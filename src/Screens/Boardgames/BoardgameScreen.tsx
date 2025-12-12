@@ -19,6 +19,7 @@ import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Ma
 import {useBoardgameFavoriteMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {useBoardgameQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameScreen>;
@@ -31,9 +32,11 @@ const decodeHtml = (html?: string) => {
 
 export const BoardgameScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
-      <BoardgameScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
+        <BoardgameScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

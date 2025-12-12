@@ -18,15 +18,18 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
 
 export const PerformerListScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={'/performers'}>
-      <PerformerListScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={'/performers'}>
+        <PerformerListScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

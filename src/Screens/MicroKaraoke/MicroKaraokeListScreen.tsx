@@ -6,12 +6,15 @@ import {NotImplementedView} from '#src/Components/Views/Static/NotImplementedVie
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 export const MicroKaraokeListScreen = () => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.microkaraoke}>
-      <MicroKaraokeListScreenInner />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.microkaraoke}>
+        <MicroKaraokeListScreenInner />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

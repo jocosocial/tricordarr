@@ -10,14 +10,17 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {ForumRelationQueryType} from '#src/Queries/Forum/ForumThreadRelationQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumFavoritesScreen>;
 
 export const ForumThreadFavoritesScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forum/favorites'}>
-      <ForumThreadFavoritesScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forum/favorites'}>
+        <ForumThreadFavoritesScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

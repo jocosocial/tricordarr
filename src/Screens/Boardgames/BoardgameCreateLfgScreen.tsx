@@ -6,17 +6,20 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {LfgCreateScreenBase} from '#src/Screens/LFG/LfgCreateScreenBase';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameCreateLfgScreen>;
 
 export const BoardgameCreateLfgScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen
-      feature={SwiftarrFeature.gameslist}
-      urlPath={`/boardgames/${props.route.params.boardgame.gameID}/createfez`}>
-      <BoardgameCreateLfgScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen
+        feature={SwiftarrFeature.gameslist}
+        urlPath={`/boardgames/${props.route.params.boardgame.gameID}/createfez`}>
+        <BoardgameCreateLfgScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

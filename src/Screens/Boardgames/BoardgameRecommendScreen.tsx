@@ -15,6 +15,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameRecommendMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {BoardgameData, BoardgameRecommendationData} from '#src/Structs/ControllerStructs';
 
 const defaultValues: BoardgameRecommendationData = {
@@ -46,9 +47,11 @@ type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameR
 
 export const BoardgameRecommendScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames/guide'}>
-      <BoardgameRecommendScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames/guide'}>
+        <BoardgameRecommendScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

@@ -11,16 +11,19 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useRegCodeForUserQuery} from '#src/Queries/Admin/RegCodeQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userRegCodeScreen>;
 
 export const UserRegCodeScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen
-      feature={SwiftarrFeature.users}
-      urlPath={`/admin/regcodes/showuser/${props.route.params.userID}`}>
-      <UserRegCodeScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen
+        feature={SwiftarrFeature.users}
+        urlPath={`/admin/regcodes/showuser/${props.route.params.userID}`}>
+        <UserRegCodeScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

@@ -5,15 +5,18 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserFindQuery, useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {UserProfileScreenBase} from '#src/Screens/User/UserProfileScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.usernameProfileScreen>;
 
 export const UsernameProfileScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={`/username/${props.route.params.username}`}>
-      <UsernameProfileScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={`/username/${props.route.params.username}`}>
+        <UsernameProfileScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

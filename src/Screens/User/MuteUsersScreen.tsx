@@ -19,15 +19,18 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';
 import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.muteUsers>;
 
 export const MuteUsersScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/blocks'}>
-      <MuteUsersScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/blocks'}>
+        <MuteUsersScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

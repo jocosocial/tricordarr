@@ -5,16 +5,19 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ForumPostScreenBase} from '#src/Screens/Forum/Post/ForumPostScreenBase';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumPostUserScreen>;
 
 export const ForumPostUserScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen
-      feature={SwiftarrFeature.forums}
-      urlPath={`/forumpost/search?creatorid=${props.route.params.user.userID}`}>
-      <ForumPostUserScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen
+        feature={SwiftarrFeature.forums}
+        urlPath={`/forumpost/search?creatorid=${props.route.params.user.userID}`}>
+        <ForumPostUserScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

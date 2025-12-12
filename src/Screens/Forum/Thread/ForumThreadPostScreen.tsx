@@ -9,16 +9,19 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ForumThreadScreenBase} from '#src/Screens/Forum/Thread/ForumThreadScreenBase';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadPostScreen>;
 
 export const ForumThreadPostScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen
-      feature={SwiftarrFeature.forums}
-      urlPath={`/forum/containingpost/${props.route.params.postID}`}>
-      <ForumThreadPostScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen
+        feature={SwiftarrFeature.forums}
+        urlPath={`/forum/containingpost/${props.route.params.postID}`}>
+        <ForumThreadPostScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

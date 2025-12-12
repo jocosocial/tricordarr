@@ -12,6 +12,7 @@ import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserProfileMutation} from '#src/Queries/User/UserProfileMutations';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {UserHeader, UserProfileUploadData} from '#src/Structs/ControllerStructs';
 import {UserProfileFormValues} from '#src/Types/FormValues';
 
@@ -19,9 +20,11 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userPr
 
 export const UserProfileEditScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/profile/edit'}>
-      <UserProfileEditScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/profile/edit'}>
+        <UserProfileEditScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

@@ -18,15 +18,18 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePhotostreamQuery} from '#src/Queries/Photostream/PhotostreamQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
 export type Props = StackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
 
 export const PhotostreamScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.photostream}>
-      <PhotostreamScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.photostream}>
+        <PhotostreamScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

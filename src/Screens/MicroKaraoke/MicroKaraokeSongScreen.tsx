@@ -15,14 +15,17 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useMicroKaraokeSongQuery} from '#src/Queries/MicroKaraoke/MicroKaraokeQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.microKaraokeSongScreen>;
 
 export const MicroKaraokeSongScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.microkaraoke}>
-      <MicroKaraokeSongScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.microkaraoke}>
+        <MicroKaraokeSongScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

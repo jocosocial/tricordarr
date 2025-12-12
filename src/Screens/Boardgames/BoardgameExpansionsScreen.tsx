@@ -14,16 +14,19 @@ import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameExpansionsQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameExpansionsScreen>;
 
 export const BoardgameExpansionsScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen
-      feature={SwiftarrFeature.gameslist}
-      urlPath={`/boardgames/${props.route.params.boardgameID}/expansions`}>
-      <BoardgameExpansionsScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen
+        feature={SwiftarrFeature.gameslist}
+        urlPath={`/boardgames/${props.route.params.boardgameID}/expansions`}>
+        <BoardgameExpansionsScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 
