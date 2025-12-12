@@ -1,8 +1,8 @@
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import {CommonActions} from '@react-navigation/native';
 import {useEffect} from 'react';
+import {View} from 'react-native';
 import {BottomNavigation} from 'react-native-paper';
-import Animated from 'react-native-reanimated';
 
 import {useLayout} from '#src/Context/Contexts/LayoutContext';
 
@@ -24,6 +24,7 @@ import {useLayout} from '#src/Context/Contexts/LayoutContext';
 export const AppBottomTabBar = (props: BottomTabBarProps) => {
   const {footerHeight} = useLayout();
 
+  // Clear footerHeight when component unmounts
   useEffect(() => {
     return () => {
       console.log('[AppBottomTabBar.tsx] useEffect return setting footerHeight to 0');
@@ -32,10 +33,12 @@ export const AppBottomTabBar = (props: BottomTabBarProps) => {
   }, [footerHeight]);
 
   return (
-    <Animated.View
+    <View
+      collapsable={false}
       onLayout={e => {
-        console.log('[AppBottomTabBar.tsx] onLayout found height', e.nativeEvent.layout.height);
-        footerHeight.set(e.nativeEvent.layout.height);
+        const height = e.nativeEvent.layout.height;
+        console.log('[AppBottomTabBar.tsx] onLayout found height', height);
+        footerHeight.set(height);
       }}>
       <BottomNavigation.Bar
         navigationState={props.state}
@@ -75,6 +78,6 @@ export const AppBottomTabBar = (props: BottomTabBarProps) => {
           return label;
         }}
       />
-    </Animated.View>
+    </View>
   );
 };

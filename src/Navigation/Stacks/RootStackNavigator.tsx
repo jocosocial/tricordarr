@@ -1,9 +1,10 @@
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
+import {useLayout} from '#src/Context/Contexts/LayoutContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -32,11 +33,40 @@ export const RootStackNavigator = () => {
   const {setHasUnsavedWork} = useErrorHandler();
   const {setEnableSelection, dispatchSelectedForums} = useSelection();
   const {setSnackbarPayload} = useSnackbar();
+  const {footerHeight} = useLayout();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  // Store the last known footer height so we can restore it when navigating back
+  const lastKnownFooterHeightRef = useRef<number>(0);
 
   let initialRouteName = RootStackComponents.oobeNavigator;
   if (appConfig.oobeCompletedVersion >= appConfig.oobeExpectedVersion) {
     initialRouteName = RootStackComponents.rootContentScreen;
   }
+
+  // Clear or restore footerHeight based on current route
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('state', () => {
+      const state = navigation.getState();
+      const currentRoute = state?.routes[state.index];
+      if (currentRoute?.name !== RootStackComponents.rootContentScreen) {
+        // Navigating away - save current height and clear it
+        if (footerHeight.value > 0) {
+          lastKnownFooterHeightRef.current = footerHeight.value;
+          console.log('[RootStackNavigator.tsx] Saving footerHeight', lastKnownFooterHeightRef.current);
+        }
+        console.log('[RootStackNavigator.tsx] Navigating away from RootContentScreen, clearing footerHeight');
+        footerHeight.set(0);
+      } else {
+        // Navigating back to RootContentScreen - restore height
+        if (lastKnownFooterHeightRef.current > 0) {
+          console.log('[RootStackNavigator.tsx] Restoring footerHeight to', lastKnownFooterHeightRef.current);
+          footerHeight.set(lastKnownFooterHeightRef.current);
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, footerHeight]);
 
   return (
     <Stack.Navigator

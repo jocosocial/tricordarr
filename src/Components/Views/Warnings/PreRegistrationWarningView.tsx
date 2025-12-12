@@ -22,10 +22,11 @@ export const PreRegistrationWarningView = () => {
     },
   });
 
-  const onPress = () =>
+  const onPress = () => {
     navigation.push(RootStackComponents.oobeNavigator, {
       screen: OobeStackComponents.oobePreregistrationScreen,
     });
+  };
 
   return (
     <TouchableOpacity style={styles.headerView} onPress={onPress}>
