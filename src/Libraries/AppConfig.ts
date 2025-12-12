@@ -211,6 +211,11 @@ export const getAppConfig = async () => {
     appConfig.muteNotifications = new Date(appConfig.muteNotifications);
   }
 
+  // If you haven't completed OOBE then you can't be in pre-registration mode
+  if (appConfig.oobeCompletedVersion !== appConfig.oobeExpectedVersion) {
+    appConfig.preRegistrationMode = false;
+  }
+
   // "Migration"
   if (appConfig.manualTimeOffset === undefined) {
     appConfig.manualTimeOffset = 0;

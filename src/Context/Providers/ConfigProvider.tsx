@@ -31,10 +31,12 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
 
   const updateAppConfig = (newConfig: AppConfig) => {
     console.info('[ConfigProvider.tsx] Updating app config to', newConfig);
-    AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(newConfig)).then(() => {
-      setAppConfig(newConfig);
-      NativeTricordarrModule.setAppConfig(JSON.stringify(newConfig));
-    });
+    // Update state immediately to avoid race conditions where consumers navigate
+    // before the state is updated.
+    setAppConfig(newConfig);
+    NativeTricordarrModule.setAppConfig(JSON.stringify(newConfig));
+    // Persist to storage in the background.
+    AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(newConfig));
   };
 
   if (!appConfig) {
