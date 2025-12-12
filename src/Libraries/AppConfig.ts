@@ -155,7 +155,7 @@ const defaultAppConfig: AppConfig = {
   preRegistrationServerUrl: '',
   enableExperiments: false,
   wifiNetworkNames: [],
-  preRegistrationMode: true,
+  preRegistrationMode: false,
 };
 
 /**
