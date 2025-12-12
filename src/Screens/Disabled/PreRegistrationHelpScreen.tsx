@@ -30,6 +30,13 @@ export const PreRegistrationHelpScreen = () => {
           be visible to other Twitarr users and will be attached to the event you're hosting. This is separate from your
           Twitarr user profile.
         </HelpTopicView>
+        <HelpTopicView icon={AppIcons.settings}>
+          There are a bunch of settings you can configure within the app. Use these to customize your experience.
+        </HelpTopicView>
+        <HelpTopicView icon={AppIcons.help}>
+          Read help documentation about all the features you can use in Twitarr before the cruise starts. You can also
+          learn more about the client applications and how to contribute to the project.
+        </HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );

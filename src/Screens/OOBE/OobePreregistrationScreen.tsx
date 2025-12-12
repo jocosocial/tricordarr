@@ -51,8 +51,8 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <Text style={styles.text}>
-            Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs, private DNS, or
-            other network blockers.
+            Before proceeding ensure that your phone is in airplane mode, on ship WiFi, and you have disabled any VPNs,
+            private DNS, or other network blockers.
           </Text>
         </PaddedContentView>
       </ScrollingContentView>

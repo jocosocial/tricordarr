@@ -4,6 +4,7 @@ import {RefreshControl, View} from 'react-native';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ModeratorCard} from '#src/Components/Cards/MainScreen/ModeratorCard';
+import {TodayPreRegistrationCard} from '#src/Components/Cards/MainScreen/TodayPreRegistrationCard';
 import {MainAccountMenu} from '#src/Components/Menus/MainAccountMenu';
 import {NotificationsMenu} from '#src/Components/Menus/NotificationsMenu';
 import {TodayHeaderTitle} from '#src/Components/Navigation/TodayHeaderTitle';
@@ -93,6 +94,11 @@ export const TodayScreen = ({navigation}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <TodayHeaderView />
+        {appConfig.preRegistrationMode && (
+          <PaddedContentView padBottom={false}>
+            <TodayPreRegistrationCard />
+          </PaddedContentView>
+        )}
         {!appConfig.preRegistrationMode && (
           <>
             <TodayTimezoneWarningView />
@@ -106,7 +112,6 @@ export const TodayScreen = ({navigation}: Props) => {
             )}
           </>
         )}
-
         <TodayAppUpdateView />
       </ScrollingContentView>
     </AppView>
