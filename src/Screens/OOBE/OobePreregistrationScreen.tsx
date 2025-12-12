@@ -50,9 +50,12 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
+          <Text style={styles.text}>Do not proceed until you are physically on the ship!</Text>
+        </PaddedContentView>
+        <PaddedContentView>
           <Text style={styles.text}>
-            Before proceeding ensure that your phone is in airplane mode, on ship WiFi, and you have disabled any VPNs,
-            private DNS, or other network blockers.
+            Ensure that your phone is in airplane mode, on ship WiFi, and you have disabled any VPNs, private DNS, or
+            other network blockers.
           </Text>
         </PaddedContentView>
       </ScrollingContentView>

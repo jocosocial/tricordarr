@@ -22,7 +22,7 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcom
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {appConfig, preRegistrationAvailable, updateAppConfig} = useConfig();
+  const {appConfig, updateAppConfig} = useConfig();
   const {theme} = useAppTheme();
 
   const setPreRegistrationMode = useCallback(
@@ -84,7 +84,6 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
         leftOnPress={onPreRegistrationPress}
         leftButtonColor={theme.colors.twitarrNeutralButton}
         leftText={'Pre-Registration'}
-        leftDisabled={!preRegistrationAvailable}
         leftButtonTextColor={theme.colors.onTwitarrNeutralButton}
       />
     </AppView>

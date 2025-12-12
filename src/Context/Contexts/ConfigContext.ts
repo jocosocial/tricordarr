@@ -11,7 +11,6 @@ interface ConfigContextType {
   setHasNotificationPermission: Dispatch<SetStateAction<boolean>>;
   notificationPermissionStatus: PermissionStatus | undefined;
   setNotificationPermissionStatus: Dispatch<SetStateAction<PermissionStatus | undefined>>;
-  preRegistrationAvailable: boolean;
 }
 
 export const ConfigContext = createContext(<ConfigContextType>{});
