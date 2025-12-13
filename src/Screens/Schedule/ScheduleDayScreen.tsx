@@ -48,7 +48,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const {appConfig, oobeCompleted} = useConfig();
+  const {appConfig} = useConfig();
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
@@ -76,7 +76,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     endpoint: 'open',
     hidePast: false,
     options: {
-      enabled: isLoggedIn && appConfig.schedule.eventsShowOpenLfgs && oobeCompleted && !appConfig.preRegistrationMode,
+      enabled: isLoggedIn && appConfig.schedule.eventsShowOpenLfgs && !appConfig.preRegistrationMode,
     },
   });
   const {
@@ -90,7 +90,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: isLoggedIn && appConfig.schedule.eventsShowJoinedLfgs && oobeCompleted && !appConfig.preRegistrationMode,
+      enabled: isLoggedIn && appConfig.schedule.eventsShowJoinedLfgs && !appConfig.preRegistrationMode,
     },
   });
   const {
@@ -102,19 +102,19 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
     options: {
-      enabled: isLoggedIn && oobeCompleted && !appConfig.preRegistrationMode,
+      enabled: isLoggedIn && !appConfig.preRegistrationMode,
     },
   });
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    if (oobeCompleted) {
-      await Promise.all([refetchEvents(), refetchLfgJoined(), refetchLfgOpen(), refetchPersonalEvents()]);
-    } else {
-      await Promise.all([refetchEvents()]);
+    let refreshes: Promise<any>[] = [refetchEvents()];
+    if (!appConfig.preRegistrationMode) {
+      refreshes.push(refetchLfgJoined(), refetchLfgOpen(), refetchPersonalEvents());
     }
+    await Promise.all(refreshes);
     setRefreshing(false);
-  }, [refetchEvents, refetchLfgJoined, refetchLfgOpen, refetchPersonalEvents, oobeCompleted]);
+  }, [refetchEvents, refetchLfgJoined, refetchLfgOpen, refetchPersonalEvents, appConfig.preRegistrationMode]);
 
   const scrollToNow = useCallback(() => {
     if (scheduleList.length === 0 || !listRef.current) {
@@ -237,7 +237,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
           onScrollThreshold={onScrollThreshold}
         />
       </View>
-      {oobeCompleted && <ScheduleFAB selectedDay={selectedCruiseDay} showLabel={showFabLabel} />}
+      <ScheduleFAB selectedDay={selectedCruiseDay} showLabel={showFabLabel} />
     </AppView>
   );
 };
