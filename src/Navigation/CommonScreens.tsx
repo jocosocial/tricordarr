@@ -23,12 +23,16 @@ import {ForumThreadEditScreen} from '#src/Screens/Forum/Thread/ForumThreadEditSc
 import {ForumThreadPostScreen} from '#src/Screens/Forum/Thread/ForumThreadPostScreen';
 import {ForumThreadScreen} from '#src/Screens/Forum/Thread/ForumThreadScreen';
 import {ForumThreadUserScreen} from '#src/Screens/Forum/Thread/ForumThreadUserScreen';
+import {HelpManualScreen} from '#src/Screens/Help/HelpManualScreen';
 import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen';
 import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
 import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
 import {LfgHelpScreen} from '#src/Screens/LFG/LfgHelpScreen';
 import {LfgParticipationScreen} from '#src/Screens/LFG/LfgParticipationScreen';
 import {LfgScreen} from '#src/Screens/LFG/LfgScreen';
+import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
+import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
+import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
 import {MainTimeZoneScreen} from '#src/Screens/Main/MainTimeZoneScreen';
 import {MapScreen} from '#src/Screens/Main/MapScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
@@ -244,6 +248,10 @@ export type CommonStackParamList = {
     cruiseDay?: number;
   };
   PreRegistrationHelpScreen: undefined;
+  HelpIndexScreen: undefined;
+  MainHelpScreen: undefined;
+  AboutTricordarrScreen: undefined;
+  AboutTwitarrScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -311,6 +319,10 @@ export enum CommonStackComponents {
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleDayPlannerScreen = 'ScheduleDayPlannerScreen',
   preRegistrationHelpScreen = 'PreRegistrationHelpScreen',
+  helpIndexScreen = 'HelpIndexScreen',
+  mainHelpScreen = 'MainHelpScreen',
+  aboutTricordarrScreen = 'AboutTricordarrScreen',
+  aboutTwitarrScreen = 'AboutTwitarrScreen',
 }
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
@@ -636,6 +648,22 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.preRegistrationHelpScreen}
         component={PreRegistrationHelpScreen}
         options={{title: 'Pre-Registration Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.helpIndexScreen}
+        component={HelpManualScreen}
+        options={{title: 'Help Manual'}}
+      />
+      <Stack.Screen name={CommonStackComponents.mainHelpScreen} component={MainHelpScreen} options={{title: 'Help'}} />
+      <Stack.Screen
+        name={CommonStackComponents.aboutTricordarrScreen}
+        component={AboutTricordarrScreen}
+        options={{title: 'About Tricordarr'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.aboutTwitarrScreen}
+        component={AboutTwitarrScreen}
+        options={{title: 'About Twitarr'}}
       />
     </>
   );
