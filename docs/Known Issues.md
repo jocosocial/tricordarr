@@ -7,6 +7,8 @@ InteractionManager has been deprecated and will be removed in a future release. 
 ```
 https://github.com/react-navigation/react-navigation/issues/12785
 
+Needs to wait for React Navigation v8. Ignore the warning in v7.
+
 ### javascript-time-ago package.json
 ```
  WARN  The package /Users/grant/Projects/jocosocial/tricordarr/node_modules/javascript-time-ago/locale/en contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
