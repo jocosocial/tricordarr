@@ -52,8 +52,9 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
   const onNextPress = () => {
     if (appConfig.preRegistrationMode) {
       navigation.push(OobeStackComponents.oobeFinishScreen);
+    } else {
+      navigation.push(OobeStackComponents.oobeUserDataScreen);
     }
-    navigation.push(OobeStackComponents.oobeFinishScreen);
   };
 
   return (
