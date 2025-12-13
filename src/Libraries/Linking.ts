@@ -29,6 +29,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           initialRouteName: MainStackComponents.mainScreen,
           screens: {
             MainScreen: 'home',
+            HelpIndexScreen: 'help',
             AboutTricordarrScreen: 'about-app',
             AboutTwitarrScreen: 'about',
             FaqScreen: 'faq',

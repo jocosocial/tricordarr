@@ -18,7 +18,7 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinish
 
 export const OobeFinishScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
-  const {data: userNotificationData} = useUserNotificationDataQuery();
+  const {data: userNotificationData} = useUserNotificationDataQuery({enabled: !appConfig.preRegistrationMode});
   const rootNavigation = useRootStack();
 
   const onFinish = async () => {
@@ -26,6 +26,7 @@ export const OobeFinishScreen = ({navigation}: Props) => {
       ...appConfig,
       oobeCompletedVersion: appConfig.oobeExpectedVersion,
       // Hopefully this is set by the time we get here?
+      // @TODO replace this with the new api endpoint that gowtam wrote the other night.
       ...(userNotificationData?.shipWifiSSID ? {wifiNetworkNames: [userNotificationData.shipWifiSSID]} : {}),
     });
     if (!appConfig.preRegistrationMode) {

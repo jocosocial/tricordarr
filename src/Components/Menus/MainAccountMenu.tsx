@@ -51,7 +51,7 @@ export const MainAccountMenu = () => {
   };
 
   const handleHelp = () => {
-    mainNavigation.push(MainStackComponents.mainHelpScreen);
+    mainNavigation.push(CommonStackComponents.helpIndexScreen);
   };
 
   const getAvatarImage = () => <UserAvatarImage userHeader={profilePublicData?.header} small={true} />;

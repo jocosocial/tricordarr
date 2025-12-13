@@ -19,6 +19,7 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePermis
 
 export const OobePermissionsScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
   const {setHasNotificationPermission, notificationPermissionStatus, setNotificationPermissionStatus} = useConfig();
 
   const enablePermissions = async () => {
@@ -40,6 +41,19 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
       return 'Unavailable';
     } else {
       return 'Unknown';
+    }
+  };
+
+  /**
+   * Skip the user data screen if we are in pre-registration mode.
+   * They have plenty of time to do that and we want to get the user out of OOBE
+   * quickly.
+   */
+  const onNextPress = () => {
+    if (appConfig.preRegistrationMode) {
+      navigation.push(OobeStackComponents.oobeFinishScreen);
+    } else {
+      navigation.push(OobeStackComponents.oobeUserDataScreen);
     }
   };
 
@@ -80,11 +94,7 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
         </PaddedContentView>
         {notificationPermissionStatus === RESULTS.GRANTED && <BatteryOptimizationSettingsView />}
       </ScrollingContentView>
-      <OobeButtonsView
-        leftOnPress={() => navigation.goBack()}
-        rightText={'Next'}
-        rightOnPress={() => navigation.push(OobeStackComponents.oobeUserDataScreen)}
-      />
+      <OobeButtonsView leftOnPress={() => navigation.goBack()} rightText={'Next'} rightOnPress={onNextPress} />
     </AppView>
   );
 };

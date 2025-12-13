@@ -13,13 +13,10 @@ import {BoardgameListScreen} from '#src/Screens/Boardgames/BoardgameListScreen';
 import {BoardgameRecommendScreen} from '#src/Screens/Boardgames/BoardgameRecommendScreen';
 import {BoardgameScreen} from '#src/Screens/Boardgames/BoardgameScreen';
 import {BoardgameSearchScreen} from '#src/Screens/Boardgames/BoardgameSearchScreen';
-import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
-import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
 import {DailyThemeScreen} from '#src/Screens/Main/DailyThemeScreen';
 import {DailyThemesScreen} from '#src/Screens/Main/DailyThemesScreen';
 import {FaqScreen} from '#src/Screens/Main/FaqScreen';
 import {MainConductScreen} from '#src/Screens/Main/MainConductScreen';
-import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
 import {TodayScreen} from '#src/Screens/Main/TodayScreen';
 import {MicroKaraokeListScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeListScreen';
 import {MicroKaraokeSongScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeSongScreen';
@@ -33,14 +30,11 @@ import {BoardgameData, DailyThemeData} from '#src/Structs/ControllerStructs';
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
   MainSettingsScreen: NavigatorScreenParams<SettingsStackParamList>;
-  AboutTwitarrScreen: undefined;
-  AboutTricordarrScreen: undefined;
   FaqScreen: undefined;
   UserDirectoryScreen: undefined;
   DailyThemeScreen: {
     dailyTheme: DailyThemeData;
   };
-  MainHelpScreen: undefined;
   MainConductScreen: undefined;
   DailyThemesScreen: undefined;
   PhotostreamScreen: undefined;
@@ -73,12 +67,9 @@ export const MainStack = createStackNavigator<MainStackParamList>();
 export enum MainStackComponents {
   mainScreen = 'MainScreen',
   mainSettingsScreen = 'MainSettingsScreen',
-  aboutTwitarrScreen = 'AboutTwitarrScreen',
-  aboutTricordarrScreen = 'AboutTricordarrScreen',
   faqScreen = 'FaqScreen',
   userDirectoryScreen = 'UserDirectoryScreen',
   dailyThemeScreen = 'DailyThemeScreen',
-  mainHelpScreen = 'MainHelpScreen',
   conductScreen = 'MainConductScreen',
   dailyThemesScreen = 'DailyThemesScreen',
   photostreamScreen = 'PhotostreamScreen',
@@ -107,16 +98,6 @@ export const MainStackNavigator = () => {
         component={SettingsStackNavigator}
         options={{headerShown: false}}
       />
-      <MainStack.Screen
-        name={MainStackComponents.aboutTricordarrScreen}
-        component={AboutTricordarrScreen}
-        options={{title: 'About Tricordarr'}}
-      />
-      <MainStack.Screen
-        name={MainStackComponents.aboutTwitarrScreen}
-        component={AboutTwitarrScreen}
-        options={{title: 'About Twitarr'}}
-      />
       <MainStack.Screen name={MainStackComponents.faqScreen} component={FaqScreen} options={{title: 'FAQ'}} />
       <MainStack.Screen
         name={MainStackComponents.userDirectoryScreen}
@@ -127,11 +108,6 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.dailyThemeScreen}
         component={DailyThemeScreen}
         options={{title: 'Daily Theme'}}
-      />
-      <MainStack.Screen
-        name={MainStackComponents.mainHelpScreen}
-        component={MainHelpScreen}
-        options={{title: 'Help'}}
       />
       <MainStack.Screen
         name={MainStackComponents.conductScreen}

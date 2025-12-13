@@ -173,6 +173,11 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.tricordarr}
                 onPress={() => Linking.openURL('tricordarr://about-app')}
               />
+              <PaperDrawer.Item
+                label={'Help Manual'}
+                icon={AppIcons.help}
+                onPress={() => Linking.openURL('tricordarr://help')}
+              />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Advanced'} showDivider={false}>
               <PaperDrawer.Item
