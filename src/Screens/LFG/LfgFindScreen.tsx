@@ -12,26 +12,26 @@ import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 export type Props = StackScreenProps<LfgStackParamList, LfgStackComponents.lfgFindScreen>;
 
 export const LfgFindScreen = (props: Props) => {
-  return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg'}>
-        <LfgFindScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
-  );
-};
-
-const LfgFindScreenInner = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();
   const {appConfig} = useConfig();
 
   useEffect(() => {
     if (appConfig.schedule.defaultLfgScreen === LfgStackComponents.lfgFindScreen) {
-      navigation.setOptions({
+      props.navigation.setOptions({
         headerLeft: getLeftMainHeaderButtons,
       });
     }
-  }, [appConfig.schedule.defaultLfgScreen, getLeftMainHeaderButtons, navigation]);
+  }, [appConfig.schedule.defaultLfgScreen, getLeftMainHeaderButtons, props.navigation]);
 
+  return (
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg'}>
+        <LfgFindScreenInner />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
+  );
+};
+
+const LfgFindScreenInner = () => {
   return <LfgListScreen endpoint={'open'} />;
 };
