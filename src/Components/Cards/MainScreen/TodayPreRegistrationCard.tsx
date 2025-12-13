@@ -11,7 +11,7 @@ export const TodayPreRegistrationCard = () => {
 
   const styles = StyleSheet.create({
     card: {
-      ...commonStyles.twitarrNeutral,
+      ...commonStyles.twitarrPositive,
     },
     title: {
       ...commonStyles.onTwitarrButton,
@@ -31,7 +31,7 @@ export const TodayPreRegistrationCard = () => {
 
   return (
     <Card style={styles.card} onPress={onPress}>
-      <Card.Title title={'Pre-Registration'} titleStyle={styles.title} />
+      <Card.Title title={'Pre-Registration Setup'} titleStyle={styles.title} />
       <Card.Content style={styles.content}>
         <Text style={styles.text}>
           Twitarr's social media features aren't enabled right now (see the JoCo Discord instead). Tap here for more
