@@ -1,13 +1,23 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useState} from 'react';
-import {Text} from 'react-native-paper';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {ScrollView, View} from 'react-native';
 
 import {AppView} from '#src/Components/Views/AppView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
+import {DayPlannerTimelineView} from '#src/Components/Views/Schedule/DayPlannerTimelineView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
+import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForTime} from '#src/Libraries/DayPlanner';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {useEventsQuery} from '#src/Queries/Events/EventQueries';
+import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayPlannerScreen>;
@@ -21,13 +31,141 @@ export const ScheduleDayPlannerScreen = (props: Props) => {
 };
 
 const ScheduleDayPlannerScreenInner = ({route}: Props) => {
-  const {adjustedCruiseDayToday} = useCruise();
+  const {adjustedCruiseDayToday, startDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(route.params?.cruiseDay ?? adjustedCruiseDayToday);
+  const {isLoggedIn} = useAuth();
+  const {appConfig} = useConfig();
+  const {commonStyles} = useStyles();
+  const [refreshing, setRefreshing] = useState(false);
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  // Fetch events with dayplanner=true (only favorited/following events)
+  const {
+    data: eventData,
+    isFetching: isEventFetching,
+    refetch: refetchEvents,
+  } = useEventsQuery({
+    cruiseDay: selectedCruiseDay,
+    dayplanner: true,
+    options: {
+      enabled: isLoggedIn,
+    },
+  });
+
+  // Fetch joined LFGs (matches web app behavior)
+  const {
+    data: lfgJoinedData,
+    isFetching: isLfgJoinedFetching,
+    refetch: refetchLfgJoined,
+    hasNextPage: joinedHasNextPage,
+    fetchNextPage: joinedFetchNextPage,
+  } = useLfgListQuery({
+    cruiseDay: selectedCruiseDay - 1,
+    endpoint: 'joined',
+    hidePast: false,
+    options: {
+      enabled: isLoggedIn && !appConfig.preRegistrationMode,
+    },
+  });
+
+  // Fetch personal/private events
+  const {
+    data: personalEventData,
+    isFetching: isPersonalEventFetching,
+    refetch: refetchPersonalEvents,
+    hasNextPage: personalHasNextPage,
+    fetchNextPage: personalFetchNextPage,
+  } = usePersonalEventsQuery({
+    cruiseDay: selectedCruiseDay - 1,
+    options: {
+      enabled: isLoggedIn && !appConfig.preRegistrationMode,
+    },
+  });
+
+  // Handle pagination for LFGs and personal events
+  useEffect(() => {
+    if (joinedHasNextPage) {
+      joinedFetchNextPage();
+    }
+    if (personalHasNextPage) {
+      personalFetchNextPage();
+    }
+  }, [joinedFetchNextPage, joinedHasNextPage, personalFetchNextPage, personalHasNextPage]);
+
+  // Build day planner items from all data sources
+  const dayPlannerItems = useMemo(() => {
+    return buildDayPlannerItems(eventData, lfgJoinedData, personalEventData);
+  }, [eventData, lfgJoinedData, personalEventData]);
+
+  // Calculate day boundaries for the timeline
+  const {dayStart, dayEnd} = useMemo(() => {
+    return getDayBoundaries(startDate, selectedCruiseDay);
+  }, [startDate, selectedCruiseDay]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    const refreshes: Promise<unknown>[] = [refetchEvents()];
+    if (!appConfig.preRegistrationMode) {
+      refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
+    }
+    await Promise.all(refreshes);
+    setRefreshing(false);
+  }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents, appConfig.preRegistrationMode]);
+
+  // Scroll to current time position in the timeline
+  const scrollToNow = useCallback(() => {
+    console.log('[ScheduleDayPlannerScreen] scrollToNow called, ref exists:', !!scrollViewRef.current);
+    if (!scrollViewRef.current) {
+      console.log('[ScheduleDayPlannerScreen] scrollViewRef.current is null, returning');
+      return;
+    }
+    const now = new Date();
+    console.log('[ScheduleDayPlannerScreen] Calculating offset for:', {
+      now: now.toISOString(),
+      dayStart: dayStart.toISOString(),
+      dayEnd: dayEnd.toISOString(),
+    });
+    const offset = getScrollOffsetForTime(now, dayStart, dayEnd);
+    console.log('[ScheduleDayPlannerScreen] Scrolling to offset:', offset);
+    scrollViewRef.current.scrollTo({y: offset, animated: true});
+  }, [dayStart, dayEnd]);
+
+  if (!isLoggedIn) {
+    return <NotLoggedInView />;
+  }
+
+  const isLoading = isEventFetching || isLfgJoinedFetching || isPersonalEventFetching;
+  const showLoading = isLoading && !refreshing && dayPlannerItems.length === 0;
+
+  if (showLoading) {
+    return (
+      <AppView>
+        <ScheduleHeaderView
+          selectedCruiseDay={selectedCruiseDay}
+          setCruiseDay={setSelectedCruiseDay}
+          scrollToNow={scrollToNow}
+        />
+        <LoadingView />
+      </AppView>
+    );
+  }
 
   return (
     <AppView>
-      <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={setSelectedCruiseDay} />
-      <Text>Day Planner for Cruise Day {selectedCruiseDay}</Text>
+      <TimezoneWarningView />
+      <ScheduleHeaderView
+        selectedCruiseDay={selectedCruiseDay}
+        setCruiseDay={setSelectedCruiseDay}
+        scrollToNow={scrollToNow}
+      />
+      <View style={commonStyles.flex}>
+        <DayPlannerTimelineView
+          ref={scrollViewRef}
+          items={dayPlannerItems}
+          dayStart={dayStart}
+          dayEnd={dayEnd}
+        />
+      </View>
     </AppView>
   );
 };
