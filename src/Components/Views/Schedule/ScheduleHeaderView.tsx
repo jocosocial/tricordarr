@@ -13,6 +13,22 @@ const GRADIENT_WIDTH = 24;
 const SCROLL_THRESHOLD = 5;
 const ANIMATION_DURATION = 200;
 
+const scrollShadowStyles = StyleSheet.create({
+  base: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: GRADIENT_WIDTH,
+    zIndex: 1,
+  },
+  left: {
+    left: 0,
+  },
+  right: {
+    right: 0,
+  },
+});
+
 // Scroll shadow indicator component using LinearGradient
 const ScrollShadow = ({side, opacity}: {side: 'left' | 'right'; opacity: SharedValue<number>}) => {
   const animatedStyle = useAnimatedStyle(() => ({
@@ -26,19 +42,7 @@ const ScrollShadow = ({side, opacity}: {side: 'left' | 'right'; opacity: SharedV
   const gradientColors = side === 'left' ? colors : [...colors].reverse();
 
   return (
-    <Animated.View
-      style={[
-        {
-          position: 'absolute',
-          [side]: 0,
-          top: 0,
-          bottom: 0,
-          width: GRADIENT_WIDTH,
-          zIndex: 1,
-        },
-        animatedStyle,
-      ]}
-      pointerEvents={'none'}>
+    <Animated.View style={[scrollShadowStyles.base, scrollShadowStyles[side], animatedStyle]} pointerEvents={'none'}>
       <LinearGradient colors={gradientColors} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={StyleSheet.absoluteFill} />
     </Animated.View>
   );
