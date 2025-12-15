@@ -8,16 +8,18 @@ import {Item} from 'react-navigation-header-buttons';
 import {LfgFAB} from '#src/Components/Buttons/FloatingActionButtons/LfgFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
-import {LfgCruiseDayFilterMenu} from '#src/Components/Menus/LFG/LfgCruiseDayFilterMenu';
 import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
+import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
@@ -40,14 +42,18 @@ export const LfgListScreen = ({
   listHeader,
   showFab = true,
 }: LfgJoinedScreenProps) => {
-  const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useFilter();
+  const {lfgTypeFilter, lfgHidePastFilter} = useFilter();
   const {isLoggedIn} = useAuth();
+  const {adjustedCruiseDayToday} = useCruise();
+  const {commonStyles} = useStyles();
+  // Default to day 1 if cruise context isn't ready yet
+  const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday || 1);
   const {data, isFetching, refetch, isLoading, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage, hasNextPage} =
     useLfgListQuery({
       endpoint: endpoint,
       fezType: lfgTypeFilter,
       // @TODO we intend to change this some day. Upstream Swiftarr issue.
-      cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
+      cruiseDay: selectedCruiseDay - 1,
       hidePast: lfgHidePastFilter,
     });
   const navigation = useLFGStackNavigation();
@@ -77,7 +83,6 @@ export const LfgListScreen = ({
                   })
                 }
               />
-              <LfgCruiseDayFilterMenu />
               <LfgFilterMenu />
             </>
           )}
@@ -141,19 +146,22 @@ export const LfgListScreen = ({
   return (
     <AppView>
       <TimezoneWarningView />
-      <LFGFlatList
-        listRef={listRef}
-        items={fezList}
-        refreshControl={
-          <RefreshControl refreshing={isFetching || isFetchingNextPage || isFetchingPreviousPage} onRefresh={refetch} />
-        }
-        separator={'day'}
-        onScrollThreshold={onScrollThreshold}
-        handleLoadNext={fetchNextPage}
-        hasNextPage={hasNextPage}
-        enableReportOnly={enableReportOnly}
-        listHeader={listHeader}
-      />
+      <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={setSelectedCruiseDay} />
+      <View style={[commonStyles.flex]}>
+        <LFGFlatList
+          listRef={listRef}
+          items={fezList}
+          refreshControl={
+            <RefreshControl refreshing={isFetching || isFetchingNextPage || isFetchingPreviousPage} onRefresh={refetch} />
+          }
+          separator={'day'}
+          onScrollThreshold={onScrollThreshold}
+          handleLoadNext={fetchNextPage}
+          hasNextPage={hasNextPage}
+          enableReportOnly={enableReportOnly}
+          listHeader={listHeader}
+        />
+      </View>
       {showFab && <LfgFAB showLabel={showFabLabel} />}
     </AppView>
   );

@@ -71,6 +71,7 @@
     "react-native-is-edge-to-edge": "^1.2.1",
     "react-native-json-tree": "^1.5.0",
     "react-native-keyboard-controller": "^1.19.2",
+    "react-native-linear-gradient": "^2.8.3",
     "react-native-mime-types": "^2.5.0",
     "react-native-paper": "^5.14.5",
     "react-native-paper-dates": "^0.22.50",
