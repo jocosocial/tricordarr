@@ -91,17 +91,13 @@ const SchedulePrivateEventsScreenInner = () => {
     }
   }, [isError, onQueryError]);
 
-  const localStyles = useMemo(
-    () =>
-      StyleSheet.create({
-        loadingContainer: {
-          ...commonStyles.flex,
-          justifyContent: 'center',
-          alignItems: 'center',
-        },
-      }),
-    [commonStyles.flex],
-  );
+  const styles = StyleSheet.create({
+    loadingContainer: {
+      ...commonStyles.flex,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+    },
+  });
 
   if (isLoading) {
     return <LoadingView />;
@@ -112,7 +108,7 @@ const SchedulePrivateEventsScreenInner = () => {
       <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={handleSetCruiseDay} />
       <View style={[commonStyles.flex]}>
         {isSwitchingDays ? (
-          <View style={localStyles.loadingContainer}>
+          <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" />
           </View>
         ) : (
