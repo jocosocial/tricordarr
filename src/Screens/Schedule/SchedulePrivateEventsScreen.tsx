@@ -1,16 +1,19 @@
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import React, {SetStateAction, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {RefreshControl, StyleSheet, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {SchedulePersonalEventCreateFAB} from '#src/Components/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
-import {LfgCruiseDayFilterMenu} from '#src/Components/Menus/LFG/LfgCruiseDayFilterMenu';
 import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {AppView} from '#src/Components/Views/AppView';
+import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
@@ -31,22 +34,35 @@ export const SchedulePrivateEventsScreen = () => {
 };
 
 const SchedulePrivateEventsScreenInner = () => {
-  const {lfgCruiseDayFilter, lfgHidePastFilter} = useFilter();
-  const {data, isFetching, refetch, hasNextPage, fetchNextPage} = usePersonalEventsQuery({
-    fezType: [FezType.privateEvent, FezType.personalEvent],
-    // @TODO we intend to change this some day. Upstream Swiftarr issue.
-    cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
-    hidePast: lfgHidePastFilter,
-  });
+  const {lfgHidePastFilter} = useFilter();
+  const {adjustedCruiseDayToday} = useCruise();
+  const {commonStyles} = useStyles();
   const listRef = useRef<FlashListRef<FezData>>(null);
   const navigation = useCommonStack();
   const [items, setItems] = useState<FezData[]>([]);
+  // Default to day 1 if cruise context isn't ready yet
+  const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday || 1);
+  const [isSwitchingDays, setIsSwitchingDays] = useState(false);
+
+  // Wrapper to clear list immediately when day changes (not in useEffect which runs after render)
+  const handleSetCruiseDay = useCallback((day: SetStateAction<number>) => {
+    setItems([]); // Clear list immediately
+    setIsSwitchingDays(true); // Mark that we're switching days
+    setSelectedCruiseDay(day);
+    listRef.current?.scrollToOffset({offset: 0, animated: false}); // Reset scroll position
+  }, []);
+
+  const {data, isFetching, isError, refetch, hasNextPage, fetchNextPage} = usePersonalEventsQuery({
+    fezType: [FezType.privateEvent, FezType.personalEvent],
+    // @TODO we intend to change this some day. Upstream Swiftarr issue.
+    cruiseDay: selectedCruiseDay - 1,
+    hidePast: lfgHidePastFilter,
+  });
 
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <MaterialHeaderButtons>
-          <LfgCruiseDayFilterMenu />
           <LfgFilterMenu showTypes={false} />
           <Item
             title={'Help'}
@@ -71,8 +87,28 @@ const SchedulePrivateEventsScreenInner = () => {
   useEffect(() => {
     if (data) {
       setItems(data.pages.flatMap(page => page.fezzes));
+      setIsSwitchingDays(false); // Data loaded, no longer switching days
     }
   }, [data]);
+
+  // Reset switching state on error to prevent stuck loading spinner
+  useEffect(() => {
+    if (isError) {
+      setIsSwitchingDays(false);
+    }
+  }, [isError]);
+
+  const localStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        loadingContainer: {
+          ...commonStyles.flex,
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+      }),
+    [commonStyles.flex],
+  );
 
   if (!data) {
     return <LoadingView />;
@@ -80,14 +116,23 @@ const SchedulePrivateEventsScreenInner = () => {
 
   return (
     <AppView>
-      <LFGFlatList
-        items={items}
-        listRef={listRef}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-        separator={'day'}
-        hasNextPage={hasNextPage}
-        handleLoadNext={fetchNextPage}
-      />
+      <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={handleSetCruiseDay} />
+      <View style={[commonStyles.flex]}>
+        {isSwitchingDays ? (
+          <View style={localStyles.loadingContainer}>
+            <ActivityIndicator size="large" />
+          </View>
+        ) : (
+          <LFGFlatList
+            items={items}
+            listRef={listRef}
+            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+            separator={'day'}
+            hasNextPage={hasNextPage}
+            handleLoadNext={fetchNextPage}
+          />
+        )}
+      </View>
       <SchedulePersonalEventCreateFAB />
     </AppView>
   );
