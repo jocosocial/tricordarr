@@ -38,13 +38,8 @@ const ScrollShadow = ({side, opacity}: {side: 'left' | 'right'; opacity: SharedV
         },
         animatedStyle,
       ]}
-      pointerEvents="none">
-      <LinearGradient
-        colors={gradientColors}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}
-        style={StyleSheet.absoluteFill}
-      />
+      pointerEvents={'none'}>
+      <LinearGradient colors={gradientColors} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={StyleSheet.absoluteFill} />
     </Animated.View>
   );
 };
@@ -129,8 +124,8 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
 
   return (
     <View style={styles.view}>
-      <ScrollShadow side="left" opacity={leftShadowOpacity} />
-      <ScrollShadow side="right" opacity={rightShadowOpacity} />
+      <ScrollShadow side={'left'} opacity={leftShadowOpacity} />
+      <ScrollShadow side={'right'} opacity={rightShadowOpacity} />
 
       <FlashList
         contentContainerStyle={{...commonStyles.paddingHorizontalSmall}}

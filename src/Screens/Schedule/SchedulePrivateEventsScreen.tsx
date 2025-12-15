@@ -1,5 +1,5 @@
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -13,10 +13,10 @@ import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderV
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
@@ -109,7 +109,7 @@ const SchedulePrivateEventsScreenInner = () => {
       <View style={[commonStyles.flex]}>
         {isSwitchingDays ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" />
+            <ActivityIndicator size={'large'} />
           </View>
         ) : (
           <LFGFlatList

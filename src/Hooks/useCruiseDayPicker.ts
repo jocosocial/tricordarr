@@ -73,10 +73,7 @@ interface UseCruiseDayPickerResult {
  * }, [isError, onQueryError]);
  * ```
  */
-export function useCruiseDayPicker<T>({
-  listRef,
-  clearList,
-}: UseCruiseDayPickerOptions<T>): UseCruiseDayPickerResult {
+export function useCruiseDayPicker<T>({listRef, clearList}: UseCruiseDayPickerOptions<T>): UseCruiseDayPickerResult {
   const {adjustedCruiseDayToday} = useCruise();
 
   // Default to day 1 if cruise context isn't ready yet

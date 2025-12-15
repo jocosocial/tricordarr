@@ -1,7 +1,7 @@
 import {useIsFocused} from '@react-navigation/native';
 import {type FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
-import React, {ReactElement, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -53,14 +53,23 @@ export const LfgListScreen = ({
     listRef,
     clearList: useCallback(() => setFezList([]), []),
   });
-  const {data, isFetching, refetch, isLoading, isError, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage, hasNextPage} =
-    useLfgListQuery({
-      endpoint: endpoint,
-      fezType: lfgTypeFilter,
-      // @TODO we intend to change this some day. Upstream Swiftarr issue.
-      cruiseDay: selectedCruiseDay - 1,
-      hidePast: lfgHidePastFilter,
-    });
+  const {
+    data,
+    isFetching,
+    refetch,
+    isLoading,
+    isError,
+    fetchNextPage,
+    isFetchingPreviousPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useLfgListQuery({
+    endpoint: endpoint,
+    fezType: lfgTypeFilter,
+    // @TODO we intend to change this some day. Upstream Swiftarr issue.
+    cruiseDay: selectedCruiseDay - 1,
+    hidePast: lfgHidePastFilter,
+  });
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
   const {notificationSocket} = useSocket();
@@ -171,7 +180,7 @@ export const LfgListScreen = ({
       <View style={[commonStyles.flex]}>
         {isSwitchingDays ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" />
+            <ActivityIndicator size={'large'} />
           </View>
         ) : (
           <LFGFlatList
