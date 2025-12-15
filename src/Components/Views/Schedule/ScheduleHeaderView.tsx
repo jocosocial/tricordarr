@@ -20,7 +20,7 @@ const ScrollShadow = ({side, opacity}: {side: 'left' | 'right'; opacity: SharedV
   }));
 
   // Gradient colors from dark to transparent
-  const colors = ['rgba(70, 70, 70, 0.48)', 'rgba(0, 0, 0, 0)'];
+  const colors = ['rgba(0, 0, 0, 0.48)', 'rgba(0, 0, 0, 0)'];
   // For left shadow: dark on left, transparent on right
   // For right shadow: transparent on left, dark on right
   const gradientColors = side === 'left' ? colors : [...colors].reverse();
