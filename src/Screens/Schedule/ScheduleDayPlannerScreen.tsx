@@ -114,19 +114,11 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
 
   // Scroll to current time position in the timeline
   const scrollToNow = useCallback(() => {
-    console.log('[ScheduleDayPlannerScreen] scrollToNow called, ref exists:', !!scrollViewRef.current);
     if (!scrollViewRef.current) {
-      console.log('[ScheduleDayPlannerScreen] scrollViewRef.current is null, returning');
       return;
     }
     const now = new Date();
-    console.log('[ScheduleDayPlannerScreen] Calculating offset for:', {
-      now: now.toISOString(),
-      dayStart: dayStart.toISOString(),
-      dayEnd: dayEnd.toISOString(),
-    });
     const offset = getScrollOffsetForTime(now, dayStart, dayEnd);
-    console.log('[ScheduleDayPlannerScreen] Scrolling to offset:', offset);
     scrollViewRef.current.scrollTo({y: offset, animated: true});
   }, [dayStart, dayEnd]);
 

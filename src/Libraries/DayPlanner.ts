@@ -215,23 +215,16 @@ export const calculateItemLayout = (
   // Sort by start time
   const sorted = [...adjustedItems].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 
-  // Track groups of overlapping items
-  let group: DayPlannerItem[] = [];
+  // Track column assignments for overlapping items
   let columnEndTimes: Date[] = [];
   let groupEndTime = new Date(0);
   const itemColumnMap = new Map<string, number>();
 
   for (const item of sorted) {
-    // Check if this item starts after the current group ends
+    // Check if this item starts after the current group ends - reset columns
     if (groupEndTime <= item.startTime) {
-      // Finalize the previous group - assign column counts
-      for (const groupedItem of group) {
-        // Column count already assigned via itemColumnMap
-      }
-      // Reset for new group
       columnEndTimes = [];
       groupEndTime = new Date(0);
-      group = [];
     }
 
     // Find an available column or create a new one
@@ -247,7 +240,6 @@ export const calculateItemLayout = (
 
     itemColumnMap.set(item.id, columnIndex);
     groupEndTime = new Date(Math.max(groupEndTime.getTime(), item.endTime.getTime()));
-    group.push(item);
   }
 
   // Calculate total columns for each item by finding max column used in overlapping items
@@ -343,13 +335,6 @@ export const getDayBoundaries = (cruiseStartDate: Date, cruiseDay: number): {day
   const dayEnd = new Date(dayStart);
   dayEnd.setHours(DAY_PLANNER_CONFIG.TOTAL_HOURS, 0, 0, 0);
 
-  console.log('[DayPlanner] getDayBoundaries:', {
-    cruiseStartDate: cruiseStartDate.toISOString(),
-    cruiseDay,
-    dayStart: dayStart.toString(),
-    dayEnd: dayEnd.toString(),
-  });
-
   return {dayStart, dayEnd};
 };
 
@@ -382,15 +367,6 @@ export const getScrollOffsetForTime = (now: Date, dayStart: Date, dayEnd: Date):
   // The timeline starts at 00:00, so we just use hours * 60 + minutes directly
   const minutesFromMidnight = nowHours * 60 + nowMinutes;
   
-  console.log('[DayPlanner] getScrollOffsetForTime:', {
-    now: now.toString(),
-    nowHours,
-    nowMinutes,
-    minutesFromMidnight,
-    dayStart: dayStart.toString(),
-    dayEnd: dayEnd.toString(),
-  });
-  
   // Convert to pixel offset
   // Each 15-minute slot is ROW_HEIGHT pixels tall
   const offset = (minutesFromMidnight / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
@@ -399,14 +375,6 @@ export const getScrollOffsetForTime = (now: Date, dayStart: Date, dayEnd: Date):
   const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2; // Show ~1 hour before current time
   
   const finalOffset = Math.max(0, offset - viewOffset);
-  
-  console.log('[DayPlanner] getScrollOffsetForTime result:', {
-    rawOffset: offset,
-    viewOffset,
-    finalOffset,
-    timelineHeight: getTimelineHeight(),
-    percentDown: ((finalOffset / getTimelineHeight()) * 100).toFixed(1) + '%',
-  });
   
   return finalOffset;
 };

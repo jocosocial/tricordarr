@@ -53,68 +53,75 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
   );
 
   // Helper to get grid line style based on slot type
-  const getGridLineStyle = (slotType: TimeSlotType) => {
-    switch (slotType) {
-      case 'hour':
-        return {borderTopWidth: 1, borderTopColor: theme.colors.outlineVariant};
-      case 'halfHour':
-        return {borderTopWidth: 0.5, borderTopColor: theme.colors.outlineVariant};
-      case 'quarter':
-        return {borderTopWidth: 0.5, borderTopColor: theme.colors.outlineVariant, opacity: 0.5};
-    }
-  };
+  const getGridLineStyle = useCallback(
+    (slotType: TimeSlotType) => {
+      switch (slotType) {
+        case 'hour':
+          return {borderTopWidth: 1, borderTopColor: theme.colors.outlineVariant};
+        case 'halfHour':
+          return {borderTopWidth: 0.5, borderTopColor: theme.colors.outlineVariant};
+        case 'quarter':
+          return {borderTopWidth: 0.5, borderTopColor: theme.colors.outlineVariant, opacity: 0.5};
+      }
+    },
+    [theme.colors.outlineVariant],
+  );
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    scrollContent: {
-      flexDirection: 'row',
-    },
-    timeColumn: {
-      width: 60,
-      paddingRight: 8,
-    },
-    timeSlot: {
-      height: DAY_PLANNER_CONFIG.ROW_HEIGHT,
-      justifyContent: 'flex-start',
-      alignItems: 'flex-end',
-    },
-    timeLabel: {
-      fontSize: 12,
-      color: theme.colors.onSurfaceVariant,
-      marginTop: 0, // Align label with grid line
-    },
-    eventsColumn: {
-      flex: 1,
-      position: 'relative',
-    },
-    gridLines: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-    },
-    gridLine: {
-      height: DAY_PLANNER_CONFIG.ROW_HEIGHT,
-    },
-    eventsContainer: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-    },
-    emptyMessage: {
-      ...commonStyles.paddingVertical,
-      ...commonStyles.paddingHorizontal,
-    },
-    emptyText: {
-      textAlign: 'center',
-      color: theme.colors.onSurfaceVariant,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          flex: 1,
+        },
+        scrollContent: {
+          flexDirection: 'row',
+        },
+        timeColumn: {
+          width: 60,
+          paddingRight: 8,
+        },
+        timeSlot: {
+          height: DAY_PLANNER_CONFIG.ROW_HEIGHT,
+          justifyContent: 'flex-start',
+          alignItems: 'flex-end',
+        },
+        timeLabel: {
+          fontSize: 12,
+          color: theme.colors.onSurfaceVariant,
+          marginTop: 0,
+        },
+        eventsColumn: {
+          flex: 1,
+          position: 'relative',
+        },
+        gridLines: {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        },
+        gridLine: {
+          height: DAY_PLANNER_CONFIG.ROW_HEIGHT,
+        },
+        eventsContainer: {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        },
+        emptyMessage: {
+          ...commonStyles.paddingVertical,
+          ...commonStyles.paddingHorizontal,
+        },
+        emptyText: {
+          textAlign: 'center',
+          color: theme.colors.onSurfaceVariant,
+        },
+      }),
+    [theme.colors.onSurfaceVariant, commonStyles.paddingVertical, commonStyles.paddingHorizontal],
+  );
 
   const timelineHeight = getTimelineHeight();
 
