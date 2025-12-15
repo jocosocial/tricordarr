@@ -1,5 +1,5 @@
 import {FlashList, type FlashListRef} from '@shopify/flash-list';
-import React, {Dispatch, SetStateAction, useCallback, useRef} from 'react';
+import React, {Dispatch, SetStateAction, useCallback, useMemo, useRef} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Animated, {type SharedValue, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
@@ -63,13 +63,17 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
   const leftShadowOpacity = useSharedValue(0);
   const rightShadowOpacity = useSharedValue(1);
 
-  const styles = StyleSheet.create({
-    view: {
-      position: 'relative',
-      ...commonStyles.flexRow,
-      ...commonStyles.paddingVerticalSmall,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        view: {
+          position: 'relative',
+          ...commonStyles.flexRow,
+          ...commonStyles.paddingVerticalSmall,
+        },
+      }),
+    [commonStyles.flexRow, commonStyles.paddingVerticalSmall],
+  );
 
   const handleScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -125,26 +129,26 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
 
   return (
     <View style={styles.view}>
-        <ScrollShadow side="left" opacity={leftShadowOpacity} />
-        <ScrollShadow side="right" opacity={rightShadowOpacity} />
+      <ScrollShadow side="left" opacity={leftShadowOpacity} />
+      <ScrollShadow side="right" opacity={rightShadowOpacity} />
 
-        <FlashList
-          contentContainerStyle={{...commonStyles.paddingHorizontalSmall}}
-          ref={headerListRef}
-          renderItem={renderItem}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          data={cruiseDays}
-          // selectedCruiseDay is event-style 1-indexed.
-          // The Math.min() is needed because the initialScrollIndex will overscroll
-          // the list on load if we get to later in the week. It fixes itself if the user
-          // scrolls but then it jumps.
-          // Only set initialScrollIndex when > 0 to avoid layout-triggered scroll events
-          initialScrollIndex={initialScrollIndex}
-          extraData={[props.selectedCruiseDay, props.scrollToNow]}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-        />
+      <FlashList
+        contentContainerStyle={{...commonStyles.paddingHorizontalSmall}}
+        ref={headerListRef}
+        renderItem={renderItem}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        data={cruiseDays}
+        // selectedCruiseDay is event-style 1-indexed.
+        // The Math.min() is needed because the initialScrollIndex will overscroll
+        // the list on load if we get to later in the week. It fixes itself if the user
+        // scrolls but then it jumps.
+        // Only set initialScrollIndex when > 0 to avoid layout-triggered scroll events
+        initialScrollIndex={initialScrollIndex}
+        extraData={[props.selectedCruiseDay, props.scrollToNow]}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      />
     </View>
   );
 };

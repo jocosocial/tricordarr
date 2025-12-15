@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {SetStateAction, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -52,7 +52,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const [isSwitchingDays, setIsSwitchingDays] = useState(false);
 
   // Wrapper to clear list immediately when day changes (not in useEffect which runs after render)
-  const handleSetCruiseDay = useCallback((day: number | ((prev: number) => number)) => {
+  const handleSetCruiseDay = useCallback((day: SetStateAction<number>) => {
     setScheduleList([]); // Clear list immediately
     setIsSwitchingDays(true); // Mark that we're switching days
     setSelectedCruiseDay(day);
@@ -68,6 +68,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {
     data: eventData,
     isFetching: isEventFetching,
+    isError: isEventError,
     refetch: refetchEvents,
   } = useEventsQuery({
     cruiseDay: selectedCruiseDay,
@@ -78,6 +79,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {
     data: lfgOpenData,
     isFetching: isLfgOpenFetching,
+    isError: isLfgOpenError,
     refetch: refetchLfgOpen,
     hasNextPage: openHasNextPage,
     fetchNextPage: openFetchNextPage,
@@ -92,6 +94,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {
     data: lfgJoinedData,
     isFetching: isLfgJoinedFetching,
+    isError: isLfgJoinedError,
     refetch: refetchLfgJoined,
     hasNextPage: joinedHasNextPage,
     fetchNextPage: joinedFetchNextPage,
@@ -106,6 +109,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {
     data: personalEventData,
     isFetching: isPersonalEventFetching,
+    isError: isPersonalEventError,
     refetch: refetchPersonalEvents,
     hasNextPage: personalHasNextPage,
     fetchNextPage: personalFetchNextPage,
@@ -189,6 +193,13 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     console.log('[ScheduleDayScreen.tsx] Finished buildScheduleList useEffect.');
   }, [scheduleFilterSettings, lfgJoinedData, lfgOpenData, eventData, personalEventData]);
 
+  // Reset switching state on error to prevent stuck loading spinner
+  useEffect(() => {
+    if (isEventError || isLfgOpenError || isLfgJoinedError || isPersonalEventError) {
+      setIsSwitchingDays(false);
+    }
+  }, [isEventError, isLfgOpenError, isLfgJoinedError, isPersonalEventError]);
+
   useEffect(() => {
     if (scheduleList.length > 0) {
       const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
@@ -230,13 +241,17 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     isPersonalEventFetching ||
     refreshing;
 
-  const localStyles = StyleSheet.create({
-    loadingContainer: {
-      ...commonStyles.flex,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  });
+  const localStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        loadingContainer: {
+          ...commonStyles.flex,
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+      }),
+    [commonStyles.flex],
+  );
 
   return (
     <AppView>

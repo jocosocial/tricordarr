@@ -1,7 +1,7 @@
 import {useIsFocused} from '@react-navigation/native';
 import {type FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
-import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
+import React, {ReactElement, SetStateAction, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -53,13 +53,13 @@ export const LfgListScreen = ({
   const [isSwitchingDays, setIsSwitchingDays] = useState(false);
 
   // Wrapper to clear list immediately when day changes (not in useEffect which runs after render)
-  const handleSetCruiseDay = useCallback((day: number | ((prev: number) => number)) => {
+  const handleSetCruiseDay = useCallback((day: SetStateAction<number>) => {
     setFezList([]); // Clear list immediately
     setIsSwitchingDays(true); // Mark that we're switching days
     setSelectedCruiseDay(day);
     listRef.current?.scrollToOffset({offset: 0, animated: false}); // Reset scroll position
   }, []);
-  const {data, isFetching, refetch, isLoading, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage, hasNextPage} =
+  const {data, isFetching, refetch, isLoading, isError, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage, hasNextPage} =
     useLfgListQuery({
       endpoint: endpoint,
       fezType: lfgTypeFilter,
@@ -146,6 +146,13 @@ export const LfgListScreen = ({
     }
   }, [data]);
 
+  // Reset switching state on error to prevent stuck loading spinner
+  useEffect(() => {
+    if (isError) {
+      setIsSwitchingDays(false);
+    }
+  }, [isError]);
+
   if (!isLoggedIn) {
     return <NotLoggedInView />;
   }
@@ -156,13 +163,17 @@ export const LfgListScreen = ({
 
   const isRefreshing = isFetching || isFetchingNextPage || isFetchingPreviousPage;
 
-  const localStyles = StyleSheet.create({
-    loadingContainer: {
-      ...commonStyles.flex,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  });
+  const localStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        loadingContainer: {
+          ...commonStyles.flex,
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+      }),
+    [commonStyles.flex],
+  );
 
   return (
     <AppView>
