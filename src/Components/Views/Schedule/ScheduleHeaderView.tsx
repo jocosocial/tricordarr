@@ -1,5 +1,5 @@
 import {FlashList, type FlashListRef} from '@shopify/flash-list';
-import React, {Dispatch, SetStateAction, useCallback, useMemo, useRef} from 'react';
+import React, {Dispatch, SetStateAction, useCallback, useRef} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Animated, {type SharedValue, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
@@ -58,17 +58,13 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
   const leftShadowOpacity = useSharedValue(0);
   const rightShadowOpacity = useSharedValue(1);
 
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        view: {
-          position: 'relative',
-          ...commonStyles.flexRow,
-          ...commonStyles.paddingVerticalSmall,
-        },
-      }),
-    [commonStyles.flexRow, commonStyles.paddingVerticalSmall],
-  );
+  const styles = StyleSheet.create({
+    view: {
+      position: 'relative',
+      ...commonStyles.flexRow,
+      ...commonStyles.paddingVerticalSmall,
+    },
+  });
 
   const handleScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
