@@ -1,5 +1,5 @@
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {SetStateAction, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -11,9 +11,9 @@ import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
@@ -35,22 +35,15 @@ export const SchedulePrivateEventsScreen = () => {
 
 const SchedulePrivateEventsScreenInner = () => {
   const {lfgHidePastFilter} = useFilter();
-  const {adjustedCruiseDayToday} = useCruise();
   const {commonStyles} = useStyles();
   const listRef = useRef<FlashListRef<FezData>>(null);
   const navigation = useCommonStack();
   const [items, setItems] = useState<FezData[]>([]);
-  // Default to day 1 if cruise context isn't ready yet
-  const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday || 1);
-  const [isSwitchingDays, setIsSwitchingDays] = useState(false);
 
-  // Wrapper to clear list immediately when day changes (not in useEffect which runs after render)
-  const handleSetCruiseDay = useCallback((day: SetStateAction<number>) => {
-    setItems([]); // Clear list immediately
-    setIsSwitchingDays(true); // Mark that we're switching days
-    setSelectedCruiseDay(day);
-    listRef.current?.scrollToOffset({offset: 0, animated: false}); // Reset scroll position
-  }, []);
+  const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
+    listRef,
+    clearList: useCallback(() => setItems([]), []),
+  });
 
   const {data, isFetching, isLoading, isError, refetch, hasNextPage, fetchNextPage} = usePersonalEventsQuery({
     fezType: [FezType.privateEvent, FezType.personalEvent],
@@ -87,16 +80,16 @@ const SchedulePrivateEventsScreenInner = () => {
   useEffect(() => {
     if (data) {
       setItems(data.pages.flatMap(page => page.fezzes));
-      setIsSwitchingDays(false); // Data loaded, no longer switching days
+      onDataLoaded();
     }
-  }, [data]);
+  }, [data, onDataLoaded]);
 
   // Reset switching state on error to prevent stuck loading spinner
   useEffect(() => {
     if (isError) {
-      setIsSwitchingDays(false);
+      onQueryError();
     }
-  }, [isError]);
+  }, [isError, onQueryError]);
 
   const localStyles = useMemo(
     () =>

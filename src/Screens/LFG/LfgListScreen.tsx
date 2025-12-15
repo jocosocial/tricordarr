@@ -1,7 +1,7 @@
 import {useIsFocused} from '@react-navigation/native';
 import {type FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
-import React, {ReactElement, SetStateAction, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {ReactElement, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -17,11 +17,11 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -45,20 +45,14 @@ export const LfgListScreen = ({
 }: LfgJoinedScreenProps) => {
   const {lfgTypeFilter, lfgHidePastFilter} = useFilter();
   const {isLoggedIn} = useAuth();
-  const {adjustedCruiseDayToday} = useCruise();
   const {commonStyles} = useStyles();
-  // Default to day 1 if cruise context isn't ready yet
-  const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday || 1);
   const [fezList, setFezList] = useState<FezData[]>([]);
-  const [isSwitchingDays, setIsSwitchingDays] = useState(false);
+  const listRef = useRef<FlashListRef<FezData>>(null);
 
-  // Wrapper to clear list immediately when day changes (not in useEffect which runs after render)
-  const handleSetCruiseDay = useCallback((day: SetStateAction<number>) => {
-    setFezList([]); // Clear list immediately
-    setIsSwitchingDays(true); // Mark that we're switching days
-    setSelectedCruiseDay(day);
-    listRef.current?.scrollToOffset({offset: 0, animated: false}); // Reset scroll position
-  }, []);
+  const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
+    listRef,
+    clearList: useCallback(() => setFezList([]), []),
+  });
   const {data, isFetching, refetch, isLoading, isError, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage, hasNextPage} =
     useLfgListQuery({
       endpoint: endpoint,
@@ -72,7 +66,6 @@ export const LfgListScreen = ({
   const {notificationSocket} = useSocket();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
-  const listRef = useRef<FlashListRef<FezData>>(null);
   const queryClient = useQueryClient();
 
   const getNavButtons = useCallback(() => {
@@ -142,16 +135,16 @@ export const LfgListScreen = ({
   useEffect(() => {
     if (data && data.pages) {
       setFezList(data.pages.flatMap(p => p.fezzes));
-      setIsSwitchingDays(false); // Data loaded, no longer switching days
+      onDataLoaded();
     }
-  }, [data]);
+  }, [data, onDataLoaded]);
 
   // Reset switching state on error to prevent stuck loading spinner
   useEffect(() => {
     if (isError) {
-      setIsSwitchingDays(false);
+      onQueryError();
     }
-  }, [isError]);
+  }, [isError, onQueryError]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;

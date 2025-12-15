@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {SetStateAction, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -21,6 +21,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import useDateTime, {calcCruiseDayTime} from '#src/Libraries/DateTime';
@@ -42,22 +43,17 @@ export const ScheduleDayScreen = (props: Props) => {
 };
 
 const ScheduleDayScreenInner = ({navigation}: Props) => {
-  const {adjustedCruiseDayToday, startDate, endDate} = useCruise();
-  const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday);
+  const {startDate, endDate} = useCruise();
   const {isLoggedIn} = useAuth();
   const {commonStyles} = useStyles();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [isSwitchingDays, setIsSwitchingDays] = useState(false);
 
-  // Wrapper to clear list immediately when day changes (not in useEffect which runs after render)
-  const handleSetCruiseDay = useCallback((day: SetStateAction<number>) => {
-    setScheduleList([]); // Clear list immediately
-    setIsSwitchingDays(true); // Mark that we're switching days
-    setSelectedCruiseDay(day);
-    listRef.current?.scrollToOffset({offset: 0, animated: false}); // Reset scroll position
-  }, []);
+  const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
+    listRef,
+    clearList: useCallback(() => setScheduleList([]), []),
+  });
   const {appConfig} = useConfig();
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
@@ -189,16 +185,16 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
       personalEventData,
     );
     setScheduleList(listData);
-    setIsSwitchingDays(false); // Data loaded, no longer switching days
+    onDataLoaded();
     console.log('[ScheduleDayScreen.tsx] Finished buildScheduleList useEffect.');
-  }, [scheduleFilterSettings, lfgJoinedData, lfgOpenData, eventData, personalEventData]);
+  }, [scheduleFilterSettings, lfgJoinedData, lfgOpenData, eventData, personalEventData, onDataLoaded]);
 
   // Reset switching state on error to prevent stuck loading spinner
   useEffect(() => {
     if (isEventError || isLfgOpenError || isLfgJoinedError || isPersonalEventError) {
-      setIsSwitchingDays(false);
+      onQueryError();
     }
-  }, [isEventError, isLfgOpenError, isLfgJoinedError, isPersonalEventError]);
+  }, [isEventError, isLfgOpenError, isLfgJoinedError, isPersonalEventError, onQueryError]);
 
   useEffect(() => {
     if (scheduleList.length > 0) {
