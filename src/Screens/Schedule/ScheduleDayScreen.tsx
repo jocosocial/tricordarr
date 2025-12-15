@@ -1,7 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
@@ -48,6 +49,15 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [isSwitchingDays, setIsSwitchingDays] = useState(false);
+
+  // Wrapper to clear list immediately when day changes (not in useEffect which runs after render)
+  const handleSetCruiseDay = useCallback((day: number | ((prev: number) => number)) => {
+    setScheduleList([]); // Clear list immediately
+    setIsSwitchingDays(true); // Mark that we're switching days
+    setSelectedCruiseDay(day);
+    listRef.current?.scrollToOffset({offset: 0, animated: false}); // Reset scroll position
+  }, []);
   const {appConfig} = useConfig();
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
@@ -175,6 +185,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
       personalEventData,
     );
     setScheduleList(listData);
+    setIsSwitchingDays(false); // Data loaded, no longer switching days
     console.log('[ScheduleDayScreen.tsx] Finished buildScheduleList useEffect.');
   }, [scheduleFilterSettings, lfgJoinedData, lfgOpenData, eventData, personalEventData]);
 
@@ -219,23 +230,37 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     isPersonalEventFetching ||
     refreshing;
 
+  const localStyles = StyleSheet.create({
+    loadingContainer: {
+      ...commonStyles.flex,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
+
   return (
     <AppView>
       <TimezoneWarningView />
       <ScheduleHeaderView
         selectedCruiseDay={selectedCruiseDay}
-        setCruiseDay={setSelectedCruiseDay}
+        setCruiseDay={handleSetCruiseDay}
         scrollToNow={scrollToNow}
       />
       <View style={[commonStyles.flex]}>
-        <ScheduleFlatList
-          listRef={listRef}
-          items={scheduleList}
-          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
-          setRefreshing={setRefreshing}
-          initialScrollIndex={scrollNowIndex}
-          onScrollThreshold={onScrollThreshold}
-        />
+        {isSwitchingDays ? (
+          <View style={localStyles.loadingContainer}>
+            <ActivityIndicator size="large" />
+          </View>
+        ) : (
+          <ScheduleFlatList
+            listRef={listRef}
+            items={scheduleList}
+            refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
+            setRefreshing={setRefreshing}
+            initialScrollIndex={scrollNowIndex}
+            onScrollThreshold={onScrollThreshold}
+          />
+        )}
       </View>
       <ScheduleFAB selectedDay={selectedCruiseDay} showLabel={showFabLabel} />
     </AppView>

@@ -116,9 +116,12 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
     return null;
   }
 
-  // Calculate safe initial scroll index
+  // Calculate safe initial scroll index - only scroll if we need to show a day other than the first
+  // Setting initialScrollIndex to 0 can cause FlashList to report non-zero offsets during layout
   const safeSelectedDay = props.selectedCruiseDay || 1;
-  const initialScrollIndex = Math.min(Math.max(safeSelectedDay - 1, 0), Math.min(cruiseDays.length - 1, 3));
+  const calculatedIndex = Math.min(Math.max(safeSelectedDay - 1, 0), Math.min(cruiseDays.length - 1, 3));
+  // Only use initialScrollIndex when we actually need to scroll (> 0)
+  const initialScrollIndex = calculatedIndex > 0 ? calculatedIndex : undefined;
 
   return (
     <View style={styles.view}>
@@ -136,6 +139,7 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
           // The Math.min() is needed because the initialScrollIndex will overscroll
           // the list on load if we get to later in the week. It fixes itself if the user
           // scrolls but then it jumps.
+          // Only set initialScrollIndex when > 0 to avoid layout-triggered scroll events
           initialScrollIndex={initialScrollIndex}
           extraData={[props.selectedCruiseDay, props.scrollToNow]}
           onScroll={handleScroll}

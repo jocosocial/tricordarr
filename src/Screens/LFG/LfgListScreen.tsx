@@ -2,7 +2,8 @@ import {useIsFocused} from '@react-navigation/native';
 import {type FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {LfgFAB} from '#src/Components/Buttons/FloatingActionButtons/LfgFAB';
@@ -48,6 +49,16 @@ export const LfgListScreen = ({
   const {commonStyles} = useStyles();
   // Default to day 1 if cruise context isn't ready yet
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday || 1);
+  const [fezList, setFezList] = useState<FezData[]>([]);
+  const [isSwitchingDays, setIsSwitchingDays] = useState(false);
+
+  // Wrapper to clear list immediately when day changes (not in useEffect which runs after render)
+  const handleSetCruiseDay = useCallback((day: number | ((prev: number) => number)) => {
+    setFezList([]); // Clear list immediately
+    setIsSwitchingDays(true); // Mark that we're switching days
+    setSelectedCruiseDay(day);
+    listRef.current?.scrollToOffset({offset: 0, animated: false}); // Reset scroll position
+  }, []);
   const {data, isFetching, refetch, isLoading, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage, hasNextPage} =
     useLfgListQuery({
       endpoint: endpoint,
@@ -63,7 +74,6 @@ export const LfgListScreen = ({
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const listRef = useRef<FlashListRef<FezData>>(null);
   const queryClient = useQueryClient();
-  const [fezList, setFezList] = useState<FezData[]>([]);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -132,6 +142,7 @@ export const LfgListScreen = ({
   useEffect(() => {
     if (data && data.pages) {
       setFezList(data.pages.flatMap(p => p.fezzes));
+      setIsSwitchingDays(false); // Data loaded, no longer switching days
     }
   }, [data]);
 
@@ -143,24 +154,38 @@ export const LfgListScreen = ({
     return <LoadingView />;
   }
 
+  const isRefreshing = isFetching || isFetchingNextPage || isFetchingPreviousPage;
+
+  const localStyles = StyleSheet.create({
+    loadingContainer: {
+      ...commonStyles.flex,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
+
   return (
     <AppView>
       <TimezoneWarningView />
-      <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={setSelectedCruiseDay} />
+      <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={handleSetCruiseDay} />
       <View style={[commonStyles.flex]}>
-        <LFGFlatList
-          listRef={listRef}
-          items={fezList}
-          refreshControl={
-            <RefreshControl refreshing={isFetching || isFetchingNextPage || isFetchingPreviousPage} onRefresh={refetch} />
-          }
-          separator={'day'}
-          onScrollThreshold={onScrollThreshold}
-          handleLoadNext={fetchNextPage}
-          hasNextPage={hasNextPage}
-          enableReportOnly={enableReportOnly}
-          listHeader={listHeader}
-        />
+        {isSwitchingDays ? (
+          <View style={localStyles.loadingContainer}>
+            <ActivityIndicator size="large" />
+          </View>
+        ) : (
+          <LFGFlatList
+            listRef={listRef}
+            items={fezList}
+            refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refetch} />}
+            separator={'day'}
+            onScrollThreshold={onScrollThreshold}
+            handleLoadNext={fetchNextPage}
+            hasNextPage={hasNextPage}
+            enableReportOnly={enableReportOnly}
+            listHeader={listHeader}
+          />
+        )}
       </View>
       {showFab && <LfgFAB showLabel={showFabLabel} />}
     </AppView>
