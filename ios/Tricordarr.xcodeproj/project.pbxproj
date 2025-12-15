@@ -3,58 +3,58 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0C80B921A6F3F58F76C31292 /* libPods-Tricordarr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-Tricordarr.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		19F2B67AEA16277C0B58016D /* SocketStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409A744D304C86AAD0F5475E /* SocketStructs.swift */; };
-		2C8476BE9D101B5EA098174F /* ControllerStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF630D1030E81F5A2F601C0F /* ControllerStructs.swift */; };
-		30B0448EEB4D66DD78B3FBA3 /* WebsocketNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E291A3D355F418F5A4ADAC8 /* WebsocketNotifier.swift */; };
-		3A526373A428B1498C9E9372 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCA1A5C638EC769E3C53DA07 /* AppConfig.swift */; };
 		4C1CD608D8B56BA06748D9CD /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
-		5B4207FA0FACC4CC17B4E8DB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C624043094B899F8815129C /* Settings.swift */; };
-		64BE53A2CE19226C99EEC1DC /* ImageBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41684EA623B188228821D3FD /* ImageBlur.swift */; };
-		6A89DBCBAE82C32E825CF4CC /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9BB8958830FEEF5A4CC328 /* UserPreferences.swift */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
-		7E4423A4526103A988B6C41B /* ConfigStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B1C14845490C8645D00A95 /* ConfigStructs.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		8491186E5BC4ED34568F1AFB /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08E718ABB8D1D8C7991EB49 /* Notifications.swift */; };
 		93690EF42EAB269900CA8914 /* RCTNativeTricordarrModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */; };
-		D2305B5EF00669DAB4C5007E /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = F721A97BB6A1BB979A95B161 /* Logging.swift */; };
-		E3CD217ACCC798F5E95E4D0E /* NotificationStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7AD226DB75DF7B16E934B2 /* NotificationStructs.swift */; };
-		F19CC336B714EAAEE43DC014 /* LocalPushProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57470CFC68ECC80A06D3376E /* LocalPushProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0C624043094B899F8815129C /* Settings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = Settings.swift; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Tricordarr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tricordarr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Tricordarr/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Tricordarr/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = Tricordarr/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-Tricordarr.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tricordarr.debug.xcconfig"; path = "Target Support Files/Pods-Tricordarr/Pods-Tricordarr.debug.xcconfig"; sourceTree = "<group>"; };
-		3D9BB8958830FEEF5A4CC328 /* UserPreferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UserPreferences.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
-		409A744D304C86AAD0F5475E /* SocketStructs.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SocketStructs.swift; path = SocketStructs.swift; sourceTree = "<group>"; };
-		41684EA623B188228821D3FD /* ImageBlur.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageBlur.swift; path = ImageBlur.swift; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-Tricordarr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tricordarr.release.xcconfig"; path = "Target Support Files/Pods-Tricordarr/Pods-Tricordarr.release.xcconfig"; sourceTree = "<group>"; };
-		57470CFC68ECC80A06D3376E /* LocalPushProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalPushProvider.swift; path = LocalPushProvider.swift; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-Tricordarr.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tricordarr.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Tricordarr/AppDelegate.swift; sourceTree = "<group>"; };
-		7E291A3D355F418F5A4ADAC8 /* WebsocketNotifier.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WebsocketNotifier.swift; path = WebsocketNotifier.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Tricordarr/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		930542E92EECD1B6002EFA6E /* Tricordarr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Tricordarr.entitlements; path = Tricordarr/Tricordarr.entitlements; sourceTree = "<group>"; };
 		93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tricordarr-Bridging-Header.h"; sourceTree = "<group>"; };
 		93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTNativeTricordarrModule.h; sourceTree = "<group>"; };
 		93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTNativeTricordarrModule.mm; sourceTree = "<group>"; };
-		AA7AD226DB75DF7B16E934B2 /* NotificationStructs.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NotificationStructs.swift; path = NotificationStructs.swift; sourceTree = "<group>"; };
-		E08E718ABB8D1D8C7991EB49 /* Notifications.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Notifications.swift; path = Notifications.swift; sourceTree = "<group>"; };
-		E6B1C14845490C8645D00A95 /* ConfigStructs.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConfigStructs.swift; path = ConfigStructs.swift; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EF630D1030E81F5A2F601C0F /* ControllerStructs.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControllerStructs.swift; path = ControllerStructs.swift; sourceTree = "<group>"; };
-		F721A97BB6A1BB979A95B161 /* Logging.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Logging.swift; path = Logging.swift; sourceTree = "<group>"; };
-		FCA1A5C638EC769E3C53DA07 /* AppConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppConfig.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		93980FED2EB846F90067E8A1 /* Structs */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			path = Structs;
+			sourceTree = "<group>";
+		};
+		93980FF02EB849190067E8A1 /* Helpers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		93B71A582EBACAC2004BC91E /* Enumerations */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			path = Enumerations;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
@@ -133,39 +133,6 @@
 			path = NativeTricordarrModule;
 			sourceTree = "<group>";
 		};
-		93980FED2EB846F90067E8A1 /* Structs */ = {
-			isa = PBXGroup;
-			children = (
-				AA7AD226DB75DF7B16E934B2 /* NotificationStructs.swift */,
-				409A744D304C86AAD0F5475E /* SocketStructs.swift */,
-				E6B1C14845490C8645D00A95 /* ConfigStructs.swift */,
-				EF630D1030E81F5A2F601C0F /* ControllerStructs.swift */,
-			);
-			path = Structs;
-			sourceTree = "<group>";
-		};
-		93980FF02EB849190067E8A1 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				E08E718ABB8D1D8C7991EB49 /* Notifications.swift */,
-				7E291A3D355F418F5A4ADAC8 /* WebsocketNotifier.swift */,
-				57470CFC68ECC80A06D3376E /* LocalPushProvider.swift */,
-				FCA1A5C638EC769E3C53DA07 /* AppConfig.swift */,
-				0C624043094B899F8815129C /* Settings.swift */,
-				F721A97BB6A1BB979A95B161 /* Logging.swift */,
-				41684EA623B188228821D3FD /* ImageBlur.swift */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
-		93B71A582EBACAC2004BC91E /* Enumerations */ = {
-			isa = PBXGroup;
-			children = (
-				3D9BB8958830FEEF5A4CC328 /* UserPreferences.swift */,
-			);
-			path = Enumerations;
-			sourceTree = "<group>";
-		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,6 +161,11 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				93980FED2EB846F90067E8A1 /* Structs */,
+				93980FF02EB849190067E8A1 /* Helpers */,
+				93B71A582EBACAC2004BC91E /* Enumerations */,
+			);
 			name = Tricordarr;
 			productName = Tricordarr;
 			productReference = 13B07F961A680F5B00A75B9A /* Tricordarr.app */;
@@ -213,7 +185,6 @@
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Tricordarr" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -221,6 +192,7 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -325,18 +297,6 @@
 			files = (
 				93690EF42EAB269900CA8914 /* RCTNativeTricordarrModule.mm in Sources */,
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
-				8491186E5BC4ED34568F1AFB /* Notifications.swift in Sources */,
-				30B0448EEB4D66DD78B3FBA3 /* WebsocketNotifier.swift in Sources */,
-				F19CC336B714EAAEE43DC014 /* LocalPushProvider.swift in Sources */,
-				3A526373A428B1498C9E9372 /* AppConfig.swift in Sources */,
-				5B4207FA0FACC4CC17B4E8DB /* Settings.swift in Sources */,
-				D2305B5EF00669DAB4C5007E /* Logging.swift in Sources */,
-				64BE53A2CE19226C99EEC1DC /* ImageBlur.swift in Sources */,
-				E3CD217ACCC798F5E95E4D0E /* NotificationStructs.swift in Sources */,
-				19F2B67AEA16277C0B58016D /* SocketStructs.swift in Sources */,
-				7E4423A4526103A988B6C41B /* ConfigStructs.swift in Sources */,
-				2C8476BE9D101B5EA098174F /* ControllerStructs.swift in Sources */,
-				6A89DBCBAE82C32E825CF4CC /* UserPreferences.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,7 +313,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 37;
-				DEVELOPMENT_TEAM = 9WLHWF9732;
+				DEVELOPMENT_TEAM = 67V85M2YSV;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Tricordarr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tricordarr;
@@ -369,7 +329,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.baconmania.tricordarr;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr;
 				PRODUCT_NAME = Tricordarr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -393,7 +353,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 37;
-				DEVELOPMENT_TEAM = 9WLHWF9732;
+				DEVELOPMENT_TEAM = 67V85M2YSV;
 				INFOPLIST_FILE = Tricordarr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tricordarr;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
@@ -408,7 +368,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.baconmania.tricordarr;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr;
 				PRODUCT_NAME = Tricordarr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
