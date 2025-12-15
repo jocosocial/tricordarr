@@ -52,7 +52,7 @@ const SchedulePrivateEventsScreenInner = () => {
     listRef.current?.scrollToOffset({offset: 0, animated: false}); // Reset scroll position
   }, []);
 
-  const {data, isFetching, isError, refetch, hasNextPage, fetchNextPage} = usePersonalEventsQuery({
+  const {data, isFetching, isLoading, isError, refetch, hasNextPage, fetchNextPage} = usePersonalEventsQuery({
     fezType: [FezType.privateEvent, FezType.personalEvent],
     // @TODO we intend to change this some day. Upstream Swiftarr issue.
     cruiseDay: selectedCruiseDay - 1,
@@ -110,7 +110,7 @@ const SchedulePrivateEventsScreenInner = () => {
     [commonStyles.flex],
   );
 
-  if (!data) {
+  if (isLoading) {
     return <LoadingView />;
   }
 
