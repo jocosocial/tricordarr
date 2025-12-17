@@ -1,7 +1,7 @@
-import {type FlashListRef} from '@shopify/flash-list';
-import {SetStateAction, useCallback, useState} from 'react';
+import { type FlashListRef } from '@shopify/flash-list';
+import { SetStateAction, useCallback, useState } from 'react';
 
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import { useCruise } from '#src/Context/Contexts/CruiseContext';
 
 interface UseCruiseDayPickerOptions<T> {
   /**
@@ -73,8 +73,8 @@ interface UseCruiseDayPickerResult {
  * }, [isError, onQueryError]);
  * ```
  */
-export function useCruiseDayPicker<T>({listRef, clearList}: UseCruiseDayPickerOptions<T>): UseCruiseDayPickerResult {
-  const {adjustedCruiseDayToday} = useCruise();
+export function useCruiseDayPicker<T>({ listRef, clearList }: UseCruiseDayPickerOptions<T>): UseCruiseDayPickerResult {
+  const { adjustedCruiseDayToday } = useCruise();
 
   // Default to day 1 if cruise context isn't ready yet
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday || 1);
@@ -82,12 +82,20 @@ export function useCruiseDayPicker<T>({listRef, clearList}: UseCruiseDayPickerOp
 
   const handleSetCruiseDay = useCallback(
     (day: SetStateAction<number>) => {
+      // Resolve the new day value (handles both direct values and updater functions)
+      const newDay = typeof day === 'function' ? day(selectedCruiseDay) : day;
+
+      // Skip if selecting the same day - prevents stuck loading spinner
+      if (newDay === selectedCruiseDay) {
+        return;
+      }
+
       clearList(); // Clear list immediately for instant feedback
       setIsSwitchingDays(true); // Show loading indicator
-      setSelectedCruiseDay(day);
-      listRef.current?.scrollToOffset({offset: 0, animated: false}); // Reset scroll position
+      setSelectedCruiseDay(newDay);
+      listRef.current?.scrollToOffset({ offset: 0, animated: false }); // Reset scroll position
     },
-    [clearList, listRef],
+    [clearList, listRef, selectedCruiseDay],
   );
 
   const onDataLoaded = useCallback(() => {
