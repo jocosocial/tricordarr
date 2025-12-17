@@ -1,31 +1,31 @@
-import {useIsFocused} from '@react-navigation/native';
-import {type FlashListRef} from '@shopify/flash-list';
-import {useQueryClient} from '@tanstack/react-query';
-import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
-import {ActivityIndicator} from 'react-native-paper';
-import {Item} from 'react-navigation-header-buttons';
+import { useIsFocused } from '@react-navigation/native';
+import { type FlashListRef } from '@shopify/flash-list';
+import { useQueryClient } from '@tanstack/react-query';
+import React, { ReactElement, useCallback, useEffect, useRef, useState } from 'react';
+import { RefreshControl, View } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
+import { Item } from 'react-navigation-header-buttons';
 
-import {LfgFAB} from '#src/Components/Buttons/FloatingActionButtons/LfgFAB';
-import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
-import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
-import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
-import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
-import {useSocket} from '#src/Context/Contexts/SocketContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {AppIcons} from '#src/Enums/Icons';
-import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
-import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
-import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
-import {FezData} from '#src/Structs/ControllerStructs';
-import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
-import {FezListEndpoints} from '#src/Types';
+import { LfgFAB } from '#src/Components/Buttons/FloatingActionButtons/LfgFAB';
+import { MaterialHeaderButtons } from '#src/Components/Buttons/MaterialHeaderButtons';
+import { LFGFlatList } from '#src/Components/Lists/Schedule/LFGFlatList';
+import { LfgFilterMenu } from '#src/Components/Menus/LFG/LfgFilterMenu';
+import { LfgListActionsMenu } from '#src/Components/Menus/LFG/LfgListActionsMenu';
+import { AppView } from '#src/Components/Views/AppView';
+import { ScheduleHeaderView } from '#src/Components/Views/Schedule/ScheduleHeaderView';
+import { NotLoggedInView } from '#src/Components/Views/Static/NotLoggedInView';
+import { TimezoneWarningView } from '#src/Components/Views/Warnings/TimezoneWarningView';
+import { useAuth } from '#src/Context/Contexts/AuthContext';
+import { useFilter } from '#src/Context/Contexts/FilterContext';
+import { useSocket } from '#src/Context/Contexts/SocketContext';
+import { useStyles } from '#src/Context/Contexts/StyleContext';
+import { AppIcons } from '#src/Enums/Icons';
+import { useCruiseDayPicker } from '#src/Hooks/useCruiseDayPicker';
+import { LfgStackComponents, useLFGStackNavigation } from '#src/Navigation/Stacks/LFGStackNavigator';
+import { useLfgListQuery } from '#src/Queries/Fez/FezQueries';
+import { FezData } from '#src/Structs/ControllerStructs';
+import { NotificationTypeData, SocketNotificationData } from '#src/Structs/SocketStructs';
+import { FezListEndpoints } from '#src/Types';
 
 interface LfgJoinedScreenProps {
   endpoint: FezListEndpoints;
@@ -42,13 +42,13 @@ export const LfgListScreen = ({
   listHeader,
   showFab = true,
 }: LfgJoinedScreenProps) => {
-  const {lfgTypeFilter, lfgHidePastFilter} = useFilter();
-  const {isLoggedIn} = useAuth();
-  const {commonStyles} = useStyles();
+  const { lfgTypeFilter, lfgHidePastFilter } = useFilter();
+  const { isLoggedIn } = useAuth();
+  const { commonStyles } = useStyles();
   const [fezList, setFezList] = useState<FezData[]>([]);
   const listRef = useRef<FlashListRef<FezData>>(null);
 
-  const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
+  const { selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError } = useCruiseDayPicker({
     listRef,
     clearList: useCallback(() => setFezList([]), []),
   });
@@ -71,7 +71,7 @@ export const LfgListScreen = ({
   });
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
-  const {notificationSocket} = useSocket();
+  const { notificationSocket } = useSocket();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const queryClient = useQueryClient();
@@ -108,7 +108,7 @@ export const LfgListScreen = ({
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.fezUnreadMsg) {
         const invalidations = FezData.getCacheKeys().map(key => {
-          return queryClient.invalidateQueries({queryKey: key});
+          return queryClient.invalidateQueries({ queryKey: key });
         });
         Promise.all(invalidations);
       } else {

@@ -1,52 +1,16 @@
-import {FlashList, type FlashListRef} from '@shopify/flash-list';
-import React, {Dispatch, SetStateAction, useCallback, useRef} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import Animated, {type SharedValue, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
+import { FlashList, type FlashListRef } from '@shopify/flash-list';
+import React, { Dispatch, SetStateAction, useCallback, useRef } from 'react';
+import { NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from 'react-native';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
 
-import {ScheduleHeaderDayButton} from '#src/Components/Buttons/ScheduleHeaderDayButton';
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CruiseDayData} from '#src/Types';
+import { ScheduleHeaderDayButton } from '#src/Components/Buttons/ScheduleHeaderDayButton';
+import { ScrollShadowView } from '#src/Components/Views/Schedule/ScrollShadowView';
+import { useCruise } from '#src/Context/Contexts/CruiseContext';
+import { useStyles } from '#src/Context/Contexts/StyleContext';
+import { CruiseDayData } from '#src/Types';
 
-const GRADIENT_WIDTH = 24;
 const SCROLL_THRESHOLD = 5;
 const ANIMATION_DURATION = 200;
-
-const scrollShadowStyles = StyleSheet.create({
-  base: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    width: GRADIENT_WIDTH,
-    zIndex: 1,
-  },
-  left: {
-    left: 0,
-  },
-  right: {
-    right: 0,
-  },
-});
-
-// Scroll shadow indicator component using LinearGradient
-const ScrollShadow = ({side, opacity}: {side: 'left' | 'right'; opacity: SharedValue<number>}) => {
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-  }));
-
-  // Gradient colors from dark to transparent
-  const colors = ['rgba(0, 0, 0, 0.48)', 'rgba(0, 0, 0, 0)'];
-  // For left shadow: dark on left, transparent on right
-  // For right shadow: transparent on left, dark on right
-  const gradientColors = side === 'left' ? colors : [...colors].reverse();
-
-  return (
-    <Animated.View style={[scrollShadowStyles.base, scrollShadowStyles[side], animatedStyle]} pointerEvents={'none'}>
-      <LinearGradient colors={gradientColors} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={StyleSheet.absoluteFill} />
-    </Animated.View>
-  );
-};
 
 interface ScheduleHeaderViewProps {
   selectedCruiseDay: number;
@@ -55,8 +19,8 @@ interface ScheduleHeaderViewProps {
 }
 
 export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
-  const {commonStyles} = useStyles();
-  const {cruiseDays} = useCruise();
+  const { commonStyles } = useStyles();
+  const { cruiseDays } = useCruise();
   const headerListRef = useRef<FlashListRef<CruiseDayData>>(null);
 
   const leftShadowOpacity = useSharedValue(0);
@@ -72,32 +36,45 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
 
   const handleScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
+      const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
       const maxScrollX = contentSize.width - layoutMeasurement.width;
 
       // Show left shadow when not at the start
       const showLeftShadow = contentOffset.x > SCROLL_THRESHOLD;
-      leftShadowOpacity.value = withTiming(showLeftShadow ? 1 : 0, {duration: ANIMATION_DURATION});
+      leftShadowOpacity.value = withTiming(showLeftShadow ? 1 : 0, { duration: ANIMATION_DURATION });
 
       // Show right shadow when not at the end
       const showRightShadow = contentOffset.x < maxScrollX - SCROLL_THRESHOLD;
-      rightShadowOpacity.value = withTiming(showRightShadow ? 1 : 0, {duration: ANIMATION_DURATION});
+      rightShadowOpacity.value = withTiming(showRightShadow ? 1 : 0, { duration: ANIMATION_DURATION });
     },
     [leftShadowOpacity, rightShadowOpacity],
   );
 
-  const renderItem = ({item}: {item: CruiseDayData}) => {
+  const renderItem = ({ item }: { item: CruiseDayData }) => {
     const onPress = () => {
       if (item.cruiseDay === props.selectedCruiseDay && props.scrollToNow) {
         props.scrollToNow();
       } else {
         props.setCruiseDay(item.cruiseDay);
-        // Scroll the selected day button into view, centered
-        headerListRef.current?.scrollToIndex({
-          index: item.cruiseDay - 1,
-          viewPosition: 0.5,
-          animated: true,
-        });
+
+        // Scroll based on which day is selected:
+        // - First day: scroll all the way to start so no left shadow
+        // - Last day: scroll all the way to end so no right shadow
+        // - Middle days: center the selected day
+        const isFirstDay = item.cruiseDay === 1;
+        const isLastDay = item.cruiseDay === cruiseDays!.length;
+
+        if (isFirstDay) {
+          headerListRef.current?.scrollToOffset({ offset: 0, animated: true });
+        } else if (isLastDay) {
+          headerListRef.current?.scrollToEnd({ animated: true });
+        } else {
+          headerListRef.current?.scrollToIndex({
+            index: item.cruiseDay - 1,
+            viewPosition: 0.5,
+            animated: true,
+          });
+        }
       }
     };
     return (
@@ -124,11 +101,11 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
 
   return (
     <View style={styles.view}>
-      <ScrollShadow side={'left'} opacity={leftShadowOpacity} />
-      <ScrollShadow side={'right'} opacity={rightShadowOpacity} />
+      <ScrollShadowView side={'left'} opacity={leftShadowOpacity} />
+      <ScrollShadowView side={'right'} opacity={rightShadowOpacity} />
 
       <FlashList
-        contentContainerStyle={{...commonStyles.paddingHorizontalSmall}}
+        contentContainerStyle={{ ...commonStyles.paddingHorizontalSmall }}
         ref={headerListRef}
         renderItem={renderItem}
         horizontal={true}
