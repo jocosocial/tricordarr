@@ -1,27 +1,26 @@
-import {type FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
-import {ActivityIndicator} from 'react-native-paper';
-import {Item} from 'react-navigation-header-buttons';
+import { type FlashListRef } from '@shopify/flash-list';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { RefreshControl, StyleSheet, View } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
+import { Item } from 'react-navigation-header-buttons';
 
-import {SchedulePersonalEventCreateFAB} from '#src/Components/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB';
-import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
-import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
-import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {FezType} from '#src/Enums/FezType';
-import {AppIcons} from '#src/Enums/Icons';
-import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
-import {FezData} from '#src/Structs/ControllerStructs';
+import { SchedulePersonalEventCreateFAB } from '#src/Components/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB';
+import { MaterialHeaderButtons } from '#src/Components/Buttons/MaterialHeaderButtons';
+import { LFGFlatList } from '#src/Components/Lists/Schedule/LFGFlatList';
+import { LfgFilterMenu } from '#src/Components/Menus/LFG/LfgFilterMenu';
+import { AppView } from '#src/Components/Views/AppView';
+import { ScheduleHeaderView } from '#src/Components/Views/Schedule/ScheduleHeaderView';
+import { useFilter } from '#src/Context/Contexts/FilterContext';
+import { useStyles } from '#src/Context/Contexts/StyleContext';
+import { SwiftarrFeature } from '#src/Enums/AppFeatures';
+import { FezType } from '#src/Enums/FezType';
+import { AppIcons } from '#src/Enums/Icons';
+import { useCruiseDayPicker } from '#src/Hooks/useCruiseDayPicker';
+import { CommonStackComponents, useCommonStack } from '#src/Navigation/CommonScreens';
+import { usePersonalEventsQuery } from '#src/Queries/Fez/FezQueries';
+import { DisabledFeatureScreen } from '#src/Screens/DisabledFeatureScreen';
+import { PreRegistrationScreen } from '#src/Screens/PreRegistrationScreen';
+import { FezData } from '#src/Structs/ControllerStructs';
 
 export const SchedulePrivateEventsScreen = () => {
   return (
@@ -34,18 +33,18 @@ export const SchedulePrivateEventsScreen = () => {
 };
 
 const SchedulePrivateEventsScreenInner = () => {
-  const {lfgHidePastFilter} = useFilter();
-  const {commonStyles} = useStyles();
+  const { lfgHidePastFilter } = useFilter();
+  const { commonStyles } = useStyles();
   const listRef = useRef<FlashListRef<FezData>>(null);
   const navigation = useCommonStack();
   const [items, setItems] = useState<FezData[]>([]);
 
-  const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
+  const { selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError } = useCruiseDayPicker({
     listRef,
     clearList: useCallback(() => setItems([]), []),
   });
 
-  const {data, isFetching, isLoading, isError, refetch, hasNextPage, fetchNextPage} = usePersonalEventsQuery({
+  const { data, isFetching, isLoading, isError, refetch, hasNextPage, fetchNextPage } = usePersonalEventsQuery({
     fezType: [FezType.privateEvent, FezType.personalEvent],
     // @TODO we intend to change this some day. Upstream Swiftarr issue.
     cruiseDay: selectedCruiseDay - 1,
@@ -99,15 +98,11 @@ const SchedulePrivateEventsScreenInner = () => {
     },
   });
 
-  if (isLoading) {
-    return <LoadingView />;
-  }
-
   return (
     <AppView>
       <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={handleSetCruiseDay} />
       <View style={[commonStyles.flex]}>
-        {isSwitchingDays ? (
+        {isLoading || isSwitchingDays ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size={'large'} />
           </View>
