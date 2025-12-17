@@ -152,6 +152,12 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         <DataFieldListItem title={'Oldest Item'} description={<RelativeTimeTag date={oldestCacheItem} />} />
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
+            buttonText={'Clear Query Cache'}
+            onPress={bustQueryCache}
+            buttonColor={theme.colors.twitarrNegativeButton}
+            style={commonStyles.marginBottom}
+          />
+          <PrimaryActionButton
             buttonText={'Query Keys'}
             onPress={() => navigation.push(SettingsStackScreenComponents.queryKeysSettingsScreen)}
             buttonColor={theme.colors.twitarrNeutralButton}
