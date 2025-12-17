@@ -1,13 +1,13 @@
-import { FlashList, type FlashListRef } from '@shopify/flash-list';
-import React, { Dispatch, SetStateAction, useCallback, useRef } from 'react';
-import { NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from 'react-native';
-import { useSharedValue, withTiming } from 'react-native-reanimated';
+import {FlashList, type FlashListRef} from '@shopify/flash-list';
+import React, {Dispatch, SetStateAction, useCallback, useRef} from 'react';
+import {NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View} from 'react-native';
+import {useSharedValue, withTiming} from 'react-native-reanimated';
 
-import { ScheduleHeaderDayButton } from '#src/Components/Buttons/ScheduleHeaderDayButton';
-import { ScrollShadowView } from '#src/Components/Views/Schedule/ScrollShadowView';
-import { useCruise } from '#src/Context/Contexts/CruiseContext';
-import { useStyles } from '#src/Context/Contexts/StyleContext';
-import { CruiseDayData } from '#src/Types';
+import {ScheduleHeaderDayButton} from '#src/Components/Buttons/ScheduleHeaderDayButton';
+import {ScrollShadowView} from '#src/Components/Views/Schedule/ScrollShadowView';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {CruiseDayData} from '#src/Types';
 
 const SCROLL_THRESHOLD = 5;
 const ANIMATION_DURATION = 200;
@@ -19,8 +19,8 @@ interface ScheduleHeaderViewProps {
 }
 
 export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
-  const { commonStyles } = useStyles();
-  const { cruiseDays } = useCruise();
+  const {commonStyles} = useStyles();
+  const {cruiseDays} = useCruise();
   const headerListRef = useRef<FlashListRef<CruiseDayData>>(null);
 
   const leftShadowOpacity = useSharedValue(0);
@@ -36,21 +36,21 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
 
   const handleScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+      const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
       const maxScrollX = contentSize.width - layoutMeasurement.width;
 
       // Show left shadow when not at the start
       const showLeftShadow = contentOffset.x > SCROLL_THRESHOLD;
-      leftShadowOpacity.value = withTiming(showLeftShadow ? 1 : 0, { duration: ANIMATION_DURATION });
+      leftShadowOpacity.value = withTiming(showLeftShadow ? 1 : 0, {duration: ANIMATION_DURATION});
 
       // Show right shadow when not at the end
       const showRightShadow = contentOffset.x < maxScrollX - SCROLL_THRESHOLD;
-      rightShadowOpacity.value = withTiming(showRightShadow ? 1 : 0, { duration: ANIMATION_DURATION });
+      rightShadowOpacity.value = withTiming(showRightShadow ? 1 : 0, {duration: ANIMATION_DURATION});
     },
     [leftShadowOpacity, rightShadowOpacity],
   );
 
-  const renderItem = ({ item }: { item: CruiseDayData }) => {
+  const renderItem = ({item}: {item: CruiseDayData}) => {
     const onPress = () => {
       if (item.cruiseDay === props.selectedCruiseDay && props.scrollToNow) {
         props.scrollToNow();
@@ -65,9 +65,9 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
         const isLastDay = item.cruiseDay === cruiseDays!.length;
 
         if (isFirstDay) {
-          headerListRef.current?.scrollToOffset({ offset: 0, animated: true });
+          headerListRef.current?.scrollToOffset({offset: 0, animated: true});
         } else if (isLastDay) {
-          headerListRef.current?.scrollToEnd({ animated: true });
+          headerListRef.current?.scrollToEnd({animated: true});
         } else {
           headerListRef.current?.scrollToIndex({
             index: item.cruiseDay - 1,
@@ -105,7 +105,7 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
       <ScrollShadowView side={'right'} opacity={rightShadowOpacity} />
 
       <FlashList
-        contentContainerStyle={{ ...commonStyles.paddingHorizontalSmall }}
+        contentContainerStyle={{...commonStyles.paddingHorizontalSmall}}
         ref={headerListRef}
         renderItem={renderItem}
         horizontal={true}

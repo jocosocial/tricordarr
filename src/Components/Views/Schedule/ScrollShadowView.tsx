@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
+import Animated, {type SharedValue, useAnimatedStyle} from 'react-native-reanimated';
 
 const GRADIENT_WIDTH = 24;
 
@@ -29,7 +29,7 @@ interface ScrollShadowViewProps {
  * A gradient shadow indicator for horizontal scroll containers.
  * Shows a dark-to-transparent gradient on the specified side to indicate scrollability.
  */
-export const ScrollShadowView = ({ side, opacity }: ScrollShadowViewProps) => {
+export const ScrollShadowView = ({side, opacity}: ScrollShadowViewProps) => {
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
   }));
@@ -42,7 +42,7 @@ export const ScrollShadowView = ({ side, opacity }: ScrollShadowViewProps) => {
 
   return (
     <Animated.View style={[styles.base, styles[side], animatedStyle]} pointerEvents={'none'}>
-      <LinearGradient colors={gradientColors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={gradientColors} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={StyleSheet.absoluteFill} />
     </Animated.View>
   );
 };
