@@ -2,7 +2,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { type FlashListRef } from '@shopify/flash-list';
 import { useQueryClient } from '@tanstack/react-query';
 import React, { ReactElement, useCallback, useEffect, useRef, useState } from 'react';
-import { RefreshControl, StyleSheet, View } from 'react-native';
+import { RefreshControl, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { Item } from 'react-navigation-header-buttons';
 
@@ -160,21 +160,13 @@ export const LfgListScreen = ({
 
   const isRefreshing = isFetching || isFetchingNextPage || isFetchingPreviousPage;
 
-  const styles = StyleSheet.create({
-    loadingContainer: {
-      ...commonStyles.flex,
-      ...commonStyles.justifyCenter,
-      ...commonStyles.alignItemsCenter,
-    },
-  });
-
   return (
     <AppView>
       <TimezoneWarningView />
       <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={handleSetCruiseDay} />
       <View style={[commonStyles.flex]}>
         {isLoading || isSwitchingDays ? (
-          <View style={styles.loadingContainer}>
+          <View style={commonStyles.loadingContainer}>
             <ActivityIndicator size={'large'} />
           </View>
         ) : (
