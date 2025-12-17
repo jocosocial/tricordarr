@@ -58,8 +58,8 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
         props.setCruiseDay(item.cruiseDay);
 
         // Scroll based on which day is selected:
-        // - First day: scroll all the way to start so no left shadow
-        // - Last day: scroll all the way to end so no right shadow
+        // - First day: scroll all the way to start so no left shadow appears
+        // - Last day: scroll all the way to end so no right shadow appears
         // - Middle days: center the selected day
         const isFirstDay = item.cruiseDay === 1;
         const isLastDay = item.cruiseDay === cruiseDays!.length;
@@ -105,7 +105,7 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
       <ScrollShadowView side={'right'} opacity={rightShadowOpacity} />
 
       <FlashList
-        contentContainerStyle={{...commonStyles.paddingHorizontalSmall}}
+        contentContainerStyle={commonStyles.paddingHorizontalSmall}
         ref={headerListRef}
         renderItem={renderItem}
         horizontal={true}
