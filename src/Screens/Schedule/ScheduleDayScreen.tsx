@@ -1,36 +1,36 @@
-import { StackScreenProps } from '@react-navigation/stack';
-import { type FlashListRef } from '@shopify/flash-list';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { RefreshControl, View } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
-import { Item } from 'react-navigation-header-buttons';
+import {StackScreenProps} from '@react-navigation/stack';
+import {type FlashListRef} from '@shopify/flash-list';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {RefreshControl, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
-import { ScheduleFAB } from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
-import { HeaderDayPlannerButton } from '#src/Components/Buttons/HeaderButtons/HeaderDayPlannerButton';
-import { HeaderScheduleYourDayButton } from '#src/Components/Buttons/HeaderButtons/HeaderScheduleYourDayButton';
-import { MaterialHeaderButtons } from '#src/Components/Buttons/MaterialHeaderButtons';
-import { ScheduleFlatList } from '#src/Components/Lists/Schedule/ScheduleFlatList';
-import { ScheduleDayScreenActionsMenu } from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
-import { ScheduleEventFilterMenu } from '#src/Components/Menus/Schedule/ScheduleEventFilterMenu';
-import { AppView } from '#src/Components/Views/AppView';
-import { ScheduleHeaderView } from '#src/Components/Views/Schedule/ScheduleHeaderView';
-import { NotLoggedInView } from '#src/Components/Views/Static/NotLoggedInView';
-import { TimezoneWarningView } from '#src/Components/Views/Warnings/TimezoneWarningView';
-import { useAuth } from '#src/Context/Contexts/AuthContext';
-import { useConfig } from '#src/Context/Contexts/ConfigContext';
-import { useCruise } from '#src/Context/Contexts/CruiseContext';
-import { useFilter } from '#src/Context/Contexts/FilterContext';
-import { useStyles } from '#src/Context/Contexts/StyleContext';
-import { SwiftarrFeature } from '#src/Enums/AppFeatures';
-import { AppIcons } from '#src/Enums/Icons';
-import { useCruiseDayPicker } from '#src/Hooks/useCruiseDayPicker';
-import useDateTime, { calcCruiseDayTime } from '#src/Libraries/DateTime';
-import { buildScheduleList, getScheduleScrollIndex } from '#src/Libraries/Schedule';
-import { CommonStackComponents, CommonStackParamList } from '#src/Navigation/CommonScreens';
-import { useEventsQuery } from '#src/Queries/Events/EventQueries';
-import { useLfgListQuery, usePersonalEventsQuery } from '#src/Queries/Fez/FezQueries';
-import { DisabledFeatureScreen } from '#src/Screens/DisabledFeatureScreen';
-import { EventData, FezData } from '#src/Structs/ControllerStructs';
+import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
+import {HeaderDayPlannerButton} from '#src/Components/Buttons/HeaderButtons/HeaderDayPlannerButton';
+import {HeaderScheduleYourDayButton} from '#src/Components/Buttons/HeaderButtons/HeaderScheduleYourDayButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
+import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
+import {ScheduleEventFilterMenu} from '#src/Components/Menus/Schedule/ScheduleEventFilterMenu';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
+import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
+import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {AppIcons} from '#src/Enums/Icons';
+import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
+import useDateTime, {calcCruiseDayTime} from '#src/Libraries/DateTime';
+import {buildScheduleList, getScheduleScrollIndex} from '#src/Libraries/Schedule';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useEventsQuery} from '#src/Queries/Events/EventQueries';
+import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
 
@@ -42,20 +42,20 @@ export const ScheduleDayScreen = (props: Props) => {
   );
 };
 
-const ScheduleDayScreenInner = ({ navigation }: Props) => {
-  const { startDate, endDate } = useCruise();
-  const { isLoggedIn } = useAuth();
-  const { commonStyles } = useStyles();
+const ScheduleDayScreenInner = ({navigation}: Props) => {
+  const {startDate, endDate} = useCruise();
+  const {isLoggedIn} = useAuth();
+  const {commonStyles} = useStyles();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const { selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError } = useCruiseDayPicker({
+  const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
     listRef,
     clearList: useCallback(() => setScheduleList([]), []),
   });
-  const { appConfig } = useConfig();
-  const { scheduleFilterSettings } = useFilter();
+  const {appConfig} = useConfig();
+  const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
   const [showFabLabel, setShowFabLabel] = useState(true);
@@ -131,7 +131,7 @@ const ScheduleDayScreenInner = ({ navigation }: Props) => {
       return;
     }
     if (scrollNowIndex === 0) {
-      listRef.current.scrollToOffset({ offset: 0 });
+      listRef.current.scrollToOffset({offset: 0});
     } else if (scrollNowIndex === scheduleList.length - 1) {
       listRef.current.scrollToEnd();
     } else {

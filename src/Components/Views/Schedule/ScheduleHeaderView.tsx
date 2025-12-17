@@ -92,12 +92,12 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
         props.scrollToNow();
       } else {
         props.setCruiseDay(item.cruiseDay);
-        // Killing this to prevent the days from jumping the list around.
-        // headerListRef.current?.scrollToIndex({
-        //   index: item.cruiseDay - 1,
-        //   viewPosition: 0.5,
-        //   animated: true,
-        // });
+        // Scroll the selected day button into view, centered
+        headerListRef.current?.scrollToIndex({
+          index: item.cruiseDay - 1,
+          viewPosition: 0.5,
+          animated: true,
+        });
       }
     };
     return (
