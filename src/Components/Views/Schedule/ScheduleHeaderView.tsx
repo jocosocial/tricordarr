@@ -1,16 +1,12 @@
 import {FlashList, type FlashListRef} from '@shopify/flash-list';
-import React, {Dispatch, SetStateAction, useCallback, useRef} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View} from 'react-native';
-import {useSharedValue, withTiming} from 'react-native-reanimated';
+import React, {Dispatch, SetStateAction, useRef} from 'react';
+import {StyleSheet, View} from 'react-native';
 
 import {ScheduleHeaderDayButton} from '#src/Components/Buttons/ScheduleHeaderDayButton';
-import {ScrollShadowView} from '#src/Components/Views/Schedule/ScrollShadowView';
+import {ScrollShadowView, useScrollShadow} from '#src/Components/Views/Schedule/ScrollShadowView';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CruiseDayData} from '#src/Types';
-
-const SCROLL_THRESHOLD = 5;
-const ANIMATION_DURATION = 200;
 
 interface ScheduleHeaderViewProps {
   selectedCruiseDay: number;
@@ -23,8 +19,7 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
   const {cruiseDays} = useCruise();
   const headerListRef = useRef<FlashListRef<CruiseDayData>>(null);
 
-  const leftShadowOpacity = useSharedValue(0);
-  const rightShadowOpacity = useSharedValue(1);
+  const {leftShadowOpacity, rightShadowOpacity, handleScroll} = useScrollShadow();
 
   const styles = StyleSheet.create({
     view: {
@@ -33,22 +28,6 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
       ...commonStyles.paddingVerticalSmall,
     },
   });
-
-  const handleScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
-      const maxScrollX = contentSize.width - layoutMeasurement.width;
-
-      // Show left shadow when not at the start
-      const showLeftShadow = contentOffset.x > SCROLL_THRESHOLD;
-      leftShadowOpacity.value = withTiming(showLeftShadow ? 1 : 0, {duration: ANIMATION_DURATION});
-
-      // Show right shadow when not at the end
-      const showRightShadow = contentOffset.x < maxScrollX - SCROLL_THRESHOLD;
-      rightShadowOpacity.value = withTiming(showRightShadow ? 1 : 0, {duration: ANIMATION_DURATION});
-    },
-    [leftShadowOpacity, rightShadowOpacity],
-  );
 
   const renderItem = ({item}: {item: CruiseDayData}) => {
     const onPress = () => {
