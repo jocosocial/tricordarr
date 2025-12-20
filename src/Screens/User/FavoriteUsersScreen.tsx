@@ -100,11 +100,14 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
               key={i}
               userHeader={relatedUserHeader}
               buttonIcon={AppIcons.unfavorite}
-              onPress={() =>
+              onPress={() => {
+                if (appConfig.preRegistrationMode) {
+                  return;
+                }
                 navigation.push(CommonStackComponents.userProfileScreen, {
                   userID: relatedUserHeader.userID,
-                })
-              }
+                });
+              }}
               buttonOnPress={handleUnfavoriteUser}
             />
           ))}
