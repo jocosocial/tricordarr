@@ -8,8 +8,8 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
-import {ForumThreadScreenBase} from '#src/Screens/Forum/Thread/ForumThreadScreenBase';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
+import {ForumThreadScreenBase} from '#src/Screens/Forum/Thread/ForumThreadScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadPostScreen>;
 
