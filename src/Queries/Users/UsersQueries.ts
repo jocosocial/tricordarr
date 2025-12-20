@@ -8,21 +8,23 @@ export const useUsersProfileQuery = (userID: string, options?: TokenAuthQueryOpt
 interface UserMatchQueryProps {
   searchQuery: string;
   favorers?: boolean;
+  autoSearchLength?: number;
   options?: TokenAuthQueryOptionsType<UserHeader[]>;
 }
 
-export const useUserMatchQuery = ({searchQuery, favorers, options}: UserMatchQueryProps) => {
+export const useUserMatchQuery = ({searchQuery, favorers, autoSearchLength = 2, options}: UserMatchQueryProps) => {
   return useTokenAuthQuery<UserHeader[]>(
     `/users/match/allnames/${searchQuery}`,
     {
+      ...(autoSearchLength !== undefined ? {enabled: searchQuery.length >= autoSearchLength} : {}),
       ...options,
-      enabled: searchQuery.length >= 2,
     },
     {
       ...(favorers !== undefined && {favorers: favorers}),
     },
   );
 };
-export const useUserFindQuery = (username: string) => {
-  return useTokenAuthQuery<UserHeader>(`/users/find/${username}`);
+
+export const useUserFindQuery = (username: string, options?: TokenAuthQueryOptionsType<UserHeader>) => {
+  return useTokenAuthQuery<UserHeader>(`/users/find/${username}`, options);
 };

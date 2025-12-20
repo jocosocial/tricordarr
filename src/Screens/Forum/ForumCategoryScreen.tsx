@@ -23,8 +23,8 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;

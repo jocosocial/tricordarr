@@ -24,8 +24,8 @@ import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
 

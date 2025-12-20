@@ -18,8 +18,8 @@ import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameFavoriteMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {useBoardgameQuery} from '#src/Queries/Boardgames/BoardgameQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameScreen>;

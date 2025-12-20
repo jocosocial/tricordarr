@@ -2,15 +2,15 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamailAddParticipantScreen>;
@@ -53,7 +53,7 @@ const SeamailAddParticipantScreenInner = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView>
         <PaddedContentView>
-          <UserSearchBar excludeHeaders={route.params.fez.members?.participants || []} onPress={onPress} />
+          <UserMatchSearchBar excludeHeaders={route.params.fez.members?.participants || []} onPress={onPress} />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

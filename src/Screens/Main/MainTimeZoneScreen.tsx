@@ -18,7 +18,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {TimeZoneChangeRecord} from '#src/Structs/ControllerStructs';
 
 const getCleanISOString = (dateString: string): string => {

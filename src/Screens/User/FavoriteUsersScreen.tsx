@@ -5,31 +5,30 @@ import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {UserFindSearchBar} from '#src/Components/Search/UserSearchBar/UserFindSearchBar';
+import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {ItalicText} from '#src/Components/Text/ItalicText';
 import {UserFavoriteText} from '#src/Components/Text/UserRelationsText';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.favoriteUsers>;
 
 export const FavoriteUsersScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/favorites'}>
-        <FavoriteUsersScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/favorites'}>
+      <FavoriteUsersScreenInner {...props} />
+    </DisabledFeatureScreen>
   );
 };
 
@@ -37,6 +36,7 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
   const userFavoriteMutation = useUserFavoriteMutation();
   const {data, isFetching, refetch} = useUserFavoritesQuery();
   const queryClient = useQueryClient();
+  const {appConfig} = useConfig();
 
   const handleUnfavoriteUser = (userHeader: UserHeader) => {
     userFavoriteMutation.mutate(
@@ -86,7 +86,11 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
           <UserFavoriteText />
         </PaddedContentView>
         <PaddedContentView>
-          <UserSearchBar excludeHeaders={data} onPress={handleFavoriteUser} clearOnPress={true} />
+          {appConfig.preRegistrationMode ? (
+            <UserFindSearchBar excludeHeaders={data} onPress={handleFavoriteUser} clearOnPress={true} />
+          ) : (
+            <UserMatchSearchBar excludeHeaders={data} onPress={handleFavoriteUser} clearOnPress={true} />
+          )}
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Favorite Users:</Text>
@@ -96,11 +100,14 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
               key={i}
               userHeader={relatedUserHeader}
               buttonIcon={AppIcons.unfavorite}
-              onPress={() =>
+              onPress={() => {
+                if (appConfig.preRegistrationMode) {
+                  return;
+                }
                 navigation.push(CommonStackComponents.userProfileScreen, {
                   userID: relatedUserHeader.userID,
-                })
-              }
+                });
+              }}
               buttonOnPress={handleUnfavoriteUser}
             />
           ))}
