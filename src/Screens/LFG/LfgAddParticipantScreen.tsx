@@ -12,8 +12,8 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgAddParticipantScreen>;

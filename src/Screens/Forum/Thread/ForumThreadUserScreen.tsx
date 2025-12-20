@@ -13,8 +13,8 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadUserScreen>;

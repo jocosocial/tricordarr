@@ -10,8 +10,8 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumRenameMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadEditScreen>;

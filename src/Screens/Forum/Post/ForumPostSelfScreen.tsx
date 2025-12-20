@@ -1,9 +1,9 @@
 import React from 'react';
 
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {ForumPostScreenBase} from '#src/Screens/Forum/Post/ForumPostScreenBase';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 export const ForumPostSelfScreen = () => {
   return (

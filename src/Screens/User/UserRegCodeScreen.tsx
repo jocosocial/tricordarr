@@ -10,8 +10,8 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useRegCodeForUserQuery} from '#src/Queries/Admin/RegCodeQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userRegCodeScreen>;
 

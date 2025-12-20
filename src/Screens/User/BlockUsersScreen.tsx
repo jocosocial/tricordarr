@@ -18,8 +18,8 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.blockUsers>;

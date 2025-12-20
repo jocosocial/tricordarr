@@ -9,8 +9,8 @@ import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThread
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {ForumRelationQueryType} from '#src/Queries/Forum/ForumThreadRelationQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumMutesScreen>;
 

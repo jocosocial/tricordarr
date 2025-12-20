@@ -12,7 +12,7 @@ import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PerformerScreenBase} from '#src/Screens/Performer/PerformerScreenBase';
 
 type Props = StackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;

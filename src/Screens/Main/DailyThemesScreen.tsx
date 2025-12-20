@@ -11,7 +11,7 @@ import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 export const DailyThemesScreen = () => {
   return (

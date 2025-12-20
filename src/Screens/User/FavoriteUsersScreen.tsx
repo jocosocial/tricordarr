@@ -19,7 +19,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.favoriteUsers>;
