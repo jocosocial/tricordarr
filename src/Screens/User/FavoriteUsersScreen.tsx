@@ -17,6 +17,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
@@ -35,6 +36,7 @@ export const FavoriteUsersScreen = (props: Props) => {
 const FavoriteUsersScreenInner = ({navigation}: Props) => {
   const userFavoriteMutation = useUserFavoriteMutation();
   const {data, isFetching, refetch} = useUserFavoritesQuery();
+  const {data: profilePublicData} = useUserProfileQuery();
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
 
@@ -72,6 +74,15 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
     );
   };
 
+  /**
+   * Excluded headers are the users that are already in your list of favorite
+   * users or the user's own profile.
+   */
+  const excludeHeaders = React.useMemo(
+    () => [profilePublicData?.header, ...(data ?? [])].filter((header): header is UserHeader => header !== undefined),
+    [profilePublicData, data],
+  );
+
   if (data === undefined) {
     return <LoadingView />;
   }
@@ -87,9 +98,9 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           {appConfig.preRegistrationMode ? (
-            <UserFindSearchBar excludeHeaders={data} onPress={handleFavoriteUser} clearOnPress={true} />
+            <UserFindSearchBar excludeHeaders={excludeHeaders} onPress={handleFavoriteUser} clearOnPress={true} />
           ) : (
-            <UserMatchSearchBar excludeHeaders={data} onPress={handleFavoriteUser} clearOnPress={true} />
+            <UserMatchSearchBar excludeHeaders={excludeHeaders} onPress={handleFavoriteUser} clearOnPress={true} />
           )}
         </PaddedContentView>
         <PaddedContentView>
