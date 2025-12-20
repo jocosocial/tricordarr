@@ -5,6 +5,7 @@ import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
+import {UserFindSearchBar} from '#src/Components/Search/UserSearchBar/UserFindSearchBar';
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {ItalicText} from '#src/Components/Text/ItalicText';
 import {UserFavoriteText} from '#src/Components/Text/UserRelationsText';
@@ -85,12 +86,11 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
           <UserFavoriteText />
         </PaddedContentView>
         <PaddedContentView>
-          <UserMatchSearchBar
-            excludeHeaders={data}
-            onPress={handleFavoriteUser}
-            clearOnPress={true}
-            autoSearch={!appConfig.preRegistrationMode}
-          />
+          {appConfig.preRegistrationMode ? (
+            <UserFindSearchBar excludeHeaders={data} onPress={handleFavoriteUser} clearOnPress={true} />
+          ) : (
+            <UserMatchSearchBar excludeHeaders={data} onPress={handleFavoriteUser} clearOnPress={true} />
+          )}
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Favorite Users:</Text>

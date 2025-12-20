@@ -14,7 +14,7 @@ export const UserFindSearchBar = ({
   excludeHeaders = [],
   onPress,
   clearOnPress = false,
-  label = 'Search for users',
+  label = 'Enter exact username',
 }: UserSearchBarProps) => {
   const {searchQuery, onChangeSearch, handlePress, onClear} = useUserSearchBar({
     onPress,
