@@ -42,6 +42,11 @@ interface UserSearchBarBaseProps {
    * Whether to auto-search as user types
    */
   autoSearch?: boolean;
+  /**
+   * Whether to exclude the user's own profile from the results.
+   * It still shows up but is disabled.
+   */
+  excludeSelf?: boolean;
 }
 
 /**
@@ -58,6 +63,7 @@ export const UserSearchBarBaseComponent = ({
   excludeHeaders = [],
   label = 'Search for users',
   autoSearch = true,
+  excludeSelf = false,
 }: UserSearchBarBaseProps) => {
   return (
     <View>
@@ -70,7 +76,12 @@ export const UserSearchBarBaseComponent = ({
         autoSearch={autoSearch}
         onSearch={autoSearch ? undefined : refetch}
       />
-      <UserSearchBarResults data={data} excludeHeaders={excludeHeaders} handlePress={handlePress} />
+      <UserSearchBarResults
+        data={data}
+        excludeHeaders={excludeHeaders}
+        handlePress={handlePress}
+        excludeSelf={excludeSelf}
+      />
     </View>
   );
 };
