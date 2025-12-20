@@ -18,18 +18,15 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.favoriteUsers>;
 
 export const FavoriteUsersScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/favorites'}>
-        <FavoriteUsersScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/favorites'}>
+      <FavoriteUsersScreenInner {...props} />
+    </DisabledFeatureScreen>
   );
 };
 

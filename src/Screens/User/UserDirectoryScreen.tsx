@@ -15,17 +15,14 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.userDirectoryScreen>;
 
 export const UserDirectoryScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/directory'}>
-        <UserDirectoryScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/directory'}>
+      <UserDirectoryScreenInner {...props} />
+    </DisabledFeatureScreen>
   );
 };
 
