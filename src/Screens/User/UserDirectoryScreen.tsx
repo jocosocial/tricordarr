@@ -4,7 +4,7 @@ import {View} from 'react-native';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {UserDirectoryScreenActionsMenu} from '#src/Components/Menus/User/UserDirectoryScreenActionsMenu';
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {UserDirectoryText} from '#src/Components/Text/UserRelationsText';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -59,7 +59,7 @@ const UserDirectoryScreenInner = ({navigation}: Props) => {
           <UserDirectoryText />
         </PaddedContentView>
         <PaddedContentView>
-          <UserSearchBar
+          <UserMatchSearchBar
             excludeHeaders={[]}
             onPress={user =>
               navigation.push(CommonStackComponents.userProfileScreen, {

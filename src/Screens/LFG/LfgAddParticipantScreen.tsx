@@ -3,7 +3,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {RefreshControl} from 'react-native';
 
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -60,7 +60,7 @@ const LfgAddParticipantScreenInner = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={participantMutation.isPending} />}>
         <PaddedContentView>
-          <UserSearchBar excludeHeaders={lfg.members.participants || []} onPress={onPress} />
+          <UserMatchSearchBar excludeHeaders={lfg.members.participants || []} onPress={onPress} />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

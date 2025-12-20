@@ -3,7 +3,7 @@ import React from 'react';
 import {View} from 'react-native';
 
 import {UserChip} from '#src/Components/Chips/UserChip';
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {UserHeader} from '#src/Structs/ControllerStructs';
@@ -50,7 +50,7 @@ export const UserChipsField = ({
       {() => (
         <View style={styles.parentContainer}>
           <View style={styles.searchBarContainer}>
-            <UserSearchBar
+            <UserMatchSearchBar
               label={label}
               excludeHeaders={field.value}
               onPress={addUserHeader}

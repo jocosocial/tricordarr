@@ -5,7 +5,7 @@ import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {ItalicText} from '#src/Components/Text/ItalicText';
 import {ModeratorMuteText, UserMuteText} from '#src/Components/Text/UserRelationsText';
 import {AppView} from '#src/Components/Views/AppView';
@@ -87,7 +87,7 @@ const MuteUsersScreenInner = ({navigation}: Props) => {
           {hasModerator && <ModeratorMuteText />}
         </PaddedContentView>
         <PaddedContentView>
-          <UserSearchBar excludeHeaders={data} onPress={handleMuteUser} clearOnPress={true} />
+          <UserMatchSearchBar excludeHeaders={data} onPress={handleMuteUser} clearOnPress={true} />
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Muted Users:</Text>

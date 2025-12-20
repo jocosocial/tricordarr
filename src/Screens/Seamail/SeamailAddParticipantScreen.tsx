@@ -2,7 +2,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -53,7 +53,7 @@ const SeamailAddParticipantScreenInner = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView>
         <PaddedContentView>
-          <UserSearchBar excludeHeaders={route.params.fez.members?.participants || []} onPress={onPress} />
+          <UserMatchSearchBar excludeHeaders={route.params.fez.members?.participants || []} onPress={onPress} />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

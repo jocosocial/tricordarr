@@ -5,7 +5,7 @@ import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {ItalicText} from '#src/Components/Text/ItalicText';
 import {ModeratorBlockText, UserBlockText} from '#src/Components/Text/UserRelationsText';
 import {AppView} from '#src/Components/Views/AppView';
@@ -87,7 +87,7 @@ const BlockUsersScreenInner = ({navigation}: Props) => {
           {hasModerator && <ModeratorBlockText />}
         </PaddedContentView>
         <PaddedContentView>
-          <UserSearchBar excludeHeaders={data} onPress={handleBlockUser} />
+          <UserMatchSearchBar excludeHeaders={data} onPress={handleBlockUser} />
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Blocked Users:</Text>
