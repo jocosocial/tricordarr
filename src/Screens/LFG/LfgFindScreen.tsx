@@ -5,9 +5,9 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 export type Props = StackScreenProps<LfgStackParamList, LfgStackComponents.lfgFindScreen>;
 

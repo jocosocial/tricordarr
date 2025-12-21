@@ -18,8 +18,8 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 export const SchedulePrivateEventsScreen = () => {

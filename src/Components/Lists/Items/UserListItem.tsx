@@ -4,6 +4,7 @@ import {IconButton, List} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -21,6 +22,7 @@ interface UserListItemProps {
  */
 export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, disabled = false}: UserListItemProps) => {
   const {styleDefaults, commonStyles} = useStyles();
+  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     // This has to account for some Paper bullshit where there is a secret View added when you define
@@ -44,10 +46,10 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
   const getAvatar = React.useCallback(
     () => (
       <View style={styles.avatar}>
-        <UserAvatarImage userHeader={userHeader} />
+        <UserAvatarImage userHeader={userHeader} forceIdenticon={appConfig.preRegistrationMode} />
       </View>
     ),
-    [userHeader, styles.avatar],
+    [userHeader, styles.avatar, appConfig.preRegistrationMode],
   );
 
   const getActionButton = React.useCallback(() => {
@@ -67,7 +69,7 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
     <List.Item
       style={styles.item}
       title={userHeader.username}
-      description={userHeader.displayName}
+      description={appConfig.preRegistrationMode ? undefined : userHeader.displayName}
       titleStyle={styles.titleStyle}
       descriptionStyle={styles.descriptionStyle}
       onPress={onPress}

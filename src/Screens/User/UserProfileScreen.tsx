@@ -5,8 +5,8 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {UserProfileScreenBase} from '#src/Screens/User/UserProfileScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userProfileScreen>;

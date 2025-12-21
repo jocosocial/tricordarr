@@ -17,8 +17,8 @@ import {AppIcons} from '#src/Enums/Icons';
 import {getApparentCruiseDate, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 

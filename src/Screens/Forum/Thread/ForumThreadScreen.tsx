@@ -4,9 +4,9 @@ import React from 'react';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ForumThreadScreenBase} from '#src/Screens/Forum/Thread/ForumThreadScreenBase';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadScreen>;
 

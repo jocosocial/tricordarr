@@ -46,7 +46,7 @@ export const UserFavoriteText = () => {
   const {commonStyles} = useStyles();
   return (
     <Text style={[commonStyles.marginBottomSmall]}>
-      Favoriting a user allows them to call you (between iOS devices only).
+      Favoriting a user allows them to call you (between iOS devices using The Kraken app only).
     </Text>
   );
 };

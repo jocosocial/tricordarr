@@ -13,8 +13,8 @@ import {FezType} from '#src/Enums/FezType';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezContentData, FezData, PostContentData} from '#src/Structs/ControllerStructs';
 import {SeamailFormValues} from '#src/Types/FormValues';
 

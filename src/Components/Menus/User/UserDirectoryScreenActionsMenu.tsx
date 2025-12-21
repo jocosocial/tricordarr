@@ -17,17 +17,17 @@ export const UserDirectoryScreenActionsMenu = () => {
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
       onDismiss={closeMenu}>
       <Menu.Item
-        title={'Favorites'}
+        title={'Favorite Users'}
         leadingIcon={AppIcons.favorite}
         onPress={() => commonNavigation.push(CommonStackComponents.favoriteUsers)}
       />
       <Menu.Item
-        title={'Mutes'}
+        title={'Muted Users'}
         leadingIcon={AppIcons.mute}
         onPress={() => commonNavigation.push(CommonStackComponents.muteUsers)}
       />
       <Menu.Item
-        title={'Blocks'}
+        title={'Blocked Users'}
         leadingIcon={AppIcons.block}
         onPress={() => commonNavigation.push(CommonStackComponents.blockUsers)}
       />

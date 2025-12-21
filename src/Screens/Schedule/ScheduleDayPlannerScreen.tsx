@@ -8,7 +8,7 @@ import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayPlannerScreen>;
 

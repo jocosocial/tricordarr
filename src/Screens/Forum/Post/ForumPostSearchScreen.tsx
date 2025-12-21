@@ -8,8 +8,8 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 export type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumPostSearchScreen>;
 
