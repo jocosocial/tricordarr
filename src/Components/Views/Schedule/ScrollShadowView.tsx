@@ -6,7 +6,6 @@ import Animated, {type SharedValue, useAnimatedStyle, useSharedValue, withTiming
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 const GRADIENT_WIDTH = 80;
-const SHADOW_OPACITY = 1;
 const SCROLL_THRESHOLD = 5;
 const ANIMATION_DURATION = 150;
 
@@ -75,13 +74,8 @@ export const ScrollShadowView = ({side, opacity}: ScrollShadowViewProps) => {
     opacity: opacity.value,
   }));
 
-  // Convert background color from 'rgb(r, g, b)' to 'rgba(r, g, b, opacity)'
-  // Use the same color with different alpha values for proper gradient fade
-  const shadowColor = theme.colors.background.replace('rgb(', `rgba(`).replace(')', `, ${SHADOW_OPACITY})`);
-  const transparentColor = theme.colors.background.replace('rgb(', `rgba(`).replace(')', ', 0)');
-
   // Gradient colors from background color (with opacity) to background color (fully transparent)
-  const colors = [shadowColor, transparentColor];
+  const colors = [theme.colors.shadowOnBackground.shadow, theme.colors.shadowOnBackground.transparent];
   // For left shadow: dark on left, transparent on right
   // For right shadow: transparent on left, dark on right
   const gradientColors = side === 'left' ? colors : [...colors].reverse();
