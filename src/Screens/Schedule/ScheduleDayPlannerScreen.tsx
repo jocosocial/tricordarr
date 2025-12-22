@@ -51,6 +51,7 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   const {
     data: lfgJoinedData,
     isFetching: isLfgJoinedFetching,
+    isFetchingNextPage: isLfgJoinedFetchingNextPage,
     hasNextPage: joinedHasNextPage,
     fetchNextPage: joinedFetchNextPage,
   } = useLfgListQuery({
@@ -66,6 +67,7 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   const {
     data: personalEventData,
     isFetching: isPersonalEventFetching,
+    isFetchingNextPage: isPersonalEventFetchingNextPage,
     hasNextPage: personalHasNextPage,
     fetchNextPage: personalFetchNextPage,
   } = usePersonalEventsQuery({
@@ -76,14 +78,22 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   });
 
   // Handle pagination for LFGs and personal events
+  // Automatically fetch all pages to show complete day schedule
   useEffect(() => {
-    if (joinedHasNextPage) {
+    if (joinedHasNextPage && !isLfgJoinedFetchingNextPage) {
       joinedFetchNextPage();
     }
-    if (personalHasNextPage) {
+    if (personalHasNextPage && !isPersonalEventFetchingNextPage) {
       personalFetchNextPage();
     }
-  }, [joinedFetchNextPage, joinedHasNextPage, personalFetchNextPage, personalHasNextPage]);
+  }, [
+    joinedFetchNextPage,
+    joinedHasNextPage,
+    isLfgJoinedFetchingNextPage,
+    personalFetchNextPage,
+    personalHasNextPage,
+    isPersonalEventFetchingNextPage,
+  ]);
 
   // Build day planner items from all data sources
   const dayPlannerItems = useMemo(() => {
@@ -94,6 +104,10 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   const {dayStart, dayEnd} = useMemo(() => {
     return getDayBoundaries(startDate, selectedCruiseDay);
   }, [startDate, selectedCruiseDay]);
+
+  // Calculate loading state
+  const isLoading = isEventFetching || isLfgJoinedFetching || isPersonalEventFetching;
+  const showLoading = isLoading && dayPlannerItems.length === 0;
 
   // Scroll to current time position in the timeline
   const scrollToNow = useCallback(() => {
@@ -108,22 +122,18 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   // Auto-scroll to current time on initial load for any selected day
   useEffect(() => {
     if (scrollViewRef.current && !showLoading) {
-      // Use a small delay to ensure the ScrollView is fully mounted and items are rendered
-      const timer = setTimeout(() => {
+      // Use requestAnimationFrame to ensure scroll happens after layout/render is complete
+      // This is more reliable than setTimeout as it syncs with the rendering cycle
+      const rafId = requestAnimationFrame(() => {
         scrollToNow();
-      }, 100);
-      return () => clearTimeout(timer);
+      });
+      return () => cancelAnimationFrame(rafId);
     }
-    // Only run on mount or when the selected day changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCruiseDay]);
+  }, [selectedCruiseDay, showLoading, scrollToNow]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
   }
-
-  const isLoading = isEventFetching || isLfgJoinedFetching || isPersonalEventFetching;
-  const showLoading = isLoading && dayPlannerItems.length === 0;
 
   return (
     <AppView>
