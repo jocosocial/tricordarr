@@ -28,6 +28,11 @@ export const ScheduleFAB = (props: ScheduleFABProps) => {
       label: 'Personal Events',
       onPress: () => navigation.push(CommonStackComponents.schedulePrivateEventsScreen),
     }),
+    FabGroupAction({
+      icon: AppIcons.dayPlanner,
+      label: 'Day Planner',
+      onPress: () => navigation.push(CommonStackComponents.scheduleDayPlannerScreen, {cruiseDay: props.selectedDay}),
+    }),
   ];
 
   return <BaseFABGroup actions={actions} openLabel={'Schedule'} icon={AppIcons.events} showLabel={props.showLabel} />;
