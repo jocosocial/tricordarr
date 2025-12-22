@@ -36,15 +36,10 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   const {isLoggedIn} = useAuth();
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
-  const [refreshing, setRefreshing] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
   // Fetch events with dayplanner=true (only favorited/following events)
-  const {
-    data: eventData,
-    isFetching: isEventFetching,
-    refetch: refetchEvents,
-  } = useEventsQuery({
+  const {data: eventData, isFetching: isEventFetching} = useEventsQuery({
     cruiseDay: selectedCruiseDay,
     dayplanner: true,
     options: {
@@ -56,7 +51,6 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   const {
     data: lfgJoinedData,
     isFetching: isLfgJoinedFetching,
-    refetch: refetchLfgJoined,
     hasNextPage: joinedHasNextPage,
     fetchNextPage: joinedFetchNextPage,
   } = useLfgListQuery({
@@ -72,7 +66,6 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   const {
     data: personalEventData,
     isFetching: isPersonalEventFetching,
-    refetch: refetchPersonalEvents,
     hasNextPage: personalHasNextPage,
     fetchNextPage: personalFetchNextPage,
   } = usePersonalEventsQuery({
@@ -102,25 +95,15 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
     return getDayBoundaries(startDate, selectedCruiseDay);
   }, [startDate, selectedCruiseDay]);
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    const refreshes: Promise<unknown>[] = [refetchEvents()];
-    if (!appConfig.preRegistrationMode) {
-      refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
-    }
-    await Promise.all(refreshes);
-    setRefreshing(false);
-  }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents, appConfig.preRegistrationMode]);
-
   // Scroll to current time position in the timeline
   const scrollToNow = useCallback(() => {
     if (!scrollViewRef.current) {
       return;
     }
     const now = new Date();
-    const offset = getScrollOffsetForTime(now, dayStart, dayEnd);
+    const offset = getScrollOffsetForTime(now);
     scrollViewRef.current.scrollTo({y: offset, animated: true});
-  }, [dayStart, dayEnd]);
+  }, []);
 
   // Auto-scroll to current time on initial load for any selected day
   useEffect(() => {
@@ -140,7 +123,7 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   }
 
   const isLoading = isEventFetching || isLfgJoinedFetching || isPersonalEventFetching;
-  const showLoading = isLoading && !refreshing && dayPlannerItems.length === 0;
+  const showLoading = isLoading && dayPlannerItems.length === 0;
 
   return (
     <AppView>

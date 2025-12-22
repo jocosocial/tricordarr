@@ -347,11 +347,9 @@ export const getTimelineHeight = (): number => {
  * We simply map the current time of day to a position on this timeline.
  *
  * @param now The current date/time
- * @param dayStart The start of the day being displayed (for logging only)
- * @param dayEnd The end of the day being displayed (for logging only)
  * @returns The scroll offset in pixels
  */
-export const getScrollOffsetForTime = (now: Date, dayStart: Date, dayEnd: Date): number => {
+export const getScrollOffsetForTime = (now: Date): number => {
   // Extract just the time-of-day from "now" (hours and minutes)
   const nowHours = now.getHours();
   const nowMinutes = now.getMinutes();
