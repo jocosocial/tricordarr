@@ -10,3 +10,13 @@ export const usePhoneCallDeclineMutation = () => {
 
   return useTokenAuthMutation(forumCreateQueryHandler);
 };
+
+export const usePhoneCallAnswerMutation = () => {
+  const {apiPost} = useSwiftarrQueryClient();
+
+  const answerQueryHandler = async ({callID}: {callID: string}) => {
+    return await apiPost(`/phone/answer/${callID}`);
+  };
+
+  return useTokenAuthMutation(answerQueryHandler);
+};
