@@ -1,61 +1,118 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback} from 'react';
-import {Text} from 'react-native-paper';
+import React, {useCallback, useEffect} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {Button, Text} from 'react-native-paper';
 
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useCall} from '#src/Context/Contexts/CallContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {usePhoneCallDeclineMutation} from '#src/Queries/PhoneCall/PhoneCallMutations';
 
 type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.krakenTalkReceiveScreen>;
 export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
-  const declineMutation = usePhoneCallDeclineMutation();
+  const {answerCall, declineCall, receiveCall} = useCall();
   const {theme} = useAppTheme();
 
-  const onDecline = () => {
-    declineMutation.mutate({
+  useEffect(() => {
+    receiveCall(route.params.callID, {
+      userID: route.params.callerUserID,
+      username: route.params.callerUsername,
+    });
+  }, [route.params.callID, route.params.callerUserID, route.params.callerUsername, receiveCall]);
+
+  const onAnswer = useCallback(async () => {
+    await answerCall(route.params.callID);
+    navigation.replace(ChatStackScreenComponents.activeCallScreen, {
       callID: route.params.callID,
     });
-  };
+  }, [answerCall, route.params.callID, navigation]);
 
-  const seamailCreateHandler = useCallback(() => {
-    navigation.push(CommonStackComponents.seamailCreateScreen, {
-      initialUserHeaders: [
-        {
-          userID: route.params.callerUserID,
-          username: route.params.callerUsername,
-        },
-      ],
-    });
-  }, [route, navigation]);
+  const onDecline = useCallback(async () => {
+    await declineCall(route.params.callID);
+    navigation.goBack();
+  }, [declineCall, route.params.callID, navigation]);
 
   return (
     <AppView>
-      <ScrollingContentView>
-        <PaddedContentView>
-          <Text>Incoming call from {route.params.callerUsername}!</Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <Text>
-            Sadly, this app doesn't know what to do about those yet. Press the button below to decline the call. Then
-            consider sending them a Seamail or finding them in person.
-          </Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <PrimaryActionButton buttonText={'Decline'} onPress={onDecline} />
-        </PaddedContentView>
-        <PaddedContentView>
-          <PrimaryActionButton
-            buttonText={'New Seamail'}
-            onPress={seamailCreateHandler}
-            buttonColor={theme.colors.twitarrNeutralButton}
-          />
+      <ScrollingContentView isStack={false}>
+        <PaddedContentView padSides={false}>
+          <View style={styles.container}>
+            <View style={styles.avatarContainer}>
+              <UserAvatarImage
+                userHeader={{
+                  userID: route.params.callerUserID,
+                  username: route.params.callerUsername,
+                }}
+              />
+            </View>
+
+            <Text variant={'headlineMedium'} style={styles.username}>
+              {route.params.callerUsername}
+            </Text>
+
+            <Text variant={'titleMedium'} style={styles.callStatus}>
+              Incoming Call...
+            </Text>
+
+            <View style={styles.buttonContainer}>
+              <Button
+                mode={'contained'}
+                onPress={onDecline}
+                buttonColor={theme.colors.error}
+                icon={'phone-hangup'}
+                style={styles.button}
+                contentStyle={styles.buttonContent}>
+                Decline
+              </Button>
+
+              <Button
+                mode={'contained'}
+                onPress={onAnswer}
+                buttonColor={theme.colors.twitarrPositiveButton}
+                icon={'phone'}
+                style={styles.button}
+                contentStyle={styles.buttonContent}>
+                Answer
+              </Button>
+            </View>
+          </View>
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 48,
+  },
+  avatarContainer: {
+    marginBottom: 24,
+  },
+  username: {
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  callStatus: {
+    marginBottom: 48,
+    textAlign: 'center',
+    opacity: 0.7,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 16,
+    paddingHorizontal: 32,
+  },
+  button: {
+    flex: 1,
+  },
+  buttonContent: {
+    paddingVertical: 8,
+  },
+});
