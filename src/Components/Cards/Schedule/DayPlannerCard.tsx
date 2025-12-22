@@ -116,63 +116,50 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
     return maxLocationLines;
   }, [contentLevel, item.height, item.location, titleLines]);
 
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          position: 'absolute',
-          top: item.topOffset,
-          left: `${leftPosition}%`,
-          width: `${columnWidth}%`,
-          height: item.height,
-          paddingHorizontal: 2,
-          paddingVertical: 1,
-        },
-        card: {
-          flex: 1,
-          backgroundColor,
-          borderRadius: 4,
-          padding: 4,
-          overflow: 'hidden',
-        },
-        content: {
-          flex: 1,
-          overflow: 'hidden',
-        },
-        title: {
-          color: textColor,
-          fontSize: 12,
-          fontWeight: 'bold',
-          lineHeight: 14,
-        },
-        time: {
-          color: textColor,
-          fontSize: 10,
-          opacity: 0.9,
-          lineHeight: 12,
-        },
-        cancelled: {
-          ...commonStyles.bold,
-          color: textColor,
-          fontSize: 10,
-          backgroundColor: theme.colors.error,
-          paddingHorizontal: 4,
-          borderRadius: 2,
-          alignSelf: 'flex-start',
-          marginBottom: 2,
-        },
-      }),
-    [
-      item.topOffset,
-      item.height,
-      leftPosition,
-      columnWidth,
+  const styles = StyleSheet.create({
+    container: {
+      position: 'absolute',
+      top: item.topOffset,
+      left: `${leftPosition}%`,
+      width: `${columnWidth}%`,
+      height: item.height,
+      paddingHorizontal: 2,
+      paddingVertical: 1,
+    },
+    card: {
+      flex: 1,
       backgroundColor,
-      textColor,
-      commonStyles.bold,
-      theme.colors.error,
-    ],
-  );
+      borderRadius: 4,
+      padding: 4,
+      overflow: 'hidden',
+    },
+    content: {
+      flex: 1,
+      overflow: 'hidden',
+    },
+    title: {
+      color: textColor,
+      fontSize: 12,
+      fontWeight: 'bold',
+      lineHeight: 14,
+    },
+    time: {
+      color: textColor,
+      fontSize: 10,
+      opacity: 0.9,
+      lineHeight: 12,
+    },
+    cancelled: {
+      ...commonStyles.bold,
+      color: textColor,
+      fontSize: 10,
+      backgroundColor: theme.colors.error,
+      paddingHorizontal: 4,
+      borderRadius: 2,
+      alignSelf: 'flex-start',
+      marginBottom: 2,
+    },
+  });
 
   const timeString = `${format(item.startTime, 'h:mm a')} - ${format(item.endTime, 'h:mm a')}`;
   const showTime = contentLevel === 'titleAndTime' || contentLevel === 'full';
