@@ -166,11 +166,7 @@ export const buildDayPlannerItems = (
  * Clip an item's display times to the day boundaries and calculate display properties.
  * Returns null if the item doesn't intersect the display window.
  */
-const adjustItemForDisplay = (
-  item: DayPlannerItem,
-  dayStart: Date,
-  dayEnd: Date,
-): DayPlannerItem | null => {
+const adjustItemForDisplay = (item: DayPlannerItem, dayStart: Date, dayEnd: Date): DayPlannerItem | null => {
   // Check if item intersects the day's display window
   if (item.endTime <= dayStart || item.startTime >= dayEnd) {
     return null;
@@ -244,23 +240,20 @@ export const calculateItemLayout = (
 
   // Calculate total columns for each item by finding max column used in overlapping items
   const result: DayPlannerItemWithLayout[] = [];
-  
+
   for (const item of sorted) {
     // Find all items that overlap with this one
-    const overlapping = sorted.filter(
-      other =>
-        other.startTime < item.endTime && other.endTime > item.startTime
-    );
+    const overlapping = sorted.filter(other => other.startTime < item.endTime && other.endTime > item.startTime);
     const totalColumns = Math.max(...overlapping.map(o => (itemColumnMap.get(o.id) ?? 0) + 1));
-    
+
     // Calculate pixel positions
     const minutesFromDayStart = (item.startTime.getTime() - dayStart.getTime()) / (1000 * 60);
     const durationMinutes = (item.endTime.getTime() - item.startTime.getTime()) / (1000 * 60);
-    
+
     const topOffset = (minutesFromDayStart / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
     const height = Math.max(
       (durationMinutes / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT,
-      DAY_PLANNER_CONFIG.MIN_EVENT_HEIGHT
+      DAY_PLANNER_CONFIG.MIN_EVENT_HEIGHT,
     );
 
     result.push({
@@ -295,7 +288,7 @@ export const generateTimeSlotLabels = (dayStart: Date): {time: Date; label: stri
     const slotTime = new Date(dayStart.getTime() + i * DAY_PLANNER_CONFIG.MINUTES_PER_ROW * 60 * 1000);
     const hours = slotTime.getHours();
     const slotInHour = i % DAY_PLANNER_CONFIG.SLOTS_PER_HOUR;
-    
+
     // Determine slot type based on position within the hour
     let slotType: TimeSlotType;
     if (slotInHour === 0) {
@@ -305,7 +298,7 @@ export const generateTimeSlotLabels = (dayStart: Date): {time: Date; label: stri
     } else {
       slotType = 'quarter';
     }
-    
+
     // Format: "12 PM", "1 AM", etc. - only show label on hour marks
     const hour12 = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
     const ampm = hours < 12 ? 'AM' : 'PM';
@@ -349,10 +342,10 @@ export const getTimelineHeight = (): number => {
  * Calculate the scroll offset in pixels for the current time of day.
  * This uses only the hour/minute of the current time, ignoring the date,
  * so it works correctly even when testing outside of cruise dates.
- * 
+ *
  * The timeline shows 27 hours: from 00:00 (midnight) to 03:00 the next day.
  * We simply map the current time of day to a position on this timeline.
- * 
+ *
  * @param now The current date/time
  * @param dayStart The start of the day being displayed (for logging only)
  * @param dayEnd The end of the day being displayed (for logging only)
@@ -362,19 +355,19 @@ export const getScrollOffsetForTime = (now: Date, dayStart: Date, dayEnd: Date):
   // Extract just the time-of-day from "now" (hours and minutes)
   const nowHours = now.getHours();
   const nowMinutes = now.getMinutes();
-  
+
   // Calculate minutes from midnight (00:00)
   // The timeline starts at 00:00, so we just use hours * 60 + minutes directly
   const minutesFromMidnight = nowHours * 60 + nowMinutes;
-  
+
   // Convert to pixel offset
   // Each 15-minute slot is ROW_HEIGHT pixels tall
   const offset = (minutesFromMidnight / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
-  
+
   // Subtract some offset so the current time appears near the top of the view, not at the very top
   const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2; // Show ~1 hour before current time
-  
+
   const finalOffset = Math.max(0, offset - viewOffset);
-  
+
   return finalOffset;
 };

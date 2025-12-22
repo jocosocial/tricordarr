@@ -59,10 +59,7 @@ const getBackgroundColor = (
 /**
  * Get the text color for a Day Planner card based on its color type.
  */
-const getTextColor = (
-  color: DayPlannerColor,
-  colors: ReturnType<typeof useAppTheme>['theme']['colors'],
-): string => {
+const getTextColor = (color: DayPlannerColor, colors: ReturnType<typeof useAppTheme>['theme']['colors']): string => {
   // Gold team needs dark text for contrast
   if (color === 'goldTeam') {
     return colors.onTwitarrYellow;
@@ -111,11 +108,11 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
     const titleSpace = titleLines * LINE_HEIGHTS.TITLE;
     const timeSpace = LINE_HEIGHTS.TIME;
     const usedSpace = CARD_PADDING + titleSpace + timeSpace;
-    
+
     // Calculate remaining space for location
     const remainingHeight = item.height - usedSpace;
     const maxLocationLines = Math.max(1, Math.floor(remainingHeight / LINE_HEIGHTS.LOCATION));
-    
+
     return maxLocationLines;
   }, [contentLevel, item.height, item.location, titleLines]);
 
@@ -165,7 +162,16 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
           marginBottom: 2,
         },
       }),
-    [item.topOffset, item.height, leftPosition, columnWidth, backgroundColor, textColor, commonStyles.bold, theme.colors.error],
+    [
+      item.topOffset,
+      item.height,
+      leftPosition,
+      columnWidth,
+      backgroundColor,
+      textColor,
+      commonStyles.bold,
+      theme.colors.error,
+    ],
   );
 
   const timeString = `${format(item.startTime, 'h:mm a')} - ${format(item.endTime, 'h:mm a')}`;
@@ -177,18 +183,20 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
       <TouchableRipple style={styles.card} onPress={onPress} borderless>
         <View style={styles.content}>
           {item.cancelled && (
-            <Text style={styles.cancelled} numberOfLines={1}>CANCELLED</Text>
+            <Text style={styles.cancelled} numberOfLines={1}>
+              CANCELLED
+            </Text>
           )}
-          <Text style={styles.title} numberOfLines={titleLines} ellipsizeMode="tail">
+          <Text style={styles.title} numberOfLines={titleLines} ellipsizeMode={'tail'}>
             {item.title}
           </Text>
           {showTime && (
-            <Text style={styles.time} numberOfLines={1} ellipsizeMode="tail">
+            <Text style={styles.time} numberOfLines={1} ellipsizeMode={'tail'}>
               {timeString}
             </Text>
           )}
           {showLocation && (
-            <Text style={styles.time} numberOfLines={locationLines} ellipsizeMode="tail">
+            <Text style={styles.time} numberOfLines={locationLines} ellipsizeMode={'tail'}>
               {item.location}
             </Text>
           )}
