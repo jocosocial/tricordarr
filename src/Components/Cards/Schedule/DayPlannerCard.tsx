@@ -1,6 +1,6 @@
 import {format} from 'date-fns';
 import React, {useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ViewStyle} from 'react-native';
 import {Text, TouchableRipple} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -33,13 +33,13 @@ const LINE_HEIGHTS = {
 // Padding inside the card
 const CARD_PADDING = 10; // 4px padding + 2px vertical container padding × 2 + some margin
 
+// Type alias for theme colors to avoid verbose type annotations
+type ThemeColors = ReturnType<typeof useAppTheme>['theme']['colors'];
+
 /**
  * Get the background color for a Day Planner card based on its color type.
  */
-const getBackgroundColor = (
-  color: DayPlannerColor,
-  colors: ReturnType<typeof useAppTheme>['theme']['colors'],
-): string => {
+const getBackgroundColor = (color: DayPlannerColor, colors: ThemeColors): string => {
   switch (color) {
     case 'redTeam':
       return colors.jocoRed;
@@ -51,21 +51,27 @@ const getBackgroundColor = (
       return colors.jocoGreen;
     case 'personalEvent':
       return colors.twitarrOrange;
-    default:
-      return colors.surfaceVariant;
   }
 };
 
 /**
  * Get the text color for a Day Planner card based on its color type.
  */
-const getTextColor = (color: DayPlannerColor, colors: ReturnType<typeof useAppTheme>['theme']['colors']): string => {
+const getTextColor = (color: DayPlannerColor, colors: ThemeColors): string => {
   // Gold team needs dark text for contrast
   if (color === 'goldTeam') {
     return colors.onTwitarrYellow;
   }
   return colors.constantWhite;
 };
+
+// Static styles that don't change per-card
+const staticStyles = StyleSheet.create({
+  content: {
+    flex: 1,
+    overflow: 'hidden',
+  },
+});
 
 export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
   const {theme} = useAppTheme();
@@ -116,74 +122,73 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
     return maxLocationLines;
   }, [contentLevel, item.height, item.location, titleLines]);
 
-  const styles = StyleSheet.create({
-    container: {
-      position: 'absolute',
-      top: item.topOffset,
-      left: `${leftPosition}%`,
-      width: `${columnWidth}%`,
-      height: item.height,
-      paddingHorizontal: 2,
-      paddingVertical: 1,
-    },
-    card: {
-      flex: 1,
-      backgroundColor,
-      borderRadius: 4,
-      padding: 4,
-      overflow: 'hidden',
-    },
-    content: {
-      flex: 1,
-      overflow: 'hidden',
-    },
-    title: {
-      color: textColor,
-      fontSize: 12,
-      fontWeight: 'bold',
-      lineHeight: 14,
-    },
-    time: {
-      color: textColor,
-      fontSize: 10,
-      opacity: 0.9,
-      lineHeight: 12,
-    },
-    cancelled: {
-      ...commonStyles.bold,
-      color: textColor,
-      fontSize: 10,
-      backgroundColor: theme.colors.error,
-      paddingHorizontal: 4,
-      borderRadius: 2,
-      alignSelf: 'flex-start',
-      marginBottom: 2,
-    },
-  });
+  // Dynamic styles specific to this card instance
+  const containerStyle: ViewStyle = {
+    position: 'absolute',
+    top: item.topOffset,
+    left: `${leftPosition}%`,
+    width: `${columnWidth}%`,
+    height: item.height,
+    paddingHorizontal: 2,
+    paddingVertical: 1,
+  };
+
+  const cardStyle: ViewStyle = {
+    flex: 1,
+    backgroundColor,
+    borderRadius: 4,
+    padding: 4,
+    overflow: 'hidden',
+  };
+
+  const textStyle = {
+    color: textColor,
+    fontSize: 12,
+    fontWeight: 'bold' as const,
+    lineHeight: 14,
+  };
+
+  const timeStyle = {
+    color: textColor,
+    fontSize: 10,
+    opacity: 0.9,
+    lineHeight: 12,
+  };
+
+  const cancelledStyle = {
+    ...commonStyles.bold,
+    color: textColor,
+    fontSize: 10,
+    backgroundColor: theme.colors.error,
+    paddingHorizontal: 4,
+    borderRadius: 2,
+    alignSelf: 'flex-start' as const,
+    marginBottom: 2,
+  };
 
   const timeString = `${format(item.startTime, 'h:mm a')} - ${format(item.endTime, 'h:mm a')}`;
   const showTime = contentLevel === 'titleAndTime' || contentLevel === 'full';
   const showLocation = contentLevel === 'full' && item.location;
 
   return (
-    <View style={styles.container}>
-      <TouchableRipple style={styles.card} onPress={onPress} borderless>
-        <View style={styles.content}>
+    <View style={containerStyle}>
+      <TouchableRipple style={cardStyle} onPress={onPress} borderless>
+        <View style={staticStyles.content}>
           {item.cancelled && (
-            <Text style={styles.cancelled} numberOfLines={1}>
+            <Text style={cancelledStyle} numberOfLines={1}>
               CANCELLED
             </Text>
           )}
-          <Text style={styles.title} numberOfLines={titleLines} ellipsizeMode={'tail'}>
+          <Text style={textStyle} numberOfLines={titleLines} ellipsizeMode={'tail'}>
             {item.title}
           </Text>
           {showTime && (
-            <Text style={styles.time} numberOfLines={1} ellipsizeMode={'tail'}>
+            <Text style={timeStyle} numberOfLines={1} ellipsizeMode={'tail'}>
               {timeString}
             </Text>
           )}
           {showLocation && (
-            <Text style={styles.time} numberOfLines={locationLines} ellipsizeMode={'tail'}>
+            <Text style={timeStyle} numberOfLines={locationLines} ellipsizeMode={'tail'}>
               {item.location}
             </Text>
           )}
