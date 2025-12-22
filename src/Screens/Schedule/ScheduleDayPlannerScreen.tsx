@@ -3,6 +3,8 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollView, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {DayPlannerTimelineView} from '#src/Components/Views/Schedule/DayPlannerTimelineView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
@@ -30,7 +32,7 @@ export const ScheduleDayPlannerScreen = (props: Props) => {
   );
 };
 
-const ScheduleDayPlannerScreenInner = ({route}: Props) => {
+const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   const {adjustedCruiseDayToday, startDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(route.params?.cruiseDay ?? adjustedCruiseDayToday);
   const {isLoggedIn} = useAuth();
@@ -39,7 +41,11 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   const scrollViewRef = useRef<ScrollView>(null);
 
   // Fetch events with dayplanner=true (only favorited/following events)
-  const {data: eventData, isFetching: isEventFetching} = useEventsQuery({
+  const {
+    data: eventData,
+    isFetching: isEventFetching,
+    refetch: refetchEvents,
+  } = useEventsQuery({
     cruiseDay: selectedCruiseDay,
     dayplanner: true,
     options: {
@@ -54,6 +60,7 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
     isFetchingNextPage: isLfgJoinedFetchingNextPage,
     hasNextPage: joinedHasNextPage,
     fetchNextPage: joinedFetchNextPage,
+    refetch: refetchLfgJoined,
   } = useLfgListQuery({
     cruiseDay: selectedCruiseDay - 1,
     endpoint: 'joined',
@@ -70,6 +77,7 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
     isFetchingNextPage: isPersonalEventFetchingNextPage,
     hasNextPage: personalHasNextPage,
     fetchNextPage: personalFetchNextPage,
+    refetch: refetchPersonalEvents,
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
     options: {
@@ -118,6 +126,36 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
     const offset = getScrollOffsetForTime(now);
     scrollViewRef.current.scrollTo({y: offset, animated: true});
   }, []);
+
+  // Refresh all data
+  const onRefresh = useCallback(async () => {
+    const refreshes: Promise<any>[] = [refetchEvents()];
+    if (!appConfig.preRegistrationMode) {
+      refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
+    }
+    await Promise.all(refreshes);
+  }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents, appConfig.preRegistrationMode]);
+
+  // Header buttons
+  const getNavButtons = useCallback(() => {
+    if (!isLoggedIn) {
+      return null;
+    }
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <ScheduleDayScreenActionsMenu onRefresh={onRefresh} />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [isLoggedIn, onRefresh]);
+
+  // Set header buttons
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   // Auto-scroll to current time on initial load for any selected day
   useEffect(() => {
