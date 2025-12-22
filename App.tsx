@@ -15,11 +15,13 @@ import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {HeaderButtonsProvider} from 'react-navigation-header-buttons/HeaderButtonsProvider';
 
+import {CallOverlay} from '#src/Components/Call/CallOverlay';
 import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
 import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
 import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
 import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
 import {AuthProvider} from '#src/Context/Providers/AuthProvider';
+import {CallProvider} from '#src/Context/Providers/CallProvider';
 import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
 import {CruiseProvider} from '#src/Context/Providers/CruiseProvider';
@@ -57,6 +59,23 @@ import {RootStackNavigator} from '#src/Navigation/Stacks/RootStackNavigator';
 //
 // 20251013 RN 0.81 apparently this is no longer needed sooooo yolo!
 // ViewReactNativeStyleAttributes.scaleY = true;
+
+// Polyfill for crypto.getRandomValues() required by uuid library in React Native
+if (typeof global.crypto === 'undefined') {
+  global.crypto = {} as Crypto;
+}
+if (typeof global.crypto.getRandomValues === 'undefined') {
+  global.crypto.getRandomValues = function <T extends ArrayBufferView | null>(array: T): T {
+    if (!array) {
+      throw new Error('getRandomValues() requires a non-null argument');
+    }
+    const bytes = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = Math.floor(Math.random() * 256);
+    }
+    return array;
+  };
+}
 
 // For development, disable warning popups because I already respond to them.
 if (__DEV__) {
@@ -116,33 +135,36 @@ function App(): React.JSX.Element {
                               <CriticalErrorProvider>
                                 <PrivilegeProvider>
                                   <SocketProvider>
-                                    <TwitarrProvider>
-                                      <UserNotificationDataProvider>
-                                        <FeatureProvider>
-                                          <ModalProvider>
-                                            <Portal.Host>
-                                              <HeaderButtonsProvider stackType={'native'}>
-                                                <CruiseProvider>
-                                                  <DrawerProvider>
-                                                    <MenuProvider>
-                                                      <FilterProvider>
-                                                        <SelectionProvider>
-                                                          <AppEventHandler />
-                                                          <PushNotificationService />
-                                                          <NotificationDataListener />
-                                                          <NotificationDataPoller />
-                                                          <RootStackNavigator />
-                                                        </SelectionProvider>
-                                                      </FilterProvider>
-                                                    </MenuProvider>
-                                                  </DrawerProvider>
-                                                </CruiseProvider>
-                                              </HeaderButtonsProvider>
-                                            </Portal.Host>
-                                          </ModalProvider>
-                                        </FeatureProvider>
-                                      </UserNotificationDataProvider>
-                                    </TwitarrProvider>
+                                    <CallProvider>
+                                      <TwitarrProvider>
+                                        <UserNotificationDataProvider>
+                                          <FeatureProvider>
+                                            <ModalProvider>
+                                              <Portal.Host>
+                                                <HeaderButtonsProvider stackType={'native'}>
+                                                  <CruiseProvider>
+                                                    <DrawerProvider>
+                                                      <MenuProvider>
+                                                        <FilterProvider>
+                                                          <SelectionProvider>
+                                                            <AppEventHandler />
+                                                            <PushNotificationService />
+                                                            <NotificationDataListener />
+                                                            <NotificationDataPoller />
+                                                            <RootStackNavigator />
+                                                            <CallOverlay />
+                                                          </SelectionProvider>
+                                                        </FilterProvider>
+                                                      </MenuProvider>
+                                                    </DrawerProvider>
+                                                  </CruiseProvider>
+                                                </HeaderButtonsProvider>
+                                              </Portal.Host>
+                                            </ModalProvider>
+                                          </FeatureProvider>
+                                        </UserNotificationDataProvider>
+                                      </TwitarrProvider>
+                                    </CallProvider>
                                   </SocketProvider>
                                 </PrivilegeProvider>
                               </CriticalErrorProvider>
