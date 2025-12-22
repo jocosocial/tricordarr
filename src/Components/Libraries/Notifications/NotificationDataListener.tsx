@@ -6,6 +6,7 @@ import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
+import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -33,6 +34,7 @@ export const NotificationDataListener = () => {
       console.log(`[NotificationDataListener.tsx] wsMessageHandler received data from server: ${event.data}`);
       const notificationData = JSON.parse(event.data) as SocketNotificationData;
       const notificationType = SocketNotificationData.getType(notificationData);
+      console.log(`[NotificationDataListener.tsx] Notification type: ${notificationType}`);
       // Always refetch the UserNotificationData when we got a socket event.
       refetchUserNotificationData();
 
@@ -40,6 +42,18 @@ export const NotificationDataListener = () => {
       switch (notificationType) {
         case NotificationTypeData.announcement: {
           refetchAnnouncements();
+          break;
+        }
+        case NotificationTypeData.incomingPhoneCall: {
+          // For incoming phone calls, always generate a push notification even when app is in foreground
+          // This ensures the user sees the call notification
+          console.log('[NotificationDataListener.tsx] Incoming phone call notification, generating push notification');
+          generatePushNotificationFromEvent(event).catch(error => {
+            console.error(
+              '[NotificationDataListener.tsx] Failed to generate push notification for incoming call:',
+              error,
+            );
+          });
           break;
         }
         // The order matters here! Not the specifics of which case but that they
