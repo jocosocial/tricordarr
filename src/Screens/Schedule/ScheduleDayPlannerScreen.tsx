@@ -1,11 +1,11 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollView, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 
 import {AppView} from '#src/Components/Views/AppView';
 import {DayPlannerTimelineView} from '#src/Components/Views/Schedule/DayPlannerTimelineView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
@@ -129,19 +129,6 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   const isLoading = isEventFetching || isLfgJoinedFetching || isPersonalEventFetching;
   const showLoading = isLoading && !refreshing && dayPlannerItems.length === 0;
 
-  if (showLoading) {
-    return (
-      <AppView>
-        <ScheduleHeaderView
-          selectedCruiseDay={selectedCruiseDay}
-          setCruiseDay={setSelectedCruiseDay}
-          scrollToNow={scrollToNow}
-        />
-        <LoadingView />
-      </AppView>
-    );
-  }
-
   return (
     <AppView>
       <TimezoneWarningView />
@@ -151,7 +138,13 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
         scrollToNow={scrollToNow}
       />
       <View style={commonStyles.flex}>
-        <DayPlannerTimelineView ref={scrollViewRef} items={dayPlannerItems} dayStart={dayStart} dayEnd={dayEnd} />
+        {showLoading ? (
+          <View style={commonStyles.loadingContainer}>
+            <ActivityIndicator size={'large'} />
+          </View>
+        ) : (
+          <DayPlannerTimelineView ref={scrollViewRef} items={dayPlannerItems} dayStart={dayStart} dayEnd={dayEnd} />
+        )}
       </View>
     </AppView>
   );
