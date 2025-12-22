@@ -42,6 +42,10 @@ export const twitarrTheme = {
     onErrorContainer: 'rgb(65, 0, 2)',
     background: 'rgb(252, 252, 255)',
     onBackground: 'rgb(25, 28, 30)',
+    shadowOnBackground: {
+      shadow: 'rgba(252, 252, 255, 1)',
+      transparent: 'rgba(252, 252, 255, 0)',
+    },
     surface: 'rgb(252, 252, 255)',
     onSurface: 'rgb(25, 28, 30)',
     surfaceVariant: 'rgb(221, 227, 234)',
@@ -111,6 +115,10 @@ export const twitarrThemeDark = {
     background: 'rgb(25, 28, 30)',
     // onBackground: 'rgb(226, 226, 229)',
     onBackground: 'rgb(255, 255, 255)',
+    shadowOnBackground: {
+      shadow: 'rgba(25, 28, 30, 1)',
+      transparent: 'rgba(25, 28, 30, 0)',
+    },
     surface: 'rgb(25, 28, 30)',
     // onSurface: 'rgb(226, 226, 229)',
     onSurface: 'rgb(255, 255, 255)',

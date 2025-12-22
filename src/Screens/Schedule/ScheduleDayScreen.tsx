@@ -2,6 +2,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
@@ -22,12 +23,13 @@ import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import useDateTime, {calcCruiseDayTime} from '#src/Libraries/DateTime';
 import {buildScheduleList, getScheduleScrollIndex} from '#src/Libraries/Schedule';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
@@ -41,13 +43,17 @@ export const ScheduleDayScreen = (props: Props) => {
 };
 
 const ScheduleDayScreenInner = ({navigation}: Props) => {
-  const {adjustedCruiseDayToday, startDate, endDate} = useCruise();
-  const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday);
+  const {startDate, endDate} = useCruise();
   const {isLoggedIn} = useAuth();
   const {commonStyles} = useStyles();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+
+  const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
+    listRef,
+    clearList: useCallback(() => setScheduleList([]), []),
+  });
   const {appConfig} = useConfig();
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
@@ -58,6 +64,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {
     data: eventData,
     isFetching: isEventFetching,
+    isError: isEventError,
     refetch: refetchEvents,
   } = useEventsQuery({
     cruiseDay: selectedCruiseDay,
@@ -68,6 +75,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {
     data: lfgOpenData,
     isFetching: isLfgOpenFetching,
+    isError: isLfgOpenError,
     refetch: refetchLfgOpen,
     hasNextPage: openHasNextPage,
     fetchNextPage: openFetchNextPage,
@@ -82,6 +90,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {
     data: lfgJoinedData,
     isFetching: isLfgJoinedFetching,
+    isError: isLfgJoinedError,
     refetch: refetchLfgJoined,
     hasNextPage: joinedHasNextPage,
     fetchNextPage: joinedFetchNextPage,
@@ -96,6 +105,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {
     data: personalEventData,
     isFetching: isPersonalEventFetching,
+    isError: isPersonalEventError,
     refetch: refetchPersonalEvents,
     hasNextPage: personalHasNextPage,
     fetchNextPage: personalFetchNextPage,
@@ -175,8 +185,16 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
       personalEventData,
     );
     setScheduleList(listData);
+    onDataLoaded();
     console.log('[ScheduleDayScreen.tsx] Finished buildScheduleList useEffect.');
-  }, [scheduleFilterSettings, lfgJoinedData, lfgOpenData, eventData, personalEventData]);
+  }, [scheduleFilterSettings, lfgJoinedData, lfgOpenData, eventData, personalEventData, onDataLoaded]);
+
+  // Reset switching state on error to prevent stuck loading spinner
+  useEffect(() => {
+    if (isEventError || isLfgOpenError || isLfgJoinedError || isPersonalEventError) {
+      onQueryError();
+    }
+  }, [isEventError, isLfgOpenError, isLfgJoinedError, isPersonalEventError, onQueryError]);
 
   useEffect(() => {
     if (scheduleList.length > 0) {
@@ -224,18 +242,24 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
       <TimezoneWarningView />
       <ScheduleHeaderView
         selectedCruiseDay={selectedCruiseDay}
-        setCruiseDay={setSelectedCruiseDay}
+        setCruiseDay={handleSetCruiseDay}
         scrollToNow={scrollToNow}
       />
       <View style={[commonStyles.flex]}>
-        <ScheduleFlatList
-          listRef={listRef}
-          items={scheduleList}
-          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
-          setRefreshing={setRefreshing}
-          initialScrollIndex={scrollNowIndex}
-          onScrollThreshold={onScrollThreshold}
-        />
+        {isSwitchingDays ? (
+          <View style={commonStyles.loadingContainer}>
+            <ActivityIndicator size={'large'} />
+          </View>
+        ) : (
+          <ScheduleFlatList
+            listRef={listRef}
+            items={scheduleList}
+            refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
+            setRefreshing={setRefreshing}
+            initialScrollIndex={scrollNowIndex}
+            onScrollThreshold={onScrollThreshold}
+          />
+        )}
       </View>
       <ScheduleFAB selectedDay={selectedCruiseDay} showLabel={showFabLabel} />
     </AppView>

@@ -17,8 +17,8 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePhotostreamQuery} from '#src/Queries/Photostream/PhotostreamQueries';
-import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
 export type Props = StackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;

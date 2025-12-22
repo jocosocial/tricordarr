@@ -313,4 +313,12 @@ export const commonStyles = StyleSheet.create({
   opacityHalf: {
     opacity: 0.5,
   },
+  /**
+   * Centered loading indicator container. Used for day switching and initial load states.
+   */
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

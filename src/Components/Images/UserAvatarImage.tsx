@@ -12,6 +12,7 @@ type UserAvatarImageProps = {
   userHeader?: UserHeader;
   small?: boolean;
   icon?: string;
+  forceIdenticon?: boolean;
 };
 
 /**
@@ -20,17 +21,23 @@ type UserAvatarImageProps = {
  * @param userHeader
  * @param small
  * @param icon
+ * @param forceIdenticon - If true, forces use of identicon even if userImage exists
  * @constructor
  */
-export const UserAvatarImage = ({userHeader, small = false, icon = AppIcons.user}: UserAvatarImageProps) => {
+export const UserAvatarImage = ({
+  userHeader,
+  small = false,
+  icon = AppIcons.user,
+  forceIdenticon = false,
+}: UserAvatarImageProps) => {
   const size = small ? styleDefaults.avatarSizeSmall : styleDefaults.avatarSize;
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
 
   const imagePath = userHeader
-    ? userHeader.userImage
-      ? `/image/thumb/${userHeader.userImage}`
-      : `/image/user/identicon/${userHeader.userID}`
+    ? forceIdenticon || !userHeader.userImage
+      ? `/image/user/identicon/${userHeader.userID}`
+      : `/image/thumb/${userHeader.userImage}`
     : '';
   const {data} = useImageQuery(imagePath, !isDisabled && !!imagePath);
 

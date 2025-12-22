@@ -3,22 +3,24 @@ import {type FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {LfgFAB} from '#src/Components/Buttons/FloatingActionButtons/LfgFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
-import {LfgCruiseDayFilterMenu} from '#src/Components/Menus/LFG/LfgCruiseDayFilterMenu';
 import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -40,24 +42,39 @@ export const LfgListScreen = ({
   listHeader,
   showFab = true,
 }: LfgJoinedScreenProps) => {
-  const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useFilter();
+  const {lfgTypeFilter, lfgHidePastFilter} = useFilter();
   const {isLoggedIn} = useAuth();
-  const {data, isFetching, refetch, isLoading, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage, hasNextPage} =
-    useLfgListQuery({
-      endpoint: endpoint,
-      fezType: lfgTypeFilter,
-      // @TODO we intend to change this some day. Upstream Swiftarr issue.
-      cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
-      hidePast: lfgHidePastFilter,
-    });
+  const {commonStyles} = useStyles();
+  const [fezList, setFezList] = useState<FezData[]>([]);
+  const listRef = useRef<FlashListRef<FezData>>(null);
+
+  const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
+    listRef,
+    clearList: useCallback(() => setFezList([]), []),
+  });
+  const {
+    data,
+    isFetching,
+    refetch,
+    isLoading,
+    isError,
+    fetchNextPage,
+    isFetchingPreviousPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useLfgListQuery({
+    endpoint: endpoint,
+    fezType: lfgTypeFilter,
+    // @TODO we intend to change this some day. Upstream Swiftarr issue.
+    cruiseDay: selectedCruiseDay - 1,
+    hidePast: lfgHidePastFilter,
+  });
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
   const {notificationSocket} = useSocket();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
-  const listRef = useRef<FlashListRef<FezData>>(null);
   const queryClient = useQueryClient();
-  const [fezList, setFezList] = useState<FezData[]>([]);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -77,7 +94,6 @@ export const LfgListScreen = ({
                   })
                 }
               />
-              <LfgCruiseDayFilterMenu />
               <LfgFilterMenu />
             </>
           )}
@@ -127,33 +143,46 @@ export const LfgListScreen = ({
   useEffect(() => {
     if (data && data.pages) {
       setFezList(data.pages.flatMap(p => p.fezzes));
+      onDataLoaded();
     }
-  }, [data]);
+  }, [data, onDataLoaded]);
+
+  // Reset switching state on error to prevent stuck loading spinner
+  useEffect(() => {
+    if (isError) {
+      onQueryError();
+    }
+  }, [isError, onQueryError]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
   }
 
-  if (isLoading) {
-    return <LoadingView />;
-  }
+  const isRefreshing = isFetching || isFetchingNextPage || isFetchingPreviousPage;
 
   return (
     <AppView>
       <TimezoneWarningView />
-      <LFGFlatList
-        listRef={listRef}
-        items={fezList}
-        refreshControl={
-          <RefreshControl refreshing={isFetching || isFetchingNextPage || isFetchingPreviousPage} onRefresh={refetch} />
-        }
-        separator={'day'}
-        onScrollThreshold={onScrollThreshold}
-        handleLoadNext={fetchNextPage}
-        hasNextPage={hasNextPage}
-        enableReportOnly={enableReportOnly}
-        listHeader={listHeader}
-      />
+      <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={handleSetCruiseDay} />
+      <View style={[commonStyles.flex]}>
+        {isLoading || isSwitchingDays ? (
+          <View style={commonStyles.loadingContainer}>
+            <ActivityIndicator size={'large'} />
+          </View>
+        ) : (
+          <LFGFlatList
+            listRef={listRef}
+            items={fezList}
+            refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refetch} />}
+            separator={'day'}
+            onScrollThreshold={onScrollThreshold}
+            handleLoadNext={fetchNextPage}
+            hasNextPage={hasNextPage}
+            enableReportOnly={enableReportOnly}
+            listHeader={listHeader}
+          />
+        )}
+      </View>
       {showFab && <LfgFAB showLabel={showFabLabel} />}
     </AppView>
   );
