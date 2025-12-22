@@ -122,6 +122,19 @@ const ScheduleDayPlannerScreenInner = ({route}: Props) => {
     scrollViewRef.current.scrollTo({y: offset, animated: true});
   }, [dayStart, dayEnd]);
 
+  // Auto-scroll to current time on initial load for any selected day
+  useEffect(() => {
+    if (scrollViewRef.current && !showLoading) {
+      // Use a small delay to ensure the ScrollView is fully mounted and items are rendered
+      const timer = setTimeout(() => {
+        scrollToNow();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+    // Only run on mount or when the selected day changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCruiseDay]);
+
   if (!isLoggedIn) {
     return <NotLoggedInView />;
   }
