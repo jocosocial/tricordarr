@@ -13,6 +13,8 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		93690EF42EAB269900CA8914 /* RCTNativeTricordarrModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */; };
+		E2D58DC82EF8D45700200352 /* AudioEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D58DC62EF8D45700200352 /* AudioEngine.m */; };
+		E2D58DC92EF8D45700200352 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D58DC72EF8D45700200352 /* AudioEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,8 @@
 		93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tricordarr-Bridging-Header.h"; sourceTree = "<group>"; };
 		93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTNativeTricordarrModule.h; sourceTree = "<group>"; };
 		93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTNativeTricordarrModule.mm; sourceTree = "<group>"; };
+		E2D58DC62EF8D45700200352 /* AudioEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioEngine.m; sourceTree = "<group>"; };
+		E2D58DC72EF8D45700200352 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -123,6 +127,8 @@
 		93690EF02EAB266C00CA8914 /* NativeTricordarrModule */ = {
 			isa = PBXGroup;
 			children = (
+				E2D58DC62EF8D45700200352 /* AudioEngine.m */,
+				E2D58DC72EF8D45700200352 /* AudioEngine.swift */,
 				93B71A582EBACAC2004BC91E /* Enumerations */,
 				93980FF02EB849190067E8A1 /* Helpers */,
 				93980FED2EB846F90067E8A1 /* Structs */,
@@ -295,6 +301,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2D58DC82EF8D45700200352 /* AudioEngine.m in Sources */,
+				E2D58DC92EF8D45700200352 /* AudioEngine.swift in Sources */,
 				93690EF42EAB269900CA8914 /* RCTNativeTricordarrModule.mm in Sources */,
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
 			);
