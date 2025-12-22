@@ -17,10 +17,19 @@
     -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL"/>
     <!--
     Camera permission for taking pictures to upload to the service. Is non-essential.
     -->
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!--
+    Microphone permission for voice calls. Required for VoIP functionality.
+    -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!--
+    Audio settings permission for speaker/earpiece switching. Required for call audio routing.
+    -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <!--
     Used to store images if the user wants to save them. Non-essential
     -->
@@ -71,6 +80,6 @@
       https://developer.android.com/develop/background-work/services/fg-service-types
       https://notifee.app/react-native/docs/android/foreground-service
       -->
-      <service android:name="app.notifee.core.ForegroundService" android:foregroundServiceType="remoteMessaging" tools:replace="android:foregroundServiceType" />
+      <service android:name="app.notifee.core.ForegroundService" android:foregroundServiceType="remoteMessaging|phoneCall" tools:replace="android:foregroundServiceType" />
     </application>
 </manifest>
