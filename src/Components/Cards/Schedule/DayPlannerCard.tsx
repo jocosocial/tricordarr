@@ -5,7 +5,7 @@ import {Text, TouchableRipple} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {DayPlannerColor, DayPlannerItemWithLayout} from '#src/Libraries/DayPlanner';
+import {DayPlannerColor, DayPlannerItemWithLayout} from '#src/Types/DayPlanner';
 
 interface DayPlannerCardProps {
   item: DayPlannerItemWithLayout;

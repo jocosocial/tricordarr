@@ -8,12 +8,10 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {
   calculateItemLayout,
   DAY_PLANNER_CONFIG,
-  DayPlannerItem,
-  DayPlannerItemWithLayout,
   generateTimeSlotLabels,
   getTimelineHeight,
-  TimeSlotType,
 } from '#src/Libraries/DayPlanner';
+import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 interface DayPlannerTimelineViewProps {

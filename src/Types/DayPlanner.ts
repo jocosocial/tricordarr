@@ -1,0 +1,111 @@
+import { parseISO } from 'date-fns';
+
+import { FezType } from '#src/Enums/FezType';
+import { EventData, FezData } from '#src/Structs/ControllerStructs';
+
+/**
+ * Color categories for Day Planner items.
+ * Matches the web app's color scheme from SitePrivateEventController.swift.
+ */
+export type DayPlannerColor = 'redTeam' | 'goldTeam' | 'schedule' | 'lfg' | 'personalEvent';
+
+/**
+ * A unified representation of an item in the Day Planner.
+ * Can represent an Event, LFG, or Personal/Private Event.
+ */
+export interface DayPlannerItem {
+  id: string;
+  title: string;
+  startTime: Date;
+  endTime: Date;
+  type: 'event' | 'lfg' | 'personalEvent';
+  color: DayPlannerColor;
+  cancelled?: boolean;
+  location?: string;
+  // Original data for navigation
+  eventData?: EventData;
+  fezData?: FezData;
+}
+
+/**
+ * A DayPlannerItem with layout information computed for rendering.
+ */
+export interface DayPlannerItemWithLayout extends DayPlannerItem {
+  // Layout properties calculated at render time
+  columnIndex: number;
+  totalColumns: number;
+  topOffset: number; // pixels from top of timeline
+  height: number; // height in pixels
+}
+
+/**
+ * Time slot type for distinguishing grid line styles.
+ * - 'hour': Top of the hour (e.g., 1:00, 2:00) - gets a label and thick line
+ * - 'halfHour': 30-minute mark (e.g., 1:30, 2:30) - gets a medium line
+ * - 'quarter': 15/45-minute mark (e.g., 1:15, 1:45) - gets a thin line
+ */
+export type TimeSlotType = 'hour' | 'halfHour' | 'quarter';
+
+export namespace DayPlannerItem {
+  /**
+   * Determine the color for a Day Planner item based on its type and title.
+   * Matches the logic from SitePrivateEventController.swift.
+   */
+  export const getDayPlannerColor = (item: {
+    type: 'event' | 'lfg' | 'personalEvent';
+    title: string;
+  }): DayPlannerColor => {
+    if (item.type === 'event') {
+      // Check for team events by title matching
+      if (item.title.toLowerCase().includes('gold team')) {
+        return 'goldTeam';
+      }
+      if (item.title.toLowerCase().includes('red team')) {
+        return 'redTeam';
+      }
+      return 'schedule';
+    }
+    if (item.type === 'lfg') {
+      return 'lfg';
+    }
+    return 'personalEvent';
+  };
+
+  /**
+   * Convert an EventData to a DayPlannerItem.
+   */
+  export const fromEvent = (event: EventData): DayPlannerItem => {
+    const type = 'event';
+    return {
+      id: event.eventID,
+      title: event.title,
+      startTime: parseISO(event.startTime),
+      endTime: parseISO(event.endTime),
+      type,
+      color: getDayPlannerColor({ type, title: event.title }),
+      location: event.location,
+      eventData: event,
+    };
+  };
+
+  /**
+   * Convert a FezData to a DayPlannerItem.
+   */
+  export const fromFez = (fez: FezData): DayPlannerItem | null => {
+    if (!fez.startTime || !fez.endTime) {
+      return null;
+    }
+    const type = FezType.isLFGType(fez.fezType) ? 'lfg' : 'personalEvent';
+    return {
+      id: fez.fezID,
+      title: fez.cancelled ? `CANCELLED - ${fez.title}` : fez.title,
+      startTime: parseISO(fez.startTime),
+      endTime: parseISO(fez.endTime),
+      type,
+      color: getDayPlannerColor({ type, title: fez.title }),
+      cancelled: fez.cancelled,
+      location: fez.location,
+      fezData: fez,
+    };
+  };
+}
