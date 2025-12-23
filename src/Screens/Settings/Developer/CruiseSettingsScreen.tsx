@@ -111,28 +111,36 @@ export const CruiseSettingsScreen = () => {
           />
         </PaddedContentView>
         <PaddedContentView>
-          <CruiseSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
-        </PaddedContentView>
-        <ListSubheader>Internal State</ListSubheader>
-        <DataFieldListItem title={'Cruise Day Today'} description={cruiseDayToday.toString()} />
-        <DataFieldListItem title={'Adjusted Cruise Day Today'} description={adjustedCruiseDayToday.toString()} />
-        <DataFieldListItem title={'Cruise Day Index'} description={cruiseDayIndex.toString()} />
-        <DataFieldListItem title={'Adjusted Cruise Day Index'} description={adjustedCruiseDayIndex.toString()} />
-        <DataFieldListItem title={'Latest Version'} description={data?.spec.latestVersion} />
-        <ListSubheader>Pre-Registration</ListSubheader>
-        <PaddedContentView padTop={true}>
-          <PrimaryActionButton
-            buttonText={appConfig.preRegistrationMode ? 'Disable' : 'Enable'}
-            onPress={togglePreRegistrationMode}
-            buttonColor={theme.colors.twitarrNeutralButton}
+          <CruiseSettingsForm
+            onSubmit={onSubmit}
+            initialValues={initialValues}
+            disabled={!appConfig.enableDeveloperOptions}
           />
         </PaddedContentView>
-        <PaddedContentView>
-          <PreRegistrationSettingsForm
-            onSubmit={onPreRegistrationSubmit}
-            initialValues={preRegistrationInitialValues}
-          />
-        </PaddedContentView>
+        {appConfig.enableDeveloperOptions && (
+          <>
+            <ListSubheader>Internal State</ListSubheader>
+            <DataFieldListItem title={'Cruise Day Today'} description={cruiseDayToday.toString()} />
+            <DataFieldListItem title={'Adjusted Cruise Day Today'} description={adjustedCruiseDayToday.toString()} />
+            <DataFieldListItem title={'Cruise Day Index'} description={cruiseDayIndex.toString()} />
+            <DataFieldListItem title={'Adjusted Cruise Day Index'} description={adjustedCruiseDayIndex.toString()} />
+            <DataFieldListItem title={'Latest Version'} description={data?.spec.latestVersion} />
+            <ListSubheader>Pre-Registration</ListSubheader>
+            <PaddedContentView padTop={true}>
+              <PrimaryActionButton
+                buttonText={appConfig.preRegistrationMode ? 'Disable' : 'Enable'}
+                onPress={togglePreRegistrationMode}
+                buttonColor={theme.colors.twitarrNeutralButton}
+              />
+            </PaddedContentView>
+            <PaddedContentView>
+              <PreRegistrationSettingsForm
+                onSubmit={onPreRegistrationSubmit}
+                initialValues={preRegistrationInitialValues}
+              />
+            </PaddedContentView>
+          </>
+        )}
       </ScrollingContentView>
     </AppView>
   );

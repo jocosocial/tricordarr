@@ -98,16 +98,30 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={CommonStackComponents.forumSettingsScreen}
             />
           </ListSection>
+          <ListSection>
+            <ListSubheader>Troubleshooting</ListSubheader>
+            <SettingsNavigationListItem
+              title={'Cruise Settings'}
+              description={'Settings for the cruise.'}
+              navComponent={SettingsStackScreenComponents.cruiseSettingsScreen}
+            />
+            <SettingsNavigationListItem
+              title={'Query Client'}
+              description={'Settings for the Twitarr API client.'}
+              navComponent={SettingsStackScreenComponents.querySettingsScreen}
+            />
+            <SettingsNavigationListItem
+              title={'App Version'}
+              description={'Show detailed version information about this app.'}
+              navComponent={SettingsStackScreenComponents.aboutSettingsScreen}
+            />
+          </ListSection>
           {appConfig.enableDeveloperOptions && (
             <>
               <Divider bold={true} />
               <ListSection>
                 <ListSubheader>Developers</ListSubheader>
-                <SettingsNavigationListItem
-                  title={'App Version'}
-                  description={'Show detailed version information about this app.'}
-                  navComponent={SettingsStackScreenComponents.aboutSettingsScreen}
-                />
+
                 <SettingsNavigationListItem
                   title={'Network Info'}
                   description={"View details about your device's current network environment."}
@@ -139,19 +153,9 @@ export const SettingsScreen = ({navigation}: Props) => {
                   navComponent={SettingsStackScreenComponents.featureSettingsScreen}
                 />
                 <SettingsNavigationListItem
-                  title={'Cruise'}
-                  description={'Settings for the cruise.'}
-                  navComponent={SettingsStackScreenComponents.cruiseSettingsScreen}
-                />
-                <SettingsNavigationListItem
                   title={'User Info'}
                   description={'Show internal state of user and auth information.'}
                   navComponent={SettingsStackScreenComponents.userInfoSettingsScreen}
-                />
-                <SettingsNavigationListItem
-                  title={'Query Client'}
-                  description={'Settings for the Twitarr API client.'}
-                  navComponent={SettingsStackScreenComponents.querySettingsScreen}
                 />
               </ListSection>
             </>
