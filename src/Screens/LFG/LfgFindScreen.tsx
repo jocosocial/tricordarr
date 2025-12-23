@@ -28,7 +28,7 @@ export const LfgFindScreen = (props: Props) => {
     <LoggedInScreen>
       <PreRegistrationScreen>
         <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg'}>
-          <LfgListScreen endpoint={'open'} />;
+          <LfgListScreen endpoint={'open'} />
         </DisabledFeatureScreen>
       </PreRegistrationScreen>
     </LoggedInScreen>

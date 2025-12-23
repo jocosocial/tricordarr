@@ -28,7 +28,7 @@ export const LfgOwnedScreen = (props: Props) => {
     <LoggedInScreen>
       <PreRegistrationScreen>
         <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg/owned'}>
-          <LfgListScreen endpoint={'owner'} />;
+          <LfgListScreen endpoint={'owner'} />
         </DisabledFeatureScreen>
       </PreRegistrationScreen>
     </LoggedInScreen>
