@@ -24,6 +24,8 @@ import {ForumThreadPostScreen} from '#src/Screens/Forum/Thread/ForumThreadPostSc
 import {ForumThreadScreen} from '#src/Screens/Forum/Thread/ForumThreadScreen';
 import {ForumThreadUserScreen} from '#src/Screens/Forum/Thread/ForumThreadUserScreen';
 import {HelpManualScreen} from '#src/Screens/Help/HelpManualScreen';
+import {ModeratorHelpScreen} from '#src/Screens/Help/ModeratorHelpScreen';
+import {ShutternautHelpScreen} from '#src/Screens/Help/ShutternautHelpScreen';
 import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen';
 import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
 import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
@@ -252,6 +254,8 @@ export type CommonStackParamList = {
   MainHelpScreen: undefined;
   AboutTricordarrScreen: undefined;
   AboutTwitarrScreen: undefined;
+  ShutternautHelpScreen: undefined;
+  ModeratorHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -323,6 +327,8 @@ export enum CommonStackComponents {
   mainHelpScreen = 'MainHelpScreen',
   aboutTricordarrScreen = 'AboutTricordarrScreen',
   aboutTwitarrScreen = 'AboutTwitarrScreen',
+  shutternautHelpScreen = 'ShutternautHelpScreen',
+  moderatorHelpScreen = 'ModeratorHelpScreen',
 }
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
@@ -664,6 +670,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.aboutTwitarrScreen}
         component={AboutTwitarrScreen}
         options={{title: 'About Twitarr'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.shutternautHelpScreen}
+        component={ShutternautHelpScreen}
+        options={{title: 'Shutternaut Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorHelpScreen}
+        component={ModeratorHelpScreen}
+        options={{title: 'Moderator Help'}}
       />
     </>
   );

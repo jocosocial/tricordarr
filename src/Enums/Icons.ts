@@ -135,4 +135,6 @@ export enum AppIcons {
   thumbnail = 'image-size-select-small',
   full = 'image-size-select-actual',
   share = 'share-variant',
+  shutternaut = 'camera-iris',
+  // shutternaut = 'bat',
 }

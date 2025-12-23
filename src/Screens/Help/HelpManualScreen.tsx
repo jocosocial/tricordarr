@@ -83,6 +83,19 @@ export const HelpManualScreen = () => {
           icon={AppIcons.help}
           onPress={() => commonNavigation.push(CommonStackComponents.preRegistrationHelpScreen)}
         />
+        <ListSubheader>Special Roles</ListSubheader>
+        <DataFieldListItem
+          title={'Shutternauts'}
+          description={'App-specific guidance for shutternauts.'}
+          icon={AppIcons.shutternaut}
+          onPress={() => commonNavigation.push(CommonStackComponents.shutternautHelpScreen)}
+        />
+        <DataFieldListItem
+          title={'Moderators'}
+          description={'App-specific guidance for moderators.'}
+          icon={AppIcons.moderator}
+          onPress={() => commonNavigation.push(CommonStackComponents.moderatorHelpScreen)}
+        />
         <ListSubheader>About</ListSubheader>
         <DataFieldListItem
           title={'About Tricordarr'}
