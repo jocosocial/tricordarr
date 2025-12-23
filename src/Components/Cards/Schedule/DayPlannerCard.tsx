@@ -5,7 +5,7 @@ import {Text, TouchableRipple} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {DayPlannerColor, DayPlannerItemWithLayout} from '#src/Types/DayPlanner';
+import {DayPlannerItem, DayPlannerItemWithLayout} from '#src/Types/DayPlanner';
 
 interface DayPlannerCardProps {
   item: DayPlannerItemWithLayout;
@@ -33,38 +33,6 @@ const LINE_HEIGHTS = {
 // Padding inside the card
 const CARD_PADDING = 10; // 4px padding + 2px vertical container padding × 2 + some margin
 
-// Type alias for theme colors to avoid verbose type annotations
-type ThemeColors = ReturnType<typeof useAppTheme>['theme']['colors'];
-
-/**
- * Get the background color for a Day Planner card based on its color type.
- */
-const getBackgroundColor = (color: DayPlannerColor, colors: ThemeColors): string => {
-  switch (color) {
-    case 'redTeam':
-      return colors.jocoRed;
-    case 'goldTeam':
-      return colors.twitarrYellow;
-    case 'schedule':
-      return colors.twitarrNeutralButton;
-    case 'lfg':
-      return colors.jocoGreen;
-    case 'personalEvent':
-      return colors.twitarrOrange;
-  }
-};
-
-/**
- * Get the text color for a Day Planner card based on its color type.
- */
-const getTextColor = (color: DayPlannerColor, colors: ThemeColors): string => {
-  // Gold team needs dark text for contrast
-  if (color === 'goldTeam') {
-    return colors.onTwitarrYellow;
-  }
-  return colors.constantWhite;
-};
-
 // Static styles that don't change per-card
 const staticStyles = StyleSheet.create({
   content: {
@@ -77,8 +45,8 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
   const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
 
-  const backgroundColor = getBackgroundColor(item.color, theme.colors);
-  const textColor = getTextColor(item.color, theme.colors);
+  const backgroundColor = DayPlannerItem.getBackgroundColor(item.color, theme.colors);
+  const textColor = DayPlannerItem.getTextColor(item.color, theme.colors);
 
   // Calculate width based on column position
   const columnWidth = 100 / item.totalColumns;

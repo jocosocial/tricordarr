@@ -46,6 +46,20 @@ export interface DayPlannerItemWithLayout extends DayPlannerItem {
  */
 export type TimeSlotType = 'hour' | 'halfHour' | 'quarter';
 
+/**
+ * Theme colors interface for Day Planner styling.
+ * Represents the subset of theme colors used by Day Planner components.
+ */
+export interface DayPlannerThemeColors {
+  jocoRed: string;
+  twitarrYellow: string;
+  twitarrNeutralButton: string;
+  jocoGreen: string;
+  twitarrOrange: string;
+  onTwitarrYellow: string;
+  constantWhite: string;
+}
+
 export namespace DayPlannerItem {
   /**
    * Determine the color for a Day Planner item based on its type and title.
@@ -69,6 +83,35 @@ export namespace DayPlannerItem {
       return 'lfg';
     }
     return 'personalEvent';
+  };
+
+  /**
+   * Get the background color for a Day Planner card based on its color type.
+   */
+  export const getBackgroundColor = (color: DayPlannerColor, colors: DayPlannerThemeColors): string => {
+    switch (color) {
+      case 'redTeam':
+        return colors.jocoRed;
+      case 'goldTeam':
+        return colors.twitarrYellow;
+      case 'schedule':
+        return colors.twitarrNeutralButton;
+      case 'lfg':
+        return colors.jocoGreen;
+      case 'personalEvent':
+        return colors.twitarrOrange;
+    }
+  };
+
+  /**
+   * Get the text color for a Day Planner card based on its color type.
+   */
+  export const getTextColor = (color: DayPlannerColor, colors: DayPlannerThemeColors): string => {
+    // Gold team needs dark text for contrast
+    if (color === 'goldTeam') {
+      return colors.onTwitarrYellow;
+    }
+    return colors.constantWhite;
   };
 
   /**
