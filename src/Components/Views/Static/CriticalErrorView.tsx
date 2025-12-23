@@ -16,7 +16,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {getInitialAppConfig} from '#src/Libraries/AppConfig';
+import {defaultAppConfig} from '#src/Libraries/AppConfig';
 
 interface CriticalErrorViewProps {
   error: Error;
@@ -42,12 +42,12 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const fixAll = async () => {
     await signOut(appConfig.preRegistrationMode);
     queryClient.clear();
-    updateAppConfig(getInitialAppConfig());
+    updateAppConfig(defaultAppConfig);
     props.resetError();
   };
 
   const resetAppConfig = async () => {
-    updateAppConfig(getInitialAppConfig());
+    updateAppConfig(defaultAppConfig);
   };
 
   return (

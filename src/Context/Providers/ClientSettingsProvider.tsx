@@ -17,28 +17,27 @@ const parseScheduleUpdateUrl = (url: string): string => {
 };
 
 export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
-  const {data: clientSettingsData, refetch} = useClientSettingsQuery({enabled: false});
+  const {refetch} = useClientSettingsQuery({enabled: false});
   const {appConfig, updateAppConfig} = useConfig();
 
   const updateClientSettings = async () => {
-    await refetch();
-    if (!clientSettingsData) {
+    const result = await refetch();
+    if (!result.data) {
       console.warn('[ClientSettingsProvider.tsx] No client settings data.');
       return;
     }
     updateAppConfig({
       ...appConfig,
-      cruiseLength: clientSettingsData.cruiseLengthInDays,
-      cruiseStartDate: new Date(clientSettingsData.cruiseStartDate),
-      portTimeZoneID: clientSettingsData.portTimeZoneID,
-      schedBaseUrl: parseScheduleUpdateUrl(clientSettingsData.scheduleUpdateURL),
+      cruiseLength: result.data.cruiseLengthInDays,
+      cruiseStartDate: new Date(result.data.cruiseStartDate),
+      portTimeZoneID: result.data.portTimeZoneID,
+      schedBaseUrl: parseScheduleUpdateUrl(result.data.scheduleUpdateURL),
     });
   };
 
   return (
     <ClientSettingsContext.Provider
       value={{
-        clientSettingsData,
         updateClientSettings,
       }}>
       {children}
