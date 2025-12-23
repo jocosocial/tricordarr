@@ -25,7 +25,6 @@ import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Ma
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
@@ -46,7 +45,6 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchMutes} = useUserMutesQuery({enabled: false});
   const {refetch: refetchBlocks} = useUserBlocksQuery({enabled: false});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
-  const {refetch: refetchClient} = useClientConfigQuery({enabled: false});
   const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
   const {isLoggedIn} = useAuth();
   const {hasModerator} = usePrivilege();
@@ -55,7 +53,7 @@ export const TodayScreen = ({navigation}: Props) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    var refreshes: Promise<any>[] = [refetchClient()];
+    var refreshes: Promise<any>[] = [];
     // These queries not available in pre-registration mode.
     if (!appConfig.preRegistrationMode) {
       refreshes.push(refetchAnnouncements(), refetchThemes(), refetchUserNotificationData());

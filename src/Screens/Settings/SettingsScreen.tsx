@@ -111,8 +111,8 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={SettingsStackScreenComponents.querySettingsScreen}
             />
             <SettingsNavigationListItem
-              title={'App Version'}
-              description={'Show detailed version information about this app.'}
+              title={'About'}
+              description={'Show version information about this app and your device.'}
               navComponent={SettingsStackScreenComponents.aboutSettingsScreen}
             />
           </ListSection>

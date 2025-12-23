@@ -951,13 +951,8 @@ export interface PhotostreamUploadData {
 //   participants: string[];
 // }
 
-interface SwiftarrClientConfigV1 {
+interface SwiftarrClientConfigV2 {
   latestVersion: string;
-  oobeVersion: number;
-  cruiseStartDate: string;
-  cruiseLength: number;
-  portTimeZoneID: string;
-  schedBaseUrl: string;
 }
 
 export interface SwiftarrClientConfig {
@@ -966,7 +961,7 @@ export interface SwiftarrClientConfig {
   metadata: {
     name: string;
   };
-  spec: SwiftarrClientConfigV1;
+  spec: SwiftarrClientConfigV2;
 }
 
 export interface MicroKaraokeCompletedSong {
@@ -1267,4 +1262,31 @@ export interface PerformerUploadData {
   youtubeURL?: string;
   /// UIDs of events where this performer is scheduled to appear.
   eventUIDs: string[];
+}
+
+/// Publicly available configuration information about the current cruise/sailing.
+/// This endpoint allows client apps to fetch environment configuration rather than hardcoding values.
+///
+/// Returned by: `GET /api/v3/client/settings`
+export interface ClientSettingsData {
+  /// Canonical hostnames for the Twitarr server (e.g., "twitarr.com", "joco.hollandamerica.com")
+  canonicalHostnames: string[];
+  /// The date the cruise embarks, at midnight in the port time zone
+  cruiseStartDate: string;
+  /// Length of the cruise in days, including partial days (embarkation through disembarkation)
+  cruiseLengthInDays: number;
+  /// The Foundation TimeZone identifier for the port of departure (e.g., "America/New_York")
+  portTimeZoneID: string;
+  /// The abbreviation for the port time zone (e.g., "EST", "EDT")
+  portTimeZoneAbbrev: string;
+  /// Seconds from GMT for the port time zone
+  portTimeZoneOffset: number;
+  /// URL used for automated schedule updates (typically a sched.com iCalendar URL)
+  scheduleUpdateURL: string;
+  /// The name of the shipboard Wifi network
+  shipWifiSSID?: string;
+  /// If TRUE, users can create accounts, log in, and edit their profile before the cruise in a restricted pre-registration mode.
+  enablePreregistration: boolean;
+  /// Unique identifier for this Postgres database installation (from pg_control_system())
+  installationID: string;
 }

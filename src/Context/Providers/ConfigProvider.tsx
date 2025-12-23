@@ -40,6 +40,7 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   };
 
   if (!appConfig) {
+    console.warn('[ConfigProvider.tsx] App config is empty?');
     return <></>;
   }
 

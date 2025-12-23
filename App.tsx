@@ -20,6 +20,7 @@ import {NotificationDataListener} from '#src/Components/Libraries/Notifications/
 import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
 import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
 import {AuthProvider} from '#src/Context/Providers/AuthProvider';
+import {ClientSettingsProvider} from '#src/Context/Providers/ClientSettingsProvider';
 import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
 import {CruiseProvider} from '#src/Context/Providers/CruiseProvider';
@@ -122,21 +123,23 @@ function App(): React.JSX.Element {
                                           <ModalProvider>
                                             <Portal.Host>
                                               <HeaderButtonsProvider stackType={'native'}>
-                                                <CruiseProvider>
-                                                  <DrawerProvider>
-                                                    <MenuProvider>
-                                                      <FilterProvider>
-                                                        <SelectionProvider>
-                                                          <AppEventHandler />
-                                                          <PushNotificationService />
-                                                          <NotificationDataListener />
-                                                          <NotificationDataPoller />
-                                                          <RootStackNavigator />
-                                                        </SelectionProvider>
-                                                      </FilterProvider>
-                                                    </MenuProvider>
-                                                  </DrawerProvider>
-                                                </CruiseProvider>
+                                                <ClientSettingsProvider>
+                                                  <CruiseProvider>
+                                                    <DrawerProvider>
+                                                      <MenuProvider>
+                                                        <FilterProvider>
+                                                          <SelectionProvider>
+                                                            <AppEventHandler />
+                                                            <PushNotificationService />
+                                                            <NotificationDataListener />
+                                                            <NotificationDataPoller />
+                                                            <RootStackNavigator />
+                                                          </SelectionProvider>
+                                                        </FilterProvider>
+                                                      </MenuProvider>
+                                                    </DrawerProvider>
+                                                  </CruiseProvider>
+                                                </ClientSettingsProvider>
                                               </HeaderButtonsProvider>
                                             </Portal.Host>
                                           </ModalProvider>

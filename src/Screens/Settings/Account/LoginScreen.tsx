@@ -8,11 +8,11 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
-import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
 import {commonStyles} from '#src/Styles';
 import {LoginFormValues} from '#src/Types/FormValues';
 
@@ -20,24 +20,9 @@ export const LoginScreen = () => {
   const navigation = useNavigation();
   const loginMutation = useLoginMutation();
   const {signIn} = useAuth();
-  const {appConfig, updateAppConfig, oobeCompleted} = useConfig();
-  const {refetch: refetchClientConfig} = useClientConfigQuery({enabled: false});
+  const {appConfig, oobeCompleted} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
-
-  const updateClientConfig = useCallback(async () => {
-    const response = await refetchClientConfig();
-    if (response.data) {
-      const [year, month, day] = response.data.spec.cruiseStartDate.split('-').map(Number);
-      updateAppConfig({
-        ...appConfig,
-        cruiseLength: response.data.spec.cruiseLength,
-        cruiseStartDate: new Date(year, month - 1, day),
-        oobeExpectedVersion: response.data.spec.oobeVersion,
-        portTimeZoneID: response.data.spec.portTimeZoneID,
-        schedBaseUrl: response.data.spec.schedBaseUrl,
-      });
-    }
-  }, [appConfig, refetchClientConfig, updateAppConfig]);
+  const {updateClientSettings} = useClientSettings();
 
   const onSubmit = useCallback(
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
@@ -47,13 +32,13 @@ export const LoginScreen = () => {
           if (oobeCompleted) {
             await startPushProvider();
           }
-          await updateClientConfig();
+          await updateClientSettings();
           navigation.goBack();
         },
         onSettled: () => formikHelpers.setSubmitting(false),
       });
     },
-    [loginMutation, signIn, appConfig.preRegistrationMode, oobeCompleted, updateClientConfig, navigation],
+    [loginMutation, signIn, appConfig.preRegistrationMode, oobeCompleted, updateClientSettings, navigation],
   );
 
   return (

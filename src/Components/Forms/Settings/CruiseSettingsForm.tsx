@@ -30,7 +30,6 @@ export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
       initialValues={props.initialValues}
       onSubmit={props.onSubmit}
       validationSchema={validationSchema}
-      disabled={props.disabled}
       enableReinitialize={true}>
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
