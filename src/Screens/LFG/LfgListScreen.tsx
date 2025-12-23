@@ -13,9 +13,7 @@ import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -23,11 +21,12 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 import {FezListEndpoints} from '#src/Types';
 
-interface LfgJoinedScreenProps {
+interface Props {
   endpoint: FezListEndpoints;
   enableFilters?: boolean;
   enableReportOnly?: boolean;
@@ -35,15 +34,20 @@ interface LfgJoinedScreenProps {
   showFab?: boolean;
 }
 
+/**
+ * Generic LFG list screen. Not intended to be routed to directly. Use screens
+ * such as LfgFindScreen or LfgJoinedScreen instead.
+ *
+ * This assumes LoggedIn, PreRegistration, and Disabled checkpoints have been handled.
+ */
 export const LfgListScreen = ({
   endpoint,
   enableFilters = true,
   enableReportOnly,
   listHeader,
   showFab = true,
-}: LfgJoinedScreenProps) => {
+}: Props) => {
   const {lfgTypeFilter, lfgHidePastFilter} = useFilter();
-  const {isLoggedIn} = useAuth();
   const {commonStyles} = useStyles();
   const [fezList, setFezList] = useState<FezData[]>([]);
   const listRef = useRef<FlashListRef<FezData>>(null);
@@ -77,9 +81,6 @@ export const LfgListScreen = ({
   const queryClient = useQueryClient();
 
   const getNavButtons = useCallback(() => {
-    if (!isLoggedIn) {
-      return <></>;
-    }
     return (
       <View>
         <MaterialHeaderButtons>
@@ -101,7 +102,7 @@ export const LfgListScreen = ({
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableFilters, endpoint, isLoggedIn, navigation]);
+  }, [enableFilters, endpoint, navigation]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -154,36 +155,34 @@ export const LfgListScreen = ({
     }
   }, [isError, onQueryError]);
 
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
-
   const isRefreshing = isFetching || isFetchingNextPage || isFetchingPreviousPage;
 
   return (
-    <AppView>
-      <TimezoneWarningView />
-      <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={handleSetCruiseDay} />
-      <View style={[commonStyles.flex]}>
-        {isLoading || isSwitchingDays ? (
-          <View style={commonStyles.loadingContainer}>
-            <ActivityIndicator size={'large'} />
-          </View>
-        ) : (
-          <LFGFlatList
-            listRef={listRef}
-            items={fezList}
-            refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refetch} />}
-            separator={'day'}
-            onScrollThreshold={onScrollThreshold}
-            handleLoadNext={fetchNextPage}
-            hasNextPage={hasNextPage}
-            enableReportOnly={enableReportOnly}
-            listHeader={listHeader}
-          />
-        )}
-      </View>
-      {showFab && <LfgFAB showLabel={showFabLabel} />}
-    </AppView>
+    <LoggedInScreen>
+      <AppView>
+        <TimezoneWarningView />
+        <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={handleSetCruiseDay} />
+        <View style={[commonStyles.flex]}>
+          {isLoading || isSwitchingDays ? (
+            <View style={commonStyles.loadingContainer}>
+              <ActivityIndicator size={'large'} />
+            </View>
+          ) : (
+            <LFGFlatList
+              listRef={listRef}
+              items={fezList}
+              refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refetch} />}
+              separator={'day'}
+              onScrollThreshold={onScrollThreshold}
+              handleLoadNext={fetchNextPage}
+              hasNextPage={hasNextPage}
+              enableReportOnly={enableReportOnly}
+              listHeader={listHeader}
+            />
+          )}
+        </View>
+        {showFab && <LfgFAB showLabel={showFabLabel} />}
+      </AppView>
+    </LoggedInScreen>
   );
 };

@@ -11,22 +11,23 @@ import {PerformerListActionsMenu} from '#src/Components/Menus/Performer/Performe
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
 
 export const PerformerListScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={'/performers'}>
-      <PerformerListScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <LoggedInScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={'/performers'}>
+        <PerformerListScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -35,7 +36,6 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
   const {data, refetch, isFetching, fetchNextPage, isLoading} = usePerformersQuery(performerType);
   const {commonStyles, styleDefaults} = useStyles();
   const flashListRef = useRef<FlashListRef<PerformerHeaderData>>(null);
-  const {isLoggedIn} = useAuth();
   const [performers, setPerformers] = useState<PerformerHeaderData[]>([]);
 
   const styles = StyleSheet.create({
@@ -99,10 +99,6 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
       setPerformers(data.pages.flatMap(p => p.performers));
     }
   }, [data]);
-
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
 
   if (isLoading) {
     return <LoadingView />;

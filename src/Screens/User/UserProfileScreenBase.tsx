@@ -20,9 +20,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {UserProfileAvatar} from '#src/Components/Views/UserProfileAvatar';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -31,22 +29,31 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {ProfilePublicData} from '#src/Structs/ControllerStructs';
 
-interface UserProfileScreenBaseProps {
+interface Props {
   data?: ProfilePublicData;
   refetch: () => Promise<any>;
   isLoading: boolean;
   enableContent?: boolean;
 }
-export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent = true}: UserProfileScreenBaseProps) => {
+
+export const UserProfileScreenBase = (props: Props) => {
+  return (
+    <LoggedInScreen>
+      <UserProfileScreenBaseInner {...props} />
+    </LoggedInScreen>
+  );
+};
+
+const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = true}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {data: profilePublicData, refetch: refetchSelf} = useUserProfileQuery();
   const {commonStyles} = useStyles();
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const commonNavigation = useCommonStack();
-  const {isLoggedIn} = useAuth();
   const {refetch: refetchFavorites} = useUserFavoritesQuery();
   const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
   const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
@@ -68,9 +75,6 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
   }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, isSelf, refetchSelf, appConfig.preRegistrationMode]);
 
   const getNavButtons = useCallback(() => {
-    if (!isLoggedIn) {
-      return <></>;
-    }
     if (data && isSelf) {
       return (
         <View>
@@ -98,7 +102,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
         </MaterialHeaderButtons>
       </View>
     );
-  }, [isLoggedIn, data, isSelf, isMuted, isBlocked, commonNavigation]);
+  }, [data, isSelf, isMuted, isBlocked, commonNavigation]);
 
   useEffect(() => {
     commonNavigation.setOptions({
@@ -134,10 +138,6 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
       ...commonStyles.textCenter,
     },
   });
-
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
 
   if (isLoading) {
     return <LoadingView />;
