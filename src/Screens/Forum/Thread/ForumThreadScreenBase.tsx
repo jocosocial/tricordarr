@@ -24,7 +24,7 @@ import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations'
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, ForumListData, PostContentData, PostData} from '#src/Structs/ControllerStructs';
 
-interface ForumThreadScreenBaseProps {
+interface Props {
   data?: InfiniteData<ForumData>;
   refetch: () => Promise<QueryObserverResult>;
   isLoading: boolean;
@@ -58,7 +58,7 @@ export const ForumThreadScreenBase = ({
   getListHeader,
   invertList,
   forumListData,
-}: ForumThreadScreenBaseProps) => {
+}: Props) => {
   const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);

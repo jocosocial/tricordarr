@@ -27,9 +27,9 @@ import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScre
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
-type SeamailListScreenProps = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
+type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
-export const SeamailListScreen = (props: SeamailListScreenProps) => {
+export const SeamailListScreen = (props: Props) => {
   return (
     <PreRegistrationScreen>
       <LoggedInScreen>
@@ -41,7 +41,7 @@ export const SeamailListScreen = (props: SeamailListScreenProps) => {
   );
 };
 
-const SeamailListScreenInner = ({navigation}: SeamailListScreenProps) => {
+const SeamailListScreenInner = ({navigation}: Props) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isLoading} = useSeamailListQuery({
     forUser: asPrivilegedUser,

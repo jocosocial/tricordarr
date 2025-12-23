@@ -13,12 +13,12 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {AppIcons} from '#src/Enums/Icons';
 import {useCommonStack} from '#src/Navigation/CommonScreens';
 
-interface SiteUIScreenBaseProps {
+interface Props {
   initialUrl: string;
   initialKey?: string;
 }
 
-export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: SiteUIScreenBaseProps) => {
+export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
   const {serverUrl} = useSwiftarrQueryClient();
   const [webviewUrl, setWebviewUrl] = React.useState(initialUrl);
   const webViewRef = useRef<WebView>(null);
