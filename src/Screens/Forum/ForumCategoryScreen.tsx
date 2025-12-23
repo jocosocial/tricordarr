@@ -24,6 +24,7 @@ import {ForumFilter} from '#src/Enums/ForumSortFilter';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
@@ -31,13 +32,15 @@ type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCat
 
 export const ForumCategoryScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen
-        feature={SwiftarrFeature.forums}
-        urlPath={`/forums/${props.route.params.category.categoryID}`}>
-        <ForumCategoryScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen>
+        <DisabledFeatureScreen
+          feature={SwiftarrFeature.forums}
+          urlPath={`/forums/${props.route.params.category.categoryID}`}>
+          <ForumCategoryScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 

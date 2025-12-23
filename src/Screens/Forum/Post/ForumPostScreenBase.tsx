@@ -16,7 +16,7 @@ import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '#src/Queries/
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {PostData} from '#src/Structs/ControllerStructs';
 
-interface ForumPostScreenBaseProps {
+interface Props {
   queryParams: ForumPostSearchQueryParams;
   refreshOnUserNotification?: boolean;
   title?: string;
@@ -26,7 +26,7 @@ interface ForumPostScreenBaseProps {
  * Used for screens listing posts such as Favorites, Hashtags, Mentions, By User, By Self.
  * Not used for Post Search
  */
-export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title}: ForumPostScreenBaseProps) => {
+export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title}: Props) => {
   const {data, refetch, isFetchingNextPage, hasNextPage, hasPreviousPage, fetchNextPage, isLoading} =
     useForumPostSearchQuery(queryParams);
   const commonNavigation = useCommonStack();

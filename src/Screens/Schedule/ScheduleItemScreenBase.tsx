@@ -23,19 +23,14 @@ import {guessDeckNumber} from '#src/Libraries/Ship';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
-interface ScheduleItemScreenBaseProps {
+interface Props {
   refreshing?: boolean;
   onRefresh?: () => void;
   eventData?: FezData | EventData;
   showLfgChat?: boolean;
 }
 
-export const ScheduleItemScreenBase = ({
-  refreshing = false,
-  onRefresh,
-  eventData,
-  showLfgChat = false,
-}: ScheduleItemScreenBaseProps) => {
+export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData, showLfgChat = false}: Props) => {
   const navigation = useCommonStack();
   const {commonStyles} = useStyles();
 

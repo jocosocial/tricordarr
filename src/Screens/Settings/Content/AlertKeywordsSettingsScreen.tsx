@@ -9,15 +9,21 @@ import {KeywordForm} from '#src/Components/Forms/KeywordForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserKeywordMutation} from '#src/Queries/User/UserMutations';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {KeywordFormValues} from '#src/Types/FormValues';
 
 export const AlertKeywordsSettingsScreen = () => {
-  const {isLoggedIn} = useAuth();
+  return (
+    <LoggedInScreen>
+      <AlertKeywordsSettingsScreenInner />
+    </LoggedInScreen>
+  );
+};
+
+const AlertKeywordsSettingsScreenInner = () => {
   const [refreshing, setIsRefreshing] = useState(false);
   const [keywords, setKeywords] = useState<string[]>([]);
   const {commonStyles} = useStyles();
@@ -76,10 +82,6 @@ export const AlertKeywordsSettingsScreen = () => {
       setKeywords(data.keywords);
     }
   }, [data]);
-
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
 
   return (
     <AppView>

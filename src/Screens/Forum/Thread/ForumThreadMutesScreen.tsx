@@ -10,17 +10,20 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {ForumRelationQueryType} from '#src/Queries/Forum/ForumThreadRelationQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumMutesScreen>;
 
 export const ForumThreadMutesScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forum/mutes'}>
-        <ForumThreadMutesScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen>
+        <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forum/mutes'}>
+          <ForumThreadMutesScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 

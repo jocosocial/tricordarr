@@ -12,9 +12,7 @@ import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/Sched
 import {ScheduleEventFilterMenu} from '#src/Components/Menus/Schedule/ScheduleEventFilterMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
@@ -28,21 +26,23 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
 
 export const ScheduleDayScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events'}>
-      <ScheduleDayScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <LoggedInScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events'}>
+        <ScheduleDayScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </LoggedInScreen>
   );
 };
 
 const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {startDate, endDate} = useCruise();
-  const {isLoggedIn} = useAuth();
   const {commonStyles} = useStyles();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
@@ -66,9 +66,6 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     refetch: refetchEvents,
   } = useEventsQuery({
     cruiseDay: selectedCruiseDay,
-    options: {
-      enabled: isLoggedIn,
-    },
   });
   const {
     data: lfgOpenData,
@@ -82,7 +79,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     endpoint: 'open',
     hidePast: false,
     options: {
-      enabled: isLoggedIn && appConfig.schedule.eventsShowOpenLfgs && !appConfig.preRegistrationMode,
+      enabled: appConfig.schedule.eventsShowOpenLfgs && !appConfig.preRegistrationMode,
     },
   });
   const {
@@ -97,7 +94,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: isLoggedIn && appConfig.schedule.eventsShowJoinedLfgs && !appConfig.preRegistrationMode,
+      enabled: appConfig.schedule.eventsShowJoinedLfgs && !appConfig.preRegistrationMode,
     },
   });
   const {
@@ -110,7 +107,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
     options: {
-      enabled: isLoggedIn && !appConfig.preRegistrationMode,
+      enabled: !appConfig.preRegistrationMode,
     },
   });
 
@@ -143,9 +140,6 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   }, [scheduleList, scrollNowIndex]);
 
   const getNavButtons = useCallback(() => {
-    if (!isLoggedIn) {
-      return <></>;
-    }
     return (
       <View>
         <MaterialHeaderButtons>
@@ -159,7 +153,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [isLoggedIn, onRefresh, navigation]);
+  }, [onRefresh, navigation]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -215,10 +209,6 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     personalFetchNextPage,
     personalHasNextPage,
   ]);
-
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
 
   // Returning the <LoadingView /> would lose the position tracking of the <ScheduleHeaderView />
   // list, so we rely on the <RefreshControl /> spinner instead.

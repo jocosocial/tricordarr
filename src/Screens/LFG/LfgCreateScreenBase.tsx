@@ -17,7 +17,7 @@ import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScree
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {FezFormValues} from '#src/Types/FormValues';
 
-interface LfgCreateScreenBaseProps {
+interface Props {
   title?: string;
   info?: string;
   location?: string;
@@ -26,6 +26,7 @@ interface LfgCreateScreenBaseProps {
   minCapacity?: number;
   maxCapacity?: number;
 }
+
 export const LfgCreateScreenBase = ({
   title = '',
   info = '',
@@ -34,7 +35,7 @@ export const LfgCreateScreenBase = ({
   duration = 30,
   minCapacity = 2,
   maxCapacity = 2,
-}: LfgCreateScreenBaseProps) => {
+}: Props) => {
   const navigation = useCommonStack();
   const fezMutation = useFezCreateMutation();
   const {startDate, adjustedCruiseDayToday} = useCruise();

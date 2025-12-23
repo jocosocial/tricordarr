@@ -8,7 +8,7 @@ import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {SiteUIScreenBase} from '#src/Screens/SiteUI/SiteUIScreenBase';
 
-interface DisabledFeatureScreenProps extends PropsWithChildren {
+interface Props extends PropsWithChildren {
   feature: SwiftarrFeature;
   urlPath?: string;
 }
@@ -19,7 +19,7 @@ interface DisabledFeatureScreenProps extends PropsWithChildren {
  *
  * In a nutshell, if the feature was disabled for the app it will try to use the web.
  */
-export const DisabledFeatureScreen = (props: DisabledFeatureScreenProps) => {
+export const DisabledFeatureScreen = (props: Props) => {
   const {getIsDisabled} = useFeature();
   const {appConfig} = useConfig();
 

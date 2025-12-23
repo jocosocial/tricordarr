@@ -5,7 +5,6 @@ import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {UserCreateForm} from '#src/Components/Forms/User/UserCreateForm';
-import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {UserRecoveryKeyModalView} from '#src/Components/Views/Modals/UserRecoveryKeyModalView';
@@ -16,7 +15,7 @@ import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {useUserCreateQuery} from '#src/Queries/User/UserMutations';
 import {LoginFormValues, UserRegistrationFormValues} from '#src/Types/FormValues';
 
-const RegisterScreenBase = () => {
+export const RegisterScreen = () => {
   const createMutation = useUserCreateQuery();
   const loginMutation = useLoginMutation();
   const {signIn} = useAuth();
@@ -102,21 +101,5 @@ const RegisterScreenBase = () => {
         <UserCreateForm onSubmit={onSubmit} />
       </PaddedContentView>
     </ScrollingContentView>
-  );
-};
-
-export const RegisterScreen = () => {
-  return (
-    <AppView>
-      <RegisterScreenBase />
-    </AppView>
-  );
-};
-
-export const OobeRegisterScreen = () => {
-  return (
-    <AppView>
-      <RegisterScreenBase />
-    </AppView>
   );
 };

@@ -14,9 +14,9 @@ import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Sta
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
-type SeamailSearchScreenProps = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailSearchScreen>;
+type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailSearchScreen>;
 
-export const SeamailSearchScreen = (props: SeamailSearchScreenProps) => {
+export const SeamailSearchScreen = (props: Props) => {
   return (
     <PreRegistrationScreen>
       <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
@@ -26,7 +26,7 @@ export const SeamailSearchScreen = (props: SeamailSearchScreenProps) => {
   );
 };
 
-const SeamailSearchScreenInner = ({navigation, route}: SeamailSearchScreenProps) => {
+const SeamailSearchScreenInner = ({navigation, route}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
