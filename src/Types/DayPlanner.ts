@@ -1,7 +1,7 @@
-import { parseISO } from 'date-fns';
+import {parseISO} from 'date-fns';
 
-import { FezType } from '#src/Enums/FezType';
-import { EventData, FezData } from '#src/Structs/ControllerStructs';
+import {FezType} from '#src/Enums/FezType';
+import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 /**
  * Color categories for Day Planner items.
@@ -125,7 +125,7 @@ export namespace DayPlannerItem {
       startTime: parseISO(event.startTime),
       endTime: parseISO(event.endTime),
       type,
-      color: getDayPlannerColor({ type, title: event.title }),
+      color: getDayPlannerColor({type, title: event.title}),
       location: event.location,
       eventData: event,
     };
@@ -145,7 +145,7 @@ export namespace DayPlannerItem {
       startTime: parseISO(fez.startTime),
       endTime: parseISO(fez.endTime),
       type,
-      color: getDayPlannerColor({ type, title: fez.title }),
+      color: getDayPlannerColor({type, title: fez.title}),
       cancelled: fez.cancelled,
       location: fez.location,
       fezData: fez,

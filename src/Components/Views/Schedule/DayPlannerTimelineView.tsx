@@ -11,8 +11,8 @@ import {
   generateTimeSlotLabels,
   getTimelineHeight,
 } from '#src/Libraries/DayPlanner';
-import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
 
 interface DayPlannerTimelineViewProps {
   items: DayPlannerItem[];

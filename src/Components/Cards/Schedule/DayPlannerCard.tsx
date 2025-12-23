@@ -1,6 +1,5 @@
-import {format} from 'date-fns';
 import React, {useMemo} from 'react';
-import {StyleSheet, View, ViewStyle} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text, TouchableRipple} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -17,17 +16,14 @@ interface DayPlannerCardProps {
 const HEIGHT_THRESHOLDS = {
   // Minimum height to show anything readable (title only, 1 line)
   TITLE_ONLY: 25,
-  // Height needed to show title (1-2 lines) + time - allows 30min events to show time
-  TITLE_AND_TIME: 40,
-  // Height needed to show title + time + location - allows 30min events to show location
-  FULL_CONTENT: 50,
+  // Height needed to show title + location - allows 30min events to show location
+  TITLE_AND_LOCATION: 40,
 } as const;
 
 // Line heights used for calculating available space
 const LINE_HEIGHTS = {
-  TITLE: 14,
-  TIME: 12,
-  LOCATION: 12,
+  TITLE: 22,
+  LOCATION: 18,
 } as const;
 
 // Padding inside the card
@@ -54,10 +50,8 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
 
   // Determine what content to show based on available height
   const contentLevel = useMemo(() => {
-    if (item.height >= HEIGHT_THRESHOLDS.FULL_CONTENT) {
-      return 'full'; // Show title, time, and location
-    } else if (item.height >= HEIGHT_THRESHOLDS.TITLE_AND_TIME) {
-      return 'titleAndTime'; // Show title and time only
+    if (item.height >= HEIGHT_THRESHOLDS.TITLE_AND_LOCATION) {
+      return 'titleAndLocation'; // Show title and location
     } else {
       return 'titleOnly'; // Show only the title
     }
@@ -75,13 +69,12 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
 
   // Calculate how many lines the location can have based on remaining space
   const locationLines = useMemo(() => {
-    if (contentLevel !== 'full' || !item.location) {
+    if (contentLevel !== 'titleAndLocation' || !item.location) {
       return 0;
     }
-    // Calculate space used by title and time
+    // Calculate space used by title
     const titleSpace = titleLines * LINE_HEIGHTS.TITLE;
-    const timeSpace = LINE_HEIGHTS.TIME;
-    const usedSpace = CARD_PADDING + titleSpace + timeSpace;
+    const usedSpace = CARD_PADDING + titleSpace;
 
     // Calculate remaining space for location
     const remainingHeight = item.height - usedSpace;
@@ -91,72 +84,75 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
   }, [contentLevel, item.height, item.location, titleLines]);
 
   // Dynamic styles specific to this card instance
-  const containerStyle: ViewStyle = {
-    position: 'absolute',
-    top: item.topOffset,
-    left: `${leftPosition}%`,
-    width: `${columnWidth}%`,
-    height: item.height,
-    paddingHorizontal: 2,
-    paddingVertical: 1,
-  };
+  const dynamicStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          position: 'absolute',
+          top: item.topOffset,
+          left: `${leftPosition}%`,
+          width: `${columnWidth}%`,
+          height: item.height,
+          paddingHorizontal: 2,
+          paddingVertical: 1,
+        },
+        card: {
+          flex: 1,
+          backgroundColor,
+          borderRadius: 4,
+          padding: 4,
+          overflow: 'hidden',
+        },
+        text: {
+          color: textColor,
+          fontSize: 18,
+          fontWeight: 'bold',
+          lineHeight: 22,
+        },
+        location: {
+          color: textColor,
+          fontSize: 14,
+          lineHeight: 18,
+        },
+        cancelled: {
+          ...commonStyles.bold,
+          color: textColor,
+          fontSize: 10,
+          backgroundColor: theme.colors.error,
+          paddingHorizontal: 4,
+          borderRadius: 2,
+          alignSelf: 'flex-start',
+          marginBottom: 2,
+        },
+      }),
+    [
+      item.topOffset,
+      item.height,
+      leftPosition,
+      columnWidth,
+      backgroundColor,
+      textColor,
+      theme.colors.error,
+      commonStyles.bold,
+    ],
+  );
 
-  const cardStyle: ViewStyle = {
-    flex: 1,
-    backgroundColor,
-    borderRadius: 4,
-    padding: 4,
-    overflow: 'hidden',
-  };
-
-  const textStyle = {
-    color: textColor,
-    fontSize: 12,
-    fontWeight: 'bold' as const,
-    lineHeight: 14,
-  };
-
-  const timeStyle = {
-    color: textColor,
-    fontSize: 10,
-    opacity: 0.9,
-    lineHeight: 12,
-  };
-
-  const cancelledStyle = {
-    ...commonStyles.bold,
-    color: textColor,
-    fontSize: 10,
-    backgroundColor: theme.colors.error,
-    paddingHorizontal: 4,
-    borderRadius: 2,
-    alignSelf: 'flex-start' as const,
-    marginBottom: 2,
-  };
-
-  const timeString = `${format(item.startTime, 'h:mm a')} - ${format(item.endTime, 'h:mm a')}`;
-  const showTime = contentLevel === 'titleAndTime' || contentLevel === 'full';
-  const showLocation = contentLevel === 'full' && item.location;
+  const showLocation = contentLevel === 'titleAndLocation' && item.location;
 
   return (
-    <View style={containerStyle}>
-      <TouchableRipple style={cardStyle} onPress={onPress} borderless>
+    <View style={dynamicStyles.container}>
+      <TouchableRipple style={dynamicStyles.card} onPress={onPress} borderless>
         <View style={staticStyles.content}>
           {item.cancelled && (
-            <Text style={cancelledStyle} numberOfLines={1}>
+            <Text style={dynamicStyles.cancelled} numberOfLines={1}>
               CANCELLED
             </Text>
           )}
-          <Text style={textStyle} numberOfLines={titleLines} ellipsizeMode={'tail'}>
+          <Text style={dynamicStyles.text} numberOfLines={titleLines} ellipsizeMode={'tail'}>
             {item.title}
           </Text>
-          {showTime && (
-            <Text style={timeStyle} numberOfLines={1} ellipsizeMode={'tail'}>
-              {timeString}
-            </Text>
-          )}
           {showLocation && (
-            <Text style={timeStyle} numberOfLines={locationLines} ellipsizeMode={'tail'}>
+            <Text style={dynamicStyles.location} numberOfLines={locationLines} ellipsizeMode={'tail'}>
               {item.location}
             </Text>
           )}
