@@ -79,7 +79,7 @@ export interface AppConfig {
 }
 
 export const defaultAppConfig: AppConfig = {
-  serverUrl: 'https://twitarr.com',
+  serverUrl: __DEV__ ? 'https://beta.twitarr.com' : 'https://twitarr.com',
   urlPrefix: '/api/v3',
   enableBackgroundWorker: true,
   notificationPollInterval: 120000, // 2 minutes
