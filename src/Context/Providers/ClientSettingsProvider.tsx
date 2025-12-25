@@ -7,12 +7,10 @@ import {ClientSettingsData} from '#src/Structs/ControllerStructs';
 
 export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
   const {appConfig, updateAppConfig} = useConfig();
-  const {data, refetch} = useClientSettingsQuery({enabled: false});
+  const {refetch} = useClientSettingsQuery({enabled: false});
 
   const updateClientSettings = useCallback(async () => {
     const response = await refetch();
-    console.log('ZZZ', response);
-    console.log('ZZZ', response.data);
     if (response.data) {
       updateAppConfig({
         ...appConfig,
@@ -23,8 +21,6 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
       });
     }
   }, [appConfig, refetch, updateAppConfig]);
-
-  console.log('WEEEEEE', data);
 
   return (
     <ClientSettingsContext.Provider
