@@ -2,6 +2,7 @@ import {QueryKey} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import pluralize from 'pluralize';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import URLParse from 'url-parse';
 
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
@@ -1289,4 +1290,33 @@ export interface ClientSettingsData {
   enablePreregistration: boolean;
   /// Unique identifier for this Postgres database installation (from pg_control_system())
   installationID: string;
+}
+
+export namespace ClientSettingsData {
+  /**
+   * Get the base URL from the payload scheduleUpdateURL.
+   * Example: https://jococruise2025.sched.com/all.ics -> https://jococruise2025.sched.com
+   */
+  export const parseScheduleUpdateURL = (url: string): string => {
+    try {
+      const urlObj = new URLParse(url);
+      // protocol includes the colon, so we need to add "//"
+      return `${urlObj.protocol}//${urlObj.host}`;
+    } catch (error) {
+      console.error('[ControllerStructs.tsx] Error parsing URL:', error);
+      return url;
+    }
+  };
+
+  /**
+   * Return a Date object from the payload cruiseStartDate with local-midnight.
+   */
+  export const parseCruiseStartDate = (dateString: string): Date => {
+    const [year, month, day] = dateString.split('-').map(Number);
+    if (!year || !month || !day) {
+      console.warn('[ControllerStructs.tsx] Unexpected date format for cruiseStartDate:', dateString);
+      return new Date(dateString);
+    }
+    return new Date(year, month - 1, day);
+  };
 }
