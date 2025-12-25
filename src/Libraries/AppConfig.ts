@@ -116,7 +116,7 @@ export const defaultAppConfig: AppConfig = {
   enableDeveloperOptions: false,
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
-  manualTimeOffset: 60,
+  manualTimeOffset: 0,
   schedule: {
     hidePastLfgs: false,
     enableLateDayFlip: true,
