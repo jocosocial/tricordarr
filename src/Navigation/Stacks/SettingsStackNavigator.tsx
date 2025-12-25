@@ -201,7 +201,7 @@ export const SettingsStackNavigator = () => {
       <Stack.Screen
         name={SettingsStackScreenComponents.querySettingsScreen}
         component={QuerySettingsScreen}
-        options={{title: 'Query Settings'}}
+        options={{title: 'Query Client'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.queryKeysSettingsScreen}

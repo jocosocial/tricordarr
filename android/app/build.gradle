@@ -144,13 +144,3 @@ dependencies {
     // ML Kit OCR
     implementation 'com.google.mlkit:text-recognition:16.0.1'
 }
-
-/**
- * react-native-config
- * https://www.npmjs.com/package/react-native-config
- */
-project.ext.envConfigFiles = [
-    debug: ".env.development",
-    release: ".env.production",
-]
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"

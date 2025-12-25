@@ -1,6 +1,5 @@
 import type {PathConfigMap} from '@react-navigation/core';
 import {LinkingOptions} from '@react-navigation/native';
-import Config from 'react-native-config';
 
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
@@ -111,6 +110,6 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
  * idk...
  */
 export const navigationLinking: LinkingOptions<RootStackParamList> = {
-  prefixes: ['tricordarr://', Config.SERVER_URL].filter(prefix => prefix !== undefined) as string[],
+  prefixes: ['tricordarr://'].filter(prefix => prefix !== undefined) as string[],
   config: deepLinksConf,
 };
