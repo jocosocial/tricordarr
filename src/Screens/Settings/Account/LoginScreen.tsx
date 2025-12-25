@@ -32,7 +32,16 @@ export const LoginScreen = () => {
           if (oobeCompleted) {
             await startPushProvider();
           }
-          await updateClientSettings();
+          /**
+           * This is a hack to wait a beat for the login processing to complete.
+           * I never could find a way to get updateClientSettings() to fire off
+           * immediately after login and not get an `undefined` payload. The query
+           * function never even fired. So this is gonna have to do until we figure
+           * out something better.
+           */
+          setTimeout(async () => {
+            await updateClientSettings();
+          }, 1000);
           navigation.goBack();
         },
         onSettled: () => formikHelpers.setSubmitting(false),

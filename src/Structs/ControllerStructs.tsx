@@ -1303,20 +1303,23 @@ export namespace ClientSettingsData {
       // protocol includes the colon, so we need to add "//"
       return `${urlObj.protocol}//${urlObj.host}`;
     } catch (error) {
-      console.error('[ControllerStructs.tsx] Error parsing URL:', error);
+      console.warn('[ControllerStructs.tsx] Error parsing URL:', error);
       return url;
     }
   };
 
   /**
-   * Return a Date object from the payload cruiseStartDate with local-midnight.
+   * Return a Date object from the payload cruiseStartDate with local-midnight semantics.
+   *
+   * The server returns an ISO-8601 timestamp (e.g. "2025-03-02T05:00:00.000Z").
+   * We normalize to local-midnight for the UTC date represented by that timestamp to avoid day shifting.
    */
   export const parseCruiseStartDate = (dateString: string): Date => {
-    const [year, month, day] = dateString.split('-').map(Number);
-    if (!year || !month || !day) {
+    const parsed = new Date(dateString);
+    if (isNaN(parsed.getTime())) {
       console.warn('[ControllerStructs.tsx] Unexpected date format for cruiseStartDate:', dateString);
-      return new Date(dateString);
+      return parsed;
     }
-    return new Date(year, month - 1, day);
+    return new Date(parsed.getUTCFullYear(), parsed.getUTCMonth(), parsed.getUTCDate());
   };
 }
