@@ -113,8 +113,8 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
 
   // Calculate day boundaries for the timeline
   const {dayStart, dayEnd} = useMemo(() => {
-    return getDayBoundaries(startDate, selectedCruiseDay);
-  }, [startDate, selectedCruiseDay]);
+    return getDayBoundaries(startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip);
+  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip]);
 
   // Calculate loading state
   const isLoading = isEventFetching || isLfgJoinedFetching || isPersonalEventFetching;

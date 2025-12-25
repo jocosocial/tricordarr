@@ -213,17 +213,27 @@ export const generateTimeSlotLabels = (dayStart: Date): {time: Date; label: stri
 
 /**
  * Calculate the day start and end times for a given cruise day.
- * Day runs from 00:00 to 03:00 the next day (27 hours).
+ * Day runs from 00:00 to either 24:00 (midnight) or 03:00 the next day (27 hours),
+ * depending on the enableLateDayFlip setting.
+ *
+ * @param cruiseStartDate - The start date of the cruise
+ * @param cruiseDay - The cruise day (1-indexed)
+ * @param enableLateDayFlip - If true, day extends to 03:00 next day (27 hours). If false, day ends at midnight (24 hours).
  */
-export const getDayBoundaries = (cruiseStartDate: Date, cruiseDay: number): {dayStart: Date; dayEnd: Date} => {
+export const getDayBoundaries = (
+  cruiseStartDate: Date,
+  cruiseDay: number,
+  enableLateDayFlip: boolean,
+): {dayStart: Date; dayEnd: Date} => {
   // cruiseDay is 1-indexed, so subtract 1 to get the offset
   const dayStart = new Date(cruiseStartDate);
   dayStart.setDate(dayStart.getDate() + cruiseDay - 1);
   dayStart.setHours(0, 0, 0, 0);
 
-  // Day ends at 03:00 the next day (27 hours later)
+  // Day ends at either midnight (24 hours) or 03:00 the next day (27 hours)
   const dayEnd = new Date(dayStart);
-  dayEnd.setHours(DAY_PLANNER_CONFIG.TOTAL_HOURS, 0, 0, 0);
+  const endHour = enableLateDayFlip ? DAY_PLANNER_CONFIG.TOTAL_HOURS : 24;
+  dayEnd.setHours(endHour, 0, 0, 0);
 
   return {dayStart, dayEnd};
 };
