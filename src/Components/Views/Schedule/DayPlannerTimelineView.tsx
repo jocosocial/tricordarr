@@ -83,7 +83,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         alignItems: 'flex-end',
       },
       timeLabel: {
-        fontSize: 12,
+        fontSize: 15,
         color: theme.colors.onSurfaceVariant,
         marginTop: 0,
       },
