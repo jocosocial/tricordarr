@@ -3,6 +3,7 @@ import React, {useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppImage} from '#src/Components/Images/AppImage';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -10,8 +11,10 @@ import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
+import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePreregistrationScreen>;
 
@@ -28,6 +31,10 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
+    boldText: {
+      ...commonStyles.bold,
+      ...commonStyles.textCenter,
+    },
     image: commonStyles.roundedBorderLarge,
   });
 
@@ -50,7 +57,15 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
-          <Text style={styles.text}>Do not proceed until you are physically on the ship!</Text>
+          <AppImage
+            mode={'scaledimage'}
+            image={AppImageMetaData.fromAsset(tricordarr, 'tricordarr.jpg')}
+            style={styles.image}
+            disableTouch={true}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text style={styles.boldText}>Do not proceed until you are physically on the ship!</Text>
         </PaddedContentView>
         <PaddedContentView>
           <Text style={styles.text}>
