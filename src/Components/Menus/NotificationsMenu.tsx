@@ -35,6 +35,16 @@ export const NotificationsMenu = () => {
         />
       }>
       {!anyNew && <Menu.Item leadingIcon={AppIcons.notificationNone} title={'No new notifications'} />}
+      {!!data?.newAnnouncementCount && (
+        <>
+          <Menu.Item
+            title={`${data?.newAnnouncementCount} new ${pluralize('announcement', data?.newAnnouncementCount)}`}
+            leadingIcon={AppIcons.notificationShow}
+            onPress={() => handleUrl('tricordarr://home')}
+          />
+          <Divider bold={true} />
+        </>
+      )}
       {!!data?.newForumMentionCount && (
         <>
           <Menu.Item
@@ -71,6 +81,20 @@ export const NotificationsMenu = () => {
           title={`${data?.newFezMessageCount} new ${pluralize('LFG', data?.newFezMessageCount)} messages`}
           leadingIcon={AppIcons.lfg}
           onPress={() => handleUrl('tricordarr://lfg/joined')}
+        />
+      )}
+      {!!data?.addedToPrivateEventCount && (
+        <Menu.Item
+          title={`Added to ${data?.addedToPrivateEventCount} new private ${pluralize('event', data?.addedToPrivateEventCount)}`}
+          leadingIcon={AppIcons.personalEvent}
+          onPress={() => handleUrl('tricordarr://privateevent/list')}
+        />
+      )}
+      {!!data?.newPrivateEventMessageCount && (
+        <Menu.Item
+          title={`${data?.newPrivateEventMessageCount} new private event ${pluralize('message', data?.newPrivateEventMessageCount)}`}
+          leadingIcon={AppIcons.personalEvent}
+          onPress={() => handleUrl('tricordarr://privateevent/list')}
         />
       )}
       <Divider bold={true} />

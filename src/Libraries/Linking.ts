@@ -84,6 +84,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             // falling through to the default route. This is what we do in the UI, so oh well.
             // Perhaps I should make a PR to Swiftarr to change that?
             PersonalEventScreen: 'privateevent/:eventID',
+            SchedulePrivateEventsScreen: 'privateevent/list', // This is what Swiftarr Site UI does.
           },
         },
         ForumsTab: {
