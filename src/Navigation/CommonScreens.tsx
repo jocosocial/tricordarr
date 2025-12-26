@@ -183,6 +183,7 @@ export type CommonStackParamList = {
   };
   LfgAddParticipantScreen: {
     fezID: string;
+    fezType: FezType;
   };
   LfgChatScreen: {
     fezID: string;

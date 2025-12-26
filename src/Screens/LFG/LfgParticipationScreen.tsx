@@ -166,7 +166,12 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
           <ListSection>
             {manageUsers && !isFull && (
               <FezParticipantAddItem
-                onPress={() => navigation.push(CommonStackComponents.lfgAddParticipantScreen, {fezID: lfg.fezID})}
+                onPress={() =>
+                  navigation.push(CommonStackComponents.lfgAddParticipantScreen, {
+                    fezID: lfg.fezID,
+                    fezType: lfg.fezType,
+                  })
+                }
               />
             )}
             {!isMember && !isFull && <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />}
@@ -188,7 +193,12 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
               <ListSection>
                 {manageUsers && (
                   <FezParticipantAddItem
-                    onPress={() => navigation.push(CommonStackComponents.lfgAddParticipantScreen, {fezID: lfg.fezID})}
+                    onPress={() =>
+                      navigation.push(CommonStackComponents.lfgAddParticipantScreen, {
+                        fezID: lfg.fezID,
+                        fezType: lfg.fezType,
+                      })
+                    }
                   />
                 )}
                 {!isMember && !isWaitlist && isFull && (
