@@ -16,6 +16,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {HeaderButtonsProvider} from 'react-navigation-header-buttons/HeaderButtonsProvider';
 
 import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
+import {AppFocusHandler} from '#src/Components/Libraries/AppFocusHandler';
 import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
 import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
 import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
@@ -130,6 +131,7 @@ function App(): React.JSX.Element {
                                                         <FilterProvider>
                                                           <SelectionProvider>
                                                             <AppEventHandler />
+                                                            <AppFocusHandler />
                                                             <PushNotificationService />
                                                             <NotificationDataListener />
                                                             <NotificationDataPoller />
