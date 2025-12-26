@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, TextStyle, View, ViewStyle} from 'react-native';
+import {StyleSheet, TextStyle, TouchableOpacity, ViewStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -9,6 +9,9 @@ interface Props {
   message: string;
   headerStyle?: ViewStyle;
   textStyle?: TextStyle;
+  disabled?: boolean;
+  onLongPress?: () => void;
+  onPress?: () => void;
 }
 export const BaseWarningView = (props: Props) => {
   const {commonStyles} = useStyles();
@@ -18,21 +21,23 @@ export const BaseWarningView = (props: Props) => {
       ...commonStyles.twitarrNeutral,
       ...commonStyles.alignItemsCenter,
       ...commonStyles.paddingVerticalSmall,
-      ...props.headerStyle,
     },
     headerText: {
       ...commonStyles.bold,
       ...commonStyles.onTwitarrButton,
-      ...props.textStyle,
     },
   });
 
   return (
-    <View style={styles.headerView}>
+    <TouchableOpacity
+      disabled={props.disabled}
+      style={styles.headerView}
+      onLongPress={props.onLongPress}
+      onPress={props.onPress}>
       <Text style={styles.headerText}>{props.title}</Text>
-      <Text variant={'labelSmall'} style={commonStyles.onTwitarrButton}>
+      <Text variant={'labelMedium'} style={commonStyles.onTwitarrButton}>
         {props.message}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 };

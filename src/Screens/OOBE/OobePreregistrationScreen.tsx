@@ -10,7 +10,10 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
+import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
@@ -21,6 +24,7 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePrereg
 export const OobePreregistrationScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
   const {appConfig, updateAppConfig} = useConfig();
+  const rootNavigation = useRootStack();
 
   const setPreRegistrationMode = useCallback(
     (mode: boolean) => {
@@ -45,7 +49,14 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
 
   const onBackPress = () => {
     setPreRegistrationMode(true);
-    navigation.goBack();
+    // This animation still doesn't look great, but it's good enough.
+    rootNavigation.setOptions({animationTypeForReplace: 'pop'});
+    rootNavigation.replace(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
+      params: {
+        screen: MainStackComponents.mainScreen,
+      },
+    });
   };
 
   return (
@@ -74,7 +85,7 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
           </Text>
         </PaddedContentView>
       </ScrollingContentView>
-      <OobeButtonsView leftText={'Back'} leftOnPress={onBackPress} rightOnPress={onPress} />
+      <OobeButtonsView leftText={'Back to App'} leftOnPress={onBackPress} rightOnPress={onPress} />
     </AppView>
   );
 };

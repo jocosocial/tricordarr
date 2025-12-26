@@ -11,7 +11,7 @@ export const TodayPreRegistrationCard = () => {
 
   const styles = StyleSheet.create({
     card: {
-      ...commonStyles.twitarrPositive,
+      ...commonStyles.twitarrNeutral,
     },
     title: {
       ...commonStyles.onTwitarrButton,

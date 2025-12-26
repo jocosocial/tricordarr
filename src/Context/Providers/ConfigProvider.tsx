@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {PropsWithChildren, useEffect, useState} from 'react';
 
 import {ConfigContext} from '#src/Context/Contexts/ConfigContext';
-import {AppConfig, getAppConfig} from '#src/Libraries/AppConfig';
+import {AppConfig, defaultAppConfig, getAppConfig} from '#src/Libraries/AppConfig';
 import {StorageKeys} from '#src/Libraries/Storage';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
@@ -26,7 +26,11 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
         console.log('[ConfigProvider.tsx] useEffect finished!');
         setIsReady(true);
       })
-      .catch(console.error);
+      .catch(error => {
+        console.error('[ConfigProvider.tsx] Failed to load config, using defaults:', error);
+        setAppConfig(defaultAppConfig);
+        setIsReady(true);
+      });
   }, []);
 
   const updateAppConfig = (newConfig: AppConfig) => {
