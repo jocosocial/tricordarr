@@ -8,7 +8,7 @@ interface Props {
   title: string;
   message: string;
   headerStyle?: ViewStyle;
-  textStyle?: TextStyle;
+  titleStyle?: TextStyle;
   disabled?: boolean;
   onLongPress?: () => void;
   onPress?: () => void;
@@ -21,10 +21,12 @@ export const BaseWarningView = (props: Props) => {
       ...commonStyles.twitarrNeutral,
       ...commonStyles.alignItemsCenter,
       ...commonStyles.paddingVerticalSmall,
+      ...props.headerStyle,
     },
-    headerText: {
+    titleText: {
       ...commonStyles.bold,
       ...commonStyles.onTwitarrButton,
+      ...props.titleStyle,
     },
   });
 
@@ -34,7 +36,7 @@ export const BaseWarningView = (props: Props) => {
       style={styles.headerView}
       onLongPress={props.onLongPress}
       onPress={props.onPress}>
-      <Text style={styles.headerText}>{props.title}</Text>
+      <Text style={styles.titleText}>{props.title}</Text>
       <Text variant={'labelMedium'} style={commonStyles.onTwitarrButton}>
         {props.message}
       </Text>
