@@ -147,7 +147,8 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     },
     headerLeftWrapper: {
       // This is close enough on Android. Haven't seen anything on iOS yet.
-      marginRight: Platform.select({android: 30, default: 15}),
+      marginRight: Platform.select({android: 16, default: 15}),
+      marginLeft: Platform.select({android: 14, default: 5}),
     },
   });
 
