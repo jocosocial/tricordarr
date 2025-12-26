@@ -11,6 +11,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
@@ -18,7 +19,8 @@ import {contentNotificationCategories} from '#src/Libraries/Notifications/Conten
 
 export const ForumSettingsScreen = () => {
   const {commonStyles} = useStyles();
-  const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();
+  const {appConfig, updateAppConfig} = useConfig();
+  const {hasNotificationPermission} = usePermissions();
   const [defaultSortOrder, setDefaultSortOrder] = useState(appConfig.userPreferences.defaultForumSortOrder);
   const [defaultSortDirection, setDefaultSortDirection] = useState(appConfig.userPreferences.defaultForumSortDirection);
   const {setForumSortOrder, setForumSortDirection} = useFilter();

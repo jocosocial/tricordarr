@@ -14,6 +14,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
@@ -21,14 +22,13 @@ import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {SegmentedButtonType} from '#src/Types';
 
 export const PushNotificationSettingsScreen = () => {
+  const {appConfig, updateAppConfig} = useConfig();
   const {
-    appConfig,
-    updateAppConfig,
     hasNotificationPermission,
     setNotificationPermissionStatus,
     notificationPermissionStatus,
     setHasNotificationPermission,
-  } = useConfig();
+  } = usePermissions();
   const {theme} = useAppTheme();
   const [muteDuration] = useState(0);
   const [muteNotifications, setMuteNotifications] = useState(appConfig.muteNotifications);

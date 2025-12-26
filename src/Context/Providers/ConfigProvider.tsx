@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {PropsWithChildren, useEffect, useState} from 'react';
-import {checkNotifications, PermissionStatus, RESULTS} from 'react-native-permissions';
 
 import {ConfigContext} from '#src/Context/Contexts/ConfigContext';
 import {AppConfig, getAppConfig} from '#src/Libraries/AppConfig';
@@ -10,8 +9,6 @@ import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
 export const ConfigProvider = ({children}: PropsWithChildren) => {
   const [appConfig, setAppConfig] = useState<AppConfig>();
-  const [hasNotificationPermission, setHasNotificationPermission] = useState(false);
-  const [notificationPermissionStatus, setNotificationPermissionStatus] = useState<PermissionStatus | undefined>();
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -23,10 +20,6 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
         NativeTricordarrModule.setAppConfig(JSON.stringify(config));
       })
       .finally(() => console.log('[ConfigProvider.tsx] Finished loading app config.'));
-    checkNotifications().then(({status}) => {
-      setHasNotificationPermission(status === RESULTS.GRANTED);
-      setNotificationPermissionStatus(status);
-    });
   }, []);
 
   const updateAppConfig = (newConfig: AppConfig) => {
@@ -52,10 +45,6 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
         appConfig,
         updateAppConfig,
         oobeCompleted,
-        hasNotificationPermission,
-        setHasNotificationPermission,
-        notificationPermissionStatus,
-        setNotificationPermissionStatus,
       }}>
       {children}
     </ConfigContext.Provider>
