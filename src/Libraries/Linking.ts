@@ -49,6 +49,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             },
             UserProfileScreen: getPath(CommonStackComponents.userProfileScreen),
             UsernameProfileScreen: getPath(CommonStackComponents.usernameProfileScreen),
+            FavoriteUsersScreen: getPath(CommonStackComponents.favoriteUsers),
             MapScreen: getPath(CommonStackComponents.mapScreen),
             UserDirectoryScreen: getPath(MainStackComponents.userDirectoryScreen),
             MainConductScreen: getPath(MainStackComponents.conductScreen),

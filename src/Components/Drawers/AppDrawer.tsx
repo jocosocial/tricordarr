@@ -93,6 +93,11 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                     icon={AppIcons.group}
                     onPress={() => Linking.openURL('tricordarr://users')}
                   />
+                  <PaperDrawer.Item
+                    label={'Favorite Users'}
+                    icon={AppIcons.userFavorite}
+                    onPress={() => Linking.openURL('tricordarr://favorites')}
+                  />
                 </>
               )}
               <PaperDrawer.Item

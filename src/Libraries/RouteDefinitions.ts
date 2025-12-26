@@ -51,6 +51,7 @@ export const allRoutes: RouteDefinition[] = [
   // ==================== User Routes ====================
   {screen: CommonStackComponents.userProfileScreen, path: 'user/:userID'},
   {screen: CommonStackComponents.usernameProfileScreen, path: 'username/:username'},
+  {screen: CommonStackComponents.favoriteUsers, path: 'favorites'},
   {screen: CommonStackComponents.mapScreen, path: 'map/:deckNumber?'},
 
   // ==================== Seamail Tab Routes ====================
