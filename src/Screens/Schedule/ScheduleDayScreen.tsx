@@ -108,6 +108,14 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     fetchNextPage: personalFetchNextPage,
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
+    // Adding this one line (hidePast: false) does some magic to prevent SchedulePrivateEventsScreen
+    // from not refetching private event data even though it is stale. I suspect React Query may be
+    // seeing the staleTime from the other instance of the query and thinking that its data is still
+    // valid even though it totally isn't. My other guess is that by making it align with the options
+    // in SchedulePrivateEventsScreen it somehow fixes this because it makes the queryKeys the same
+    // and subject to correct refetching.
+    // https://github.com/jocosocial/tricordarr/issues/253
+    hidePast: false,
     options: {
       enabled: !appConfig.preRegistrationMode,
     },
