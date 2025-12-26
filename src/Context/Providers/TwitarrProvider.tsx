@@ -6,6 +6,8 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {TwitarrContext} from '#src/Context/Contexts/TwitarrContext';
+import {isNavigationReady, push} from '#src/Libraries/NavigationRef';
+import {extractPathFromTricordarrUrl, parseDeepLinkUrl} from '#src/Libraries/UrlParser';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
@@ -14,14 +16,31 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
 
   /**
    * Transform a URL path for the app's deep linking scheme.
-   * Handles /fez -> /lfg translation and opens the URL.
+   * Handles /fez -> /lfg translation.
+   *
+   * Attempts to use push navigation for a better back button experience.
+   * Falls back to Linking.openURL() if the URL can't be parsed or navigation isn't ready.
    */
   const openAppUrl = useCallback(
     (appUrl: string) => {
+      // Handle /fez -> /lfg translation
       if (appUrl.includes('/fez')) {
         appUrl = appUrl.replace('/fez', '/lfg');
       }
-      console.log('[TwitarrProvider.tsx] Opening reformed URL', appUrl);
+
+      // Try to use push navigation for better back button behavior
+      const path = extractPathFromTricordarrUrl(appUrl);
+      if (path && isNavigationReady()) {
+        const parsed = parseDeepLinkUrl(path);
+        if (parsed) {
+          console.log('[TwitarrProvider.tsx] Push navigating to', parsed.screen, parsed.params);
+          push(parsed.screen, parsed.params);
+          return;
+        }
+      }
+
+      // Fall back to Linking.openURL() for unrecognized routes
+      console.log('[TwitarrProvider.tsx] Falling back to Linking.openURL for', appUrl);
       Linking.openURL(appUrl).catch(err => {
         console.error('[TwitarrProvider.tsx] Failed to open URL:', appUrl, err);
         setErrorBanner('Failed to open URL: ' + appUrl);

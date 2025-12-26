@@ -6,6 +6,7 @@ import {HeaderButtonsProvider} from 'react-navigation-header-buttons/HeaderButto
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {closeAllMenus} from '#src/Hooks/useMenu';
 import {navigationLinking} from '#src/Libraries/Linking';
+import {navigationRef} from '#src/Libraries/NavigationRef';
 
 export const NavigationProvider = ({children}: PropsWithChildren) => {
   const {navTheme, theme} = useAppTheme();
@@ -17,7 +18,11 @@ export const NavigationProvider = ({children}: PropsWithChildren) => {
   const handleStateChange = useCallback(() => closeAllMenus(), []);
 
   return (
-    <NavigationContainer linking={navigationLinking} theme={navTheme} onStateChange={handleStateChange}>
+    <NavigationContainer
+      ref={navigationRef}
+      linking={navigationLinking}
+      theme={navTheme}
+      onStateChange={handleStateChange}>
       <PaperProvider theme={theme}>
         <HeaderButtonsProvider stackType={'native'}>{children as ReactElement}</HeaderButtonsProvider>
       </PaperProvider>
