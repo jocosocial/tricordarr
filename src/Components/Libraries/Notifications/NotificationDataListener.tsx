@@ -4,8 +4,8 @@ import {useCallback, useEffect} from 'react';
 
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
-import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -17,7 +17,7 @@ import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketS
  * This is NOT responsible for push notifications.
  */
 export const NotificationDataListener = () => {
-  const {enableUserNotifications} = useUserNotificationData();
+  const {enableUserNotifications} = useEnableUserNotification();
   const {isLoggedIn} = useAuth();
   const {oobeCompleted, appConfig} = useConfig();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({

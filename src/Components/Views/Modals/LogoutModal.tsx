@@ -12,7 +12,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
+import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {stopForegroundServiceWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 import {useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
@@ -37,7 +37,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
   const {theme} = useAppTheme();
   const settingsNavigation = useSettingsStack();
 
-  const {setEnableUserNotifications} = useUserNotificationData();
+  const {setEnableUserNotifications} = useEnableUserNotification();
   const {signOut} = useAuth();
   const logoutMutation = useLogoutMutation({
     onSuccess: () => {

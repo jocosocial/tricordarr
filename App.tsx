@@ -26,6 +26,7 @@ import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
 import {CruiseProvider} from '#src/Context/Providers/CruiseProvider';
 import {DrawerProvider} from '#src/Context/Providers/DrawerProvider';
+import {EnableUserNotificationProvider} from '#src/Context/Providers/EnableUserNotificationProvider';
 import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
 import {FeatureProvider} from '#src/Context/Providers/FeatureProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
@@ -42,7 +43,6 @@ import {StyleProvider} from '#src/Context/Providers/StyleProvider';
 import {SwiftarrQueryClientProvider} from '#src/Context/Providers/SwiftarrQueryClientProvider';
 import {ThemeProvider} from '#src/Context/Providers/ThemeProvider';
 import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
-import {UserNotificationDataProvider} from '#src/Context/Providers/UserNotificationDataProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
 import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
@@ -119,7 +119,7 @@ function App(): React.JSX.Element {
                                 <PrivilegeProvider>
                                   <SocketProvider>
                                     <TwitarrProvider>
-                                      <UserNotificationDataProvider>
+                                      <EnableUserNotificationProvider>
                                         <FeatureProvider>
                                           <ModalProvider>
                                             <Portal.Host>
@@ -146,7 +146,7 @@ function App(): React.JSX.Element {
                                             </Portal.Host>
                                           </ModalProvider>
                                         </FeatureProvider>
-                                      </UserNotificationDataProvider>
+                                      </EnableUserNotificationProvider>
                                     </TwitarrProvider>
                                   </SocketProvider>
                                 </PrivilegeProvider>
