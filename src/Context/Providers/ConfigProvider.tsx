@@ -9,17 +9,24 @@ import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
 export const ConfigProvider = ({children}: PropsWithChildren) => {
   const [appConfig, setAppConfig] = useState<AppConfig>();
+  const [isReady, setIsReady] = useState<boolean>(false);
+
+  const loadAppConfig = async () => {
+    console.log('[ConfigProvider.tsx] loadAppConfig start');
+    const config = await getAppConfig();
+    setAppConfig(config);
+    NativeTricordarrModule.setAppConfig(JSON.stringify(config));
+    console.log('[ConfigProvider.tsx] loadAppConfig finished');
+  };
 
   useEffect(() => {
-    const loadConfig = async () => {
-      return getAppConfig();
-    };
-    loadConfig()
-      .then(config => {
-        setAppConfig(config);
-        NativeTricordarrModule.setAppConfig(JSON.stringify(config));
+    console.log('[ConfigProvider.tsx] useEffect calling loadAppConfig...');
+    loadAppConfig()
+      .then(() => {
+        console.log('[ConfigProvider.tsx] useEffect finished!');
+        setIsReady(true);
       })
-      .finally(() => console.log('[ConfigProvider.tsx] Finished loading app config.'));
+      .catch(console.error);
   }, []);
 
   const updateAppConfig = (newConfig: AppConfig) => {
@@ -30,11 +37,19 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
     NativeTricordarrModule.setAppConfig(JSON.stringify(newConfig));
     // Persist to storage in the background.
     AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(newConfig));
+    console.log('[ConfigProvider.tsx] updateAppConfig finished');
   };
 
+  // This should eventually show the splash screen.
+  // https://github.com/jocosocial/tricordarr/issues/390
+  if (!isReady) {
+    console.log('[ConfigProvider.tsx] Config is not ready.');
+    return null;
+  }
+
   if (!appConfig) {
-    console.warn('[ConfigProvider.tsx] App config is empty?');
-    return <></>;
+    console.error('[ConfigProvider.tsx] App config is empty?');
+    return null;
   }
 
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
