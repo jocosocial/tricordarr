@@ -1,13 +1,12 @@
 import {CacheManager} from '@georstat/react-native-image-cache';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {BoldText} from '#src/Components/Text/BoldText';
-import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
@@ -23,6 +22,11 @@ interface CriticalErrorViewProps {
   resetError: Function;
 }
 
+/**
+ * This is a standalone view that can be used to display a critical error.
+ * It is not part of the navigation stack and can be used to display a critical error
+ * in a standalone context. Thus it cannot rely on AppView.
+ */
 export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
@@ -31,11 +35,25 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const {signOut} = useAuth();
   const {appConfig, updateAppConfig} = useConfig();
 
-  const styles = {
-    outerContainer: [commonStyles.flex, commonStyles.justifyCenter, commonStyles.alignItemsCenter],
-    innerContainer: [commonStyles.justifyCenter, commonStyles.alignItemsCenter],
-    contentContainer: [commonStyles.marginVerticalSmall],
-  };
+  const styles = StyleSheet.create({
+    screen: {
+      ...commonStyles.flex,
+      ...commonStyles.safePaddingTop,
+      ...commonStyles.safePaddingBottom,
+    },
+    outerContainer: {
+      ...commonStyles.flex,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+    },
+    innerContainer: {
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+    },
+    contentContainer: {
+      ...commonStyles.marginVerticalSmall,
+    },
+  });
 
   const toggleShowStack = () => setShowStack(!showStack);
 
@@ -51,7 +69,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   };
 
   return (
-    <AppView>
+    <View style={styles.screen}>
       <ScrollingContentView isStack={true} overScroll={true}>
         <View style={styles.outerContainer}>
           <PaddedContentView style={styles.innerContainer}>
@@ -115,6 +133,6 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
           </PaddedContentView>
         )}
       </ScrollingContentView>
-    </AppView>
+    </View>
   );
 };
