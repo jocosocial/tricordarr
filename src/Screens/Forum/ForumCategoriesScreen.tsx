@@ -30,13 +30,13 @@ type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCat
 
 export const ForumCategoriesScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <LoggedInScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen>
         <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
           <ForumCategoriesScreenInner {...props} />
         </DisabledFeatureScreen>
-      </LoggedInScreen>
-    </PreRegistrationScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 
