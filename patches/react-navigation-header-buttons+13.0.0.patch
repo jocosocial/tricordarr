@@ -1,0 +1,26 @@
+diff --git a/node_modules/react-navigation-header-buttons/src/HeaderButtons.tsx b/node_modules/react-navigation-header-buttons/src/HeaderButtons.tsx
+index 0d10c24..bc7d998 100644
+--- a/node_modules/react-navigation-header-buttons/src/HeaderButtons.tsx
++++ b/node_modules/react-navigation-header-buttons/src/HeaderButtons.tsx
+@@ -8,7 +8,7 @@ import { ButtonsWrapper, ButtonsWrapperProps } from './ButtonsWrapper';
+ 
+ export type HeaderButtonsProps = Pick<
+   ButtonsWrapperProps,
+-  'left' | 'preset' | 'children'
++  'left' | 'preset' | 'children' | 'style'
+ > & {
+   HeaderButtonComponent?: HeaderButtonsComponentType;
+ };
+@@ -18,10 +18,11 @@ export const HeaderButtons = ({
+   HeaderButtonComponent = HeaderButton,
+   left = false,
+   preset,
++  style,
+ }: HeaderButtonsProps) => {
+   return (
+     <HeaderButtonComponentContext.Provider value={HeaderButtonComponent}>
+-      <ButtonsWrapper left={left} preset={preset}>
++      <ButtonsWrapper left={left} preset={preset} style={style}>
+         {children}
+       </ButtonsWrapper>
+     </HeaderButtonComponentContext.Provider>
