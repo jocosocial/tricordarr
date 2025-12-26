@@ -1,6 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
-import React, {PropsWithChildren, useCallback} from 'react';
+import React, {PropsWithChildren, ReactElement, useCallback} from 'react';
 import {PaperProvider} from 'react-native-paper';
+import {HeaderButtonsProvider} from 'react-navigation-header-buttons/HeaderButtonsProvider';
 
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {closeAllMenus} from '#src/Hooks/useMenu';
@@ -17,7 +18,9 @@ export const NavigationProvider = ({children}: PropsWithChildren) => {
 
   return (
     <NavigationContainer linking={navigationLinking} theme={navTheme} onStateChange={handleStateChange}>
-      <PaperProvider theme={theme}>{children}</PaperProvider>
+      <PaperProvider theme={theme}>
+        <HeaderButtonsProvider stackType={'native'}>{children as ReactElement}</HeaderButtonsProvider>
+      </PaperProvider>
     </NavigationContainer>
   );
 };
