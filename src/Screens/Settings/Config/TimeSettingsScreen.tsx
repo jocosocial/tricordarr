@@ -1,7 +1,10 @@
+import {StackScreenProps} from '@react-navigation/stack';
 import {Formik, FormikHelpers} from 'formik';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {TimeSettingsForm} from '#src/Components/Forms/Settings/TimeSettingsForm';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
@@ -13,9 +16,14 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {TimeSettingsFormValues} from '#src/Types/FormValues';
 
-export const TimeSettingsScreen = () => {
+type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.timeSettingsScreen>;
+
+export const TimeSettingsScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
   const {commonStyles} = useStyles();
   const [forceShowTimezoneWarning, setForceShowTimezoneWarning] = useState(appConfig.forceShowTimezoneWarning);
@@ -37,6 +45,28 @@ export const TimeSettingsScreen = () => {
     });
     setForceShowTimezoneWarning(newValue);
   };
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => {
+              navigation.push(CommonStackComponents.timeZoneHelpScreen);
+            }}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const initialValues: TimeSettingsFormValues = {manualTimeOffset: appConfig.manualTimeOffset.toString()};
   return (
