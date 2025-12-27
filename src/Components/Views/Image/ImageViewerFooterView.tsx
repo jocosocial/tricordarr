@@ -3,8 +3,8 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 import {isIOS} from '#src/Libraries/Platform/Detection';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ImageViewerFooterViewProps {
   currentIndex: number;

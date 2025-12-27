@@ -10,12 +10,12 @@ import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '#src/Queries/User/UserAvatarMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
 import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
 import {styleDefaults} from '#src/Styles';
-import {isIOS} from '#src/Libraries/Platform/Detection';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;

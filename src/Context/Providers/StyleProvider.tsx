@@ -4,8 +4,8 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {StyleContext} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {commonStyles, styleDefaults} from '#src/Styles';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
+import {commonStyles, styleDefaults} from '#src/Styles';
 
 export const StyleProvider = ({children}: PropsWithChildren) => {
   const {theme} = useAppTheme();

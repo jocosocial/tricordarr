@@ -2,8 +2,8 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {Item} from 'react-navigation-header-buttons';
 import {Text} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';

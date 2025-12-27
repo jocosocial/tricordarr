@@ -1,8 +1,6 @@
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-
-import {isAndroid} from '#src/Libraries/Platform/Detection';
 import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
 import {requestNotifications, RESULTS} from 'react-native-permissions';
 
@@ -20,6 +18,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
+import {isAndroid} from '#src/Libraries/Platform/Detection';
 import {SegmentedButtonType} from '#src/Types';
 
 export const PushNotificationSettingsScreen = () => {

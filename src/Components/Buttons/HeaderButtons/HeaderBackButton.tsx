@@ -1,8 +1,7 @@
 import {Item} from 'react-navigation-header-buttons';
 
-import {isIOS} from '#src/Libraries/Platform/Detection';
-
 import {AppIcons} from '#src/Enums/Icons';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 
 interface HeaderBackButtonProps {
   onPress: () => void;
@@ -13,12 +12,5 @@ export const HeaderBackButton = ({onPress, title = 'Back'}: HeaderBackButtonProp
   // On iOS, show title with icon (matching default React Navigation behavior)
   // On Android, show only icon (matching default React Navigation behavior)
   // Using empty string on Android to satisfy type requirement while hiding text
-  return (
-    <Item
-      title={isIOS ? title : ''}
-      iconName={AppIcons.back}
-      onPress={onPress}
-      showTitle={isIOS}
-    />
-  );
+  return <Item title={isIOS ? title : ''} iconName={AppIcons.back} onPress={onPress} showTitle={isIOS} />;
 };

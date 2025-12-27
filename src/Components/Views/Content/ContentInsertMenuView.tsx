@@ -7,8 +7,8 @@ import {PERMISSIONS, request as requestPermission} from 'react-native-permission
 
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {PostContentData} from '#src/Structs/ControllerStructs';
 import {isIOS} from '#src/Libraries/Platform/Detection';
+import {PostContentData} from '#src/Structs/ControllerStructs';
 
 interface ContentInsertMenuViewProps {
   visible: boolean;

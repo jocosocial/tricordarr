@@ -9,8 +9,8 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 import {isIOS} from '#src/Libraries/Platform/Detection';
+import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 
 interface ImageViewerHeaderViewProps {
   enableDownload: boolean;

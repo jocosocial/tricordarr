@@ -8,9 +8,9 @@ import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
 import {styleDefaults} from '#src/Styles';
-import {isIOS} from '#src/Libraries/Platform/Detection';
 
 interface AvatarImageFieldProps<TFormData> {
   name: keyof TFormData;

@@ -21,7 +21,8 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePermis
 export const OobePermissionsScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
-  const {setHasNotificationPermission, notificationPermissionStatus, setNotificationPermissionStatus} = usePermissions();
+  const {setHasNotificationPermission, notificationPermissionStatus, setNotificationPermissionStatus} =
+    usePermissions();
 
   const enablePermissions = async () => {
     const {status} = await requestNotifications([]);

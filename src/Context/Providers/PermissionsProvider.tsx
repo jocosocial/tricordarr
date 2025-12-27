@@ -26,4 +26,3 @@ export const PermissionsProvider = ({children}: PropsWithChildren) => {
     </PermissionsContext.Provider>
   );
 };
-

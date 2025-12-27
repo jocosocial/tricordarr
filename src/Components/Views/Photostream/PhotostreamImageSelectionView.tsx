@@ -10,11 +10,11 @@ import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
 import {AppImage} from '#src/Components/Images/AppImage';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
-import {isIOS} from '#src/Libraries/Platform/Detection';
 
 export const PhotostreamImageSelectionView = () => {
   const {commonStyles, styleDefaults} = useStyles();
