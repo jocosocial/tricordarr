@@ -31,6 +31,7 @@ import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
 import {NavigationProvider} from '#src/Context/Providers/NavigationProvider';
 import {PermissionsProvider} from '#src/Context/Providers/PermissionsProvider';
 import {PrivilegeProvider} from '#src/Context/Providers/PrivilegeProvider';
+import {RoleProvider} from '#src/Context/Providers/RoleProvider';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider.tsx';
 import {ShellProvider} from '#src/Context/Providers/ShellProvider';
 import {SocketProvider} from '#src/Context/Providers/SocketProvider';
@@ -111,30 +112,32 @@ function App(): React.JSX.Element {
                           <LoadingProvider>
                             <CriticalErrorProvider>
                               <PrivilegeProvider>
-                                <SocketProvider>
-                                  <TwitarrProvider>
-                                    <EnableUserNotificationProvider>
-                                      <FeatureProvider>
-                                        <ClientSettingsProvider>
-                                          <CruiseProvider>
-                                            <FilterProvider>
-                                              <SelectionProvider>
-                                                <ShellProvider>
-                                                  <AppEventHandler />
-                                                  <AppFocusHandler />
-                                                  <PushNotificationService />
-                                                  <NotificationDataListener />
-                                                  <NotificationDataPoller />
-                                                  <RootStackNavigator />
-                                                </ShellProvider>
-                                              </SelectionProvider>
-                                            </FilterProvider>
-                                          </CruiseProvider>
-                                        </ClientSettingsProvider>
-                                      </FeatureProvider>
-                                    </EnableUserNotificationProvider>
-                                  </TwitarrProvider>
-                                </SocketProvider>
+                                <RoleProvider>
+                                  <SocketProvider>
+                                    <TwitarrProvider>
+                                      <EnableUserNotificationProvider>
+                                        <FeatureProvider>
+                                          <ClientSettingsProvider>
+                                            <CruiseProvider>
+                                              <FilterProvider>
+                                                <SelectionProvider>
+                                                  <ShellProvider>
+                                                    <AppEventHandler />
+                                                    <AppFocusHandler />
+                                                    <PushNotificationService />
+                                                    <NotificationDataListener />
+                                                    <NotificationDataPoller />
+                                                    <RootStackNavigator />
+                                                  </ShellProvider>
+                                                </SelectionProvider>
+                                              </FilterProvider>
+                                            </CruiseProvider>
+                                          </ClientSettingsProvider>
+                                        </FeatureProvider>
+                                      </EnableUserNotificationProvider>
+                                    </TwitarrProvider>
+                                  </SocketProvider>
+                                </RoleProvider>
                               </PrivilegeProvider>
                             </CriticalErrorProvider>
                           </LoadingProvider>

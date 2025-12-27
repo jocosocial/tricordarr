@@ -152,11 +152,6 @@ export const SettingsScreen = ({navigation}: Props) => {
                   description={'Internal OOBE information.'}
                   navComponent={SettingsStackScreenComponents.oobeSettings}
                 />
-                <SettingsNavigationListItem
-                  title={'User Info'}
-                  description={'Show internal state of user and auth information.'}
-                  navComponent={SettingsStackScreenComponents.userInfoSettingsScreen}
-                />
               </ListSection>
             </>
           )}

@@ -45,7 +45,7 @@ export namespace UserRoleType {
       case UserRoleType.karaokeambassador:
         return 'Micro Karaoke Ambassador';
       case UserRoleType.performerselfeditor:
-        return '"Allowed to create/edit their Shadow Event Performer"';
+        return 'Shadow Event Performer Editor';
     }
   };
 
