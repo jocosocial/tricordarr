@@ -169,6 +169,11 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 onPress={() => Linking.openURL('tricordarr://codeOfConduct')}
               />
               <PaperDrawer.Item
+                label={'Shadow Host Form'}
+                icon={AppIcons.feedback}
+                onPress={() => Linking.openURL('tricordarr://eventfeedback')}
+              />
+              <PaperDrawer.Item
                 label={'About Twitarr (Service)'}
                 icon={AppIcons.twitarr}
                 onPress={() => Linking.openURL('tricordarr://about')}

@@ -138,4 +138,5 @@ export enum AppIcons {
   shutternaut = 'camera-iris',
   // shutternaut = 'bat',
   userFavorite = 'account-star',
+  feedback = 'comment-quote',
 }
