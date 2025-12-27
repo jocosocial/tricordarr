@@ -25,7 +25,7 @@ import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Ma
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {useUserProfileQuery, useUserWhoamiQuery} from '#src/Queries/User/UserQueries';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
@@ -46,6 +46,7 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchBlocks} = useUserBlocksQuery({enabled: false});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
+  const {refetch: refetchWhoami} = useUserWhoamiQuery({enabled: false});
   const {isLoggedIn} = useAuth();
   const {hasModerator} = usePrivilege();
   const {appConfig} = useConfig();
@@ -58,7 +59,7 @@ export const TodayScreen = ({navigation}: Props) => {
     if (!appConfig.preRegistrationMode) {
       refreshes.push(refetchAnnouncements(), refetchThemes(), refetchUserNotificationData());
       if (isLoggedIn) {
-        refreshes.push(refetchProfile(), refetchFavorites(), refetchBlocks(), refetchMutes());
+        refreshes.push(refetchProfile(), refetchFavorites(), refetchBlocks(), refetchMutes(), refetchWhoami());
       }
     }
     await Promise.all(refreshes);

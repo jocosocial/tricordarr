@@ -1,3 +1,4 @@
+import {STALE} from '#src/Libraries/Time/Time';
 import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 import {UserNotificationData} from '#src/Structs/ControllerStructs';
 
@@ -7,7 +8,7 @@ import {UserNotificationData} from '#src/Structs/ControllerStructs';
  */
 export const useUserNotificationDataQuery = (options: TokenAuthQueryOptionsType<UserNotificationData> = {}) => {
   return useTokenAuthQuery<UserNotificationData>('/notification/global', {
-    staleTime: 1000 * 30,
+    staleTime: STALE.SECONDS.THIRTY,
     ...options,
   });
 };

@@ -1,10 +1,12 @@
-import React from 'react';
-import {ScrollView, View} from 'react-native';
+import React, {useState} from 'react';
+import {RefreshControl, ScrollView, View} from 'react-native';
 
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {UserRoleType} from '#src/Enums/UserRoleType';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 const toSecureString = (originalText?: string) => {
@@ -22,17 +24,27 @@ const toSecureString = (originalText?: string) => {
 };
 
 export const UserInfoSettingsScreen = () => {
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {data: profilePublicData, refetch: refetchProfile} = useUserProfileQuery();
   const {tokenData} = useAuth();
-  const [showToken, setShowToken] = React.useState(false);
+  const {roles, refetch: refetchRoles} = useRoles();
+  const [showToken, setShowToken] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const toggleToken = () => {
     setShowToken(!showToken);
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([refetchProfile(), refetchRoles()]);
+    setRefreshing(false);
+  };
+
+  const rolesDescription = roles.length > 0 ? roles.map(role => UserRoleType.getLabel(role)).join(', ') : 'None';
+
   return (
     <AppView>
-      <ScrollView>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View>
           <ListSubheader>Profile Public Data</ListSubheader>
           <DataFieldListItem title={'UserID'} description={profilePublicData?.header.userID} />
@@ -47,6 +59,10 @@ export const UserInfoSettingsScreen = () => {
             onPress={toggleToken}
             description={showToken ? tokenData?.token : toSecureString(tokenData?.token)}
           />
+        </View>
+        <View>
+          <ListSubheader>User Roles</ListSubheader>
+          <DataFieldListItem title={'Roles'} description={rolesDescription} />
         </View>
       </ScrollView>
     </AppView>

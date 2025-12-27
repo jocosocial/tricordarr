@@ -9,6 +9,7 @@ import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {FezType} from '#src/Enums/FezType';
 import {LikeType} from '#src/Enums/LikeType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
+import {UserRoleType} from '#src/Enums/UserRoleType';
 import {StorageKeys} from '#src/Libraries/Storage';
 
 /**
@@ -1322,4 +1323,22 @@ export namespace ClientSettingsData {
     }
     return new Date(parsed.getUTCFullYear(), parsed.getUTCMonth(), parsed.getUTCDate());
   };
+}
+
+/// Used to obtain the current user's ID, username and logged-in status.
+///
+/// Returned by: `GET /api/v3/user/whoami`
+///
+/// See `UserController.whoamiHandler(_:).`
+export interface CurrentUserData {
+  /// The currrent user's ID.
+  userID: string;
+  /// The current user's username.
+  username: string;
+  /// Whether the user is currently logged in.
+  isLoggedIn: boolean;
+  /// The current user's access level (role).
+  accessLevel: UserAccessLevel;
+  /// A list of the user's roles
+  roles: UserRoleType[];
 }

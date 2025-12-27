@@ -106,6 +106,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={SettingsStackScreenComponents.cruiseSettingsScreen}
             />
             <SettingsNavigationListItem
+              title={'Manage Features'}
+              description={'Show server feature state and manage experiments.'}
+              navComponent={SettingsStackScreenComponents.featureSettingsScreen}
+            />
+            <SettingsNavigationListItem
               title={'Query Client'}
               description={'Settings for the Twitarr API client.'}
               navComponent={SettingsStackScreenComponents.querySettingsScreen}
@@ -146,11 +151,6 @@ export const SettingsScreen = ({navigation}: Props) => {
                   title={'Out-of-box Experience'}
                   description={'Internal OOBE information.'}
                   navComponent={SettingsStackScreenComponents.oobeSettings}
-                />
-                <SettingsNavigationListItem
-                  title={'Manage Features'}
-                  description={'Show server feature state and manage experiments.'}
-                  navComponent={SettingsStackScreenComponents.featureSettingsScreen}
                 />
                 <SettingsNavigationListItem
                   title={'User Info'}
