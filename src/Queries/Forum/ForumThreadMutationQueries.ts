@@ -31,3 +31,13 @@ export const useForumRenameMutation = () => {
 
   return useTokenAuthMutation(forumRenameQueryHandler);
 };
+
+export const useForumMarkReadMutation = () => {
+  const {apiPost} = useSwiftarrQueryClient();
+
+  const forumMarkReadQueryHandler = async ({forumID}: {forumID: string}) => {
+    return await apiPost(`/forum/${forumID}/markRead`);
+  };
+
+  return useTokenAuthMutation(forumMarkReadQueryHandler);
+};
