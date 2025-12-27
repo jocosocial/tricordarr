@@ -6,8 +6,6 @@ import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
-import {HeaderDayPlannerButton} from '#src/Components/Buttons/HeaderButtons/HeaderDayPlannerButton';
-import {HeaderScheduleYourDayButton} from '#src/Components/Buttons/HeaderButtons/HeaderScheduleYourDayButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
@@ -158,18 +156,12 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
             iconName={AppIcons.search}
             onPress={() => navigation.push(CommonStackComponents.eventSearchScreen)}
           />
-          {appConfig.enableExperiments ? (
-            <HeaderDayPlannerButton cruiseDay={selectedCruiseDay} />
-          ) : (
-            <HeaderScheduleYourDayButton />
-          )}
           <ScheduleEventFilterMenu />
-
           <ScheduleDayScreenActionsMenu onRefresh={onRefresh} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [onRefresh, navigation, selectedCruiseDay, appConfig.enableExperiments]);
+  }, [onRefresh, navigation]);
 
   useEffect(() => {
     navigation.setOptions({

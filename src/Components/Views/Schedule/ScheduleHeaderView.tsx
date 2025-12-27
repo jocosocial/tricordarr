@@ -1,5 +1,5 @@
 import {FlashList, type FlashListRef} from '@shopify/flash-list';
-import React, {Dispatch, SetStateAction, useRef} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useRef} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {ScheduleHeaderDayButton} from '#src/Components/Buttons/ScheduleHeaderDayButton';
@@ -28,6 +28,47 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
       ...commonStyles.paddingVerticalSmall,
     },
   });
+
+  // Calculate selected day - must be before early return per Rules of Hooks
+  const safeSelectedDay = props.selectedCruiseDay || 1;
+
+  // Center the selected day on initial mount only - must be before early return per Rules of Hooks
+  // Use a ref to track if we've done the initial scroll
+  const hasScrolledOnMount = useRef(false);
+
+  useEffect(() => {
+    // Check data availability first, before checking if we've scrolled
+    if (!headerListRef.current || !cruiseDays || cruiseDays.length === 0) {
+      return;
+    }
+
+    // Only scroll if we haven't done it yet
+    if (hasScrolledOnMount.current) {
+      return;
+    }
+
+    // Use requestAnimationFrame to ensure scroll happens after layout is complete
+    const rafId = requestAnimationFrame(() => {
+      const isFirstDay = safeSelectedDay === 1;
+      const isLastDay = safeSelectedDay === cruiseDays.length;
+
+      if (isFirstDay) {
+        headerListRef.current?.scrollToOffset({offset: 0, animated: false});
+      } else if (isLastDay) {
+        headerListRef.current?.scrollToEnd({animated: false});
+      } else {
+        headerListRef.current?.scrollToIndex({
+          index: safeSelectedDay - 1,
+          viewPosition: 0.5,
+          animated: false,
+        });
+      }
+
+      hasScrolledOnMount.current = true;
+    });
+
+    return () => cancelAnimationFrame(rafId);
+  }, [safeSelectedDay, cruiseDays]);
 
   const renderItem = ({item}: {item: CruiseDayData}) => {
     const onPress = () => {
@@ -71,13 +112,6 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
     return null;
   }
 
-  // Calculate safe initial scroll index - only scroll if we need to show a day other than the first
-  // Setting initialScrollIndex to 0 can cause FlashList to report non-zero offsets during layout
-  const safeSelectedDay = props.selectedCruiseDay || 1;
-  const calculatedIndex = Math.min(Math.max(safeSelectedDay - 1, 0), Math.min(cruiseDays.length - 1, 3));
-  // Only use initialScrollIndex when we actually need to scroll (> 0)
-  const initialScrollIndex = calculatedIndex > 0 ? calculatedIndex : undefined;
-
   return (
     <View style={styles.view}>
       <ScrollShadowView side={'left'} opacity={leftShadowOpacity} />
@@ -90,12 +124,6 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         data={cruiseDays}
-        // selectedCruiseDay is event-style 1-indexed.
-        // The Math.min() is needed because the initialScrollIndex will overscroll
-        // the list on load if we get to later in the week. It fixes itself if the user
-        // scrolls but then it jumps.
-        // Only set initialScrollIndex when > 0 to avoid layout-triggered scroll events
-        initialScrollIndex={initialScrollIndex}
         extraData={[props.selectedCruiseDay, props.scrollToNow]}
         onScroll={handleScroll}
         scrollEventThrottle={16}
