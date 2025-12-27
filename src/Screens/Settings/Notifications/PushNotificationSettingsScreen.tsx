@@ -1,7 +1,6 @@
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {Platform} from 'react-native';
 import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
 import {requestNotifications, RESULTS} from 'react-native-permissions';
 
@@ -14,21 +13,22 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
+import {isAndroid} from '#src/Libraries/Platform/Detection';
 import {SegmentedButtonType} from '#src/Types';
 
 export const PushNotificationSettingsScreen = () => {
+  const {appConfig, updateAppConfig} = useConfig();
   const {
-    appConfig,
-    updateAppConfig,
     hasNotificationPermission,
     setNotificationPermissionStatus,
     notificationPermissionStatus,
     setHasNotificationPermission,
-  } = useConfig();
+  } = usePermissions();
   const {theme} = useAppTheme();
   const [muteDuration] = useState(0);
   const [muteNotifications, setMuteNotifications] = useState(appConfig.muteNotifications);
@@ -208,7 +208,7 @@ export const PushNotificationSettingsScreen = () => {
             <PrimaryActionButton buttonText={'Resume'} onPress={resumeNotifications} disabled={!muteNotifications} />
           </PaddedContentView>
         </ListSection>
-        {Platform.OS === 'android' && (
+        {isAndroid && (
           <ListSection>
             <ListSubheader>Auto Cancel</ListSubheader>
             <PaddedContentView padTop={true}>

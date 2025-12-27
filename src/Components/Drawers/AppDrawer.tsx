@@ -93,6 +93,11 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                     icon={AppIcons.group}
                     onPress={() => Linking.openURL('tricordarr://users')}
                   />
+                  <PaperDrawer.Item
+                    label={'Favorite Users'}
+                    icon={AppIcons.userFavorite}
+                    onPress={() => Linking.openURL('tricordarr://favorites')}
+                  />
                 </>
               )}
               <PaperDrawer.Item
@@ -162,6 +167,11 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 label={'Code of Conduct'}
                 icon={AppIcons.codeofconduct}
                 onPress={() => Linking.openURL('tricordarr://codeOfConduct')}
+              />
+              <PaperDrawer.Item
+                label={'Shadow Host Form'}
+                icon={AppIcons.feedback}
+                onPress={() => Linking.openURL('tricordarr://eventfeedback')}
               />
               <PaperDrawer.Item
                 label={'About Twitarr (Service)'}

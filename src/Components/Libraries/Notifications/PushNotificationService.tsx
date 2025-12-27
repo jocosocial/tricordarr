@@ -1,8 +1,9 @@
 import {useEffect} from 'react';
 
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
+import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
+
 /**
  * Functional component to control the lifecycle of the platform-dependent push notification
  * system.
@@ -14,7 +15,7 @@ import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/
  * and generates notifications on the JS side.
  */
 export const PushNotificationService = () => {
-  const {enableUserNotifications} = useUserNotificationData();
+  const {enableUserNotifications} = useEnableUserNotification();
   const {isLoggedIn, isLoading} = useAuth();
 
   useEffect(() => {

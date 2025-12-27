@@ -10,24 +10,25 @@ import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameListScreen>;
 
 export const BoardgameListScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
-        <BoardgameListScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen>
+        <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
+          <BoardgameListScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -45,7 +46,6 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
     refetch,
     isFetching,
   } = useBoardgamesQuery({favorite: favorites});
-  const {isLoggedIn} = useAuth();
 
   const handleLoadNext = async () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -90,10 +90,6 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
       headerRight: getNavButtons,
     });
   }, [getNavButtons, navigation]);
-
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
 
   if (isLoading) {
     return <LoadingView />;

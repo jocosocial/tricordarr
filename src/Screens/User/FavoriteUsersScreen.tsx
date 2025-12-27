@@ -1,14 +1,15 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
-import React from 'react';
-import {RefreshControl} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {UserFindSearchBar} from '#src/Components/Search/UserSearchBar/UserFindSearchBar';
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {ItalicText} from '#src/Components/Text/ItalicText';
-import {UserFavoriteText} from '#src/Components/Text/UserRelationsText';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -37,6 +38,26 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
   const {data, isFetching, refetch} = useUserFavoritesQuery();
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.userRelationsHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const handleUnfavoriteUser = (userHeader: UserHeader) => {
     userFavoriteMutation.mutate(
@@ -83,7 +104,10 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
           <RefreshControl refreshing={isFetching || userFavoriteMutation.isPending} onRefresh={refetch} />
         }>
         <PaddedContentView>
-          <UserFavoriteText />
+          <Text>
+            Favoriting a user allows them to call you with KrakenTalk™. You will only be able to call them if they
+            favorite you.
+          </Text>
         </PaddedContentView>
         <PaddedContentView>
           {appConfig.preRegistrationMode ? (

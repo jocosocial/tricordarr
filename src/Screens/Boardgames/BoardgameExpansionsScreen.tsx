@@ -7,26 +7,27 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameExpansionsQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameExpansionsScreen>;
 
 export const BoardgameExpansionsScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen
-        feature={SwiftarrFeature.gameslist}
-        urlPath={`/boardgames/${props.route.params.boardgameID}/expansions`}>
-        <BoardgameExpansionsScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen>
+        <DisabledFeatureScreen
+          feature={SwiftarrFeature.gameslist}
+          urlPath={`/boardgames/${props.route.params.boardgameID}/expansions`}>
+          <BoardgameExpansionsScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -43,7 +44,6 @@ const BoardgameExpansionsScreenInner = ({navigation, route}: Props) => {
     refetch,
     isFetching,
   } = useBoardgameExpansionsQuery({boardgameID: route.params.boardgameID});
-  const {isLoggedIn} = useAuth();
 
   const handleLoadNext = async () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -77,10 +77,6 @@ const BoardgameExpansionsScreenInner = ({navigation, route}: Props) => {
       headerRight: getNavButtons,
     });
   }, [getNavButtons, navigation]);
-
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
 
   if (isLoading) {
     return <LoadingView />;

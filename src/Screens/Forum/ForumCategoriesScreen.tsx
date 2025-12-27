@@ -16,8 +16,6 @@ import {ForumCategoriesScreenSearchMenu} from '#src/Components/Menus/Forum/Forum
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
@@ -25,17 +23,20 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
 
 export const ForumCategoriesScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
-        <ForumCategoriesScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen>
+        <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
+          <ForumCategoriesScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -43,7 +44,6 @@ const ForumCategoriesScreenInner = ({navigation}: Props) => {
   const {data, refetch, isLoading} = useForumCategoriesQuery();
   const [refreshing, setRefreshing] = useState(false);
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
-  const {isLoggedIn} = useAuth();
   const isFocused = useIsFocused();
   const {clearPrivileges} = usePrivilege();
   const {data: keywordData, refetch: refetchKeywordData} = useUserKeywordQuery({
@@ -79,10 +79,6 @@ const ForumCategoriesScreenInner = ({navigation}: Props) => {
       headerRight: getNavButtons,
     });
   }, [getNavButtons, navigation]);
-
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
 
   if (isLoading) {
     return <LoadingView />;

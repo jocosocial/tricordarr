@@ -6,6 +6,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
@@ -21,6 +22,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
   const {appConfig} = useConfig();
+  const {hasPerformerSelfEditor} = useRoles();
 
   const handleHelp = () => {
     closeMenu();
@@ -44,7 +46,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
               eventID: props.event.eventID,
             });
           }}
-          disabled={!appConfig.preRegistrationMode}
+          disabled={!(appConfig.preRegistrationMode || hasPerformerSelfEditor)}
         />
       )}
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />

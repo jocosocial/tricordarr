@@ -1,6 +1,6 @@
 import {useQueryClient} from '@tanstack/react-query';
 import React, {Dispatch, SetStateAction, useEffect} from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 
@@ -10,6 +10,7 @@ import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '#src/Queries/User/UserAvatarMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
@@ -79,7 +80,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   };
 
   const takeImage = async () => {
-    const cameraPermission = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+    const cameraPermission = isIOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
     const permissionStatus = await requestPermission(cameraPermission);
     console.log('[UserProfileAvatar.tsx] Camera permission is', permissionStatus);
     try {

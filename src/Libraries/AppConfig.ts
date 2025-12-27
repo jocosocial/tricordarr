@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Config from 'react-native-config';
 
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from '#src/Libraries/Network/APIClient';
@@ -77,10 +76,11 @@ export interface AppConfig {
   manualTimeOffset: number;
   wifiNetworkNames: string[];
   preRegistrationMode: boolean;
+  forceShowTimezoneWarning: boolean;
 }
 
-const defaultAppConfig: AppConfig = {
-  serverUrl: '',
+export const defaultAppConfig: AppConfig = {
+  serverUrl: __DEV__ ? 'https://beta.twitarr.com' : 'https://twitarr.com',
   urlPrefix: '/api/v3',
   enableBackgroundWorker: true,
   notificationPollInterval: 120000, // 2 minutes
@@ -113,11 +113,11 @@ const defaultAppConfig: AppConfig = {
   },
   fgsWorkerHealthTimer: 20000, // 20000 == 20 seconds
   oobeCompletedVersion: 0,
-  oobeExpectedVersion: 0,
+  oobeExpectedVersion: 3,
   enableDeveloperOptions: false,
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
-  manualTimeOffset: 60,
+  manualTimeOffset: 0,
   schedule: {
     hidePastLfgs: false,
     enableLateDayFlip: true,
@@ -152,43 +152,11 @@ const defaultAppConfig: AppConfig = {
     autosavePhotos: true,
   },
   markReadCancelPush: true,
-  preRegistrationServerUrl: '',
+  preRegistrationServerUrl: 'https://start.twitarr.com',
   enableExperiments: false,
   wifiNetworkNames: [],
   preRegistrationMode: false,
-};
-
-/**
- * Generates an AppConfig object from the defaults and React Native Config "env vars".
- */
-export const getInitialAppConfig = () => {
-  let config = defaultAppConfig;
-  if (Config.SERVER_URL) {
-    config.serverUrl = Config.SERVER_URL;
-  }
-  if (Config.OOBE_VERSION) {
-    config.oobeExpectedVersion = Number(Config.OOBE_VERSION);
-  }
-  if (Config.CRUISE_START_DATE) {
-    const [year, month, day] = Config.CRUISE_START_DATE.split('-').map(Number);
-    // Because Javascript, Fools!
-    config.cruiseStartDate = new Date(year, month - 1, day);
-  }
-  if (Config.CRUISE_LENGTH) {
-    config.cruiseLength = Number(Config.CRUISE_LENGTH);
-  }
-  if (Config.PORT_TIME_ZONE_ID) {
-    config.portTimeZoneID = Config.PORT_TIME_ZONE_ID;
-  }
-  if (Config.SCHED_URL) {
-    config.schedBaseUrl = Config.SCHED_URL;
-  }
-  if (Config.PREREGISTRATION_SERVER_URL) {
-    config.preRegistrationServerUrl = Config.PREREGISTRATION_SERVER_URL;
-  } else {
-    config.preRegistrationServerUrl = config.serverUrl;
-  }
-  return config;
+  forceShowTimezoneWarning: false,
 };
 
 /**
@@ -197,9 +165,7 @@ export const getInitialAppConfig = () => {
 export const getAppConfig = async () => {
   let rawConfig = await AsyncStorage.getItem(StorageKeys.APP_CONFIG);
   if (!rawConfig) {
-    const defaultConfig = getInitialAppConfig();
-    await AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(defaultConfig));
-    return defaultConfig;
+    return defaultAppConfig;
   }
   let appConfig = JSON.parse(rawConfig) as AppConfig;
   // Certain keys should always be loaded from the app environment.

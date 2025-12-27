@@ -1,10 +1,10 @@
 import React from 'react';
-import {Platform} from 'react-native';
 
 import {KrakenView} from '#src/Components/Views/Static/KrakenView';
 import {NotImplementedView} from '#src/Components/Views/Static/NotImplementedView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
@@ -38,7 +38,7 @@ const MicroKaraokeListScreenInner = () => {
   //     </ScrollingContentView>
   //   </AppView>
   // );
-  if (Platform.OS === 'ios' && !appConfig.enableExperiments) {
+  if (isIOS && !appConfig.enableExperiments) {
     return <KrakenView />;
   }
   return <NotImplementedView />;

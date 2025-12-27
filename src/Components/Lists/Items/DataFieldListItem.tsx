@@ -8,7 +8,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface DataFieldListItemProps {
   title?: string;
-  description?: string | number | (() => ReactNode);
+  description?: string | number | (() => ReactNode) | Element;
   onPress?: () => void;
   titleStyle?: TextStyle;
   descriptionStyle?: TextStyle;

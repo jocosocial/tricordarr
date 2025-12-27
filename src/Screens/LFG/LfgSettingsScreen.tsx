@@ -11,6 +11,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
@@ -19,7 +20,8 @@ import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {SegmentedButtonType} from '#src/Types';
 
 export const LfgSettingsScreen = () => {
-  const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();
+  const {appConfig, updateAppConfig} = useConfig();
+  const {hasNotificationPermission} = usePermissions();
   const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.schedule.hidePastLfgs);
   const {setLfgHidePastFilter} = useFilter();
   const {commonStyles} = useStyles();

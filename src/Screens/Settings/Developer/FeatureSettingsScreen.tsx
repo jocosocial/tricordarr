@@ -16,9 +16,11 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 
 export const FeatureSettingsScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
-  const {disabledFeatures} = useFeature();
   const {appConfig, updateAppConfig} = useConfig();
+  const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery({
+    enabled: !appConfig.preRegistrationMode,
+  });
+  const {disabledFeatures} = useFeature();
   const {commonStyles} = useStyles();
   const [enableExperiments, setEnableExperiments] = useState(appConfig.enableExperiments);
 
@@ -41,26 +43,9 @@ export const FeatureSettingsScreen = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ListSection>
-          <ListSubheader>Experiments</ListSubheader>
-          <PaddedContentView padSides={false}>
-            <Formik initialValues={{}} onSubmit={() => {}}>
-              <View>
-                <BooleanField
-                  name={'enableExperiments'}
-                  label={'Enable Experiments'}
-                  helperText={
-                    'Enable experimental features in this app that are not yet ready for general consumption.'
-                  }
-                  value={enableExperiments}
-                  onPress={handleEnableExperiments}
-                  style={commonStyles.paddingHorizontalSmall}
-                />
-              </View>
-            </Formik>
-          </PaddedContentView>
-        </ListSection>
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!appConfig.preRegistrationMode} />
+        }>
         <ListSection>
           <ListSubheader>Server Features</ListSubheader>
           <PaddedContentView padTop={true}>
@@ -94,6 +79,27 @@ export const FeatureSettingsScreen = () => {
             </DataTable>
           </PaddedContentView>
         </ListSection>
+        {appConfig.enableDeveloperOptions && (
+          <ListSection>
+            <ListSubheader>Experiments</ListSubheader>
+            <PaddedContentView padSides={false}>
+              <Formik initialValues={{}} onSubmit={() => {}}>
+                <View>
+                  <BooleanField
+                    name={'enableExperiments'}
+                    label={'Enable Experiments'}
+                    helperText={
+                      'Enable experimental features in this app that are not yet ready for general consumption.'
+                    }
+                    value={enableExperiments}
+                    onPress={handleEnableExperiments}
+                    style={commonStyles.paddingHorizontalSmall}
+                  />
+                </View>
+              </Formik>
+            </PaddedContentView>
+          </ListSection>
+        )}
       </ScrollingContentView>
     </AppView>
   );

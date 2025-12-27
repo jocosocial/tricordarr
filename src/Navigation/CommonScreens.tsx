@@ -24,6 +24,8 @@ import {ForumThreadPostScreen} from '#src/Screens/Forum/Thread/ForumThreadPostSc
 import {ForumThreadScreen} from '#src/Screens/Forum/Thread/ForumThreadScreen';
 import {ForumThreadUserScreen} from '#src/Screens/Forum/Thread/ForumThreadUserScreen';
 import {HelpManualScreen} from '#src/Screens/Help/HelpManualScreen';
+import {ModeratorHelpScreen} from '#src/Screens/Help/ModeratorHelpScreen';
+import {ShutternautHelpScreen} from '#src/Screens/Help/ShutternautHelpScreen';
 import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen';
 import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
 import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
@@ -71,6 +73,7 @@ import {UserProfileEditScreen} from '#src/Screens/User/UserProfileEditScreen';
 import {UserProfileHelpScreen} from '#src/Screens/User/UserProfileHelpScreen';
 import {UserProfileScreen} from '#src/Screens/User/UserProfileScreen';
 import {UserRegCodeScreen} from '#src/Screens/User/UserRegCodeScreen';
+import {UserRelationsHelpScreen} from '#src/Screens/User/UserRelationsHelpScreen';
 import {
   CategoryData,
   FezData,
@@ -181,6 +184,7 @@ export type CommonStackParamList = {
   };
   LfgAddParticipantScreen: {
     fezID: string;
+    fezType: FezType;
   };
   LfgChatScreen: {
     fezID: string;
@@ -201,6 +205,7 @@ export type CommonStackParamList = {
     initialUserHeaders?: UserHeader[];
   };
   UserProfileHelpScreen: ParamsWithOobe;
+  UserRelationsHelpScreen: undefined;
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
   FavoriteUsersScreen: undefined;
@@ -252,6 +257,8 @@ export type CommonStackParamList = {
   MainHelpScreen: undefined;
   AboutTricordarrScreen: undefined;
   AboutTwitarrScreen: undefined;
+  ShutternautHelpScreen: undefined;
+  ModeratorHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -290,6 +297,7 @@ export enum CommonStackComponents {
   personalEventEditScreen = 'PersonalEventEditScreen',
   personalEventCreateScreen = 'PersonalEventCreateScreen',
   userProfileHelpScreen = 'UserProfileHelpScreen',
+  userRelationsHelpScreen = 'UserRelationsHelpScreen',
   blockUsers = 'BlockUsersScreen',
   muteUsers = 'MuteUsersScreen',
   favoriteUsers = 'FavoriteUsersScreen',
@@ -323,6 +331,8 @@ export enum CommonStackComponents {
   mainHelpScreen = 'MainHelpScreen',
   aboutTricordarrScreen = 'AboutTricordarrScreen',
   aboutTwitarrScreen = 'AboutTwitarrScreen',
+  shutternautHelpScreen = 'ShutternautHelpScreen',
+  moderatorHelpScreen = 'ModeratorHelpScreen',
 }
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
@@ -502,6 +512,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Help'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.userRelationsHelpScreen}
+        component={UserRelationsHelpScreen}
+        options={{title: 'User Relations Help'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.blockUsers}
         component={BlockUsersScreen}
         options={{title: 'Blocked Users'}}
@@ -664,6 +679,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.aboutTwitarrScreen}
         component={AboutTwitarrScreen}
         options={{title: 'About Twitarr'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.shutternautHelpScreen}
+        component={ShutternautHelpScreen}
+        options={{title: 'Shutternaut Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorHelpScreen}
+        component={ModeratorHelpScreen}
+        options={{title: 'Moderator Help'}}
       />
     </>
   );

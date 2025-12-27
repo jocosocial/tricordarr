@@ -36,28 +36,38 @@ export const AccountManagementScreen = ({navigation}: Props) => {
       <ScrollingContentView isStack={true}>
         <PaddedContentView padSides={false}>
           {profilePublicData && (
-            <ListSection>
-              <ListSubheader>Manage Your Account</ListSubheader>
-              <MinorActionListItem
-                title={'Change Username'}
-                icon={AppIcons.edituser}
-                onPress={() => settingsNavigation.push(SettingsStackScreenComponents.changeUsername)}
-              />
-              <MinorActionListItem
-                title={'Change Password'}
-                icon={AppIcons.password}
-                onPress={() => settingsNavigation.push(SettingsStackScreenComponents.changePassword)}
-              />
-              <MinorActionListItem
-                title={'Create Alt Account'}
-                icon={AppIcons.altAccount}
-                onPress={() =>
-                  navigation.push(CommonStackComponents.siteUIScreen, {
-                    resource: 'createAltAccount',
-                  })
-                }
-              />
-            </ListSection>
+            <>
+              <ListSection>
+                <ListSubheader>Manage Your Account</ListSubheader>
+                <MinorActionListItem
+                  title={'Change Username'}
+                  icon={AppIcons.edituser}
+                  onPress={() => settingsNavigation.push(SettingsStackScreenComponents.changeUsername)}
+                />
+                <MinorActionListItem
+                  title={'Change Password'}
+                  icon={AppIcons.password}
+                  onPress={() => settingsNavigation.push(SettingsStackScreenComponents.changePassword)}
+                />
+                <MinorActionListItem
+                  title={'Create Alt Account'}
+                  icon={AppIcons.altAccount}
+                  onPress={() =>
+                    navigation.push(CommonStackComponents.siteUIScreen, {
+                      resource: 'createAltAccount',
+                    })
+                  }
+                />
+              </ListSection>
+              <ListSection>
+                <ListSubheader>User Information</ListSubheader>
+                <MinorActionListItem
+                  title={'Account Info'}
+                  icon={AppIcons.info}
+                  onPress={() => settingsNavigation.push(SettingsStackScreenComponents.userInfoSettingsScreen)}
+                />
+              </ListSection>
+            </>
           )}
           <ListSection>
             <ListSubheader>Log Out</ListSubheader>

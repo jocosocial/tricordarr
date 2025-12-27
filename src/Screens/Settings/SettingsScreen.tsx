@@ -49,11 +49,6 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Theme and styling options for this app.'}
               navComponent={CommonStackComponents.accessibilitySettingsScreen}
             />
-            <SettingsNavigationListItem
-              title={'Time'}
-              description={'Clock and time settings for this app.'}
-              navComponent={SettingsStackScreenComponents.timeSettingsScreen}
-            />
           </ListSection>
           <Divider bold={true} />
           <ListSection>
@@ -98,16 +93,40 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={CommonStackComponents.forumSettingsScreen}
             />
           </ListSection>
+          <ListSection>
+            <ListSubheader>Troubleshooting</ListSubheader>
+            <SettingsNavigationListItem
+              title={'Time'}
+              description={'Clock and time settings for this app.'}
+              navComponent={SettingsStackScreenComponents.timeSettingsScreen}
+            />
+            <SettingsNavigationListItem
+              title={'Cruise Settings'}
+              description={'Settings for the cruise.'}
+              navComponent={SettingsStackScreenComponents.cruiseSettingsScreen}
+            />
+            <SettingsNavigationListItem
+              title={'Manage Features'}
+              description={'Show server feature state and manage experiments.'}
+              navComponent={SettingsStackScreenComponents.featureSettingsScreen}
+            />
+            <SettingsNavigationListItem
+              title={'Query Client'}
+              description={'Settings for the Twitarr API client.'}
+              navComponent={SettingsStackScreenComponents.querySettingsScreen}
+            />
+            <SettingsNavigationListItem
+              title={'About'}
+              description={'Show version information about this app and your device.'}
+              navComponent={SettingsStackScreenComponents.aboutSettingsScreen}
+            />
+          </ListSection>
           {appConfig.enableDeveloperOptions && (
             <>
               <Divider bold={true} />
               <ListSection>
                 <ListSubheader>Developers</ListSubheader>
-                <SettingsNavigationListItem
-                  title={'App Version'}
-                  description={'Show detailed version information about this app.'}
-                  navComponent={SettingsStackScreenComponents.aboutSettingsScreen}
-                />
+
                 <SettingsNavigationListItem
                   title={'Network Info'}
                   description={"View details about your device's current network environment."}
@@ -132,26 +151,6 @@ export const SettingsScreen = ({navigation}: Props) => {
                   title={'Out-of-box Experience'}
                   description={'Internal OOBE information.'}
                   navComponent={SettingsStackScreenComponents.oobeSettings}
-                />
-                <SettingsNavigationListItem
-                  title={'Manage Features'}
-                  description={'Show server feature state and manage experiments.'}
-                  navComponent={SettingsStackScreenComponents.featureSettingsScreen}
-                />
-                <SettingsNavigationListItem
-                  title={'Cruise'}
-                  description={'Settings for the cruise.'}
-                  navComponent={SettingsStackScreenComponents.cruiseSettingsScreen}
-                />
-                <SettingsNavigationListItem
-                  title={'User Info'}
-                  description={'Show internal state of user and auth information.'}
-                  navComponent={SettingsStackScreenComponents.userInfoSettingsScreen}
-                />
-                <SettingsNavigationListItem
-                  title={'Query Client'}
-                  description={'Settings for the Twitarr API client.'}
-                  navComponent={SettingsStackScreenComponents.querySettingsScreen}
                 />
               </ListSection>
             </>

@@ -59,6 +59,12 @@ export const HelpManualScreen = () => {
           onPress={() => commonNavigation.push(CommonStackComponents.userProfileHelpScreen, {})}
         />
         <DataFieldListItem
+          title={'User Relations'}
+          description={'Blocking, muting, and favoriting users.'}
+          icon={AppIcons.userFavorite}
+          onPress={() => commonNavigation.push(CommonStackComponents.userRelationsHelpScreen)}
+        />
+        <DataFieldListItem
           title={'User Directory'}
           description={'Directory of users on the cruise.'}
           icon={AppIcons.user}
@@ -82,6 +88,19 @@ export const HelpManualScreen = () => {
           description={'Features that are available before the cruise starts.'}
           icon={AppIcons.help}
           onPress={() => commonNavigation.push(CommonStackComponents.preRegistrationHelpScreen)}
+        />
+        <ListSubheader>Special Roles</ListSubheader>
+        <DataFieldListItem
+          title={'Shutternauts'}
+          description={'App-specific guidance for shutternauts.'}
+          icon={AppIcons.shutternaut}
+          onPress={() => commonNavigation.push(CommonStackComponents.shutternautHelpScreen)}
+        />
+        <DataFieldListItem
+          title={'Moderators'}
+          description={'App-specific guidance for moderators.'}
+          icon={AppIcons.moderator}
+          onPress={() => commonNavigation.push(CommonStackComponents.moderatorHelpScreen)}
         />
         <ListSubheader>About</ListSubheader>
         <DataFieldListItem
