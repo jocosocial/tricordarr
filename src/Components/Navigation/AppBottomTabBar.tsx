@@ -68,6 +68,10 @@ export const AppBottomTabBar = (props: BottomTabBarProps) => {
 
           return label;
         }}
+        getBadge={({route}) => {
+          const {options} = props.descriptors[route.key];
+          return options.tabBarBadge;
+        }}
       />
     </View>
   );
