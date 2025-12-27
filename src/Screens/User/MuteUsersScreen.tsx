@@ -1,9 +1,11 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
-import React from 'react';
-import {RefreshControl} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {RefreshControl, View} from 'react-native';
+import {Item} from 'react-navigation-header-buttons';
 import {Text} from 'react-native-paper';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {ItalicText} from '#src/Components/Text/ItalicText';
@@ -39,6 +41,26 @@ const MuteUsersScreenInner = ({navigation}: Props) => {
   const userMuteMutation = useUserMuteMutation();
   const {data, isFetching, refetch} = useUserMutesQuery();
   const queryClient = useQueryClient();
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.userRelationsHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const handleUnmuteUser = (userHeader: UserHeader) => {
     userMuteMutation.mutate(

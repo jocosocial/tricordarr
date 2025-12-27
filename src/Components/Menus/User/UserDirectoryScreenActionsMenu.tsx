@@ -18,7 +18,7 @@ export const UserDirectoryScreenActionsMenu = () => {
       onDismiss={closeMenu}>
       <Menu.Item
         title={'Favorite Users'}
-        leadingIcon={AppIcons.favorite}
+        leadingIcon={AppIcons.userFavorite}
         onPress={() => commonNavigation.push(CommonStackComponents.favoriteUsers)}
       />
       <Menu.Item

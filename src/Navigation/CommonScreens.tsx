@@ -73,6 +73,7 @@ import {UserProfileEditScreen} from '#src/Screens/User/UserProfileEditScreen';
 import {UserProfileHelpScreen} from '#src/Screens/User/UserProfileHelpScreen';
 import {UserProfileScreen} from '#src/Screens/User/UserProfileScreen';
 import {UserRegCodeScreen} from '#src/Screens/User/UserRegCodeScreen';
+import {UserRelationsHelpScreen} from '#src/Screens/User/UserRelationsHelpScreen';
 import {
   CategoryData,
   FezData,
@@ -204,6 +205,7 @@ export type CommonStackParamList = {
     initialUserHeaders?: UserHeader[];
   };
   UserProfileHelpScreen: ParamsWithOobe;
+  UserRelationsHelpScreen: undefined;
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
   FavoriteUsersScreen: undefined;
@@ -295,6 +297,7 @@ export enum CommonStackComponents {
   personalEventEditScreen = 'PersonalEventEditScreen',
   personalEventCreateScreen = 'PersonalEventCreateScreen',
   userProfileHelpScreen = 'UserProfileHelpScreen',
+  userRelationsHelpScreen = 'UserRelationsHelpScreen',
   blockUsers = 'BlockUsersScreen',
   muteUsers = 'MuteUsersScreen',
   favoriteUsers = 'FavoriteUsersScreen',
@@ -507,6 +510,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.userProfileHelpScreen}
         component={UserProfileHelpScreen}
         options={{title: 'Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.userRelationsHelpScreen}
+        component={UserRelationsHelpScreen}
+        options={{title: 'User Relations Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.blockUsers}

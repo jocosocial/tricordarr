@@ -59,6 +59,12 @@ export const HelpManualScreen = () => {
           onPress={() => commonNavigation.push(CommonStackComponents.userProfileHelpScreen, {})}
         />
         <DataFieldListItem
+          title={'User Relations'}
+          description={'Blocking, muting, and favoriting users.'}
+          icon={AppIcons.userFavorite}
+          onPress={() => commonNavigation.push(CommonStackComponents.userRelationsHelpScreen)}
+        />
+        <DataFieldListItem
           title={'User Directory'}
           description={'Directory of users on the cruise.'}
           icon={AppIcons.user}
