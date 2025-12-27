@@ -1,6 +1,6 @@
 import FastImage from '@d11/react-native-fast-image';
 import React, {useCallback} from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {IconButton, Text} from 'react-native-paper';
 
 import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
@@ -9,6 +9,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 
 interface ImageViewerHeaderViewProps {
@@ -36,7 +37,7 @@ export const ImageViewerHeaderView = ({
       ...commonStyles.flexRow,
       ...commonStyles.justifyContentEnd,
       ...commonStyles.imageViewerBackground,
-      ...(Platform.OS === 'ios' && commonStyles.safePaddingTop),
+      ...(isIOS && commonStyles.safePaddingTop),
     },
     textContainer: {
       ...commonStyles.imageViewerBackgroundAlpha,

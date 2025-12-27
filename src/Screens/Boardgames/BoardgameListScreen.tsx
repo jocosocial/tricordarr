@@ -22,13 +22,13 @@ type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameL
 
 export const BoardgameListScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <LoggedInScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen>
         <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
           <BoardgameListScreenInner {...props} />
         </DisabledFeatureScreen>
-      </LoggedInScreen>
-    </PreRegistrationScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 

@@ -1,37 +1,27 @@
-import {useAppState} from '@react-native-community/hooks';
-import {useQueryClient} from '@tanstack/react-query';
-import {useEffect} from 'react';
-
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
+/**
+ * Functional component to poll the notification data endpoint. All of the actual polling
+ * magic is done through React Query.
+ */
 export const NotificationDataPoller = () => {
   const {isLoggedIn, isLoading} = useAuth();
   const {appConfig, oobeCompleted} = useConfig();
   const enablePolling =
     oobeCompleted && isLoggedIn && !isLoading && !appConfig.preRegistrationMode && appConfig.enableNotificationPolling;
-  const {data} = useUserNotificationDataQuery({
+
+  useUserNotificationDataQuery({
     refetchInterval: enablePolling ? appConfig.notificationPollInterval : false,
     enabled: enablePolling,
+    // True honors staleTime, which for this query defaults to 30 seconds.
+    // 'always' will refetch even if within the staleTime. I'm electing to do true
+    // here because 30 seconds should be sufficient and I don't want to over-fetch.
+    // This used to be done in a useEffect. Overkill...
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
-  const appState = useAppState();
-  const queryClient = useQueryClient();
-
-  if (!enablePolling) {
-    console.log('[NotificationDataPoller.tsx] Polling disabled or conditions not met.');
-  } else {
-    console.log(`[NotificationDataPoller.tsx] Polling enabled, response serverTime is ${data?.serverTime}`);
-  }
-
-  // When the app loads (either from nothing or from background) trigger a refresh of the notification
-  // data endpoint.
-  useEffect(() => {
-    if (appState === 'active') {
-      console.log('[NotificationDataPoller.tsx] Refreshing notification data');
-      queryClient.invalidateQueries({queryKey: ['/notification/global']});
-    }
-  }, [appState, queryClient]);
 
   return null;
 };

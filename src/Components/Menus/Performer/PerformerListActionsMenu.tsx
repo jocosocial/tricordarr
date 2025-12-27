@@ -1,7 +1,9 @@
 import React from 'react';
+import {View} from 'react-native';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -13,35 +15,45 @@ export const PerformerListActionsMenu = () => {
   const {hasTwitarrTeam} = usePrivilege();
   const navigation = useCommonStack();
 
+  if (hasTwitarrTeam) {
+    return (
+      <AppMenu
+        visible={visible}
+        onDismiss={closeMenu}
+        anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+        <Menu.Item
+          title={'Add Performer'}
+          leadingIcon={AppIcons.twitarteam}
+          onPress={() => {
+            navigation.push(CommonStackComponents.siteUIScreen, {
+              resource: 'performer/add',
+              admin: true,
+            });
+            closeMenu();
+          }}
+        />
+        <Divider bold={true} />
+        <Menu.Item
+          title={'Help'}
+          leadingIcon={AppIcons.help}
+          onPress={() => {
+            closeMenu();
+            navigation.push(CommonStackComponents.performerHelpScreen);
+          }}
+        />
+      </AppMenu>
+    );
+  }
+
   return (
-    <AppMenu
-      visible={visible}
-      onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      {hasTwitarrTeam && (
-        <>
-          <Menu.Item
-            title={'Add Performer'}
-            leadingIcon={AppIcons.twitarteam}
-            onPress={() => {
-              navigation.push(CommonStackComponents.siteUIScreen, {
-                resource: 'performer/add',
-                admin: true,
-              });
-              closeMenu();
-            }}
-          />
-          <Divider bold={true} />
-        </>
-      )}
-      <Menu.Item
-        title={'Help'}
-        leadingIcon={AppIcons.help}
-        onPress={() => {
-          closeMenu();
-          navigation.push(CommonStackComponents.performerHelpScreen);
-        }}
-      />
-    </AppMenu>
+    <View>
+      <MaterialHeaderButtons>
+        <Item
+          title={'Help'}
+          iconName={AppIcons.help}
+          onPress={() => navigation.push(CommonStackComponents.performerHelpScreen)}
+        />
+      </MaterialHeaderButtons>
+    </View>
   );
 };

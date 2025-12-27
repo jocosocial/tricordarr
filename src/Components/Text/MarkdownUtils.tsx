@@ -1,63 +1,27 @@
 import {ASTNode, RenderRules} from '@ronradtke/react-native-markdown-display';
 import {useCallback, useMemo} from 'react';
-import {Linking, StyleProp, StyleSheet, TextStyle} from 'react-native';
+import {StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useTwitarr} from '#src/Context/Contexts/TwitarrContext';
 
 /**
  * Hook to create markdown link handler that processes URLs for deep linking.
+ * Delegates to TwitarrProvider.openWebUrl for URL processing.
  * https://github.com/jocosocial/tricordarr/issues/252
  */
 export const useMarkdownLinkHandler = () => {
-  const {appConfig} = useConfig();
-  const {setErrorBanner} = useErrorHandler();
+  const {openWebUrl} = useTwitarr();
 
   return useCallback(
     (url: string) => {
-      let processedUrl = url;
-
-      // If the URL is a relative path (starts with /), add the tricordarr:// prefix
-      if (url.startsWith('/')) {
-        // Remove leading slash since the deep link config doesn't expect it
-        processedUrl = `tricordarr://${url.substring(1)}`;
-      } else {
-        // Check if the URL contains canonical hostnames or starts with the server URL
-        let urlToProcess = url;
-
-        // Check and replace canonical hostnames with http/https prefix
-        appConfig.apiClientConfig.canonicalHostnames.forEach(hostname => {
-          const httpPattern = `http://${hostname}`;
-          const httpsPattern = `https://${hostname}`;
-
-          if (urlToProcess.includes(httpPattern)) {
-            urlToProcess = urlToProcess.replace(httpPattern, 'tricordarr:/');
-          } else if (urlToProcess.includes(httpsPattern)) {
-            urlToProcess = urlToProcess.replace(httpsPattern, 'tricordarr:/');
-          }
-        });
-
-        // Check if the URL starts with the current server URL
-        if (appConfig.serverUrl && urlToProcess.startsWith(appConfig.serverUrl)) {
-          urlToProcess = urlToProcess.replace(appConfig.serverUrl, 'tricordarr:/');
-        }
-
-        processedUrl = urlToProcess;
-      }
-
-      // Open the URL with the processed link
-      Linking.openURL(processedUrl).catch(err => {
-        console.error('[MarkdownUtils.tsx] handleMarkdownLinkPress failed to open URL:', processedUrl, err);
-        setErrorBanner('Failed to open URL: ' + processedUrl);
-      });
-
-      // Return false to prevent default handling
+      openWebUrl(url);
+      // Return false to prevent default handling by the markdown library
       return false;
     },
-    [setErrorBanner, appConfig.apiClientConfig.canonicalHostnames, appConfig.serverUrl],
+    [openWebUrl],
   );
 };
 

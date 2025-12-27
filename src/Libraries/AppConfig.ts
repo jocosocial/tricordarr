@@ -76,6 +76,7 @@ export interface AppConfig {
   manualTimeOffset: number;
   wifiNetworkNames: string[];
   preRegistrationMode: boolean;
+  forceShowTimezoneWarning: boolean;
 }
 
 export const defaultAppConfig: AppConfig = {
@@ -155,6 +156,7 @@ export const defaultAppConfig: AppConfig = {
   enableExperiments: false,
   wifiNetworkNames: [],
   preRegistrationMode: false,
+  forceShowTimezoneWarning: false,
 };
 
 /**

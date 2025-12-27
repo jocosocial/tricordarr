@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, TextStyle, View, ViewStyle} from 'react-native';
+import {StyleSheet, TextStyle, TouchableOpacity, ViewStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -8,7 +8,10 @@ interface Props {
   title: string;
   message: string;
   headerStyle?: ViewStyle;
-  textStyle?: TextStyle;
+  titleStyle?: TextStyle;
+  disabled?: boolean;
+  onLongPress?: () => void;
+  onPress?: () => void;
 }
 export const BaseWarningView = (props: Props) => {
   const {commonStyles} = useStyles();
@@ -20,19 +23,23 @@ export const BaseWarningView = (props: Props) => {
       ...commonStyles.paddingVerticalSmall,
       ...props.headerStyle,
     },
-    headerText: {
+    titleText: {
       ...commonStyles.bold,
       ...commonStyles.onTwitarrButton,
-      ...props.textStyle,
+      ...props.titleStyle,
     },
   });
 
   return (
-    <View style={styles.headerView}>
-      <Text style={styles.headerText}>{props.title}</Text>
-      <Text variant={'labelSmall'} style={commonStyles.onTwitarrButton}>
+    <TouchableOpacity
+      disabled={props.disabled}
+      style={styles.headerView}
+      onLongPress={props.onLongPress}
+      onPress={props.onPress}>
+      <Text style={styles.titleText}>{props.title}</Text>
+      <Text variant={'labelMedium'} style={commonStyles.onTwitarrButton}>
         {props.message}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 };

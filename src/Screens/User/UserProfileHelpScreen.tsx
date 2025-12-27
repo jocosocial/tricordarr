@@ -4,7 +4,6 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
-import {AppIcons} from '#src/Enums/Icons';
 
 export const UserProfileHelpScreen = () => {
   return (
@@ -22,16 +21,6 @@ export const UserProfileHelpScreen = () => {
         <HelpTopicView title={'Private Note'}>
           You can save a note about a user that is visible only to you. For example: "Met at the Lido Bar on Monday,
           interested in my D&D campaign".
-        </HelpTopicView>
-        <HelpChapterTitleView title={'Relations'} />
-        <HelpTopicView title={'Block'} icon={AppIcons.block}>
-          Blocking a user will hide all that user's content from you, and also hide all your content from them.
-        </HelpTopicView>
-        <HelpTopicView title={'Mute'} icon={AppIcons.mute}>
-          Muting a user will hide all that user's content from you.
-        </HelpTopicView>
-        <HelpTopicView title={'Favorite'} icon={AppIcons.favorite}>
-          Favoriting a user allows them to call you (between iOS devices only). Otherwise does nothing.
         </HelpTopicView>
       </ScrollingContentView>
     </AppView>

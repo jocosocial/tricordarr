@@ -1,0 +1,45 @@
+import React, {PropsWithChildren, useEffect, useState} from 'react';
+
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {EnableUserNotificationContext} from '#src/Context/Contexts/EnableUserNotificationContext';
+
+/**
+ * "User Notifications" means both:
+ * - Push notifications (from the platform-specific providers)
+ * - NotificationSocket responses (purely on the JS side)
+ */
+export const EnableUserNotificationProvider = ({children}: PropsWithChildren) => {
+  const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);
+  const {isLoading, isLoggedIn} = useAuth();
+  const {appConfig} = useConfig();
+  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
+
+  /**
+   * Once the app has "started", figure out if we should enable the background worker.
+   */
+  useEffect(() => {
+    if (isLoading) {
+      console.log('[EnableUserNotificationProvider.tsx] App is still loading');
+      return;
+    }
+    if (isLoggedIn && oobeCompleted && !appConfig.preRegistrationMode) {
+      console.log('[EnableUserNotificationProvider.tsx] User notifications can start.');
+      console.log('[EnableUserNotificationProvider.tsx] Enabled is', appConfig.enableBackgroundWorker);
+      setEnableUserNotifications(appConfig.enableBackgroundWorker);
+    } else {
+      console.log('[EnableUserNotificationProvider.tsx] Disabling user notifications');
+      setEnableUserNotifications(false);
+    }
+  }, [isLoggedIn, isLoading, appConfig.enableBackgroundWorker, oobeCompleted, appConfig.preRegistrationMode]);
+
+  return (
+    <EnableUserNotificationContext.Provider
+      value={{
+        enableUserNotifications,
+        setEnableUserNotifications,
+      }}>
+      {children}
+    </EnableUserNotificationContext.Provider>
+  );
+};

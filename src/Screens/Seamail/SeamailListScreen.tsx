@@ -31,13 +31,13 @@ type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seam
 
 export const SeamailListScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <LoggedInScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen>
         <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
           <SeamailListScreenInner {...props} />
         </DisabledFeatureScreen>
-      </LoggedInScreen>
-    </PreRegistrationScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 

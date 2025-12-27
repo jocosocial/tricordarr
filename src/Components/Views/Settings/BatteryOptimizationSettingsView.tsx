@@ -1,6 +1,6 @@
 import {useAppState} from '@react-native-community/hooks';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Platform, View} from 'react-native';
+import {View} from 'react-native';
 // @ts-ignore
 import {BatteryOptEnabled, RequestDisableOptimization} from 'react-native-battery-optimization-check';
 import {HelperText, Text} from 'react-native-paper';
@@ -11,6 +11,7 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {isAndroid} from '#src/Libraries/Platform/Detection';
 
 const BatteryOptimizationSettingsViewInternal = () => {
   const {theme} = useAppTheme();
@@ -62,7 +63,7 @@ const BatteryOptimizationSettingsViewInternal = () => {
 };
 
 export const BatteryOptimizationSettingsView = () => {
-  if (Platform.OS !== 'android') {
+  if (!isAndroid) {
     return null;
   }
   return <BatteryOptimizationSettingsViewInternal />;

@@ -14,11 +14,11 @@ import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScre
 
 export const DailyThemesScreen = () => {
   return (
-    <PreRegistrationScreen>
-      <LoggedInScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen>
         <DailyThemesScreenInner />
-      </LoggedInScreen>
-    </PreRegistrationScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 

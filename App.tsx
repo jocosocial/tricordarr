@@ -10,10 +10,8 @@ import {LogBox} from 'react-native';
 import 'react-native-gesture-handler';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {KeyboardProvider} from 'react-native-keyboard-controller';
-import {Portal} from 'react-native-paper';
 import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {HeaderButtonsProvider} from 'react-navigation-header-buttons/HeaderButtonsProvider';
 
 import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
 import {AppFocusHandler} from '#src/Components/Libraries/AppFocusHandler';
@@ -25,24 +23,22 @@ import {ClientSettingsProvider} from '#src/Context/Providers/ClientSettingsProvi
 import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
 import {CruiseProvider} from '#src/Context/Providers/CruiseProvider';
-import {DrawerProvider} from '#src/Context/Providers/DrawerProvider';
+import {EnableUserNotificationProvider} from '#src/Context/Providers/EnableUserNotificationProvider';
 import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
 import {FeatureProvider} from '#src/Context/Providers/FeatureProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
-import {LayoutProvider} from '#src/Context/Providers/LayoutProvider';
 import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
-import {MenuProvider} from '#src/Context/Providers/MenuProvider';
-import {ModalProvider} from '#src/Context/Providers/ModalProvider';
 import {NavigationProvider} from '#src/Context/Providers/NavigationProvider';
+import {PermissionsProvider} from '#src/Context/Providers/PermissionsProvider';
 import {PrivilegeProvider} from '#src/Context/Providers/PrivilegeProvider';
+import {RoleProvider} from '#src/Context/Providers/RoleProvider';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider.tsx';
-import {SnackbarProvider} from '#src/Context/Providers/SnackbarProvider.tsx';
+import {ShellProvider} from '#src/Context/Providers/ShellProvider';
 import {SocketProvider} from '#src/Context/Providers/SocketProvider';
 import {StyleProvider} from '#src/Context/Providers/StyleProvider';
 import {SwiftarrQueryClientProvider} from '#src/Context/Providers/SwiftarrQueryClientProvider';
 import {ThemeProvider} from '#src/Context/Providers/ThemeProvider';
 import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
-import {UserNotificationDataProvider} from '#src/Context/Providers/UserNotificationDataProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
 import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
@@ -105,62 +101,54 @@ function App(): React.JSX.Element {
     <SafeAreaProvider>
       <GestureHandlerRootView>
         <ConfigProvider>
-          <ThemeProvider>
-            <NavigationProvider>
-              <LayoutProvider>
+          <PermissionsProvider>
+            <ThemeProvider>
+              <NavigationProvider>
                 <KeyboardProvider>
                   <StyleProvider>
                     <ErrorHandlerProvider>
-                      <SnackbarProvider>
-                        <AuthProvider>
-                          <SwiftarrQueryClientProvider>
-                            <LoadingProvider>
-                              <CriticalErrorProvider>
-                                <PrivilegeProvider>
+                      <AuthProvider>
+                        <SwiftarrQueryClientProvider>
+                          <LoadingProvider>
+                            <CriticalErrorProvider>
+                              <PrivilegeProvider>
+                                <RoleProvider>
                                   <SocketProvider>
                                     <TwitarrProvider>
-                                      <UserNotificationDataProvider>
+                                      <EnableUserNotificationProvider>
                                         <FeatureProvider>
-                                          <ModalProvider>
-                                            <Portal.Host>
-                                              <HeaderButtonsProvider stackType={'native'}>
-                                                <ClientSettingsProvider>
-                                                  <CruiseProvider>
-                                                    <DrawerProvider>
-                                                      <MenuProvider>
-                                                        <FilterProvider>
-                                                          <SelectionProvider>
-                                                            <AppEventHandler />
-                                                            <AppFocusHandler />
-                                                            <PushNotificationService />
-                                                            <NotificationDataListener />
-                                                            <NotificationDataPoller />
-                                                            <RootStackNavigator />
-                                                          </SelectionProvider>
-                                                        </FilterProvider>
-                                                      </MenuProvider>
-                                                    </DrawerProvider>
-                                                  </CruiseProvider>
-                                                </ClientSettingsProvider>
-                                              </HeaderButtonsProvider>
-                                            </Portal.Host>
-                                          </ModalProvider>
+                                          <ClientSettingsProvider>
+                                            <CruiseProvider>
+                                              <FilterProvider>
+                                                <SelectionProvider>
+                                                  <ShellProvider>
+                                                    <AppEventHandler />
+                                                    <AppFocusHandler />
+                                                    <PushNotificationService />
+                                                    <NotificationDataListener />
+                                                    <NotificationDataPoller />
+                                                    <RootStackNavigator />
+                                                  </ShellProvider>
+                                                </SelectionProvider>
+                                              </FilterProvider>
+                                            </CruiseProvider>
+                                          </ClientSettingsProvider>
                                         </FeatureProvider>
-                                      </UserNotificationDataProvider>
+                                      </EnableUserNotificationProvider>
                                     </TwitarrProvider>
                                   </SocketProvider>
-                                </PrivilegeProvider>
-                              </CriticalErrorProvider>
-                            </LoadingProvider>
-                          </SwiftarrQueryClientProvider>
-                        </AuthProvider>
-                      </SnackbarProvider>
+                                </RoleProvider>
+                              </PrivilegeProvider>
+                            </CriticalErrorProvider>
+                          </LoadingProvider>
+                        </SwiftarrQueryClientProvider>
+                      </AuthProvider>
                     </ErrorHandlerProvider>
                   </StyleProvider>
                 </KeyboardProvider>
-              </LayoutProvider>
-            </NavigationProvider>
-          </ThemeProvider>
+              </NavigationProvider>
+            </ThemeProvider>
+          </PermissionsProvider>
         </ConfigProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>

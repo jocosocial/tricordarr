@@ -27,7 +27,7 @@ export const buildScheduleList = (
     filterSettings.eventLfgFilter || filterSettings.eventFavoriteFilter || filterSettings.eventPersonalFilter;
 
   let lfgList: FezData[] = [];
-  if (filterSettings.eventLfgFilter || !anyPersonalFilter) {
+  if ((filterSettings.eventLfgFilter || !anyPersonalFilter) && !filterSettings.eventTypeFilter) {
     if (filterSettings.showJoinedLfgs && lfgJoinedData) {
       lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
     }
@@ -53,7 +53,7 @@ export const buildScheduleList = (
   }
 
   let personalEventList: FezData[] = [];
-  if (filterSettings.eventPersonalFilter || !anyPersonalFilter) {
+  if ((filterSettings.eventPersonalFilter || !anyPersonalFilter) && !filterSettings.eventTypeFilter) {
     // personalEventList = personalEventData.pages.map || [];
     if (personalEventData?.pages) {
       personalEventData.pages.map(page => (personalEventList = personalEventList.concat(page.fezzes)));

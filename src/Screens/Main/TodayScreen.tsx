@@ -26,9 +26,7 @@ import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
-import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
 
@@ -42,8 +40,6 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchThemes} = useDailyThemeQuery({enabled: false});
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
   const {refetch: refetchFavorites} = useUserFavoritesQuery({enabled: false});
-  const {refetch: refetchMutes} = useUserMutesQuery({enabled: false});
-  const {refetch: refetchBlocks} = useUserBlocksQuery({enabled: false});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
   const {isLoggedIn} = useAuth();
@@ -58,7 +54,10 @@ export const TodayScreen = ({navigation}: Props) => {
     if (!appConfig.preRegistrationMode) {
       refreshes.push(refetchAnnouncements(), refetchThemes(), refetchUserNotificationData());
       if (isLoggedIn) {
-        refreshes.push(refetchProfile(), refetchFavorites(), refetchBlocks(), refetchMutes());
+        // useUserProfileQuery is here because the menu has the users picture.
+        // useUserFavoritesQuery is here because the favorites list is sneakily used
+        // in various places within the app that are not worth refetching directly in.
+        refreshes.push(refetchProfile(), refetchFavorites());
       }
     }
     await Promise.all(refreshes);
