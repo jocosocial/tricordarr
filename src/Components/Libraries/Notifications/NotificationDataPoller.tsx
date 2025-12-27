@@ -15,12 +15,11 @@ export const NotificationDataPoller = () => {
   useUserNotificationDataQuery({
     refetchInterval: enablePolling ? appConfig.notificationPollInterval : false,
     enabled: enablePolling,
-    // True honors staleTime, which for this query defaults to 30 seconds.
-    // 'always' will refetch even if within the staleTime. I'm electing to do true
-    // here because 30 seconds should be sufficient and I don't want to over-fetch.
-    // This used to be done in a useEffect. Overkill...
+    // true honors staleTime, which for this query defaults to 30 seconds.
+    // 'always' will refetch even if within the staleTime.
+    // This used to be done in a useEffect. Very overkill...
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: 'always',
   });
 
   return null;
