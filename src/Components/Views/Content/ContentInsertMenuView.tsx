@@ -1,6 +1,6 @@
 import {useFormikContext} from 'formik';
 import React, {Dispatch, SetStateAction, useEffect} from 'react';
-import {Platform, View} from 'react-native';
+import {View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {List} from 'react-native-paper';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
@@ -8,6 +8,7 @@ import {PERMISSIONS, request as requestPermission} from 'react-native-permission
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {PostContentData} from '#src/Structs/ControllerStructs';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 
 interface ContentInsertMenuViewProps {
   visible: boolean;
@@ -43,7 +44,7 @@ export const ContentInsertMenuView = ({
   }, [isSubmitting, setEmojiVisible, setVisible]);
 
   const takeImage = async () => {
-    const cameraPermission = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+    const cameraPermission = isIOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
     const permissionStatus = await requestPermission(cameraPermission);
     console.log('[ContentInsertMenuView.tsx] Camera permission is', permissionStatus);
     try {

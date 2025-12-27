@@ -1,7 +1,8 @@
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {Platform} from 'react-native';
+
+import {isAndroid} from '#src/Libraries/Platform/Detection';
 import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
 import {requestNotifications, RESULTS} from 'react-native-permissions';
 
@@ -208,7 +209,7 @@ export const PushNotificationSettingsScreen = () => {
             <PrimaryActionButton buttonText={'Resume'} onPress={resumeNotifications} disabled={!muteNotifications} />
           </PaddedContentView>
         </ListSection>
-        {Platform.OS === 'android' && (
+        {isAndroid && (
           <ListSection>
             <ListSubheader>Auto Cancel</ListSubheader>
             <PaddedContentView padTop={true}>

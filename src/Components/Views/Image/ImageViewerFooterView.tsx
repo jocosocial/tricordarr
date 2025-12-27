@@ -1,9 +1,10 @@
 import React from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 
 interface ImageViewerFooterViewProps {
   currentIndex: number;
@@ -27,7 +28,7 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifyCenter,
       ...commonStyles.imageViewerBackgroundAlpha,
-      ...(Platform.OS === 'ios' && commonStyles.safePaddingBottom),
+      ...(isIOS && commonStyles.safePaddingBottom),
     },
     verticalContainer: {
       ...commonStyles.flexColumn,

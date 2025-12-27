@@ -1,6 +1,6 @@
 import {useField} from 'formik';
 import React from 'react';
-import {Image as NativeImage, Platform, StyleSheet, View} from 'react-native';
+import {Image as NativeImage, StyleSheet, View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 
@@ -10,6 +10,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
 import {styleDefaults} from '#src/Styles';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 
 interface AvatarImageFieldProps<TFormData> {
   name: keyof TFormData;
@@ -50,7 +51,7 @@ export const AvatarImageField = <TFormData,>({imageData, name}: AvatarImageField
   };
 
   const takeImage = async () => {
-    const cameraPermission = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+    const cameraPermission = isIOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
     const permissionStatus = await requestPermission(cameraPermission);
     console.log('[AvatarImageField.tsx] Camera permission is', permissionStatus);
     try {

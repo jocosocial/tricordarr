@@ -1,4 +1,4 @@
-import {Platform} from 'react-native';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 
 import {
   startForegroundServiceWorker,
@@ -8,14 +8,14 @@ import {startLocalPushManager} from '#src/Libraries/Notifications/Push/IOS/Local
 import {stopLocalPushManager} from '#src/Libraries/Notifications/Push/IOS/LocalPushManager';
 
 export const startPushProvider = async () => {
-  if (Platform.OS === 'ios') {
+  if (isIOS) {
     await startLocalPushManager();
   } else {
     await startForegroundServiceWorker();
   }
 };
 export const stopPushProvider = async () => {
-  if (Platform.OS === 'ios') {
+  if (isIOS) {
     await stopLocalPushManager();
   } else {
     await stopForegroundServiceWorker();

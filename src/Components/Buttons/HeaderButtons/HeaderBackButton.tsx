@@ -1,5 +1,6 @@
-import {Platform} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
+
+import {isIOS} from '#src/Libraries/Platform/Detection';
 
 import {AppIcons} from '#src/Enums/Icons';
 
@@ -14,10 +15,10 @@ export const HeaderBackButton = ({onPress, title = 'Back'}: HeaderBackButtonProp
   // Using empty string on Android to satisfy type requirement while hiding text
   return (
     <Item
-      title={Platform.OS === 'ios' ? title : ''}
+      title={isIOS ? title : ''}
       iconName={AppIcons.back}
       onPress={onPress}
-      showTitle={Platform.OS === 'ios'}
+      showTitle={isIOS}
     />
   );
 };

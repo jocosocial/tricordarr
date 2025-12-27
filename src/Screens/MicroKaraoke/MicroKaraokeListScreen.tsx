@@ -1,5 +1,6 @@
 import React from 'react';
-import {Platform} from 'react-native';
+
+import {isIOS} from '#src/Libraries/Platform/Detection';
 
 import {KrakenView} from '#src/Components/Views/Static/KrakenView';
 import {NotImplementedView} from '#src/Components/Views/Static/NotImplementedView';
@@ -38,7 +39,7 @@ const MicroKaraokeListScreenInner = () => {
   //     </ScrollingContentView>
   //   </AppView>
   // );
-  if (Platform.OS === 'ios' && !appConfig.enableExperiments) {
+  if (isIOS && !appConfig.enableExperiments) {
     return <KrakenView />;
   }
   return <NotImplementedView />;
