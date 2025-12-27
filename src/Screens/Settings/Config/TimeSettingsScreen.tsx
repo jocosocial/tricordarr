@@ -4,12 +4,14 @@ import {View} from 'react-native';
 
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {TimeSettingsForm} from '#src/Components/Forms/Settings/TimeSettingsForm';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {TimeSettingsFormValues} from '#src/Types/FormValues';
 
@@ -17,6 +19,7 @@ export const TimeSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const {commonStyles} = useStyles();
   const [forceShowTimezoneWarning, setForceShowTimezoneWarning] = useState(appConfig.forceShowTimezoneWarning);
+  const {cruiseDayToday, adjustedCruiseDayToday, cruiseDayIndex, adjustedCruiseDayIndex} = useCruise();
 
   const onSubmit = (values: TimeSettingsFormValues, helpers: FormikHelpers<TimeSettingsFormValues>) => {
     updateAppConfig({
@@ -39,11 +42,19 @@ export const TimeSettingsScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
+        <ListSection>
+          <ListSubheader>Offset</ListSubheader>
+        </ListSection>
         <PaddedContentView padTop={true}>
           <TimeSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
         </PaddedContentView>
         {appConfig.enableDeveloperOptions && (
           <>
+            <ListSubheader>Date Internals</ListSubheader>
+            <DataFieldListItem title={'Cruise Day Today'} description={cruiseDayToday.toString()} />
+            <DataFieldListItem title={'Adjusted Cruise Day Today'} description={adjustedCruiseDayToday.toString()} />
+            <DataFieldListItem title={'Cruise Day Index'} description={cruiseDayIndex.toString()} />
+            <DataFieldListItem title={'Adjusted Cruise Day Index'} description={adjustedCruiseDayIndex.toString()} />
             <ListSection>
               <ListSubheader>Developer Options</ListSubheader>
             </ListSection>
