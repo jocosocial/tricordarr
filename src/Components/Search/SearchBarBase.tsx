@@ -1,4 +1,5 @@
-import React, {useEffect} from 'react';
+import {Query, useQueryClient} from '@tanstack/react-query';
+import React, {useCallback, useEffect} from 'react';
 import {StyleSheet, ViewStyle} from 'react-native';
 import {HelperText, Searchbar} from 'react-native-paper';
 
@@ -12,7 +13,6 @@ interface SearchBarBaseProps {
   placeholder?: string;
   minLength?: number;
   style?: ViewStyle;
-  remove?: () => void;
   /**
    * If true, automatically triggers onSearch when the query meets minLength requirements.
    * Useful for reactive search patterns where results update as the user types.
@@ -28,10 +28,10 @@ export const SearchBarBase = ({
   placeholder = 'Search',
   minLength = 3,
   style,
-  remove,
   autoSearch = false,
 }: SearchBarBaseProps) => {
   const {commonStyles} = useStyles();
+  const queryClient = useQueryClient();
   const [showHelp, setShowHelp] = React.useState(false);
 
   const styles = StyleSheet.create({
@@ -69,6 +69,53 @@ export const SearchBarBase = ({
     attemptSearch();
   };
 
+  /**
+   * Clear search results from cache when query is cleared or component unmounts
+   * Automatically detects and clears all queries with a 'search' parameter or user search endpoints
+   * Query keys are structured as [endpoint, queryParams, ...queryKeyExtraData]
+   * We match queries where:
+   * 1. queryParams (2nd element) has a 'search' property, OR
+   * 2. endpoint (1st element) matches user search endpoints (/users/match/allnames/ or /users/find/)
+   *
+   * This is some AI stuff.
+   */
+  const clearSearchCache = useCallback(() => {
+    const predicate = (query: Query<unknown, Error, unknown, readonly unknown[]>) => {
+      const key = query.queryKey;
+      if (key.length === 0) {
+        return false;
+      }
+
+      // Check endpoint (first element) for user search endpoints
+      const endpoint = key[0];
+      if (typeof endpoint === 'string') {
+        if (endpoint.startsWith('/users/match/allnames/') || endpoint.startsWith('/users/find/')) {
+          return true;
+        }
+      }
+
+      // Check if query key has at least 2 elements (endpoint and queryParams)
+      // and queryParams has a 'search' property
+      if (key.length >= 2 && typeof key[1] === 'object' && key[1] !== null) {
+        const queryParams = key[1] as Record<string, unknown>;
+        return 'search' in queryParams && queryParams.search !== undefined && queryParams.search !== '';
+      }
+
+      return false;
+    };
+
+    // Get all matching queries to log them before removal
+    const queryCache = queryClient.getQueryCache();
+    const matchingQueries = queryCache.findAll({predicate});
+    const removedKeys = matchingQueries.map(query => query.queryKey);
+
+    if (removedKeys.length > 0) {
+      console.log('[SearchBarBase] Removing search query keys from cache:', removedKeys);
+    }
+
+    queryClient.removeQueries({predicate});
+  }, [queryClient]);
+
   // Handle auto-search: trigger search automatically when query meets minLength
   // Also manage helper text visibility for reactive search patterns
   useEffect(() => {
@@ -90,10 +137,20 @@ export const SearchBarBase = ({
   }, [autoSearch, onSearch, searchQuery, minLength]);
 
   // Clear search results when you go back or otherwise unmount this screen
-  // @TODO react query v5 removed remove(). Is this still relevant? Should we do something else?
+  // React Query v5: use queryClient.removeQueries() instead of the removed remove() method
   useEffect(() => {
-    return () => (remove ? remove() : undefined);
-  }, [remove]);
+    return () => {
+      clearSearchCache();
+    };
+  }, [clearSearchCache]);
+
+  // Clear cache when search is cleared via the clear button
+  const handleClear = useCallback(() => {
+    clearSearchCache();
+    if (onClear) {
+      onClear();
+    }
+  }, [clearSearchCache, onClear]);
 
   return (
     <>
@@ -105,7 +162,7 @@ export const SearchBarBase = ({
         onSubmitEditing={() => {
           attemptSearch();
         }}
-        onClearIconPress={onClear}
+        onClearIconPress={handleClear}
         style={styles.searchBar}
       />
       {showHelp && <HelperText type={'error'}>{`Must enter >${minLength - 1} characters to search`}</HelperText>}
