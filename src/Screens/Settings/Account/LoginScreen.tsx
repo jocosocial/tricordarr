@@ -10,6 +10,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
@@ -23,6 +24,7 @@ export const LoginScreen = () => {
   const {appConfig, oobeCompleted} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
   const {updateClientSettings} = useClientSettings();
+  const {refetch: refetchRoles} = useRoles();
 
   const onSubmit = useCallback(
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
@@ -40,14 +42,22 @@ export const LoginScreen = () => {
            * out something better.
            */
           setTimeout(async () => {
-            await updateClientSettings();
+            await Promise.all([updateClientSettings(), refetchRoles()]);
           }, 1000);
           navigation.goBack();
         },
         onSettled: () => formikHelpers.setSubmitting(false),
       });
     },
-    [loginMutation, signIn, appConfig.preRegistrationMode, oobeCompleted, updateClientSettings, navigation],
+    [
+      loginMutation,
+      signIn,
+      appConfig.preRegistrationMode,
+      oobeCompleted,
+      updateClientSettings,
+      navigation,
+      refetchRoles,
+    ],
   );
 
   return (
