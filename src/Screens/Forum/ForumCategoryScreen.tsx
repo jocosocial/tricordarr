@@ -99,6 +99,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
             setRefreshing={setRefreshing}
             categoryID={route.params.category.categoryID}
             items={forumListData}
+            selectedItems={selectedItems}
           />
         </View>
       );
@@ -113,7 +114,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableSelection, route.params.category, forumListData]);
+  }, [enableSelection, route.params.category, forumListData, selectedItems]);
 
   useEffect(() => {
     // This clears the previous state of forum posts and a specific forum.

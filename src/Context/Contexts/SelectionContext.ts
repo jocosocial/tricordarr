@@ -10,6 +10,11 @@ export interface SelectionContextType {
   setEnableSelection: Dispatch<SetStateAction<boolean>>;
 }
 
-export const SelectionContext = createContext(<SelectionContextType>{});
+export const SelectionContext = createContext(<SelectionContextType>{
+  selectedItems: [],
+  dispatchSelectedItems: () => {},
+  enableSelection: false,
+  setEnableSelection: () => {},
+});
 
 export const useSelection = () => useContext(SelectionContext);

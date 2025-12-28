@@ -310,7 +310,7 @@ export const commonStyles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
-  opacityHalf: {
+  disabled: {
     opacity: 0.5,
   },
   /**

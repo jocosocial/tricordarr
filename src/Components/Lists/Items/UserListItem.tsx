@@ -33,13 +33,13 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
     },
     avatar: {
       ...commonStyles.justifyCenter,
-      ...(disabled ? commonStyles.opacityHalf : {}),
+      ...(disabled ? commonStyles.disabled : {}),
     },
     titleStyle: {
-      ...(disabled ? commonStyles.opacityHalf : {}),
+      ...(disabled ? commonStyles.disabled : {}),
     },
     descriptionStyle: {
-      ...(disabled ? commonStyles.opacityHalf : {}),
+      ...(disabled ? commonStyles.disabled : {}),
     },
   });
 
