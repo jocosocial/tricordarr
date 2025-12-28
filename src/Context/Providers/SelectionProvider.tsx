@@ -1,15 +1,14 @@
 import React, {PropsWithChildren, useState} from 'react';
 
 import {SelectionContext} from '#src/Context/Contexts/SelectionContext';
-import {useForumListDataSelectionReducer} from '#src/Reducers/Forum/ForumListDataSelectionReducer';
+import {useSelectionReducer} from '#src/Reducers/SelectionReducer';
 
 export const SelectionProvider = ({children}: PropsWithChildren) => {
-  // const [selectedItems, setSelectedItems] = useState<unknown[]>([]);
   const [enableSelection, setEnableSelection] = useState<boolean>(false);
-  const [selectedForums, dispatchSelectedForums] = useForumListDataSelectionReducer([]);
+  const [selectedItems, dispatchSelectedItems] = useSelectionReducer([]);
 
   return (
-    <SelectionContext.Provider value={{selectedItems: selectedForums, dispatchSelectedItems: dispatchSelectedForums, enableSelection, setEnableSelection}}>
+    <SelectionContext.Provider value={{selectedItems, dispatchSelectedItems, enableSelection, setEnableSelection}}>
       {children}
     </SelectionContext.Provider>
   );

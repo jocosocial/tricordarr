@@ -70,7 +70,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
-  const {selectedItems: selectedForums, enableSelection} = useSelection();
+  const {selectedItems, enableSelection} = useSelection();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -95,7 +95,11 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
     if (enableSelection) {
       return (
         <View>
-          <ForumSelectionHeaderButtons setRefreshing={setRefreshing} categoryID={route.params.category.categoryID} />
+          <ForumSelectionHeaderButtons
+            setRefreshing={setRefreshing}
+            categoryID={route.params.category.categoryID}
+            items={forumListData}
+          />
         </View>
       );
     }
@@ -109,7 +113,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableSelection, route.params.category]);
+  }, [enableSelection, route.params.category, forumListData]);
 
   useEffect(() => {
     // This clears the previous state of forum posts and a specific forum.
@@ -120,11 +124,11 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
       headerRight: getNavButtons,
     });
     if (enableSelection) {
-      navigation.setOptions({title: `Selected: ${selectedForums.length}`});
+      navigation.setOptions({title: `Selected: ${selectedItems.length}`});
     } else {
       navigation.setOptions({title: 'Forums'});
     }
-  }, [isFocused, getNavButtons, navigation, clearPrivileges, enableSelection, selectedForums.length]);
+  }, [isFocused, getNavButtons, navigation, clearPrivileges, enableSelection, selectedItems.length]);
 
   if (isLoading || !data) {
     return <LoadingView />;

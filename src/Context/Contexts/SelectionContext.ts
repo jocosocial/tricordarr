@@ -1,11 +1,11 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 
-import {ForumListDataSelectionActionsType} from '#src/Reducers/Forum/ForumListDataSelectionReducer';
-import {ForumListData} from '#src/Structs/ControllerStructs';
+import {SelectionActionsType} from '#src/Reducers/SelectionReducer';
+import {Selectable} from '#src/Types/Selection';
 
 export interface SelectionContextType {
-  selectedItems: ForumListData[];
-  dispatchSelectedItems: Dispatch<ForumListDataSelectionActionsType>;
+  selectedItems: Selectable[];
+  dispatchSelectedItems: Dispatch<SelectionActionsType>;
   enableSelection: boolean;
   setEnableSelection: Dispatch<SetStateAction<boolean>>;
 }
