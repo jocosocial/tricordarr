@@ -41,7 +41,7 @@ export const ForumThreadList = ({
   onScrollThreshold,
 }: ForumThreadListProps) => {
   const listRef = useRef<FlashListRef<ForumListData>>(null);
-  const {enableSelection, setEnableSelection, selectedForums} = useSelection();
+  const {enableSelection, setEnableSelection, selectedItems: selectedForums} = useSelection();
   const {appConfig} = useConfig();
 
   const renderListHeader = () => {

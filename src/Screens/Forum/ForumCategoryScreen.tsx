@@ -70,7 +70,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
-  const {selectedForums, enableSelection} = useSelection();
+  const {selectedItems: selectedForums, enableSelection} = useSelection();
 
   const onRefresh = async () => {
     setRefreshing(true);

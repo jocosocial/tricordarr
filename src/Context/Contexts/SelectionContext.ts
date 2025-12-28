@@ -4,10 +4,8 @@ import {ForumListDataSelectionActionsType} from '#src/Reducers/Forum/ForumListDa
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
 export interface SelectionContextType {
-  // selectedItems: TItem[];
-  // setSelectedItems: Dispatch<SetStateAction<TItem[]>>;
-  selectedForums: ForumListData[];
-  dispatchSelectedForums: Dispatch<ForumListDataSelectionActionsType>;
+  selectedItems: ForumListData[];
+  dispatchSelectedItems: Dispatch<ForumListDataSelectionActionsType>;
   enableSelection: boolean;
   setEnableSelection: Dispatch<SetStateAction<boolean>>;
 }

@@ -19,7 +19,11 @@ export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const isFocused = useIsFocused();
-  const {dispatchSelectedForums, setEnableSelection, selectedForums} = useSelection();
+  const {
+    dispatchSelectedItems: dispatchSelectedForums,
+    setEnableSelection,
+    selectedItems: selectedForums,
+  } = useSelection();
 
   const styles = StyleSheet.create({
     button: {

@@ -37,7 +37,7 @@ const ForumThreadListInternal = ({
 }: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
   const {theme} = useAppTheme();
-  const {dispatchSelectedForums} = useSelection();
+  const {dispatchSelectedItems: dispatchSelectedForums} = useSelection();
 
   const styles = StyleSheet.create({
     item: {

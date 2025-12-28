@@ -9,7 +9,7 @@ export const SelectionProvider = ({children}: PropsWithChildren) => {
   const [selectedForums, dispatchSelectedForums] = useForumListDataSelectionReducer([]);
 
   return (
-    <SelectionContext.Provider value={{selectedForums, dispatchSelectedForums, enableSelection, setEnableSelection}}>
+    <SelectionContext.Provider value={{selectedItems: selectedForums, dispatchSelectedItems: dispatchSelectedForums, enableSelection, setEnableSelection}}>
       {children}
     </SelectionContext.Provider>
   );
