@@ -11,7 +11,6 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '#src/Types/FormValues';
 
@@ -19,7 +18,6 @@ export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const {theme} = useAppTheme();
   const [refreshing, setRefreshing] = useState(false);
-  const {cruiseDayToday, adjustedCruiseDayToday, cruiseDayIndex, adjustedCruiseDayIndex} = useCruise();
   const {updateClientSettings} = useClientSettings();
 
   const initialValues: CruiseSettingsFormValues = {

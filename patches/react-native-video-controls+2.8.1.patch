@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-video-controls/VideoPlayer.js b/node_modules/react-native-video-controls/VideoPlayer.js
+index 7d36b4b..e725be4 100644
+--- a/node_modules/react-native-video-controls/VideoPlayer.js
++++ b/node_modules/react-native-video-controls/VideoPlayer.js
+@@ -1300,6 +1300,7 @@ const styles = {
+     },
+     control: {
+       padding: 16,
++      paddingTop: 50,
+     },
+     text: {
+       backgroundColor: 'transparent',

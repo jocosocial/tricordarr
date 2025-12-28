@@ -15,9 +15,10 @@ import {AppIcons} from '#src/Enums/Icons';
 import {getEventTimeString} from '#src/Libraries/DateTime';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
-import {ForumListDataSelectionActions} from '#src/Reducers/Forum/ForumListDataSelectionReducer';
+import {SelectionActions} from '#src/Reducers/SelectionReducer';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 import {commonStyles} from '#src/Styles';
+import {Selectable} from '#src/Types/Selectable';
 
 interface ForumThreadListItemProps {
   forumListData: ForumListData;
@@ -37,7 +38,7 @@ const ForumThreadListInternal = ({
 }: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
   const {theme} = useAppTheme();
-  const {dispatchSelectedForums} = useSelection();
+  const {dispatchSelectedItems} = useSelection();
 
   const styles = StyleSheet.create({
     item: {
@@ -120,9 +121,9 @@ const ForumThreadListInternal = ({
   };
 
   const handleSelection = () => {
-    dispatchSelectedForums({
-      type: ForumListDataSelectionActions.select,
-      forumListData: forumListData,
+    dispatchSelectedItems({
+      type: SelectionActions.select,
+      item: Selectable.fromForumListData(forumListData),
     });
   };
 
