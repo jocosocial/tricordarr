@@ -199,9 +199,8 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           disabled={props.forumListData.isMuted}
         />
         <SwipeableButton
-          // Ehhhhhh
-          text={'Mark\n   as\nRead'}
-          iconName={AppIcons.check}
+          text={'Read'}
+          iconName={AppIcons.markAsRead}
           onPress={() => handleMarkAsRead(swipeable)}
           refreshing={readRefreshing}
           style={{backgroundColor: theme.colors.elevation.level3}}

@@ -122,7 +122,7 @@ export enum AppIcons {
   selectAll = 'select-all',
   selectNone = 'select-remove',
   selectInverse = 'select-inverse',
-  markAsRead = 'read',
+  markAsRead = 'checkbox-marked-circle-outline',
   microKaraoke = 'account-music',
   twitter = 'twitter',
   youtube = 'youtube',
