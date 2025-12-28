@@ -1,7 +1,7 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 
 import {SelectionActionsType} from '#src/Reducers/SelectionReducer';
-import {Selectable} from '#src/Types/Selection';
+import {Selectable} from '#src/Types/Selectable';
 
 export interface SelectionContextType {
   selectedItems: Selectable[];

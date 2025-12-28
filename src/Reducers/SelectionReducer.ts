@@ -1,6 +1,6 @@
 import {useReducer} from 'react';
 
-import {Selectable} from '#src/Types/Selection';
+import {Selectable} from '#src/Types/Selectable';
 
 export enum SelectionActions {
   select = 'SELECT',

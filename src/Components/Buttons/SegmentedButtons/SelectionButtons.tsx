@@ -10,7 +10,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {SelectionActions} from '#src/Reducers/SelectionReducer';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 import {SegmentedButtonType} from '#src/Types';
-import {Selectable} from '#src/Types/Selection';
+import {Selectable} from '#src/Types/Selectable';
 
 interface SelectionButtonsProps {
   items?: ForumListData[];

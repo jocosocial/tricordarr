@@ -8,7 +8,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
 import {ForumListData} from '#src/Structs/ControllerStructs';
-import {Selectable} from '#src/Types/Selection';
+import {Selectable} from '#src/Types/Selectable';
 
 interface ForumSelectionHeaderButtonsProps {
   setRefreshing: Dispatch<SetStateAction<boolean>>;

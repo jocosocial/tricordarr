@@ -18,7 +18,7 @@ import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigato
 import {SelectionActions} from '#src/Reducers/SelectionReducer';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 import {commonStyles} from '#src/Styles';
-import {Selectable} from '#src/Types/Selection';
+import {Selectable} from '#src/Types/Selectable';
 
 interface ForumThreadListItemProps {
   forumListData: ForumListData;
