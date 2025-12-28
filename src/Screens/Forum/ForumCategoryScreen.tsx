@@ -19,6 +19,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
@@ -37,7 +38,9 @@ export const ForumCategoryScreen = (props: Props) => {
         <DisabledFeatureScreen
           feature={SwiftarrFeature.forums}
           urlPath={`/forums/${props.route.params.category.categoryID}`}>
-          <ForumCategoryScreenInner {...props} />
+          <SelectionProvider>
+            <ForumCategoryScreenInner {...props} />
+          </SelectionProvider>
         </DisabledFeatureScreen>
       </PreRegistrationScreen>
     </LoggedInScreen>
