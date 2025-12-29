@@ -4,6 +4,7 @@ import {StyleSheet, View} from 'react-native';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezAvatarImage} from '#src/Components/Images/FezAvatarImage';
 import {ListItem} from '#src/Components/Lists/ListItem';
+import {SeamailListItemSwipeable} from '#src/Components/Swipeables/SeamailListItemSwipeable';
 import {SeamailMessageCountIndicator} from '#src/Components/Text/SeamailMessageCountIndicator';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -96,17 +97,19 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
    * the description to one line.
    */
   return (
-    <ListItem
-      title={fez.title}
-      titleStyle={styles.title}
-      titleNumberOfLines={0}
-      description={description}
-      descriptionStyle={styles.description}
-      descriptionNumberOfLines={1}
-      onPress={onPress}
-      left={getAvatar}
-      right={getRight}
-    />
+    <SeamailListItemSwipeable fez={fez}>
+      <ListItem
+        title={fez.title}
+        titleStyle={styles.title}
+        titleNumberOfLines={0}
+        description={description}
+        descriptionStyle={styles.description}
+        descriptionNumberOfLines={1}
+        onPress={onPress}
+        left={getAvatar}
+        right={getRight}
+      />
+    </SeamailListItemSwipeable>
   );
 };
 

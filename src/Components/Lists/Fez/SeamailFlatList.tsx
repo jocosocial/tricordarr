@@ -31,7 +31,11 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
     return <></>;
   }, [props.fezList]);
 
-  const renderItem = ({item}: {item: FezData}) => <SeamailListItem fez={item} />;
+  const renderItem = ({item}: {item: FezData}) => (
+    // The key is needed to force a re-render when the mute state changes
+    // so that the swipables don't get all out of alignment in the list.
+    <SeamailListItem key={`${item.fezID}-${item.members?.isMuted ?? false}`} fez={item} />
+  );
 
   const getListHeader = useCallback(() => {
     if (props.fezList.length > 0) {
@@ -51,7 +55,7 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
   }, [props.fezList.length]);
 
   return (
-    <AppFlashList
+    <AppFlashList<FezData>
       ref={flatListRef}
       refreshControl={props.refreshControl}
       renderItem={renderItem}
