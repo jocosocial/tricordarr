@@ -43,7 +43,7 @@ export const SeamailListScreen = (props: Props) => {
 
 const SeamailListScreenInner = ({navigation}: Props) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
-  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isLoading} = useSeamailListQuery({
+  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isPending} = useSeamailListQuery({
     forUser: asPrivilegedUser,
   });
   const {notificationSocket, closeFezSocket} = useSocket();
@@ -53,6 +53,7 @@ const SeamailListScreenInner = ({navigation}: Props) => {
   const {data: profilePublicData} = useUserProfileQuery();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const [fezList, setFezList] = useState<FezData[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const queryClient = useQueryClient();
 
@@ -68,10 +69,11 @@ const SeamailListScreenInner = ({navigation}: Props) => {
     }
   }, [data]);
 
-  const onRefresh = useCallback(() => {
-    refetch().finally(() => {
-      refetchUserNotificationData();
-    });
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    await refetchUserNotificationData();
+    setRefreshing(false);
   }, [refetch, refetchUserNotificationData]);
 
   const notificationHandler = useCallback(
@@ -143,7 +145,7 @@ const SeamailListScreenInner = ({navigation}: Props) => {
       )}
       <SeamailFlatList
         fezList={fezList}
-        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={isLoading || refreshing || isPending} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
         onScrollThreshold={onScrollThreshold}
         hasNextPage={hasNextPage}
