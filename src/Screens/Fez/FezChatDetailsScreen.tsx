@@ -7,6 +7,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
+import {FezParticipantFavoriteAllItem} from '#src/Components/Lists/Items/FezParticipantFavoriteAllItem';
 import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
@@ -126,6 +127,10 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
                 onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
               />
             ))}
+        </ListSection>
+        <DataFieldListItem title={'Participant Actions'} />
+        <ListSection>
+          <FezParticipantFavoriteAllItem fez={fez} />
         </ListSection>
       </ScrollingContentView>
     </AppView>

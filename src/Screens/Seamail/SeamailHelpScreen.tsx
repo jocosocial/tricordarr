@@ -44,6 +44,10 @@ export const SeamailHelpScreen = () => {
           You can schedule a personal event with the users in a seamail conversation by pressing the "Create Event"
           button in the header.
         </HelpTopicView>
+        <HelpTopicView icon={AppIcons.details}>
+          The details screen for a seamail conversation shows the list of participants and other internal information.
+          You can also bulk favorite all users in the chat at once.
+        </HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );
