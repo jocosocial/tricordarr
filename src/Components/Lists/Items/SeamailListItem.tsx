@@ -49,13 +49,18 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
       ...commonStyles.alignItemsEnd,
       ...commonStyles.paddingLeftSmall,
     },
+    avatar: {
+      ...commonStyles.paddingLeftSmall,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+    },
   });
 
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
   const description = otherParticipants.map(p => p.username).join(', ');
 
   const getAvatar = () => (
-    <View style={[styles.leftContainer, commonStyles.alignItemsCenter]}>
+    <View style={styles.avatar}>
       <FezAvatarImage fez={fez} />
     </View>
   );
