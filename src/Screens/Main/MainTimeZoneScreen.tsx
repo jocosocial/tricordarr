@@ -3,19 +3,18 @@ import moment from 'moment-timezone';
 import React, {useCallback, useEffect} from 'react';
 import {Linking, RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {MainTimeZoneScreenActionsMenu} from '#src/Components/Menus/Main/MainTimeZoneScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {useCommonStack} from '#src/Navigation/CommonScreens';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -56,15 +55,11 @@ const TimeZoneScreen = () => {
     () => (
       <View>
         <MaterialHeaderButtons>
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.timeZoneHelpScreen)}
-          />
+          <MainTimeZoneScreenActionsMenu />
         </MaterialHeaderButtons>
       </View>
     ),
-    [navigation],
+    [],
   );
 
   useEffect(() => {
