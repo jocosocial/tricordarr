@@ -113,9 +113,8 @@ const FezChatScreenInner = ({route}: Props) => {
     if (!fez) {
       return <></>;
     }
-    const isSeamail = FezType.isSeamailType(fez.fezType);
     const participants = fez.members?.participants;
-    const canCreateEvent = isSeamail && participants && participants.length > 0;
+    const canCreateEvent = FezType.isSeamailType(fez.fezType) && participants && participants.length > 0;
 
     return (
       <View>
@@ -123,7 +122,7 @@ const FezChatScreenInner = ({route}: Props) => {
           {canCreateEvent && (
             <Item
               title={'Create Event'}
-              iconName={AppIcons.personalEvent}
+              iconName={AppIcons.eventCreate}
               onPress={() =>
                 navigation.push(CommonStackComponents.personalEventCreateScreen, {
                   initialUserHeaders: participants,
