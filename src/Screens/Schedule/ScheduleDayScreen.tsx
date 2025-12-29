@@ -100,6 +100,21 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     },
   });
   const {
+    data: lfgOwnedData,
+    isFetching: isLfgOwnedFetching,
+    isError: isLfgOwnedError,
+    refetch: refetchLfgOwned,
+    hasNextPage: ownedHasNextPage,
+    fetchNextPage: ownedFetchNextPage,
+  } = useLfgListQuery({
+    cruiseDay: selectedCruiseDay - 1,
+    endpoint: 'owner',
+    hidePast: false,
+    options: {
+      enabled: !appConfig.preRegistrationMode,
+    },
+  });
+  const {
     data: personalEventData,
     isFetching: isPersonalEventFetching,
     isError: isPersonalEventError,
@@ -125,11 +140,22 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     setRefreshing(true);
     let refreshes: Promise<any>[] = [refetchEvents()];
     if (!appConfig.preRegistrationMode) {
-      refreshes.push(refetchLfgJoined(), refetchLfgOpen(), refetchPersonalEvents());
+      refreshes.push(refetchLfgJoined(), refetchLfgOwned(), refetchPersonalEvents());
+      if (appConfig.schedule.eventsShowOpenLfgs) {
+        refreshes.push(refetchLfgOpen());
+      }
     }
     await Promise.all(refreshes);
     setRefreshing(false);
-  }, [refetchEvents, refetchLfgJoined, refetchLfgOpen, refetchPersonalEvents, appConfig.preRegistrationMode]);
+  }, [
+    refetchEvents,
+    refetchLfgJoined,
+    refetchLfgOwned,
+    refetchLfgOpen,
+    refetchPersonalEvents,
+    appConfig.preRegistrationMode,
+    appConfig.schedule.eventsShowOpenLfgs,
+  ]);
 
   const scrollToNow = useCallback(() => {
     if (scheduleList.length === 0 || !listRef.current) {
@@ -182,6 +208,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     const listData = buildScheduleList(
       scheduleFilterSettings,
       lfgJoinedData,
+      lfgOwnedData,
       lfgOpenData,
       eventData,
       personalEventData,
@@ -189,14 +216,22 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     setScheduleList(listData);
     onDataLoaded();
     console.log('[ScheduleDayScreen.tsx] Finished buildScheduleList useEffect.');
-  }, [scheduleFilterSettings, lfgJoinedData, lfgOpenData, eventData, personalEventData, onDataLoaded]);
+  }, [
+    scheduleFilterSettings,
+    lfgJoinedData,
+    lfgOwnedData,
+    lfgOpenData,
+    eventData,
+    personalEventData,
+    onDataLoaded,
+  ]);
 
   // Reset switching state on error to prevent stuck loading spinner
   useEffect(() => {
-    if (isEventError || isLfgOpenError || isLfgJoinedError || isPersonalEventError) {
+    if (isEventError || isLfgOpenError || isLfgJoinedError || isLfgOwnedError || isPersonalEventError) {
       onQueryError();
     }
-  }, [isEventError, isLfgOpenError, isLfgJoinedError, isPersonalEventError, onQueryError]);
+  }, [isEventError, isLfgOpenError, isLfgJoinedError, isLfgOwnedError, isPersonalEventError, onQueryError]);
 
   useEffect(() => {
     if (scheduleList.length > 0) {
@@ -208,20 +243,26 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
 
   useEffect(() => {
     console.log('[ScheduleDayScreen.tsx] Firing pagination useEffect');
-    if (openHasNextPage) {
+    if (appConfig.schedule.eventsShowOpenLfgs && openHasNextPage) {
       openFetchNextPage();
     }
     if (joinedHasNextPage) {
       joinedFetchNextPage();
     }
+    if (ownedHasNextPage) {
+      ownedFetchNextPage();
+    }
     if (personalHasNextPage) {
       personalFetchNextPage();
     }
   }, [
+    appConfig.schedule.eventsShowOpenLfgs,
     joinedFetchNextPage,
     joinedHasNextPage,
     openFetchNextPage,
     openHasNextPage,
+    ownedFetchNextPage,
+    ownedHasNextPage,
     personalFetchNextPage,
     personalHasNextPage,
   ]);
@@ -231,6 +272,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const isRefreshing =
     (appConfig.schedule.eventsShowJoinedLfgs && isLfgJoinedFetching) ||
     (appConfig.schedule.eventsShowOpenLfgs && isLfgOpenFetching) ||
+    isLfgOwnedFetching ||
     isEventFetching ||
     isPersonalEventFetching ||
     refreshing;

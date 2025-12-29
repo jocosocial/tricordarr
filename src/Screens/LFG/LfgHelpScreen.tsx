@@ -61,7 +61,7 @@ export const LfgHelpScreen = () => {
           These are LFGs that you have created.
         </HelpTopicView>
         <HelpTopicView icon={AppIcons.lfgFind} title={'Find'}>
-          These are LFGs created by others that you can join.
+          Also referred to as Open. These are LFGs created by others that you can join.
         </HelpTopicView>
         <HelpTopicView icon={AppIcons.lfgFormer} title={'Former'}>
           These are Seamails, LFGs and Personal Events that you were previously a member of, but have since left or been

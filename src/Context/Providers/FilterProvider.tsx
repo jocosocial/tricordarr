@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, useState} from 'react';
+import React, {PropsWithChildren, useEffect, useState} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {FilterContext} from '#src/Context/Contexts/FilterContext';
@@ -19,10 +19,19 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
     appConfig.userPreferences.defaultForumSortOrder,
   );
   const [eventPersonalFilter, setEventPersonalFilter] = useState(false);
-  const [eventLfgFilter, setEventLfgFilter] = useState(false);
+  const [eventLfgJoinedFilter, setEventLfgJoinedFilter] = useState(false);
+  const [eventLfgOwnedFilter, setEventLfgOwnedFilter] = useState(false);
+  const [eventLfgOpenFilter, setEventLfgOpenFilter] = useState(false);
   const [forumSortDirection, setForumSortDirection] = useState<ForumSortDirection | undefined>(
     appConfig.userPreferences.defaultForumSortDirection,
   );
+
+  // Clear the Open LFGs filter if the setting is disabled
+  useEffect(() => {
+    if (!appConfig.schedule.eventsShowOpenLfgs && eventLfgOpenFilter) {
+      setEventLfgOpenFilter(false);
+    }
+  }, [appConfig.schedule.eventsShowOpenLfgs, eventLfgOpenFilter]);
 
   const scheduleFilterSettings: ScheduleFilterSettings = {
     eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
@@ -30,7 +39,9 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
     showJoinedLfgs: appConfig.schedule.eventsShowJoinedLfgs,
     showOpenLfgs: appConfig.schedule.eventsShowOpenLfgs,
     eventPersonalFilter: eventPersonalFilter,
-    eventLfgFilter: eventLfgFilter,
+    eventLfgJoinedFilter: eventLfgJoinedFilter,
+    eventLfgOwnedFilter: eventLfgOwnedFilter,
+    eventLfgOpenFilter: eventLfgOpenFilter,
   };
 
   return (
@@ -52,8 +63,12 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
         setForumSortOrder,
         eventPersonalFilter,
         setEventPersonalFilter,
-        eventLfgFilter,
-        setEventLfgFilter,
+        eventLfgJoinedFilter,
+        setEventLfgJoinedFilter,
+        eventLfgOwnedFilter,
+        setEventLfgOwnedFilter,
+        eventLfgOpenFilter,
+        setEventLfgOpenFilter,
         scheduleFilterSettings,
         forumSortDirection,
         setForumSortDirection,

@@ -12,6 +12,7 @@ import {CruiseDayTime, ScheduleCardMarkerType, ScheduleFilterSettings} from '#sr
  * This array should be ordered by start time.
  * @param filterSettings
  * @param lfgJoinedData
+ * @param lfgOwnedData
  * @param lfgOpenData
  * @param eventData
  * @param personalEventData
@@ -19,27 +20,50 @@ import {CruiseDayTime, ScheduleCardMarkerType, ScheduleFilterSettings} from '#sr
 export const buildScheduleList = (
   filterSettings: ScheduleFilterSettings,
   lfgJoinedData?: InfiniteData<FezListData>,
+  lfgOwnedData?: InfiniteData<FezListData>,
   lfgOpenData?: InfiniteData<FezListData>,
   eventData?: EventData[],
   personalEventData?: InfiniteData<FezListData>,
 ): (FezData | EventData)[] => {
-  let anyPersonalFilter =
-    filterSettings.eventLfgFilter || filterSettings.eventFavoriteFilter || filterSettings.eventPersonalFilter;
+  let anyLfgFilter =
+    filterSettings.eventLfgJoinedFilter ||
+    filterSettings.eventLfgOwnedFilter ||
+    filterSettings.eventLfgOpenFilter;
+  let anyOtherFilter = filterSettings.eventFavoriteFilter || filterSettings.eventPersonalFilter;
+  let anyPersonalFilter = anyLfgFilter || anyOtherFilter;
 
   let lfgList: FezData[] = [];
-  if ((filterSettings.eventLfgFilter || !anyPersonalFilter) && !filterSettings.eventTypeFilter) {
+  if (anyLfgFilter) {
+    // If any LFG filter is active, show only those specific LFGs
+    if (filterSettings.eventLfgJoinedFilter && filterSettings.showJoinedLfgs && lfgJoinedData) {
+      lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+    }
+    if (filterSettings.eventLfgOwnedFilter && lfgOwnedData) {
+      lfgOwnedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+    }
+    if (
+      filterSettings.eventLfgOpenFilter &&
+      (!filterSettings.eventFavoriteFilter || !filterSettings.eventPersonalFilter) &&
+      filterSettings.showOpenLfgs &&
+      lfgOpenData
+    ) {
+      lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+    }
+  } else if (!anyOtherFilter && !filterSettings.eventTypeFilter) {
+    // If no filter is active at all, show all enabled LFGs (default behavior)
+    // Note: eventTypeFilter excludes LFGs in default view, but LFG filters can work with eventTypeFilter
     if (filterSettings.showJoinedLfgs && lfgJoinedData) {
       lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
     }
-    if (!filterSettings.eventFavoriteFilter || !filterSettings.eventPersonalFilter) {
-      if (filterSettings.showOpenLfgs && lfgOpenData) {
-        lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
-      }
+    if (filterSettings.showOpenLfgs && lfgOpenData) {
+      lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
     }
   }
+  // If other filters are active but no LFG filter, don't show LFGs
 
   let eventList: EventData[] = [];
-  if (filterSettings.eventFavoriteFilter || !anyPersonalFilter) {
+  // Show events if: favorite filter is on, OR no personal filters are on, OR eventType filter is on (to allow combining with LFG filters)
+  if (filterSettings.eventFavoriteFilter || !anyPersonalFilter || filterSettings.eventTypeFilter) {
     eventData?.map(event => {
       if (
         (filterSettings.eventTypeFilter && event.eventType !== EventType[filterSettings.eventTypeFilter]) ||
@@ -63,7 +87,20 @@ export const buildScheduleList = (
   // The order of the combinedList is important. In the event of a tie for start time, personalEvents should
   // be listed first, followed by Events then LFGs. It's possible that LFGs should be second in the priority.
   // Will see if any cases come up where that matters.
-  return [personalEventList, eventList, lfgList].flat().sort((a, b) => {
+  const combinedList = [personalEventList, eventList, lfgList].flat();
+
+  // Deduplicate items by their unique IDs
+  const seenIds = new Set<string>();
+  const deduplicatedList: (FezData | EventData)[] = [];
+  for (const item of combinedList) {
+    const id = 'fezID' in item ? item.fezID : item.eventID;
+    if (!seenIds.has(id)) {
+      seenIds.add(id);
+      deduplicatedList.push(item);
+    }
+  }
+
+  return deduplicatedList.sort((a, b) => {
     if (a.startTime && b.startTime) {
       return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
     }

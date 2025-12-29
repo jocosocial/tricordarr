@@ -21,8 +21,12 @@ interface ScheduleFilterContextType {
   setForumFilter: Dispatch<SetStateAction<ForumFilter | undefined>>;
   eventPersonalFilter: boolean;
   setEventPersonalFilter: Dispatch<SetStateAction<boolean>>;
-  eventLfgFilter: boolean;
-  setEventLfgFilter: Dispatch<SetStateAction<boolean>>;
+  eventLfgJoinedFilter: boolean;
+  setEventLfgJoinedFilter: Dispatch<SetStateAction<boolean>>;
+  eventLfgOwnedFilter: boolean;
+  setEventLfgOwnedFilter: Dispatch<SetStateAction<boolean>>;
+  eventLfgOpenFilter: boolean;
+  setEventLfgOpenFilter: Dispatch<SetStateAction<boolean>>;
   scheduleFilterSettings: ScheduleFilterSettings;
   forumSortDirection?: ForumSortDirection;
   setForumSortDirection: Dispatch<SetStateAction<ForumSortDirection | undefined>>;

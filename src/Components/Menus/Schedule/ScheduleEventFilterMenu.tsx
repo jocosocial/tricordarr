@@ -19,10 +19,14 @@ export const ScheduleEventFilterMenu = () => {
     setEventFavoriteFilter,
     eventPersonalFilter,
     setEventPersonalFilter,
-    eventLfgFilter,
-    setEventLfgFilter,
+    eventLfgJoinedFilter,
+    setEventLfgJoinedFilter,
+    eventLfgOwnedFilter,
+    setEventLfgOwnedFilter,
+    eventLfgOpenFilter,
+    setEventLfgOpenFilter,
   } = useFilter();
-  const {oobeCompleted} = useConfig();
+  const {oobeCompleted, appConfig} = useConfig();
 
   // This also shows joined LFGs, hopefully that's not too surprising
   const handleFavoriteSelection = () => {
@@ -35,8 +39,18 @@ export const ScheduleEventFilterMenu = () => {
     closeMenu();
   };
 
-  const handleLfgSelection = () => {
-    setEventLfgFilter(!eventLfgFilter);
+  const handleLfgJoinedSelection = () => {
+    setEventLfgJoinedFilter(!eventLfgJoinedFilter);
+    closeMenu();
+  };
+
+  const handleLfgOwnedSelection = () => {
+    setEventLfgOwnedFilter(!eventLfgOwnedFilter);
+    closeMenu();
+  };
+
+  const handleLfgOpenSelection = () => {
+    setEventLfgOpenFilter(!eventLfgOpenFilter);
     closeMenu();
   };
 
@@ -52,11 +66,19 @@ export const ScheduleEventFilterMenu = () => {
   const clearFilters = () => {
     setEventTypeFilter('');
     setEventFavoriteFilter(false);
-    setEventLfgFilter(false);
+    setEventLfgJoinedFilter(false);
+    setEventLfgOwnedFilter(false);
+    setEventLfgOpenFilter(false);
     setEventPersonalFilter(false);
   };
 
-  const anyActiveFilter = eventFavoriteFilter || eventTypeFilter || eventPersonalFilter || eventLfgFilter;
+  const anyActiveFilter =
+    eventFavoriteFilter ||
+    eventTypeFilter ||
+    eventPersonalFilter ||
+    eventLfgJoinedFilter ||
+    eventLfgOwnedFilter ||
+    eventLfgOpenFilter;
 
   const menuAnchor = (
     <MenuAnchor
@@ -77,12 +99,6 @@ export const ScheduleEventFilterMenu = () => {
         selected={eventPersonalFilter}
         disabled={!oobeCompleted}
       />
-      <SelectableMenuItem
-        title={'LFGs'}
-        onPress={handleLfgSelection}
-        selected={eventLfgFilter}
-        disabled={!oobeCompleted}
-      />
       <Divider bold={true} />
       {Object.keys(EventType).map(eventType => {
         return (
@@ -94,6 +110,27 @@ export const ScheduleEventFilterMenu = () => {
           />
         );
       })}
+      <Divider bold={true} />
+      <SelectableMenuItem
+        title={'Joined LFGs'}
+        onPress={handleLfgJoinedSelection}
+        selected={eventLfgJoinedFilter}
+        disabled={!oobeCompleted}
+      />
+      <SelectableMenuItem
+        title={'Your LFGs'}
+        onPress={handleLfgOwnedSelection}
+        selected={eventLfgOwnedFilter}
+        disabled={!oobeCompleted}
+      />
+      {appConfig.schedule.eventsShowOpenLfgs && (
+        <SelectableMenuItem
+          title={'Open LFGs'}
+          onPress={handleLfgOpenSelection}
+          selected={eventLfgOpenFilter}
+          disabled={!oobeCompleted}
+        />
+      )}
     </AppMenu>
   );
 };
