@@ -6,9 +6,9 @@
 //
 
 import Foundation
+import NetworkExtension
 import UIKit
 import UserNotifications
-import NetworkExtension
 
 /// Class to manage User Notifications.
 ///
@@ -18,7 +18,19 @@ import NetworkExtension
 /// Tricordarr does not need this since any data refetches are handled by React Query and/or the NotificationDataPoller/NotificationDataListener
 /// components on the JavaScript side.
 @objc class Notifications: NSObject, UNUserNotificationCenterDelegate {
-	static let shared = Notifications()
+	/// Serial queue for thread-safe access to the shared instance
+	private static let accessQueue = DispatchQueue(label: "com.grantcohoe.tricordarr.notifications.access")
+
+	/// Private shared instance
+	/// Synchronization is handled via accessQueue
+	nonisolated(unsafe) private static let _shared = Notifications()
+
+	/// Thread-safe access to the shared Notifications instance
+	static var shared: Notifications {
+		return accessQueue.sync {
+			return _shared
+		}
+	}
 
 	/// The pushManager is the instance that handles the local push provider.
 	@objc dynamic var backgroundPushManager: NEAppPushManager?
