@@ -9,7 +9,7 @@ import Foundation
 import NetworkExtension
 import os
 
-@objc public class WebsocketNotifier: NSObject {
+public class WebsocketNotifier: NSObject {
 	// Thread safety: All property access must go through accessQueue
 	private let accessQueue = DispatchQueue(label: "com.tricordarr.websocketnotifier.access", qos: .userInitiated)
 
@@ -551,13 +551,14 @@ extension WebsocketNotifier: URLSessionTaskDelegate {
 
 /// Delegate methods for WebSocket tasks
 extension WebsocketNotifier: URLSessionWebSocketDelegate {
-	public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol: String?) {
+	public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol: String?)
+	{
 		logger.log(
 			"[WebsocketNotifier.swift] Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public)"
 		)
 	}
 
-  public func urlSession(
+	public func urlSession(
 		_ session: URLSession,
 		webSocketTask: URLSessionWebSocketTask,
 		didCloseWith: URLSessionWebSocketTask.CloseCode,
