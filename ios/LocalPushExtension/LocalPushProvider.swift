@@ -14,7 +14,7 @@ import TricordarrKit
 ///
 class LocalPushProvider: NEAppPushProvider {
 	var websocketNotifier = WebsocketNotifier()
-  let logger = Logging.getLogger("LocalPushProvider")
+	let logger = Logging.getLogger("LocalPushProvider")
 
 	override init() {
 		super.init()
@@ -22,13 +22,13 @@ class LocalPushProvider: NEAppPushProvider {
 	}
 
 	override func start() {
-    logger.log("[LocalPushProvider.swift] start")
+		logger.log("[LocalPushProvider.swift] start")
 		websocketNotifier.updateConfig()
 		websocketNotifier.start()
 	}
 
 	override func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-    logger.log("[LocalPushProvider.swift] stop")
+		logger.log("[LocalPushProvider.swift] stop")
 		websocketNotifier.stop(with: reason, completionHandler: completionHandler)
 	}
 
