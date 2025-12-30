@@ -158,7 +158,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
               (appConfig.wifiNetworkNames?.length === 1 && appConfig.wifiNetworkNames[0] === data?.shipWifiSSID)
             }
             onPress={resetDefaultValues}
-            buttonText={'Reset'}
+            buttonText={'Reset to Default Networks'}
             style={commonStyles.marginTopSmall}
             buttonColor={theme.colors.twitarrNeutralButton}
           />
