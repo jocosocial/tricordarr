@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import UserNotifications
+import NetworkExtension
 
 /// Class to manage User Notifications.
 ///

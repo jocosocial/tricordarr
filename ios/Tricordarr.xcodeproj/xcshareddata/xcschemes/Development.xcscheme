@@ -20,6 +20,20 @@
                ReferencedContainer = "container:Tricordarr.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "9383B5A52F033211001BD68E"
+               BuildableName = "LocalPushExtension.appex"
+               BlueprintName = "LocalPushExtension"
+               ReferencedContainer = "container:Tricordarr.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

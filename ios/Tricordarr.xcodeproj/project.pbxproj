@@ -13,7 +13,36 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		93690EF42EAB269900CA8914 /* RCTNativeTricordarrModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */; };
+		9383B5A82F033211001BD68E /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9383B5A72F033211001BD68E /* NetworkExtension.framework */; };
+		9383B5B02F033211001BD68E /* LocalPushExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9383B5A62F033211001BD68E /* LocalPushExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9383B5E52F037EDA001BD68E /* TricordarrKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9383B5E42F037EDA001BD68E /* TricordarrKit */; };
+		9383B5E82F037F2B001BD68E /* TricordarrKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9383B5E72F037F2B001BD68E /* TricordarrKit */; };
+		9383B5EA2F037F33001BD68E /* TricordarrKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9383B5E92F037F33001BD68E /* TricordarrKit */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9383B5AE2F033211001BD68E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9383B5A52F033211001BD68E;
+			remoteInfo = LocalPushExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9383B5B52F033211001BD68E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9383B5B02F033211001BD68E /* LocalPushExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		13B07F961A680F5B00A75B9A /* Tricordarr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tricordarr.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -29,29 +58,34 @@
 		93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tricordarr-Bridging-Header.h"; sourceTree = "<group>"; };
 		93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTNativeTricordarrModule.h; sourceTree = "<group>"; };
 		93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTNativeTricordarrModule.mm; sourceTree = "<group>"; };
+		9383B5A62F033211001BD68E /* LocalPushExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LocalPushExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9383B5A72F033211001BD68E /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		9383B5E22F037DD1001BD68E /* TricordarrKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = TricordarrKit; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9383B5C52F033A5F001BD68E /* Exceptions for "LocalPushExtension" folder in "LocalPushExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9383B5A52F033211001BD68E /* LocalPushExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		93980FED2EB846F90067E8A1 /* Structs */ = {
+		9383B5A92F033211001BD68E /* LocalPushExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				9383B5C52F033A5F001BD68E /* Exceptions for "LocalPushExtension" folder in "LocalPushExtension" target */,
 			);
-			path = Structs;
+			path = LocalPushExtension;
 			sourceTree = "<group>";
 		};
-		93980FF02EB849190067E8A1 /* Helpers */ = {
+		93B71A582EBACAC2004BC91E /* Helpers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = Helpers;
-			sourceTree = "<group>";
-		};
-		93B71A582EBACAC2004BC91E /* Enumerations */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
-			path = Enumerations;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -62,6 +96,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C80B921A6F3F58F76C31292 /* libPods-Tricordarr.a in Frameworks */,
+				9383B5E52F037EDA001BD68E /* TricordarrKit in Frameworks */,
+				9383B5E82F037F2B001BD68E /* TricordarrKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9383B5A32F033211001BD68E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9383B5A82F033211001BD68E /* NetworkExtension.framework in Frameworks */,
+				9383B5EA2F037F33001BD68E /* TricordarrKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +131,7 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				5DCACB8F33CDC322A6C60F78 /* libPods-Tricordarr.a */,
+				9383B5A72F033211001BD68E /* NetworkExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -100,9 +146,11 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				9383B5E22F037DD1001BD68E /* TricordarrKit */,
 				93690EF02EAB266C00CA8914 /* NativeTricordarrModule */,
 				13B07FAE1A68108700A75B9A /* Tricordarr */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
+				9383B5A92F033211001BD68E /* LocalPushExtension */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
@@ -116,6 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* Tricordarr.app */,
+				9383B5A62F033211001BD68E /* LocalPushExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -123,9 +172,7 @@
 		93690EF02EAB266C00CA8914 /* NativeTricordarrModule */ = {
 			isa = PBXGroup;
 			children = (
-				93B71A582EBACAC2004BC91E /* Enumerations */,
-				93980FF02EB849190067E8A1 /* Helpers */,
-				93980FED2EB846F90067E8A1 /* Structs */,
+				93B71A582EBACAC2004BC91E /* Helpers */,
 				93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */,
 				93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */,
 				93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */,
@@ -156,20 +203,43 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+				9383B5B52F033211001BD68E /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9383B5AF2F033211001BD68E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				93B71A582EBACAC2004BC91E /* Helpers */,
+			);
+			name = Tricordarr;
+			productName = Tricordarr;
+			productReference = 13B07F961A680F5B00A75B9A /* Tricordarr.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9383B5A52F033211001BD68E /* LocalPushExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9383B5B22F033211001BD68E /* Build configuration list for PBXNativeTarget "LocalPushExtension" */;
+			buildPhases = (
+				9383B5A22F033211001BD68E /* Sources */,
+				9383B5A32F033211001BD68E /* Frameworks */,
+				9383B5A42F033211001BD68E /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				93980FED2EB846F90067E8A1 /* Structs */,
-				93980FF02EB849190067E8A1 /* Helpers */,
-				93B71A582EBACAC2004BC91E /* Enumerations */,
+				9383B5A92F033211001BD68E /* LocalPushExtension */,
 			);
-			name = Tricordarr;
-			productName = Tricordarr;
-			productReference = 13B07F961A680F5B00A75B9A /* Tricordarr.app */;
-			productType = "com.apple.product-type.application";
+			name = LocalPushExtension;
+			packageProductDependencies = (
+				9383B5E92F037F33001BD68E /* TricordarrKit */,
+			);
+			productName = LocalPushExtension;
+			productReference = 9383B5A62F033211001BD68E /* LocalPushExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -177,10 +247,14 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1210;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1640;
+					};
+					9383B5A52F033211001BD68E = {
+						CreatedOnToolsVersion = 16.4;
 					};
 				};
 			};
@@ -192,12 +266,16 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				9383B5E62F037F2B001BD68E /* XCLocalSwiftPackageReference "TricordarrKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* Tricordarr */,
+				9383B5A52F033211001BD68E /* LocalPushExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -210,6 +288,13 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				4C1CD608D8B56BA06748D9CD /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9383B5A42F033211001BD68E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,9 +325,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -279,9 +368,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -300,7 +393,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9383B5A22F033211001BD68E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9383B5AF2F033211001BD68E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9383B5A52F033211001BD68E /* LocalPushExtension */;
+			targetProxy = 9383B5AE2F033211001BD68E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
@@ -525,6 +633,91 @@
 			};
 			name = Release;
 		};
+		9383B5B32F033211001BD68E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = LocalPushExtension/LocalPushExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 67V85M2YSV;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LocalPushExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LocalPushExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr.LocalPushExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9383B5B42F033211001BD68E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = LocalPushExtension/LocalPushExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 67V85M2YSV;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LocalPushExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LocalPushExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr.LocalPushExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -546,7 +739,38 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		9383B5B22F033211001BD68E /* Build configuration list for PBXNativeTarget "LocalPushExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9383B5B32F033211001BD68E /* Debug */,
+				9383B5B42F033211001BD68E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		9383B5E62F037F2B001BD68E /* XCLocalSwiftPackageReference "TricordarrKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = TricordarrKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9383B5E42F037EDA001BD68E /* TricordarrKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TricordarrKit;
+		};
+		9383B5E72F037F2B001BD68E /* TricordarrKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TricordarrKit;
+		};
+		9383B5E92F037F33001BD68E /* TricordarrKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TricordarrKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

@@ -10,6 +10,7 @@ import React
 import UIKit
 import Vision
 import os
+import TricordarrKit
 
 // Class that handles image processing for features such as the Photostream.
 //
@@ -24,11 +25,13 @@ import os
 	// The logic of this function is a combination of the Android implementation here and the iOS implementation
 	// from The Kraken. https://github.com/challfry/TheKraken/blob/master/Kraken/Photostream/PhotostreamCamera.swift
 	//
+  static let logger = Logging.getLogger("ImageBlur")
+  
 	@objc static public func blurTextInImage(
 		_ inputFilePath: String,
 		callback: @escaping RCTResponseSenderBlock
 	) {
-		Logging.logger.info("[ImageBlur.swift] got inputFilePath: \"\(inputFilePath)\"")
+		logger.info("[ImageBlur.swift] got inputFilePath: \"\(inputFilePath)\"")
 
 		// Run the heavy work off the main thread.
 		DispatchQueue.global(qos: .userInitiated)
@@ -47,7 +50,7 @@ import os
 					guard let sourceImage = UIImage(contentsOfFile: inputURL.path),
 						let cgImage = sourceImage.cgImage
 					else {
-						Logging.logger.error("[ImageBlur.swift] Failed to load image from path: \(inputFilePath)")
+						logger.error("[ImageBlur.swift] Failed to load image from path: \(inputFilePath)")
 						DispatchQueue.main.async { callback([inputFilePath]) }
 						return
 					}
@@ -66,7 +69,7 @@ import os
 						try handler.perform([textRequest])
 					}
 					catch {
-						Logging.logger.error(
+						logger.error(
 							"[ImageBlur.swift] Vision perform() failed: \(String(describing: error))"
 						)
 						DispatchQueue.main.async { callback([inputFilePath]) }
@@ -125,7 +128,7 @@ import os
 
 					// Write a temporary JPEG file and return its path
 					guard let jpegData = destImage.jpegData(compressionQuality: 0.9) else {
-						Logging.logger.error("[ImageBlur.swift] Failed to encode JPEG data.")
+						logger.error("[ImageBlur.swift] Failed to encode JPEG data.")
 						DispatchQueue.main.async { callback([inputFilePath]) }
 						return
 					}
@@ -134,11 +137,11 @@ import os
 					let outputURL = tempDir.appendingPathComponent("imageBlurResult_\(UUID().uuidString).jpg")
 					do {
 						try jpegData.write(to: outputURL, options: [.atomic])
-						Logging.logger.info("[ImageBlur.swift] output file path is \(outputURL.path)")
+						logger.info("[ImageBlur.swift] output file path is \(outputURL.path)")
 						DispatchQueue.main.async { callback([outputURL.path]) }
 					}
 					catch {
-						Logging.logger.error(
+						logger.error(
 							"[ImageBlur.swift] Failed writing output file: \(String(describing: error))"
 						)
 						DispatchQueue.main.async { callback([inputFilePath]) }
