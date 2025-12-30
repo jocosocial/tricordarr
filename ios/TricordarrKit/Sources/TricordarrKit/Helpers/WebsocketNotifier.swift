@@ -17,7 +17,9 @@ public class WebsocketNotifier: NSObject {
 	var session: URLSession?
 	@objc dynamic var socket: URLSessionWebSocketTask?
 	var lastPing: Date?
-	public let logger = Logging.getLogger("WebsocketNotifier")
+	// Internal logger to avoid direct field offset linker error with BUILD_LIBRARY_FOR_DISTRIBUTION
+	// Making it internal (not public) prevents Swift from generating direct field offset symbols
+	private let logger = Logging.getLogger("WebsocketNotifier")
 	var startState: Bool = false  // TRUE between calls to Start and Stop. Tracks NEAppPushProvider's state, NOT the socket itself.
 	var isInApp: Bool = false
 	var incomingPhonecallHandler: (([AnyHashable: Any]) -> Void)?

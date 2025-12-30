@@ -33,19 +33,19 @@ class LocalPushProvider: NEAppPushProvider {
 	}
 
 	override func handleTimerEvent() {
-		websocketNotifier.logger.log("[LocalPushProvider.swift] sleep")
+		logger.log("[LocalPushProvider.swift] handleTimerEvent")
 		websocketNotifier.handleTimerEvent()
 	}
 
 	// NEProvider override
 	override func sleep(completionHandler: @escaping () -> Void) {
-		websocketNotifier.logger.log("[LocalPushProvider.swift] sleep")
+		logger.log("[LocalPushProvider.swift] sleep")
 		// Add code here to get ready to sleep.
 		completionHandler()
 	}
 
 	// NEProvider override
 	override func wake() {
-		websocketNotifier.logger.log("[LocalPushProvider.swift] wake")
+		logger.log("[LocalPushProvider.swift] wake")
 	}
 }
