@@ -15,9 +15,10 @@
 		93690EF42EAB269900CA8914 /* RCTNativeTricordarrModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */; };
 		9383B5A82F033211001BD68E /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9383B5A72F033211001BD68E /* NetworkExtension.framework */; };
 		9383B5B02F033211001BD68E /* LocalPushExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9383B5A62F033211001BD68E /* LocalPushExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		9383B5E52F037EDA001BD68E /* TricordarrKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9383B5E42F037EDA001BD68E /* TricordarrKit */; };
-		9383B5E82F037F2B001BD68E /* TricordarrKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9383B5E72F037F2B001BD68E /* TricordarrKit */; };
-		9383B5EA2F037F33001BD68E /* TricordarrKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9383B5E92F037F33001BD68E /* TricordarrKit */; };
+		9383B63D2F039429001BD68E /* TricordarrKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9383B6282F039429001BD68E /* TricordarrKit.framework */; };
+		9383B63E2F039429001BD68E /* TricordarrKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9383B6282F039429001BD68E /* TricordarrKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9383C8322F03952F001BD68E /* TricordarrKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9383B6282F039429001BD68E /* TricordarrKit.framework */; };
+		9383C8332F03952F001BD68E /* TricordarrKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9383B6282F039429001BD68E /* TricordarrKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +28,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 9383B5A52F033211001BD68E;
 			remoteInfo = LocalPushExtension;
+		};
+		9383B63B2F039429001BD68E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9383B6272F039429001BD68E;
+			remoteInfo = TricordarrKit;
+		};
+		9383C8342F03952F001BD68E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9383B6272F039429001BD68E;
+			remoteInfo = TricordarrKit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -40,6 +55,28 @@
 				9383B5B02F033211001BD68E /* LocalPushExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9383B6422F03942A001BD68E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9383B63E2F039429001BD68E /* TricordarrKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9383C8362F03952F001BD68E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9383C8332F03952F001BD68E /* TricordarrKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -60,7 +97,7 @@
 		93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTNativeTricordarrModule.mm; sourceTree = "<group>"; };
 		9383B5A62F033211001BD68E /* LocalPushExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LocalPushExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		9383B5A72F033211001BD68E /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
-		9383B5E22F037DD1001BD68E /* TricordarrKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = TricordarrKit; sourceTree = "<group>"; };
+		9383B6282F039429001BD68E /* TricordarrKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TricordarrKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -83,6 +120,11 @@
 			path = LocalPushExtension;
 			sourceTree = "<group>";
 		};
+		9383B6292F039429001BD68E /* TricordarrKit */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TricordarrKit;
+			sourceTree = "<group>";
+		};
 		93B71A582EBACAC2004BC91E /* Helpers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Helpers;
@@ -96,8 +138,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C80B921A6F3F58F76C31292 /* libPods-Tricordarr.a in Frameworks */,
-				9383B5E52F037EDA001BD68E /* TricordarrKit in Frameworks */,
-				9383B5E82F037F2B001BD68E /* TricordarrKit in Frameworks */,
+				9383B63D2F039429001BD68E /* TricordarrKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,7 +147,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				9383B5A82F033211001BD68E /* NetworkExtension.framework in Frameworks */,
-				9383B5EA2F037F33001BD68E /* TricordarrKit in Frameworks */,
+				9383C8322F03952F001BD68E /* TricordarrKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9383B6252F039429001BD68E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,11 +194,11 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				9383B5E22F037DD1001BD68E /* TricordarrKit */,
 				93690EF02EAB266C00CA8914 /* NativeTricordarrModule */,
 				13B07FAE1A68108700A75B9A /* Tricordarr */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				9383B5A92F033211001BD68E /* LocalPushExtension */,
+				9383B6292F039429001BD68E /* TricordarrKit */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
@@ -165,6 +213,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* Tricordarr.app */,
 				9383B5A62F033211001BD68E /* LocalPushExtension.appex */,
+				9383B6282F039429001BD68E /* TricordarrKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -191,6 +240,16 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		9383B6232F039429001BD68E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		13B07F861A680F5B00A75B9A /* Tricordarr */ = {
 			isa = PBXNativeTarget;
@@ -204,11 +263,13 @@
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
 				9383B5B52F033211001BD68E /* Embed Foundation Extensions */,
+				9383B6422F03942A001BD68E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				9383B5AF2F033211001BD68E /* PBXTargetDependency */,
+				9383B63C2F039429001BD68E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				93B71A582EBACAC2004BC91E /* Helpers */,
@@ -225,21 +286,45 @@
 				9383B5A22F033211001BD68E /* Sources */,
 				9383B5A32F033211001BD68E /* Frameworks */,
 				9383B5A42F033211001BD68E /* Resources */,
+				9383C8362F03952F001BD68E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				9383C8352F03952F001BD68E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9383B5A92F033211001BD68E /* LocalPushExtension */,
 			);
 			name = LocalPushExtension;
 			packageProductDependencies = (
-				9383B5E92F037F33001BD68E /* TricordarrKit */,
 			);
 			productName = LocalPushExtension;
 			productReference = 9383B5A62F033211001BD68E /* LocalPushExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
+		};
+		9383B6272F039429001BD68E /* TricordarrKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9383B63F2F03942A001BD68E /* Build configuration list for PBXNativeTarget "TricordarrKit" */;
+			buildPhases = (
+				9383B6232F039429001BD68E /* Headers */,
+				9383B6242F039429001BD68E /* Sources */,
+				9383B6252F039429001BD68E /* Frameworks */,
+				9383B6262F039429001BD68E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				9383B6292F039429001BD68E /* TricordarrKit */,
+			);
+			name = TricordarrKit;
+			packageProductDependencies = (
+			);
+			productName = TricordarrKit;
+			productReference = 9383B6282F039429001BD68E /* TricordarrKit.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -256,6 +341,9 @@
 					9383B5A52F033211001BD68E = {
 						CreatedOnToolsVersion = 16.4;
 					};
+					9383B6272F039429001BD68E = {
+						CreatedOnToolsVersion = 16.4;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Tricordarr" */;
@@ -267,7 +355,6 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
-				9383B5E62F037F2B001BD68E /* XCLocalSwiftPackageReference "TricordarrKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
@@ -276,6 +363,7 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* Tricordarr */,
 				9383B5A52F033211001BD68E /* LocalPushExtension */,
+				9383B6272F039429001BD68E /* TricordarrKit */,
 			);
 		};
 /* End PBXProject section */
@@ -292,6 +380,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		9383B5A42F033211001BD68E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9383B6262F039429001BD68E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -400,6 +495,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9383B6242F039429001BD68E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -407,6 +509,16 @@
 			isa = PBXTargetDependency;
 			target = 9383B5A52F033211001BD68E /* LocalPushExtension */;
 			targetProxy = 9383B5AE2F033211001BD68E /* PBXContainerItemProxy */;
+		};
+		9383B63C2F039429001BD68E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9383B6272F039429001BD68E /* TricordarrKit */;
+			targetProxy = 9383B63B2F039429001BD68E /* PBXContainerItemProxy */;
+		};
+		9383C8352F03952F001BD68E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9383B6272F039429001BD68E /* TricordarrKit */;
+			targetProxy = 9383C8342F03952F001BD68E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -724,6 +836,115 @@
 			};
 			name = Release;
 		};
+		9383B6402F03942A001BD68E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 67V85M2YSV;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr.TricordarrKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		9383B6412F03942A001BD68E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 67V85M2YSV;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr.TricordarrKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -754,29 +975,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		9383B63F2F03942A001BD68E /* Build configuration list for PBXNativeTarget "TricordarrKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9383B6402F03942A001BD68E /* Debug */,
+				9383B6412F03942A001BD68E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		9383B5E62F037F2B001BD68E /* XCLocalSwiftPackageReference "TricordarrKit" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = TricordarrKit;
-		};
-/* End XCLocalSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		9383B5E42F037EDA001BD68E /* TricordarrKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = TricordarrKit;
-		};
-		9383B5E72F037F2B001BD68E /* TricordarrKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = TricordarrKit;
-		};
-		9383B5E92F037F33001BD68E /* TricordarrKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = TricordarrKit;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

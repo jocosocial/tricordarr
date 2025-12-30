@@ -7,7 +7,7 @@
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
-            buildForTesting = "NO"
+            buildForTesting = "YES"
             buildForRunning = "YES"
             buildForProfiling = "YES"
             buildForArchiving = "YES"
@@ -35,6 +35,17 @@
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
                BuildableName = "TricordarrTests.xctest"
                BlueprintName = "TricordarrTests"
+               ReferencedContainer = "container:Tricordarr.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "9383B6312F039429001BD68E"
+               BuildableName = "TricordarrKitTests.xctest"
+               BlueprintName = "TricordarrKitTests"
                ReferencedContainer = "container:Tricordarr.xcodeproj">
             </BuildableReference>
          </TestableReference>

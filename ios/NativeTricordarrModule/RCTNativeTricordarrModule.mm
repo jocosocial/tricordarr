@@ -8,6 +8,7 @@
 #import "RCTNativeTricordarrModule.h"
 #import "Tricordarr-Swift.h"
 #import <UserNotifications/UserNotifications.h>
+#import "TricordarrKit-Swift.h"
 
 @implementation RCTNativeTricordarrModule
 
