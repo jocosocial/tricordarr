@@ -17,7 +17,7 @@ import UserNotifications
 /// The Kraken implementation has a `processNotifications(_)` function that reloads data from the API if certain notifications are showing.
 /// Tricordarr does not need this since any data refetches are handled by React Query and/or the NotificationDataPoller/NotificationDataListener
 /// components on the JavaScript side.
-@objc class Notifications: NSObject, UNUserNotificationCenterDelegate {
+@objc public class Notifications: NSObject, UNUserNotificationCenterDelegate {
 	/// Serial queue for thread-safe access to the shared instance
 	private static let accessQueue = DispatchQueue(label: "com.grantcohoe.tricordarr.notifications.access")
 
@@ -26,7 +26,7 @@ import UserNotifications
 	nonisolated(unsafe) private static let _shared = Notifications()
 
 	/// Thread-safe access to the shared Notifications instance
-	static var shared: Notifications {
+	public static var shared: Notifications {
 		return accessQueue.sync {
 			return _shared
 		}
@@ -109,7 +109,7 @@ import UserNotifications
 	 If it's shown to the user (over our app's UI--we're in the FG) and the user taps it, the
 	 `userNotificationCenter(_:didReceive:withCompletionHandler)` below is called instead.
 	 */
-	func userNotificationCenter(
+	public func userNotificationCenter(
 		_ center: UNUserNotificationCenter,
 		willPresent notification: UNNotification,
 		withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
@@ -121,7 +121,7 @@ import UserNotifications
 	 Process displaying notifications as the app comes into the foreground. Often this will do nothing, but if the user has a ton of old
 	 notifications then it will clear them out automatically. Called in `AppDelegate.swift`.
 	 */
-	static func appForegrounded() {
+	public static func appForegrounded() {
 		let center = UNUserNotificationCenter.current()
 		center.getDeliveredNotifications { notifications in
 			// Remove older notifications; keep ones that are within 10 minutes of delivery (during this time,
@@ -137,7 +137,7 @@ import UserNotifications
 	/**
 	 Called when the user taps a notification, whether the notification is displayed while the app running or not.
 	 */
-	func userNotificationCenter(
+	public func userNotificationCenter(
 		_ center: UNUserNotificationCenter,
 		didReceive response: UNNotificationResponse,
 		withCompletionHandler completionHandler: @escaping () -> Void
@@ -227,7 +227,9 @@ import UserNotifications
 		guard let userInfoData = decodeUserInfo(userInfo) else {
 			// If no URL is present, navigate to home as a fallback
 			if let url = URL(string: "tricordarr://home") {
-				UIApplication.shared.open(url)
+				Task { @MainActor in
+					UIApplication.shared.open(url)
+				}
 			}
 			return
 		}
@@ -239,19 +241,21 @@ import UserNotifications
 
 		// Open the deep link URL, which will be handled by AppDelegate's application(_:open:options:)
 		// and routed through RCTLinkingManager to React Navigation
-		if UIApplication.shared.canOpenURL(url) {
-			UIApplication.shared.open(url) { success in
-				if !success {
-					Logging.logger.error(
-						"Failed to open deep link URL: \(url.absoluteString, privacy: .public)"
-					)
+		Task { @MainActor in
+			if UIApplication.shared.canOpenURL(url) {
+				UIApplication.shared.open(url) { success in
+					if !success {
+						Logging.logger.error(
+							"Failed to open deep link URL: \(url.absoluteString, privacy: .public)"
+						)
+					}
 				}
 			}
-		}
-		else {
-			Logging.logger.error(
-				"Cannot open deep link URL: \(url.absoluteString, privacy: .public)"
-			)
+			else {
+				Logging.logger.error(
+					"Cannot open deep link URL: \(url.absoluteString, privacy: .public)"
+				)
+			}
 		}
 	}
 }
