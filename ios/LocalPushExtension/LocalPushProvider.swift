@@ -18,17 +18,49 @@ class LocalPushProvider: NEAppPushProvider {
 
 	override init() {
 		super.init()
+		logger.log("[LocalPushProvider.swift] init() - Extension initialized")
 		websocketNotifier.pushProvider = self
+		logger.log("[LocalPushProvider.swift] init() - WebsocketNotifier configured with pushProvider")
 	}
 
 	override func start() {
-		logger.log("[LocalPushProvider.swift] start")
+		logger.log("[LocalPushProvider.swift] start() called - Extension starting")
+		
+		// Log provider configuration if available
+		if let config = providerConfiguration {
+			logger.log(
+				"[LocalPushProvider.swift] Provider configuration available with \(config.count, privacy: .public) keys"
+			)
+			if let twitarrURL = config["twitarrURL"] as? String {
+				logger.log(
+					"[LocalPushProvider.swift] twitarrURL from config: \(twitarrURL, privacy: .private)"
+				)
+			} else {
+				logger.error("[LocalPushProvider.swift] twitarrURL not found in provider configuration")
+			}
+			if let token = config["token"] as? String {
+				logger.log(
+					"[LocalPushProvider.swift] token from config: \(token.isEmpty ? "empty" : "present", privacy: .public)"
+				)
+			} else {
+				logger.error("[LocalPushProvider.swift] token not found in provider configuration")
+			}
+		} else {
+			logger.error("[LocalPushProvider.swift] Provider configuration is nil")
+		}
+		
+		// Update config and start
+		logger.log("[LocalPushProvider.swift] Calling websocketNotifier.updateConfig()")
 		websocketNotifier.updateConfig()
+		logger.log("[LocalPushProvider.swift] Calling websocketNotifier.start()")
 		websocketNotifier.start()
+		logger.log("[LocalPushProvider.swift] start() completed")
 	}
 
 	override func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-		logger.log("[LocalPushProvider.swift] stop")
+		logger.log(
+			"[LocalPushProvider.swift] stop() called with reason: \(reason.rawValue, privacy: .public)"
+		)
 		websocketNotifier.stop(with: reason, completionHandler: completionHandler)
 	}
 
