@@ -536,7 +536,7 @@ extension WebsocketNotifier: URLSessionWebSocketDelegate {
 	{
     let debugUrl = webSocketTask.currentRequest?.url?.absoluteString ?? "unknown"
     self.logger.log(
-      "[WebsocketNotifier.swift] Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public) to \(debugUrl)"
+      "[WebsocketNotifier.swift] Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public) to \(debugUrl, privacy: .public)"
 		)
 	}
 
