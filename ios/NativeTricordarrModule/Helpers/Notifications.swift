@@ -203,6 +203,19 @@ import UserNotifications
 			return
 		}
 
+		// Extract current configuration values for comparison
+		let currentProviderConfig = manager.providerConfiguration
+    let currentSocketUrl = currentProviderConfig["twitarrURL"] as? String
+    let currentToken = currentProviderConfig["token"] as? String
+		let currentMatchSSIDs = manager.matchSSIDs
+		let newMatchSSIDs = appConfig.wifiNetworkNames
+
+		// Check if configuration has changed
+		let socketUrlChanged = currentSocketUrl != socketUrl
+		let tokenChanged = currentToken != token
+		let ssidsChanged = Set(currentMatchSSIDs) != Set(newMatchSSIDs)
+		let configChanged = socketUrlChanged || tokenChanged || ssidsChanged
+
 		// Configure provider configuration dictionary
 		var providerConfig: [String: Any] = [:]
 		providerConfig["twitarrURL"] = socketUrl
@@ -211,10 +224,16 @@ import UserNotifications
 
 		// Set matchSSIDs from AppConfig
 		manager.matchSSIDs = appConfig.wifiNetworkNames
-    
-    manager.isEnabled = true
-    manager.providerBundleIdentifier = "com.grantcohoe.tricordarr.LocalPushExtension"
-    manager.localizedDescription = "App Extension for Background Server Communication"
+
+		manager.isEnabled = true
+		manager.providerBundleIdentifier = "com.grantcohoe.tricordarr.LocalPushExtension"
+		manager.localizedDescription = "App Extension for Background Server Communication"
+
+		// Only save to preferences if configuration has changed
+		guard configChanged else {
+			logger.log("[Notifications.swift] Configuration unchanged, skipping saveToPreferences")
+			return
+		}
 
 		// Save to preferences
 		manager.saveToPreferences { error in
