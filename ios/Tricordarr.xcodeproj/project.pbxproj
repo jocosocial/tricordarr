@@ -13,7 +13,71 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		93690EF42EAB269900CA8914 /* RCTNativeTricordarrModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */; };
+		93ADBFFD2F074E0700C698D2 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93ADBFFC2F074E0700C698D2 /* NetworkExtension.framework */; };
+		93ADC0052F074E0700C698D2 /* LocalPushExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 93ADBFFB2F074E0700C698D2 /* LocalPushExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		93ADC0812F07749D00C698D2 /* TricordarrKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */; };
+		93ADC0822F07749D00C698D2 /* TricordarrKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		93ADC0872F0774B500C698D2 /* TricordarrKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		93ADC0032F074E0700C698D2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 93ADBFFA2F074E0700C698D2;
+			remoteInfo = LocalPushExtension;
+		};
+		93ADC07F2F07749D00C698D2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 93ADC07A2F07749D00C698D2;
+			remoteInfo = TricordarrKit;
+		};
+		93ADC0892F0774B500C698D2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 93ADC07A2F07749D00C698D2;
+			remoteInfo = TricordarrKit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		93ADC0062F074E0700C698D2 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				93ADC0052F074E0700C698D2 /* LocalPushExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93ADC0832F07749D00C698D2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				93ADC0822F07749D00C698D2 /* TricordarrKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93ADC08B2F0774B500C698D2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		13B07F961A680F5B00A75B9A /* Tricordarr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tricordarr.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -29,29 +93,39 @@
 		93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tricordarr-Bridging-Header.h"; sourceTree = "<group>"; };
 		93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTNativeTricordarrModule.h; sourceTree = "<group>"; };
 		93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTNativeTricordarrModule.mm; sourceTree = "<group>"; };
+		93ADBFFB2F074E0700C698D2 /* LocalPushExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LocalPushExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		93ADBFFC2F074E0700C698D2 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TricordarrKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		93980FED2EB846F90067E8A1 /* Structs */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		93ADC0092F074E0700C698D2 /* Exceptions for "LocalPushExtension" folder in "LocalPushExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
 			);
-			path = Structs;
-			sourceTree = "<group>";
+			target = 93ADBFFA2F074E0700C698D2 /* LocalPushExtension */;
 		};
-		93980FF02EB849190067E8A1 /* Helpers */ = {
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		9394DAB82F077F9E000B2338 /* Helpers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = Helpers;
 			sourceTree = "<group>";
 		};
-		93B71A582EBACAC2004BC91E /* Enumerations */ = {
+		93ADBFFE2F074E0700C698D2 /* LocalPushExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				93ADC0092F074E0700C698D2 /* Exceptions for "LocalPushExtension" folder in "LocalPushExtension" target */,
 			);
-			path = Enumerations;
+			path = LocalPushExtension;
+			sourceTree = "<group>";
+		};
+		93ADC07C2F07749D00C698D2 /* TricordarrKit */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TricordarrKit;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -62,6 +136,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C80B921A6F3F58F76C31292 /* libPods-Tricordarr.a in Frameworks */,
+				93ADC0812F07749D00C698D2 /* TricordarrKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93ADBFF82F074E0700C698D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				93ADBFFD2F074E0700C698D2 /* NetworkExtension.framework in Frameworks */,
+				93ADC0872F0774B500C698D2 /* TricordarrKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93ADC0782F07749D00C698D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +177,7 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				5DCACB8F33CDC322A6C60F78 /* libPods-Tricordarr.a */,
+				93ADBFFC2F074E0700C698D2 /* NetworkExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -103,6 +195,8 @@
 				93690EF02EAB266C00CA8914 /* NativeTricordarrModule */,
 				13B07FAE1A68108700A75B9A /* Tricordarr */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
+				93ADBFFE2F074E0700C698D2 /* LocalPushExtension */,
+				93ADC07C2F07749D00C698D2 /* TricordarrKit */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
@@ -116,6 +210,8 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* Tricordarr.app */,
+				93ADBFFB2F074E0700C698D2 /* LocalPushExtension.appex */,
+				93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -123,9 +219,7 @@
 		93690EF02EAB266C00CA8914 /* NativeTricordarrModule */ = {
 			isa = PBXGroup;
 			children = (
-				93B71A582EBACAC2004BC91E /* Enumerations */,
-				93980FF02EB849190067E8A1 /* Helpers */,
-				93980FED2EB846F90067E8A1 /* Structs */,
+				9394DAB82F077F9E000B2338 /* Helpers */,
 				93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */,
 				93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */,
 				93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */,
@@ -144,6 +238,16 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		93ADC0762F07749D00C698D2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		13B07F861A680F5B00A75B9A /* Tricordarr */ = {
 			isa = PBXNativeTarget;
@@ -156,20 +260,69 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+				93ADC0062F074E0700C698D2 /* Embed Foundation Extensions */,
+				93ADC0832F07749D00C698D2 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				93ADC0042F074E0700C698D2 /* PBXTargetDependency */,
+				93ADC0802F07749D00C698D2 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				9394DAB82F077F9E000B2338 /* Helpers */,
+			);
+			name = Tricordarr;
+			productName = Tricordarr;
+			productReference = 13B07F961A680F5B00A75B9A /* Tricordarr.app */;
+			productType = "com.apple.product-type.application";
+		};
+		93ADBFFA2F074E0700C698D2 /* LocalPushExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93ADC00A2F074E0700C698D2 /* Build configuration list for PBXNativeTarget "LocalPushExtension" */;
+			buildPhases = (
+				93ADBFF72F074E0700C698D2 /* Sources */,
+				93ADBFF82F074E0700C698D2 /* Frameworks */,
+				93ADBFF92F074E0700C698D2 /* Resources */,
+				93ADC08B2F0774B500C698D2 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				93ADC08A2F0774B500C698D2 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				93ADBFFE2F074E0700C698D2 /* LocalPushExtension */,
+			);
+			name = LocalPushExtension;
+			packageProductDependencies = (
+			);
+			productName = LocalPushExtension;
+			productReference = 93ADBFFB2F074E0700C698D2 /* LocalPushExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		93ADC07A2F07749D00C698D2 /* TricordarrKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93ADC0862F07749D00C698D2 /* Build configuration list for PBXNativeTarget "TricordarrKit" */;
+			buildPhases = (
+				93ADC0762F07749D00C698D2 /* Headers */,
+				93ADC0772F07749D00C698D2 /* Sources */,
+				93ADC0782F07749D00C698D2 /* Frameworks */,
+				93ADC0792F07749D00C698D2 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				93980FED2EB846F90067E8A1 /* Structs */,
-				93980FF02EB849190067E8A1 /* Helpers */,
-				93B71A582EBACAC2004BC91E /* Enumerations */,
+				93ADC07C2F07749D00C698D2 /* TricordarrKit */,
 			);
-			name = Tricordarr;
-			productName = Tricordarr;
-			productReference = 13B07F961A680F5B00A75B9A /* Tricordarr.app */;
-			productType = "com.apple.product-type.application";
+			name = TricordarrKit;
+			packageProductDependencies = (
+			);
+			productName = TricordarrKit;
+			productReference = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -177,10 +330,19 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1640;
+					};
+					93ADBFFA2F074E0700C698D2 = {
+						CreatedOnToolsVersion = 16.4;
+						LastSwiftMigration = 1640;
+					};
+					93ADC07A2F07749D00C698D2 = {
+						CreatedOnToolsVersion = 16.4;
 					};
 				};
 			};
@@ -198,6 +360,8 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* Tricordarr */,
+				93ADBFFA2F074E0700C698D2 /* LocalPushExtension */,
+				93ADC07A2F07749D00C698D2 /* TricordarrKit */,
 			);
 		};
 /* End PBXProject section */
@@ -210,6 +374,20 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				4C1CD608D8B56BA06748D9CD /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93ADBFF92F074E0700C698D2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93ADC0792F07749D00C698D2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,9 +418,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -279,9 +461,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -300,7 +486,39 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93ADBFF72F074E0700C698D2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93ADC0772F07749D00C698D2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		93ADC0042F074E0700C698D2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 93ADBFFA2F074E0700C698D2 /* LocalPushExtension */;
+			targetProxy = 93ADC0032F074E0700C698D2 /* PBXContainerItemProxy */;
+		};
+		93ADC0802F07749D00C698D2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 93ADC07A2F07749D00C698D2 /* TricordarrKit */;
+			targetProxy = 93ADC07F2F07749D00C698D2 /* PBXContainerItemProxy */;
+		};
+		93ADC08A2F0774B500C698D2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 93ADC07A2F07749D00C698D2 /* TricordarrKit */;
+			targetProxy = 93ADC0892F0774B500C698D2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
@@ -312,8 +530,7 @@
 				CODE_SIGN_ENTITLEMENTS = Tricordarr/Tricordarr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 37;
-				DEVELOPMENT_TEAM = 67V85M2YSV;
+				CURRENT_PROJECT_VERSION = 38;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Tricordarr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tricordarr;
@@ -323,7 +540,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2026.0.7;
+				MARKETING_VERSION = 2026.0.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -338,7 +555,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "NativeTricordarrModule/Tricordarr-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -352,8 +569,7 @@
 				CODE_SIGN_ENTITLEMENTS = Tricordarr/Tricordarr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 37;
-				DEVELOPMENT_TEAM = 67V85M2YSV;
+				CURRENT_PROJECT_VERSION = 38;
 				INFOPLIST_FILE = Tricordarr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tricordarr;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
@@ -362,7 +578,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2026.0.7;
+				MARKETING_VERSION = 2026.0.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -376,7 +592,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "NativeTricordarrModule/Tricordarr-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -412,6 +628,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 67V85M2YSV;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -488,6 +705,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				DEVELOPMENT_TEAM = 67V85M2YSV;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -520,8 +738,213 @@
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		93ADC0072F074E0700C698D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = LocalPushExtension/LocalPushExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 38;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LocalPushExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LocalPushExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 2026.0.8;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr.LocalPushExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		93ADC0082F074E0700C698D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = LocalPushExtension/LocalPushExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 38;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LocalPushExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LocalPushExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 2026.0.8;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr.LocalPushExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		93ADC0842F07749D00C698D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr.TricordarrKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		93ADC0852F07749D00C698D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr.TricordarrKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -542,6 +965,24 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		93ADC00A2F074E0700C698D2 /* Build configuration list for PBXNativeTarget "LocalPushExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93ADC0072F074E0700C698D2 /* Debug */,
+				93ADC0082F074E0700C698D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		93ADC0862F07749D00C698D2 /* Build configuration list for PBXNativeTarget "TricordarrKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93ADC0842F07749D00C698D2 /* Debug */,
+				93ADC0852F07749D00C698D2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

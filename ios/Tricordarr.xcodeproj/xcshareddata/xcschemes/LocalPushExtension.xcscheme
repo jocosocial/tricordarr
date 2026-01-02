@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1640"
-   version = "1.3">
+   wasCreatedForAppExtension = "YES"
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+      buildImplicitDependencies = "YES"
+      buildArchitectures = "Automatic">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -14,9 +16,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "Tricordarr.app"
-               BlueprintName = "Tricordarr"
+               BlueprintIdentifier = "93ADC07A2F07749D00C698D2"
+               BuildableName = "TricordarrKit.framework"
+               BlueprintName = "TricordarrKit"
                ReferencedContainer = "container:Tricordarr.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -42,9 +44,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "93ADC07A2F07749D00C698D2"
-               BuildableName = "TricordarrKit.framework"
-               BlueprintName = "TricordarrKit"
+               BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+               BuildableName = "Tricordarr.app"
+               BlueprintName = "Tricordarr"
                ReferencedContainer = "container:Tricordarr.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -54,9 +56,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <Testables>
-      </Testables>
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldAutocreateTestPlan = "YES">
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -80,11 +81,13 @@
       </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES">
+      debugDocumentVersioning = "YES"
+      askForAppToLaunch = "Yes"
+      launchAutomaticallySubstyle = "2">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
@@ -100,7 +103,7 @@
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

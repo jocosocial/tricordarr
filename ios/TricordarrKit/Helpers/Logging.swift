@@ -8,9 +8,14 @@
 import Foundation
 import os
 
-/// Common logging components.
+/**
+ Common logging components.
+ 
+ For successful logging, do `self.logger.log` or `Logging.logger.log` rather than `.info` since
+ that seems to get eaten in Console.app
+ */
 public final class Logging {
-	static let logger = Logger(
+	public static let logger = Logger(
 		subsystem: Bundle.main.bundleIdentifier ?? "com.grantcohoe.unknown",
 		category: "App"
 	)

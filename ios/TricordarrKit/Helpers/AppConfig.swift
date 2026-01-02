@@ -9,30 +9,34 @@ import Foundation
 
 /// Singleton helper class to manage AppConfig decoded from JSON.
 /// Provides access to the decoded AppConfig struct throughout the native iOS code.
-@objc class AppConfig: NSObject {
+@objc public class AppConfig: NSObject {
 	static var shared: AppConfigData?
 
 	/// Decodes and stores AppConfig from a JSON string.
-	@objc static func setAppConfig(appConfigJson: String) {
+	@objc public static func setAppConfig(appConfigJson: String) {
 		guard let jsonData = appConfigJson.data(using: .utf8) else {
-			Logging.logger.error("AppConfig: Failed to convert JSON string to Data")
+			Logging.logger.error("[AppConfig.swift] Failed to convert JSON string to Data")
 			return
 		}
 
 		do {
 			shared = try JSONDecoder().decode(AppConfigData.self, from: jsonData)
-			Logging.logger.log("AppConfig: Successfully decoded and stored AppConfig")
+			Logging.logger.log("[AppConfig.swift] Successfully decoded and stored AppConfig")
 		}
 		catch {
 			Logging.logger.error(
-				"AppConfig: Failed to decode AppConfig: \(error.localizedDescription, privacy: .public)"
+				"[AppConfig.swift] Failed to decode AppConfig: \(error.localizedDescription, privacy: .public)"
 			)
 			return
 		}
 	}
 
 	/// Configures notifications without setting AppConfig.
-	@objc static func setupLocalPushManager(socketUrl: String, token: String, enable: Bool) {
+	@objc public static func setupLocalPushManager(socketUrl: String, token: String, enable: Bool) {
+    Logging.logger.info("[AppConfig.swift] setupLocalPushManager")
 		Notifications.saveSettings(socketUrl: socketUrl, token: token)
+		if enable {
+			Notifications.appStarted()
+		}
 	}
 }
