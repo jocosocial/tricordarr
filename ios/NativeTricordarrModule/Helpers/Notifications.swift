@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import NetworkExtension
 import UIKit
 import UserNotifications
 
@@ -35,6 +36,40 @@ import UserNotifications
 			Notifications.shared.foregroundPushProvider.updateConfig(serverURL: urlComponents.url, token: token)
 		}
 		Notifications.shared.checkStartInAppSocket()
+	}
+
+	/**
+	 Gets the current status of the background push manager.
+	 Returns a BackgroundPushManagerStatus struct with isActive, isEnabled, and matchSSIDs properties.
+	 Called from the JavaScript side over the "bridge".
+	
+	 - Returns: BackgroundPushManagerStatus struct with optional isActive and isEnabled booleans, and matchSSIDs array
+	 */
+	static func getBackgroundPushManagerStatus() -> BackgroundPushManagerStatus {
+		guard let manager = Notifications.shared.backgroundPushManager else {
+			return BackgroundPushManagerStatus(
+				isActive: nil,
+				isEnabled: nil,
+				matchSSIDs: []
+			)
+		}
+
+		return BackgroundPushManagerStatus(
+			isActive: manager.isActive,
+			isEnabled: manager.isEnabled,
+			matchSSIDs: manager.matchSSIDs
+		)
+	}
+
+	/**
+	 Gets the current status of the background push manager as a dictionary.
+	 Objective-C bridge method that converts BackgroundPushManagerStatus to [String: Any].
+	 Called from the Objective-C bridge.
+	
+	 - Returns: Dictionary with keys: "isActive" (Bool or NSNull), "isEnabled" (Bool or NSNull), "matchSSIDs" ([String] as NSArray)
+	 */
+	@objc static func getBackgroundPushManagerStatusDictionary() -> [String: Any] {
+		return getBackgroundPushManagerStatus().asDictionary
 	}
 
 	// MARK: - Notification Generation

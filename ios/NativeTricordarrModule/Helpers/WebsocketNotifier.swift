@@ -10,7 +10,7 @@ import NetworkExtension
 import os
 
 @objc class WebsocketNotifier: NSObject {
-	var pushProvider: LocalPushProvider?  // NULL if notifier is being used in-app
+  var pushProvider: NEAppPushProvider?  // NULL if notifier is being used in-app @TODO LocalPushProvider
 	var session: URLSession?
 	@objc dynamic var socket: URLSessionWebSocketTask?
 	var lastPing: Date?

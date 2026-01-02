@@ -1,5 +1,5 @@
 import {Formik, FormikHelpers, FormikProps} from 'formik';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
@@ -7,6 +7,7 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {SliderField} from '#src/Components/Forms/Fields/SliderField';
 import {BackgroundConnectionSettingsForm} from '#src/Components/Forms/Settings/BackgroundConnectionSettingsForm';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
@@ -23,6 +24,12 @@ import {BackgroundConnectionSettingsFormValues} from '#src/Types/FormValues';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
+interface ManagerStatus {
+  isActive?: boolean;
+  isEnabled?: boolean;
+  matchSSIDs: string[];
+}
+
 export const BackgroundConnectionSettingsIOSView = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
@@ -32,6 +39,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
   const {setSnackbarPayload} = useSnackbar();
   const formikRef = useRef<FormikProps<BackgroundConnectionSettingsFormValues>>(null);
   const {tokenData} = useAuth();
+  const [managerStatus, setManagerStatus] = useState<ManagerStatus | null>(null);
 
   const handleEnable = () => {
     const newValue = !appConfig.enableBackgroundWorker;
@@ -96,7 +104,28 @@ export const BackgroundConnectionSettingsIOSView = () => {
     const socketUrl = await buildWebsocketURL();
     console.log('setupLocalPushManager', socketUrl, tokenData.token, enable);
     NativeTricordarrModule.setupLocalPushManager(socketUrl, tokenData.token, enable);
+    // Refresh status after recycling worker
+    fetchManagerStatus();
   };
+
+  const fetchManagerStatus = async () => {
+    try {
+      const status = await NativeTricordarrModule.getBackgroundPushManagerStatus();
+      setManagerStatus(status);
+    } catch (error) {
+      console.error('Failed to fetch manager status:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchManagerStatus();
+  }, []);
+
+  useEffect(() => {
+    if (!isFetching) {
+      fetchManagerStatus();
+    }
+  }, [isFetching]);
 
   return (
     <AppView>
@@ -158,11 +187,31 @@ export const BackgroundConnectionSettingsIOSView = () => {
               (appConfig.wifiNetworkNames?.length === 1 && appConfig.wifiNetworkNames[0] === data?.shipWifiSSID)
             }
             onPress={resetDefaultValues}
-            buttonText={'Reset'}
+            buttonText={'Reset to Default Networks'}
             style={commonStyles.marginTopSmall}
-            buttonColor={theme.colors.twitarrNeutralButton}
+            buttonColor={theme.colors.twitarrNegativeButton}
           />
         </PaddedContentView>
+        <ListSection>
+          <ListSubheader>Status</ListSubheader>
+        </ListSection>
+        <DataFieldListItem title={'Default Networks'} description={appConfig.wifiNetworkNames?.join(', ')} />
+        {managerStatus && (
+          <>
+            <DataFieldListItem
+              title={'Manager Active'}
+              description={managerStatus.isActive !== undefined ? (managerStatus.isActive ? 'Yes' : 'No') : 'Unknown'}
+            />
+            <DataFieldListItem
+              title={'Manager Enabled'}
+              description={managerStatus.isEnabled !== undefined ? (managerStatus.isEnabled ? 'Yes' : 'No') : 'Unknown'}
+            />
+            <DataFieldListItem
+              title={'Match SSIDs'}
+              description={managerStatus.matchSSIDs.length > 0 ? managerStatus.matchSSIDs.join(', ') : 'None'}
+            />
+          </>
+        )}
         <ListSection>
           <ListSubheader>Control</ListSubheader>
         </ListSection>

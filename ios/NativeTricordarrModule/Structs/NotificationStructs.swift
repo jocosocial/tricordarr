@@ -25,3 +25,28 @@ extension UserInfoData {
 		return dict
 	}
 }
+
+struct BackgroundPushManagerStatus: Codable {
+	var isActive: Bool?
+	var isEnabled: Bool?
+	var matchSSIDs: [String]
+}
+
+extension BackgroundPushManagerStatus {
+	var asDictionary: [String: Any] {
+		var dict: [String: Any] = [
+			"matchSSIDs": matchSSIDs,
+		]
+		if let isActive = isActive {
+			dict["isActive"] = isActive
+		} else {
+			dict["isActive"] = NSNull()
+		}
+		if let isEnabled = isEnabled {
+			dict["isEnabled"] = isEnabled
+		} else {
+			dict["isEnabled"] = NSNull()
+		}
+		return dict
+	}
+}

@@ -7,6 +7,7 @@
 
 #import "RCTNativeTricordarrModule.h"
 #import "Tricordarr-Swift.h"
+#import <React/RCTBridge.h>
 #import <UserNotifications/UserNotifications.h>
 
 @implementation RCTNativeTricordarrModule
@@ -44,6 +45,11 @@
   [AppConfig setupLocalPushManagerWithSocketUrl:socketUrl
                                           token:token
                                          enable:enable];
+}
+
+- (void)getBackgroundPushManagerStatus:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+  NSDictionary *status = [Notifications getBackgroundPushManagerStatusDictionary];
+  resolve(status);
 }
 
 @end

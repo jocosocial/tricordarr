@@ -5,6 +5,11 @@ export interface Spec extends TurboModule {
   blurTextInImage(inputFilePath: string, callback: (newPath: string) => void): void;
   setupLocalPushManager(socketUrl: string, token: string, enable: boolean): void;
   setAppConfig(appConfigJson: string): void;
+  getBackgroundPushManagerStatus(): Promise<{
+    isActive?: boolean;
+    isEnabled?: boolean;
+    matchSSIDs: string[];
+  }>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('NativeTricordarrModule');
