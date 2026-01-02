@@ -44,7 +44,7 @@ export const SeamailListScreen = (props: Props) => {
 
 const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
-  const [showUnreadOnly, setShowUnreadOnly] = useState(route.params?.onlyNew || false);
+  const [showUnreadOnly, setShowUnreadOnly] = useState(false);
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isPending} = useSeamailListQuery({
     forUser: asPrivilegedUser,
     onlyNew: showUnreadOnly,
@@ -139,6 +139,17 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
       headerRight: getNavButtons,
     });
   }, [isFocused, closeFezSocket, navigation, getNavButtons]);
+
+  /**
+   * This operates more like an intent than a state.
+   * When the user navigates from the NotificationsMenu it's almost certainly
+   * because they want to see unread seamails. All other cases should be normal.
+   */
+  useEffect(() => {
+    if (route.params?.onlyNew !== undefined) {
+      setShowUnreadOnly(route.params.onlyNew);
+    }
+  }, [route.params]);
 
   if (isLoading) {
     return <LoadingView />;
