@@ -91,6 +91,38 @@ import UserNotifications
 		return getBackgroundPushManagerStatus().asDictionary
 	}
 
+	/**
+	 Gets the current status of the foreground push provider.
+	 Returns a ForegroundPushProviderStatus struct with lastPing, isActive, and socketPingInterval properties.
+	 Called from the JavaScript side over the "bridge".
+	
+	 - Returns: ForegroundPushProviderStatus struct with optional lastPing (ISO8601 string), isActive boolean, and socketPingInterval double
+	 */
+	static func getForegroundPushProviderStatus() -> ForegroundPushProviderStatus {
+		let provider = Notifications.shared.foregroundPushProvider
+		let formatter = ISO8601DateFormatter()
+		formatter.formatOptions.insert(.withFractionalSeconds)
+
+		let lastPingString: String? = provider.lastPing.map { formatter.string(from: $0) }
+
+		return ForegroundPushProviderStatus(
+			lastPing: lastPingString,
+			isActive: provider.startState,
+			socketPingInterval: provider.socketPingTimer?.timeInterval
+		)
+	}
+
+	/**
+	 Gets the current status of the foreground push provider as a dictionary.
+	 Objective-C bridge method that converts ForegroundPushProviderStatus to [String: Any].
+	 Called from the Objective-C bridge.
+	
+	 - Returns: Dictionary with keys: "lastPing" (String as ISO8601 or NSNull), "isActive" (Bool or NSNull), "socketPingInterval" (Double or NSNull)
+	 */
+	@objc public static func getForegroundPushProviderStatusDictionary() -> [String: Any] {
+		return getForegroundPushProviderStatus().asDictionary
+	}
+
 	// MARK: - Notification Generation
 
 	/**
@@ -195,7 +227,7 @@ import UserNotifications
 	 - Parameter manager: The NEAppPushManager to configure
 	 */
 	private func saveSettings(for manager: NEAppPushManager) {
-    logger.info("[Notifications.swift] saveSettings for manager")
+		logger.info("[Notifications.swift] saveSettings for manager")
 
 		guard let socketUrl = storedSocketUrl, let token = storedToken else {
 			logger.error("[Notifications.swift] Cannot save settings for manager: socketUrl or token is nil")
@@ -348,7 +380,7 @@ import UserNotifications
 	 Handles changes to the manager's active state.
 	 */
 	private func handleManagerStateChange() {
-    logger.log("[Notifications.swift] handleManagerStateChange")
+		logger.log("[Notifications.swift] handleManagerStateChange")
 		if let manager = backgroundPushManager {
 			if manager.isActive {
 				logger.log("[Notifications.swift] Extension push provider is active")

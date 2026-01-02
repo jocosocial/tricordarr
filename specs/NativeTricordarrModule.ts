@@ -11,6 +11,11 @@ export interface Spec extends TurboModule {
     matchSSIDs: string[];
     providerConfiguration?: string;
   }>;
+  getForegroundPushProviderStatus(): Promise<{
+    lastPing?: string;
+    isActive?: boolean;
+    socketPingInterval?: number;
+  }>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('NativeTricordarrModule');

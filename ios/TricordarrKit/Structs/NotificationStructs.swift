@@ -74,3 +74,34 @@ extension BackgroundPushManagerStatus {
 		return dict
 	}
 }
+
+struct ForegroundPushProviderStatus: Codable {
+	var lastPing: String?
+	var isActive: Bool?
+	var socketPingInterval: Double?
+}
+
+extension ForegroundPushProviderStatus {
+	var asDictionary: [String: Any] {
+		var dict: [String: Any] = [:]
+		if let lastPing = lastPing {
+			dict["lastPing"] = lastPing
+		}
+		else {
+			dict["lastPing"] = NSNull()
+		}
+		if let isActive = isActive {
+			dict["isActive"] = isActive
+		}
+		else {
+			dict["isActive"] = NSNull()
+		}
+		if let socketPingInterval = socketPingInterval {
+			dict["socketPingInterval"] = socketPingInterval
+		}
+		else {
+			dict["socketPingInterval"] = NSNull()
+		}
+		return dict
+	}
+}

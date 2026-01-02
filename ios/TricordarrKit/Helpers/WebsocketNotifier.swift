@@ -119,7 +119,13 @@ public class WebsocketNotifier: NSObject {
 		// When we're running a `WebsocketNotifier` outside of that context (aka Foreground mode) we set a
 		// similar timer to perform healthcheck actions on the socket.
 		if pushProvider == nil && socketPingTimer == nil {
-			socketPingTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] timer in
+			let pingIntervalSeconds = Double(AppConfig.shared?.fgsWorkerHealthTimer ?? 10000) / 1000.0
+      self.logger
+        .info(
+          "[WebsocketNotifier.swift] setting up new socketPingTimer at interval \(pingIntervalSeconds, privacy: .public)"
+        )
+      socketPingTimer = Timer
+        .scheduledTimer(withTimeInterval: pingIntervalSeconds, repeats: true) { [weak self] timer in
 				self?.handleTimerEvent()
 			}
 		}
@@ -437,6 +443,7 @@ public class WebsocketNotifier: NSObject {
 	 If the socket is unhealthy/nonexistant this should jumpstart it.
 	 */
 	public func handleTimerEvent() {
+    logger.info("[WebsocketNotifier.swift] handleTimerEvent")
 		if let pingTime = lastPing, Date().timeIntervalSince(pingTime) < 1.0 {
 			logger.warning("[WebsocketNotifier.swift] HandleTimerEvent called with very low delay from last call.")
 			return
@@ -519,8 +526,9 @@ extension WebsocketNotifier: URLSessionTaskDelegate {
 extension WebsocketNotifier: URLSessionWebSocketDelegate {
 	public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol: String?)
 	{
+    let debugUrl = webSocketTask.currentRequest?.url?.absoluteString ?? "unknown"
 		logger.log(
-			"[WebsocketNotifier.swift] Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public)"
+      "[WebsocketNotifier.swift] Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public) to \(debugUrl)"
 		)
 	}
 

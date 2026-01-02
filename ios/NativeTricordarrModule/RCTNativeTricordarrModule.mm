@@ -53,4 +53,9 @@
   resolve(status);
 }
 
+- (void)getForegroundPushProviderStatus:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+  NSDictionary *status = [Notifications getForegroundPushProviderStatusDictionary];
+  resolve(status);
+}
+
 @end

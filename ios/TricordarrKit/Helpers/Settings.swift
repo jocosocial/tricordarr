@@ -23,6 +23,6 @@ import Foundation
 	}()
 
 	var appVersion: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-  
-  var bundleId = Bundle.main.bundleIdentifier ?? "com.grantcohoe.unknown"
+
+	var bundleId = Bundle.main.bundleIdentifier ?? "com.grantcohoe.unknown"
 }

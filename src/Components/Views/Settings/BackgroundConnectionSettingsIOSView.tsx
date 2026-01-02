@@ -1,5 +1,5 @@
 import {Formik, FormikHelpers, FormikProps} from 'formik';
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
@@ -10,6 +10,7 @@ import {BackgroundConnectionSettingsForm} from '#src/Components/Forms/Settings/B
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -31,6 +32,12 @@ interface ManagerStatus {
   providerConfiguration?: string; // JSON string from native side
 }
 
+interface ForegroundProviderStatus {
+  lastPing?: string;
+  isActive?: boolean;
+  socketPingInterval?: number;
+}
+
 export const BackgroundConnectionSettingsIOSView = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
@@ -41,6 +48,14 @@ export const BackgroundConnectionSettingsIOSView = () => {
   const formikRef = useRef<FormikProps<BackgroundConnectionSettingsFormValues>>(null);
   const {tokenData} = useAuth();
   const [managerStatus, setManagerStatus] = useState<ManagerStatus | null>(null);
+  const [foregroundProviderStatus, setForegroundProviderStatus] = useState<ForegroundProviderStatus | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await Promise.all([refetch(), fetchManagerStatus(), fetchForegroundProviderStatus()]);
+    setRefreshing(false);
+  }, [refetch]);
 
   const handleEnable = () => {
     const newValue = !appConfig.enableBackgroundWorker;
@@ -107,6 +122,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
     NativeTricordarrModule.setupLocalPushManager(socketUrl, tokenData.token, enable);
     // Refresh status after recycling worker
     fetchManagerStatus();
+    fetchForegroundProviderStatus();
   };
 
   const formatProviderConfigValue = (value: any): string => {
@@ -144,6 +160,15 @@ export const BackgroundConnectionSettingsIOSView = () => {
     }
   };
 
+  const fetchForegroundProviderStatus = async () => {
+    try {
+      const status = await NativeTricordarrModule.getForegroundPushProviderStatus();
+      setForegroundProviderStatus(status);
+    } catch (error) {
+      console.error('Failed to fetch foreground provider status:', error);
+    }
+  };
+
   const parseProviderConfiguration = (configJson?: string): Record<string, any> | null => {
     if (!configJson) {
       return null;
@@ -158,11 +183,13 @@ export const BackgroundConnectionSettingsIOSView = () => {
 
   useEffect(() => {
     fetchManagerStatus();
+    fetchForegroundProviderStatus();
   }, []);
 
   useEffect(() => {
     if (!isFetching) {
       fetchManagerStatus();
+      fetchForegroundProviderStatus();
     }
   }, [isFetching]);
 
@@ -170,7 +197,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ListSection>
           <ListSubheader>About</ListSubheader>
         </ListSection>
@@ -269,6 +296,44 @@ export const BackgroundConnectionSettingsIOSView = () => {
             <DataFieldListItem title={'Provider Configuration'} description={'Not available'} />
           );
         })()}
+        <ListSection>
+          <ListSubheader>In-App Socket Status</ListSubheader>
+        </ListSection>
+        {foregroundProviderStatus && (
+          <>
+            <DataFieldListItem
+              title={'Last Ping'}
+              description={
+                foregroundProviderStatus.lastPing ? (
+                  <RelativeTimeTag date={new Date(foregroundProviderStatus.lastPing)} />
+                ) : (
+                  'Never'
+                )
+              }
+              // description={
+              //   foregroundProviderStatus.lastPing ? new Date(foregroundProviderStatus.lastPing).toString() : 'Never'
+              // }
+            />
+            <DataFieldListItem
+              title={'Provider Active'}
+              description={
+                foregroundProviderStatus.isActive !== undefined
+                  ? foregroundProviderStatus.isActive
+                    ? 'Yes'
+                    : 'No'
+                  : 'Unknown'
+              }
+            />
+            <DataFieldListItem
+              title={'Ping Interval'}
+              description={
+                foregroundProviderStatus.socketPingInterval !== undefined
+                  ? `${foregroundProviderStatus.socketPingInterval} seconds`
+                  : 'Unknown'
+              }
+            />
+          </>
+        )}
         <ListSection>
           <ListSubheader>Control</ListSubheader>
         </ListSection>
