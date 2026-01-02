@@ -1,4 +1,4 @@
-import {extractParamNames, pathToRegex, pushableRoutes} from '#src/Libraries/RouteDefinitions';
+import {allRoutes, extractParamNames, pathToRegex, pushableRoutes} from '#src/Libraries/RouteDefinitions';
 
 interface ParsedRoute {
   screen: string;
@@ -6,7 +6,28 @@ interface ParsedRoute {
 }
 
 /**
- * Pre-computed route matchers for efficient URL parsing.
+ * Check if a path pattern contains any path parameters (e.g., :param).
+ */
+const hasPathParams = (path: string): boolean => {
+  return /:[^/?]+/.test(path);
+};
+
+/**
+ * Pre-computed route matchers for literal routes (no path parameters).
+ * These are checked first to ensure literal paths like 'lfg/joined' match before
+ * parameterized patterns like 'lfg/:fezID'.
+ * Generated from allRoutes to include all literal routes, not just pushable ones.
+ */
+const literalRouteMatchers = allRoutes
+  .filter(route => !hasPathParams(route.path))
+  .map(route => ({
+    screen: route.screen,
+    pattern: pathToRegex(route.path),
+    paramNames: extractParamNames(route.path),
+  }));
+
+/**
+ * Pre-computed route matchers for parameterized routes.
  * Generated from the pushable route definitions (routes that support push navigation).
  */
 const routeMatchers = pushableRoutes.map(route => ({
@@ -32,7 +53,8 @@ export const parseDeepLinkUrl = (urlPath: string): ParsedRoute | undefined => {
   // Parse query parameters
   const queryParams = queryString ? parseQueryParams(queryString) : {};
 
-  for (const matcher of routeMatchers) {
+  // Helper function to match a route and return parsed result
+  const tryMatch = (matcher: {screen: string; pattern: RegExp; paramNames: string[]}): ParsedRoute | undefined => {
     const match = cleanPath.match(matcher.pattern);
     if (match) {
       const params: Record<string, string | number | boolean> = {};
@@ -51,6 +73,24 @@ export const parseDeepLinkUrl = (urlPath: string): ParsedRoute | undefined => {
         screen: matcher.screen,
         params: Object.keys(params).length > 0 ? params : undefined,
       };
+    }
+    return undefined;
+  };
+
+  // Check literal routes first (e.g., 'lfg/joined', 'lfg/faq')
+  // This ensures literal paths match before parameterized patterns
+  for (const matcher of literalRouteMatchers) {
+    const result = tryMatch(matcher);
+    if (result) {
+      return result;
+    }
+  }
+
+  // Fall back to parameterized routes from pushableRoutes
+  for (const matcher of routeMatchers) {
+    const result = tryMatch(matcher);
+    if (result) {
+      return result;
     }
   }
 

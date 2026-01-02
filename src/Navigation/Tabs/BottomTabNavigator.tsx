@@ -12,6 +12,11 @@ import {MainStackNavigator, MainStackParamList} from '#src/Navigation/Stacks/Mai
 import {ScheduleStackNavigator, ScheduleStackParamList} from '#src/Navigation/Stacks/ScheduleStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
+/**
+ * This is a helper function to get the badge display value for a given input.
+ * The intention is that the badges should only be shown for new message count,
+ * not for added to or other such things like that.
+ */
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
     return undefined;
