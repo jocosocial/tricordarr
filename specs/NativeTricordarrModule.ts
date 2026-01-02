@@ -9,6 +9,7 @@ export interface Spec extends TurboModule {
     isActive?: boolean;
     isEnabled?: boolean;
     matchSSIDs: string[];
+    providerConfiguration?: string;
   }>;
 }
 

@@ -28,6 +28,7 @@ interface ManagerStatus {
   isActive?: boolean;
   isEnabled?: boolean;
   matchSSIDs: string[];
+  providerConfiguration?: string; // JSON string from native side
 }
 
 export const BackgroundConnectionSettingsIOSView = () => {
@@ -108,12 +109,50 @@ export const BackgroundConnectionSettingsIOSView = () => {
     fetchManagerStatus();
   };
 
+  const formatProviderConfigValue = (value: any): string => {
+    if (value === null || value === undefined) {
+      return 'null';
+    }
+    if (typeof value === 'boolean') {
+      return value ? 'Yes' : 'No';
+    }
+    if (typeof value === 'number') {
+      return String(value);
+    }
+    if (typeof value === 'string') {
+      return value;
+    }
+    if (Array.isArray(value)) {
+      return value.length > 0 ? value.join(', ') : '[]';
+    }
+    if (typeof value === 'object') {
+      try {
+        return JSON.stringify(value, null, 2);
+      } catch {
+        return String(value);
+      }
+    }
+    return String(value);
+  };
+
   const fetchManagerStatus = async () => {
     try {
       const status = await NativeTricordarrModule.getBackgroundPushManagerStatus();
       setManagerStatus(status);
     } catch (error) {
       console.error('Failed to fetch manager status:', error);
+    }
+  };
+
+  const parseProviderConfiguration = (configJson?: string): Record<string, any> | null => {
+    if (!configJson) {
+      return null;
+    }
+    try {
+      return JSON.parse(configJson);
+    } catch (error) {
+      console.error('Failed to parse provider configuration JSON:', error);
+      return null;
     }
   };
 
@@ -212,6 +251,19 @@ export const BackgroundConnectionSettingsIOSView = () => {
             />
           </>
         )}
+        <ListSection>
+          <ListSubheader>Provider Configuration</ListSubheader>
+        </ListSection>
+        {(() => {
+          const providerConfig = parseProviderConfiguration(managerStatus?.providerConfiguration);
+          return providerConfig ? (
+            Object.entries(providerConfig).map(([key, value]) => (
+              <DataFieldListItem key={key} title={key} description={formatProviderConfigValue(value)} />
+            ))
+          ) : (
+            <DataFieldListItem title={'Provider Configuration'} description={'Not available'} />
+          );
+        })()}
         <ListSection>
           <ListSubheader>Control</ListSubheader>
         </ListSection>

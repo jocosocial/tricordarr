@@ -67,14 +67,16 @@ import UserNotifications
 			return BackgroundPushManagerStatus(
 				isActive: nil,
 				isEnabled: nil,
-				matchSSIDs: []
+				matchSSIDs: [],
+				providerConfiguration: nil
 			)
 		}
 
 		return BackgroundPushManagerStatus(
 			isActive: manager.isActive,
 			isEnabled: manager.isEnabled,
-			matchSSIDs: manager.matchSSIDs
+			matchSSIDs: manager.matchSSIDs,
+			providerConfiguration: manager.providerConfiguration
 		)
 	}
 
@@ -83,7 +85,7 @@ import UserNotifications
 	 Objective-C bridge method that converts BackgroundPushManagerStatus to [String: Any].
 	 Called from the Objective-C bridge.
 	
-	 - Returns: Dictionary with keys: "isActive" (Bool or NSNull), "isEnabled" (Bool or NSNull), "matchSSIDs" ([String] as NSArray)
+	 - Returns: Dictionary with keys: "isActive" (Bool or NSNull), "isEnabled" (Bool or NSNull), "matchSSIDs" ([String] as NSArray), "providerConfiguration" (String as JSON or NSNull)
 	 */
 	@objc public static func getBackgroundPushManagerStatusDictionary() -> [String: Any] {
 		return getBackgroundPushManagerStatus().asDictionary
@@ -205,11 +207,11 @@ import UserNotifications
 
 		// Extract current configuration values for comparison
 		let currentProviderConfig = manager.providerConfiguration
-    let currentSocketUrl = currentProviderConfig["twitarrURL"] as? String
-    let currentToken = currentProviderConfig["token"] as? String
+		let currentSocketUrl = currentProviderConfig["twitarrURL"] as? String
+		let currentToken = currentProviderConfig["token"] as? String
 		let currentMatchSSIDs = manager.matchSSIDs
 		let newMatchSSIDs = appConfig.wifiNetworkNames
-		
+
 		// Convert pushNotifications from [NotificationTypeData: Bool] to [String: Bool] for storage
 		var pushNotificationsDict: [String: Bool] = [:]
 		for (key, value) in appConfig.pushNotifications {
@@ -224,7 +226,8 @@ import UserNotifications
 		let ssidsChanged = Set(currentMatchSSIDs) != Set(newMatchSSIDs)
 		let pushNotificationsChanged = currentPushNotifications != pushNotificationsDict
 		let muteNotificationsChanged = currentMuteNotifications != appConfig.muteNotifications
-		let configChanged = socketUrlChanged || tokenChanged || ssidsChanged || pushNotificationsChanged || muteNotificationsChanged
+		let configChanged =
+			socketUrlChanged || tokenChanged || ssidsChanged || pushNotificationsChanged || muteNotificationsChanged
 
 		// Configure provider configuration dictionary
 		var providerConfig: [String: Any] = [:]
