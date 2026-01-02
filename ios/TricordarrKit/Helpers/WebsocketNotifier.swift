@@ -132,9 +132,10 @@ public class WebsocketNotifier: NSObject {
 		var title = "From Tricordarr"
 		var url = ""
 		var markAsReadUrl: String? = nil
+    self.logger.log("[WebsocketNotifier.swift] generatePushNotificationFromEvent send \(sendNotification)")
 
 		guard let appConfig = AppConfig.shared else {
-			self.logger.error("Could not get shared AppConfig")
+			self.logger.error("[WebsocketNotifier.swift] Could not get shared AppConfig")
 			return
 		}
 
@@ -291,24 +292,24 @@ public class WebsocketNotifier: NSObject {
 				self.lastPing = Date()
 				switch result {
 				case .failure(let error):
-					self.logger.error("Error during websocket receive: \(error.localizedDescription, privacy: .public)")
+					self.logger.error("[WebsocketNotifier.swift] Error during websocket receive: \(error.localizedDescription, privacy: .public)")
 					socket.cancel(with: .goingAway, reason: nil)
 					self.socket = nil
 					self.session?.finishTasksAndInvalidate()
 					self.session = nil
 				case .success(let msg):
-					self.logger.log("got a successful message. Instance: \(debugAddr, privacy: .public)")
+					self.logger.log("[WebsocketNotifier.swift] got a successful message. Instance: \(debugAddr, privacy: .public)")
 					var msgData: Data?
 					switch msg {
 					case .string(let str):
-						self.logger.log("STRING MESSAGE: \(str, privacy: .public)")
+						self.logger.log("[WebsocketNotifier.swift] STRING MESSAGE: \(str, privacy: .public)")
 						msgData = str.data(using: .utf8)
 					case .data(let data):
 						// @TODO uhh, is this logging every call audio packet?
-						self.logger.log("DATA MESSAGE: \(data, privacy: .public)")
+						self.logger.log("[WebsocketNotifier.swift] DATA MESSAGE: \(data, privacy: .public)")
 						msgData = data
 					@unknown default:
-						self.logger.error("Error during websocket receive: Unknown ws data type delivered.)")
+						self.logger.error("[WebsocketNotifier.swift] Error during websocket receive: Unknown ws data type delivered.)")
 					}
 					if let msgData = msgData,
 						let socketNotification = try? JSONDecoder().decode(SocketNotificationData.self, from: msgData)
@@ -316,7 +317,7 @@ public class WebsocketNotifier: NSObject {
 						self.generatePushNotificationFromEvent(socketNotification)
 					}
 					else {
-						self.logger.error("Error during websocket receive: Looks like we couldn't parse the data?)")
+						self.logger.error("[WebsocketNotifier.swift] Error during websocket receive: Looks like we couldn't parse the data?)")
 					}
 				}
 				self.receiveNextMessage()
