@@ -28,7 +28,7 @@ class LocalPushProvider: NEAppPushProvider {
 	override init() {
 		super.init()
     logger.log("[LocalPushProvider.swift] init() - Extension initialized")
-//		websocketNotifier.pushProvider = self
+		websocketNotifier.pushProvider = self
     logger.log("[LocalPushProvider.swift] init() - WebsocketNotifier configured with pushProvider")
 	}
 
@@ -60,9 +60,9 @@ class LocalPushProvider: NEAppPushProvider {
 		
 		// Update config and start
     logger.log("[LocalPushProvider.swift] Calling websocketNotifier.updateConfig()")
-//		websocketNotifier.updateConfig()
+		websocketNotifier.updateConfig()
     logger.log("[LocalPushProvider.swift] Calling websocketNotifier.start()")
-//		websocketNotifier.start()
+		websocketNotifier.start()
     logger.log("[LocalPushProvider.swift] start() completed")
 	}
 
@@ -70,12 +70,12 @@ class LocalPushProvider: NEAppPushProvider {
     logger.log(
 			"[LocalPushProvider.swift] stop() called with reason: \(reason.rawValue, privacy: .public)"
 		)
-//		websocketNotifier.stop(with: reason, completionHandler: completionHandler)
+		websocketNotifier.stop(with: reason, completionHandler: completionHandler)
 	}
 
 	override func handleTimerEvent() {
     logger.log("[LocalPushProvider.swift] handleTimerEvent")
-//		websocketNotifier.handleTimerEvent()
+		websocketNotifier.handleTimerEvent()
 	}
 
 	// NEProvider override

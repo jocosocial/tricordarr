@@ -10,7 +10,7 @@ import NetworkExtension
 import os
 
 public class WebsocketNotifier: NSObject {
-  var pushProvider: NEAppPushProvider?  // NULL if notifier is being used in-app @TODO LocalPushProvider
+  public var pushProvider: NEAppPushProvider?  // NULL if notifier is being used in-app @TODO LocalPushProvider
 	var session: URLSession?
 	@objc dynamic var socket: URLSessionWebSocketTask?
 	var lastPing: Date?
@@ -41,7 +41,7 @@ public class WebsocketNotifier: NSObject {
 	// MARK: - Configuration
 
 	// Don't call this from within websocketnotifier.
-	func updateConfig(serverURL: URL? = nil, token: String? = nil) {
+	public func updateConfig(serverURL: URL? = nil, token: String? = nil) {
 		if let provider = pushProvider {
 			if let config = provider.providerConfiguration, let twitarrStr = config["twitarrURL"] as? String,
 				let token = config["token"] as? String,
@@ -362,7 +362,7 @@ public class WebsocketNotifier: NSObject {
 	/**
 	 Start the websocket.
 	 */
-	func start() {
+	public func start() {
 		let providerLogTerm = "\(self.isInApp ? "Foreground" : "Background") Provider"
 
 		if startState == true {
@@ -388,7 +388,7 @@ public class WebsocketNotifier: NSObject {
 	/**
 	 Stop and shutdown the websocket. We need to do this quickly and quietly in cases where the phone switches/loses wifi.
 	 */
-	func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
+	public func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
 		logger.log("[WebsocketNotifier.swift] stop called")
 		socket?.cancel(with: .goingAway, reason: nil)
 		socket = nil
@@ -403,7 +403,7 @@ public class WebsocketNotifier: NSObject {
 	 Websocket healthcheck function. This is triggered periodically by timers (set by us or automagically by the Local Push framework).
 	 If the socket is unhealthy/nonexistant this should jumpstart it.
 	 */
-	func handleTimerEvent() {
+	public func handleTimerEvent() {
 		if let pingTime = lastPing, Date().timeIntervalSince(pingTime) < 1.0 {
 			logger.warning("[WebsocketNotifier.swift] HandleTimerEvent called with very low delay from last call.")
 			return
