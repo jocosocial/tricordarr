@@ -10,7 +10,7 @@ import NetworkExtension
 import os
 
 public class WebsocketNotifier: NSObject {
-  public var pushProvider: NEAppPushProvider?  // NULL if notifier is being used in-app @TODO LocalPushProvider
+	public var pushProvider: NEAppPushProvider?  // NULL if notifier is being used in-app @TODO LocalPushProvider
 	var session: URLSession?
 	@objc dynamic var socket: URLSessionWebSocketTask?
 	var lastPing: Date?
@@ -132,15 +132,39 @@ public class WebsocketNotifier: NSObject {
 		var title = "From Tricordarr"
 		var url = ""
 		var markAsReadUrl: String? = nil
-    self.logger.log("[WebsocketNotifier.swift] generatePushNotificationFromEvent send \(sendNotification)")
+		self.logger.log("[WebsocketNotifier.swift] generatePushNotificationFromEvent send \(sendNotification)")
 
-		guard let appConfig = AppConfig.shared else {
-			self.logger.error("[WebsocketNotifier.swift] Could not get shared AppConfig")
-			return
+		// Get pushNotifications and muteNotifications from provider config (extension) or AppConfig.shared (in-app)
+		var pushNotifications: [NotificationTypeData: Bool] = [:]
+		var muteNotifications: String? = nil
+
+		if let provider = pushProvider, let config = provider.providerConfiguration {
+			// Extension context: read from provider configuration
+			if let pushNotificationsDict = config["pushNotifications"] as? [String: Bool] {
+				for (key, value) in pushNotificationsDict {
+					if let notificationType = NotificationTypeData(rawValue: key) {
+						pushNotifications[notificationType] = value
+					}
+				}
+			}
+			muteNotifications = config["muteNotifications"] as? String
+      self.logger.log("[WebsocketNotifier.swift] loaded push and mute from provider")
+		}
+		else if let appConfig = AppConfig.shared {
+			// In-app context: read from AppConfig.shared
+			pushNotifications = appConfig.pushNotifications
+			muteNotifications = appConfig.muteNotifications
+      self.logger.log("[WebsocketNotifier.swift] loaded push and mute from appConfig")
+		}
+		else {
+			// Fallback: if neither is available, log and continue (allow notification)
+			self.logger.warning(
+				"[WebsocketNotifier.swift] Could not get pushNotifications or muteNotifications from provider config or AppConfig.shared, allowing notification"
+			)
 		}
 
 		// Do not generate a notification if the user has disabled that category.
-		if appConfig.pushNotifications[socketNotification.type] == false {
+		if pushNotifications[socketNotification.type] == false {
 			self.logger
 				.info(
 					"[WebsocketNotifier.swift] user has disabled category \(socketNotification.type.rawValue, privacy: .public)"
@@ -149,7 +173,7 @@ public class WebsocketNotifier: NSObject {
 		}
 
 		// Do not generate a notification if the user has muted notifications.
-		if let muteString = appConfig.muteNotifications {
+		if let muteString = muteNotifications {
 			let formatter = ISO8601DateFormatter()
 			formatter.formatOptions.insert(.withFractionalSeconds)
 			if let muteUntil = formatter.date(from: muteString) {
@@ -292,13 +316,17 @@ public class WebsocketNotifier: NSObject {
 				self.lastPing = Date()
 				switch result {
 				case .failure(let error):
-					self.logger.error("[WebsocketNotifier.swift] Error during websocket receive: \(error.localizedDescription, privacy: .public)")
+					self.logger.error(
+						"[WebsocketNotifier.swift] Error during websocket receive: \(error.localizedDescription, privacy: .public)"
+					)
 					socket.cancel(with: .goingAway, reason: nil)
 					self.socket = nil
 					self.session?.finishTasksAndInvalidate()
 					self.session = nil
 				case .success(let msg):
-					self.logger.log("[WebsocketNotifier.swift] got a successful message. Instance: \(debugAddr, privacy: .public)")
+					self.logger.log(
+						"[WebsocketNotifier.swift] got a successful message. Instance: \(debugAddr, privacy: .public)"
+					)
 					var msgData: Data?
 					switch msg {
 					case .string(let str):
@@ -309,7 +337,9 @@ public class WebsocketNotifier: NSObject {
 						self.logger.log("[WebsocketNotifier.swift] DATA MESSAGE: \(data, privacy: .public)")
 						msgData = data
 					@unknown default:
-						self.logger.error("[WebsocketNotifier.swift] Error during websocket receive: Unknown ws data type delivered.)")
+						self.logger.error(
+							"[WebsocketNotifier.swift] Error during websocket receive: Unknown ws data type delivered.)"
+						)
 					}
 					if let msgData = msgData,
 						let socketNotification = try? JSONDecoder().decode(SocketNotificationData.self, from: msgData)
@@ -317,7 +347,9 @@ public class WebsocketNotifier: NSObject {
 						self.generatePushNotificationFromEvent(socketNotification)
 					}
 					else {
-						self.logger.error("[WebsocketNotifier.swift] Error during websocket receive: Looks like we couldn't parse the data?)")
+						self.logger.error(
+							"[WebsocketNotifier.swift] Error during websocket receive: Looks like we couldn't parse the data?)"
+						)
 					}
 				}
 				self.receiveNextMessage()
@@ -485,7 +517,8 @@ extension WebsocketNotifier: URLSessionTaskDelegate {
 
 /// Delegate methods for WebSocket tasks
 extension WebsocketNotifier: URLSessionWebSocketDelegate {
-	public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol: String?) {
+	public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol: String?)
+	{
 		logger.log(
 			"[WebsocketNotifier.swift] Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public)"
 		)

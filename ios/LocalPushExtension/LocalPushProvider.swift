@@ -23,7 +23,7 @@ import TricordarrKit
 ///
 class LocalPushProvider: NEAppPushProvider {
   var websocketNotifier = WebsocketNotifier()
-  let logger = Logging.getLogger("LocalPushProvider")
+  let logger = Logging.getLogger("TricordarrLocalPushProvider")
 
 	override init() {
 		super.init()

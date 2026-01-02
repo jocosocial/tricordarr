@@ -209,17 +209,31 @@ import UserNotifications
     let currentToken = currentProviderConfig["token"] as? String
 		let currentMatchSSIDs = manager.matchSSIDs
 		let newMatchSSIDs = appConfig.wifiNetworkNames
+		
+		// Convert pushNotifications from [NotificationTypeData: Bool] to [String: Bool] for storage
+		var pushNotificationsDict: [String: Bool] = [:]
+		for (key, value) in appConfig.pushNotifications {
+			pushNotificationsDict[key.rawValue] = value
+		}
+		let currentPushNotifications = currentProviderConfig["pushNotifications"] as? [String: Bool]
+		let currentMuteNotifications = currentProviderConfig["muteNotifications"] as? String
 
 		// Check if configuration has changed
 		let socketUrlChanged = currentSocketUrl != socketUrl
 		let tokenChanged = currentToken != token
 		let ssidsChanged = Set(currentMatchSSIDs) != Set(newMatchSSIDs)
-		let configChanged = socketUrlChanged || tokenChanged || ssidsChanged
+		let pushNotificationsChanged = currentPushNotifications != pushNotificationsDict
+		let muteNotificationsChanged = currentMuteNotifications != appConfig.muteNotifications
+		let configChanged = socketUrlChanged || tokenChanged || ssidsChanged || pushNotificationsChanged || muteNotificationsChanged
 
 		// Configure provider configuration dictionary
 		var providerConfig: [String: Any] = [:]
 		providerConfig["twitarrURL"] = socketUrl
 		providerConfig["token"] = token
+		providerConfig["pushNotifications"] = pushNotificationsDict
+		if let muteNotifications = appConfig.muteNotifications {
+			providerConfig["muteNotifications"] = muteNotifications
+		}
 		manager.providerConfiguration = providerConfig
 
 		// Set matchSSIDs from AppConfig
