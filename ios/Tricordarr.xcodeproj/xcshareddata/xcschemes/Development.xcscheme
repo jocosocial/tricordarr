@@ -34,6 +34,20 @@
                ReferencedContainer = "container:Tricordarr.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "93ADC07A2F07749D00C698D2"
+               BuildableName = "TricordarrKit.framework"
+               BlueprintName = "TricordarrKit"
+               ReferencedContainer = "container:Tricordarr.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
