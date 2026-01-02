@@ -109,19 +109,43 @@
 			);
 			target = 93ADBFFA2F074E0700C698D2 /* LocalPushExtension */;
 		};
+		93ADC0952F0775B800C698D2 /* Exceptions for "TricordarrKit" folder in "Tricordarr" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Enumerations/UserPreferences.swift,
+				Helpers/AppConfig.swift,
+				Helpers/ImageBlur.swift,
+				Helpers/Logging.swift,
+				Helpers/Notifications.swift,
+				Helpers/Settings.swift,
+				Helpers/WebsocketNotifier.swift,
+				Structs/ConfigStructs.swift,
+				Structs/ControllerStructs.swift,
+				Structs/NotificationStructs.swift,
+				Structs/SocketStructs.swift,
+			);
+			target = 13B07F861A680F5B00A75B9A /* Tricordarr */;
+		};
+		93ADC0962F0775B800C698D2 /* Exceptions for "TricordarrKit" folder in "TricordarrKit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Enumerations/UserPreferences.swift,
+				Helpers/AppConfig.swift,
+				Helpers/ImageBlur.swift,
+				Helpers/Logging.swift,
+				Helpers/Notifications.swift,
+				Helpers/Settings.swift,
+				Helpers/WebsocketNotifier.swift,
+				Structs/ConfigStructs.swift,
+				Structs/ControllerStructs.swift,
+				Structs/NotificationStructs.swift,
+				Structs/SocketStructs.swift,
+			);
+			target = 93ADC07A2F07749D00C698D2 /* TricordarrKit */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		93980FED2EB846F90067E8A1 /* Structs */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Structs;
-			sourceTree = "<group>";
-		};
-		93980FF02EB849190067E8A1 /* Helpers */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Helpers;
-			sourceTree = "<group>";
-		};
 		93ADBFFE2F074E0700C698D2 /* LocalPushExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -132,12 +156,11 @@
 		};
 		93ADC07C2F07749D00C698D2 /* TricordarrKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				93ADC0952F0775B800C698D2 /* Exceptions for "TricordarrKit" folder in "Tricordarr" target */,
+				93ADC0962F0775B800C698D2 /* Exceptions for "TricordarrKit" folder in "TricordarrKit" target */,
+			);
 			path = TricordarrKit;
-			sourceTree = "<group>";
-		};
-		93B71A582EBACAC2004BC91E /* Enumerations */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Enumerations;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -231,9 +254,6 @@
 		93690EF02EAB266C00CA8914 /* NativeTricordarrModule */ = {
 			isa = PBXGroup;
 			children = (
-				93B71A582EBACAC2004BC91E /* Enumerations */,
-				93980FF02EB849190067E8A1 /* Helpers */,
-				93980FED2EB846F90067E8A1 /* Structs */,
 				93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */,
 				93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */,
 				93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */,
@@ -282,11 +302,6 @@
 			dependencies = (
 				93ADC0042F074E0700C698D2 /* PBXTargetDependency */,
 				93ADC0802F07749D00C698D2 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				93980FED2EB846F90067E8A1 /* Structs */,
-				93980FF02EB849190067E8A1 /* Helpers */,
-				93B71A582EBACAC2004BC91E /* Enumerations */,
 			);
 			name = Tricordarr;
 			productName = Tricordarr;
