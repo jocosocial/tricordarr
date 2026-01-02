@@ -10,7 +10,6 @@ import {BackgroundConnectionSettingsForm} from '#src/Components/Forms/Settings/B
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
-import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -304,11 +303,10 @@ export const BackgroundConnectionSettingsIOSView = () => {
             <DataFieldListItem
               title={'Last Ping'}
               description={
-                foregroundProviderStatus.lastPing ? (
-                  <RelativeTimeTag date={new Date(foregroundProviderStatus.lastPing)} />
-                ) : (
-                  'Never'
-                )
+                foregroundProviderStatus.lastPing
+                  ? // <RelativeTimeTag date={new Date(foregroundProviderStatus.lastPing)} />
+                    foregroundProviderStatus.lastPing.toString()
+                  : 'Never'
               }
               // description={
               //   foregroundProviderStatus.lastPing ? new Date(foregroundProviderStatus.lastPing).toString() : 'Never'

@@ -29,19 +29,20 @@ public class WebsocketNotifier: NSObject {
 		self.isInApp = isInApp
 		super.init()
 		debugAddr = Unmanaged.passUnretained(self).toOpaque().debugDescription
-		logger.log(
-			"KrakenPushProvider WebsocketNotifier.init() inApp: \(isInApp) addr: \(self.debugAddr, privacy: .public)"
+    self.logger.log(
+			"[WebsocketNotifier.swift] WebsocketNotifier.init() inApp: \(isInApp) addr: \(self.debugAddr, privacy: .public)"
 		)
 	}
 
 	deinit {
-		logger.log("KrakenPushProvider de-init. inApp: \(self.isInApp)")
+    self.logger.log("[WebsocketNotifier.swift] de-init. inApp: \(self.isInApp)")
 	}
 
 	// MARK: - Configuration
 
 	// Don't call this from within websocketnotifier.
 	public func updateConfig(serverURL: URL? = nil, token: String? = nil) {
+    self.logger.log("[WebsocketNotifier.swift] updateConfig")
 		if let provider = pushProvider {
 			if let config = provider.providerConfiguration, let twitarrStr = config["twitarrURL"] as? String,
 				let token = config["token"] as? String,
@@ -68,6 +69,7 @@ public class WebsocketNotifier: NSObject {
 	 Configures a `URLSession` for an instance of this class to use. Manages all web requests under one context roof.
 	 */
 	private func configureURLSession() {
+    self.logger.log("[WebsocketNotifier.swift] configureURLSession")
 		if session == nil {
 			let config = URLSessionConfiguration.ephemeral
 			// Kraken has `allowsCellularAccess` set to false. I am not convinced that is a good thing
@@ -86,6 +88,7 @@ public class WebsocketNotifier: NSObject {
 	 that all the necessary dependencies are satisfied (such as `URLSession`).
 	 */
 	func openWebSocket() {
+    self.logger.log("[WebsocketNotifier.swift] openWebSocket")
 		// No config == no socket.
 		guard let twitarrURL = self.serverURL, let token = self.token, !token.isEmpty else {
 			self.logger.error("[WebsocketNotifier.swift] openWebSocket essential configuration missing")
@@ -121,12 +124,15 @@ public class WebsocketNotifier: NSObject {
 		if pushProvider == nil && socketPingTimer == nil {
 			let pingIntervalSeconds = Double(AppConfig.shared?.fgsWorkerHealthTimer ?? 10000) / 1000.0
       self.logger
-        .info(
+        .log(
           "[WebsocketNotifier.swift] setting up new socketPingTimer at interval \(pingIntervalSeconds, privacy: .public)"
         )
-      socketPingTimer = Timer
-        .scheduledTimer(withTimeInterval: pingIntervalSeconds, repeats: true) { [weak self] timer in
+      socketPingTimer = Timer(timeInterval: pingIntervalSeconds, repeats: true) { [weak self] timer in
 				self?.handleTimerEvent()
+			}
+			// Explicitly schedule on main run loop to ensure timer fires regardless of calling thread
+			if let timer = socketPingTimer {
+				RunLoop.main.add(timer, forMode: .common)
 			}
 		}
 	}
@@ -172,7 +178,7 @@ public class WebsocketNotifier: NSObject {
 		// Do not generate a notification if the user has disabled that category.
 		if pushNotifications[socketNotification.type] == false {
 			self.logger
-				.info(
+				.log(
 					"[WebsocketNotifier.swift] user has disabled category \(socketNotification.type.rawValue, privacy: .public)"
 				)
 			return
@@ -184,7 +190,7 @@ public class WebsocketNotifier: NSObject {
 			formatter.formatOptions.insert(.withFractionalSeconds)
 			if let muteUntil = formatter.date(from: muteString) {
 				if Date() < muteUntil {
-					self.logger.info(
+					self.logger.log(
 						"[WebsocketNotifier.swift] user has muted notifications until \(muteUntil, privacy: .public)"
 					)
 					return
@@ -316,6 +322,7 @@ public class WebsocketNotifier: NSObject {
 	}
 
 	func receiveNextMessage() {
+    self.logger.log("[WebsocketNotifier.swift] receiveNextMessage")
 		if let socket = socket {
 			socket.receive { [weak self] result in
 				guard let self = self else { return }
@@ -369,7 +376,7 @@ public class WebsocketNotifier: NSObject {
 		userHeader: UserHeader,
 		callerAddr: PhoneSocketServerAddress?
 	) {
-		logger.log("Incoming call")
+    self.logger.log("Incoming call")
 		var dict =
 			[
 				"name": name, "callID": callID, "callerID": userHeader.userID.uuidString,
@@ -402,23 +409,24 @@ public class WebsocketNotifier: NSObject {
 	 Start the websocket.
 	 */
 	public func start() {
+    self.logger.log("[WebsocketNotifier.swift] start")
 		let providerLogTerm = "\(self.isInApp ? "Foreground" : "Background") Provider"
 
 		if startState == true {
-			logger.log("[WebsocketNotifier.swift] start called while already started")
+      self.logger.log("[WebsocketNotifier.swift] start called while already started")
 		}
 		else if self.serverURL == nil {
-			logger.log(
+      self.logger.log(
 				"[WebsocketNotifier.swift] \(providerLogTerm) can't start -- no server URL"
 			)
 		}
 		else if self.token == nil || token == "" {
-			logger.log(
+      self.logger.log(
 				"[WebsocketNotifier.swift] \(providerLogTerm) can't start -- no user token"
 			)
 		}
 		else {
-			logger.log("[WebsocketNotifier.swift] \(providerLogTerm) start")
+      self.logger.log("[WebsocketNotifier.swift] \(providerLogTerm) start")
 		}
 		startState = true
 		openWebSocket()
@@ -428,7 +436,7 @@ public class WebsocketNotifier: NSObject {
 	 Stop and shutdown the websocket. We need to do this quickly and quietly in cases where the phone switches/loses wifi.
 	 */
 	public func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-		logger.log("[WebsocketNotifier.swift] stop called")
+    self.logger.log("[WebsocketNotifier.swift] stop called")
 		socket?.cancel(with: .goingAway, reason: nil)
 		socket = nil
 		session?.finishTasksAndInvalidate()
@@ -443,19 +451,19 @@ public class WebsocketNotifier: NSObject {
 	 If the socket is unhealthy/nonexistant this should jumpstart it.
 	 */
 	public func handleTimerEvent() {
-    logger.info("[WebsocketNotifier.swift] handleTimerEvent")
+    self.logger.log("[WebsocketNotifier.swift] handleTimerEvent")
 		if let pingTime = lastPing, Date().timeIntervalSince(pingTime) < 1.0 {
-			logger.warning("[WebsocketNotifier.swift] HandleTimerEvent called with very low delay from last call.")
+      self.logger.warning("[WebsocketNotifier.swift] HandleTimerEvent called with very low delay from last call.")
 			return
 		}
 		else if startState == false {
-			logger.warning("[WebsocketNotifier.swift] HandleTimerEvent called while in stop state.")
+      self.logger.warning("[WebsocketNotifier.swift] HandleTimerEvent called while in stop state.")
 			return
 		}
-		logger.log(
+    self.logger.log(
 			"[WebsocketNotifier.swift] HandleTimerEvent called for instance \(String(format: "%p", self), privacy: .public)"
 		)
-		logger.log(
+    self.logger.log(
 			"[WebsocketNotifier.swift] lastPing: \(self.lastPing?.debugDescription ?? "<nil>", privacy: .public)"
 		)
 
@@ -485,7 +493,7 @@ public class WebsocketNotifier: NSObject {
 // Delegate methods for the session itself
 extension WebsocketNotifier: URLSessionDelegate {
 	public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-		logger.log("[WebsocketNotifier.swift] Session went invalid because: \(error, privacy: .public)")
+    self.logger.log("[WebsocketNotifier.swift] Session went invalid because: \(error, privacy: .public)")
 		self.session = nil
 	}
 }
@@ -493,7 +501,7 @@ extension WebsocketNotifier: URLSessionDelegate {
 // Delegate methods for the session's Tasks -- common to all task types
 extension WebsocketNotifier: URLSessionTaskDelegate {
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-		logger.log(
+    self.logger.log(
 			"[WebsocketNotifier.swift] Notifier Socket task received didCompleteWithError: \(error, privacy: .public)"
 		)
 	}
@@ -505,7 +513,7 @@ extension WebsocketNotifier: URLSessionTaskDelegate {
 		newRequest request: URLRequest,
 		completionHandler: @escaping (URLRequest?) -> Void
 	) {
-		logger.log("[WebsocketNotifier.swift] Notifier Socket task received willPerformHTTPRedirection")
+    self.logger.log("[WebsocketNotifier.swift] Notifier Socket task received willPerformHTTPRedirection")
 		completionHandler(request)
 	}
 
@@ -515,7 +523,7 @@ extension WebsocketNotifier: URLSessionTaskDelegate {
 		didReceive challenge: URLAuthenticationChallenge,
 		completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
 	) {
-		logger.log(
+    self.logger.log(
 			"[WebsocketNotifier.swift] Notifier Socket task received URLAuthenticationChallenge of type \(challenge.protectionSpace.authenticationMethod)."
 		)
 		completionHandler(.performDefaultHandling, nil)
@@ -527,7 +535,7 @@ extension WebsocketNotifier: URLSessionWebSocketDelegate {
 	public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol: String?)
 	{
     let debugUrl = webSocketTask.currentRequest?.url?.absoluteString ?? "unknown"
-		logger.log(
+    self.logger.log(
       "[WebsocketNotifier.swift] Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public) to \(debugUrl)"
 		)
 	}
@@ -538,7 +546,7 @@ extension WebsocketNotifier: URLSessionWebSocketDelegate {
 		didCloseWith: URLSessionWebSocketTask.CloseCode,
 		reason: Data?
 	) {
-		logger.log("[WebsocketNotifier.swift] Socket closed with code: \(didCloseWith.rawValue)")
+    self.logger.log("[WebsocketNotifier.swift] Socket closed with code: \(didCloseWith.rawValue)")
 		socket?.cancel(with: .goingAway, reason: nil)
 		socket = nil
 	}
