@@ -195,6 +195,8 @@ import UserNotifications
 	 - Parameter manager: The NEAppPushManager to configure
 	 */
 	private func saveSettings(for manager: NEAppPushManager) {
+    logger.info("[Notifications.swift] saveSettings for manager")
+
 		guard let socketUrl = storedSocketUrl, let token = storedToken else {
 			logger.error("[Notifications.swift] Cannot save settings for manager: socketUrl or token is nil")
 			return
@@ -346,6 +348,7 @@ import UserNotifications
 	 Handles changes to the manager's active state.
 	 */
 	private func handleManagerStateChange() {
+    logger.log("[Notifications.swift] handleManagerStateChange")
 		if let manager = backgroundPushManager {
 			if manager.isActive {
 				logger.log("[Notifications.swift] Extension push provider is active")
