@@ -26,16 +26,33 @@ import UserNotifications
 	@objc dynamic var foregroundPushProvider = WebsocketNotifier(isInApp: true)
 	/// This timer is used in various places to determine if the foregroundPushProvider should be started.
 	private var providerDownTimer: Timer?
+	/// Logger for this class
+	private let logger = Logging.getLogger("Notifications")
+	/// Stored socket URL and token for configuring the background manager
+	private var storedSocketUrl: String?
+	private var storedToken: String?
+	/// KVO observation token for backgroundPushManager.isActive
+	private var isActiveObservation: NSKeyValueObservation?
 
 	/**
 	 Configure the providers with settings. Called from the JavaScript side over the "bridge".
    @TODO this should ensure the background manager and foreground provider cycle.
 	 */
 	@objc static func saveSettings(socketUrl: String, token: String) {
+		// Store settings for background manager configuration
+		Notifications.shared.storedSocketUrl = socketUrl
+		Notifications.shared.storedToken = token
+
+		// Update foreground provider
 		if let urlComponents = URLComponents(string: socketUrl) {
 			Notifications.shared.foregroundPushProvider.updateConfig(serverURL: urlComponents.url, token: token)
 		}
 		Notifications.shared.checkStartInAppSocket()
+
+		// Update background manager if it exists
+		if let manager = Notifications.shared.backgroundPushManager {
+			Notifications.shared.saveSettings(for: manager)
+		}
 	}
 
 	/**
@@ -112,12 +129,12 @@ import UserNotifications
 			.add(request) { error in
 				if let error = error {
 					Logging.logger.log(
-						"Error submitting local notification: \(error.localizedDescription, privacy: .public)"
+						"[Notifications.swift] Error submitting local notification: \(error.localizedDescription, privacy: .public)"
 					)
 					return
 				}
 
-				Logging.logger.log("Local notification posted successfully")
+				Logging.logger.log("[Notifications.swift] Local notification posted successfully")
 			}
 	}
 
@@ -168,6 +185,50 @@ import UserNotifications
 		completionHandler()
 	}
 
+	// MARK: - Background Push Manager Configuration
+
+	/**
+	 Configures an NEAppPushManager with provider configuration and matchSSIDs.
+	
+	 - Parameter manager: The NEAppPushManager to configure
+	 */
+	private func saveSettings(for manager: NEAppPushManager) {
+		guard let socketUrl = storedSocketUrl, let token = storedToken else {
+			logger.error("[Notifications.swift] Cannot save settings for manager: socketUrl or token is nil")
+			return
+		}
+
+		guard let appConfig = AppConfig.shared else {
+			logger.error("[Notifications.swift] Cannot save settings for manager: AppConfig.shared is nil")
+			return
+		}
+
+		// Configure provider configuration dictionary
+		var providerConfig: [String: Any] = [:]
+		providerConfig["twitarrURL"] = socketUrl
+		providerConfig["token"] = token
+		manager.providerConfiguration = providerConfig
+
+		// Set matchSSIDs from AppConfig
+		manager.matchSSIDs = appConfig.wifiNetworkNames
+    
+    manager.isEnabled = true
+    manager.providerBundleIdentifier = "com.grantcohoe.tricordarr.LocalPushExtension"
+    manager.localizedDescription = "App Extension for Background Server Communication"
+
+		// Save to preferences
+		manager.saveToPreferences { error in
+			if let error = error {
+				self.logger.error(
+					"[Notifications.swift] Error saving push manager preferences: \(error.localizedDescription, privacy: .public)"
+				)
+				return
+			}
+
+			self.logger.log("[Notifications.swift] Push manager preferences saved successfully")
+		}
+	}
+
 	// MARK: - Foreground Push Provider
 
 	/**
@@ -190,6 +251,87 @@ import UserNotifications
 		}
 	}
 
+	// MARK: - App Startup
+
+	/**
+	 Initialize and configure the background push manager at app startup.
+	 Loads existing manager from preferences, configures it, sets up observers, and manages the foreground/background provider lifecycle.
+	 */
+	@objc static func appStarted() {
+		#if !targetEnvironment(simulator)
+			let instance = Notifications.shared
+
+			// Load existing managers from preferences
+			NEAppPushManager.loadAllFromPreferences { managers, error in
+				if let error = error {
+					instance.logger.error(
+						"[Notifications.swift] Couldn't load push manager prefs: \(error.localizedDescription, privacy: .public)"
+					)
+					return
+				}
+
+				// Use existing manager or create new one
+				let manager = managers?.first ?? NEAppPushManager()
+
+				// Configure and save settings
+				instance.backgroundPushManager = manager
+				instance.saveSettings(for: manager)
+
+				// Set up KVO observer for isActive property
+				instance.setupIsActiveObserver()
+
+				// If at app launch the extension isn't running, start using in-app provider after 5 seconds
+				instance.providerDownTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+					instance.checkStartInAppSocket()
+				}
+			}
+		#endif
+	}
+
+	/**
+	 Sets up KVO observer for backgroundPushManager.isActive property changes.
+	 */
+	private func setupIsActiveObserver() {
+		// Remove existing observer if any
+		isActiveObservation?.invalidate()
+
+		guard let manager = backgroundPushManager else {
+			return
+		}
+
+		// Observe isActive property changes on the manager directly
+		isActiveObservation = manager.observe(\.isActive, options: [.new, .old]) { [weak self] _, change in
+			guard let self = self else { return }
+			self.handleManagerStateChange()
+		}
+	}
+
+	/**
+	 Handles changes to the manager's active state.
+	 */
+	private func handleManagerStateChange() {
+		if let manager = backgroundPushManager {
+			if manager.isActive {
+				logger.log("[Notifications.swift] Extension push provider is active")
+				checkStopInAppSocket()
+				providerDownTimer?.invalidate()
+				providerDownTimer = nil
+			}
+			else {
+				logger.log("[Notifications.swift] Extension push provider is inactive")
+				// Start a 30 second timer. If the provider extension is still offline, enable the
+				// in-app provider. This should prevent extra socket cycling for very short Wifi unavailability.
+				providerDownTimer?.invalidate()
+				providerDownTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: false) { [weak self] _ in
+					self?.checkStartInAppSocket()
+				}
+			}
+		}
+		else {
+			logger.log("[Notifications.swift] Extension push provider is nil")
+		}
+	}
+
 	// MARK: - Deep Link Handling
 
 	/**
@@ -203,8 +345,8 @@ import UserNotifications
 			let type = NotificationTypeData(rawValue: typeString),
 			let urlString = userInfo["url"] as? String
 		else {
-			Logging.logger.error(
-				"Failed to decode UserInfoData from notification userInfo: \(userInfo, privacy: .public)"
+			logger.error(
+				"[Notifications.swift] Failed to decode UserInfoData from notification userInfo: \(userInfo, privacy: .public)"
 			)
 			return nil
 		}
@@ -226,8 +368,8 @@ import UserNotifications
 	private func createDeepLinkUrl(from urlPath: String) -> URL? {
 		let deepLinkUrl = "tricordarr:/\(urlPath)"
 		guard let url = URL(string: deepLinkUrl) else {
-			Logging.logger.error(
-				"Invalid URL string in notification userInfo: \(urlPath, privacy: .public)"
+			logger.error(
+				"[Notifications.swift] Invalid URL string in notification userInfo: \(urlPath, privacy: .public)"
 			)
 			return nil
 		}
@@ -264,15 +406,15 @@ import UserNotifications
 		if UIApplication.shared.canOpenURL(url) {
 			UIApplication.shared.open(url) { success in
 				if !success {
-					Logging.logger.error(
-						"Failed to open deep link URL: \(url.absoluteString, privacy: .public)"
+					self.logger.error(
+						"[Notifications.swift] Failed to open deep link URL: \(url.absoluteString, privacy: .public)"
 					)
 				}
 			}
 		}
 		else {
-			Logging.logger.error(
-				"Cannot open deep link URL: \(url.absoluteString, privacy: .public)"
+			logger.error(
+				"[Notifications.swift] Cannot open deep link URL: \(url.absoluteString, privacy: .public)"
 			)
 		}
 	}

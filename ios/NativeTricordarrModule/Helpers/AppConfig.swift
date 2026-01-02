@@ -15,17 +15,17 @@ import Foundation
 	/// Decodes and stores AppConfig from a JSON string.
 	@objc static func setAppConfig(appConfigJson: String) {
 		guard let jsonData = appConfigJson.data(using: .utf8) else {
-			Logging.logger.error("AppConfig: Failed to convert JSON string to Data")
+			Logging.logger.error("[AppConfig.swift] Failed to convert JSON string to Data")
 			return
 		}
 
 		do {
 			shared = try JSONDecoder().decode(AppConfigData.self, from: jsonData)
-			Logging.logger.log("AppConfig: Successfully decoded and stored AppConfig")
+			Logging.logger.log("[AppConfig.swift] Successfully decoded and stored AppConfig")
 		}
 		catch {
 			Logging.logger.error(
-				"AppConfig: Failed to decode AppConfig: \(error.localizedDescription, privacy: .public)"
+				"[AppConfig.swift] Failed to decode AppConfig: \(error.localizedDescription, privacy: .public)"
 			)
 			return
 		}
@@ -34,5 +34,8 @@ import Foundation
 	/// Configures notifications without setting AppConfig.
 	@objc static func setupLocalPushManager(socketUrl: String, token: String, enable: Bool) {
 		Notifications.saveSettings(socketUrl: socketUrl, token: token)
+		if enable {
+			Notifications.appStarted()
+		}
 	}
 }
