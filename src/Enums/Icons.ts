@@ -3,6 +3,7 @@ export enum AppIcons {
   // Chat
   seamailCreate = 'email-plus',
   seamail = 'email',
+  seamailUnread = 'email-mark-as-unread',
   seamailInactive = 'email-outline',
   krakentalkCreate = 'phone-outgoing',
   krakentalk = 'phone',
@@ -84,7 +85,6 @@ export enum AppIcons {
   join = 'account-plus',
   leave = 'account-remove',
   cancel = 'cancel',
-  seamailSearch = 'email-search',
   eventSearch = 'calendar-search',
   info = 'information-outline',
   save = 'content-save',

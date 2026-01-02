@@ -48,6 +48,9 @@ export const SeamailHelpScreen = () => {
           The details screen for a seamail conversation shows the list of participants and other internal information.
           You can also bulk favorite all users in the chat at once.
         </HelpTopicView>
+        <HelpTopicView icon={AppIcons.seamailUnread}>
+          You can filter to only show unread seamail conversations by pressing the "Filter Unread" button in the header.
+        </HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );
