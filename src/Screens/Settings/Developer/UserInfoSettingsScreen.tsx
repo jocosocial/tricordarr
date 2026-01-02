@@ -9,30 +9,11 @@ import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
-const toSecureString = (originalText?: string) => {
-  if (!originalText) {
-    return '';
-  }
-  // Extract the first three characters
-  const firstThreeCharacters = originalText.slice(0, 3);
-
-  // Replace the remaining characters with asterisks
-  const asterisks = '*'.repeat(originalText.length - 3);
-
-  // Concatenate the first three characters with asterisks
-  return firstThreeCharacters + asterisks;
-};
-
 export const UserInfoSettingsScreen = () => {
   const {data: profilePublicData, refetch: refetchProfile} = useUserProfileQuery();
   const {tokenData} = useAuth();
   const {roles, refetch: refetchRoles} = useRoles();
-  const [showToken, setShowToken] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-
-  const toggleToken = () => {
-    setShowToken(!showToken);
-  };
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -54,11 +35,7 @@ export const UserInfoSettingsScreen = () => {
           <ListSubheader>Token Auth Data</ListSubheader>
           <DataFieldListItem title={'UserID'} description={tokenData?.userID} />
           <DataFieldListItem title={'Access Level'} description={tokenData?.accessLevel} />
-          <DataFieldListItem
-            title={'Token'}
-            onPress={toggleToken}
-            description={showToken ? tokenData?.token : toSecureString(tokenData?.token)}
-          />
+          <DataFieldListItem title={'Token'} description={tokenData?.token} sensitive={true} />
         </View>
         <View>
           <ListSubheader>User Roles</ListSubheader>
