@@ -26,9 +26,7 @@ export const buildScheduleList = (
   personalEventData?: InfiniteData<FezListData>,
 ): (FezData | EventData)[] => {
   let anyLfgFilter =
-    filterSettings.eventLfgJoinedFilter ||
-    filterSettings.eventLfgOwnedFilter ||
-    filterSettings.eventLfgOpenFilter;
+    filterSettings.eventLfgJoinedFilter || filterSettings.eventLfgOwnedFilter || filterSettings.eventLfgOpenFilter;
   let anyOtherFilter = filterSettings.eventFavoriteFilter || filterSettings.eventPersonalFilter;
   let anyPersonalFilter = anyLfgFilter || anyOtherFilter;
 

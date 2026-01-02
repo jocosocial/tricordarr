@@ -57,7 +57,7 @@ export const FezCancelModal = ({fezData}: {fezData: FezData}) => {
   const cardActions = (
     <PrimaryActionButton
       buttonColor={theme.colors.twitarrNegativeButton}
-      buttonText={'Cancel'}
+      buttonText={'Cancel Event'}
       onPress={onSubmit}
       isLoading={cancelMutation.isPending}
       disabled={cancelMutation.isPending}

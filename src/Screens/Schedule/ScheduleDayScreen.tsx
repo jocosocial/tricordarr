@@ -216,15 +216,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     setScheduleList(listData);
     onDataLoaded();
     console.log('[ScheduleDayScreen.tsx] Finished buildScheduleList useEffect.');
-  }, [
-    scheduleFilterSettings,
-    lfgJoinedData,
-    lfgOwnedData,
-    lfgOpenData,
-    eventData,
-    personalEventData,
-    onDataLoaded,
-  ]);
+  }, [scheduleFilterSettings, lfgJoinedData, lfgOwnedData, lfgOpenData, eventData, personalEventData, onDataLoaded]);
 
   // Reset switching state on error to prevent stuck loading spinner
   useEffect(() => {

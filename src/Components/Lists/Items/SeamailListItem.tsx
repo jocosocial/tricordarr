@@ -54,6 +54,9 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
       ...commonStyles.justifyCenter,
       ...commonStyles.alignItemsCenter,
     },
+    item: {
+      ...commonStyles.background,
+    },
   });
 
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
@@ -104,6 +107,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
   return (
     <SeamailListItemSwipeable fez={fez}>
       <ListItem
+        style={styles.item}
         title={fez.title}
         titleStyle={styles.title}
         titleNumberOfLines={0}

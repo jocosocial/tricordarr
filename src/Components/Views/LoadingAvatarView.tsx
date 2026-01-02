@@ -28,4 +28,3 @@ export const LoadingAvatarView = ({size}: LoadingAvatarViewProps) => {
     </View>
   );
 };
-

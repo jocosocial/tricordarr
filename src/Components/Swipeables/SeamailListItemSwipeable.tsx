@@ -22,6 +22,9 @@ export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) =
   // The optimistic state is needed to ensure that the swipeable doesnt leave visual ghosts
   // when the mute state changes. Maybe some day removing the mutation invalidation pattern
   // can improve this behavior. They addition of the key was key.
+  //
+  // In retrospect I'm wondering how much of this was needed versus adding the damn
+  // backgroundColor style to the list item....
   const [optimisticMuted, setOptimisticMuted] = useState<boolean | undefined>(props.fez.members?.isMuted);
 
   // Sync optimistic state with props when they change
