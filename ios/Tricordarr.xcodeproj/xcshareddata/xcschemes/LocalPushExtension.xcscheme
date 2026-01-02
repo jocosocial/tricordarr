@@ -16,6 +16,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "93ADC07A2F07749D00C698D2"
+               BuildableName = "TricordarrKit.framework"
+               BlueprintName = "TricordarrKit"
+               ReferencedContainer = "container:Tricordarr.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "93ADBFFA2F074E0700C698D2"
                BuildableName = "LocalPushExtension.appex"
                BlueprintName = "LocalPushExtension"
@@ -33,20 +47,6 @@
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "Tricordarr.app"
                BlueprintName = "Tricordarr"
-               ReferencedContainer = "container:Tricordarr.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "93ADC07A2F07749D00C698D2"
-               BuildableName = "TricordarrKit.framework"
-               BlueprintName = "TricordarrKit"
                ReferencedContainer = "container:Tricordarr.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

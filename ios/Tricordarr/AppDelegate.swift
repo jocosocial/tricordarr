@@ -2,6 +2,7 @@ import React
 import ReactAppDependencyProvider
 import React_RCTAppDelegate
 import UIKit
+import TricordarrKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {

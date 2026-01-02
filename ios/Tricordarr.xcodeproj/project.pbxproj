@@ -109,43 +109,14 @@
 			);
 			target = 93ADBFFA2F074E0700C698D2 /* LocalPushExtension */;
 		};
-		93ADC0952F0775B800C698D2 /* Exceptions for "TricordarrKit" folder in "Tricordarr" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Enumerations/UserPreferences.swift,
-				Helpers/AppConfig.swift,
-				Helpers/ImageBlur.swift,
-				Helpers/Logging.swift,
-				Helpers/Notifications.swift,
-				Helpers/Settings.swift,
-				Helpers/WebsocketNotifier.swift,
-				Structs/ConfigStructs.swift,
-				Structs/ControllerStructs.swift,
-				Structs/NotificationStructs.swift,
-				Structs/SocketStructs.swift,
-			);
-			target = 13B07F861A680F5B00A75B9A /* Tricordarr */;
-		};
-		93ADC0962F0775B800C698D2 /* Exceptions for "TricordarrKit" folder in "TricordarrKit" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Enumerations/UserPreferences.swift,
-				Helpers/AppConfig.swift,
-				Helpers/ImageBlur.swift,
-				Helpers/Logging.swift,
-				Helpers/Notifications.swift,
-				Helpers/Settings.swift,
-				Helpers/WebsocketNotifier.swift,
-				Structs/ConfigStructs.swift,
-				Structs/ControllerStructs.swift,
-				Structs/NotificationStructs.swift,
-				Structs/SocketStructs.swift,
-			);
-			target = 93ADC07A2F07749D00C698D2 /* TricordarrKit */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		9394DAB82F077F9E000B2338 /* Helpers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		93ADBFFE2F074E0700C698D2 /* LocalPushExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -156,10 +127,6 @@
 		};
 		93ADC07C2F07749D00C698D2 /* TricordarrKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				93ADC0952F0775B800C698D2 /* Exceptions for "TricordarrKit" folder in "Tricordarr" target */,
-				93ADC0962F0775B800C698D2 /* Exceptions for "TricordarrKit" folder in "TricordarrKit" target */,
-			);
 			path = TricordarrKit;
 			sourceTree = "<group>";
 		};
@@ -254,6 +221,7 @@
 		93690EF02EAB266C00CA8914 /* NativeTricordarrModule */ = {
 			isa = PBXGroup;
 			children = (
+				9394DAB82F077F9E000B2338 /* Helpers */,
 				93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */,
 				93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */,
 				93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */,
@@ -302,6 +270,9 @@
 			dependencies = (
 				93ADC0042F074E0700C698D2 /* PBXTargetDependency */,
 				93ADC0802F07749D00C698D2 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				9394DAB82F077F9E000B2338 /* Helpers */,
 			);
 			name = Tricordarr;
 			productName = Tricordarr;
@@ -791,6 +762,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 67V85M2YSV;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LocalPushExtension/Info.plist;
@@ -840,6 +812,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 67V85M2YSV;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LocalPushExtension/Info.plist;
@@ -914,7 +887,8 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_INSTALL_MODULE = YES;
-				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -969,7 +943,8 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_INSTALL_MODULE = YES;
-				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";

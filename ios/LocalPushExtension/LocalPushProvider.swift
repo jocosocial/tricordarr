@@ -9,7 +9,7 @@
 import os
 import Foundation
 import NetworkExtension
-//import TricordarrKit
+import TricordarrKit
 
 //
 //  TricordarrLocalPushProvider.swift
@@ -22,73 +22,71 @@ import NetworkExtension
 /// https://developer.apple.com/documentation/technologyoverviews/app-extensions
 ///
 class LocalPushProvider: NEAppPushProvider {
-  static let logger = Logger(
-    subsystem: Bundle.main.bundleIdentifier ?? "com.grantcohoe.unknown",
-    category: "App"
-  )
+  var websocketNotifier = WebsocketNotifier()
+  let logger = Logging.getLogger("LocalPushProvider")
 
 	override init() {
 		super.init()
-    LocalPushProvider.logger.log("[LocalPushProvider.swift] init() - Extension initialized")
+    logger.log("[LocalPushProvider.swift] init() - Extension initialized")
 //		websocketNotifier.pushProvider = self
-    LocalPushProvider.logger.log("[LocalPushProvider.swift] init() - WebsocketNotifier configured with pushProvider")
+    logger.log("[LocalPushProvider.swift] init() - WebsocketNotifier configured with pushProvider")
 	}
 
 	override func start() {
-    LocalPushProvider.logger.log("[LocalPushProvider.swift] start() called - Extension starting")
+    logger.log("[LocalPushProvider.swift] start() called - Extension starting")
 		
 		// Log provider configuration if available
 		if let config = providerConfiguration {
-      LocalPushProvider.logger.log(
+      logger.log(
 				"[LocalPushProvider.swift] Provider configuration available with \(config.count, privacy: .public) keys"
 			)
 			if let twitarrURL = config["twitarrURL"] as? String {
-        LocalPushProvider.logger.log(
+        logger.log(
 					"[LocalPushProvider.swift] twitarrURL from config: \(twitarrURL, privacy: .private)"
 				)
 			} else {
-        LocalPushProvider.logger.error("[LocalPushProvider.swift] twitarrURL not found in provider configuration")
+        logger.error("[LocalPushProvider.swift] twitarrURL not found in provider configuration")
 			}
 			if let token = config["token"] as? String {
-        LocalPushProvider.logger.log(
+        logger.log(
 					"[LocalPushProvider.swift] token from config: \(token.isEmpty ? "empty" : "present", privacy: .public)"
 				)
 			} else {
-        LocalPushProvider.logger.error("[LocalPushProvider.swift] token not found in provider configuration")
+        logger.error("[LocalPushProvider.swift] token not found in provider configuration")
 			}
 		} else {
-      LocalPushProvider.logger.error("[LocalPushProvider.swift] Provider configuration is nil")
+      logger.error("[LocalPushProvider.swift] Provider configuration is nil")
 		}
 		
 		// Update config and start
-    LocalPushProvider.logger.log("[LocalPushProvider.swift] Calling websocketNotifier.updateConfig()")
+    logger.log("[LocalPushProvider.swift] Calling websocketNotifier.updateConfig()")
 //		websocketNotifier.updateConfig()
-    LocalPushProvider.logger.log("[LocalPushProvider.swift] Calling websocketNotifier.start()")
+    logger.log("[LocalPushProvider.swift] Calling websocketNotifier.start()")
 //		websocketNotifier.start()
-    LocalPushProvider.logger.log("[LocalPushProvider.swift] start() completed")
+    logger.log("[LocalPushProvider.swift] start() completed")
 	}
 
 	override func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-    LocalPushProvider.logger.log(
+    logger.log(
 			"[LocalPushProvider.swift] stop() called with reason: \(reason.rawValue, privacy: .public)"
 		)
 //		websocketNotifier.stop(with: reason, completionHandler: completionHandler)
 	}
 
 	override func handleTimerEvent() {
-    LocalPushProvider.logger.log("[LocalPushProvider.swift] handleTimerEvent")
+    logger.log("[LocalPushProvider.swift] handleTimerEvent")
 //		websocketNotifier.handleTimerEvent()
 	}
 
 	// NEProvider override
 	override func sleep(completionHandler: @escaping () -> Void) {
-    LocalPushProvider.logger.log("[LocalPushProvider.swift] sleep")
+    logger.log("[LocalPushProvider.swift] sleep")
 		// Add code here to get ready to sleep.
 		completionHandler()
 	}
 
 	// NEProvider override
 	override func wake() {
-    LocalPushProvider.logger.log("[LocalPushProvider.swift] wake")
+    logger.log("[LocalPushProvider.swift] wake")
 	}
 }

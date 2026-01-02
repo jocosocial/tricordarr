@@ -17,8 +17,8 @@ import UserNotifications
 /// The Kraken implementation has a `processNotifications(_)` function that reloads data from the API if certain notifications are showing.
 /// Tricordarr does not need this since any data refetches are handled by React Query and/or the NotificationDataPoller/NotificationDataListener
 /// components on the JavaScript side.
-@objc class Notifications: NSObject, UNUserNotificationCenterDelegate {
-	static let shared = Notifications()
+@objc public class Notifications: NSObject, UNUserNotificationCenterDelegate {
+	public static let shared = Notifications()
 
 	/// The pushManager is the instance that handles the local push provider.
 	@objc dynamic var backgroundPushManager: NEAppPushManager?
@@ -85,7 +85,7 @@ import UserNotifications
 	
 	 - Returns: Dictionary with keys: "isActive" (Bool or NSNull), "isEnabled" (Bool or NSNull), "matchSSIDs" ([String] as NSArray)
 	 */
-	@objc static func getBackgroundPushManagerStatusDictionary() -> [String: Any] {
+	@objc public static func getBackgroundPushManagerStatusDictionary() -> [String: Any] {
 		return getBackgroundPushManagerStatus().asDictionary
 	}
 
@@ -148,7 +148,7 @@ import UserNotifications
 	 If it's shown to the user (over our app's UI--we're in the FG) and the user taps it, the
 	 `userNotificationCenter(_:didReceive:withCompletionHandler)` below is called instead.
 	 */
-	func userNotificationCenter(
+	public func userNotificationCenter(
 		_ center: UNUserNotificationCenter,
 		willPresent notification: UNNotification,
 		withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
@@ -160,7 +160,7 @@ import UserNotifications
 	 Process displaying notifications as the app comes into the foreground. Often this will do nothing, but if the user has a ton of old
 	 notifications then it will clear them out automatically. Called in `AppDelegate.swift`.
 	 */
-	static func appForegrounded() {
+	public static func appForegrounded() {
 		let center = UNUserNotificationCenter.current()
 		center.getDeliveredNotifications { notifications in
 			// Remove older notifications; keep ones that are within 10 minutes of delivery (during this time,
@@ -176,7 +176,7 @@ import UserNotifications
 	/**
 	 Called when the user taps a notification, whether the notification is displayed while the app running or not.
 	 */
-	func userNotificationCenter(
+	public func userNotificationCenter(
 		_ center: UNUserNotificationCenter,
 		didReceive response: UNNotificationResponse,
 		withCompletionHandler completionHandler: @escaping () -> Void

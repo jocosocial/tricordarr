@@ -9,6 +9,7 @@
 #import "Tricordarr-Swift.h"
 #import <React/RCTBridge.h>
 #import <UserNotifications/UserNotifications.h>
+#import <TricordarrKit/TricordarrKit-Swift.h>
 
 @implementation RCTNativeTricordarrModule
 

@@ -9,7 +9,7 @@ import Foundation
 import NetworkExtension
 import os
 
-@objc class WebsocketNotifier: NSObject {
+public class WebsocketNotifier: NSObject {
   var pushProvider: NEAppPushProvider?  // NULL if notifier is being used in-app @TODO LocalPushProvider
 	var session: URLSession?
 	@objc dynamic var socket: URLSessionWebSocketTask?
@@ -25,7 +25,7 @@ import os
 	private var serverURL: URL?
 	private var token: String?
 
-	init(isInApp: Bool = false) {
+	public init(isInApp: Bool = false) {
 		self.isInApp = isInApp
 		super.init()
 		debugAddr = Unmanaged.passUnretained(self).toOpaque().debugDescription
@@ -444,7 +444,7 @@ import os
 
 // Delegate methods for the session itself
 extension WebsocketNotifier: URLSessionDelegate {
-	func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+	public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
 		logger.log("[WebsocketNotifier.swift] Session went invalid because: \(error, privacy: .public)")
 		self.session = nil
 	}
@@ -484,13 +484,13 @@ extension WebsocketNotifier: URLSessionTaskDelegate {
 
 /// Delegate methods for WebSocket tasks
 extension WebsocketNotifier: URLSessionWebSocketDelegate {
-	func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol: String?) {
+	public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol: String?) {
 		logger.log(
 			"[WebsocketNotifier.swift] Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public)"
 		)
 	}
 
-	func urlSession(
+	public func urlSession(
 		_ session: URLSession,
 		webSocketTask: URLSessionWebSocketTask,
 		didCloseWith: URLSessionWebSocketTask.CloseCode,

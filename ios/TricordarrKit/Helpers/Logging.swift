@@ -10,7 +10,7 @@ import os
 
 /// Common logging components.
 public final class Logging {
-	static let logger = Logger(
+	public static let logger = Logger(
 		subsystem: Bundle.main.bundleIdentifier ?? "com.grantcohoe.unknown",
 		category: "App"
 	)
