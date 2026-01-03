@@ -9,6 +9,7 @@ import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -18,6 +19,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
   const {oobeCompleted, appConfig} = useConfig();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
+  const {hasShutternaut, hasShutternautManager} = useRoles();
   const {data: userNotificationData} = useUserNotificationDataQuery({
     enabled: oobeCompleted && !appConfig.preRegistrationMode,
   });
@@ -200,6 +202,20 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.webview}
                 onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}`)}
               />
+              {hasShutternaut && (
+                <PaperDrawer.Item
+                  label={'Shutternaut Calendar'}
+                  icon={AppIcons.shutternaut}
+                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/dayplanner/shutternauts`)}
+                />
+              )}
+              {hasShutternautManager && (
+                <PaperDrawer.Item
+                  label={'Manage Shutternauts'}
+                  icon={AppIcons.shutternaut}
+                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/userrole/shutternaut/manage`)}
+                />
+              )}
               {hasModerator && (
                 <PaperDrawer.Item
                   label={'Moderator Actions'}

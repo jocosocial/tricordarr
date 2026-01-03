@@ -123,6 +123,7 @@ export type CommonStackParamList = {
   SiteUIScreen: {
     resource?: string;
     id?: string;
+    action?: string;
     timestamp?: string;
     moderate?: boolean;
     admin?: boolean;

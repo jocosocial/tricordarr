@@ -32,7 +32,7 @@ export const allRoutes: RouteDefinition[] = [
   {screen: CommonStackComponents.aboutTricordarrScreen, path: 'about-app'},
   {screen: CommonStackComponents.aboutTwitarrScreen, path: 'about'},
   {screen: MainStackComponents.faqScreen, path: 'faq'},
-  {screen: CommonStackComponents.siteUIScreen, path: 'twitarrtab/:timestamp?/:resource?/:id?'},
+  {screen: CommonStackComponents.siteUIScreen, path: 'twitarrtab/:timestamp?/:resource?/:id?/:action?'},
   {screen: MainStackComponents.userDirectoryScreen, path: 'users'},
   {screen: MainStackComponents.conductScreen, path: 'codeOfConduct'},
   {screen: MainStackComponents.dailyThemesScreen, path: 'dailyThemes'},
