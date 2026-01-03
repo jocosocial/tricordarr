@@ -10,4 +10,5 @@ export interface Session {
   tokenData: TokenStringData | null;
   createdAt: string; // ISO date string
   lastUsedAt: string; // ISO date string
+  oobeCompletedVersion?: number;
 }

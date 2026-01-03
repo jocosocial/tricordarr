@@ -57,7 +57,6 @@ export interface AppConfig {
   pushNotifications: PushNotificationConfig;
   fgsWorkerHealthTimer: number;
   oobeExpectedVersion: number;
-  oobeCompletedVersion: number;
   enableDeveloperOptions: boolean;
   enableExperiments: boolean;
   cruiseStartDate: Date;
@@ -112,7 +111,6 @@ export const defaultAppConfig: AppConfig = {
     lfgCanceled: true,
   },
   fgsWorkerHealthTimer: 20000, // 20000 == 20 seconds
-  oobeCompletedVersion: 0,
   oobeExpectedVersion: 3,
   enableDeveloperOptions: false,
   cruiseStartDate: new Date(2023, 3, 5),
@@ -175,11 +173,6 @@ export const getAppConfig = async () => {
   appConfig.cruiseStartDate = new Date(appConfig.cruiseStartDate);
   if (appConfig.muteNotifications) {
     appConfig.muteNotifications = new Date(appConfig.muteNotifications);
-  }
-
-  // If you haven't completed OOBE then you can't be in pre-registration mode
-  if (appConfig.oobeCompletedVersion !== appConfig.oobeExpectedVersion) {
-    appConfig.preRegistrationMode = false;
   }
 
   // "Migration"

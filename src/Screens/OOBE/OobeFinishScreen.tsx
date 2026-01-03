@@ -7,6 +7,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
@@ -19,6 +20,7 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinish
 
 export const OobeFinishScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
+  const {oobeFinish} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {data: userNotificationData} = useUserNotificationDataQuery({
     enabled: !preRegistrationMode,
@@ -26,13 +28,15 @@ export const OobeFinishScreen = ({navigation}: Props) => {
   const rootNavigation = useRootStack();
 
   const onFinish = async () => {
-    updateAppConfig({
-      ...appConfig,
-      oobeCompletedVersion: appConfig.oobeExpectedVersion,
-      // Hopefully this is set by the time we get here?
-      // @TODO replace this with the new api endpoint that gowtam wrote the other night.
-      ...(userNotificationData?.shipWifiSSID ? {wifiNetworkNames: [userNotificationData.shipWifiSSID]} : {}),
-    });
+    oobeFinish();
+    // Hopefully this is set by the time we get here?
+    // @TODO replace this with the new api endpoint that gowtam wrote the other night.
+    if (userNotificationData?.shipWifiSSID) {
+      updateAppConfig({
+        ...appConfig,
+        wifiNetworkNames: [userNotificationData.shipWifiSSID],
+      });
+    }
     if (!preRegistrationMode) {
       startPushProvider();
     }

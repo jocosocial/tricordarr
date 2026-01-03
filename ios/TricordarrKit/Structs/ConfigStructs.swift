@@ -59,7 +59,6 @@ struct AppConfigData: Codable {
 	var pushNotifications: [NotificationTypeData: Bool]
 	var fgsWorkerHealthTimer: Int
 	var oobeExpectedVersion: Int
-	var oobeCompletedVersion: Int
 	var enableDeveloperOptions: Bool
 	var enableExperiments: Bool
 	var cruiseStartDate: String  // Stored as ISO8601 string, will be converted to Date on read
@@ -82,7 +81,7 @@ struct AppConfigData: Codable {
 	enum CodingKeys: String, CodingKey {
 		case serverUrl, urlPrefix, enableBackgroundWorker, notificationPollInterval
 		case enableNotificationPolling, enableNotificationSocket, enableFezSocket
-		case pushNotifications, fgsWorkerHealthTimer, oobeExpectedVersion, oobeCompletedVersion
+		case pushNotifications, fgsWorkerHealthTimer, oobeExpectedVersion
 		case enableDeveloperOptions, enableExperiments, cruiseStartDate, cruiseLength
 		case schedule, portTimeZoneID, apiClientConfig, enableEasterEgg
 		case accessibility, muteNotifications, skipThumbnails, schedBaseUrl
@@ -103,7 +102,6 @@ struct AppConfigData: Codable {
 		enableFezSocket = try container.decode(Bool.self, forKey: .enableFezSocket)
 		fgsWorkerHealthTimer = try container.decode(Int.self, forKey: .fgsWorkerHealthTimer)
 		oobeExpectedVersion = try container.decode(Int.self, forKey: .oobeExpectedVersion)
-		oobeCompletedVersion = try container.decode(Int.self, forKey: .oobeCompletedVersion)
 		enableDeveloperOptions = try container.decode(Bool.self, forKey: .enableDeveloperOptions)
 		enableExperiments = try container.decode(Bool.self, forKey: .enableExperiments)
 		cruiseStartDate = try container.decode(String.self, forKey: .cruiseStartDate)
@@ -146,7 +144,6 @@ struct AppConfigData: Codable {
 		try container.encode(enableFezSocket, forKey: .enableFezSocket)
 		try container.encode(fgsWorkerHealthTimer, forKey: .fgsWorkerHealthTimer)
 		try container.encode(oobeExpectedVersion, forKey: .oobeExpectedVersion)
-		try container.encode(oobeCompletedVersion, forKey: .oobeCompletedVersion)
 		try container.encode(enableDeveloperOptions, forKey: .enableDeveloperOptions)
 		try container.encode(enableExperiments, forKey: .enableExperiments)
 		try container.encode(cruiseStartDate, forKey: .cruiseStartDate)
