@@ -7,7 +7,7 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {NumberValidation} from '#src/Libraries/ValidationSchema';
+import {SignedIntegerValidation} from '#src/Libraries/ValidationSchema';
 import {TimeSettingsFormValues} from '#src/Types/FormValues';
 
 interface TimeSettingsFormProps {
@@ -16,7 +16,7 @@ interface TimeSettingsFormProps {
 }
 
 const validationSchema = Yup.object().shape({
-  manualTimeOffset: NumberValidation,
+  manualTimeOffset: SignedIntegerValidation,
 });
 
 export const TimeSettingsForm = (props: TimeSettingsFormProps) => {
