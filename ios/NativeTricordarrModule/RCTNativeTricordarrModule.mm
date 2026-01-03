@@ -58,4 +58,8 @@
   resolve(status);
 }
 
+- (void)clearLocalPushManager {
+  [Notifications clearSettings];
+}
+
 @end

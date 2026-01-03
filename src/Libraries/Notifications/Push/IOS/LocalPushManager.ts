@@ -40,3 +40,13 @@ export const stopLocalPushManager = async () => {
   // @TODO should we make a dedicated stop function?
   NativeTricordarrModule.setupLocalPushManager(socketUrl, token, false);
 };
+
+/**
+ * Clear all stored notification settings and stop all providers.
+ * Provides a clean slate by clearing stored socket URL, token, disabling the background push manager,
+ * and stopping/clearing the foreground push provider.
+ */
+export const clearLocalPushManager = () => {
+  console.log('[LocalPushManager.ts] Clearing local push manager.');
+  NativeTricordarrModule.clearLocalPushManager();
+};
