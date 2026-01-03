@@ -18,10 +18,10 @@ import {TodayNextAppointmentView} from '#src/Components/Views/Today/TodayNextApp
 import {TodayThemeView} from '#src/Components/Views/Today/TodayThemeView';
 import {TodayTimezoneWarningView} from '#src/Components/Views/Today/TodayTimezoneWarningView';
 import {TodayAppUpdateView} from '#src/Components/Views/TodayAppUpdateView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
@@ -43,7 +43,7 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchFavorites} = useUserFavoritesQuery({enabled: false});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
-  const {isLoggedIn} = useAuth();
+  const {isLoggedIn} = useSession();
   const {hasModerator} = usePrivilege();
   const {preRegistrationMode} = usePreRegistration();
   const [refreshing, setRefreshing] = useState(false);

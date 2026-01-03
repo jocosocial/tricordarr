@@ -5,6 +5,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {EnableUserNotificationContext} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 
 /**
  * "User Notifications" means both:
@@ -13,7 +14,8 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
  */
 export const EnableUserNotificationProvider = ({children}: PropsWithChildren) => {
   const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);
-  const {isLoading, isLoggedIn} = useAuth();
+  const {isLoading} = useAuth();
+  const {isLoggedIn} = useSession();
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
   const {oobeCompleted} = useOobe();

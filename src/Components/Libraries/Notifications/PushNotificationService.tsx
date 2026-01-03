@@ -2,6 +2,7 @@ import {useEffect} from 'react';
 
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
 
 /**
@@ -16,7 +17,8 @@ import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/
  */
 export const PushNotificationService = () => {
   const {enableUserNotifications} = useEnableUserNotification();
-  const {isLoggedIn, isLoading} = useAuth();
+  const {isLoading} = useAuth();
+  const {isLoggedIn} = useSession();
 
   useEffect(() => {
     console.log(

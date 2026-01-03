@@ -2,6 +2,7 @@ import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 /**
@@ -9,7 +10,8 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
  * magic is done through React Query.
  */
 export const NotificationDataPoller = () => {
-  const {isLoggedIn, isLoading} = useAuth();
+  const {isLoggedIn} = useSession();
+  const {isLoading} = useAuth();
   const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();

@@ -16,10 +16,10 @@ import {ErrorResponse} from '#src/Structs/ControllerStructs';
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
-  const {currentSession} = useSession();
+  const {currentSession, isLoggedIn} = useSession();
   const [errorCount, setErrorCount] = useState(0);
   const {setSnackbarPayload} = useSnackbar();
-  const {tokenData, isLoggedIn} = useAuth();
+  const {tokenData} = useAuth();
 
   const serverUrl = useMemo(() => {
     if (!currentSession) {

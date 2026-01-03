@@ -14,6 +14,7 @@ export interface SessionContextType {
   deleteSession: (sessionID: string) => Promise<void>;
   updateSessionToken: (sessionID: string, tokenData: TokenStringData | null) => Promise<void>;
   isLoading: boolean;
+  isLoggedIn: boolean;
 }
 
 export const SessionContext = createContext<SessionContextType>({
@@ -31,6 +32,7 @@ export const SessionContext = createContext<SessionContextType>({
   deleteSession: async () => {},
   updateSessionToken: async () => {},
   isLoading: true,
+  isLoggedIn: false,
 });
 
 export const useSession = () => useContext(SessionContext);

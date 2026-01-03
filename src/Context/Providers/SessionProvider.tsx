@@ -47,6 +47,10 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
     return currentSession?.tokenData?.userID || null;
   }, [currentSession]);
 
+  const isLoggedIn = useMemo(() => {
+    return !!currentSession?.tokenData;
+  }, [currentSession]);
+
   const switchSession = useCallback(
     async (sessionID: string) => {
       const session = sessions.find(s => s.sessionID === sessionID);
@@ -181,6 +185,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       deleteSession,
       updateSessionToken,
       isLoading,
+      isLoggedIn,
     }),
     [
       currentSession,
@@ -193,6 +198,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       deleteSession,
       updateSessionToken,
       isLoading,
+      isLoggedIn,
     ],
   );
 

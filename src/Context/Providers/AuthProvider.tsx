@@ -11,7 +11,6 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
     isLoading: true,
     tokenData: null,
   });
-  const isLoggedIn = !!authState.tokenData;
 
   const restoreTokenData = useCallback(async () => {
     if (!currentSession) {
@@ -78,7 +77,6 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
       value={{
         ...authContext,
         tokenData: authState.tokenData,
-        isLoggedIn: isLoggedIn,
         isLoading: isLoading,
       }}>
       {children}

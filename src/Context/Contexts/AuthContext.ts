@@ -7,7 +7,6 @@ interface AuthContextType {
   signOut: (preRegistrationMode?: boolean) => Promise<void>;
   restore: () => Promise<void>;
   tokenData: TokenStringData | null;
-  isLoggedIn: boolean;
   isLoading: boolean;
 }
 

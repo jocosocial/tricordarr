@@ -1,16 +1,16 @@
 import React, {PropsWithChildren, useCallback, useEffect, useState} from 'react';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SocketContext} from '#src/Context/Contexts/SocketContext';
 import {buildWebSocket, OpenFezSocket} from '#src/Libraries/Network/Websockets';
 import {useWebSocketStorageReducer, WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
 
 export const SocketProvider = ({children}: PropsWithChildren) => {
-  const {isLoggedIn} = useAuth();
+  const {isLoggedIn} = useSession();
   const [notificationSocket, setNotificationSocket] = useState<ReconnectingWebSocket>();
   const [fezSockets, dispatchFezSockets] = useWebSocketStorageReducer({});
   const {appConfig} = useConfig();
