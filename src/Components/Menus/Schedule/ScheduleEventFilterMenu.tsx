@@ -30,7 +30,7 @@ export const ScheduleEventFilterMenu = () => {
     setEventShutternautFilter,
   } = useFilter();
   const {oobeCompleted, appConfig} = useConfig();
-  const {hasShutternaut, hasShutternautManager} = useRoles();
+  const {hasShutternaut} = useRoles();
 
   // This also shows joined LFGs, hopefully that's not too surprising
   const handleFavoriteSelection = () => {
@@ -58,6 +58,11 @@ export const ScheduleEventFilterMenu = () => {
     closeMenu();
   };
 
+  /**
+   * This mirrors the implementation on the Site UI of doing the filtering in JS
+   * rather than passing through to the API. Some day we may want to do that. Lets
+   * see how it goes in 2026 first.
+   */
   const handleShutternautFilterSelection = (filterValue: string) => {
     if (eventShutternautFilter === filterValue) {
       setEventShutternautFilter(undefined);

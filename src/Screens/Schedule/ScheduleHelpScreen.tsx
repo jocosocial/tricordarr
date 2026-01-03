@@ -111,6 +111,8 @@ export const ScheduleHelpScreen = () => {
           or remove users later on. If you have already created your personal event you cannot add users later. You'll
           need to create a new personal event and add them at the time of creation.
         </HelpTopicView>
+        <HelpChapterTitleView title={'Shutternauts'} />
+        <HelpTopicView>See the Shutternaut Help (available in the app drawer) for more information.</HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );
