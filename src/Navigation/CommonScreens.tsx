@@ -52,6 +52,7 @@ import {ScheduleImportScreen} from '#src/Screens/Schedule/ScheduleImportScreen';
 import {SchedulePrivateEventsScreen} from '#src/Screens/Schedule/SchedulePrivateEventsScreen';
 import {SeamailAddParticipantScreen} from '#src/Screens/Seamail/SeamailAddParticipantScreen';
 import {SeamailCreateScreen} from '#src/Screens/Seamail/SeamailCreateScreen';
+import {SeamailEditScreen} from '#src/Screens/Seamail/SeamailEditScreen';
 import {SeamailHelpScreen} from '#src/Screens/Seamail/SeamailHelpScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
@@ -176,6 +177,9 @@ export type CommonStackParamList = {
   SeamailAddParticipantScreen: {
     fez: FezData;
   };
+  SeamailEditScreen: {
+    fezID: string;
+  };
   LfgScreen: {
     fezID: string;
   };
@@ -285,6 +289,7 @@ export enum CommonStackComponents {
   seamailChatScreen = 'SeamailChatScreen',
   fezChatDetailsScreen = 'FezChatDetailsScreen',
   seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
+  seamailEditScreen = 'SeamailEditScreen',
   lfgScreen = 'LfgScreen',
   lfgParticipationScreen = 'LfgParticipationScreen',
   lfgAddParticipantScreen = 'LfgAddParticipantScreen',
@@ -454,6 +459,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.seamailAddParticipantScreen}
         component={SeamailAddParticipantScreen}
         options={{title: 'Add Participant'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailEditScreen}
+        component={SeamailEditScreen}
+        options={{title: 'Edit Seamail'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgScreen}
