@@ -1,13 +1,20 @@
+import {useQueryClient} from '@tanstack/react-query';
 import React, {Dispatch, SetStateAction} from 'react';
-import {Menu} from 'react-native-paper';
+import {Divider, Menu} from 'react-native-paper';
 
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {EventData} from '#src/Structs/ControllerStructs';
+import {
+  useEventNeedsPhotographerMutation,
+  useEventPhotographerMutation,
+} from '#src/Queries/Events/EventPhotographerMutations';
+import {EventData, EventData as EventDataType} from '#src/Structs/ControllerStructs';
 
 interface EventCardActionsMenuProps {
   anchor: React.JSX.Element;
@@ -18,6 +25,11 @@ interface EventCardActionsMenuProps {
 }
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const commonNavigation = useCommonStack();
+  const {hasShutternaut, hasShutternautManager} = useRoles();
+  const {commonStyles} = useStyles();
+  const queryClient = useQueryClient();
+  const photographerMutation = useEventPhotographerMutation();
+  const needsPhotographerMutation = useEventNeedsPhotographerMutation();
 
   const closeMenu = () => props.setMenuVisible(false);
 
@@ -28,6 +40,48 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
         forumID: props.eventData.forum,
       });
     }
+  };
+
+  const handlePhotographerToggle = () => {
+    if (!props.eventData.shutternautData) {
+      return;
+    }
+    photographerMutation.mutate(
+      {
+        eventID: props.eventData.eventID,
+        action: props.eventData.shutternautData.userIsPhotographer ? 'delete' : 'create',
+      },
+      {
+        onSuccess: async () => {
+          const invalidations = EventDataType.getCacheKeys(props.eventData.eventID)
+            .concat([['/events']])
+            .map(key => queryClient.invalidateQueries({queryKey: key}));
+          await Promise.all(invalidations);
+        },
+      },
+    );
+    closeMenu();
+  };
+
+  const handleNeedsPhotographerToggle = () => {
+    if (!props.eventData.shutternautData) {
+      return;
+    }
+    needsPhotographerMutation.mutate(
+      {
+        eventID: props.eventData.eventID,
+        action: props.eventData.shutternautData.needsPhotographer ? 'delete' : 'create',
+      },
+      {
+        onSuccess: async () => {
+          const invalidations = EventDataType.getCacheKeys(props.eventData.eventID).map(key =>
+            queryClient.invalidateQueries({queryKey: key}),
+          );
+          await Promise.all(invalidations);
+        },
+      },
+    );
+    closeMenu();
   };
 
   return (
@@ -47,6 +101,23 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
       {props.eventData.forum && <Menu.Item title={'Forum'} leadingIcon={AppIcons.forum} onPress={handleForumPress} />}
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.eventData.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.eventData} />
+      {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
+      {hasShutternaut && props.eventData.shutternautData && (
+        <Menu.Item
+          title={'Photographing'}
+          leadingIcon={AppIcons.shutternaut}
+          onPress={handlePhotographerToggle}
+          style={props.eventData.shutternautData.userIsPhotographer ? commonStyles.surfaceVariant : undefined}
+        />
+      )}
+      {hasShutternautManager && props.eventData.shutternautData && (
+        <Menu.Item
+          title={'Needs Photographer'}
+          leadingIcon={AppIcons.shutternautManager}
+          onPress={handleNeedsPhotographerToggle}
+          style={props.eventData.shutternautData.needsPhotographer ? commonStyles.surfaceVariant : undefined}
+        />
+      )}
     </Menu>
   );
 };

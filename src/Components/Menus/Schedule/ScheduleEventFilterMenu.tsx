@@ -6,6 +6,7 @@ import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -25,8 +26,11 @@ export const ScheduleEventFilterMenu = () => {
     setEventLfgOwnedFilter,
     eventLfgOpenFilter,
     setEventLfgOpenFilter,
+    eventShutternautFilter,
+    setEventShutternautFilter,
   } = useFilter();
   const {oobeCompleted, appConfig} = useConfig();
+  const {hasShutternaut, hasShutternautManager} = useRoles();
 
   // This also shows joined LFGs, hopefully that's not too surprising
   const handleFavoriteSelection = () => {
@@ -54,6 +58,15 @@ export const ScheduleEventFilterMenu = () => {
     closeMenu();
   };
 
+  const handleShutternautFilterSelection = (filterValue: string) => {
+    if (eventShutternautFilter === filterValue) {
+      setEventShutternautFilter(undefined);
+    } else {
+      setEventShutternautFilter(filterValue);
+    }
+    closeMenu();
+  };
+
   const handleFilterSelection = (newEventTypeFilter: string) => {
     if (newEventTypeFilter === eventTypeFilter) {
       setEventTypeFilter('');
@@ -70,6 +83,7 @@ export const ScheduleEventFilterMenu = () => {
     setEventLfgOwnedFilter(false);
     setEventLfgOpenFilter(false);
     setEventPersonalFilter(false);
+    setEventShutternautFilter(undefined);
   };
 
   const anyActiveFilter =
@@ -78,7 +92,8 @@ export const ScheduleEventFilterMenu = () => {
     eventPersonalFilter ||
     eventLfgJoinedFilter ||
     eventLfgOwnedFilter ||
-    eventLfgOpenFilter;
+    eventLfgOpenFilter ||
+    eventShutternautFilter !== undefined;
 
   const menuAnchor = (
     <MenuAnchor
@@ -130,6 +145,36 @@ export const ScheduleEventFilterMenu = () => {
           selected={eventLfgOpenFilter}
           disabled={!oobeCompleted}
         />
+      )}
+      {hasShutternaut && (
+        <>
+          <Divider bold={true} />
+          <SelectableMenuItem
+            title={'No Photographer'}
+            onPress={() => handleShutternautFilterSelection('nophotographer')}
+            selected={eventShutternautFilter === 'nophotographer'}
+          />
+          <SelectableMenuItem
+            title={"I'm Photographing"}
+            onPress={() => handleShutternautFilterSelection('imphotographer')}
+            selected={eventShutternautFilter === 'imphotographer'}
+          />
+        </>
+      )}
+      {hasShutternautManager && (
+        <>
+          <Divider bold={true} />
+          <SelectableMenuItem
+            title={'Needs Photographer'}
+            onPress={() => handleShutternautFilterSelection('needsPhotographer')}
+            selected={eventShutternautFilter === 'needsPhotographer'}
+          />
+          <SelectableMenuItem
+            title={'Has Photographer'}
+            onPress={() => handleShutternautFilterSelection('hasphotographer')}
+            selected={eventShutternautFilter === 'hasphotographer'}
+          />
+        </>
       )}
     </AppMenu>
   );
