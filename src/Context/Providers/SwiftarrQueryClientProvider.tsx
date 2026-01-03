@@ -6,6 +6,7 @@ import DeviceInfo from 'react-native-device-info';
 
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrQueryClientContext} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -13,7 +14,8 @@ import {BadResponseFormatError, createQueryClient, createSessionPersister} from 
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
-  const {appConfig, oobeCompleted} = useConfig();
+  const {appConfig} = useConfig();
+  const {oobeCompleted} = useOobe();
   const {currentSession} = useSession();
   const [errorCount, setErrorCount] = useState(0);
   const {setSnackbarPayload} = useSnackbar();

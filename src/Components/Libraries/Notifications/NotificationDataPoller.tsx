@@ -1,5 +1,6 @@
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
@@ -9,7 +10,8 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
  */
 export const NotificationDataPoller = () => {
   const {isLoggedIn, isLoading} = useAuth();
-  const {appConfig, oobeCompleted} = useConfig();
+  const {appConfig} = useConfig();
+  const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const enablePolling =
     oobeCompleted &&

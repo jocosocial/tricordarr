@@ -3,12 +3,14 @@ import React, {PropsWithChildren} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {CruiseContext} from '#src/Context/Contexts/CruiseContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import useDateTime, {getCruiseDay, getCruiseDays} from '#src/Libraries/DateTime';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 export const CruiseProvider = ({children}: PropsWithChildren) => {
-  const {appConfig, oobeCompleted} = useConfig();
+  const {appConfig} = useConfig();
+  const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   // The hourlyUpdatingDate is a Date that will trigger a state refresh every hour on the hour.
   const hourlyUpdatingDate = useDateTime('hour');

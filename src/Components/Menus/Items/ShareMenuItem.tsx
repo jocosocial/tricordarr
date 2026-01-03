@@ -3,6 +3,7 @@ import React from 'react';
 import {Menu} from 'react-native-paper';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -15,7 +16,8 @@ interface ShareMenuItemProps {
 }
 
 export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItemProps) => {
-  const {appConfig, oobeCompleted} = useConfig();
+  const {appConfig} = useConfig();
+  const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {serverUrl} = useSwiftarrQueryClient();
 

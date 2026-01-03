@@ -3,6 +3,7 @@ import React, {PropsWithChildren, useEffect, useState} from 'react';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {EnableUserNotificationContext} from '#src/Context/Contexts/EnableUserNotificationContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 
 /**
@@ -15,7 +16,7 @@ export const EnableUserNotificationProvider = ({children}: PropsWithChildren) =>
   const {isLoading, isLoggedIn} = useAuth();
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
-  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
+  const {oobeCompleted} = useOobe();
 
   /**
    * Once the app has "started", figure out if we should enable the background worker.

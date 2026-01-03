@@ -6,6 +6,7 @@ import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
@@ -29,7 +30,8 @@ export const ScheduleEventFilterMenu = () => {
     eventShutternautFilter,
     setEventShutternautFilter,
   } = useFilter();
-  const {oobeCompleted, appConfig} = useConfig();
+  const {appConfig} = useConfig();
+  const {oobeCompleted} = useOobe();
   const {hasShutternaut} = useRoles();
 
   // This also shows joined LFGs, hopefully that's not too surprising

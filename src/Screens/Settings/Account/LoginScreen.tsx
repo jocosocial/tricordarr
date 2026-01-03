@@ -10,6 +10,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -22,7 +23,8 @@ export const LoginScreen = () => {
   const navigation = useNavigation();
   const loginMutation = useLoginMutation();
   const {signIn} = useAuth();
-  const {appConfig, oobeCompleted} = useConfig();
+  const {appConfig} = useConfig();
+  const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {serverUrl} = useSwiftarrQueryClient();
   const {updateClientSettings} = useClientSettings();

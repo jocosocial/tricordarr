@@ -32,6 +32,7 @@ import {NavigationProvider} from '#src/Context/Providers/NavigationProvider';
 import {PermissionsProvider} from '#src/Context/Providers/PermissionsProvider';
 import {PrivilegeProvider} from '#src/Context/Providers/PrivilegeProvider';
 import {RoleProvider} from '#src/Context/Providers/RoleProvider';
+import {OobeProvider} from '#src/Context/Providers/OobeProvider';
 import {PreRegistrationProvider} from '#src/Context/Providers/PreRegistrationProvider';
 import {SessionProvider} from '#src/Context/Providers/SessionProvider';
 import {ShellProvider} from '#src/Context/Providers/ShellProvider';
@@ -107,8 +108,9 @@ function App(): React.JSX.Element {
       <GestureHandlerRootView>
         <ConfigProvider>
           <SessionProvider>
-            <PreRegistrationProvider>
-              <PermissionsProvider>
+            <OobeProvider>
+              <PreRegistrationProvider>
+                <PermissionsProvider>
               <ThemeProvider>
                 <NavigationProvider>
                   <KeyboardProvider>
@@ -155,8 +157,9 @@ function App(): React.JSX.Element {
                   </KeyboardProvider>
                 </NavigationProvider>
               </ThemeProvider>
-            </PermissionsProvider>
-            </PreRegistrationProvider>
+                </PermissionsProvider>
+              </PreRegistrationProvider>
+            </OobeProvider>
           </SessionProvider>
         </ConfigProvider>
       </GestureHandlerRootView>

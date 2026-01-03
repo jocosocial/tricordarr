@@ -3,6 +3,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {SocketContext} from '#src/Context/Contexts/SocketContext';
 import {buildWebSocket, OpenFezSocket} from '#src/Libraries/Network/Websockets';
@@ -14,7 +15,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
   const [fezSockets, dispatchFezSockets] = useWebSocketStorageReducer({});
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
-  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
+  const {oobeCompleted} = useOobe();
 
   // Socket Open
 

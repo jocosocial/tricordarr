@@ -56,14 +56,11 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
     return null;
   }
 
-  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
-
   return (
     <ConfigContext.Provider
       value={{
         appConfig,
         updateAppConfig,
-        oobeCompleted,
       }}>
       {children}
     </ConfigContext.Provider>
