@@ -1,7 +1,8 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Keyboard, RefreshControl, View} from 'react-native';
+import {Keyboard, View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
@@ -114,7 +115,7 @@ export const ForumThreadSearchBar = (props: Props) => {
       <View style={[commonStyles.flex]}>
         <ForumThreadList
           refreshControl={
-            <RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
+            <AppRefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
           }
           forumListData={forumList}
           handleLoadNext={handleLoadNext}

@@ -1,10 +1,11 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {UserFindSearchBar} from '#src/Components/Search/UserSearchBar/UserFindSearchBar';
@@ -101,7 +102,7 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         refreshControl={
-          <RefreshControl refreshing={isFetching || userFavoriteMutation.isPending} onRefresh={refetch} />
+          <AppRefreshControl refreshing={isFetching || userFavoriteMutation.isPending} onRefresh={refetch} />
         }>
         <PaddedContentView>
           <Text>

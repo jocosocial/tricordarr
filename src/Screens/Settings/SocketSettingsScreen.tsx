@@ -1,8 +1,9 @@
 import {Formik} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -52,7 +53,7 @@ export const SocketSettingsScreen = () => {
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         isStack={true}>
         <Formik initialValues={{}} onSubmit={() => {}}>
           <View>

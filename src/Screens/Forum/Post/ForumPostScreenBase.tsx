@@ -1,9 +1,10 @@
 import {FlashListRef} from '@shopify/flash-list';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {AppView} from '#src/Components/Views/AppView';
@@ -102,7 +103,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
       <ForumPostList
         listRef={flatListRef}
         postList={forumPosts}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         handleLoadNext={handleLoadNext}
         itemSeparator={'time'}
         enableShowInThread={true}

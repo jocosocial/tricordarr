@@ -1,6 +1,6 @@
 import React from 'react';
-import {RefreshControl} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DailyThemeCard} from '#src/Components/Cards/MainScreen/DailyThemeCard';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -34,7 +34,7 @@ const DailyThemesScreenInner = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
+        refreshControl={<AppRefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
         <PaddedContentView padSides={false}>
           <ListTitleView title={`Today is day #${cruiseDayIndex}`} />
         </PaddedContentView>

@@ -1,9 +1,9 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
-import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -60,7 +60,7 @@ const LfgAddParticipantScreenInner = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={participantMutation.isPending} />}>
+      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={participantMutation.isPending} />}>
         <PaddedContentView>
           <Text>
             Don't just add random people to your {FezType.getChatTypeString(route.params.fezType)}. It's not nice.

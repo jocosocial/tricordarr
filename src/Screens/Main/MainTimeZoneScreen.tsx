@@ -1,11 +1,12 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import moment from 'moment-timezone';
 import React, {useCallback, useEffect} from 'react';
-import {Linking, RefreshControl, View} from 'react-native';
+import {Linking, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -76,7 +77,7 @@ const TimeZoneScreen = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refresh} />}>
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refresh} />}>
         <ListSection>
           <ListSubheader>Device Time</ListSubheader>
         </ListSection>

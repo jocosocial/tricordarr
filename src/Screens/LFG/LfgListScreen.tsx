@@ -2,12 +2,13 @@ import {useIsFocused} from '@react-navigation/native';
 import {type FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {LfgFAB} from '#src/Components/Buttons/FloatingActionButtons/LfgFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
 import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
@@ -185,7 +186,7 @@ export const LfgListScreen = ({
             <LFGFlatList
               listRef={listRef}
               items={fezList}
-              refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refetch} />}
+              refreshControl={<AppRefreshControl refreshing={isRefreshing} onRefresh={refetch} />}
               separator={'day'}
               onScrollThreshold={onScrollThreshold}
               handleLoadNext={fetchNextPage}

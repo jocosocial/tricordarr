@@ -2,9 +2,10 @@ import {useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {PhotostreamFAB} from '#src/Components/Buttons/FloatingActionButtons/PhotostreamFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
@@ -142,7 +143,7 @@ const PhotostreamScreenInner = ({navigation}: Props) => {
   if (!streamList || streamList.length === 0) {
     return (
       <AppView>
-        <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <PaddedContentView>
             <Text>There are no photos in the Photo Stream. Press the button below to add one!</Text>
           </PaddedContentView>
@@ -159,7 +160,7 @@ const PhotostreamScreenInner = ({navigation}: Props) => {
         renderItem={renderItem}
         data={streamList}
         onScrollThreshold={onScrollThreshold}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         handleLoadNext={handleLoadNext}
         keyExtractor={keyExtractor}
         renderListFooter={EndResultsFooter}

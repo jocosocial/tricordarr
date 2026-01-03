@@ -1,10 +1,11 @@
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {Item} from 'react-navigation-header-buttons';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
@@ -242,7 +243,7 @@ export const ForumThreadScreenBase = ({
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
         forumData={data.pages[0]}
         hasPreviousPage={hasPreviousPage}
         // maintainViewPosition={maintainViewPosition}

@@ -1,9 +1,10 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {KeywordChip} from '#src/Components/Chips/KeywordChip';
 import {KeywordForm} from '#src/Components/Forms/KeywordForm';
 import {AppView} from '#src/Components/Views/AppView';
@@ -86,7 +87,7 @@ const AlertKeywordsSettingsScreenInner = () => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <Text>Generate an alert/notification whenever new content is made containing these keywords.</Text>
         </PaddedContentView>

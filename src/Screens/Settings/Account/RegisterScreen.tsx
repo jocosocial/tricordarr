@@ -1,9 +1,9 @@
 import {useNavigation} from '@react-navigation/native';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useState} from 'react';
-import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {UserCreateForm} from '#src/Components/Forms/User/UserCreateForm';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -78,7 +78,7 @@ export const RegisterScreen = () => {
   );
 
   return (
-    <ScrollingContentView isStack={true} refreshControl={<RefreshControl enabled={false} refreshing={refreshing} />}>
+    <ScrollingContentView isStack={true} refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} />}>
       <PaddedContentView padTop={true}>
         <Text>
           Your Twitarr registration code was sent to you via e-mail. If you did not receive your registration code or do

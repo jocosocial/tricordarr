@@ -1,7 +1,7 @@
 import {FormikHelpers} from 'formik';
 import React, {useState} from 'react';
-import {RefreshControl} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {CruiseSettingsForm} from '#src/Components/Forms/Settings/CruiseSettingsForm';
 import {PreRegistrationSettingsForm} from '#src/Components/Forms/Settings/PreRegistrationSettingsForm';
@@ -87,7 +87,7 @@ export const CruiseSettingsScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={true} refreshControl={<RefreshControl refreshing={refreshing} enabled={false} />}>
+      <ScrollingContentView isStack={true} refreshControl={<AppRefreshControl refreshing={refreshing} enabled={false} />}>
         <ListSubheader>General</ListSubheader>
         <PaddedContentView padTop={true} padBottom={false}>
           <PrimaryActionButton

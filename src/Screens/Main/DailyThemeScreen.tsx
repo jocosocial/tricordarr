@@ -1,7 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useState} from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -33,7 +34,7 @@ export const DailyThemeScreen = ({route}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ListSection>
           <DataFieldListItem description={route.params.dailyTheme.title} title={'Title'} />
           <DataFieldListItem description={route.params.dailyTheme.info} title={'Info'} />

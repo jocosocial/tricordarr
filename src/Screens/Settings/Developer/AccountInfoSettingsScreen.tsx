@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import {RefreshControl, ScrollView, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -29,7 +30,7 @@ export const AccountInfoSettingsScreen = () => {
 
   return (
     <AppView>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View>
           <ListSubheader>Profile Public Data</ListSubheader>
           <DataFieldListItem title={'UserID'} description={profilePublicData?.header.userID} />

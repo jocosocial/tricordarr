@@ -1,7 +1,7 @@
 import {FlashList} from '@shopify/flash-list';
 import React, {useRef, useState} from 'react';
-import {RefreshControl} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
@@ -40,7 +40,7 @@ export const EventSearchBar = () => {
         listRef={listRef}
         listFooter={<TimeDivider label={'End of Results'} />}
         items={eventList}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} enabled={!!searchQuery} />}
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} enabled={!!searchQuery} />}
         separator={'day'}
       />
     </>

@@ -2,9 +2,10 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PhotostreamImageCreateForm} from '#src/Components/Forms/Photostream/PhotostreamImageCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
@@ -111,7 +112,7 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <PhotostreamImageCreateForm
             locations={locationData.locations}

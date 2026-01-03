@@ -1,7 +1,9 @@
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
@@ -196,7 +198,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ListSection>
           <ListSubheader>About</ListSubheader>
         </ListSection>

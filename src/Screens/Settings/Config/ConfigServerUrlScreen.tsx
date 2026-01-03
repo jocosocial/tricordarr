@@ -3,9 +3,9 @@ import {useQueryClient} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
 import React, {useEffect, useState} from 'react';
-import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ServerUrlSettingForm} from '#src/Components/Forms/Settings/ServerUrlSettingForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -76,7 +76,7 @@ export const ConfigServerUrlScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <PaddedContentView>
           <Text>Do not change this unless instructed to do so by the Twitarr Dev Team or THO.</Text>
         </PaddedContentView>

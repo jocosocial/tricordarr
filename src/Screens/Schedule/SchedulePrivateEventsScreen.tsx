@@ -1,9 +1,10 @@
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SchedulePersonalEventCreateFAB} from '#src/Components/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
@@ -102,7 +103,7 @@ const SchedulePrivateEventsScreenInner = () => {
           <LFGFlatList
             items={items}
             listRef={listRef}
-            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+            refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
             separator={'day'}
             hasNextPage={hasNextPage}
             handleLoadNext={fetchNextPage}

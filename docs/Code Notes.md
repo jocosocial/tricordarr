@@ -75,3 +75,7 @@ https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
 ## Swiftarr API
 
 - All dates from the API come in as ISO8601 strings
+
+## RefreshControl
+
+React Native (as of at least 0.82) `RefreshControl` does not support `enabled` on iOS so we use a wrapper `AppRefreshControl` which returns null (an AI-recommended pattern).

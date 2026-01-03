@@ -1,9 +1,10 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumAlertwordListItem} from '#src/Components/Lists/Items/Forum/ForumAlertwordListItem';
 import {ForumCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumCategoryListItem';
@@ -90,7 +91,7 @@ const ForumCategoriesScreenInner = ({navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         overScroll={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
         <View>
           {data && (
             <ListSection>

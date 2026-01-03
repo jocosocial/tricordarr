@@ -2,8 +2,9 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
@@ -44,7 +45,7 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
       <View style={[commonStyles.flex]}>
         <ForumPostList
           listRef={flatListRef}
-          refreshControl={<RefreshControl refreshing={isFetching || refreshing} onRefresh={refetch} />}
+          refreshControl={<AppRefreshControl refreshing={isFetching || refreshing} onRefresh={refetch} />}
           postList={forumPosts}
           handleLoadNext={handleLoadNext}
           itemSeparator={'time'}

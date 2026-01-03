@@ -1,8 +1,9 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {AppView} from '#src/Components/Views/AppView';
@@ -93,7 +94,7 @@ const BoardgameExpansionsScreenInner = ({navigation, route}: Props) => {
         hasPreviousPage={hasPreviousPage}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
       />
     </AppView>
   );

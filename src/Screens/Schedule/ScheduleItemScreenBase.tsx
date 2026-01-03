@@ -1,8 +1,9 @@
 import pluralize from 'pluralize';
 import React from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Badge, Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPerformerListItem';
 import {EventPhotographerListItem} from '#src/Components/Lists/Items/Event/EventPhotographerListItem';
@@ -111,7 +112,7 @@ export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData
       )}
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {eventData && (
           <PaddedContentView padSides={false}>
             <ListSection>

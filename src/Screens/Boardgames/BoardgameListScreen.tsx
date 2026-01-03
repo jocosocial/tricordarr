@@ -1,8 +1,9 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BoardgameGuideFAB} from '#src/Components/Buttons/FloatingActionButtons/BoardgameGuideFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
@@ -107,7 +108,7 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
         hasPreviousPage={hasPreviousPage}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
       />
       <BoardgameGuideFAB showLabel={true} />
     </AppView>

@@ -1,8 +1,9 @@
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Keyboard, RefreshControl, View} from 'react-native';
+import {Keyboard, View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
@@ -99,7 +100,7 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
         <ForumPostList
           listRef={flatListRef}
           refreshControl={
-            <RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
+            <AppRefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
           }
           postList={forumPosts}
           handleLoadNext={handleLoadNext}

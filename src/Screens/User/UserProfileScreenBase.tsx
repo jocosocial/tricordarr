@@ -1,9 +1,10 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BlockedOrMutedBanner} from '#src/Components/Banners/BlockedOrMutedBanner';
 import {HeaderProfileFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileFavoriteButton';
 import {HeaderProfileSeamailButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileSeamailButton';
@@ -151,7 +152,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = t
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
         {data.message && (
           <PaddedContentView padTop={true} padBottom={false} style={styles.listContentCenter}>

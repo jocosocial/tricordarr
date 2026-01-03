@@ -4,10 +4,11 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {Item} from 'react-navigation-header-buttons';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
@@ -358,7 +359,7 @@ const FezChatScreenInner = ({route}: Props) => {
         scrollButtonPosition={'raised'}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
       />
       <ContentPostForm onSubmit={onSubmit} enablePhotos={false} />
     </AppView>
