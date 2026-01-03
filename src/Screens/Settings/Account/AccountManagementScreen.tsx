@@ -64,7 +64,7 @@ export const AccountManagementScreen = ({navigation}: Props) => {
                 <MinorActionListItem
                   title={'Account Info'}
                   icon={AppIcons.info}
-                  onPress={() => settingsNavigation.push(SettingsStackScreenComponents.userInfoSettingsScreen)}
+                  onPress={() => settingsNavigation.push(SettingsStackScreenComponents.accountInfoSettingsScreen)}
                 />
               </ListSection>
             </>
