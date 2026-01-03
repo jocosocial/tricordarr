@@ -100,25 +100,21 @@ const LfgScreenInner = ({navigation, route}: Props) => {
     }
   }, [data, setLfg]);
 
-  // Expire queries on first load
+  /**
+   * Mark as Read. Even though you may not have "read" it (tapping the Chat screen)
+   * the API considers the GET in this screen as you reading it.
+   * Expire queries only if there are unread messages.
+   * This intentionally does not expire the Fez data query (ie, passing a fezID)
+   * because we want the user to have a chance to notice they have unread messages.
+   */
   useEffect(() => {
-    // const invalidations = FezData.getCacheKeys().map(key => {
-    //   return queryClient.invalidateQueries({queryKey: key});
-    // });
-    Promise.all(UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})));
-  }, [queryClient]);
-
-  // Mark as Read. Even though you may not have "read" it (tapping the Chat screen)
-  // the API considers the GET in this screen as you reading it.
-  // useEffect(() => {
-  //   if (lfg && lfg.members && lfg.members.readCount !== lfg.members.postCount) {
-  //     refetchUserNotificationData();
-  //   }
-  //   // @TODO this is still leaking. Is it?
-  //   if (isFocused) {
-  //     closeFezSocket();
-  //   }
-  // }, [closeFezSocket, lfg, isFocused, refetchUserNotificationData]);
+    if (lfg?.members && lfg.members.postCount > lfg.members.readCount) {
+      Promise.all([
+        ...UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
+        ...FezData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
+      ]);
+    }
+  }, [lfg, queryClient]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
