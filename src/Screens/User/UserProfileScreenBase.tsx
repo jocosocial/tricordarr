@@ -22,7 +22,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {UserProfileAvatar} from '#src/Components/Views/UserProfileAvatar';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
@@ -58,14 +58,14 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = t
   const {refetch: refetchFavorites} = useUserFavoritesQuery();
   const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
   const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
-  const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
 
   const isSelf = data?.header.userID === profilePublicData?.header.userID;
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     let refreshes = [refetch()];
-    if (!appConfig.preRegistrationMode) {
+    if (!preRegistrationMode) {
       refreshes.push(refetchFavorites(), refetchMutes(), refetchBlocks());
     }
     if (isSelf) {
@@ -73,7 +73,15 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = t
     }
     await Promise.all(refreshes);
     setRefreshing(false);
-  }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, isSelf, refetchSelf, appConfig.preRegistrationMode]);
+  }, [
+    refetch,
+    refetchFavorites,
+    refetchMutes,
+    refetchBlocks,
+    isSelf,
+    refetchSelf,
+    preRegistrationMode,
+  ]);
 
   const getNavButtons = useCallback(() => {
     if (data && isSelf) {

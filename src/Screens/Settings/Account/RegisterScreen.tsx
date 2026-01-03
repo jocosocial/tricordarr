@@ -9,8 +9,8 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {UserRecoveryKeyModalView} from '#src/Components/Views/Modals/UserRecoveryKeyModalView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {useUserCreateQuery} from '#src/Queries/User/UserMutations';
 import {LoginFormValues, UserRegistrationFormValues} from '#src/Types/FormValues';
@@ -22,7 +22,7 @@ export const RegisterScreen = () => {
   const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
-  const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
 
   const onPress = useCallback(() => {
     setModalVisible(false);
@@ -44,7 +44,7 @@ export const RegisterScreen = () => {
           };
           loginMutation.mutate(loginValues, {
             onSuccess: response => {
-              signIn(response.data, appConfig.preRegistrationMode).then(() => {
+              signIn(response.data, preRegistrationMode).then(() => {
                 setModalOnDismiss(onDismiss);
                 setModalContent(
                   <UserRecoveryKeyModalView onPress={onPress} userRecoveryKey={userCreateResponse.data.recoveryKey} />,
@@ -73,7 +73,7 @@ export const RegisterScreen = () => {
       setModalOnDismiss,
       setModalVisible,
       signIn,
-      appConfig.preRegistrationMode,
+      preRegistrationMode,
     ],
   );
 

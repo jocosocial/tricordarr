@@ -1,4 +1,4 @@
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {STALE} from '#src/Libraries/Time/Time';
 import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 import {UserNotificationData} from '#src/Structs/ControllerStructs';
@@ -8,10 +8,10 @@ import {UserNotificationData} from '#src/Structs/ControllerStructs';
  * Login not required, but may respond differently if logged in.
  */
 export const useUserNotificationDataQuery = (options: TokenAuthQueryOptionsType<UserNotificationData> = {}) => {
-  const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   return useTokenAuthQuery<UserNotificationData>('/notification/global', {
     staleTime: STALE.SECONDS.THIRTY,
-    enabled: !appConfig.preRegistrationMode,
+    enabled: !preRegistrationMode,
     ...options,
   });
 };

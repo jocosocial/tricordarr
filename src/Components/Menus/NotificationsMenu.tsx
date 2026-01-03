@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useTwitarr} from '#src/Context/Contexts/TwitarrContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -14,7 +15,8 @@ import {UserNotificationData} from '#src/Structs/ControllerStructs';
 export const NotificationsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {appConfig} = useConfig();
-  const {data} = useUserNotificationDataQuery({enabled: !appConfig.preRegistrationMode});
+  const {preRegistrationMode} = usePreRegistration();
+  const {data} = useUserNotificationDataQuery({enabled: !preRegistrationMode});
   const {openAppUrl} = useTwitarr();
 
   const anyNew = UserNotificationData.totalNewCount(data) !== 0;

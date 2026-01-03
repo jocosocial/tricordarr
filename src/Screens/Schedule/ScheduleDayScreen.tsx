@@ -19,6 +19,7 @@ import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarnin
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
@@ -56,6 +57,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     clearList: useCallback(() => setScheduleList([]), []),
   });
   const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
@@ -82,7 +84,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     endpoint: 'open',
     hidePast: false,
     options: {
-      enabled: appConfig.schedule.eventsShowOpenLfgs && !appConfig.preRegistrationMode,
+      enabled: appConfig.schedule.eventsShowOpenLfgs && !preRegistrationMode,
     },
   });
   const {
@@ -97,7 +99,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: appConfig.schedule.eventsShowJoinedLfgs && !appConfig.preRegistrationMode,
+      enabled: appConfig.schedule.eventsShowJoinedLfgs && !preRegistrationMode,
     },
   });
   const {
@@ -112,7 +114,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     endpoint: 'owner',
     hidePast: false,
     options: {
-      enabled: !appConfig.preRegistrationMode,
+      enabled: !preRegistrationMode,
     },
   });
   const {
@@ -133,14 +135,14 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     // https://github.com/jocosocial/tricordarr/issues/253
     hidePast: false,
     options: {
-      enabled: !appConfig.preRegistrationMode,
+      enabled: !preRegistrationMode,
     },
   });
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     let refreshes: Promise<any>[] = [refetchEvents()];
-    if (!appConfig.preRegistrationMode) {
+    if (!preRegistrationMode) {
       refreshes.push(refetchLfgJoined(), refetchLfgOwned(), refetchPersonalEvents());
       if (appConfig.schedule.eventsShowOpenLfgs) {
         refreshes.push(refetchLfgOpen());
@@ -154,7 +156,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     refetchLfgOwned,
     refetchLfgOpen,
     refetchPersonalEvents,
-    appConfig.preRegistrationMode,
+    preRegistrationMode,
     appConfig.schedule.eventsShowOpenLfgs,
   ]);
 

@@ -15,7 +15,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
@@ -38,7 +38,7 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
   const userFavoriteMutation = useUserFavoriteMutation();
   const {data, isFetching, refetch} = useUserFavoritesQuery();
   const queryClient = useQueryClient();
-  const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
 
   const getNavButtons = useCallback(() => {
     return (
@@ -111,7 +111,7 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
-          {appConfig.preRegistrationMode ? (
+          {preRegistrationMode ? (
             <UserFindSearchBar excludeHeaders={data} onPress={handleFavoriteUser} clearOnPress={true} />
           ) : (
             <UserMatchSearchBar excludeHeaders={data} onPress={handleFavoriteUser} clearOnPress={true} />
@@ -126,7 +126,7 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
               userHeader={relatedUserHeader}
               buttonIcon={AppIcons.unfavorite}
               onPress={() => {
-                if (appConfig.preRegistrationMode) {
+                if (preRegistrationMode) {
                   return;
                 }
                 navigation.push(CommonStackComponents.userProfileScreen, {

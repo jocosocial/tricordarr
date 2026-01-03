@@ -3,6 +3,7 @@ import React, {PropsWithChildren, useEffect, useState} from 'react';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {EnableUserNotificationContext} from '#src/Context/Contexts/EnableUserNotificationContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 
 /**
  * "User Notifications" means both:
@@ -13,6 +14,7 @@ export const EnableUserNotificationProvider = ({children}: PropsWithChildren) =>
   const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);
   const {isLoading, isLoggedIn} = useAuth();
   const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
 
   /**
@@ -23,7 +25,7 @@ export const EnableUserNotificationProvider = ({children}: PropsWithChildren) =>
       console.log('[EnableUserNotificationProvider.tsx] App is still loading');
       return;
     }
-    if (isLoggedIn && oobeCompleted && !appConfig.preRegistrationMode) {
+    if (isLoggedIn && oobeCompleted && !preRegistrationMode) {
       console.log('[EnableUserNotificationProvider.tsx] User notifications can start.');
       console.log('[EnableUserNotificationProvider.tsx] Enabled is', appConfig.enableBackgroundWorker);
       setEnableUserNotifications(appConfig.enableBackgroundWorker);
@@ -31,7 +33,7 @@ export const EnableUserNotificationProvider = ({children}: PropsWithChildren) =>
       console.log('[EnableUserNotificationProvider.tsx] Disabling user notifications');
       setEnableUserNotifications(false);
     }
-  }, [isLoggedIn, isLoading, appConfig.enableBackgroundWorker, oobeCompleted, appConfig.preRegistrationMode]);
+  }, [isLoggedIn, isLoading, appConfig.enableBackgroundWorker, oobeCompleted, preRegistrationMode]);
 
   return (
     <EnableUserNotificationContext.Provider

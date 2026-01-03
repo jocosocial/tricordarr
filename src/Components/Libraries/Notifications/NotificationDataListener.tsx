@@ -5,6 +5,7 @@ import {useCallback, useEffect} from 'react';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -20,8 +21,9 @@ export const NotificationDataListener = () => {
   const {enableUserNotifications} = useEnableUserNotification();
   const {isLoggedIn} = useAuth();
   const {oobeCompleted, appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({
-    enabled: oobeCompleted && isLoggedIn && !appConfig.preRegistrationMode,
+    enabled: oobeCompleted && isLoggedIn && !preRegistrationMode,
   });
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();

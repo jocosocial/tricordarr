@@ -16,6 +16,7 @@ import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -83,7 +84,7 @@ export const OobeServerScreen = ({navigation}: Props) => {
     });
   }, [getHeaderTitle, navigation]);
 
-  const preRegistrationMode = currentSession?.preRegistrationMode ?? false;
+  const {preRegistrationMode} = usePreRegistration();
 
   return (
     <AppView>

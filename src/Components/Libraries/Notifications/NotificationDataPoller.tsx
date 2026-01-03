@@ -1,5 +1,6 @@
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 /**
@@ -9,8 +10,13 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 export const NotificationDataPoller = () => {
   const {isLoggedIn, isLoading} = useAuth();
   const {appConfig, oobeCompleted} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const enablePolling =
-    oobeCompleted && isLoggedIn && !isLoading && !appConfig.preRegistrationMode && appConfig.enableNotificationPolling;
+    oobeCompleted &&
+    isLoggedIn &&
+    !isLoading &&
+    !preRegistrationMode &&
+    appConfig.enableNotificationPolling;
 
   useUserNotificationDataQuery({
     refetchInterval: enablePolling ? appConfig.notificationPollInterval : false,

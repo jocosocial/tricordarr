@@ -19,8 +19,8 @@ import {TodayThemeView} from '#src/Components/Views/Today/TodayThemeView';
 import {TodayTimezoneWarningView} from '#src/Components/Views/Today/TodayTimezoneWarningView';
 import {TodayAppUpdateView} from '#src/Components/Views/TodayAppUpdateView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
@@ -45,14 +45,14 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
   const {isLoggedIn} = useAuth();
   const {hasModerator} = usePrivilege();
-  const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
     setRefreshing(true);
     var refreshes: Promise<any>[] = [];
     // These queries not available in pre-registration mode.
-    if (!appConfig.preRegistrationMode) {
+    if (!preRegistrationMode) {
       refreshes.push(refetchAnnouncements(), refetchThemes(), refetchUserNotificationData());
       if (isLoggedIn) {
         // useUserProfileQuery is here because the menu has the users picture.
@@ -92,12 +92,12 @@ export const TodayScreen = ({navigation}: Props) => {
         isStack={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <TodayHeaderView />
-        {appConfig.preRegistrationMode && (
+        {preRegistrationMode && (
           <PaddedContentView padBottom={false}>
             <TodayPreRegistrationCard />
           </PaddedContentView>
         )}
-        {!appConfig.preRegistrationMode && (
+        {!preRegistrationMode && (
           <>
             <TodayTimezoneWarningView />
             <TodayAnnouncementView />

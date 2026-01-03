@@ -10,6 +10,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
@@ -22,6 +23,7 @@ export const LoginScreen = () => {
   const loginMutation = useLoginMutation();
   const {signIn} = useAuth();
   const {appConfig, oobeCompleted} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const {serverUrl} = useSwiftarrQueryClient();
   const {updateClientSettings} = useClientSettings();
   const {refetch: refetchRoles} = useRoles();
@@ -30,7 +32,7 @@ export const LoginScreen = () => {
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
       loginMutation.mutate(formValues, {
         onSuccess: async response => {
-          await signIn(response.data, appConfig.preRegistrationMode);
+          await signIn(response.data, preRegistrationMode);
           if (oobeCompleted) {
             await startPushProvider();
           }
@@ -52,7 +54,7 @@ export const LoginScreen = () => {
     [
       loginMutation,
       signIn,
-      appConfig.preRegistrationMode,
+      preRegistrationMode,
       oobeCompleted,
       updateClientSettings,
       navigation,

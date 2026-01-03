@@ -6,7 +6,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {EventType} from '#src/Enums/EventType';
@@ -27,7 +27,7 @@ interface EventScreenActionsMenuProps {
 export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
-  const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const {hasPerformerSelfEditor, hasShutternaut, hasShutternautManager} = useRoles();
   const {commonStyles} = useStyles();
   const queryClient = useQueryClient();
@@ -98,7 +98,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
               eventID: props.event.eventID,
             });
           }}
-          disabled={!(appConfig.preRegistrationMode || hasPerformerSelfEditor)}
+          disabled={!(preRegistrationMode || hasPerformerSelfEditor)}
         />
       )}
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}

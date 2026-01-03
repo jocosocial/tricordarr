@@ -3,6 +3,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {SocketContext} from '#src/Context/Contexts/SocketContext';
 import {buildWebSocket, OpenFezSocket} from '#src/Libraries/Network/Websockets';
 import {useWebSocketStorageReducer, WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
@@ -12,6 +13,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
   const [notificationSocket, setNotificationSocket] = useState<ReconnectingWebSocket>();
   const [fezSockets, dispatchFezSockets] = useWebSocketStorageReducer({});
   const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
 
   // Socket Open
@@ -57,7 +59,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
   const openNotificationSocket = useCallback(() => {
     // If the notification socket is disabled or we're in pre-registration mode, don't open it.
     // This returns the function early.
-    if (!appConfig.enableNotificationSocket || appConfig.preRegistrationMode) {
+    if (!appConfig.enableNotificationSocket || preRegistrationMode) {
       console.log('[SocketProvider.tsx] NotificationSocket is disabled. Skipping open.');
       return;
     }
@@ -71,7 +73,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       buildWebSocket().then(ws => setNotificationSocket(ws));
     }
     console.log(`[SocketProvider.tsx] NotificationSocket open complete! State: ${notificationSocket?.readyState}`);
-  }, [appConfig.enableNotificationSocket, notificationSocket, appConfig.preRegistrationMode]);
+  }, [appConfig.enableNotificationSocket, notificationSocket, preRegistrationMode]);
 
   // Socket Close
 

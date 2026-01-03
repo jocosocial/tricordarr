@@ -3,6 +3,8 @@ import React from 'react';
 import {Menu} from 'react-native-paper';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 
@@ -14,13 +16,15 @@ interface ShareMenuItemProps {
 
 export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItemProps) => {
   const {appConfig, oobeCompleted} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
+  const {serverUrl} = useSwiftarrQueryClient();
 
   const handlePress = React.useCallback(() => {
     let fullURL = '';
     if (contentType === ShareContentType.siteUI) {
       fullURL = contentID as string;
     } else {
-      fullURL = `${appConfig.serverUrl}/${contentType}/${contentID}`;
+      fullURL = `${serverUrl}/${contentType}/${contentID}`;
     }
 
     Clipboard.setString(fullURL);
@@ -28,13 +32,13 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
     if (closeMenu) {
       closeMenu();
     }
-  }, [contentType, contentID, appConfig, closeMenu]);
+  }, [contentType, contentID, serverUrl, closeMenu]);
 
   /**
    * If the user hasn't finished setup or is in pre-registration mode,
    * don't let them share content.
    */
-  if (!oobeCompleted || appConfig.preRegistrationMode) {
+  if (!oobeCompleted || preRegistrationMode) {
     return null;
   }
 
