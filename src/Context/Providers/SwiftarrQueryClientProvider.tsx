@@ -83,7 +83,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
 
   /**
    * Create a new QueryClient instance for each session to ensure complete data isolation.
-   * The key prop on PersistQueryClientProvider will force remount when session changes.
+   * Session isolation is maintained via queryClient recreation, session-scoped persister,
+   * and query key scoping - no remount needed.
    */
   const queryClient = useMemo(() => {
     if (!currentSession) {
@@ -237,6 +238,14 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     return !noDehydrateEndpoints.includes(endpoint) && !query.meta?.noDehydrate;
   };
 
+  // Clear query cache when session changes to ensure clean state
+  useEffect(() => {
+    if (currentSession) {
+      console.log('[SwiftarrQueryClientProvider.tsx] Session changed, clearing query cache');
+      queryClient.clear();
+    }
+  }, [currentSession, queryClient]);
+
   useEffect(() => {
     console.log('[SwiftarrQueryClientProvider.tsx] Configuring query client');
     const currentOptions = queryClient.getDefaultOptions();
@@ -272,7 +281,6 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         serverUrl,
       }}>
       <PersistQueryClientProvider
-        key={currentSession?.sessionID || 'no-session'}
         client={queryClient}
         persistOptions={{
           persister: sessionPersister,
