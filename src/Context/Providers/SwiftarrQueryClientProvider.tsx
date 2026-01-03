@@ -219,6 +219,13 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   }, [queryClient, disruptionDetected, errorCount, setSnackbarPayload]);
 
   const shouldDehydrateQuery = (query: Query) => {
+    // Don't dehydrate queries that are still pending or fetching.
+    // These queries will be cancelled when the app reloads, causing CancelledError on rehydration.
+    // Only dehydrate queries that have completed (success or error status).
+    if (query.state.status === 'pending' || query.state.fetchStatus === 'fetching') {
+      return false;
+    }
+
     // Endpoints that should not be dehydrated (aka cached).
     const noDehydrateEndpoints = ['/client/health'];
     // The .meta is arbitrary but our convention is to use .noDehydrate=true for queries that should not be cached.
