@@ -112,6 +112,8 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9394DAB82F077F9E000B2338 /* Helpers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = Helpers;
 			sourceTree = "<group>";
 		};
@@ -125,6 +127,8 @@
 		};
 		93ADC07C2F07749D00C698D2 /* TricordarrKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = TricordarrKit;
 			sourceTree = "<group>";
 		};
@@ -295,8 +299,6 @@
 				93ADBFFE2F074E0700C698D2 /* LocalPushExtension */,
 			);
 			name = LocalPushExtension;
-			packageProductDependencies = (
-			);
 			productName = LocalPushExtension;
 			productReference = 93ADBFFB2F074E0700C698D2 /* LocalPushExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -318,8 +320,6 @@
 				93ADC07C2F07749D00C698D2 /* TricordarrKit */,
 			);
 			name = TricordarrKit;
-			packageProductDependencies = (
-			);
 			productName = TricordarrKit;
 			productReference = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */;
 			productType = "com.apple.product-type.framework";
@@ -418,13 +418,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -461,13 +457,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

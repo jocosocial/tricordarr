@@ -2,6 +2,9 @@
  * @format
  */
 
+// Polyfill for crypto.getRandomValues() required by uuid
+import 'react-native-get-random-values';
+
 import {AppRegistry} from 'react-native';
 
 // eslint-disable-next-line no-restricted-imports
