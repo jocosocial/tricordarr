@@ -71,7 +71,7 @@ export const useLfgListQuery = ({
   fezType,
   hidePast = true, // this matches Swiftarr behavior
   endpoint = 'open',
-  options,
+  options = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'},
   onlyNew,
   search,
   matchID,

@@ -5,24 +5,13 @@ import React, {useCallback} from 'react';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppBottomTabBar} from '#src/Components/Navigation/AppBottomTabBar';
 import {AppIcons} from '#src/Enums/Icons';
+import {getBadgeDisplayValue} from '#src/Libraries/StringUtils';
 import {ChatStackNavigator, ChatStackParamList} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {ForumStackNavigator, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {LfgStackNavigator, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {MainStackNavigator, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {ScheduleStackNavigator, ScheduleStackParamList} from '#src/Navigation/Stacks/ScheduleStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-
-/**
- * This is a helper function to get the badge display value for a given input.
- * The intention is that the badges should only be shown for new message count,
- * not for added to or other such things like that.
- */
-function getBadgeDisplayValue(input: number | undefined) {
-  if (input === 0) {
-    return undefined;
-  }
-  return input;
-}
 
 /**
  * This is where we define the root tabs and associate each one with its relevant

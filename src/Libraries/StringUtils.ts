@@ -22,3 +22,18 @@ export const toSecureString = (originalText?: string): string => {
   // Concatenate the first three characters with asterisks
   return firstThreeCharacters + asterisks;
 };
+
+/**
+ * This is a helper function to get the badge display value for a given input.
+ * The intention is that the badges should only be shown for new message count,
+ * not for added to or other such things like that.
+ *
+ * @param input The number to check. If undefined or 0, returns undefined.
+ * @returns The input value if it's greater than 0, otherwise undefined.
+ */
+export const getBadgeDisplayValue = (input: number | undefined): number | undefined => {
+  if (input === 0) {
+    return undefined;
+  }
+  return input;
+};
