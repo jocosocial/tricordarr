@@ -8,7 +8,7 @@ import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 export const TimeZoneHelpScreen = () => {
   return (
     <AppView>
-      <ScrollingContentView isStack={false} overScroll={true}>
+      <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'} />
         <HelpTopicView>
           JoCo Cruise occasionally makes time zone changes during the week. Be careful when scheduling events that you
