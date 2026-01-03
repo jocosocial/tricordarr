@@ -115,6 +115,44 @@ export const PushNotificationSettingsScreen = () => {
     }
   }, [appConfig, updateAppConfig]);
 
+  // Group notifications by feature area, sorted alphabetically
+  const notificationGroups = [
+    {
+      title: 'Announcements',
+      categories: ['announcement'] as const,
+    },
+    {
+      title: 'Events',
+      categories: [
+        'followedEventStarting',
+        'personalEventStarting',
+        'addedToPrivateEvent',
+        'privateEventUnreadMsg',
+        'privateEventCanceled',
+      ] as const,
+    },
+    {
+      title: 'Forum',
+      categories: ['alertwordPost', 'forumMention', 'moderatorForumMention', 'twitarrTeamForumMention'] as const,
+    },
+    {
+      title: 'KrakenTalk',
+      categories: ['incomingPhoneCall', 'phoneCallAnswered', 'phoneCallEnded'] as const,
+    },
+    {
+      title: 'LFG',
+      categories: ['fezUnreadMsg', 'addedToLFG', 'joinedLFGStarting', 'lfgCanceled'] as const,
+    },
+    {
+      title: 'MicroKaraoke',
+      categories: ['microKaraokeSongReady'] as const,
+    },
+    {
+      title: 'Seamail',
+      categories: ['seamailUnreadMsg', 'addedToSeamail'] as const,
+    },
+  ];
+
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -144,26 +182,6 @@ export const PushNotificationSettingsScreen = () => {
               Pick the types of actions you want to receive as push notifications. This only controls what generates a
               notification on your device, not what to get notified for within Twitarr.
             </Text>
-            <Formik initialValues={{}} onSubmit={() => {}}>
-              <View>
-                {Object.values(contentNotificationCategories).flatMap(value => {
-                  if (value.disabled) {
-                    return null;
-                  }
-                  return (
-                    <BooleanField
-                      key={value.configKey}
-                      name={value.configKey}
-                      label={value.title}
-                      value={appConfig.pushNotifications[value.configKey]}
-                      onPress={() => toggleValue(value.configKey)}
-                      disabled={!hasNotificationPermission || value.disabled}
-                      helperText={value.description}
-                    />
-                  );
-                })}
-              </View>
-            </Formik>
           </PaddedContentView>
           <PaddedContentView padTop={true}>
             <PrimaryActionButton
@@ -181,6 +199,39 @@ export const PushNotificationSettingsScreen = () => {
               disabled={notificationPermissionStatus !== RESULTS.GRANTED}
             />
           </PaddedContentView>
+          <Formik initialValues={{}} onSubmit={() => {}}>
+            <View>
+              {notificationGroups.map(group => {
+                const groupCategories = group.categories
+                  .map(key => contentNotificationCategories[key])
+                  .filter(category => category && !category.disabled)
+                  .sort((a, b) => a.title.localeCompare(b.title));
+
+                if (groupCategories.length === 0) {
+                  return null;
+                }
+
+                return (
+                  <View key={group.title}>
+                    <ListSubheader>{group.title}</ListSubheader>
+                    <PaddedContentView>
+                      {groupCategories.map(category => (
+                        <BooleanField
+                          key={category.configKey}
+                          name={category.configKey}
+                          label={category.title}
+                          value={appConfig.pushNotifications[category.configKey]}
+                          onPress={() => toggleValue(category.configKey)}
+                          disabled={!hasNotificationPermission || category.disabled}
+                          helperText={category.description}
+                        />
+                      ))}
+                    </PaddedContentView>
+                  </View>
+                );
+              })}
+            </View>
+          </Formik>
         </ListSection>
         <ListSection>
           <ListSubheader>Temporary Mute</ListSubheader>
