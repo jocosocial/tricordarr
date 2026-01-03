@@ -75,4 +75,16 @@ export namespace SessionStorage {
   export const setLastSessionID = async (sessionID: string): Promise<void> => {
     await EncryptedStorage.setItem(StorageKeys.LAST_SESSION_ID, sessionID);
   };
+
+  /**
+   * Get the current session by looking up the last active session ID.
+   * Useful for background workers that cannot access React context.
+   */
+  export const getCurrentSession = async (): Promise<Session | null> => {
+    const lastSessionID = await getLastSessionID();
+    if (!lastSessionID) {
+      return null;
+    }
+    return await get(lastSessionID);
+  };
 }

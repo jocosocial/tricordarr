@@ -119,12 +119,16 @@ export const BackgroundConnectionSettingsIOSView = () => {
     if (!tokenData) {
       return;
     }
-    const socketUrl = await buildWebsocketURL();
-    console.log('setupLocalPushManager', socketUrl, tokenData.token, enable);
-    NativeTricordarrModule.setupLocalPushManager(socketUrl, tokenData.token, enable);
-    // Refresh status after recycling worker
-    fetchManagerStatus();
-    fetchForegroundProviderStatus();
+    try {
+      const socketUrl = await buildWebsocketURL();
+      console.log('setupLocalPushManager', socketUrl, tokenData.token, enable);
+      NativeTricordarrModule.setupLocalPushManager(socketUrl, tokenData.token, enable);
+      // Refresh status after recycling worker
+      fetchManagerStatus();
+      fetchForegroundProviderStatus();
+    } catch (error) {
+      console.error('[BackgroundConnectionSettingsIOSView] Error getting socket URL:', error);
+    }
   };
 
   const formatProviderConfigValue = (value: any): string => {

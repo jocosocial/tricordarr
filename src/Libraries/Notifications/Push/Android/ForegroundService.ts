@@ -96,13 +96,18 @@ const fgsWorker = async () => {
   }
 
   // Add our event listener to respond to socket events and turn them into push notifications.
-  const ws = await createSharedWebSocket();
-  ws.addEventListener('message', fgsEventHandler);
+  try {
+    const ws = await createSharedWebSocket();
+    ws.addEventListener('message', fgsEventHandler);
 
-  // Start a regular socket health check to help ensure the socket stays open.
-  // Or at least yell at the user when it fails.
-  fgsWorkerTimer = setInterval(fgsWorkerHealthcheck, appConfig.fgsWorkerHealthTimer);
-  console.log('[Service.ts] Worker startup complete.');
+    // Start a regular socket health check to help ensure the socket stays open.
+    // Or at least yell at the user when it fails.
+    fgsWorkerTimer = setInterval(fgsWorkerHealthcheck, appConfig.fgsWorkerHealthTimer);
+    console.log('[Service.ts] Worker startup complete.');
+  } catch (error) {
+    console.error('[Service.ts] Error creating websocket. Shutting down worker:', error);
+    await stopForegroundServiceWorker();
+  }
 };
 
 /**

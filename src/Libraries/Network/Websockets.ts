@@ -2,20 +2,26 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import {getAppConfig} from '#src/Libraries/AppConfig';
 import {getAuthHeaders} from '#src/Libraries/Network/APIClient';
-import {StorageKeys} from '#src/Libraries/Storage';
-import {TokenStringData} from '#src/Structs/ControllerStructs';
+import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
 import {WebSocketOptions} from '#src/Types';
 
 /**
  * This function returns a normalized URL of a WebSocket API endpoint to connect to.
+ * Reads the serverUrl from the current session via LAST_SESSION_ID lookup, which works
+ * for background workers that cannot access React context.
  * React-Native does not support all the same properties as browser URL
  * objects. Big sad.
  */
 export async function buildWebsocketURL(fezID?: string) {
-  const {serverUrl, urlPrefix} = await getAppConfig();
-  let wsUrl = `${serverUrl}${urlPrefix}/notification/socket`;
+  const session = await SessionStorage.getCurrentSession();
+  if (!session?.serverUrl) {
+    throw new Error('[Websockets.ts] No current session found or session missing serverUrl');
+  }
+
+  const {urlPrefix} = await getAppConfig();
+  let wsUrl = `${session.serverUrl}${urlPrefix}/notification/socket`;
   if (fezID) {
-    wsUrl = `${serverUrl}${urlPrefix}/fez/${fezID}/socket`;
+    wsUrl = `${session.serverUrl}${urlPrefix}/fez/${fezID}/socket`;
   }
   if (wsUrl.startsWith('https://')) {
     wsUrl = wsUrl.replace('https', 'wss');
@@ -41,15 +47,17 @@ function WebSocketConstructor(options?: WebSocketOptions) {
 
 /**
  * Returns the users current bearer token necessary to communicate with the WebSocket.
+ * Reads from the current session via LAST_SESSION_ID lookup, which works for background
+ * workers that cannot access React context.
  * Based on reading through the internet it seems like this is an anti-pattern. But is
  * something we'd have to re-implement in Swiftarr first. I doubt we're gonna do that.
  */
 export async function getToken() {
-  const rawTokenData = await TokenStringData.getLocal(StorageKeys.TOKEN_STRING_DATA_V2);
-  if (rawTokenData) {
-    const tokenStringData = JSON.parse(rawTokenData) as TokenStringData;
-    return tokenStringData.token;
+  const session = await SessionStorage.getCurrentSession();
+  if (session?.tokenData?.token) {
+    return session.tokenData.token;
   }
+  return undefined;
 }
 
 /**
