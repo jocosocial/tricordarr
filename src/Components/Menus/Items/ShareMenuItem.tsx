@@ -2,7 +2,6 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -16,7 +15,6 @@ interface ShareMenuItemProps {
 }
 
 export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItemProps) => {
-  const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {serverUrl} = useSwiftarrQueryClient();

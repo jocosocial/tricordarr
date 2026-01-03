@@ -1,6 +1,5 @@
 import React, {PropsWithChildren, useEffect, useState} from 'react';
 
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {FeatureContext} from '#src/Context/Contexts/FeatureContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
@@ -9,7 +8,6 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 import {DisabledFeature} from '#src/Structs/ControllerStructs';
 
 export const FeatureProvider = ({children}: PropsWithChildren) => {
-  const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const [disabledFeatures, setDisabledFeatures] = useState<SwiftarrFeature[]>([]);

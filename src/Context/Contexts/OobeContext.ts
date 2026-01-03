@@ -9,4 +9,3 @@ export const OobeContext = createContext<OobeContextType>({
 });
 
 export const useOobe = () => useContext(OobeContext);
-

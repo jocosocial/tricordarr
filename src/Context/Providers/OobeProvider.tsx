@@ -1,7 +1,7 @@
 import React, {PropsWithChildren, useMemo} from 'react';
 
-import {OobeContext} from '#src/Context/Contexts/OobeContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {OobeContext} from '#src/Context/Contexts/OobeContext';
 
 export const OobeProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
@@ -19,4 +19,3 @@ export const OobeProvider = ({children}: PropsWithChildren) => {
 
   return <OobeContext.Provider value={contextValue}>{children}</OobeContext.Provider>;
 };
-

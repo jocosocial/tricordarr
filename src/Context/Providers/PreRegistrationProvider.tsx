@@ -19,4 +19,3 @@ export const PreRegistrationProvider = ({children}: PropsWithChildren) => {
 
   return <PreRegistrationContext.Provider value={contextValue}>{children}</PreRegistrationContext.Provider>;
 };
-

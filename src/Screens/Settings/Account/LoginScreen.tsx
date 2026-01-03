@@ -9,7 +9,6 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
@@ -23,7 +22,6 @@ export const LoginScreen = () => {
   const navigation = useNavigation();
   const loginMutation = useLoginMutation();
   const {signIn} = useAuth();
-  const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {serverUrl} = useSwiftarrQueryClient();
@@ -53,15 +51,7 @@ export const LoginScreen = () => {
         onSettled: () => formikHelpers.setSubmitting(false),
       });
     },
-    [
-      loginMutation,
-      signIn,
-      preRegistrationMode,
-      oobeCompleted,
-      updateClientSettings,
-      navigation,
-      refetchRoles,
-    ],
+    [loginMutation, signIn, preRegistrationMode, oobeCompleted, updateClientSettings, navigation, refetchRoles],
   );
 
   return (

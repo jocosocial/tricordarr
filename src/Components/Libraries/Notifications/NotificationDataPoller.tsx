@@ -14,11 +14,7 @@ export const NotificationDataPoller = () => {
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const enablePolling =
-    oobeCompleted &&
-    isLoggedIn &&
-    !isLoading &&
-    !preRegistrationMode &&
-    appConfig.enableNotificationPolling;
+    oobeCompleted && isLoggedIn && !isLoading && !preRegistrationMode && appConfig.enableNotificationPolling;
 
   useUserNotificationDataQuery({
     refetchInterval: enablePolling ? appConfig.notificationPollInterval : false,

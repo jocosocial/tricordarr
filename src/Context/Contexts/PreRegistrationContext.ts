@@ -9,4 +9,3 @@ export const PreRegistrationContext = createContext<PreRegistrationContextType>(
 });
 
 export const usePreRegistration = () => useContext(PreRegistrationContext);
-

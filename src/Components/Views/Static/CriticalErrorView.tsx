@@ -34,7 +34,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const queryClient = useQueryClient();
   const [showStack, setShowStack] = React.useState(false);
   const {signOut} = useAuth();
-  const {appConfig, updateAppConfig} = useConfig();
+  const {updateAppConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
 
   const styles = StyleSheet.create({

@@ -45,11 +45,7 @@ export const FeatureSettingsScreen = () => {
       <ScrollingContentView
         isStack={true}
         refreshControl={
-          <AppRefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            enabled={!preRegistrationMode}
-          />
+          <AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!preRegistrationMode} />
         }>
         <ListSection>
           <ListSubheader>Server Features</ListSubheader>

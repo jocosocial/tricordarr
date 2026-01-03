@@ -73,15 +73,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = t
     }
     await Promise.all(refreshes);
     setRefreshing(false);
-  }, [
-    refetch,
-    refetchFavorites,
-    refetchMutes,
-    refetchBlocks,
-    isSelf,
-    refetchSelf,
-    preRegistrationMode,
-  ]);
+  }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, isSelf, refetchSelf, preRegistrationMode]);
 
   const getNavButtons = useCallback(() => {
     if (data && isSelf) {

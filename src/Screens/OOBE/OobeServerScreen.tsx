@@ -15,8 +15,8 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
