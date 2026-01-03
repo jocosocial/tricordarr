@@ -1,6 +1,8 @@
 import React, {forwardRef} from 'react';
 import {RefreshControl, RefreshControlProps} from 'react-native';
 
+import {isIOS} from '#src/Libraries/Platform/Detection';
+
 interface AppRefreshControlProps extends RefreshControlProps {
   /**
    * Whether pull-to-refresh is enabled. Defaults to true.
@@ -16,7 +18,11 @@ interface AppRefreshControlProps extends RefreshControlProps {
  */
 export const AppRefreshControl = forwardRef<RefreshControl, AppRefreshControlProps>(
   ({enabled = true, ...props}, ref) => {
-    if (!enabled) {
+    /**
+     * iOS does not support the enabled prop. Android freaks out if the RefreshControl is null
+     * (FlashList and LegendList stopped rendering entirely).
+     */
+    if (isIOS && !enabled) {
       return null;
     }
 
