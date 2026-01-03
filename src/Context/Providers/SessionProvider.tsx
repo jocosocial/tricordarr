@@ -67,9 +67,9 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       await SessionStorage.save(updatedSession);
       setSessions(prev => prev.map(s => (s.sessionID === sessionID ? updatedSession : s)));
 
-      // Update current session and persist lastSessionID
+      // Update current session
+      // Note: lastSessionID is not set here - it's set when OOBE completes
       setCurrentSessionID(sessionID);
-      await SessionStorage.setLastSessionID(sessionID);
     },
     [sessions],
   );
@@ -89,9 +89,9 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
     await SessionStorage.save(newSession);
     setSessions(prev => [...prev, newSession]);
 
-    // Switch to new session and persist lastSessionID
+    // Switch to new session
+    // Note: lastSessionID is not set here - it's set when OOBE completes
     setCurrentSessionID(newSession.sessionID);
-    await SessionStorage.setLastSessionID(newSession.sessionID);
 
     return newSession;
   }, []);
