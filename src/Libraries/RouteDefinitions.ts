@@ -65,15 +65,15 @@ export const allRoutes: RouteDefinition[] = [
   // ==================== LFG Tab Routes ====================
   {screen: LfgStackComponents.lfgFindScreen, path: 'lfg'},
   {screen: CommonStackComponents.lfgChatScreen, path: 'lfg/:fezID/chat'},
-  {screen: CommonStackComponents.lfgScreen, path: 'lfg/:fezID'},
   {screen: CommonStackComponents.lfgHelpScreen, path: 'lfg/faq'},
   {screen: LfgStackComponents.lfgJoinedScreen, path: 'lfg/joined'},
+  {screen: CommonStackComponents.lfgScreen, path: 'lfg/:fezID'},
 
   // ==================== Schedule Tab Routes ====================
   {screen: CommonStackComponents.scheduleDayScreen, path: 'events'},
   {screen: CommonStackComponents.eventScreen, path: 'events/:eventID'},
-  {screen: CommonStackComponents.personalEventScreen, path: 'privateevent/:eventID'},
   {screen: CommonStackComponents.schedulePrivateEventsScreen, path: 'privateevent/list'},
+  {screen: CommonStackComponents.personalEventScreen, path: 'privateevent/:eventID'},
 
   // ==================== Forum Tab Routes ====================
   {screen: ForumStackComponents.forumCategoriesScreen, path: 'forums'},

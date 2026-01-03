@@ -7,6 +7,7 @@ import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {TwitarrContext} from '#src/Context/Contexts/TwitarrContext';
 import {isNavigationReady, push} from '#src/Libraries/NavigationRef';
+import {findRouteByScreen, pushableRoutes} from '#src/Libraries/RouteDefinitions';
 import {extractPathFromTricordarrUrl, parseDeepLinkUrl} from '#src/Libraries/UrlParser';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
@@ -22,28 +23,56 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
    * Falls back to Linking.openURL() if the URL can't be parsed or navigation isn't ready.
    */
   const openAppUrl = useCallback(
-    (appUrl: string) => {
+    (appUrl: string, queryParams?: Record<string, string | number | boolean>) => {
+      // Build URL with query parameters if provided
+      let finalUrl = appUrl;
+      if (queryParams && Object.keys(queryParams).length > 0) {
+        const queryString = Object.entries(queryParams)
+          .map(([key, value]) => {
+            const stringValue =
+              typeof value === 'boolean' ? String(value) : typeof value === 'number' ? String(value) : value;
+            return `${encodeURIComponent(key)}=${encodeURIComponent(stringValue)}`;
+          })
+          .join('&');
+        finalUrl = `${appUrl}?${queryString}`;
+      }
+
       // Handle /fez -> /lfg translation
-      if (appUrl.includes('/fez')) {
-        appUrl = appUrl.replace('/fez', '/lfg');
+      if (finalUrl.includes('/fez')) {
+        finalUrl = finalUrl.replace('/fez', '/lfg');
       }
 
       // Try to use push navigation for better back button behavior
-      const path = extractPathFromTricordarrUrl(appUrl);
+      const path = extractPathFromTricordarrUrl(finalUrl);
       if (path && isNavigationReady()) {
         const parsed = parseDeepLinkUrl(path);
         if (parsed) {
-          console.log('[TwitarrProvider.tsx] Push navigating to', parsed.screen, parsed.params);
-          push(parsed.screen, parsed.params);
-          return;
+          // Check if the route is pushable (CommonStackComponent available in all stacks)
+          const route = findRouteByScreen(parsed.screen);
+          const isPushable = route && pushableRoutes.some(r => r.screen === route.screen);
+
+          if (isPushable) {
+            console.log('[TwitarrProvider.tsx] Push navigating to', parsed.screen, parsed.params);
+            push(parsed.screen, parsed.params);
+            return;
+          } else {
+            // For stack-specific screens, fall back to Linking.openURL()
+            // React Navigation's linking system handles tab navigation correctly
+            console.log('[TwitarrProvider.tsx] Stack-specific screen, using Linking.openURL for', finalUrl);
+            Linking.openURL(finalUrl).catch(err => {
+              console.error('[TwitarrProvider.tsx] Failed to open URL:', finalUrl, err);
+              setErrorBanner('Failed to open URL: ' + finalUrl);
+            });
+            return;
+          }
         }
       }
 
       // Fall back to Linking.openURL() for unrecognized routes
-      console.log('[TwitarrProvider.tsx] Falling back to Linking.openURL for', appUrl);
-      Linking.openURL(appUrl).catch(err => {
-        console.error('[TwitarrProvider.tsx] Failed to open URL:', appUrl, err);
-        setErrorBanner('Failed to open URL: ' + appUrl);
+      console.log('[TwitarrProvider.tsx] Falling back to Linking.openURL for', finalUrl);
+      Linking.openURL(finalUrl).catch(err => {
+        console.error('[TwitarrProvider.tsx] Failed to open URL:', finalUrl, err);
+        setErrorBanner('Failed to open URL: ' + finalUrl);
       });
     },
     [setErrorBanner],
@@ -98,6 +127,7 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
     <TwitarrContext.Provider
       value={{
         openWebUrl,
+        openAppUrl,
       }}>
       {children}
     </TwitarrContext.Provider>

@@ -28,7 +28,7 @@ export const LfgJoinedScreen = (props: Props) => {
     <LoggedInScreen>
       <PreRegistrationScreen>
         <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg/joined'}>
-          <LfgListScreen endpoint={'joined'} />
+          <LfgListScreen endpoint={'joined'} onlyNewInitial={props.route.params?.onlyNew} />
         </DisabledFeatureScreen>
       </PreRegistrationScreen>
     </LoggedInScreen>

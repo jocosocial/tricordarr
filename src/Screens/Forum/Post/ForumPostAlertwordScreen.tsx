@@ -10,7 +10,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
-import {PostData} from '#src/Structs/ControllerStructs';
+import {PostData, UserNotificationData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumPostAlertwordScreen>;
 
@@ -34,7 +34,7 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
   useEffect(() => {
     if (data && data.pages) {
       setForumPosts(data.pages.flatMap(p => p.posts));
-      queryClient.invalidateQueries({queryKey: ['/notification/global']});
+      Promise.all(UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})));
     }
   }, [data, setForumPosts, queryClient, route.params.alertWord]);
 

@@ -32,6 +32,7 @@ interface Props {
   enableReportOnly?: boolean;
   listHeader?: ReactElement;
   showFab?: boolean;
+  onlyNewInitial?: boolean;
 }
 
 /**
@@ -46,8 +47,9 @@ export const LfgListScreen = ({
   enableReportOnly,
   listHeader,
   showFab = true,
+  onlyNewInitial,
 }: Props) => {
-  const {lfgTypeFilter, lfgHidePastFilter} = useFilter();
+  const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} = useFilter();
   const {commonStyles} = useStyles();
   const [fezList, setFezList] = useState<FezData[]>([]);
   const listRef = useRef<FlashListRef<FezData>>(null);
@@ -72,6 +74,7 @@ export const LfgListScreen = ({
     // @TODO we intend to change this some day. Upstream Swiftarr issue.
     cruiseDay: selectedCruiseDay - 1,
     hidePast: lfgHidePastFilter,
+    onlyNew: lfgOnlyNew,
   });
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
@@ -95,7 +98,7 @@ export const LfgListScreen = ({
                   })
                 }
               />
-              <LfgFilterMenu />
+              <LfgFilterMenu enableUnread={endpoint === 'joined'} />
             </>
           )}
           <LfgListActionsMenu />
@@ -147,6 +150,17 @@ export const LfgListScreen = ({
       onDataLoaded();
     }
   }, [data, onDataLoaded]);
+
+  /**
+   * This operates more like an intent than a state.
+   * When the user navigates from the NotificationsMenu it's almost certainly
+   * because they want to see unread LFGs. All other cases should be normal.
+   */
+  useEffect(() => {
+    if (onlyNewInitial !== undefined) {
+      setLfgOnlyNew(onlyNewInitial);
+    }
+  }, [onlyNewInitial, setLfgOnlyNew]);
 
   // Reset switching state on error to prevent stuck loading spinner
   useEffect(() => {

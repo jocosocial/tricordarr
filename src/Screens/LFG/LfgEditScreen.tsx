@@ -16,7 +16,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgEditScreen>;
@@ -64,10 +64,10 @@ const LfgEditScreenInner = ({route, navigation}: Props) => {
       {
         onSuccess: async () => {
           navigation.goBack();
-          const invalidations = FezData.getCacheKeys(route.params.fez.fezID).map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          await Promise.all([...invalidations, queryClient.invalidateQueries({queryKey: ['/notification/global']})]);
+          const invalidations = UserNotificationData.getCacheKeys()
+            .concat(FezData.getCacheKeys(route.params.fez.fezID))
+            .map(key => queryClient.invalidateQueries({queryKey: key}));
+          await Promise.all(invalidations);
         },
         onSettled: () => helpers.setSubmitting(false),
       },

@@ -15,7 +15,9 @@ import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen';
 import {FezListEndpoints} from '#src/Types';
 
 export type LfgStackParamList = CommonStackParamList & {
-  LfgJoinedScreen: undefined;
+  LfgJoinedScreen: {
+    onlyNew?: boolean;
+  };
   LfgFindScreen: undefined;
   LfgOwnedScreen: undefined;
   LfgSettingsScreen: undefined;

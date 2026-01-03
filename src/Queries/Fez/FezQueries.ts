@@ -71,7 +71,7 @@ export const useLfgListQuery = ({
   fezType,
   hidePast = true, // this matches Swiftarr behavior
   endpoint = 'open',
-  options,
+  options = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'},
   onlyNew,
   search,
   matchID,
@@ -120,7 +120,7 @@ export const usePersonalEventsQuery = ({
   search,
   hidePast,
   matchID,
-  options,
+  options = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'},
   fezType = [FezType.privateEvent, FezType.personalEvent],
 }: FezListQueryOptions) => {
   return useFezListQuery({

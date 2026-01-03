@@ -15,6 +15,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {getApparentCruiseDate, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
+import {UserNotificationData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
 interface Props {
@@ -84,7 +85,9 @@ export const LfgCreateScreenBase = ({
           navigation.replace(CommonStackComponents.lfgScreen, {
             fezID: response.data.fezID,
           });
-          await queryClient.invalidateQueries({queryKey: ['/notification/global']});
+          await Promise.all(
+            UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
+          );
         },
         onSettled: () => {
           helpers.setSubmitting(false);

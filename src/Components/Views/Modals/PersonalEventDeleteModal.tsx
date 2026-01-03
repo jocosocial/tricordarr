@@ -11,7 +11,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useFezDeleteMutation} from '#src/Queries/Fez/FezMutations';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();
@@ -43,11 +43,9 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
           }
           setModalVisible(false);
           setSnackbarPayload({message: 'Successfully deleted this event.', messageType: 'info'});
-          const invalidations = FezData.getCacheKeys()
-            .map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            })
-            .concat([queryClient.invalidateQueries({queryKey: ['/notification/global']})]);
+          const invalidations = UserNotificationData.getCacheKeys()
+            .concat(FezData.getCacheKeys())
+            .map(key => queryClient.invalidateQueries({queryKey: key}));
           await Promise.all(invalidations);
         },
       },
