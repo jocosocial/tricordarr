@@ -48,6 +48,7 @@ export type ScheduleFilterSettings = {
   eventLfgJoinedFilter?: boolean;
   eventLfgOwnedFilter?: boolean;
   eventLfgOpenFilter?: boolean;
+  eventShutternautFilter?: string;
 };
 
 export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;

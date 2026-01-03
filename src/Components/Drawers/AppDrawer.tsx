@@ -192,7 +192,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               {hasShutternautManager && (
                 <PaperDrawer.Item
                   label={'Manage Shutternauts'}
-                  icon={AppIcons.shutternaut}
+                  icon={AppIcons.shutternautManager}
                   onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/userrole/shutternaut/manage`)}
                 />
               )}

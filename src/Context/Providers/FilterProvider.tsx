@@ -23,6 +23,7 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
   const [eventLfgJoinedFilter, setEventLfgJoinedFilter] = useState(false);
   const [eventLfgOwnedFilter, setEventLfgOwnedFilter] = useState(false);
   const [eventLfgOpenFilter, setEventLfgOpenFilter] = useState(false);
+  const [eventShutternautFilter, setEventShutternautFilter] = useState<string | undefined>(undefined);
   const [forumSortDirection, setForumSortDirection] = useState<ForumSortDirection | undefined>(
     appConfig.userPreferences.defaultForumSortDirection,
   );
@@ -43,6 +44,7 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
     eventLfgJoinedFilter: eventLfgJoinedFilter,
     eventLfgOwnedFilter: eventLfgOwnedFilter,
     eventLfgOpenFilter: eventLfgOpenFilter,
+    eventShutternautFilter: eventShutternautFilter,
   };
 
   return (
@@ -72,6 +74,8 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
         setEventLfgOwnedFilter,
         eventLfgOpenFilter,
         setEventLfgOpenFilter,
+        eventShutternautFilter,
+        setEventShutternautFilter,
         scheduleFilterSettings,
         forumSortDirection,
         setForumSortDirection,

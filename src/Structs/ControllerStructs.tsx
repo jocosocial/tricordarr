@@ -582,6 +582,16 @@ export interface UserCreateData {
   verification?: string;
 }
 
+/// Optional sub-struct that only gets filled out for users with the Shutternaut role.
+export interface ShutternautEventData {
+  /// TRUE if a ShutternautManager has marked this event as needing to get photographed by someone.
+  needsPhotographer: boolean;
+  /// Shutternauts that have signed up to photograph this event.
+  photographers: UserHeader[];
+  /// TRUE if the current user is in the `photographers` array.
+  userIsPhotographer: boolean;
+}
+
 export interface EventData {
   /// The event's ID. This is the Swiftarr database record for this event.
   eventID: string;
@@ -611,6 +621,8 @@ export interface EventData {
   isFavorite: boolean;
   /// The performers who will be at the event.
   performers: PerformerHeaderData[];
+  /// Optional data returned if the requestor is a member of the Shutternauts group. NULL for all other users.
+  shutternautData?: ShutternautEventData;
 }
 
 export namespace EventData {

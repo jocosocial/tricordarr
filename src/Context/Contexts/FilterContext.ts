@@ -29,6 +29,8 @@ interface ScheduleFilterContextType {
   setEventLfgOwnedFilter: Dispatch<SetStateAction<boolean>>;
   eventLfgOpenFilter: boolean;
   setEventLfgOpenFilter: Dispatch<SetStateAction<boolean>>;
+  eventShutternautFilter: string | undefined;
+  setEventShutternautFilter: Dispatch<SetStateAction<string | undefined>>;
   scheduleFilterSettings: ScheduleFilterSettings;
   forumSortDirection?: ForumSortDirection;
   setForumSortDirection: Dispatch<SetStateAction<ForumSortDirection | undefined>>;
