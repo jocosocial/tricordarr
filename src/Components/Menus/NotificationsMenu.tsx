@@ -82,13 +82,13 @@ export const NotificationsMenu = () => {
           onPress={() => openAppUrl('tricordarr://lfg/joined', {onlyNew: true})}
         />
       )}
-      {!!data?.addedToPrivateEventCount && (
+      {/* {!!data?.addedToPrivateEventCount && (
         <Menu.Item
           title={`Added to ${data?.addedToPrivateEventCount} new private ${pluralize('event', data?.addedToPrivateEventCount)}`}
           leadingIcon={AppIcons.personalEvent}
           onPress={() => openAppUrl('tricordarr://privateevent/list')}
         />
-      )}
+      )} */}
       {!!data?.newPrivateEventMessageCount && (
         <Menu.Item
           title={`${data?.newPrivateEventMessageCount} new private event ${pluralize('message', data?.newPrivateEventMessageCount)}`}

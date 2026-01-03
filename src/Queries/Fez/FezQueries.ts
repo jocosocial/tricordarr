@@ -120,7 +120,7 @@ export const usePersonalEventsQuery = ({
   search,
   hidePast,
   matchID,
-  options,
+  options = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'},
   fezType = [FezType.privateEvent, FezType.personalEvent],
 }: FezListQueryOptions) => {
   return useFezListQuery({

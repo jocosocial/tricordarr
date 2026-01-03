@@ -223,11 +223,11 @@ export namespace UserNotificationData {
       valueOrZero(data.newSeamailMessageCount) +
       valueOrZero(data.newFezMessageCount) +
       valueOrZero(data.newPrivateEventMessageCount) +
-      valueOrZero(data.addedToSeamailCount) +
-      // We have no way to list "new LFGs you've been added to" in the API.
+      valueOrZero(data.addedToSeamailCount)
+      // We have no way to list "new LFGs/PEs you've been added to" in the API.
       // Only unread messages. So this is disabled until we can.
       // valueOrZero(data.addedToLFGCount) +
-      valueOrZero(data.addedToPrivateEventCount)
+      // valueOrZero(data.addedToPrivateEventCount)
     );
   };
 
