@@ -222,6 +222,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
                 style={commonStyles.paddingHorizontalSmall}
                 helperText={'Use this to disable the worker if it is causing problems.'}
                 value={enable}
+                disabled={appConfig.preRegistrationMode}
               />
               <SliderField
                 name={'fgsWorkerHealthTimer'}
@@ -236,6 +237,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
                 }
                 style={commonStyles.paddingHorizontalSmall}
                 onSlidingComplete={handleHealthChange}
+                disabled={appConfig.preRegistrationMode}
               />
             </View>
           </Formik>
@@ -245,11 +247,12 @@ export const BackgroundConnectionSettingsIOSView = () => {
             formikRef={formikRef}
             initialValues={{wifiNetworkNames: appConfig.wifiNetworkNames || []}}
             onSubmit={handleSubmit}
+            disabled={appConfig.preRegistrationMode}
           />
           <PrimaryActionButton
             disabled={
-              isFetching ||
-              (appConfig.wifiNetworkNames?.length === 1 && appConfig.wifiNetworkNames[0] === data?.shipWifiSSID)
+              (appConfig.wifiNetworkNames?.length === 1 && appConfig.wifiNetworkNames[0] === data?.shipWifiSSID) ||
+              appConfig.preRegistrationMode
             }
             onPress={resetDefaultValues}
             buttonText={'Reset to Default Networks'}
@@ -315,7 +318,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
             <DataFieldListItem
               title={'Provider Active'}
               description={
-                foregroundProviderStatus.isActive !== undefined
+                foregroundProviderStatus.isActive != null
                   ? foregroundProviderStatus.isActive
                     ? 'Yes'
                     : 'No'
@@ -325,7 +328,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
             <DataFieldListItem
               title={'Ping Interval'}
               description={
-                foregroundProviderStatus.socketPingInterval !== undefined
+                foregroundProviderStatus.socketPingInterval != null
                   ? `${foregroundProviderStatus.socketPingInterval} seconds`
                   : 'Unknown'
               }
@@ -339,7 +342,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
           <PrimaryActionButton
             buttonText={'Recycle Worker'}
             onPress={handleSetupManager}
-            disabled={!tokenData}
+            disabled={!tokenData || appConfig.preRegistrationMode}
             buttonColor={theme.colors.twitarrNeutralButton}
           />
         </PaddedContentView>

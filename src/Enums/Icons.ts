@@ -35,7 +35,7 @@ export enum AppIcons {
   mute = 'volume-off',
   unmute = 'volume-high',
   report = 'alert-octagon',
-  help = 'help-circle',
+  help = 'help-circle-outline',
   copy = 'content-copy',
   // Users
   profile = 'account-details-outline',

@@ -18,6 +18,7 @@ interface SearchBarBaseProps {
    * Useful for reactive search patterns where results update as the user types.
    */
   autoSearch?: boolean;
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
 }
 
 export const SearchBarBase = ({
@@ -29,6 +30,7 @@ export const SearchBarBase = ({
   minLength = 3,
   style,
   autoSearch = false,
+  autoCapitalize = 'none',
 }: SearchBarBaseProps) => {
   const {commonStyles} = useStyles();
   const queryClient = useQueryClient();
@@ -164,6 +166,7 @@ export const SearchBarBase = ({
         }}
         onClearIconPress={handleClear}
         style={styles.searchBar}
+        autoCapitalize={autoCapitalize}
       />
       {showHelp && <HelperText type={'error'}>{`Must enter >${minLength - 1} characters to search`}</HelperText>}
     </>

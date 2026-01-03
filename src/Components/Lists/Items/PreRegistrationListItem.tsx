@@ -17,18 +17,20 @@ export const PreRegistrationListItem = (props: PreRegistrationListItemProps) => 
   const styles = StyleSheet.create({
     title: {
       ...commonStyles.bold,
+      ...commonStyles.onTwitarrButton,
     },
     item: {
       // backgroundColor: 'pink',
       ...commonStyles.paddingVerticalZero,
     },
   });
+
   const getIcon = useCallback(() => {
     if (props.iconName) {
-      return <AppIcon icon={props.iconName} />;
+      return <AppIcon icon={props.iconName} color={commonStyles.onTwitarrButton.color} />;
     }
     return undefined;
-  }, [props.iconName]);
+  }, [props.iconName, commonStyles.onTwitarrButton.color]);
 
   return (
     <List.Item
