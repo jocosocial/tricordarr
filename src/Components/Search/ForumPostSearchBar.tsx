@@ -3,8 +3,8 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Keyboard, View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';

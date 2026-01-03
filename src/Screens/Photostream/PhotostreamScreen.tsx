@@ -5,9 +5,9 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {PhotostreamFAB} from '#src/Components/Buttons/FloatingActionButtons/PhotostreamFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {PhotostreamListItem} from '#src/Components/Lists/Items/PhotostreamListItem';

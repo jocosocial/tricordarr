@@ -5,9 +5,9 @@ import {View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {type TConversationListRef} from '#src/Components/Lists/ConversationList';
 import {ForumConversationList} from '#src/Components/Lists/Forums/ForumConversationList';
@@ -243,7 +243,9 @@ export const ForumThreadScreenBase = ({
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
+        refreshControl={
+          <AppRefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />
+        }
         forumData={data.pages[0]}
         hasPreviousPage={hasPreviousPage}
         // maintainViewPosition={maintainViewPosition}

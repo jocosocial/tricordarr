@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {Text} from 'react-native-paper';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BaseFABGroup} from '#src/Components/Buttons/FloatingActionButtons/BaseFABGroup';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';

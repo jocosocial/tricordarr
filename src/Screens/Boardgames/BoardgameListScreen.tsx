@@ -3,9 +3,9 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BoardgameGuideFAB} from '#src/Components/Buttons/FloatingActionButtons/BoardgameGuideFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';

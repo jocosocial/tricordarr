@@ -5,10 +5,10 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFAB} from '#src/Components/Buttons/FloatingActionButtons/SeamailFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SeamailAccountButtons} from '#src/Components/Buttons/SegmentedButtons/SeamailAccountButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {SeamailListScreenActionsMenu} from '#src/Components/Menus/Seamail/SeamailListScreenActionsMenu';

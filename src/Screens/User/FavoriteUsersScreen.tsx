@@ -5,8 +5,8 @@ import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {UserFindSearchBar} from '#src/Components/Search/UserSearchBar/UserFindSearchBar';
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DailyThemeCard} from '#src/Components/Cards/MainScreen/DailyThemeCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';

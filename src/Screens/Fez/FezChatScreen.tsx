@@ -8,9 +8,9 @@ import {View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {TConversationListRef} from '#src/Components/Lists/ConversationList';
 import {ChatFlatList} from '#src/Components/Lists/Fez/ChatFlatList';

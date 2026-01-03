@@ -5,8 +5,8 @@ import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {ItalicText} from '#src/Components/Text/ItalicText';
@@ -104,7 +104,9 @@ const BlockUsersScreenInner = ({navigation}: Props) => {
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<AppRefreshControl refreshing={isFetching || userBlockMutation.isPending} onRefresh={refetch} />}>
+        refreshControl={
+          <AppRefreshControl refreshing={isFetching || userBlockMutation.isPending} onRefresh={refetch} />
+        }>
         <PaddedContentView>
           <UserBlockText />
           {hasModerator && <ModeratorBlockText />}

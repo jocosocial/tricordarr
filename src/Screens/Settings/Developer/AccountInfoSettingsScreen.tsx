@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {ScrollView, View} from 'react-native';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';

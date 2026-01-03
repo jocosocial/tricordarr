@@ -2,10 +2,10 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ModeratorCard} from '#src/Components/Cards/MainScreen/ModeratorCard';
 import {TodayPreRegistrationCard} from '#src/Components/Cards/MainScreen/TodayPreRegistrationCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MainAccountMenu} from '#src/Components/Menus/MainAccountMenu';
 import {NotificationsMenu} from '#src/Components/Menus/NotificationsMenu';
 import {TodayHeaderTitle} from '#src/Components/Navigation/TodayHeaderTitle';

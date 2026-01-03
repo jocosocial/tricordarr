@@ -5,11 +5,11 @@ import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
 import {HeaderDayPlannerButton} from '#src/Components/Buttons/HeaderButtons/HeaderDayPlannerButton';
 import {HeaderScheduleYourDayButton} from '#src/Components/Buttons/HeaderButtons/HeaderScheduleYourDayButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
 import {ScheduleEventFilterMenu} from '#src/Components/Menus/Schedule/ScheduleEventFilterMenu';

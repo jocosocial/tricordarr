@@ -4,9 +4,8 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {HelperText, Text} from 'react-native-paper';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {SliderField} from '#src/Components/Forms/Fields/SliderField';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';

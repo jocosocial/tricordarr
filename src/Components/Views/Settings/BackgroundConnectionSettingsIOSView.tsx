@@ -3,9 +3,8 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {SliderField} from '#src/Components/Forms/Fields/SliderField';
 import {BackgroundConnectionSettingsForm} from '#src/Components/Forms/Settings/BackgroundConnectionSettingsForm';

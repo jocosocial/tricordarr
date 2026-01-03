@@ -3,8 +3,8 @@ import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';

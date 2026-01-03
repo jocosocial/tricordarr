@@ -4,7 +4,6 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BlockedOrMutedBanner} from '#src/Components/Banners/BlockedOrMutedBanner';
 import {HeaderProfileFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileFavoriteButton';
 import {HeaderProfileSeamailButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileSeamailButton';
@@ -13,6 +12,7 @@ import {UserAboutCard} from '#src/Components/Cards/UserProfile/UserAboutCard';
 import {UserContentCard} from '#src/Components/Cards/UserProfile/UserContentCard';
 import {UserNoteCard} from '#src/Components/Cards/UserProfile/UserNoteCard';
 import {UserProfileCard} from '#src/Components/Cards/UserProfile/UserProfileCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {UserProfileScreenActionsMenu} from '#src/Components/Menus/User/UserProfileScreenActionsMenu';
 import {UserProfileSelfActionsMenu} from '#src/Components/Menus/User/UserProfileSelfActionsMenu';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';

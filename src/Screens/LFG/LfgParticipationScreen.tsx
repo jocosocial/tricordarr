@@ -4,8 +4,8 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
 import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';

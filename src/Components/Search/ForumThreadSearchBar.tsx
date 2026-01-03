@@ -2,8 +2,8 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Keyboard, View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';

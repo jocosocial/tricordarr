@@ -4,9 +4,9 @@ import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SchedulePersonalEventCreateFAB} from '#src/Components/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
 import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {AppView} from '#src/Components/Views/AppView';

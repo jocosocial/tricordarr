@@ -3,8 +3,8 @@ import {Keyboard, ScrollView, StyleSheet, View} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {ContentText} from '#src/Components/Text/ContentText';
 import {SearchableMarkdownText} from '#src/Components/Text/SearchableMarkdownText';

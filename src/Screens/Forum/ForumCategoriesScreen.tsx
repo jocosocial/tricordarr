@@ -4,8 +4,8 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumAlertwordListItem} from '#src/Components/Lists/Items/Forum/ForumAlertwordListItem';
 import {ForumCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumCategoryListItem';
 import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';

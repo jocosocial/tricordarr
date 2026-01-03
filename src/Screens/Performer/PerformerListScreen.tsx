@@ -3,10 +3,10 @@ import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PerformerTypeButtons} from '#src/Components/Buttons/SegmentedButtons/PerformerTypeButtons';
 import {PerformerHeaderCard} from '#src/Components/Cards/Performer/PerformerHeaderCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {PerformerListActionsMenu} from '#src/Components/Menus/Performer/PerformerListActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';

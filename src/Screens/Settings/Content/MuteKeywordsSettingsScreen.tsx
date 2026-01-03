@@ -3,8 +3,8 @@ import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {KeywordChip} from '#src/Components/Chips/KeywordChip';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {KeywordForm} from '#src/Components/Forms/KeywordForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
