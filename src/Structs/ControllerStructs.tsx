@@ -251,6 +251,10 @@ export namespace UserNotificationData {
     }
     return valueOrZero(data.newPrivateEventMessageCount) + valueOrZero(data.addedToPrivateEventCount);
   };
+
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/notification/global']];
+  };
 }
 
 export interface Paginator {

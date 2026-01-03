@@ -11,7 +11,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCancelMutation} from '#src/Queries/Fez/FezMutations';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 
 const ModalContent = ({fez}: {fez: FezData}) => {
   const {commonStyles} = useStyles();
@@ -44,10 +44,10 @@ export const FezCancelModal = ({fezData}: {fezData: FezData}) => {
       {
         onSuccess: async () => {
           setSnackbarPayload({message: 'Successfully canceled this event.', messageType: 'info'});
-          const invalidations = FezData.getCacheKeys(fezData.fezID).map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          await Promise.all([...invalidations, queryClient.invalidateQueries({queryKey: ['/notification/global']})]);
+          const invalidations = UserNotificationData.getCacheKeys()
+            .concat(FezData.getCacheKeys(fezData.fezID))
+            .map(key => queryClient.invalidateQueries({queryKey: key}));
+          await Promise.all(invalidations);
           setModalVisible(false);
         },
       },

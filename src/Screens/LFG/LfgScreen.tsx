@@ -1,5 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
+import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
@@ -18,7 +19,7 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
@@ -42,6 +43,7 @@ const LfgScreenInner = ({navigation, route}: Props) => {
   const {notificationSocket} = useSocket();
   const isFocused = useIsFocused();
   const {hasModerator} = usePrivilege();
+  const queryClient = useQueryClient();
 
   const showChat =
     hasModerator ||
@@ -97,6 +99,14 @@ const LfgScreenInner = ({navigation, route}: Props) => {
       setLfg(data.pages[0]);
     }
   }, [data, setLfg]);
+
+  // Expire queries on first load
+  useEffect(() => {
+    // const invalidations = FezData.getCacheKeys().map(key => {
+    //   return queryClient.invalidateQueries({queryKey: key});
+    // });
+    Promise.all(UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})));
+  }, [queryClient]);
 
   // Mark as Read. Even though you may not have "read" it (tapping the Chat screen)
   // the API considers the GET in this screen as you reading it.

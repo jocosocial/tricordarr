@@ -12,7 +12,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventQuery} from '#src/Queries/Events/EventQueries';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
-import {EventData} from '#src/Structs/ControllerStructs';
+import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.eventScreen>;
 
@@ -36,13 +36,10 @@ export const EventScreen = ({navigation, route}: Props) => {
         },
         {
           onSuccess: async () => {
-            await Promise.all([
-              queryClient.invalidateQueries({queryKey: ['/events']}),
-              queryClient.invalidateQueries({queryKey: [`/events/${event.eventID}`]}),
-              queryClient.invalidateQueries({queryKey: ['/events/favorites']}),
-              // Update the user notification data in case this was/is a favorite.
-              queryClient.invalidateQueries({queryKey: ['/notification/global']}),
-            ]);
+            const invalidations = UserNotificationData.getCacheKeys()
+              .concat([['/events'], [`/events/${event.eventID}`], ['/events/favorites']])
+              .map(key => queryClient.invalidateQueries({queryKey: key}));
+            await Promise.all(invalidations);
           },
         },
       );

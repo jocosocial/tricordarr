@@ -13,6 +13,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserKeywordMutation} from '#src/Queries/User/UserMutations';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {UserNotificationData} from '#src/Structs/ControllerStructs';
 import {KeywordFormValues} from '#src/Types/FormValues';
 
 export const AlertKeywordsSettingsScreen = () => {
@@ -44,10 +45,10 @@ const AlertKeywordsSettingsScreenInner = () => {
       {
         onSuccess: async () => {
           setKeywords(keywords.filter(kw => kw !== keyword));
-          await Promise.all([
-            queryClient.invalidateQueries({queryKey: ['/user/alertwords']}),
-            queryClient.invalidateQueries({queryKey: ['/notification/global']}),
-          ]);
+          const invalidations = UserNotificationData.getCacheKeys()
+            .concat([['/user/alertwords']])
+            .map(key => queryClient.invalidateQueries({queryKey: key}));
+          await Promise.all(invalidations);
         },
       },
     );

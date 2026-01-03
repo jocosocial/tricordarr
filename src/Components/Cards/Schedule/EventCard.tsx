@@ -9,7 +9,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
-import {EventData} from '#src/Structs/ControllerStructs';
+import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
 
 interface EventCardProps {
@@ -46,13 +46,10 @@ export const EventCard = ({
       {
         onSuccess: async () => {
           // If this is too slow to reload, a setQueryData here may be in order.
-          await Promise.all([
-            queryClient.invalidateQueries({queryKey: ['/events']}),
-            queryClient.invalidateQueries({queryKey: [`/events/${eventData.eventID}`]}),
-            queryClient.invalidateQueries({queryKey: ['/events/favorites']}),
-            // Update the user notification data in case this was/is a favorite.
-            queryClient.invalidateQueries({queryKey: ['/notification/global']}),
-          ]);
+          const invalidations = UserNotificationData.getCacheKeys()
+            .concat([['/events'], [`/events/${eventData.eventID}`], ['/events/favorites']])
+            .map(key => queryClient.invalidateQueries({queryKey: key}));
+          await Promise.all(invalidations);
         },
         onSettled: () => setRefreshing(false),
       },
