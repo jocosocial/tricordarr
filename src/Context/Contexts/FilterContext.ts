@@ -15,6 +15,8 @@ interface ScheduleFilterContextType {
   setLfgTypeFilter: Dispatch<SetStateAction<FezType | undefined>>;
   lfgHidePastFilter: boolean;
   setLfgHidePastFilter: Dispatch<SetStateAction<boolean>>;
+  lfgOnlyNew: boolean | undefined;
+  setLfgOnlyNew: Dispatch<SetStateAction<boolean | undefined>>;
   forumSortOrder?: ForumSort;
   setForumSortOrder: Dispatch<SetStateAction<ForumSort | undefined>>;
   forumFilter?: ForumFilter;

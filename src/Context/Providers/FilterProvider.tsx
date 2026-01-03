@@ -14,6 +14,7 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
   const [lfgCruiseDayFilter, setLfgCruiseDayFilter] = useState<number>();
   const [lfgTypeFilter, setLfgTypeFilter] = useState<keyof typeof FezType>();
   const [lfgHidePastFilter, setLfgHidePastFilter] = useState(appConfig.schedule.hidePastLfgs);
+  const [lfgOnlyNew, setLfgOnlyNew] = useState<boolean | undefined>(undefined);
   const [forumFilter, setForumFilter] = useState<ForumFilter>();
   const [forumSortOrder, setForumSortOrder] = useState<ForumSort | undefined>(
     appConfig.userPreferences.defaultForumSortOrder,
@@ -57,6 +58,8 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
         setLfgTypeFilter,
         lfgHidePastFilter,
         setLfgHidePastFilter,
+        lfgOnlyNew,
+        setLfgOnlyNew,
         forumFilter,
         setForumFilter,
         forumSortOrder,

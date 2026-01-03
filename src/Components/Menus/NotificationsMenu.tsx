@@ -65,18 +65,21 @@ export const NotificationsMenu = () => {
           onPress={() => openAppUrl('tricordarr://seamail', {onlyNew: true})}
         />
       )}
+      {/* 
+      We have no way to list "new LFGs you've been added to" in the API.
+      Only unread messages. So this is disabled until we can.
       {!!data?.addedToLFGCount && (
         <Menu.Item
           title={`Added to ${data?.addedToLFGCount} new ${pluralize('LFG', data?.addedToLFGCount)}`}
           leadingIcon={AppIcons.lfg}
-          onPress={() => openAppUrl('tricordarr://lfg/joined')}
+          onPress={() => openAppUrl('tricordarr://lfg/joined', {onlyNew: true})}
         />
-      )}
+      )} */}
       {!!data?.newFezMessageCount && (
         <Menu.Item
           title={`${data?.newFezMessageCount} new ${pluralize('LFG', data?.newFezMessageCount)} messages`}
           leadingIcon={AppIcons.lfg}
-          onPress={() => openAppUrl('tricordarr://lfg/joined')}
+          onPress={() => openAppUrl('tricordarr://lfg/joined', {onlyNew: true})}
         />
       )}
       {!!data?.addedToPrivateEventCount && (
