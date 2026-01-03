@@ -44,7 +44,9 @@ export const SeamailListScreen = (props: Props) => {
 
 const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
-  const [showUnreadOnly, setShowUnreadOnly] = useState(false);
+  // showUnreadOnly should almost never be false since that's not useful. The query will not
+  // pass undefined to the API.
+  const [showUnreadOnly, setShowUnreadOnly] = useState<boolean | undefined>(undefined);
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isPending} = useSeamailListQuery({
     forUser: asPrivilegedUser,
     onlyNew: showUnreadOnly,
@@ -106,7 +108,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
             active={showUnreadOnly}
             title={'Filter Unread'}
             iconName={AppIcons.seamailUnread}
-            onPress={() => setShowUnreadOnly(prev => !prev)}
+            onPress={() => setShowUnreadOnly(prev => (prev === true ? undefined : true))}
           />
           <Item
             title={'Search'}
