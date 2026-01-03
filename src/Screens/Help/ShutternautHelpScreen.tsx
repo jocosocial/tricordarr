@@ -12,11 +12,12 @@ export const ShutternautHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'Roles'} />
         <HelpTopicView title={'Shutternaut'} icon={AppIcons.shutternaut}>
-          With this role you can pick events that you intend to photograph.
+          With this role you can pick events that you intend to photograph. Contact a Shutternaut Manager to be assigned
+          the Shutternaut role. Managers can assign the role to users through a link in the app drawer.
         </HelpTopicView>
         <HelpTopicView title={'Shutternaut Manager'} icon={AppIcons.shutternautManager}>
           This role allows you to mark events as needing to get photographed by someone. It can also assign the
-          Shutternaut role to users. Contact the Twitarr Team to be assigned the Shutternaut Manager role.
+          Shutternaut role to users. Contact the Twitarr Team or THO to be assigned the Shutternaut Manager role.
         </HelpTopicView>
         <HelpChapterTitleView title={'How to Use'} />
         <HelpTopicView title={'Filters'} icon={AppIcons.filter}>
