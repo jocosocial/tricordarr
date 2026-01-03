@@ -10,9 +10,29 @@ export const ShutternautHelpScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>
-        <HelpChapterTitleView title={'General'} />
-        <HelpTopicView title={'Placeholder'} icon={AppIcons.shutternaut}>
-          This help content is coming Soon™.
+        <HelpChapterTitleView title={'Roles'} />
+        <HelpTopicView title={'Shutternaut'} icon={AppIcons.shutternaut}>
+          With this role you can pick events that you intend to photograph.
+        </HelpTopicView>
+        <HelpTopicView title={'Shutternaut Manager'} icon={AppIcons.shutternautManager}>
+          This role allows you to mark events as needing to get photographed by someone. It can also assign the
+          Shutternaut role to users. Contact the Twitarr Team to be assigned the Shutternaut Manager role.
+        </HelpTopicView>
+        <HelpChapterTitleView title={'How to Use'} />
+        <HelpTopicView title={'Filters'} icon={AppIcons.filter}>
+          In the Schedule screen you can filter events based on whether they need a photographer. You can also view what
+          events you are photographing.
+        </HelpTopicView>
+        <HelpTopicView>
+          Long-press an event or open the event details screen to set the photographer for the event.
+        </HelpTopicView>
+        <HelpTopicView>
+          All Shutternaut roles will see a list of photographers for an event in the event details screen.
+        </HelpTopicView>
+        <HelpChapterTitleView title={'Shared Calendar'} />
+        <HelpTopicView>
+          All Shutternauts can see a shared calendar of events that they are photographing and events that need a
+          photographer. It can be accessed from the app drawer.
         </HelpTopicView>
       </ScrollingContentView>
     </AppView>
