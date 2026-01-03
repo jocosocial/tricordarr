@@ -150,29 +150,24 @@ export const ScheduleEventFilterMenu = () => {
         <>
           <Divider bold={true} />
           <SelectableMenuItem
+            title={"You're Photographing"}
+            onPress={() => handleShutternautFilterSelection('imphotographer')}
+            selected={eventShutternautFilter === 'imphotographer'}
+          />
+          <SelectableMenuItem
             title={'No Photographer'}
             onPress={() => handleShutternautFilterSelection('nophotographer')}
             selected={eventShutternautFilter === 'nophotographer'}
           />
           <SelectableMenuItem
-            title={"I'm Photographing"}
-            onPress={() => handleShutternautFilterSelection('imphotographer')}
-            selected={eventShutternautFilter === 'imphotographer'}
+            title={'Has Photographer'}
+            onPress={() => handleShutternautFilterSelection('hasphotographer')}
+            selected={eventShutternautFilter === 'hasphotographer'}
           />
-        </>
-      )}
-      {hasShutternautManager && (
-        <>
-          <Divider bold={true} />
           <SelectableMenuItem
             title={'Needs Photographer'}
             onPress={() => handleShutternautFilterSelection('needsPhotographer')}
             selected={eventShutternautFilter === 'needsPhotographer'}
-          />
-          <SelectableMenuItem
-            title={'Has Photographer'}
-            onPress={() => handleShutternautFilterSelection('hasphotographer')}
-            selected={eventShutternautFilter === 'hasphotographer'}
           />
         </>
       )}
