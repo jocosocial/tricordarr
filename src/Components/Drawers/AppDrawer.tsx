@@ -171,36 +171,16 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 onPress={() => Linking.openURL('tricordarr://codeOfConduct')}
               />
               <PaperDrawer.Item
-                label={'Shadow Host Form'}
-                icon={AppIcons.feedback}
-                onPress={() => Linking.openURL('tricordarr://eventfeedback')}
-              />
-              <PaperDrawer.Item
-                label={'About Twitarr (Service)'}
-                icon={AppIcons.twitarr}
-                onPress={() => Linking.openURL('tricordarr://about')}
-              />
-              <PaperDrawer.Item
-                label={'About Tricordarr (App)'}
-                icon={AppIcons.tricordarr}
-                onPress={() => Linking.openURL('tricordarr://about-app')}
-              />
-              <PaperDrawer.Item
                 label={'Help Manual'}
                 icon={AppIcons.help}
                 onPress={() => Linking.openURL('tricordarr://help')}
               />
             </PaperDrawer.Section>
-            <PaperDrawer.Section title={'Advanced'} showDivider={false}>
+            <PaperDrawer.Section title={'Special Roles'} showDivider={false}>
               <PaperDrawer.Item
-                label={'Settings'}
-                icon={AppIcons.settings}
-                onPress={() => Linking.openURL('tricordarr://settings')}
-              />
-              <PaperDrawer.Item
-                label={'Twitarr Web UI'}
-                icon={AppIcons.webview}
-                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}`)}
+                label={'Shadow Event Host Form'}
+                icon={AppIcons.feedback}
+                onPress={() => Linking.openURL('tricordarr://eventfeedback')}
               />
               {hasShutternaut && (
                 <PaperDrawer.Item
@@ -232,6 +212,28 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   right={getTTBadge}
                 />
               )}
+            </PaperDrawer.Section>
+            <PaperDrawer.Section title={'Advanced'} showDivider={false}>
+              <PaperDrawer.Item
+                label={'Settings'}
+                icon={AppIcons.settings}
+                onPress={() => Linking.openURL('tricordarr://settings')}
+              />
+              <PaperDrawer.Item
+                label={'Twitarr Web UI'}
+                icon={AppIcons.webview}
+                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}`)}
+              />
+              <PaperDrawer.Item
+                label={'About Twitarr (Service)'}
+                icon={AppIcons.twitarr}
+                onPress={() => Linking.openURL('tricordarr://about')}
+              />
+              <PaperDrawer.Item
+                label={'About Tricordarr (App)'}
+                icon={AppIcons.tricordarr}
+                onPress={() => Linking.openURL('tricordarr://about-app')}
+              />
             </PaperDrawer.Section>
           </ScrollView>
         );
