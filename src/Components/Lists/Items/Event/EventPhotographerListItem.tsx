@@ -21,7 +21,7 @@ export const EventPhotographerListItem = (props: EventPhotographerListItemProps)
   const getDescription = () => {
     return (
       <View style={commonStyles.chipContainer}>
-        {props.photographers.map((photographer, index) => {
+        {props.photographers.map(photographer => {
           return (
             <UserChip
               key={photographer.userID}
