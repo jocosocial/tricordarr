@@ -1,13 +1,17 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
+import {View} from 'react-native';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SeamailEditForm} from '#src/Components/Forms/SeamailEditForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {AppIcons} from '#src/Enums/Icons';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useFez} from '#src/Hooks/useFez';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
@@ -33,6 +37,26 @@ const SeamailEditScreenInner = ({route, navigation}: Props) => {
   const {fezData, isLoading} = useFez({fezID: route.params.fezID});
   const updateMutation = useFezUpdateMutation();
   const queryClient = useQueryClient();
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.seamailHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const onSubmit = (values: ForumThreadValues, helpers: FormikHelpers<ForumThreadValues>) => {
     if (!fezData) {

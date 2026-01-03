@@ -27,12 +27,12 @@ export const SeamailEditForm = ({fez, onSubmit}: SeamailEditFormProps) => {
   };
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({handleSubmit, isSubmitting, isValid}) => (
+      {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
           <TextField name={'title'} label={'Title'} />
           <PrimaryActionButton
-            disabled={isSubmitting || !isValid}
+            disabled={isSubmitting || !isValid || !dirty}
             isLoading={isSubmitting}
             viewStyle={[commonStyles.marginTopSmall]}
             onPress={handleSubmit}

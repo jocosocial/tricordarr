@@ -51,6 +51,10 @@ export const SeamailHelpScreen = () => {
         <HelpTopicView icon={AppIcons.seamailUnread}>
           You can filter to only show unread seamail conversations by pressing the "Filter Unread" button in the header.
         </HelpTopicView>
+        <HelpTopicView>
+          If you are the owner of a seamail conversation, you can edit the conversation by pressing the "Edit" button in
+          the header.
+        </HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );
