@@ -18,6 +18,7 @@ import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
@@ -33,7 +34,7 @@ type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seam
 export const SeamailListScreen = (props: Props) => {
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
           <SeamailListScreenInner {...props} />
         </DisabledFeatureScreen>

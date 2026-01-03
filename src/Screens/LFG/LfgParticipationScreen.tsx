@@ -31,7 +31,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgPar
 
 export const LfgParticipationScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={`/lfg/${props.route.params.fezID}`}>
         <LfgParticipationScreenInner {...props} />
       </DisabledFeatureScreen>

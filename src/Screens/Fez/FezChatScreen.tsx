@@ -25,7 +25,12 @@ import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, CommonStackParamList, useCommonStack} from '#src/Navigation/CommonScreens';
+import {
+  CommonStackComponents,
+  CommonStackParamList,
+  HelpScreenComponents,
+  useCommonStack,
+} from '#src/Navigation/CommonScreens';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
@@ -52,26 +57,27 @@ export const FezChatScreen = (props: Props) => {
   const routeName = route.name;
 
   // Determine feature and urlPath based on route name
-  let feature: SwiftarrFeature;
-  let urlPath: string;
+  // Fallback (shouldn't happen)
+  let feature: SwiftarrFeature = SwiftarrFeature.seamail;
+  let urlPath: string = '/seamail';
+  let helpScreen: HelpScreenComponents = CommonStackComponents.seamailHelpScreen;
 
   if (routeName === CommonStackComponents.seamailChatScreen) {
     feature = SwiftarrFeature.seamail;
     urlPath = '/seamail/${route.params.fezID}';
+    helpScreen = CommonStackComponents.seamailHelpScreen;
   } else if (routeName === CommonStackComponents.lfgChatScreen) {
     feature = SwiftarrFeature.friendlyfez;
     urlPath = '/lfg/${route.params.fezID}';
+    helpScreen = CommonStackComponents.lfgHelpScreen;
   } else if (routeName === CommonStackComponents.privateEventChatScreen) {
     feature = SwiftarrFeature.personalevents;
     urlPath = '/privateevent/${route.params.fezID}';
-  } else {
-    // Fallback (shouldn't happen)
-    feature = SwiftarrFeature.seamail;
-    urlPath = '/seamail';
+    helpScreen = CommonStackComponents.scheduleHelpScreen;
   }
 
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={helpScreen}>
       <DisabledFeatureScreen feature={feature} urlPath={urlPath}>
         <FezChatScreenInner {...props} />
       </DisabledFeatureScreen>

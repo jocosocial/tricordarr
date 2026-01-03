@@ -21,7 +21,7 @@ type Props = StackScreenProps<MainStackParamList, MainStackComponents.userDirect
 export const UserDirectoryScreen = (props: Props) => {
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.userProfileHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/directory'}>
           <UserDirectoryScreenInner {...props} />
         </DisabledFeatureScreen>

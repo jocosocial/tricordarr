@@ -15,7 +15,7 @@ export type Props = StackScreenProps<CommonStackParamList, CommonStackComponents
 
 export const ForumPostSearchScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
         <ForumPostSearchScreenInner {...props} />
       </DisabledFeatureScreen>

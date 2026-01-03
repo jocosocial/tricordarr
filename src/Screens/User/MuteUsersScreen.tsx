@@ -28,7 +28,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.muteUs
 
 export const MuteUsersScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.userProfileHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/blocks'}>
         <MuteUsersScreenInner {...props} />
       </DisabledFeatureScreen>

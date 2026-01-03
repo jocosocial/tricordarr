@@ -25,7 +25,9 @@ export const UserProfileScreen = (props: Props) => {
     return content;
   }
 
-  return <PreRegistrationScreen>{content}</PreRegistrationScreen>;
+  return (
+    <PreRegistrationScreen helpScreen={CommonStackComponents.userProfileHelpScreen}>{content}</PreRegistrationScreen>
+  );
 };
 
 const UserProfileScreenInner = ({route}: Props) => {

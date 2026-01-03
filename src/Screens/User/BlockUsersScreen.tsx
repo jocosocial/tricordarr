@@ -28,7 +28,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.blockU
 
 export const BlockUsersScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.userProfileHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/blocks'}>
         <BlockUsersScreenInner {...props} />
       </DisabledFeatureScreen>

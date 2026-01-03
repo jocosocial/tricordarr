@@ -9,15 +9,24 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, HelpScreenComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
 import preregistration from '#assets/preregistration.jpg';
 
-export const PreRegistrationView = () => {
+interface PreRegistrationViewProps {
+  helpScreen?: HelpScreenComponents;
+}
+
+export const PreRegistrationView = ({
+  helpScreen = CommonStackComponents.preRegistrationHelpScreen,
+}: PreRegistrationViewProps) => {
   const commonNavigation = useCommonStack();
 
+  /**
+   * You can pass a custom help screen to help the user maintain context.
+   */
   const getNavButtons = useCallback(() => {
     return (
       <View>
@@ -25,12 +34,14 @@ export const PreRegistrationView = () => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => commonNavigation.push(CommonStackComponents.preRegistrationHelpScreen)}
+            onPress={() => {
+              commonNavigation.push(helpScreen);
+            }}
           />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [commonNavigation]);
+  }, [commonNavigation, helpScreen]);
 
   useEffect(() => {
     commonNavigation.setOptions({

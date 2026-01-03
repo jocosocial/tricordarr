@@ -18,7 +18,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamai
 export const SeamailAddParticipantScreen = (props: Props) => {
   // Yes this is an /lfg route.
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={`/lfg/${props.route.params.fez.fezID}/members`}>
         <SeamailAddParticipantScreenInner {...props} />
       </DisabledFeatureScreen>

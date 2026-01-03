@@ -9,6 +9,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameExpansionsQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -20,7 +21,7 @@ type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameE
 export const BoardgameExpansionsScreen = (props: Props) => {
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
         <DisabledFeatureScreen
           feature={SwiftarrFeature.gameslist}
           urlPath={`/boardgames/${props.route.params.boardgameID}/expansions`}>
