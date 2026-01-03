@@ -1,10 +1,10 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
-import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -116,7 +116,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
       <PerformerProfileWarningView />
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
           <Text>
             This self-service form allows you, the organizer of a Shadow Event, to create a Bio page for yourself,

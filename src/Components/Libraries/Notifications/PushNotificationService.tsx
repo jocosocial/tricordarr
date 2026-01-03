@@ -27,12 +27,13 @@ export const PushNotificationService = () => {
       return;
     }
 
-    if (isLoggedIn && enableUserNotifications) {
+    // enableUserNotifications already factors in oobeCompleted, isLoggedIn, and preRegistrationMode.
+    if (enableUserNotifications) {
       startPushProvider();
     } else {
       stopPushProvider();
     }
-  }, [enableUserNotifications, isLoading, isLoggedIn]);
+  }, [enableUserNotifications, isLoggedIn, isLoading]);
 
   return null;
 };

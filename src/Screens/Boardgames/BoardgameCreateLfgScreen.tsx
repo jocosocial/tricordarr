@@ -4,6 +4,7 @@ import React from 'react';
 
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -13,7 +14,7 @@ type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameC
 
 export const BoardgameCreateLfgScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.gameslist}
         urlPath={`/boardgames/${props.route.params.boardgame.gameID}/createfez`}>

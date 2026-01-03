@@ -25,7 +25,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamai
 
 export const SeamailEditScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={`/seamail/${props.route.params.fezID}/edit`}>
         <SeamailEditScreenInner {...props} />
       </DisabledFeatureScreen>

@@ -12,7 +12,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumT
 
 export const ForumThreadScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={`/forum/${props.route.params.forumID}`}>
         <ForumThreadScreenInner {...props} />
       </DisabledFeatureScreen>

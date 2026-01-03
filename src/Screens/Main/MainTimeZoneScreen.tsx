@@ -1,11 +1,12 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import moment from 'moment-timezone';
 import React, {useCallback, useEffect} from 'react';
-import {Linking, RefreshControl, View} from 'react-native';
+import {Linking, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -14,7 +15,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -36,7 +37,7 @@ const TimeZoneListItem = ({record}: {record: TimeZoneChangeRecord}) => {
 
 export const MainTimeZoneScreen = () => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.timeZoneHelpScreen}>
       <TimeZoneScreen />
     </PreRegistrationScreen>
   );
@@ -76,7 +77,7 @@ const TimeZoneScreen = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refresh} />}>
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refresh} />}>
         <ListSection>
           <ListSubheader>Device Time</ListSubheader>
         </ListSection>

@@ -5,6 +5,7 @@ import React from 'react';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {FezType} from '#src/Enums/FezType';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
+import {BoardgameHelpScreen} from '#src/Screens/Boardgames/BoardgameHelpScreen';
 import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
 import {PreRegistrationHelpScreen} from '#src/Screens/Disabled/PreRegistrationHelpScreen';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
@@ -45,6 +46,7 @@ import {PerformerScreen} from '#src/Screens/Performer/PerformerScreen';
 import {PersonalEventCreateScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateScreen';
 import {PersonalEventEditScreen} from '#src/Screens/PersonalEvent/PersonalEventEditScreen';
 import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScreen';
+import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
 import {ScheduleDayPlannerScreen} from '#src/Screens/Schedule/ScheduleDayPlannerScreen';
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {ScheduleHelpScreen} from '#src/Screens/Schedule/ScheduleHelpScreen';
@@ -264,6 +266,8 @@ export type CommonStackParamList = {
   AboutTwitarrScreen: undefined;
   ShutternautHelpScreen: undefined;
   ModeratorHelpScreen: undefined;
+  BoardgameHelpScreen: undefined;
+  PhotostreamHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -339,7 +343,34 @@ export enum CommonStackComponents {
   aboutTwitarrScreen = 'AboutTwitarrScreen',
   shutternautHelpScreen = 'ShutternautHelpScreen',
   moderatorHelpScreen = 'ModeratorHelpScreen',
+  boardgameHelpScreen = 'BoardgameHelpScreen',
+  photostreamHelpScreen = 'PhotostreamHelpScreen',
 }
+
+/**
+ * Helper type for help screens. Needed for proper typing when calling commonNavigation.push().
+ */
+export type HelpScreenComponents =
+  | CommonStackComponents.preRegistrationHelpScreen
+  | CommonStackComponents.moderatorHelpScreen
+  | CommonStackComponents.scheduleHelpScreen
+  | CommonStackComponents.userRelationsHelpScreen
+  | CommonStackComponents.userDirectoryHelpScreen
+  | CommonStackComponents.forumHelpScreen
+  | CommonStackComponents.seamailHelpScreen
+  | CommonStackComponents.performerHelpScreen
+  | CommonStackComponents.siteUIHelpScreen
+  | CommonStackComponents.disabledHelpScreen
+  | CommonStackComponents.lfgHelpScreen
+  | CommonStackComponents.lfgCreateHelpScreen
+  | CommonStackComponents.timeZoneHelpScreen
+  | CommonStackComponents.helpIndexScreen
+  | CommonStackComponents.mainHelpScreen
+  | CommonStackComponents.aboutTricordarrScreen
+  | CommonStackComponents.aboutTwitarrScreen
+  | CommonStackComponents.shutternautHelpScreen
+  | CommonStackComponents.boardgameHelpScreen
+  | CommonStackComponents.photostreamHelpScreen;
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
   const {getLeftMainHeaderButtons} = useDrawer();
@@ -700,6 +731,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.moderatorHelpScreen}
         component={ModeratorHelpScreen}
         options={{title: 'Moderator Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.boardgameHelpScreen}
+        component={BoardgameHelpScreen}
+        options={{title: 'Board Game Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.photostreamHelpScreen}
+        component={PhotostreamHelpScreen}
+        options={{title: 'Help'}}
       />
     </>
   );

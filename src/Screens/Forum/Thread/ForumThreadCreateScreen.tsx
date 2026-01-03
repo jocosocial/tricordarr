@@ -22,7 +22,7 @@ type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumThr
 
 export const ForumThreadCreateScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.forums}
         urlPath={`/forums/${props.route.params.categoryId}/createForum`}>

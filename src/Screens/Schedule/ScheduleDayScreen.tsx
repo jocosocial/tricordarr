@@ -1,7 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -9,6 +9,7 @@ import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/Schedul
 import {HeaderDayPlannerButton} from '#src/Components/Buttons/HeaderButtons/HeaderDayPlannerButton';
 import {HeaderScheduleYourDayButton} from '#src/Components/Buttons/HeaderButtons/HeaderScheduleYourDayButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
 import {ScheduleEventFilterMenu} from '#src/Components/Menus/Schedule/ScheduleEventFilterMenu';
@@ -286,7 +287,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
           <ScheduleFlatList
             listRef={listRef}
             items={scheduleList}
-            refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
+            refreshControl={<AppRefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
             setRefreshing={setRefreshing}
             initialScrollIndex={scrollNowIndex}
             onScrollThreshold={onScrollThreshold}

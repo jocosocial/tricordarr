@@ -16,6 +16,7 @@ export interface Spec extends TurboModule {
     isActive?: boolean;
     socketPingInterval?: number;
   }>;
+  clearLocalPushManager(): void;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('NativeTricordarrModule');

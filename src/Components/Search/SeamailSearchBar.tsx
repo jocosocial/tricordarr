@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Keyboard, RefreshControl} from 'react-native';
+import {Keyboard} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -68,7 +69,7 @@ export const SeamailSearchBar = () => {
       />
       <SeamailFlatList
         fezList={fezList}
-        refreshControl={<RefreshControl refreshing={isFetching || refreshing} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={isFetching || refreshing} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
       />
     </>

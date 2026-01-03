@@ -1,9 +1,10 @@
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {SliderField} from '#src/Components/Forms/Fields/SliderField';
 import {BackgroundConnectionSettingsForm} from '#src/Components/Forms/Settings/BackgroundConnectionSettingsForm';
@@ -196,7 +197,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ListSection>
           <ListSubheader>About</ListSubheader>
         </ListSection>
@@ -222,6 +223,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
                 style={commonStyles.paddingHorizontalSmall}
                 helperText={'Use this to disable the worker if it is causing problems.'}
                 value={enable}
+                disabled={appConfig.preRegistrationMode}
               />
               <SliderField
                 name={'fgsWorkerHealthTimer'}
@@ -236,6 +238,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
                 }
                 style={commonStyles.paddingHorizontalSmall}
                 onSlidingComplete={handleHealthChange}
+                disabled={appConfig.preRegistrationMode}
               />
             </View>
           </Formik>
@@ -245,11 +248,12 @@ export const BackgroundConnectionSettingsIOSView = () => {
             formikRef={formikRef}
             initialValues={{wifiNetworkNames: appConfig.wifiNetworkNames || []}}
             onSubmit={handleSubmit}
+            disabled={appConfig.preRegistrationMode}
           />
           <PrimaryActionButton
             disabled={
-              isFetching ||
-              (appConfig.wifiNetworkNames?.length === 1 && appConfig.wifiNetworkNames[0] === data?.shipWifiSSID)
+              (appConfig.wifiNetworkNames?.length === 1 && appConfig.wifiNetworkNames[0] === data?.shipWifiSSID) ||
+              appConfig.preRegistrationMode
             }
             onPress={resetDefaultValues}
             buttonText={'Reset to Default Networks'}
@@ -315,7 +319,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
             <DataFieldListItem
               title={'Provider Active'}
               description={
-                foregroundProviderStatus.isActive !== undefined
+                foregroundProviderStatus.isActive != null
                   ? foregroundProviderStatus.isActive
                     ? 'Yes'
                     : 'No'
@@ -325,7 +329,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
             <DataFieldListItem
               title={'Ping Interval'}
               description={
-                foregroundProviderStatus.socketPingInterval !== undefined
+                foregroundProviderStatus.socketPingInterval != null
                   ? `${foregroundProviderStatus.socketPingInterval} seconds`
                   : 'Unknown'
               }
@@ -339,7 +343,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
           <PrimaryActionButton
             buttonText={'Recycle Worker'}
             onPress={handleSetupManager}
-            disabled={!tokenData}
+            disabled={!tokenData || appConfig.preRegistrationMode}
             buttonColor={theme.colors.twitarrNeutralButton}
           />
         </PaddedContentView>

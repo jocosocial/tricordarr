@@ -1,7 +1,8 @@
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import React, {useCallback, useState} from 'react';
-import {RefreshControl, ScrollView, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
@@ -17,7 +18,7 @@ export const NetworkInfoSettings = () => {
 
   return (
     <AppView>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View>
           <ListSubheader>NetInfo</ListSubheader>
           {Object.keys(data.details ?? []).map(key => (

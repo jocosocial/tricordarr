@@ -13,6 +13,7 @@ import {ChangeUsernameScreen} from '#src/Screens/Settings/Account/ChangeUsername
 import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
 import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
 import {TimeSettingsScreen} from '#src/Screens/Settings/Config/TimeSettingsScreen';
+import {AccountInfoSettingsScreen} from '#src/Screens/Settings/Developer/AccountInfoSettingsScreen';
 import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
 import {FeatureSettingsScreen} from '#src/Screens/Settings/Developer/FeatureSettingsScreen';
 import {LoadingSettingScreen} from '#src/Screens/Settings/Developer/LoadingSettingScreen';
@@ -23,7 +24,6 @@ import {QueryKeysSettingsScreen} from '#src/Screens/Settings/Developer/QueryKeys
 import {QuerySettingsScreen} from '#src/Screens/Settings/Developer/QuerySettingsScreen';
 import {TestErrorScreen} from '#src/Screens/Settings/Developer/TestErrorScreen';
 import {TestNotificationScreen} from '#src/Screens/Settings/Developer/TestNotificationScreen';
-import {UserInfoSettingsScreen} from '#src/Screens/Settings/Developer/UserInfoSettingsScreen';
 import {BackgroundConnectionSettingsScreen} from '#src/Screens/Settings/Notifications/BackgroundConnectionSettingsScreen';
 import {NotificationPollerSettingsScreen} from '#src/Screens/Settings/Notifications/NotificationPollerSettingsScreen';
 import {PushNotificationSettingsScreen} from '#src/Screens/Settings/Notifications/PushNotificationSettingsScreen';
@@ -80,7 +80,7 @@ export enum SettingsStackScreenComponents {
   loadingSettingScreen = 'LoadingSettingScreen',
   registerScreen = 'RegisterScreen',
   cruiseSettingsScreen = 'CruiseSettingsScreen',
-  userInfoSettingsScreen = 'UserInfoSettingsScreen',
+  accountInfoSettingsScreen = 'UserInfoSettingsScreen',
   aboutSettingsScreen = 'AboutSettingsScreen',
   querySettingsScreen = 'QuerySettingsScreen',
   queryKeysSettingsScreen = 'QueryKeysSettingsScreen',
@@ -189,9 +189,9 @@ export const SettingsStackNavigator = () => {
         options={{title: 'Cruise Settings'}}
       />
       <Stack.Screen
-        name={SettingsStackScreenComponents.userInfoSettingsScreen}
-        component={UserInfoSettingsScreen}
-        options={{title: 'User Info'}}
+        name={SettingsStackScreenComponents.accountInfoSettingsScreen}
+        component={AccountInfoSettingsScreen}
+        options={{title: 'Account Info'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.aboutSettingsScreen}

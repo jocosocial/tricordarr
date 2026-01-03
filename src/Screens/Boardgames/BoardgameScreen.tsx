@@ -2,12 +2,13 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {decode} from 'html-entities';
 import React, {useCallback, useEffect} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {HeaderFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderFavoriteButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -15,6 +16,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameFavoriteMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {useBoardgameQuery} from '#src/Queries/Boardgames/BoardgameQueries';
@@ -32,7 +34,7 @@ const decodeHtml = (html?: string) => {
 
 export const BoardgameScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
         <BoardgameScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -110,7 +112,7 @@ const BoardgameScreenInner = ({navigation, route}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <DataFieldListItem title={'Name'} description={data.gameName} />
         {!!players && <DataFieldListItem title={'Players'} description={players} />}
         {!!playingTime && <DataFieldListItem title={'Playing Time'} description={playingTime} />}

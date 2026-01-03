@@ -2,12 +2,13 @@ import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {SeamailFAB} from '#src/Components/Buttons/FloatingActionButtons/SeamailFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SeamailAccountButtons} from '#src/Components/Buttons/SegmentedButtons/SeamailAccountButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {SeamailListScreenActionsMenu} from '#src/Components/Menus/Seamail/SeamailListScreenActionsMenu';
@@ -18,6 +19,7 @@ import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
@@ -33,7 +35,7 @@ type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seam
 export const SeamailListScreen = (props: Props) => {
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
           <SeamailListScreenInner {...props} />
         </DisabledFeatureScreen>
@@ -44,7 +46,9 @@ export const SeamailListScreen = (props: Props) => {
 
 const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
-  const [showUnreadOnly, setShowUnreadOnly] = useState(false);
+  // showUnreadOnly should almost never be false since that's not useful. The query will not
+  // pass undefined to the API.
+  const [showUnreadOnly, setShowUnreadOnly] = useState<boolean | undefined>(undefined);
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isPending} = useSeamailListQuery({
     forUser: asPrivilegedUser,
     onlyNew: showUnreadOnly,
@@ -106,7 +110,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
             active={showUnreadOnly}
             title={'Filter Unread'}
             iconName={AppIcons.seamailUnread}
-            onPress={() => setShowUnreadOnly(prev => !prev)}
+            onPress={() => setShowUnreadOnly(prev => (prev === true ? undefined : true))}
           />
           <Item
             title={'Search'}
@@ -165,7 +169,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
       )}
       <SeamailFlatList
         fezList={fezList}
-        refreshControl={<RefreshControl refreshing={isLoading || refreshing || isPending} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={isLoading || refreshing || isPending} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
         onScrollThreshold={onScrollThreshold}
         hasNextPage={hasNextPage}

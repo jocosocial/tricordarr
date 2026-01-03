@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {BaseFABGroup} from '#src/Components/Buttons/FloatingActionButtons/BaseFABGroup';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -48,7 +48,7 @@ export const TestErrorScreen = () => {
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={isFetchingError || isFetchingSuccess} enabled={false} />}>
+        refreshControl={<AppRefreshControl refreshing={isFetchingError || isFetchingSuccess} enabled={false} />}>
         <PaddedContentView>
           <Text>Banner: {errorBanner}</Text>
           <PrimaryActionButton

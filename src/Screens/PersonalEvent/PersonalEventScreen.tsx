@@ -24,7 +24,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.person
 
 export const PersonalEventScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.scheduleHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/privateevent/list'}>
         <PersonalEventScreenInner {...props} />
       </DisabledFeatureScreen>

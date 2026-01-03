@@ -1,14 +1,16 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameExpansionsQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -20,7 +22,7 @@ type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameE
 export const BoardgameExpansionsScreen = (props: Props) => {
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
         <DisabledFeatureScreen
           feature={SwiftarrFeature.gameslist}
           urlPath={`/boardgames/${props.route.params.boardgameID}/expansions`}>
@@ -92,7 +94,7 @@ const BoardgameExpansionsScreenInner = ({navigation, route}: Props) => {
         hasPreviousPage={hasPreviousPage}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
       />
     </AppView>
   );

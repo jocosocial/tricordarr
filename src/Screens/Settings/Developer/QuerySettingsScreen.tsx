@@ -2,9 +2,9 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl} from 'react-native';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {QuerySettingsForm} from '#src/Components/Forms/Settings/QuerySettingsForm';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -111,7 +111,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetchingHealth} enabled={false} />}>
+        refreshControl={<AppRefreshControl refreshing={isFetchingHealth} enabled={false} />}>
         <ListSubheader>Query Cache</ListSubheader>
         <DataFieldListItem title={'Oldest Item'} description={<RelativeTimeTag date={oldestCacheItem} />} />
         <DataFieldListItem

@@ -9,7 +9,7 @@ import {BoardgameComplexityPickerField} from '#src/Components/Forms/Fields/Board
 import {BoardgameDurationPickerField} from '#src/Components/Forms/Fields/Boardgames/BoardgameDurationPickerField';
 import {BoardgameNumPlayersPickerField} from '#src/Components/Forms/Fields/Boardgames/BoardgameNumPlayersPickerField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {NumberValidation} from '#src/Libraries/ValidationSchema';
+import {IntegerValidation} from '#src/Libraries/ValidationSchema';
 import {BoardgameRecommendationData} from '#src/Structs/ControllerStructs';
 
 interface PersonalEventFormProps {
@@ -19,10 +19,10 @@ interface PersonalEventFormProps {
 }
 
 const validationSchema = Yup.object().shape({
-  numPlayers: NumberValidation,
-  timeToPlay: NumberValidation,
-  maxAge: NumberValidation,
-  complexity: NumberValidation,
+  numPlayers: IntegerValidation,
+  timeToPlay: IntegerValidation,
+  maxAge: IntegerValidation,
+  complexity: IntegerValidation,
 });
 
 export const BoardgameRecommendationForm = ({

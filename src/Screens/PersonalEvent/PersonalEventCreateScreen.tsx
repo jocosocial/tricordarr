@@ -24,7 +24,7 @@ import {FezFormValues} from '#src/Types/FormValues';
 
 export const PersonalEventCreateScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.lfgCreateHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/privateevent/create'}>
         <PersonalEventCreateScreenInner {...props} />
       </DisabledFeatureScreen>

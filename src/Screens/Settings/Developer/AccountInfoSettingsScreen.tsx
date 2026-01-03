@@ -1,19 +1,24 @@
 import React, {useState} from 'react';
-import {RefreshControl, ScrollView, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
-export const UserInfoSettingsScreen = () => {
+export const AccountInfoSettingsScreen = () => {
   const {data: profilePublicData, refetch: refetchProfile} = useUserProfileQuery();
   const {tokenData} = useAuth();
   const {roles, refetch: refetchRoles} = useRoles();
   const [refreshing, setRefreshing] = useState(false);
+  const {theme} = useAppTheme();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -25,7 +30,7 @@ export const UserInfoSettingsScreen = () => {
 
   return (
     <AppView>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View>
           <ListSubheader>Profile Public Data</ListSubheader>
           <DataFieldListItem title={'UserID'} description={profilePublicData?.header.userID} />
@@ -40,6 +45,14 @@ export const UserInfoSettingsScreen = () => {
         <View>
           <ListSubheader>User Roles</ListSubheader>
           <DataFieldListItem title={'Roles'} description={rolesDescription} />
+          <PaddedContentView>
+            <PrimaryActionButton
+              buttonColor={theme.colors.twitarrNeutralButton}
+              buttonText={'Reload Roles'}
+              onPress={onRefresh}
+              isLoading={refreshing}
+            />
+          </PaddedContentView>
         </View>
       </ScrollView>
     </AppView>

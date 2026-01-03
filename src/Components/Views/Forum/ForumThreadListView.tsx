@@ -1,8 +1,8 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
-import {RefreshControl} from 'react-native';
 
 import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
 import {SelectionButtons} from '#src/Components/Buttons/SegmentedButtons/SelectionButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
@@ -69,7 +69,7 @@ export const ForumThreadListView = ({
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
         categoryID={category?.categoryID}

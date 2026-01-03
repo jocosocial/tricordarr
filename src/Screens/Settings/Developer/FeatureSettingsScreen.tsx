@@ -1,8 +1,9 @@
 import {Formik} from 'formik';
 import React, {useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {DataTable, Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -17,9 +18,7 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 export const FeatureSettingsScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {appConfig, updateAppConfig} = useConfig();
-  const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery({
-    enabled: !appConfig.preRegistrationMode,
-  });
+  const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {disabledFeatures} = useFeature();
   const {commonStyles} = useStyles();
   const [enableExperiments, setEnableExperiments] = useState(appConfig.enableExperiments);
@@ -44,7 +43,7 @@ export const FeatureSettingsScreen = () => {
       <ScrollingContentView
         isStack={true}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!appConfig.preRegistrationMode} />
+          <AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!appConfig.preRegistrationMode} />
         }>
         <ListSection>
           <ListSubheader>Server Features</ListSubheader>

@@ -11,7 +11,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumP
 
 export const ForumPostHashtagScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.forums}
         urlPath={`/forumpost/search?hashtag=${props.route.params.hashtag}`}>

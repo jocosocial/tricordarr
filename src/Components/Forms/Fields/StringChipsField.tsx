@@ -14,6 +14,7 @@ interface StringChipsFieldProps {
   onAddValue?: () => void;
   onRemoveValue?: () => void;
   inputLabel?: string;
+  disabled?: boolean;
 }
 export const StringChipsField = ({
   name,
@@ -22,6 +23,7 @@ export const StringChipsField = ({
   onAddValue,
   onRemoveValue,
   inputLabel = 'Add new value',
+  disabled = false,
 }: StringChipsFieldProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
@@ -91,13 +93,14 @@ export const StringChipsField = ({
             onChangeText={setInputValue}
             multiline={false}
             label={inputLabel}
+            disabled={disabled}
           />
         </View>
         <View style={styles.buttonContainer}>
           <IconButton
             mode={'contained'}
             iconColor={theme.colors.onBackground}
-            disabled={!inputValue}
+            disabled={!inputValue || disabled}
             icon={AppIcons.new}
             onPress={() => addValue(inputValue)}
           />

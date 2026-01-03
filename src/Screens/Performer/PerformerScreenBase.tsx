@@ -1,10 +1,11 @@
 import React from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 
 import {PerformerBioCard} from '#src/Components/Cards/Performer/PerformerBioCard';
 import {PerformerYearsCard} from '#src/Components/Cards/Performer/PerformerYearsCard';
 import {EventCard} from '#src/Components/Cards/Schedule/EventCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {AppView} from '#src/Components/Views/AppView';
@@ -52,7 +53,7 @@ export const PerformerScreenBase = ({performerData, onRefresh, isFetching = fals
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={onRefresh} />}
         isStack={true}>
         <PaddedContentView style={styles.listContentContainer} padTop={true}>
           {performerData.header.photo && (

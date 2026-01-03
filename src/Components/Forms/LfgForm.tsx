@@ -16,8 +16,8 @@ import {publicLocationSuggestions} from '#src/Libraries/Ship';
 import {
   DateValidation,
   InfoStringValidation,
+  IntegerValidation,
   LFGTypeValidation,
-  NumberValidation,
 } from '#src/Libraries/ValidationSchema';
 import {FezFormValues} from '#src/Types/FormValues';
 
@@ -31,8 +31,8 @@ const validationSchema = Yup.object().shape({
   title: InfoStringValidation,
   location: InfoStringValidation,
   info: InfoStringValidation,
-  minCapacity: NumberValidation.min(1).max(3),
-  maxCapacity: NumberValidation.min(1).max(3),
+  minCapacity: IntegerValidation.min(1).max(3),
+  maxCapacity: IntegerValidation.min(1).max(3),
   fezType: LFGTypeValidation,
   startDate: DateValidation,
 });

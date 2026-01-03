@@ -56,6 +56,51 @@ import UserNotifications
 	}
 
 	/**
+	 Clears all stored notification settings and stops all providers.
+	 Provides a clean slate by clearing stored socket URL, token, disabling the background push manager,
+	 and stopping/clearing the foreground push provider.
+	 Called from the JavaScript side over the "bridge".
+	 */
+	@objc public static func clearSettings() {
+		let instance = Notifications.shared
+		instance.logger.log("[Notifications.swift] clearSettings called")
+
+		// Clear stored settings
+		instance.storedSocketUrl = nil
+		instance.storedToken = nil
+
+		// Stop foreground push provider if running
+		instance.checkStopInAppSocket()
+
+		// Clear foreground push provider config
+		instance.foregroundPushProvider.updateConfig(serverURL: nil, token: nil)
+
+		// Disable background push manager if it exists
+		if let manager = instance.backgroundPushManager {
+			manager.isEnabled = false
+			manager.saveToPreferences { error in
+				if let error = error {
+					instance.logger.error(
+						"[Notifications.swift] Error saving disabled push manager preferences: \(error.localizedDescription, privacy: .public)"
+					)
+					return
+				}
+				instance.logger.log("[Notifications.swift] Push manager disabled and preferences saved")
+			}
+		}
+
+		// Invalidate and clear the provider down timer
+		instance.providerDownTimer?.invalidate()
+		instance.providerDownTimer = nil
+
+		// Invalidate and clear the KVO observer
+		instance.isActiveObservation?.invalidate()
+		instance.isActiveObservation = nil
+
+		instance.logger.log("[Notifications.swift] clearSettings completed")
+	}
+
+	/**
 	 Gets the current status of the background push manager.
 	 Returns a BackgroundPushManagerStatus struct with isActive, isEnabled, and matchSSIDs properties.
 	 Called from the JavaScript side over the "bridge".

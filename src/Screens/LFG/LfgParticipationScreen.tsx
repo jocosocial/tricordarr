@@ -1,10 +1,11 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
 import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
@@ -31,7 +32,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgPar
 
 export const LfgParticipationScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={`/lfg/${props.route.params.fezID}`}>
         <LfgParticipationScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -140,7 +141,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} />}>
         <DataFieldListItem title={'Title'} description={lfg.title} />
         <DataFieldListItem title={'Hosted By'} />
         <FezParticipantListItem

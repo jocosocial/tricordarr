@@ -1,6 +1,6 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -12,6 +12,7 @@ import {UserAboutCard} from '#src/Components/Cards/UserProfile/UserAboutCard';
 import {UserContentCard} from '#src/Components/Cards/UserProfile/UserContentCard';
 import {UserNoteCard} from '#src/Components/Cards/UserProfile/UserNoteCard';
 import {UserProfileCard} from '#src/Components/Cards/UserProfile/UserProfileCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {UserProfileScreenActionsMenu} from '#src/Components/Menus/User/UserProfileScreenActionsMenu';
 import {UserProfileSelfActionsMenu} from '#src/Components/Menus/User/UserProfileSelfActionsMenu';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
@@ -151,7 +152,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = t
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
         {data.message && (
           <PaddedContentView padTop={true} padBottom={false} style={styles.listContentCenter}>

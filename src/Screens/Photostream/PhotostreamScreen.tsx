@@ -2,11 +2,12 @@ import {useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {PhotostreamFAB} from '#src/Components/Buttons/FloatingActionButtons/PhotostreamFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {PhotostreamListItem} from '#src/Components/Lists/Items/PhotostreamListItem';
@@ -15,6 +16,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePhotostreamQuery} from '#src/Queries/Photostream/PhotostreamQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -25,7 +27,7 @@ export type Props = StackScreenProps<MainStackParamList, MainStackComponents.pho
 
 export const PhotostreamScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.photostreamHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.photostream}>
         <PhotostreamScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -141,7 +143,7 @@ const PhotostreamScreenInner = ({navigation}: Props) => {
   if (!streamList || streamList.length === 0) {
     return (
       <AppView>
-        <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <PaddedContentView>
             <Text>There are no photos in the Photo Stream. Press the button below to add one!</Text>
           </PaddedContentView>
@@ -158,7 +160,7 @@ const PhotostreamScreenInner = ({navigation}: Props) => {
         renderItem={renderItem}
         data={streamList}
         onScrollThreshold={onScrollThreshold}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         handleLoadNext={handleLoadNext}
         keyExtractor={keyExtractor}
         renderListFooter={EndResultsFooter}

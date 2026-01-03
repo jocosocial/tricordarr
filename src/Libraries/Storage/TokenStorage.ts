@@ -7,6 +7,12 @@ export type TokenStorageData = TokenStringData[];
 
 /**
  * This is not in use. Likely started as some evening project and forgotten about.
+ *
+ * Android (by default) will clear the token storage on app uninstall. iOS will not.
+ * We have extra code in `AppDelegate.swift` to clear the keychain on first launch
+ * after reinstall.
+ *
+ * https://github.com/emeraldsanto/react-native-encrypted-storage?tab=readme-ov-file#note-regarding-keychain-persistence
  */
 export namespace TokenStorageData {
   /**

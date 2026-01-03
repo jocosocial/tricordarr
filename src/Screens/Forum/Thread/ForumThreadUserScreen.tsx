@@ -1,8 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
 import {AppView} from '#src/Components/Views/AppView';
@@ -21,7 +21,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumT
 
 export const ForumThreadUserScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.forums}
         urlPath={`/forumpost/search?creatorid=${props.route.params.user.userID}`}>
@@ -81,7 +81,7 @@ const ForumThreadUserScreenInner = ({route}: Props) => {
       <AppView>
         <ScrollingContentView
           isStack={true}
-          refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
+          refreshControl={<AppRefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
           <PaddedContentView padTop={true}>
             <Text>There aren't any forums created by this user.</Text>
           </PaddedContentView>
@@ -97,7 +97,7 @@ const ForumThreadUserScreenInner = ({route}: Props) => {
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
       />

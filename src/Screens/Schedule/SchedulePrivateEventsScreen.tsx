@@ -1,11 +1,12 @@
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {SchedulePersonalEventCreateFAB} from '#src/Components/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
 import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {AppView} from '#src/Components/Views/AppView';
@@ -24,7 +25,7 @@ import {FezData} from '#src/Structs/ControllerStructs';
 
 export const SchedulePrivateEventsScreen = () => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.scheduleHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/privateevent/list'}>
         <SchedulePrivateEventsScreenInner />
       </DisabledFeatureScreen>
@@ -102,7 +103,7 @@ const SchedulePrivateEventsScreenInner = () => {
           <LFGFlatList
             items={items}
             listRef={listRef}
-            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+            refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
             separator={'day'}
             hasNextPage={hasNextPage}
             handleLoadNext={fetchNextPage}

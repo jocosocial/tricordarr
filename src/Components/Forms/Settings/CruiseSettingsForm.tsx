@@ -8,7 +8,7 @@ import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {DateValidation, NumberValidation} from '#src/Libraries/ValidationSchema';
+import {DateValidation, IntegerValidation} from '#src/Libraries/ValidationSchema';
 import {CruiseSettingsFormValues} from '#src/Types/FormValues';
 
 interface CruiseSettingsFormProps {
@@ -20,7 +20,7 @@ interface CruiseSettingsFormProps {
 const validationSchema = Yup.object().shape({
   portTimeZoneID: Yup.string().required(),
   startDate: DateValidation,
-  cruiseLength: NumberValidation,
+  cruiseLength: IntegerValidation,
 });
 
 export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
