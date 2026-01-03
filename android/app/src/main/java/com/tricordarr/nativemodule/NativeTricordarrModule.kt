@@ -62,6 +62,10 @@ class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTric
     promise.resolve(result)
   }
 
+  override fun clearLocalPushManager() {
+    Log.d(NAME, "clearLocalPushManager is a no-op on Android")
+  }
+
   // Kotlin doesn't have "static" like Java so this does a similar thing of making class members.
   // The name needs to match what gets registered in the JavaScript spec side.
   companion object {
