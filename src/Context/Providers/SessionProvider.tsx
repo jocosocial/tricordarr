@@ -1,47 +1,119 @@
-import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useEffect, useMemo, useRef, useSyncExternalStore} from 'react';
 import {v4 as uuidv4} from 'uuid';
 
 import {SessionContext, SessionContextType} from '#src/Context/Contexts/SessionContext';
+import {SessionStore} from '#src/Context/State/SessionStore';
+import {useOneTaskAtATime} from '#src/Hooks/useOneTaskAtATime';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {Session} from '#src/Structs/SessionStructs';
 
+/**
+ * SessionProvider refactored to use reducer pattern and useSyncExternalStore
+ * for synchronous state access, eliminating race conditions.
+ *
+ * Architecture based on Bluesky's session management:
+ * https://github.com/bluesky-social/social-app/blob/55806f10870128f7702714b5968c64a0e908281e/src/state/session/index.tsx
+ */
 export const SessionProvider = ({children}: PropsWithChildren) => {
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [currentSessionID, setCurrentSessionID] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // Create store instance (persists across renders)
+  // Based on Bluesky's SessionStore pattern
+  const storeRef = useRef<SessionStore | null>(null);
+  if (!storeRef.current) {
+    storeRef.current = new SessionStore();
+  }
+  const store = storeRef.current;
 
-  // Load sessions from storage on mount
+  // Subscribe to store changes using useSyncExternalStore for synchronous state access
+  // This ensures components always get the latest state without race conditions
+  // See: https://github.com/bluesky-social/social-app/blob/55806f10870128f7702714b5968c64a0e908281e/src/state/session/index.tsx
+  const state = useSyncExternalStore(
+    store.subscribe.bind(store),
+    store.getState.bind(store),
+    store.getState.bind(store), // Server snapshot (same as client for React Native)
+  );
+
+  // Operation cancellation hook to prevent overlapping async operations
+  // Based on Bluesky's useOneTaskAtATime pattern
+  const cancelPendingTask = useOneTaskAtATime();
+
+  // Load initial state from storage on mount
   useEffect(() => {
     const loadSessions = async () => {
+      const signal = cancelPendingTask();
       try {
         const loadedSessions = await SessionStorage.getAll();
-        setSessions(loadedSessions);
+        if (signal.aborted) return;
 
-        // Try to restore last session
         const lastSessionID = await SessionStorage.getLastSessionID();
-        if (lastSessionID) {
-          const session = loadedSessions.find(s => s.sessionID === lastSessionID);
-          if (session) {
-            setCurrentSessionID(lastSessionID);
-          }
-        }
+        if (signal.aborted) return;
+
+        // Dispatch loaded-sessions action
+        store.dispatch({
+          type: 'loaded-sessions',
+          sessions: loadedSessions,
+          lastSessionID,
+        });
       } catch (error) {
         console.error('[SessionProvider] Error loading sessions:', error);
-      } finally {
-        setIsLoading(false);
+        // Still dispatch with empty state to mark as loaded
+        if (!signal.aborted) {
+          store.dispatch({
+            type: 'loaded-sessions',
+            sessions: [],
+            lastSessionID: null,
+          });
+        }
       }
     };
 
     loadSessions();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
 
+  // Handle persistence when needsPersist flag is set
+  useEffect(() => {
+    if (!state.needsPersist) {
+      return;
+    }
+
+    const persistState = async () => {
+      const signal = cancelPendingTask();
+
+      try {
+        // Persist all sessions
+        for (const session of state.sessions) {
+          if (signal.aborted) return;
+          await SessionStorage.save(session);
+        }
+
+        // Persist last session ID if current session exists
+        if (state.currentSessionID) {
+          if (signal.aborted) return;
+          await SessionStorage.setLastSessionID(state.currentSessionID);
+        } else {
+          if (signal.aborted) return;
+          await SessionStorage.setLastSessionID('');
+        }
+
+        if (!signal.aborted) {
+          store.markPersisted();
+        }
+      } catch (error) {
+        console.error('[SessionProvider] Error persisting sessions:', error);
+      }
+    };
+
+    persistState();
+  }, [state.needsPersist, state.sessions, state.currentSessionID, store, cancelPendingTask]);
+
+  // Computed values from state
   const currentSession = useMemo(() => {
-    if (!currentSessionID) {
+    if (!state.currentSessionID) {
       return null;
     }
-    return sessions.find(s => s.sessionID === currentSessionID) || null;
-  }, [sessions, currentSessionID]);
+    return state.sessions.find(s => s.sessionID === state.currentSessionID) || null;
+  }, [state.sessions, state.currentSessionID]);
 
   const currentUserID = useMemo(() => {
     return currentSession?.tokenData?.userID || null;
@@ -51,55 +123,53 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
     return !!currentSession?.tokenData;
   }, [currentSession]);
 
+  // Session operations - all dispatch actions synchronously
   const switchSession = useCallback(
     async (sessionID: string) => {
-      const session = sessions.find(s => s.sessionID === sessionID);
+      const session = state.sessions.find(s => s.sessionID === sessionID);
       if (!session) {
         console.warn('[SessionProvider] Attempted to switch to non-existent session:', sessionID);
         return;
       }
 
-      // Update lastUsedAt
-      const updatedSession: Session = {
-        ...session,
-        lastUsedAt: new Date().toISOString(),
-      };
-      await SessionStorage.save(updatedSession);
-      setSessions(prev => prev.map(s => (s.sessionID === sessionID ? updatedSession : s)));
-
-      // Update current session
-      // Note: lastSessionID is not set here - it's set when OOBE completes
-      setCurrentSessionID(sessionID);
+      // Dispatch action synchronously - persistence happens in useEffect
+      store.dispatch({
+        type: 'switched-to-session',
+        sessionID,
+      });
     },
-    [sessions],
+    [state.sessions, store],
   );
 
-  const createSession = useCallback(async (serverUrl: string, preRegistrationMode: boolean): Promise<Session> => {
-    const now = new Date().toISOString();
-    const newSession: Session = {
-      sessionID: uuidv4(),
-      serverUrl,
-      preRegistrationMode,
-      tokenData: null,
-      createdAt: now,
-      lastUsedAt: now,
-    };
+  const createSession = useCallback(
+    async (serverUrl: string, preRegistrationMode: boolean): Promise<Session> => {
+      const now = new Date().toISOString();
+      const newSession: Session = {
+        sessionID: uuidv4(),
+        serverUrl,
+        preRegistrationMode,
+        tokenData: null,
+        createdAt: now,
+        lastUsedAt: now,
+      };
 
-    // Persist immediately
-    await SessionStorage.save(newSession);
-    setSessions(prev => [...prev, newSession]);
+      // Dispatch action synchronously - persistence happens in useEffect
+      store.dispatch({
+        type: 'created-session',
+        session: newSession,
+      });
 
-    // Switch to new session
-    // Note: lastSessionID is not set here - it's set when OOBE completes
-    setCurrentSessionID(newSession.sessionID);
-
-    return newSession;
-  }, []);
+      return newSession;
+    },
+    [store],
+  );
 
   const findOrCreateSession = useCallback(
     async (serverUrl: string, preRegistrationMode: boolean): Promise<Session> => {
       // Try to find existing session matching criteria
-      const existing = sessions.find(s => s.serverUrl === serverUrl && s.preRegistrationMode === preRegistrationMode);
+      const existing = state.sessions.find(
+        s => s.serverUrl === serverUrl && s.preRegistrationMode === preRegistrationMode,
+      );
 
       if (existing) {
         // Switch to existing session
@@ -110,69 +180,64 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       // Create new session
       return await createSession(serverUrl, preRegistrationMode);
     },
-    [sessions, switchSession, createSession],
+    [state.sessions, switchSession, createSession],
   );
 
   const updateSession = useCallback(
     async (sessionID: string, updates: Partial<Session>) => {
-      const session = sessions.find(s => s.sessionID === sessionID);
+      const session = state.sessions.find(s => s.sessionID === sessionID);
       if (!session) {
         console.warn('[SessionProvider] Attempted to update non-existent session:', sessionID);
         return;
       }
 
-      const updatedSession: Session = {
-        ...session,
-        ...updates,
-        lastUsedAt: new Date().toISOString(),
-      };
-
-      // Persist immediately
-      await SessionStorage.save(updatedSession);
-      setSessions(prev => prev.map(s => (s.sessionID === sessionID ? updatedSession : s)));
-
-      // If this is the current session, update currentSessionID state will reflect the change
-      // via the useMemo dependency
+      // Dispatch action synchronously - persistence happens in useEffect
+      store.dispatch({
+        type: 'updated-session',
+        sessionID,
+        updates,
+      });
     },
-    [sessions],
+    [state.sessions, store],
   );
 
   const deleteSession = useCallback(
     async (sessionID: string) => {
-      // Persist deletion immediately
-      await SessionStorage.deleteSession(sessionID);
-      setSessions(prev => prev.filter(s => s.sessionID !== sessionID));
+      // Dispatch action synchronously - persistence happens in useEffect
+      store.dispatch({
+        type: 'deleted-session',
+        sessionID,
+      });
 
-      // If deleting current session, clear it
-      if (currentSessionID === sessionID) {
-        setCurrentSessionID(null);
-        await SessionStorage.setLastSessionID('');
+      // Also delete from storage immediately (reducer handles state)
+      try {
+        await SessionStorage.deleteSession(sessionID);
+        if (state.currentSessionID === sessionID) {
+          await SessionStorage.setLastSessionID('');
+        }
+      } catch (error) {
+        console.error('[SessionProvider] Error deleting session from storage:', error);
       }
     },
-    [currentSessionID],
+    [state.currentSessionID, store],
   );
 
   const updateSessionToken = useCallback(
     async (sessionID: string, tokenData: TokenStringData | null) => {
-      const session = sessions.find(s => s.sessionID === sessionID);
+      const session = state.sessions.find(s => s.sessionID === sessionID);
       if (!session) {
         console.warn('[SessionProvider] Attempted to update token for non-existent session:', sessionID);
         return;
       }
 
-      const updatedSession: Session = {
-        ...session,
-        tokenData,
-        lastUsedAt: new Date().toISOString(),
-      };
-
-      console.log('YYYYYYY [SessionProvider] updateSessionToken', updatedSession);
-
-      // Persist immediately
-      await SessionStorage.save(updatedSession);
-      setSessions(prev => prev.map(s => (s.sessionID === sessionID ? updatedSession : s)));
+      // Dispatch action synchronously - persistence happens in useEffect
+      store.dispatch({
+        type: 'updated-session',
+        sessionID,
+        updates: {tokenData},
+      });
     },
-    [sessions],
+    [state.sessions, store],
   );
 
   const signIn = useCallback(
@@ -198,7 +263,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
     () => ({
       currentSession,
       currentUserID,
-      sessions,
+      sessions: state.sessions,
       switchSession,
       createSession,
       findOrCreateSession,
@@ -207,13 +272,14 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       updateSessionToken,
       signIn,
       signOut,
-      isLoading,
+      isLoading: state.isLoading,
       isLoggedIn,
     }),
     [
       currentSession,
       currentUserID,
-      sessions,
+      state.sessions,
+      state.isLoading,
       switchSession,
       createSession,
       findOrCreateSession,
@@ -222,7 +288,6 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       updateSessionToken,
       signIn,
       signOut,
-      isLoading,
       isLoggedIn,
     ],
   );
