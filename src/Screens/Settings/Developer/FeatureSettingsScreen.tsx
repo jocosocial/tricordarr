@@ -12,12 +12,14 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 export const FeatureSettingsScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {appConfig, updateAppConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {disabledFeatures} = useFeature();
   const {commonStyles} = useStyles();
@@ -43,7 +45,7 @@ export const FeatureSettingsScreen = () => {
       <ScrollingContentView
         isStack={true}
         refreshControl={
-          <AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!appConfig.preRegistrationMode} />
+          <AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!preRegistrationMode} />
         }>
         <ListSection>
           <ListSubheader>Server Features</ListSubheader>

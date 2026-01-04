@@ -22,6 +22,7 @@ import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
@@ -52,10 +53,11 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
   const {setModalContent, setModalVisible} = useModal();
   const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
   const [imageSourceMetadata, setImageSourceMetadata] = useState<AppImageMetaData>(
     staticSize === 'identicon'
-      ? AppImageMetaData.fromIdenticon(path, appConfig)
-      : AppImageMetaData.fromFileName(path, appConfig),
+      ? AppImageMetaData.fromIdenticon(path, appConfig, serverUrl)
+      : AppImageMetaData.fromFileName(path, appConfig, serverUrl),
   );
   const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
@@ -146,10 +148,10 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
   React.useEffect(() => {
     setImageSourceMetadata(
       staticSize === 'identicon'
-        ? AppImageMetaData.fromIdenticon(path, appConfig)
-        : AppImageMetaData.fromFileName(path, appConfig),
+        ? AppImageMetaData.fromIdenticon(path, appConfig, serverUrl)
+        : AppImageMetaData.fromFileName(path, appConfig, serverUrl),
     );
-  }, [path, appConfig, staticSize]);
+  }, [path, appConfig, serverUrl, staticSize]);
 
   /**
    * Effect to preload the full image if the initial size is set to thumb.

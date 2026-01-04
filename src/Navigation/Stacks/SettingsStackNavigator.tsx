@@ -12,6 +12,8 @@ import {ChangePasswordScreen} from '#src/Screens/Settings/Account/ChangePassword
 import {ChangeUsernameScreen} from '#src/Screens/Settings/Account/ChangeUsernameScreen';
 import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
 import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
+import {SessionDetailsScreen} from '#src/Screens/Settings/Account/SessionDetailsScreen';
+import {SessionSettingsScreen} from '#src/Screens/Settings/Account/SessionSettingsScreen';
 import {TimeSettingsScreen} from '#src/Screens/Settings/Config/TimeSettingsScreen';
 import {AccountInfoSettingsScreen} from '#src/Screens/Settings/Developer/AccountInfoSettingsScreen';
 import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
@@ -58,6 +60,10 @@ export type SettingsStackParamList = CommonStackParamList & {
     queryHash: string;
   };
   TimeSettingsScreen: undefined;
+  SessionSettingsScreen: undefined;
+  SessionDetailsScreen: {
+    sessionID: string;
+  };
 };
 
 export enum SettingsStackScreenComponents {
@@ -86,6 +92,8 @@ export enum SettingsStackScreenComponents {
   queryKeysSettingsScreen = 'QueryKeysSettingsScreen',
   queryDataSettingsScreen = 'QueryDataSettingsScreen',
   timeSettingsScreen = 'TimeSettingsScreen',
+  sessionSettings = 'SessionSettingsScreen',
+  sessionDetails = 'SessionDetailsScreen',
 }
 
 export const SettingsStackNavigator = () => {
@@ -217,6 +225,16 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.timeSettingsScreen}
         component={TimeSettingsScreen}
         options={{title: 'Time Settings'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.sessionSettings}
+        component={SessionSettingsScreen}
+        options={{title: 'Sessions'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.sessionDetails}
+        component={SessionDetailsScreen}
+        options={{title: 'Session Details'}}
       />
     </Stack.Navigator>
   );

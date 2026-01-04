@@ -12,6 +12,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -33,7 +34,8 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const queryClient = useQueryClient();
   const [showStack, setShowStack] = React.useState(false);
   const {signOut} = useAuth();
-  const {appConfig, updateAppConfig} = useConfig();
+  const {updateAppConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
 
   const styles = StyleSheet.create({
     screen: {
@@ -58,7 +60,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const toggleShowStack = () => setShowStack(!showStack);
 
   const fixAll = async () => {
-    await signOut(appConfig.preRegistrationMode);
+    await signOut(preRegistrationMode);
     queryClient.clear();
     updateAppConfig(defaultAppConfig);
     props.resetError();
@@ -107,7 +109,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
           <PrimaryActionButton
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Sign Out'}
-            onPress={async () => await signOut(appConfig.preRegistrationMode)}
+            onPress={async () => await signOut(preRegistrationMode)}
           />
         </PaddedContentView>
         <PaddedContentView>

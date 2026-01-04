@@ -8,7 +8,9 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LogoutDeviceModalView} from '#src/Components/Views/Modals/LogoutModal';
+import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {
@@ -22,6 +24,7 @@ type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenCompone
 export const AccountManagementScreen = ({navigation}: Props) => {
   const settingsNavigation = useSettingsStack();
   const {data: profilePublicData} = useUserProfileQuery();
+  const {isLoggedIn} = useSession();
   const {setModalContent, setModalVisible} = useModal();
 
   const handleLogoutModal = (allDevices = false) => {
@@ -29,8 +32,13 @@ export const AccountManagementScreen = ({navigation}: Props) => {
     setModalVisible(true);
   };
 
+  if (!isLoggedIn) {
+    return <NotLoggedInView />;
+  }
+
   // Need to conditional on ProfilePublicData in case it never loaded because the user lost communication
   // with the server. Logout device should still be allowed when no local data because it clears state.
+  // I'm not sure how true that is now that SessionProvider is a thing.
   return (
     <AppView>
       <ScrollingContentView isStack={true}>

@@ -4,7 +4,7 @@ import {Divider, Menu} from 'react-native-paper';
 
 import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -16,7 +16,7 @@ export const MainAccountMenu = () => {
   const {data: profilePublicData} = useUserProfileQuery();
   const {visible, openMenu, closeMenu} = useMenu();
   const mainNavigation = useMainStack();
-  const {isLoggedIn} = useAuth();
+  const {isLoggedIn} = useSession();
 
   const handleManage = () => {
     mainNavigation.push(MainStackComponents.mainSettingsScreen, {

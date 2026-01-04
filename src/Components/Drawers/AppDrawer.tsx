@@ -6,8 +6,9 @@ import {Drawer} from 'react-native-drawer-layout';
 import {Badge, Drawer as PaperDrawer} from 'react-native-paper';
 
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -17,11 +18,12 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
-  const {oobeCompleted, appConfig} = useConfig();
+  const {oobeCompleted} = useOobe();
+  const {preRegistrationMode} = usePreRegistration();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
   const {hasShutternaut, hasShutternautManager} = useRoles();
   const {data: userNotificationData} = useUserNotificationDataQuery({
-    enabled: oobeCompleted && !appConfig.preRegistrationMode,
+    enabled: oobeCompleted && !preRegistrationMode,
   });
   const {tokenData} = useAuth();
   const {data: profilePublicData} = useUserProfileQuery({enabled: oobeCompleted});

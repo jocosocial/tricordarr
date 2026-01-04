@@ -6,9 +6,9 @@ import {Text} from 'react-native-paper';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -48,7 +48,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
   const [loading, setLoading] = useState(false);
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
-  const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
 
   const onLogout = () => {
     setEnableUserNotifications(false);
@@ -57,7 +57,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
       type: WebSocketStorageActions.clear,
     });
     stopForegroundServiceWorker().then(() =>
-      signOut(appConfig.preRegistrationMode).then(() => {
+      signOut(preRegistrationMode).then(() => {
         clearPrivileges();
         queryClient.clear();
         setModalVisible(false);

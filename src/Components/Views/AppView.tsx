@@ -12,9 +12,9 @@ import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {ConnectionDisruptedView} from '#src/Components/Views/Warnings/ConnectionDisruptedView';
 import {PreRegistrationWarningView} from '#src/Components/Views/Warnings/PreRegistrationWarningView';
 import {UnsavedChangesView} from '#src/Components/Views/Warnings/UnsavedChangesView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useLayout} from '#src/Context/Contexts/LayoutContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {isIOS} from '#src/Libraries/Platform/Detection';
@@ -33,7 +33,7 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
   const {hasUnsavedWork} = useErrorHandler();
   // https://reactnavigation.org/docs/6.x/handling-safe-area
   const insets = useSafeAreaInsets();
-  const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const {headerHeight, headerHeightValue, footerHeightValue} = useLayout();
   const directHeaderHeight = useHeaderHeight();
 
@@ -94,7 +94,7 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
           <AppModal />
           <AppSnackbar />
         </Portal>
-        {appConfig.preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
+        {preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
         {disruptionDetected && <ConnectionDisruptedView />}
         {children}
         <UnsavedChangesView isVisible={hasUnsavedWork} />

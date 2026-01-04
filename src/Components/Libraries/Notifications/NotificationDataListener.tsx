@@ -2,9 +2,10 @@ import {useAppState} from '@react-native-community/hooks';
 import {useQueryClient} from '@tanstack/react-query';
 import {useCallback, useEffect} from 'react';
 
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -18,10 +19,11 @@ import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketS
  */
 export const NotificationDataListener = () => {
   const {enableUserNotifications} = useEnableUserNotification();
-  const {isLoggedIn} = useAuth();
-  const {oobeCompleted, appConfig} = useConfig();
+  const {isLoggedIn} = useSession();
+  const {oobeCompleted} = useOobe();
+  const {preRegistrationMode} = usePreRegistration();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({
-    enabled: oobeCompleted && isLoggedIn && !appConfig.preRegistrationMode,
+    enabled: oobeCompleted && isLoggedIn && !preRegistrationMode,
   });
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();

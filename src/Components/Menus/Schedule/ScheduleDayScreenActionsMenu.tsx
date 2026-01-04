@@ -4,7 +4,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -16,7 +16,7 @@ interface ScheduleDayScreenActionsMenuProps {
 export const ScheduleDayScreenActionsMenu = ({onRefresh}: ScheduleDayScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const navigation = useScheduleStackNavigation();
-  const {oobeCompleted} = useConfig();
+  const {oobeCompleted} = useOobe();
 
   const menuAnchor = <Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />;
 

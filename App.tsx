@@ -29,9 +29,12 @@ import {FeatureProvider} from '#src/Context/Providers/FeatureProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
 import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
 import {NavigationProvider} from '#src/Context/Providers/NavigationProvider';
+import {OobeProvider} from '#src/Context/Providers/OobeProvider';
 import {PermissionsProvider} from '#src/Context/Providers/PermissionsProvider';
+import {PreRegistrationProvider} from '#src/Context/Providers/PreRegistrationProvider';
 import {PrivilegeProvider} from '#src/Context/Providers/PrivilegeProvider';
 import {RoleProvider} from '#src/Context/Providers/RoleProvider';
+import {SessionProvider} from '#src/Context/Providers/SessionProvider';
 import {ShellProvider} from '#src/Context/Providers/ShellProvider';
 import {SnackbarProvider} from '#src/Context/Providers/SnackbarProvider';
 import {SocketProvider} from '#src/Context/Providers/SocketProvider';
@@ -96,59 +99,68 @@ function App(): React.JSX.Element {
    * SnackbarProvider shouldn't need anything.
    * TwitarrProvider needs ConfigProvider and SwiftarrQueryClientProvider.
    * AppNavigationThemeProvider should be within SafeAreaProvider.
+   * SessionProvider needs ConfigProvider for defaultAppConfig.
+   * AuthProvider needs SessionProvider for currentSession.
+   * SwiftarrQueryClientProvider needs SessionProvider for currentSession.
    */
   return (
     <SafeAreaProvider>
       <GestureHandlerRootView>
         <ConfigProvider>
-          <PermissionsProvider>
-            <ThemeProvider>
-              <NavigationProvider>
-                <KeyboardProvider>
-                  <StyleProvider>
-                    <ErrorHandlerProvider>
-                      <AuthProvider>
-                        <SnackbarProvider>
-                          <SwiftarrQueryClientProvider>
-                            <LoadingProvider>
-                              <CriticalErrorProvider>
-                                <PrivilegeProvider>
-                                  <RoleProvider>
-                                    <SocketProvider>
-                                      <TwitarrProvider>
-                                        <EnableUserNotificationProvider>
-                                          <FeatureProvider>
-                                            <ClientSettingsProvider>
-                                              <CruiseProvider>
-                                                <FilterProvider>
-                                                  <ShellProvider>
-                                                    <AppEventHandler />
-                                                    <AppFocusHandler />
-                                                    <PushNotificationService />
-                                                    <NotificationDataListener />
-                                                    <NotificationDataPoller />
-                                                    <RootStackNavigator />
-                                                  </ShellProvider>
-                                                </FilterProvider>
-                                              </CruiseProvider>
-                                            </ClientSettingsProvider>
-                                          </FeatureProvider>
-                                        </EnableUserNotificationProvider>
-                                      </TwitarrProvider>
-                                    </SocketProvider>
-                                  </RoleProvider>
-                                </PrivilegeProvider>
-                              </CriticalErrorProvider>
-                            </LoadingProvider>
-                          </SwiftarrQueryClientProvider>
-                        </SnackbarProvider>
-                      </AuthProvider>
-                    </ErrorHandlerProvider>
-                  </StyleProvider>
-                </KeyboardProvider>
-              </NavigationProvider>
-            </ThemeProvider>
-          </PermissionsProvider>
+          <SessionProvider>
+            <OobeProvider>
+              <PreRegistrationProvider>
+                <PermissionsProvider>
+                  <ThemeProvider>
+                    <NavigationProvider>
+                      <KeyboardProvider>
+                        <StyleProvider>
+                          <ErrorHandlerProvider>
+                            <AuthProvider>
+                              <SnackbarProvider>
+                                <SwiftarrQueryClientProvider>
+                                  <LoadingProvider>
+                                    <CriticalErrorProvider>
+                                      <PrivilegeProvider>
+                                        <RoleProvider>
+                                          <SocketProvider>
+                                            <TwitarrProvider>
+                                              <EnableUserNotificationProvider>
+                                                <FeatureProvider>
+                                                  <ClientSettingsProvider>
+                                                    <CruiseProvider>
+                                                      <FilterProvider>
+                                                        <ShellProvider>
+                                                          <AppEventHandler />
+                                                          <AppFocusHandler />
+                                                          <PushNotificationService />
+                                                          <NotificationDataListener />
+                                                          <NotificationDataPoller />
+                                                          <RootStackNavigator />
+                                                        </ShellProvider>
+                                                      </FilterProvider>
+                                                    </CruiseProvider>
+                                                  </ClientSettingsProvider>
+                                                </FeatureProvider>
+                                              </EnableUserNotificationProvider>
+                                            </TwitarrProvider>
+                                          </SocketProvider>
+                                        </RoleProvider>
+                                      </PrivilegeProvider>
+                                    </CriticalErrorProvider>
+                                  </LoadingProvider>
+                                </SwiftarrQueryClientProvider>
+                              </SnackbarProvider>
+                            </AuthProvider>
+                          </ErrorHandlerProvider>
+                        </StyleProvider>
+                      </KeyboardProvider>
+                    </NavigationProvider>
+                  </ThemeProvider>
+                </PermissionsProvider>
+              </PreRegistrationProvider>
+            </OobeProvider>
+          </SessionProvider>
         </ConfigProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>

@@ -139,4 +139,5 @@ export enum AppIcons {
   shutternautManager = 'bat',
   userFavorite = 'account-star',
   feedback = 'comment-quote',
+  session = 'cloud-outline',
 }

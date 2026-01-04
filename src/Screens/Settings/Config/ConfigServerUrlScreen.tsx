@@ -12,9 +12,9 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -24,7 +24,7 @@ import {ServerUrlFormValues} from '#src/Types/FormValues';
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
-  const {appConfig, updateAppConfig} = useConfig();
+  const {currentSession, updateSession} = useSession();
   const {signOut} = useAuth();
   const {commonStyles} = useStyles();
   const {clearPrivileges} = usePrivilege();
@@ -35,19 +35,16 @@ export const ConfigServerUrlScreen = () => {
   const {setSnackbarPayload} = useSnackbar();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
+    if (!currentSession) {
+      console.error('[ConfigServerUrlScreen] Cannot save: no current session');
+      return;
+    }
+
     const oldServerUrl = serverUrl;
     await queryClient.cancelQueries({queryKey: ['/client/health']});
-    if (appConfig.preRegistrationMode) {
-      updateAppConfig({
-        ...appConfig,
-        preRegistrationServerUrl: values.serverUrl,
-      });
-    } else {
-      updateAppConfig({
-        ...appConfig,
-        serverUrl: values.serverUrl,
-      });
-    }
+
+    // Update session serverUrl - persists immediately
+    await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
 
     refetch().then(() =>
       formikHelpers.resetForm({
@@ -58,7 +55,7 @@ export const ConfigServerUrlScreen = () => {
       }),
     );
     if (oldServerUrl !== values.serverUrl) {
-      await signOut(appConfig.preRegistrationMode);
+      await signOut(currentSession.preRegistrationMode);
       clearPrivileges();
       queryClient.clear();
       await CacheManager.clearCache();

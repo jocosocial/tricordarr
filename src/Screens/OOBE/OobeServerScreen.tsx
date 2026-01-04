@@ -14,9 +14,10 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
@@ -27,7 +28,7 @@ import {ServerUrlFormValues} from '#src/Types/FormValues';
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
 
 export const OobeServerScreen = ({navigation}: Props) => {
-  const {appConfig, updateAppConfig} = useConfig();
+  const {currentSession, updateSession} = useSession();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
@@ -38,19 +39,17 @@ export const OobeServerScreen = ({navigation}: Props) => {
   const {setSnackbarPayload} = useSnackbar();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
+    if (!currentSession) {
+      console.error('[OobeServerScreen] Cannot save: no current session');
+      return;
+    }
+
     const oldServerUrl = serverUrl;
     await queryClient.cancelQueries({queryKey: ['/client/health']});
-    if (appConfig.preRegistrationMode) {
-      updateAppConfig({
-        ...appConfig,
-        preRegistrationServerUrl: values.serverUrl,
-      });
-    } else {
-      updateAppConfig({
-        ...appConfig,
-        serverUrl: values.serverUrl,
-      });
-    }
+
+    // Update session serverUrl - persists immediately
+    await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
+
     refetch().then(() =>
       formikHelpers.resetForm({
         values: {
@@ -68,7 +67,6 @@ export const OobeServerScreen = ({navigation}: Props) => {
   };
 
   const onBackPress = () => {
-    updateAppConfig({...appConfig, preRegistrationMode: false});
     navigation.goBack();
   };
 
@@ -86,10 +84,12 @@ export const OobeServerScreen = ({navigation}: Props) => {
     });
   }, [getHeaderTitle, navigation]);
 
+  const {preRegistrationMode} = usePreRegistration();
+
   return (
     <AppView>
       <ScrollingContentView refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-        {!appConfig.preRegistrationMode && (
+        {!preRegistrationMode && (
           <PaddedContentView>
             <Text>
               Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs, private DNS, or
@@ -100,7 +100,7 @@ export const OobeServerScreen = ({navigation}: Props) => {
         <PaddedContentView>
           <Text>
             Do not change this unless instructed to do so by the Twitarr Dev Team or THO.
-            {appConfig.preRegistrationMode ? (
+            {preRegistrationMode ? (
               <Text> Should be set to Start during pre-registration.</Text>
             ) : (
               <Text> Should be set to Production when on-board.</Text>

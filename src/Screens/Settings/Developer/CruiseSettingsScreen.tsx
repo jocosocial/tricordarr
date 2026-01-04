@@ -11,11 +11,13 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '#src/Types/FormValues';
 
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
+  const {currentSession, updateSession} = useSession();
   const {theme} = useAppTheme();
   const [refreshing, setRefreshing] = useState(false);
   const {updateClientSettings} = useClientSettings();
@@ -77,12 +79,14 @@ export const CruiseSettingsScreen = () => {
     setRefreshing(false);
   };
 
-  const togglePreRegistrationMode = () => {
-    console.log('[CruiseSettingsScreen.tsx] toggling pre-registration mode to', !appConfig.preRegistrationMode);
-    updateAppConfig({
-      ...appConfig,
-      preRegistrationMode: !appConfig.preRegistrationMode,
-    });
+  const togglePreRegistrationMode = async () => {
+    if (!currentSession) {
+      console.error('[CruiseSettingsScreen.tsx] Cannot toggle pre-registration mode: no current session');
+      return;
+    }
+    const newPreRegistrationMode = !currentSession.preRegistrationMode;
+    console.log('[CruiseSettingsScreen.tsx] toggling pre-registration mode to', newPreRegistrationMode);
+    await updateSession(currentSession.sessionID, {preRegistrationMode: newPreRegistrationMode});
   };
 
   return (
@@ -110,7 +114,7 @@ export const CruiseSettingsScreen = () => {
             <ListSubheader>Pre-Registration</ListSubheader>
             <PaddedContentView padTop={true}>
               <PrimaryActionButton
-                buttonText={appConfig.preRegistrationMode ? 'Disable' : 'Enable'}
+                buttonText={currentSession?.preRegistrationMode ? 'Disable' : 'Enable'}
                 onPress={togglePreRegistrationMode}
                 buttonColor={theme.colors.twitarrNeutralButton}
               />

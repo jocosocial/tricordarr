@@ -16,6 +16,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {buildWebsocketURL} from '#src/Libraries/Network/Websockets';
@@ -40,6 +41,7 @@ interface ForegroundProviderStatus {
 
 export const BackgroundConnectionSettingsIOSView = () => {
   const {appConfig, updateAppConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
   const [fgsHealthTime, setFgsHealthTime] = useState(appConfig.fgsWorkerHealthTimer / 1000);
   const {data, refetch, isFetching} = useUserNotificationDataQuery();
@@ -117,12 +119,16 @@ export const BackgroundConnectionSettingsIOSView = () => {
     if (!tokenData) {
       return;
     }
-    const socketUrl = await buildWebsocketURL();
-    console.log('setupLocalPushManager', socketUrl, tokenData.token, enable);
-    NativeTricordarrModule.setupLocalPushManager(socketUrl, tokenData.token, enable);
-    // Refresh status after recycling worker
-    fetchManagerStatus();
-    fetchForegroundProviderStatus();
+    try {
+      const socketUrl = await buildWebsocketURL();
+      console.log('setupLocalPushManager', socketUrl, tokenData.token, enable);
+      NativeTricordarrModule.setupLocalPushManager(socketUrl, tokenData.token, enable);
+      // Refresh status after recycling worker
+      fetchManagerStatus();
+      fetchForegroundProviderStatus();
+    } catch (error) {
+      console.error('[BackgroundConnectionSettingsIOSView] Error getting socket URL:', error);
+    }
   };
 
   const formatProviderConfigValue = (value: any): string => {
@@ -223,7 +229,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
                 style={commonStyles.paddingHorizontalSmall}
                 helperText={'Use this to disable the worker if it is causing problems.'}
                 value={enable}
-                disabled={appConfig.preRegistrationMode}
+                disabled={preRegistrationMode}
               />
               <SliderField
                 name={'fgsWorkerHealthTimer'}
@@ -238,7 +244,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
                 }
                 style={commonStyles.paddingHorizontalSmall}
                 onSlidingComplete={handleHealthChange}
-                disabled={appConfig.preRegistrationMode}
+                disabled={preRegistrationMode}
               />
             </View>
           </Formik>
