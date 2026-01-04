@@ -152,11 +152,6 @@ export interface SnackbarPayload {
   elevation?: 0 | 1 | 2 | 3 | 4 | 5 | Animated.Value;
 }
 
-// This is fucking stupid
-export interface ParamsWithOobe {
-  oobe?: boolean;
-}
-
 // This comes from 'react-native/Libraries/Components/TextInput/TextInput'.
 // React Native deep imports are deprecated.
 export type RNInputModeOptions = 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url';

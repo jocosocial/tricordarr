@@ -18,6 +18,7 @@ import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderV
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -36,6 +37,14 @@ import {EventData, FezData} from '#src/Structs/ControllerStructs';
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
 
 export const ScheduleDayScreen = (props: Props) => {
+  const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
+
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerLeft: props.route.params?.noDrawer ? getLeftBackHeaderButtons : getLeftMainHeaderButtons,
+    });
+  }, [getLeftMainHeaderButtons, getLeftBackHeaderButtons, props.navigation, props.route.params?.noDrawer]);
+
   return (
     <LoggedInScreen>
       <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events'}>

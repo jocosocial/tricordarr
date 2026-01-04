@@ -87,7 +87,7 @@ import {
   ProfilePublicData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
-import {ParamsWithOobe} from '#src/Types';
+import {NoDrawerParamsOptional} from '#src/Types/RouteParams';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -211,7 +211,7 @@ export type CommonStackParamList = {
     cruiseDay?: number;
     initialUserHeaders?: UserHeader[];
   };
-  UserProfileHelpScreen: ParamsWithOobe;
+  UserProfileHelpScreen: undefined;
   UserRelationsHelpScreen: undefined;
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
@@ -255,7 +255,7 @@ export type CommonStackParamList = {
   };
   EventSettingsScreen: undefined;
   SchedulePrivateEventsScreen: undefined;
-  ScheduleDayScreen: ParamsWithOobe;
+  ScheduleDayScreen: NoDrawerParamsOptional;
   ScheduleDayPlannerScreen: {
     cruiseDay?: number;
   };
@@ -370,7 +370,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.aboutTwitarrScreen
   | CommonStackComponents.shutternautHelpScreen
   | CommonStackComponents.boardgameHelpScreen
-  | CommonStackComponents.photostreamHelpScreen;
+  | CommonStackComponents.photostreamHelpScreen
+  | CommonStackComponents.userProfileHelpScreen;
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
   const {getLeftMainHeaderButtons} = useDrawer();
@@ -686,10 +687,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.scheduleDayScreen}
         component={ScheduleDayScreen}
-        options={{
-          headerLeft: getLeftMainHeaderButtons,
-          title: 'Schedule',
-        }}
+        options={{title: 'Schedule'}}
       />
       <Stack.Screen
         name={CommonStackComponents.schedulePrivateEventsScreen}
