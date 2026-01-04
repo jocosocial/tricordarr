@@ -183,45 +183,6 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
     [state.sessions, switchSession, createSession],
   );
 
-  const updateSession = useCallback(
-    async (sessionID: string, updates: Partial<Session>) => {
-      const session = state.sessions.find(s => s.sessionID === sessionID);
-      if (!session) {
-        console.warn('[SessionProvider] Attempted to update non-existent session:', sessionID);
-        return;
-      }
-
-      // Dispatch action synchronously - persistence happens in useEffect
-      store.dispatch({
-        type: 'updated-session',
-        sessionID,
-        updates,
-      });
-    },
-    [state.sessions, store],
-  );
-
-  const deleteSession = useCallback(
-    async (sessionID: string) => {
-      // Dispatch action synchronously - persistence happens in useEffect
-      store.dispatch({
-        type: 'deleted-session',
-        sessionID,
-      });
-
-      // Also delete from storage immediately (reducer handles state)
-      try {
-        await SessionStorage.deleteSession(sessionID);
-        if (state.currentSessionID === sessionID) {
-          await SessionStorage.setLastSessionID('');
-        }
-      } catch (error) {
-        console.error('[SessionProvider] Error deleting session from storage:', error);
-      }
-    },
-    [state.currentSessionID, store],
-  );
-
   const updateSessionToken = useCallback(
     async (sessionID: string, tokenData: TokenStringData | null) => {
       const session = state.sessions.find(s => s.sessionID === sessionID);
@@ -258,6 +219,53 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
     }
     await updateSessionToken(currentSession.sessionID, null);
   }, [currentSession, updateSessionToken]);
+
+  const updateSession = useCallback(
+    async (sessionID: string, updates: Partial<Session>) => {
+      const session = state.sessions.find(s => s.sessionID === sessionID);
+      if (!session) {
+        console.warn('[SessionProvider] Attempted to update non-existent session:', sessionID);
+        return;
+      }
+
+      // If server URL is changing and this is the current session, sign out first
+      if (updates.serverUrl !== undefined && updates.serverUrl !== session.serverUrl) {
+        if (sessionID === state.currentSessionID && session.tokenData) {
+          // Clear token data when server URL changes
+          await signOut();
+        }
+      }
+
+      // Dispatch action synchronously - persistence happens in useEffect
+      store.dispatch({
+        type: 'updated-session',
+        sessionID,
+        updates,
+      });
+    },
+    [state.sessions, state.currentSessionID, store, signOut],
+  );
+
+  const deleteSession = useCallback(
+    async (sessionID: string) => {
+      // Dispatch action synchronously - persistence happens in useEffect
+      store.dispatch({
+        type: 'deleted-session',
+        sessionID,
+      });
+
+      // Also delete from storage immediately (reducer handles state)
+      try {
+        await SessionStorage.deleteSession(sessionID);
+        if (state.currentSessionID === sessionID) {
+          await SessionStorage.setLastSessionID('');
+        }
+      } catch (error) {
+        console.error('[SessionProvider] Error deleting session from storage:', error);
+      }
+    },
+    [state.currentSessionID, store],
+  );
 
   const contextValue: SessionContextType = useMemo(
     () => ({

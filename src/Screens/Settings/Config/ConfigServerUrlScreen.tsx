@@ -23,7 +23,7 @@ import {ServerUrlFormValues} from '#src/Types/FormValues';
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
-  const {currentSession, updateSession, signOut} = useSession();
+  const {currentSession, updateSession} = useSession();
   const {commonStyles} = useStyles();
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
@@ -31,8 +31,6 @@ export const ConfigServerUrlScreen = () => {
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const {hasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
-
-  console.log('ZZZZZZZ [ConfigServerUrlScreen] serverUrl', currentSession?.serverUrl);
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     if (!currentSession) {
@@ -55,7 +53,6 @@ export const ConfigServerUrlScreen = () => {
       }),
     );
     if (oldServerUrl !== values.serverUrl) {
-      await signOut();
       clearPrivileges();
       queryClient.clear();
       await CacheManager.clearCache();
