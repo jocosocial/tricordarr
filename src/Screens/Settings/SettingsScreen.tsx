@@ -49,13 +49,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Theme and styling options for this app.'}
               navComponent={CommonStackComponents.accessibilitySettingsScreen}
             />
-            {!tokenData && (
-              <SettingsNavigationListItem
-                title={'Sessions'}
-                description={'Manage local sessions.'}
-                navComponent={SettingsStackScreenComponents.sessionSettings}
-              />
-            )}
+            <SettingsNavigationListItem
+              title={'Sessions'}
+              description={'Manage local account sessions.'}
+              navComponent={SettingsStackScreenComponents.sessionSettings}
+            />
           </ListSection>
           <Divider bold={true} />
           <ListSection>

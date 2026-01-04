@@ -74,11 +74,6 @@ export const AccountManagementScreen = ({navigation}: Props) => {
                   icon={AppIcons.info}
                   onPress={() => settingsNavigation.push(SettingsStackScreenComponents.accountInfoSettingsScreen)}
                 />
-                <MinorActionListItem
-                  title={'Sessions'}
-                  icon={AppIcons.session}
-                  onPress={() => settingsNavigation.push(SettingsStackScreenComponents.sessionSettings)}
-                />
               </ListSection>
             </>
           )}

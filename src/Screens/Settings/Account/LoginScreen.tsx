@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import {FormikHelpers} from 'formik';
-import React, {useCallback} from 'react';
-import {Text} from 'react-native-paper';
+import React, {useCallback, useEffect, useState} from 'react';
+import {ActivityIndicator, Text} from 'react-native-paper';
 
 import {LoginForm} from '#src/Components/Forms/User/LoginForm';
 import {AppView} from '#src/Components/Views/AppView';
@@ -9,9 +9,11 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
@@ -27,6 +29,22 @@ export const LoginScreen = () => {
   const {serverUrl} = useSwiftarrQueryClient();
   const {updateClientSettings} = useClientSettings();
   const {refetch: refetchRoles} = useRoles();
+  const {currentSession, findOrCreateSession} = useSession();
+  const {appConfig} = useConfig();
+  const [isSessionReady, setIsSessionReady] = useState(false);
+
+  // Create session on mount if none exists
+  useEffect(() => {
+    const initializeSession = async () => {
+      if (!currentSession) {
+        // Create a default session if none exists
+        await findOrCreateSession(appConfig.serverUrl, false);
+      }
+      setIsSessionReady(true);
+    };
+
+    initializeSession();
+  }, [currentSession, findOrCreateSession, appConfig.serverUrl]);
 
   const onSubmit = useCallback(
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
@@ -53,6 +71,18 @@ export const LoginScreen = () => {
     },
     [loginMutation, signIn, preRegistrationMode, oobeCompleted, updateClientSettings, navigation, refetchRoles],
   );
+
+  if (!isSessionReady) {
+    return (
+      <AppView>
+        <ScrollingContentView isStack={true}>
+          <PaddedContentView padTop={true}>
+            <ActivityIndicator />
+          </PaddedContentView>
+        </ScrollingContentView>
+      </AppView>
+    );
+  }
 
   return (
     <AppView>
