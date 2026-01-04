@@ -19,7 +19,7 @@ import {
 type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.sessionSettings>;
 export const SessionSettingsScreen = () => {
   const settingsNavigation = useSettingsStack();
-  const {sessions, currentSessionID} = useSession();
+  const {sessions, currentSession} = useSession();
 
   const formatSessionDescription = (serverUrl: string, preRegistrationMode: boolean) => {
     return `${serverUrl} (preRegistrationMode: ${preRegistrationMode})`;
@@ -49,6 +49,7 @@ export const SessionSettingsScreen = () => {
               sessions.map(session => (
                 <MinorActionListItem
                   key={session.sessionID}
+                  active={session.sessionID === currentSession?.sessionID}
                   title={formatSessionTitle(session.sessionID)}
                   icon={AppIcons.session}
                   description={formatSessionDescription(session.serverUrl, session.preRegistrationMode)}
