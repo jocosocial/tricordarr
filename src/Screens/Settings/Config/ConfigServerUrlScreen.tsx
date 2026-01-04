@@ -11,7 +11,6 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -24,15 +23,16 @@ import {ServerUrlFormValues} from '#src/Types/FormValues';
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
-  const {currentSession, updateSession} = useSession();
-  const {signOut} = useAuth();
+  const {currentSession, updateSession, signOut} = useSession();
   const {commonStyles} = useStyles();
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
-  const {disruptionDetected, serverUrl} = useSwiftarrQueryClient();
+  const {disruptionDetected} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const {hasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
+
+  console.log('ZZZZZZZ [ConfigServerUrlScreen] serverUrl', currentSession?.serverUrl);
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     if (!currentSession) {
@@ -40,7 +40,7 @@ export const ConfigServerUrlScreen = () => {
       return;
     }
 
-    const oldServerUrl = serverUrl;
+    const oldServerUrl = currentSession.serverUrl;
     await queryClient.cancelQueries({queryKey: ['/client/health']});
 
     // Update session serverUrl - persists immediately
@@ -55,7 +55,7 @@ export const ConfigServerUrlScreen = () => {
       }),
     );
     if (oldServerUrl !== values.serverUrl) {
-      await signOut(currentSession.preRegistrationMode);
+      await signOut();
       clearPrivileges();
       queryClient.clear();
       await CacheManager.clearCache();
@@ -81,8 +81,8 @@ export const ConfigServerUrlScreen = () => {
           <ServerUrlSettingForm
             onSubmit={onSave}
             initialValues={{
-              serverChoice: ServerChoices.fromUrl(serverUrl),
-              serverUrl: serverUrl,
+              serverChoice: ServerChoices.fromUrl(currentSession?.serverUrl || ''),
+              serverUrl: currentSession?.serverUrl || '',
             }}
           />
         </PaddedContentView>

@@ -10,7 +10,6 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LogoutDeviceModalView} from '#src/Components/Views/Modals/LogoutModal';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -22,9 +21,8 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccoun
 
 export const OobeAccountScreen = ({navigation}: Props) => {
   const {theme} = useAppTheme();
-  const {tokenData} = useAuth();
   const {isLoggedIn} = useSession();
-  const {data: profilePublicData} = useUserProfileQuery({enabled: !!tokenData});
+  const {data: profilePublicData} = useUserProfileQuery();
   const {setModalContent, setModalVisible} = useModal();
 
   const handleLogoutModal = (allDevices = false) => {

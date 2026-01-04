@@ -8,10 +8,8 @@ import {UserCreateForm} from '#src/Components/Forms/User/UserCreateForm';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {UserRecoveryKeyModalView} from '#src/Components/Views/Modals/UserRecoveryKeyModalView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
-import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {useUserCreateQuery} from '#src/Queries/User/UserMutations';
@@ -20,11 +18,10 @@ import {LoginFormValues, UserRegistrationFormValues} from '#src/Types/FormValues
 export const RegisterScreen = () => {
   const createMutation = useUserCreateQuery();
   const loginMutation = useLoginMutation();
-  const {signIn} = useAuth();
+  const {signIn} = useSession();
   const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
-  const {preRegistrationMode} = usePreRegistration();
   const {currentSession, findOrCreateSession} = useSession();
   const {appConfig} = useConfig();
   const [isSessionReady, setIsSessionReady] = useState(false);
@@ -62,7 +59,7 @@ export const RegisterScreen = () => {
           };
           loginMutation.mutate(loginValues, {
             onSuccess: response => {
-              signIn(response.data, preRegistrationMode).then(() => {
+              signIn(response.data).then(() => {
                 setModalOnDismiss(onDismiss);
                 setModalContent(
                   <UserRecoveryKeyModalView onPress={onPress} userRecoveryKey={userCreateResponse.data.recoveryKey} />,
@@ -82,17 +79,7 @@ export const RegisterScreen = () => {
         },
       });
     },
-    [
-      createMutation,
-      loginMutation,
-      onDismiss,
-      onPress,
-      setModalContent,
-      setModalOnDismiss,
-      setModalVisible,
-      signIn,
-      preRegistrationMode,
-    ],
+    [createMutation, loginMutation, onDismiss, onPress, setModalContent, setModalOnDismiss, setModalVisible, signIn],
   );
 
   if (!isSessionReady) {

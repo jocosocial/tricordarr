@@ -13,6 +13,8 @@ export interface SessionContextType {
   updateSession: (sessionID: string, updates: Partial<Session>) => Promise<void>;
   deleteSession: (sessionID: string) => Promise<void>;
   updateSessionToken: (sessionID: string, tokenData: TokenStringData | null) => Promise<void>;
+  signIn: (tokenData: TokenStringData) => Promise<void>;
+  signOut: () => Promise<void>;
   isLoading: boolean;
   isLoggedIn: boolean;
 }
@@ -31,6 +33,10 @@ export const SessionContext = createContext<SessionContextType>({
   updateSession: async () => {},
   deleteSession: async () => {},
   updateSessionToken: async () => {},
+  signIn: async () => {
+    throw new Error('SessionProvider not initialized');
+  },
+  signOut: async () => {},
   isLoading: true,
   isLoggedIn: false,
 });

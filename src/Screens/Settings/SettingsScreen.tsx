@@ -12,8 +12,8 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {SettingsHeaderTitle} from '#src/Components/Navigation/SettingsHeaderTitle';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
@@ -22,7 +22,8 @@ export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreen
 export const SettingsScreen = ({navigation}: Props) => {
   const {appConfig} = useConfig();
   const getHeaderTitle = useCallback(() => <SettingsHeaderTitle />, []);
-  const {tokenData} = useAuth();
+  const {currentSession} = useSession();
+  const tokenData = currentSession?.tokenData || null;
 
   useEffect(() => {
     navigation.setOptions({

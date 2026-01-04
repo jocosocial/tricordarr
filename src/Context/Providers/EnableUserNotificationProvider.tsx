@@ -1,6 +1,5 @@
 import React, {PropsWithChildren, useEffect, useState} from 'react';
 
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {EnableUserNotificationContext} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
@@ -14,8 +13,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
  */
 export const EnableUserNotificationProvider = ({children}: PropsWithChildren) => {
   const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);
-  const {isLoading} = useAuth();
-  const {isLoggedIn} = useSession();
+  const {isLoading, isLoggedIn} = useSession();
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
   const {oobeCompleted} = useOobe();

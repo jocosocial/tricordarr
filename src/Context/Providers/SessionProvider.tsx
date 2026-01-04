@@ -166,12 +166,33 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
         lastUsedAt: new Date().toISOString(),
       };
 
+      console.log('YYYYYYY [SessionProvider] updateSessionToken', updatedSession);
+
       // Persist immediately
       await SessionStorage.save(updatedSession);
       setSessions(prev => prev.map(s => (s.sessionID === sessionID ? updatedSession : s)));
     },
     [sessions],
   );
+
+  const signIn = useCallback(
+    async (tokenData: TokenStringData) => {
+      if (!currentSession) {
+        console.error('[SessionProvider] Cannot sign in: no current session');
+        return;
+      }
+      await updateSessionToken(currentSession.sessionID, tokenData);
+    },
+    [currentSession, updateSessionToken],
+  );
+
+  const signOut = useCallback(async () => {
+    if (!currentSession) {
+      console.error('[SessionProvider] Cannot sign out: no current session');
+      return;
+    }
+    await updateSessionToken(currentSession.sessionID, null);
+  }, [currentSession, updateSessionToken]);
 
   const contextValue: SessionContextType = useMemo(
     () => ({
@@ -184,6 +205,8 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       updateSession,
       deleteSession,
       updateSessionToken,
+      signIn,
+      signOut,
       isLoading,
       isLoggedIn,
     }),
@@ -197,6 +220,8 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       updateSession,
       deleteSession,
       updateSessionToken,
+      signIn,
+      signOut,
       isLoading,
       isLoggedIn,
     ],

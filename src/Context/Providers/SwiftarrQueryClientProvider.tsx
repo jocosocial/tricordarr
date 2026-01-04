@@ -4,7 +4,6 @@ import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 import DeviceInfo from 'react-native-device-info';
 
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -19,7 +18,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {currentSession, isLoggedIn} = useSession();
   const [errorCount, setErrorCount] = useState(0);
   const {setSnackbarPayload} = useSnackbar();
-  const {tokenData} = useAuth();
+  const tokenData = currentSession?.tokenData || null;
 
   const serverUrl = useMemo(() => {
     if (!currentSession) {

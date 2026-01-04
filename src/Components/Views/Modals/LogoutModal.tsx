@@ -5,11 +5,10 @@ import {Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ModalCard} from '#src/Components/Cards/ModalCard';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
-import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -38,7 +37,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
   const settingsNavigation = useSettingsStack();
 
   const {setEnableUserNotifications} = useEnableUserNotification();
-  const {signOut} = useAuth();
+  const {signOut} = useSession();
   const logoutMutation = useLogoutMutation({
     onSuccess: () => {
       onLogout();
@@ -48,7 +47,6 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
   const [loading, setLoading] = useState(false);
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
-  const {preRegistrationMode} = usePreRegistration();
 
   const onLogout = () => {
     setEnableUserNotifications(false);
@@ -57,7 +55,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
       type: WebSocketStorageActions.clear,
     });
     stopForegroundServiceWorker().then(() =>
-      signOut(preRegistrationMode).then(() => {
+      signOut().then(() => {
         clearPrivileges();
         queryClient.clear();
         setModalVisible(false);
