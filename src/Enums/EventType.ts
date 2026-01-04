@@ -7,6 +7,8 @@ export const EventType = {
   gaming: 'Gaming',
   /// An official but uncategorized event.
   general: 'Official',
+  /// A dining event.
+  dining: 'Dining',
   /// A live podcast event.
   livePodcast: 'Live Podcast',
   /// A main concert event.
