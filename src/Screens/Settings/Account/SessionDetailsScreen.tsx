@@ -11,10 +11,7 @@ import {SessionDeleteModalView} from '#src/Components/Views/Modals/SessionDelete
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {
-  SettingsStackParamList,
-  SettingsStackScreenComponents,
-} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
 type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.sessionDetails>;
 export const SessionDetailsScreen = ({route, navigation}: Props) => {
@@ -75,10 +72,7 @@ export const SessionDetailsScreen = ({route, navigation}: Props) => {
           <DataFieldListItem title={'Created At'} description={formatDate(session.createdAt)} />
           <DataFieldListItem title={'Last Used At'} description={formatDate(session.lastUsedAt)} />
           {session.oobeCompletedVersion !== undefined && (
-            <DataFieldListItem
-              title={'OOBE Completed Version'}
-              description={session.oobeCompletedVersion.toString()}
-            />
+            <DataFieldListItem title={'OOBE Completed Version'} description={session.oobeCompletedVersion.toString()} />
           )}
         </View>
         {session.tokenData && (
@@ -86,11 +80,7 @@ export const SessionDetailsScreen = ({route, navigation}: Props) => {
             <ListSubheader>Token Data</ListSubheader>
             <DataFieldListItem title={'User ID'} description={session.tokenData.userID} />
             <DataFieldListItem title={'Access Level'} description={session.tokenData.accessLevel} />
-            <DataFieldListItem
-              title={'Token'}
-              description={session.tokenData.token}
-              sensitive={true}
-            />
+            <DataFieldListItem title={'Token'} description={session.tokenData.token} sensitive={true} />
           </View>
         )}
         {!session.tokenData && (
@@ -110,4 +100,3 @@ export const SessionDetailsScreen = ({route, navigation}: Props) => {
     </AppView>
   );
 };
-
