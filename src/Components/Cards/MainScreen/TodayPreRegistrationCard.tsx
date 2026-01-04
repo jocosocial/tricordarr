@@ -4,7 +4,6 @@ import {Card, Text} from 'react-native-paper';
 
 import {PreRegistrationListItem} from '#src/Components/Lists/Items/PreRegistrationListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -13,10 +12,8 @@ import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/B
 
 export const TodayPreRegistrationCard = () => {
   const {commonStyles} = useStyles();
-  // const commonNavigation = useCommonStack();
   const mainNavigation = useMainStack();
   const bottomTabNavigation = useBottomTabNavigator();
-  const {tokenData} = useAuth();
 
   const styles = StyleSheet.create({
     card: {
@@ -46,14 +43,17 @@ export const TodayPreRegistrationCard = () => {
           <PreRegistrationListItem
             title={'Setup Your Profile'}
             iconName={AppIcons.profile}
-            onPress={() =>
-              mainNavigation.push(CommonStackComponents.userProfileScreen, {userID: tokenData?.userID ?? ''})
-            }
+            onPress={() => mainNavigation.push(CommonStackComponents.userSelfProfileScreen)}
           />
           <PreRegistrationListItem
             title={'View the Schedule'}
             iconName={AppIcons.events}
-            onPress={() => bottomTabNavigation.navigate(BottomTabComponents.scheduleTab)}
+            onPress={() =>
+              bottomTabNavigation.navigate(BottomTabComponents.scheduleTab, {
+                screen: CommonStackComponents.scheduleDayScreen,
+                params: {noDrawer: true},
+              })
+            }
           />
           <PreRegistrationListItem
             title={'Read Performer Bios'}
