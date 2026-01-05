@@ -31,6 +31,14 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
 
   return (
     <Menu visible={props.menuVisible} onDismiss={closeMenu} anchor={props.anchor}>
+      <Menu.Item
+        leadingIcon={AppIcons.calendarMultiple}
+        title={'Show Overlapping'}
+        onPress={() => {
+          closeMenu();
+          navigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.eventData});
+        }}
+      />
       {props.eventData.owner.userID === profilePublicData?.header.userID && (
         <>
           <Menu.Item

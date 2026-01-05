@@ -358,3 +358,16 @@ export const getScheduleItemStartEndTime = (
   let eventEndTime = addMinutes(eventStartTime, Number(duration));
   return {startTime: eventStartTime, endTime: eventEndTime};
 };
+
+/**
+ * Check if two time ranges overlap.
+ * Two events overlap if the first event starts before the second ends AND the first event ends after the second starts.
+ * @param start1 Start time of the first event (ISO string)
+ * @param end1 End time of the first event (ISO string)
+ * @param start2 Start time of the second event (ISO string)
+ * @param end2 End time of the second event (ISO string)
+ * @returns true if the events overlap in time, false otherwise
+ */
+export const eventsOverlap = (start1: string, end1: string, start2: string, end2: string): boolean => {
+  return new Date(start1) < new Date(end2) && new Date(end1) > new Date(start2);
+};

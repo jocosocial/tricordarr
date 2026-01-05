@@ -86,6 +86,15 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      <Menu.Item
+        title={'Show Overlapping'}
+        leadingIcon={AppIcons.calendarMultiple}
+        onPress={() => {
+          closeMenu();
+          commonNavigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.event});
+        }}
+      />
+      <Divider bold={true} />
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.event.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />
       {props.event.eventType === EventType.shadow && (

@@ -90,6 +90,12 @@ export const ScheduleHelpScreen = () => {
           Press this button on the schedule screen to view all of your events for the day. This includes favorited
           events, personal events, and joined LFGs. Pressing the button again will disengage the filters.
         </HelpTopicView>
+        <HelpTopicView title={'Overlapping Events'} icon={AppIcons.calendarMultiple}>
+          View events, LFGs, and personal events that occur at the same time as a selected event. Access this feature by
+          tapping the "Show Overlapping" button in the header of any event, LFG, or personal event screen, or by
+          long-pressing an event card and selecting "Show Overlapping" from the menu. Use the "Only your events" filter
+          to restrict the list to events you're participating in, events you own, or events you've favorited.
+        </HelpTopicView>
         <HelpChapterTitleView title={'LFG Integration'} />
         <HelpTopicView>
           There are optional settings to enable showing LFGs you've joined or that are open to you in the schedule.

@@ -99,6 +99,15 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
         />
       )}
       {props.eventData.forum && <Menu.Item title={'Forum'} leadingIcon={AppIcons.forum} onPress={handleForumPress} />}
+      <Menu.Item
+        title={'Overlapping'}
+        leadingIcon={AppIcons.calendarMultiple}
+        onPress={() => {
+          closeMenu();
+          commonNavigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.eventData});
+        }}
+      />
+      <Divider bold={true} />
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.eventData.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.eventData} />
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}

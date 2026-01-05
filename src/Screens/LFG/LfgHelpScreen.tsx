@@ -41,6 +41,12 @@ export const LfgHelpScreen = () => {
           You can change the default LFG screen (Find, Joined, Owned) and filter past LFGs by default in the settings.
           Tap the menu in the upper right of any LFG screen and select Settings.
         </HelpTopicView>
+        <HelpTopicView title={'Overlapping Events'} icon={AppIcons.calendarMultiple}>
+          View events, LFGs, and personal events that occur at the same time as a selected LFG. Access this feature by
+          tapping the actions menu (three dots) in the header of any LFG screen and selecting "Show Overlapping", or by
+          long-pressing an LFG card and selecting "Show Overlapping" from the menu. Use the "Only your events" filter to
+          restrict the list to events you're participating in, events you own, or events you've favorited.
+        </HelpTopicView>
         <HelpChapterTitleView title={'Participation'} />
         <HelpTopicView>Don't just add random people to your LFG. It's not nice.</HelpTopicView>
         <HelpTopicView>If you add people to your LFG, those people should already expect to be added.</HelpTopicView>

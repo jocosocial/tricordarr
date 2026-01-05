@@ -50,6 +50,7 @@ import {ScheduleDayPlannerScreen} from '#src/Screens/Schedule/ScheduleDayPlanner
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {ScheduleHelpScreen} from '#src/Screens/Schedule/ScheduleHelpScreen';
 import {ScheduleImportScreen} from '#src/Screens/Schedule/ScheduleImportScreen';
+import {ScheduleOverlapScreen} from '#src/Screens/Schedule/ScheduleOverlapScreen';
 import {SchedulePrivateEventsScreen} from '#src/Screens/Schedule/SchedulePrivateEventsScreen';
 import {SeamailAddParticipantScreen} from '#src/Screens/Seamail/SeamailAddParticipantScreen';
 import {SeamailCreateScreen} from '#src/Screens/Seamail/SeamailCreateScreen';
@@ -79,6 +80,7 @@ import {UserRelationsHelpScreen} from '#src/Screens/User/UserRelationsHelpScreen
 import {UserSelfProfileScreen} from '#src/Screens/User/UserSelfProfileScreen';
 import {
   CategoryData,
+  EventData,
   FezData,
   ForumData,
   ForumListData,
@@ -259,6 +261,9 @@ export type CommonStackParamList = {
   ScheduleDayPlannerScreen: {
     cruiseDay?: number;
   };
+  ScheduleOverlapScreen: {
+    eventData: EventData | FezData;
+  };
   PreRegistrationHelpScreen: undefined;
   HelpIndexScreen: undefined;
   MainHelpScreen: undefined;
@@ -337,6 +342,7 @@ export enum CommonStackComponents {
   schedulePrivateEventsScreen = 'SchedulePrivateEventsScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleDayPlannerScreen = 'ScheduleDayPlannerScreen',
+  scheduleOverlapScreen = 'ScheduleOverlapScreen',
   preRegistrationHelpScreen = 'PreRegistrationHelpScreen',
   helpIndexScreen = 'HelpIndexScreen',
   mainHelpScreen = 'MainHelpScreen',
@@ -702,6 +708,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.scheduleDayPlannerScreen}
         component={ScheduleDayPlannerScreen}
         options={{title: 'Day Planner'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleOverlapScreen}
+        component={ScheduleOverlapScreen}
+        options={{title: 'Overlapping Events'}}
       />
       <Stack.Screen
         name={CommonStackComponents.preRegistrationHelpScreen}
