@@ -28,6 +28,7 @@ export interface ScheduleConfig {
   hidePastLfgs: boolean;
   enableLateDayFlip: boolean;
   defaultLfgScreen: LfgStackComponents;
+  overlapExcludeDurationHours: number;
 }
 
 export interface AccessibilityConfig {
@@ -122,6 +123,7 @@ export const defaultAppConfig: AppConfig = {
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
     defaultLfgScreen: LfgStackComponents.lfgFindScreen,
+    overlapExcludeDurationHours: 4,
   },
   portTimeZoneID: 'America/New_York',
   apiClientConfig: {
@@ -178,6 +180,9 @@ export const getAppConfig = async () => {
   // "Migration"
   if (appConfig.manualTimeOffset === undefined) {
     appConfig.manualTimeOffset = 0;
+  }
+  if (appConfig.schedule.overlapExcludeDurationHours === undefined) {
+    appConfig.schedule.overlapExcludeDurationHours = 4;
   }
 
   // Ok now we're done

@@ -2,20 +2,23 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View} from 'react-native';
-import {ActivityIndicator} from 'react-native-paper';
+import {ActivityIndicator, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/useMenu';
 import {calcCruiseDayTime, eventsOverlap, getDurationString} from '#src/Libraries/DateTime';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
@@ -27,10 +30,13 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {eventData} = route.params;
   const {startDate, endDate} = useCruise();
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
   const {data: profilePublicData} = useUserProfileQuery();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [onlyYourEvents, setOnlyYourEvents] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
+  const commonNavigation = useCommonStack();
 
   // Extract startTime, endTime, and cruiseDay from eventData
   const inputStartTime = eventData.startTime;
@@ -155,7 +161,15 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       if (isInputEvent) {
         return false;
       }
-      return eventsOverlap(inputStartTime, inputEndTime, item.startTime, item.endTime);
+      if (!eventsOverlap(inputStartTime, inputEndTime, item.startTime, item.endTime)) {
+        return false;
+      }
+      // Filter out events with duration >= overlapExcludeDurationHours
+      const durationHours = (new Date(item.endTime).getTime() - new Date(item.startTime).getTime()) / (1000 * 60 * 60);
+      if (durationHours >= appConfig.schedule.overlapExcludeDurationHours) {
+        return false;
+      }
+      return true;
     });
 
     // Filter by "only your events" if enabled
@@ -186,6 +200,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     personalEventData,
     onlyYourEvents,
     profilePublicData,
+    appConfig.schedule.overlapExcludeDurationHours,
   ]);
 
   const isFetching =
@@ -213,15 +228,31 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
             onPress={() => setOnlyYourEvents(!onlyYourEvents)}
             iconName={AppIcons.user}
           />
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.scheduleHelpScreen)}
-          />
+          <AppMenu
+            visible={visible}
+            onDismiss={closeMenu}
+            anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+            <Menu.Item
+              title={'Settings'}
+              leadingIcon={AppIcons.settings}
+              onPress={() => {
+                closeMenu();
+                commonNavigation.push(CommonStackComponents.eventSettingsScreen);
+              }}
+            />
+            <Menu.Item
+              title={'Help'}
+              leadingIcon={AppIcons.help}
+              onPress={() => {
+                closeMenu();
+                commonNavigation.push(CommonStackComponents.scheduleHelpScreen);
+              }}
+            />
+          </AppMenu>
         </MaterialHeaderButtons>
       </View>
     );
-  }, [navigation, onlyYourEvents]);
+  }, [onlyYourEvents, visible, openMenu, closeMenu, commonNavigation]);
 
   useEffect(() => {
     navigation.setOptions({

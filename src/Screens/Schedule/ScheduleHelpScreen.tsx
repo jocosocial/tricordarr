@@ -94,7 +94,8 @@ export const ScheduleHelpScreen = () => {
           View events, LFGs, and personal events that occur at the same time as a selected event. Access this feature by
           tapping the "Show Overlapping" button in the header of any event, LFG, or personal event screen, or by
           long-pressing an event card and selecting "Show Overlapping" from the menu. Use the "Only your events" filter
-          to restrict the list to events you're participating in, events you own, or events you've favorited.
+          to restrict the list to events you're participating in, events you own, or events you've favorited. You can
+          configure a setting to exclude long events (by default, events 4 hours or longer) from the overlap list.
         </HelpTopicView>
         <HelpChapterTitleView title={'LFG Integration'} />
         <HelpTopicView>

@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
+import {SliderField} from '#src/Components/Forms/Fields/SliderField';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
@@ -27,6 +28,9 @@ export const EventSettingsScreen = () => {
   const {commonStyles} = useStyles();
   const [joined, setJoined] = useState(appConfig.schedule.eventsShowJoinedLfgs);
   const [open, setOpen] = useState(appConfig.schedule.eventsShowOpenLfgs);
+  const [overlapExcludeDurationHours, setOverlapExcludeDurationHours] = useState(
+    appConfig.schedule.overlapExcludeDurationHours,
+  );
 
   const handleOpenLfgs = () => {
     updateAppConfig({
@@ -131,6 +135,34 @@ export const EventSettingsScreen = () => {
                   onPress={handleOpenLfgs}
                   value={open}
                   style={commonStyles.paddingHorizontalSmall}
+                />
+              </ListSection>
+              <ListSection>
+                <ListSubheader>Overlapping Events</ListSubheader>
+                <SliderField
+                  name={'overlapExcludeDurationHours'}
+                  label={'Exclude Long Events from Overlap'}
+                  value={overlapExcludeDurationHours}
+                  minimumValue={0}
+                  maximumValue={24}
+                  step={1}
+                  unit={'hour'}
+                  helperText={
+                    'Events with a duration equal to or longer than this value (in hours) will be excluded from the overlap list. Set to 0 to show all overlapping events regardless of duration.'
+                  }
+                  onValueChange={(value: number) => {
+                    setOverlapExcludeDurationHours(value);
+                  }}
+                  onSlidingComplete={(value: number) => {
+                    updateAppConfig({
+                      ...appConfig,
+                      schedule: {
+                        ...appConfig.schedule,
+                        overlapExcludeDurationHours: value,
+                      },
+                    });
+                  }}
+                  style={[commonStyles.paddingHorizontalSmall, commonStyles.paddingTopSmall]}
                 />
               </ListSection>
               <ListSection>

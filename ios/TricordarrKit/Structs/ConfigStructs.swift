@@ -30,6 +30,7 @@ struct ScheduleConfig: Codable {
 	var hidePastLfgs: Bool
 	var enableLateDayFlip: Bool
 	var defaultLfgScreen: LfgStackComponents
+	var overlapExcludeDurationHours: Int
 }
 
 /// Accessibility configuration matching TypeScript AccessibilityConfig
