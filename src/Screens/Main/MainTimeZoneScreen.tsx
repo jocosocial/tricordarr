@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import moment from 'moment-timezone';
 import React, {useCallback, useEffect} from 'react';
 import {Linking, View} from 'react-native';
@@ -15,6 +14,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -26,11 +26,12 @@ const getCleanISOString = (dateString: string): string => {
 };
 
 const TimeZoneListItem = ({record}: {record: TimeZoneChangeRecord}) => {
+  const {setString} = useClipboard();
   return (
     <DataFieldListItem
       title={`${record.timeZoneID} (${record.timeZoneAbbrev}, UTC${moment.tz(record.timeZoneID).utcOffset()})`}
       description={`Effective at ${getCleanISOString(record.activeDate)}`}
-      onLongPress={() => Clipboard.setString(record.timeZoneID)}
+      onLongPress={() => setString(record.timeZoneID)}
     />
   );
 };

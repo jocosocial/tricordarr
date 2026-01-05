@@ -1,10 +1,10 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React, {ReactNode, useCallback, useMemo, useState} from 'react';
 import {StyleSheet, TextStyle, ViewStyle} from 'react-native';
 import {List} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {toSecureString} from '#src/Libraries/StringUtils';
 
 interface DataFieldListItemProps {
@@ -41,6 +41,7 @@ export const DataFieldListItem = ({
 }: DataFieldListItemProps) => {
   const [showSensitive, setShowSensitive] = useState(false);
   const {commonStyles} = useStyles();
+  const {setString} = useClipboard();
   const styles = StyleSheet.create({
     title: {
       ...commonStyles.fontSizeLabel,
@@ -104,7 +105,7 @@ export const DataFieldListItem = ({
         onLongPress ||
         (() =>
           displayDescription && (typeof displayDescription === 'string' || typeof displayDescription === 'number')
-            ? Clipboard.setString(displayDescription.toString())
+            ? setString(displayDescription.toString())
             : undefined)
       }
       contentStyle={styles.content}

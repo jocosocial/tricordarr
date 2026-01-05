@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
@@ -7,6 +6,7 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
+import {useClipboard} from '#src/Hooks/useClipboard';
 
 interface ShareMenuItemProps {
   contentType: ShareContentType;
@@ -18,6 +18,7 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {serverUrl} = useSwiftarrQueryClient();
+  const {setString} = useClipboard();
 
   const handlePress = React.useCallback(() => {
     let fullURL = '';
@@ -27,12 +28,12 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
       fullURL = `${serverUrl}/${contentType}/${contentID}`;
     }
 
-    Clipboard.setString(fullURL);
+    setString(fullURL);
 
     if (closeMenu) {
       closeMenu();
     }
-  }, [contentType, contentID, serverUrl, closeMenu]);
+  }, [contentType, contentID, serverUrl, closeMenu, setString]);
 
   /**
    * If the user hasn't finished setup or is in pre-registration mode,

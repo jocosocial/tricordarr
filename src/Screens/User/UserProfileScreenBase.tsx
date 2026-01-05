@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -26,6 +25,7 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
@@ -60,6 +60,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const commonNavigation = useCommonStack();
+  const {setString} = useClipboard();
   const {refetch: refetchFavorites} = useUserFavoritesQuery();
   const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
   const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
@@ -179,7 +180,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
               onPress={() => commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {user: data})}
               onLongPress={() => {
                 if (data.note !== undefined) {
-                  Clipboard.setString(data.note);
+                  setString(data.note);
                 }
               }}
             />

@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React, {ReactNode} from 'react';
 import {Menu} from 'react-native-paper';
 
@@ -6,6 +5,7 @@ import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
 interface FezPostActionsMenuProps {
@@ -18,6 +18,7 @@ interface FezPostActionsMenuProps {
 
 export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: FezPostActionsMenuProps) => {
   const {setModalContent, setModalVisible} = useModal();
+  const {setString} = useClipboard();
 
   const handleReport = () => {
     closeMenu();
@@ -32,7 +33,7 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
         leadingIcon={AppIcons.copy}
         title={'Copy'}
         onPress={() => {
-          Clipboard.setString(fezPost.text);
+          setString(fezPost.text);
           closeMenu();
         }}
       />

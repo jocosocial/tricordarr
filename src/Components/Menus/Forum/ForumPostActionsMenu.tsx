@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React, {ReactNode} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
@@ -12,6 +11,7 @@ import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
@@ -39,6 +39,7 @@ export const ForumPostActionsMenu = ({
   const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
   // Apparently this doesn't get to be available in the sub items? That's annoying.
   const commonNavigation = useCommonStack();
+  const {setString} = useClipboard();
 
   /**
    * closeMenu comes from the instance established in ForumPostMessageView so we need to drill
@@ -57,7 +58,7 @@ export const ForumPostActionsMenu = ({
         leadingIcon={AppIcons.copy}
         title={'Copy'}
         onPress={() => {
-          Clipboard.setString(forumPost.text);
+          setString(forumPost.text);
           closeMenu();
         }}
       />

@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import {StackScreenProps} from '@react-navigation/stack';
 import {FlashList} from '@shopify/flash-list';
 import {Query, useQueryClient} from '@tanstack/react-query';
@@ -9,6 +8,7 @@ import {Divider, Text} from 'react-native-paper';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
 export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.queryKeysSettingsScreen>;
@@ -18,6 +18,7 @@ export const QueryKeysSettingsScreen = ({navigation}: Props) => {
   const [contents, setContents] = useState<Query[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const {commonStyles} = useStyles();
+  const {setString} = useClipboard();
 
   const refresh = useCallback(() => {
     setRefreshing(true);
@@ -41,7 +42,7 @@ export const QueryKeysSettingsScreen = ({navigation}: Props) => {
       navigation.push(SettingsStackScreenComponents.queryDataSettingsScreen, {
         queryHash: item.queryHash,
       });
-    const onLongPress = () => Clipboard.setString(item.queryKey.toString());
+    const onLongPress = () => setString(item.queryKey.toString());
     return (
       <View style={styles.itemContainer}>
         <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>

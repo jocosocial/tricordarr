@@ -79,3 +79,7 @@ https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
 ## RefreshControl
 
 React Native (as of at least 0.82) `RefreshControl` does not support `enabled` on iOS so we use a wrapper `AppRefreshControl` which returns null (an AI-recommended pattern).
+
+## Clipboard
+
+iOS doesn't give you any clipboard feedback so I made a hook that does. `useClipboard()`.
