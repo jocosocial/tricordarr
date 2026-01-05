@@ -1,8 +1,8 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
+import {WebSocketStorage, WebSocketStorageType} from '#src/Context/Reducers/Fez/FezSocketReducer';
 import {OpenFezSocket} from '#src/Libraries/Network/Websockets';
-import {WebSocketStorage, WebSocketStorageType} from '#src/Reducers/Fez/FezSocketReducer';
 
 interface SocketContextType {
   fezSockets: WebSocketStorage;

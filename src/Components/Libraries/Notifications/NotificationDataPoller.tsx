@@ -1,4 +1,3 @@
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
@@ -10,8 +9,7 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
  * magic is done through React Query.
  */
 export const NotificationDataPoller = () => {
-  const {isLoggedIn} = useSession();
-  const {isLoading} = useAuth();
+  const {isLoggedIn, isLoading} = useSession();
   const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();

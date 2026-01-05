@@ -2,7 +2,6 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
-import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {FezType} from '#src/Enums/FezType';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {BoardgameHelpScreen} from '#src/Screens/Boardgames/BoardgameHelpScreen';
@@ -77,6 +76,7 @@ import {UserProfileHelpScreen} from '#src/Screens/User/UserProfileHelpScreen';
 import {UserProfileScreen} from '#src/Screens/User/UserProfileScreen';
 import {UserRegCodeScreen} from '#src/Screens/User/UserRegCodeScreen';
 import {UserRelationsHelpScreen} from '#src/Screens/User/UserRelationsHelpScreen';
+import {UserSelfProfileScreen} from '#src/Screens/User/UserSelfProfileScreen';
 import {
   CategoryData,
   FezData,
@@ -87,7 +87,7 @@ import {
   ProfilePublicData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
-import {ParamsWithOobe} from '#src/Types';
+import {NoDrawerParamsOptional} from '#src/Types/RouteParams';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -108,8 +108,8 @@ import {ParamsWithOobe} from '#src/Types';
 export type CommonStackParamList = {
   UserProfileScreen: {
     userID: string;
-    enableContent?: boolean;
   };
+  UserSelfProfileScreen: undefined;
   EditUserProfileScreen: {
     user: ProfilePublicData;
   };
@@ -211,7 +211,7 @@ export type CommonStackParamList = {
     cruiseDay?: number;
     initialUserHeaders?: UserHeader[];
   };
-  UserProfileHelpScreen: ParamsWithOobe;
+  UserProfileHelpScreen: undefined;
   UserRelationsHelpScreen: undefined;
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
@@ -255,7 +255,7 @@ export type CommonStackParamList = {
   };
   EventSettingsScreen: undefined;
   SchedulePrivateEventsScreen: undefined;
-  ScheduleDayScreen: ParamsWithOobe;
+  ScheduleDayScreen: NoDrawerParamsOptional;
   ScheduleDayPlannerScreen: {
     cruiseDay?: number;
   };
@@ -272,6 +272,7 @@ export type CommonStackParamList = {
 
 export enum CommonStackComponents {
   userProfileScreen = 'UserProfileScreen',
+  userSelfProfileScreen = 'UserSelfProfileScreen',
   userProfileEditScreen = 'EditUserProfileScreen',
   userPrivateNoteScreen = 'UserPrivateNoteScreen',
   userRegCodeScreen = 'UserRegCodeScreen',
@@ -370,11 +371,10 @@ export type HelpScreenComponents =
   | CommonStackComponents.aboutTwitarrScreen
   | CommonStackComponents.shutternautHelpScreen
   | CommonStackComponents.boardgameHelpScreen
-  | CommonStackComponents.photostreamHelpScreen;
+  | CommonStackComponents.photostreamHelpScreen
+  | CommonStackComponents.userProfileHelpScreen;
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
-  const {getLeftMainHeaderButtons} = useDrawer();
-
   return (
     <>
       <Stack.Screen
@@ -391,6 +391,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.userProfileEditScreen}
         component={UserProfileEditScreen}
         options={{title: 'Edit Profile'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.userSelfProfileScreen}
+        component={UserSelfProfileScreen}
+        options={{title: 'Your Profile'}}
       />
       <Stack.Screen
         name={CommonStackComponents.userPrivateNoteScreen}
@@ -686,10 +691,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.scheduleDayScreen}
         component={ScheduleDayScreen}
-        options={{
-          headerLeft: getLeftMainHeaderButtons,
-          title: 'Schedule',
-        }}
+        options={{title: 'Schedule'}}
       />
       <Stack.Screen
         name={CommonStackComponents.schedulePrivateEventsScreen}

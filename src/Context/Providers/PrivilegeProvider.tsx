@@ -1,7 +1,7 @@
 import React, {PropsWithChildren, useEffect, useState} from 'react';
 
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {PrivilegeContext} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {PrivilegedUserAccounts, UserAccessLevel} from '#src/Enums/UserAccessLevel';
 
 /**
@@ -18,7 +18,8 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
   const [hasTHO, setHasTHO] = useState(false);
   const [hasVerified, setHasVerified] = useState(false);
   const [hasAdmin, setHasAdmin] = useState(false);
-  const {tokenData} = useAuth();
+  const {currentSession} = useSession();
+  const tokenData = currentSession?.tokenData || null;
   const accessLevel = tokenData?.accessLevel || UserAccessLevel.unverified;
   // Maybe these should come from SwiftarrClientConfig some day?
   const privilegedUsernames = ['admin', 'twitarrteam', 'tho', 'moderator'];

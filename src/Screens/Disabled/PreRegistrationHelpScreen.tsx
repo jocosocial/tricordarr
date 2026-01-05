@@ -9,11 +9,9 @@ import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 export const PreRegistrationHelpScreen = () => {
   const mainNavigation = useMainStack();
-  const {data: profilePublicData} = useUserProfileQuery();
 
   return (
     <AppView>
@@ -34,11 +32,7 @@ export const PreRegistrationHelpScreen = () => {
             'Fill out a user profile that will be visible to other Twitarr users. This is where you can upload a photo of yourself or set preferred pronouns.'
           }
           icon={AppIcons.profile}
-          onPress={() =>
-            mainNavigation.push(CommonStackComponents.userProfileScreen, {
-              userID: profilePublicData?.header.userID ?? '',
-            })
-          }
+          onPress={() => mainNavigation.push(CommonStackComponents.userSelfProfileScreen)}
         />
         <DataFieldListItem
           title={'Events'}
@@ -46,7 +40,7 @@ export const PreRegistrationHelpScreen = () => {
             "Follow official and shadow events in the schedule. This will add them to your in-app day planner and generate reminder notifications. You can also import favorites from a Sched.com account if you've done this over there already."
           }
           icon={AppIcons.events}
-          onPress={() => mainNavigation.navigate(CommonStackComponents.scheduleDayScreen, {})}
+          onPress={() => mainNavigation.navigate(CommonStackComponents.scheduleDayScreen, {noDrawer: true})}
         />
         <DataFieldListItem
           title={'Performer'}
@@ -54,7 +48,7 @@ export const PreRegistrationHelpScreen = () => {
             "If you are hosting a Shadow Cruise event you can optionally create a performer profile for yourself. This will be visible to other Twitarr users and will be attached to the event you're hosting. This is separate from your Twitarr user profile."
           }
           icon={AppIcons.performer}
-          onPress={() => mainNavigation.push(CommonStackComponents.scheduleDayScreen, {})}
+          onPress={() => mainNavigation.push(CommonStackComponents.scheduleDayScreen, {noDrawer: true})}
         />
         <DataFieldListItem
           title={'Settings'}

@@ -22,6 +22,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {UserProfileAvatar} from '#src/Components/Views/UserProfileAvatar';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -37,7 +38,6 @@ interface Props {
   data?: ProfilePublicData;
   refetch: () => Promise<any>;
   isLoading: boolean;
-  enableContent?: boolean;
 }
 
 export const UserProfileScreenBase = (props: Props) => {
@@ -48,7 +48,12 @@ export const UserProfileScreenBase = (props: Props) => {
   );
 };
 
-const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = true}: Props) => {
+/**
+ * Screen for the user's own profile.
+ *
+ * If the user hasn't completed the OOBE, they will not see the content card.
+ */
+const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {data: profilePublicData, refetch: refetchSelf} = useUserProfileQuery();
   const {commonStyles} = useStyles();
@@ -59,7 +64,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = t
   const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
   const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
   const {preRegistrationMode} = usePreRegistration();
-
+  const {oobeCompleted} = useOobe();
   const isSelf = data?.header.userID === profilePublicData?.header.userID;
 
   const onRefresh = useCallback(async () => {
@@ -188,7 +193,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = t
             <UserAboutCard user={data} />
           </PaddedContentView>
         )}
-        {enableContent && (
+        {oobeCompleted && (
           <PaddedContentView>
             <UserContentCard user={data} />
           </PaddedContentView>

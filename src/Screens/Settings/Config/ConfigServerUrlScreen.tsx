@@ -1,4 +1,3 @@
-import {CacheManager} from '@georstat/react-native-image-cache';
 import {useQueryClient} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
@@ -11,10 +10,9 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -25,14 +23,13 @@ import {ServerUrlFormValues} from '#src/Types/FormValues';
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const {currentSession, updateSession} = useSession();
-  const {signOut} = useAuth();
   const {commonStyles} = useStyles();
-  const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
-  const {disruptionDetected, serverUrl} = useSwiftarrQueryClient();
+  const {disruptionDetected} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const {hasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
+  const {performSignOut} = useSignOut();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     if (!currentSession) {
@@ -40,7 +37,7 @@ export const ConfigServerUrlScreen = () => {
       return;
     }
 
-    const oldServerUrl = serverUrl;
+    const oldServerUrl = currentSession.serverUrl;
     await queryClient.cancelQueries({queryKey: ['/client/health']});
 
     // Update session serverUrl - persists immediately
@@ -55,10 +52,8 @@ export const ConfigServerUrlScreen = () => {
       }),
     );
     if (oldServerUrl !== values.serverUrl) {
-      await signOut(currentSession.preRegistrationMode);
-      clearPrivileges();
-      queryClient.clear();
-      await CacheManager.clearCache();
+      // Perform full sign-out when server URL changes (handles notifications, sockets, privileges, session, query cache, image cache)
+      await performSignOut();
     }
     setSnackbarPayload(undefined);
   };
@@ -81,8 +76,8 @@ export const ConfigServerUrlScreen = () => {
           <ServerUrlSettingForm
             onSubmit={onSave}
             initialValues={{
-              serverChoice: ServerChoices.fromUrl(serverUrl),
-              serverUrl: serverUrl,
+              serverChoice: ServerChoices.fromUrl(currentSession?.serverUrl || ''),
+              serverUrl: currentSession?.serverUrl || '',
             }}
           />
         </PaddedContentView>

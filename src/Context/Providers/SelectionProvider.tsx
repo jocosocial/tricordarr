@@ -2,7 +2,7 @@ import React, {PropsWithChildren, useEffect, useRef, useState} from 'react';
 import {Vibration} from 'react-native';
 
 import {SelectionContext} from '#src/Context/Contexts/SelectionContext';
-import {useSelectionReducer} from '#src/Reducers/SelectionReducer';
+import {useSelectionReducer} from '#src/Context/Reducers/SelectionReducer';
 
 /**
  * Provider for selecting items in a list. This is intended to be used in a Screen

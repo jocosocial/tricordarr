@@ -7,11 +7,9 @@ import {LoginForm} from '#src/Components/Forms/User/LoginForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
-import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -23,9 +21,8 @@ import {LoginFormValues} from '#src/Types/FormValues';
 export const LoginScreen = () => {
   const navigation = useNavigation();
   const loginMutation = useLoginMutation();
-  const {signIn} = useAuth();
+  const {signIn} = useSession();
   const {oobeCompleted} = useOobe();
-  const {preRegistrationMode} = usePreRegistration();
   const {serverUrl} = useSwiftarrQueryClient();
   const {updateClientSettings} = useClientSettings();
   const {refetch: refetchRoles} = useRoles();
@@ -50,7 +47,7 @@ export const LoginScreen = () => {
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
       loginMutation.mutate(formValues, {
         onSuccess: async response => {
-          await signIn(response.data, preRegistrationMode);
+          await signIn(response.data);
           if (oobeCompleted) {
             await startPushProvider();
           }
@@ -69,7 +66,7 @@ export const LoginScreen = () => {
         onSettled: () => formikHelpers.setSubmitting(false),
       });
     },
-    [loginMutation, signIn, preRegistrationMode, oobeCompleted, updateClientSettings, navigation, refetchRoles],
+    [loginMutation, signIn, oobeCompleted, updateClientSettings, navigation, refetchRoles],
   );
 
   if (!isSessionReady) {

@@ -5,7 +5,6 @@ import {Linking, ScrollView, StyleSheet} from 'react-native';
 import {Drawer} from 'react-native-drawer-layout';
 import {Badge, Drawer as PaperDrawer} from 'react-native-paper';
 
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
@@ -25,7 +24,6 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {data: userNotificationData} = useUserNotificationDataQuery({
     enabled: oobeCompleted && !preRegistrationMode,
   });
-  const {tokenData} = useAuth();
   const {data: profilePublicData} = useUserProfileQuery({enabled: oobeCompleted});
   const {commonStyles} = useStyles();
   const navigation = useNavigation();
@@ -90,7 +88,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   <PaperDrawer.Item
                     label={`Your Profile (${profilePublicData?.header.username})`}
                     icon={AppIcons.profile}
-                    onPress={() => Linking.openURL(`tricordarr://user/${tokenData?.userID}`)}
+                    onPress={() => Linking.openURL('tricordarr://profile')}
                   />
                   <PaperDrawer.Item
                     label={'Directory'}

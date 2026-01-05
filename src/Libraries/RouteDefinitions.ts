@@ -41,6 +41,7 @@ export const allRoutes: RouteDefinition[] = [
   {screen: MainStackComponents.performerListScreen, path: 'performers'},
   {screen: CommonStackComponents.mainTimeZoneScreen, path: 'time'},
   {screen: MainStackComponents.boardgameListScreen, path: 'boardgames'},
+  {screen: CommonStackComponents.userSelfProfileScreen, path: 'profile'},
 
   // ==================== Settings Routes ====================
   {screen: SettingsStackScreenComponents.settings, path: 'settings'},

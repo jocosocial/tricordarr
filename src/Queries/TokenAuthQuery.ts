@@ -77,7 +77,7 @@ export function useTokenAuthQuery<TData, TQueryParams = Object, TError extends E
 //   options?: TokenAuthPaginationQueryOptionsType<TData, PaginationQueryParams, TError>,
 //   queryParams?: TQueryParams,
 // ) {
-//   const {isLoggedIn} = useAuth();
+//   const {isLoggedIn} = useSession();
 //   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
 //   const {appConfig} = useConfig();
 
@@ -113,7 +113,7 @@ export function useTokenAuthQuery<TData, TQueryParams = Object, TError extends E
 //   options?: TokenAuthPaginationQueryOptionsType<TData, PaginationQueryParams, TError>,
 //   queryParams?: TQueryParams,
 // ) {
-//   const {isLoggedIn} = useAuth();
+//   const {isLoggedIn} = useSession();
 //   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
 
 //   // const defaultQueryFn = async ({pageParam}: {pageParam: PaginationQueryParams}) => {

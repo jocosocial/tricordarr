@@ -7,15 +7,16 @@ import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 export const AccountInfoSettingsScreen = () => {
   const {data: profilePublicData, refetch: refetchProfile} = useUserProfileQuery();
-  const {tokenData} = useAuth();
+  const {currentSession} = useSession();
+  const tokenData = currentSession?.tokenData || null;
   const {roles, refetch: refetchRoles} = useRoles();
   const [refreshing, setRefreshing] = useState(false);
   const {theme} = useAppTheme();
