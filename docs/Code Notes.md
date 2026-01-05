@@ -66,6 +66,13 @@ const onRefresh = async () => {
 };
 ```
 
+**Important**: Always use local `refreshing` state with `RefreshControl`, not `isFetching` from queries. Background refetches (e.g., from `NotificationDataPoller` polling every 2 minutes) will cause `isFetching` to toggle, making the RefreshControl spinner appear/disappear quickly and causing screen jumping on iOS. The local state pattern ensures the spinner only shows during user-initiated pull-to-refresh actions.
+
+- Use `isFetching` for debugging or other non-UI purposes
+- Use `isLoading` only for initial loading states (return `<LoadingView />`)
+- Use `isFetchingNextPage`/`isFetchingPreviousPage` only for pagination indicators, not RefreshControl
+- Use local `refreshing` state for all `RefreshControl` components
+
 `refetchPage` can be passed to `refetch` to limit refetching - CITATION NEEDED
 
 ## Websocket Keepalive

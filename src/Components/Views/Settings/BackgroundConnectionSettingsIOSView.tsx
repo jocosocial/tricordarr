@@ -44,7 +44,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
   const {preRegistrationMode} = usePreRegistration();
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
   const [fgsHealthTime, setFgsHealthTime] = useState(appConfig.fgsWorkerHealthTimer / 1000);
-  const {data, refetch, isFetching} = useUserNotificationDataQuery();
+  const {data, refetch} = useUserNotificationDataQuery();
   const {theme} = useAppTheme();
   const {setSnackbarPayload} = useSnackbar();
   const formikRef = useRef<FormikProps<BackgroundConnectionSettingsFormValues>>(null);
@@ -192,13 +192,6 @@ export const BackgroundConnectionSettingsIOSView = () => {
     fetchManagerStatus();
     fetchForegroundProviderStatus();
   }, []);
-
-  useEffect(() => {
-    if (!isFetching) {
-      fetchManagerStatus();
-      fetchForegroundProviderStatus();
-    }
-  }, [isFetching]);
 
   return (
     <AppView>

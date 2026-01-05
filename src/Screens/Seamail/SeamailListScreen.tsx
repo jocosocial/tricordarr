@@ -49,7 +49,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   // showUnreadOnly should almost never be false since that's not useful. The query will not
   // pass undefined to the API.
   const [showUnreadOnly, setShowUnreadOnly] = useState<boolean | undefined>(undefined);
-  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isPending} = useSeamailListQuery({
+  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading} = useSeamailListQuery({
     forUser: asPrivilegedUser,
     onlyNew: showUnreadOnly,
   });
@@ -169,7 +169,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
       )}
       <SeamailFlatList
         fezList={fezList}
-        refreshControl={<AppRefreshControl refreshing={isLoading || refreshing || isPending} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
         onScrollThreshold={onScrollThreshold}
         hasNextPage={hasNextPage}

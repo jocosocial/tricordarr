@@ -1,5 +1,5 @@
 import moment from 'moment-timezone';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Linking, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
@@ -13,7 +13,6 @@ import {MainTimeZoneScreenActionsMenu} from '#src/Components/Menus/Main/MainTime
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
@@ -45,12 +44,15 @@ export const MainTimeZoneScreen = () => {
 };
 
 const TimeZoneScreen = () => {
-  const {data, refetch, isFetching, isInitialLoading} = useTimeZoneChangesQuery();
+  const {data, refetch} = useTimeZoneChangesQuery();
   const navigation = useCommonStack();
   const {data: notificationData, refetch: refetchNotificationData} = useUserNotificationDataQuery();
+  const [refreshing, setRefreshing] = useState(false);
 
   const refresh = async () => {
+    setRefreshing(true);
     await Promise.all([refetch(), refetchNotificationData()]);
+    setRefreshing(false);
   };
 
   const getNavBarIcons = useCallback(
@@ -70,15 +72,11 @@ const TimeZoneScreen = () => {
     });
   }, [getNavBarIcons, navigation]);
 
-  if (isInitialLoading) {
-    return <LoadingView />;
-  }
-
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={refresh} />}>
         <ListSection>
           <ListSubheader>Device Time</ListSubheader>
         </ListSection>

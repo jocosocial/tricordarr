@@ -81,6 +81,7 @@ export const LfgListScreen = ({
   const isFocused = useIsFocused();
   const {notificationSocket} = useSocket();
   const [showFabLabel, setShowFabLabel] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const queryClient = useQueryClient();
 
@@ -170,7 +171,11 @@ export const LfgListScreen = ({
     }
   }, [isError, onQueryError]);
 
-  const isRefreshing = isFetching || isFetchingNextPage || isFetchingPreviousPage;
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   return (
     <LoggedInScreen>
@@ -186,7 +191,7 @@ export const LfgListScreen = ({
             <LFGFlatList
               listRef={listRef}
               items={fezList}
-              refreshControl={<AppRefreshControl refreshing={isRefreshing} onRefresh={refetch} />}
+              refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
               separator={'day'}
               onScrollThreshold={onScrollThreshold}
               handleLoadNext={fetchNextPage}
