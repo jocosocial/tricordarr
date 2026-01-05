@@ -22,6 +22,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {UserProfileAvatar} from '#src/Components/Views/UserProfileAvatar';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -47,6 +48,11 @@ export const UserProfileScreenBase = (props: Props) => {
   );
 };
 
+/**
+ * Screen for the user's own profile.
+ *
+ * If the user hasn't completed the OOBE, they will not see the content card.
+ */
 const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {data: profilePublicData, refetch: refetchSelf} = useUserProfileQuery();
@@ -58,7 +64,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
   const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
   const {preRegistrationMode} = usePreRegistration();
-
+  const {oobeCompleted} = useOobe();
   const isSelf = data?.header.userID === profilePublicData?.header.userID;
 
   const onRefresh = useCallback(async () => {
@@ -187,9 +193,11 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
             <UserAboutCard user={data} />
           </PaddedContentView>
         )}
-        <PaddedContentView>
-          <UserContentCard user={data} />
-        </PaddedContentView>
+        {oobeCompleted && (
+          <PaddedContentView>
+            <UserContentCard user={data} />
+          </PaddedContentView>
+        )}
       </ScrollingContentView>
     </AppView>
   );
