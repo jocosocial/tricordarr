@@ -1,4 +1,3 @@
-import {CacheManager} from '@georstat/react-native-image-cache';
 import {useQueryClient} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
@@ -12,8 +11,8 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -25,12 +24,12 @@ export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const {currentSession, updateSession} = useSession();
   const {commonStyles} = useStyles();
-  const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const {hasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
+  const {performSignOut} = useSignOut();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     if (!currentSession) {
@@ -53,9 +52,8 @@ export const ConfigServerUrlScreen = () => {
       }),
     );
     if (oldServerUrl !== values.serverUrl) {
-      clearPrivileges();
-      queryClient.clear();
-      await CacheManager.clearCache();
+      // Perform full sign-out when server URL changes (handles notifications, sockets, privileges, session, query cache, image cache)
+      await performSignOut();
     }
     setSnackbarPayload(undefined);
   };

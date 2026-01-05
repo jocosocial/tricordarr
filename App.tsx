@@ -35,6 +35,7 @@ import {PrivilegeProvider} from '#src/Context/Providers/PrivilegeProvider';
 import {RoleProvider} from '#src/Context/Providers/RoleProvider';
 import {SessionProvider} from '#src/Context/Providers/SessionProvider';
 import {ShellProvider} from '#src/Context/Providers/ShellProvider';
+import {SignOutProvider} from '#src/Context/Providers/SignOutProvider';
 import {SnackbarProvider} from '#src/Context/Providers/SnackbarProvider';
 import {SocketProvider} from '#src/Context/Providers/SocketProvider';
 import {StyleProvider} from '#src/Context/Providers/StyleProvider';
@@ -127,14 +128,16 @@ function App(): React.JSX.Element {
                                                 <ClientSettingsProvider>
                                                   <CruiseProvider>
                                                     <FilterProvider>
-                                                      <ShellProvider>
-                                                        <AppEventHandler />
-                                                        <AppFocusHandler />
-                                                        <PushNotificationService />
-                                                        <NotificationDataListener />
-                                                        <NotificationDataPoller />
-                                                        <RootStackNavigator />
-                                                      </ShellProvider>
+                                                      <SignOutProvider>
+                                                        <ShellProvider>
+                                                          <AppEventHandler />
+                                                          <AppFocusHandler />
+                                                          <PushNotificationService />
+                                                          <NotificationDataListener />
+                                                          <NotificationDataPoller />
+                                                          <RootStackNavigator />
+                                                        </ShellProvider>
+                                                      </SignOutProvider>
                                                     </FilterProvider>
                                                   </CruiseProvider>
                                                 </ClientSettingsProvider>
