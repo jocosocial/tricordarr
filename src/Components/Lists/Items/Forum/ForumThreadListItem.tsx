@@ -15,7 +15,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {getEventTimeString} from '#src/Libraries/DateTime';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
-import {SelectionActions} from '#src/Reducers/SelectionReducer';
+import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 import {commonStyles} from '#src/Styles';
 import {Selectable} from '#src/Types/Selectable';

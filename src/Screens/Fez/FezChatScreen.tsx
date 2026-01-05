@@ -35,8 +35,8 @@ import {
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
-import {FezPostsActions, useFezPostsReducer} from '#src/Reducers/Fez/FezPostsReducers';
-import {WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
+import {FezPostsActions, useFezPostsReducer} from '#src/Context/Reducers/Fez/FezPostsReducers';
+import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData, PostContentData} from '#src/Structs/ControllerStructs';

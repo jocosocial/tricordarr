@@ -7,7 +7,7 @@ import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {SelectionActions} from '#src/Reducers/SelectionReducer';
+import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 import {SegmentedButtonType} from '#src/Types';
 import {Selectable} from '#src/Types/Selectable';

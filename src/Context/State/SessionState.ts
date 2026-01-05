@@ -1,4 +1,3 @@
-import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {Session} from '#src/Structs/SessionStructs';
 
 /**
@@ -142,7 +141,11 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     case 'deleted-session': {
       const filteredSessions = state.sessions.filter(s => s.sessionID !== action.sessionID);
       const newCurrentSessionID =
-        state.currentSessionID === action.sessionID ? (filteredSessions.length > 0 ? filteredSessions[0].sessionID : null) : state.currentSessionID;
+        state.currentSessionID === action.sessionID
+          ? filteredSessions.length > 0
+            ? filteredSessions[0].sessionID
+            : null
+          : state.currentSessionID;
 
       return {
         ...state,
@@ -174,4 +177,3 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     }
   }
 }
-

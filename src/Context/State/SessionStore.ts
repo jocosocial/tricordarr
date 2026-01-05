@@ -1,9 +1,9 @@
-import {getInitialState, sessionReducer, SessionState, SessionAction} from './SessionState';
+import {getInitialState, SessionAction, sessionReducer, SessionState} from '#src/Context/State/SessionState';
 
 /**
  * SessionStore manages session state using a reducer pattern.
  * Provides synchronous state access and subscription-based updates for React.
- * 
+ *
  * Based on Bluesky's SessionStore implementation:
  * https://github.com/bluesky-social/social-app/blob/55806f10870128f7702714b5968c64a0e908281e/src/state/session/index.tsx
  */
@@ -62,4 +62,3 @@ export class SessionStore {
     };
   }
 }
-

@@ -8,7 +8,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SignOutContext, SignOutContextType} from '#src/Context/Contexts/SignOutContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {stopForegroundServiceWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
-import {WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
+import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
 
 /**
  * SignOutProvider consolidates all sign-out logic into a single performSignOut function.
