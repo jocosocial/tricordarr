@@ -2,10 +2,10 @@ import React from 'react';
 import {Linking, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {ContributorCard} from '#src/Components/Cards/ContributorCard';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ContributorView} from '#src/Components/Views/ContributorView';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
@@ -24,10 +24,9 @@ export const KrakenView = () => {
         <PaddedContentView>
           <TouchableOpacity
             onPress={() => Linking.openURL('https://apps.apple.com/us/app/the-kraken-a-twitarr-client/id1496322373')}>
-            <ContributorCard
-              image={AppImageMetaData.fromAsset(Krakn, 'Krakn.png')}
-              bodyText={'The Kraken is a social media app custom-built for JoCo Cruise by Chall Fry.'}
-            />
+            <ContributorView image={AppImageMetaData.fromAsset(Krakn, 'Krakn.png')}>
+              The Kraken is a social media app custom-built for JoCo Cruise by Chall Fry.
+            </ContributorView>
           </TouchableOpacity>
         </PaddedContentView>
       </ScrollingContentView>

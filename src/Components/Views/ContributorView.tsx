@@ -1,22 +1,22 @@
-import React from 'react';
+import React, {PropsWithChildren} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Card, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 
 import {AppImage} from '#src/Components/Images/AppImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
-interface ContributorCardProps {
-  bodyText: string;
+interface ContributorViewProps {
   image: AppImageMetaData;
 }
 
-export const ContributorCard = (props: ContributorCardProps) => {
+export const ContributorView = (props: PropsWithChildren<ContributorViewProps>) => {
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
-    cardContent: {
+    content: {
       ...commonStyles.flexRow,
+      ...commonStyles.marginBottom,
     },
     image: {
       width: 100,
@@ -28,19 +28,14 @@ export const ContributorCard = (props: ContributorCardProps) => {
       ...commonStyles.flex,
       ...commonStyles.flexColumn,
     },
-    card: {
-      ...commonStyles.marginBottomSmall,
-    },
   });
 
   return (
-    <Card style={styles.card}>
-      <Card.Content style={styles.cardContent}>
-        <AppImage image={props.image} style={styles.image} />
-        <View style={styles.body}>
-          <Text>{props.bodyText}</Text>
-        </View>
-      </Card.Content>
-    </Card>
+    <View style={styles.content}>
+      <AppImage image={props.image} style={styles.image} />
+      <View style={styles.body}>
+        <Text>{props.children}</Text>
+      </View>
+    </View>
   );
 };
