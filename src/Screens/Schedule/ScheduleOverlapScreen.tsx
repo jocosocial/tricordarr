@@ -76,7 +76,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     endpoint: 'open',
     hidePast: false,
     options: {
-      enabled: cruiseDay !== undefined && !preRegistrationMode,
+      enabled: cruiseDay !== undefined && !preRegistrationMode && appConfig.schedule.eventsShowOpenLfgs,
     },
   });
 
@@ -132,7 +132,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     }
 
     // Add LFGs
-    if (lfgOpenData) {
+    if (lfgOpenData && appConfig.schedule.eventsShowOpenLfgs) {
       lfgOpenData.pages.forEach(page => {
         allItems.push(...page.fezzes);
       });
@@ -234,6 +234,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     onlyYourEvents,
     profilePublicData,
     appConfig.schedule.overlapExcludeDurationHours,
+    appConfig.schedule.eventsShowOpenLfgs,
     getIsDisabled,
     preRegistrationMode,
   ]);
@@ -245,11 +246,22 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     setRefreshing(true);
     const refreshes: Promise<any>[] = [refetchEvents()];
     if (!preRegistrationMode) {
-      refreshes.push(refetchLfgOpen(), refetchLfgJoined(), refetchLfgOwned(), refetchPersonalEvents());
+      if (appConfig.schedule.eventsShowOpenLfgs) {
+        refreshes.push(refetchLfgOpen());
+      }
+      refreshes.push(refetchLfgJoined(), refetchLfgOwned(), refetchPersonalEvents());
     }
     await Promise.all(refreshes);
     setRefreshing(false);
-  }, [refetchEvents, refetchLfgOpen, refetchLfgJoined, refetchLfgOwned, refetchPersonalEvents, preRegistrationMode]);
+  }, [
+    refetchEvents,
+    refetchLfgOpen,
+    refetchLfgJoined,
+    refetchLfgOwned,
+    refetchPersonalEvents,
+    preRegistrationMode,
+    appConfig.schedule.eventsShowOpenLfgs,
+  ]);
 
   const getNavButtons = useCallback(() => {
     return (
