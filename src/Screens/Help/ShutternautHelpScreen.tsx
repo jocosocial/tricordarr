@@ -25,8 +25,11 @@ export const ShutternautHelpScreen = () => {
           events you are photographing. Filters are mutually exclusive so you can only have one active Shutternaut
           filter at a time.
         </HelpTopicView>
-        <HelpTopicView>
-          Long-press an event or open the event details screen to set the photographer for the event.
+        <HelpTopicView icon={AppIcons.shutternaut}>
+          Long-press an event or open the event details screen to mark yourself as a photographer for the event.
+        </HelpTopicView>
+        <HelpTopicView icon={AppIcons.needsPhotographer}>
+          Events with this icon have been marked as needing a photographer by a Shutternaut Manager.
         </HelpTopicView>
         <HelpTopicView>
           All Shutternaut roles will see a list of photographers for an event in the event details screen.

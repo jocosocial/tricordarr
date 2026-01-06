@@ -3,9 +3,9 @@ import React, {Dispatch, SetStateAction} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
+import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
@@ -26,7 +26,6 @@ interface EventCardActionsMenuProps {
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const commonNavigation = useCommonStack();
   const {hasShutternaut, hasShutternautManager} = useRoles();
-  const {commonStyles} = useStyles();
   const queryClient = useQueryClient();
   const photographerMutation = useEventPhotographerMutation();
   const needsPhotographerMutation = useEventNeedsPhotographerMutation();
@@ -112,19 +111,19 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.eventData} />
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
       {hasShutternaut && props.eventData.shutternautData && (
-        <Menu.Item
+        <SelectableMenuItem
           title={'Photographing'}
           leadingIcon={AppIcons.shutternaut}
           onPress={handlePhotographerToggle}
-          style={props.eventData.shutternautData.userIsPhotographer ? commonStyles.surfaceVariant : undefined}
+          selected={props.eventData.shutternautData.userIsPhotographer}
         />
       )}
       {hasShutternautManager && props.eventData.shutternautData && (
-        <Menu.Item
+        <SelectableMenuItem
           title={'Needs Photographer'}
-          leadingIcon={AppIcons.shutternautManager}
+          leadingIcon={AppIcons.needsPhotographer}
           onPress={handleNeedsPhotographerToggle}
-          style={props.eventData.shutternautData.needsPhotographer ? commonStyles.surfaceVariant : undefined}
+          selected={props.eventData.shutternautData.needsPhotographer}
         />
       )}
     </Menu>

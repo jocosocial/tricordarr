@@ -79,7 +79,15 @@ const SchedulePrivateEventsScreenInner = () => {
    */
   useEffect(() => {
     if (data) {
-      setItems(data.pages.flatMap(page => page.fezzes));
+      const flattenedItems = data.pages.flatMap(page => page.fezzes);
+      const sortedItems = flattenedItems.sort((a, b) => {
+        if (a.startTime && b.startTime) {
+          return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+        }
+        // Return 0 if both startTime are undefined (order remains unchanged)
+        return 0;
+      });
+      setItems(sortedItems);
       onDataLoaded();
     }
   }, [data, onDataLoaded]);

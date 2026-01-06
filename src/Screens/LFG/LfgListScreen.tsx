@@ -59,17 +59,7 @@ export const LfgListScreen = ({
     listRef,
     clearList: useCallback(() => setFezList([]), []),
   });
-  const {
-    data,
-    isFetching,
-    refetch,
-    isLoading,
-    isError,
-    fetchNextPage,
-    isFetchingPreviousPage,
-    isFetchingNextPage,
-    hasNextPage,
-  } = useLfgListQuery({
+  const {data, refetch, isLoading, isError, fetchNextPage, hasNextPage} = useLfgListQuery({
     endpoint: endpoint,
     fezType: lfgTypeFilter,
     // @TODO we intend to change this some day. Upstream Swiftarr issue.

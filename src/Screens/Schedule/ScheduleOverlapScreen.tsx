@@ -14,7 +14,11 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {calcCruiseDayTime, eventsOverlap, getDurationString} from '#src/Libraries/DateTime';
@@ -32,6 +36,8 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
   const {data: profilePublicData} = useUserProfileQuery();
+  const {getIsDisabled} = useFeature();
+  const {preRegistrationMode} = usePreRegistration();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [onlyYourEvents, setOnlyYourEvents] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -70,7 +76,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     endpoint: 'open',
     hidePast: false,
     options: {
-      enabled: cruiseDay !== undefined,
+      enabled: cruiseDay !== undefined && !preRegistrationMode && appConfig.schedule.eventsShowOpenLfgs,
     },
   });
 
@@ -83,20 +89,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: cruiseDay !== undefined,
-    },
-  });
-
-  const {
-    data: lfgOwnedData,
-    isFetching: isLfgOwnedFetching,
-    refetch: refetchLfgOwned,
-  } = useLfgListQuery({
-    cruiseDay: cruiseDay !== undefined ? cruiseDay - 1 : undefined,
-    endpoint: 'owner',
-    hidePast: false,
-    options: {
-      enabled: cruiseDay !== undefined,
+      enabled: cruiseDay !== undefined && !preRegistrationMode,
     },
   });
 
@@ -108,7 +101,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     cruiseDay: cruiseDay !== undefined ? cruiseDay - 1 : undefined,
     hidePast: false,
     options: {
-      enabled: cruiseDay !== undefined,
+      enabled: cruiseDay !== undefined && !preRegistrationMode,
     },
   });
 
@@ -126,18 +119,13 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     }
 
     // Add LFGs
-    if (lfgOpenData) {
+    if (lfgOpenData && appConfig.schedule.eventsShowOpenLfgs) {
       lfgOpenData.pages.forEach(page => {
         allItems.push(...page.fezzes);
       });
     }
     if (lfgJoinedData) {
       lfgJoinedData.pages.forEach(page => {
-        allItems.push(...page.fezzes);
-      });
-    }
-    if (lfgOwnedData) {
-      lfgOwnedData.pages.forEach(page => {
         allItems.push(...page.fezzes);
       });
     }
@@ -149,16 +137,9 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       });
     }
 
-    // Filter by time overlap and exclude the input event itself
+    // Filter by time overlap
     const overlappingItems = allItems.filter(item => {
       if (!item.startTime || !item.endTime) {
-        return false;
-      }
-      // Exclude the input event itself
-      const isInputEvent =
-        ('fezID' in item && 'fezID' in eventData && item.fezID === eventData.fezID) ||
-        ('eventID' in item && 'eventID' in eventData && item.eventID === eventData.eventID);
-      if (isInputEvent) {
         return false;
       }
       if (!eventsOverlap(inputStartTime, inputEndTime, item.startTime, item.endTime)) {
@@ -172,9 +153,38 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       return true;
     });
 
+    // Filter by feature flags and preregistration mode
+    const featureFilteredItems = overlappingItems.filter(item => {
+      // Only filter FezData items (LFGs and personal events)
+      if ('fezID' in item) {
+        // Exclude LFGs if feature is disabled or in preregistration mode
+        if (FezType.isLFGType(item.fezType)) {
+          if (getIsDisabled(SwiftarrFeature.friendlyfez) || preRegistrationMode) {
+            return false;
+          }
+        }
+        // Exclude personal events if feature is disabled or in preregistration mode
+        if (item.fezType === FezType.personalEvent) {
+          if (getIsDisabled(SwiftarrFeature.personalevents) || preRegistrationMode) {
+            return false;
+          }
+        }
+      }
+      return true;
+    });
+
     // Filter by "only your events" if enabled
     if (onlyYourEvents && profilePublicData?.header) {
-      return overlappingItems.filter(item => {
+      // Get the ID of the route's eventData to ensure it's always included
+      const routeEventId = 'fezID' in eventData ? eventData.fezID : eventData.eventID;
+
+      const userFilteredItems = featureFilteredItems.filter(item => {
+        // Always include the route's eventData, even if it doesn't match the filter
+        const itemId = 'fezID' in item ? item.fezID : item.eventID;
+        if (itemId === routeEventId) {
+          return true;
+        }
+
         if ('fezID' in item) {
           // LFGs or PersonalEvents: check if user is participant or owner
           return (
@@ -186,9 +196,24 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
           return item.isFavorite === true;
         }
       });
+      // Sort by startTime
+      return userFilteredItems.sort((a, b) => {
+        if (a.startTime && b.startTime) {
+          return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+        }
+        // Return 0 if both startTime are undefined (order remains unchanged)
+        return 0;
+      });
     }
 
-    return overlappingItems;
+    // Sort by startTime
+    return featureFilteredItems.sort((a, b) => {
+      if (a.startTime && b.startTime) {
+        return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+      }
+      // Return 0 if both startTime are undefined (order remains unchanged)
+      return 0;
+    });
   }, [
     inputStartTime,
     inputEndTime,
@@ -196,27 +221,36 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     eventDataQuery,
     lfgOpenData,
     lfgJoinedData,
-    lfgOwnedData,
     personalEventData,
     onlyYourEvents,
     profilePublicData,
     appConfig.schedule.overlapExcludeDurationHours,
+    appConfig.schedule.eventsShowOpenLfgs,
+    getIsDisabled,
+    preRegistrationMode,
   ]);
 
-  const isFetching =
-    isEventFetching || isLfgOpenFetching || isLfgJoinedFetching || isLfgOwnedFetching || isPersonalEventFetching;
+  const isFetching = isEventFetching || isLfgOpenFetching || isLfgJoinedFetching || isPersonalEventFetching;
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await Promise.all([
-      refetchEvents(),
-      refetchLfgOpen(),
-      refetchLfgJoined(),
-      refetchLfgOwned(),
-      refetchPersonalEvents(),
-    ]);
+    const refreshes: Promise<any>[] = [refetchEvents()];
+    if (!preRegistrationMode) {
+      if (appConfig.schedule.eventsShowOpenLfgs) {
+        refreshes.push(refetchLfgOpen());
+      }
+      refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
+    }
+    await Promise.all(refreshes);
     setRefreshing(false);
-  }, [refetchEvents, refetchLfgOpen, refetchLfgJoined, refetchLfgOwned, refetchPersonalEvents]);
+  }, [
+    refetchEvents,
+    refetchLfgOpen,
+    refetchLfgJoined,
+    refetchPersonalEvents,
+    preRegistrationMode,
+    appConfig.schedule.eventsShowOpenLfgs,
+  ]);
 
   const getNavButtons = useCallback(() => {
     return (

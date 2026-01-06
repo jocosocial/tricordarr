@@ -38,9 +38,9 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
   const directHeaderHeight = useHeaderHeight();
 
   // Log layout values for debugging
-  console.log('[AppView.tsx] insets', insets);
-  console.log(`[AppView.tsx] headerHeightValue: ${headerHeightValue}, footerHeightValue: ${footerHeightValue}`);
-  console.log(`[AppView.tsx] headerHeight: ${directHeaderHeight}`);
+  // console.log('[AppView.tsx] insets', insets);
+  // console.log(`[AppView.tsx] headerHeightValue: ${headerHeightValue}, footerHeightValue: ${footerHeightValue}`);
+  // console.log(`[AppView.tsx] headerHeight: ${directHeaderHeight}`);
 
   const styles = StyleSheet.create({
     appView: {
