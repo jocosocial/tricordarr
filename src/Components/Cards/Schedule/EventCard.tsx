@@ -33,32 +33,29 @@ const EventCardRightIcons = ({eventData, refreshing, onFavoritePress}: EventCard
   const {theme} = useAppTheme();
   const {hasShutternaut} = useRoles();
 
-  const iconContainerStyle = useMemo(
-    () =>
-      StyleSheet.create({
-        iconContainer: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 4,
-        },
-      }),
-    [],
-  );
+  const styles = StyleSheet.create({
+    iconContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+  });
 
-  if (refreshing) {
-    return <ActivityIndicator />;
-  }
+  const needsPhotographerIcon = useMemo(() => {
+    if (!hasShutternaut || !eventData.shutternautData?.needsPhotographer) {
+      return null;
+    }
+    return <AppIcon icon={AppIcons.needsPhotographer} color={theme.colors.onTwitarrNegativeButton} />;
+  }, [hasShutternaut, eventData.shutternautData?.needsPhotographer, theme.colors.onTwitarrNegativeButton]);
 
-  const showNeedsPhotographer = hasShutternaut && eventData.shutternautData?.needsPhotographer;
-  const showPhotographer = hasShutternaut && eventData.shutternautData?.userIsPhotographer;
-  const showFavorite = true;
+  const photographerIcon = useMemo(() => {
+    if (!hasShutternaut || !eventData.shutternautData?.userIsPhotographer) {
+      return null;
+    }
+    return <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} />;
+  }, [hasShutternaut, eventData.shutternautData?.userIsPhotographer, theme.colors.onTwitarrNegativeButton]);
 
-  if (!showNeedsPhotographer && !showPhotographer && !showFavorite) {
-    return null;
-  }
-
-  // If only one icon, render without wrapper to avoid layout issues
-  if (showFavorite && !showPhotographer && !showNeedsPhotographer) {
+  const favoriteIcon = useMemo(() => {
     return (
       <TouchableOpacity onPress={onFavoritePress}>
         {eventData.isFavorite ? (
@@ -68,31 +65,17 @@ const EventCardRightIcons = ({eventData, refreshing, onFavoritePress}: EventCard
         )}
       </TouchableOpacity>
     );
-  }
+  }, [onFavoritePress, eventData.isFavorite, theme.colors.twitarrYellow]);
 
-  if (showPhotographer && !showFavorite && !showNeedsPhotographer) {
-    return <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} />;
-  }
-
-  if (showNeedsPhotographer && !showPhotographer && !showFavorite) {
-    return <AppIcon icon={AppIcons.needsPhotographer} color={theme.colors.onTwitarrNegativeButton} />;
-  }
-
-  // Multiple icons present - use wrapper with row layout
   return (
-    <View style={iconContainerStyle.iconContainer}>
-      {showNeedsPhotographer && (
-        <AppIcon icon={AppIcons.needsPhotographer} color={theme.colors.onTwitarrNegativeButton} />
-      )}
-      {showPhotographer && <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} />}
-      {showFavorite && (
-        <TouchableOpacity onPress={onFavoritePress}>
-          {eventData.isFavorite ? (
-            <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
-          ) : (
-            <AppIcon icon={AppIcons.toggleFavorite} />
-          )}
-        </TouchableOpacity>
+    <View style={styles.iconContainer}>
+      {refreshing && <ActivityIndicator />}
+      {!refreshing && (
+        <>
+          {needsPhotographerIcon}
+          {photographerIcon}
+          {favoriteIcon}
+        </>
       )}
     </View>
   );
