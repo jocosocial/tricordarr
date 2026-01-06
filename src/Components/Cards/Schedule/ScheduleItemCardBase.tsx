@@ -137,6 +137,8 @@ export const ScheduleItemCardBase = ({
                   user={author}
                   prefix={'Hosted by:'}
                   includePronoun={false}
+                  // Selectable here gets in the way of onLongPress in card items.
+                  selectable={false}
                 />
               )}
               {participation && (
