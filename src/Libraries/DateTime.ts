@@ -172,7 +172,7 @@ export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseE
  * @param timeZoneID The common ID string of a timezone (such as "America/New_York")
  */
 export const getTimeMarker = (dateTimeStr: string, timeZoneID: string) => {
-  const formattedTime = getBoatTimeMoment(dateTimeStr, timeZoneID).format('hh:mm A');
+  const formattedTime = getBoatTimeMoment(dateTimeStr, timeZoneID).format('dddd hh:mm A');
   return `${formattedTime} ${moment.tz(timeZoneID).zoneAbbr()}`;
 };
 
