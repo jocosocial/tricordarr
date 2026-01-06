@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
+import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
@@ -98,15 +99,9 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.event.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />
       {props.event.eventType === EventType.shadow && (
-        <Menu.Item
-          title={'Set Organizer'}
-          leadingIcon={AppIcons.performer}
-          onPress={() => {
-            closeMenu();
-            commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
-              eventID: props.event.eventID,
-            });
-          }}
+        <SetOrganizerMenuItem
+          eventID={props.event.eventID}
+          closeMenu={closeMenu}
           disabled={!(preRegistrationMode || hasPerformerSelfEditor)}
         />
       )}

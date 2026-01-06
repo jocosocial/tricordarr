@@ -3,6 +3,7 @@ import React, {Dispatch, SetStateAction} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
+import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
@@ -86,16 +87,7 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   return (
     <Menu visible={props.menuVisible} onDismiss={closeMenu} anchor={props.anchor}>
       {props.eventData.eventType === EventType.shadow && (
-        <Menu.Item
-          title={'Set Organizer'}
-          leadingIcon={AppIcons.performer}
-          onPress={() => {
-            closeMenu();
-            commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
-              eventID: props.eventData.eventID,
-            });
-          }}
-        />
+        <SetOrganizerMenuItem eventID={props.eventData.eventID} closeMenu={closeMenu} />
       )}
       {props.eventData.forum && <Menu.Item title={'Forum'} leadingIcon={AppIcons.forum} onPress={handleForumPress} />}
       <Menu.Item
