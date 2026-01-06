@@ -175,7 +175,16 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
 
     // Filter by "only your events" if enabled
     if (onlyYourEvents && profilePublicData?.header) {
+      // Get the ID of the route's eventData to ensure it's always included
+      const routeEventId = 'fezID' in eventData ? eventData.fezID : eventData.eventID;
+
       const userFilteredItems = featureFilteredItems.filter(item => {
+        // Always include the route's eventData, even if it doesn't match the filter
+        const itemId = 'fezID' in item ? item.fezID : item.eventID;
+        if (itemId === routeEventId) {
+          return true;
+        }
+
         if ('fezID' in item) {
           // LFGs or PersonalEvents: check if user is participant or owner
           return (
@@ -208,6 +217,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   }, [
     inputStartTime,
     inputEndTime,
+    eventData,
     eventDataQuery,
     lfgOpenData,
     lfgJoinedData,
