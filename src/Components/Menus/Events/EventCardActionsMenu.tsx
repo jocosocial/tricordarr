@@ -124,7 +124,7 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
       {hasShutternautManager && props.eventData.shutternautData && (
         <SelectableMenuItem
           title={'Needs Photographer'}
-          leadingIcon={AppIcons.shutternautManager}
+          leadingIcon={AppIcons.needsPhotographer}
           onPress={handleNeedsPhotographerToggle}
           selected={props.eventData.shutternautData.needsPhotographer}
         />

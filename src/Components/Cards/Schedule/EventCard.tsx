@@ -105,14 +105,14 @@ export const EventCard = ({
     }
 
     if (showNeedsPhotographer && !showPhotographer && !showFavorite) {
-      return <AppIcon icon={AppIcons.shutternautManager} color={theme.colors.onTwitarrNegativeButton} />;
+      return <AppIcon icon={AppIcons.needsPhotographer} color={theme.colors.onTwitarrNegativeButton} />;
     }
 
     // Multiple icons present - use wrapper with row layout
     return (
       <View style={styles.iconContainer}>
         {showNeedsPhotographer && (
-          <AppIcon icon={AppIcons.shutternautManager} color={theme.colors.onTwitarrNegativeButton} />
+          <AppIcon icon={AppIcons.needsPhotographer} color={theme.colors.onTwitarrNegativeButton} />
         )}
         {showPhotographer && <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} />}
         {showFavorite && (

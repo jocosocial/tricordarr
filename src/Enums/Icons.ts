@@ -138,6 +138,8 @@ export enum AppIcons {
   share = 'share-variant',
   shutternaut = 'camera-iris',
   shutternautManager = 'bat',
+  needsPhotographer = 'flash-alert-outline',
+  photographer = 'flash-outline',
   userFavorite = 'account-star',
   feedback = 'comment-quote',
   session = 'cloud-outline',
