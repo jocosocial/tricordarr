@@ -88,7 +88,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <Menu.Item
-        title={'Show Overlapping'}
+        title={'Overlapping'}
         leadingIcon={AppIcons.calendarMultiple}
         onPress={() => {
           closeMenu();

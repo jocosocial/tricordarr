@@ -86,9 +86,6 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
 
   return (
     <Menu visible={props.menuVisible} onDismiss={closeMenu} anchor={props.anchor}>
-      {props.eventData.eventType === EventType.shadow && (
-        <SetOrganizerMenuItem eventID={props.eventData.eventID} closeMenu={closeMenu} />
-      )}
       {props.eventData.forum && <Menu.Item title={'Forum'} leadingIcon={AppIcons.forum} onPress={handleForumPress} />}
       <Menu.Item
         title={'Overlapping'}
@@ -101,6 +98,12 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
       <Divider bold={true} />
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.eventData.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.eventData} />
+      {props.eventData.eventType === EventType.shadow && (
+        <>
+          <Divider bold={true} />
+          <SetOrganizerMenuItem eventID={props.eventData.eventID} closeMenu={closeMenu} />
+        </>
+      )}
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
       {hasShutternaut && props.eventData.shutternautData && (
         <SelectableMenuItem

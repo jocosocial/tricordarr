@@ -35,7 +35,7 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <Menu.Item
-        title={'Show Overlapping'}
+        title={'Overlapping'}
         leadingIcon={AppIcons.calendarMultiple}
         onPress={() => {
           closeMenu();
