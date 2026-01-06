@@ -10,6 +10,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ContributorView} from '#src/Components/Views/ContributorView';
 import {SourceCodeView} from '#src/Components/Views/SourceCodeView';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
@@ -22,6 +23,7 @@ import hendu from '#assets/contributors/hendu.jpg';
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 export const AboutTricordarrScreen = () => {
+  const commonNavigation = useCommonStack();
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -66,6 +68,14 @@ export const AboutTricordarrScreen = () => {
         <PaddedContentView padTop={true}>
           <SourceCodeView />
         </PaddedContentView>
+        <ListSection>
+          <ListSubheader>Privacy</ListSubheader>
+        </ListSection>
+        <DataFieldListItem
+          title={'Privacy Policy'}
+          description={'View the service and app privacy policies.'}
+          onPress={() => commonNavigation.push(CommonStackComponents.privacyScreen)}
+        />
       </ScrollingContentView>
     </AppView>
   );

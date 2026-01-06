@@ -34,6 +34,7 @@ import {LfgParticipationScreen} from '#src/Screens/LFG/LfgParticipationScreen';
 import {LfgScreen} from '#src/Screens/LFG/LfgScreen';
 import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
 import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
+import {PrivacyScreen} from '#src/Screens/Main/PrivacyScreen';
 import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
 import {MainTimeZoneScreen} from '#src/Screens/Main/MainTimeZoneScreen';
 import {MapScreen} from '#src/Screens/Main/MapScreen';
@@ -269,6 +270,7 @@ export type CommonStackParamList = {
   MainHelpScreen: undefined;
   AboutTricordarrScreen: undefined;
   AboutTwitarrScreen: undefined;
+  PrivacyScreen: undefined;
   ShutternautHelpScreen: undefined;
   ModeratorHelpScreen: undefined;
   BoardgameHelpScreen: undefined;
@@ -348,6 +350,7 @@ export enum CommonStackComponents {
   mainHelpScreen = 'MainHelpScreen',
   aboutTricordarrScreen = 'AboutTricordarrScreen',
   aboutTwitarrScreen = 'AboutTwitarrScreen',
+  privacyScreen = 'PrivacyScreen',
   shutternautHelpScreen = 'ShutternautHelpScreen',
   moderatorHelpScreen = 'ModeratorHelpScreen',
   boardgameHelpScreen = 'BoardgameHelpScreen',
@@ -734,6 +737,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.aboutTwitarrScreen}
         component={AboutTwitarrScreen}
         options={{title: 'About Twitarr'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.privacyScreen}
+        component={PrivacyScreen}
+        options={{title: 'Privacy Policy'}}
       />
       <Stack.Screen
         name={CommonStackComponents.shutternautHelpScreen}

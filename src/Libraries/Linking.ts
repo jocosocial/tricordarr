@@ -36,6 +36,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             HelpIndexScreen: getPath(CommonStackComponents.helpIndexScreen),
             AboutTricordarrScreen: getPath(CommonStackComponents.aboutTricordarrScreen),
             AboutTwitarrScreen: getPath(CommonStackComponents.aboutTwitarrScreen),
+            PrivacyScreen: getPath(CommonStackComponents.privacyScreen),
             FaqScreen: getPath(MainStackComponents.faqScreen),
             SiteUIScreen: getPath(CommonStackComponents.siteUIScreen),
             SiteUILinkScreen: '*', // Catch-all wildcard - special case, not in RouteDefinitions

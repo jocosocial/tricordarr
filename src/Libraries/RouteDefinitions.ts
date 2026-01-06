@@ -31,6 +31,7 @@ export const allRoutes: RouteDefinition[] = [
   {screen: CommonStackComponents.helpIndexScreen, path: 'help'},
   {screen: CommonStackComponents.aboutTricordarrScreen, path: 'about-app'},
   {screen: CommonStackComponents.aboutTwitarrScreen, path: 'about'},
+  {screen: CommonStackComponents.privacyScreen, path: 'privacy'},
   {screen: MainStackComponents.faqScreen, path: 'faq'},
   {screen: CommonStackComponents.siteUIScreen, path: 'twitarrtab/:timestamp?/:resource?/:id?/:action?'},
   {screen: MainStackComponents.userDirectoryScreen, path: 'users'},
