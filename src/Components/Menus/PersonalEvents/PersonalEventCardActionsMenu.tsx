@@ -33,7 +33,7 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
     <Menu visible={props.menuVisible} onDismiss={closeMenu} anchor={props.anchor}>
       <Menu.Item
         leadingIcon={AppIcons.calendarMultiple}
-        title={'Show Overlapping'}
+        title={'Overlapping'}
         onPress={() => {
           closeMenu();
           navigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.eventData});
