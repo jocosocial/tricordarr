@@ -193,7 +193,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
 
     // Filter by "only your events" if enabled
     if (onlyYourEvents && profilePublicData?.header) {
-      return featureFilteredItems.filter(item => {
+      const userFilteredItems = featureFilteredItems.filter(item => {
         if ('fezID' in item) {
           // LFGs or PersonalEvents: check if user is participant or owner
           return (
@@ -205,9 +205,24 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
           return item.isFavorite === true;
         }
       });
+      // Sort by startTime
+      return userFilteredItems.sort((a, b) => {
+        if (a.startTime && b.startTime) {
+          return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+        }
+        // Return 0 if both startTime are undefined (order remains unchanged)
+        return 0;
+      });
     }
 
-    return featureFilteredItems;
+    // Sort by startTime
+    return featureFilteredItems.sort((a, b) => {
+      if (a.startTime && b.startTime) {
+        return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+      }
+      // Return 0 if both startTime are undefined (order remains unchanged)
+      return 0;
+    });
   }, [
     inputStartTime,
     inputEndTime,
