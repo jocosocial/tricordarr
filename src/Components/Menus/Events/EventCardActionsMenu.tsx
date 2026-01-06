@@ -3,9 +3,9 @@ import React, {Dispatch, SetStateAction} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
+import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
@@ -15,8 +15,6 @@ import {
   useEventPhotographerMutation,
 } from '#src/Queries/Events/EventPhotographerMutations';
 import {EventData, EventData as EventDataType} from '#src/Structs/ControllerStructs';
-
-import {SelectableMenuItem} from '../Items/SelectableMenuItem';
 
 interface EventCardActionsMenuProps {
   anchor: React.JSX.Element;
@@ -28,7 +26,6 @@ interface EventCardActionsMenuProps {
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const commonNavigation = useCommonStack();
   const {hasShutternaut, hasShutternautManager} = useRoles();
-  const {commonStyles} = useStyles();
   const queryClient = useQueryClient();
   const photographerMutation = useEventPhotographerMutation();
   const needsPhotographerMutation = useEventNeedsPhotographerMutation();
