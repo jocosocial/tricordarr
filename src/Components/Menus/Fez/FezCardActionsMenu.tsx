@@ -1,7 +1,9 @@
 import React from 'react';
-import {Menu} from 'react-native-paper';
+import {Divider, Menu} from 'react-native-paper';
 
+import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
+import {ShareContentType} from '#src/Enums/ShareContentType';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {FezData} from '#src/Structs/ControllerStructs';
 
@@ -26,7 +28,8 @@ export const FezCardActionsMenu = (props: FezCardActionsMenuProps) => {
           commonNavigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.fezData});
         }}
       />
+      <Divider bold={true} />
+      <ShareMenuItem contentType={ShareContentType.lfg} contentID={props.fezData.fezID} closeMenu={props.closeMenu} />
     </Menu>
   );
 };
-
