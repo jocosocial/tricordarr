@@ -627,7 +627,7 @@ export interface EventData {
 
 export namespace EventData {
   export const getCacheKeys = (eventID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [['/events']];
+    let queryKeys: QueryKey[] = [['/events'], ['/events/favorites']];
     if (eventID) {
       queryKeys.push([`/events/${eventID}`]);
     }

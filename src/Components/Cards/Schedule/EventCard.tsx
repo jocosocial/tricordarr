@@ -106,7 +106,7 @@ export const EventCard = ({
         onSuccess: async () => {
           // If this is too slow to reload, a setQueryData here may be in order.
           const invalidations = UserNotificationData.getCacheKeys()
-            .concat([['/events'], [`/events/${eventData.eventID}`], ['/events/favorites']])
+            .concat(EventData.getCacheKeys(eventData.eventID))
             .map(key => queryClient.invalidateQueries({queryKey: key}));
           await Promise.all(invalidations);
         },
