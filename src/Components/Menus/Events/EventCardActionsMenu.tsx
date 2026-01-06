@@ -16,6 +16,8 @@ import {
 } from '#src/Queries/Events/EventPhotographerMutations';
 import {EventData, EventData as EventDataType} from '#src/Structs/ControllerStructs';
 
+import {SelectableMenuItem} from '../Items/SelectableMenuItem';
+
 interface EventCardActionsMenuProps {
   anchor: React.JSX.Element;
   eventData: EventData;
@@ -112,19 +114,19 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.eventData} />
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
       {hasShutternaut && props.eventData.shutternautData && (
-        <Menu.Item
+        <SelectableMenuItem
           title={'Photographing'}
           leadingIcon={AppIcons.shutternaut}
           onPress={handlePhotographerToggle}
-          style={props.eventData.shutternautData.userIsPhotographer ? commonStyles.surfaceVariant : undefined}
+          selected={props.eventData.shutternautData.userIsPhotographer}
         />
       )}
       {hasShutternautManager && props.eventData.shutternautData && (
-        <Menu.Item
+        <SelectableMenuItem
           title={'Needs Photographer'}
           leadingIcon={AppIcons.shutternautManager}
           onPress={handleNeedsPhotographerToggle}
-          style={props.eventData.shutternautData.needsPhotographer ? commonStyles.surfaceVariant : undefined}
+          selected={props.eventData.shutternautData.needsPhotographer}
         />
       )}
     </Menu>
