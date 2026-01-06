@@ -3,6 +3,7 @@ import {Vibration} from 'react-native';
 
 import {SelectionContext} from '#src/Context/Contexts/SelectionContext';
 import {useSelectionReducer} from '#src/Context/Reducers/SelectionReducer';
+import {isAndroid} from '#src/Libraries/Platform/Detection';
 
 /**
  * Provider for selecting items in a list. This is intended to be used in a Screen
@@ -15,8 +16,9 @@ export const SelectionProvider = ({children}: PropsWithChildren) => {
 
   useEffect(() => {
     // Trigger haptic feedback when enableSelection changes from false to true
-    if (enableSelection && !prevEnableSelectionRef.current) {
-      Vibration.vibrate(50); // Short haptic feedback (50ms)
+    // iOS doesn't let you make this short and the default of 400ms is far too long.
+    if (isAndroid && enableSelection && !prevEnableSelectionRef.current) {
+      Vibration.vibrate(30);
     }
     prevEnableSelectionRef.current = enableSelection;
   }, [enableSelection]);
