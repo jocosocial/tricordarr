@@ -94,19 +94,6 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   });
 
   const {
-    data: lfgOwnedData,
-    isFetching: isLfgOwnedFetching,
-    refetch: refetchLfgOwned,
-  } = useLfgListQuery({
-    cruiseDay: cruiseDay !== undefined ? cruiseDay - 1 : undefined,
-    endpoint: 'owner',
-    hidePast: false,
-    options: {
-      enabled: cruiseDay !== undefined && !preRegistrationMode,
-    },
-  });
-
-  const {
     data: personalEventData,
     isFetching: isPersonalEventFetching,
     refetch: refetchPersonalEvents,
@@ -139,11 +126,6 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     }
     if (lfgJoinedData) {
       lfgJoinedData.pages.forEach(page => {
-        allItems.push(...page.fezzes);
-      });
-    }
-    if (lfgOwnedData) {
-      lfgOwnedData.pages.forEach(page => {
         allItems.push(...page.fezzes);
       });
     }
@@ -229,7 +211,6 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     eventDataQuery,
     lfgOpenData,
     lfgJoinedData,
-    lfgOwnedData,
     personalEventData,
     onlyYourEvents,
     profilePublicData,
@@ -239,8 +220,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     preRegistrationMode,
   ]);
 
-  const isFetching =
-    isEventFetching || isLfgOpenFetching || isLfgJoinedFetching || isLfgOwnedFetching || isPersonalEventFetching;
+  const isFetching = isEventFetching || isLfgOpenFetching || isLfgJoinedFetching || isPersonalEventFetching;
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -249,7 +229,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       if (appConfig.schedule.eventsShowOpenLfgs) {
         refreshes.push(refetchLfgOpen());
       }
-      refreshes.push(refetchLfgJoined(), refetchLfgOwned(), refetchPersonalEvents());
+      refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
     }
     await Promise.all(refreshes);
     setRefreshing(false);
@@ -257,7 +237,6 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     refetchEvents,
     refetchLfgOpen,
     refetchLfgJoined,
-    refetchLfgOwned,
     refetchPersonalEvents,
     preRegistrationMode,
     appConfig.schedule.eventsShowOpenLfgs,
