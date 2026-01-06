@@ -111,6 +111,9 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       return [];
     }
 
+    // Get the ID of the route's eventData to ensure it's always included
+    const routeEventId = 'fezID' in eventData ? eventData.fezID : eventData.eventID;
+
     const allItems: (EventData | FezData)[] = [];
 
     // Add Events
@@ -145,6 +148,11 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       if (!eventsOverlap(inputStartTime, inputEndTime, item.startTime, item.endTime)) {
         return false;
       }
+      // Always include the route's eventData, even if it exceeds overlapExcludeDurationHours
+      const itemId = 'fezID' in item ? item.fezID : item.eventID;
+      if (itemId === routeEventId) {
+        return true;
+      }
       // Filter out events with duration >= overlapExcludeDurationHours
       const durationHours = (new Date(item.endTime).getTime() - new Date(item.startTime).getTime()) / (1000 * 60 * 60);
       if (durationHours >= appConfig.schedule.overlapExcludeDurationHours) {
@@ -175,9 +183,6 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
 
     // Filter by "only your events" if enabled
     if (onlyYourEvents && profilePublicData?.header) {
-      // Get the ID of the route's eventData to ensure it's always included
-      const routeEventId = 'fezID' in eventData ? eventData.fezID : eventData.eventID;
-
       const userFilteredItems = featureFilteredItems.filter(item => {
         // Always include the route's eventData, even if it doesn't match the filter
         const itemId = 'fezID' in item ? item.fezID : item.eventID;
