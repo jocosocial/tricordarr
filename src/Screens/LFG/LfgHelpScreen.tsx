@@ -41,6 +41,13 @@ export const LfgHelpScreen = () => {
           You can change the default LFG screen (Find, Joined, Owned) and filter past LFGs by default in the settings.
           Tap the menu in the upper right of any LFG screen and select Settings.
         </HelpTopicView>
+        <HelpTopicView title={'Overlapping Events'} icon={AppIcons.calendarMultiple}>
+          View events, LFGs, and personal events that occur at the same time as a selected event. Tap the "Overlapping"
+          button in the actions menu of any event, LFG, or personal event screen, or by long-pressing an event card and
+          selecting "Overlapping". Use the "Only your events" filter to restrict the list to events you're participating
+          in, events you own, or events you've favorited. You can configure a setting to exclude long events (by
+          default, events 4 hours or longer) from the overlap list.
+        </HelpTopicView>
         <HelpChapterTitleView title={'Participation'} />
         <HelpTopicView>Don't just add random people to your LFG. It's not nice.</HelpTopicView>
         <HelpTopicView>If you add people to your LFG, those people should already expect to be added.</HelpTopicView>
@@ -61,7 +68,7 @@ export const LfgHelpScreen = () => {
           These are LFGs that you have created.
         </HelpTopicView>
         <HelpTopicView icon={AppIcons.lfgFind} title={'Find'}>
-          These are LFGs created by others that you can join.
+          Also referred to as Open. These are LFGs created by others that you can join.
         </HelpTopicView>
         <HelpTopicView icon={AppIcons.lfgFormer} title={'Former'}>
           These are Seamails, LFGs and Personal Events that you were previously a member of, but have since left or been

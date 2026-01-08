@@ -1,8 +1,9 @@
 import {Formik} from 'formik';
 import React, {useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {DataTable, Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -11,14 +12,16 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 export const FeatureSettingsScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
+  const {appConfig, updateAppConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {disabledFeatures} = useFeature();
-  const {appConfig, updateAppConfig} = useConfig();
   const {commonStyles} = useStyles();
   const [enableExperiments, setEnableExperiments] = useState(appConfig.enableExperiments);
 
@@ -41,26 +44,9 @@ export const FeatureSettingsScreen = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ListSection>
-          <ListSubheader>Experiments</ListSubheader>
-          <PaddedContentView padSides={false}>
-            <Formik initialValues={{}} onSubmit={() => {}}>
-              <View>
-                <BooleanField
-                  name={'enableExperiments'}
-                  label={'Enable Experiments'}
-                  helperText={
-                    'Enable experimental features in this app that are not yet ready for general consumption.'
-                  }
-                  value={enableExperiments}
-                  onPress={handleEnableExperiments}
-                  style={commonStyles.paddingHorizontalSmall}
-                />
-              </View>
-            </Formik>
-          </PaddedContentView>
-        </ListSection>
+        refreshControl={
+          <AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!preRegistrationMode} />
+        }>
         <ListSection>
           <ListSubheader>Server Features</ListSubheader>
           <PaddedContentView padTop={true}>
@@ -94,6 +80,27 @@ export const FeatureSettingsScreen = () => {
             </DataTable>
           </PaddedContentView>
         </ListSection>
+        {appConfig.enableDeveloperOptions && (
+          <ListSection>
+            <ListSubheader>Experiments</ListSubheader>
+            <PaddedContentView padSides={false}>
+              <Formik initialValues={{}} onSubmit={() => {}}>
+                <View>
+                  <BooleanField
+                    name={'enableExperiments'}
+                    label={'Enable Experiments'}
+                    helperText={
+                      'Enable experimental features in this app that are not yet ready for general consumption.'
+                    }
+                    value={enableExperiments}
+                    onPress={handleEnableExperiments}
+                    style={commonStyles.paddingHorizontalSmall}
+                  />
+                </View>
+              </Formik>
+            </PaddedContentView>
+          </ListSection>
+        )}
       </ScrollingContentView>
     </AppView>
   );

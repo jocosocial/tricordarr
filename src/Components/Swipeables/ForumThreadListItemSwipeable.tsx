@@ -9,8 +9,8 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {useForumPinMutation} from '#src/Queries/Forum/ForumThreadPinMutations';
-import {useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
@@ -32,7 +32,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
   const eventID = props.forumListData.eventID;
   const {hasModerator} = usePrivilege();
   const pinMutation = useForumPinMutation();
-  const {refetch} = useForumThreadQuery(props.forumListData.forumID, undefined, {enabled: false});
+  const markReadMutation = useForumMarkReadMutation();
 
   const invalidationQueryKeys = ForumListData.getCacheKeys(props.categoryID, props.forumListData.forumID);
 
@@ -44,14 +44,26 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
       // We need to "refetch" (which triggers markAsRead) before we then go invalidate
       // the other keys. This had an issue where marking a favorite forum as read would
       // not update the favorites list.
-      await refetch();
-      const invalidations = invalidationQueryKeys.map(key => {
-        return queryClient.invalidateQueries({queryKey: key});
-      });
-      await Promise.all(invalidations);
-      setReadRefreshing(false);
+      // await refetch();
+      markReadMutation.mutate(
+        {
+          forumID: props.forumListData.forumID,
+        },
+        {
+          onSuccess: async () => {
+            const invalidations = invalidationQueryKeys.map(key => {
+              return queryClient.invalidateQueries({queryKey: key});
+            });
+            await Promise.all(invalidations);
+          },
+          onSettled: () => {
+            setReadRefreshing(false);
+            swipeable.reset();
+          },
+        },
+      );
     },
-    [queryClient, invalidationQueryKeys, refetch],
+    [queryClient, invalidationQueryKeys, markReadMutation, props.forumListData.forumID],
   );
 
   const handleFavorite = useCallback(
@@ -187,9 +199,8 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           disabled={props.forumListData.isMuted}
         />
         <SwipeableButton
-          // Ehhhhhh
-          text={'Mark\n   as\nRead'}
-          iconName={AppIcons.check}
+          text={'Read'}
+          iconName={AppIcons.markAsRead}
           onPress={() => handleMarkAsRead(swipeable)}
           refreshing={readRefreshing}
           style={{backgroundColor: theme.colors.elevation.level3}}

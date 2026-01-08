@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React, {CSSProperties, PropsWithChildren} from 'react';
 import {StyleProp, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -6,6 +5,7 @@ import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
 import ReactTimeAgo from 'react-time-ago';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useClipboard} from '#src/Hooks/useClipboard';
 
 interface RelativeTimeTagProps {
   date?: Date;
@@ -44,11 +44,12 @@ const StylizedText = (props: StylizedTextProps) => {
 export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) => {
   const [showRawTime, setShowRawTime] = React.useState(false);
   const {appConfig} = useConfig();
+  const {setString} = useClipboard();
 
   const onPress = () => {
     setShowRawTime(!showRawTime);
   };
-  const onLongPress = () => (date ? Clipboard.setString(date.toISOString()) : undefined);
+  const onLongPress = () => (date ? setString(date.toISOString()) : undefined);
 
   if (!date) {
     return <></>;

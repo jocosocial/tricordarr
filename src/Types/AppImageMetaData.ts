@@ -21,23 +21,23 @@ export interface AppImageMetaData {
   assetURI?: string;
 }
 export namespace AppImageMetaData {
-  export const fromFileName = (fileName: string, appConfig: AppConfig): AppImageMetaData => {
-    const serverUrl = appConfig.preRegistrationMode ? appConfig.preRegistrationServerUrl : appConfig.serverUrl;
+  export const fromFileName = (fileName: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
+    const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;
     return {
       mode: AppImageMode.api,
       fileName: fileName,
-      thumbURI: `${serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.thumb}/${fileName}`,
-      fullURI: `${serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.full}/${fileName}`,
+      thumbURI: `${resolvedServerUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.thumb}/${fileName}`,
+      fullURI: `${resolvedServerUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.full}/${fileName}`,
       mimeType: lookupMimeType(fileName) || 'application/octet-stream',
     };
   };
 
-  export const fromIdenticon = (userID: string, appConfig: AppConfig): AppImageMetaData => {
-    const serverUrl = appConfig.preRegistrationMode ? appConfig.preRegistrationServerUrl : appConfig.serverUrl;
+  export const fromIdenticon = (userID: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
+    const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;
     return {
       mode: AppImageMode.identicon,
       fileName: `${userID}.png`,
-      identiconURI: `${serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.identicon}/${userID}`,
+      identiconURI: `${resolvedServerUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.identicon}/${userID}`,
       mimeType: 'image/png', // This comes from Swiftarr ImageController.swift
     };
   };

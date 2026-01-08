@@ -2,12 +2,13 @@ import {useIsFocused} from '@react-navigation/native';
 import {type FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {LfgFAB} from '#src/Components/Buttons/FloatingActionButtons/LfgFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
 import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
@@ -32,6 +33,7 @@ interface Props {
   enableReportOnly?: boolean;
   listHeader?: ReactElement;
   showFab?: boolean;
+  onlyNewInitial?: boolean;
 }
 
 /**
@@ -46,8 +48,9 @@ export const LfgListScreen = ({
   enableReportOnly,
   listHeader,
   showFab = true,
+  onlyNewInitial,
 }: Props) => {
-  const {lfgTypeFilter, lfgHidePastFilter} = useFilter();
+  const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} = useFilter();
   const {commonStyles} = useStyles();
   const [fezList, setFezList] = useState<FezData[]>([]);
   const listRef = useRef<FlashListRef<FezData>>(null);
@@ -56,27 +59,19 @@ export const LfgListScreen = ({
     listRef,
     clearList: useCallback(() => setFezList([]), []),
   });
-  const {
-    data,
-    isFetching,
-    refetch,
-    isLoading,
-    isError,
-    fetchNextPage,
-    isFetchingPreviousPage,
-    isFetchingNextPage,
-    hasNextPage,
-  } = useLfgListQuery({
+  const {data, refetch, isLoading, isError, fetchNextPage, hasNextPage} = useLfgListQuery({
     endpoint: endpoint,
     fezType: lfgTypeFilter,
     // @TODO we intend to change this some day. Upstream Swiftarr issue.
     cruiseDay: selectedCruiseDay - 1,
     hidePast: lfgHidePastFilter,
+    onlyNew: lfgOnlyNew,
   });
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
   const {notificationSocket} = useSocket();
   const [showFabLabel, setShowFabLabel] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const queryClient = useQueryClient();
 
@@ -95,7 +90,7 @@ export const LfgListScreen = ({
                   })
                 }
               />
-              <LfgFilterMenu />
+              <LfgFilterMenu enableUnread={endpoint === 'joined'} />
             </>
           )}
           <LfgListActionsMenu />
@@ -148,6 +143,17 @@ export const LfgListScreen = ({
     }
   }, [data, onDataLoaded]);
 
+  /**
+   * This operates more like an intent than a state.
+   * When the user navigates from the NotificationsMenu it's almost certainly
+   * because they want to see unread LFGs. All other cases should be normal.
+   */
+  useEffect(() => {
+    if (onlyNewInitial !== undefined) {
+      setLfgOnlyNew(onlyNewInitial);
+    }
+  }, [onlyNewInitial, setLfgOnlyNew]);
+
   // Reset switching state on error to prevent stuck loading spinner
   useEffect(() => {
     if (isError) {
@@ -155,7 +161,11 @@ export const LfgListScreen = ({
     }
   }, [isError, onQueryError]);
 
-  const isRefreshing = isFetching || isFetchingNextPage || isFetchingPreviousPage;
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   return (
     <LoggedInScreen>
@@ -171,7 +181,7 @@ export const LfgListScreen = ({
             <LFGFlatList
               listRef={listRef}
               items={fezList}
-              refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refetch} />}
+              refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
               separator={'day'}
               onScrollThreshold={onScrollThreshold}
               handleLoadNext={fetchNextPage}

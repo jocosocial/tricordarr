@@ -1,44 +1,58 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback} from 'react';
+import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppImage} from '#src/Components/Images/AppImage';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {defaultAppConfig} from '#src/Libraries/AppConfig';
+import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
+import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
+import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePreregistrationScreen>;
 
 export const OobePreregistrationScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {appConfig, updateAppConfig} = useConfig();
-
-  const setPreRegistrationMode = useCallback(
-    (mode: boolean) => {
-      updateAppConfig({...appConfig, preRegistrationMode: mode});
-    },
-    [appConfig, updateAppConfig],
-  );
+  const {findOrCreateSession} = useSession();
+  const rootNavigation = useRootStack();
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
+    boldText: {
+      ...commonStyles.bold,
+      ...commonStyles.textCenter,
+    },
     image: commonStyles.roundedBorderLarge,
   });
 
-  const onPress = () => {
-    setPreRegistrationMode(false);
+  const onPress = async () => {
+    // Switch to production session (create if doesn't exist)
+    await findOrCreateSession(defaultAppConfig.serverUrl, false);
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
-  const onBackPress = () => {
-    setPreRegistrationMode(true);
-    navigation.goBack();
+  const onBackPress = async () => {
+    // Switch to preregistration session (create if doesn't exist)
+    await findOrCreateSession(defaultAppConfig.preRegistrationServerUrl, true);
+    // This animation still doesn't look great, but it's good enough.
+    rootNavigation.setOptions({animationTypeForReplace: 'pop'});
+    rootNavigation.replace(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
+      params: {
+        screen: MainStackComponents.mainScreen,
+      },
+    });
   };
 
   return (
@@ -50,7 +64,15 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
-          <Text style={styles.text}>Do not proceed until you are physically on the ship!</Text>
+          <AppImage
+            mode={'scaledimage'}
+            image={AppImageMetaData.fromAsset(tricordarr, 'tricordarr.jpg')}
+            style={styles.image}
+            disableTouch={true}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text style={styles.boldText}>Do not proceed until you are physically on the ship!</Text>
         </PaddedContentView>
         <PaddedContentView>
           <Text style={styles.text}>
@@ -59,7 +81,7 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
           </Text>
         </PaddedContentView>
       </ScrollingContentView>
-      <OobeButtonsView leftText={'Back'} leftOnPress={onBackPress} rightOnPress={onPress} />
+      <OobeButtonsView leftText={'Back to App'} leftOnPress={onBackPress} rightOnPress={onPress} />
     </AppView>
   );
 };

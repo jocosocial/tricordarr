@@ -1,37 +1,30 @@
-import {useAppState} from '@react-native-community/hooks';
-import {useQueryClient} from '@tanstack/react-query';
-import {useEffect} from 'react';
-
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
+/**
+ * Functional component to poll the notification data endpoint. All of the actual polling
+ * magic is done through React Query.
+ */
 export const NotificationDataPoller = () => {
-  const {isLoggedIn, isLoading} = useAuth();
-  const {appConfig, oobeCompleted} = useConfig();
+  const {isLoggedIn, isLoading} = useSession();
+  const {appConfig} = useConfig();
+  const {oobeCompleted} = useOobe();
+  const {preRegistrationMode} = usePreRegistration();
   const enablePolling =
-    oobeCompleted && isLoggedIn && !isLoading && !appConfig.preRegistrationMode && appConfig.enableNotificationPolling;
-  const {data} = useUserNotificationDataQuery({
+    oobeCompleted && isLoggedIn && !isLoading && !preRegistrationMode && appConfig.enableNotificationPolling;
+
+  useUserNotificationDataQuery({
     refetchInterval: enablePolling ? appConfig.notificationPollInterval : false,
     enabled: enablePolling,
+    // true honors staleTime, which for this query defaults to 30 seconds.
+    // 'always' will refetch even if within the staleTime.
+    // This used to be done in a useEffect. Very overkill...
+    refetchOnMount: true,
+    refetchOnWindowFocus: 'always',
   });
-  const appState = useAppState();
-  const queryClient = useQueryClient();
-
-  if (!enablePolling) {
-    console.log('[NotificationDataPoller.tsx] Polling disabled or conditions not met.');
-  } else {
-    console.log(`[NotificationDataPoller.tsx] Polling enabled, response serverTime is ${data?.serverTime}`);
-  }
-
-  // When the app loads (either from nothing or from background) trigger a refresh of the notification
-  // data endpoint.
-  useEffect(() => {
-    if (appState === 'active') {
-      console.log('[NotificationDataPoller.tsx] Refreshing notification data');
-      queryClient.invalidateQueries({queryKey: ['/notification/global']});
-    }
-  }, [appState, queryClient]);
 
   return null;
 };

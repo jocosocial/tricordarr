@@ -12,12 +12,19 @@ import {useMenu} from '#src/Hooks/useMenu';
 
 interface LfgFilterMenuProps {
   showTypes?: boolean;
+  enableUnread?: boolean;
 }
 
-export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
+export const LfgFilterMenu = ({showTypes = true, enableUnread = false}: LfgFilterMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter} = useFilter();
+  const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} =
+    useFilter();
   const {appConfig} = useConfig();
+
+  const handleUnreadOnly = () => {
+    setLfgOnlyNew(prev => (prev === true ? undefined : true));
+    closeMenu();
+  };
 
   const handleHidePast = () => {
     setLfgHidePastFilter(!lfgHidePastFilter);
@@ -36,9 +43,10 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
   const clearFilters = () => {
     setLfgTypeFilter(undefined);
     setLfgHidePastFilter(appConfig.schedule.hidePastLfgs);
+    setLfgOnlyNew(undefined);
   };
 
-  const anyActiveFilter = lfgTypeFilter || lfgHidePastFilter;
+  const anyActiveFilter = lfgTypeFilter || lfgHidePastFilter || lfgOnlyNew === true;
 
   const menuAnchor = (
     <MenuAnchor
@@ -52,6 +60,7 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+      {enableUnread && <SelectableMenuItem title={'Unread'} onPress={handleUnreadOnly} selected={lfgOnlyNew} />}
       <SelectableMenuItem title={'Hide Past'} onPress={handleHidePast} selected={lfgHidePastFilter} />
       {showTypes && (
         <>

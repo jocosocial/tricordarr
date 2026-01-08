@@ -24,6 +24,10 @@ export const SiteUIScreen = ({route}: Props) => {
 
       if (route.params.id) {
         newUrl += `/${route.params.id}`;
+
+        if (route.params.action) {
+          newUrl += `/${route.params.action}`;
+        }
       }
     }
     return newUrl;

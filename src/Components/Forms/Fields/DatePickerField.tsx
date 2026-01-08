@@ -17,6 +17,7 @@ interface DatePickerFieldProps {
   endYear?: number;
   validRange?: ValidRangeType;
   label?: string;
+  disabled?: boolean;
 }
 
 export const DatePickerField = ({
@@ -26,6 +27,7 @@ export const DatePickerField = ({
   endYear,
   validRange,
   label = 'Date',
+  disabled = false,
 }: DatePickerFieldProps) => {
   const {startDate, endDate} = useCruise();
   const [field, meta] = useField<Date>(name);
@@ -74,6 +76,7 @@ export const DatePickerField = ({
   return (
     <View>
       <Button
+        disabled={disabled}
         buttonColor={theme.colors.background}
         textColor={theme.colors.onBackground}
         labelStyle={styles.text}

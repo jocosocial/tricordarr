@@ -1,10 +1,11 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumAlertwordListItem} from '#src/Components/Lists/Items/Forum/ForumAlertwordListItem';
 import {ForumCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumCategoryListItem';
 import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';
@@ -18,6 +19,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
@@ -30,13 +32,13 @@ type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCat
 
 export const ForumCategoriesScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <LoggedInScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
           <ForumCategoriesScreenInner {...props} />
         </DisabledFeatureScreen>
-      </LoggedInScreen>
-    </PreRegistrationScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -89,7 +91,7 @@ const ForumCategoriesScreenInner = ({navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         overScroll={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
         <View>
           {data && (
             <ListSection>

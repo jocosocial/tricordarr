@@ -47,7 +47,7 @@ export const ScrollingContentView = forwardRef<ScrollView, PropsWithChildren<Scr
         // 202561116 I don't remember what this was for or why it was disabled.
         // keyboardShouldPersistTaps="handled"
         // contentInsetAdjustmentBehavior="automatic"
-        // automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}>
+        // automaticallyAdjustKeyboardInsets={isIOS}>
         automaticallyAdjustKeyboardInsets={true}>
         <View style={styles.scrollView}>{children}</View>
       </ScrollView>

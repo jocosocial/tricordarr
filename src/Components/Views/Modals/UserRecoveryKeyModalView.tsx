@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
 import {TextStyle, View} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -7,6 +6,7 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {useClipboard} from '#src/Hooks/useClipboard';
 
 interface UserRecoveryKeyModalViewProps {
   userRecoveryKey: string;
@@ -15,6 +15,7 @@ interface UserRecoveryKeyModalViewProps {
 
 const UserRecoveryKeyModalContent = ({recoveryKey}: {recoveryKey: string}) => {
   const {commonStyles} = useStyles();
+  const {setString} = useClipboard();
 
   const keyStyle: TextStyle = {
     ...commonStyles.textCenter,
@@ -32,7 +33,7 @@ const UserRecoveryKeyModalContent = ({recoveryKey}: {recoveryKey: string}) => {
         be used only once and will be shown to you only right now. Write it down (press to copy to clipboard, long press
         to select) or screenshot this screen before proceeding.
       </Text>
-      <Text selectable={true} style={keyStyle} variant={'titleLarge'} onPress={() => Clipboard.setString(recoveryKey)}>
+      <Text selectable={true} style={keyStyle} variant={'titleLarge'} onPress={() => setString(recoveryKey)}>
         {recoveryKey}
       </Text>
     </>

@@ -11,7 +11,8 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 
@@ -19,8 +20,9 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePermis
 
 export const OobePermissionsScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {appConfig} = useConfig();
-  const {setHasNotificationPermission, notificationPermissionStatus, setNotificationPermissionStatus} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
+  const {setHasNotificationPermission, notificationPermissionStatus, setNotificationPermissionStatus} =
+    usePermissions();
 
   const enablePermissions = async () => {
     const {status} = await requestNotifications([]);
@@ -50,7 +52,7 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
    * quickly.
    */
   const onNextPress = () => {
-    if (appConfig.preRegistrationMode) {
+    if (preRegistrationMode) {
       navigation.push(OobeStackComponents.oobeFinishScreen);
     } else {
       navigation.push(OobeStackComponents.oobeUserDataScreen);

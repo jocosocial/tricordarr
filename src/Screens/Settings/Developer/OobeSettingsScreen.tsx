@@ -7,17 +7,21 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
 
 export const OobeSettingsScreen = () => {
-  const {appConfig, updateAppConfig} = useConfig();
+  const {appConfig} = useConfig();
+  const {currentSession, updateSession} = useSession();
   const navigation = useRootStack();
   const {theme} = useAppTheme();
 
   async function resetOobeVersion() {
-    updateAppConfig({
-      ...appConfig,
+    if (!currentSession) {
+      return;
+    }
+    await updateSession(currentSession.sessionID, {
       oobeCompletedVersion: 0,
     });
   }
@@ -27,7 +31,7 @@ export const OobeSettingsScreen = () => {
       <ScrollingContentView isStack={true}>
         <ListSubheader>Config</ListSubheader>
         <DataFieldListItem title={'Expected'} description={String(appConfig.oobeExpectedVersion)} />
-        <DataFieldListItem title={'Completed'} description={String(appConfig.oobeCompletedVersion)} />
+        <DataFieldListItem title={'Completed'} description={String(currentSession?.oobeCompletedVersion ?? 0)} />
         <PaddedContentView>
           <PrimaryActionButton buttonText={'Reset'} onPress={resetOobeVersion} />
         </PaddedContentView>

@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.Arguments
 import android.util.Log
 
 // This get codegen'd from specs/NativeTricordarrModule.ts.
@@ -44,6 +47,23 @@ class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTric
 
   override fun setAppConfig(appConfigJson: String) {
     Log.d(NAME, "setAppConfig is a no-op on Android")
+  }
+
+  override fun getBackgroundPushManagerStatus(promise: Promise) {
+    Log.d(NAME, "getBackgroundPushManagerStatus is a no-op on Android")
+    val result: WritableMap = Arguments.createMap()
+    result.putArray("matchSSIDs", Arguments.createArray())
+    promise.resolve(result)
+  }
+
+  override fun getForegroundPushProviderStatus(promise: Promise) {
+    Log.d(NAME, "getForegroundPushProviderStatus is a no-op on Android")
+    val result: WritableMap = Arguments.createMap()
+    promise.resolve(result)
+  }
+
+  override fun clearLocalPushManager() {
+    Log.d(NAME, "clearLocalPushManager is a no-op on Android")
   }
 
   // Kotlin doesn't have "static" like Java so this does a similar thing of making class members.

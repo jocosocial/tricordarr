@@ -1,7 +1,8 @@
 import React from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -23,7 +24,7 @@ export const ErrorView = (props: ErrorViewProps) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={props.refreshing} onRefresh={props.onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={props.refreshing} onRefresh={props.onRefresh} />}>
         <View style={styles.outerContainer}>
           <View style={styles.innerContainer}>
             <View style={styles.contentContainer}>

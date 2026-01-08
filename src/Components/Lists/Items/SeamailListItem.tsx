@@ -4,6 +4,7 @@ import {StyleSheet, View} from 'react-native';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezAvatarImage} from '#src/Components/Images/FezAvatarImage';
 import {ListItem} from '#src/Components/Lists/ListItem';
+import {SeamailListItemSwipeable} from '#src/Components/Swipeables/SeamailListItemSwipeable';
 import {SeamailMessageCountIndicator} from '#src/Components/Text/SeamailMessageCountIndicator';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -48,13 +49,21 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
       ...commonStyles.alignItemsEnd,
       ...commonStyles.paddingLeftSmall,
     },
+    avatar: {
+      ...commonStyles.paddingLeftSmall,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+    },
+    item: {
+      ...commonStyles.background,
+    },
   });
 
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
   const description = otherParticipants.map(p => p.username).join(', ');
 
   const getAvatar = () => (
-    <View style={[styles.leftContainer, commonStyles.alignItemsCenter]}>
+    <View style={styles.avatar}>
       <FezAvatarImage fez={fez} />
     </View>
   );
@@ -96,17 +105,20 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
    * the description to one line.
    */
   return (
-    <ListItem
-      title={fez.title}
-      titleStyle={styles.title}
-      titleNumberOfLines={0}
-      description={description}
-      descriptionStyle={styles.description}
-      descriptionNumberOfLines={1}
-      onPress={onPress}
-      left={getAvatar}
-      right={getRight}
-    />
+    <SeamailListItemSwipeable fez={fez}>
+      <ListItem
+        style={styles.item}
+        title={fez.title}
+        titleStyle={styles.title}
+        titleNumberOfLines={0}
+        description={description}
+        descriptionStyle={styles.description}
+        descriptionNumberOfLines={1}
+        onPress={onPress}
+        left={getAvatar}
+        right={getRight}
+      />
+    </SeamailListItemSwipeable>
   );
 };
 

@@ -90,6 +90,13 @@ export const ScheduleHelpScreen = () => {
           Press this button on the schedule screen to view all of your events for the day. This includes favorited
           events, personal events, and joined LFGs. Pressing the button again will disengage the filters.
         </HelpTopicView>
+        <HelpTopicView title={'Overlapping Events'} icon={AppIcons.calendarMultiple}>
+          View events, LFGs, and personal events that occur at the same time as a selected event. Tap the "Overlapping"
+          button in the actions menu of any event, LFG, or personal event screen, or by long-pressing an event card and
+          selecting "Overlapping". Use the "Only your events" filter to restrict the list to events you're participating
+          in, events you own, or events you've favorited. You can configure a setting to exclude long events (by
+          default, events 4 hours or longer) from the overlap list.
+        </HelpTopicView>
         <HelpChapterTitleView title={'LFG Integration'} />
         <HelpTopicView>
           There are optional settings to enable showing LFGs you've joined or that are open to you in the schedule.
@@ -111,6 +118,8 @@ export const ScheduleHelpScreen = () => {
           or remove users later on. If you have already created your personal event you cannot add users later. You'll
           need to create a new personal event and add them at the time of creation.
         </HelpTopicView>
+        <HelpChapterTitleView title={'Shutternauts'} />
+        <HelpTopicView>See the Shutternaut Help (available in the app drawer) for more information.</HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );

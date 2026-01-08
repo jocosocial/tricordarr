@@ -1,12 +1,13 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
 import {ScheduleEventFilterMenu} from '#src/Components/Menus/Schedule/ScheduleEventFilterMenu';
@@ -15,7 +16,9 @@ import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderV
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
@@ -32,6 +35,14 @@ import {EventData, FezData} from '#src/Structs/ControllerStructs';
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
 
 export const ScheduleDayScreen = (props: Props) => {
+  const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
+
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerLeft: props.route.params?.noDrawer ? getLeftBackHeaderButtons : getLeftMainHeaderButtons,
+    });
+  }, [getLeftMainHeaderButtons, getLeftBackHeaderButtons, props.navigation, props.route.params?.noDrawer]);
+
   return (
     <LoggedInScreen>
       <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events'}>
@@ -53,6 +64,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     clearList: useCallback(() => setScheduleList([]), []),
   });
   const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
@@ -79,7 +91,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     endpoint: 'open',
     hidePast: false,
     options: {
-      enabled: appConfig.schedule.eventsShowOpenLfgs && !appConfig.preRegistrationMode,
+      enabled: appConfig.schedule.eventsShowOpenLfgs && !preRegistrationMode,
     },
   });
   const {
@@ -94,7 +106,22 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: appConfig.schedule.eventsShowJoinedLfgs && !appConfig.preRegistrationMode,
+      enabled: appConfig.schedule.eventsShowJoinedLfgs && !preRegistrationMode,
+    },
+  });
+  const {
+    data: lfgOwnedData,
+    isFetching: isLfgOwnedFetching,
+    isError: isLfgOwnedError,
+    refetch: refetchLfgOwned,
+    hasNextPage: ownedHasNextPage,
+    fetchNextPage: ownedFetchNextPage,
+  } = useLfgListQuery({
+    cruiseDay: selectedCruiseDay - 1,
+    endpoint: 'owner',
+    hidePast: false,
+    options: {
+      enabled: !preRegistrationMode,
     },
   });
   const {
@@ -106,20 +133,39 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     fetchNextPage: personalFetchNextPage,
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
+    // Adding this one line (hidePast: false) does some magic to prevent SchedulePrivateEventsScreen
+    // from not refetching private event data even though it is stale. I suspect React Query may be
+    // seeing the staleTime from the other instance of the query and thinking that its data is still
+    // valid even though it totally isn't. My other guess is that by making it align with the options
+    // in SchedulePrivateEventsScreen it somehow fixes this because it makes the queryKeys the same
+    // and subject to correct refetching.
+    // https://github.com/jocosocial/tricordarr/issues/253
+    hidePast: false,
     options: {
-      enabled: !appConfig.preRegistrationMode,
+      enabled: !preRegistrationMode,
     },
   });
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     let refreshes: Promise<any>[] = [refetchEvents()];
-    if (!appConfig.preRegistrationMode) {
-      refreshes.push(refetchLfgJoined(), refetchLfgOpen(), refetchPersonalEvents());
+    if (!preRegistrationMode) {
+      refreshes.push(refetchLfgJoined(), refetchLfgOwned(), refetchPersonalEvents());
+      if (appConfig.schedule.eventsShowOpenLfgs) {
+        refreshes.push(refetchLfgOpen());
+      }
     }
     await Promise.all(refreshes);
     setRefreshing(false);
-  }, [refetchEvents, refetchLfgJoined, refetchLfgOpen, refetchPersonalEvents, appConfig.preRegistrationMode]);
+  }, [
+    refetchEvents,
+    refetchLfgJoined,
+    refetchLfgOwned,
+    refetchLfgOpen,
+    refetchPersonalEvents,
+    preRegistrationMode,
+    appConfig.schedule.eventsShowOpenLfgs,
+  ]);
 
   const scrollToNow = useCallback(() => {
     if (scheduleList.length === 0 || !listRef.current) {
@@ -166,6 +212,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     const listData = buildScheduleList(
       scheduleFilterSettings,
       lfgJoinedData,
+      lfgOwnedData,
       lfgOpenData,
       eventData,
       personalEventData,
@@ -173,14 +220,14 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     setScheduleList(listData);
     onDataLoaded();
     console.log('[ScheduleDayScreen.tsx] Finished buildScheduleList useEffect.');
-  }, [scheduleFilterSettings, lfgJoinedData, lfgOpenData, eventData, personalEventData, onDataLoaded]);
+  }, [scheduleFilterSettings, lfgJoinedData, lfgOwnedData, lfgOpenData, eventData, personalEventData, onDataLoaded]);
 
   // Reset switching state on error to prevent stuck loading spinner
   useEffect(() => {
-    if (isEventError || isLfgOpenError || isLfgJoinedError || isPersonalEventError) {
+    if (isEventError || isLfgOpenError || isLfgJoinedError || isLfgOwnedError || isPersonalEventError) {
       onQueryError();
     }
-  }, [isEventError, isLfgOpenError, isLfgJoinedError, isPersonalEventError, onQueryError]);
+  }, [isEventError, isLfgOpenError, isLfgJoinedError, isLfgOwnedError, isPersonalEventError, onQueryError]);
 
   useEffect(() => {
     if (scheduleList.length > 0) {
@@ -192,20 +239,26 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
 
   useEffect(() => {
     console.log('[ScheduleDayScreen.tsx] Firing pagination useEffect');
-    if (openHasNextPage) {
+    if (appConfig.schedule.eventsShowOpenLfgs && openHasNextPage) {
       openFetchNextPage();
     }
     if (joinedHasNextPage) {
       joinedFetchNextPage();
     }
+    if (ownedHasNextPage) {
+      ownedFetchNextPage();
+    }
     if (personalHasNextPage) {
       personalFetchNextPage();
     }
   }, [
+    appConfig.schedule.eventsShowOpenLfgs,
     joinedFetchNextPage,
     joinedHasNextPage,
     openFetchNextPage,
     openHasNextPage,
+    ownedFetchNextPage,
+    ownedHasNextPage,
     personalFetchNextPage,
     personalHasNextPage,
   ]);
@@ -215,6 +268,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const isRefreshing =
     (appConfig.schedule.eventsShowJoinedLfgs && isLfgJoinedFetching) ||
     (appConfig.schedule.eventsShowOpenLfgs && isLfgOpenFetching) ||
+    isLfgOwnedFetching ||
     isEventFetching ||
     isPersonalEventFetching ||
     refreshing;
@@ -236,7 +290,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
           <ScheduleFlatList
             listRef={listRef}
             items={scheduleList}
-            refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
+            refreshControl={<AppRefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
             setRefreshing={setRefreshing}
             initialScrollIndex={scrollNowIndex}
             onScrollThreshold={onScrollThreshold}

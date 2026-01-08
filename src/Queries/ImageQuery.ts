@@ -1,7 +1,7 @@
 import {CacheManager} from '@georstat/react-native-image-cache';
 
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useOpenQuery} from '#src/Queries/OpenQuery';
 import {ImageQueryData} from '#src/Types';
@@ -10,7 +10,7 @@ import {ImageQueryData} from '#src/Types';
  * Handler for retrieving images.
  */
 export const useImageQuery = (path: string, enabled: boolean = true) => {
-  const {isLoggedIn} = useAuth();
+  const {isLoggedIn} = useSession();
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
 

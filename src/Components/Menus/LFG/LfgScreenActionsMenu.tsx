@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react';
-import {Menu} from 'react-native-paper';
+import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
@@ -11,7 +11,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -19,6 +19,7 @@ import {FezData} from '#src/Structs/ControllerStructs';
 export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const navigation = useLFGStackNavigation();
+  const commonNavigation = useCommonStack();
   const {hasModerator} = usePrivilege();
   const {setModalContent, setModalVisible} = useModal();
   const {data: profilePublicData} = useUserProfileQuery();
@@ -33,6 +34,15 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+      <Menu.Item
+        title={'Overlapping'}
+        leadingIcon={AppIcons.calendarMultiple}
+        onPress={() => {
+          closeMenu();
+          commonNavigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: fezData});
+        }}
+      />
+      <Divider bold={true} />
       {fezData.owner.userID === profilePublicData?.header.userID && (
         <Menu.Item
           leadingIcon={AppIcons.cancel}

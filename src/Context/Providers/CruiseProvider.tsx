@@ -3,11 +3,15 @@ import React, {PropsWithChildren} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {CruiseContext} from '#src/Context/Contexts/CruiseContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import useDateTime, {getCruiseDay, getCruiseDays} from '#src/Libraries/DateTime';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 export const CruiseProvider = ({children}: PropsWithChildren) => {
-  const {appConfig, oobeCompleted} = useConfig();
+  const {appConfig} = useConfig();
+  const {oobeCompleted} = useOobe();
+  const {preRegistrationMode} = usePreRegistration();
   // The hourlyUpdatingDate is a Date that will trigger a state refresh every hour on the hour.
   const hourlyUpdatingDate = useDateTime('hour');
   // We use 3AM as the day rollover point because many people stay up late. This is done in Swiftarr and elsewhere here.
@@ -38,7 +42,7 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
 
   // Figure out of the device is in the wrong time zone.
   const {data: userNotificationData} = useUserNotificationDataQuery({
-    enabled: oobeCompleted && !appConfig.preRegistrationMode,
+    enabled: oobeCompleted && !preRegistrationMode,
   });
   // .getTimezoneOffset() reports in minutes and from the opposite perspective
   // as the server. Server says "you're -4" whereas device says "they're +4".

@@ -1,7 +1,7 @@
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useFocusEffect} from '@react-navigation/native';
 import React, {PropsWithChildren, useCallback} from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {KeyboardAvoidingView as ModuleKeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {Portal} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -12,11 +12,12 @@ import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {ConnectionDisruptedView} from '#src/Components/Views/Warnings/ConnectionDisruptedView';
 import {PreRegistrationWarningView} from '#src/Components/Views/Warnings/PreRegistrationWarningView';
 import {UnsavedChangesView} from '#src/Components/Views/Warnings/UnsavedChangesView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useLayout} from '#src/Context/Contexts/LayoutContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 
 interface AppViewProps extends PropsWithChildren {
   disablePreRegistrationWarning?: boolean;
@@ -32,14 +33,14 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
   const {hasUnsavedWork} = useErrorHandler();
   // https://reactnavigation.org/docs/6.x/handling-safe-area
   const insets = useSafeAreaInsets();
-  const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const {headerHeight, headerHeightValue, footerHeightValue} = useLayout();
   const directHeaderHeight = useHeaderHeight();
 
   // Log layout values for debugging
-  console.log('[AppView.tsx] insets', insets);
-  console.log(`[AppView.tsx] headerHeightValue: ${headerHeightValue}, footerHeightValue: ${footerHeightValue}`);
-  console.log(`[AppView.tsx] headerHeight: ${directHeaderHeight}`);
+  // console.log('[AppView.tsx] insets', insets);
+  // console.log(`[AppView.tsx] headerHeightValue: ${headerHeightValue}, footerHeightValue: ${footerHeightValue}`);
+  // console.log(`[AppView.tsx] headerHeight: ${directHeaderHeight}`);
 
   const styles = StyleSheet.create({
     appView: {
@@ -66,7 +67,7 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
    * https://github.com/react-native-community/discussions-and-proposals/discussions/827
    */
   var keyboardVerticalOffset = insets.top + insets.bottom;
-  if (Platform.OS === 'ios' && insets.bottom === 0) {
+  if (isIOS && insets.bottom === 0) {
     keyboardVerticalOffset += 40;
   }
 
@@ -85,7 +86,7 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
     <View style={styles.appView}>
       <ModuleKeyboardAvoidingView
         style={styles.keyboardView}
-        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        // behavior={isIOS ? 'padding' : 'height'}
         behavior={'translate-with-padding'}
         keyboardVerticalOffset={keyboardVerticalOffset}>
         <Portal>
@@ -93,7 +94,7 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
           <AppModal />
           <AppSnackbar />
         </Portal>
-        {appConfig.preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
+        {preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
         {disruptionDetected && <ConnectionDisruptedView />}
         {children}
         <UnsavedChangesView isVisible={hasUnsavedWork} />

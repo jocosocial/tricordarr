@@ -1,6 +1,6 @@
 import React from 'react';
-import {RefreshControl} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentText} from '#src/Components/Text/ContentText';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -16,7 +16,7 @@ export const AboutTwitarrScreen = () => {
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
         isStack={true}>
         <PaddedContentView>
           <ContentText text={data} forceMarkdown={true} />

@@ -1,7 +1,7 @@
 import React from 'react';
-import {RefreshControl} from 'react-native';
 
 import {DailyThemeCard} from '#src/Components/Cards/MainScreen/DailyThemeCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -14,11 +14,11 @@ import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScre
 
 export const DailyThemesScreen = () => {
   return (
-    <PreRegistrationScreen>
-      <LoggedInScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen>
         <DailyThemesScreenInner />
-      </LoggedInScreen>
-    </PreRegistrationScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -34,7 +34,7 @@ const DailyThemesScreenInner = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
+        refreshControl={<AppRefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
         <PaddedContentView padSides={false}>
           <ListTitleView title={`Today is day #${cruiseDayIndex}`} />
         </PaddedContentView>

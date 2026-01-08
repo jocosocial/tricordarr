@@ -1,9 +1,12 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
-import React from 'react';
-import {RefreshControl} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {ItalicText} from '#src/Components/Text/ItalicText';
@@ -26,7 +29,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.muteUs
 
 export const MuteUsersScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.userProfileHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/blocks'}>
         <MuteUsersScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -39,6 +42,26 @@ const MuteUsersScreenInner = ({navigation}: Props) => {
   const userMuteMutation = useUserMuteMutation();
   const {data, isFetching, refetch} = useUserMutesQuery();
   const queryClient = useQueryClient();
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.userRelationsHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const handleUnmuteUser = (userHeader: UserHeader) => {
     userMuteMutation.mutate(
@@ -81,7 +104,9 @@ const MuteUsersScreenInner = ({navigation}: Props) => {
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={isFetching || userMuteMutation.isPending} onRefresh={refetch} />}>
+        refreshControl={
+          <AppRefreshControl refreshing={isFetching || userMuteMutation.isPending} onRefresh={refetch} />
+        }>
         <PaddedContentView>
           <UserMuteText />
           {hasModerator && <ModeratorMuteText />}

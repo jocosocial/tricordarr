@@ -1,6 +1,5 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -12,6 +11,7 @@ import {UserAboutCard} from '#src/Components/Cards/UserProfile/UserAboutCard';
 import {UserContentCard} from '#src/Components/Cards/UserProfile/UserContentCard';
 import {UserNoteCard} from '#src/Components/Cards/UserProfile/UserNoteCard';
 import {UserProfileCard} from '#src/Components/Cards/UserProfile/UserProfileCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {UserProfileScreenActionsMenu} from '#src/Components/Menus/User/UserProfileScreenActionsMenu';
 import {UserProfileSelfActionsMenu} from '#src/Components/Menus/User/UserProfileSelfActionsMenu';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
@@ -21,9 +21,11 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {UserProfileAvatar} from '#src/Components/Views/UserProfileAvatar';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
@@ -36,7 +38,6 @@ interface Props {
   data?: ProfilePublicData;
   refetch: () => Promise<any>;
   isLoading: boolean;
-  enableContent?: boolean;
 }
 
 export const UserProfileScreenBase = (props: Props) => {
@@ -47,24 +48,30 @@ export const UserProfileScreenBase = (props: Props) => {
   );
 };
 
-const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = true}: Props) => {
+/**
+ * Screen for the user's own profile.
+ *
+ * If the user hasn't completed the OOBE, they will not see the content card.
+ */
+const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {data: profilePublicData, refetch: refetchSelf} = useUserProfileQuery();
   const {commonStyles} = useStyles();
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const commonNavigation = useCommonStack();
+  const {setString} = useClipboard();
   const {refetch: refetchFavorites} = useUserFavoritesQuery();
   const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
   const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
-  const {appConfig} = useConfig();
-
+  const {preRegistrationMode} = usePreRegistration();
+  const {oobeCompleted} = useOobe();
   const isSelf = data?.header.userID === profilePublicData?.header.userID;
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     let refreshes = [refetch()];
-    if (!appConfig.preRegistrationMode) {
+    if (!preRegistrationMode) {
       refreshes.push(refetchFavorites(), refetchMutes(), refetchBlocks());
     }
     if (isSelf) {
@@ -72,7 +79,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = t
     }
     await Promise.all(refreshes);
     setRefreshing(false);
-  }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, isSelf, refetchSelf, appConfig.preRegistrationMode]);
+  }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, isSelf, refetchSelf, preRegistrationMode]);
 
   const getNavButtons = useCallback(() => {
     if (data && isSelf) {
@@ -151,7 +158,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = t
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
         {data.message && (
           <PaddedContentView padTop={true} padBottom={false} style={styles.listContentCenter}>
@@ -173,7 +180,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = t
               onPress={() => commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {user: data})}
               onLongPress={() => {
                 if (data.note !== undefined) {
-                  Clipboard.setString(data.note);
+                  setString(data.note);
                 }
               }}
             />
@@ -187,7 +194,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading, enableContent = t
             <UserAboutCard user={data} />
           </PaddedContentView>
         )}
-        {enableContent && (
+        {oobeCompleted && (
           <PaddedContentView>
             <UserContentCard user={data} />
           </PaddedContentView>

@@ -1,10 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Formik} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {HelperText, Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {SliderField} from '#src/Components/Forms/Fields/SliderField';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
@@ -16,8 +17,8 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
 import {fgsFailedCounter, getSharedWebSocket} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
@@ -29,7 +30,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
   const {theme} = useAppTheme();
   const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
-  const {enableUserNotifications} = useUserNotificationData();
+  const {enableUserNotifications} = useEnableUserNotification();
   const {appConfig, updateAppConfig} = useConfig();
   const [healthData, setHealthData] = useState<SocketHealthcheckData | undefined>();
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
@@ -101,7 +102,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ListSection>
           <ListSubheader>About</ListSubheader>
         </ListSection>

@@ -1,18 +1,21 @@
 import React, {PropsWithChildren, useCallback, useEffect, useState} from 'react';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SocketContext} from '#src/Context/Contexts/SocketContext';
+import {useWebSocketStorageReducer, WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
 import {buildWebSocket, OpenFezSocket} from '#src/Libraries/Network/Websockets';
-import {useWebSocketStorageReducer, WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
 
 export const SocketProvider = ({children}: PropsWithChildren) => {
-  const {isLoggedIn} = useAuth();
+  const {isLoggedIn} = useSession();
   const [notificationSocket, setNotificationSocket] = useState<ReconnectingWebSocket>();
   const [fezSockets, dispatchFezSockets] = useWebSocketStorageReducer({});
   const {appConfig} = useConfig();
-  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
+  const {preRegistrationMode} = usePreRegistration();
+  const {oobeCompleted} = useOobe();
 
   // Socket Open
 
@@ -57,7 +60,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
   const openNotificationSocket = useCallback(() => {
     // If the notification socket is disabled or we're in pre-registration mode, don't open it.
     // This returns the function early.
-    if (!appConfig.enableNotificationSocket || appConfig.preRegistrationMode) {
+    if (!appConfig.enableNotificationSocket || preRegistrationMode) {
       console.log('[SocketProvider.tsx] NotificationSocket is disabled. Skipping open.');
       return;
     }
@@ -71,7 +74,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       buildWebSocket().then(ws => setNotificationSocket(ws));
     }
     console.log(`[SocketProvider.tsx] NotificationSocket open complete! State: ${notificationSocket?.readyState}`);
-  }, [appConfig.enableNotificationSocket, notificationSocket, appConfig.preRegistrationMode]);
+  }, [appConfig.enableNotificationSocket, notificationSocket, preRegistrationMode]);
 
   // Socket Close
 

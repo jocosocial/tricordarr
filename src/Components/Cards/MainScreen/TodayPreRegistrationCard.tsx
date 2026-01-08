@@ -2,16 +2,22 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 
+import {PreRegistrationListItem} from '#src/Components/Lists/Items/PreRegistrationListItem';
+import {ListSection} from '#src/Components/Lists/ListSection';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/BottomTabNavigator';
 
 export const TodayPreRegistrationCard = () => {
   const {commonStyles} = useStyles();
-  const commonNavigation = useCommonStack();
+  const mainNavigation = useMainStack();
+  const bottomTabNavigation = useBottomTabNavigator();
 
   const styles = StyleSheet.create({
     card: {
-      ...commonStyles.twitarrPositive,
+      ...commonStyles.twitarrNeutral,
     },
     title: {
       ...commonStyles.onTwitarrButton,
@@ -25,18 +31,47 @@ export const TodayPreRegistrationCard = () => {
     },
   });
 
-  const onPress = () => {
-    commonNavigation.push(CommonStackComponents.preRegistrationHelpScreen);
-  };
-
   return (
-    <Card style={styles.card} onPress={onPress}>
+    <Card style={styles.card}>
       <Card.Title title={'Pre-Registration Setup'} titleStyle={styles.title} />
       <Card.Content style={styles.content}>
         <Text style={styles.text}>
-          Twitarr's social media features aren't enabled right now (see the JoCo Discord instead). Tap here for more
-          information about what you can do in the app before the cruise starts.
+          Twitarr's social media features aren't enabled right now (see the JoCo Discord instead). Here are some
+          suggested actions to get your started:
         </Text>
+        <ListSection>
+          <PreRegistrationListItem
+            title={'Setup Your Profile'}
+            iconName={AppIcons.profile}
+            onPress={() => mainNavigation.push(CommonStackComponents.userSelfProfileScreen)}
+          />
+          <PreRegistrationListItem
+            title={'View the Schedule'}
+            iconName={AppIcons.events}
+            onPress={() =>
+              bottomTabNavigation.navigate(BottomTabComponents.scheduleTab, {
+                screen: CommonStackComponents.scheduleDayScreen,
+                params: {noDrawer: true},
+              })
+            }
+          />
+          <PreRegistrationListItem
+            title={'Read Performer Bios'}
+            iconName={AppIcons.performer}
+            onPress={() => mainNavigation.push(MainStackComponents.performerListScreen, {})}
+          />
+          <PreRegistrationListItem
+            title={'Favorite Users'}
+            iconName={AppIcons.userFavorite}
+            onPress={() => mainNavigation.push(CommonStackComponents.favoriteUsers)}
+          />
+
+          <PreRegistrationListItem
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => mainNavigation.push(CommonStackComponents.helpIndexScreen)}
+          />
+        </ListSection>
       </Card.Content>
     </Card>
   );

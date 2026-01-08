@@ -3,6 +3,7 @@ export enum AppIcons {
   // Chat
   seamailCreate = 'email-plus',
   seamail = 'email',
+  seamailUnread = 'email-mark-as-unread',
   seamailInactive = 'email-outline',
   krakentalkCreate = 'phone-outgoing',
   krakentalk = 'phone',
@@ -34,7 +35,7 @@ export enum AppIcons {
   mute = 'volume-off',
   unmute = 'volume-high',
   report = 'alert-octagon',
-  help = 'help-circle',
+  help = 'help-circle-outline',
   copy = 'content-copy',
   // Users
   profile = 'account-details-outline',
@@ -84,7 +85,6 @@ export enum AppIcons {
   join = 'account-plus',
   leave = 'account-remove',
   cancel = 'cancel',
-  seamailSearch = 'email-search',
   eventSearch = 'calendar-search',
   info = 'information-outline',
   save = 'content-save',
@@ -117,13 +117,14 @@ export enum AppIcons {
   eventCreate = 'calendar-plus', // I wanted -outline but it's not available in my version
   personalEvent = 'calendar-account', // I wanted -outline but it's not available in my version
   dayPlanner = 'book-clock',
+  calendarMultiple = 'calendar-multiple',
   schedImport = 'calendar-import',
   sortAscending = 'sort-ascending',
   sortDescending = 'sort-descending',
   selectAll = 'select-all',
   selectNone = 'select-remove',
   selectInverse = 'select-inverse',
-  markAsRead = 'read',
+  markAsRead = 'checkbox-marked-circle-outline',
   microKaraoke = 'account-music',
   twitter = 'twitter',
   youtube = 'youtube',
@@ -137,5 +138,10 @@ export enum AppIcons {
   full = 'image-size-select-actual',
   share = 'share-variant',
   shutternaut = 'camera-iris',
-  // shutternaut = 'bat',
+  shutternautManager = 'bat',
+  needsPhotographer = 'flash-alert-outline',
+  photographer = 'flash-outline',
+  userFavorite = 'account-star',
+  feedback = 'comment-quote',
+  session = 'cloud-outline',
 }

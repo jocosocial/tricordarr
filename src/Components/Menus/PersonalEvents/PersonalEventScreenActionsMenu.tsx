@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react';
-import {Menu} from 'react-native-paper';
+import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
@@ -36,6 +36,15 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      <Menu.Item
+        title={'Overlapping'}
+        leadingIcon={AppIcons.calendarMultiple}
+        onPress={() => {
+          closeMenu();
+          navigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.event});
+        }}
+      />
+      <Divider bold={true} />
       {props.event.owner.userID === profilePublicData?.header.userID && (
         <>
           {props.event.fezType === FezType.personalEvent ? (

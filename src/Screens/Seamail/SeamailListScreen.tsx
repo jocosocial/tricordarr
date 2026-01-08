@@ -2,13 +2,15 @@ import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {SeamailFAB} from '#src/Components/Buttons/FloatingActionButtons/SeamailFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SeamailAccountButtons} from '#src/Components/Buttons/SegmentedButtons/SeamailAccountButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
+import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {SeamailListScreenActionsMenu} from '#src/Components/Menus/Seamail/SeamailListScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -17,6 +19,7 @@ import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
@@ -31,20 +34,24 @@ type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seam
 
 export const SeamailListScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <LoggedInScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
           <SeamailListScreenInner {...props} />
         </DisabledFeatureScreen>
-      </LoggedInScreen>
-    </PreRegistrationScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 
-const SeamailListScreenInner = ({navigation}: Props) => {
+const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
-  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isLoading} = useSeamailListQuery({
+  // showUnreadOnly should almost never be false since that's not useful. The query will not
+  // pass undefined to the API.
+  const [showUnreadOnly, setShowUnreadOnly] = useState<boolean | undefined>(undefined);
+  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading} = useSeamailListQuery({
     forUser: asPrivilegedUser,
+    onlyNew: showUnreadOnly,
   });
   const {notificationSocket, closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
@@ -53,6 +60,7 @@ const SeamailListScreenInner = ({navigation}: Props) => {
   const {data: profilePublicData} = useUserProfileQuery();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const [fezList, setFezList] = useState<FezData[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const queryClient = useQueryClient();
 
@@ -68,10 +76,11 @@ const SeamailListScreenInner = ({navigation}: Props) => {
     }
   }, [data]);
 
-  const onRefresh = useCallback(() => {
-    refetch().finally(() => {
-      refetchUserNotificationData();
-    });
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    await refetchUserNotificationData();
+    setRefreshing(false);
   }, [refetch, refetchUserNotificationData]);
 
   const notificationHandler = useCallback(
@@ -96,10 +105,16 @@ const SeamailListScreenInner = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <MaterialHeaderButtons left>
+        <MaterialHeaderButtons>
+          <MenuAnchor
+            active={showUnreadOnly}
+            title={'Filter Unread'}
+            iconName={AppIcons.seamailUnread}
+            onPress={() => setShowUnreadOnly(prev => (prev === true ? undefined : true))}
+          />
           <Item
             title={'Search'}
-            iconName={AppIcons.seamailSearch}
+            iconName={AppIcons.search}
             onPress={() =>
               navigation.push(ChatStackScreenComponents.seamailSearchScreen, {
                 forUser: asPrivilegedUser,
@@ -110,7 +125,7 @@ const SeamailListScreenInner = ({navigation}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [asPrivilegedUser, navigation]);
+  }, [showUnreadOnly, asPrivilegedUser, navigation]);
 
   useEffect(() => {
     if (notificationSocket) {
@@ -129,6 +144,17 @@ const SeamailListScreenInner = ({navigation}: Props) => {
     });
   }, [isFocused, closeFezSocket, navigation, getNavButtons]);
 
+  /**
+   * This operates more like an intent than a state.
+   * When the user navigates from the NotificationsMenu it's almost certainly
+   * because they want to see unread seamails. All other cases should be normal.
+   */
+  useEffect(() => {
+    if (route.params?.onlyNew !== undefined) {
+      setShowUnreadOnly(route.params.onlyNew);
+    }
+  }, [route.params]);
+
   if (isLoading) {
     return <LoadingView />;
   }
@@ -137,13 +163,13 @@ const SeamailListScreenInner = ({navigation}: Props) => {
     <AppView>
       {profilePublicData && (hasTwitarrTeam || hasModerator) && (
         // For some reason, SegmentedButtons hates the flex in PaddedContentView.
-        <View style={[commonStyles.margin]}>
+        <View style={[commonStyles.paddingSmall]}>
           <SeamailAccountButtons />
         </View>
       )}
       <SeamailFlatList
         fezList={fezList}
-        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
         onScrollThreshold={onScrollThreshold}
         hasNextPage={hasNextPage}

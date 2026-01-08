@@ -1,6 +1,6 @@
 import {useFormikContext} from 'formik';
 import React from 'react';
-import {Platform, View} from 'react-native';
+import {View} from 'react-native';
 import RNFS from 'react-native-fs';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {ActivityIndicator} from 'react-native-paper';
@@ -10,6 +10,7 @@ import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
 import {AppImage} from '#src/Components/Images/AppImage';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
@@ -68,7 +69,7 @@ export const PhotostreamImageSelectionView = () => {
   };
 
   const takeImage = async () => {
-    const cameraPermission = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+    const cameraPermission = isIOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
     const permissionStatus = await requestPermission(cameraPermission);
     console.log('[PhotostreamImageSelectionView.tsx] Camera permission is', permissionStatus);
     try {

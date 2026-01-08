@@ -1,13 +1,18 @@
 import React, {PropsWithChildren} from 'react';
 
 import {PreRegistrationView} from '#src/Components/Views/Static/PreRegistrationView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {HelpScreenComponents} from '#src/Navigation/CommonScreens';
 
-export const PreRegistrationScreen = (props: PropsWithChildren) => {
-  const {appConfig} = useConfig();
+interface PreRegistrationScreenProps extends PropsWithChildren {
+  helpScreen?: HelpScreenComponents;
+}
 
-  if (appConfig.preRegistrationMode) {
-    return <PreRegistrationView />;
+export const PreRegistrationScreen = (props: PreRegistrationScreenProps) => {
+  const {preRegistrationMode} = usePreRegistration();
+
+  if (preRegistrationMode) {
+    return <PreRegistrationView helpScreen={props.helpScreen} />;
   }
 
   return props.children;

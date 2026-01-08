@@ -2,8 +2,8 @@ import {PropsWithChildren, ReactElement} from 'react';
 
 import {DisabledView} from '#src/Components/Views/Static/DisabledView';
 import {KrakenView} from '#src/Components/Views/Static/KrakenView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {SiteUIScreenBase} from '#src/Screens/SiteUI/SiteUIScreenBase';
@@ -21,7 +21,7 @@ interface Props extends PropsWithChildren {
  */
 export const DisabledFeatureScreen = (props: Props) => {
   const {getIsDisabled} = useFeature();
-  const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
 
   /**
    * Determines which component to render based on which apps have the feature disabled
@@ -45,7 +45,7 @@ export const DisabledFeatureScreen = (props: Props) => {
 
     // .tricordarr and not .swiftarr: return SiteUIScreenBase
     if (props.urlPath && isDisabledForTricordarr && !isDisabledForSwiftarr) {
-      return <SiteUIScreenBase initialUrl={`${appConfig.serverUrl}/${props.urlPath}`} />;
+      return <SiteUIScreenBase initialUrl={`${serverUrl}/${props.urlPath}`} />;
     }
 
     // .tricordarr and .swiftarr and not .kraken: return KrakenView

@@ -7,14 +7,18 @@ import {FezListEndpoints} from '#src/Types';
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 interface FezQueryProps {
   fezID: string;
+  options?: TokenAuthPaginationQueryOptionsTypeV2<FezData>;
 }
 
 /**
  * Gets a single Fez Chat.
  * @param fezID String of the Fez Chat ID.
  */
-export const useFezQuery = ({fezID}: FezQueryProps) => {
-  return useTokenAuthPaginationQuery<FezData>(`/fez/${fezID}`);
+export const useFezQuery = ({
+  fezID,
+  options = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'},
+}: FezQueryProps) => {
+  return useTokenAuthPaginationQuery<FezData>(`/fez/${fezID}`, options);
 };
 
 // Mostly mirrors https://github.com/jocosocial/swiftarr/blob/master/Sources/swiftarr/Controllers/FezController.swift
@@ -38,7 +42,7 @@ export const useFezListQuery = ({
   hidePast,
   endpoint,
   excludeFezType,
-  options,
+  options = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'},
   onlyNew,
   search,
   matchID,
@@ -67,7 +71,7 @@ export const useLfgListQuery = ({
   fezType,
   hidePast = true, // this matches Swiftarr behavior
   endpoint = 'open',
-  options,
+  options = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'},
   onlyNew,
   search,
   matchID,
@@ -116,7 +120,7 @@ export const usePersonalEventsQuery = ({
   search,
   hidePast,
   matchID,
-  options,
+  options = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'},
   fezType = [FezType.privateEvent, FezType.personalEvent],
 }: FezListQueryOptions) => {
   return useFezListQuery({

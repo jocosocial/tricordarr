@@ -1,21 +1,35 @@
-Code Notes
-==========
+# Code Notes
 
-Query
------
+## Query
 
 `isLoading`: no cache and in flight
-* Return `<LoadingView />`
+
+- Return `<LoadingView />`
 
 `isRefetching`: Background refetch (excluding initial) and `refetch()`.
-* RefreshControl
+
+- RefreshControl
 
 `refetch()` will refetch even if within the staleTime. Backgrounds will not because that's the point of staleTime.
 
 `isFetching`: Catchall for any time the query function is running. This should be the default solution.
 
-Native Code
------------
+A useful debugging snippet:
+
+```ts
+const allJoinedQueries = queryClient
+  .getQueryCache()
+  .getAll()
+  .filter(q => Array.isArray(q.queryKey) && q.queryKey[0] === '/fez/joined');
+
+console.log('[PersonalEvents] total /fez/joined queries:', allJoinedQueries.length);
+allJoinedQueries.forEach((q, i) => {
+  console.log(`[PersonalEvents] query ${i} key:`, JSON.stringify(q.queryKey));
+  console.log(`[PersonalEvents] query ${i} dataUpdatedAt:`, new Date(q.state.dataUpdatedAt).toISOString());
+});
+```
+
+## Native Code
 
 ### Codegen
 
@@ -38,8 +52,7 @@ https://stackoverflow.com/questions/70816347/i-cant-find-the-image-asset-option-
 
 Open the `ios` directory in Xcode or `open` the `Tricordarr.xcworkspace` file.
 
-Refresh
--------
+## Refresh
 
 To refresh without glitches:
 
@@ -53,14 +66,27 @@ const onRefresh = async () => {
 };
 ```
 
+**Important**: Always use local `refreshing` state with `RefreshControl`, not `isFetching` from queries. Background refetches (e.g., from `NotificationDataPoller` polling every 2 minutes) will cause `isFetching` to toggle, making the RefreshControl spinner appear/disappear quickly and causing screen jumping on iOS. The local state pattern ensures the spinner only shows during user-initiated pull-to-refresh actions.
+
+- Use `isFetching` for debugging or other non-UI purposes
+- Use `isLoading` only for initial loading states (return `<LoadingView />`)
+- Use `isFetchingNextPage`/`isFetchingPreviousPage` only for pagination indicators, not RefreshControl
+- Use local `refreshing` state for all `RefreshControl` components
+
 `refetchPage` can be passed to `refetch` to limit refetching - CITATION NEEDED
 
-Websocket Keepalive
--------------------
+## Websocket Keepalive
 
 https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
 
-Swiftarr API
-------------
+## Swiftarr API
 
-* All dates from the API come in as ISO8601 strings
+- All dates from the API come in as ISO8601 strings
+
+## RefreshControl
+
+React Native (as of at least 0.82) `RefreshControl` does not support `enabled` on iOS so we use a wrapper `AppRefreshControl` which returns null (an AI-recommended pattern).
+
+## Clipboard
+
+iOS doesn't give you any clipboard feedback so I made a hook that does. `useClipboard()`.

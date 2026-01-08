@@ -1,9 +1,10 @@
 import React, {PropsWithChildren} from 'react';
-import {Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {StyleContext} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {isAndroid} from '#src/Libraries/Platform/Detection';
 import {commonStyles, styleDefaults} from '#src/Styles';
 
 export const StyleProvider = ({children}: PropsWithChildren) => {
@@ -147,7 +148,8 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     },
     headerLeftWrapper: {
       // This is close enough on Android. Haven't seen anything on iOS yet.
-      marginRight: Platform.select({android: 30, default: 15}),
+      marginRight: isAndroid ? 16 : 15,
+      marginLeft: isAndroid ? 14 : 5,
     },
   });
 

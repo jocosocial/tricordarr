@@ -1,24 +1,36 @@
 import {Formik} from 'formik';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
+import {SliderField} from '#src/Components/Forms/Fields/SliderField';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
 export const EventSettingsScreen = () => {
-  const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();
+  const {appConfig, updateAppConfig} = useConfig();
+  const {hasNotificationPermission} = usePermissions();
+  const navigation = useSettingsStack();
   const [enableLateDayFlip, setEnableLateDayFlip] = useState(appConfig.schedule.enableLateDayFlip);
   const {commonStyles} = useStyles();
   const [joined, setJoined] = useState(appConfig.schedule.eventsShowJoinedLfgs);
   const [open, setOpen] = useState(appConfig.schedule.eventsShowOpenLfgs);
+  const [overlapExcludeDurationHours, setOverlapExcludeDurationHours] = useState(
+    appConfig.schedule.overlapExcludeDurationHours,
+  );
 
   const handleOpenLfgs = () => {
     updateAppConfig({
@@ -63,6 +75,26 @@ export const EventSettingsScreen = () => {
     });
   };
 
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.scheduleHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
+
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -103,6 +135,34 @@ export const EventSettingsScreen = () => {
                   onPress={handleOpenLfgs}
                   value={open}
                   style={commonStyles.paddingHorizontalSmall}
+                />
+              </ListSection>
+              <ListSection>
+                <ListSubheader>Overlapping Events</ListSubheader>
+                <SliderField
+                  name={'overlapExcludeDurationHours'}
+                  label={'Exclude Long Events from Overlap'}
+                  value={overlapExcludeDurationHours}
+                  minimumValue={0}
+                  maximumValue={24}
+                  step={1}
+                  unit={'hour'}
+                  helperText={
+                    'Events with a duration equal to or longer than this value (in hours) will be excluded from the overlap list. Set to 0 to show all overlapping events regardless of duration.'
+                  }
+                  onValueChange={(value: number) => {
+                    setOverlapExcludeDurationHours(value);
+                  }}
+                  onSlidingComplete={(value: number) => {
+                    updateAppConfig({
+                      ...appConfig,
+                      schedule: {
+                        ...appConfig.schedule,
+                        overlapExcludeDurationHours: value,
+                      },
+                    });
+                  }}
+                  style={[commonStyles.paddingHorizontalSmall, commonStyles.paddingTopSmall]}
                 />
               </ListSection>
               <ListSection>

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, View} from 'react-native';
-import {Platform} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
+import {isAndroid} from '#src/Libraries/Platform/Detection';
 
 export const AboutSettingsScreen = () => {
   const [apiLevel, setApiLevel] = useState<number>();
@@ -30,7 +30,7 @@ export const AboutSettingsScreen = () => {
           <DataFieldListItem title={'Build'} description={DeviceInfo.getBuildNumber()} />
           <ListSubheader>Your Device</ListSubheader>
           <DataFieldListItem title={'System Version'} description={DeviceInfo.getSystemVersion()} />
-          {Platform.OS === 'android' && <DataFieldListItem title={'API Level'} description={apiLevel?.toString()} />}
+          {isAndroid && <DataFieldListItem title={'API Level'} description={apiLevel?.toString()} />}
           <DataFieldListItem title={'Device ID'} description={DeviceInfo.getDeviceId()} />
           <DataFieldListItem title={'Manufacturer'} description={manufacturer} />
         </View>

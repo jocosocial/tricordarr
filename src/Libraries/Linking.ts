@@ -1,13 +1,15 @@
 import type {PathConfigMap} from '@react-navigation/core';
 import {LinkingOptions} from '@react-navigation/native';
-import Config from 'react-native-config';
 
+import {getPath} from '#src/Libraries/RouteDefinitions';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {ForumStackComponents} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
-import {RootStackParamList} from '#src/Navigation/Stacks/RootStackNavigator';
+import {OobeStackComponents} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {RootStackComponents, RootStackParamList} from '#src/Navigation/Stacks/RootStackNavigator';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;
@@ -19,87 +21,88 @@ type DeepLinksConfig<ParamList extends {}> = {
  * be based on a StackScreenComponent enum value. The actual tabs will vary and should loosely
  * follow the routes that we use in the Swiftarr web UI.
  * The initialRouteName's cannot be undefined or you'll lose initial navigation on link.
+ *
+ * All paths are sourced from RouteDefinitions.ts via getPath() to ensure consistency.
  */
 const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
   screens: {
-    OobeWelcomeScreen: 'oobe',
+    OobeWelcomeScreen: getPath(OobeStackComponents.oobeWelcomeScreen),
     RootContentScreen: {
       screens: {
         HomeTab: {
           initialRouteName: MainStackComponents.mainScreen,
           screens: {
-            MainScreen: 'home',
-            HelpIndexScreen: 'help',
-            AboutTricordarrScreen: 'about-app',
-            AboutTwitarrScreen: 'about',
-            FaqScreen: 'faq',
-            SiteUIScreen: 'twitarrtab/:timestamp?/:resource?/:id?',
-            SiteUILinkScreen: '*', // Catch-all wildcard
+            MainScreen: getPath(MainStackComponents.mainScreen),
+            HelpIndexScreen: getPath(CommonStackComponents.helpIndexScreen),
+            AboutTricordarrScreen: getPath(CommonStackComponents.aboutTricordarrScreen),
+            AboutTwitarrScreen: getPath(CommonStackComponents.aboutTwitarrScreen),
+            PrivacyScreen: getPath(CommonStackComponents.privacyScreen),
+            FaqScreen: getPath(MainStackComponents.faqScreen),
+            SiteUIScreen: getPath(CommonStackComponents.siteUIScreen),
+            SiteUILinkScreen: '*', // Catch-all wildcard - special case, not in RouteDefinitions
             MainSettingsScreen: {
-              // Disable this to prevent doubling up on the SettingsScreen after going back.
-              // initialRouteName: SettingsStackScreenComponents.settings,
               screens: {
-                SettingsScreen: 'settings',
-                ServerConnectionSettingsScreen: 'settings/serverconnectionsettingsscreen',
-                PushNotificationSettingsScreen: 'settings/pushnotifications',
-                LoginScreen: 'login',
+                SettingsScreen: getPath(SettingsStackScreenComponents.settings),
+                ServerConnectionSettingsScreen: getPath(SettingsStackScreenComponents.networkInfoSettings),
+                PushNotificationSettingsScreen: getPath(SettingsStackScreenComponents.pushNotificationSettings),
+                LoginScreen: getPath(SettingsStackScreenComponents.login),
               },
             },
-            UserProfileScreen: 'user/:userID',
-            UsernameProfileScreen: 'username/:username',
-            UserDirectoryScreen: 'users',
-            MapScreen: 'map/:deckNumber?',
-            MainConductScreen: 'codeOfConduct',
-            DailyThemesScreen: 'dailyThemes',
-            PhotostreamScreen: 'photostream',
-            MicroKaraokeListScreen: 'microkaraoke',
-            PerformerListScreen: 'performers',
-            MainTimeZoneScreen: 'time',
-            BoardgameListScreen: 'boardgames',
+            UserProfileScreen: getPath(CommonStackComponents.userProfileScreen),
+            UserSelfProfileScreen: getPath(CommonStackComponents.userSelfProfileScreen),
+            UsernameProfileScreen: getPath(CommonStackComponents.usernameProfileScreen),
+            FavoriteUsersScreen: getPath(CommonStackComponents.favoriteUsers),
+            MapScreen: getPath(CommonStackComponents.mapScreen),
+            UserDirectoryScreen: getPath(MainStackComponents.userDirectoryScreen),
+            MainConductScreen: getPath(MainStackComponents.conductScreen),
+            DailyThemesScreen: getPath(MainStackComponents.dailyThemesScreen),
+            PhotostreamScreen: getPath(MainStackComponents.photostreamScreen),
+            MicroKaraokeListScreen: getPath(MainStackComponents.microKaraokeListScreen),
+            PerformerListScreen: getPath(MainStackComponents.performerListScreen),
+            MainTimeZoneScreen: getPath(CommonStackComponents.mainTimeZoneScreen),
+            BoardgameListScreen: getPath(MainStackComponents.boardgameListScreen),
           },
         },
         SeamailTab: {
           initialRouteName: ChatStackScreenComponents.seamailListScreen,
           screens: {
-            SeamailTab: 'seamail',
-            SeamailChatScreen: 'seamail/:fezID',
-            KrakenTalkReceiveScreen: 'phonecall/:callID/from/:callerUserID/:callerUsername',
+            SeamailListScreen: getPath(ChatStackScreenComponents.seamailListScreen),
+            SeamailChatScreen: getPath(CommonStackComponents.seamailChatScreen),
+            KrakenTalkReceiveScreen: getPath(ChatStackScreenComponents.krakenTalkReceiveScreen),
           },
         },
         LfgTab: {
           initialRouteName: LfgStackComponents.lfgFindScreen,
           screens: {
-            LfgTab: 'lfg',
-            LfgScreen: 'lfg/:fezID',
-            LfgChatScreen: 'lfg/:fezID/chat',
-            LfgHelpScreen: 'lfg/faq',
-            LfgJoinedScreen: 'lfg/joined',
+            LfgTab: getPath(LfgStackComponents.lfgFindScreen),
+            LfgScreen: getPath(CommonStackComponents.lfgScreen),
+            LfgChatScreen: getPath(CommonStackComponents.lfgChatScreen),
+            LfgHelpScreen: getPath(CommonStackComponents.lfgHelpScreen),
+            LfgJoinedScreen: getPath(LfgStackComponents.lfgJoinedScreen),
           },
         },
         ScheduleTab: {
           initialRouteName: CommonStackComponents.scheduleDayScreen,
           screens: {
-            ScheduleDayScreen: 'events',
-            EventScreen: 'events/:eventID',
-            // I wanted PersonalEventScreen: { paths: [one, two] } but it kept
-            // falling through to the default route. This is what we do in the UI, so oh well.
-            // Perhaps I should make a PR to Swiftarr to change that?
-            PersonalEventScreen: 'privateevent/:eventID',
+            ScheduleDayScreen: getPath(CommonStackComponents.scheduleDayScreen),
+            EventScreen: getPath(CommonStackComponents.eventScreen),
+            PersonalEventScreen: getPath(CommonStackComponents.personalEventScreen),
+            SchedulePrivateEventsScreen: getPath(CommonStackComponents.schedulePrivateEventsScreen),
           },
         },
         ForumsTab: {
           initialRouteName: ForumStackComponents.forumCategoriesScreen,
           screens: {
-            ForumCategoriesScreen: 'forums',
-            ForumCategoryScreen: 'forums/:categoryID',
-            ForumThreadScreen: 'forum/:forumID',
-            ForumThreadPostScreen: 'forum/containingpost/:postID',
-            ForumPostMentionScreen: 'forumpost/mentions',
+            ForumCategoriesScreen: getPath(ForumStackComponents.forumCategoriesScreen),
+            ForumCategoryScreen: getPath(ForumStackComponents.forumCategoryScreen),
+            ForumPostMentionScreen: getPath(ForumStackComponents.forumPostMentionScreen),
+            ForumThreadScreen: getPath(CommonStackComponents.forumThreadScreen),
+            ForumThreadPostScreen: getPath(CommonStackComponents.forumThreadPostScreen),
           },
         },
       },
     },
-    LighterScreen: 'lighter',
+    LighterScreen: getPath(RootStackComponents.lighterScreen),
   },
 };
 
@@ -111,6 +114,6 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
  * idk...
  */
 export const navigationLinking: LinkingOptions<RootStackParamList> = {
-  prefixes: ['tricordarr://', Config.SERVER_URL].filter(prefix => prefix !== undefined) as string[],
+  prefixes: ['tricordarr://'].filter(prefix => prefix !== undefined) as string[],
   config: deepLinksConf,
 };

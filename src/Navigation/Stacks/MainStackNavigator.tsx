@@ -8,7 +8,6 @@ import {SettingsStackNavigator, SettingsStackParamList} from '#src/Navigation/St
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {BoardgameCreateLfgScreen} from '#src/Screens/Boardgames/BoardgameCreateLfgScreen';
 import {BoardgameExpansionsScreen} from '#src/Screens/Boardgames/BoardgameExpansionsScreen';
-import {BoardgameHelpScreen} from '#src/Screens/Boardgames/BoardgameHelpScreen';
 import {BoardgameListScreen} from '#src/Screens/Boardgames/BoardgameListScreen';
 import {BoardgameRecommendScreen} from '#src/Screens/Boardgames/BoardgameRecommendScreen';
 import {BoardgameScreen} from '#src/Screens/Boardgames/BoardgameScreen';
@@ -21,7 +20,6 @@ import {TodayScreen} from '#src/Screens/Main/TodayScreen';
 import {MicroKaraokeListScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeListScreen';
 import {MicroKaraokeSongScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeSongScreen';
 import {PerformerListScreen} from '#src/Screens/Performer/PerformerListScreen';
-import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
 import {PhotostreamImageCreateScreen} from '#src/Screens/Photostream/PhotostreamImageCreateScreen';
 import {PhotostreamScreen} from '#src/Screens/Photostream/PhotostreamScreen';
 import {UserDirectoryScreen} from '#src/Screens/User/UserDirectoryScreen';
@@ -39,7 +37,6 @@ export type MainStackParamList = CommonStackParamList & {
   DailyThemesScreen: undefined;
   PhotostreamScreen: undefined;
   PhotostreamImageCreateScreen: undefined;
-  PhotostreamHelpScreen: undefined;
   MicroKaraokeListScreen: undefined;
   MicroKaraokeSongScreen: {
     songID: number;
@@ -51,7 +48,6 @@ export type MainStackParamList = CommonStackParamList & {
   BoardgameScreen: {
     boardgame: BoardgameData;
   };
-  BoardgameHelpScreen: undefined;
   BoardgameRecommendScreen: undefined;
   BoardgameSearchScreen: undefined;
   BoardgameExpansionsScreen: {
@@ -74,13 +70,11 @@ export enum MainStackComponents {
   dailyThemesScreen = 'DailyThemesScreen',
   photostreamScreen = 'PhotostreamScreen',
   photostreamImageCreateScreen = 'PhotostreamImageCreateScreen',
-  photostreamHelpScreen = 'PhotostreamHelpScreen',
   microKaraokeListScreen = 'MicroKaraokeListScreen',
   microKaraokeSongScreen = 'MicroKaraokeSongScreen',
   performerListScreen = 'PerformerListScreen',
   boardgameListScreen = 'BoardgameListScreen',
   boardgameScreen = 'BoardgameScreen',
-  boardgameHelpScreen = 'BoardgameHelpScreen',
   boardgameRecommendScreen = 'BoardgameRecommendScreen',
   boardgameSearchScreen = 'BoardgameSearchScreen',
   boardgameExpansionsScreen = 'BoardgameExpansionsScreen',
@@ -130,11 +124,6 @@ export const MainStackNavigator = () => {
         options={{title: 'Upload'}}
       />
       <MainStack.Screen
-        name={MainStackComponents.photostreamHelpScreen}
-        component={PhotostreamHelpScreen}
-        options={{title: 'Help'}}
-      />
-      <MainStack.Screen
         name={MainStackComponents.microKaraokeListScreen}
         component={MicroKaraokeListScreen}
         options={{title: 'Song List'}}
@@ -158,11 +147,6 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.boardgameScreen}
         component={BoardgameScreen}
         options={{title: 'Board Game'}}
-      />
-      <MainStack.Screen
-        name={MainStackComponents.boardgameHelpScreen}
-        component={BoardgameHelpScreen}
-        options={{title: 'Board Game Help'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameSearchScreen}

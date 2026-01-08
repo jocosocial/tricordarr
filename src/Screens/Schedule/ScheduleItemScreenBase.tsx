@@ -1,10 +1,12 @@
 import pluralize from 'pluralize';
 import React from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Badge, Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPerformerListItem';
+import {EventPhotographerListItem} from '#src/Components/Lists/Items/Event/EventPhotographerListItem';
 import {UserChipsListItem} from '#src/Components/Lists/Items/UserChipsListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ContentText} from '#src/Components/Text/ContentText';
@@ -110,7 +112,7 @@ export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData
       )}
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {eventData && (
           <PaddedContentView padSides={false}>
             <ListSection>
@@ -133,6 +135,9 @@ export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData
                     <DataFieldListItem icon={AppIcons.description} description={getInfoContent} title={'Description'} />
                   )}
                   {eventData.performers.length !== 0 && <EventPerformerListItem performers={eventData.performers} />}
+                  {eventData.shutternautData?.photographers && eventData.shutternautData.photographers.length !== 0 && (
+                    <EventPhotographerListItem photographers={eventData.shutternautData.photographers} />
+                  )}
                 </>
               )}
               {'fezID' in eventData && (

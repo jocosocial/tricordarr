@@ -2,15 +2,16 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
-import {PostData} from '#src/Structs/ControllerStructs';
+import {PostData, UserNotificationData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumPostAlertwordScreen>;
 
@@ -34,7 +35,7 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
   useEffect(() => {
     if (data && data.pages) {
       setForumPosts(data.pages.flatMap(p => p.posts));
-      queryClient.invalidateQueries({queryKey: ['/notification/global']});
+      Promise.all(UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})));
     }
   }, [data, setForumPosts, queryClient, route.params.alertWord]);
 
@@ -44,7 +45,7 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
       <View style={[commonStyles.flex]}>
         <ForumPostList
           listRef={flatListRef}
-          refreshControl={<RefreshControl refreshing={isFetching || refreshing} onRefresh={refetch} />}
+          refreshControl={<AppRefreshControl refreshing={isFetching || refreshing} onRefresh={refetch} />}
           postList={forumPosts}
           handleLoadNext={handleLoadNext}
           itemSeparator={'time'}

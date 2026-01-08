@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
 import {Hyperlink} from 'react-native-hyperlink';
 import {ReactElementWithType} from 'react-native-hyperlink/dist/typescript/src/types';
@@ -8,6 +7,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useTwitarr} from '#src/Context/Contexts/TwitarrContext';
+import {useClipboard} from '#src/Hooks/useClipboard';
 
 // https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift
 const urlPathLabelMappings = [
@@ -36,6 +36,7 @@ export const HyperlinkText = ({children, disableLinkInterpolation = false}: Hype
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
   const {commonStyles} = useStyles();
+  const {setString} = useClipboard();
 
   const handleLink = (linkUrl?: string) => {
     if (linkUrl) {
@@ -46,7 +47,7 @@ export const HyperlinkText = ({children, disableLinkInterpolation = false}: Hype
 
   const onLongPress = (linkUrl?: string) => {
     if (linkUrl) {
-      Clipboard.setString(linkUrl);
+      setString(linkUrl);
     }
   };
 

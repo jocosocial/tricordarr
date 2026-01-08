@@ -22,7 +22,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamai
 
 export const SeamailCreateScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail/create'}>
         <SeamailCreateScreenInner {...props} />
       </DisabledFeatureScreen>

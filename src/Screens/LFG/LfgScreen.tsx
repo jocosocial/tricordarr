@@ -1,5 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
+import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
@@ -18,14 +19,14 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
 
 export const LfgScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={`/lfg/${props.route.params.fezID}`}>
         <LfgScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -42,6 +43,7 @@ const LfgScreenInner = ({navigation, route}: Props) => {
   const {notificationSocket} = useSocket();
   const isFocused = useIsFocused();
   const {hasModerator} = usePrivilege();
+  const queryClient = useQueryClient();
 
   const showChat =
     hasModerator ||
@@ -98,17 +100,21 @@ const LfgScreenInner = ({navigation, route}: Props) => {
     }
   }, [data, setLfg]);
 
-  // Mark as Read. Even though you may not have "read" it (tapping the Chat screen)
-  // the API considers the GET in this screen as you reading it.
-  // useEffect(() => {
-  //   if (lfg && lfg.members && lfg.members.readCount !== lfg.members.postCount) {
-  //     refetchUserNotificationData();
-  //   }
-  //   // @TODO this is still leaking. Is it?
-  //   if (isFocused) {
-  //     closeFezSocket();
-  //   }
-  // }, [closeFezSocket, lfg, isFocused, refetchUserNotificationData]);
+  /**
+   * Mark as Read. Even though you may not have "read" it (tapping the Chat screen)
+   * the API considers the GET in this screen as you reading it.
+   * Expire queries only if there are unread messages.
+   * This intentionally does not expire the Fez data query (ie, passing a fezID)
+   * because we want the user to have a chance to notice they have unread messages.
+   */
+  useEffect(() => {
+    if (lfg?.members && lfg.members.postCount > lfg.members.readCount) {
+      Promise.all([
+        ...UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
+        ...FezData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
+      ]);
+    }
+  }, [lfg, queryClient]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {

@@ -1,8 +1,10 @@
 import React from 'react';
+import {TouchableOpacity} from 'react-native';
 import {Avatar} from 'react-native-paper';
 
 import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {styleDefaults} from '#src/Styles';
@@ -13,6 +15,7 @@ interface FezAvatarImageProps {
 
 export const FezAvatarImage = ({fez}: FezAvatarImageProps) => {
   const {data: profilePublicData} = useUserProfileQuery();
+  const commonNavigation = useCommonStack();
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
 
   // More than 1 other person makes this a group chat.
@@ -23,5 +26,15 @@ export const FezAvatarImage = ({fez}: FezAvatarImageProps) => {
     return <Avatar.Icon size={styleDefaults.avatarSize} icon={AppIcons.error} />;
   }
 
-  return <UserAvatarImage userHeader={otherParticipants[0]} />;
+  const onPress = () => {
+    commonNavigation.push(CommonStackComponents.userProfileScreen, {
+      userID: otherParticipants[0].userID,
+    });
+  };
+
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <UserAvatarImage userHeader={otherParticipants[0]} />
+    </TouchableOpacity>
+  );
 };

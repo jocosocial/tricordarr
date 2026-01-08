@@ -2,12 +2,14 @@ import {QueryKey} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import pluralize from 'pluralize';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import URLParse from 'url-parse';
 
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {FezType} from '#src/Enums/FezType';
 import {LikeType} from '#src/Enums/LikeType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
+import {UserRoleType} from '#src/Enums/UserRoleType';
 import {StorageKeys} from '#src/Libraries/Storage';
 
 /**
@@ -221,9 +223,11 @@ export namespace UserNotificationData {
       valueOrZero(data.newSeamailMessageCount) +
       valueOrZero(data.newFezMessageCount) +
       valueOrZero(data.newPrivateEventMessageCount) +
-      valueOrZero(data.addedToSeamailCount) +
-      valueOrZero(data.addedToLFGCount) +
-      valueOrZero(data.addedToPrivateEventCount)
+      valueOrZero(data.addedToSeamailCount)
+      // We have no way to list "new LFGs/PEs you've been added to" in the API.
+      // Only unread messages. So this is disabled until we can.
+      // valueOrZero(data.addedToLFGCount) +
+      // valueOrZero(data.addedToPrivateEventCount)
     );
   };
 
@@ -246,6 +250,10 @@ export namespace UserNotificationData {
       return 0;
     }
     return valueOrZero(data.newPrivateEventMessageCount) + valueOrZero(data.addedToPrivateEventCount);
+  };
+
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/notification/global']];
   };
 }
 
@@ -574,6 +582,16 @@ export interface UserCreateData {
   verification?: string;
 }
 
+/// Optional sub-struct that only gets filled out for users with the Shutternaut role.
+export interface ShutternautEventData {
+  /// TRUE if a ShutternautManager has marked this event as needing to get photographed by someone.
+  needsPhotographer: boolean;
+  /// Shutternauts that have signed up to photograph this event.
+  photographers: UserHeader[];
+  /// TRUE if the current user is in the `photographers` array.
+  userIsPhotographer: boolean;
+}
+
 export interface EventData {
   /// The event's ID. This is the Swiftarr database record for this event.
   eventID: string;
@@ -603,11 +621,13 @@ export interface EventData {
   isFavorite: boolean;
   /// The performers who will be at the event.
   performers: PerformerHeaderData[];
+  /// Optional data returned if the requestor is a member of the Shutternauts group. NULL for all other users.
+  shutternautData?: ShutternautEventData;
 }
 
 export namespace EventData {
   export const getCacheKeys = (eventID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [['/events']];
+    let queryKeys: QueryKey[] = [['/events'], ['/events/favorites']];
     if (eventID) {
       queryKeys.push([`/events/${eventID}`]);
     }
@@ -951,13 +971,8 @@ export interface PhotostreamUploadData {
 //   participants: string[];
 // }
 
-interface SwiftarrClientConfigV1 {
+interface SwiftarrClientConfigV2 {
   latestVersion: string;
-  oobeVersion: number;
-  cruiseStartDate: string;
-  cruiseLength: number;
-  portTimeZoneID: string;
-  schedBaseUrl: string;
 }
 
 export interface SwiftarrClientConfig {
@@ -966,7 +981,7 @@ export interface SwiftarrClientConfig {
   metadata: {
     name: string;
   };
-  spec: SwiftarrClientConfigV1;
+  spec: SwiftarrClientConfigV2;
 }
 
 export interface MicroKaraokeCompletedSong {
@@ -1267,4 +1282,81 @@ export interface PerformerUploadData {
   youtubeURL?: string;
   /// UIDs of events where this performer is scheduled to appear.
   eventUIDs: string[];
+}
+
+/// Publicly available configuration information about the current cruise/sailing.
+/// This endpoint allows client apps to fetch environment configuration rather than hardcoding values.
+///
+/// Returned by: `GET /api/v3/client/settings`
+export interface ClientSettingsData {
+  /// Canonical hostnames for the Twitarr server (e.g., "twitarr.com", "joco.hollandamerica.com")
+  canonicalHostnames: string[];
+  /// The date the cruise embarks, at midnight in the port time zone
+  cruiseStartDate: string;
+  /// Length of the cruise in days, including partial days (embarkation through disembarkation)
+  cruiseLengthInDays: number;
+  /// The Foundation TimeZone identifier for the port of departure (e.g., "America/New_York")
+  portTimeZoneID: string;
+  /// The abbreviation for the port time zone (e.g., "EST", "EDT")
+  portTimeZoneAbbrev: string;
+  /// Seconds from GMT for the port time zone
+  portTimeZoneOffset: number;
+  /// URL used for automated schedule updates (typically a sched.com iCalendar URL)
+  scheduleUpdateURL: string;
+  /// The name of the shipboard Wifi network
+  shipWifiSSID?: string;
+  /// If TRUE, users can create accounts, log in, and edit their profile before the cruise in a restricted pre-registration mode.
+  enablePreregistration: boolean;
+  /// Unique identifier for this Postgres database installation (from pg_control_system())
+  installationID: string;
+}
+
+export namespace ClientSettingsData {
+  /**
+   * Get the base URL from the payload scheduleUpdateURL.
+   * Example: https://jococruise2025.sched.com/all.ics -> https://jococruise2025.sched.com
+   */
+  export const parseScheduleUpdateURL = (url: string): string => {
+    try {
+      const urlObj = new URLParse(url);
+      // protocol includes the colon, so we need to add "//"
+      return `${urlObj.protocol}//${urlObj.host}`;
+    } catch (error) {
+      console.warn('[ControllerStructs.tsx] Error parsing URL:', error);
+      return url;
+    }
+  };
+
+  /**
+   * Return a Date object from the payload cruiseStartDate with local-midnight semantics.
+   *
+   * The server returns an ISO-8601 timestamp (e.g. "2025-03-02T05:00:00.000Z").
+   * We normalize to local-midnight for the UTC date represented by that timestamp to avoid day shifting.
+   */
+  export const parseCruiseStartDate = (dateString: string): Date => {
+    const parsed = new Date(dateString);
+    if (isNaN(parsed.getTime())) {
+      console.warn('[ControllerStructs.tsx] Unexpected date format for cruiseStartDate:', dateString);
+      return parsed;
+    }
+    return new Date(parsed.getUTCFullYear(), parsed.getUTCMonth(), parsed.getUTCDate());
+  };
+}
+
+/// Used to obtain the current user's ID, username and logged-in status.
+///
+/// Returned by: `GET /api/v3/user/whoami`
+///
+/// See `UserController.whoamiHandler(_:).`
+export interface CurrentUserData {
+  /// The currrent user's ID.
+  userID: string;
+  /// The current user's username.
+  username: string;
+  /// Whether the user is currently logged in.
+  isLoggedIn: boolean;
+  /// The current user's access level (role).
+  accessLevel: UserAccessLevel;
+  /// A list of the user's roles
+  roles: UserRoleType[];
 }

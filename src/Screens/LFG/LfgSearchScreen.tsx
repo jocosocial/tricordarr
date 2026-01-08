@@ -18,7 +18,7 @@ type Props = StackScreenProps<LfgStackParamList, LfgStackComponents.lfgSearchScr
 
 export const LfgSearchScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg'}>
         <LfgSearchScreenInner {...props} />
       </DisabledFeatureScreen>

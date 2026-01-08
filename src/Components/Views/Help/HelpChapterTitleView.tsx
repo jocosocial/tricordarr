@@ -15,7 +15,7 @@ export const HelpChapterTitleView = (props: HelpChapterTitleView) => {
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
-    container: commonStyles.marginBottom,
+    container: commonStyles.marginBottomSmall,
     // I actually like this less.
     // text: commonStyles.bold,
   });

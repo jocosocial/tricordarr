@@ -1,10 +1,11 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {KeywordChip} from '#src/Components/Chips/KeywordChip';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {KeywordForm} from '#src/Components/Forms/KeywordForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -13,6 +14,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserKeywordMutation} from '#src/Queries/User/UserMutations';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {UserNotificationData} from '#src/Structs/ControllerStructs';
 import {KeywordFormValues} from '#src/Types/FormValues';
 
 export const AlertKeywordsSettingsScreen = () => {
@@ -44,10 +46,10 @@ const AlertKeywordsSettingsScreenInner = () => {
       {
         onSuccess: async () => {
           setKeywords(keywords.filter(kw => kw !== keyword));
-          await Promise.all([
-            queryClient.invalidateQueries({queryKey: ['/user/alertwords']}),
-            queryClient.invalidateQueries({queryKey: ['/notification/global']}),
-          ]);
+          const invalidations = UserNotificationData.getCacheKeys()
+            .concat([['/user/alertwords']])
+            .map(key => queryClient.invalidateQueries({queryKey: key}));
+          await Promise.all(invalidations);
         },
       },
     );
@@ -85,7 +87,7 @@ const AlertKeywordsSettingsScreenInner = () => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <Text>Generate an alert/notification whenever new content is made containing these keywords.</Text>
         </PaddedContentView>

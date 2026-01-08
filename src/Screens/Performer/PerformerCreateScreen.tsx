@@ -19,7 +19,7 @@ type Props = StackScreenProps<MainStackParamList, CommonStackComponents.performe
 
 export const PerformerCreateScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.performerHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.performers}
         urlPath={`/performer/shadow/addtoevent/${props.route.params.eventID}`}>

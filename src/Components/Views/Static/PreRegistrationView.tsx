@@ -9,15 +9,24 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, HelpScreenComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
 import preregistration from '#assets/preregistration.jpg';
 
-export const PreRegistrationView = () => {
+interface PreRegistrationViewProps {
+  helpScreen?: HelpScreenComponents;
+}
+
+export const PreRegistrationView = ({
+  helpScreen = CommonStackComponents.preRegistrationHelpScreen,
+}: PreRegistrationViewProps) => {
   const commonNavigation = useCommonStack();
 
+  /**
+   * You can pass a custom help screen to help the user maintain context.
+   */
   const getNavButtons = useCallback(() => {
     return (
       <View>
@@ -25,12 +34,14 @@ export const PreRegistrationView = () => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => commonNavigation.push(CommonStackComponents.preRegistrationHelpScreen)}
+            onPress={() => {
+              commonNavigation.push(helpScreen);
+            }}
           />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [commonNavigation]);
+  }, [commonNavigation, helpScreen]);
 
   useEffect(() => {
     commonNavigation.setOptions({
@@ -47,18 +58,8 @@ export const PreRegistrationView = () => {
         </PaddedContentView>
         <PaddedContentView>
           <Text>
-            Parts of Twitarr aren't available until we're on the ship. You can come back to this app in pre-registration
-            mode until the cruise starts.
-          </Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <Text>Tap the blue banner at the top of any screen to connect to Twitarr on-board.</Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <Text>
-            Once on-board the Twitarr Team recommends that you enable airplane mode and disable any VPNs, private DNS,
-            or other network blockers that may be running on your device. This will help ensure a smooth experience
-            connecting to the ship's WiFi network.
+            Parts of Twitarr aren't available until we're physically on the ship. You can come back to this app in
+            pre-registration mode until the cruise starts.
           </Text>
         </PaddedContentView>
       </ScrollingContentView>

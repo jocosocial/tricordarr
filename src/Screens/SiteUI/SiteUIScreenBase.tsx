@@ -38,8 +38,20 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
 
   const getCurrentUrl = useCallback(() => currentUrlRef.current, []);
 
+  /**
+   * This overrides the back button to navigate in the Webview first if possible,
+   * then hook into the navigation system to go back in the app.
+   */
   const handleBackButtonPress = useCallback(() => {
     if (!handleGoBack) {
+      navigation.goBack();
+      return true;
+    }
+    // If we're at the Today screen (server URL with no path), navigate back in app
+    const currentUrl = currentUrlRef.current;
+    const baseUrl = serverUrl.endsWith('/') ? serverUrl.slice(0, -1) : serverUrl;
+    const normalizedCurrentUrl = currentUrl.endsWith('/') ? currentUrl.slice(0, -1) : currentUrl;
+    if (normalizedCurrentUrl === baseUrl) {
       navigation.goBack();
       return true;
     }
@@ -49,7 +61,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
     } catch (err) {
       return false;
     }
-  }, [navigation, handleGoBack]);
+  }, [navigation, handleGoBack, serverUrl]);
 
   const getNavBarIcons = useCallback(
     () => (

@@ -26,7 +26,10 @@ export const ForumHelpScreen = () => {
         <HelpTopicView title={'Mute'} icon={AppIcons.mute}>
           Muted forums appear at the end of any list of forum threads.
         </HelpTopicView>
-        <HelpTopicView>You can favorite or mute a thread by swiping left or right on it.</HelpTopicView>
+        <HelpTopicView title={'Mark as Read'} icon={AppIcons.markAsRead}>
+          Read forums appear at the end of any list of forum threads.
+        </HelpTopicView>
+        <HelpTopicView>You can favorite, mute, or mark a thread as read by swiping left or right on it.</HelpTopicView>
         <HelpChapterTitleView title={'Posts'} />
         <HelpTopicView title={'Posts'} icon={AppIcons.post}>
           Long-press a post to favorite, edit, or add a reaction. Tapping on a post will take you to the posts forum to

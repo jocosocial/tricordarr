@@ -1,12 +1,14 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
+import {FezParticipantFavoriteAllItem} from '#src/Components/Lists/Items/FezParticipantFavoriteAllItem';
 import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
@@ -99,7 +101,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <DataFieldListItem title={'Title'} description={fez.title} />
         <DataFieldListItem title={'Type'} description={fez.fezType} />
         {fez.members && <DataFieldListItem title={'Total Posts'} description={fez.members?.postCount} />}
@@ -126,6 +128,10 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
                 onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
               />
             ))}
+        </ListSection>
+        <DataFieldListItem title={'Participant Actions'} />
+        <ListSection>
+          <FezParticipantFavoriteAllItem fez={fez} />
         </ListSection>
       </ScrollingContentView>
     </AppView>
