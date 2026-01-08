@@ -1,12 +1,12 @@
 import * as React from 'react';
 
+import {BaseFABGroup} from '#src/Components/Buttons/FloatingActionButtons/BaseFABGroup';
+import {FabGroupAction} from '#src/Components/Buttons/FloatingActionButtons/FABGroupAction';
 import {AppIcons} from '#src/Enums/Icons';
 import {getBadgeDisplayValue} from '#src/Libraries/StringUtils';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import { BaseFABGroup } from './BaseFABGroup';
-import { FabGroupAction } from './FABGroupAction';
 
 interface ScheduleFABProps {
   selectedDay?: number;
@@ -44,12 +44,5 @@ export const ScheduleFAB = (props: ScheduleFABProps) => {
     }),
   ];
 
-  return (
-    <BaseFABGroup
-      actions={actions}
-      openLabel={'Schedule'}
-      icon={AppIcons.events}
-      showLabel={props.showLabel}
-    />
-  );
+  return <BaseFABGroup actions={actions} openLabel={'Schedule'} icon={AppIcons.events} showLabel={props.showLabel} />;
 };

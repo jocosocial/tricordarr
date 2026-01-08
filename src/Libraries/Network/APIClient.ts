@@ -52,7 +52,7 @@ export function getAuthHeaders(
  * Creates a new QueryClient instance for each session to ensure complete data isolation.
  * https://tanstack.com/query/latest/docs/react/overview
  */
-export const createQueryClient = (sessionID: string): QueryClient => {
+export const createQueryClient = (_sessionID: string): QueryClient => {
   return new QueryClient();
 };
 
