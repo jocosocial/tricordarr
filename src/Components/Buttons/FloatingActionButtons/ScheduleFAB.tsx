@@ -22,14 +22,6 @@ export const ScheduleFAB = (props: ScheduleFABProps) => {
 
   const actions = [
     FabGroupAction({
-      icon: AppIcons.dayPlanner,
-      label: 'Day Planner',
-      onPress: () =>
-        navigation.push(CommonStackComponents.scheduleDayPlannerScreen, {
-          cruiseDay: props.selectedDay,
-        }),
-    }),
-    FabGroupAction({
       icon: AppIcons.new,
       label: 'Create Personal Event',
       onPress: () =>
@@ -41,6 +33,14 @@ export const ScheduleFAB = (props: ScheduleFABProps) => {
       icon: AppIcons.personalEvent,
       label: personalEventsLabel,
       onPress: () => navigation.push(CommonStackComponents.schedulePrivateEventsScreen),
+    }),
+    FabGroupAction({
+      icon: AppIcons.dayPlanner,
+      label: 'Day Planner',
+      onPress: () =>
+        navigation.push(CommonStackComponents.scheduleDayPlannerScreen, {
+          cruiseDay: props.selectedDay,
+        }),
     }),
   ];
 
