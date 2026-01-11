@@ -46,7 +46,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   // Fetch events with dayplanner=true (only favorited/following events)
   const {
     data: eventData,
-    isFetching: isEventFetching,
+    isLoading: isEventLoading,
     refetch: refetchEvents,
   } = useEventsQuery({
     cruiseDay: selectedCruiseDay,
@@ -56,7 +56,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   // Fetch joined LFGs (matches web app behavior)
   const {
     data: lfgJoinedData,
-    isFetching: isLfgJoinedFetching,
+    isLoading: isLfgJoinedLoading,
     isFetchingNextPage: isLfgJoinedFetchingNextPage,
     hasNextPage: joinedHasNextPage,
     fetchNextPage: joinedFetchNextPage,
@@ -73,7 +73,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   // Fetch personal/private events
   const {
     data: personalEventData,
-    isFetching: isPersonalEventFetching,
+    isLoading: isPersonalEventLoading,
     isFetchingNextPage: isPersonalEventFetchingNextPage,
     hasNextPage: personalHasNextPage,
     fetchNextPage: personalFetchNextPage,
@@ -113,9 +113,9 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     return getDayBoundaries(startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip);
   }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip]);
 
-  // Calculate loading state
-  const isLoading = isEventFetching || isLfgJoinedFetching || isPersonalEventFetching;
-  const showLoading = isLoading && dayPlannerItems.length === 0;
+  // Calculate loading state - only show loading spinner on initial fetch (when no cached data exists)
+  // Using isLoading instead of isFetching avoids showing spinner on refetch
+  const showLoading = isEventLoading || isLfgJoinedLoading || isPersonalEventLoading;
 
   // Scroll to current time position in the timeline
   const scrollToNow = useCallback(() => {
