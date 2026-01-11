@@ -15,7 +15,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LFGMembershipView} from '#src/Components/Views/Schedule/LFGMembershipView';
-import {LfgCanceledView} from '#src/Components/Views/Static/LfgCanceledView';
+import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
@@ -107,7 +107,7 @@ export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData
     <AppView>
       {'fezID' in eventData && eventData.cancelled && (
         <View style={styles.cancelContainer}>
-          <LfgCanceledView />
+          <FezCanceledView fezType={eventData.fezType} />
         </View>
       )}
       <ScrollingContentView

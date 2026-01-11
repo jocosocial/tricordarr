@@ -8,7 +8,7 @@ import {LfgForm} from '#src/Components/Forms/LfgForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {LfgCanceledView} from '#src/Components/Views/Static/LfgCanceledView';
+import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
@@ -98,7 +98,7 @@ const LfgEditScreenInner = ({route, navigation}: Props) => {
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
-        {route.params.fez.cancelled && <LfgCanceledView update={true} />}
+        {route.params.fez.cancelled && <FezCanceledView update={true} fezType={route.params.fez.fezType} />}
         <PaddedContentView padTop={true}>
           <LfgForm onSubmit={onSubmit} initialValues={initialValues} buttonText={'Save'} />
         </PaddedContentView>
