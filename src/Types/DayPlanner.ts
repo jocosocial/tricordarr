@@ -1,13 +1,14 @@
 import {parseISO} from 'date-fns';
 
+import {EventType} from '#src/Enums/EventType';
 import {FezType} from '#src/Enums/FezType';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 /**
  * Color categories for Day Planner items.
- * Matches the web app's color scheme from SitePrivateEventController.swift.
+ * Matches the color scheme used in ScheduleDayScreen, with special cases for red/gold team events.
  */
-export type DayPlannerColor = 'redTeam' | 'goldTeam' | 'schedule' | 'lfg' | 'personalEvent';
+export type DayPlannerColor = 'redTeam' | 'goldTeam' | 'shadow' | 'schedule' | 'lfg' | 'personalEvent';
 
 /**
  * A unified representation of an item in the Day Planner.
@@ -54,7 +55,8 @@ export interface DayPlannerThemeColors {
   jocoRed: string;
   twitarrYellow: string;
   twitarrNeutralButton: string;
-  jocoGreen: string;
+  jocoPurple: string;
+  outline: string;
   twitarrOrange: string;
   onTwitarrYellow: string;
   constantWhite: string;
@@ -62,15 +64,20 @@ export interface DayPlannerThemeColors {
 
 export namespace DayPlannerItem {
   /**
-   * Determine the color for a Day Planner item based on its type and title.
-   * Matches the logic from SitePrivateEventController.swift.
+   * Determine the color for a Day Planner item based on its type, title, and eventType.
+   * Matches the color scheme used in ScheduleDayScreen, with special cases for red/gold team events.
    */
   export const getDayPlannerColor = (item: {
     type: 'event' | 'lfg' | 'personalEvent';
     title: string;
+    eventType?: string;
   }): DayPlannerColor => {
     if (item.type === 'event') {
-      // Check for team events by title matching
+      // Check for shadow events first (matches EventCard behavior)
+      if (item.eventType === EventType.shadow) {
+        return 'shadow';
+      }
+      // Check for team events by title matching (special case kept from web app)
       if (item.title.toLowerCase().includes('gold team')) {
         return 'goldTeam';
       }
@@ -87,6 +94,7 @@ export namespace DayPlannerItem {
 
   /**
    * Get the background color for a Day Planner card based on its color type.
+   * Matches the color scheme used in ScheduleDayScreen (EventCard and FezCard).
    */
   export const getBackgroundColor = (color: DayPlannerColor, colors: DayPlannerThemeColors): string => {
     switch (color) {
@@ -94,10 +102,12 @@ export namespace DayPlannerItem {
         return colors.jocoRed;
       case 'goldTeam':
         return colors.twitarrYellow;
+      case 'shadow':
+        return colors.jocoPurple;
       case 'schedule':
         return colors.twitarrNeutralButton;
       case 'lfg':
-        return colors.jocoGreen;
+        return colors.outline;
       case 'personalEvent':
         return colors.twitarrOrange;
     }
@@ -125,7 +135,7 @@ export namespace DayPlannerItem {
       startTime: parseISO(event.startTime),
       endTime: parseISO(event.endTime),
       type,
-      color: getDayPlannerColor({type, title: event.title}),
+      color: getDayPlannerColor({type, title: event.title, eventType: event.eventType}),
       location: event.location,
       eventData: event,
     };
