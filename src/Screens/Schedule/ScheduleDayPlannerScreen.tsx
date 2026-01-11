@@ -10,11 +10,9 @@ import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/Sched
 import {AppView} from '#src/Components/Views/AppView';
 import {DayPlannerTimelineView} from '#src/Components/Views/Schedule/DayPlannerTimelineView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
@@ -24,21 +22,23 @@ import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayPlannerScreen>;
 
 export const ScheduleDayPlannerScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/dayplanner'}>
-      <ScheduleDayPlannerScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <LoggedInScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/dayplanner'}>
+        <ScheduleDayPlannerScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </LoggedInScreen>
   );
 };
 
 const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   const {adjustedCruiseDayToday, startDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(route.params?.cruiseDay ?? adjustedCruiseDayToday);
-  const {isLoggedIn} = useSession();
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const scrollViewRef = useRef<ScrollView>(null);
@@ -51,9 +51,6 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   } = useEventsQuery({
     cruiseDay: selectedCruiseDay,
     dayplanner: true,
-    options: {
-      enabled: isLoggedIn,
-    },
   });
 
   // Fetch joined LFGs (matches web app behavior)
@@ -69,7 +66,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: isLoggedIn && !appConfig.preRegistrationMode,
+      enabled: !appConfig.preRegistrationMode,
     },
   });
 
@@ -84,7 +81,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
     options: {
-      enabled: isLoggedIn && !appConfig.preRegistrationMode,
+      enabled: !appConfig.preRegistrationMode,
     },
   });
 
@@ -141,9 +138,6 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
 
   // Header buttons
   const getNavButtons = useCallback(() => {
-    if (!isLoggedIn) {
-      return null;
-    }
     return (
       <View>
         <MaterialHeaderButtons>
@@ -151,7 +145,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [isLoggedIn, onRefresh]);
+  }, [onRefresh]);
 
   // Set header buttons
   useEffect(() => {
@@ -171,10 +165,6 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
       return () => cancelAnimationFrame(rafId);
     }
   }, [selectedCruiseDay, showLoading, scrollToNow]);
-
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
 
   const actions = [
     FabGroupAction({
