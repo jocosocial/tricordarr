@@ -13,6 +13,8 @@ import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 // @ts-ignore
 import cfry from '#assets/contributors/cfry.jpg';
 // @ts-ignore
+import gowtam from '#assets/contributors/gowtam.jpg';
+// @ts-ignore
 import grant from '#assets/contributors/grant.jpg';
 // @ts-ignore
 import hendu from '#assets/contributors/hendu.jpg';
@@ -49,6 +51,11 @@ export const AboutTricordarrScreen = () => {
             Chall Fry (@cfry) is the lead architect of the Twitarr service and the iOS app The Kraken. His guidance and
             insight on software engineering and the mobile app world has been invaluable. He made the cool lighter video
             and most of the native-side code.
+          </ContributorView>
+          <ContributorView image={AppImageMetaData.fromAsset(gowtam, 'gowtam.jpg')}>
+            Gowtam Lal (@baconmania) brought the day planner to the app and a whole lot of iOS support and general
+            improvements. His greatest contribution is the recurring hackathons at the local pub. Turns out friends make
+            great beta testers.
           </ContributorView>
           <OobeNoteCard />
         </PaddedContentView>
