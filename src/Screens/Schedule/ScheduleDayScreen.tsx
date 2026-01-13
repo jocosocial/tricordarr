@@ -5,7 +5,7 @@ import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
+import {DayPlannerFAB} from '#src/Components/Buttons/FloatingActionButtons/DayPlannerFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
@@ -294,7 +294,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
           />
         )}
       </View>
-      <ScheduleFAB selectedDay={selectedCruiseDay} />
+      <DayPlannerFAB selectedDay={selectedCruiseDay} />
     </AppView>
   );
 };

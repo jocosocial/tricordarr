@@ -5,12 +5,11 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
 
-interface ScheduleFABProps {
+interface DayPlannerFABProps {
   selectedDay?: number;
-  showLabel?: boolean;
 }
 
-export const ScheduleFAB = ({selectedDay}: ScheduleFABProps) => {
+export const DayPlannerFAB = ({selectedDay}: DayPlannerFABProps) => {
   const navigation = useScheduleStackNavigation();
 
   return (
