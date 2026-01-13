@@ -74,8 +74,13 @@ export const ScheduleHelpScreen = () => {
               disabled={true}
             />
           }>
-          Pressing on day button will take you to the schedule for that day. Pressing it again will jump you to around
+          Pressing on a day button will take you to the schedule for that day. Pressing it again will jump you to around
           the current time.
+        </HelpTopicView>
+        <HelpTopicView title={'Day Planner'} icon={AppIcons.dayPlanner}>
+          Press this button on the bottom-right corner of the schedule screen to view your events in a calendar-style
+          view. This includes favorited events, personal events, and joined LFGs. Once you've picked your events, this
+          is your main screen for keeping track of your days onboard.
         </HelpTopicView>
         <HelpTopicView title={'Favorite/Follow'} icon={AppIcons.favorite}>
           Favoriting an event adds it to a list of all of your favorites. Long press an event in the schedule or press
@@ -85,10 +90,6 @@ export const ScheduleHelpScreen = () => {
         <HelpTopicView title={'Forums'} icon={AppIcons.forum}>
           All events are given a corresponding forum. You can use that to discuss the event by tapping the forum button
           in the Menu.
-        </HelpTopicView>
-        <HelpTopicView title={'Your Day Today'} icon={AppIcons.personalEvent}>
-          Press this button on the schedule screen to view all of your events for the day. This includes favorited
-          events, personal events, and joined LFGs. Pressing the button again will disengage the filters.
         </HelpTopicView>
         <HelpTopicView title={'Overlapping Events'} icon={AppIcons.calendarMultiple}>
           View events, LFGs, and personal events that occur at the same time as a selected event. Tap the "Overlapping"
