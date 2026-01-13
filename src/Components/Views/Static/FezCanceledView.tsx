@@ -3,8 +3,9 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {FezType} from '#src/Enums/FezType';
 
-export const LfgCanceledView = ({update}: {update?: boolean}) => {
+export const FezCanceledView = ({fezType, update}: {fezType: FezType; update?: boolean}) => {
   const {commonStyles} = useStyles();
   const styles = StyleSheet.create({
     outerContainer: {
@@ -24,7 +25,7 @@ export const LfgCanceledView = ({update}: {update?: boolean}) => {
   return (
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
-        <Text style={styles.text}>This LFG has been cancelled.</Text>
+        <Text style={styles.text}>This {FezType.getChatTypeString(fezType)} has been cancelled.</Text>
         {update && <Text style={styles.text}>Saving it will un-cancel it.</Text>}
       </View>
     </View>
