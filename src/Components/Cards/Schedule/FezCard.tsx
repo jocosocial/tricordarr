@@ -3,6 +3,7 @@ import React, {memo, ReactNode, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import {Badge} from 'react-native-paper';
 
+import {CancelledBadge} from '#src/Components/Badges/CancelledBadge';
 import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezCardActionsMenu} from '#src/Components/Menus/Fez/FezCardActionsMenu';
@@ -68,12 +69,11 @@ const FezCardInternal = ({
     if (enableReportOnly) {
       return <AppIcon icon={AppIcons.report} onPress={() => handleModal(<ReportModalView fez={fez} />)} />;
     }
-    if (!!unreadCount || fez.cancelled) {
-      return (
-        <Badge style={styles.badge}>
-          {fez.cancelled ? 'Cancelled' : `${unreadCount} new ${pluralize('post', unreadCount)}`}
-        </Badge>
-      );
+    if (fez.cancelled) {
+      return <CancelledBadge />;
+    }
+    if (unreadCount) {
+      return <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>;
     }
     if (showIcon) {
       const outputIcon = icon ? icon : FezType.isLFGType(fez.fezType) ? AppIcons.lfg : AppIcons.personalEvent;

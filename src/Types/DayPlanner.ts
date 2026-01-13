@@ -115,13 +115,15 @@ export namespace DayPlannerItem {
 
   /**
    * Get the text color for a Day Planner card based on its color type.
+   * Gold team needs dark text for contrast; all others use white.
    */
   export const getTextColor = (color: DayPlannerColor, colors: DayPlannerThemeColors): string => {
-    // Gold team needs dark text for contrast
-    if (color === 'goldTeam') {
-      return colors.onTwitarrYellow;
+    switch (color) {
+      case 'goldTeam':
+        return colors.onTwitarrYellow;
+      default:
+        return colors.constantWhite;
     }
-    return colors.constantWhite;
   };
 
   /**
@@ -151,7 +153,7 @@ export namespace DayPlannerItem {
     const type = FezType.isLFGType(fez.fezType) ? 'lfg' : 'personalEvent';
     return {
       id: fez.fezID,
-      title: fez.cancelled ? `CANCELLED - ${fez.title}` : fez.title,
+      title: fez.title,
       startTime: parseISO(fez.startTime),
       endTime: parseISO(fez.endTime),
       type,

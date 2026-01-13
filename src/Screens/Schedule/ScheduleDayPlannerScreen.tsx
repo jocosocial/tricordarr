@@ -29,7 +29,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.schedu
 export const ScheduleDayPlannerScreen = (props: Props) => {
   return (
     <LoggedInScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/dayplanner'}>
+      <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/dayplanner'}>
         <ScheduleDayPlannerScreenInner {...props} />
       </DisabledFeatureScreen>
     </LoggedInScreen>
@@ -177,7 +177,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     }),
     FabGroupAction({
       icon: AppIcons.personalEvent,
-      label: 'Personal Events',
+      label: 'Show Personal Events',
       onPress: () => navigation.push(CommonStackComponents.schedulePrivateEventsScreen),
     }),
   ];
@@ -199,7 +199,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
           <DayPlannerTimelineView ref={scrollViewRef} items={dayPlannerItems} dayStart={dayStart} dayEnd={dayEnd} />
         )}
       </View>
-      <BaseFABGroup actions={actions} openLabel={'Schedule'} icon={AppIcons.events} />
+      <BaseFABGroup actions={actions} openLabel={'Personal Events'} icon={AppIcons.personalEvent} />
     </AppView>
   );
 };
