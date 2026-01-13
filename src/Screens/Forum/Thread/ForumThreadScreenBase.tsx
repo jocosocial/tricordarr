@@ -202,7 +202,7 @@ export const ForumThreadScreenBase = ({
     return <LoadingView />;
   }
 
-  const getInitialScrollIndex = () => {
+  const _getInitialScrollIndex = () => {
     // Inverted list means that we are starting from the bottom, so the
     // ISI (InitialScrollIndex) is meaningless.
     // console.log('### getInitialScrollIndex');

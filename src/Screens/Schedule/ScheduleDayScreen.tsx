@@ -5,9 +5,7 @@ import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
-import {HeaderDayPlannerButton} from '#src/Components/Buttons/HeaderButtons/HeaderDayPlannerButton';
-import {HeaderScheduleYourDayButton} from '#src/Components/Buttons/HeaderButtons/HeaderScheduleYourDayButton';
+import {DayPlannerFAB} from '#src/Components/Buttons/FloatingActionButtons/DayPlannerFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
@@ -70,8 +68,6 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
-  const [showFabLabel, setShowFabLabel] = useState(true);
-  const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
 
   const {
     data: eventData,
@@ -196,18 +192,12 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
             iconName={AppIcons.search}
             onPress={() => navigation.push(CommonStackComponents.eventSearchScreen)}
           />
-          {appConfig.enableExperiments ? (
-            <HeaderDayPlannerButton cruiseDay={selectedCruiseDay} />
-          ) : (
-            <HeaderScheduleYourDayButton />
-          )}
           <ScheduleEventFilterMenu />
-
           <ScheduleDayScreenActionsMenu onRefresh={onRefresh} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [onRefresh, navigation, selectedCruiseDay, appConfig.enableExperiments]);
+  }, [onRefresh, navigation]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -301,11 +291,10 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
             refreshControl={<AppRefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
             setRefreshing={setRefreshing}
             initialScrollIndex={scrollNowIndex}
-            onScrollThreshold={onScrollThreshold}
           />
         )}
       </View>
-      <ScheduleFAB selectedDay={selectedCruiseDay} showLabel={showFabLabel} />
+      <DayPlannerFAB selectedDay={selectedCruiseDay} />
     </AppView>
   );
 };

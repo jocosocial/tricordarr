@@ -116,6 +116,7 @@ export enum AppIcons {
   passed = 'check-circle-outline',
   eventCreate = 'calendar-plus', // I wanted -outline but it's not available in my version
   personalEvent = 'calendar-account', // I wanted -outline but it's not available in my version
+  dayPlanner = 'book-clock',
   calendarMultiple = 'calendar-multiple',
   schedImport = 'calendar-import',
   sortAscending = 'sort-ascending',
