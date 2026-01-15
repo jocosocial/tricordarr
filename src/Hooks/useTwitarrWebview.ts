@@ -2,6 +2,7 @@ import CookieManager from '@react-native-cookies/cookies';
 import {useCallback} from 'react';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 import {usePublicMutation} from '#src/Queries/PublicMutation';
 import {LoginFormValues} from '#src/Types/FormValues';
 
@@ -53,12 +54,16 @@ export const useTwitarrWebview = () => {
         if (cookieValue) {
           console.log('[useTwitarrWebview.ts] Setting swiftarr_session cookie for serverUrl', serverUrl);
           // Set the cookie using CookieManager
-          await CookieManager.set(serverUrl, {
-            name: 'swiftarr_session',
-            value: cookieValue,
-            path: '/',
-            // Domain will be automatically determined from the URL
-          });
+          await CookieManager.set(
+            serverUrl,
+            {
+              name: 'swiftarr_session',
+              value: cookieValue,
+              path: '/',
+              // Domain will be automatically determined from the URL
+            },
+            isIOS,
+          );
         } else {
           console.warn('[useTwitarrWebview] No swiftarr_session cookie found in response');
         }
