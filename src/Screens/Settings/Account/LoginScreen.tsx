@@ -13,6 +13,7 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {commonStyles} from '#src/Styles';
@@ -29,6 +30,7 @@ export const LoginScreen = () => {
   const {currentSession, findOrCreateSession} = useSession();
   const {appConfig} = useConfig();
   const [isSessionReady, setIsSessionReady] = useState(false);
+  const {signIn: signInWebview} = useTwitarrWebview();
 
   // Create session on mount if none exists
   useEffect(() => {
@@ -47,6 +49,7 @@ export const LoginScreen = () => {
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
       loginMutation.mutate(formValues, {
         onSuccess: async response => {
+          signInWebview(formValues);
           await signIn(response.data);
           if (oobeCompleted) {
             await startPushProvider();
@@ -66,7 +69,7 @@ export const LoginScreen = () => {
         onSettled: () => formikHelpers.setSubmitting(false),
       });
     },
-    [loginMutation, signIn, oobeCompleted, updateClientSettings, navigation, refetchRoles],
+    [loginMutation, signIn, oobeCompleted, updateClientSettings, navigation, refetchRoles, signInWebview],
   );
 
   if (!isSessionReady) {

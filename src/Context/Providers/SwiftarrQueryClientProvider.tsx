@@ -163,6 +163,21 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     [PublicQueryClient],
   );
 
+  const publicPost = useCallback(
+    async <TResponseData = void, TRequestData = void>(
+      url: string,
+      body?: TRequestData,
+      config?: AxiosRequestConfig,
+    ) => {
+      return await PublicQueryClient.post<TResponseData, AxiosResponse<TResponseData, TResponseData>>(
+        url,
+        body,
+        config,
+      );
+    },
+    [PublicQueryClient],
+  );
+
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
   // https://tanstack.com/query/v4/docs/react/guides/query-invalidation
   const onSuccess = () => {
@@ -284,6 +299,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         ServerQueryClient,
         PublicQueryClient,
         publicGet,
+        publicPost,
         serverUrl,
       }}>
       <PersistQueryClientProvider

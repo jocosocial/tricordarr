@@ -1,4 +1,5 @@
 import {CacheManager} from '@georstat/react-native-image-cache';
+import CookieManager from '@react-native-cookies/cookies';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {PropsWithChildren, useCallback} from 'react';
 
@@ -54,6 +55,9 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
 
     // Clear image cache
     await CacheManager.clearCache();
+
+    // Clear cookies (e.g., swiftarr_session from webview login)
+    await CookieManager.clearAll();
   }, [setEnableUserNotifications, closeNotificationSocket, dispatchFezSockets, signOut, clearPrivileges, queryClient]);
 
   const contextValue: SignOutContextType = React.useMemo(
