@@ -10,6 +10,7 @@ import {SignOutContext, SignOutContextType} from '#src/Context/Contexts/SignOutC
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
 import {stopForegroundServiceWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 
 /**
  * SignOutProvider consolidates all sign-out logic into a single performSignOut function.
@@ -57,7 +58,7 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
     await CacheManager.clearCache();
 
     // Clear cookies (e.g., swiftarr_session from webview login)
-    await CookieManager.clearAll();
+    await CookieManager.clearAll(isIOS);
   }, [setEnableUserNotifications, closeNotificationSocket, dispatchFezSockets, signOut, clearPrivileges, queryClient]);
 
   const contextValue: SignOutContextType = React.useMemo(
