@@ -138,7 +138,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
           {timeSlots.map((slot, index) => (
             <View key={index} style={[styles.timeSlot, getGridLineStyle(slot.slotType)]}>
               {slot.label ? (
-                <Text style={styles.timeLabel} variant={'bodyLarge'}>
+                <Text style={styles.timeLabel} variant={'bodyMedium'}>
                   {slot.label}
                 </Text>
               ) : null}
