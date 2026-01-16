@@ -112,8 +112,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9394DAB82F077F9E000B2338 /* Helpers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = Helpers;
 			sourceTree = "<group>";
 		};
@@ -127,8 +125,6 @@
 		};
 		93ADC07C2F07749D00C698D2 /* TricordarrKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = TricordarrKit;
 			sourceTree = "<group>";
 		};
@@ -418,9 +414,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -457,9 +457,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -522,7 +526,7 @@
 				CODE_SIGN_ENTITLEMENTS = Tricordarr/Tricordarr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 41;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Tricordarr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tricordarr;
@@ -532,7 +536,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2026.0.9;
+				MARKETING_VERSION = 2026.0.10;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -561,7 +565,7 @@
 				CODE_SIGN_ENTITLEMENTS = Tricordarr/Tricordarr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 41;
 				INFOPLIST_FILE = Tricordarr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tricordarr;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
@@ -570,7 +574,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2026.0.9;
+				MARKETING_VERSION = 2026.0.10;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
