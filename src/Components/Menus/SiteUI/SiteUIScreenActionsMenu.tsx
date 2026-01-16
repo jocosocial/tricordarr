@@ -34,6 +34,7 @@ export const SiteUIScreenActionsMenu = ({onHome, getCurrentUrl, setKey}: SiteUIS
 
   const handleClear = async () => {
     console.log('[SiteUIScreenActionsMenu.tsx] Clearing cookies');
+    closeMenu();
     await clearCookies();
     setKey(String(Date.now()));
   };
