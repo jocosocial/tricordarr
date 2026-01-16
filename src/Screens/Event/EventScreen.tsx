@@ -17,11 +17,7 @@ import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.eventScreen>;
 
 export const EventScreen = ({navigation, route}: Props) => {
-  const {
-    data: eventData,
-    refetch,
-    isFetching,
-  } = useEventQuery({
+  const {data: eventData, refetch} = useEventQuery({
     eventID: route.params.eventID,
   });
   const eventFavoriteMutation = useEventFavoriteMutation();
@@ -81,5 +77,5 @@ export const EventScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  return <ScheduleItemScreenBase eventData={eventData} refreshing={isFetching} onRefresh={refetch} />;
+  return <ScheduleItemScreenBase eventData={eventData} onRefresh={refetch} />;
 };
