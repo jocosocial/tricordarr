@@ -3,8 +3,7 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollView, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
-import {BaseFABGroup} from '#src/Components/Buttons/FloatingActionButtons/BaseFABGroup';
-import {FabGroupAction} from '#src/Components/Buttons/FloatingActionButtons/FABGroupAction';
+import {SchedulePersonalEventCreateFAB} from '#src/Components/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
@@ -15,7 +14,6 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {AppIcons} from '#src/Enums/Icons';
 import {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForTime} from '#src/Libraries/DayPlanner';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -166,22 +164,6 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     }
   }, [selectedCruiseDay, showLoading, scrollToNow]);
 
-  const actions = [
-    FabGroupAction({
-      icon: AppIcons.new,
-      label: 'Create Personal Event',
-      onPress: () =>
-        navigation.push(CommonStackComponents.personalEventCreateScreen, {
-          cruiseDay: selectedCruiseDay,
-        }),
-    }),
-    FabGroupAction({
-      icon: AppIcons.personalEvent,
-      label: 'Show Personal Events',
-      onPress: () => navigation.push(CommonStackComponents.schedulePrivateEventsScreen),
-    }),
-  ];
-
   return (
     <AppView>
       <TimezoneWarningView />
@@ -199,7 +181,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
           <DayPlannerTimelineView ref={scrollViewRef} items={dayPlannerItems} dayStart={dayStart} dayEnd={dayEnd} />
         )}
       </View>
-      <BaseFABGroup actions={actions} openLabel={'Personal Events'} icon={AppIcons.personalEvent} />
+      <SchedulePersonalEventCreateFAB />
     </AppView>
   );
 };
