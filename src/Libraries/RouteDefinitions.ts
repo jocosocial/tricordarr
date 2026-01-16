@@ -74,7 +74,6 @@ export const allRoutes: RouteDefinition[] = [
   // ==================== Schedule Tab Routes ====================
   {screen: CommonStackComponents.scheduleDayScreen, path: 'events'},
   {screen: CommonStackComponents.eventScreen, path: 'events/:eventID'},
-  {screen: CommonStackComponents.schedulePrivateEventsScreen, path: 'privateevent/list'},
   {screen: CommonStackComponents.personalEventScreen, path: 'privateevent/:eventID'},
 
   // ==================== Forum Tab Routes ====================

@@ -52,7 +52,6 @@ import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {ScheduleHelpScreen} from '#src/Screens/Schedule/ScheduleHelpScreen';
 import {ScheduleImportScreen} from '#src/Screens/Schedule/ScheduleImportScreen';
 import {ScheduleOverlapScreen} from '#src/Screens/Schedule/ScheduleOverlapScreen';
-import {SchedulePrivateEventsScreen} from '#src/Screens/Schedule/SchedulePrivateEventsScreen';
 import {SeamailAddParticipantScreen} from '#src/Screens/Seamail/SeamailAddParticipantScreen';
 import {SeamailCreateScreen} from '#src/Screens/Seamail/SeamailCreateScreen';
 import {SeamailEditScreen} from '#src/Screens/Seamail/SeamailEditScreen';
@@ -257,7 +256,6 @@ export type CommonStackParamList = {
     eventID: string;
   };
   EventSettingsScreen: undefined;
-  SchedulePrivateEventsScreen: undefined;
   ScheduleDayScreen: NoDrawerParamsOptional;
   ScheduleDayPlannerScreen: {
     cruiseDay?: number;
@@ -341,7 +339,6 @@ export enum CommonStackComponents {
   performerCreateScreen = 'PerformerCreateScreen',
   performerEditScreen = 'PerformerEditScreen',
   eventSettingsScreen = 'EventSettingsScreen',
-  schedulePrivateEventsScreen = 'SchedulePrivateEventsScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleDayPlannerScreen = 'ScheduleDayPlannerScreen',
   scheduleOverlapScreen = 'ScheduleOverlapScreen',
@@ -701,11 +698,6 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.scheduleDayScreen}
         component={ScheduleDayScreen}
         options={{title: 'Schedule'}}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.schedulePrivateEventsScreen}
-        component={SchedulePrivateEventsScreen}
-        options={{title: 'Personal Events'}}
       />
       <Stack.Screen
         name={CommonStackComponents.scheduleDayPlannerScreen}

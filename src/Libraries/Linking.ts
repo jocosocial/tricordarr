@@ -87,7 +87,6 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             ScheduleDayScreen: getPath(CommonStackComponents.scheduleDayScreen),
             EventScreen: getPath(CommonStackComponents.eventScreen),
             PersonalEventScreen: getPath(CommonStackComponents.personalEventScreen),
-            SchedulePrivateEventsScreen: getPath(CommonStackComponents.schedulePrivateEventsScreen),
           },
         },
         ForumsTab: {
