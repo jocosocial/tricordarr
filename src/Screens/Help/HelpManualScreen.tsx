@@ -46,6 +46,12 @@ export const HelpManualScreen = () => {
           onPress={() => commonNavigation.push(CommonStackComponents.scheduleHelpScreen)}
         />
         <DataFieldListItem
+          title={'Personal Events'}
+          description={'Create personal calendar events to track your schedule and locations.'}
+          icon={AppIcons.personalEvent}
+          onPress={() => commonNavigation.push(CommonStackComponents.personalEventCreateHelpScreen)}
+        />
+        <DataFieldListItem
           title={'Performers'}
           description={'Official and Shadow performers.'}
           icon={AppIcons.performer}

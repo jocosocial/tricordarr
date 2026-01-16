@@ -43,6 +43,7 @@ import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScree
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {PerformerHelpScreen} from '#src/Screens/Performer/PerformerHelpScreen';
 import {PerformerScreen} from '#src/Screens/Performer/PerformerScreen';
+import {PersonalEventCreateHelpScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateHelpScreen';
 import {PersonalEventCreateScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateScreen';
 import {PersonalEventEditScreen} from '#src/Screens/PersonalEvent/PersonalEventEditScreen';
 import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScreen';
@@ -237,6 +238,7 @@ export type CommonStackParamList = {
   DisabledHelpScreen: undefined;
   LfgHelpScreen: undefined;
   LfgCreateHelpScreen: undefined;
+  PersonalEventCreateHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
   TimeZoneHelpScreen: undefined;
   PrivateEventChatScreen: {
@@ -330,6 +332,7 @@ export enum CommonStackComponents {
   disabledHelpScreen = 'DisabledHelpScreen',
   lfgHelpScreen = 'LfgHelpScreen',
   lfgCreateHelpScreen = 'LfgCreateHelpScreen',
+  personalEventCreateHelpScreen = 'PersonalEventCreateHelpScreen',
   mainTimeZoneScreen = 'MainTimeZoneScreen',
   timeZoneHelpScreen = 'TimeZoneHelpScreen',
   privateEventChatScreen = 'PrivateEventChatScreen',
@@ -370,6 +373,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.disabledHelpScreen
   | CommonStackComponents.lfgHelpScreen
   | CommonStackComponents.lfgCreateHelpScreen
+  | CommonStackComponents.personalEventCreateHelpScreen
   | CommonStackComponents.timeZoneHelpScreen
   | CommonStackComponents.helpIndexScreen
   | CommonStackComponents.mainHelpScreen
@@ -648,6 +652,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.lfgCreateHelpScreen}
         component={LfgCreateHelpScreen}
         options={{title: 'New LFG Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.personalEventCreateHelpScreen}
+        component={PersonalEventCreateHelpScreen}
+        options={{title: 'Create Personal Event Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.mainTimeZoneScreen}
