@@ -81,7 +81,23 @@ export const useTwitarrWebview = () => {
     [siteLoginMutation],
   );
 
+  /**
+   * Clears all cookies. On iOS, clears both NSHTTPCookieStorage and WKHTTPCookieStore.
+   * clearAll(true) clears WKHTTPCookieStore, clearAll(false) clears NSHTTPCookieStorage.
+   *
+   * This was having issues on iOS with cookies not clearing on signOut.
+   */
+  const clearCookies = useCallback(async () => {
+    if (isIOS) {
+      await CookieManager.clearAll(false); // Clear NSHTTPCookieStorage
+      await CookieManager.clearAll(true); // Clear WKHTTPCookieStore
+    } else {
+      await CookieManager.clearAll();
+    }
+  }, []);
+
   return {
     signIn,
+    clearCookies,
   };
 };

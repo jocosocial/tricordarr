@@ -1,4 +1,3 @@
-import CookieManager from '@react-native-cookies/cookies';
 import React, {Dispatch, SetStateAction} from 'react';
 import {Linking} from 'react-native';
 import {Menu} from 'react-native-paper';
@@ -9,7 +8,7 @@ import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
-import {isIOS} from '#src/Libraries/Platform/Detection';
+import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 interface SiteUIScreenActionsMenuProps {
@@ -21,6 +20,7 @@ interface SiteUIScreenActionsMenuProps {
 export const SiteUIScreenActionsMenu = ({onHome, getCurrentUrl, setKey}: SiteUIScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
+  const {clearCookies} = useTwitarrWebview();
 
   const handleHome = () => {
     closeMenu();
@@ -32,10 +32,10 @@ export const SiteUIScreenActionsMenu = ({onHome, getCurrentUrl, setKey}: SiteUIS
     commonNavigation.push(CommonStackComponents.siteUIHelpScreen);
   };
 
-  const handleClear = () => {
+  const handleClear = async () => {
     console.log('[SiteUIScreenActionsMenu.tsx] Clearing cookies');
-    CookieManager.clearAll(isIOS);
-    // setKey(String(Date.now()));
+    await clearCookies();
+    setKey(String(Date.now()));
   };
 
   const handleOpenInBrowser = () => {

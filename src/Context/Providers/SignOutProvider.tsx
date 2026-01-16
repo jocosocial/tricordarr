@@ -1,5 +1,4 @@
 import {CacheManager} from '@georstat/react-native-image-cache';
-import CookieManager from '@react-native-cookies/cookies';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {PropsWithChildren, useCallback} from 'react';
 
@@ -9,8 +8,8 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SignOutContext, SignOutContextType} from '#src/Context/Contexts/SignOutContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
+import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {stopForegroundServiceWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
-import {isIOS} from '#src/Libraries/Platform/Detection';
 
 /**
  * SignOutProvider consolidates all sign-out logic into a single performSignOut function.
@@ -29,6 +28,7 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
   const {signOut} = useSession();
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
+  const {clearCookies} = useTwitarrWebview();
 
   const performSignOut = useCallback(async () => {
     // Disable user notifications
@@ -57,9 +57,17 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
     // Clear image cache
     await CacheManager.clearCache();
 
-    // Clear cookies (e.g., swiftarr_session from webview login)
-    await CookieManager.clearAll(isIOS);
-  }, [setEnableUserNotifications, closeNotificationSocket, dispatchFezSockets, signOut, clearPrivileges, queryClient]);
+    // Clear webview cookies
+    await clearCookies();
+  }, [
+    setEnableUserNotifications,
+    closeNotificationSocket,
+    dispatchFezSockets,
+    signOut,
+    clearPrivileges,
+    queryClient,
+    clearCookies,
+  ]);
 
   const contextValue: SignOutContextType = React.useMemo(
     () => ({
