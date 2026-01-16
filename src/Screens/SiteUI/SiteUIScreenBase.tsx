@@ -69,7 +69,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
       <View>
         <MaterialHeaderButtons>
           <Item title={'Reload'} iconName={AppIcons.reload} onPress={reload} />
-          <SiteUIScreenActionsMenu onHome={onHome} getCurrentUrl={getCurrentUrl} />
+          <SiteUIScreenActionsMenu onHome={onHome} getCurrentUrl={getCurrentUrl} setKey={setKey} />
         </MaterialHeaderButtons>
       </View>
     ),
