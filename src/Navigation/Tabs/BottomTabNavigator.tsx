@@ -75,7 +75,7 @@ export const BottomTabNavigator = () => {
         component={MainStackNavigator}
         options={{
           title: 'Today',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.home : AppIcons.homeInactive),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.homeActive : AppIcons.home),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newAnnouncementCount),
         }}
       />

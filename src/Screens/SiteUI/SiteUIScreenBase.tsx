@@ -11,6 +11,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 import {useCommonStack} from '#src/Navigation/CommonScreens';
 
 interface Props {
@@ -68,7 +69,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
       <View>
         <MaterialHeaderButtons>
           <Item title={'Reload'} iconName={AppIcons.reload} onPress={reload} />
-          <SiteUIScreenActionsMenu onHome={onHome} getCurrentUrl={getCurrentUrl} />
+          <SiteUIScreenActionsMenu onHome={onHome} getCurrentUrl={getCurrentUrl} setKey={setKey} />
         </MaterialHeaderButtons>
       </View>
     ),
@@ -121,6 +122,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
         key={key}
         ref={webViewRef}
         onNavigationStateChange={handleWebViewNavigationStateChange}
+        sharedCookiesEnabled={isIOS}
       />
     </AppView>
   );

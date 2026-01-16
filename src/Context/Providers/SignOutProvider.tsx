@@ -8,6 +8,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SignOutContext, SignOutContextType} from '#src/Context/Contexts/SignOutContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
+import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {stopForegroundServiceWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 
 /**
@@ -27,6 +28,7 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
   const {signOut} = useSession();
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
+  const {clearCookies} = useTwitarrWebview();
 
   const performSignOut = useCallback(async () => {
     // Disable user notifications
@@ -54,7 +56,18 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
 
     // Clear image cache
     await CacheManager.clearCache();
-  }, [setEnableUserNotifications, closeNotificationSocket, dispatchFezSockets, signOut, clearPrivileges, queryClient]);
+
+    // Clear webview cookies
+    await clearCookies();
+  }, [
+    setEnableUserNotifications,
+    closeNotificationSocket,
+    dispatchFezSockets,
+    signOut,
+    clearPrivileges,
+    queryClient,
+    clearCookies,
+  ]);
 
   const contextValue: SignOutContextType = React.useMemo(
     () => ({
