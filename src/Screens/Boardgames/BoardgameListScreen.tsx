@@ -79,7 +79,7 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(MainStackComponents.boardgameHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.boardgameHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>
