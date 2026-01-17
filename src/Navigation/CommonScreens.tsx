@@ -36,6 +36,7 @@ import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
 import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
 import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
 import {MainTimeZoneScreen} from '#src/Screens/Main/MainTimeZoneScreen';
+import {MapHelpScreen} from '#src/Screens/Main/MapHelpScreen';
 import {MapScreen} from '#src/Screens/Main/MapScreen';
 import {PrivacyScreen} from '#src/Screens/Main/PrivacyScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
@@ -275,6 +276,7 @@ export type CommonStackParamList = {
   ModeratorHelpScreen: undefined;
   BoardgameHelpScreen: undefined;
   PhotostreamHelpScreen: undefined;
+  MapHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -355,6 +357,7 @@ export enum CommonStackComponents {
   moderatorHelpScreen = 'ModeratorHelpScreen',
   boardgameHelpScreen = 'BoardgameHelpScreen',
   photostreamHelpScreen = 'PhotostreamHelpScreen',
+  mapHelpScreen = 'MapHelpScreen',
 }
 
 /**
@@ -382,7 +385,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.shutternautHelpScreen
   | CommonStackComponents.boardgameHelpScreen
   | CommonStackComponents.photostreamHelpScreen
-  | CommonStackComponents.userProfileHelpScreen;
+  | CommonStackComponents.userProfileHelpScreen
+  | CommonStackComponents.mapHelpScreen;
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
   return (
@@ -763,6 +767,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.photostreamHelpScreen}
         component={PhotostreamHelpScreen}
         options={{title: 'Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.mapHelpScreen}
+        component={MapHelpScreen}
+        options={{title: 'Map Help'}}
       />
     </>
   );

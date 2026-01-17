@@ -84,6 +84,12 @@ export const HelpManualScreen = () => {
           onPress={() => commonNavigation.push(CommonStackComponents.timeZoneHelpScreen)}
         />
         <DataFieldListItem
+          title={'Deck Map'}
+          description={'Navigate the ship using deck maps and find your way around.'}
+          icon={AppIcons.map}
+          onPress={() => commonNavigation.push(CommonStackComponents.mapHelpScreen)}
+        />
+        <DataFieldListItem
           title={'Webview'}
           description={'Integrated webview and how to use Twitarr features not yet in the app.'}
           icon={AppIcons.webview}
