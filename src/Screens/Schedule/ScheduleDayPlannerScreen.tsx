@@ -183,7 +183,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
           <DayPlannerTimelineView ref={scrollViewRef} items={dayPlannerItems} dayStart={dayStart} dayEnd={dayEnd} />
         )}
       </View>
-      <SchedulePersonalEventCreateFAB />
+      {!preRegistrationMode && <SchedulePersonalEventCreateFAB />}
     </AppView>
   );
 };
