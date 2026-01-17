@@ -84,7 +84,7 @@ export const BottomTabNavigator = () => {
         component={ForumStackNavigator}
         options={{
           title: 'Forums',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.forum : AppIcons.forumInactive),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.forumActive : AppIcons.forum),
           tabBarBadge: getBadgeDisplayValue(getForumBadgeCount()),
         }}
       />
@@ -93,7 +93,7 @@ export const BottomTabNavigator = () => {
         component={ChatStackNavigator}
         options={{
           title: 'Seamail',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.seamail : AppIcons.seamailInactive),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.seamailActive : AppIcons.seamail),
           tabBarBadge: getBadgeDisplayValue(getChatBadgeCount()),
         }}
       />
@@ -102,7 +102,7 @@ export const BottomTabNavigator = () => {
         component={LfgStackNavigator}
         options={{
           title: 'LFG',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.lfg : AppIcons.lfgInactive),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.lfgActive : AppIcons.lfg),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newFezMessageCount),
         }}
       />
@@ -111,7 +111,7 @@ export const BottomTabNavigator = () => {
         component={ScheduleStackNavigator}
         options={{
           title: 'Schedule',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.events : AppIcons.eventsInactive),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.eventsActive : AppIcons.events),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newPrivateEventMessageCount),
         }}
       />
