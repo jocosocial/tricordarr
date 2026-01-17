@@ -248,12 +248,12 @@ export const BackgroundConnectionSettingsIOSView = () => {
             formikRef={formikRef}
             initialValues={{wifiNetworkNames: appConfig.wifiNetworkNames || []}}
             onSubmit={handleSubmit}
-            disabled={appConfig.preRegistrationMode}
+            disabled={preRegistrationMode}
           />
           <PrimaryActionButton
             disabled={
               (appConfig.wifiNetworkNames?.length === 1 && appConfig.wifiNetworkNames[0] === data?.shipWifiSSID) ||
-              appConfig.preRegistrationMode
+              preRegistrationMode
             }
             onPress={resetDefaultValues}
             buttonText={'Reset to Default Networks'}
@@ -343,7 +343,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
           <PrimaryActionButton
             buttonText={'Recycle Worker'}
             onPress={handleSetupManager}
-            disabled={!tokenData || appConfig.preRegistrationMode}
+            disabled={!tokenData || preRegistrationMode}
             buttonColor={theme.colors.twitarrNeutralButton}
           />
         </PaddedContentView>

@@ -75,7 +75,6 @@ export interface AppConfig {
   preRegistrationServerUrl: string;
   manualTimeOffset: number;
   wifiNetworkNames: string[];
-  preRegistrationMode: boolean;
   forceShowTimezoneWarning: boolean;
 }
 
@@ -155,7 +154,6 @@ export const defaultAppConfig: AppConfig = {
   preRegistrationServerUrl: 'https://start.twitarr.com',
   enableExperiments: false,
   wifiNetworkNames: [],
-  preRegistrationMode: false,
   forceShowTimezoneWarning: false,
 };
 

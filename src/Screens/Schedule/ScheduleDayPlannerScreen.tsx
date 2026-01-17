@@ -12,6 +12,7 @@ import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderV
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForTime} from '#src/Libraries/DayPlanner';
@@ -40,6 +41,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const scrollViewRef = useRef<ScrollView>(null);
+  const {preRegistrationMode} = usePreRegistration();
 
   // Fetch events with dayplanner=true (only favorited/following events)
   const {
@@ -64,7 +66,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: !appConfig.preRegistrationMode,
+      enabled: !preRegistrationMode,
     },
   });
 
@@ -79,7 +81,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
     options: {
-      enabled: !appConfig.preRegistrationMode,
+      enabled: !preRegistrationMode,
     },
   });
 
@@ -128,11 +130,11 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   // Refresh all data
   const onRefresh = useCallback(async () => {
     const refreshes: Promise<any>[] = [refetchEvents()];
-    if (!appConfig.preRegistrationMode) {
+    if (!preRegistrationMode) {
       refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
     }
     await Promise.all(refreshes);
-  }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents, appConfig.preRegistrationMode]);
+  }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents, preRegistrationMode]);
 
   // Header buttons
   const getNavButtons = useCallback(() => {
