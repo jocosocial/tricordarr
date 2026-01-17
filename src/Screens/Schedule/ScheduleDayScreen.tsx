@@ -261,16 +261,6 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     personalHasNextPage,
   ]);
 
-  // Returning the <LoadingView /> would lose the position tracking of the <ScheduleHeaderView />
-  // list, so we rely on the <RefreshControl /> spinner instead.
-  const isRefreshing =
-    (appConfig.schedule.eventsShowJoinedLfgs && isLfgJoinedFetching) ||
-    (appConfig.schedule.eventsShowOpenLfgs && isLfgOpenFetching) ||
-    isLfgOwnedFetching ||
-    isEventFetching ||
-    isPersonalEventFetching ||
-    refreshing;
-
   return (
     <AppView>
       <TimezoneWarningView />
@@ -288,7 +278,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
           <ScheduleFlatList
             listRef={listRef}
             items={scheduleList}
-            refreshControl={<AppRefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
+            refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
             setRefreshing={setRefreshing}
             initialScrollIndex={scrollNowIndex}
           />
