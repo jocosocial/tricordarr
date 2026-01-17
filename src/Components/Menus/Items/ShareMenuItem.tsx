@@ -39,9 +39,12 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
    * If the user hasn't finished setup or is in pre-registration mode,
    * don't let them share content.
    */
-  if (!oobeCompleted || preRegistrationMode) {
-    return null;
-  }
-
-  return <Menu.Item title={'Share'} leadingIcon={AppIcons.share} onPress={handlePress} />;
+  return (
+    <Menu.Item
+      disabled={!oobeCompleted || preRegistrationMode}
+      title={'Share'}
+      leadingIcon={AppIcons.share}
+      onPress={handlePress}
+    />
+  );
 };
