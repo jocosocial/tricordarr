@@ -26,6 +26,7 @@ const validationSchema = Yup.object().shape({
   homeLocation: Yup.string().optional().min(2).max(50),
   message: Yup.string().optional().min(4).max(80),
   about: Yup.string().optional().min(4).max(400),
+  discordUsername: Yup.string().optional().min(2).max(50),
 });
 
 // https://formik.org/docs/guides/react-native
@@ -66,6 +67,12 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             label={'Cabin Number'}
             autoCapitalize={'words'}
             keyboardType={'numeric'}
+          />
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'discordUsername'}
+            label={'Discord Username'}
+            autoCapitalize={'none'}
           />
           <PickerField
             viewStyle={styles.pickerContainer}

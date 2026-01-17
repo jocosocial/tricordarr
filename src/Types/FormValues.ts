@@ -28,6 +28,7 @@ export interface UserProfileFormValues {
   message: string;
   about: string;
   dinnerTeam: string;
+  discordUsername: string;
 }
 
 export interface UserNoteFormValues {

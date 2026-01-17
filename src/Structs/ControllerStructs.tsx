@@ -92,6 +92,8 @@ export interface ProfilePublicData {
   note?: string;
   /// An optional dinner team assignment.
   dinnerTeam?: DinnerTeam;
+  /// An optional Discord username for the user.
+  discordUsername?: string;
   /// Whether the requesting user has favorited this user.
   isFavorite: boolean;
 }
@@ -656,6 +658,8 @@ export interface UserProfileUploadData {
   about: string;
   /// An optional dinner team assignment.
   dinnerTeam?: DinnerTeam;
+  /// An optional Discord username.
+  discordUsername?: string;
 }
 
 export interface NoteCreateData {
