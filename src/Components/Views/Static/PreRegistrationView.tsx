@@ -62,6 +62,12 @@ export const PreRegistrationView = ({
             pre-registration mode until the cruise starts.
           </Text>
         </PaddedContentView>
+        <PaddedContentView>
+          <Text>
+            In the mean time, you can view the help chapter for this feature by tapping the help icon in the top right
+            of this screen. Or pack.
+          </Text>
+        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );
