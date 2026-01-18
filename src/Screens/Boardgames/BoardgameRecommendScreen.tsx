@@ -60,9 +60,11 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
   const guideMutation = useBoardgameRecommendMutation();
   const [games, setGames] = useState<BoardgameData[]>([]);
   const [fieldValues, setFieldValues] = useState<BoardgameRecommendationData>(defaultValues);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const onSubmit = (values: BoardgameRecommendationData, helpers: FormikHelpers<BoardgameRecommendationData>) => {
     setFieldValues(values);
+    setHasSearched(true);
     guideMutation.mutate(
       {
         recommendationData: values,
@@ -101,7 +103,11 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <BoardgameFlatList items={games} listHeader={getHeader} />
+      <BoardgameFlatList
+        items={games}
+        listHeader={getHeader}
+        showEmptyFooter={hasSearched && !guideMutation.isPending}
+      />
     </AppView>
   );
 };
