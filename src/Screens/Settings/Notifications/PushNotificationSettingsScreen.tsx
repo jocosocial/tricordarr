@@ -4,13 +4,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {ScrollView, View} from 'react-native';
 import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
 import {requestNotifications, RESULTS} from 'react-native-permissions';
-import Animated, {
-  interpolateColor,
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
@@ -24,6 +18,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {useHighlightAnimation} from '#src/Hooks/useHighlightAnimation';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
@@ -41,7 +36,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
     notificationPermissionStatus,
     setHasNotificationPermission,
   } = usePermissions();
-  const {theme, isDarkMode} = useAppTheme();
+  const {theme} = useAppTheme();
   const [muteDuration] = useState(0);
   const [muteNotifications, setMuteNotifications] = useState(appConfig.muteNotifications);
   const [markReadCancelPush, setMarkReadCancelPush] = useState(appConfig.markReadCancelPush);
@@ -52,31 +47,11 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
   const notificationType = route.params?.notificationType;
   const hasScrolledToCategory = useRef(false);
   const {commonStyles} = useStyles();
-  const pulseOpacity = useSharedValue(0);
 
-  const triggerPulseAnimation = () => {
-    // Two pulses: fade in → fade out, then fade in → fade out again
-    // Each fade is 175ms, with no delay between pulses
-    pulseOpacity.value = withSequence(
-      withTiming(1, {duration: 175}), // First pulse: fade in
-      withTiming(0, {duration: 175}), // First pulse: fade out
-      withTiming(0, {duration: 0}), // Delay between pulses
-      withTiming(1, {duration: 175}), // Second pulse: fade in
-      withTiming(0, {duration: 175}), // Second pulse: fade out
-    );
-  };
-
-  // Calculate theme-aware colors for pulse animation
-  // Dark mode: white-ish color, Light mode: grey/black-ish color
-  const pulseBaseColor = isDarkMode ? 'rgba(255, 255, 255, 0)' : 'rgba(0, 0, 0, 0)';
-  const pulseColor = isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)';
-
-  // Animated style for pulse effect with theme-aware colors
-  const pulseAnimatedStyle = useAnimatedStyle(() => {
-    // Interpolate from transparent to pulse color based on pulseOpacity
-    return {
-      backgroundColor: interpolateColor(pulseOpacity.value, [0, 1], [pulseBaseColor, pulseColor]),
-    };
+  const {triggerPulseAnimation, pulseAnimatedStyle} = useHighlightAnimation({
+    onComplete: () => {
+      setHighlightedCategory(null);
+    },
   });
 
   const muteButtons: SegmentedButtonType[] = [
@@ -184,12 +159,9 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
           hasScrolledToCategory.current = true;
 
           // Trigger pulse animation after scroll completes (scroll animation typically takes ~300-500ms)
+          // onScrollAnimationEnd is not reliable for programmatic scrolls, so we have to use a timeout.
           setTimeout(() => {
             triggerPulseAnimation();
-            // Clear highlight after pulse animation completes (~675ms)
-            setTimeout(() => {
-              setHighlightedCategory(null);
-            }, 700);
           }, 500);
         },
         () => {
