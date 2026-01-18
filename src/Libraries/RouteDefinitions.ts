@@ -106,6 +106,8 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.userProfileScreen,
     CommonStackComponents.usernameProfileScreen,
     CommonStackComponents.mapScreen,
+    // Info routes
+    CommonStackComponents.privacyScreen,
   ].includes(route.screen as CommonStackComponents),
 );
 

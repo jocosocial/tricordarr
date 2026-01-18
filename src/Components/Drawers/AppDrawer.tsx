@@ -224,16 +224,6 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.webview}
                 onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}`)}
               />
-              <PaperDrawer.Item
-                label={'About Twitarr (Service)'}
-                icon={AppIcons.twitarr}
-                onPress={() => Linking.openURL('tricordarr://about')}
-              />
-              <PaperDrawer.Item
-                label={'About Tricordarr (App)'}
-                icon={AppIcons.tricordarr}
-                onPress={() => Linking.openURL('tricordarr://about-app')}
-              />
             </PaperDrawer.Section>
           </ScrollView>
         );

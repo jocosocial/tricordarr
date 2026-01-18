@@ -144,4 +144,5 @@ export enum AppIcons {
   userFavorite = 'account-star',
   feedback = 'comment-quote',
   session = 'cloud-outline',
+  privacy = 'incognito',
 }

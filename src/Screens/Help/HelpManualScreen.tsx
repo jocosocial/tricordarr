@@ -117,7 +117,7 @@ export const HelpManualScreen = () => {
         <ListSubheader>About</ListSubheader>
         <DataFieldListItem
           title={'About Tricordarr'}
-          description={'The Tricordarr app and the project.'}
+          description={'This particular client app.'}
           icon={AppIcons.tricordarr}
           onPress={() => commonNavigation.push(CommonStackComponents.aboutTricordarrScreen)}
         />
@@ -132,6 +132,12 @@ export const HelpManualScreen = () => {
           description={'How to find administrative assistance at sea and on land during the cruise.'}
           icon={AppIcons.help}
           onPress={() => commonNavigation.push(CommonStackComponents.cruiseHelpScreen)}
+        />
+        <DataFieldListItem
+          title={'Privacy Policy'}
+          description={'View the service and app privacy policies.'}
+          icon={AppIcons.privacy}
+          onPress={() => commonNavigation.push(CommonStackComponents.privacyScreen)}
         />
       </ScrollingContentView>
     </AppView>
