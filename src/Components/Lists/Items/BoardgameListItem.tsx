@@ -4,6 +4,7 @@ import {List} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
@@ -14,6 +15,7 @@ interface BoardgameListItemProps {
 
 const ItemRightInternal = ({boardgame}: BoardgameListItemProps) => {
   const {commonStyles} = useStyles();
+  const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
     rightContainer: {
@@ -28,44 +30,18 @@ const ItemRightInternal = ({boardgame}: BoardgameListItemProps) => {
     },
   });
 
-  const playingTime = BoardgameData.getPlayingTime(boardgame);
   return (
     <View style={styles.rightContainer}>
       <View style={styles.rightContent}>
+        {boardgame.isFavorite && <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />}
         {boardgame.yearPublished && <Text style={styles.text}>{boardgame.yearPublished}</Text>}
-        {playingTime && <Text style={styles.text}>{playingTime}</Text>}
       </View>
     </View>
   );
 };
 
-const ItemLeftInternal = ({boardgame}: BoardgameListItemProps) => {
-  const {commonStyles} = useStyles();
-
-  const styles = StyleSheet.create({
-    leftContainer: {
-      ...commonStyles.justifyCenter,
-      ...commonStyles.paddingRightSmall,
-    },
-    leftContent: {
-      ...commonStyles.flexColumn,
-    },
-    text: {
-      ...commonStyles.onBackground,
-    },
-  });
-
-  if (!boardgame.isFavorite) {
-    return <></>;
-  }
-
-  return (
-    <View style={styles.leftContainer}>
-      <View style={styles.leftContent}>
-        <AppIcon icon={AppIcons.favorite} />
-      </View>
-    </View>
-  );
+const ItemLeftInternal = (_: BoardgameListItemProps) => {
+  return <></>;
 };
 
 const ItemLeft = memo(ItemLeftInternal);
@@ -77,10 +53,14 @@ const BoardgameListItemInternal = ({boardgame}: BoardgameListItemProps) => {
 
   const styles = StyleSheet.create({
     item: {
-      ...commonStyles.paddingHorizontal,
+      ...commonStyles.paddingHorizontalSmall,
     },
     text: {
       ...commonStyles.onBackground,
+    },
+    title: {
+      ...commonStyles.onBackground,
+      fontWeight: 'bold',
     },
     content: {
       ...commonStyles.paddingLeftZero,
@@ -98,15 +78,19 @@ const BoardgameListItemInternal = ({boardgame}: BoardgameListItemProps) => {
     [navigation, boardgame],
   );
 
+  const players = BoardgameData.getPlayers(boardgame);
+  const playingTime = BoardgameData.getPlayingTime(boardgame);
+  const description = [players, playingTime].filter(Boolean).join('\n');
+
   return (
     <List.Item
       contentStyle={styles.content}
       style={styles.item}
       title={boardgame.gameName}
       titleNumberOfLines={0}
-      description={BoardgameData.getPlayers(boardgame)}
+      description={description}
       descriptionStyle={styles.text}
-      titleStyle={styles.text}
+      titleStyle={styles.title}
       onPress={onPress}
       right={getRight}
       left={getLeft}
