@@ -41,6 +41,7 @@ import {MapHelpScreen} from '#src/Screens/Main/MapHelpScreen';
 import {MapScreen} from '#src/Screens/Main/MapScreen';
 import {PrivacyScreen} from '#src/Screens/Main/PrivacyScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
+import {TodayHelpScreen} from '#src/Screens/Main/TodayHelpScreen';
 import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScreen';
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {PerformerHelpScreen} from '#src/Screens/Performer/PerformerHelpScreen';
@@ -279,6 +280,7 @@ export type CommonStackParamList = {
   PhotostreamHelpScreen: undefined;
   MapHelpScreen: undefined;
   CruiseHelpScreen: undefined;
+  TodayHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -361,6 +363,7 @@ export enum CommonStackComponents {
   photostreamHelpScreen = 'PhotostreamHelpScreen',
   mapHelpScreen = 'MapHelpScreen',
   cruiseHelpScreen = 'CruiseHelpScreen',
+  todayHelpScreen = 'TodayHelpScreen',
 }
 
 /**
@@ -390,7 +393,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.photostreamHelpScreen
   | CommonStackComponents.userProfileHelpScreen
   | CommonStackComponents.mapHelpScreen
-  | CommonStackComponents.cruiseHelpScreen;
+  | CommonStackComponents.cruiseHelpScreen
+  | CommonStackComponents.todayHelpScreen;
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
   return (
@@ -781,6 +785,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.cruiseHelpScreen}
         component={CruiseHelpScreen}
         options={{title: 'Cruise Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.todayHelpScreen}
+        component={TodayHelpScreen}
+        options={{title: 'Today Help'}}
       />
     </>
   );
