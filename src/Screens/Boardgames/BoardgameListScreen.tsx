@@ -13,6 +13,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
@@ -36,7 +37,6 @@ export const BoardgameListScreen = (props: Props) => {
 
 const BoardgameListScreenInner = ({navigation}: Props) => {
   const [favorites, setFavorites] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const {
     data,
     hasNextPage,
@@ -49,6 +49,10 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
     refetch,
   } = useBoardgamesQuery({favorite: favorites});
 
+  const {refreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+  });
+
   const handleLoadNext = async () => {
     if (!isFetchingNextPage && hasNextPage) {
       await fetchNextPage();
@@ -60,12 +64,6 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
       await fetchPreviousPage();
     }
   };
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  }, [refetch]);
 
   const getNavButtons = useCallback(
     () => (
