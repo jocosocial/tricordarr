@@ -6,6 +6,7 @@ import {SearchBarBase, useSafePagination} from '#src/Components/Search/SearchBar
 import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -32,8 +33,14 @@ const BoardgameSearchScreenInner = () => {
     },
   });
 
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
+
   const onSearch = () => {
     setQueryEnable(true);
+    setRefreshing(true);
   };
 
   const onClear = () => {
@@ -70,7 +77,7 @@ const BoardgameSearchScreenInner = () => {
       <BoardgameFlatList
         items={items}
         hasNextPage={effectiveHasNextPage}
-        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} enabled={!!searchQuery} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />}
         handleLoadNext={safeHandleLoadNext}
       />
     </AppView>

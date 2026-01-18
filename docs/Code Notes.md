@@ -54,6 +54,12 @@ Open the `ios` directory in Xcode or `open` the `Tricordarr.xcworkspace` file.
 
 ## Refresh
 
+## New Hook
+
+Hey we have a hook now! `useRefresh`. See below why we should use it.
+
+### Previous Guidance
+
 To refresh without glitches:
 
 ```ts
