@@ -23,21 +23,29 @@ export const BoardgameSearchScreen = () => {
 
 const BoardgameSearchScreenInner = () => {
   const {commonStyles} = useStyles();
+  const [queryEnable, setQueryEnable] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const {data, hasNextPage, fetchNextPage, isFetching, refetch} = useBoardgamesQuery({
     search: searchQuery,
     options: {
-      enabled: false,
+      enabled: queryEnable,
     },
   });
 
-  const onSearch = async () => {
-    await refetch();
+  const onSearch = () => {
+    setQueryEnable(true);
   };
 
   const onClear = () => {
     setSearchQuery('');
     // remove() was deprecated in react-query v5. Do we still need to do that?
+  };
+
+  const onChangeSearch = (query: string) => {
+    if (query !== searchQuery) {
+      setQueryEnable(false);
+    }
+    setSearchQuery(query);
   };
 
   const items = searchQuery ? data?.pages.flatMap(p => p.gameArray) || [] : [];
@@ -56,15 +64,13 @@ const BoardgameSearchScreenInner = () => {
         searchQuery={searchQuery}
         onClear={onClear}
         onSearch={onSearch}
-        onChangeSearch={query => {
-          setSearchQuery(query);
-        }}
+        onChangeSearch={onChangeSearch}
         style={commonStyles.marginBottom}
       />
       <BoardgameFlatList
         items={items}
         hasNextPage={effectiveHasNextPage}
-        refreshControl={<AppRefreshControl refreshing={isFetching} enabled={false} />}
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} enabled={!!searchQuery} />}
         handleLoadNext={safeHandleLoadNext}
       />
     </AppView>
