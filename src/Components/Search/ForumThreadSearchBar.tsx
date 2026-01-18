@@ -6,7 +6,7 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
-import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
+import {SearchBarBase, useSafePagination} from '#src/Components/Search/SearchBarBase';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ForumSort} from '#src/Enums/ForumSortFilter';
@@ -67,12 +67,19 @@ export const ForumThreadSearchBar = (props: Props) => {
     Keyboard.dismiss();
   };
 
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {safeHandleLoadNext, effectiveHasNextPage} = useSafePagination({
+    searchQuery,
+    minLength: 3,
+    hasNextPage: hasNextPage ?? false,
+    itemsLength: forumList.length,
+    fetchNextPage: () => {
+      if (!isFetchingNextPage) {
+        setRefreshing(true);
+        fetchNextPage().finally(() => setRefreshing(false));
+      }
+    },
+  });
+
   const handleLoadPrevious = () => {
     if (!isFetchingPreviousPage && hasPreviousPage) {
       setRefreshing(true);
@@ -118,9 +125,9 @@ export const ForumThreadSearchBar = (props: Props) => {
             <AppRefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
           }
           forumListData={forumList}
-          handleLoadNext={handleLoadNext}
+          handleLoadNext={safeHandleLoadNext}
           handleLoadPrevious={handleLoadPrevious}
-          hasNextPage={hasNextPage}
+          hasNextPage={effectiveHasNextPage}
           hasPreviousPage={hasPreviousPage}
         />
       </View>

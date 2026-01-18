@@ -3,7 +3,7 @@ import {Keyboard} from 'react-native';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
-import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
+import {SearchBarBase, useSafePagination} from '#src/Components/Search/SearchBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -35,12 +35,18 @@ export const SeamailSearchBar = () => {
     Keyboard.dismiss();
   };
 
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage && queryEnable) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {safeHandleLoadNext} = useSafePagination({
+    searchQuery,
+    minLength: 3,
+    hasNextPage: hasNextPage ?? false,
+    itemsLength: fezList.length,
+    fetchNextPage: () => {
+      if (!isFetchingNextPage && queryEnable) {
+        setRefreshing(true);
+        fetchNextPage().finally(() => setRefreshing(false));
+      }
+    },
+  });
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -70,7 +76,7 @@ export const SeamailSearchBar = () => {
       <SeamailFlatList
         fezList={fezList}
         refreshControl={<AppRefreshControl refreshing={isFetching || refreshing} onRefresh={onRefresh} />}
-        onEndReached={handleLoadNext}
+        onEndReached={safeHandleLoadNext}
       />
     </>
   );

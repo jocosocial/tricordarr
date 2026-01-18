@@ -2,7 +2,7 @@ import React from 'react';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
-import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
+import {SearchBarBase, useSafePagination} from '#src/Components/Search/SearchBarBase';
 import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -42,20 +42,30 @@ const BoardgameSearchScreenInner = () => {
 
   const items = searchQuery ? data?.pages.flatMap(p => p.gameArray) || [] : [];
 
+  const {safeHandleLoadNext, effectiveHasNextPage} = useSafePagination({
+    searchQuery,
+    minLength: 3,
+    hasNextPage: hasNextPage ?? false,
+    itemsLength: items.length,
+    fetchNextPage,
+  });
+
   return (
     <AppView>
       <SearchBarBase
         searchQuery={searchQuery}
         onClear={onClear}
         onSearch={onSearch}
-        onChangeSearch={query => setSearchQuery(query)}
+        onChangeSearch={query => {
+          setSearchQuery(query);
+        }}
         style={commonStyles.marginBottom}
       />
       <BoardgameFlatList
         items={items}
-        hasNextPage={items.length > 0 && hasNextPage}
+        hasNextPage={effectiveHasNextPage}
         refreshControl={<AppRefreshControl refreshing={isFetching} enabled={false} />}
-        handleLoadNext={fetchNextPage}
+        handleLoadNext={safeHandleLoadNext}
       />
     </AppView>
   );
