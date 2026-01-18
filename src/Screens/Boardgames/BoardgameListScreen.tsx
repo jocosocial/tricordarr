@@ -36,6 +36,7 @@ export const BoardgameListScreen = (props: Props) => {
 
 const BoardgameListScreenInner = ({navigation}: Props) => {
   const [favorites, setFavorites] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const {
     data,
     hasNextPage,
@@ -46,7 +47,6 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
     fetchPreviousPage,
     isFetchingPreviousPage,
     refetch,
-    isFetching,
   } = useBoardgamesQuery({favorite: favorites});
 
   const handleLoadNext = async () => {
@@ -60,6 +60,12 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
       await fetchPreviousPage();
     }
   };
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   const getNavButtons = useCallback(
     () => (
@@ -108,7 +114,7 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
         hasPreviousPage={hasPreviousPage}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
       <BoardgameGuideFAB showLabel={true} />
     </AppView>

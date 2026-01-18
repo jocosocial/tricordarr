@@ -7,6 +7,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {BoardgameListItemSwipeable} from '#src/Components/Swipeables/BoardgameListItemSwipeable';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 
 interface BoardgameListItemProps {
@@ -49,10 +50,12 @@ const ItemRight = memo(ItemRightInternal);
 
 const BoardgameListItemInternal = ({boardgame}: BoardgameListItemProps) => {
   const {commonStyles} = useStyles();
+  const {theme} = useAppTheme();
   const navigation = useMainStack();
 
   const styles = StyleSheet.create({
     item: {
+      backgroundColor: theme.colors.background,
       ...commonStyles.paddingHorizontalSmall,
     },
     text: {
@@ -83,18 +86,20 @@ const BoardgameListItemInternal = ({boardgame}: BoardgameListItemProps) => {
   const description = [players, playingTime].filter(Boolean).join('\n');
 
   return (
-    <List.Item
-      contentStyle={styles.content}
-      style={styles.item}
-      title={boardgame.gameName}
-      titleNumberOfLines={0}
-      description={description}
-      descriptionStyle={styles.text}
-      titleStyle={styles.title}
-      onPress={onPress}
-      right={getRight}
-      left={getLeft}
-    />
+    <BoardgameListItemSwipeable boardgame={boardgame}>
+      <List.Item
+        contentStyle={styles.content}
+        style={styles.item}
+        title={boardgame.gameName}
+        titleNumberOfLines={0}
+        description={description}
+        descriptionStyle={styles.text}
+        titleStyle={styles.title}
+        onPress={onPress}
+        right={getRight}
+        left={getLeft}
+      />
+    </BoardgameListItemSwipeable>
   );
 };
 
