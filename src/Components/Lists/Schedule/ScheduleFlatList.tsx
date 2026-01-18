@@ -25,6 +25,8 @@ interface ScheduleFlatListProps<TItem> {
   initialScrollIndex?: number;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
   onScrollThreshold?: (condition: boolean) => void;
+  handleLoadNext?: () => void;
+  hasNextPage?: boolean;
 }
 
 export const ScheduleFlatList = <TItem extends EventData | FezData>({
@@ -34,6 +36,8 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
   listRef,
   setRefreshing,
   onScrollThreshold,
+  handleLoadNext,
+  hasNextPage,
 }: ScheduleFlatListProps<TItem>) => {
   const commonNavigation = useCommonStack();
   const {appConfig} = useConfig();
@@ -103,6 +107,8 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
       separator={separator}
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
+      handleLoadNext={handleLoadNext}
+      hasNextPage={hasNextPage}
       extraData={[minutelyUpdatingDate, appConfig.manualTimeOffset]}
     />
   );
