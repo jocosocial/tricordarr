@@ -36,11 +36,6 @@ React Native (as of 0.82+) `RefreshControl` does not support `enabled` on iOS. A
 ## API Details
 - All dates from the Swiftarr API come in as ISO8601 strings
 
-## Native Code
-- Do NOT run `npx @react-native-community/cli codegen` or `npx react-native codegen`. These commands are not fully baked. Re-run Codegen by doing a build instead.
-- Android Studio: Open the `android` directory in Android Studio instead of the project root
-- Xcode: Open the `ios` directory in Xcode or `open` the `Tricordarr.xcworkspace` file
-
 ## Clipboard
 iOS doesn't provide clipboard feedback. Use the `useClipboard()` hook from `src/Hooks/useClipboard.ts` which provides feedback.
 
