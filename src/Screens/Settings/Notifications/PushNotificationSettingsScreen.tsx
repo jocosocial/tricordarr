@@ -1,6 +1,7 @@
+import {StackScreenProps} from '@react-navigation/stack';
 import {Formik} from 'formik';
-import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
 import {requestNotifications, RESULTS} from 'react-native-permissions';
 
@@ -14,14 +15,18 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
+import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {SegmentedButtonType} from '#src/Types';
 
-export const PushNotificationSettingsScreen = () => {
+export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.pushNotificationSettings>;
+
+export const PushNotificationSettingsScreen = ({route}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
   const {
     hasNotificationPermission,
@@ -33,6 +38,19 @@ export const PushNotificationSettingsScreen = () => {
   const [muteDuration] = useState(0);
   const [muteNotifications, setMuteNotifications] = useState(appConfig.muteNotifications);
   const [markReadCancelPush, setMarkReadCancelPush] = useState(appConfig.markReadCancelPush);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollContentRef = useRef<View | null>(null);
+  const categoryRefs = useRef<Record<string, View | null>>({});
+  const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
+  const notificationType = route.params?.notificationType;
+  const hasScrolledToCategory = useRef(false);
+  const {commonStyles} = useStyles();
+
+  const highlightStyle = StyleSheet.create({
+    highlighted: {
+      backgroundColor: theme.colors.primaryContainer,
+    },
+  });
 
   const muteButtons: SegmentedButtonType[] = [
     {value: '5', label: '5m'},
@@ -115,6 +133,46 @@ export const PushNotificationSettingsScreen = () => {
     }
   }, [appConfig, updateAppConfig]);
 
+  // Auto-scroll to and highlight notification type when opened from notification
+  const handleContentLayout = () => {
+    if (!notificationType || !scrollViewRef.current || !scrollContentRef.current || hasScrolledToCategory.current) {
+      return;
+    }
+
+    const categoryRef = categoryRefs.current[notificationType];
+    if (categoryRef && scrollViewRef.current && scrollContentRef.current) {
+      categoryRef.measureLayout(
+        scrollContentRef.current,
+        (x, y) => {
+          // Scroll to the category with some offset for better visibility
+          scrollViewRef.current?.scrollTo({
+            y: Math.max(0, y - 20),
+            animated: true,
+          });
+
+          // Highlight the category
+          setHighlightedCategory(notificationType);
+
+          // Mark as handled to prevent re-scrolling on subsequent layout changes
+          hasScrolledToCategory.current = true;
+
+          // Clear highlight after 3 seconds
+          setTimeout(() => {
+            setHighlightedCategory(null);
+          }, 3000);
+        },
+        () => {
+          console.warn('[PushNotificationSettingsScreen] Failed to measure layout for category:', notificationType);
+        },
+      );
+    }
+  };
+
+  // Reset scroll flag when notificationType changes
+  useEffect(() => {
+    hasScrolledToCategory.current = false;
+  }, [notificationType]);
+
   // Group notifications by feature area, sorted alphabetically
   const notificationGroups = [
     {
@@ -155,7 +213,7 @@ export const PushNotificationSettingsScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={true}>
+      <ScrollingContentView isStack={true} ref={scrollViewRef} onLayout={handleContentLayout}>
         <ListSection>
           <ListSubheader>Permissions</ListSubheader>
           <PaddedContentView padTop={true}>
@@ -200,7 +258,10 @@ export const PushNotificationSettingsScreen = () => {
             />
           </PaddedContentView>
           <Formik initialValues={{}} onSubmit={() => {}}>
-            <View>
+            <View
+              ref={ref => {
+                scrollContentRef.current = ref;
+              }}>
               {notificationGroups.map(group => {
                 const groupCategories = group.categories
                   .map(key => contentNotificationCategories[key])
@@ -214,19 +275,31 @@ export const PushNotificationSettingsScreen = () => {
                 return (
                   <View key={group.title}>
                     <ListSubheader>{group.title}</ListSubheader>
-                    <PaddedContentView>
-                      {groupCategories.map(category => (
-                        <BooleanField
-                          key={category.configKey}
-                          name={category.configKey}
-                          label={category.title}
-                          value={appConfig.pushNotifications[category.configKey]}
-                          onPress={() => toggleValue(category.configKey)}
-                          disabled={!hasNotificationPermission || category.disabled}
-                          helperText={category.description}
-                        />
-                      ))}
-                    </PaddedContentView>
+                    <View>
+                      {groupCategories.map(category => {
+                        const isHighlighted = highlightedCategory === category.configKey;
+                        return (
+                          <View
+                            key={category.configKey}
+                            ref={ref => {
+                              categoryRefs.current[category.configKey] = ref;
+                            }}
+                            style={[
+                              isHighlighted ? highlightStyle.highlighted : undefined,
+                              commonStyles.paddingHorizontalSmall,
+                            ]}>
+                            <BooleanField
+                              name={category.configKey}
+                              label={category.title}
+                              value={appConfig.pushNotifications[category.configKey]}
+                              onPress={() => toggleValue(category.configKey)}
+                              disabled={!hasNotificationPermission || category.disabled}
+                              helperText={category.description}
+                            />
+                          </View>
+                        );
+                      })}
+                    </View>
                   </View>
                 );
               })}

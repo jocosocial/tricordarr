@@ -1,5 +1,6 @@
 import React, {forwardRef, PropsWithChildren} from 'react';
 import {
+  LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
   RefreshControlProps,
@@ -19,6 +20,7 @@ interface ScrollingContentViewProps {
   // that we care about.
   overScroll?: boolean;
   onScroll?: ((event: NativeSyntheticEvent<NativeScrollEvent>) => void) | undefined;
+  onLayout?: ((event: LayoutChangeEvent) => void) | undefined;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -27,7 +29,7 @@ interface ScrollingContentViewProps {
  * Accepts a single element as a child.
  */
 export const ScrollingContentView = forwardRef<ScrollView, PropsWithChildren<ScrollingContentViewProps>>(
-  ({children, isStack = false, refreshControl, overScroll = false, onScroll, style}, ref) => {
+  ({children, isStack = false, refreshControl, overScroll = false, onScroll, onLayout, style}, ref) => {
     const {commonStyles} = useStyles();
 
     const styles = StyleSheet.create({
@@ -49,7 +51,7 @@ export const ScrollingContentView = forwardRef<ScrollView, PropsWithChildren<Scr
         // contentInsetAdjustmentBehavior="automatic"
         // automaticallyAdjustKeyboardInsets={isIOS}>
         automaticallyAdjustKeyboardInsets={true}>
-        <View style={styles.scrollView}>{children}</View>
+        <View style={styles.scrollView} onLayout={onLayout}>{children}</View>
       </ScrollView>
     );
   },

@@ -39,7 +39,9 @@ export type SettingsStackParamList = CommonStackParamList & {
   TestNotificationScreen: undefined;
   TestErrorScreen: undefined;
   SocketSettingsScreen: undefined;
-  PushNotificationSettingsScreen: undefined;
+  PushNotificationSettingsScreen: {
+    notificationType?: string;
+  };
   OobeSettingsScreen: undefined;
   ChangePasswordScreen: undefined;
   ChangeUsernameScreen: undefined;
