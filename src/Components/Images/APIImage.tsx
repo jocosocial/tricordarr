@@ -62,6 +62,7 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
   const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const [imageSource, setImageSource] = useState<FastImageSource | undefined>(undefined);
+  const [cardCoverSource, setCardCoverSource] = useState<{uri: string} | undefined>(undefined);
   const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
@@ -169,33 +170,73 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
    */
   React.useEffect(() => {
     if (staticSize === 'thumb') {
-      setImageSource({uri: imageSourceMetadata.thumbURI});
+      if (!imageSourceMetadata.thumbURI) {
+        return;
+      }
+      const thumbSource = {uri: imageSourceMetadata.thumbURI};
+      setImageSource(thumbSource);
+      if (mode === 'cardcover') {
+        setCardCoverSource(thumbSource);
+      }
       return;
     }
     if (staticSize === 'identicon') {
-      setImageSource({uri: imageSourceMetadata.identiconURI});
+      if (!imageSourceMetadata.identiconURI) {
+        return;
+      }
+      const identiconSource = {uri: imageSourceMetadata.identiconURI};
+      setImageSource(identiconSource);
+      if (mode === 'cardcover') {
+        setCardCoverSource(identiconSource);
+      }
       return;
     }
-    const hasCachePath = async () => {
-      const cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI});
-      return !!cachePath;
-    };
-    hasCachePath().then(isFullCached => {
+    if (!imageSourceMetadata.fullURI) {
+      return;
+    }
+    const checkCacheAndSetSource = async () => {
+      const cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI!});
+      const isFullCached = !!cachePath;
+
       if (isFullCached) {
-        setImageSource({uri: imageSourceMetadata.fullURI});
+        const fullSource = {uri: imageSourceMetadata.fullURI!};
+        setImageSource(fullSource);
+        if (mode === 'cardcover') {
+          // Use cached file path to avoid network calls
+          setCardCoverSource({uri: `file://${cachePath}`});
+        }
       } else {
-        setImageSource({
-          uri: appConfig.skipThumbnails ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI,
-        });
+        const fallbackUri = appConfig.skipThumbnails ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI;
+        if (!fallbackUri) {
+          return;
+        }
+        const fallbackSource = {uri: fallbackUri};
+        setImageSource(fallbackSource);
+        if (mode === 'cardcover') {
+          setCardCoverSource(fallbackSource);
+        }
       }
-    });
+    };
+    checkCacheAndSetSource();
   }, [
+    mode,
     staticSize,
     appConfig.skipThumbnails,
     imageSourceMetadata.fullURI,
     imageSourceMetadata.thumbURI,
     imageSourceMetadata.identiconURI,
   ]);
+
+  /**
+   * Effect to set viewerImages for cardcover mode when cardCoverSource is set.
+   * Card.Cover doesn't support onLoad callbacks, so we call onLoad() directly
+   * when we have the source ready to reuse the existing logic.
+   */
+  React.useEffect(() => {
+    if (mode === 'cardcover' && cardCoverSource && imageSourceMetadata) {
+      onLoad();
+    }
+  }, [mode, cardCoverSource, imageSourceMetadata, onLoad]);
 
   /**
    * If the Images feature of Swiftarr is disabled, then show a generic disabled icon.
@@ -208,7 +249,7 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
     );
   }
 
-  if (!imageSource) {
+  if (!imageSource || (mode === 'cardcover' && !cardCoverSource)) {
     return (
       <Card.Content style={styles.loadingCard}>
         <ActivityIndicator />
@@ -218,13 +259,14 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
 
   const isThumbnail = imageSource.uri === imageSourceMetadata.thumbURI;
 
-  // @TODO cardcover does use FastImage under the hood.
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
       <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
         <View style={styles.imageContainer}>
-          {/* {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageSource} />} */}
+          {mode === 'cardcover' && cardCoverSource && (
+            <Card.Cover style={style as RNImageStyle} source={cardCoverSource} />
+          )}
           {mode === 'image' && (
             <FastImage
               resizeMode={'cover'}
