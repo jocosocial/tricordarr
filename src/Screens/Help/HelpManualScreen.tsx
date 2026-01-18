@@ -62,7 +62,7 @@ export const HelpManualScreen = () => {
           title={'User Profile'}
           description={'Your bio and what information is visible to others.'}
           icon={AppIcons.profile}
-          onPress={() => commonNavigation.push(CommonStackComponents.userProfileHelpScreen, {})}
+          onPress={() => commonNavigation.push(CommonStackComponents.userProfileHelpScreen)}
         />
         <DataFieldListItem
           title={'User Relations'}
@@ -126,6 +126,12 @@ export const HelpManualScreen = () => {
           description={'The Twitarr service and its history with JoCo Cruise.'}
           icon={AppIcons.twitarr}
           onPress={() => commonNavigation.push(CommonStackComponents.aboutTwitarrScreen)}
+        />
+        <DataFieldListItem
+          title={'Cruise Help'}
+          description={'How to find administrative assistance at sea and on land during the cruise.'}
+          icon={AppIcons.help}
+          onPress={() => commonNavigation.push(CommonStackComponents.cruiseHelpScreen)}
         />
       </ScrollingContentView>
     </AppView>

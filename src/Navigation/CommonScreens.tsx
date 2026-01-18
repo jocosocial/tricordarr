@@ -34,6 +34,7 @@ import {LfgParticipationScreen} from '#src/Screens/LFG/LfgParticipationScreen';
 import {LfgScreen} from '#src/Screens/LFG/LfgScreen';
 import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
 import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
+import {CruiseHelpScreen} from '#src/Screens/Main/CruiseHelpScreen';
 import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
 import {MainTimeZoneScreen} from '#src/Screens/Main/MainTimeZoneScreen';
 import {MapHelpScreen} from '#src/Screens/Main/MapHelpScreen';
@@ -277,6 +278,7 @@ export type CommonStackParamList = {
   BoardgameHelpScreen: undefined;
   PhotostreamHelpScreen: undefined;
   MapHelpScreen: undefined;
+  CruiseHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -358,6 +360,7 @@ export enum CommonStackComponents {
   boardgameHelpScreen = 'BoardgameHelpScreen',
   photostreamHelpScreen = 'PhotostreamHelpScreen',
   mapHelpScreen = 'MapHelpScreen',
+  cruiseHelpScreen = 'CruiseHelpScreen',
 }
 
 /**
@@ -386,7 +389,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.boardgameHelpScreen
   | CommonStackComponents.photostreamHelpScreen
   | CommonStackComponents.userProfileHelpScreen
-  | CommonStackComponents.mapHelpScreen;
+  | CommonStackComponents.mapHelpScreen
+  | CommonStackComponents.cruiseHelpScreen;
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
   return (
@@ -772,6 +776,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.mapHelpScreen}
         component={MapHelpScreen}
         options={{title: 'Map Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.cruiseHelpScreen}
+        component={CruiseHelpScreen}
+        options={{title: 'Cruise Help'}}
       />
     </>
   );
