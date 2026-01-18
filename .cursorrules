@@ -45,3 +45,7 @@ iOS doesn't provide clipboard feedback. Use the `useClipboard()` hook from `src/
 - Queries are in `src/Queries/`
 - Hooks are in `src/Hooks/`
 - Context is in `src/Context/`
+
+## Cursor Debugging
+
+To POST logs to the Cursor log listener different endpoints may be needed based on the platform. iOS can use `127.0.0.1`. Android should use `10.0.2.2`. Optionally prompt the user perform an `adb reverse` port mapping prior to testing during offline/airplane mode.
