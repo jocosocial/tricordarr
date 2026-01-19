@@ -61,6 +61,7 @@ import {ScheduleOverlapScreen} from '#src/Screens/Schedule/ScheduleOverlapScreen
 import {SeamailAddParticipantScreen} from '#src/Screens/Seamail/SeamailAddParticipantScreen';
 import {SeamailCreateScreen} from '#src/Screens/Seamail/SeamailCreateScreen';
 import {SeamailEditScreen} from '#src/Screens/Seamail/SeamailEditScreen';
+import {SeamailCreateHelpScreen} from '#src/Screens/Seamail/SeamailCreateHelpScreen';
 import {SeamailHelpScreen} from '#src/Screens/Seamail/SeamailHelpScreen';
 import {SeamailListHelpScreen} from '#src/Screens/Seamail/SeamailListHelpScreen';
 import {SeamailSearchHelpScreen} from '#src/Screens/Seamail/SeamailSearchHelpScreen';
@@ -237,6 +238,7 @@ export type CommonStackParamList = {
   SeamailHelpScreen: undefined;
   SeamailListHelpScreen: undefined;
   SeamailSearchHelpScreen: undefined;
+  SeamailCreateHelpScreen: undefined;
   FezChatHelpScreen: undefined;
   FezChatDetailsHelpScreen: undefined;
   SiteUILinkScreen: undefined;
@@ -341,6 +343,7 @@ export enum CommonStackComponents {
   seamailHelpScreen = 'SeamailHelpScreen',
   seamailListHelpScreen = 'SeamailListHelpScreen',
   seamailSearchHelpScreen = 'SeamailSearchHelpScreen',
+  seamailCreateHelpScreen = 'SeamailCreateHelpScreen',
   fezChatHelpScreen = 'FezChatHelpScreen',
   fezChatDetailsHelpScreen = 'FezChatDetailsHelpScreen',
   siteUILinkScreen = 'SiteUILinkScreen',
@@ -391,6 +394,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.seamailHelpScreen
   | CommonStackComponents.seamailListHelpScreen
   | CommonStackComponents.seamailSearchHelpScreen
+  | CommonStackComponents.seamailCreateHelpScreen
   | CommonStackComponents.fezChatHelpScreen
   | CommonStackComponents.fezChatDetailsHelpScreen
   | CommonStackComponents.performerHelpScreen
@@ -655,6 +659,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.seamailSearchHelpScreen}
         component={SeamailSearchHelpScreen}
         options={{title: 'Seamail Search Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailCreateHelpScreen}
+        component={SeamailCreateHelpScreen}
+        options={{title: 'Seamail Create Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.fezChatHelpScreen}

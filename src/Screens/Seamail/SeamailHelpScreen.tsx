@@ -38,6 +38,12 @@ export const SeamailHelpScreen = () => {
             onPress={() => commonNavigation.push(CommonStackComponents.seamailListHelpScreen)}
           />
           <DataFieldListItem
+            title={'Create'}
+            description={'Create a new seamail conversation with participants and an initial message.'}
+            icon={AppIcons.new}
+            onPress={() => commonNavigation.push(CommonStackComponents.seamailCreateHelpScreen)}
+          />
+          <DataFieldListItem
             title={'Search'}
             description={'Search through your seamail conversations by keyword.'}
             icon={AppIcons.search}

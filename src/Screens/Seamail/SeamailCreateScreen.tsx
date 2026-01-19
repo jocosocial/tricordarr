@@ -1,15 +1,19 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikProps} from 'formik';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {View} from 'react-native';
+import {Item} from 'react-navigation-header-buttons';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {SeamailCreateForm} from '#src/Components/Forms/SeamailCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
+import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
@@ -22,7 +26,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamai
 
 export const SeamailCreateScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.seamailCreateHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail/create'}>
         <SeamailCreateScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -121,6 +125,26 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
   const onSubmit = useCallback(() => {
     seamailCreateFormRef.current?.submitForm();
   }, []);
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.seamailCreateHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>
