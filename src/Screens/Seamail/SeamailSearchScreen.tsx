@@ -18,7 +18,7 @@ type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seam
 
 export const SeamailSearchScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.seamailSearchHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
         <SeamailSearchScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -34,7 +34,7 @@ const SeamailSearchScreenInner = ({navigation, route}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.seamailHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.seamailSearchHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>
