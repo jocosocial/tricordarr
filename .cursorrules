@@ -49,3 +49,10 @@ iOS doesn't provide clipboard feedback. Use the `useClipboard()` hook from `src/
 ## Cursor Debugging
 
 To POST logs to the Cursor log listener different endpoints may be needed based on the platform. iOS can use `127.0.0.1`. Android should use `10.0.2.2`. Optionally prompt the user perform an `adb reverse` port mapping prior to testing during offline/airplane mode.
+
+## Help Screens
+Help screens should have a section for "Actions" if there are buttons within the header, either within a menu or directly. The back button should not be included unless it has very special properties (such as `SiteUIScreenBase.tsx`). Actions should be listed in order of header then within any menus.
+
+Buttons that are used in multiple screens such as Help or Share should have re-usable components for their help entry (such as `HelpButtonHelpTopicView.tsx` or `ShareButtonHelpTopicView.tsx`).
+
+Newly created Help screens should be linked within the `HelpManualScreen.tsx`.
