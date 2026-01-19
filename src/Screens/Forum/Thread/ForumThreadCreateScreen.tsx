@@ -9,6 +9,7 @@ import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {ForumCreateForm} from '#src/Components/Forms/Forum/ForumCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
@@ -39,6 +40,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   const [forumFormValid, setForumFormValid] = useState(false);
   const forumCreateMutation = useForumCreateMutation();
   const queryClient = useQueryClient();
+  const maxForumPostImages = useMaxForumPostImages();
   // Use a ref to store the created forum data immediately (synchronously) to avoid race condition
   const createdForumRef = useRef<ForumData | null>(null);
 
@@ -111,7 +113,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
         onPress={onSubmit}
         enablePhotos={true}
         maxLength={2000}
-        maxPhotos={4}
+        maxPhotos={maxForumPostImages}
         disabled={!forumFormValid}
       />
     </AppView>

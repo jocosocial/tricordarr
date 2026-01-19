@@ -19,6 +19,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
@@ -66,6 +67,7 @@ export const ForumThreadScreenBase = ({
   const postCreateMutation = useForumPostCreateMutation();
   const flatListRef = useRef<TConversationListRef>(null);
   const {hasModerator} = usePrivilege();
+  const maxForumPostImages = useMaxForumPostImages();
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
@@ -262,7 +264,7 @@ export const ForumThreadScreenBase = ({
           formRef={postFormRef}
           enablePhotos={true}
           maxLength={2000}
-          maxPhotos={4}
+          maxPhotos={maxForumPostImages}
         />
       )}
     </AppView>

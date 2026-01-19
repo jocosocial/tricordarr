@@ -7,6 +7,7 @@ import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumPostUpdateMutation} from '#src/Queries/Forum/ForumPostMutations';
@@ -31,6 +32,7 @@ export const ForumPostEditScreen = (props: Props) => {
 const ForumPostEditScreenInner = ({route, navigation}: Props) => {
   const postUpdateMutation = useForumPostUpdateMutation();
   const queryClient = useQueryClient();
+  const maxForumPostImages = useMaxForumPostImages();
 
   const onSubmit = (values: PostContentData, helpers: FormikHelpers<PostContentData>) => {
     values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
@@ -75,7 +77,7 @@ const ForumPostEditScreenInner = ({route, navigation}: Props) => {
         onSubmit={onSubmit}
         enablePhotos={true}
         maxLength={2000}
-        maxPhotos={4}
+        maxPhotos={maxForumPostImages}
         initialValues={initialValues}
       />
     </AppView>

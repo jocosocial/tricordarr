@@ -20,6 +20,7 @@ export const STALE = {
   },
   HOURS: {
     ONE: HOUR,
+    TWENTY_FOUR: 24 * HOUR,
   },
   INFINITY: Infinity,
 };

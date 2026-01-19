@@ -427,7 +427,7 @@ export interface ErrorResponse {
 export interface PostContentData {
   /// The new text of the forum post.
   text: string;
-  /// An array of up to 4 images (1 when used in a Fez post). Each image can specify either new image data or an existing image filename.
+  /// An array of images (up to 8 for Shutternauts, otherwise up to `maxForumPostImages` from server settings, 1 when used in a Fez post). Each image can specify either new image data or an existing image filename.
   /// For new posts, images will generally contain all new image data. When editing existing posts, images may contain a mix of new and existing images.
   /// Reorder ImageUploadDatas to change presentation order. Set images to [] to remove images attached to post when editing.
   images: ImageUploadData[];
@@ -1311,6 +1311,10 @@ export interface ClientSettingsData {
   shipWifiSSID?: string;
   /// If TRUE, users can create accounts, log in, and edit their profile before the cruise in a restricted pre-registration mode.
   enablePreregistration: boolean;
+  /// Minimum user access level required to use the full server (e.g., "banned", "verified", "moderator", "admin")
+  minAccessLevel: string;
+  /// Maximum number of images allowed per forum post.
+  maxForumPostImages: number;
   /// Unique identifier for this Postgres database installation (from pg_control_system())
   installationID: string;
 }

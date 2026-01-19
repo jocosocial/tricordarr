@@ -1,6 +1,7 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {isAxiosError} from 'axios';
 
+import {STALE} from '#src/Libraries/Time/Time';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useOpenQuery, usePublicQuery} from '#src/Queries/OpenQuery';
 import {ClientSettingsData, HealthResponse, SwiftarrClientConfig} from '#src/Structs/ControllerStructs';
@@ -60,6 +61,7 @@ export const useClientConfigQuery = (options = {}) => {
  */
 export const useClientSettingsQuery = (options = {}) => {
   return useOpenQuery<ClientSettingsData>('/client/settings', {
+    staleTime: STALE.HOURS.TWENTY_FOUR,
     ...options,
   });
 };
