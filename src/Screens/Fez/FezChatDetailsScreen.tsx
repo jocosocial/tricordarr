@@ -2,21 +2,19 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
-import {FezParticipantFavoriteAllItem} from '#src/Components/Lists/Items/FezParticipantFavoriteAllItem';
 import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {FezChatDetailsScreenActionsMenu} from '#src/Components/Menus/Fez/FezChatDetailsScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
-import {AppIcons} from '#src/Enums/Icons';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
@@ -57,24 +55,18 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
     );
   };
 
-  const getHeaderRight = useCallback(
-    () => (
+  const getHeaderRight = useCallback(() => {
+    if (!fez) {
+      return <></>;
+    }
+    return (
       <View>
         <MaterialHeaderButtons left>
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => {
-              if (fez) {
-                navigation.push(FezType.getHelpRoute(fez.fezType));
-              }
-            }}
-          />
+          <FezChatDetailsScreenActionsMenu fez={fez} />
         </MaterialHeaderButtons>
       </View>
-    ),
-    [fez, navigation],
-  );
+    );
+  }, [fez]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -128,10 +120,6 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
                 onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
               />
             ))}
-        </ListSection>
-        <DataFieldListItem title={'Participant Actions'} />
-        <ListSection>
-          <FezParticipantFavoriteAllItem fez={fez} />
         </ListSection>
       </ScrollingContentView>
     </AppView>
