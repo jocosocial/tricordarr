@@ -39,7 +39,7 @@ export const SeamailHelpScreen = () => {
         <DataFieldListItem
           title={'Seamail Chat'}
           description={'Send messages and interact in conversations.'}
-          icon={AppIcons.seamail}
+          icon={AppIcons.chat}
           onPress={() => commonNavigation.push(CommonStackComponents.fezChatHelpScreen)}
         />
         <DataFieldListItem

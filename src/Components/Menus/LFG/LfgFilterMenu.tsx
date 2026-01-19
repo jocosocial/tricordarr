@@ -2,12 +2,11 @@ import React from 'react';
 import {Divider} from 'react-native-paper';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
-import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {FezType} from '#src/Enums/FezType';
-import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 
 interface LfgFilterMenuProps {
@@ -48,15 +47,7 @@ export const LfgFilterMenu = ({showTypes = true, enableUnread = false}: LfgFilte
 
   const anyActiveFilter = lfgTypeFilter || lfgHidePastFilter || lfgOnlyNew === true;
 
-  const menuAnchor = (
-    <MenuAnchor
-      title={'Filter'}
-      active={!!anyActiveFilter}
-      iconName={AppIcons.filter}
-      onPress={openMenu}
-      onLongPress={clearFilters}
-    />
-  );
+  const menuAnchor = <FilterMenuAnchor active={!!anyActiveFilter} onPress={openMenu} onLongPress={clearFilters} />;
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>

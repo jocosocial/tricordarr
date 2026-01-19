@@ -2,14 +2,13 @@ import React from 'react';
 import {Divider} from 'react-native-paper';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
-import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {EventType} from '#src/Enums/EventType';
-import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 
 export const ScheduleEventFilterMenu = () => {
@@ -102,15 +101,7 @@ export const ScheduleEventFilterMenu = () => {
     eventLfgOpenFilter ||
     eventShutternautFilter !== undefined;
 
-  const menuAnchor = (
-    <MenuAnchor
-      active={!!anyActiveFilter}
-      title={'Filter'}
-      iconName={AppIcons.filter}
-      onPress={openMenu}
-      onLongPress={clearFilters}
-    />
-  );
+  const menuAnchor = <FilterMenuAnchor active={!!anyActiveFilter} onPress={openMenu} onLongPress={clearFilters} />;
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>

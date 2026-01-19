@@ -7,7 +7,7 @@ export enum AppIcons {
   seamailActive = 'email',
   krakentalkCreate = 'phone-outgoing',
   krakentalk = 'phone',
-  chat = 'chat',
+  chat = 'chat-outline',
   details = 'account-details',
   // Profile
   privateNoteEdit = 'note-edit',
@@ -68,7 +68,8 @@ export enum AppIcons {
   time = 'clock-check',
   logout = 'logout',
   registrationCode = 'barcode',
-  filter = 'filter-menu',
+  filter = 'filter-menu-outline',
+  filterActive = 'filter-menu',
   cruiseDay = 'calendar-today',
   search = 'magnify',
   // LFG
