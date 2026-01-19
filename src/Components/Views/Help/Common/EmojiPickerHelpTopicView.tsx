@@ -11,12 +11,20 @@ export const EmojiPickerHelpTopicView = () => {
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
+    emojiContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+    },
     emojiRow: {
       ...commonStyles.flexRow,
       ...commonStyles.marginBottomSmall,
       ...commonStyles.alignItemsCenter,
+      width: '48%',
+      marginHorizontal: '1%',
     },
-    emojiContainer: {
+    emojiIconContainer: {
       ...commonStyles.marginRightSmall,
     },
     emojiText: {
@@ -39,16 +47,18 @@ export const EmojiPickerHelpTopicView = () => {
         Available emoji:
       </HelpTopicView>
       <PaddedContentView>
-        {emojiList.map(emojiName => (
-          <View key={emojiName} style={styles.emojiRow}>
-            <View style={styles.emojiContainer}>
-              <Emoji emojiName={emojiName} style={styles.emojiText} />
+        <View style={styles.emojiContainer}>
+          {emojiList.map(emojiName => (
+            <View key={emojiName} style={styles.emojiRow}>
+              <View style={styles.emojiIconContainer}>
+                <Emoji emojiName={emojiName} style={styles.emojiText} />
+              </View>
+              <Text selectable={true} style={styles.emojiNameText}>
+                {emojiName}
+              </Text>
             </View>
-            <Text selectable={true} style={styles.emojiNameText}>
-              {emojiName}
-            </Text>
-          </View>
-        ))}
+          ))}
+        </View>
       </PaddedContentView>
     </>
   );
