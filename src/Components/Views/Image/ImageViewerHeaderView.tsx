@@ -44,6 +44,7 @@ export const ImageViewerHeaderView = ({
     },
     infoText: {
       ...commonStyles.marginBottomSmall,
+      ...commonStyles.onImageViewer,
     },
   });
 
