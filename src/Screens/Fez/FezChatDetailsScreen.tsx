@@ -15,6 +15,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
@@ -35,6 +36,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const [fez, setFez] = useState<FezData>();
   const {data: profilePublicData} = useUserProfileQuery();
   const queryClient = useQueryClient();
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
 
   const onParticipantRemove = (fezID: string, userID: string) => {
     participantMutation.mutate(
@@ -93,7 +95,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <DataFieldListItem title={'Title'} description={fez.title} />
         <DataFieldListItem title={'Type'} description={fez.fezType} />
         {fez.members && <DataFieldListItem title={'Total Posts'} description={fez.members?.postCount} />}
