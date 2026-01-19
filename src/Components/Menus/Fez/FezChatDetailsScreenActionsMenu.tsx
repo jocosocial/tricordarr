@@ -5,10 +5,9 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
@@ -93,22 +92,15 @@ export const FezChatDetailsScreenActionsMenu = ({fez}: FezChatDetailsScreenActio
 
   const handleHelp = React.useCallback(() => {
     closeMenu();
-    const helpRoute = FezType.getHelpRoute(fez.fezType);
-    if (helpRoute) {
-      commonNavigation.push(helpRoute);
-    }
-  }, [fez.fezType, commonNavigation, closeMenu]);
+    commonNavigation.push(CommonStackComponents.fezChatDetailsHelpScreen);
+  }, [commonNavigation, closeMenu]);
 
   return (
     <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <Menu.Item
-        title={'Favorite All Users'}
-        leadingIcon={AppIcons.favorite}
-        onPress={handleFavoriteAll}
-      />
+      <Menu.Item title={'Favorite All Users'} leadingIcon={AppIcons.favorite} onPress={handleFavoriteAll} />
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />
     </AppMenu>
   );

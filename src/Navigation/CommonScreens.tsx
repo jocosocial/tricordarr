@@ -11,7 +11,9 @@ import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScree
 import {EventScreen} from '#src/Screens/Event/EventScreen';
 import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
+import {FezChatDetailsHelpScreen} from '#src/Screens/Fez/FezChatDetailsHelpScreen';
 import {FezChatDetailsScreen} from '#src/Screens/Fez/FezChatDetailsScreen';
+import {FezChatHelpScreen} from '#src/Screens/Fez/FezChatHelpScreen';
 import {FezChatScreen} from '#src/Screens/Fez/FezChatScreen';
 import {ForumHelpScreen} from '#src/Screens/Forum/ForumHelpScreen';
 import {ForumPostEditScreen} from '#src/Screens/Forum/Post/ForumPostEditScreen';
@@ -60,6 +62,7 @@ import {SeamailAddParticipantScreen} from '#src/Screens/Seamail/SeamailAddPartic
 import {SeamailCreateScreen} from '#src/Screens/Seamail/SeamailCreateScreen';
 import {SeamailEditScreen} from '#src/Screens/Seamail/SeamailEditScreen';
 import {SeamailHelpScreen} from '#src/Screens/Seamail/SeamailHelpScreen';
+import {SeamailListHelpScreen} from '#src/Screens/Seamail/SeamailListHelpScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
 import {ConfigServerUrlScreen} from '#src/Screens/Settings/Config/ConfigServerUrlScreen';
@@ -231,6 +234,9 @@ export type CommonStackParamList = {
     forum?: ForumListData | ForumData;
   };
   SeamailHelpScreen: undefined;
+  SeamailListHelpScreen: undefined;
+  FezChatHelpScreen: undefined;
+  FezChatDetailsHelpScreen: undefined;
   SiteUILinkScreen: undefined;
   PerformerScreen: {
     id: string;
@@ -331,6 +337,9 @@ export enum CommonStackComponents {
   scheduleHelpScreen = 'ScheduleHelpScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
+  seamailListHelpScreen = 'SeamailListHelpScreen',
+  fezChatHelpScreen = 'FezChatHelpScreen',
+  fezChatDetailsHelpScreen = 'FezChatDetailsHelpScreen',
   siteUILinkScreen = 'SiteUILinkScreen',
   performerScreen = 'PerformerScreen',
   performerHelpScreen = 'PerformerHelpScreen',
@@ -377,6 +386,9 @@ export type HelpScreenComponents =
   | CommonStackComponents.userDirectoryHelpScreen
   | CommonStackComponents.forumHelpScreen
   | CommonStackComponents.seamailHelpScreen
+  | CommonStackComponents.seamailListHelpScreen
+  | CommonStackComponents.fezChatHelpScreen
+  | CommonStackComponents.fezChatDetailsHelpScreen
   | CommonStackComponents.performerHelpScreen
   | CommonStackComponents.siteUIHelpScreen
   | CommonStackComponents.disabledHelpScreen
@@ -629,6 +641,21 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.seamailHelpScreen}
         component={SeamailHelpScreen}
         options={{title: 'Seamail Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailListHelpScreen}
+        component={SeamailListHelpScreen}
+        options={{title: 'Seamail List Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.fezChatHelpScreen}
+        component={FezChatHelpScreen}
+        options={{title: 'Chat Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.fezChatDetailsHelpScreen}
+        component={FezChatDetailsHelpScreen}
+        options={{title: 'Chat Details Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.siteUILinkScreen}

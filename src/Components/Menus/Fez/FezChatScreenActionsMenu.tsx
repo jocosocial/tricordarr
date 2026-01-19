@@ -101,10 +101,7 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
         leadingIcon={AppIcons.help}
         onPress={() => {
           closeMenu();
-          const helpRoute = FezType.getHelpRoute(fez.fezType);
-          if (helpRoute) {
-            commonNavigation.push(helpRoute);
-          }
+          commonNavigation.push(CommonStackComponents.fezChatHelpScreen);
         }}
       />
     </AppMenu>
