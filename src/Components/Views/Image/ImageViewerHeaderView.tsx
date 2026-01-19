@@ -83,7 +83,7 @@ export const ImageViewerHeaderView = ({
       {showMetadata && (
         <PaddedContentView padTop={true} style={styles.textContainer}>
           <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
-            mimeType: {viewerImages[imageIndex].mimeType}
+            mimeType: {image.mimeType}
           </Text>
           <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
             mode: {image.mode}
