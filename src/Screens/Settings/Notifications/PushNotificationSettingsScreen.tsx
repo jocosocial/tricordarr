@@ -184,13 +184,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
     },
     {
       title: 'Events',
-      categories: [
-        'followedEventStarting',
-        'personalEventStarting',
-        'addedToPrivateEvent',
-        'privateEventUnreadMsg',
-        'privateEventCanceled',
-      ] as const,
+      categories: ['followedEventStarting'] as const,
     },
     {
       title: 'Forum',
@@ -207,6 +201,15 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
     {
       title: 'MicroKaraoke',
       categories: ['microKaraokeSongReady'] as const,
+    },
+    {
+      title: 'Personal Events',
+      categories: [
+        'personalEventStarting',
+        'addedToPrivateEvent',
+        'privateEventUnreadMsg',
+        'privateEventCanceled',
+      ] as const,
     },
     {
       title: 'Seamail',
