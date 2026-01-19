@@ -1,4 +1,5 @@
 import React from 'react';
+import {Linking} from 'react-native';
 import {Hyperlink} from 'react-native-hyperlink';
 import {ReactElementWithType} from 'react-native-hyperlink/dist/typescript/src/types';
 import URLParse from 'url-parse';
@@ -41,7 +42,12 @@ export const HyperlinkText = ({children, disableLinkInterpolation = false}: Hype
   const handleLink = (linkUrl?: string) => {
     if (linkUrl) {
       console.log(`[HyperlinkText.tsx] opening link to ${linkUrl}`);
-      openWebUrl(linkUrl);
+      if (disableLinkInterpolation) {
+        // Open externally, not using the openWebUrl function.
+        Linking.openURL(linkUrl);
+      } else {
+        openWebUrl(linkUrl);
+      }
     }
   };
 
