@@ -11,5 +11,5 @@ interface EmojiProps {
 
 export const Emoji = ({emojiName, style}: EmojiProps) => {
   const {commonStyles} = useStyles();
-  return <Image source={CustomEmoji[emojiName]} style={[commonStyles.emoji, style]} />;
+  return <Image source={CustomEmoji[emojiName].source} style={[commonStyles.emoji, style]} />;
 };

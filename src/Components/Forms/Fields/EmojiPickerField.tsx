@@ -32,15 +32,17 @@ export const EmojiPickerField = () => {
 
   return (
     <View style={styles.outerView}>
-      {Object.keys(CustomEmoji).map((emoji, index) => {
-        return (
-          <IconButton
-            key={index}
-            onPress={() => handleEmojiPress(emoji)}
-            icon={() => getEmojiIcon(emoji as keyof typeof CustomEmoji)}
-          />
-        );
-      })}
+      {Object.keys(CustomEmoji)
+        .filter(emoji => !CustomEmoji[emoji as keyof typeof CustomEmoji].secret)
+        .map((emoji, index) => {
+          return (
+            <IconButton
+              key={index}
+              onPress={() => handleEmojiPress(emoji)}
+              icon={() => getEmojiIcon(emoji as keyof typeof CustomEmoji)}
+            />
+          );
+        })}
     </View>
   );
 };

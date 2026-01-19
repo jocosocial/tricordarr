@@ -27,7 +27,9 @@ export const EmojiPickerHelpTopicView = () => {
     },
   });
 
-  const emojiList = Object.keys(CustomEmoji) as Array<keyof typeof CustomEmoji>;
+  const emojiList = Object.keys(CustomEmoji).filter(
+    emoji => !CustomEmoji[emoji as keyof typeof CustomEmoji].secret,
+  ) as Array<keyof typeof CustomEmoji>;
 
   return (
     <>
