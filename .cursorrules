@@ -59,6 +59,6 @@ Buttons that are used in multiple screens such as Help or Share should have re-u
 
 Newly created Help screens should be linked within the `HelpManualScreen.tsx`.
 
-Any FABs should generally have their own `HelpChapterTitleView` and describe what they do. If it's a `BaseFAB` component it should implement one or more `HelpTopicView`. A `BaseFABGroup` should implement one `HelpTopicView` for each action within the FAB Group.
+Any FABs should generally have their own `HelpChapterTitleView` and describe what they do. If it's a `BaseFAB` component it should implement one or more `HelpTopicView`. A `BaseFABGroup` should implement one `HelpTopicView` for each action within the FAB Group. The FABs should be listed before the Actions in the help screen. The actual FAB (be it a `BaseFABGroup` or `BaseFAB`) should implement a `HelpFABView` that matches the label and icon of the FAB.
 
 All help screens should be added to the `HelpScreenComponents` type union.

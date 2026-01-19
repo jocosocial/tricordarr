@@ -17,34 +17,37 @@ export const FezChatHelpScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>
-        <HelpChapterTitleView title={'General'} />
-        <HelpTopicView>
-          The chat screen is where you send and receive messages in a seamail conversation. Messages appear in
-          chronological order, and you can scroll up to load older messages.
-        </HelpTopicView>
-        <HelpChapterTitleView title={'Content'} />
-        <HelpTopicView>
-          You can send text, unicode emojis, and our custom emojis. You cannot send pictures. This is intentional.
-        </HelpTopicView>
-        <HelpTopicView>
-          Messages made in Open seamails can be reported to the moderation team by long-pressing on the message and
-          selecting Report.
-        </HelpTopicView>
-        <HelpTopicView>
-          You can long-press on a message to access a menu of additional actions such as copy to clipboard.
-        </HelpTopicView>
-        <HelpChapterTitleView title={'Actions'} />
-        <HelpTopicView title={'Create Event'} icon={AppIcons.eventCreate}>
-          Schedule a personal event with the users in this seamail conversation. This button only appears for seamail
-          conversations that have participants.
-        </HelpTopicView>
-        <ReloadButtonHelpTopicView />
-        <DetailsButtonHelpTopicView />
-        <EditButtonHelpTopicView />
-        <MuteButtonHelpTopicView />
-        <PostAsModeratorHelpTopicView />
-        <PostAsTwitarrTeamHelpTopicView />
-        <HelpButtonHelpTopicView />
+        <HelpChapterTitleView title={'General'}>
+          <HelpTopicView>
+            The chat screen is where you send and receive messages in a seamail conversation. Messages appear in
+            chronological order, and you can scroll up to load older messages.
+          </HelpTopicView>
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Content'}>
+          <HelpTopicView>
+            You can send text, unicode emojis, and our custom emojis. You cannot send pictures. This is intentional.
+          </HelpTopicView>
+          <HelpTopicView>
+            Messages made in Open seamails can be reported to the moderation team by long-pressing on the message and
+            selecting Report.
+          </HelpTopicView>
+          <HelpTopicView>
+            You can long-press on a message to access a menu of additional actions such as copy to clipboard.
+          </HelpTopicView>
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Actions'}>
+          <HelpTopicView title={'Create Event'} icon={AppIcons.eventCreate}>
+            Schedule a personal event with the users in this seamail conversation. This button only appears for seamail
+            conversations that have participants.
+          </HelpTopicView>
+          <ReloadButtonHelpTopicView />
+          <DetailsButtonHelpTopicView />
+          <EditButtonHelpTopicView />
+          <MuteButtonHelpTopicView />
+          <PostAsModeratorHelpTopicView />
+          <PostAsTwitarrTeamHelpTopicView />
+          <HelpButtonHelpTopicView />
+        </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>
   );

@@ -5,6 +5,7 @@ import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
+import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 
 export const ForumThreadScreenFilterMenu = () => {
