@@ -3,11 +3,11 @@ import {StyleSheet, Text, View} from 'react-native';
 import {List} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {BoardgameListItemSwipeable} from '#src/Components/Swipeables/BoardgameListItemSwipeable';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
-import {BoardgameListItemSwipeable} from '#src/Components/Swipeables/BoardgameListItemSwipeable';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 
 interface BoardgameListItemProps {

@@ -1,8 +1,8 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {isAxiosError} from 'axios';
 
-import {STALE} from '#src/Libraries/Time/Time';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {STALE} from '#src/Libraries/Time/Time';
 import {useOpenQuery, usePublicQuery} from '#src/Queries/OpenQuery';
 import {ClientSettingsData, HealthResponse, SwiftarrClientConfig} from '#src/Structs/ControllerStructs';
 

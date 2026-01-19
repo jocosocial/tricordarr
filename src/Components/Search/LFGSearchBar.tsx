@@ -2,7 +2,6 @@ import {FlashList} from '@shopify/flash-list';
 import React, {useEffect, useRef, useState} from 'react';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {SearchBarBase, useSafePagination} from '#src/Components/Search/SearchBarBase';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
@@ -77,7 +76,9 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
       <ScheduleFlatList
         listRef={listRef}
         items={lfgList}
-        refreshControl={<AppRefreshControl refreshing={isFetching || refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />}
+        refreshControl={
+          <AppRefreshControl refreshing={isFetching || refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />
+        }
         separator={'day'}
         handleLoadNext={safeHandleLoadNext}
         hasNextPage={effectiveHasNextPage}

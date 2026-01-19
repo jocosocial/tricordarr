@@ -16,7 +16,7 @@ export const SetOrganizerMenuItem = (props: SetOrganizerMenuItemProps) => {
   const handlePress = () => {
     props.closeMenu();
     commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
-      eventID: props.eventID,
+      eventID: String(props.eventID),
     });
   };
 

@@ -93,7 +93,7 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(MainStackComponents.photostreamHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.photostreamHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>
