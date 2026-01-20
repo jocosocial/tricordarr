@@ -2,6 +2,7 @@ import React from 'react';
 
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {DailyThemeHelpTopicView} from '#src/Components/Views/Help/Common/DailyThemeHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -24,10 +25,7 @@ export const TodayHelpScreen = () => {
           Important announcements from THO and the TwitarrTeam appear prominently on the Today screen. These may include
           schedule changes, important reminders, or other critical information.
         </HelpTopicView>
-        <HelpTopicView title={'Daily Theme'}>
-          Most days of the cruise has a theme. The Today screen displays the current day's theme, which may inspire
-          costumes, activities, or conversations.
-        </HelpTopicView>
+        <DailyThemeHelpTopicView />
         <HelpTopicView title={'Next Appointment'}>
           Your next scheduled event, personal event, or joined LFG will appear on the Today screen, making it easy to
           see what's coming up next in your day.

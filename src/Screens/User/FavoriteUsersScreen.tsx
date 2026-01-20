@@ -47,7 +47,7 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.userRelationsHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.userDirectoryHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>

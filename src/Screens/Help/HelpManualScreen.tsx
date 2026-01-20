@@ -68,7 +68,7 @@ export const HelpManualScreen = () => {
           title={'User Relations'}
           description={'Blocking, muting, and favoriting users.'}
           icon={AppIcons.userFavorite}
-          onPress={() => commonNavigation.push(CommonStackComponents.userRelationsHelpScreen)}
+          onPress={() => commonNavigation.push(CommonStackComponents.userDirectoryHelpScreen)}
         />
         <DataFieldListItem
           title={'User Directory'}
@@ -129,7 +129,7 @@ export const HelpManualScreen = () => {
         />
         <DataFieldListItem
           title={'Cruise Help'}
-          description={'How to find administrative assistance at sea and on land during the cruise.'}
+          description={'Information about the JoCo Cruise event.'}
           icon={AppIcons.help}
           onPress={() => commonNavigation.push(CommonStackComponents.cruiseHelpScreen)}
         />

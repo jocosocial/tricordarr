@@ -86,7 +86,6 @@ import {UserProfileEditScreen} from '#src/Screens/User/UserProfileEditScreen';
 import {UserProfileHelpScreen} from '#src/Screens/User/UserProfileHelpScreen';
 import {UserProfileScreen} from '#src/Screens/User/UserProfileScreen';
 import {UserRegCodeScreen} from '#src/Screens/User/UserRegCodeScreen';
-import {UserRelationsHelpScreen} from '#src/Screens/User/UserRelationsHelpScreen';
 import {UserSelfProfileScreen} from '#src/Screens/User/UserSelfProfileScreen';
 import {
   CategoryData,
@@ -227,7 +226,6 @@ export type CommonStackParamList = {
     initialUserHeaders?: UserHeader[];
   };
   UserProfileHelpScreen: undefined;
-  UserRelationsHelpScreen: undefined;
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
   FavoriteUsersScreen: undefined;
@@ -336,7 +334,6 @@ export enum CommonStackComponents {
   personalEventEditScreen = 'PersonalEventEditScreen',
   personalEventCreateScreen = 'PersonalEventCreateScreen',
   userProfileHelpScreen = 'UserProfileHelpScreen',
-  userRelationsHelpScreen = 'UserRelationsHelpScreen',
   blockUsers = 'BlockUsersScreen',
   muteUsers = 'MuteUsersScreen',
   favoriteUsers = 'FavoriteUsersScreen',
@@ -393,7 +390,6 @@ export type HelpScreenComponents =
   | CommonStackComponents.preRegistrationHelpScreen
   | CommonStackComponents.moderatorHelpScreen
   | CommonStackComponents.scheduleHelpScreen
-  | CommonStackComponents.userRelationsHelpScreen
   | CommonStackComponents.userDirectoryHelpScreen
   | CommonStackComponents.forumHelpScreen
   | CommonStackComponents.seamailHelpScreen
@@ -611,11 +607,6 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Help'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.userRelationsHelpScreen}
-        component={UserRelationsHelpScreen}
-        options={{title: 'User Relations Help'}}
-      />
-      <Stack.Screen
         name={CommonStackComponents.blockUsers}
         component={BlockUsersScreen}
         options={{title: 'Blocked Users'}}
@@ -713,7 +704,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.lfgHelpScreen}
         component={LfgHelpScreen}
-        options={{title: 'Looking For Group (LFG) Help'}}
+        options={{title: 'Looking For Group Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgCreateHelpScreen}
