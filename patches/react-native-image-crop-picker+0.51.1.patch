@@ -1,0 +1,17 @@
+diff --git a/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm b/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
+index 354ad09..93e0300 100644
+--- a/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
++++ b/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
+@@ -175,6 +175,12 @@ - (UIViewController*) getRootVC {
+                 picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+             }
+ 
++            // Set flash mode to Off by default.
++            // This prevents the flash from firing automatically (which happens with Auto mode).
++            // Allegedly iOS does not expose the users flash preference. And IMO "Auto"/On is an
++            // insane default choice in the year 2026.
++            picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
++            
+             [[self getRootVC] presentViewController:picker animated:YES completion:nil];
+         });
+     }];
