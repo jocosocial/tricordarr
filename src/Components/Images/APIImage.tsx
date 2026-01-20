@@ -62,7 +62,6 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
   const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const [imageSource, setImageSource] = useState<FastImageSource | undefined>(undefined);
-  const [cardCoverSource, setCardCoverSource] = useState<{uri: string} | undefined>(undefined);
   const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
@@ -87,6 +86,12 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
       borderRadius: 12,
       padding: 4,
       zIndex: 1,
+    },
+    cardCover: {
+      height: 195,
+      ...commonStyles.fullWidth,
+      ...commonStyles.roundedBorderCard,
+      overflow: 'hidden',
     },
   });
 
@@ -175,9 +180,6 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
       }
       const thumbSource = {uri: imageSourceMetadata.thumbURI};
       setImageSource(thumbSource);
-      if (mode === 'cardcover') {
-        setCardCoverSource(thumbSource);
-      }
       return;
     }
     if (staticSize === 'identicon') {
@@ -186,9 +188,6 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
       }
       const identiconSource = {uri: imageSourceMetadata.identiconURI};
       setImageSource(identiconSource);
-      if (mode === 'cardcover') {
-        setCardCoverSource(identiconSource);
-      }
       return;
     }
     if (!imageSourceMetadata.fullURI) {
@@ -201,10 +200,6 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
       if (isFullCached) {
         const fullSource = {uri: imageSourceMetadata.fullURI!};
         setImageSource(fullSource);
-        if (mode === 'cardcover') {
-          // Use cached file path to avoid network calls
-          setCardCoverSource({uri: `file://${cachePath}`});
-        }
       } else {
         const fallbackUri = appConfig.skipThumbnails ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI;
         if (!fallbackUri) {
@@ -212,9 +207,6 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
         }
         const fallbackSource = {uri: fallbackUri};
         setImageSource(fallbackSource);
-        if (mode === 'cardcover') {
-          setCardCoverSource(fallbackSource);
-        }
       }
     };
     checkCacheAndSetSource();
@@ -228,17 +220,6 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
   ]);
 
   /**
-   * Effect to set viewerImages for cardcover mode when cardCoverSource is set.
-   * Card.Cover doesn't support onLoad callbacks, so we call onLoad() directly
-   * when we have the source ready to reuse the existing logic.
-   */
-  React.useEffect(() => {
-    if (mode === 'cardcover' && cardCoverSource && imageSourceMetadata) {
-      onLoad();
-    }
-  }, [mode, cardCoverSource, imageSourceMetadata, onLoad]);
-
-  /**
    * If the Images feature of Swiftarr is disabled, then show a generic disabled icon.
    */
   if (isDisabled) {
@@ -249,7 +230,7 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
     );
   }
 
-  if (!imageSource || (mode === 'cardcover' && !cardCoverSource)) {
+  if (!imageSource) {
     return (
       <Card.Content style={styles.loadingCard}>
         <ActivityIndicator />
@@ -264,8 +245,15 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
       <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
         <View style={styles.imageContainer}>
-          {mode === 'cardcover' && cardCoverSource && (
-            <Card.Cover style={style as RNImageStyle} source={cardCoverSource} />
+          {mode === 'cardcover' && (
+            <FastImage
+              resizeMode={'cover'}
+              style={[styles.cardCover, style as FastImageStyle]}
+              source={imageSource}
+              onLoad={onLoad}
+              onError={onError}
+              onProgress={onProgress}
+            />
           )}
           {mode === 'image' && (
             <FastImage
