@@ -6,6 +6,7 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {usePagination} from '#src/Hooks/usePagination';
 import {CategoryData, ForumListData} from '#src/Structs/ControllerStructs';
 
 interface ForumThreadListViewProps {
@@ -45,18 +46,15 @@ export const ForumThreadListView = ({
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
 
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
-  const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
-      setRefreshing(true);
-      fetchPreviousPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {handleLoadNext, handleLoadPrevious} = usePagination({
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    setRefreshing,
+  });
 
   return (
     <>
@@ -68,7 +66,7 @@ export const ForumThreadListView = ({
       <ForumThreadList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
-        handleLoadPrevious={handleLoadPrevious}
+        handleLoadPrevious={handleLoadPrevious!}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}

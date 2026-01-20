@@ -11,6 +11,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {AppIcons} from '#src/Enums/Icons';
+import {usePagination} from '#src/Hooks/usePagination';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
@@ -60,12 +61,12 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     );
   }, [commonNavigation]);
 
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {handleLoadNext} = usePagination({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    setRefreshing,
+  });
 
   useEffect(() => {
     if (refreshOnUserNotification && userNotificationData?.newForumMentionCount) {

@@ -28,6 +28,7 @@ import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReduce
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {usePagination} from '#src/Hooks/usePagination';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -175,23 +176,15 @@ const FezChatScreenInner = ({route}: Props) => {
     [refetch, setSnackbarPayload],
   );
 
-  const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
-      setRefreshing(true);
-      fetchPreviousPage().finally(() => {
-        setRefreshing(false);
-      });
-    }
-  };
-
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => {
-        setRefreshing(false);
-      });
-    }
-  };
+  const {handleLoadNext, handleLoadPrevious} = usePagination({
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    setRefreshing,
+  });
 
   // @TODO Disabling this since the new list component can dynamically load
   // in both directions

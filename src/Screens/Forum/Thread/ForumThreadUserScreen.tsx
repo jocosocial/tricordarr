@@ -11,6 +11,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {usePagination} from '#src/Hooks/usePagination';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -53,18 +54,15 @@ const ForumThreadUserScreenInner = ({route}: Props) => {
     refetch().then(() => setRefreshing(false));
   }, [refetch]);
 
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
-  const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
-      setRefreshing(true);
-      fetchPreviousPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {handleLoadNext, handleLoadPrevious} = usePagination({
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    setRefreshing,
+  });
 
   useEffect(() => {
     if (data && data.pages) {

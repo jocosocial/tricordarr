@@ -10,6 +10,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {usePagination} from '#src/Hooks/usePagination';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameExpansionsQuery} from '#src/Queries/Boardgames/BoardgameQueries';
@@ -47,17 +48,14 @@ const BoardgameExpansionsScreenInner = ({navigation, route}: Props) => {
     isFetching,
   } = useBoardgameExpansionsQuery({boardgameID: route.params.boardgameID});
 
-  const handleLoadNext = async () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      await fetchNextPage();
-    }
-  };
-
-  const handleLoadPrevious = async () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
-      await fetchPreviousPage();
-    }
-  };
+  const {handleLoadNext, handleLoadPrevious} = usePagination({
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+  });
 
   const getNavButtons = useCallback(
     () => (

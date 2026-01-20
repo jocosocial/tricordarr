@@ -13,6 +13,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
@@ -53,17 +54,14 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
     refresh: refetch,
   });
 
-  const handleLoadNext = async () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      await fetchNextPage();
-    }
-  };
-
-  const handleLoadPrevious = async () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
-      await fetchPreviousPage();
-    }
-  };
+  const {handleLoadNext, handleLoadPrevious} = usePagination({
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+  });
 
   const getNavButtons = useCallback(
     () => (

@@ -20,6 +20,7 @@ import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
+import {usePagination} from '#src/Hooks/usePagination';
 import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
@@ -59,13 +60,18 @@ export const LfgListScreen = ({
     listRef,
     clearList: useCallback(() => setFezList([]), []),
   });
-  const {data, refetch, isLoading, isError, fetchNextPage, hasNextPage} = useLfgListQuery({
+  const {data, refetch, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage} = useLfgListQuery({
     endpoint: endpoint,
     fezType: lfgTypeFilter,
     // @TODO we intend to change this some day. Upstream Swiftarr issue.
     cruiseDay: selectedCruiseDay - 1,
     hidePast: lfgHidePastFilter,
     onlyNew: lfgOnlyNew,
+  });
+  const {handleLoadNext} = usePagination({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   });
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
@@ -184,7 +190,7 @@ export const LfgListScreen = ({
               refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
               separator={'day'}
               onScrollThreshold={onScrollThreshold}
-              handleLoadNext={fetchNextPage}
+              handleLoadNext={handleLoadNext}
               hasNextPage={hasNextPage}
               enableReportOnly={enableReportOnly}
               listHeader={listHeader}

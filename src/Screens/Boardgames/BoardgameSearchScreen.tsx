@@ -2,11 +2,12 @@ import React from 'react';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
-import {SearchBarBase, useSafePagination} from '#src/Components/Search/SearchBarBase';
+import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';

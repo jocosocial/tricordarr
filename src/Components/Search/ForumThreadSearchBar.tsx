@@ -6,11 +6,12 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
-import {SearchBarBase, useSafePagination} from '#src/Components/Search/SearchBarBase';
+import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ForumSort} from '#src/Enums/ForumSortFilter';
 import {AppIcons} from '#src/Enums/Icons';
+import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries';
 import {CategoryData, ForumListData} from '#src/Structs/ControllerStructs';

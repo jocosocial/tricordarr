@@ -3,8 +3,9 @@ import React, {useEffect, useRef, useState} from 'react';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
-import {SearchBarBase, useSafePagination} from '#src/Components/Search/SearchBarBase';
+import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {FezListEndpoints} from '#src/Types';

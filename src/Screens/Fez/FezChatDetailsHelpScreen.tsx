@@ -13,8 +13,8 @@ export const FezChatDetailsHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
-            The details screen shows information about the conversation, including the title, type, total number of posts,
-            websocket connection status, and a list of all participants.
+            The details screen shows information about the conversation, including the title, type, total number of
+            posts, websocket connection status, and a list of all participants.
           </HelpTopicView>
           <HelpTopicView>
             If you are the ower of an Open seamail conversation you can add or remove participants from this screen.

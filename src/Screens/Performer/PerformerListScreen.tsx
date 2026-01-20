@@ -14,6 +14,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {usePagination} from '#src/Hooks/usePagination';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -34,7 +35,13 @@ export const PerformerListScreen = (props: Props) => {
 
 const PerformerListScreenInner = ({navigation, route}: Props) => {
   const [performerType, setPerformerType] = useState<PerformerType>(route.params?.performerType || 'official');
-  const {data, refetch, isFetching, fetchNextPage, isLoading} = usePerformersQuery(performerType);
+  const {data, refetch, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading} =
+    usePerformersQuery(performerType);
+  const {handleLoadNext} = usePagination({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  });
   const {commonStyles, styleDefaults} = useStyles();
   const flashListRef = useRef<FlashListRef<PerformerHeaderData>>(null);
   const [performers, setPerformers] = useState<PerformerHeaderData[]>([]);
@@ -112,7 +119,7 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
         renderItem={renderItem}
         data={performers}
         keyExtractor={keyExtractor}
-        handleLoadNext={fetchNextPage}
+        handleLoadNext={handleLoadNext}
         refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
         renderListHeader={renderListHeader}
         renderListFooter={renderListFooter}

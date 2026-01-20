@@ -9,6 +9,7 @@ import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {usePagination} from '#src/Hooks/usePagination';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
 import {PostData, UserNotificationData} from '#src/Structs/ControllerStructs';
@@ -25,12 +26,12 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
   const flatListRef = useRef<FlashListRef<PostData>>(null);
   const queryClient = useQueryClient();
 
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {handleLoadNext} = usePagination({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    setRefreshing,
+  });
 
   useEffect(() => {
     if (data && data.pages) {

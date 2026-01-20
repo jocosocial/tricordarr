@@ -4,8 +4,8 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {usePhotostreamLocationDataQuery} from '#src/Queries/Photostream/PhotostreamQueries';
 import {useMenu} from '#src/Hooks/useMenu';
+import {usePhotostreamLocationDataQuery} from '#src/Queries/Photostream/PhotostreamQueries';
 
 interface PhotostreamFilterMenuProps {
   locationName?: string;
@@ -23,11 +23,7 @@ export const PhotostreamFilterMenu = ({locationName, onLocationChange}: Photostr
   }
 
   const menuAnchor = (
-    <FilterMenuAnchor
-      active={!!locationName}
-      onPress={openMenu}
-      onLongPress={() => onLocationChange(undefined)}
-    />
+    <FilterMenuAnchor active={!!locationName} onPress={openMenu} onLongPress={() => onLocationChange(undefined)} />
   );
 
   const handleLocationSelection = (selectedLocation: string) => {

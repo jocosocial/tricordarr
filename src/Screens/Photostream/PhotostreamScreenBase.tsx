@@ -1,8 +1,8 @@
-import {AxiosError} from 'axios';
 import {FlashListRef} from '@shopify/flash-list';
+import {InfiniteData, UseInfiniteQueryResult} from '@tanstack/react-query';
+import {AxiosError} from 'axios';
 import React, {ReactNode, useCallback, useMemo, useRef} from 'react';
 import {Text} from 'react-native-paper';
-import {InfiniteData, UseInfiniteQueryResult} from '@tanstack/react-query';
 
 import {PhotostreamFAB} from '#src/Components/Buttons/FloatingActionButtons/PhotostreamFAB';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -12,6 +12,7 @@ import {PhotostreamListItem} from '#src/Components/Lists/Items/PhotostreamListIt
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {PaginationQueryParams} from '#src/Queries/Pagination';
 import {ErrorResponse, PhotostreamListData} from '#src/Structs/ControllerStructs';
@@ -37,14 +38,13 @@ export const PhotostreamScreenBase = ({
 }: PhotostreamScreenBaseProps) => {
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isFetching} = queryResult;
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
+  const {handleLoadNext} = usePagination({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  });
   const internalFlashListRef = useRef<FlashListRef<PhotostreamImageData>>(null);
   const flashListRef = externalFlashListRef || internalFlashListRef;
-
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      fetchNextPage();
-    }
-  };
 
   const renderItem = useCallback(({item}: {item: PhotostreamImageData}) => <PhotostreamListItem item={item} />, []);
   const keyExtractor = useCallback((item: PhotostreamImageData) => item.postID.toString(), []);

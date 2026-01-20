@@ -3,8 +3,9 @@ import {Keyboard} from 'react-native';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
-import {SearchBarBase, useSafePagination} from '#src/Components/Search/SearchBarBase';
+import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 

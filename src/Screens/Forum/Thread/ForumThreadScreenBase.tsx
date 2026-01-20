@@ -21,6 +21,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
+import {usePagination} from '#src/Hooks/usePagination';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
@@ -86,18 +87,15 @@ export const ForumThreadScreenBase = ({
     setRefreshing(false);
   }, [refetch]);
 
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
-  const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
-      setRefreshing(true);
-      fetchPreviousPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {handleLoadNext, handleLoadPrevious} = usePagination({
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    setRefreshing,
+  });
 
   const getNavButtons = useCallback(() => {
     // Typescript struggles

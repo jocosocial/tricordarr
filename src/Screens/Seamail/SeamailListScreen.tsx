@@ -19,6 +19,7 @@ import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {usePagination} from '#src/Hooks/usePagination';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -63,12 +64,11 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const queryClient = useQueryClient();
-
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      fetchNextPage();
-    }
-  };
+  const {handleLoadNext} = usePagination({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  });
 
   useEffect(() => {
     if (data && data.pages) {
