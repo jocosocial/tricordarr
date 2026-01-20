@@ -29,7 +29,7 @@ export const ScheduleHelpScreen = () => {
             description={
               'Produced by the JoCo Cruise management and/or featured guests. These appear on the schedule posted online and throughout the ship.'
             }
-            onPress={() => commonNavigation.push(CommonStackComponents.eventOfficialHelpScreen)}
+            onPress={() => commonNavigation.push(CommonStackComponents.eventHelpScreen, {mode: 'official'})}
           />
         </PaddedContentView>
         <PaddedContentView>
@@ -39,7 +39,7 @@ export const ScheduleHelpScreen = () => {
             description={
               'Approved by the JoCo Cruise management but conducted by cruise attendees. These appear on the schedule posted online and throughout the ship.'
             }
-            onPress={() => commonNavigation.push(CommonStackComponents.eventShadowHelpScreen)}
+            onPress={() => commonNavigation.push(CommonStackComponents.eventHelpScreen, {mode: 'shadow'})}
           />
         </PaddedContentView>
         <PaddedContentView>

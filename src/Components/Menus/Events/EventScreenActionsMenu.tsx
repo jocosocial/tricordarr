@@ -40,10 +40,10 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   const handleHelp = () => {
     closeMenu();
     if (props.event.eventType === EventType.shadow) {
-      commonNavigation.push(CommonStackComponents.eventShadowHelpScreen);
+      commonNavigation.push(CommonStackComponents.eventHelpScreen, {mode: 'shadow'});
     } else {
       // Default to official help screen for official events, fallback to schedule help for any other types
-      commonNavigation.push(CommonStackComponents.eventOfficialHelpScreen);
+      commonNavigation.push(CommonStackComponents.eventHelpScreen, {mode: 'official'});
     }
   };
 

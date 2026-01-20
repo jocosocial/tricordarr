@@ -54,8 +54,7 @@ import {PersonalEventEditScreen} from '#src/Screens/PersonalEvent/PersonalEventE
 import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScreen';
 import {PhotostreamEventScreen} from '#src/Screens/Photostream/PhotostreamEventScreen';
 import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
-import {EventOfficialHelpScreen} from '#src/Screens/Schedule/EventOfficialHelpScreen';
-import {EventShadowHelpScreen} from '#src/Screens/Schedule/EventShadowHelpScreen';
+import {EventHelpScreen} from '#src/Screens/Schedule/EventHelpScreen';
 import {PersonalEventHelpScreen} from '#src/Screens/Schedule/PersonalEventHelpScreen';
 import {ScheduleDayPlannerScreen} from '#src/Screens/Schedule/ScheduleDayPlannerScreen';
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
@@ -257,8 +256,9 @@ export type CommonStackParamList = {
   LfgHelpScreen: undefined;
   LfgCreateHelpScreen: undefined;
   PersonalEventCreateHelpScreen: undefined;
-  EventOfficialHelpScreen: undefined;
-  EventShadowHelpScreen: undefined;
+  EventHelpScreen: {
+    mode?: 'official' | 'shadow';
+  };
   PersonalEventHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
   TimeZoneHelpScreen: undefined;
@@ -362,8 +362,7 @@ export enum CommonStackComponents {
   lfgHelpScreen = 'LfgHelpScreen',
   lfgCreateHelpScreen = 'LfgCreateHelpScreen',
   personalEventCreateHelpScreen = 'PersonalEventCreateHelpScreen',
-  eventOfficialHelpScreen = 'EventOfficialHelpScreen',
-  eventShadowHelpScreen = 'EventShadowHelpScreen',
+  eventHelpScreen = 'EventHelpScreen',
   personalEventHelpScreen = 'PersonalEventHelpScreen',
   mainTimeZoneScreen = 'MainTimeZoneScreen',
   timeZoneHelpScreen = 'TimeZoneHelpScreen',
@@ -413,8 +412,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.lfgHelpScreen
   | CommonStackComponents.lfgCreateHelpScreen
   | CommonStackComponents.personalEventCreateHelpScreen
-  | CommonStackComponents.eventOfficialHelpScreen
-  | CommonStackComponents.eventShadowHelpScreen
+  | CommonStackComponents.eventHelpScreen
   | CommonStackComponents.personalEventHelpScreen
   | CommonStackComponents.timeZoneHelpScreen
   | CommonStackComponents.helpIndexScreen
@@ -729,14 +727,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Create Personal Event Help'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.eventOfficialHelpScreen}
-        component={EventOfficialHelpScreen}
-        options={{title: 'Official Event Help'}}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.eventShadowHelpScreen}
-        component={EventShadowHelpScreen}
-        options={{title: 'Shadow Event Help'}}
+        name={CommonStackComponents.eventHelpScreen}
+        component={EventHelpScreen}
+        options={({route}: {route: RouteProp<CommonStackParamList, 'EventHelpScreen'>}) => ({
+          title: route.params?.mode === 'shadow' ? 'Shadow Event Help' : 'Official Event Help',
+        })}
       />
       <Stack.Screen
         name={CommonStackComponents.personalEventHelpScreen}

@@ -6,9 +6,13 @@ export const ShadowPerformerProfilesHelpTopicView = () => {
     <>
       <HelpChapterTitleView title={'Shadow Profiles'} />
       <HelpTopicView>
-        If you are a Shadow Cruise event organizer you can optionally create a performer bio for yourself that is attached
-        to the event you'll be running. This Bio page is not publicly linked to your Twitarr user. The intent of this
-        feature is to let people thinking of attending your session know a bit about you.
+        These are attendees just like you! They have something cool to share and are volunteering their vacation time to
+        share it.
+      </HelpTopicView>
+      <HelpTopicView>
+        If you are a Shadow Cruise event organizer you can optionally create a performer bio for yourself that is
+        attached to the event you'll be running. This Bio page is not publicly linked to your Twitarr user. The intent
+        of this feature is to let people thinking of attending your session know a bit about you.
       </HelpTopicView>
       <HelpTopicView>
         Performer Profiles for Shadow Cruise organizers can only be created before sailing. Long press the event in the

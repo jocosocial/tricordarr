@@ -2,6 +2,7 @@ import React from 'react';
 
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {OverlappingHelpTopicView} from '#src/Components/Views/Help/Common/OverlappingHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -41,13 +42,7 @@ export const LfgHelpScreen = () => {
           You can change the default LFG screen (Find, Joined, Owned) and filter past LFGs by default in the settings.
           Tap the menu in the upper right of any LFG screen and select Settings.
         </HelpTopicView>
-        <HelpTopicView title={'Overlapping Events'} icon={AppIcons.calendarMultiple}>
-          View events, LFGs, and personal events that occur at the same time as a selected event. Tap the "Overlapping"
-          button in the actions menu of any event, LFG, or personal event screen, or by long-pressing an event card and
-          selecting "Overlapping". Use the "Only your events" filter to restrict the list to events you're participating
-          in, events you own, or events you've favorited. You can configure a setting to exclude long events (by
-          default, events 4 hours or longer) from the overlap list.
-        </HelpTopicView>
+        <OverlappingHelpTopicView />
         <HelpChapterTitleView title={'Participation'} />
         <HelpTopicView>Don't just add random people to your LFG. It's not nice.</HelpTopicView>
         <HelpTopicView>If you add people to your LFG, those people should already expect to be added.</HelpTopicView>
