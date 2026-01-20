@@ -52,6 +52,7 @@ import {PersonalEventCreateHelpScreen} from '#src/Screens/PersonalEvent/Personal
 import {PersonalEventCreateScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateScreen';
 import {PersonalEventEditScreen} from '#src/Screens/PersonalEvent/PersonalEventEditScreen';
 import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScreen';
+import {PhotostreamEventScreen} from '#src/Screens/Photostream/PhotostreamEventScreen';
 import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
 import {ScheduleDayPlannerScreen} from '#src/Screens/Schedule/ScheduleDayPlannerScreen';
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
@@ -152,6 +153,9 @@ export type CommonStackParamList = {
     user: UserHeader;
   };
   EventScreen: {
+    eventID: string;
+  };
+  PhotostreamEventScreen: {
     eventID: string;
   };
   PersonalEventScreen: {
@@ -306,6 +310,7 @@ export enum CommonStackComponents {
   forumThreadUserScreen = 'ForumThreadUserScreen',
   forumPostUserScreen = 'ForumPostUserScreen',
   eventScreen = 'EventScreen',
+  photostreamEventScreen = 'PhotostreamEventScreen',
   forumThreadScreen = 'ForumThreadScreen',
   alertKeywords = 'AlertKeywordsSettingsScreen',
   muteKeywords = 'MuteKeywordsSettingsScreen',
@@ -471,6 +476,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Forums by User'}}
       />
       <Stack.Screen name={CommonStackComponents.eventScreen} component={EventScreen} options={{title: 'Event'}} />
+      <Stack.Screen
+        name={CommonStackComponents.photostreamEventScreen}
+        component={PhotostreamEventScreen}
+        options={{title: 'Event Photos'}}
+      />
       <Stack.Screen
         name={CommonStackComponents.forumThreadScreen}
         component={ForumThreadScreen}

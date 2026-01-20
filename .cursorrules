@@ -62,3 +62,17 @@ Newly created Help screens should be linked within the `HelpManualScreen.tsx`.
 Any FABs should generally have their own `HelpChapterTitleView` and describe what they do. If it's a `BaseFAB` component it should implement one or more `HelpTopicView`. A `BaseFABGroup` should implement one `HelpTopicView` for each action within the FAB Group. The FABs should be listed before the Actions in the help screen. The actual FAB (be it a `BaseFABGroup` or `BaseFAB`) should implement a `HelpFABView` that matches the label and icon of the FAB.
 
 All help screens should be added to the `HelpScreenComponents` type union.
+
+## Screen Structure
+Most screens should be wrapped in `LoggedInScreen`, `PreRegistrationScreen`, and `DisabledFeatureScreen` checkpoints. A relevant `helpScreen` should be provided to `PreRegistrationScreen`. An appropriate `SwiftarrFeature` to `DisabledFeatureScreen`.
+
+Example:
+```ts
+<LoggedInScreen>
+  <PreRegistrationScreen helpScreen={CommonStackComponents.photostreamHelpScreen}>
+    <DisabledFeatureScreen feature={SwiftarrFeature.photostream}>
+      <PhotostreamScreenInner {...props} />
+    </DisabledFeatureScreen>
+  </PreRegistrationScreen>
+</LoggedInScreen>
+```

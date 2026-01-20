@@ -2,12 +2,10 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {Item} from 'react-navigation-header-buttons';
 
 import {HeaderFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderFavoriteButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {EventScreenActionsMenu} from '#src/Components/Menus/Events/EventScreenActionsMenu';
-import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventQuery} from '#src/Queries/Events/EventQueries';
@@ -50,26 +48,13 @@ export const EventScreen = ({navigation, route}: Props) => {
           {eventData && (
             <>
               <HeaderFavoriteButton isFavorite={eventData.isFavorite} onPress={() => handleFavorite(eventData)} />
-              {eventData.forum && (
-                <Item
-                  title={'Forum'}
-                  iconName={AppIcons.forum}
-                  onPress={() => {
-                    if (eventData.forum) {
-                      navigation.push(CommonStackComponents.forumThreadScreen, {
-                        forumID: eventData.forum,
-                      });
-                    }
-                  }}
-                />
-              )}
               <EventScreenActionsMenu event={eventData} />
             </>
           )}
         </MaterialHeaderButtons>
       </View>
     );
-  }, [eventData, handleFavorite, navigation]);
+  }, [eventData, handleFavorite]);
 
   useEffect(() => {
     navigation.setOptions({

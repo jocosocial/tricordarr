@@ -7,6 +7,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
 import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -28,6 +29,7 @@ interface EventScreenActionsMenuProps {
 export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
+  const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
   const {hasPerformerSelfEditor, hasShutternaut, hasShutternautManager} = useRoles();
   const {commonStyles} = useStyles();
@@ -87,6 +89,20 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      {props.event.forum && (
+        <Menu.Item
+          title={'Forum'}
+          leadingIcon={AppIcons.forum}
+          onPress={() => {
+            closeMenu();
+            if (props.event.forum) {
+              commonNavigation.push(CommonStackComponents.forumThreadScreen, {
+                forumID: props.event.forum,
+              });
+            }
+          }}
+        />
+      )}
       <Menu.Item
         title={'Overlapping'}
         leadingIcon={AppIcons.calendarMultiple}
@@ -95,6 +111,18 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
           commonNavigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.event});
         }}
       />
+      {appConfig.enableExperiments && (
+        <Menu.Item
+          title={'Photostream'}
+          leadingIcon={AppIcons.photostream}
+          onPress={() => {
+            closeMenu();
+            commonNavigation.push(CommonStackComponents.photostreamEventScreen, {
+              eventID: props.event.eventID,
+            });
+          }}
+        />
+      )}
       <Divider bold={true} />
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.event.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />
