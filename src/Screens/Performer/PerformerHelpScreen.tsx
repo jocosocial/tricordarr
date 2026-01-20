@@ -14,8 +14,8 @@ export const PerformerHelpScreen = () => {
         <HelpChapterTitleView title={'General'} />
         <OfficialPerformersHelpTopicView />
         <HelpTopicView title={'Shadow Performers'}>
-          These are attendees just like you! They have something cool to share and are volunteering their vacation time to
-          share it.
+          These are attendees just like you! They have something cool to share and are volunteering their vacation time
+          to share it.
         </HelpTopicView>
         <ShadowPerformerProfilesHelpTopicView />
       </ScrollingContentView>

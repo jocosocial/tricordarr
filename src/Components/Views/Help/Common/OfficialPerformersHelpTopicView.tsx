@@ -5,12 +5,12 @@ export const OfficialPerformersHelpTopicView = () => {
   return (
     <>
       <HelpTopicView title={'Official Performers'} icon={AppIcons.official}>
-        These are guests hired by the Home Office to share or present their talent with JoCo Cruise. You've probably heard
-        of some of them. Look for the badge next to their name.
+        These are guests hired by the Home Office to share or present their talent with JoCo Cruise. You've probably
+        heard of some of them. Look for the badge next to their name.
       </HelpTopicView>
       <HelpTopicView>
-        Please do your best to "read the room" and use proper judgment as to when introduction/autograph/photo requesting is
-        appropriate or encouraged.
+        Please do your best to "read the room" and use proper judgment as to when introduction/autograph/photo
+        requesting is appropriate or encouraged.
       </HelpTopicView>
       <HelpTopicView>
         If a performer or guest does not appear to be preoccupied, it is fine to introduce yourself and say something to

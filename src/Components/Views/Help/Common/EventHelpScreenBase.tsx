@@ -14,11 +14,7 @@ interface EventHelpScreenBaseProps {
   afterDownload?: ReactNode;
 }
 
-export const EventHelpScreenBase = ({
-  generalDescription,
-  beforeActions,
-  afterDownload,
-}: EventHelpScreenBaseProps) => {
+export const EventHelpScreenBase = ({generalDescription, beforeActions, afterDownload}: EventHelpScreenBaseProps) => {
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>

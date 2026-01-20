@@ -68,8 +68,6 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
-  const isFetching =
-    isEventFetching || isLfgOpenFetching || isLfgJoinedFetching || isLfgOwnedFetching || isPersonalEventFetching;
 
   const {
     data: eventData,
@@ -145,6 +143,9 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
       enabled: !preRegistrationMode,
     },
   });
+
+  const isFetching =
+    isEventFetching || isLfgOpenFetching || isLfgJoinedFetching || isLfgOwnedFetching || isPersonalEventFetching;
 
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
