@@ -22,10 +22,12 @@ export const MenuScrollIndicator = ({visible}: MenuScrollIndicatorProps) => {
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifyContentCenter,
       ...commonStyles.onMenu,
-      opacity: visible ? 1 : 0,
-      pointerEvents: visible ? 'auto' : 'none',
     },
   });
+
+  if (!visible) {
+    return null;
+  }
 
   return (
     <View style={styles.scrollIndicator}>
