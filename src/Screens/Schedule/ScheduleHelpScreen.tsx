@@ -9,15 +9,19 @@ import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleV
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 export const ScheduleHelpScreen = () => {
   const {theme} = useAppTheme();
+  const commonNavigation = useCommonStack();
+
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'} />
         <HelpTopicView>Always confirm event times and locations as they are subject to change.</HelpTopicView>
         <HelpChapterTitleView title={'Event Types'} />
+        <HelpTopicView>Tap on a card to learn more about each event type.</HelpTopicView>
         <PaddedContentView>
           <ScheduleItemCardBase
             title={'Official Event'}
@@ -25,6 +29,7 @@ export const ScheduleHelpScreen = () => {
             description={
               'Produced by the JoCo Cruise management and/or featured guests. These appear on the schedule posted online and throughout the ship.'
             }
+            onPress={() => commonNavigation.push(CommonStackComponents.eventOfficialHelpScreen)}
           />
         </PaddedContentView>
         <PaddedContentView>
@@ -34,6 +39,7 @@ export const ScheduleHelpScreen = () => {
             description={
               'Approved by the JoCo Cruise management but conducted by cruise attendees. These appear on the schedule posted online and throughout the ship.'
             }
+            onPress={() => commonNavigation.push(CommonStackComponents.eventShadowHelpScreen)}
           />
         </PaddedContentView>
         <PaddedContentView>
@@ -43,6 +49,7 @@ export const ScheduleHelpScreen = () => {
             description={
               'Attendee organized event. These are available within Twitarr only. Sometimes participation is limited.'
             }
+            onPress={() => commonNavigation.push(CommonStackComponents.lfgHelpScreen)}
           />
         </PaddedContentView>
         <PaddedContentView>
@@ -52,6 +59,7 @@ export const ScheduleHelpScreen = () => {
             description={
               'Private calendar entries created by you within the Twitarr system for you and your friends. Useful for a single-app schedule for your day.'
             }
+            onPress={() => commonNavigation.push(CommonStackComponents.personalEventHelpScreen)}
           />
         </PaddedContentView>
         <HelpChapterTitleView title={'Navigation'} />
@@ -101,23 +109,6 @@ export const ScheduleHelpScreen = () => {
         <HelpChapterTitleView title={'LFG Integration'} />
         <HelpTopicView>
           There are optional settings to enable showing LFGs you've joined or that are open to you in the schedule.
-        </HelpTopicView>
-        <HelpChapterTitleView title={'Shadow Performer Profiles'} />
-        <HelpTopicView>
-          If you are a Shadow Cruise event organizer you can optionally create a performer bio for yourself that is
-          attached to the event you'll be running. This Bio page is not publicly linked to your Twitarr user. The intent
-          of this feature is to let people thinking of attending your session know a bit about you.
-        </HelpTopicView>
-        <HelpTopicView>
-          Performer Profiles for Shadow Cruise organizers can only be created before sailing. Long press the event in
-          the Schedule screen and select Set Organizer to fill out the form. If you wish to create one while on board
-          contact the TwitarrTeam for assistance. All profile content is subject to moderator review.
-        </HelpTopicView>
-        <HelpChapterTitleView title={'Personal Events'} />
-        <HelpTopicView>
-          You can add guests to your personal events. This will automatically create a Seamail chat for it. You can add
-          or remove users later on. If you have already created your personal event you cannot add users later. You'll
-          need to create a new personal event and add them at the time of creation.
         </HelpTopicView>
         <HelpChapterTitleView title={'Shutternauts'} />
         <HelpTopicView>See the Shutternaut Help (available in the app drawer) for more information.</HelpTopicView>

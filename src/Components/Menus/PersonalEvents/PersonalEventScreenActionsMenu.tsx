@@ -73,7 +73,7 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
         title={'Help'}
         onPress={() => {
           closeMenu();
-          navigation.push(CommonStackComponents.scheduleHelpScreen);
+          navigation.push(CommonStackComponents.personalEventHelpScreen);
         }}
       />
     </AppMenu>
