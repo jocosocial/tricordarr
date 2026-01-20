@@ -1,6 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
@@ -19,6 +19,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -43,20 +44,19 @@ export const ForumCategoriesScreen = (props: Props) => {
 };
 
 const ForumCategoriesScreenInner = ({navigation}: Props) => {
-  const {data, refetch, isLoading} = useForumCategoriesQuery();
-  const [refreshing, setRefreshing] = useState(false);
+  const {data, refetch, isLoading, isFetching} = useForumCategoriesQuery();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const isFocused = useIsFocused();
   const {clearPrivileges} = usePrivilege();
   const {data: keywordData, refetch: refetchKeywordData} = useUserKeywordQuery({
     keywordType: 'alertwords',
   });
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await Promise.all([refetch(), refetchUserNotificationData(), refetchKeywordData()]);
-    setRefreshing(false);
-  }, [refetch, refetchKeywordData, refetchUserNotificationData]);
+  const {refreshing, onRefresh} = useRefresh({
+    refresh: useCallback(async () => {
+      await Promise.all([refetch(), refetchUserNotificationData(), refetchKeywordData()]);
+    }, [refetch, refetchUserNotificationData, refetchKeywordData]),
+    isRefreshing: isFetching,
+  });
 
   const getNavButtons = useCallback(() => {
     return (
@@ -91,7 +91,7 @@ const ForumCategoriesScreenInner = ({navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         overScroll={true}
-        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View>
           {data && (
             <ListSection>

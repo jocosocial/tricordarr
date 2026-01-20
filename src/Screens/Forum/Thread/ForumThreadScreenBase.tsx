@@ -22,6 +22,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {usePagination} from '#src/Hooks/usePagination';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
@@ -63,7 +64,6 @@ export const ForumThreadScreenBase = ({
   forumListData,
 }: Props) => {
   const navigation = useCommonStack();
-  const [refreshing, setRefreshing] = useState(false);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const flatListRef = useRef<TConversationListRef>(null);
@@ -80,12 +80,9 @@ export const ForumThreadScreenBase = ({
   // to care about. It's all in the category (ForumListData) queries.
   const markReadInvalidationKeys = ForumListData.getCacheKeys(data?.pages[0].categoryID);
   const otherInvalidationKeys = ForumListData.getCacheKeys(data?.pages[0].categoryID, data?.pages[0].forumID);
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  }, [refetch]);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+  });
 
   const {handleLoadNext, handleLoadPrevious} = usePagination({
     fetchNextPage,
@@ -243,9 +240,7 @@ export const ForumThreadScreenBase = ({
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={
-          <AppRefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />
-        }
+        refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
         forumData={data.pages[0]}
         hasPreviousPage={hasPreviousPage}
         // maintainViewPosition={maintainViewPosition}

@@ -11,6 +11,7 @@ import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ForumSort} from '#src/Enums/ForumSortFilter';
 import {AppIcons} from '#src/Enums/Icons';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries';
@@ -46,8 +47,11 @@ export const ForumThreadSearchBar = (props: Props) => {
   );
   const {commonStyles} = useStyles();
   const [forumList, setForumList] = useState<ForumListData[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
   const commonNavigation = useCommonStack();
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
@@ -56,10 +60,6 @@ export const ForumThreadSearchBar = (props: Props) => {
   const onClear = () => {
     setEnable(false);
     setForumList([]);
-  };
-  const onRefresh = () => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
   };
 
   const onSearch = () => {
@@ -122,9 +122,7 @@ export const ForumThreadSearchBar = (props: Props) => {
       <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} onClear={onClear} />
       <View style={[commonStyles.flex]}>
         <ForumThreadList
-          refreshControl={
-            <AppRefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
-          }
+          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />}
           forumListData={forumList}
           handleLoadNext={safeHandleLoadNext}
           handleLoadPrevious={handleLoadPrevious}

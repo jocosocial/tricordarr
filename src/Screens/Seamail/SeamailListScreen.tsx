@@ -20,6 +20,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {usePagination} from '#src/Hooks/usePagination';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -50,7 +51,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   // showUnreadOnly should almost never be false since that's not useful. The query will not
   // pass undefined to the API.
   const [showUnreadOnly, setShowUnreadOnly] = useState<boolean | undefined>(undefined);
-  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading} = useSeamailListQuery({
+  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isFetching} = useSeamailListQuery({
     forUser: asPrivilegedUser,
     onlyNew: showUnreadOnly,
   });
@@ -61,7 +62,6 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {data: profilePublicData} = useUserProfileQuery();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const [fezList, setFezList] = useState<FezData[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const queryClient = useQueryClient();
   const {handleLoadNext} = usePagination({
@@ -69,19 +69,18 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
     hasNextPage,
     isFetchingNextPage,
   });
+  const {refreshing, onRefresh} = useRefresh({
+    refresh: useCallback(async () => {
+      await Promise.all([refetch(), refetchUserNotificationData()]);
+    }, [refetch, refetchUserNotificationData]),
+    isRefreshing: isFetching,
+  });
 
   useEffect(() => {
     if (data && data.pages) {
       setFezList(data.pages.flatMap(p => p.fezzes));
     }
   }, [data]);
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await refetch();
-    await refetchUserNotificationData();
-    setRefreshing(false);
-  }, [refetch, refetchUserNotificationData]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {

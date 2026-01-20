@@ -29,6 +29,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {usePagination} from '#src/Hooks/usePagination';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -97,10 +98,10 @@ const FezChatScreenInner = ({route}: Props) => {
     hasPreviousPage,
     isFetchingNextPage,
     isFetchingPreviousPage,
+    isFetching,
   } = useFezQuery({fezID: route.params.fezID});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const fezPostMutation = useFezPostMutation();
-  const [refreshing, setRefreshing] = useState(false);
   const {setSnackbarPayload} = useSnackbar();
   const {fezSockets, openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
@@ -110,12 +111,12 @@ const FezChatScreenInner = ({route}: Props) => {
   const flatListRef = useRef<TConversationListRef>(null);
   const [fez, setFez] = useState<FezData>();
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await Promise.all([refetchUserNotificationData(), refetch()]);
-    setRefreshing(false);
-  }, [refetch, refetchUserNotificationData]);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: useCallback(async () => {
+      await Promise.all([refetchUserNotificationData(), refetch()]);
+    }, [refetch, refetchUserNotificationData]),
+    isRefreshing: isFetching,
+  });
 
   const getNavButtons = useCallback(() => {
     if (!fez) {

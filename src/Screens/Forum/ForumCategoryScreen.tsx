@@ -1,7 +1,7 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import pluralize from 'pluralize';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 
 import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
@@ -22,6 +22,7 @@ import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
@@ -63,21 +64,30 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
     hasNextPage,
     fetchNextPage,
     isLoading,
+    isFetching,
   } = useForumCategoryQuery(route.params.category.categoryID, {
     ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
     ...(forumSortDirection ? {order: forumSortDirection} : undefined),
   });
-  const [refreshing, setRefreshing] = useState(false);
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
   const {selectedItems, enableSelection} = useSelection();
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  };
+  const {
+    refreshing,
+    setRefreshing: setRefreshingDirect,
+    onRefresh,
+  } = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
+  // Wrapper to match Dispatch<SetStateAction<boolean>> type expected by child components
+  const setRefreshing: Dispatch<SetStateAction<boolean>> = useCallback(
+    (value: SetStateAction<boolean>) => {
+      setRefreshingDirect(typeof value === 'function' ? value(refreshing) : value);
+    },
+    [setRefreshingDirect, refreshing],
+  );
 
   useEffect(() => {
     if (data && data.pages) {
@@ -115,7 +125,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableSelection, route.params.category, forumListData, selectedItems]);
+  }, [enableSelection, route.params.category, forumListData, selectedItems, setRefreshing]);
 
   useEffect(() => {
     // This clears the previous state of forum posts and a specific forum.

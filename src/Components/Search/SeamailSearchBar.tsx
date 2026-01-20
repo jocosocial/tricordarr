@@ -5,6 +5,7 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -20,7 +21,10 @@ export const SeamailSearchBar = () => {
   });
   const {commonStyles} = useStyles();
   const [fezList, setFezList] = useState<FezData[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
@@ -49,11 +53,6 @@ export const SeamailSearchBar = () => {
     },
   });
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  };
-
   useEffect(() => {
     if (data && queryEnable) {
       let fezDataList: FezData[] = [];
@@ -76,7 +75,7 @@ export const SeamailSearchBar = () => {
       />
       <SeamailFlatList
         fezList={fezList}
-        refreshControl={<AppRefreshControl refreshing={isFetching || refreshing} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         onEndReached={safeHandleLoadNext}
       />
     </>

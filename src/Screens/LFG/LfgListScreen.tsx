@@ -21,6 +21,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {usePagination} from '#src/Hooks/usePagination';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
@@ -60,14 +61,16 @@ export const LfgListScreen = ({
     listRef,
     clearList: useCallback(() => setFezList([]), []),
   });
-  const {data, refetch, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage} = useLfgListQuery({
-    endpoint: endpoint,
-    fezType: lfgTypeFilter,
-    // @TODO we intend to change this some day. Upstream Swiftarr issue.
-    cruiseDay: selectedCruiseDay - 1,
-    hidePast: lfgHidePastFilter,
-    onlyNew: lfgOnlyNew,
-  });
+  const {data, refetch, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching} =
+    useLfgListQuery({
+      endpoint: endpoint,
+      fezType: lfgTypeFilter,
+      // @TODO we intend to change this some day. Upstream Swiftarr issue.
+      cruiseDay: selectedCruiseDay - 1,
+      hidePast: lfgHidePastFilter,
+      onlyNew: lfgOnlyNew,
+    });
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const {handleLoadNext} = usePagination({
     fetchNextPage,
     hasNextPage,
@@ -77,7 +80,6 @@ export const LfgListScreen = ({
   const isFocused = useIsFocused();
   const {notificationSocket} = useSocket();
   const [showFabLabel, setShowFabLabel] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const queryClient = useQueryClient();
 
@@ -166,12 +168,6 @@ export const LfgListScreen = ({
       onQueryError();
     }
   }, [isError, onQueryError]);
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  }, [refetch]);
 
   return (
     <LoggedInScreen>

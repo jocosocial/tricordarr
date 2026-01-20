@@ -15,6 +15,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {usePagination} from '#src/Hooks/usePagination';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -37,6 +38,7 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
   const [performerType, setPerformerType] = useState<PerformerType>(route.params?.performerType || 'official');
   const {data, refetch, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading} =
     usePerformersQuery(performerType);
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const {handleLoadNext} = usePagination({
     fetchNextPage,
     hasNextPage,
@@ -120,7 +122,7 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
         data={performers}
         keyExtractor={keyExtractor}
         handleLoadNext={handleLoadNext}
-        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderListHeader={renderListHeader}
         renderListFooter={renderListFooter}
         numColumns={2}

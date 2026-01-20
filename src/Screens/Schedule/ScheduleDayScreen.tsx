@@ -23,6 +23,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import useDateTime, {calcCruiseDayTime} from '#src/Libraries/DateTime';
 import {buildScheduleList, getScheduleScrollIndex} from '#src/Libraries/Schedule';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
@@ -57,7 +58,6 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
 
   const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
     listRef,
@@ -68,6 +68,8 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
+  const isFetching =
+    isEventFetching || isLfgOpenFetching || isLfgJoinedFetching || isLfgOwnedFetching || isPersonalEventFetching;
 
   const {
     data: eventData,
@@ -144,26 +146,27 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     },
   });
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    let refreshes: Promise<any>[] = [refetchEvents()];
-    if (!preRegistrationMode) {
-      refreshes.push(refetchLfgJoined(), refetchLfgOwned(), refetchPersonalEvents());
-      if (appConfig.schedule.eventsShowOpenLfgs) {
-        refreshes.push(refetchLfgOpen());
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: useCallback(async () => {
+      let refreshes: Promise<any>[] = [refetchEvents()];
+      if (!preRegistrationMode) {
+        refreshes.push(refetchLfgJoined(), refetchLfgOwned(), refetchPersonalEvents());
+        if (appConfig.schedule.eventsShowOpenLfgs) {
+          refreshes.push(refetchLfgOpen());
+        }
       }
-    }
-    await Promise.all(refreshes);
-    setRefreshing(false);
-  }, [
-    refetchEvents,
-    refetchLfgJoined,
-    refetchLfgOwned,
-    refetchLfgOpen,
-    refetchPersonalEvents,
-    preRegistrationMode,
-    appConfig.schedule.eventsShowOpenLfgs,
-  ]);
+      await Promise.all(refreshes);
+    }, [
+      refetchEvents,
+      refetchLfgJoined,
+      refetchLfgOwned,
+      refetchLfgOpen,
+      refetchPersonalEvents,
+      preRegistrationMode,
+      appConfig.schedule.eventsShowOpenLfgs,
+    ]),
+    isRefreshing: isFetching,
+  });
 
   const scrollToNow = useCallback(() => {
     if (scheduleList.length === 0 || !listRef.current) {

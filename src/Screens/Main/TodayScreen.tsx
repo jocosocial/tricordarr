@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -22,6 +22,7 @@ import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
@@ -46,24 +47,30 @@ export const TodayScreen = ({navigation}: Props) => {
   const {isLoggedIn} = useSession();
   const {hasModerator} = usePrivilege();
   const {preRegistrationMode} = usePreRegistration();
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    var refreshes: Promise<any>[] = [];
-    // These queries not available in pre-registration mode.
-    if (!preRegistrationMode) {
-      refreshes.push(refetchAnnouncements(), refetchThemes(), refetchUserNotificationData());
-      if (isLoggedIn) {
-        // useUserProfileQuery is here because the menu has the users picture.
-        // useUserFavoritesQuery is here because the favorites list is sneakily used
-        // in various places within the app that are not worth refetching directly in.
-        refreshes.push(refetchProfile(), refetchFavorites());
+  const {refreshing, onRefresh} = useRefresh({
+    refresh: useCallback(async () => {
+      var refreshes: Promise<any>[] = [];
+      // These queries not available in pre-registration mode.
+      if (!preRegistrationMode) {
+        refreshes.push(refetchAnnouncements(), refetchThemes(), refetchUserNotificationData());
+        if (isLoggedIn) {
+          // useUserProfileQuery is here because the menu has the users picture.
+          // useUserFavoritesQuery is here because the favorites list is sneakily used
+          // in various places within the app that are not worth refetching directly in.
+          refreshes.push(refetchProfile(), refetchFavorites());
+        }
       }
-    }
-    await Promise.all(refreshes);
-    setRefreshing(false);
-  };
+      await Promise.all(refreshes);
+    }, [
+      preRegistrationMode,
+      isLoggedIn,
+      refetchAnnouncements,
+      refetchThemes,
+      refetchUserNotificationData,
+      refetchProfile,
+      refetchFavorites,
+    ]),
+  });
 
   const getRightMainHeaderButtons = useCallback(() => {
     return (

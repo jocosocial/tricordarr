@@ -9,6 +9,7 @@ import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
@@ -34,9 +35,12 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
   );
   const {commonStyles} = useStyles();
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
   const commonNavigation = useCommonStack();
   const flatListRef = useRef<FlashListRef<PostData>>(null);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
@@ -46,11 +50,6 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
   const onClear = () => {
     setForumPosts([]);
     setQueryEnable(false);
-  };
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
   };
 
   const onSearch = () => {
@@ -106,9 +105,7 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
       <View style={[commonStyles.flex]}>
         <ForumPostList
           listRef={flatListRef}
-          refreshControl={
-            <AppRefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
-          }
+          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />}
           postList={forumPosts}
           handleLoadNext={safeHandleLoadNext}
           itemSeparator={'time'}

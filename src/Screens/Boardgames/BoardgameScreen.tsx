@@ -16,6 +16,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameFavoriteMutation} from '#src/Queries/Boardgames/BoardgameMutations';
@@ -44,6 +45,7 @@ export const BoardgameScreen = (props: Props) => {
 
 const BoardgameScreenInner = ({navigation, route}: Props) => {
   const {data, isFetching, isLoading, refetch} = useBoardgameQuery({boardgameID: route.params.boardgame.gameID});
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const favoriteMutation = useBoardgameFavoriteMutation();
   const queryClient = useQueryClient();
 
@@ -112,7 +114,7 @@ const BoardgameScreenInner = ({navigation, route}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <DataFieldListItem title={'Name'} description={data.gameName} />
         {!!players && <DataFieldListItem title={'Players'} description={players} />}
         {!!playingTime && <DataFieldListItem title={'Playing Time'} description={playingTime} />}

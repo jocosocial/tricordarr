@@ -5,6 +5,7 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -28,7 +29,10 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
   });
   const listRef = useRef<FlashList<FezData>>(null);
   const [lfgList, setLfgList] = useState<FezData[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const onChangeSearch = (query: string) => {
     if (query !== searchQuery) {
@@ -39,11 +43,6 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
 
   const onSearch = () => {
     setQueryEnable(true);
-  };
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
   };
 
   const {safeHandleLoadNext, effectiveHasNextPage} = useSafePagination({
@@ -77,9 +76,7 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
       <ScheduleFlatList
         listRef={listRef}
         items={lfgList}
-        refreshControl={
-          <AppRefreshControl refreshing={isFetching || refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />
-        }
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />}
         separator={'day'}
         handleLoadNext={safeHandleLoadNext}
         hasNextPage={effectiveHasNextPage}

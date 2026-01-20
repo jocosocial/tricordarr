@@ -26,6 +26,7 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
@@ -54,7 +55,6 @@ export const UserProfileScreenBase = (props: Props) => {
  * If the user hasn't completed the OOBE, they will not see the content card.
  */
 const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
-  const [refreshing, setRefreshing] = useState(false);
   const {data: profilePublicData, refetch: refetchSelf} = useUserProfileQuery();
   const {commonStyles} = useStyles();
   const [isMuted, setIsMuted] = useState(false);
@@ -67,19 +67,18 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const {preRegistrationMode} = usePreRegistration();
   const {oobeCompleted} = useOobe();
   const isSelf = data?.header.userID === profilePublicData?.header.userID;
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    let refreshes = [refetch()];
-    if (!preRegistrationMode) {
-      refreshes.push(refetchFavorites(), refetchMutes(), refetchBlocks());
-    }
-    if (isSelf) {
-      refreshes.push(refetchSelf());
-    }
-    await Promise.all(refreshes);
-    setRefreshing(false);
-  }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, isSelf, refetchSelf, preRegistrationMode]);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: useCallback(async () => {
+      let refreshes = [refetch()];
+      if (!preRegistrationMode) {
+        refreshes.push(refetchFavorites(), refetchMutes(), refetchBlocks());
+      }
+      if (isSelf) {
+        refreshes.push(refetchSelf());
+      }
+      await Promise.all(refreshes);
+    }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, isSelf, refetchSelf, preRegistrationMode]),
+  });
 
   const getNavButtons = useCallback(() => {
     if (data && isSelf) {

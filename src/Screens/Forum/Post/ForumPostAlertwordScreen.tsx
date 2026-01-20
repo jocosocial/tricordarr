@@ -10,6 +10,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {usePagination} from '#src/Hooks/usePagination';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
 import {PostData, UserNotificationData} from '#src/Structs/ControllerStructs';
@@ -22,9 +23,12 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
   });
   const {commonStyles} = useStyles();
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
   const flatListRef = useRef<FlashListRef<PostData>>(null);
   const queryClient = useQueryClient();
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const {handleLoadNext} = usePagination({
     fetchNextPage,
@@ -46,7 +50,7 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
       <View style={[commonStyles.flex]}>
         <ForumPostList
           listRef={flatListRef}
-          refreshControl={<AppRefreshControl refreshing={isFetching || refreshing} onRefresh={refetch} />}
+          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           postList={forumPosts}
           handleLoadNext={handleLoadNext}
           itemSeparator={'time'}

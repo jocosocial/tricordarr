@@ -21,6 +21,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {calcCruiseDayTime, eventsOverlap, getDurationString} from '#src/Libraries/DateTime';
 import {CommonStackComponents, CommonStackParamList, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
@@ -40,7 +41,6 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {preRegistrationMode} = usePreRegistration();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [onlyYourEvents, setOnlyYourEvents] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
 
@@ -237,25 +237,26 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
 
   const isFetching = isEventFetching || isLfgOpenFetching || isLfgJoinedFetching || isPersonalEventFetching;
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    const refreshes: Promise<any>[] = [refetchEvents()];
-    if (!preRegistrationMode) {
-      if (appConfig.schedule.eventsShowOpenLfgs) {
-        refreshes.push(refetchLfgOpen());
+  const {refreshing, onRefresh} = useRefresh({
+    refresh: useCallback(async () => {
+      const refreshes: Promise<any>[] = [refetchEvents()];
+      if (!preRegistrationMode) {
+        if (appConfig.schedule.eventsShowOpenLfgs) {
+          refreshes.push(refetchLfgOpen());
+        }
+        refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
       }
-      refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
-    }
-    await Promise.all(refreshes);
-    setRefreshing(false);
-  }, [
-    refetchEvents,
-    refetchLfgOpen,
-    refetchLfgJoined,
-    refetchPersonalEvents,
-    preRegistrationMode,
-    appConfig.schedule.eventsShowOpenLfgs,
-  ]);
+      await Promise.all(refreshes);
+    }, [
+      refetchEvents,
+      refetchLfgOpen,
+      refetchLfgJoined,
+      refetchPersonalEvents,
+      preRegistrationMode,
+      appConfig.schedule.eventsShowOpenLfgs,
+    ]),
+    isRefreshing: isFetching,
+  });
 
   const getNavButtons = useCallback(() => {
     return (

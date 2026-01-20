@@ -12,6 +12,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {AppIcons} from '#src/Enums/Icons';
 import {usePagination} from '#src/Hooks/usePagination';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
@@ -29,21 +30,19 @@ interface Props {
  * Not used for Post Search
  */
 export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title}: Props) => {
-  const {data, refetch, isFetchingNextPage, hasNextPage, hasPreviousPage, fetchNextPage, isLoading} =
+  const {data, refetch, isFetchingNextPage, hasNextPage, hasPreviousPage, fetchNextPage, isLoading, isFetching} =
     useForumPostSearchQuery(queryParams);
   const commonNavigation = useCommonStack();
-  const [refreshing, setRefreshing] = useState(false);
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const flatListRef = useRef<FlashListRef<PostData>>(null);
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  }, [refetch]);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const getNavButtons = useCallback(() => {
     return (

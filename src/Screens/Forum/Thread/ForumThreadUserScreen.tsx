@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -12,6 +12,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {usePagination} from '#src/Hooks/usePagination';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -36,23 +37,21 @@ const ForumThreadUserScreenInner = ({route}: Props) => {
   const {
     data,
     refetch,
-    isLoading,
     hasPreviousPage,
     fetchPreviousPage,
     isFetchingPreviousPage,
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
+    isFetching,
   } = useForumSearchQuery({
     creatorid: route.params.user.userID,
   });
-  const [refreshing, setRefreshing] = useState(false);
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  }, [refetch]);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const {handleLoadNext, handleLoadPrevious} = usePagination({
     fetchNextPage,
@@ -79,7 +78,7 @@ const ForumThreadUserScreenInner = ({route}: Props) => {
       <AppView>
         <ScrollingContentView
           isStack={true}
-          refreshControl={<AppRefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
+          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <PaddedContentView padTop={true}>
             <Text>There aren't any forums created by this user.</Text>
           </PaddedContentView>
@@ -95,7 +94,7 @@ const ForumThreadUserScreenInner = ({route}: Props) => {
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<AppRefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
       />
