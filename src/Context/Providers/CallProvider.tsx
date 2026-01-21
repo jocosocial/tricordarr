@@ -18,6 +18,7 @@ import { CallEndReason, CallKitService } from '#src/Libraries/Call/CallKitServic
 import { navigate as navigationNavigate } from '#src/Libraries/NavigationRef';
 import { buildPhoneCallWebSocket } from '#src/Libraries/Network/Websockets';
 import { ChatStackScreenComponents } from '#src/Navigation/Stacks/ChatStackNavigator';
+import { BottomTabComponents } from '#src/Navigation/Tabs/BottomTabNavigator';
 import { usePhoneCallAnswerMutation, usePhoneCallDeclineMutation } from '#src/Queries/PhoneCall/PhoneCallMutations';
 import { CallActions, callReducer, initialCallState } from '#src/Reducers/Call/CallReducer';
 import { UserHeader } from '#src/Structs/ControllerStructs';
@@ -992,6 +993,12 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
     const newMutedState = !state.isMuted;
     const fromCallKit = muteChangeFromCallKitRef.current;
     console.log('[CallProvider] toggleMute called - newMutedState:', newMutedState, 'fromCallKit:', fromCallKit);
+
+    // Update ref synchronously BEFORE dispatch and CallKit sync
+    // This ensures that when CallKit fires its callback, the ref already has the new value
+    // and we can correctly detect that the state matches (preventing feedback loop)
+    isMutedRef.current = newMutedState;
+
     dispatch({ type: CallActions.TOGGLE_MUTE });
 
     // Update native audio engine
@@ -1148,8 +1155,12 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
 
           // Navigate to ActiveCallScreen after answering
           // When device is unlocked, iOS hands control to the app after CallKit answer
+          // Must navigate to the tab first since ActiveCallScreen is in a nested navigator
           console.log('[CallProvider] Navigating to ActiveCallScreen after CallKit answer');
-          navigationNavigate(ChatStackScreenComponents.activeCallScreen, { callID: currentCallID! });
+          navigationNavigate(BottomTabComponents.seamailTab, {
+            screen: ChatStackScreenComponents.activeCallScreen,
+            params: { callID: currentCallID! },
+          });
         } else {
           console.log('[CallProvider] CallKit answerCall did NOT match current call - ignoring');
         }
