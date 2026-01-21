@@ -1,7 +1,9 @@
 import {useAppState} from '@react-native-community/hooks';
 import {useQueryClient} from '@tanstack/react-query';
 import {useCallback, useEffect} from 'react';
+import {Platform} from 'react-native';
 
+import {useCall} from '#src/Context/Contexts/CallContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
@@ -30,6 +32,7 @@ export const NotificationDataListener = () => {
   const {notificationSocket} = useSocket();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
   const queryClient = useQueryClient();
+  const {receiveCall} = useCall();
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -47,15 +50,33 @@ export const NotificationDataListener = () => {
           break;
         }
         case NotificationTypeData.incomingPhoneCall: {
-          // For incoming phone calls, always generate a push notification even when app is in foreground
-          // This ensures the user sees the call notification
-          console.log('[NotificationDataListener.tsx] Incoming phone call notification, generating push notification');
-          generatePushNotificationFromEvent(event).catch(error => {
-            console.error(
-              '[NotificationDataListener.tsx] Failed to generate push notification for incoming call:',
-              error,
-            );
-          });
+          // For incoming phone calls:
+          // - On iOS: Use CallKit for native incoming call UI
+          // - On Android: Generate push notification
+          console.log('[NotificationDataListener.tsx] Incoming phone call notification');
+
+          if (Platform.OS === 'ios') {
+            // On iOS, use CallKit via receiveCall which triggers native incoming call UI
+            const caller = notificationData.caller;
+            if (caller) {
+              console.log('[NotificationDataListener.tsx] Displaying incoming call via CallKit');
+              receiveCall(notificationData.contentID, {
+                userID: caller.userID,
+                username: caller.username,
+              });
+            } else {
+              console.warn('[NotificationDataListener.tsx] No caller info in phone call notification');
+            }
+          } else {
+            // On Android, use push notification
+            console.log('[NotificationDataListener.tsx] Generating push notification for incoming call');
+            generatePushNotificationFromEvent(event).catch(error => {
+              console.error(
+                '[NotificationDataListener.tsx] Failed to generate push notification for incoming call:',
+                error,
+              );
+            });
+          }
           break;
         }
         // The order matters here! Not the specifics of which case but that they
@@ -76,7 +97,7 @@ export const NotificationDataListener = () => {
         }
       }
     },
-    [queryClient, refetchAnnouncements, refetchUserNotificationData],
+    [queryClient, refetchAnnouncements, refetchUserNotificationData, receiveCall],
   );
 
   const addHandler = useCallback(() => {

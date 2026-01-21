@@ -121,13 +121,19 @@ export interface OpenFezSocket {
  * For callee: connects to /phone/socket/answer/{callID}
  */
 export const buildPhoneCallWebSocket = async (callID: string, userID?: string) => {
-  const {serverUrl, urlPrefix} = await getAppConfig();
+  // Use session serverUrl (not app config) to ensure we connect to the correct server
+  const session = await SessionStorage.getCurrentSession();
+  if (!session?.serverUrl) {
+    throw new Error('[Websockets.ts] No current session found or session missing serverUrl for phone call');
+  }
+
+  const {urlPrefix} = await getAppConfig();
 
   let wsUrl;
   if (userID) {
-    wsUrl = `${serverUrl}${urlPrefix}/phone/socket/initiate/${callID}/to/${userID}`;
+    wsUrl = `${session.serverUrl}${urlPrefix}/phone/socket/initiate/${callID}/to/${userID}`;
   } else {
-    wsUrl = `${serverUrl}${urlPrefix}/phone/socket/answer/${callID}`;
+    wsUrl = `${session.serverUrl}${urlPrefix}/phone/socket/answer/${callID}`;
   }
 
   if (wsUrl.startsWith('https://')) {

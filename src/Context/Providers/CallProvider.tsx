@@ -14,7 +14,10 @@ import {
   showCallForegroundNotification,
   updateCallForegroundNotification,
 } from '#src/Libraries/Call/CallForegroundService';
+import { CallEndReason, CallKitService } from '#src/Libraries/Call/CallKitService';
+import { navigate as navigationNavigate } from '#src/Libraries/NavigationRef';
 import { buildPhoneCallWebSocket } from '#src/Libraries/Network/Websockets';
+import { ChatStackScreenComponents } from '#src/Navigation/Stacks/ChatStackNavigator';
 import { usePhoneCallAnswerMutation, usePhoneCallDeclineMutation } from '#src/Queries/PhoneCall/PhoneCallMutations';
 import { CallActions, callReducer, initialCallState } from '#src/Reducers/Call/CallReducer';
 import { UserHeader } from '#src/Structs/ControllerStructs';
@@ -28,6 +31,17 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
   const playbackIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const callStateRef = useRef<CallState>(state.state);
   const speakerStateRef = useRef<boolean>(state.isSpeakerOn);
+  const callKitInitializedRef = useRef<boolean>(false);
+  // Track current call ID for CallKit handlers (avoids stale closure issues)
+  const currentCallIDRef = useRef<string | undefined>(undefined);
+  // Track if user answered via CallKit UI to prevent double-answering
+  const answeredViaCallKitRef = useRef<boolean>(false);
+  // Track if current call uses CallKit (only incoming calls use CallKit)
+  const callUsesCallKitRef = useRef<boolean>(false);
+  // Track mute state for CallKit handler (avoids stale closure issues)
+  const isMutedRef = useRef<boolean>(false);
+  // Track if mute change originated from CallKit to prevent feedback loop
+  const muteChangeFromCallKitRef = useRef<boolean>(false);
   const appState = useAppState();
   const { setSnackbarPayload } = useSnackbar();
 
@@ -39,6 +53,40 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     speakerStateRef.current = state.isSpeakerOn;
   }, [state.isSpeakerOn]);
+
+  useEffect(() => {
+    isMutedRef.current = state.isMuted;
+  }, [state.isMuted]);
+
+  // Keep currentCallIDRef in sync with state (for CallKit handlers)
+  useEffect(() => {
+    currentCallIDRef.current = state.currentCall?.callID;
+    console.log('[CallProvider] currentCallIDRef updated to:', currentCallIDRef.current);
+  }, [state.currentCall?.callID]);
+
+  // Initialize CallKit on iOS
+  useEffect(() => {
+    if (Platform.OS !== 'ios' || callKitInitializedRef.current) {
+      return;
+    }
+
+    const setupCallKit = async () => {
+      try {
+        await CallKitService.setup();
+        callKitInitializedRef.current = true;
+        console.log('[CallProvider] CallKit initialized');
+      } catch (error) {
+        console.error('[CallProvider] Failed to initialize CallKit:', error);
+      }
+    };
+
+    setupCallKit();
+
+    // Cleanup on unmount
+    return () => {
+      CallKitService.clearEventHandlers();
+    };
+  }, []);
 
   const answerMutation = usePhoneCallAnswerMutation();
   const declineMutation = usePhoneCallDeclineMutation();
@@ -196,7 +244,13 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
   const initiateCall = useCallback(
     async (userHeader: UserHeader) => {
       const callID = uuidv4();
+      console.log('[CallProvider] initiateCall() starting - callID:', callID, 'callee:', userHeader.username);
 
+      // Mark this call as NOT using CallKit (outgoing calls don't use CallKit)
+      // Only incoming calls use CallKit for the native UI
+      callUsesCallKitRef.current = false;
+
+      console.log('[CallProvider] initiateCall() dispatching INITIATE action');
       dispatch({
         type: CallActions.INITIATE,
         payload: {
@@ -206,7 +260,9 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
       });
 
       try {
+        console.log('[CallProvider] initiateCall() building WebSocket');
         const ws = await buildPhoneCallWebSocket(callID, userHeader.userID);
+        console.log('[CallProvider] initiateCall() WebSocket built successfully');
         console.log('[CallProvider] WebSocket created, readyState:', ws.readyState);
         const socketOpenedRef = { current: false };
         const socketCreatedTime = Date.now();
@@ -218,6 +274,12 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
             url: ws.url,
           });
           dispatch({ type: CallActions.SET_SOCKET, payload: ws });
+
+          // NOTE: We intentionally do NOT use CallKit for outgoing calls.
+          // CallKit has issues with outgoing calls where it auto-ends the call
+          // after didReceiveStartCallAction regardless of setCurrentCallActive.
+          // CallKit is most valuable for incoming calls (lock screen UI), so we
+          // only use it there. Outgoing calls use our own in-app UI.
         });
 
         ws.addEventListener('message', event => {
@@ -510,6 +572,7 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
         });
       } catch (error) {
         console.error('[CallProvider] Failed to initiate call', error);
+        console.log('[CallProvider] initiateCall() dispatching END action due to error');
         dispatch({ type: CallActions.END });
       }
     },
@@ -518,6 +581,11 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
 
   const receiveCall = useCallback((callID: string, callerUserHeader: UserHeader) => {
     console.log('[CallProvider] Receiving incoming call from', callerUserHeader.username);
+
+    // Mark this call as using CallKit (incoming calls use CallKit for native UI)
+    callUsesCallKitRef.current = Platform.OS === 'ios';
+
+    // First dispatch RECEIVE to update state immediately
     dispatch({
       type: CallActions.RECEIVE,
       payload: {
@@ -525,6 +593,18 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
         remoteUser: callerUserHeader,
       },
     });
+
+    // Display incoming call via CallKit on iOS
+    // Note: displayIncomingCall will ensure setup is complete before proceeding
+    if (Platform.OS === 'ios') {
+      CallKitService.displayIncomingCall(
+        callID,
+        callerUserHeader.username,
+        callerUserHeader.userID,
+      ).catch(error => {
+        console.error('[CallProvider] CallKit displayIncomingCall failed:', error);
+      });
+    }
   }, []);
 
   const answerCall = useCallback(
@@ -856,6 +936,10 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
       } catch (error) {
         console.error('[CallProvider] Failed to decline call', error);
       } finally {
+        // End call via CallKit on iOS (reports as declined)
+        if (Platform.OS === 'ios') {
+          CallKitService.reportEndCallWithReason(callID, CallEndReason.DeclinedElsewhere);
+        }
         dispatch({ type: CallActions.DECLINE });
       }
     },
@@ -863,17 +947,35 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
   );
 
   const endCall = useCallback(async () => {
+    const callID = state.currentCall?.callID;
+    const callState = state.state;
+    const usesCallKit = callUsesCallKitRef.current;
+    console.log('[CallProvider] endCall() called - callID:', callID, 'callState:', callState, 'usesCallKit:', usesCallKit, 'stack:', new Error().stack?.split('\n').slice(0, 5).join('\n'));
+
     if (state.currentCall?.phoneSocket) {
+      console.log('[CallProvider] endCall() closing phone socket');
       state.currentCall.phoneSocket.close();
     }
 
-    if (state.currentCall?.callID) {
+    if (callID) {
       try {
-        await declineMutation.mutateAsync({ callID: state.currentCall.callID });
+        console.log('[CallProvider] endCall() calling decline mutation for callID:', callID);
+        await declineMutation.mutateAsync({ callID });
+        console.log('[CallProvider] endCall() decline mutation succeeded');
       } catch (error) {
         console.error('[CallProvider] Failed to end call', error);
       }
+
+      // End call via CallKit on iOS (only if this call uses CallKit)
+      if (Platform.OS === 'ios' && usesCallKit) {
+        CallKitService.endCall(callID);
+      }
+    } else {
+      console.log('[CallProvider] endCall() no callID, skipping decline mutation');
     }
+
+    // Reset CallKit flag
+    callUsesCallKitRef.current = false;
 
     // Stop audio streaming
     await stopAudioStreaming();
@@ -888,6 +990,8 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
 
   const toggleMute = useCallback(async () => {
     const newMutedState = !state.isMuted;
+    const fromCallKit = muteChangeFromCallKitRef.current;
+    console.log('[CallProvider] toggleMute called - newMutedState:', newMutedState, 'fromCallKit:', fromCallKit);
     dispatch({ type: CallActions.TOGGLE_MUTE });
 
     // Update native audio engine
@@ -898,7 +1002,17 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
         console.error('[CallProvider] Failed to toggle mute:', error);
       }
     }
-  }, [state.isMuted]);
+
+    // Sync mute state with CallKit on iOS, but only if change didn't originate from CallKit
+    // This prevents a feedback loop: CallKit -> app -> CallKit -> app...
+    if (Platform.OS === 'ios' && state.currentCall?.callID && !fromCallKit) {
+      console.log('[CallProvider] Syncing mute state to CallKit:', newMutedState);
+      CallKitService.setMuted(state.currentCall.callID, newMutedState);
+    }
+
+    // Reset the flag after processing
+    muteChangeFromCallKitRef.current = false;
+  }, [state.isMuted, state.currentCall]);
 
   const toggleSpeaker = useCallback(async () => {
     const newSpeakerState = !state.isSpeakerOn;
@@ -989,6 +1103,101 @@ export const CallProvider = ({ children }: PropsWithChildren) => {
       }
     }
   }, [appState, state.state, state.currentCall, state.duration, state.isMuted]);
+
+  // Sync call state with CallKit on iOS
+  useEffect(() => {
+    if (Platform.OS !== 'ios' || !state.currentCall) {
+      return;
+    }
+
+    const callID = state.currentCall.callID;
+
+    // Report call connected when state becomes ACTIVE
+    if (state.state === CallState.ACTIVE) {
+      CallKitService.reportCallConnected(callID);
+    }
+
+    // Report call ended when state becomes ENDED or IDLE
+    if (state.state === CallState.ENDED) {
+      CallKitService.endCall(callID);
+    }
+  }, [state.state, state.currentCall]);
+
+  // Set CallKit event handlers once on mount
+  // Use refs to access current state (avoids stale closure issues)
+  useEffect(() => {
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+
+    CallKitService.setEventHandlers({
+      onAnswerCall: (callUUID: string) => {
+        // User answered via CallKit UI
+        // Use refs to get current state (avoids stale closure)
+        const currentCallID = currentCallIDRef.current;
+        const currentState = callStateRef.current;
+        console.log('[CallProvider] CallKit answerCall event for:', callUUID, 'currentCallID:', currentCallID, 'callState:', currentState);
+
+        // Compare UUIDs case-insensitively (CallKit returns lowercase, server returns uppercase)
+        const uuidsMatch = currentCallID?.toLowerCase() === callUUID.toLowerCase();
+
+        if (uuidsMatch && currentState === CallState.RINGING) {
+          answeredViaCallKitRef.current = true;
+          // Use the original currentCallID (uppercase) for consistency with server
+          answerCall(currentCallID!);
+
+          // Navigate to ActiveCallScreen after answering
+          // When device is unlocked, iOS hands control to the app after CallKit answer
+          console.log('[CallProvider] Navigating to ActiveCallScreen after CallKit answer');
+          navigationNavigate(ChatStackScreenComponents.activeCallScreen, { callID: currentCallID! });
+        } else {
+          console.log('[CallProvider] CallKit answerCall did NOT match current call - ignoring');
+        }
+      },
+      onEndCall: (callUUID: string) => {
+        // User ended via CallKit UI
+        // Use refs to get current state (avoids stale closure)
+        const currentCallID = currentCallIDRef.current;
+        const currentState = callStateRef.current;
+        const usesCallKit = callUsesCallKitRef.current;
+        console.log('[CallProvider] CallKit endCall event for:', callUUID, 'currentCallID:', currentCallID, 'callState:', currentState, 'usesCallKit:', usesCallKit);
+
+        // Only process CallKit events for calls that actually use CallKit (incoming calls)
+        if (!usesCallKit) {
+          console.log('[CallProvider] CallKit endCall ignored - call does not use CallKit');
+          return;
+        }
+
+        // Compare UUIDs case-insensitively (CallKit returns lowercase, server returns uppercase)
+        const uuidsMatch = currentCallID?.toLowerCase() === callUUID.toLowerCase();
+
+        if (uuidsMatch) {
+          console.log('[CallProvider] CallKit endCall matched current call - calling endCall()');
+          endCall();
+        } else {
+          console.log('[CallProvider] CallKit endCall did NOT match current call - ignoring');
+        }
+      },
+      onMuteCall: (muted: boolean, callUUID: string) => {
+        // User toggled mute via CallKit UI
+        const currentCallID = currentCallIDRef.current;
+        const currentMuteState = isMutedRef.current;
+        console.log('[CallProvider] CallKit mute event:', muted, 'for:', callUUID, 'currentCallID:', currentCallID, 'currentMuteState:', currentMuteState);
+        // Compare UUIDs case-insensitively (CallKit returns lowercase, server returns uppercase)
+        const uuidsMatch = currentCallID?.toLowerCase() === callUUID.toLowerCase();
+        // Only toggle if the requested state differs from current state
+        // This prevents duplicate toggles when we sync state back to CallKit
+        if (uuidsMatch && muted !== currentMuteState) {
+          console.log('[CallProvider] CallKit mute state differs from app state, toggling');
+          // Mark that this change originated from CallKit to prevent feedback loop
+          muteChangeFromCallKitRef.current = true;
+          toggleMute();
+        } else if (uuidsMatch) {
+          console.log('[CallProvider] CallKit mute state matches app state, ignoring');
+        }
+      },
+    });
+  }, [answerCall, endCall, toggleMute]);
 
   const value = {
     currentCall: state.currentCall,
