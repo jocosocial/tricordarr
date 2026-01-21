@@ -5,19 +5,13 @@ import React, {useCallback} from 'react';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppBottomTabBar} from '#src/Components/Navigation/AppBottomTabBar';
 import {AppIcons} from '#src/Enums/Icons';
+import {getBadgeDisplayValue} from '#src/Libraries/StringUtils';
 import {ChatStackNavigator, ChatStackParamList} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {ForumStackNavigator, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {LfgStackNavigator, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {MainStackNavigator, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {ScheduleStackNavigator, ScheduleStackParamList} from '#src/Navigation/Stacks/ScheduleStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-
-function getBadgeDisplayValue(input: number | undefined) {
-  if (input === 0) {
-    return undefined;
-  }
-  return input;
-}
 
 /**
  * This is where we define the root tabs and associate each one with its relevant
@@ -81,7 +75,7 @@ export const BottomTabNavigator = () => {
         component={MainStackNavigator}
         options={{
           title: 'Today',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.home : AppIcons.homeInactive),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.homeActive : AppIcons.home),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newAnnouncementCount),
         }}
       />
@@ -90,7 +84,7 @@ export const BottomTabNavigator = () => {
         component={ForumStackNavigator}
         options={{
           title: 'Forums',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.forum : AppIcons.forumInactive),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.forumActive : AppIcons.forum),
           tabBarBadge: getBadgeDisplayValue(getForumBadgeCount()),
         }}
       />
@@ -99,7 +93,7 @@ export const BottomTabNavigator = () => {
         component={ChatStackNavigator}
         options={{
           title: 'Seamail',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.seamail : AppIcons.seamailInactive),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.seamailActive : AppIcons.seamail),
           tabBarBadge: getBadgeDisplayValue(getChatBadgeCount()),
         }}
       />
@@ -108,7 +102,7 @@ export const BottomTabNavigator = () => {
         component={LfgStackNavigator}
         options={{
           title: 'LFG',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.lfg : AppIcons.lfgInactive),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.lfgActive : AppIcons.lfg),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newFezMessageCount),
         }}
       />
@@ -117,7 +111,7 @@ export const BottomTabNavigator = () => {
         component={ScheduleStackNavigator}
         options={{
           title: 'Schedule',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.events : AppIcons.eventsInactive),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.eventsActive : AppIcons.events),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newPrivateEventMessageCount),
         }}
       />

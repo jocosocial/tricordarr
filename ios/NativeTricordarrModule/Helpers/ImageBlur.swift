@@ -10,6 +10,7 @@ import React
 import UIKit
 import Vision
 import os
+import TricordarrKit
 
 // Class that handles image processing for features such as the Photostream.
 //

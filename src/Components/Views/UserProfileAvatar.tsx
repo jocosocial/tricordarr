@@ -1,18 +1,18 @@
 import {useQueryClient} from '@tanstack/react-query';
-import React, {Dispatch, SetStateAction, useEffect} from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
+import React, {Dispatch, SetStateAction} from 'react';
+import {StyleSheet, View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 
 import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '#src/Queries/User/UserAvatarMutations';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
-import {useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
 import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
 import {styleDefaults} from '#src/Styles';
 
@@ -56,8 +56,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   const avatarDeleteMutation = useUserImageDeleteMutation();
   const avatarMutation = useUserAvatarMutation();
   const {setSnackbarPayload} = useSnackbar();
-  const usersProfileQuery = useUsersProfileQuery(user.header.userID);
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const {getIsDisabled} = useFeature();
   const queryClient = useQueryClient();
 
@@ -79,7 +78,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   };
 
   const takeImage = async () => {
-    const cameraPermission = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+    const cameraPermission = isIOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
     const permissionStatus = await requestPermission(cameraPermission);
     console.log('[UserProfileAvatar.tsx] Camera permission is', permissionStatus);
     try {
@@ -107,12 +106,14 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
 
   const processImage = (image: Image) => {
     if (image.data) {
+      setRefreshing(true);
       avatarMutation.mutate(
         {
           image: image.data,
         },
         {
           onSuccess: onSuccess,
+          onSettled: () => setRefreshing(false),
         },
       );
     }
@@ -127,15 +128,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     );
   };
 
-  useEffect(() => {
-    setRefreshing(avatarMutation.isPending || usersProfileQuery.isRefetching);
-  }, [avatarMutation.isPending, setRefreshing, usersProfileQuery.isRefetching]);
-
-  const isSelf = profilePublicData?.header.userID === user.header.userID;
-
-  if (!usersProfileQuery.data) {
-    return <></>;
-  }
+  const isSelf = currentUserID === user.header.userID;
 
   return (
     <View>
@@ -146,7 +139,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
           clearImage={clearImage}
           pickImage={pickImage}
           style={commonStyles.justifyCenter}
-          disableDelete={!profilePublicData?.header.userImage}
+          disableDelete={!user.header.userImage}
         />
       )}
     </View>

@@ -20,6 +20,8 @@ export const ContentInsertPhotosView = () => {
   const styles = StyleSheet.create({
     imageRow: {
       ...commonStyles.flexRow,
+      ...commonStyles.flexWrap,
+      ...commonStyles.gapSmall,
       ...commonStyles.marginTopSmall,
     },
   });

@@ -22,7 +22,7 @@ export const UserProfileSelfActionsMenu = ({userID}: UserProfileSelfActionsMenuP
 
   const handleHelp = () => {
     closeMenu();
-    commonNavigation.push(CommonStackComponents.userProfileHelpScreen, {});
+    commonNavigation.push(CommonStackComponents.userProfileHelpScreen);
   };
 
   return (

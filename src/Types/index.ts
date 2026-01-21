@@ -45,7 +45,10 @@ export type ScheduleFilterSettings = {
   showJoinedLfgs?: boolean;
   showOpenLfgs?: boolean;
   eventPersonalFilter?: boolean;
-  eventLfgFilter?: boolean;
+  eventLfgJoinedFilter?: boolean;
+  eventLfgOwnedFilter?: boolean;
+  eventLfgOpenFilter?: boolean;
+  eventShutternautFilter?: string;
 };
 
 export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;
@@ -147,11 +150,6 @@ export interface SnackbarPayload {
   messageType?: 'info' | 'error' | 'success';
   style?: StyleProp<ViewStyle>;
   elevation?: 0 | 1 | 2 | 3 | 4 | 5 | Animated.Value;
-}
-
-// This is fucking stupid
-export interface ParamsWithOobe {
-  oobe?: boolean;
 }
 
 // This comes from 'react-native/Libraries/Components/TextInput/TextInput'.

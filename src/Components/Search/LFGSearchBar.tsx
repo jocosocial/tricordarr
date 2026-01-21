@@ -1,11 +1,12 @@
 import {FlashList} from '@shopify/flash-list';
-import React, {useRef, useState} from 'react';
-import {RefreshControl} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
 
-import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useRefresh} from '#src/Hooks/useRefresh';
+import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {FezListEndpoints} from '#src/Types';
@@ -18,7 +19,7 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
   const [queryEnable, setQueryEnable] = useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const {lfgHidePastFilter} = useFilter();
-  const {data, refetch, isFetching} = useLfgListQuery({
+  const {data, refetch, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage} = useLfgListQuery({
     search: searchQuery,
     hidePast: lfgHidePastFilter,
     options: {
@@ -27,6 +28,11 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
     endpoint: endpoint,
   });
   const listRef = useRef<FlashList<FezData>>(null);
+  const [lfgList, setLfgList] = useState<FezData[]>([]);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const onChangeSearch = (query: string) => {
     if (query !== searchQuery) {
@@ -39,19 +45,41 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
     setQueryEnable(true);
   };
 
-  // Deal with some undefined issues below by defaulting to empty list.
-  let lfgList: FezData[] = [];
-  searchQuery && data?.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+  const {safeHandleLoadNext, effectiveHasNextPage} = useSafePagination({
+    searchQuery,
+    minLength: 3,
+    hasNextPage: hasNextPage ?? false,
+    itemsLength: lfgList.length,
+    fetchNextPage: () => {
+      if (!isFetchingNextPage && queryEnable) {
+        setRefreshing(true);
+        fetchNextPage().finally(() => setRefreshing(false));
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (data && queryEnable) {
+      let fezDataList: FezData[] = [];
+      data.pages.map(page => {
+        fezDataList = fezDataList.concat(page.fezzes);
+      });
+      setLfgList(fezDataList);
+    } else {
+      setLfgList([]);
+    }
+  }, [data, queryEnable]);
 
   return (
     <>
       <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} />
       <ScheduleFlatList
         listRef={listRef}
-        listFooter={<TimeDivider label={'End of Results'} />}
         items={lfgList}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} enabled={!!searchQuery} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />}
         separator={'day'}
+        handleLoadNext={safeHandleLoadNext}
+        hasNextPage={effectiveHasNextPage}
       />
     </>
   );

@@ -1,7 +1,7 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import pluralize from 'pluralize';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 
 import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
@@ -19,11 +19,15 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
+import {useRefresh} from '#src/Hooks/useRefresh';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
@@ -31,13 +35,17 @@ type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCat
 
 export const ForumCategoryScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen
-        feature={SwiftarrFeature.forums}
-        urlPath={`/forums/${props.route.params.category.categoryID}`}>
-        <ForumCategoryScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+        <DisabledFeatureScreen
+          feature={SwiftarrFeature.forums}
+          urlPath={`/forums/${props.route.params.category.categoryID}`}>
+          <SelectionProvider>
+            <ForumCategoryScreenInner {...props} />
+          </SelectionProvider>
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -56,21 +64,30 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
     hasNextPage,
     fetchNextPage,
     isLoading,
+    isFetching,
   } = useForumCategoryQuery(route.params.category.categoryID, {
     ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
     ...(forumSortDirection ? {order: forumSortDirection} : undefined),
   });
-  const [refreshing, setRefreshing] = useState(false);
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
-  const {selectedForums, enableSelection} = useSelection();
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  };
+  const {selectedItems, enableSelection} = useSelection();
+  const {
+    refreshing,
+    setRefreshing: setRefreshingDirect,
+    onRefresh,
+  } = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
+  // Wrapper to match Dispatch<SetStateAction<boolean>> type expected by child components
+  const setRefreshing: Dispatch<SetStateAction<boolean>> = useCallback(
+    (value: SetStateAction<boolean>) => {
+      setRefreshingDirect(typeof value === 'function' ? value(refreshing) : value);
+    },
+    [setRefreshingDirect, refreshing],
+  );
 
   useEffect(() => {
     if (data && data.pages) {
@@ -89,7 +106,12 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
     if (enableSelection) {
       return (
         <View>
-          <ForumSelectionHeaderButtons setRefreshing={setRefreshing} categoryID={route.params.category.categoryID} />
+          <ForumSelectionHeaderButtons
+            setRefreshing={setRefreshing}
+            categoryID={route.params.category.categoryID}
+            items={forumListData}
+            selectedItems={selectedItems}
+          />
         </View>
       );
     }
@@ -103,7 +125,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableSelection, route.params.category]);
+  }, [enableSelection, route.params.category, forumListData, selectedItems, setRefreshing]);
 
   useEffect(() => {
     // This clears the previous state of forum posts and a specific forum.
@@ -114,11 +136,11 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
       headerRight: getNavButtons,
     });
     if (enableSelection) {
-      navigation.setOptions({title: `Selected: ${selectedForums.length}`});
+      navigation.setOptions({title: `Selected: ${selectedItems.length}`});
     } else {
       navigation.setOptions({title: 'Forums'});
     }
-  }, [isFocused, getNavButtons, navigation, clearPrivileges, enableSelection, selectedForums.length]);
+  }, [isFocused, getNavButtons, navigation, clearPrivileges, enableSelection, selectedItems.length]);
 
   if (isLoading || !data) {
     return <LoadingView />;

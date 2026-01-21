@@ -13,7 +13,7 @@ import {FezType} from '#src/Enums/FezType';
 import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventEditScreen>;
@@ -42,10 +42,10 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
       },
       {
         onSuccess: async () => {
-          const invalidations = FezData.getCacheKeys(route.params.personalEvent.fezID).map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          await Promise.all([...invalidations, queryClient.invalidateQueries({queryKey: ['/notification/global']})]);
+          const invalidations = UserNotificationData.getCacheKeys()
+            .concat(FezData.getCacheKeys(route.params.personalEvent.fezID))
+            .map(key => queryClient.invalidateQueries({queryKey: key}));
+          await Promise.all(invalidations);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

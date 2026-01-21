@@ -48,10 +48,13 @@ export function getAuthHeaders(
 }
 
 /**
- * React-Query Client.
+ * React-Query Client Factory.
+ * Creates a new QueryClient instance for each session to ensure complete data isolation.
  * https://tanstack.com/query/latest/docs/react/overview
  */
-export const SwiftarrQueryClient = new QueryClient();
+export const createQueryClient = (_sessionID: string): QueryClient => {
+  return new QueryClient();
+};
 
 /**
  * This is here because it gets referenced in the settings.
@@ -61,16 +64,20 @@ export const defaultStaleTime = 1000 * 60; // 60 seconds
 export const defaultImageStaleTime = 1000 * 60 * 60 * 24 * 30; // 30 days
 
 /**
- * React-Query Storage Persister.
+ * React-Query Storage Persister Factory.
+ * Creates a session-scoped persister to ensure query cache isolation between sessions.
  */
-export const asyncStoragePersister = createAsyncStoragePersister({
-  storage: AsyncStorage,
-  throttleTime: 1000,
-  // https://github.com/TanStack/query/issues/4309
-  // The default [de]serializer turns undefined into null, which breaks pageParam.
-  serialize: superjson.stringify,
-  deserialize: superjson.parse,
-});
+export const createSessionPersister = (sessionID: string) => {
+  return createAsyncStoragePersister({
+    storage: AsyncStorage,
+    throttleTime: 1000,
+    // https://github.com/TanStack/query/issues/4309
+    // The default [de]serializer turns undefined into null, which breaks pageParam.
+    serialize: superjson.stringify,
+    deserialize: superjson.parse,
+    key: `REACT_QUERY_CACHE_${sessionID}`,
+  });
+};
 
 export const shouldQueryEnable = (isLoggedIn: boolean, disruptionDetected: boolean, optionEnable?: boolean) => {
   let shouldEnable = false;

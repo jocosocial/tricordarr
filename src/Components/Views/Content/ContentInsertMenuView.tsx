@@ -1,12 +1,16 @@
 import {useFormikContext} from 'formik';
-import React, {Dispatch, SetStateAction, useEffect} from 'react';
-import {Platform, View} from 'react-native';
+import React, {Dispatch, SetStateAction, useCallback, useEffect} from 'react';
+import {View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {List} from 'react-native-paper';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {isIOS} from '#src/Libraries/Platform/Detection';
 import {PostContentData} from '#src/Structs/ControllerStructs';
 
 interface ContentInsertMenuViewProps {
@@ -28,7 +32,15 @@ export const ContentInsertMenuView = ({
 }: ContentInsertMenuViewProps) => {
   const {setSnackbarPayload} = useSnackbar();
   const {values, setFieldValue, isSubmitting} = useFormikContext<PostContentData>();
+  const {hasShutternaut} = useRoles();
   const currentPhotoCount = values.images.length;
+
+  const getIcon = useCallback(() => {
+    if (hasShutternaut) {
+      return <AppIcon icon={AppIcons.shutternaut} />;
+    }
+    return undefined;
+  }, [hasShutternaut]);
 
   const handleInsertEmoji = () => {
     setVisible(false);
@@ -43,7 +55,7 @@ export const ContentInsertMenuView = ({
   }, [isSubmitting, setEmojiVisible, setVisible]);
 
   const takeImage = async () => {
-    const cameraPermission = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+    const cameraPermission = isIOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
     const permissionStatus = await requestPermission(cameraPermission);
     console.log('[ContentInsertMenuView.tsx] Camera permission is', permissionStatus);
     try {
@@ -91,11 +103,13 @@ export const ContentInsertMenuView = ({
                 <List.Item
                   disabled={currentPhotoCount >= maxPhotos}
                   title={`Take a New Photo (Max: ${maxPhotos})`}
+                  right={getIcon}
                   onPress={takeImage}
                 />
                 <List.Item
                   disabled={currentPhotoCount >= maxPhotos}
                   title={`Attach Existing Photo (Max: ${maxPhotos})`}
+                  right={getIcon}
                   onPress={pickImage}
                 />
               </>

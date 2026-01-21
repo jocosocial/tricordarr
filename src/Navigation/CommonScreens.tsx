@@ -2,16 +2,18 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
-import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {FezType} from '#src/Enums/FezType';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
+import {BoardgameHelpScreen} from '#src/Screens/Boardgames/BoardgameHelpScreen';
 import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
 import {PreRegistrationHelpScreen} from '#src/Screens/Disabled/PreRegistrationHelpScreen';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
 import {EventScreen} from '#src/Screens/Event/EventScreen';
 import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
+import {FezChatDetailsHelpScreen} from '#src/Screens/Fez/FezChatDetailsHelpScreen';
 import {FezChatDetailsScreen} from '#src/Screens/Fez/FezChatDetailsScreen';
+import {FezChatHelpScreen} from '#src/Screens/Fez/FezChatHelpScreen';
 import {FezChatScreen} from '#src/Screens/Fez/FezChatScreen';
 import {ForumHelpScreen} from '#src/Screens/Forum/ForumHelpScreen';
 import {ForumPostEditScreen} from '#src/Screens/Forum/Post/ForumPostEditScreen';
@@ -24,6 +26,8 @@ import {ForumThreadPostScreen} from '#src/Screens/Forum/Thread/ForumThreadPostSc
 import {ForumThreadScreen} from '#src/Screens/Forum/Thread/ForumThreadScreen';
 import {ForumThreadUserScreen} from '#src/Screens/Forum/Thread/ForumThreadUserScreen';
 import {HelpManualScreen} from '#src/Screens/Help/HelpManualScreen';
+import {ModeratorHelpScreen} from '#src/Screens/Help/ModeratorHelpScreen';
+import {ShutternautHelpScreen} from '#src/Screens/Help/ShutternautHelpScreen';
 import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen';
 import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
 import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
@@ -32,25 +36,38 @@ import {LfgParticipationScreen} from '#src/Screens/LFG/LfgParticipationScreen';
 import {LfgScreen} from '#src/Screens/LFG/LfgScreen';
 import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
 import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
+import {CruiseHelpScreen} from '#src/Screens/Main/CruiseHelpScreen';
 import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
 import {MainTimeZoneScreen} from '#src/Screens/Main/MainTimeZoneScreen';
+import {MapHelpScreen} from '#src/Screens/Main/MapHelpScreen';
 import {MapScreen} from '#src/Screens/Main/MapScreen';
+import {PrivacyScreen} from '#src/Screens/Main/PrivacyScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
+import {TodayHelpScreen} from '#src/Screens/Main/TodayHelpScreen';
 import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScreen';
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {PerformerHelpScreen} from '#src/Screens/Performer/PerformerHelpScreen';
 import {PerformerScreen} from '#src/Screens/Performer/PerformerScreen';
+import {PersonalEventCreateHelpScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateHelpScreen';
 import {PersonalEventCreateScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateScreen';
 import {PersonalEventEditScreen} from '#src/Screens/PersonalEvent/PersonalEventEditScreen';
 import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScreen';
+import {PhotostreamEventScreen} from '#src/Screens/Photostream/PhotostreamEventScreen';
+import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
+import {EventHelpScreen} from '#src/Screens/Schedule/EventHelpScreen';
+import {PersonalEventHelpScreen} from '#src/Screens/Schedule/PersonalEventHelpScreen';
 import {ScheduleDayPlannerScreen} from '#src/Screens/Schedule/ScheduleDayPlannerScreen';
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {ScheduleHelpScreen} from '#src/Screens/Schedule/ScheduleHelpScreen';
 import {ScheduleImportScreen} from '#src/Screens/Schedule/ScheduleImportScreen';
-import {SchedulePrivateEventsScreen} from '#src/Screens/Schedule/SchedulePrivateEventsScreen';
+import {ScheduleOverlapScreen} from '#src/Screens/Schedule/ScheduleOverlapScreen';
 import {SeamailAddParticipantScreen} from '#src/Screens/Seamail/SeamailAddParticipantScreen';
+import {SeamailCreateHelpScreen} from '#src/Screens/Seamail/SeamailCreateHelpScreen';
 import {SeamailCreateScreen} from '#src/Screens/Seamail/SeamailCreateScreen';
+import {SeamailEditScreen} from '#src/Screens/Seamail/SeamailEditScreen';
 import {SeamailHelpScreen} from '#src/Screens/Seamail/SeamailHelpScreen';
+import {SeamailListHelpScreen} from '#src/Screens/Seamail/SeamailListHelpScreen';
+import {SeamailSearchHelpScreen} from '#src/Screens/Seamail/SeamailSearchHelpScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
 import {ConfigServerUrlScreen} from '#src/Screens/Settings/Config/ConfigServerUrlScreen';
@@ -71,8 +88,10 @@ import {UserProfileEditScreen} from '#src/Screens/User/UserProfileEditScreen';
 import {UserProfileHelpScreen} from '#src/Screens/User/UserProfileHelpScreen';
 import {UserProfileScreen} from '#src/Screens/User/UserProfileScreen';
 import {UserRegCodeScreen} from '#src/Screens/User/UserRegCodeScreen';
+import {UserSelfProfileScreen} from '#src/Screens/User/UserSelfProfileScreen';
 import {
   CategoryData,
+  EventData,
   FezData,
   ForumData,
   ForumListData,
@@ -81,7 +100,7 @@ import {
   ProfilePublicData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
-import {ParamsWithOobe} from '#src/Types';
+import {NoDrawerParamsOptional} from '#src/Types/RouteParams';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -102,8 +121,8 @@ import {ParamsWithOobe} from '#src/Types';
 export type CommonStackParamList = {
   UserProfileScreen: {
     userID: string;
-    enableContent?: boolean;
   };
+  UserSelfProfileScreen: undefined;
   EditUserProfileScreen: {
     user: ProfilePublicData;
   };
@@ -119,6 +138,7 @@ export type CommonStackParamList = {
   SiteUIScreen: {
     resource?: string;
     id?: string;
+    action?: string;
     timestamp?: string;
     moderate?: boolean;
     admin?: boolean;
@@ -134,6 +154,9 @@ export type CommonStackParamList = {
     user: UserHeader;
   };
   EventScreen: {
+    eventID: string;
+  };
+  PhotostreamEventScreen: {
     eventID: string;
   };
   PersonalEventScreen: {
@@ -173,6 +196,9 @@ export type CommonStackParamList = {
   SeamailAddParticipantScreen: {
     fez: FezData;
   };
+  SeamailEditScreen: {
+    fezID: string;
+  };
   LfgScreen: {
     fezID: string;
   };
@@ -181,6 +207,7 @@ export type CommonStackParamList = {
   };
   LfgAddParticipantScreen: {
     fezID: string;
+    fezType: FezType;
   };
   LfgChatScreen: {
     fezID: string;
@@ -200,7 +227,7 @@ export type CommonStackParamList = {
     cruiseDay?: number;
     initialUserHeaders?: UserHeader[];
   };
-  UserProfileHelpScreen: ParamsWithOobe;
+  UserProfileHelpScreen: undefined;
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
   FavoriteUsersScreen: undefined;
@@ -213,6 +240,11 @@ export type CommonStackParamList = {
     forum?: ForumListData | ForumData;
   };
   SeamailHelpScreen: undefined;
+  SeamailListHelpScreen: undefined;
+  SeamailSearchHelpScreen: undefined;
+  SeamailCreateHelpScreen: undefined;
+  FezChatHelpScreen: undefined;
+  FezChatDetailsHelpScreen: undefined;
   SiteUILinkScreen: undefined;
   PerformerScreen: {
     id: string;
@@ -223,6 +255,11 @@ export type CommonStackParamList = {
   DisabledHelpScreen: undefined;
   LfgHelpScreen: undefined;
   LfgCreateHelpScreen: undefined;
+  PersonalEventCreateHelpScreen: undefined;
+  EventHelpScreen: {
+    mode?: 'official' | 'shadow';
+  };
+  PersonalEventHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
   TimeZoneHelpScreen: undefined;
   PrivateEventChatScreen: {
@@ -242,20 +279,31 @@ export type CommonStackParamList = {
     eventID: string;
   };
   EventSettingsScreen: undefined;
-  SchedulePrivateEventsScreen: undefined;
-  ScheduleDayScreen: ParamsWithOobe;
+  ScheduleDayScreen: NoDrawerParamsOptional;
   ScheduleDayPlannerScreen: {
     cruiseDay?: number;
+  };
+  ScheduleOverlapScreen: {
+    eventData: EventData | FezData;
   };
   PreRegistrationHelpScreen: undefined;
   HelpIndexScreen: undefined;
   MainHelpScreen: undefined;
   AboutTricordarrScreen: undefined;
   AboutTwitarrScreen: undefined;
+  PrivacyScreen: undefined;
+  ShutternautHelpScreen: undefined;
+  ModeratorHelpScreen: undefined;
+  BoardgameHelpScreen: undefined;
+  PhotostreamHelpScreen: undefined;
+  MapHelpScreen: undefined;
+  CruiseHelpScreen: undefined;
+  TodayHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
   userProfileScreen = 'UserProfileScreen',
+  userSelfProfileScreen = 'UserSelfProfileScreen',
   userProfileEditScreen = 'EditUserProfileScreen',
   userPrivateNoteScreen = 'UserPrivateNoteScreen',
   userRegCodeScreen = 'UserRegCodeScreen',
@@ -266,6 +314,7 @@ export enum CommonStackComponents {
   forumThreadUserScreen = 'ForumThreadUserScreen',
   forumPostUserScreen = 'ForumPostUserScreen',
   eventScreen = 'EventScreen',
+  photostreamEventScreen = 'PhotostreamEventScreen',
   forumThreadScreen = 'ForumThreadScreen',
   alertKeywords = 'AlertKeywordsSettingsScreen',
   muteKeywords = 'MuteKeywordsSettingsScreen',
@@ -278,6 +327,7 @@ export enum CommonStackComponents {
   seamailChatScreen = 'SeamailChatScreen',
   fezChatDetailsScreen = 'FezChatDetailsScreen',
   seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
+  seamailEditScreen = 'SeamailEditScreen',
   lfgScreen = 'LfgScreen',
   lfgParticipationScreen = 'LfgParticipationScreen',
   lfgAddParticipantScreen = 'LfgAddParticipantScreen',
@@ -299,6 +349,11 @@ export enum CommonStackComponents {
   scheduleHelpScreen = 'ScheduleHelpScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
+  seamailListHelpScreen = 'SeamailListHelpScreen',
+  seamailSearchHelpScreen = 'SeamailSearchHelpScreen',
+  seamailCreateHelpScreen = 'SeamailCreateHelpScreen',
+  fezChatHelpScreen = 'FezChatHelpScreen',
+  fezChatDetailsHelpScreen = 'FezChatDetailsHelpScreen',
   siteUILinkScreen = 'SiteUILinkScreen',
   performerScreen = 'PerformerScreen',
   performerHelpScreen = 'PerformerHelpScreen',
@@ -306,6 +361,9 @@ export enum CommonStackComponents {
   disabledHelpScreen = 'DisabledHelpScreen',
   lfgHelpScreen = 'LfgHelpScreen',
   lfgCreateHelpScreen = 'LfgCreateHelpScreen',
+  personalEventCreateHelpScreen = 'PersonalEventCreateHelpScreen',
+  eventHelpScreen = 'EventHelpScreen',
+  personalEventHelpScreen = 'PersonalEventHelpScreen',
   mainTimeZoneScreen = 'MainTimeZoneScreen',
   timeZoneHelpScreen = 'TimeZoneHelpScreen',
   privateEventChatScreen = 'PrivateEventChatScreen',
@@ -315,19 +373,61 @@ export enum CommonStackComponents {
   performerCreateScreen = 'PerformerCreateScreen',
   performerEditScreen = 'PerformerEditScreen',
   eventSettingsScreen = 'EventSettingsScreen',
-  schedulePrivateEventsScreen = 'SchedulePrivateEventsScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleDayPlannerScreen = 'ScheduleDayPlannerScreen',
+  scheduleOverlapScreen = 'ScheduleOverlapScreen',
   preRegistrationHelpScreen = 'PreRegistrationHelpScreen',
   helpIndexScreen = 'HelpIndexScreen',
   mainHelpScreen = 'MainHelpScreen',
   aboutTricordarrScreen = 'AboutTricordarrScreen',
   aboutTwitarrScreen = 'AboutTwitarrScreen',
+  privacyScreen = 'PrivacyScreen',
+  shutternautHelpScreen = 'ShutternautHelpScreen',
+  moderatorHelpScreen = 'ModeratorHelpScreen',
+  boardgameHelpScreen = 'BoardgameHelpScreen',
+  photostreamHelpScreen = 'PhotostreamHelpScreen',
+  mapHelpScreen = 'MapHelpScreen',
+  cruiseHelpScreen = 'CruiseHelpScreen',
+  todayHelpScreen = 'TodayHelpScreen',
 }
 
-export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
-  const {getLeftMainHeaderButtons} = useDrawer();
+/**
+ * Helper type for help screens. Needed for proper typing when calling commonNavigation.push().
+ */
+export type HelpScreenComponents =
+  | CommonStackComponents.preRegistrationHelpScreen
+  | CommonStackComponents.moderatorHelpScreen
+  | CommonStackComponents.scheduleHelpScreen
+  | CommonStackComponents.userDirectoryHelpScreen
+  | CommonStackComponents.forumHelpScreen
+  | CommonStackComponents.seamailHelpScreen
+  | CommonStackComponents.seamailListHelpScreen
+  | CommonStackComponents.seamailSearchHelpScreen
+  | CommonStackComponents.seamailCreateHelpScreen
+  | CommonStackComponents.fezChatHelpScreen
+  | CommonStackComponents.fezChatDetailsHelpScreen
+  | CommonStackComponents.performerHelpScreen
+  | CommonStackComponents.siteUIHelpScreen
+  | CommonStackComponents.disabledHelpScreen
+  | CommonStackComponents.lfgHelpScreen
+  | CommonStackComponents.lfgCreateHelpScreen
+  | CommonStackComponents.personalEventCreateHelpScreen
+  | CommonStackComponents.eventHelpScreen
+  | CommonStackComponents.personalEventHelpScreen
+  | CommonStackComponents.timeZoneHelpScreen
+  | CommonStackComponents.helpIndexScreen
+  | CommonStackComponents.mainHelpScreen
+  | CommonStackComponents.aboutTricordarrScreen
+  | CommonStackComponents.aboutTwitarrScreen
+  | CommonStackComponents.shutternautHelpScreen
+  | CommonStackComponents.boardgameHelpScreen
+  | CommonStackComponents.photostreamHelpScreen
+  | CommonStackComponents.userProfileHelpScreen
+  | CommonStackComponents.mapHelpScreen
+  | CommonStackComponents.cruiseHelpScreen
+  | CommonStackComponents.todayHelpScreen;
 
+export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
   return (
     <>
       <Stack.Screen
@@ -344,6 +444,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.userProfileEditScreen}
         component={UserProfileEditScreen}
         options={{title: 'Edit Profile'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.userSelfProfileScreen}
+        component={UserSelfProfileScreen}
+        options={{title: 'Your Profile'}}
       />
       <Stack.Screen
         name={CommonStackComponents.userPrivateNoteScreen}
@@ -377,6 +482,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Forums by User'}}
       />
       <Stack.Screen name={CommonStackComponents.eventScreen} component={EventScreen} options={{title: 'Event'}} />
+      <Stack.Screen
+        name={CommonStackComponents.photostreamEventScreen}
+        component={PhotostreamEventScreen}
+        options={{title: 'Event Photos'}}
+      />
       <Stack.Screen
         name={CommonStackComponents.forumThreadScreen}
         component={ForumThreadScreen}
@@ -444,6 +554,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.seamailAddParticipantScreen}
         component={SeamailAddParticipantScreen}
         options={{title: 'Add Participant'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailEditScreen}
+        component={SeamailEditScreen}
+        options={{title: 'Edit Seamail'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgScreen}
@@ -547,6 +662,31 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Seamail Help'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.seamailListHelpScreen}
+        component={SeamailListHelpScreen}
+        options={{title: 'Seamail List Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailSearchHelpScreen}
+        component={SeamailSearchHelpScreen}
+        options={{title: 'Seamail Search Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailCreateHelpScreen}
+        component={SeamailCreateHelpScreen}
+        options={{title: 'Seamail Create Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.fezChatHelpScreen}
+        component={FezChatHelpScreen}
+        options={{title: 'Chat Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.fezChatDetailsHelpScreen}
+        component={FezChatDetailsHelpScreen}
+        options={{title: 'Chat Details Help'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.siteUILinkScreen}
         component={SiteUILinkScreen}
         options={{title: 'Twitarr'}}
@@ -574,12 +714,29 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.lfgHelpScreen}
         component={LfgHelpScreen}
-        options={{title: 'Looking For Group (LFG) Help'}}
+        options={{title: 'Looking For Group Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgCreateHelpScreen}
         component={LfgCreateHelpScreen}
         options={{title: 'New LFG Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.personalEventCreateHelpScreen}
+        component={PersonalEventCreateHelpScreen}
+        options={{title: 'Create Personal Event Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventHelpScreen}
+        component={EventHelpScreen}
+        options={({route}: {route: RouteProp<CommonStackParamList, 'EventHelpScreen'>}) => ({
+          title: route.params?.mode === 'shadow' ? 'Shadow Event Help' : 'Official Event Help',
+        })}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.personalEventHelpScreen}
+        component={PersonalEventHelpScreen}
+        options={{title: 'Personal Event Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.mainTimeZoneScreen}
@@ -629,20 +786,17 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.scheduleDayScreen}
         component={ScheduleDayScreen}
-        options={{
-          headerLeft: getLeftMainHeaderButtons,
-          title: 'Schedule',
-        }}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.schedulePrivateEventsScreen}
-        component={SchedulePrivateEventsScreen}
-        options={{title: 'Personal Events'}}
+        options={{title: 'Schedule'}}
       />
       <Stack.Screen
         name={CommonStackComponents.scheduleDayPlannerScreen}
         component={ScheduleDayPlannerScreen}
         options={{title: 'Day Planner'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleOverlapScreen}
+        component={ScheduleOverlapScreen}
+        options={{title: 'Overlapping Events'}}
       />
       <Stack.Screen
         name={CommonStackComponents.preRegistrationHelpScreen}
@@ -664,6 +818,46 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.aboutTwitarrScreen}
         component={AboutTwitarrScreen}
         options={{title: 'About Twitarr'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.privacyScreen}
+        component={PrivacyScreen}
+        options={{title: 'Privacy Policy'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.shutternautHelpScreen}
+        component={ShutternautHelpScreen}
+        options={{title: 'Shutternaut Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorHelpScreen}
+        component={ModeratorHelpScreen}
+        options={{title: 'Moderator Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.boardgameHelpScreen}
+        component={BoardgameHelpScreen}
+        options={{title: 'Board Game Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.photostreamHelpScreen}
+        component={PhotostreamHelpScreen}
+        options={{title: 'Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.mapHelpScreen}
+        component={MapHelpScreen}
+        options={{title: 'Map Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.cruiseHelpScreen}
+        component={CruiseHelpScreen}
+        options={{title: 'Cruise Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.todayHelpScreen}
+        component={TodayHelpScreen}
+        options={{title: 'Today Help'}}
       />
     </>
   );

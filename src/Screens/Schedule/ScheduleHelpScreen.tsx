@@ -9,15 +9,19 @@ import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleV
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 export const ScheduleHelpScreen = () => {
   const {theme} = useAppTheme();
+  const commonNavigation = useCommonStack();
+
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'} />
         <HelpTopicView>Always confirm event times and locations as they are subject to change.</HelpTopicView>
         <HelpChapterTitleView title={'Event Types'} />
+        <HelpTopicView>Tap on a card to learn more about each event type.</HelpTopicView>
         <PaddedContentView>
           <ScheduleItemCardBase
             title={'Official Event'}
@@ -25,6 +29,7 @@ export const ScheduleHelpScreen = () => {
             description={
               'Produced by the JoCo Cruise management and/or featured guests. These appear on the schedule posted online and throughout the ship.'
             }
+            onPress={() => commonNavigation.push(CommonStackComponents.eventHelpScreen, {mode: 'official'})}
           />
         </PaddedContentView>
         <PaddedContentView>
@@ -34,6 +39,7 @@ export const ScheduleHelpScreen = () => {
             description={
               'Approved by the JoCo Cruise management but conducted by cruise attendees. These appear on the schedule posted online and throughout the ship.'
             }
+            onPress={() => commonNavigation.push(CommonStackComponents.eventHelpScreen, {mode: 'shadow'})}
           />
         </PaddedContentView>
         <PaddedContentView>
@@ -43,6 +49,7 @@ export const ScheduleHelpScreen = () => {
             description={
               'Attendee organized event. These are available within Twitarr only. Sometimes participation is limited.'
             }
+            onPress={() => commonNavigation.push(CommonStackComponents.lfgHelpScreen)}
           />
         </PaddedContentView>
         <PaddedContentView>
@@ -52,6 +59,7 @@ export const ScheduleHelpScreen = () => {
             description={
               'Private calendar entries created by you within the Twitarr system for you and your friends. Useful for a single-app schedule for your day.'
             }
+            onPress={() => commonNavigation.push(CommonStackComponents.personalEventHelpScreen)}
           />
         </PaddedContentView>
         <HelpChapterTitleView title={'Navigation'} />
@@ -74,8 +82,13 @@ export const ScheduleHelpScreen = () => {
               disabled={true}
             />
           }>
-          Pressing on day button will take you to the schedule for that day. Pressing it again will jump you to around
+          Pressing on a day button will take you to the schedule for that day. Pressing it again will jump you to around
           the current time.
+        </HelpTopicView>
+        <HelpTopicView title={'Day Planner'} icon={AppIcons.dayPlanner}>
+          Press this button on the bottom-right corner of the schedule screen to view your events in a calendar-style
+          view. This includes favorited events, personal events, and joined LFGs. Once you've picked your events, this
+          is your main screen for keeping track of your days onboard.
         </HelpTopicView>
         <HelpTopicView title={'Favorite/Follow'} icon={AppIcons.favorite}>
           Favoriting an event adds it to a list of all of your favorites. Long press an event in the schedule or press
@@ -86,31 +99,19 @@ export const ScheduleHelpScreen = () => {
           All events are given a corresponding forum. You can use that to discuss the event by tapping the forum button
           in the Menu.
         </HelpTopicView>
-        <HelpTopicView title={'Your Day Today'} icon={AppIcons.personalEvent}>
-          Press this button on the schedule screen to view all of your events for the day. This includes favorited
-          events, personal events, and joined LFGs. Pressing the button again will disengage the filters.
+        <HelpTopicView title={'Overlapping Events'} icon={AppIcons.calendarMultiple}>
+          View events, LFGs, and personal events that occur at the same time as a selected event. Tap the "Overlapping"
+          button in the actions menu of any event, LFG, or personal event screen, or by long-pressing an event card and
+          selecting "Overlapping". Use the "Only your events" filter to restrict the list to events you're participating
+          in, events you own, or events you've favorited. You can configure a setting to exclude long events (by
+          default, events 4 hours or longer) from the overlap list.
         </HelpTopicView>
         <HelpChapterTitleView title={'LFG Integration'} />
         <HelpTopicView>
           There are optional settings to enable showing LFGs you've joined or that are open to you in the schedule.
         </HelpTopicView>
-        <HelpChapterTitleView title={'Shadow Performer Profiles'} />
-        <HelpTopicView>
-          If you are a Shadow Cruise event organizer you can optionally create a performer bio for yourself that is
-          attached to the event you'll be running. This Bio page is not publicly linked to your Twitarr user. The intent
-          of this feature is to let people thinking of attending your session know a bit about you.
-        </HelpTopicView>
-        <HelpTopicView>
-          Performer Profiles for Shadow Cruise organizers can only be created before sailing. Long press the event in
-          the Schedule screen and select Set Organizer to fill out the form. If you wish to create one while on board
-          contact the TwitarrTeam for assistance. All profile content is subject to moderator review.
-        </HelpTopicView>
-        <HelpChapterTitleView title={'Personal Events'} />
-        <HelpTopicView>
-          You can add guests to your personal events. This will automatically create a Seamail chat for it. You can add
-          or remove users later on. If you have already created your personal event you cannot add users later. You'll
-          need to create a new personal event and add them at the time of creation.
-        </HelpTopicView>
+        <HelpChapterTitleView title={'Shutternauts'} />
+        <HelpTopicView>See the Shutternaut Help (available in the app drawer) for more information.</HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );

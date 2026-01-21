@@ -1,22 +1,25 @@
 import {FlashListRef} from '@shopify/flash-list';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {AppIcons} from '#src/Enums/Icons';
+import {usePagination} from '#src/Hooks/usePagination';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {PostData} from '#src/Structs/ControllerStructs';
 
-interface ForumPostScreenBaseProps {
+interface Props {
   queryParams: ForumPostSearchQueryParams;
   refreshOnUserNotification?: boolean;
   title?: string;
@@ -26,22 +29,20 @@ interface ForumPostScreenBaseProps {
  * Used for screens listing posts such as Favorites, Hashtags, Mentions, By User, By Self.
  * Not used for Post Search
  */
-export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title}: ForumPostScreenBaseProps) => {
-  const {data, refetch, isFetchingNextPage, hasNextPage, hasPreviousPage, fetchNextPage, isLoading} =
+export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title}: Props) => {
+  const {data, refetch, isFetchingNextPage, hasNextPage, hasPreviousPage, fetchNextPage, isLoading, isFetching} =
     useForumPostSearchQuery(queryParams);
   const commonNavigation = useCommonStack();
-  const [refreshing, setRefreshing] = useState(false);
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const flatListRef = useRef<FlashListRef<PostData>>(null);
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  }, [refetch]);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const getNavButtons = useCallback(() => {
     return (
@@ -59,12 +60,12 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     );
   }, [commonNavigation]);
 
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {handleLoadNext} = usePagination({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    setRefreshing,
+  });
 
   useEffect(() => {
     if (refreshOnUserNotification && userNotificationData?.newForumMentionCount) {
@@ -102,7 +103,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
       <ForumPostList
         listRef={flatListRef}
         postList={forumPosts}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         handleLoadNext={handleLoadNext}
         itemSeparator={'time'}
         enableShowInThread={true}

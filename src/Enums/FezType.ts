@@ -84,6 +84,17 @@ export namespace FezType {
     return 'Unknown Chat';
   };
 
+  export const getChatTypeString = (fezType: FezType) => {
+    if (FezType.isLFGType(fezType)) {
+      return 'LFG';
+    } else if (FezType.isSeamailType(fezType)) {
+      return 'Seamail';
+    } else if (FezType.isPrivateEventType(fezType)) {
+      return 'Private Event';
+    }
+    return 'Unknown';
+  };
+
   export const getHelpRoute = (fezType: FezType) => {
     if (FezType.isLFGType(fezType)) {
       return CommonStackComponents.lfgHelpScreen;

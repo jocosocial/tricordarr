@@ -2,8 +2,9 @@ import {useQueryClient} from '@tanstack/react-query';
 import {isAxiosError} from 'axios';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {STALE} from '#src/Libraries/Time/Time';
 import {useOpenQuery, usePublicQuery} from '#src/Queries/OpenQuery';
-import {HealthResponse, SwiftarrClientConfig} from '#src/Structs/ControllerStructs';
+import {ClientSettingsData, HealthResponse, SwiftarrClientConfig} from '#src/Structs/ControllerStructs';
 
 export const useHealthQuery = (options = {}) => {
   const client = useQueryClient();
@@ -46,8 +47,21 @@ export const useHealthQuery = (options = {}) => {
   });
 };
 
+/**
+ * This has been reduced to just Tricordarr-specific data. aka latest version.
+ */
 export const useClientConfigQuery = (options = {}) => {
   return usePublicQuery<SwiftarrClientConfig>('/public/clients/tricordarr.json', {
+    ...options,
+  });
+};
+
+/**
+ * Cruise settings data. Replaces the .env files.
+ */
+export const useClientSettingsQuery = (options = {}) => {
+  return useOpenQuery<ClientSettingsData>('/client/settings', {
+    staleTime: STALE.HOURS.TWENTY_FOUR,
     ...options,
   });
 };

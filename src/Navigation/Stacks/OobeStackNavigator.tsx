@@ -12,9 +12,8 @@ import {OobePreregistrationScreen} from '#src/Screens/OOBE/OobePreregistrationSc
 import {OobeServerScreen} from '#src/Screens/OOBE/OobeServerScreen';
 import {OobeUserDataScreen} from '#src/Screens/OOBE/OobeUserDataScreen';
 import {OobeWelcomeScreen} from '#src/Screens/OOBE/OobeWelcomeScreen';
-import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
-import {OobeRegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
+import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
 
 export type OobeStackParamList = CommonStackParamList & {
   OobeWelcomeScreen: undefined;
@@ -75,7 +74,7 @@ export const OobeStackNavigator = () => {
       <Stack.Screen name={OobeStackComponents.oobeLoginScreen} component={LoginScreen} options={{title: 'Login'}} />
       <Stack.Screen
         name={OobeStackComponents.oobeRegisterScreen}
-        component={OobeRegisterScreen}
+        component={RegisterScreen}
         options={{title: 'Register'}}
       />
       <Stack.Screen
@@ -97,11 +96,6 @@ export const OobeStackNavigator = () => {
         name={OobeStackComponents.oobeUserDataScreen}
         component={OobeUserDataScreen}
         options={{title: 'User Data'}}
-      />
-      <Stack.Screen
-        name={OobeStackComponents.oobeScheduleDayScreen}
-        component={ScheduleDayScreen}
-        options={{title: 'Schedule'}}
       />
       {CommonScreens(Stack)}
     </Stack.Navigator>

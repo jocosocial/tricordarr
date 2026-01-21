@@ -1,8 +1,9 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Keyboard, RefreshControl, View} from 'react-native';
+import {Keyboard, View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
@@ -10,6 +11,8 @@ import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ForumSort} from '#src/Enums/ForumSortFilter';
 import {AppIcons} from '#src/Enums/Icons';
+import {useRefresh} from '#src/Hooks/useRefresh';
+import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries';
 import {CategoryData, ForumListData} from '#src/Structs/ControllerStructs';
@@ -44,8 +47,11 @@ export const ForumThreadSearchBar = (props: Props) => {
   );
   const {commonStyles} = useStyles();
   const [forumList, setForumList] = useState<ForumListData[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
   const commonNavigation = useCommonStack();
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
@@ -55,10 +61,6 @@ export const ForumThreadSearchBar = (props: Props) => {
     setEnable(false);
     setForumList([]);
   };
-  const onRefresh = () => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  };
 
   const onSearch = () => {
     setEnable(true);
@@ -66,12 +68,19 @@ export const ForumThreadSearchBar = (props: Props) => {
     Keyboard.dismiss();
   };
 
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {safeHandleLoadNext, effectiveHasNextPage} = useSafePagination({
+    searchQuery,
+    minLength: 3,
+    hasNextPage: hasNextPage ?? false,
+    itemsLength: forumList.length,
+    fetchNextPage: () => {
+      if (!isFetchingNextPage) {
+        setRefreshing(true);
+        fetchNextPage().finally(() => setRefreshing(false));
+      }
+    },
+  });
+
   const handleLoadPrevious = () => {
     if (!isFetchingPreviousPage && hasPreviousPage) {
       setRefreshing(true);
@@ -113,13 +122,11 @@ export const ForumThreadSearchBar = (props: Props) => {
       <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} onClear={onClear} />
       <View style={[commonStyles.flex]}>
         <ForumThreadList
-          refreshControl={
-            <RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
-          }
+          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />}
           forumListData={forumList}
-          handleLoadNext={handleLoadNext}
+          handleLoadNext={safeHandleLoadNext}
           handleLoadPrevious={handleLoadPrevious}
-          hasNextPage={hasNextPage}
+          hasNextPage={effectiveHasNextPage}
           hasPreviousPage={hasPreviousPage}
         />
       </View>

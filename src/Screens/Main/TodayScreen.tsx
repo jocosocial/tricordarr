@@ -1,10 +1,11 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {View} from 'react-native';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ModeratorCard} from '#src/Components/Cards/MainScreen/ModeratorCard';
 import {TodayPreRegistrationCard} from '#src/Components/Cards/MainScreen/TodayPreRegistrationCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MainAccountMenu} from '#src/Components/Menus/MainAccountMenu';
 import {NotificationsMenu} from '#src/Components/Menus/NotificationsMenu';
 import {TodayHeaderTitle} from '#src/Components/Navigation/TodayHeaderTitle';
@@ -17,19 +18,17 @@ import {TodayNextAppointmentView} from '#src/Components/Views/Today/TodayNextApp
 import {TodayThemeView} from '#src/Components/Views/Today/TodayThemeView';
 import {TodayTimezoneWarningView} from '#src/Components/Views/Today/TodayTimezoneWarningView';
 import {TodayAppUpdateView} from '#src/Components/Views/TodayAppUpdateView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
-import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
 
@@ -43,29 +42,35 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchThemes} = useDailyThemeQuery({enabled: false});
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
   const {refetch: refetchFavorites} = useUserFavoritesQuery({enabled: false});
-  const {refetch: refetchMutes} = useUserMutesQuery({enabled: false});
-  const {refetch: refetchBlocks} = useUserBlocksQuery({enabled: false});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
-  const {refetch: refetchClient} = useClientConfigQuery({enabled: false});
   const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
-  const {isLoggedIn} = useAuth();
+  const {isLoggedIn} = useSession();
   const {hasModerator} = usePrivilege();
-  const {appConfig} = useConfig();
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    var refreshes: Promise<any>[] = [refetchClient()];
-    // These queries not available in pre-registration mode.
-    if (!appConfig.preRegistrationMode) {
-      refreshes.push(refetchAnnouncements(), refetchThemes(), refetchUserNotificationData());
-      if (isLoggedIn) {
-        refreshes.push(refetchProfile(), refetchFavorites(), refetchBlocks(), refetchMutes());
+  const {preRegistrationMode} = usePreRegistration();
+  const {refreshing, onRefresh} = useRefresh({
+    refresh: useCallback(async () => {
+      var refreshes: Promise<any>[] = [];
+      // These queries not available in pre-registration mode.
+      if (!preRegistrationMode) {
+        refreshes.push(refetchAnnouncements(), refetchThemes(), refetchUserNotificationData());
+        if (isLoggedIn) {
+          // useUserProfileQuery is here because the menu has the users picture.
+          // useUserFavoritesQuery is here because the favorites list is sneakily used
+          // in various places within the app that are not worth refetching directly in.
+          refreshes.push(refetchProfile(), refetchFavorites());
+        }
       }
-    }
-    await Promise.all(refreshes);
-    setRefreshing(false);
-  };
+      await Promise.all(refreshes);
+    }, [
+      preRegistrationMode,
+      isLoggedIn,
+      refetchAnnouncements,
+      refetchThemes,
+      refetchUserNotificationData,
+      refetchProfile,
+      refetchFavorites,
+    ]),
+  });
 
   const getRightMainHeaderButtons = useCallback(() => {
     return (
@@ -92,14 +97,14 @@ export const TodayScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <TodayHeaderView />
-        {appConfig.preRegistrationMode && (
+        {preRegistrationMode && (
           <PaddedContentView padBottom={false}>
             <TodayPreRegistrationCard />
           </PaddedContentView>
         )}
-        {!appConfig.preRegistrationMode && (
+        {!preRegistrationMode && (
           <>
             <TodayTimezoneWarningView />
             <TodayAnnouncementView />

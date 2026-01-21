@@ -27,8 +27,12 @@ export const KeywordValidation = Yup.string()
 // This is a blend of Title/Location/Info from LFGs.
 export const InfoStringValidation = Yup.string().min(3).max(2000).required('Cannot be empty.');
 
-export const NumberValidation = Yup.string()
+export const IntegerValidation = Yup.string()
   .matches(/^[0-9]+$/, 'Must be an integer.')
+  .required('Integer required');
+
+export const SignedIntegerValidation = Yup.string()
+  .matches(/^-?[0-9]+$/, 'Must be a whole number (negative values allowed).')
   .required('Integer required');
 
 // Object.values(FezType) also brings in the namespace functions which makes this very sad.

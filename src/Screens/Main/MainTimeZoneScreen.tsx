@@ -1,20 +1,19 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import moment from 'moment-timezone';
-import React, {useCallback, useEffect} from 'react';
-import {Linking, RefreshControl, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Linking, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {MainTimeZoneScreenActionsMenu} from '#src/Components/Menus/Main/MainTimeZoneScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {AppIcons} from '#src/Enums/Icons';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -26,45 +25,45 @@ const getCleanISOString = (dateString: string): string => {
 };
 
 const TimeZoneListItem = ({record}: {record: TimeZoneChangeRecord}) => {
+  const {setString} = useClipboard();
   return (
     <DataFieldListItem
       title={`${record.timeZoneID} (${record.timeZoneAbbrev}, UTC${moment.tz(record.timeZoneID).utcOffset()})`}
       description={`Effective at ${getCleanISOString(record.activeDate)}`}
-      onLongPress={() => Clipboard.setString(record.timeZoneID)}
+      onLongPress={() => setString(record.timeZoneID)}
     />
   );
 };
 
 export const MainTimeZoneScreen = () => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.timeZoneHelpScreen}>
       <TimeZoneScreen />
     </PreRegistrationScreen>
   );
 };
 
 const TimeZoneScreen = () => {
-  const {data, refetch, isFetching, isInitialLoading} = useTimeZoneChangesQuery();
+  const {data, refetch} = useTimeZoneChangesQuery();
   const navigation = useCommonStack();
   const {data: notificationData, refetch: refetchNotificationData} = useUserNotificationDataQuery();
+  const [refreshing, setRefreshing] = useState(false);
 
   const refresh = async () => {
+    setRefreshing(true);
     await Promise.all([refetch(), refetchNotificationData()]);
+    setRefreshing(false);
   };
 
   const getNavBarIcons = useCallback(
     () => (
       <View>
         <MaterialHeaderButtons>
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.timeZoneHelpScreen)}
-          />
+          <MainTimeZoneScreenActionsMenu />
         </MaterialHeaderButtons>
       </View>
     ),
-    [navigation],
+    [],
   );
 
   useEffect(() => {
@@ -73,15 +72,11 @@ const TimeZoneScreen = () => {
     });
   }, [getNavBarIcons, navigation]);
 
-  if (isInitialLoading) {
-    return <LoadingView />;
-  }
-
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={refresh} />}>
         <ListSection>
           <ListSubheader>Device Time</ListSubheader>
         </ListSection>

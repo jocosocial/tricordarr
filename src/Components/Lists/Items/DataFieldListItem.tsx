@@ -1,14 +1,15 @@
-import Clipboard from '@react-native-clipboard/clipboard';
-import React, {ReactNode, useCallback} from 'react';
+import React, {ReactNode, useCallback, useMemo, useState} from 'react';
 import {StyleSheet, TextStyle, ViewStyle} from 'react-native';
 import {List} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useClipboard} from '#src/Hooks/useClipboard';
+import {toSecureString} from '#src/Libraries/StringUtils';
 
 interface DataFieldListItemProps {
   title?: string;
-  description?: string | number | (() => ReactNode);
+  description?: string | number | (() => ReactNode) | Element;
   onPress?: () => void;
   titleStyle?: TextStyle;
   descriptionStyle?: TextStyle;
@@ -16,6 +17,7 @@ interface DataFieldListItemProps {
   left?: () => ReactNode;
   icon?: string;
   onLongPress?: () => void;
+  sensitive?: boolean;
 }
 
 /**
@@ -35,8 +37,11 @@ export const DataFieldListItem = ({
   icon,
   left,
   onLongPress,
+  sensitive = false,
 }: DataFieldListItemProps) => {
+  const [showSensitive, setShowSensitive] = useState(false);
   const {commonStyles} = useStyles();
+  const {setString} = useClipboard();
   const styles = StyleSheet.create({
     title: {
       ...commonStyles.fontSizeLabel,
@@ -70,21 +75,37 @@ export const DataFieldListItem = ({
     [icon, styles.icon],
   );
 
+  // Handle press: toggle sensitive visibility if sensitive is true, then call onPress if provided
+  const handlePress = useCallback(() => {
+    if (sensitive) {
+      setShowSensitive(prev => !prev);
+    }
+    onPress?.();
+  }, [sensitive, onPress]);
+
+  // Mask sensitive string descriptions
+  const displayDescription = useMemo(() => {
+    if (sensitive && typeof description === 'string') {
+      return showSensitive ? description : toSecureString(description);
+    }
+    return description;
+  }, [description, sensitive, showSensitive]);
+
   return (
     <List.Item
       left={left || getIcon}
       style={styles.item}
       titleStyle={styles.title}
       descriptionStyle={styles.description}
-      description={description}
+      description={displayDescription}
       descriptionNumberOfLines={0}
       title={title}
-      onPress={onPress}
+      onPress={sensitive || onPress ? handlePress : undefined}
       onLongPress={
         onLongPress ||
         (() =>
-          description && (typeof description === 'string' || typeof description === 'number')
-            ? Clipboard.setString(description.toString())
+          displayDescription && (typeof displayDescription === 'string' || typeof displayDescription === 'number')
+            ? setString(displayDescription.toString())
             : undefined)
       }
       contentStyle={styles.content}

@@ -3,14 +3,17 @@ import React, {memo, ReactNode, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import {Badge} from 'react-native-paper';
 
+import {CancelledBadge} from '#src/Components/Badges/CancelledBadge';
 import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {FezCardActionsMenu} from '#src/Components/Menus/Fez/FezCardActionsMenu';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/useMenu';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
@@ -42,6 +45,7 @@ const FezCardInternal = ({
   const unreadCount = fez.members ? fez.members.postCount - fez.members.readCount : 0;
   const {commonStyles} = useStyles();
   const {setModalContent, setModalVisible} = useModal();
+  const {visible: menuVisible, openMenu, closeMenu} = useMenu();
   const handleModal = useCallback(
     (content: ReactNode) => {
       setModalContent(content);
@@ -65,12 +69,11 @@ const FezCardInternal = ({
     if (enableReportOnly) {
       return <AppIcon icon={AppIcons.report} onPress={() => handleModal(<ReportModalView fez={fez} />)} />;
     }
-    if (!!unreadCount || fez.cancelled) {
-      return (
-        <Badge style={styles.badge}>
-          {fez.cancelled ? 'Cancelled' : `${unreadCount} new ${pluralize('post', unreadCount)}`}
-        </Badge>
-      );
+    if (fez.cancelled) {
+      return <CancelledBadge />;
+    }
+    if (unreadCount) {
+      return <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>;
     }
     if (showIcon) {
       const outputIcon = icon ? icon : FezType.isLFGType(fez.fezType) ? AppIcons.lfg : AppIcons.personalEvent;
@@ -87,10 +90,18 @@ const FezCardInternal = ({
     FezType.isLFGType(fez.fezType) ||
     (FezType.isPrivateEventType(fez.fezType) && FezData.isParticipant(fez, profilePublicData?.header));
 
-  return (
+  const handleLongPress = useCallback(() => {
+    if (onLongPress) {
+      onLongPress();
+    } else if (fez.startTime && fez.endTime) {
+      openMenu();
+    }
+  }, [onLongPress, fez.startTime, fez.endTime, openMenu]);
+
+  const cardContent = (
     <ScheduleItemCardBase
       onPress={enableReportOnly ? undefined : onPress}
-      onLongPress={onLongPress}
+      onLongPress={handleLongPress}
       cardStyle={styles.card}
       title={fez.title}
       author={fez.fezType === FezType.personalEvent ? undefined : fez.owner}
@@ -105,6 +116,13 @@ const FezCardInternal = ({
       titleHeader={titleHeader}
     />
   );
+
+  // Only show menu if fez has startTime and endTime (required for overlap calculation)
+  if (fez.startTime && fez.endTime) {
+    return <FezCardActionsMenu anchor={cardContent} fezData={fez} menuVisible={menuVisible} closeMenu={closeMenu} />;
+  }
+
+  return cardContent;
 };
 
 export const FezCard = memo(FezCardInternal);

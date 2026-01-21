@@ -7,7 +7,6 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
@@ -15,7 +14,6 @@ import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oo
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeUserDataScreen>;
 
 export const OobeUserDataScreen = ({navigation}: Props) => {
-  const {tokenData} = useAuth();
   const {theme} = useAppTheme();
 
   return (
@@ -31,15 +29,7 @@ export const OobeUserDataScreen = ({navigation}: Props) => {
           <PrimaryActionButton
             buttonText={'Setup Profile'}
             buttonColor={theme.colors.twitarrNeutralButton}
-            onPress={() => {
-              if (tokenData) {
-                navigation.push(CommonStackComponents.userProfileScreen, {
-                  userID: tokenData?.userID,
-                  enableContent: false,
-                });
-              }
-            }}
-            disabled={!tokenData}
+            onPress={() => navigation.push(CommonStackComponents.userSelfProfileScreen)}
           />
         </PaddedContentView>
       </ScrollingContentView>

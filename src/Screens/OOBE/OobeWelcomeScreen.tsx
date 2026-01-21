@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback} from 'react';
+import React from 'react';
 import {StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Text} from 'react-native-paper';
@@ -9,9 +9,10 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {defaultAppConfig} from '#src/Libraries/AppConfig';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
@@ -22,28 +23,23 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcom
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {appConfig, updateAppConfig} = useConfig();
+  const {findOrCreateSession} = useSession();
   const {theme} = useAppTheme();
-
-  const setPreRegistrationMode = useCallback(
-    (mode: boolean) => {
-      updateAppConfig({...appConfig, preRegistrationMode: mode});
-    },
-    [appConfig, updateAppConfig],
-  );
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
     image: commonStyles.roundedBorderLarge,
   });
 
-  const onPreRegistrationPress = () => {
-    setPreRegistrationMode(true);
+  const onPreRegistrationPress = async () => {
+    // Create or find preregistration session and persist immediately
+    await findOrCreateSession(defaultAppConfig.preRegistrationServerUrl, true);
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
-  const onPress = () => {
-    setPreRegistrationMode(false);
+  const onPress = async () => {
+    // Create or find production session and persist immediately
+    await findOrCreateSession(defaultAppConfig.serverUrl, false);
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
@@ -54,7 +50,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
 
   // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
   return (
-    <AppView>
+    <AppView disablePreRegistrationWarning={true}>
       <ScrollingContentView isStack={false}>
         <PaddedContentView>
           <Text style={styles.text} variant={'displayLarge'}>

@@ -25,12 +25,12 @@ export const contentNotificationCategories: ContentNotificationCategories = {
   },
   seamailUnreadMsg: {
     configKey: 'seamailUnreadMsg',
-    title: 'Seamails',
+    title: 'Unread Seamail Messages',
     description: 'New unread private chat messages sent to you from another user.',
   },
   fezUnreadMsg: {
     configKey: 'fezUnreadMsg',
-    title: 'LFG Posts',
+    title: 'Unread LFG Messages',
     description: "New unread chat public messages posted in an LFG you've joined or that you own.",
   },
   alertwordPost: {

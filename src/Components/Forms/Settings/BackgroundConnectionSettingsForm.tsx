@@ -17,12 +17,14 @@ interface BackgroundConnectionSettingsFormProps {
     helpers: FormikHelpers<BackgroundConnectionSettingsFormValues>,
   ) => void;
   formikRef?: React.Ref<FormikProps<BackgroundConnectionSettingsFormValues>>;
+  disabled?: boolean;
 }
 
 export const BackgroundConnectionSettingsForm = ({
   initialValues,
   onSubmit,
   formikRef,
+  disabled,
 }: BackgroundConnectionSettingsFormProps) => {
   return (
     <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -37,6 +39,7 @@ export const BackgroundConnectionSettingsForm = ({
             onAddValue={handleSubmit}
             onRemoveValue={handleSubmit}
             inputLabel={'Add new network'}
+            disabled={disabled}
           />
         </View>
       )}

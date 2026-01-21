@@ -6,7 +6,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 
 export const PhotostreamActionsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
@@ -29,7 +29,7 @@ export const PhotostreamActionsMenu = () => {
         title={'Help'}
         onPress={() => {
           closeMenu();
-          navigation.push(MainStackComponents.photostreamHelpScreen);
+          navigation.push(CommonStackComponents.photostreamHelpScreen);
         }}
         leadingIcon={AppIcons.help}
       />

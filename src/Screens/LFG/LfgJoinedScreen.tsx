@@ -4,8 +4,10 @@ import React, {useEffect} from 'react';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
 
@@ -24,14 +26,12 @@ export const LfgJoinedScreen = (props: Props) => {
   }, [appConfig.schedule.defaultLfgScreen, getLeftMainHeaderButtons, props.navigation]);
 
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg/joined'}>
-        <LfgJoinedScreenInner />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg/joined'}>
+          <LfgListScreen endpoint={'joined'} onlyNewInitial={props.route.params?.onlyNew} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
-};
-
-const LfgJoinedScreenInner = () => {
-  return <LfgListScreen endpoint={'joined'} />;
 };

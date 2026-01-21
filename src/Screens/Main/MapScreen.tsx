@@ -2,6 +2,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Menu} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
@@ -34,10 +35,15 @@ export const MapScreen = ({navigation, route}: Props) => {
       <View>
         <MaterialHeaderButtons>
           <DeckMapMenu shipDeck={shipDeck} setShipDeck={setShipDeck} />
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.mapHelpScreen)}
+          />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [shipDeck]);
+  }, [shipDeck, navigation]);
 
   const styles = StyleSheet.create({
     imageContainer: {

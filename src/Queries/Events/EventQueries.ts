@@ -8,10 +8,20 @@ interface EventsQueryOptions {
   time?: Date;
   eventType?: 'official' | 'shadow';
   search?: string;
+  dayplanner?: boolean;
   options?: TokenAuthQueryOptionsType<EventData[]>;
 }
 
-export const useEventsQuery = ({cruiseDay, day, date, time, eventType, search, options}: EventsQueryOptions) => {
+export const useEventsQuery = ({
+  cruiseDay,
+  day,
+  date,
+  time,
+  eventType,
+  search,
+  dayplanner,
+  options,
+}: EventsQueryOptions) => {
   return useTokenAuthQuery<EventData[]>('/events', options, {
     ...(cruiseDay !== undefined && {cruiseday: cruiseDay}),
     ...(day && {day: day}),
@@ -19,6 +29,7 @@ export const useEventsQuery = ({cruiseDay, day, date, time, eventType, search, o
     ...(time && {time: time.toISOString()}),
     ...(eventType && {type: eventType}),
     ...(search && {search: search}),
+    ...(dayplanner && {dayplanner: true}),
   });
 };
 

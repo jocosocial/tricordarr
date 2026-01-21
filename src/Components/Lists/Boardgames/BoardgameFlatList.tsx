@@ -20,9 +20,21 @@ interface BoardgameFlatListProps {
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
   listHeader?: React.ComponentType<any>;
+  showEmptyFooter?: boolean;
 }
 
-export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
+export const BoardgameFlatList = ({
+  items,
+  refreshControl,
+  onEndReached: _onEndReached,
+  onScrollThreshold,
+  hasNextPage,
+  hasPreviousPage: _hasPreviousPage,
+  handleLoadNext,
+  handleLoadPrevious: _handleLoadPrevious,
+  listHeader,
+  showEmptyFooter = true,
+}: BoardgameFlatListProps) => {
   const flatListRef = useRef<FlashListRef<BoardgameData>>(null);
 
   const getListSeparator = useCallback(() => {
@@ -34,37 +46,37 @@ export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
   }, []);
 
   const getListHeader = useCallback(() => {
-    if (props.items.length > 0) {
+    if (items.length > 0) {
       return <Divider bold={true} />;
     }
     return <></>;
-  }, [props.items.length]);
+  }, [items.length]);
 
   const getListFooter = useCallback(() => {
-    if (props.hasNextPage) {
+    if (hasNextPage) {
       return <LoadingNextFooter />;
     }
-    if (props.items.length > 0) {
+    if (items.length > 0) {
       return <EndResultsFooter />;
     }
-    if (props.items.length === 0) {
+    if (items.length === 0 && showEmptyFooter) {
       return <NoResultsFooter />;
     }
     return null;
-  }, [props.items.length, props.hasNextPage]);
+  }, [items.length, hasNextPage, showEmptyFooter]);
 
   return (
     <AppFlashList<BoardgameData>
       ref={flatListRef}
-      refreshControl={props.refreshControl}
+      refreshControl={refreshControl}
       renderItem={renderItem}
-      data={props.items}
+      data={items}
       keyExtractor={(item: BoardgameData) => item.gameID}
-      renderListHeader={props.listHeader || getListHeader}
+      renderListHeader={listHeader || getListHeader}
       renderListFooter={getListFooter}
       renderItemSeparator={getListSeparator}
-      onScrollThreshold={props.onScrollThreshold}
-      handleLoadNext={props.handleLoadNext}
+      onScrollThreshold={onScrollThreshold}
+      handleLoadNext={handleLoadNext}
     />
   );
 };

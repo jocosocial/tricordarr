@@ -1,22 +1,29 @@
 import {FormikHelpers} from 'formik';
 import React, {useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {KeywordChip} from '#src/Components/Chips/KeywordChip';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {KeywordForm} from '#src/Components/Forms/KeywordForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserKeywordMutation} from '#src/Queries/User/UserMutations';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {KeywordFormValues} from '#src/Types/FormValues';
 
 export const MuteKeywordsSettingsScreen = () => {
-  const {isLoggedIn} = useAuth();
+  return (
+    <LoggedInScreen>
+      <MuteKeywordsSettingsScreenInner />
+    </LoggedInScreen>
+  );
+};
+
+const MuteKeywordsSettingsScreenInner = () => {
   const [refreshing, setIsRefreshing] = useState(false);
   const [keywords, setKeywords] = useState<string[]>([]);
   const {commonStyles} = useStyles();
@@ -66,13 +73,9 @@ export const MuteKeywordsSettingsScreen = () => {
     }
   }, [data]);
 
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
-
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <Text>Hide any content that contains these keywords.</Text>
         </PaddedContentView>

@@ -1,41 +1,51 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PerformerTypeButtons} from '#src/Components/Buttons/SegmentedButtons/PerformerTypeButtons';
 import {PerformerHeaderCard} from '#src/Components/Cards/Performer/PerformerHeaderCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {PerformerListActionsMenu} from '#src/Components/Menus/Performer/PerformerListActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {usePagination} from '#src/Hooks/usePagination';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
 
 export const PerformerListScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={'/performers'}>
-      <PerformerListScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <LoggedInScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={'/performers'}>
+        <PerformerListScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </LoggedInScreen>
   );
 };
 
 const PerformerListScreenInner = ({navigation, route}: Props) => {
   const [performerType, setPerformerType] = useState<PerformerType>(route.params?.performerType || 'official');
-  const {data, refetch, isFetching, fetchNextPage, isLoading} = usePerformersQuery(performerType);
+  const {data, refetch, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading} =
+    usePerformersQuery(performerType);
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
+  const {handleLoadNext} = usePagination({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  });
   const {commonStyles, styleDefaults} = useStyles();
   const flashListRef = useRef<FlashListRef<PerformerHeaderData>>(null);
-  const {isLoggedIn} = useAuth();
   const [performers, setPerformers] = useState<PerformerHeaderData[]>([]);
 
   const styles = StyleSheet.create({
@@ -100,10 +110,6 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
     }
   }, [data]);
 
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
-
   if (isLoading) {
     return <LoadingView />;
   }
@@ -115,8 +121,8 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
         renderItem={renderItem}
         data={performers}
         keyExtractor={keyExtractor}
-        handleLoadNext={fetchNextPage}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        handleLoadNext={handleLoadNext}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderListHeader={renderListHeader}
         renderListFooter={renderListFooter}
         numColumns={2}

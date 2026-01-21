@@ -46,6 +46,12 @@ export const HelpManualScreen = () => {
           onPress={() => commonNavigation.push(CommonStackComponents.scheduleHelpScreen)}
         />
         <DataFieldListItem
+          title={'Personal Events'}
+          description={'Create personal calendar events to track your schedule and locations.'}
+          icon={AppIcons.personalEvent}
+          onPress={() => commonNavigation.push(CommonStackComponents.personalEventCreateHelpScreen)}
+        />
+        <DataFieldListItem
           title={'Performers'}
           description={'Official and Shadow performers.'}
           icon={AppIcons.performer}
@@ -56,7 +62,13 @@ export const HelpManualScreen = () => {
           title={'User Profile'}
           description={'Your bio and what information is visible to others.'}
           icon={AppIcons.profile}
-          onPress={() => commonNavigation.push(CommonStackComponents.userProfileHelpScreen, {})}
+          onPress={() => commonNavigation.push(CommonStackComponents.userProfileHelpScreen)}
+        />
+        <DataFieldListItem
+          title={'User Relations'}
+          description={'Blocking, muting, and favoriting users.'}
+          icon={AppIcons.userFavorite}
+          onPress={() => commonNavigation.push(CommonStackComponents.userDirectoryHelpScreen)}
         />
         <DataFieldListItem
           title={'User Directory'}
@@ -72,6 +84,12 @@ export const HelpManualScreen = () => {
           onPress={() => commonNavigation.push(CommonStackComponents.timeZoneHelpScreen)}
         />
         <DataFieldListItem
+          title={'Deck Map'}
+          description={'Navigate the ship using deck maps and find your way around.'}
+          icon={AppIcons.map}
+          onPress={() => commonNavigation.push(CommonStackComponents.mapHelpScreen)}
+        />
+        <DataFieldListItem
           title={'Webview'}
           description={'Integrated webview and how to use Twitarr features not yet in the app.'}
           icon={AppIcons.webview}
@@ -83,10 +101,23 @@ export const HelpManualScreen = () => {
           icon={AppIcons.help}
           onPress={() => commonNavigation.push(CommonStackComponents.preRegistrationHelpScreen)}
         />
+        <ListSubheader>Special Roles</ListSubheader>
+        <DataFieldListItem
+          title={'Shutternauts'}
+          description={'App-specific guidance for shutternauts.'}
+          icon={AppIcons.shutternaut}
+          onPress={() => commonNavigation.push(CommonStackComponents.shutternautHelpScreen)}
+        />
+        <DataFieldListItem
+          title={'Moderators'}
+          description={'App-specific guidance for moderators.'}
+          icon={AppIcons.moderator}
+          onPress={() => commonNavigation.push(CommonStackComponents.moderatorHelpScreen)}
+        />
         <ListSubheader>About</ListSubheader>
         <DataFieldListItem
           title={'About Tricordarr'}
-          description={'The Tricordarr app and the project.'}
+          description={'This particular client app.'}
           icon={AppIcons.tricordarr}
           onPress={() => commonNavigation.push(CommonStackComponents.aboutTricordarrScreen)}
         />
@@ -95,6 +126,18 @@ export const HelpManualScreen = () => {
           description={'The Twitarr service and its history with JoCo Cruise.'}
           icon={AppIcons.twitarr}
           onPress={() => commonNavigation.push(CommonStackComponents.aboutTwitarrScreen)}
+        />
+        <DataFieldListItem
+          title={'Cruise Help'}
+          description={'Information about the JoCo Cruise event.'}
+          icon={AppIcons.help}
+          onPress={() => commonNavigation.push(CommonStackComponents.cruiseHelpScreen)}
+        />
+        <DataFieldListItem
+          title={'Privacy Policy'}
+          description={'View the service and app privacy policies.'}
+          icon={AppIcons.privacy}
+          onPress={() => commonNavigation.push(CommonStackComponents.privacyScreen)}
         />
       </ScrollingContentView>
     </AppView>

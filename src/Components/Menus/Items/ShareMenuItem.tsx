@@ -1,10 +1,12 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
+import {useClipboard} from '#src/Hooks/useClipboard';
 
 interface ShareMenuItemProps {
   contentType: ShareContentType;
@@ -13,30 +15,36 @@ interface ShareMenuItemProps {
 }
 
 export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItemProps) => {
-  const {appConfig, oobeCompleted} = useConfig();
+  const {oobeCompleted} = useOobe();
+  const {preRegistrationMode} = usePreRegistration();
+  const {serverUrl} = useSwiftarrQueryClient();
+  const {setString} = useClipboard();
 
   const handlePress = React.useCallback(() => {
     let fullURL = '';
     if (contentType === ShareContentType.siteUI) {
       fullURL = contentID as string;
     } else {
-      fullURL = `${appConfig.serverUrl}/${contentType}/${contentID}`;
+      fullURL = `${serverUrl}/${contentType}/${contentID}`;
     }
 
-    Clipboard.setString(fullURL);
+    setString(fullURL);
 
     if (closeMenu) {
       closeMenu();
     }
-  }, [contentType, contentID, appConfig, closeMenu]);
+  }, [contentType, contentID, serverUrl, closeMenu, setString]);
 
   /**
    * If the user hasn't finished setup or is in pre-registration mode,
    * don't let them share content.
    */
-  if (!oobeCompleted || appConfig.preRegistrationMode) {
-    return null;
-  }
-
-  return <Menu.Item title={'Share'} leadingIcon={AppIcons.share} onPress={handlePress} />;
+  return (
+    <Menu.Item
+      disabled={!oobeCompleted || preRegistrationMode}
+      title={'Share'}
+      leadingIcon={AppIcons.share}
+      onPress={handlePress}
+    />
+  );
 };

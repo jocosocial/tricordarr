@@ -1,8 +1,9 @@
 import {useEffect} from 'react';
 
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
+import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
+
 /**
  * Functional component to control the lifecycle of the platform-dependent push notification
  * system.
@@ -14,8 +15,8 @@ import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/
  * and generates notifications on the JS side.
  */
 export const PushNotificationService = () => {
-  const {enableUserNotifications} = useUserNotificationData();
-  const {isLoggedIn, isLoading} = useAuth();
+  const {enableUserNotifications} = useEnableUserNotification();
+  const {isLoading, isLoggedIn} = useSession();
 
   useEffect(() => {
     console.log(
@@ -26,12 +27,13 @@ export const PushNotificationService = () => {
       return;
     }
 
-    if (isLoggedIn && enableUserNotifications) {
+    // enableUserNotifications already factors in oobeCompleted, isLoggedIn, and preRegistrationMode.
+    if (enableUserNotifications) {
       startPushProvider();
     } else {
       stopPushProvider();
     }
-  }, [enableUserNotifications, isLoading, isLoggedIn]);
+  }, [enableUserNotifications, isLoggedIn, isLoading]);
 
   return null;
 };

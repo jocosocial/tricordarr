@@ -1,5 +1,6 @@
 import notifee from '@notifee/react-native';
 import {StackScreenProps} from '@react-navigation/stack';
+import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
@@ -17,13 +18,13 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
 export const PersonalEventScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.scheduleHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/privateevent/list'}>
         <PersonalEventScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -37,6 +38,8 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
     fezID: route.params.eventID,
   });
   const {data: profilePublicData} = useUserProfileQuery();
+  const queryClient = useQueryClient();
+
   const eventData = data?.pages[0];
   const showChat =
     eventData?.fezType === FezType.privateEvent && FezData.isParticipant(eventData, profilePublicData?.header);
@@ -82,6 +85,15 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
       notifee.cancelDisplayedNotification(eventData.fezID);
     }
   }, [getNavButtons, navigation, eventData, appConfig.markReadCancelPush]);
+
+  useEffect(() => {
+    if (eventData) {
+      Promise.all([
+        ...UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
+        ...FezData.getCacheKeys(eventData.fezID).map(key => queryClient.invalidateQueries({queryKey: key})),
+      ]);
+    }
+  }, [eventData, queryClient]);
 
   return (
     <ScheduleItemScreenBase eventData={eventData} onRefresh={refetch} refreshing={isFetching} showLfgChat={showChat} />

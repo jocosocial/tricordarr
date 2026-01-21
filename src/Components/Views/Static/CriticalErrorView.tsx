@@ -1,57 +1,75 @@
 import {CacheManager} from '@georstat/react-native-image-cache';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {BoldText} from '#src/Components/Text/BoldText';
-import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {getInitialAppConfig} from '#src/Libraries/AppConfig';
+import {defaultAppConfig} from '#src/Libraries/AppConfig';
 
 interface CriticalErrorViewProps {
   error: Error;
   resetError: Function;
 }
 
+/**
+ * This is a standalone view that can be used to display a critical error.
+ * It is not part of the navigation stack and can be used to display a critical error
+ * in a standalone context. Thus it cannot rely on AppView.
+ */
 export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const queryClient = useQueryClient();
   const [showStack, setShowStack] = React.useState(false);
-  const {signOut} = useAuth();
-  const {appConfig, updateAppConfig} = useConfig();
+  const {signOut} = useSession();
+  const {updateAppConfig} = useConfig();
 
-  const styles = {
-    outerContainer: [commonStyles.flex, commonStyles.justifyCenter, commonStyles.alignItemsCenter],
-    innerContainer: [commonStyles.justifyCenter, commonStyles.alignItemsCenter],
-    contentContainer: [commonStyles.marginVerticalSmall],
-  };
+  const styles = StyleSheet.create({
+    screen: {
+      ...commonStyles.flex,
+      ...commonStyles.safePaddingTop,
+      ...commonStyles.safePaddingBottom,
+    },
+    outerContainer: {
+      ...commonStyles.flex,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+    },
+    innerContainer: {
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+    },
+    contentContainer: {
+      ...commonStyles.marginVerticalSmall,
+    },
+  });
 
   const toggleShowStack = () => setShowStack(!showStack);
 
   const fixAll = async () => {
-    await signOut(appConfig.preRegistrationMode);
+    await signOut();
     queryClient.clear();
-    updateAppConfig(getInitialAppConfig());
+    updateAppConfig(defaultAppConfig);
     props.resetError();
   };
 
   const resetAppConfig = async () => {
-    updateAppConfig(getInitialAppConfig());
+    updateAppConfig(defaultAppConfig);
   };
 
   return (
-    <AppView>
+    <View style={styles.screen}>
       <ScrollingContentView isStack={true} overScroll={true}>
         <View style={styles.outerContainer}>
           <PaddedContentView style={styles.innerContainer}>
@@ -89,7 +107,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
           <PrimaryActionButton
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Sign Out'}
-            onPress={async () => await signOut(appConfig.preRegistrationMode)}
+            onPress={async () => await signOut()}
           />
         </PaddedContentView>
         <PaddedContentView>
@@ -115,6 +133,6 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
           </PaddedContentView>
         )}
       </ScrollingContentView>
-    </AppView>
+    </View>
   );
 };

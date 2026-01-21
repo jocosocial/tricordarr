@@ -1,10 +1,11 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {Query, useQueryClient} from '@tanstack/react-query';
 import React, {useEffect, useState} from 'react';
-import {RefreshControl, ScrollView} from 'react-native';
+import {ScrollView} from 'react-native';
 import JSONTree from 'react-native-json-tree';
 import {Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
@@ -56,7 +57,7 @@ export const QueryDataSettingsScreen = ({route}: Props) => {
 
   return (
     <AppView>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refetch} />}>
+      <ScrollView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={refetch} />}>
         <ScrollView horizontal={true}>
           <JSONTree data={query.state as any} hideRoot={true} shouldExpandNode={() => true} />
         </ScrollView>

@@ -1,8 +1,8 @@
 import React from 'react';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
-import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
 import {AppIcons} from '#src/Enums/Icons';
@@ -13,13 +13,7 @@ export const ForumThreadScreenFilterMenu = () => {
   const {forumFilter, setForumFilter} = useFilter();
 
   const menuAnchor = (
-    <MenuAnchor
-      title={'Filter'}
-      active={!!forumFilter}
-      iconName={AppIcons.filter}
-      onPress={openMenu}
-      onLongPress={() => setForumFilter(undefined)}
-    />
+    <FilterMenuAnchor active={!!forumFilter} onPress={openMenu} onLongPress={() => setForumFilter(undefined)} />
   );
 
   const handleFilterSelection = (filter: ForumFilter) => {

@@ -15,7 +15,9 @@ import {UserHeader} from '#src/Structs/ControllerStructs';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type ChatStackParamList = CommonStackParamList & {
-  SeamailListScreen: undefined;
+  SeamailListScreen: {
+    onlyNew?: boolean;
+  };
   KrakenTalkCreateScreen?: {
     initialUserHeader?: UserHeader;
   };

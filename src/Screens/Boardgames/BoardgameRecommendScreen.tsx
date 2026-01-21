@@ -12,6 +12,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameRecommendMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -47,7 +48,7 @@ type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameR
 
 export const BoardgameRecommendScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames/guide'}>
         <BoardgameRecommendScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -59,9 +60,11 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
   const guideMutation = useBoardgameRecommendMutation();
   const [games, setGames] = useState<BoardgameData[]>([]);
   const [fieldValues, setFieldValues] = useState<BoardgameRecommendationData>(defaultValues);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const onSubmit = (values: BoardgameRecommendationData, helpers: FormikHelpers<BoardgameRecommendationData>) => {
     setFieldValues(values);
+    setHasSearched(true);
     guideMutation.mutate(
       {
         recommendationData: values,
@@ -84,7 +87,7 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(MainStackComponents.boardgameHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.boardgameHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>
@@ -100,7 +103,11 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <BoardgameFlatList items={games} listHeader={getHeader} />
+      <BoardgameFlatList
+        items={games}
+        listHeader={getHeader}
+        showEmptyFooter={hasSearched && !guideMutation.isPending}
+      />
     </AppView>
   );
 };

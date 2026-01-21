@@ -1,47 +1,30 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
-import {Text} from 'react-native-paper';
 
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {BaseWarningView} from '#src/Components/Views/Warnings/BaseWarningView';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {OobeStackComponents} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
 
 export const PreRegistrationWarningView = () => {
-  const {commonStyles} = useStyles();
   const navigation = useRootStack();
-  const {oobeCompleted} = useConfig();
-
-  const styles = StyleSheet.create({
-    headerView: {
-      ...commonStyles.twitarrNeutral,
-      ...commonStyles.alignItemsCenter,
-      ...commonStyles.paddingVerticalSmall,
-    },
-    headerText: {
-      ...commonStyles.bold,
-      ...commonStyles.onTwitarrButton,
-    },
-  });
+  const {oobeCompleted} = useOobe();
 
   const onPress = () => {
-    navigation.push(RootStackComponents.oobeNavigator, {
+    navigation.replace(RootStackComponents.oobeNavigator, {
       screen: OobeStackComponents.oobePreregistrationScreen,
     });
   };
 
   return (
-    <TouchableOpacity disabled={!oobeCompleted} style={styles.headerView} onPress={onPress}>
-      <Text style={styles.headerText}>Pre-Registration Mode</Text>
-      {oobeCompleted ? (
-        <Text variant={'labelSmall'} style={commonStyles.onTwitarrButton}>
-          Tap here when you are physically on the ship.
-        </Text>
-      ) : (
-        <Text variant={'labelSmall'} style={commonStyles.onTwitarrButton}>
-          Complete setup to start using Twitarr.
-        </Text>
-      )}
-    </TouchableOpacity>
+    <BaseWarningView
+      title={'Pre-Registration Mode'}
+      message={
+        oobeCompleted
+          ? 'Press and hold here when you are physically on the ship.'
+          : 'Complete setup to start using Twitarr.'
+      }
+      onLongPress={onPress}
+      disabled={!oobeCompleted}
+    />
   );
 };

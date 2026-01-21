@@ -41,7 +41,7 @@ export const ForumThreadList = ({
   onScrollThreshold,
 }: ForumThreadListProps) => {
   const listRef = useRef<FlashListRef<ForumListData>>(null);
-  const {enableSelection, setEnableSelection, selectedForums} = useSelection();
+  const {enableSelection, setEnableSelection, selectedItems} = useSelection();
   const {appConfig} = useConfig();
 
   const renderListHeader = () => {
@@ -73,11 +73,11 @@ export const ForumThreadList = ({
           categoryID={categoryID}
           enableSelection={enableSelection}
           setEnableSelection={setEnableSelection}
-          selected={selectedForums.some(i => i.forumID === item.forumID)}
+          selected={selectedItems.some(i => i.id === item.forumID)}
         />
       );
     },
-    [categoryID, enableSelection, selectedForums, setEnableSelection],
+    [categoryID, enableSelection, selectedItems, setEnableSelection],
   );
 
   const renderItemSeparator = () => <Divider bold={true} />;

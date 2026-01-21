@@ -1,11 +1,12 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
-import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {PhotostreamImageCreateForm} from '#src/Components/Forms/Photostream/PhotostreamImageCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -14,7 +15,9 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePhotostreamImageUploadMutation} from '#src/Queries/Photostream/PhotostreamMutations';
 import {usePhotostreamLocationDataQuery} from '#src/Queries/Photostream/PhotostreamQueries';
@@ -28,7 +31,7 @@ export type Props = StackScreenProps<MainStackParamList, MainStackComponents.pho
 
 export const PhotostreamImageCreateScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.photostreamHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.photostream}>
         <PhotostreamImageCreateScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -37,17 +40,11 @@ export const PhotostreamImageCreateScreen = (props: Props) => {
 };
 
 const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
-  const {data: locationData, refetch: refetchLocationData} = usePhotostreamLocationDataQuery();
-  const [refreshing, setRefreshing] = useState(false);
+  const {data: locationData, refetch: refetchLocationData, isFetching} = usePhotostreamLocationDataQuery();
+  const {refreshing, onRefresh} = useRefresh({refresh: refetchLocationData, isRefreshing: isFetching});
   const uploadMutation = usePhotostreamImageUploadMutation();
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refetchLocationData();
-    setRefreshing(false);
-  };
 
   const onSubmit = async (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => {
     if (!values.image) {
@@ -91,7 +88,7 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(MainStackComponents.photostreamHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.photostreamHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>
@@ -110,7 +107,7 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <PhotostreamImageCreateForm
             locations={locationData.locations}

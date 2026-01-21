@@ -1,7 +1,9 @@
 import {Formik} from 'formik';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -11,14 +13,19 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
+import {AppIcons} from '#src/Enums/Icons';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 export const ForumSettingsScreen = () => {
   const {commonStyles} = useStyles();
-  const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();
+  const {appConfig, updateAppConfig} = useConfig();
+  const {hasNotificationPermission} = usePermissions();
+  const navigation = useCommonStack();
   const [defaultSortOrder, setDefaultSortOrder] = useState(appConfig.userPreferences.defaultForumSortOrder);
   const [defaultSortDirection, setDefaultSortDirection] = useState(appConfig.userPreferences.defaultForumSortDirection);
   const {setForumSortOrder, setForumSortDirection} = useFilter();
@@ -68,6 +75,26 @@ export const ForumSettingsScreen = () => {
     });
     setHighlightAlertWords(!highlightAlertWords);
   };
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.forumHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>

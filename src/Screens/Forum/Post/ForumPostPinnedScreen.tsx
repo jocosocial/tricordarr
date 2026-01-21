@@ -1,8 +1,9 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useRef} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
 import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {AppView} from '#src/Components/Views/AppView';
@@ -29,7 +30,7 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
   if (data.length === 0) {
     return (
       <AppView>
-        <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        <ScrollingContentView refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
           <PaddedContentView>
             <TimeDivider label={'No posts to display'} />
           </PaddedContentView>
@@ -45,7 +46,7 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
       <View style={[commonStyles.flex]}>
         <ForumPostList
           listRef={flatListRef}
-          refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+          refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
           postList={data}
           enableShowInThread={true}
           forumData={forumData?.pages[0]}

@@ -1,12 +1,13 @@
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {Item} from 'react-navigation-header-buttons';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {type TConversationListRef} from '#src/Components/Lists/ConversationList';
 import {ForumConversationList} from '#src/Components/Lists/Forums/ForumConversationList';
@@ -19,12 +20,15 @@ import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
+import {usePagination} from '#src/Hooks/usePagination';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, ForumListData, PostContentData, PostData} from '#src/Structs/ControllerStructs';
 
-interface ForumThreadScreenBaseProps {
+interface Props {
   data?: InfiniteData<ForumData>;
   refetch: () => Promise<QueryObserverResult>;
   isLoading: boolean;
@@ -58,13 +62,13 @@ export const ForumThreadScreenBase = ({
   getListHeader,
   invertList,
   forumListData,
-}: ForumThreadScreenBaseProps) => {
+}: Props) => {
   const navigation = useCommonStack();
-  const [refreshing, setRefreshing] = useState(false);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const flatListRef = useRef<TConversationListRef>(null);
   const {hasModerator} = usePrivilege();
+  const maxForumPostImages = useMaxForumPostImages();
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
@@ -76,25 +80,19 @@ export const ForumThreadScreenBase = ({
   // to care about. It's all in the category (ForumListData) queries.
   const markReadInvalidationKeys = ForumListData.getCacheKeys(data?.pages[0].categoryID);
   const otherInvalidationKeys = ForumListData.getCacheKeys(data?.pages[0].categoryID, data?.pages[0].forumID);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+  });
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  }, [refetch]);
-
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
-  const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
-      setRefreshing(true);
-      fetchPreviousPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {handleLoadNext, handleLoadPrevious} = usePagination({
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    setRefreshing,
+  });
 
   const getNavButtons = useCallback(() => {
     // Typescript struggles
@@ -201,7 +199,7 @@ export const ForumThreadScreenBase = ({
     return <LoadingView />;
   }
 
-  const getInitialScrollIndex = () => {
+  const _getInitialScrollIndex = () => {
     // Inverted list means that we are starting from the bottom, so the
     // ISI (InitialScrollIndex) is meaningless.
     // console.log('### getInitialScrollIndex');
@@ -242,7 +240,7 @@ export const ForumThreadScreenBase = ({
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
         forumData={data.pages[0]}
         hasPreviousPage={hasPreviousPage}
         // maintainViewPosition={maintainViewPosition}
@@ -259,7 +257,7 @@ export const ForumThreadScreenBase = ({
           formRef={postFormRef}
           enablePhotos={true}
           maxLength={2000}
-          maxPhotos={4}
+          maxPhotos={maxForumPostImages}
         />
       )}
     </AppView>

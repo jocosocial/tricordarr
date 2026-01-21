@@ -25,6 +25,11 @@ interface SwiftarrQueryClientContextType {
     queryParams?: TQueryParams,
     config?: AxiosRequestConfig,
   ) => Promise<AxiosResponse<TData>>;
+  publicPost: <TResponseData = void, TRequestData = void>(
+    url: string,
+    body?: TRequestData | undefined,
+    config?: AxiosRequestConfig,
+  ) => Promise<AxiosResponse<TResponseData, TResponseData>>;
   serverUrl: string;
 }
 

@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Keyboard, RefreshControl} from 'react-native';
+import {Keyboard} from 'react-native';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useRefresh} from '#src/Hooks/useRefresh';
+import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
@@ -18,7 +21,10 @@ export const SeamailSearchBar = () => {
   });
   const {commonStyles} = useStyles();
   const [fezList, setFezList] = useState<FezData[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
@@ -34,17 +40,18 @@ export const SeamailSearchBar = () => {
     Keyboard.dismiss();
   };
 
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage && queryEnable) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  };
+  const {safeHandleLoadNext} = useSafePagination({
+    searchQuery,
+    minLength: 3,
+    hasNextPage: hasNextPage ?? false,
+    itemsLength: fezList.length,
+    fetchNextPage: () => {
+      if (!isFetchingNextPage && queryEnable) {
+        setRefreshing(true);
+        fetchNextPage().finally(() => setRefreshing(false));
+      }
+    },
+  });
 
   useEffect(() => {
     if (data && queryEnable) {
@@ -68,8 +75,8 @@ export const SeamailSearchBar = () => {
       />
       <SeamailFlatList
         fezList={fezList}
-        refreshControl={<RefreshControl refreshing={isFetching || refreshing} onRefresh={onRefresh} />}
-        onEndReached={handleLoadNext}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        onEndReached={safeHandleLoadNext}
       />
     </>
   );

@@ -1,10 +1,11 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumAlertwordListItem} from '#src/Components/Lists/Items/Forum/ForumAlertwordListItem';
 import {ForumCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumCategoryListItem';
 import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';
@@ -16,45 +17,46 @@ import {ForumCategoriesScreenSearchMenu} from '#src/Components/Menus/Forum/Forum
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useRefresh} from '#src/Hooks/useRefresh';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
 
 export const ForumCategoriesScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
-        <ForumCategoriesScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <LoggedInScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
+          <ForumCategoriesScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
   );
 };
 
 const ForumCategoriesScreenInner = ({navigation}: Props) => {
-  const {data, refetch, isLoading} = useForumCategoriesQuery();
-  const [refreshing, setRefreshing] = useState(false);
+  const {data, refetch, isLoading, isFetching} = useForumCategoriesQuery();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
-  const {isLoggedIn} = useAuth();
   const isFocused = useIsFocused();
   const {clearPrivileges} = usePrivilege();
   const {data: keywordData, refetch: refetchKeywordData} = useUserKeywordQuery({
     keywordType: 'alertwords',
   });
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await Promise.all([refetch(), refetchUserNotificationData(), refetchKeywordData()]);
-    setRefreshing(false);
-  }, [refetch, refetchKeywordData, refetchUserNotificationData]);
+  const {refreshing, onRefresh} = useRefresh({
+    refresh: useCallback(async () => {
+      await Promise.all([refetch(), refetchUserNotificationData(), refetchKeywordData()]);
+    }, [refetch, refetchUserNotificationData, refetchKeywordData]),
+    isRefreshing: isFetching,
+  });
 
   const getNavButtons = useCallback(() => {
     return (
@@ -80,10 +82,6 @@ const ForumCategoriesScreenInner = ({navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
-
   if (isLoading) {
     return <LoadingView />;
   }
@@ -93,7 +91,7 @@ const ForumCategoriesScreenInner = ({navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         overScroll={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View>
           {data && (
             <ListSection>

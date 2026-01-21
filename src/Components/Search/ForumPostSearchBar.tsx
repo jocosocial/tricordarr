@@ -1,13 +1,16 @@
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Keyboard, RefreshControl, View} from 'react-native';
+import {Keyboard, View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useRefresh} from '#src/Hooks/useRefresh';
+import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
 import {CategoryData, ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
@@ -32,9 +35,12 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
   );
   const {commonStyles} = useStyles();
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
   const commonNavigation = useCommonStack();
   const flatListRef = useRef<FlashListRef<PostData>>(null);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
@@ -46,23 +52,24 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
     setQueryEnable(false);
   };
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  };
-
   const onSearch = () => {
     setQueryEnable(true);
     refetch();
     Keyboard.dismiss();
   };
 
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage && queryEnable) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {safeHandleLoadNext, effectiveHasNextPage} = useSafePagination({
+    searchQuery,
+    minLength: 3,
+    hasNextPage: hasNextPage ?? false,
+    itemsLength: forumPosts.length,
+    fetchNextPage: () => {
+      if (!isFetchingNextPage && queryEnable) {
+        setRefreshing(true);
+        fetchNextPage().finally(() => setRefreshing(false));
+      }
+    },
+  });
 
   const getNavButtons = useCallback(() => {
     return (
@@ -98,14 +105,12 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
       <View style={[commonStyles.flex]}>
         <ForumPostList
           listRef={flatListRef}
-          refreshControl={
-            <RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
-          }
+          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />}
           postList={forumPosts}
-          handleLoadNext={handleLoadNext}
+          handleLoadNext={safeHandleLoadNext}
           itemSeparator={'time'}
           enableShowInThread={true}
-          hasNextPage={hasNextPage}
+          hasNextPage={effectiveHasNextPage}
         />
       </View>
     </>

@@ -1,0 +1,334 @@
+diff --git a/node_modules/@react-native-cookies/cookies/android/build.gradle b/node_modules/@react-native-cookies/cookies/android/build.gradle
+index 13c7e43..14ab1be 100644
+--- a/node_modules/@react-native-cookies/cookies/android/build.gradle
++++ b/node_modules/@react-native-cookies/cookies/android/build.gradle
+@@ -31,7 +31,7 @@ buildscript {
+     if (project == rootProject) {
+         repositories {
+             google()
+-            jcenter()
++            mavenCentral()
+         }
+         dependencies {
+             classpath 'com.android.tools.build:gradle:3.5.3'
+@@ -67,7 +67,7 @@ repositories {
+         url "$rootDir/../node_modules/jsc-android/dist"
+     }
+     google()
+-    jcenter()
++    mavenCentral()
+ }
+ 
+ dependencies {
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/results.bin b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/results.bin
+new file mode 100644
+index 0000000..7ed749e
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/results.bin
+@@ -0,0 +1 @@
++o/bundleLibRuntimeToDirDebug
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/BuildConfig.dex b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/BuildConfig.dex
+new file mode 100644
+index 0000000..baf5bda
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/BuildConfig.dex differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule$1.dex b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule$1.dex
+new file mode 100644
+index 0000000..2bf8e29
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule$1.dex differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule$2.dex b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule$2.dex
+new file mode 100644
+index 0000000..c9afc91
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule$2.dex differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule$3.dex b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule$3.dex
+new file mode 100644
+index 0000000..0a46be1
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule$3.dex differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule.dex b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule.dex
+new file mode 100644
+index 0000000..56387f9
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerModule.dex differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerPackage.dex b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerPackage.dex
+new file mode 100644
+index 0000000..b1331e3
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/reactnativecommunity/cookies/CookieManagerPackage.dex differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/desugar_graph.bin b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/desugar_graph.bin
+new file mode 100644
+index 0000000..4df3cb8
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/.transforms/1ba91b28d32bd126a19b3f25b684bb8b/transformed/bundleLibRuntimeToDirDebug/desugar_graph.bin differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/.transforms/8af7cf8f629f7874df1a9a5bc4ae9752/results.bin b/node_modules/@react-native-cookies/cookies/android/build/.transforms/8af7cf8f629f7874df1a9a5bc4ae9752/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/.transforms/8af7cf8f629f7874df1a9a5bc4ae9752/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/.transforms/8af7cf8f629f7874df1a9a5bc4ae9752/transformed/classes/classes_dex/classes.dex b/node_modules/@react-native-cookies/cookies/android/build/.transforms/8af7cf8f629f7874df1a9a5bc4ae9752/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..b598050
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/.transforms/8af7cf8f629f7874df1a9a5bc4ae9752/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/generated/source/buildConfig/debug/com/reactnativecommunity/cookies/BuildConfig.java b/node_modules/@react-native-cookies/cookies/android/build/generated/source/buildConfig/debug/com/reactnativecommunity/cookies/BuildConfig.java
+new file mode 100644
+index 0000000..f4fb194
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/generated/source/buildConfig/debug/com/reactnativecommunity/cookies/BuildConfig.java
+@@ -0,0 +1,10 @@
++/**
++ * Automatically generated file. DO NOT MODIFY
++ */
++package com.reactnativecommunity.cookies;
++
++public final class BuildConfig {
++  public static final boolean DEBUG = Boolean.parseBoolean("true");
++  public static final String LIBRARY_PACKAGE_NAME = "com.reactnativecommunity.cookies";
++  public static final String BUILD_TYPE = "debug";
++}
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml b/node_modules/@react-native-cookies/cookies/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+new file mode 100644
+index 0000000..b07c7ad
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.reactnativecommunity.cookies" >
++
++    <uses-sdk android:minSdkVersion="24" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json b/node_modules/@react-native-cookies/cookies/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+new file mode 100644
+index 0000000..be13ca2
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+@@ -0,0 +1,18 @@
++{
++  "version": 3,
++  "artifactType": {
++    "type": "AAPT_FRIENDLY_MERGED_MANIFESTS",
++    "kind": "Directory"
++  },
++  "applicationId": "com.reactnativecommunity.cookies",
++  "variantName": "debug",
++  "elements": [
++    {
++      "type": "SINGLE",
++      "filters": [],
++      "attributes": [],
++      "outputFile": "AndroidManifest.xml"
++    }
++  ],
++  "elementType": "File"
++}
+\ No newline at end of file
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties b/node_modules/@react-native-cookies/cookies/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+new file mode 100644
+index 0000000..1211b1e
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+@@ -0,0 +1,6 @@
++aarFormatVersion=1.0
++aarMetadataVersion=1.0
++minCompileSdk=1
++minCompileSdkExtension=0
++minAndroidGradlePluginVersion=1.0.0
++coreLibraryDesugaringEnabled=false
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json b/node_modules/@react-native-cookies/cookies/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar b/node_modules/@react-native-cookies/cookies/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar
+new file mode 100644
+index 0000000..b98a1ea
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar b/node_modules/@react-native-cookies/cookies/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar
+new file mode 100644
+index 0000000..ddf211a
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt b/node_modules/@react-native-cookies/cookies/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties b/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+new file mode 100644
+index 0000000..d427099
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+@@ -0,0 +1 @@
++#Wed Jan 14 23:20:16 EST 2026
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml b/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+new file mode 100644
+index 0000000..bc38d53
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/build/generated/res/resValues/debug"/></dataSet><mergedItems/></merger>
+\ No newline at end of file
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/mergeDebugAssets/merger.xml b/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/mergeDebugAssets/merger.xml
+new file mode 100644
+index 0000000..c513ead
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/mergeDebugAssets/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/assets"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/debug/assets"/></dataSet><dataSet config="generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/build/intermediates/shader_assets/debug/compileDebugShaders/out"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml b/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+new file mode 100644
+index 0000000..f897adc
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/jniLibs"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/debug/jniLibs"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/mergeDebugShaders/merger.xml b/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+new file mode 100644
+index 0000000..8653752
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/shaders"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/debug/shaders"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/BuildConfig.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/BuildConfig.class
+new file mode 100644
+index 0000000..fe180b6
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/BuildConfig.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule$1.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule$1.class
+new file mode 100644
+index 0000000..2060cda
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule$1.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule$2.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule$2.class
+new file mode 100644
+index 0000000..4755c60
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule$2.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule$3.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule$3.class
+new file mode 100644
+index 0000000..344b2bf
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule$3.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule.class
+new file mode 100644
+index 0000000..85df923
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerModule.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerPackage.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerPackage.class
+new file mode 100644
+index 0000000..9eb2d7b
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/reactnativecommunity/cookies/CookieManagerPackage.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt b/node_modules/@react-native-cookies/cookies/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+new file mode 100644
+index 0000000..78ac5b8
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+@@ -0,0 +1,2 @@
++R_DEF: Internal format may change without notice
++local
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt b/node_modules/@react-native-cookies/cookies/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+new file mode 100644
+index 0000000..d57d311
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+@@ -0,0 +1,7 @@
++1<?xml version="1.0" encoding="utf-8"?>
++2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++3    package="com.reactnativecommunity.cookies" >
++4
++5    <uses-sdk android:minSdkVersion="24" />
++6
++7</manifest>
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml b/node_modules/@react-native-cookies/cookies/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+new file mode 100644
+index 0000000..b07c7ad
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.reactnativecommunity.cookies" >
++
++    <uses-sdk android:minSdkVersion="24" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json b/node_modules/@react-native-cookies/cookies/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+new file mode 100644
+index 0000000..0637a08
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+@@ -0,0 +1 @@
++[]
+\ No newline at end of file
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt b/node_modules/@react-native-cookies/cookies/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+new file mode 100644
+index 0000000..08f4ebe
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+@@ -0,0 +1 @@
++0 Warning/Error
+\ No newline at end of file
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/BuildConfig.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/BuildConfig.class
+new file mode 100644
+index 0000000..fe180b6
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/BuildConfig.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule$1.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule$1.class
+new file mode 100644
+index 0000000..2060cda
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule$1.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule$2.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule$2.class
+new file mode 100644
+index 0000000..4755c60
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule$2.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule$3.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule$3.class
+new file mode 100644
+index 0000000..344b2bf
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule$3.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule.class
+new file mode 100644
+index 0000000..85df923
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerModule.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerPackage.class b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerPackage.class
+new file mode 100644
+index 0000000..9eb2d7b
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/reactnativecommunity/cookies/CookieManagerPackage.class differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar
+new file mode 100644
+index 0000000..2108f23
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar differ
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt b/node_modules/@react-native-cookies/cookies/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+new file mode 100644
+index 0000000..0d46964
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+@@ -0,0 +1 @@
++com.reactnativecommunity.cookies
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/outputs/logs/manifest-merger-debug-report.txt b/node_modules/@react-native-cookies/cookies/android/build/outputs/logs/manifest-merger-debug-report.txt
+new file mode 100644
+index 0000000..1bd785b
+--- /dev/null
++++ b/node_modules/@react-native-cookies/cookies/android/build/outputs/logs/manifest-merger-debug-report.txt
+@@ -0,0 +1,17 @@
++-- Merging decision tree log ---
++manifest
++ADDED from /Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/AndroidManifest.xml:2:1-4:12
++INJECTED from /Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/AndroidManifest.xml:2:1-4:12
++	package
++		ADDED from /Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/AndroidManifest.xml:3:5-47
++		INJECTED from /Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/AndroidManifest.xml
++	xmlns:android
++		ADDED from /Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/AndroidManifest.xml:2:11-69
++uses-sdk
++INJECTED from /Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
++INJECTED from /Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/AndroidManifest.xml
++INJECTED from /Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/AndroidManifest.xml
++	android:targetSdkVersion
++		INJECTED from /Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/AndroidManifest.xml
++	android:minSdkVersion
++		INJECTED from /Users/grant/Projects/jocosocial/tricordarr/node_modules/@react-native-cookies/cookies/android/src/main/AndroidManifest.xml
+diff --git a/node_modules/@react-native-cookies/cookies/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin b/node_modules/@react-native-cookies/cookies/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin
+new file mode 100644
+index 0000000..989190c
+Binary files /dev/null and b/node_modules/@react-native-cookies/cookies/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin differ

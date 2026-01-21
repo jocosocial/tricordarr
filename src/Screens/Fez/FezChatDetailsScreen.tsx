@@ -1,20 +1,21 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
-import {Item} from 'react-navigation-header-buttons';
+import {View} from 'react-native';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
 import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {FezChatDetailsScreenActionsMenu} from '#src/Components/Menus/Fez/FezChatDetailsScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
-import {AppIcons} from '#src/Enums/Icons';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
@@ -35,6 +36,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const [fez, setFez] = useState<FezData>();
   const {data: profilePublicData} = useUserProfileQuery();
   const queryClient = useQueryClient();
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
 
   const onParticipantRemove = (fezID: string, userID: string) => {
     participantMutation.mutate(
@@ -55,24 +57,18 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
     );
   };
 
-  const getHeaderRight = useCallback(
-    () => (
+  const getHeaderRight = useCallback(() => {
+    if (!fez) {
+      return <></>;
+    }
+    return (
       <View>
         <MaterialHeaderButtons left>
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => {
-              if (fez) {
-                navigation.push(FezType.getHelpRoute(fez.fezType));
-              }
-            }}
-          />
+          <FezChatDetailsScreenActionsMenu fez={fez} />
         </MaterialHeaderButtons>
       </View>
-    ),
-    [fez, navigation],
-  );
+    );
+  }, [fez]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -99,7 +95,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <DataFieldListItem title={'Title'} description={fez.title} />
         <DataFieldListItem title={'Type'} description={fez.fezType} />
         {fez.members && <DataFieldListItem title={'Total Posts'} description={fez.members?.postCount} />}

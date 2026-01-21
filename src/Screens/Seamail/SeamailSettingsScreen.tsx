@@ -9,12 +9,14 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 
 export const SeamailSettingsScreen = () => {
-  const {appConfig, hasNotificationPermission, updateAppConfig} = useConfig();
+  const {appConfig, updateAppConfig} = useConfig();
+  const {hasNotificationPermission} = usePermissions();
   const {commonStyles} = useStyles();
 
   const toggleValue = (configKey: keyof PushNotificationConfig) => {

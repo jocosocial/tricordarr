@@ -1,6 +1,5 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -12,6 +11,7 @@ import {UserAboutCard} from '#src/Components/Cards/UserProfile/UserAboutCard';
 import {UserContentCard} from '#src/Components/Cards/UserProfile/UserContentCard';
 import {UserNoteCard} from '#src/Components/Cards/UserProfile/UserNoteCard';
 import {UserProfileCard} from '#src/Components/Cards/UserProfile/UserProfileCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {UserProfileScreenActionsMenu} from '#src/Components/Menus/User/UserProfileScreenActionsMenu';
 import {UserProfileSelfActionsMenu} from '#src/Components/Menus/User/UserProfileSelfActionsMenu';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
@@ -20,57 +20,67 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {UserProfileAvatar} from '#src/Components/Views/UserProfileAvatar';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useClipboard} from '#src/Hooks/useClipboard';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {ProfilePublicData} from '#src/Structs/ControllerStructs';
 
-interface UserProfileScreenBaseProps {
+interface Props {
   data?: ProfilePublicData;
   refetch: () => Promise<any>;
   isLoading: boolean;
-  enableContent?: boolean;
 }
-export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent = true}: UserProfileScreenBaseProps) => {
-  const [refreshing, setRefreshing] = useState(false);
+
+export const UserProfileScreenBase = (props: Props) => {
+  return (
+    <LoggedInScreen>
+      <UserProfileScreenBaseInner {...props} />
+    </LoggedInScreen>
+  );
+};
+
+/**
+ * Screen for the user's own profile.
+ *
+ * If the user hasn't completed the OOBE, they will not see the content card.
+ */
+const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const {data: profilePublicData, refetch: refetchSelf} = useUserProfileQuery();
   const {commonStyles} = useStyles();
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const commonNavigation = useCommonStack();
-  const {isLoggedIn} = useAuth();
+  const {setString} = useClipboard();
   const {refetch: refetchFavorites} = useUserFavoritesQuery();
   const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
   const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
-  const {appConfig} = useConfig();
-
+  const {preRegistrationMode} = usePreRegistration();
+  const {oobeCompleted} = useOobe();
   const isSelf = data?.header.userID === profilePublicData?.header.userID;
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    let refreshes = [refetch()];
-    if (!appConfig.preRegistrationMode) {
-      refreshes.push(refetchFavorites(), refetchMutes(), refetchBlocks());
-    }
-    if (isSelf) {
-      refreshes.push(refetchSelf());
-    }
-    await Promise.all(refreshes);
-    setRefreshing(false);
-  }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, isSelf, refetchSelf, appConfig.preRegistrationMode]);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: useCallback(async () => {
+      let refreshes = [refetch()];
+      if (!preRegistrationMode) {
+        refreshes.push(refetchFavorites(), refetchMutes(), refetchBlocks());
+      }
+      if (isSelf) {
+        refreshes.push(refetchSelf());
+      }
+      await Promise.all(refreshes);
+    }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, isSelf, refetchSelf, preRegistrationMode]),
+  });
 
   const getNavButtons = useCallback(() => {
-    if (!isLoggedIn) {
-      return <></>;
-    }
     if (data && isSelf) {
       return (
         <View>
@@ -98,7 +108,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
         </MaterialHeaderButtons>
       </View>
     );
-  }, [isLoggedIn, data, isSelf, isMuted, isBlocked, commonNavigation]);
+  }, [data, isSelf, isMuted, isBlocked, commonNavigation]);
 
   useEffect(() => {
     commonNavigation.setOptions({
@@ -135,10 +145,6 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
     },
   });
 
-  if (!isLoggedIn) {
-    return <NotLoggedInView />;
-  }
-
   if (isLoading) {
     return <LoadingView />;
   }
@@ -151,7 +157,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
         {data.message && (
           <PaddedContentView padTop={true} padBottom={false} style={styles.listContentCenter}>
@@ -173,7 +179,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
               onPress={() => commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {user: data})}
               onLongPress={() => {
                 if (data.note !== undefined) {
-                  Clipboard.setString(data.note);
+                  setString(data.note);
                 }
               }}
             />
@@ -187,7 +193,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
             <UserAboutCard user={data} />
           </PaddedContentView>
         )}
-        {enableContent && (
+        {oobeCompleted && (
           <PaddedContentView>
             <UserContentCard user={data} />
           </PaddedContentView>

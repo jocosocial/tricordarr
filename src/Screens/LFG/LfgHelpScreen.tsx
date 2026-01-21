@@ -2,6 +2,7 @@ import React from 'react';
 
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {OverlappingHelpTopicView} from '#src/Components/Views/Help/Common/OverlappingHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -41,6 +42,7 @@ export const LfgHelpScreen = () => {
           You can change the default LFG screen (Find, Joined, Owned) and filter past LFGs by default in the settings.
           Tap the menu in the upper right of any LFG screen and select Settings.
         </HelpTopicView>
+        <OverlappingHelpTopicView />
         <HelpChapterTitleView title={'Participation'} />
         <HelpTopicView>Don't just add random people to your LFG. It's not nice.</HelpTopicView>
         <HelpTopicView>If you add people to your LFG, those people should already expect to be added.</HelpTopicView>
@@ -61,7 +63,7 @@ export const LfgHelpScreen = () => {
           These are LFGs that you have created.
         </HelpTopicView>
         <HelpTopicView icon={AppIcons.lfgFind} title={'Find'}>
-          These are LFGs created by others that you can join.
+          Also referred to as Open. These are LFGs created by others that you can join.
         </HelpTopicView>
         <HelpTopicView icon={AppIcons.lfgFormer} title={'Former'}>
           These are Seamails, LFGs and Personal Events that you were previously a member of, but have since left or been

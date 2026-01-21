@@ -22,6 +22,7 @@ import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
@@ -52,10 +53,11 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
   const {setModalContent, setModalVisible} = useModal();
   const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
   const [imageSourceMetadata, setImageSourceMetadata] = useState<AppImageMetaData>(
     staticSize === 'identicon'
-      ? AppImageMetaData.fromIdenticon(path, appConfig)
-      : AppImageMetaData.fromFileName(path, appConfig),
+      ? AppImageMetaData.fromIdenticon(path, appConfig, serverUrl)
+      : AppImageMetaData.fromFileName(path, appConfig, serverUrl),
   );
   const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
@@ -84,6 +86,12 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
       borderRadius: 12,
       padding: 4,
       zIndex: 1,
+    },
+    cardCover: {
+      height: 195,
+      ...commonStyles.fullWidth,
+      ...commonStyles.roundedBorderCard,
+      overflow: 'hidden',
     },
   });
 
@@ -146,10 +154,10 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
   React.useEffect(() => {
     setImageSourceMetadata(
       staticSize === 'identicon'
-        ? AppImageMetaData.fromIdenticon(path, appConfig)
-        : AppImageMetaData.fromFileName(path, appConfig),
+        ? AppImageMetaData.fromIdenticon(path, appConfig, serverUrl)
+        : AppImageMetaData.fromFileName(path, appConfig, serverUrl),
     );
-  }, [path, appConfig, staticSize]);
+  }, [path, appConfig, serverUrl, staticSize]);
 
   /**
    * Effect to preload the full image if the initial size is set to thumb.
@@ -167,27 +175,43 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
    */
   React.useEffect(() => {
     if (staticSize === 'thumb') {
-      setImageSource({uri: imageSourceMetadata.thumbURI});
+      if (!imageSourceMetadata.thumbURI) {
+        return;
+      }
+      const thumbSource = {uri: imageSourceMetadata.thumbURI};
+      setImageSource(thumbSource);
       return;
     }
     if (staticSize === 'identicon') {
-      setImageSource({uri: imageSourceMetadata.identiconURI});
+      if (!imageSourceMetadata.identiconURI) {
+        return;
+      }
+      const identiconSource = {uri: imageSourceMetadata.identiconURI};
+      setImageSource(identiconSource);
       return;
     }
-    const hasCachePath = async () => {
-      const cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI});
-      return !!cachePath;
-    };
-    hasCachePath().then(isFullCached => {
+    if (!imageSourceMetadata.fullURI) {
+      return;
+    }
+    const checkCacheAndSetSource = async () => {
+      const cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI!});
+      const isFullCached = !!cachePath;
+
       if (isFullCached) {
-        setImageSource({uri: imageSourceMetadata.fullURI});
+        const fullSource = {uri: imageSourceMetadata.fullURI!};
+        setImageSource(fullSource);
       } else {
-        setImageSource({
-          uri: appConfig.skipThumbnails ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI,
-        });
+        const fallbackUri = appConfig.skipThumbnails ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI;
+        if (!fallbackUri) {
+          return;
+        }
+        const fallbackSource = {uri: fallbackUri};
+        setImageSource(fallbackSource);
       }
-    });
+    };
+    checkCacheAndSetSource();
   }, [
+    mode,
     staticSize,
     appConfig.skipThumbnails,
     imageSourceMetadata.fullURI,
@@ -216,13 +240,21 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
 
   const isThumbnail = imageSource.uri === imageSourceMetadata.thumbURI;
 
-  // @TODO cardcover does use FastImage under the hood.
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
       <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
         <View style={styles.imageContainer}>
-          {/* {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageSource} />} */}
+          {mode === 'cardcover' && (
+            <FastImage
+              resizeMode={'cover'}
+              style={[styles.cardCover, style as FastImageStyle]}
+              source={imageSource}
+              onLoad={onLoad}
+              onError={onError}
+              onProgress={onProgress}
+            />
+          )}
           {mode === 'image' && (
             <FastImage
               resizeMode={'cover'}

@@ -1,15 +1,16 @@
 import {useQueryClient} from '@tanstack/react-query';
-import React, {useCallback, useState} from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useCallback, useMemo, useState} from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
 import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
-import {EventData} from '#src/Structs/ControllerStructs';
+import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
 
 interface EventCardProps {
@@ -21,6 +22,64 @@ interface EventCardProps {
   onLongPress?: () => void;
   titleHeader?: string;
 }
+
+interface EventCardRightIconsProps {
+  eventData: EventData;
+  refreshing: boolean;
+  onFavoritePress: () => void;
+}
+
+const EventCardRightIcons = ({eventData, refreshing, onFavoritePress}: EventCardRightIconsProps) => {
+  const {theme} = useAppTheme();
+  const {hasShutternaut} = useRoles();
+
+  const styles = StyleSheet.create({
+    iconContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+  });
+
+  const needsPhotographerIcon = useMemo(() => {
+    if (!hasShutternaut || !eventData.shutternautData?.needsPhotographer) {
+      return null;
+    }
+    return <AppIcon icon={AppIcons.needsPhotographer} color={theme.colors.onTwitarrNegativeButton} />;
+  }, [hasShutternaut, eventData.shutternautData?.needsPhotographer, theme.colors.onTwitarrNegativeButton]);
+
+  const photographerIcon = useMemo(() => {
+    if (!hasShutternaut || !eventData.shutternautData?.userIsPhotographer) {
+      return null;
+    }
+    return <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} />;
+  }, [hasShutternaut, eventData.shutternautData?.userIsPhotographer, theme.colors.onTwitarrNegativeButton]);
+
+  const favoriteIcon = useMemo(() => {
+    return (
+      <TouchableOpacity onPress={onFavoritePress}>
+        {eventData.isFavorite ? (
+          <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
+        ) : (
+          <AppIcon icon={AppIcons.toggleFavorite} />
+        )}
+      </TouchableOpacity>
+    );
+  }, [onFavoritePress, eventData.isFavorite, theme.colors.twitarrYellow]);
+
+  return (
+    <View style={styles.iconContainer}>
+      {refreshing && <ActivityIndicator />}
+      {!refreshing && (
+        <>
+          {needsPhotographerIcon}
+          {photographerIcon}
+          {favoriteIcon}
+        </>
+      )}
+    </View>
+  );
+};
 
 export const EventCard = ({
   eventData,
@@ -46,44 +105,33 @@ export const EventCard = ({
       {
         onSuccess: async () => {
           // If this is too slow to reload, a setQueryData here may be in order.
-          await Promise.all([
-            queryClient.invalidateQueries({queryKey: ['/events']}),
-            queryClient.invalidateQueries({queryKey: [`/events/${eventData.eventID}`]}),
-            queryClient.invalidateQueries({queryKey: ['/events/favorites']}),
-            // Update the user notification data in case this was/is a favorite.
-            queryClient.invalidateQueries({queryKey: ['/notification/global']}),
-          ]);
+          const invalidations = UserNotificationData.getCacheKeys()
+            .concat(EventData.getCacheKeys(eventData.eventID))
+            .map(key => queryClient.invalidateQueries({queryKey: key}));
+          await Promise.all(invalidations);
         },
         onSettled: () => setRefreshing(false),
       },
     );
   }, [eventData.eventID, eventData.isFavorite, eventFavoriteMutation, queryClient]);
 
-  const getFavorite = useCallback(() => {
-    if (refreshing) {
-      return <ActivityIndicator />;
-    }
-    if (eventData.isFavorite && !hideFavorite) {
-      return (
-        <TouchableOpacity onPress={onFavoritePress}>
-          <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
-        </TouchableOpacity>
-      );
-    } else if (!hideFavorite) {
-      return (
-        <TouchableOpacity onPress={onFavoritePress}>
-          <AppIcon icon={AppIcons.toggleFavorite} />
-        </TouchableOpacity>
-      );
-    }
-  }, [eventData.isFavorite, hideFavorite, onFavoritePress, refreshing, theme.colors.twitarrYellow]);
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        card: {
+          backgroundColor:
+            eventData.eventType === EventType.shadow ? theme.colors.jocoPurple : theme.colors.twitarrNeutralButton,
+        },
+      }),
+    [eventData.eventType, theme.colors.jocoPurple, theme.colors.twitarrNeutralButton],
+  );
 
-  const styles = StyleSheet.create({
-    card: {
-      backgroundColor:
-        eventData.eventType === EventType.shadow ? theme.colors.jocoPurple : theme.colors.twitarrNeutralButton,
-    },
-  });
+  const getRight = useCallback(() => {
+    if (hideFavorite) {
+      return null;
+    }
+    return <EventCardRightIcons eventData={eventData} refreshing={refreshing} onFavoritePress={onFavoritePress} />;
+  }, [eventData, refreshing, hideFavorite, onFavoritePress]);
 
   return (
     <ScheduleItemCardBase
@@ -91,7 +139,7 @@ export const EventCard = ({
       cardStyle={styles.card}
       title={eventData.title}
       location={eventData.location}
-      titleRight={getFavorite}
+      titleRight={getRight}
       startTime={eventData.startTime}
       endTime={eventData.endTime}
       timeZoneID={eventData.timeZoneID}

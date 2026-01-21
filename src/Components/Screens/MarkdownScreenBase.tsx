@@ -1,9 +1,10 @@
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
-import {Keyboard, RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
+import {Keyboard, ScrollView, StyleSheet, View} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {ContentText} from '#src/Components/Text/ContentText';
 import {SearchableMarkdownText} from '#src/Components/Text/SearchableMarkdownText';
@@ -247,7 +248,7 @@ export const MarkdownScreenBase = ({
       )}
       <ScrollingContentView
         ref={scrollViewRef}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}
         isStack={true}
         style={styles.scrollView}>
         <PaddedContentView>

@@ -37,6 +37,7 @@ export interface TextFieldProps {
   onBlur?: (e?: FocusEvent) => void;
   disabled?: boolean;
   onSelectionChange?: (event: TextInputSelectionChangeEvent) => void;
+  trimOnBlur?: boolean;
 }
 
 // @TODO make this type-generic
@@ -61,8 +62,9 @@ export const TextField = ({
   onBlur,
   disabled,
   onSelectionChange,
+  trimOnBlur = true,
 }: TextFieldProps) => {
-  const {handleChange, handleBlur, isSubmitting} = useFormikContext();
+  const {handleChange, handleBlur, isSubmitting, setFieldValue, setFieldTouched} = useFormikContext();
   const {theme} = useAppTheme();
   const [field, meta] = useField<string>(name);
   const {styleDefaults} = useStyles();
@@ -84,6 +86,24 @@ export const TextField = ({
   };
 
   const handleBlurEvent = (event: FocusEvent) => {
+    if (trimOnBlur && field.value && typeof field.value === 'string') {
+      const trimmedValue = field.value.trim();
+      if (trimmedValue !== field.value) {
+        // Set the trimmed value first
+        setFieldValue(name, trimmedValue, false);
+        // Use requestAnimationFrame to ensure state update propagates before validation
+        requestAnimationFrame(() => {
+          // Mark as touched and trigger validation on the trimmed value
+          setFieldTouched(name, true, true);
+        });
+        // Call user's onBlur callback
+        if (onBlur) {
+          onBlur(event);
+        }
+        // Don't call handleBlur here since we're handling it manually
+        return;
+      }
+    }
     if (onBlur) {
       onBlur(event);
     }

@@ -1,7 +1,8 @@
 import React from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {ActivityIndicator, Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -26,7 +27,7 @@ export const LoadingView = (props: LoadingViewProps) => {
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={props.refreshing || false} onRefresh={props.onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={props.refreshing || false} onRefresh={props.onRefresh} />}>
         <ActivityIndicator />
         <View style={styles.container}>
           <Text>Loading...</Text>

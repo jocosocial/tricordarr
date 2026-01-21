@@ -14,11 +14,11 @@ import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Sta
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
-type SeamailSearchScreenProps = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailSearchScreen>;
+type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailSearchScreen>;
 
-export const SeamailSearchScreen = (props: SeamailSearchScreenProps) => {
+export const SeamailSearchScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.seamailSearchHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
         <SeamailSearchScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -26,7 +26,7 @@ export const SeamailSearchScreen = (props: SeamailSearchScreenProps) => {
   );
 };
 
-const SeamailSearchScreenInner = ({navigation, route}: SeamailSearchScreenProps) => {
+const SeamailSearchScreenInner = ({navigation, route}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
@@ -34,7 +34,7 @@ const SeamailSearchScreenInner = ({navigation, route}: SeamailSearchScreenProps)
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.seamailHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.seamailSearchHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>

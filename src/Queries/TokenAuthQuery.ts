@@ -11,8 +11,8 @@ import {
 } from '@tanstack/react-query';
 import {AxiosError} from 'axios';
 
-import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {shouldQueryEnable} from '#src/Libraries/Network/APIClient';
 import {
@@ -43,7 +43,7 @@ export function useTokenAuthQuery<TData, TQueryParams = Object, TError extends E
   options?: TokenAuthQueryOptionsType<TData, TError>,
   queryParams?: TQueryParams,
 ): UseQueryResult<TData, TError> {
-  const {isLoggedIn} = useAuth();
+  const {isLoggedIn} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
 
   return useQuery<TData, TError, TData>({
@@ -77,7 +77,7 @@ export function useTokenAuthQuery<TData, TQueryParams = Object, TError extends E
 //   options?: TokenAuthPaginationQueryOptionsType<TData, PaginationQueryParams, TError>,
 //   queryParams?: TQueryParams,
 // ) {
-//   const {isLoggedIn} = useAuth();
+//   const {isLoggedIn} = useSession();
 //   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
 //   const {appConfig} = useConfig();
 
@@ -113,7 +113,7 @@ export function useTokenAuthQuery<TData, TQueryParams = Object, TError extends E
 //   options?: TokenAuthPaginationQueryOptionsType<TData, PaginationQueryParams, TError>,
 //   queryParams?: TQueryParams,
 // ) {
-//   const {isLoggedIn} = useAuth();
+//   const {isLoggedIn} = useSession();
 //   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
 
 //   // const defaultQueryFn = async ({pageParam}: {pageParam: PaginationQueryParams}) => {
@@ -195,7 +195,7 @@ export function useTokenAuthPaginationQuery<
   options?: TokenAuthPaginationQueryOptionsTypeV2<TQueryFnData, TError, TData>,
   queryParams?: TQueryParams,
 ): UseInfiniteQueryResult<TData, TError> {
-  const {isLoggedIn} = useAuth();
+  const {isLoggedIn} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
   const {appConfig} = useConfig();
 

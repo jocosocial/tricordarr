@@ -38,6 +38,7 @@ const UserProfileEditScreenInner = ({route, navigation}: Props) => {
     message: route.params.user.message,
     about: route.params.user.about,
     dinnerTeam: route.params.user.dinnerTeam || '',
+    discordUsername: route.params.user.discordUsername || '',
   };
 
   const onSubmit = (values: UserProfileFormValues, helpers: FormikHelpers<UserProfileFormValues>) => {
@@ -52,6 +53,7 @@ const UserProfileEditScreenInner = ({route, navigation}: Props) => {
       about: values.about,
       preferredPronoun: values.preferredPronoun,
       ...(values.dinnerTeam ? {dinnerTeam: values.dinnerTeam as DinnerTeam} : undefined),
+      discordUsername: values.discordUsername,
       header: route.params.user.header,
     };
     profileMutation.mutate(

@@ -1,56 +1,30 @@
 import React from 'react';
-import {RefreshControl, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 
-import {LinkIconButton} from '#src/Components/Buttons/IconButtons/LinkIconButton';
 import {PerformerBioCard} from '#src/Components/Cards/Performer/PerformerBioCard';
 import {PerformerYearsCard} from '#src/Components/Cards/Performer/PerformerYearsCard';
 import {EventCard} from '#src/Components/Cards/Schedule/EventCard';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PerformerLinksView} from '#src/Components/Views/Performer/PerformerLinksView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {PerformerData} from '#src/Structs/ControllerStructs';
 
-interface PerformerScreenBaseProps {
+interface Props {
   performerData: PerformerData;
   onRefresh?: () => Promise<void>;
   isFetching?: boolean;
 }
 
-interface PerformerLinksViewProps {
-  style: StyleProp<ViewStyle>;
-  data: PerformerData;
-}
-const PerformerLinksView = (props: PerformerLinksViewProps) => {
-  if (
-    !props.data.website &&
-    !props.data.xURL &&
-    !props.data.facebookURL &&
-    !props.data.instagramURL &&
-    !props.data.youtubeURL
-  ) {
-    return <></>;
-  }
-  return (
-    <PaddedContentView>
-      <View style={props.style}>
-        <LinkIconButton link={props.data.website} icon={AppIcons.webview} />
-        <LinkIconButton link={props.data.xURL} icon={AppIcons.twitter} />
-        <LinkIconButton link={props.data.facebookURL} icon={AppIcons.facebook} />
-        <LinkIconButton link={props.data.instagramURL} icon={AppIcons.instagram} />
-        <LinkIconButton link={props.data.youtubeURL} icon={AppIcons.youtube} />
-      </View>
-    </PaddedContentView>
-  );
-};
-
-export const PerformerScreenBase = ({performerData, onRefresh, isFetching = false}: PerformerScreenBaseProps) => {
+export const PerformerScreenBase = ({performerData, onRefresh, isFetching = false}: Props) => {
   const {commonStyles} = useStyles();
   const navigation = useCommonStack();
 
@@ -79,7 +53,7 @@ export const PerformerScreenBase = ({performerData, onRefresh, isFetching = fals
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={onRefresh} />}
+        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={onRefresh} />}
         isStack={true}>
         <PaddedContentView style={styles.listContentContainer} padTop={true}>
           {performerData.header.photo && (

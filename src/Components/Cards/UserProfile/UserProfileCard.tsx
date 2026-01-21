@@ -39,6 +39,7 @@ export const UserProfileCard = ({user}: UserProfileCardProps) => {
           )}
           {user.homeLocation && <DataFieldListItem title={'Home Location'} description={user.homeLocation} />}
           {user.roomNumber && <DataFieldListItem title={'Room Number'} description={user.roomNumber} />}
+          {user.discordUsername && <DataFieldListItem title={'Discord Username'} description={user.discordUsername} />}
         </ListSection>
       </Card.Content>
     </Card>

@@ -5,10 +5,11 @@ import {Linking, ScrollView, StyleSheet} from 'react-native';
 import {Drawer} from 'react-native-drawer-layout';
 import {Badge, Drawer as PaperDrawer} from 'react-native-paper';
 
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -16,12 +17,13 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
-  const {oobeCompleted, appConfig} = useConfig();
+  const {oobeCompleted} = useOobe();
+  const {preRegistrationMode} = usePreRegistration();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
+  const {hasShutternaut, hasShutternautManager} = useRoles();
   const {data: userNotificationData} = useUserNotificationDataQuery({
-    enabled: oobeCompleted && !appConfig.preRegistrationMode,
+    enabled: oobeCompleted && !preRegistrationMode,
   });
-  const {tokenData} = useAuth();
   const {data: profilePublicData} = useUserProfileQuery({enabled: oobeCompleted});
   const {commonStyles} = useStyles();
   const navigation = useNavigation();
@@ -86,12 +88,17 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   <PaperDrawer.Item
                     label={`Your Profile (${profilePublicData?.header.username})`}
                     icon={AppIcons.profile}
-                    onPress={() => Linking.openURL(`tricordarr://user/${tokenData?.userID}`)}
+                    onPress={() => Linking.openURL('tricordarr://profile')}
                   />
                   <PaperDrawer.Item
                     label={'Directory'}
                     icon={AppIcons.group}
                     onPress={() => Linking.openURL('tricordarr://users')}
+                  />
+                  <PaperDrawer.Item
+                    label={'Favorite Users'}
+                    icon={AppIcons.userFavorite}
+                    onPress={() => Linking.openURL('tricordarr://favorites')}
                   />
                 </>
               )}
@@ -164,32 +171,31 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 onPress={() => Linking.openURL('tricordarr://codeOfConduct')}
               />
               <PaperDrawer.Item
-                label={'About Twitarr (Service)'}
-                icon={AppIcons.twitarr}
-                onPress={() => Linking.openURL('tricordarr://about')}
-              />
-              <PaperDrawer.Item
-                label={'About Tricordarr (App)'}
-                icon={AppIcons.tricordarr}
-                onPress={() => Linking.openURL('tricordarr://about-app')}
-              />
-              <PaperDrawer.Item
                 label={'Help Manual'}
                 icon={AppIcons.help}
                 onPress={() => Linking.openURL('tricordarr://help')}
               />
             </PaperDrawer.Section>
-            <PaperDrawer.Section title={'Advanced'} showDivider={false}>
+            <PaperDrawer.Section title={'Special Roles'} showDivider={false}>
               <PaperDrawer.Item
-                label={'Settings'}
-                icon={AppIcons.settings}
-                onPress={() => Linking.openURL('tricordarr://settings')}
+                label={'Shadow Event Host Form'}
+                icon={AppIcons.feedback}
+                onPress={() => Linking.openURL('tricordarr://eventfeedback')}
               />
-              <PaperDrawer.Item
-                label={'Twitarr Web UI'}
-                icon={AppIcons.webview}
-                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}`)}
-              />
+              {(hasShutternaut || hasTwitarrTeam) && (
+                <PaperDrawer.Item
+                  label={'Shutternaut Calendar'}
+                  icon={AppIcons.shutternaut}
+                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/dayplanner/shutternauts`)}
+                />
+              )}
+              {(hasShutternautManager || hasTwitarrTeam) && (
+                <PaperDrawer.Item
+                  label={'Manage Shutternauts'}
+                  icon={AppIcons.shutternautManager}
+                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/userrole/shutternaut/manage`)}
+                />
+              )}
               {hasModerator && (
                 <PaperDrawer.Item
                   label={'Moderator Actions'}
@@ -206,6 +212,18 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   right={getTTBadge}
                 />
               )}
+            </PaperDrawer.Section>
+            <PaperDrawer.Section title={'Advanced'} showDivider={false}>
+              <PaperDrawer.Item
+                label={'Settings'}
+                icon={AppIcons.settings}
+                onPress={() => Linking.openURL('tricordarr://settings')}
+              />
+              <PaperDrawer.Item
+                label={'Twitarr Web UI'}
+                icon={AppIcons.webview}
+                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}`)}
+              />
             </PaperDrawer.Section>
           </ScrollView>
         );

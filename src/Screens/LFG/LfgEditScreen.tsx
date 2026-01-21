@@ -8,7 +8,7 @@ import {LfgForm} from '#src/Components/Forms/LfgForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {LfgCanceledView} from '#src/Components/Views/Static/LfgCanceledView';
+import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
@@ -16,14 +16,14 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgEditScreen>;
 
 export const LfgEditScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.friendlyfez}
         urlPath={`/lfg/${props.route.params.fez.fezID}/update`}>
@@ -64,10 +64,10 @@ const LfgEditScreenInner = ({route, navigation}: Props) => {
       {
         onSuccess: async () => {
           navigation.goBack();
-          const invalidations = FezData.getCacheKeys(route.params.fez.fezID).map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          await Promise.all([...invalidations, queryClient.invalidateQueries({queryKey: ['/notification/global']})]);
+          const invalidations = UserNotificationData.getCacheKeys()
+            .concat(FezData.getCacheKeys(route.params.fez.fezID))
+            .map(key => queryClient.invalidateQueries({queryKey: key}));
+          await Promise.all(invalidations);
         },
         onSettled: () => helpers.setSubmitting(false),
       },
@@ -98,7 +98,7 @@ const LfgEditScreenInner = ({route, navigation}: Props) => {
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
-        {route.params.fez.cancelled && <LfgCanceledView update={true} />}
+        {route.params.fez.cancelled && <FezCanceledView update={true} fezType={route.params.fez.fezType} />}
         <PaddedContentView padTop={true}>
           <LfgForm onSubmit={onSubmit} initialValues={initialValues} buttonText={'Save'} />
         </PaddedContentView>

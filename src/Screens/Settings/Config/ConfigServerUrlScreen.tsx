@@ -1,20 +1,18 @@
-import {CacheManager} from '@georstat/react-native-image-cache';
 import {useQueryClient} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
 import React, {useEffect, useState} from 'react';
-import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ServerUrlSettingForm} from '#src/Components/Forms/Settings/ServerUrlSettingForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -24,30 +22,26 @@ import {ServerUrlFormValues} from '#src/Types/FormValues';
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
-  const {appConfig, updateAppConfig} = useConfig();
-  const {signOut} = useAuth();
+  const {currentSession, updateSession} = useSession();
   const {commonStyles} = useStyles();
-  const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
-  const {disruptionDetected, serverUrl} = useSwiftarrQueryClient();
+  const {disruptionDetected} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const {hasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
+  const {performSignOut} = useSignOut();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
-    const oldServerUrl = serverUrl;
-    await queryClient.cancelQueries({queryKey: ['/client/health']});
-    if (appConfig.preRegistrationMode) {
-      updateAppConfig({
-        ...appConfig,
-        preRegistrationServerUrl: values.serverUrl,
-      });
-    } else {
-      updateAppConfig({
-        ...appConfig,
-        serverUrl: values.serverUrl,
-      });
+    if (!currentSession) {
+      console.error('[ConfigServerUrlScreen] Cannot save: no current session');
+      return;
     }
+
+    const oldServerUrl = currentSession.serverUrl;
+    await queryClient.cancelQueries({queryKey: ['/client/health']});
+
+    // Update session serverUrl - persists immediately
+    await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
 
     refetch().then(() =>
       formikHelpers.resetForm({
@@ -58,10 +52,8 @@ export const ConfigServerUrlScreen = () => {
       }),
     );
     if (oldServerUrl !== values.serverUrl) {
-      await signOut(appConfig.preRegistrationMode);
-      clearPrivileges();
-      queryClient.clear();
-      await CacheManager.clearCache();
+      // Perform full sign-out when server URL changes (handles notifications, sockets, privileges, session, query cache, image cache)
+      await performSignOut();
     }
     setSnackbarPayload(undefined);
   };
@@ -76,7 +68,7 @@ export const ConfigServerUrlScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <PaddedContentView>
           <Text>Do not change this unless instructed to do so by the Twitarr Dev Team or THO.</Text>
         </PaddedContentView>
@@ -84,8 +76,8 @@ export const ConfigServerUrlScreen = () => {
           <ServerUrlSettingForm
             onSubmit={onSave}
             initialValues={{
-              serverChoice: ServerChoices.fromUrl(serverUrl),
-              serverUrl: serverUrl,
+              serverChoice: ServerChoices.fromUrl(currentSession?.serverUrl || ''),
+              serverUrl: currentSession?.serverUrl || '',
             }}
           />
         </PaddedContentView>

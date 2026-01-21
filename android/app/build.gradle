@@ -82,8 +82,8 @@ android {
         applicationId "com.tricordarr"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 37
-        versionName "2026.0.7"
+        versionCode 41
+        versionName "2026.0.10"
     }
     signingConfigs {
         debug {
@@ -144,13 +144,3 @@ dependencies {
     // ML Kit OCR
     implementation 'com.google.mlkit:text-recognition:16.0.1'
 }
-
-/**
- * react-native-config
- * https://www.npmjs.com/package/react-native-config
- */
-project.ext.envConfigFiles = [
-    debug: ".env.development",
-    release: ".env.production",
-]
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"

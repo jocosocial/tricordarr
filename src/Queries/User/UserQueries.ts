@@ -1,5 +1,6 @@
+import {STALE} from '#src/Libraries/Time/Time';
 import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
-import {KeywordData, ProfilePublicData} from '#src/Structs/ControllerStructs';
+import {CurrentUserData, KeywordData, ProfilePublicData} from '#src/Structs/ControllerStructs';
 import {KeywordType} from '#src/Types';
 
 // The Keyword queries are a good example of the most recent pattern of designing queries and mutations.
@@ -15,4 +16,10 @@ export const useUserKeywordQuery = ({keywordType, options}: KeywordQueryProps) =
 
 export const useUserProfileQuery = <TData = ProfilePublicData>(options: TokenAuthQueryOptionsType<TData> = {}) => {
   return useTokenAuthQuery<TData>('/user/profile', options);
+};
+
+export const useUserWhoamiQuery = (
+  options: TokenAuthQueryOptionsType<CurrentUserData> = {staleTime: STALE.MINUTES.THIRTY},
+) => {
+  return useTokenAuthQuery<CurrentUserData>('/user/whoami', options);
 };

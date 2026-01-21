@@ -1,21 +1,30 @@
-Code Notes
-==========
+# Code Notes
 
-Query
------
+Many of these have been moved to [cursorrules](../.cursorrules)
 
-`isLoading`: no cache and in flight
-* Return `<LoadingView />`
+## Query
 
-`isRefetching`: Background refetch (excluding initial) and `refetch()`.
-* RefreshControl
+A useful debugging snippet:
 
-`refetch()` will refetch even if within the staleTime. Backgrounds will not because that's the point of staleTime.
+```ts
+const allJoinedQueries = queryClient
+  .getQueryCache()
+  .getAll()
+  .filter(q => Array.isArray(q.queryKey) && q.queryKey[0] === '/fez/joined');
 
-`isFetching`: Catchall for any time the query function is running. This should be the default solution.
+console.log('[PersonalEvents] total /fez/joined queries:', allJoinedQueries.length);
+allJoinedQueries.forEach((q, i) => {
+  console.log(`[PersonalEvents] query ${i} key:`, JSON.stringify(q.queryKey));
+  console.log(`[PersonalEvents] query ${i} dataUpdatedAt:`, new Date(q.state.dataUpdatedAt).toISOString());
+});
+```
 
-Native Code
------------
+## Websocket Keepalive
+
+https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
+
+
+## Native Code
 
 ### Codegen
 
@@ -37,30 +46,3 @@ https://stackoverflow.com/questions/70816347/i-cant-find-the-image-asset-option-
 ### Xcode
 
 Open the `ios` directory in Xcode or `open` the `Tricordarr.xcworkspace` file.
-
-Refresh
--------
-
-To refresh without glitches:
-
-```ts
-const [refreshing, setRefreshing] = React.useState(false);
-
-const onRefresh = async () => {
-  setRefreshing(true);
-  await Promise.all([refetch(), refetchPins()]);
-  setRefreshing(false);
-};
-```
-
-`refetchPage` can be passed to `refetch` to limit refetching - CITATION NEEDED
-
-Websocket Keepalive
--------------------
-
-https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
-
-Swiftarr API
-------------
-
-* All dates from the API come in as ISO8601 strings

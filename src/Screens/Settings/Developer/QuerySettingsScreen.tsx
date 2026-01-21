@@ -1,12 +1,10 @@
-import FastImage from '@d11/react-native-fast-image';
-import {CacheManager} from '@georstat/react-native-image-cache';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl} from 'react-native';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {QuerySettingsForm} from '#src/Components/Forms/Settings/QuerySettingsForm';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -18,7 +16,6 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {getDirSize} from '#src/Libraries/Storage/ImageStorage';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {commonStyles} from '#src/Styles';
@@ -36,7 +33,6 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
   const {refetch: refetchHealth, isFetching: isFetchingHealth} = useHealthQuery({
     enabled: false,
   });
-  const [imageCacheSize, setImageCacheSize] = useState(0);
   const [oldestCacheItem, setOldestCacheItem] = useState<Date>();
 
   const bustQueryCache = () => {
@@ -50,14 +46,6 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     });
     queryClient.getQueryCache().clear();
     refreshCacheStats();
-  };
-
-  const bustImageCache = async () => {
-    console.log('[QuerySettingsScreen.tsx] Busting image cache.');
-    await CacheManager.clearCache();
-    await FastImage.clearDiskCache();
-    await FastImage.clearMemoryCache();
-    await refreshImageCacheSize();
   };
 
   const triggerDisruption = () => {
@@ -101,16 +89,6 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     });
   };
 
-  const refreshImageCacheSize = useCallback(async () => {
-    // https://github.com/georstat/react-native-image-cache/issues/81
-    const cacheSize = await getDirSize(CacheManager.config.baseDir);
-    setImageCacheSize(cacheSize);
-  }, []);
-
-  useEffect(() => {
-    refreshImageCacheSize();
-  }, [refreshImageCacheSize]);
-
   const refreshCacheStats = useCallback(() => {
     const contents = queryClient.getQueryCache().getAll();
     console.log('[QuerySettingsScreen.tsx] refreshing stats, had count', contents.length);
@@ -133,47 +111,59 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetchingHealth} enabled={false} />}>
-        <ListSection>
-          <ListSubheader>General</ListSubheader>
-          <PaddedContentView padTop={true}>
-            <QuerySettingsForm initialValues={initialValues} onSubmit={onSubmit} />
-          </PaddedContentView>
-        </ListSection>
+        refreshControl={<AppRefreshControl refreshing={isFetchingHealth} enabled={false} />}>
         <ListSubheader>Query Cache</ListSubheader>
-        <DataFieldListItem
-          title={'Last Query Bust'}
-          description={<RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />}
-        />
+        <DataFieldListItem title={'Oldest Item'} description={<RelativeTimeTag date={oldestCacheItem} />} />
         <DataFieldListItem
           title={'Query Item Count'}
           description={queryClient.getQueryCache().getAll().length.toString()}
         />
-        <DataFieldListItem title={'Oldest Item'} description={<RelativeTimeTag date={oldestCacheItem} />} />
+        <DataFieldListItem
+          title={'Last Query Bust'}
+          description={<RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />}
+        />
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
-            buttonText={'Query Keys'}
-            onPress={() => navigation.push(SettingsStackScreenComponents.queryKeysSettingsScreen)}
-            buttonColor={theme.colors.twitarrNeutralButton}
+            buttonText={'Clear Query Cache'}
+            onPress={bustQueryCache}
+            buttonColor={theme.colors.twitarrNegativeButton}
+            style={commonStyles.marginBottom}
           />
-        </PaddedContentView>
-        <ListSection>
-          <ListSubheader>Connection Disruption</ListSubheader>
-          <DataFieldListItem title={'Error Count'} description={errorCount.toString()} />
-          <PaddedContentView padTop={true}>
+          {appConfig.enableDeveloperOptions && (
             <PrimaryActionButton
-              buttonText={'Trigger Disruption'}
-              onPress={triggerDisruption}
-              buttonColor={theme.colors.twitarrNegativeButton}
-              style={commonStyles.marginBottom}
-            />
-            <PrimaryActionButton
-              buttonText={'Server Health Check'}
-              onPress={refetchHealth}
+              buttonText={'Query Keys'}
+              onPress={() => navigation.push(SettingsStackScreenComponents.queryKeysSettingsScreen)}
               buttonColor={theme.colors.twitarrNeutralButton}
             />
-          </PaddedContentView>
-        </ListSection>
+          )}
+        </PaddedContentView>
+        {appConfig.enableDeveloperOptions && (
+          <>
+            <ListSection>
+              <ListSubheader>Connection Disruption</ListSubheader>
+              <DataFieldListItem title={'Error Count'} description={errorCount.toString()} />
+              <PaddedContentView padTop={true}>
+                <PrimaryActionButton
+                  buttonText={'Trigger Disruption'}
+                  onPress={triggerDisruption}
+                  buttonColor={theme.colors.twitarrNegativeButton}
+                  style={commonStyles.marginBottom}
+                />
+                <PrimaryActionButton
+                  buttonText={'Server Health Check'}
+                  onPress={refetchHealth}
+                  buttonColor={theme.colors.twitarrNeutralButton}
+                />
+              </PaddedContentView>
+            </ListSection>
+            <ListSection>
+              <ListSubheader>Tuning</ListSubheader>
+              <PaddedContentView padTop={true}>
+                <QuerySettingsForm initialValues={initialValues} onSubmit={onSubmit} />
+              </PaddedContentView>
+            </ListSection>
+          </>
+        )}
       </ScrollingContentView>
     </AppView>
   );

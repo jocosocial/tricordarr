@@ -245,7 +245,11 @@ export const getUrlForNotificationEvent = (
         return '/settings/serverconnectionsettingsscreen';
       }
       case PressAction.contentSettings: {
-        return '/settings/pushnotifications';
+        const baseUrl = '/settings/pushnotifications';
+        if (notification.data?.type && typeof notification.data.type === 'string') {
+          return `${baseUrl}?notificationType=${encodeURIComponent(notification.data.type)}`;
+        }
+        return baseUrl;
       }
       // @TODO dedupe these into a single content press type
       case PressAction.seamail: {

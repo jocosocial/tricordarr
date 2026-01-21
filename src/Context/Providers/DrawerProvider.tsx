@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {PropsWithChildren, useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
@@ -11,6 +12,7 @@ import {AppIcons} from '#src/Enums/Icons';
 export const DrawerProvider = ({children}: PropsWithChildren) => {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const {commonStyles} = useStyles();
+  const navigation = useNavigation();
 
   /**
    * In the switch from NativeStack to Stack, the header buttons were rendering
@@ -37,8 +39,21 @@ export const DrawerProvider = ({children}: PropsWithChildren) => {
     );
   }, [setDrawerOpen, styles]);
 
+  /**
+   * Dedupe with HeaderBackButton.tsx.
+   */
+  const getLeftBackHeaderButtons = useCallback(() => {
+    return (
+      <View style={styles.container}>
+        <MaterialHeaderButtons left>
+          <Item title={'Back'} iconName={AppIcons.back} onPress={() => navigation.goBack()} />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [styles, navigation]);
+
   return (
-    <DrawerContext.Provider value={{drawerOpen, setDrawerOpen, getLeftMainHeaderButtons}}>
+    <DrawerContext.Provider value={{drawerOpen, setDrawerOpen, getLeftMainHeaderButtons, getLeftBackHeaderButtons}}>
       <AppDrawer>{children}</AppDrawer>
     </DrawerContext.Provider>
   );

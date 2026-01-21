@@ -1,10 +1,12 @@
 import pluralize from 'pluralize';
 import React from 'react';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Badge, Text} from 'react-native-paper';
 
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPerformerListItem';
+import {EventPhotographerListItem} from '#src/Components/Lists/Items/Event/EventPhotographerListItem';
 import {UserChipsListItem} from '#src/Components/Lists/Items/UserChipsListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ContentText} from '#src/Components/Text/ContentText';
@@ -13,7 +15,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LFGMembershipView} from '#src/Components/Views/Schedule/LFGMembershipView';
-import {LfgCanceledView} from '#src/Components/Views/Static/LfgCanceledView';
+import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
@@ -23,19 +25,14 @@ import {guessDeckNumber} from '#src/Libraries/Ship';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
-interface ScheduleItemScreenBaseProps {
+interface Props {
   refreshing?: boolean;
   onRefresh?: () => void;
   eventData?: FezData | EventData;
   showLfgChat?: boolean;
 }
 
-export const ScheduleItemScreenBase = ({
-  refreshing = false,
-  onRefresh,
-  eventData,
-  showLfgChat = false,
-}: ScheduleItemScreenBaseProps) => {
+export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData, showLfgChat = false}: Props) => {
   const navigation = useCommonStack();
   const {commonStyles} = useStyles();
 
@@ -110,12 +107,12 @@ export const ScheduleItemScreenBase = ({
     <AppView>
       {'fezID' in eventData && eventData.cancelled && (
         <View style={styles.cancelContainer}>
-          <LfgCanceledView />
+          <FezCanceledView fezType={eventData.fezType} />
         </View>
       )}
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {eventData && (
           <PaddedContentView padSides={false}>
             <ListSection>
@@ -138,6 +135,9 @@ export const ScheduleItemScreenBase = ({
                     <DataFieldListItem icon={AppIcons.description} description={getInfoContent} title={'Description'} />
                   )}
                   {eventData.performers.length !== 0 && <EventPerformerListItem performers={eventData.performers} />}
+                  {eventData.shutternautData?.photographers && eventData.shutternautData.photographers.length !== 0 && (
+                    <EventPhotographerListItem photographers={eventData.shutternautData.photographers} />
+                  )}
                 </>
               )}
               {'fezID' in eventData && (
