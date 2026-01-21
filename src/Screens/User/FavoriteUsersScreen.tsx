@@ -19,10 +19,13 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
+import {navigate} from '#src/Libraries/NavigationRef';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.favoriteUsers>;
 
@@ -39,6 +42,17 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
   const {data, isFetching, refetch} = useUserFavoritesQuery();
   const queryClient = useQueryClient();
   const {preRegistrationMode} = usePreRegistration();
+
+  const handleCallUser = useCallback((userHeader: UserHeader) => {
+    // Navigate to the Seamail tab first, then to the KrakenTalkCreateScreen
+    // This is needed because KrakenTalkCreateScreen is in a nested navigator
+    navigate(BottomTabComponents.seamailTab, {
+      screen: ChatStackScreenComponents.krakentalkCreateScreen,
+      params: {
+        initialUserHeader: userHeader,
+      },
+    });
+  }, []);
 
   const getNavButtons = useCallback(() => {
     return (
@@ -134,6 +148,11 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
                 });
               }}
               buttonOnPress={handleUnfavoriteUser}
+              additionalButtons={
+                preRegistrationMode
+                  ? undefined
+                  : [{icon: AppIcons.krakentalkCreate, onPress: handleCallUser}]
+              }
             />
           ))}
         </PaddedContentView>
