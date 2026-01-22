@@ -78,3 +78,6 @@ Example:
   </PreRegistrationScreen>
 </LoggedInScreen>
 ```
+
+## Platform Detection
+Use the helpers in `src/Libraries/Platform/Detection.ts` for any platform detection that may be necessary.

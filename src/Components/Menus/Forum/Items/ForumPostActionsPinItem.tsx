@@ -51,7 +51,7 @@ export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => 
 
   return (
     <Menu.Item
-      title={props.forumPost.isPinned ? 'Unpin' : 'Pin'}
+      title={props.forumPost.isPinned ? 'Unpin' : 'Pin Post to Thread'}
       dense={false}
       leadingIcon={getIcon}
       onPress={handleFavorite}

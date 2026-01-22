@@ -15,6 +15,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ForumEmptyListView} from '#src/Components/Views/Forum/ForumEmptyListView';
 import {ForumThreadListView} from '#src/Components/Views/Forum/ForumThreadListView';
 import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThreadsRelationsView';
+import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
@@ -149,6 +150,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
   if (data?.pages[0].paginator.total === 0 && forumListData.length === 0) {
     return (
       <AppView>
+        <ListTitleView title={route.params.category.title} />
         <ForumEmptyListView onRefresh={onRefresh} refreshing={refreshing} />
         {!isUserRestricted && <ForumCategoryFAB category={route.params.category} />}
       </AppView>

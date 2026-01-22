@@ -16,6 +16,7 @@ import {FezChatDetailsScreen} from '#src/Screens/Fez/FezChatDetailsScreen';
 import {FezChatHelpScreen} from '#src/Screens/Fez/FezChatHelpScreen';
 import {FezChatScreen} from '#src/Screens/Fez/FezChatScreen';
 import {ForumHelpScreen} from '#src/Screens/Forum/ForumHelpScreen';
+import {KeywordsHelpScreen} from '#src/Screens/Forum/KeywordsHelpScreen';
 import {ForumPostEditScreen} from '#src/Screens/Forum/Post/ForumPostEditScreen';
 import {ForumPostHashtagScreen} from '#src/Screens/Forum/Post/ForumPostHashtagScreen';
 import {ForumPostPinnedScreen} from '#src/Screens/Forum/Post/ForumPostPinnedScreen';
@@ -72,10 +73,10 @@ import {SeamailSearchHelpScreen} from '#src/Screens/Seamail/SeamailSearchHelpScr
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
 import {ConfigServerUrlScreen} from '#src/Screens/Settings/Config/ConfigServerUrlScreen';
-import {AlertKeywordsSettingsScreen} from '#src/Screens/Settings/Content/AlertKeywordsSettingsScreen';
+import {AlertKeywordsScreen} from '#src/Screens/Settings/Content/AlertKeywordsSettingsScreen';
 import {ForumSettingsScreen} from '#src/Screens/Settings/Content/ForumSettingsScreen';
 import {ImageSettingsScreen} from '#src/Screens/Settings/Content/ImageSettingsScreen';
-import {MuteKeywordsSettingsScreen} from '#src/Screens/Settings/Content/MuteKeywordsSettingsScreen';
+import {MuteKeywordsScreen} from '#src/Screens/Settings/Content/MuteKeywordsSettingsScreen';
 import {SiteUIHelpScreen} from '#src/Screens/SiteUI/SiteUIHelpScreen';
 import {SiteUILinkScreen} from '#src/Screens/SiteUI/SiteUILinkScreen';
 import {SiteUIScreen} from '#src/Screens/SiteUI/SiteUIScreen';
@@ -167,8 +168,8 @@ export type CommonStackParamList = {
     forumID: string;
     forumListData?: ForumListData;
   };
-  AlertKeywordsSettingsScreen: undefined;
-  MuteKeywordsSettingsScreen: undefined;
+  AlertKeywordsScreen: undefined;
+  MuteKeywordsScreen: undefined;
   ForumThreadPostScreen: {
     postID: string;
   };
@@ -235,6 +236,7 @@ export type CommonStackParamList = {
   UserDirectoryHelpScreen: undefined;
   ForumSettingsScreen: undefined;
   ForumHelpScreen: undefined;
+  KeywordsHelpScreen: undefined;
   ScheduleHelpScreen: undefined;
   ForumPostSearchScreen: {
     category?: CategoryData;
@@ -318,8 +320,8 @@ export enum CommonStackComponents {
   eventScreen = 'EventScreen',
   photostreamEventScreen = 'PhotostreamEventScreen',
   forumThreadScreen = 'ForumThreadScreen',
-  alertKeywords = 'AlertKeywordsSettingsScreen',
-  muteKeywords = 'MuteKeywordsSettingsScreen',
+  alertKeywords = 'AlertKeywordsScreen',
+  muteKeywords = 'MuteKeywordsScreen',
   forumThreadPostScreen = 'ForumThreadPostScreen',
   forumPostEditScreen = 'ForumPostEditScreen',
   seamailCreateScreen = 'SeamailCreateScreen',
@@ -348,6 +350,7 @@ export enum CommonStackComponents {
   userDirectoryHelpScreen = 'UserDirectoryHelpScreen',
   forumSettingsScreen = 'ForumSettingsScreen',
   forumHelpScreen = 'ForumHelpScreen',
+  keywordsHelpScreen = 'KeywordsHelpScreen',
   scheduleHelpScreen = 'ScheduleHelpScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
@@ -403,6 +406,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.scheduleHelpScreen
   | CommonStackComponents.userDirectoryHelpScreen
   | CommonStackComponents.forumHelpScreen
+  | CommonStackComponents.keywordsHelpScreen
   | CommonStackComponents.seamailHelpScreen
   | CommonStackComponents.seamailListHelpScreen
   | CommonStackComponents.seamailSearchHelpScreen
@@ -500,12 +504,12 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.alertKeywords}
-        component={AlertKeywordsSettingsScreen}
+        component={AlertKeywordsScreen}
         options={{title: 'Alert Keywords'}}
       />
       <Stack.Screen
         name={CommonStackComponents.muteKeywords}
-        component={MuteKeywordsSettingsScreen}
+        component={MuteKeywordsScreen}
         options={{title: 'Mute Keywords'}}
       />
       <Stack.Screen
@@ -649,6 +653,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.forumHelpScreen}
         component={ForumHelpScreen}
         options={{title: 'Forum Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.keywordsHelpScreen}
+        component={KeywordsHelpScreen}
+        options={{title: 'Keywords Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.scheduleHelpScreen}

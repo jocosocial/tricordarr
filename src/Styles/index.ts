@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 export interface StyleDefaults {
   marginSize: number;
@@ -256,7 +256,11 @@ export const commonStyles = StyleSheet.create({
     position: 'absolute',
   },
   navigationHeaderTitle: {
-    fontSize: 20,
+    fontSize: Platform.select({
+      ios: 17,
+      android: 20,
+      default: 20,
+    }),
     lineHeight: undefined,
     fontFamily: 'sans-serif-medium',
   },

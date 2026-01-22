@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {AlertKeywordsHelpTopicView} from '#src/Components/Views/Help/Common/AlertKeywordsHelpTopicView';
+import {MuteKeywordsHelpTopicView} from '#src/Components/Views/Help/Common/MuteKeywordsHelpTopicView';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
@@ -45,13 +47,8 @@ export const ForumHelpScreen = () => {
           posts containing "pokemon" within the Activities category can be done from that category's thread list.
         </HelpTopicView>
         <HelpChapterTitleView title={'Keywords'} />
-        <HelpTopicView title={'Mute Keywords'} icon={AppIcons.mute}>
-          You can set up mute words to prevent seeing forum posts containing a specific word.
-        </HelpTopicView>
-        <HelpTopicView title={'Alert Keywords'} icon={AppIcons.alertword}>
-          You can set up alert words to ping you when someone makes a forum post containing a specific word. Alert words
-          will be highlighted in content views like 🚨this🚨.
-        </HelpTopicView>
+        <MuteKeywordsHelpTopicView />
+        <AlertKeywordsHelpTopicView />
       </ScrollingContentView>
     </AppView>
   );

@@ -50,5 +50,11 @@ export const ForumThreadPinItem = (props: ForumThreadPinItemProps) => {
     />
   );
 
-  return <Menu.Item title={props.isPinned ? 'Unpin' : 'Pin'} leadingIcon={getPinnedIcon} onPress={handlePin} />;
+  return (
+    <Menu.Item
+      title={props.isPinned ? 'Unpin Thread' : 'Pin Thread to Category'}
+      leadingIcon={getPinnedIcon}
+      onPress={handlePin}
+    />
+  );
 };

@@ -147,7 +147,7 @@ export interface SnackbarPayload {
   };
   duration?: number;
   message?: string;
-  messageType?: 'info' | 'error' | 'success';
+  messageType?: 'info' | 'error' | 'success' | 'secret';
   style?: StyleProp<ViewStyle>;
   elevation?: 0 | 1 | 2 | 3 | 4 | 5 | Animated.Value;
 }
