@@ -11,6 +11,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LogoutDeviceModalView} from '#src/Components/Views/Modals/LogoutModal';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -24,6 +25,7 @@ export const OobeAccountScreen = ({navigation}: Props) => {
   const {isLoggedIn} = useSession();
   const {data: profilePublicData} = useUserProfileQuery();
   const {setModalContent, setModalVisible} = useModal();
+  const {preRegistrationMode} = usePreRegistration();
 
   const handleLogoutModal = (allDevices = false) => {
     setModalContent(<LogoutDeviceModalView allDevices={allDevices} />);
@@ -37,6 +39,13 @@ export const OobeAccountScreen = ({navigation}: Props) => {
           <PaddedContentView>
             <Text>Accounts are new every year. Only create an account if you have not done so this year.</Text>
           </PaddedContentView>
+          {!preRegistrationMode && (
+            <PaddedContentView>
+              <Text>
+                If you created an account during pre-registration, you can instead log in with that account below.
+              </Text>
+            </PaddedContentView>
+          )}
           <PaddedContentView>
             <PrimaryActionButton
               buttonText={'Create Account'}
