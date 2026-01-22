@@ -9,7 +9,7 @@ import {EventData} from '#src/Structs/ControllerStructs';
 interface NeedsPhotographerMenuItemProps {
   eventID: string;
   shutternautData: EventData['shutternautData'];
-  closeMenu: () => void;
+  closeMenu?: () => void;
 }
 
 export const NeedsPhotographerMenuItem = (props: NeedsPhotographerMenuItemProps) => {
@@ -32,9 +32,11 @@ export const NeedsPhotographerMenuItem = (props: NeedsPhotographerMenuItemProps)
           );
           await Promise.all(invalidations);
         },
+        onSettled: () => {
+          props.closeMenu?.();
+        },
       },
     );
-    props.closeMenu();
   };
 
   if (!props.shutternautData) {

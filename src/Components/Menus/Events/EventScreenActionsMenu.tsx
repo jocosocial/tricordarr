@@ -89,18 +89,10 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       )}
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
       {hasShutternaut && (
-        <PhotographingMenuItem
-          eventID={props.event.eventID}
-          shutternautData={props.event.shutternautData}
-          closeMenu={closeMenu}
-        />
+        <PhotographingMenuItem eventID={props.event.eventID} shutternautData={props.event.shutternautData} />
       )}
       {hasShutternautManager && (
-        <NeedsPhotographerMenuItem
-          eventID={props.event.eventID}
-          shutternautData={props.event.shutternautData}
-          closeMenu={closeMenu}
-        />
+        <NeedsPhotographerMenuItem eventID={props.event.eventID} shutternautData={props.event.shutternautData} />
       )}
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />

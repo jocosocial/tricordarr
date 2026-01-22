@@ -83,3 +83,22 @@ Example:
 
 ## Platform Detection
 Use the helpers in `src/Libraries/Platform/Detection.ts` for any platform detection that may be necessary.
+
+## Menus
+We call three-dots menus Actions Menus. The visibility should be determined from `useMenu.ts`. The anchor should be `MenuAnchor.tsx`. If passing a `props.onClose?` callback to a mutating menu item that callback must be performed in the `onSettled` block of the mutation otherwise it could get unmounted before executing.
+
+"Toggle" and "Navigation" style menu items such as `NeedsPhotographerMenuItem` and `HelpMenuItem` should not provide the `onClose`. The latter because we hook into the global navigation system to close menus on navigate. "Action" style menu items such as `ShareMenuItem` must provide it.
+
+## Queries
+### Mutations
+Mutations will generally need to invalidate certain queries in the cache. For example:
+```ts
+onSuccess: async () => {
+  const invalidations = EventData.getCacheKeys(props.eventID).map(key =>
+    queryClient.invalidateQueries({queryKey: key}),
+  );
+  await Promise.all(invalidations);
+},
+```
+
+Avoid hardcoding query keys in these functions and instead rely on a `getCacheKeys()` function on the type of data. If one does not exist, make one.
