@@ -37,6 +37,7 @@ import {LfgScreen} from '#src/Screens/LFG/LfgScreen';
 import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
 import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
 import {CruiseHelpScreen} from '#src/Screens/Main/CruiseHelpScreen';
+import {DailyThemeHelpScreen} from '#src/Screens/Main/DailyThemeHelpScreen';
 import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
 import {MainTimeZoneScreen} from '#src/Screens/Main/MainTimeZoneScreen';
 import {MapHelpScreen} from '#src/Screens/Main/MapHelpScreen';
@@ -298,6 +299,7 @@ export type CommonStackParamList = {
   PhotostreamHelpScreen: undefined;
   MapHelpScreen: undefined;
   CruiseHelpScreen: undefined;
+  DailyThemeHelpScreen: undefined;
   TodayHelpScreen: undefined;
 };
 
@@ -388,6 +390,7 @@ export enum CommonStackComponents {
   photostreamHelpScreen = 'PhotostreamHelpScreen',
   mapHelpScreen = 'MapHelpScreen',
   cruiseHelpScreen = 'CruiseHelpScreen',
+  dailyThemeHelpScreen = 'DailyThemeHelpScreen',
   todayHelpScreen = 'TodayHelpScreen',
 }
 
@@ -425,6 +428,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.userProfileHelpScreen
   | CommonStackComponents.mapHelpScreen
   | CommonStackComponents.cruiseHelpScreen
+  | CommonStackComponents.dailyThemeHelpScreen
   | CommonStackComponents.todayHelpScreen;
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
@@ -614,7 +618,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.userProfileHelpScreen}
         component={UserProfileHelpScreen}
-        options={{title: 'Help'}}
+        options={{title: 'Profile Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.blockUsers}
@@ -699,7 +703,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.performerHelpScreen}
         component={PerformerHelpScreen}
-        options={{title: 'Help'}}
+        options={{title: 'Performer Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.siteUIHelpScreen}
@@ -842,7 +846,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.photostreamHelpScreen}
         component={PhotostreamHelpScreen}
-        options={{title: 'Help'}}
+        options={{title: 'Photostream Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.mapHelpScreen}
@@ -853,6 +857,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.cruiseHelpScreen}
         component={CruiseHelpScreen}
         options={{title: 'Cruise Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.dailyThemeHelpScreen}
+        component={DailyThemeHelpScreen}
+        options={{title: 'Daily Theme Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.todayHelpScreen}

@@ -3,12 +3,7 @@ import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 
 export const ShadowPerformerProfilesHelpTopicView = () => {
   return (
-    <>
-      <HelpChapterTitleView title={'Shadow Profiles'} />
-      <HelpTopicView>
-        These are attendees just like you! They have something cool to share and are volunteering their vacation time to
-        share it.
-      </HelpTopicView>
+    <HelpChapterTitleView title={'Shadow Profiles'}>
       <HelpTopicView>
         If you are a Shadow Cruise event organizer you can optionally create a performer bio for yourself that is
         attached to the event you'll be running. This Bio page is not publicly linked to your Twitarr user. The intent
@@ -19,6 +14,6 @@ export const ShadowPerformerProfilesHelpTopicView = () => {
         Schedule screen and select Set Organizer to fill out the form. If you wish to create one while on board contact
         the TwitarrTeam for assistance. All profile content is subject to moderator review.
       </HelpTopicView>
-    </>
+    </HelpChapterTitleView>
   );
 };

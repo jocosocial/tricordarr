@@ -19,7 +19,6 @@ import {AccountInfoSettingsScreen} from '#src/Screens/Settings/Developer/Account
 import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
 import {FeatureSettingsScreen} from '#src/Screens/Settings/Developer/FeatureSettingsScreen';
 import {LoadingSettingScreen} from '#src/Screens/Settings/Developer/LoadingSettingScreen';
-import {NetworkInfoSettings} from '#src/Screens/Settings/Developer/NetworkInfoSettings';
 import {OobeSettingsScreen} from '#src/Screens/Settings/Developer/OobeSettingsScreen';
 import {QueryDataSettingsScreen} from '#src/Screens/Settings/Developer/QueryDataSettingsScreen';
 import {QueryKeysSettingsScreen} from '#src/Screens/Settings/Developer/QueryKeysSettingsScreen';
@@ -34,7 +33,6 @@ import {SocketSettingsScreen} from '#src/Screens/Settings/SocketSettingsScreen';
 
 export type SettingsStackParamList = CommonStackParamList & {
   SettingsScreen: undefined;
-  NetworkInfoSettingsScreen: undefined;
   BackgroundConnectionSettingsScreen: undefined;
   TestNotificationScreen: undefined;
   TestErrorScreen: undefined;
@@ -70,7 +68,6 @@ export type SettingsStackParamList = CommonStackParamList & {
 
 export enum SettingsStackScreenComponents {
   settings = 'SettingsScreen',
-  networkInfoSettings = 'NetworkInfoSettingsScreen',
   backgroundConnectionSettings = 'BackgroundConnectionSettingsScreen',
   testNotification = 'TestNotificationScreen',
   testError = 'TestErrorScreen',
@@ -110,11 +107,6 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.settings}
         component={SettingsScreen}
         options={{title: 'Settings'}}
-      />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.networkInfoSettings}
-        component={NetworkInfoSettings}
-        options={{title: 'Network'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.backgroundConnectionSettings}

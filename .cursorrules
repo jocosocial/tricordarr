@@ -51,7 +51,7 @@ iOS doesn't provide clipboard feedback. Use the `useClipboard()` hook from `src/
 To POST logs to the Cursor log listener different endpoints may be needed based on the platform. iOS can use `127.0.0.1`. Android should use `10.0.2.2`. Optionally prompt the user perform an `adb reverse` port mapping prior to testing during offline/airplane mode.
 
 ## Help Screens
-Help screens should have a section for "Actions" if there are buttons within the header, either within a menu or directly. The back button should not be included unless it has very special properties (such as `SiteUIScreenBase.tsx`). Actions should be listed in order of header then within any menus. There does not need to be a help entry for the actions menu itself. If there is a button for Help, it should be last.
+Help screens should have a section for "Actions" if there are buttons within the header, either within a menu or directly. The back button should not be included unless it has very special properties (such as `SiteUIScreenBase.tsx`). Actions should be listed in order of header then within any menus. There does not need to be a help entry for the actions menu itself. If there is a button for Help, it should be last. Any privileged actions should go in a "Privileged Actions" TitleView after "Action".
 
 All help content should be implemented using `HelpTopicView` or `HelpChapterTitleView`. There are some exceptions to this such as in `ScheduleHelpScreen`.
 
@@ -62,6 +62,8 @@ Newly created Help screens should be linked within the `HelpManualScreen.tsx`.
 Any FABs should generally have their own `HelpChapterTitleView` and describe what they do. If it's a `BaseFAB` component it should implement one or more `HelpTopicView`. A `BaseFABGroup` should implement one `HelpTopicView` for each action within the FAB Group. The FABs should be listed before the Actions in the help screen. The actual FAB (be it a `BaseFABGroup` or `BaseFAB`) should implement a `HelpFABView` that matches the label and icon of the FAB.
 
 All help screens should be added to the `HelpScreenComponents` type union.
+
+`HelpTopicView`s that are contained within a `HelpChapterTitleView` should be children of the `HelpChapterTitleView`.
 
 ## Screen Structure
 Most screens should be wrapped in `LoggedInScreen`, `PreRegistrationScreen`, and `DisabledFeatureScreen` checkpoints. A relevant `helpScreen` should be provided to `PreRegistrationScreen`. An appropriate `SwiftarrFeature` to `DisabledFeatureScreen`.

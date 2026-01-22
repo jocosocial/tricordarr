@@ -132,12 +132,6 @@ export const SettingsScreen = ({navigation}: Props) => {
               <Divider bold={true} />
               <ListSection>
                 <ListSubheader>Developers</ListSubheader>
-
-                <SettingsNavigationListItem
-                  title={'Network Info'}
-                  description={"View details about your device's current network environment."}
-                  navComponent={SettingsStackScreenComponents.networkInfoSettings}
-                />
                 <SettingsNavigationListItem
                   title={'Test Notifications'}
                   description={'Generate a test notification for debugging.'}

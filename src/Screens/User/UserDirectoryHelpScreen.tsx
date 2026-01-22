@@ -19,9 +19,9 @@ export const UserDirectoryHelpScreen = () => {
           enter at least two characters to search.
         </HelpTopicView>
         <HelpChapterTitleView title={'Actions'} />
-        <FavoriteUsersHelpTopicView />
-        <MutedUsersHelpTopicView />
-        <BlockedUsersHelpTopicView />
+        <FavoriteUsersHelpTopicView forListScreen={true} />
+        <MutedUsersHelpTopicView forListScreen={true} />
+        <BlockedUsersHelpTopicView forListScreen={true} />
         <HelpButtonHelpTopicView />
       </ScrollingContentView>
     </AppView>
