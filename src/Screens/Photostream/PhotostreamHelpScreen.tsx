@@ -6,9 +6,11 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {AppIcons} from '#src/Enums/Icons';
 
 export const PhotostreamHelpScreen = () => {
+  const {appConfig} = useConfig();
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>
@@ -39,10 +41,12 @@ export const PhotostreamHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
-          <HelpTopicView title={'Filter'} icon={AppIcons.filter}>
-            Filter photostream posts by location. A filter is active if the menu icon is blue. Long press the filter
-            menu button to clear any active filters. This feature may only be available when experiments are enabled.
-          </HelpTopicView>
+          {appConfig.enableExperiments && (
+            <HelpTopicView title={'Filter'} icon={AppIcons.filter}>
+              Filter photostream posts by location. A filter is active if the menu icon is blue. Long press the filter
+              menu button to clear any active filters.
+            </HelpTopicView>
+          )}
           <HelpTopicView title={'Image Settings'} icon={AppIcons.settings}>
             Access image settings to configure how images are processed and displayed in the photostream.
           </HelpTopicView>

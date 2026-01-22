@@ -8,7 +8,7 @@ import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleV
 export const DailyThemeHelpScreen = () => {
   return (
     <AppView>
-      <ScrollingContentView isStack={true}>
+      <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'Daily Themes'}>
           <DailyThemeHelpTopicView showTitle={false} />
         </HelpChapterTitleView>

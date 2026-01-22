@@ -10,7 +10,7 @@ import {AppIcons} from '#src/Enums/Icons';
 export const BoardgameHelpScreen = () => {
   return (
     <AppView>
-      <ScrollingContentView isStack={true}>
+      <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'} />
         <HelpTopicView>
           Explore the on-board board game library and find a game to play! The library is typically located in the Main

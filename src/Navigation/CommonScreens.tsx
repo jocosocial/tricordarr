@@ -35,6 +35,7 @@ import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
 import {LfgHelpScreen} from '#src/Screens/LFG/LfgHelpScreen';
 import {LfgParticipationScreen} from '#src/Screens/LFG/LfgParticipationScreen';
 import {LfgScreen} from '#src/Screens/LFG/LfgScreen';
+import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen';
 import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
 import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
 import {CruiseHelpScreen} from '#src/Screens/Main/CruiseHelpScreen';
@@ -70,6 +71,7 @@ import {SeamailEditScreen} from '#src/Screens/Seamail/SeamailEditScreen';
 import {SeamailHelpScreen} from '#src/Screens/Seamail/SeamailHelpScreen';
 import {SeamailListHelpScreen} from '#src/Screens/Seamail/SeamailListHelpScreen';
 import {SeamailSearchHelpScreen} from '#src/Screens/Seamail/SeamailSearchHelpScreen';
+import {SeamailSettingsScreen} from '#src/Screens/Seamail/SeamailSettingsScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
 import {ConfigServerUrlScreen} from '#src/Screens/Settings/Config/ConfigServerUrlScreen';
@@ -217,6 +219,7 @@ export type CommonStackParamList = {
   LfgEditScreen: {
     fez: FezData;
   };
+  LfgSettingsScreen: undefined;
   ForumThreadEditScreen: {
     forumData: ForumData;
   };
@@ -246,6 +249,7 @@ export type CommonStackParamList = {
   SeamailListHelpScreen: undefined;
   SeamailSearchHelpScreen: undefined;
   SeamailCreateHelpScreen: undefined;
+  SeamailSettingsScreen: undefined;
   FezChatHelpScreen: undefined;
   FezChatDetailsHelpScreen: undefined;
   SiteUILinkScreen: undefined;
@@ -337,6 +341,7 @@ export enum CommonStackComponents {
   lfgAddParticipantScreen = 'LfgAddParticipantScreen',
   lfgChatScreen = 'LfgChatScreen',
   lfgEditScreen = 'LfgEditScreen',
+  lfgSettingsScreen = 'LfgSettingsScreen',
   forumThreadEditScreen = 'ForumThreadEditScreen',
   accessibilitySettingsScreen = 'AccessibilitySettingsScreen',
   imageSettingsScreen = 'ImageSettingsScreen',
@@ -357,6 +362,7 @@ export enum CommonStackComponents {
   seamailListHelpScreen = 'SeamailListHelpScreen',
   seamailSearchHelpScreen = 'SeamailSearchHelpScreen',
   seamailCreateHelpScreen = 'SeamailCreateHelpScreen',
+  seamailSettingsScreen = 'SeamailSettingsScreen',
   fezChatHelpScreen = 'FezChatHelpScreen',
   fezChatDetailsHelpScreen = 'FezChatDetailsHelpScreen',
   siteUILinkScreen = 'SiteUILinkScreen',
@@ -590,6 +596,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen name={CommonStackComponents.lfgEditScreen} component={LfgEditScreen} options={{title: 'Edit'}} />
       <Stack.Screen
+        name={CommonStackComponents.lfgSettingsScreen}
+        component={LfgSettingsScreen}
+        options={{title: 'LFG Settings'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.forumThreadEditScreen}
         component={ForumThreadEditScreen}
         options={{title: 'Edit Forum'}}
@@ -688,6 +699,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.seamailCreateHelpScreen}
         component={SeamailCreateHelpScreen}
         options={{title: 'Seamail Create Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailSettingsScreen}
+        component={SeamailSettingsScreen}
+        options={{title: 'Seamail Settings'}}
       />
       <Stack.Screen
         name={CommonStackComponents.fezChatHelpScreen}

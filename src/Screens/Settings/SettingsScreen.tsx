@@ -50,11 +50,6 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Theme and styling options for this app.'}
               navComponent={CommonStackComponents.accessibilitySettingsScreen}
             />
-            <SettingsNavigationListItem
-              title={'Sessions'}
-              description={'Manage local account sessions.'}
-              navComponent={SettingsStackScreenComponents.sessionSettings}
-            />
           </ListSection>
           <Divider bold={true} />
           <ListSection>
@@ -79,14 +74,9 @@ export const SettingsScreen = ({navigation}: Props) => {
           <ListSection>
             <ListSubheader>Content</ListSubheader>
             <SettingsNavigationListItem
-              title={'Schedule Settings'}
-              description={'Settings related to the day and schedule.'}
-              navComponent={SettingsStackScreenComponents.eventSettings}
-            />
-            <SettingsNavigationListItem
-              title={'LFG Settings'}
-              description={'Settings for community organized events.'}
-              navComponent={SettingsStackScreenComponents.lfgSettings}
+              title={'Forum Settings'}
+              description={'Settings for Forum threads and categories.'}
+              navComponent={CommonStackComponents.forumSettingsScreen}
             />
             <SettingsNavigationListItem
               title={'Image Settings'}
@@ -94,11 +84,22 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={CommonStackComponents.imageSettingsScreen}
             />
             <SettingsNavigationListItem
-              title={'Forum Settings'}
-              description={'Settings for Forum threads and categories.'}
-              navComponent={CommonStackComponents.forumSettingsScreen}
+              title={'LFG Settings'}
+              description={'Settings for community organized events.'}
+              navComponent={CommonStackComponents.lfgSettingsScreen}
+            />
+            <SettingsNavigationListItem
+              title={'Schedule Settings'}
+              description={'Settings related to the day and schedule.'}
+              navComponent={CommonStackComponents.eventSettingsScreen}
+            />
+            <SettingsNavigationListItem
+              title={'Seamail Settings'}
+              description={'Settings for Seamail conversations.'}
+              navComponent={CommonStackComponents.seamailSettingsScreen}
             />
           </ListSection>
+          <Divider bold={true} />
           <ListSection>
             <ListSubheader>Troubleshooting</ListSubheader>
             <SettingsNavigationListItem
@@ -120,6 +121,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               title={'Query Client'}
               description={'Settings for the Twitarr API client.'}
               navComponent={SettingsStackScreenComponents.querySettingsScreen}
+            />
+            <SettingsNavigationListItem
+              title={'Sessions'}
+              description={'Manage local account sessions.'}
+              navComponent={SettingsStackScreenComponents.sessionSettings}
             />
             <SettingsNavigationListItem
               title={'About'}

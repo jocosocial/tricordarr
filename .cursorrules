@@ -63,6 +63,8 @@ Any FABs should generally have their own `HelpChapterTitleView` and describe wha
 
 All help screens should be added to the `HelpScreenComponents` type union.
 
+All help screens should have `isStack={true}` and `overScroll={true}` on the `ScrollingContentView`.
+
 `HelpTopicView`s that are contained within a `HelpChapterTitleView` should be children of the `HelpChapterTitleView`.
 
 ## Screen Structure

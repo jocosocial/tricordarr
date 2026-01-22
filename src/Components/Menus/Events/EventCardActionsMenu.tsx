@@ -1,42 +1,36 @@
-import {useQueryClient} from '@tanstack/react-query';
 import React, {Dispatch, SetStateAction} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
+import {NeedsPhotographerMenuItem} from '#src/Components/Menus/Events/Items/NeedsPhotographerMenuItem';
+import {PhotographingMenuItem} from '#src/Components/Menus/Events/Items/PhotographingMenuItem';
 import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
-import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
+import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {
-  useEventNeedsPhotographerMutation,
-  useEventPhotographerMutation,
-} from '#src/Queries/Events/EventPhotographerMutations';
-import {EventData, EventData as EventDataType} from '#src/Structs/ControllerStructs';
+import {EventData} from '#src/Structs/ControllerStructs';
 
 interface EventCardActionsMenuProps {
   anchor: React.JSX.Element;
   eventData: EventData;
-  menuVisible: boolean;
-  setMenuVisible: Dispatch<SetStateAction<boolean>>;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
 }
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
+  const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
   const {appConfig} = useConfig();
   const {hasShutternaut, hasShutternautManager} = useRoles();
-  const queryClient = useQueryClient();
-  const photographerMutation = useEventPhotographerMutation();
-  const needsPhotographerMutation = useEventNeedsPhotographerMutation();
 
-  const closeMenu = () => props.setMenuVisible(false);
+  const anchorWithMenu = React.cloneElement(props.anchor, {
+    onLongPress: openMenu,
+  });
 
   const handleForumPress = () => {
-    closeMenu();
     if (props.eventData.forum) {
       commonNavigation.push(CommonStackComponents.forumThreadScreen, {
         forumID: props.eventData.forum,
@@ -44,69 +38,23 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
     }
   };
 
-  const handlePhotographerToggle = () => {
-    if (!props.eventData.shutternautData) {
-      return;
-    }
-    photographerMutation.mutate(
-      {
-        eventID: props.eventData.eventID,
-        action: props.eventData.shutternautData.userIsPhotographer ? 'delete' : 'create',
-      },
-      {
-        onSuccess: async () => {
-          const invalidations = EventDataType.getCacheKeys(props.eventData.eventID)
-            .concat([['/events']])
-            .map(key => queryClient.invalidateQueries({queryKey: key}));
-          await Promise.all(invalidations);
-        },
-      },
-    );
-    closeMenu();
-  };
-
-  const handleNeedsPhotographerToggle = () => {
-    if (!props.eventData.shutternautData) {
-      return;
-    }
-    needsPhotographerMutation.mutate(
-      {
-        eventID: props.eventData.eventID,
-        action: props.eventData.shutternautData.needsPhotographer ? 'delete' : 'create',
-      },
-      {
-        onSuccess: async () => {
-          const invalidations = EventDataType.getCacheKeys(props.eventData.eventID).map(key =>
-            queryClient.invalidateQueries({queryKey: key}),
-          );
-          await Promise.all(invalidations);
-        },
-      },
-    );
-    closeMenu();
-  };
-
   return (
-    <Menu visible={props.menuVisible} onDismiss={closeMenu} anchor={props.anchor}>
+    <Menu visible={visible} onDismiss={closeMenu} anchor={anchorWithMenu}>
       {props.eventData.forum && <Menu.Item title={'Forum'} leadingIcon={AppIcons.forum} onPress={handleForumPress} />}
       <Menu.Item
         title={'Overlapping'}
         leadingIcon={AppIcons.calendarMultiple}
-        onPress={() => {
-          closeMenu();
-          commonNavigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.eventData});
-        }}
+        onPress={() => commonNavigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.eventData})}
       />
       {appConfig.enableExperiments && (
         <Menu.Item
           title={'Photostream'}
           leadingIcon={AppIcons.photostream}
-          onPress={() => {
-            closeMenu();
+          onPress={() =>
             commonNavigation.push(CommonStackComponents.photostreamEventScreen, {
               eventID: props.eventData.eventID,
-            });
-          }}
+            })
+          }
         />
       )}
       <Divider bold={true} />
@@ -119,20 +67,18 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
         </>
       )}
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
-      {hasShutternaut && props.eventData.shutternautData && (
-        <SelectableMenuItem
-          title={'Photographing'}
-          leadingIcon={AppIcons.shutternaut}
-          onPress={handlePhotographerToggle}
-          selected={props.eventData.shutternautData.userIsPhotographer}
+      {hasShutternaut && (
+        <PhotographingMenuItem
+          eventID={props.eventData.eventID}
+          shutternautData={props.eventData.shutternautData}
+          closeMenu={closeMenu}
         />
       )}
-      {hasShutternautManager && props.eventData.shutternautData && (
-        <SelectableMenuItem
-          title={'Needs Photographer'}
-          leadingIcon={AppIcons.needsPhotographer}
-          onPress={handleNeedsPhotographerToggle}
-          selected={props.eventData.shutternautData.needsPhotographer}
+      {hasShutternautManager && (
+        <NeedsPhotographerMenuItem
+          eventID={props.eventData.eventID}
+          shutternautData={props.eventData.shutternautData}
+          closeMenu={closeMenu}
         />
       )}
     </Menu>

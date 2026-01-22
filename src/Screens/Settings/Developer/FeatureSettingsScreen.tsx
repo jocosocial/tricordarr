@@ -80,27 +80,25 @@ export const FeatureSettingsScreen = () => {
             </DataTable>
           </PaddedContentView>
         </ListSection>
-        {appConfig.enableDeveloperOptions && (
-          <ListSection>
-            <ListSubheader>Experiments</ListSubheader>
-            <PaddedContentView padSides={false}>
-              <Formik initialValues={{}} onSubmit={() => {}}>
-                <View>
-                  <BooleanField
-                    name={'enableExperiments'}
-                    label={'Enable Experiments'}
-                    helperText={
-                      'Enable experimental features in this app that are not yet ready for general consumption.'
-                    }
-                    value={enableExperiments}
-                    onPress={handleEnableExperiments}
-                    style={commonStyles.paddingHorizontalSmall}
-                  />
-                </View>
-              </Formik>
-            </PaddedContentView>
-          </ListSection>
-        )}
+        <ListSection>
+          <ListSubheader>Experiments</ListSubheader>
+          <PaddedContentView padSides={false}>
+            <Formik initialValues={{}} onSubmit={() => {}}>
+              <View>
+                <BooleanField
+                  name={'enableExperiments'}
+                  label={'Enable Experiments'}
+                  helperText={
+                    'Enable experimental features in this app that are not yet ready for general consumption. This will almost certainly void your non-existent warranty.'
+                  }
+                  value={enableExperiments}
+                  onPress={handleEnableExperiments}
+                  style={commonStyles.paddingHorizontalSmall}
+                />
+              </View>
+            </Formik>
+          </PaddedContentView>
+        </ListSection>
       </ScrollingContentView>
     </AppView>
   );

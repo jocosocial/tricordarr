@@ -4,8 +4,6 @@ import React from 'react';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
-import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen';
 import {AboutSettingsScreen} from '#src/Screens/Settings/AboutSettingsScreen';
 import {AccountManagementScreen} from '#src/Screens/Settings/Account/AccountManagementScreen';
 import {ChangePasswordScreen} from '#src/Screens/Settings/Account/ChangePasswordScreen';
@@ -45,8 +43,6 @@ export type SettingsStackParamList = CommonStackParamList & {
   ChangeUsernameScreen: undefined;
   AccountManagementScreen: undefined;
   LoginScreen: undefined;
-  EventSettingsScreen: undefined;
-  LfgSettingsScreen: undefined;
   FeatureSettingsScreen: undefined;
   NotificationPollerSettingsScreen: undefined;
   LoadingSettingScreen: undefined;
@@ -78,8 +74,6 @@ export enum SettingsStackScreenComponents {
   changeUsername = 'ChangeUsernameScreen',
   login = 'LoginScreen',
   accountManagement = 'AccountManagementScreen',
-  eventSettings = 'EventSettingsScreen',
-  lfgSettings = 'LfgSettingsScreen',
   featureSettingsScreen = 'FeatureSettingsScreen',
   notificationPollerSettingsScreen = 'NotificationPollerSettingsScreen',
   loadingSettingScreen = 'LoadingSettingScreen',
@@ -159,16 +153,6 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.accountManagement}
         component={AccountManagementScreen}
         options={{title: 'Account Management'}}
-      />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.eventSettings}
-        component={EventSettingsScreen}
-        options={{title: 'Schedule Settings'}}
-      />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.lfgSettings}
-        component={LfgSettingsScreen}
-        options={{title: 'LFG Settings'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.featureSettingsScreen}

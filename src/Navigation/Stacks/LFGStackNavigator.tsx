@@ -11,7 +11,6 @@ import {LfgFormerScreen} from '#src/Screens/LFG/LfgFormerScreen';
 import {LfgJoinedScreen} from '#src/Screens/LFG/LfgJoinedScreen';
 import {LfgOwnedScreen} from '#src/Screens/LFG/LfgOwnedScreen';
 import {LfgSearchScreen} from '#src/Screens/LFG/LfgSearchScreen';
-import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen';
 import {FezListEndpoints} from '#src/Types';
 
 export type LfgStackParamList = CommonStackParamList & {
@@ -20,7 +19,6 @@ export type LfgStackParamList = CommonStackParamList & {
   };
   LfgFindScreen: undefined;
   LfgOwnedScreen: undefined;
-  LfgSettingsScreen: undefined;
   LfgCreateScreen: undefined;
   LfgFormerScreen: undefined;
   LfgSearchScreen: {
@@ -32,7 +30,6 @@ export enum LfgStackComponents {
   lfgOwnedScreen = 'LfgOwnedScreen',
   lfgJoinedScreen = 'LfgJoinedScreen',
   lfgFindScreen = 'LfgFindScreen',
-  lfgSettingsScreen = 'LfgSettingsScreen',
   lfgCreateScreen = 'LfgCreateScreen',
   lfgFormerScreen = 'LfgFormerScreen',
   lfgSearchScreen = 'LfgSearchScreen',
@@ -61,11 +58,6 @@ export const LfgStackNavigator = () => {
         name={LfgStackComponents.lfgOwnedScreen}
         component={LfgOwnedScreen}
         options={{title: 'Your Groups'}}
-      />
-      <Stack.Screen
-        name={LfgStackComponents.lfgSettingsScreen}
-        component={LfgSettingsScreen}
-        options={{title: 'LFG Settings'}}
       />
       <Stack.Screen
         name={LfgStackComponents.lfgCreateScreen}

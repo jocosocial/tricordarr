@@ -10,7 +10,7 @@ import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 export const CruiseHelpScreen = () => {
   return (
     <AppView>
-      <ScrollingContentView isStack={true}>
+      <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'Cruise Assistance'}>
           <HelpTopicView title={'At Sea'}>
             Visit the JoCo Cruise Info Desk, typically located in the atrium on deck 1 midship.

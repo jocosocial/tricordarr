@@ -41,11 +41,7 @@ export const EmojiPickerHelpTopicView = () => {
 
   return (
     <>
-      <HelpTopicView title={'Custom Emoji'}>
-        Insert custom emoji into your post. Tap any emoji to add it at the current cursor position in your text.
-        {'\n\n'}
-        Available emoji:
-      </HelpTopicView>
+      <HelpTopicView title={'Custom Emoji'}>Insert custom emoji into your post.</HelpTopicView>
       <PaddedContentView>
         <View style={styles.emojiContainer}>
           {emojiList.map(emojiName => (
