@@ -8,7 +8,7 @@ import {ForumPostScreenBase} from '#src/Screens/Forum/Post/ForumPostScreenBase';
 
 export const ForumPostMentionScreen = () => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumThreadHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forumpost/mentions'}>
         <ForumPostScreenBase refreshOnUserNotification={true} queryParams={{mentionself: true}} />
       </DisabledFeatureScreen>

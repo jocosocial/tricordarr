@@ -14,7 +14,7 @@ export type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.f
 
 export const ForumThreadSearchScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumThreadSearchHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
         <ForumThreadSearchScreenInner {...props} />
       </DisabledFeatureScreen>

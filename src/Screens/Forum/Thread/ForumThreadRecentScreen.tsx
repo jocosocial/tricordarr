@@ -12,7 +12,7 @@ import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScre
 export const ForumThreadRecentScreen = () => {
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.forumCategoryHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forum/recent'}>
           <AppView>
             <ForumThreadsRelationsView relationType={ForumRelationQueryType.recent} />

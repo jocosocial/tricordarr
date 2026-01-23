@@ -11,7 +11,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumP
 
 export const ForumPostUserScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumThreadHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.forums}
         urlPath={`/forumpost/search?creatorid=${props.route.params.user.userID}`}>

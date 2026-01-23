@@ -15,7 +15,13 @@ import {FezChatDetailsHelpScreen} from '#src/Screens/Fez/FezChatDetailsHelpScree
 import {FezChatDetailsScreen} from '#src/Screens/Fez/FezChatDetailsScreen';
 import {FezChatHelpScreen} from '#src/Screens/Fez/FezChatHelpScreen';
 import {FezChatScreen} from '#src/Screens/Fez/FezChatScreen';
+import {ForumCategoriesHelpScreen} from '#src/Screens/Forum/ForumCategoriesHelpScreen';
+import {ForumCategoryHelpScreen} from '#src/Screens/Forum/ForumCategoryHelpScreen';
 import {ForumHelpScreen} from '#src/Screens/Forum/ForumHelpScreen';
+import {ForumPostSearchHelpScreen} from '#src/Screens/Forum/ForumPostSearchHelpScreen';
+import {ForumThreadCreateHelpScreen} from '#src/Screens/Forum/ForumThreadCreateHelpScreen';
+import {ForumThreadHelpScreen} from '#src/Screens/Forum/ForumThreadHelpScreen';
+import {ForumThreadSearchHelpScreen} from '#src/Screens/Forum/ForumThreadSearchHelpScreen';
 import {KeywordsHelpScreen} from '#src/Screens/Forum/KeywordsHelpScreen';
 import {ForumPostEditScreen} from '#src/Screens/Forum/Post/ForumPostEditScreen';
 import {ForumPostHashtagScreen} from '#src/Screens/Forum/Post/ForumPostHashtagScreen';
@@ -239,6 +245,12 @@ export type CommonStackParamList = {
   UserDirectoryHelpScreen: undefined;
   ForumSettingsScreen: undefined;
   ForumHelpScreen: undefined;
+  ForumCategoriesHelpScreen: undefined;
+  ForumCategoryHelpScreen: undefined;
+  ForumThreadHelpScreen: undefined;
+  ForumThreadCreateHelpScreen: undefined;
+  ForumThreadSearchHelpScreen: undefined;
+  ForumPostSearchHelpScreen: undefined;
   KeywordsHelpScreen: undefined;
   ScheduleHelpScreen: undefined;
   ForumPostSearchScreen: {
@@ -355,6 +367,12 @@ export enum CommonStackComponents {
   userDirectoryHelpScreen = 'UserDirectoryHelpScreen',
   forumSettingsScreen = 'ForumSettingsScreen',
   forumHelpScreen = 'ForumHelpScreen',
+  forumCategoriesHelpScreen = 'ForumCategoriesHelpScreen',
+  forumCategoryHelpScreen = 'ForumCategoryHelpScreen',
+  forumThreadHelpScreen = 'ForumThreadHelpScreen',
+  forumThreadCreateHelpScreen = 'ForumThreadCreateHelpScreen',
+  forumThreadSearchHelpScreen = 'ForumThreadSearchHelpScreen',
+  forumPostSearchHelpScreen = 'ForumPostSearchHelpScreen',
   keywordsHelpScreen = 'KeywordsHelpScreen',
   scheduleHelpScreen = 'ScheduleHelpScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
@@ -412,6 +430,12 @@ export type HelpScreenComponents =
   | CommonStackComponents.scheduleHelpScreen
   | CommonStackComponents.userDirectoryHelpScreen
   | CommonStackComponents.forumHelpScreen
+  | CommonStackComponents.forumCategoriesHelpScreen
+  | CommonStackComponents.forumCategoryHelpScreen
+  | CommonStackComponents.forumThreadHelpScreen
+  | CommonStackComponents.forumThreadCreateHelpScreen
+  | CommonStackComponents.forumThreadSearchHelpScreen
+  | CommonStackComponents.forumPostSearchHelpScreen
   | CommonStackComponents.keywordsHelpScreen
   | CommonStackComponents.seamailHelpScreen
   | CommonStackComponents.seamailListHelpScreen
@@ -664,6 +688,36 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.forumHelpScreen}
         component={ForumHelpScreen}
         options={{title: 'Forum Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumCategoriesHelpScreen}
+        component={ForumCategoriesHelpScreen}
+        options={{title: 'Categories Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumCategoryHelpScreen}
+        component={ForumCategoryHelpScreen}
+        options={{title: 'Category Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumThreadHelpScreen}
+        component={ForumThreadHelpScreen}
+        options={{title: 'Thread Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumThreadCreateHelpScreen}
+        component={ForumThreadCreateHelpScreen}
+        options={{title: 'Create Thread Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumThreadSearchHelpScreen}
+        component={ForumThreadSearchHelpScreen}
+        options={{title: 'Thread Search Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumPostSearchHelpScreen}
+        component={ForumPostSearchHelpScreen}
+        options={{title: 'Post Search Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.keywordsHelpScreen}

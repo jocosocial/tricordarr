@@ -101,7 +101,7 @@ export const ForumThreadScreenActionsMenu = ({
 
   const handleHelp = () => {
     closeMenu();
-    commonNavigation.push(CommonStackComponents.forumHelpScreen);
+    commonNavigation.push(CommonStackComponents.forumThreadHelpScreen);
   };
 
   return (

@@ -4,7 +4,7 @@ import {AppIcons} from '#src/Enums/Icons';
 export const ReloadButtonHelpTopicView = () => {
   return (
     <HelpTopicView title={'Reload'} icon={AppIcons.reload}>
-      Refresh the conversation to load the latest messages.
+      Refresh this content to load the latest data from the server.
     </HelpTopicView>
   );
 };

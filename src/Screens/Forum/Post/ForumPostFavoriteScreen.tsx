@@ -8,7 +8,7 @@ import {ForumPostScreenBase} from '#src/Screens/Forum/Post/ForumPostScreenBase';
 
 export const ForumPostFavoriteScreen = () => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumThreadHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forumpost/favorite'}>
         <ForumPostScreenBase refreshOnUserNotification={true} queryParams={{bookmarked: true}} />
       </DisabledFeatureScreen>

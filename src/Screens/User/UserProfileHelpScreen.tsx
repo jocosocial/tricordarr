@@ -4,7 +4,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {BlockedUsersHelpTopicView} from '#src/Components/Views/Help/Common/BlockedUsersHelpTopicView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
-import {ModerateHelpTopicView} from '#src/Components/Views/Help/Common/ModerateHelpTopicView';
+import {ModerateButtonHelpTopicView} from '#src/Components/Views/Help/Common/ModerateButtonHelpTopicView';
 import {MutedUsersHelpTopicView} from '#src/Components/Views/Help/Common/MutedUsersHelpTopicView';
 import {ReportButtonHelpTopicView} from '#src/Components/Views/Help/Common/ReportButtonHelpTopicView';
 import {ShareButtonHelpTopicView} from '#src/Components/Views/Help/Common/ShareButtonHelpTopicView';
@@ -53,7 +53,7 @@ export const UserProfileHelpScreen = () => {
           <HelpButtonHelpTopicView />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Privileged Actions'}>
-          <ModerateHelpTopicView />
+          <ModerateButtonHelpTopicView />
           <HelpTopicView title={'Registration'} icon={AppIcons.twitarteam}>
             View the user's registration information. This option is only available to users with TwitarrTeam
             privileges.

@@ -27,7 +27,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumT
 
 export const ForumThreadUserScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumCategoryHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.forums}
         urlPath={`/forumpost/search?creatorid=${props.route.params.user.userID}`}>
@@ -64,7 +64,7 @@ const ForumThreadUserScreenInner = ({route, navigation}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.forumHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.forumCategoryHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>
