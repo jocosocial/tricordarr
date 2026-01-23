@@ -83,7 +83,8 @@ export const useLfgListQuery = ({
     endpoint,
     excludeFezType: [FezType.privateEventTypes, FezType.seamailTypes].flat(),
     options,
-    lfgTypesOnly: true,
+    // Only use lfgTypesOnly when no specific type is selected, since they're mutually exclusive
+    lfgTypesOnly: fezType ? undefined : true,
     onlyNew,
     search,
     matchID,
