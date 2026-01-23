@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {FlashListRef} from '@shopify/flash-list';
+import {FlashList, FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 
@@ -7,7 +7,6 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {PerformerTypeButtons} from '#src/Components/Buttons/SegmentedButtons/PerformerTypeButtons';
 import {PerformerHeaderCard} from '#src/Components/Cards/Performer/PerformerHeaderCard';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {PerformerListActionsMenu} from '#src/Components/Menus/Performer/PerformerListActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -114,17 +113,21 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
     return <LoadingView />;
   }
 
+  /**
+   * Something with AppFlashList is not rendering the initial position with a header
+   * correctly. I'll solve that some other time.
+   */
   return (
     <AppView>
-      <AppFlashList
+      <FlashList
         ref={flashListRef}
         renderItem={renderItem}
         data={performers}
         keyExtractor={keyExtractor}
-        handleLoadNext={handleLoadNext}
+        onEndReached={handleLoadNext}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        renderListHeader={renderListHeader}
-        renderListFooter={renderListFooter}
+        ListHeaderComponent={renderListHeader}
+        ListFooterComponent={renderListFooter}
         numColumns={2}
       />
     </AppView>
