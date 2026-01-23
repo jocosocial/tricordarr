@@ -43,7 +43,14 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
   const maxMenuHeight = calculateMaxHeight();
 
   const isScrollable = contentHeight > maxMenuHeight;
-  // Hide indicator when scrolled down OR when at bottom of content
+  // Hide indicator when scrolled down OR when at bottom of content.
+  // The isAtBottom check is necessary because on small devices, the total scrollable distance
+  // may be less than 10 pixels. Without this check, the indicator would never hide.
+  // Note: MenuScrollIndicator uses absolute positioning to prevent a flickering feedback loop.
+  // If it were in the flex layout, showing/hiding it would change the ScrollView's available
+  // height, which changes the scroll offset, which toggles the indicator again rapidly.
+  //
+  // This was all due to small iOS devices being weird with scrolling to the bottom.
   const showIndicator = isScrollable && scrollY < 10 && !isAtBottom;
 
   // Reset scroll position when menu opens
