@@ -123,9 +123,9 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
       return;
     }
     const now = new Date();
-    const offset = getScrollOffsetForTime(now);
+    const offset = getScrollOffsetForTime(now, dayStart);
     scrollViewRef.current.scrollTo({y: offset, animated: true});
-  }, []);
+  }, [dayStart]);
 
   // Refresh all data
   const onRefresh = useCallback(async () => {
