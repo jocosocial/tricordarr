@@ -22,6 +22,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useScrollToNow} from '#src/Hooks/useScrollToNow';
 import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
@@ -75,6 +76,10 @@ export const LfgListScreen = ({
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+  });
+  const {scrollToNow} = useScrollToNow({
+    items: fezList,
+    listRef,
   });
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
@@ -173,7 +178,11 @@ export const LfgListScreen = ({
     <LoggedInScreen>
       <AppView>
         <TimezoneWarningView />
-        <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={handleSetCruiseDay} />
+        <ScheduleHeaderView
+          selectedCruiseDay={selectedCruiseDay}
+          setCruiseDay={handleSetCruiseDay}
+          scrollToNow={scrollToNow}
+        />
         <View style={[commonStyles.flex]}>
           {isLoading || isSwitchingDays ? (
             <View style={commonStyles.loadingContainer}>
