@@ -1,5 +1,5 @@
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useRef} from 'react';
+import React, {forwardRef, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 import {Divider} from 'react-native-paper';
 
@@ -23,20 +23,21 @@ interface BoardgameFlatListProps {
   showEmptyFooter?: boolean;
 }
 
-export const BoardgameFlatList = ({
-  items,
-  refreshControl,
-  onEndReached: _onEndReached,
-  onScrollThreshold,
-  hasNextPage,
-  hasPreviousPage: _hasPreviousPage,
-  handleLoadNext,
-  handleLoadPrevious: _handleLoadPrevious,
-  listHeader,
-  showEmptyFooter = true,
-}: BoardgameFlatListProps) => {
-  const flatListRef = useRef<FlashListRef<BoardgameData>>(null);
-
+const BoardgameFlatListInner = (
+  {
+    items,
+    refreshControl,
+    onEndReached: _onEndReached,
+    onScrollThreshold,
+    hasNextPage,
+    hasPreviousPage: _hasPreviousPage,
+    handleLoadNext,
+    handleLoadPrevious: _handleLoadPrevious,
+    listHeader,
+    showEmptyFooter = true,
+  }: BoardgameFlatListProps,
+  ref: React.ForwardedRef<FlashListRef<BoardgameData>>,
+) => {
   const getListSeparator = useCallback(() => {
     return <Divider bold={true} />;
   }, []);
@@ -67,7 +68,7 @@ export const BoardgameFlatList = ({
 
   return (
     <AppFlashList<BoardgameData>
-      ref={flatListRef}
+      ref={ref}
       refreshControl={refreshControl}
       renderItem={renderItem}
       data={items}
@@ -80,3 +81,7 @@ export const BoardgameFlatList = ({
     />
   );
 };
+
+export const BoardgameFlatList = forwardRef(BoardgameFlatListInner) as (
+  props: BoardgameFlatListProps & {ref?: React.ForwardedRef<FlashListRef<BoardgameData>>},
+) => ReturnType<typeof BoardgameFlatListInner>;
