@@ -18,7 +18,12 @@ export const MenuScrollIndicator = ({visible}: MenuScrollIndicatorProps) => {
 
   const styles = StyleSheet.create({
     scrollIndicator: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
       ...commonStyles.paddingTopSmall,
+      ...commonStyles.paddingBottomSmall,
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifyContentCenter,
       ...commonStyles.onMenu,

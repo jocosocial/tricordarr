@@ -31,6 +31,7 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
   const screenHeight = Dimensions.get('window').height;
   const [contentHeight, setContentHeight] = useState(0);
   const [scrollY, setScrollY] = useState(0);
+  const [isAtBottom, setIsAtBottom] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const containerRef = useRef<View>(null);
 
@@ -42,12 +43,14 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
   const maxMenuHeight = calculateMaxHeight();
 
   const isScrollable = contentHeight > maxMenuHeight;
-  const showIndicator = isScrollable && scrollY < 10; // Hide indicator after scrolling down a bit
+  // Hide indicator when scrolled down OR when at bottom of content
+  const showIndicator = isScrollable && scrollY < 10 && !isAtBottom;
 
   // Reset scroll position when menu opens
   useEffect(() => {
     if (visible) {
       setScrollY(0);
+      setIsAtBottom(false);
       scrollViewRef.current?.scrollTo({y: 0, animated: false});
     }
   }, [visible]);
@@ -70,7 +73,12 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
   });
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    setScrollY(event.nativeEvent.contentOffset.y);
+    const newScrollY = event.nativeEvent.contentOffset.y;
+    const {contentSize, layoutMeasurement} = event.nativeEvent;
+    const maxScrollY = contentSize.height - layoutMeasurement.height;
+    const atBottom = newScrollY >= maxScrollY - 5;
+    setScrollY(newScrollY);
+    setIsAtBottom(atBottom);
     // Call the original onScroll handler if provided
     if (onScroll) {
       onScroll(event);
