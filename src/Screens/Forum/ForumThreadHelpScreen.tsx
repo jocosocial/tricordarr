@@ -28,33 +28,6 @@ export const ForumThreadHelpScreen = () => {
             with individual posts.
           </HelpTopicView>
         </HelpChapterTitleView>
-        <HelpChapterTitleView title={'Actions'}>
-          <HelpTopicView title={'Pinned Posts'} icon={AppIcons.pin}>
-            View pinned posts for this thread. These can be set by the creator of the thread or by moderators.
-          </HelpTopicView>
-          <ForumSearchPostsHelpTopicView scope={'thread'} />
-          <ReloadButtonHelpTopicView />
-          <HelpTopicView title={'Favorite'} icon={AppIcons.favorite}>
-            Favorite or unfavorite this thread. Favorited threads appear in Personal Categories for easy access.
-          </HelpTopicView>
-          <HelpTopicView title={'Mute'} icon={AppIcons.mute}>
-            Mute or unmute this thread. Muted threads appear at the end of thread lists.
-          </HelpTopicView>
-          <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
-            Edit the thread title. Only available if you created the thread.
-          </HelpTopicView>
-          <ReportButtonHelpTopicView />
-          <ShareButtonHelpTopicView />
-          <HelpButtonHelpTopicView />
-        </HelpChapterTitleView>
-        <HelpChapterTitleView title={'Privileged Actions'}>
-          <PostAsTwitarrTeamHelpTopicView />
-          <PostAsModeratorHelpTopicView />
-          <ModerateButtonHelpTopicView />
-          <HelpTopicView title={'Pin Thread to Category'} icon={AppIcons.pin}>
-            Pin or unpin this thread to the top of the category. Pinned threads appear first in thread lists.
-          </HelpTopicView>
-        </HelpChapterTitleView>
         <HelpChapterTitleView title={'Post Actions'}>
           <HelpTopicView>Long-press a post to access a menu of actions for that specific post.</HelpTopicView>
           <CopyButtonHelpTopicView />
@@ -82,6 +55,33 @@ export const ForumThreadHelpScreen = () => {
           <InsertButtonHelpTopicView enablePhotos={true} />
           <EmojiPickerHelpTopicView />
           <SubmitButtonHelpTopicView />
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Actions'}>
+          <HelpTopicView title={'Pinned Posts'} icon={AppIcons.pin}>
+            View pinned posts for this thread. These can be set by the creator of the thread or by moderators.
+          </HelpTopicView>
+          <ForumSearchPostsHelpTopicView scope={'thread'} />
+          <ReloadButtonHelpTopicView />
+          <HelpTopicView title={'Favorite'} icon={AppIcons.favorite}>
+            Favorite or unfavorite this thread. Favorited threads appear in Personal Categories for easy access.
+          </HelpTopicView>
+          <HelpTopicView title={'Mute'} icon={AppIcons.mute}>
+            Mute or unmute this thread. Muted threads appear at the end of thread lists.
+          </HelpTopicView>
+          <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
+            Edit the thread title. Only available if you created the thread.
+          </HelpTopicView>
+          <ReportButtonHelpTopicView />
+          <ShareButtonHelpTopicView />
+          <HelpButtonHelpTopicView />
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Privileged Actions'}>
+          <PostAsTwitarrTeamHelpTopicView />
+          <PostAsModeratorHelpTopicView />
+          <ModerateButtonHelpTopicView />
+          <HelpTopicView title={'Pin Thread to Category'} icon={AppIcons.pin}>
+            Pin or unpin this thread to the top of the category. Pinned threads appear first in thread lists.
+          </HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>

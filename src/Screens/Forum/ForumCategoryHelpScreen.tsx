@@ -28,6 +28,25 @@ export const ForumCategoryHelpScreen = () => {
             may not appear if the category is restricted.
           </HelpTopicView>
         </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Thread Actions'}>
+          <HelpTopicView>
+            Each thread in the list can be swiped left or right to perform additional actions for that specific thread.
+          </HelpTopicView>
+          <HelpTopicView title={'Mark as Read'} icon={AppIcons.markAsRead}>
+            Marking a thread as read will clear the unread post indicator.
+          </HelpTopicView>
+          <HelpTopicView title={'Favorite'} icon={AppIcons.favorite}>
+            Favorited forums appear in the Personal Categories section on the main Forums page for easy access.
+          </HelpTopicView>
+          <HelpTopicView title={'Mute'} icon={AppIcons.mute}>
+            Muted forums appear at the end of any list of forum threads.
+          </HelpTopicView>
+          <HelpTopicView title={'Pin'} icon={AppIcons.pin}>
+            Moderators can pin forum threads to the category. Pinned threads appear at the top of the list and should be
+            used sparingly.
+          </HelpTopicView>
+          <SelectionHelpTopicView />
+        </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
           <ForumSearchThreadsHelpTopicView category={true} />
           <ForumSearchPostsHelpTopicView scope={'category'} />
@@ -41,26 +60,6 @@ export const ForumCategoryHelpScreen = () => {
             Access forum settings to configure sorting preferences, alert word highlighting, and push notifications.
           </HelpTopicView>
           <HelpButtonHelpTopicView />
-          <HelpChapterTitleView title={'Thread Actions'}>
-            <HelpTopicView>
-              Each thread in the list can be swiped left or right to perform additional actions for that specific
-              thread.
-            </HelpTopicView>
-            <HelpTopicView title={'Mark as Read'} icon={AppIcons.markAsRead}>
-              Marking a thread as read will clear the unread post indicator.
-            </HelpTopicView>
-            <HelpTopicView title={'Favorite'} icon={AppIcons.favorite}>
-              Favorited forums appear in the Personal Categories section on the main Forums page for easy access.
-            </HelpTopicView>
-            <HelpTopicView title={'Mute'} icon={AppIcons.mute}>
-              Muted forums appear at the end of any list of forum threads.
-            </HelpTopicView>
-            <HelpTopicView title={'Pin'} icon={AppIcons.pin}>
-              Moderators can pin forum threads to the category. Pinned threads appear at the top of the list and should
-              be used sparingly.
-            </HelpTopicView>
-            <SelectionHelpTopicView />
-          </HelpChapterTitleView>
         </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>
