@@ -2,7 +2,7 @@ import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Avatar} from 'react-native-paper';
 
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
@@ -34,7 +34,7 @@ export const FezAvatarImage = ({fez}: FezAvatarImageProps) => {
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <UserAvatarImage userHeader={otherParticipants[0]} />
+      <AvatarImage userHeader={otherParticipants[0]} />
     </TouchableOpacity>
   );
 };

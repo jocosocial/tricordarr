@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 
+import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
 import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {ForumPostMessageView} from '#src/Components/Views/Forum/ForumPostMessageView';
 import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
@@ -41,7 +41,7 @@ const ForumPostListItemInternal = ({
   return (
     <FlatListItemContent>
       <MessageAvatarContainerView onPress={handleAuthorAvatarPress}>
-        <UserAvatarImage userHeader={postData.author} small={true} />
+        <AvatarImage userHeader={postData.author} small={true} />
       </MessageAvatarContainerView>
       <MessageViewContainer>
         <ForumPostMessageView

@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {IconButton, List} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {UserHeader} from '#src/Structs/ControllerStructs';
@@ -46,7 +46,7 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
   const getAvatar = React.useCallback(
     () => (
       <View style={styles.avatar}>
-        <UserAvatarImage userHeader={userHeader} forceIdenticon={preRegistrationMode} />
+        <AvatarImage userHeader={userHeader} forceIdenticon={preRegistrationMode} />
       </View>
     ),
     [userHeader, styles.avatar, preRegistrationMode],

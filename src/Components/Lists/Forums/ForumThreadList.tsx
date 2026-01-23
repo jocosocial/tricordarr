@@ -17,7 +17,7 @@ interface ForumThreadListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
   forumListData: ForumListData[];
   handleLoadNext: () => void;
-  handleLoadPrevious: () => void;
+  handleLoadPrevious?: () => void;
   maintainViewPosition?: boolean;
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;

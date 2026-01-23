@@ -6,7 +6,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {ChatStackScreenComponents, useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
 
 export const SeamailListScreenActionsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
