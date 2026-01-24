@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Text} from 'react-native-paper';
@@ -9,10 +9,10 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {defaultAppConfig} from '#src/Libraries/AppConfig';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
@@ -23,7 +23,8 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcom
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {findOrCreateSession} = useSession();
+  const {currentSession, findOrCreateSession, updateSession} = useSession();
+  const {appConfig} = useConfig();
   const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
@@ -31,15 +32,39 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
     image: commonStyles.roundedBorderLarge,
   });
 
-  const onPreRegistrationPress = async () => {
-    // Create or find preregistration session and persist immediately
-    await findOrCreateSession(defaultAppConfig.preRegistrationServerUrl, true);
+  // Ensure a session exists on mount - create default production session if needed
+  useEffect(() => {
+    const initializeSession = async () => {
+      if (!currentSession) {
+        await findOrCreateSession(appConfig.serverUrl, false);
+      }
+    };
+    initializeSession();
+  }, [currentSession, findOrCreateSession, appConfig.serverUrl]);
+
+  const isInitializing = !currentSession;
+
+  const onPreRegistrationPress = () => {
+    if (!currentSession) {
+      console.warn('[OobeWelcomeScreen] Cannot update session: no current session');
+      return;
+    }
+    updateSession(currentSession.sessionID, {
+      serverUrl: appConfig.preRegistrationServerUrl,
+      preRegistrationMode: true,
+    });
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
-  const onPress = async () => {
-    // Create or find production session and persist immediately
-    await findOrCreateSession(defaultAppConfig.serverUrl, false);
+  const onPress = () => {
+    if (!currentSession) {
+      console.warn('[OobeWelcomeScreen] Cannot update session: no current session');
+      return;
+    }
+    updateSession(currentSession.sessionID, {
+      serverUrl: appConfig.serverUrl,
+      preRegistrationMode: false,
+    });
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
@@ -81,6 +106,8 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
         leftButtonColor={theme.colors.twitarrNeutralButton}
         leftText={'Pre-Registration'}
         leftButtonTextColor={theme.colors.onTwitarrNeutralButton}
+        rightDisabled={isInitializing}
+        leftDisabled={isInitializing}
       />
     </AppView>
   );
