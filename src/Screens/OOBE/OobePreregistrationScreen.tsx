@@ -8,13 +8,14 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {defaultAppConfig} from '#src/Libraries/AppConfig';
 import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
 import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
@@ -24,8 +25,11 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePrereg
 
 export const OobePreregistrationScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {findOrCreateSession} = useSession();
+  const {currentSession, updateSession, signIn} = useSession();
   const rootNavigation = useRootStack();
+  const {appConfig} = useConfig();
+  const [sessionServerURL, setSessionServerURL] = React.useState(appConfig.preRegistrationServerUrl);
+  const [sessionTokenData, setSessionTokenData] = React.useState<TokenStringData | null>(null);
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
@@ -37,14 +41,34 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
   });
 
   const onPress = async () => {
-    // Switch to production session (create if doesn't exist)
-    await findOrCreateSession(defaultAppConfig.serverUrl, false);
+    if (!currentSession) {
+      console.warn('[OobePreregistrationScreen] Cannot update session: no current session');
+      return;
+    }
+    // Store some current session data so we can restore it if we go back.
+    setSessionServerURL(currentSession.serverUrl);
+    setSessionTokenData(currentSession.tokenData);
+    // Update current session to production mode
+    await updateSession(currentSession.sessionID, {
+      serverUrl: appConfig.serverUrl,
+      preRegistrationMode: false,
+    });
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
   const onBackPress = async () => {
-    // Switch to preregistration session (create if doesn't exist)
-    await findOrCreateSession(defaultAppConfig.preRegistrationServerUrl, true);
+    if (!currentSession) {
+      console.warn('[OobePreregistrationScreen] Cannot update session: no current session');
+      return;
+    }
+    // Update current session server URL to whatever it was using before.
+    await updateSession(currentSession.sessionID, {
+      serverUrl: sessionServerURL,
+      preRegistrationMode: true,
+    });
+    if (sessionTokenData) {
+      await signIn(sessionTokenData);
+    }
     // This animation still doesn't look great, but it's good enough.
     rootNavigation.setOptions({animationTypeForReplace: 'pop'});
     rootNavigation.replace(RootStackComponents.rootContentScreen, {
