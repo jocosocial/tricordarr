@@ -24,7 +24,7 @@ import {FezFormValues} from '#src/Types/FormValues';
 
 export const PersonalEventCreateScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.personalEventCreateHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.personalEventHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/privateevent/create'}>
         <PersonalEventCreateScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -44,7 +44,7 @@ const PersonalEventCreateScreenInner = ({navigation, route}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.personalEventCreateHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.personalEventHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>

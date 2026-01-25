@@ -57,7 +57,6 @@ import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScree
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {PerformerHelpScreen} from '#src/Screens/Performer/PerformerHelpScreen';
 import {PerformerScreen} from '#src/Screens/Performer/PerformerScreen';
-import {PersonalEventCreateHelpScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateHelpScreen';
 import {PersonalEventCreateScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateScreen';
 import {PersonalEventEditScreen} from '#src/Screens/PersonalEvent/PersonalEventEditScreen';
 import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScreen';
@@ -65,6 +64,8 @@ import {PhotostreamEventScreen} from '#src/Screens/Photostream/PhotostreamEventS
 import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
 import {EventHelpScreen} from '#src/Screens/Schedule/EventHelpScreen';
 import {PersonalEventHelpScreen} from '#src/Screens/Schedule/PersonalEventHelpScreen';
+import {ScheduleDayHelpScreen} from '#src/Screens/Schedule/ScheduleDayHelpScreen';
+import {ScheduleDayPlannerHelpScreen} from '#src/Screens/Schedule/ScheduleDayPlannerHelpScreen';
 import {ScheduleDayPlannerScreen} from '#src/Screens/Schedule/ScheduleDayPlannerScreen';
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {ScheduleHelpScreen} from '#src/Screens/Schedule/ScheduleHelpScreen';
@@ -253,6 +254,8 @@ export type CommonStackParamList = {
   ForumPostSearchHelpScreen: undefined;
   KeywordsHelpScreen: undefined;
   ScheduleHelpScreen: undefined;
+  ScheduleDayHelpScreen: undefined;
+  ScheduleDayPlannerHelpScreen: undefined;
   ForumPostSearchScreen: {
     category?: CategoryData;
     forum?: ForumListData | ForumData;
@@ -375,6 +378,8 @@ export enum CommonStackComponents {
   forumPostSearchHelpScreen = 'ForumPostSearchHelpScreen',
   keywordsHelpScreen = 'KeywordsHelpScreen',
   scheduleHelpScreen = 'ScheduleHelpScreen',
+  scheduleDayHelpScreen = 'ScheduleDayHelpScreen',
+  scheduleDayPlannerHelpScreen = 'ScheduleDayPlannerHelpScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
   seamailListHelpScreen = 'SeamailListHelpScreen',
@@ -428,6 +433,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.preRegistrationHelpScreen
   | CommonStackComponents.moderatorHelpScreen
   | CommonStackComponents.scheduleHelpScreen
+  | CommonStackComponents.scheduleDayHelpScreen
+  | CommonStackComponents.scheduleDayPlannerHelpScreen
   | CommonStackComponents.userDirectoryHelpScreen
   | CommonStackComponents.forumHelpScreen
   | CommonStackComponents.forumCategoriesHelpScreen
@@ -448,7 +455,6 @@ export type HelpScreenComponents =
   | CommonStackComponents.disabledHelpScreen
   | CommonStackComponents.lfgHelpScreen
   | CommonStackComponents.lfgCreateHelpScreen
-  | CommonStackComponents.personalEventCreateHelpScreen
   | CommonStackComponents.eventHelpScreen
   | CommonStackComponents.personalEventHelpScreen
   | CommonStackComponents.timeZoneHelpScreen
@@ -730,6 +736,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Schedule Help'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.scheduleDayHelpScreen}
+        component={ScheduleDayHelpScreen}
+        options={{title: 'Schedule Day Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleDayPlannerHelpScreen}
+        component={ScheduleDayPlannerHelpScreen}
+        options={{title: 'Day Planner Help'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.forumPostSearchScreen}
         component={ForumPostSearchScreen}
         options={{title: 'Post Search'}}
@@ -806,8 +822,8 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.personalEventCreateHelpScreen}
-        component={PersonalEventCreateHelpScreen}
-        options={{title: 'Create Personal Event Help'}}
+        component={PersonalEventHelpScreen}
+        options={{title: 'Personal Event Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.eventHelpScreen}
