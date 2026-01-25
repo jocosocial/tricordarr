@@ -1,5 +1,6 @@
 import React from 'react';
 
+import {HelpFABView} from '#src/Components/Buttons/FloatingActionButtons/HelpFABView';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
@@ -25,6 +26,12 @@ export const ScheduleDayHelpScreen = () => {
             the menu and select/deselect the filter you wish to apply.
           </HelpTopicView>
           <ScheduleDayButtonHelpTopicView />
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Floating Action Button'}>
+          <HelpFABView icon={AppIcons.dayPlanner} label={'Day Planner'} />
+          <HelpTopicView>
+            Press the "Day Planner" button in the lower right to view your events in a calendar-style timeline view.
+          </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
           <ReloadButtonHelpTopicView />
