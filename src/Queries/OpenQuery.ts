@@ -17,10 +17,12 @@ export function useOpenQuery<TData, TQueryParams = Object, TError extends Error 
   queryParams?: TQueryParams,
 ): UseQueryResult<TData, TError> {
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
+  const enabled = !disruptionDetected;
+  const queryKey = [endpoint, queryParams, ...queryKeyExtraData];
 
-  return useQuery<TData, TError, TData>({
-    enabled: !disruptionDetected,
-    queryKey: [endpoint, queryParams, ...queryKeyExtraData],
+  const result = useQuery<TData, TError, TData>({
+    enabled,
+    queryKey,
     queryFn: options?.queryFn
       ? options.queryFn
       : async () => {
@@ -29,6 +31,7 @@ export function useOpenQuery<TData, TQueryParams = Object, TError extends Error 
         },
     ...options,
   });
+  return result;
 }
 
 export function usePublicQuery<TData, TQueryParams = Object, TError extends Error = AxiosError<ErrorResponse>>(
@@ -40,10 +43,12 @@ export function usePublicQuery<TData, TQueryParams = Object, TError extends Erro
   queryParams?: TQueryParams,
 ): UseQueryResult<TData, TError> {
   const {disruptionDetected, publicGet, queryKeyExtraData} = useSwiftarrQueryClient();
+  const enabled = !disruptionDetected;
+  const queryKey = [endpoint, queryParams, ...queryKeyExtraData];
 
-  return useQuery<TData, TError, TData>({
-    enabled: !disruptionDetected,
-    queryKey: [endpoint, queryParams, ...queryKeyExtraData],
+  const result = useQuery<TData, TError, TData>({
+    enabled,
+    queryKey,
     queryFn: options?.queryFn
       ? options.queryFn
       : async () => {
@@ -52,4 +57,5 @@ export function usePublicQuery<TData, TQueryParams = Object, TError extends Erro
         },
     ...options,
   });
+  return result;
 }

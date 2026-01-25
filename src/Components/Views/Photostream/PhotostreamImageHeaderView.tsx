@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {PhotostreamImageActionsMenu} from '#src/Components/Menus/Photostream/PhotostreamImageActionsMenu';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
@@ -48,7 +48,7 @@ export const PhotostreamImageHeaderView = (props: PhotostreamAuthorViewProps) =>
   return (
     <View style={styles.viewContainer}>
       <TouchableOpacity style={styles.avatarContainer} onPress={onHeaderPress}>
-        <UserAvatarImage userHeader={props.image.author} />
+        <AvatarImage userHeader={props.image.author} />
       </TouchableOpacity>
       <View style={styles.rowContainer}>
         <TouchableOpacity onPress={onHeaderPress}>

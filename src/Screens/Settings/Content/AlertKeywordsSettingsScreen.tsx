@@ -1,9 +1,11 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {KeywordChip} from '#src/Components/Chips/KeywordChip';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {KeywordForm} from '#src/Components/Forms/KeywordForm';
@@ -11,25 +13,28 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserKeywordMutation} from '#src/Queries/User/UserMutations';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {UserNotificationData} from '#src/Structs/ControllerStructs';
 import {KeywordFormValues} from '#src/Types/FormValues';
 
-export const AlertKeywordsSettingsScreen = () => {
+export const AlertKeywordsScreen = () => {
   return (
     <LoggedInScreen>
-      <AlertKeywordsSettingsScreenInner />
+      <AlertKeywordsScreenInner />
     </LoggedInScreen>
   );
 };
 
-const AlertKeywordsSettingsScreenInner = () => {
+const AlertKeywordsScreenInner = () => {
   const [refreshing, setIsRefreshing] = useState(false);
   const [keywords, setKeywords] = useState<string[]>([]);
   const {commonStyles} = useStyles();
   const queryClient = useQueryClient();
+  const navigation = useCommonStack();
 
   const {data, refetch} = useUserKeywordQuery({
     keywordType: 'alertwords',
@@ -78,6 +83,26 @@ const AlertKeywordsSettingsScreenInner = () => {
     await refetch();
     setIsRefreshing(false);
   };
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.keywordsHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   useEffect(() => {
     if (data) {

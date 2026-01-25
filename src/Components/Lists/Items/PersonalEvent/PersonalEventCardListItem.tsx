@@ -1,4 +1,4 @@
-import React, {Dispatch, memo, SetStateAction, useState} from 'react';
+import React, {Dispatch, memo, SetStateAction} from 'react';
 
 import {FezCard} from '#src/Components/Cards/Schedule/FezCard';
 import {PersonalEventCardActionsMenu} from '#src/Components/Menus/PersonalEvents/PersonalEventCardActionsMenu';
@@ -13,23 +13,12 @@ interface PersonalEventCardListItemProps {
 }
 
 const PersonalEventCardListItemInternal = (props: PersonalEventCardListItemProps) => {
-  const [menuVisible, setMenuVisible] = useState(false);
-
-  const anchorContent = (
-    <FezCard
-      fez={props.eventData}
-      onPress={props.onPress}
-      marker={props.marker}
-      onLongPress={() => setMenuVisible(true)}
-    />
-  );
+  const anchorContent = <FezCard fez={props.eventData} onPress={props.onPress} marker={props.marker} />;
 
   return (
     <PersonalEventCardActionsMenu
       eventData={props.eventData}
       setRefreshing={props.setRefreshing}
-      menuVisible={menuVisible}
-      setMenuVisible={setMenuVisible}
       anchor={anchorContent}
     />
   );

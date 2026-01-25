@@ -34,10 +34,7 @@ export const TodayHelpScreen = () => {
           If there's a new version of the app available, you'll see a notification at the bottom of the Today screen
           with information about the update.
         </HelpTopicView>
-        <HelpChapterTitleView title={'Header Buttons'} />
-        <HelpTopicView title={'Drawer'} icon={AppIcons.drawer}>
-          Access the app drawer from the top left corner to find additional features, documentation, and settings.
-        </HelpTopicView>
+        <HelpChapterTitleView title={'Actions'} />
         <HelpTopicView title={'Notifications'} icon={AppIcons.notificationShow}>
           If you're logged in, you'll see a notifications icon in the top right. Tap it to view your notifications and
           alerts.

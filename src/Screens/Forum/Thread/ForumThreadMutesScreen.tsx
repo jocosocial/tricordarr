@@ -19,7 +19,7 @@ type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumMut
 export const ForumThreadMutesScreen = (props: Props) => {
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.forumCategoryHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forum/mutes'}>
           <ForumThreadMutesScreenInner {...props} />
         </DisabledFeatureScreen>

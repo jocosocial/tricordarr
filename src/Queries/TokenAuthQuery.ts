@@ -45,9 +45,11 @@ export function useTokenAuthQuery<TData, TQueryParams = Object, TError extends E
 ): UseQueryResult<TData, TError> {
   const {isLoggedIn} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
+  const enabled = shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled);
+  const queryKey = [endpoint, queryParams, ...queryKeyExtraData];
 
-  return useQuery<TData, TError, TData>({
-    queryKey: [endpoint, queryParams, ...queryKeyExtraData],
+  const result = useQuery<TData, TError, TData>({
+    queryKey,
     ...options,
     queryFn: options?.queryFn
       ? options.queryFn
@@ -55,8 +57,9 @@ export function useTokenAuthQuery<TData, TQueryParams = Object, TError extends E
           const response = await apiGet<TData, TQueryParams>(endpoint, queryParams);
           return response.data;
         },
-    enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
+    enabled,
   });
+  return result;
 }
 
 /**

@@ -2,7 +2,7 @@ import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Divider, Menu} from 'react-native-paper';
 
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -50,7 +50,10 @@ export const MainAccountMenu = () => {
     mainNavigation.push(CommonStackComponents.todayHelpScreen);
   };
 
-  const getAvatarImage = () => <UserAvatarImage userHeader={profilePublicData?.header} small={true} />;
+  const getAvatarImage = React.useCallback(
+    () => <AvatarImage userHeader={profilePublicData?.header} small={true} />,
+    [profilePublicData?.header],
+  );
 
   return (
     <AppMenu

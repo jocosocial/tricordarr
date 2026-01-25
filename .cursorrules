@@ -9,9 +9,11 @@ This is a React Native app - a Twitarr client built with TypeScript.
 The `useRefresh` hook (located at `src/Hooks/useRefresh.ts`) should be used for all pull-to-refresh functionality. Do NOT use `isFetching` from React Query queries directly with RefreshControl.
 
 ### Why?
+
 Background refetches (e.g., from `NotificationDataPoller` polling every 2 minutes) will cause `isFetching` to toggle, making the RefreshControl spinner appear/disappear quickly and causing screen jumping on iOS. The `useRefresh` hook ensures the spinner only shows during user-initiated pull-to-refresh actions.
 
 ### Usage:
+
 ```ts
 const {refreshing, setRefreshing, onRefresh} = useRefresh({
   refresh: refetch, // Can pass React Query refetch directly
@@ -23,6 +25,7 @@ const {refreshing, setRefreshing, onRefresh} = useRefresh({
 ```
 
 ### React Query State Usage:
+
 - `isLoading`: no cache and in flight → Return `<LoadingView />`
 - `isRefetching`: Background refetch (excluding initial) and `refetch()`
 - `isFetching`: Catchall for any time the query function is running. Use for debugging or other non-UI purposes, NOT for RefreshControl
@@ -34,12 +37,15 @@ const {refreshing, setRefreshing, onRefresh} = useRefresh({
 React Native (as of 0.82+) `RefreshControl` does not support `enabled` on iOS. Always use `AppRefreshControl` from `src/Components/Controls/AppRefreshControl.tsx` which returns null when disabled (an AI-recommended pattern).
 
 ## API Details
+
 - All dates from the Swiftarr API come in as ISO8601 strings
 
 ## Clipboard
+
 iOS doesn't provide clipboard feedback. Use the `useClipboard()` hook from `src/Hooks/useClipboard.ts` which provides feedback.
 
 ## Project Structure
+
 - Components are in `src/Components/`
 - Screens are in `src/Screens/`
 - Queries are in `src/Queries/`
@@ -51,11 +57,12 @@ iOS doesn't provide clipboard feedback. Use the `useClipboard()` hook from `src/
 To POST logs to the Cursor log listener different endpoints may be needed based on the platform. iOS can use `127.0.0.1`. Android should use `10.0.2.2`. Optionally prompt the user perform an `adb reverse` port mapping prior to testing during offline/airplane mode.
 
 ## Help Screens
-Help screens should have a section for "Actions" if there are buttons within the header, either within a menu or directly. The back button should not be included unless it has very special properties (such as `SiteUIScreenBase.tsx`). Actions should be listed in order of header then within any menus. There does not need to be a help entry for the actions menu itself. If there is a button for Help, it should be last.
+
+Help screens should have a section for "Actions" if there are buttons within the header, either within a menu or directly. The back button should not be included unless it has very special properties (such as `SiteUIScreenBase.tsx`). Actions should be listed in order of header then within any menus. There does not need to be a help entry for the actions menu itself. If there is a button for Help, it should be last. Any privileged actions should go in a "Privileged Actions" TitleView after "Action".
 
 All help content should be implemented using `HelpTopicView` or `HelpChapterTitleView`. There are some exceptions to this such as in `ScheduleHelpScreen`.
 
-Buttons that are used in multiple screens such as Help or Share should have re-usable components for their help entry (such as `HelpButtonHelpTopicView.tsx` or `ShareButtonHelpTopicView.tsx`). 
+Buttons that are used in multiple screens such as Help or Share should have re-usable components for their help entry (such as `HelpButtonHelpTopicView.tsx` or `ShareButtonHelpTopicView.tsx`).
 
 Newly created Help screens should be linked within the `HelpManualScreen.tsx`.
 
@@ -63,10 +70,18 @@ Any FABs should generally have their own `HelpChapterTitleView` and describe wha
 
 All help screens should be added to the `HelpScreenComponents` type union.
 
+All help screens should have `isStack={true}` and `overScroll={true}` on the `ScrollingContentView`.
+
+`HelpTopicView`s that are contained within a `HelpChapterTitleView` should be children of the `HelpChapterTitleView`.
+
+If a screen contains swipeable components, document that along with the swipe specific actions in a dedicated `HelpChapterTitleView`. Order them by starting on the default right swipable pane, going left to right. Followed by the default left pane, also left to right. Likewise add the `SelectionHelpTopicView` if items in a screen implement selection.
+
 ## Screen Structure
+
 Most screens should be wrapped in `LoggedInScreen`, `PreRegistrationScreen`, and `DisabledFeatureScreen` checkpoints. A relevant `helpScreen` should be provided to `PreRegistrationScreen`. An appropriate `SwiftarrFeature` to `DisabledFeatureScreen`.
 
 Example:
+
 ```ts
 <LoggedInScreen>
   <PreRegistrationScreen helpScreen={CommonStackComponents.photostreamHelpScreen}>
@@ -76,3 +91,30 @@ Example:
   </PreRegistrationScreen>
 </LoggedInScreen>
 ```
+
+## Platform Detection
+
+Use the helpers in `src/Libraries/Platform/Detection.ts` for any platform detection that may be necessary.
+
+## Menus
+
+We call three-dots menus Actions Menus. The visibility should be determined from `useMenu.ts`. The anchor should be `MenuAnchor.tsx`. If passing a `props.onClose?` callback to a mutating menu item that callback must be performed in the `onSettled` block of the mutation otherwise it could get unmounted before executing.
+
+"Toggle" and "Navigation" style menu items such as `NeedsPhotographerMenuItem` and `HelpMenuItem` should not provide the `onClose`. The latter because we hook into the global navigation system to close menus on navigate. "Action" style menu items such as `ShareMenuItem` must provide it.
+
+## Queries
+
+### Mutations
+
+Mutations will generally need to invalidate certain queries in the cache. For example:
+
+```ts
+onSuccess: async () => {
+  const invalidations = EventData.getCacheKeys(props.eventID).map(key =>
+    queryClient.invalidateQueries({queryKey: key}),
+  );
+  await Promise.all(invalidations);
+},
+```
+
+Avoid hardcoding query keys in these functions and instead rely on a `getCacheKeys()` function on the type of data. If one does not exist, make one.

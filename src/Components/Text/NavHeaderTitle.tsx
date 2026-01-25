@@ -14,7 +14,7 @@ export const NavHeaderTitle = ({title, onPress}: NavHeaderTitleProps) => {
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <Text style={[commonStyles.navigationHeaderTitle]}>{title}</Text>
+      <Text style={commonStyles.navigationHeaderTitle}>{title}</Text>
     </TouchableOpacity>
   );
 };

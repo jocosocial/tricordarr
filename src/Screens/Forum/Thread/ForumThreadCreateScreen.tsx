@@ -1,15 +1,19 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
-import React, {useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
+import {Item} from 'react-navigation-header-buttons';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {ForumCreateForm} from '#src/Components/Forms/Forum/ForumCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {AppIcons} from '#src/Enums/Icons';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
@@ -23,7 +27,7 @@ type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumThr
 
 export const ForumThreadCreateScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumThreadCreateHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.forums}
         urlPath={`/forums/${props.route.params.categoryId}/createForum`}>
@@ -99,6 +103,26 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
     setSubmitting(true);
     forumFormRef.current?.submitForm();
   };
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.forumThreadCreateHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>

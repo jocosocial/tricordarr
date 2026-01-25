@@ -36,6 +36,10 @@ interface APIImageV2Props {
   disableTouch?: boolean;
   staticSize?: keyof typeof APIImageSizePaths;
   onPress?: () => void;
+  /**
+   * Size for avatar mode. Defaults to styleDefaults.avatarSize.
+   */
+  size?: number;
 }
 
 /**
@@ -45,10 +49,19 @@ interface APIImageV2Props {
  *
  * Setting your own onPress effectively disables the image viewer.
  */
-export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, staticSize, onPress}: APIImageV2Props) => {
+export const APIImage = ({
+  path,
+  style,
+  mode = 'scaledimage',
+  disableTouch,
+  staticSize,
+  onPress,
+  size,
+}: APIImageV2Props) => {
   const [viewerImages, setViewerImages] = useState<AppImageMetaData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
-  const {commonStyles} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
+  const avatarSize = size ?? styleDefaults.avatarSize;
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
   const {setModalContent, setModalVisible} = useModal();
@@ -92,6 +105,11 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
       ...commonStyles.fullWidth,
       ...commonStyles.roundedBorderCard,
       overflow: 'hidden',
+    },
+    avatar: {
+      width: avatarSize,
+      height: avatarSize,
+      borderRadius: avatarSize / 2,
     },
   });
 
@@ -265,6 +283,15 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
               onProgress={onProgress}
             />
           )}
+          {mode === 'avatar' && (
+            <FastImage
+              resizeMode={'cover'}
+              style={[styles.avatar, style as FastImageStyle]}
+              source={imageSource}
+              onLoad={onLoad}
+              onError={onError}
+            />
+          )}
           {mode === 'scaledimage' && (
             <AppScaledImage
               image={imageSource}
@@ -274,7 +301,7 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
               onProgress={onProgress}
             />
           )}
-          {appConfig.enableDeveloperOptions && (
+          {appConfig.enableDeveloperOptions && mode !== 'avatar' && (
             <View style={styles.imageDebugIcon}>
               <AppIcon
                 icon={isThumbnail ? AppIcons.thumbnail : staticSize === 'identicon' ? AppIcons.user : AppIcons.full}

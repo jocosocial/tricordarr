@@ -20,6 +20,7 @@ export interface PrivilegeContextType {
   hasVerified: boolean;
   hasAdmin: boolean;
   privilegedUsernames: string[];
+  hasAnyPrivilege: boolean;
 }
 
 export const PrivilegeContext = createContext(<PrivilegeContextType>{});

@@ -31,7 +31,7 @@ export const EventScreen = ({navigation, route}: Props) => {
         {
           onSuccess: async () => {
             const invalidations = UserNotificationData.getCacheKeys()
-              .concat([['/events'], [`/events/${event.eventID}`], ['/events/favorites']])
+              .concat(EventData.getCacheKeys(event.eventID))
               .map(key => queryClient.invalidateQueries({queryKey: key}));
             await Promise.all(invalidations);
           },

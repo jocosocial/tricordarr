@@ -78,17 +78,13 @@ export const ForumPostActionsMenu = ({
               });
             }}
           />
-          <Divider bold={true} />
+          <ForumPostActionsDeleteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
         </>
       )}
-      <ForumPostActionsDeleteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
       <Divider bold={true} />
       <ForumPostActionsFavoriteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
       {enablePinnedPosts && (
-        <>
-          <ForumPostActionsPinItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
-          <Divider bold={true} />
-        </>
+        <ForumPostActionsPinItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
       )}
       <Divider bold={true} />
       <ForumPostActionsReportItem forumPost={forumPost} closeMenu={closeMenu} />

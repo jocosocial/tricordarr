@@ -79,7 +79,7 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => {
-              commonNavigation.push(CommonStackComponents.forumHelpScreen);
+              commonNavigation.push(CommonStackComponents.forumPostSearchHelpScreen);
             }}
           />
         </MaterialHeaderButtons>

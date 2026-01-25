@@ -30,7 +30,7 @@ export const LfgListActionsMenu = () => {
       <Menu.Item
         leadingIcon={AppIcons.settings}
         title={'Settings'}
-        onPress={() => navigation.push(LfgStackComponents.lfgSettingsScreen)}
+        onPress={() => navigation.push(CommonStackComponents.lfgSettingsScreen)}
       />
       <Menu.Item
         leadingIcon={AppIcons.help}

@@ -29,7 +29,7 @@ export const ForumCategoryScreenActionsMenu = () => {
         leadingIcon={AppIcons.help}
         onPress={() => {
           closeMenu();
-          commonNavigation.push(CommonStackComponents.forumHelpScreen);
+          commonNavigation.push(CommonStackComponents.forumCategoryHelpScreen);
         }}
       />
     </AppMenu>

@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, useEffect, useState} from 'react';
+import React, {PropsWithChildren, useEffect, useMemo, useState} from 'react';
 
 import {PrivilegeContext} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -98,6 +98,10 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
     }
   };
 
+  const hasAnyPrivilege = useMemo(() => {
+    return hasModerator || hasTwitarrTeam || hasTHO || hasAdmin;
+  }, [hasModerator, hasTwitarrTeam, hasTHO, hasAdmin]);
+
   return (
     <PrivilegeContext.Provider
       value={{
@@ -118,6 +122,7 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
         hasVerified,
         hasAdmin,
         privilegedUsernames,
+        hasAnyPrivilege,
       }}>
       {children}
     </PrivilegeContext.Provider>

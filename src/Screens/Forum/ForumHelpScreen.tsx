@@ -1,57 +1,70 @@
 import React from 'react';
 
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 export const ForumHelpScreen = () => {
+  const commonNavigation = useCommonStack();
+
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>
-        <HelpChapterTitleView title={'Categories'} />
-        <HelpTopicView>
-          Forum Categories are broad containers for forum threads. There are two groupings of forum categories: Forum
-          (for general topics, announcements, memes, etc) and Personal (for forums that relate specifically to you.)
-        </HelpTopicView>
-        <HelpChapterTitleView title={'Threads'} />
-        <HelpTopicView title={'Pin'} icon={AppIcons.pin}>
-          Moderators can pin forum threads to the category. This can make them easier to see and should be used
-          sparingly.
-        </HelpTopicView>
-        <HelpTopicView title={'Favorite'} icon={AppIcons.favorite}>
-          Favorited forums appear in the sort order, which by default is Most Recent Post first.
-        </HelpTopicView>
-        <HelpTopicView title={'Mute'} icon={AppIcons.mute}>
-          Muted forums appear at the end of any list of forum threads.
-        </HelpTopicView>
-        <HelpTopicView title={'Mark as Read'} icon={AppIcons.markAsRead}>
-          Read forums appear at the end of any list of forum threads.
-        </HelpTopicView>
-        <HelpTopicView>You can favorite, mute, or mark a thread as read by swiping left or right on it.</HelpTopicView>
-        <HelpChapterTitleView title={'Posts'} />
-        <HelpTopicView title={'Posts'} icon={AppIcons.post}>
-          Long-press a post to favorite, edit, or add a reaction. Tapping on a post will take you to the posts forum to
-          see it in context (if you aren't already). You can edit or delete your own forum posts.
-        </HelpTopicView>
-        <HelpTopicView title={'Favorite'} icon={AppIcons.favorite}>
-          Favoriting a post will save it to an easily accessible Personal Category on the Forums page.
-        </HelpTopicView>
-        <HelpChapterTitleView title={'Search'} />
-        <HelpTopicView icon={AppIcons.search}>
-          You can search for either posts or threads by using the Forum Search button in the header menu. You can limit
-          the scope of search by initiating the search from the screen you wish to limit to. For example, searching for
-          posts containing "pokemon" within the Activities category can be done from that category's thread list.
-        </HelpTopicView>
-        <HelpChapterTitleView title={'Keywords'} />
-        <HelpTopicView title={'Mute Keywords'} icon={AppIcons.mute}>
-          You can set up mute words to prevent seeing forum posts containing a specific word.
-        </HelpTopicView>
-        <HelpTopicView title={'Alert Keywords'} icon={AppIcons.alertword}>
-          You can set up alert words to ping you when someone makes a forum post containing a specific word. Alert words
-          will be highlighted in content views like 🚨this🚨.
-        </HelpTopicView>
+        <HelpChapterTitleView title={'General'}>
+          <HelpTopicView>
+            Forums are a place to have discussions with other users. Forums are organized into Categories which contain
+            Threads. Each Thread contains Posts from users. Categories can be general topics like announcements, memes,
+            or activities, or Personal categories that relate specifically to you like favorites or your own posts.
+          </HelpTopicView>
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Screens'} noMargin={true}>
+          <DataFieldListItem
+            title={'Categories (Default)'}
+            description={'Browse forum categories and personal forums.'}
+            icon={AppIcons.forum}
+            onPress={() => commonNavigation.push(CommonStackComponents.forumCategoriesHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Category'}
+            description={'View threads in a category.'}
+            icon={AppIcons.forumActive}
+            onPress={() => commonNavigation.push(CommonStackComponents.forumCategoryHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Thread'}
+            description={'View and reply to posts in a thread.'}
+            icon={AppIcons.post}
+            onPress={() => commonNavigation.push(CommonStackComponents.forumThreadHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Create Thread'}
+            description={'Create a new forum thread.'}
+            icon={AppIcons.new}
+            onPress={() => commonNavigation.push(CommonStackComponents.forumThreadCreateHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Thread Search'}
+            description={'Search for forum threads by keyword.'}
+            icon={AppIcons.search}
+            onPress={() => commonNavigation.push(CommonStackComponents.forumThreadSearchHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Post Search'}
+            description={'Search for forum posts by keyword.'}
+            icon={AppIcons.search}
+            onPress={() => commonNavigation.push(CommonStackComponents.forumPostSearchHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Keywords'}
+            description={'Configure alert and mute keywords for notifications and filtering forum content.'}
+            icon={AppIcons.alertword}
+            onPress={() => commonNavigation.push(CommonStackComponents.keywordsHelpScreen)}
+          />
+        </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>
   );

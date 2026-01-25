@@ -28,6 +28,12 @@ export const HelpManualScreen = () => {
           onPress={() => commonNavigation.push(CommonStackComponents.forumHelpScreen)}
         />
         <DataFieldListItem
+          title={'Keywords'}
+          description={'Mute and alert keywords for filtering forum content.'}
+          icon={AppIcons.alertword}
+          onPress={() => commonNavigation.push(CommonStackComponents.keywordsHelpScreen)}
+        />
+        <DataFieldListItem
           title={'Seamail'}
           description={'Private messaging and group conversations.'}
           icon={AppIcons.seamail}

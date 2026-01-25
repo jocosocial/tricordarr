@@ -10,7 +10,6 @@ import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateSc
 import {KrakenTalkReceiveScreen} from '#src/Screens/KrakenTalk/KrakenTalkReceiveScreen';
 import {SeamailListScreen} from '#src/Screens/Seamail/SeamailListScreen';
 import {SeamailSearchScreen} from '#src/Screens/Seamail/SeamailSearchScreen';
-import {SeamailSettingsScreen} from '#src/Screens/Seamail/SeamailSettingsScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
@@ -32,7 +31,6 @@ export type ChatStackParamList = CommonStackParamList & {
   ActiveCallScreen: {
     callID: string;
   };
-  SeamailSettingsScreen: undefined;
 };
 
 const ChatStack = createStackNavigator<ChatStackParamList>();
@@ -43,7 +41,6 @@ export enum ChatStackScreenComponents {
   seamailSearchScreen = 'SeamailSearchScreen',
   krakenTalkReceiveScreen = 'KrakenTalkReceiveScreen',
   activeCallScreen = 'ActiveCallScreen',
-  seamailSettingsScreen = 'SeamailSettingsScreen',
 }
 
 export const ChatStackNavigator = () => {
@@ -79,11 +76,6 @@ export const ChatStackNavigator = () => {
         name={ChatStackScreenComponents.activeCallScreen}
         component={ActiveCallScreen}
         options={{title: 'Call', headerShown: false}}
-      />
-      <ChatStack.Screen
-        name={ChatStackScreenComponents.seamailSettingsScreen}
-        component={SeamailSettingsScreen}
-        options={{title: 'Seamail Settings'}}
       />
       {CommonScreens(ChatStack)}
     </ChatStack.Navigator>

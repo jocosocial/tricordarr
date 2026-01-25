@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 
+import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
 import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
 import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView';
@@ -50,7 +50,7 @@ const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
     <FlatListItemContent>
       {!messageOnRight && (
         <MessageAvatarContainerView onPress={onPress}>
-          <UserAvatarImage userHeader={fezPost.author} small={true} />
+          <AvatarImage userHeader={fezPost.author} small={true} />
         </MessageAvatarContainerView>
       )}
       {messageOnRight && <MessageSpacerView />}

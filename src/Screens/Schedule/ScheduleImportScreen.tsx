@@ -15,6 +15,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {getCalFeedFromUrl, getEventUid} from '#src/Libraries/Schedule';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
+import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {SchedImportFormValues} from '#src/Types/FormValues';
 
 export const ScheduleImportScreen = () => {
@@ -33,7 +34,10 @@ export const ScheduleImportScreen = () => {
       ...appConfig,
       schedBaseUrl: values.schedUrl,
     });
-    await queryClient.invalidateQueries({queryKey: ['/events']});
+    const invalidations = EventData.getCacheKeys()
+      .concat(UserNotificationData.getCacheKeys())
+      .map(key => queryClient.invalidateQueries({queryKey: key}));
+    await Promise.all(invalidations);
     let successCount = 0,
       skipCount = 0;
     await refetch();

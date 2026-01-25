@@ -19,7 +19,7 @@ type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumOwn
 export const ForumThreadOwnedScreen = (props: Props) => {
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.forumCategoryHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forum/owned'}>
           <ForumThreadOwnedScreenInner {...props} />
         </DisabledFeatureScreen>

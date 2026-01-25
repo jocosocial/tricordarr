@@ -38,7 +38,7 @@ const MicroKaraokeListScreenInner = () => {
   //     </ScrollingContentView>
   //   </AppView>
   // );
-  if (isIOS && !appConfig.enableExperiments) {
+  if (isIOS) {
     return <KrakenView />;
   }
   return <NotImplementedView />;

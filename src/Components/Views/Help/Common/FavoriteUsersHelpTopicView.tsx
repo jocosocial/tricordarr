@@ -1,10 +1,15 @@
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
 
-export const FavoriteUsersHelpTopicView = () => {
+interface FavoriteUsersHelpTopicViewProps {
+  forListScreen?: boolean;
+}
+
+export const FavoriteUsersHelpTopicView = ({forListScreen = true}: FavoriteUsersHelpTopicViewProps = {}) => {
   return (
-    <HelpTopicView title={'Favorite Users'} icon={AppIcons.userFavorite}>
-      View and manage your list of favorite users. Favoriting a user allows them to call you with KrakenTalk™.
+    <HelpTopicView title={forListScreen ? 'Favorite Users' : 'Favorite User'} icon={AppIcons.userFavorite}>
+      {forListScreen && 'View and manage your list of favorite users. '}
+      Favoriting a user allows them to call you with KrakenTalk™.
     </HelpTopicView>
   );
 };

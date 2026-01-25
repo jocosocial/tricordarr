@@ -1,6 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
+import {type FlashListRef} from '@shopify/flash-list';
 import {FormikHelpers} from 'formik';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -61,6 +62,7 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
   const [games, setGames] = useState<BoardgameData[]>([]);
   const [fieldValues, setFieldValues] = useState<BoardgameRecommendationData>(defaultValues);
   const [hasSearched, setHasSearched] = useState(false);
+  const listRef = useRef<FlashListRef<BoardgameData>>(null);
 
   const onSubmit = (values: BoardgameRecommendationData, helpers: FormikHelpers<BoardgameRecommendationData>) => {
     setFieldValues(values);
@@ -72,6 +74,15 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
       {
         onSuccess: response => {
           setGames(response.data.gameArray);
+          // Animate scroll to top to show results
+          requestAnimationFrame(() => {
+            try {
+              listRef.current?.scrollToIndex({index: 0, animated: true});
+            } catch {
+              // If scrollToIndex fails (e.g., list not fully rendered), use scrollToOffset as fallback
+              listRef.current?.scrollToOffset({offset: 0, animated: true});
+            }
+          });
         },
         onSettled: () => helpers.setSubmitting(false),
       },
@@ -104,6 +115,7 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
   return (
     <AppView>
       <BoardgameFlatList
+        ref={listRef}
         items={games}
         listHeader={getHeader}
         showEmptyFooter={hasSearched && !guideMutation.isPending}

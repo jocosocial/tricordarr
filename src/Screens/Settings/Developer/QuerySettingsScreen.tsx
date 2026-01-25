@@ -1,6 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
-import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
@@ -61,7 +60,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     imageStaleTimeDays: appConfig.apiClientConfig.imageStaleTime / 24 / 60 / 60 / 1000,
   };
 
-  const onSubmit = (values: QuerySettingsFormValues, helpers: FormikHelpers<QuerySettingsFormValues>) => {
+  const onSubmit = (values: QuerySettingsFormValues) => {
     const bustCache = values.defaultPageSize !== appConfig.apiClientConfig.defaultPageSize;
     updateAppConfig({
       ...appConfig,
@@ -83,10 +82,6 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         refreshCacheStats();
       }, 1000);
     }
-    helpers.setSubmitting(false);
-    helpers.resetForm({
-      values: values,
-    });
   };
 
   const refreshCacheStats = useCallback(() => {

@@ -1,16 +1,14 @@
-import {Formik, FormikHelpers} from 'formik';
+import {Formik} from 'formik';
 import React from 'react';
 import {View} from 'react-native';
 import * as Yup from 'yup';
 
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {SliderField} from '#src/Components/Forms/Fields/SliderField';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {QuerySettingsFormValues} from '#src/Types/FormValues';
 
 interface QuerySettingsFormProps {
   initialValues: QuerySettingsFormValues;
-  onSubmit: (values: QuerySettingsFormValues, helpers: FormikHelpers<QuerySettingsFormValues>) => void;
+  onSubmit: (values: QuerySettingsFormValues) => void;
 }
 
 const validationSchema = Yup.object().shape({
@@ -23,10 +21,9 @@ const validationSchema = Yup.object().shape({
 });
 
 export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
-  const {commonStyles} = useStyles();
   return (
-    <Formik initialValues={props.initialValues} onSubmit={props.onSubmit} validationSchema={validationSchema}>
-      {({values, handleSubmit, isSubmitting, isValid, dirty}) => (
+    <Formik initialValues={props.initialValues} onSubmit={() => {}} validationSchema={validationSchema}>
+      {({values}) => (
         <View>
           <SliderField
             value={values.defaultPageSize}
@@ -36,6 +33,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             label={'Page Size'}
             name={'defaultPageSize'}
             helperText={'Number of results in each page of paginated responses.'}
+            onSlidingComplete={() => props.onSubmit(values)}
           />
           <SliderField
             value={values.retry}
@@ -45,6 +43,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             label={'Retries'}
             name={'retry'}
             helperText={'Number of retry attempts to make if a query fails.'}
+            onSlidingComplete={() => props.onSubmit(values)}
           />
           <SliderField
             value={values.disruptionThreshold}
@@ -56,6 +55,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             helperText={
               'Number of failed query attempts before the server is considered disrupted, disabling future automatic queries.'
             }
+            onSlidingComplete={() => props.onSubmit(values)}
           />
           <SliderField
             value={values.staleTimeMinutes}
@@ -66,6 +66,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             name={'staleTimeMinutes'}
             helperText={'Amount of time for query response data to be considered fresh before automatically refreshed.'}
             unit={'minute'}
+            onSlidingComplete={() => props.onSubmit(values)}
           />
           <SliderField
             value={values.cacheTimeDays}
@@ -76,6 +77,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             name={'cacheTimeDays'}
             helperText={'Amount of time for query response data to be cached.'}
             unit={'day'}
+            onSlidingComplete={() => props.onSubmit(values)}
           />
           <SliderField
             value={values.imageStaleTimeDays}
@@ -86,13 +88,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             name={'imageStaleTimeDays'}
             helperText={'Amount of time for image response data to be considered fresh before automatically refreshed.'}
             unit={'day'}
-          />
-          <PrimaryActionButton
-            disabled={!isValid || isSubmitting || !dirty}
-            isLoading={isSubmitting}
-            viewStyle={commonStyles.marginTopSmall}
-            onPress={handleSubmit}
-            buttonText={'Save'}
+            onSlidingComplete={() => props.onSubmit(values)}
           />
         </View>
       )}

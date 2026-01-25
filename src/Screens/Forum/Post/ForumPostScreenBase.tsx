@@ -52,7 +52,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => {
-              commonNavigation.push(CommonStackComponents.forumHelpScreen);
+              commonNavigation.push(CommonStackComponents.forumThreadHelpScreen);
             }}
           />
         </MaterialHeaderButtons>

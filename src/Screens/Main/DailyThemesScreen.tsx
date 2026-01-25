@@ -29,7 +29,7 @@ export const DailyThemesScreen = ({navigation}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.cruiseHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.dailyThemeHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>

@@ -1,7 +1,10 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
@@ -11,6 +14,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {AppIcons} from '#src/Enums/Icons';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
@@ -23,7 +27,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumT
 
 export const ForumThreadUserScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumCategoryHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.forums}
         urlPath={`/forumpost/search?creatorid=${props.route.params.user.userID}`}>
@@ -33,7 +37,7 @@ export const ForumThreadUserScreen = (props: Props) => {
   );
 };
 
-const ForumThreadUserScreenInner = ({route}: Props) => {
+const ForumThreadUserScreenInner = ({route, navigation}: Props) => {
   const {
     data,
     refetch,
@@ -52,6 +56,26 @@ const ForumThreadUserScreenInner = ({route}: Props) => {
     refresh: refetch,
     isRefreshing: isFetching,
   });
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.forumCategoryHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const {handleLoadNext, handleLoadPrevious} = usePagination({
     fetchNextPage,

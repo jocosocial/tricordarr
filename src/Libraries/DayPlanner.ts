@@ -247,23 +247,33 @@ export const getTimelineHeight = (): number => {
 
 /**
  * Calculate the scroll offset in pixels for the current time of day.
- * This uses only the hour/minute of the current time, ignoring the date,
- * so it works correctly even when testing outside of cruise dates.
  *
  * The timeline shows 27 hours: from 00:00 (midnight) to 03:00 the next day.
- * We simply map the current time of day to a position on this timeline.
+ * When dayStart is provided, we can correctly handle the extended hours (00:00-03:00)
+ * that fall on the next calendar day by adding 24 hours to the offset.
  *
  * @param now The current date/time
+ * @param dayStart Optional start of the viewed day's timeline. When provided, enables
+ *                 correct positioning for times in the extended hours (next calendar day).
  * @returns The scroll offset in pixels
  */
-export const getScrollOffsetForTime = (now: Date): number => {
+export const getScrollOffsetForTime = (now: Date, dayStart?: Date): number => {
   // Extract just the time-of-day from "now" (hours and minutes)
   const nowHours = now.getHours();
   const nowMinutes = now.getMinutes();
 
   // Calculate minutes from midnight (00:00)
-  // The timeline starts at 00:00, so we just use hours * 60 + minutes directly
-  const minutesFromMidnight = nowHours * 60 + nowMinutes;
+  let minutesFromMidnight = nowHours * 60 + nowMinutes;
+
+  // If dayStart is provided and now is on a later calendar date,
+  // we're in the extended hours (00:00-03:00 next day) and need to add 24 hours
+  if (dayStart) {
+    const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dayStartDate = new Date(dayStart.getFullYear(), dayStart.getMonth(), dayStart.getDate());
+    if (nowDate.getTime() > dayStartDate.getTime()) {
+      minutesFromMidnight += 24 * 60; // Add 24 hours worth of minutes
+    }
+  }
 
   // Convert to pixel offset
   // Each 15-minute slot is ROW_HEIGHT pixels tall

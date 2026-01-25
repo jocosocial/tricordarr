@@ -43,7 +43,6 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             MainSettingsScreen: {
               screens: {
                 SettingsScreen: getPath(SettingsStackScreenComponents.settings),
-                ServerConnectionSettingsScreen: getPath(SettingsStackScreenComponents.networkInfoSettings),
                 PushNotificationSettingsScreen: getPath(SettingsStackScreenComponents.pushNotificationSettings),
                 LoginScreen: getPath(SettingsStackScreenComponents.login),
               },

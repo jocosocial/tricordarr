@@ -19,17 +19,6 @@ export const SeamailHelpScreen = () => {
             Seamail: It's like email, but at sea. Use them to send private messages to other users.
           </HelpTopicView>
         </HelpChapterTitleView>
-        <HelpChapterTitleView title={'Types'}>
-          <HelpTopicView title={'Open'}>
-            Allows you add or remove users later on. Added users will be able to read all past history. This is the
-            default type.
-          </HelpTopicView>
-          <HelpTopicView title={'Closed'}>
-            Cannot add or remove users later on. To start chatting with new users you'll need to create a new
-            conversation.
-          </HelpTopicView>
-          <HelpTopicView>The type cannot be changed once the conversation is created.</HelpTopicView>
-        </HelpChapterTitleView>
         <HelpChapterTitleView title={'Screens'} noMargin={true}>
           <DataFieldListItem
             title={'List (Default)'}

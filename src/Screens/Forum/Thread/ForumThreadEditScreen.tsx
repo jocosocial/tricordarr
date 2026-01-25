@@ -18,7 +18,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumT
 
 export const ForumThreadEditScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.forumHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.forumThreadHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.forums}
         urlPath={`/forum/${props.route.params.forumData.forumID}/edit`}>

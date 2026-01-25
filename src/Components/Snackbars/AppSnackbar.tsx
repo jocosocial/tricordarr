@@ -41,6 +41,7 @@ export const AppSnackbar = () => {
         {snackbarPayload.messageType === 'info' && 'ℹ️ '}
         {snackbarPayload.messageType === 'error' && '🚨️ '}
         {snackbarPayload.messageType === 'success' && '✅️ '}
+        {snackbarPayload.messageType === 'secret' && '🕵️ '}
         {snackbarPayload.message}
       </Text>
     </Snackbar>

@@ -11,20 +11,22 @@ export const MapHelpScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>
-        <HelpChapterTitleView title={'General'} />
-        <HelpTopicView>
-          The deck map shows a visual representation of each deck on the ship. Use it to find your way around and locate
-          rooms, venues, and other important locations.
-        </HelpTopicView>
-        <HelpTopicView>
-          The map displays forward (front)/aft (back) port (left)/starboard (right) indicators to help you orient
-          yourself.
-        </HelpTopicView>
-        <HelpChapterTitleView title={'Header Buttons'} />
-        <HelpTopicView title={'Deck Menu'} icon={AppIcons.decks}>
-          Tap the deck menu button in the header to quickly switch between different decks. The current deck is
-          highlighted in the menu.
-        </HelpTopicView>
+        <HelpChapterTitleView title={'General'}>
+          <HelpTopicView>
+            The deck map shows a visual representation of each deck on the ship. Use it to find your way around and
+            locate rooms, venues, and other important locations.
+          </HelpTopicView>
+          <HelpTopicView>
+            The map displays forward (front) and aft (back) as well as port (left) and starboard (right) indicators to
+            help you orient yourself.
+          </HelpTopicView>
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Actions'}>
+          <HelpTopicView title={'Deck Menu'} icon={AppIcons.decks}>
+            Tap the deck menu button in the header to quickly switch between different decks. The current deck is
+            highlighted in the menu.
+          </HelpTopicView>
+        </HelpChapterTitleView>
         <HelpButtonHelpTopicView />
       </ScrollingContentView>
     </AppView>

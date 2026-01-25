@@ -4,7 +4,6 @@ import React, {useState} from 'react';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {CruiseSettingsForm} from '#src/Components/Forms/Settings/CruiseSettingsForm';
-import {PreRegistrationSettingsForm} from '#src/Components/Forms/Settings/PreRegistrationSettingsForm';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -117,12 +116,6 @@ export const CruiseSettingsScreen = () => {
                 buttonText={currentSession?.preRegistrationMode ? 'Disable' : 'Enable'}
                 onPress={togglePreRegistrationMode}
                 buttonColor={theme.colors.twitarrNeutralButton}
-              />
-            </PaddedContentView>
-            <PaddedContentView>
-              <PreRegistrationSettingsForm
-                onSubmit={onPreRegistrationSubmit}
-                initialValues={preRegistrationInitialValues}
               />
             </PaddedContentView>
           </>

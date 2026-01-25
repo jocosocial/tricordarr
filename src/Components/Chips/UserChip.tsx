@@ -1,7 +1,7 @@
 import React from 'react';
 import {Chip} from 'react-native-paper';
 
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -15,7 +15,7 @@ type UserChipProps = {
 export const UserChip = ({userHeader, onClose, disabled, onPress}: UserChipProps) => {
   const {commonStyles} = useStyles();
 
-  const getAvatar = () => <UserAvatarImage userHeader={userHeader} />;
+  const getAvatar = React.useCallback(() => <AvatarImage userHeader={userHeader} />, [userHeader]);
 
   return (
     <Chip style={commonStyles.chip} icon={getAvatar} disabled={disabled} onClose={onClose} onPress={onPress}>

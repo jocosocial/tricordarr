@@ -1,4 +1,4 @@
-import React, {Dispatch, memo, SetStateAction, useState} from 'react';
+import React, {Dispatch, memo, SetStateAction} from 'react';
 
 import {EventCard} from '#src/Components/Cards/Schedule/EventCard';
 import {EventCardActionsMenu} from '#src/Components/Menus/Events/EventCardActionsMenu';
@@ -13,25 +13,10 @@ interface EventCardListItemProps {
 }
 
 const EventCardListItemInternal = (props: EventCardListItemProps) => {
-  const [menuVisible, setMenuVisible] = useState(false);
-
-  const anchorContent = (
-    <EventCard
-      eventData={props.eventData}
-      onPress={props.onPress}
-      marker={props.marker}
-      onLongPress={() => setMenuVisible(true)}
-    />
-  );
+  const anchorContent = <EventCard eventData={props.eventData} onPress={props.onPress} marker={props.marker} />;
 
   return (
-    <EventCardActionsMenu
-      eventData={props.eventData}
-      setRefreshing={props.setRefreshing}
-      menuVisible={menuVisible}
-      setMenuVisible={setMenuVisible}
-      anchor={anchorContent}
-    />
+    <EventCardActionsMenu eventData={props.eventData} setRefreshing={props.setRefreshing} anchor={anchorContent} />
   );
 };
 

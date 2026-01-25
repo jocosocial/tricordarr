@@ -15,7 +15,6 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
@@ -24,8 +23,8 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import useDateTime, {calcCruiseDayTime} from '#src/Libraries/DateTime';
-import {buildScheduleList, getScheduleScrollIndex} from '#src/Libraries/Schedule';
+import {useScrollToNow} from '#src/Hooks/useScrollToNow';
+import {buildScheduleList} from '#src/Libraries/Schedule';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
@@ -54,7 +53,6 @@ export const ScheduleDayScreen = (props: Props) => {
 };
 
 const ScheduleDayScreenInner = ({navigation}: Props) => {
-  const {startDate, endDate} = useCruise();
   const {commonStyles} = useStyles();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
@@ -66,8 +64,6 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
   const {scheduleFilterSettings} = useFilter();
-  const [scrollNowIndex, setScrollNowIndex] = useState(0);
-  const minutelyUpdatingDate = useDateTime('minute');
 
   const {
     data: eventData,
@@ -169,23 +165,10 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     isRefreshing: isFetching,
   });
 
-  const scrollToNow = useCallback(() => {
-    if (scheduleList.length === 0 || !listRef.current) {
-      return;
-    }
-    if (scrollNowIndex === 0) {
-      listRef.current.scrollToOffset({offset: 0});
-    } else if (scrollNowIndex === scheduleList.length - 1) {
-      listRef.current.scrollToEnd();
-    } else {
-      listRef.current.scrollToIndex({
-        index: scrollNowIndex,
-        // The viewOffset is so that we show the TimeSeparator in the view as well.
-        viewOffset: 40,
-        animated: true,
-      });
-    }
-  }, [scheduleList, scrollNowIndex]);
+  const {scrollToNow, scrollNowIndex} = useScrollToNow({
+    items: scheduleList,
+    listRef,
+  });
 
   const getNavButtons = useCallback(() => {
     return (
@@ -230,14 +213,6 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
       onQueryError();
     }
   }, [isEventError, isLfgOpenError, isLfgJoinedError, isLfgOwnedError, isPersonalEventError, onQueryError]);
-
-  useEffect(() => {
-    if (scheduleList.length > 0) {
-      const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
-      const index = getScheduleScrollIndex(nowDayTime, scheduleList, startDate, endDate, appConfig.portTimeZoneID);
-      setScrollNowIndex(index);
-    }
-  }, [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, scheduleList, startDate]);
 
   useEffect(() => {
     console.log('[ScheduleDayScreen.tsx] Firing pagination useEffect');
