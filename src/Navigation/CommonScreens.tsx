@@ -111,7 +111,7 @@ import {
   ProfilePublicData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
-import {NoDrawerParamsOptional} from '#src/Types/RouteParams';
+import {NoDrawerParamsOptional, ScheduleDayParams} from '#src/Types/RouteParams';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -301,7 +301,7 @@ export type CommonStackParamList = {
     eventID: string;
   };
   EventSettingsScreen: undefined;
-  ScheduleDayScreen: NoDrawerParamsOptional;
+  ScheduleDayScreen: ScheduleDayParams & NoDrawerParamsOptional;
   ScheduleDayPlannerScreen: {
     cruiseDay?: number;
   };

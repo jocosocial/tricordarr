@@ -52,7 +52,7 @@ export const ScheduleDayScreen = (props: Props) => {
   );
 };
 
-const ScheduleDayScreenInner = ({navigation}: Props) => {
+const ScheduleDayScreenInner = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
@@ -60,10 +60,11 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
     listRef,
     clearList: useCallback(() => setScheduleList([]), []),
+    defaultCruiseDay: route.params?.cruiseDay,
   });
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
-  const {scheduleFilterSettings} = useScheduleFilter();
+  const {scheduleFilterSettings, setEventPersonalFilter} = useScheduleFilter();
 
   const {
     data: eventData,
@@ -71,7 +72,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     isError: isEventError,
     refetch: refetchEvents,
   } = useEventsQuery({
-    cruiseDay: selectedCruiseDay,
+    cruiseDay: selectedCruiseDay === 0 ? undefined : selectedCruiseDay,
   });
   const {
     data: lfgOpenData,
@@ -81,7 +82,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     hasNextPage: openHasNextPage,
     fetchNextPage: openFetchNextPage,
   } = useLfgListQuery({
-    cruiseDay: selectedCruiseDay - 1,
+    cruiseDay: selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
     endpoint: 'open',
     hidePast: false,
     options: {
@@ -96,7 +97,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     hasNextPage: joinedHasNextPage,
     fetchNextPage: joinedFetchNextPage,
   } = useLfgListQuery({
-    cruiseDay: selectedCruiseDay - 1,
+    cruiseDay: selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
     endpoint: 'joined',
     hidePast: false,
     options: {
@@ -111,7 +112,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     hasNextPage: ownedHasNextPage,
     fetchNextPage: ownedFetchNextPage,
   } = useLfgListQuery({
-    cruiseDay: selectedCruiseDay - 1,
+    cruiseDay: selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
     endpoint: 'owner',
     hidePast: false,
     options: {
@@ -126,7 +127,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     hasNextPage: personalHasNextPage,
     fetchNextPage: personalFetchNextPage,
   } = usePersonalEventsQuery({
-    cruiseDay: selectedCruiseDay - 1,
+    cruiseDay: selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
     // Adding this one line (hidePast: false) does some magic to prevent SchedulePrivateEventsScreen
     // from not refetching private event data even though it is stale. I suspect React Query may be
     // seeing the staleTime from the other instance of the query and thinking that its data is still
@@ -193,6 +194,17 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
+  /**
+   * This operates more like an intent than a state.
+   * When the user navigates from the NotificationsMenu it's almost certainly
+   * because they want to see personal events. All other cases should be normal.
+   */
+  useEffect(() => {
+    if (route.params?.setPersonalFilter !== undefined) {
+      setEventPersonalFilter(route.params.setPersonalFilter);
+    }
+  }, [route.params, setEventPersonalFilter]);
+
   useEffect(() => {
     console.log('[ScheduleDayScreen.tsx] Starting buildScheduleList useEffect.');
     const listData = buildScheduleList(
@@ -248,6 +260,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
         selectedCruiseDay={selectedCruiseDay}
         setCruiseDay={handleSetCruiseDay}
         scrollToNow={scrollToNow}
+        enableAll={true}
       />
       <View style={[commonStyles.flex]}>
         {isSwitchingDays ? (

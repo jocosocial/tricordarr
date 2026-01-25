@@ -1,6 +1,6 @@
 # Tricordarr (React Native, TypeScript)
 
-## RefreshControl (CRITICAL)
+## RefreshControl
 
 - ALWAYS use `useRefresh` (`src/Hooks/useRefresh.ts`)
 - NEVER use React Query `isFetching` with RefreshControl
@@ -72,3 +72,7 @@ LoggedInScreen
 
 - Invalidate via `getCacheKeys()`
 - NEVER hardcode query keys
+
+## Code Smells
+
+- NEVER disable ESLint validation such as `eslint-disable-next-line react-hooks/exhaustive-deps`

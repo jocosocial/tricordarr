@@ -7,6 +7,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {ForumStackComponents} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
@@ -95,7 +96,7 @@ export const NotificationsMenu = () => {
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.lfgTab, {
               screen: LfgStackComponents.lfgListScreen,
-              params: {endpoint: 'joined', onlyNew: true, cruiseDay: 0},
+              params: {endpoint: 'joined', cruiseDay: 0, intent: `lfgAddedTo_${Date.now()}`},
             })
           }
         />
@@ -112,13 +113,18 @@ export const NotificationsMenu = () => {
           }
         />
       )}
-      {/* {!!data?.addedToPrivateEventCount && (
+      {!!data?.addedToPrivateEventCount && (
         <Menu.Item
           title={`Added to ${data?.addedToPrivateEventCount} new private ${pluralize('event', data?.addedToPrivateEventCount)}`}
           leadingIcon={AppIcons.personalEvent}
-          onPress={() => openAppUrl('tricordarr://privateevent/list')}
+          onPress={() =>
+            bottomTabNavigator.navigate(BottomTabComponents.scheduleTab, {
+              screen: CommonStackComponents.scheduleDayScreen,
+              params: {cruiseDay: 0, setPersonalFilter: true},
+            })
+          }
         />
-      )} */}
+      )}
       {!!data?.newPrivateEventMessageCount && (
         <Menu.Item
           title={`${data?.newPrivateEventMessageCount} new private event ${pluralize('message', data?.newPrivateEventMessageCount)}`}
