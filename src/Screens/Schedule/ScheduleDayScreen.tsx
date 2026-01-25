@@ -135,6 +135,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     // and subject to correct refetching.
     // https://github.com/jocosocial/tricordarr/issues/253
     hidePast: false,
+    onlyNew: scheduleFilterSettings.eventPersonalUnreadFilter ? true : undefined,
     options: {
       enabled: !preRegistrationMode,
     },

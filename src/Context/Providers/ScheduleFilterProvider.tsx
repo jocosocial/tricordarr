@@ -10,6 +10,7 @@ export const ScheduleFilterProvider = ({children}: PropsWithChildren) => {
   const [eventTypeFilter, setEventTypeFilter] = useState('');
   const [eventFavoriteFilter, setEventFavoriteFilter] = useState(false);
   const [eventPersonalFilter, setEventPersonalFilter] = useState(false);
+  const [eventPersonalUnreadFilter, setEventPersonalUnreadFilter] = useState(false);
   const [eventLfgJoinedFilter, setEventLfgJoinedFilter] = useState(false);
   const [eventLfgOwnedFilter, setEventLfgOwnedFilter] = useState(false);
   const [eventLfgOpenFilter, setEventLfgOpenFilter] = useState(false);
@@ -32,6 +33,7 @@ export const ScheduleFilterProvider = ({children}: PropsWithChildren) => {
     eventLfgOwnedFilter: eventLfgOwnedFilter,
     eventLfgOpenFilter: eventLfgOpenFilter,
     eventShutternautFilter: eventShutternautFilter,
+    eventPersonalUnreadFilter: eventPersonalUnreadFilter,
   };
 
   return (
@@ -52,6 +54,8 @@ export const ScheduleFilterProvider = ({children}: PropsWithChildren) => {
         eventShutternautFilter,
         setEventShutternautFilter,
         scheduleFilterSettings,
+        eventPersonalUnreadFilter,
+        setEventPersonalUnreadFilter,
       }}>
       {children}
     </ScheduleFilterContext.Provider>

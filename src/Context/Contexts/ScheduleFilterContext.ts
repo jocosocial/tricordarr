@@ -18,6 +18,8 @@ interface ScheduleFilterContextType {
   eventShutternautFilter: string | undefined;
   setEventShutternautFilter: Dispatch<SetStateAction<string | undefined>>;
   scheduleFilterSettings: ScheduleFilterSettings;
+  eventPersonalUnreadFilter: boolean;
+  setEventPersonalUnreadFilter: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ScheduleFilterContext = createContext(<ScheduleFilterContextType>{});
