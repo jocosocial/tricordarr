@@ -12,7 +12,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useLfgFilter} from '#src/Context/Contexts/LfgFilterContext';
 import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -27,7 +27,7 @@ export const LfgSettingsScreen = () => {
   const {hasNotificationPermission} = usePermissions();
   const navigation = useSettingsStack();
   const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.schedule.hidePastLfgs);
-  const {setLfgHidePastFilter} = useFilter();
+  const {setLfgHidePastFilter} = useLfgFilter();
   const {commonStyles} = useStyles();
   const [defaultScreen, setDefaultScreen] = useState<FezListEndpoints>(appConfig.schedule.defaultLfgList);
 

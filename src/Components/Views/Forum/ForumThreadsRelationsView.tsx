@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {ForumEmptyListView} from '#src/Components/Views/Forum/ForumEmptyListView';
 import {ForumThreadListView} from '#src/Components/Views/Forum/ForumThreadListView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useForumFilter} from '#src/Context/Contexts/ForumFilterContext';
 import {ForumSort} from '#src/Enums/ForumSortFilter';
 import {ForumRelationQueryType, useForumRelationQuery} from '#src/Queries/Forum/ForumThreadRelationQueries';
 import {CategoryData, ForumListData} from '#src/Structs/ControllerStructs';
@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const ForumThreadsRelationsView = ({relationType, category, title}: Props) => {
-  const {forumSortOrder, forumSortDirection} = useFilter();
+  const {forumSortOrder, forumSortDirection} = useForumFilter();
   const {
     data,
     refetch,

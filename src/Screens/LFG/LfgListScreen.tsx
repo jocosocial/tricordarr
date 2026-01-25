@@ -17,7 +17,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useLfgFilter} from '#src/Context/Contexts/LfgFilterContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -61,7 +61,7 @@ const LfgListScreenInner = ({
   onlyNewInitial,
   cruiseDayInitial,
 }: LfgListScreenInnerProps) => {
-  const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} = useFilter();
+  const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} = useLfgFilter();
   const {commonStyles} = useStyles();
   const [fezList, setFezList] = useState<FezData[]>([]);
   const listRef = useRef<FlashListRef<FezData>>(null);

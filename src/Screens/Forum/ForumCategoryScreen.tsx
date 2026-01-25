@@ -17,7 +17,7 @@ import {ForumThreadListView} from '#src/Components/Views/Forum/ForumThreadListVi
 import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThreadsRelationsView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useForumFilter} from '#src/Context/Contexts/ForumFilterContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
@@ -51,10 +51,9 @@ export const ForumCategoryScreen = (props: Props) => {
 };
 
 const ForumCategoryScreenInner = ({route, navigation}: Props) => {
-  const {forumFilter} = useFilter();
+  const {forumFilter, forumSortOrder, forumSortDirection} = useForumFilter();
   const isFocused = useIsFocused();
   const {clearPrivileges} = usePrivilege();
-  const {forumSortOrder, forumSortDirection} = useFilter();
   const {
     data,
     refetch,

@@ -7,7 +7,7 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useForumFilter} from '#src/Context/Contexts/ForumFilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ForumSort} from '#src/Enums/ForumSortFilter';
 import {AppIcons} from '#src/Enums/Icons';
@@ -24,7 +24,7 @@ interface Props {
 export const ForumThreadSearchBar = (props: Props) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [enable, setEnable] = useState(false);
-  const {forumSortOrder} = useFilter();
+  const {forumSortOrder} = useForumFilter();
   const {
     data,
     refetch,

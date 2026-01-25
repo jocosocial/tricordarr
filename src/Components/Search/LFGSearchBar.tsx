@@ -4,7 +4,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useLfgFilter} from '#src/Context/Contexts/LfgFilterContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
@@ -18,7 +18,7 @@ interface LFGSearchBarProps {
 export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
   const [queryEnable, setQueryEnable] = useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
-  const {lfgHidePastFilter} = useFilter();
+  const {lfgHidePastFilter} = useLfgFilter();
   const {data, refetch, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage} = useLfgListQuery({
     search: searchQuery,
     hidePast: lfgHidePastFilter,

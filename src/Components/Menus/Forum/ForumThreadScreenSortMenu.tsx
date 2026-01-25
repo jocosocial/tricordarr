@@ -4,7 +4,7 @@ import {Divider} from 'react-native-paper';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useForumFilter} from '#src/Context/Contexts/ForumFilterContext';
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -16,7 +16,7 @@ interface ForumThreadScreenSortMenuProps {
 
 export const ForumThreadScreenSortMenu = (props: ForumThreadScreenSortMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {forumSortOrder, setForumSortOrder, forumSortDirection, setForumSortDirection} = useFilter();
+  const {forumSortOrder, setForumSortOrder, forumSortDirection, setForumSortDirection} = useForumFilter();
 
   const menuAnchor = (
     <MenuAnchor

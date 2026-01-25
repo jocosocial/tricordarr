@@ -5,7 +5,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useScheduleFilter} from '#src/Context/Contexts/ScheduleFilterContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {EventType} from '#src/Enums/EventType';
@@ -28,7 +28,7 @@ export const ScheduleEventFilterMenu = () => {
     setEventLfgOpenFilter,
     eventShutternautFilter,
     setEventShutternautFilter,
-  } = useFilter();
+  } = useScheduleFilter();
   const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
   const {hasShutternaut} = useRoles();

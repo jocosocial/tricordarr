@@ -3,14 +3,14 @@ import React from 'react';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useForumFilter} from '#src/Context/Contexts/ForumFilterContext';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 
 export const ForumThreadScreenFilterMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {forumFilter, setForumFilter} = useFilter();
+  const {forumFilter, setForumFilter} = useForumFilter();
 
   const menuAnchor = (
     <FilterMenuAnchor active={!!forumFilter} onPress={openMenu} onLongPress={() => setForumFilter(undefined)} />

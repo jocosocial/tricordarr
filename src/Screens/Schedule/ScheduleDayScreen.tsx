@@ -16,7 +16,7 @@ import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderV
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useScheduleFilter} from '#src/Context/Contexts/ScheduleFilterContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -63,7 +63,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   });
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
-  const {scheduleFilterSettings} = useFilter();
+  const {scheduleFilterSettings} = useScheduleFilter();
 
   const {
     data: eventData,
