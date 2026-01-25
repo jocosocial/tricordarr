@@ -116,6 +116,8 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9394DAB82F077F9E000B2338 /* Helpers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = Helpers;
 			sourceTree = "<group>";
 		};
@@ -129,6 +131,8 @@
 		};
 		93ADC07C2F07749D00C698D2 /* TricordarrKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = TricordarrKit;
 			sourceTree = "<group>";
 		};
@@ -226,9 +230,6 @@
 				9394DAB82F077F9E000B2338 /* Helpers */,
 				E2D58DC62EF8D45700200352 /* AudioEngine.m */,
 				E2D58DC72EF8D45700200352 /* AudioEngine.swift */,
-				93B71A582EBACAC2004BC91E /* Enumerations */,
-				93980FF02EB849190067E8A1 /* Helpers */,
-				93980FED2EB846F90067E8A1 /* Structs */,
 				93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */,
 				93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */,
 				93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */,
@@ -423,13 +424,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -466,13 +463,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

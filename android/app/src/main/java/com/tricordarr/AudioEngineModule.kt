@@ -1,5 +1,6 @@
 package com.tricordarr
 
+import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioManager
@@ -60,7 +61,7 @@ class AudioEngineModule(reactContext: ReactApplicationContext) :
     fun setSpeakerOn(speakerOn: Boolean, promise: Promise) {
         try {
             val audioManager = reactApplicationContext.getSystemService(
-                ReactApplicationContext.AUDIO_SERVICE
+                Context.AUDIO_SERVICE
             ) as AudioManager
 
             audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
