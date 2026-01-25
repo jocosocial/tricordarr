@@ -13,11 +13,13 @@ import {KeyboardProvider} from 'react-native-keyboard-controller';
 import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
+import {CallOverlay} from '#src/Components/Call/CallOverlay';
 import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
 import {AppFocusHandler} from '#src/Components/Libraries/AppFocusHandler';
 import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
 import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
 import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
+import {CallProvider} from '#src/Context/Providers/CallProvider';
 import {ClientSettingsProvider} from '#src/Context/Providers/ClientSettingsProvider';
 import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
@@ -58,6 +60,23 @@ import {RootStackNavigator} from '#src/Navigation/Stacks/RootStackNavigator';
 //
 // 20251013 RN 0.81 apparently this is no longer needed sooooo yolo!
 // ViewReactNativeStyleAttributes.scaleY = true;
+
+// Polyfill for crypto.getRandomValues() required by uuid library in React Native
+if (typeof global.crypto === 'undefined') {
+  global.crypto = {} as Crypto;
+}
+if (typeof global.crypto.getRandomValues === 'undefined') {
+  global.crypto.getRandomValues = function <T extends ArrayBufferView | null>(array: T): T {
+    if (!array) {
+      throw new Error('getRandomValues() requires a non-null argument');
+    }
+    const bytes = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = Math.floor(Math.random() * 256);
+    }
+    return array;
+  };
+}
 
 // For development, disable warning popups because I already respond to them.
 if (__DEV__) {
@@ -122,28 +141,31 @@ function App(): React.JSX.Element {
                                     <PrivilegeProvider>
                                       <RoleProvider>
                                         <SocketProvider>
-                                          <TwitarrProvider>
-                                            <EnableUserNotificationProvider>
-                                              <FeatureProvider>
-                                                <ClientSettingsProvider>
-                                                  <CruiseProvider>
-                                                    <FilterProvider>
-                                                      <SignOutProvider>
-                                                        <ShellProvider>
-                                                          <AppEventHandler />
-                                                          <AppFocusHandler />
-                                                          <PushNotificationService />
-                                                          <NotificationDataListener />
-                                                          <NotificationDataPoller />
-                                                          <RootStackNavigator />
-                                                        </ShellProvider>
-                                                      </SignOutProvider>
-                                                    </FilterProvider>
-                                                  </CruiseProvider>
-                                                </ClientSettingsProvider>
-                                              </FeatureProvider>
-                                            </EnableUserNotificationProvider>
-                                          </TwitarrProvider>
+                                          <CallProvider>
+                                            <TwitarrProvider>
+                                              <EnableUserNotificationProvider>
+                                                <FeatureProvider>
+                                                  <ClientSettingsProvider>
+                                                    <CruiseProvider>
+                                                      <FilterProvider>
+                                                        <SignOutProvider>
+                                                          <ShellProvider>
+                                                            <AppEventHandler />
+                                                            <AppFocusHandler />
+                                                            <PushNotificationService />
+                                                            <NotificationDataListener />
+                                                            <NotificationDataPoller />
+                                                            <RootStackNavigator />
+                                                            <CallOverlay />
+                                                          </ShellProvider>
+                                                        </SignOutProvider>
+                                                      </FilterProvider>
+                                                    </CruiseProvider>
+                                                  </ClientSettingsProvider>
+                                                </FeatureProvider>
+                                              </EnableUserNotificationProvider>
+                                            </TwitarrProvider>
+                                          </CallProvider>
                                         </SocketProvider>
                                       </RoleProvider>
                                     </PrivilegeProvider>

@@ -5,7 +5,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
-import {SeamailFAB} from '#src/Components/Buttons/FloatingActionButtons/SeamailFAB';
+import {ChatFABGroup} from '#src/Components/Buttons/FloatingActionButtons/ChatFABGroup';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SeamailAccountButtons} from '#src/Components/Buttons/SegmentedButtons/SeamailAccountButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -174,7 +174,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
         hasNextPage={hasNextPage}
         handleLoadNext={handleLoadNext}
       />
-      <SeamailFAB showLabel={showFabLabel} />
+      <ChatFABGroup showLabel={showFabLabel} />
     </AppView>
   );
 };

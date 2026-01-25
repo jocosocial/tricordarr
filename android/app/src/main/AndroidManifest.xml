@@ -22,6 +22,14 @@
     -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <!--
+    Microphone permission for voice calls. Required for VoIP functionality.
+    -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!--
+    Audio settings permission for speaker/earpiece switching. Required for call audio routing.
+    -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <!--
     Used to store images if the user wants to save them. Non-essential
     -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
