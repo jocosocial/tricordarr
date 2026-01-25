@@ -64,10 +64,9 @@ export const allRoutes: RouteDefinition[] = [
   },
 
   // ==================== LFG Tab Routes ====================
-  {screen: LfgStackComponents.lfgFindScreen, path: 'lfg'},
+  {screen: LfgStackComponents.lfgListScreen, path: 'lfg/:endpoint?'},
   {screen: CommonStackComponents.lfgChatScreen, path: 'lfg/:fezID/chat'},
   {screen: CommonStackComponents.lfgHelpScreen, path: 'lfg/faq'},
-  {screen: LfgStackComponents.lfgJoinedScreen, path: 'lfg/joined'},
   {screen: CommonStackComponents.lfgScreen, path: 'lfg/:fezID'},
 
   // ==================== Schedule Tab Routes ====================

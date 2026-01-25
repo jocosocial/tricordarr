@@ -24,15 +24,13 @@ enum ForumSortDirection: String, Codable {
   case descending = "descending"
 }
 
-/// LFG stack components enum matching TypeScript LfgStackComponents
+/// FezListEndpoints enum matching TypeScript FezListEndpoints type
+/// Used for the default LFG screen configuration
 /// Seeing this here.... I really hyper-fixated on this one feature that I'd bet money no-one used.
 /// This lets you configure the default screen of the LFG tab. Wow......
-enum LfgStackComponents: String, Codable {
-  case lfgOwnedScreen = "LfgOwnedScreen"
-  case lfgJoinedScreen = "LfgJoinedScreen"
-  case lfgFindScreen = "LfgFindScreen"
-  case lfgSettingsScreen = "LfgSettingsScreen"
-  case lfgCreateScreen = "LfgCreateScreen"
-  case lfgFormerScreen = "LfgFormerScreen"
-  case lfgSearchScreen = "LfgSearchScreen"
+enum FezListEndpoints: String, Codable {
+  case open = "open"
+  case joined = "joined"
+  case owner = "owner"
+  case former = "former"
 }

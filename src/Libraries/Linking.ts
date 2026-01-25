@@ -5,7 +5,6 @@ import {getPath} from '#src/Libraries/RouteDefinitions';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {ForumStackComponents} from '#src/Navigation/Stacks/ForumStackNavigator';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
 import {OobeStackComponents} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {RootStackComponents, RootStackParamList} from '#src/Navigation/Stacks/RootStackNavigator';
@@ -71,15 +70,29 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           },
         },
         LfgTab: {
-          initialRouteName: LfgStackComponents.lfgFindScreen,
+          initialRouteName: 'LfgListScreen',
           screens: {
-            LfgTab: getPath(LfgStackComponents.lfgFindScreen),
+            LfgListScreen: {
+              path: 'lfg/:endpoint?',
+              parse: {
+                endpoint: (value?: string) => {
+                  // Default to 'open' when no endpoint in URL
+                  if (!value || value === '') return 'open';
+                  return value;
+                },
+              },
+              stringify: {
+                endpoint: (value: string) => {
+                  // /lfg maps to 'open', others include endpoint in URL
+                  return value === 'open' ? undefined : value;
+                },
+              },
+            },
             LfgScreen: getPath(CommonStackComponents.lfgScreen),
             LfgChatScreen: getPath(CommonStackComponents.lfgChatScreen),
             LfgHelpScreen: getPath(CommonStackComponents.lfgHelpScreen),
-            LfgJoinedScreen: getPath(LfgStackComponents.lfgJoinedScreen),
           },
-        },
+        } as any,
         ScheduleTab: {
           initialRouteName: CommonStackComponents.scheduleDayScreen,
           screens: {

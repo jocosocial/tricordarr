@@ -104,8 +104,8 @@ export const NotificationsMenu = () => {
           leadingIcon={AppIcons.lfg}
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.lfgTab, {
-              screen: LfgStackComponents.lfgJoinedScreen,
-              params: {onlyNew: true},
+              screen: LfgStackComponents.lfgListScreen,
+              params: {endpoint: 'joined', onlyNew: true},
             })
           }
         />

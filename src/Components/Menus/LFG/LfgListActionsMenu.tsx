@@ -15,14 +15,18 @@ export const LfgListActionsMenu = () => {
 
   const menuAnchor = <Item title={'Schedule Options'} iconName={AppIcons.menu} onPress={openMenu} />;
 
+  // Check if we're on the former LFGs screen
+  const isFormerScreen =
+    route.name === LfgStackComponents.lfgListScreen && 'endpoint' in route.params && route.params.endpoint === 'former';
+
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      {route.name !== LfgStackComponents.lfgFormerScreen && (
+      {!isFormerScreen && (
         <>
           <Menu.Item
             leadingIcon={AppIcons.lfgFormer}
             title={'Former LFGs'}
-            onPress={() => navigation.push(LfgStackComponents.lfgFormerScreen)}
+            onPress={() => navigation.push(LfgStackComponents.lfgListScreen, {endpoint: 'former'})}
           />
           <Divider bold={true} />
         </>

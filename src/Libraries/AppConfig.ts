@@ -3,8 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from '#src/Libraries/Network/APIClient';
 import {StorageKeys} from '#src/Libraries/Storage';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
+import {FezListEndpoints} from '#src/Types';
 
 export type PushNotificationConfig = {
   [_key in keyof typeof NotificationTypeData]: boolean;
@@ -27,7 +27,7 @@ export interface ScheduleConfig {
   eventsShowOpenLfgs: boolean;
   hidePastLfgs: boolean;
   enableLateDayFlip: boolean;
-  defaultLfgScreen: LfgStackComponents;
+  defaultLfgList: FezListEndpoints;
   overlapExcludeDurationHours: number;
 }
 
@@ -121,7 +121,7 @@ export const defaultAppConfig: AppConfig = {
     enableLateDayFlip: true,
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
-    defaultLfgScreen: LfgStackComponents.lfgFindScreen,
+    defaultLfgList: 'open',
     overlapExcludeDurationHours: 4,
   },
   portTimeZoneID: 'America/New_York',
@@ -181,6 +181,15 @@ export const getAppConfig = async () => {
   }
   if (appConfig.schedule.overlapExcludeDurationHours === undefined) {
     appConfig.schedule.overlapExcludeDurationHours = 4;
+  }
+  // Migration: defaultLfgScreen -> defaultLfgList
+  if ((appConfig.schedule as any).defaultLfgScreen !== undefined && appConfig.schedule.defaultLfgList === undefined) {
+    appConfig.schedule.defaultLfgList = (appConfig.schedule as any).defaultLfgScreen;
+    delete (appConfig.schedule as any).defaultLfgScreen;
+  }
+  // Ensure defaultLfgList exists, defaulting to 'open'
+  if (appConfig.schedule.defaultLfgList === undefined) {
+    appConfig.schedule.defaultLfgList = 'open';
   }
 
   // Ok now we're done

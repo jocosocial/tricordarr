@@ -1,4 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
+import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
@@ -15,23 +16,29 @@ import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
+import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToNow} from '#src/Hooks/useScrollToNow';
-import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {LfgStackComponents, LfgStackParamList, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 import {FezListEndpoints} from '#src/Types';
 
-interface Props {
+interface LfgListScreenInnerProps {
   endpoint: FezListEndpoints;
+  setEndpoint: (endpoint: FezListEndpoints) => void;
   enableFilters?: boolean;
   enableReportOnly?: boolean;
   listHeader?: ReactElement;
@@ -40,19 +47,18 @@ interface Props {
 }
 
 /**
- * Generic LFG list screen. Not intended to be routed to directly. Use screens
- * such as LfgFindScreen or LfgJoinedScreen instead.
- *
+ * Inner component containing the actual LFG list logic.
  * This assumes LoggedIn, PreRegistration, and Disabled checkpoints have been handled.
  */
-export const LfgListScreen = ({
+const LfgListScreenInner = ({
   endpoint,
+  setEndpoint,
   enableFilters = true,
   enableReportOnly,
   listHeader,
   showFab = true,
   onlyNewInitial,
-}: Props) => {
+}: LfgListScreenInnerProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} = useFilter();
   const {commonStyles} = useStyles();
   const [fezList, setFezList] = useState<FezData[]>([]);
@@ -175,35 +181,109 @@ export const LfgListScreen = ({
   }, [isError, onQueryError]);
 
   return (
+    <AppView>
+      <TimezoneWarningView />
+      <ScheduleHeaderView
+        selectedCruiseDay={selectedCruiseDay}
+        setCruiseDay={handleSetCruiseDay}
+        scrollToNow={scrollToNow}
+      />
+      <View style={[commonStyles.flex]}>
+        {isLoading || isSwitchingDays ? (
+          <View style={commonStyles.loadingContainer}>
+            <ActivityIndicator size={'large'} />
+          </View>
+        ) : (
+          <LFGFlatList
+            listRef={listRef}
+            items={fezList}
+            refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            separator={'day'}
+            onScrollThreshold={onScrollThreshold}
+            handleLoadNext={handleLoadNext}
+            hasNextPage={hasNextPage}
+            enableReportOnly={enableReportOnly}
+            listHeader={listHeader}
+          />
+        )}
+      </View>
+      {showFab && <LfgFAB showLabel={showFabLabel} endpoint={endpoint} setEndpoint={setEndpoint} />}
+    </AppView>
+  );
+};
+
+interface LfgListScreenWithEndpointProps
+  extends StackScreenProps<LfgStackParamList, LfgStackComponents.lfgListScreen> {}
+
+/**
+ * Middle component that handles route parameters and state management.
+ */
+const LfgListScreenWithEndpoint = ({route, navigation}: LfgListScreenWithEndpointProps) => {
+  const [endpoint, setEndpoint] = useState<FezListEndpoints>(route.params.endpoint);
+
+  // Sync state with route params (for external navigation)
+  useEffect(() => {
+    if (route.params.endpoint !== endpoint) {
+      setEndpoint(route.params.endpoint);
+    }
+  }, [route.params.endpoint, endpoint]);
+
+  // Determine endpoint-specific props
+  const enableFilters = endpoint !== 'former';
+  const enableReportOnly = endpoint === 'former';
+  const showFab = endpoint !== 'former';
+
+  // Determine urlPath based on endpoint
+  const urlPathMap: Record<FezListEndpoints, string> = {
+    open: '/lfg',
+    joined: '/lfg/joined',
+    owner: '/lfg/owned',
+    former: '/lfg/former',
+  };
+
+  const wrappedSetEndpoint = useCallback(
+    (newEndpoint: FezListEndpoints) => {
+      setEndpoint(newEndpoint);
+      navigation.setParams({endpoint: newEndpoint});
+    },
+    [navigation],
+  );
+
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={urlPathMap[endpoint]}>
+      <LfgListScreenInner
+        endpoint={endpoint}
+        setEndpoint={wrappedSetEndpoint}
+        enableFilters={enableFilters}
+        enableReportOnly={enableReportOnly}
+        showFab={showFab}
+        onlyNewInitial={route.params.onlyNew}
+      />
+    </DisabledFeatureScreen>
+  );
+};
+
+export type Props = StackScreenProps<LfgStackParamList, LfgStackComponents.lfgListScreen>;
+
+/**
+ * Main LFG list screen that handles route props and checkpoints.
+ * This screen consolidates LfgFindScreen, LfgJoinedScreen, LfgOwnedScreen, and LfgFormerScreen.
+ */
+export const LfgListScreen = (props: Props) => {
+  const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
+
+  useEffect(() => {
+    const shouldShowBackButton = props.route.params.endpoint === 'former' && props.navigation.canGoBack();
+    props.navigation.setOptions({
+      headerLeft: shouldShowBackButton ? getLeftBackHeaderButtons : getLeftMainHeaderButtons,
+    });
+  }, [getLeftMainHeaderButtons, getLeftBackHeaderButtons, props.navigation, props.route.params.endpoint]);
+
+  return (
     <LoggedInScreen>
-      <AppView>
-        <TimezoneWarningView />
-        <ScheduleHeaderView
-          selectedCruiseDay={selectedCruiseDay}
-          setCruiseDay={handleSetCruiseDay}
-          scrollToNow={scrollToNow}
-        />
-        <View style={[commonStyles.flex]}>
-          {isLoading || isSwitchingDays ? (
-            <View style={commonStyles.loadingContainer}>
-              <ActivityIndicator size={'large'} />
-            </View>
-          ) : (
-            <LFGFlatList
-              listRef={listRef}
-              items={fezList}
-              refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-              separator={'day'}
-              onScrollThreshold={onScrollThreshold}
-              handleLoadNext={handleLoadNext}
-              hasNextPage={hasNextPage}
-              enableReportOnly={enableReportOnly}
-              listHeader={listHeader}
-            />
-          )}
-        </View>
-        {showFab && <LfgFAB showLabel={showFabLabel} />}
-      </AppView>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen}>
+        <LfgListScreenWithEndpoint {...props} />
+      </PreRegistrationScreen>
     </LoggedInScreen>
   );
 };
