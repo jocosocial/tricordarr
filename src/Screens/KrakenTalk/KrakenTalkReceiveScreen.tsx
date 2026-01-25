@@ -3,7 +3,7 @@ import React, {useCallback, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -41,7 +41,7 @@ export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
         <PaddedContentView padSides={false}>
           <View style={styles.container}>
             <View style={styles.avatarContainer}>
-              <UserAvatarImage
+              <AvatarImage
                 userHeader={{
                   userID: route.params.callerUserID,
                   username: route.params.callerUsername,

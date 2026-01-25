@@ -5,7 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import ErrorBoundary from 'react-native-error-boundary';
 import { IconButton, Text } from 'react-native-paper';
 
-import { UserAvatarImage } from '#src/Components/Images/UserAvatarImage';
+import { AvatarImage } from '#src/Components/Images/AvatarImage';
 import { CallState, useCall } from '#src/Context/Contexts/CallContext';
 import { useAppTheme } from '#src/Context/Contexts/ThemeContext';
 import { ChatStackParamList, ChatStackScreenComponents } from '#src/Navigation/Stacks/ChatStackNavigator';
@@ -95,7 +95,7 @@ const CallOverlayInner = () => {
     <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.8}>
       <View style={[styles.content, { backgroundColor: theme.colors.surface }]}>
         <View style={styles.avatarContainer}>
-          <UserAvatarImage userHeader={currentCall.remoteUser} small={true} />
+          <AvatarImage userHeader={currentCall.remoteUser} small={true} />
         </View>
 
         <View style={styles.infoContainer}>

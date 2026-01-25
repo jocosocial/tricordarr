@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {IconButton, Text} from 'react-native-paper';
 
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {AppView} from '#src/Components/Views/AppView';
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -63,7 +63,7 @@ export const ActiveCallScreen = ({route, navigation}: Props) => {
       <View style={styles.container}>
         <View style={styles.userSection}>
           <View style={styles.avatarContainer}>
-            <UserAvatarImage userHeader={currentCall.remoteUser} />
+            <AvatarImage userHeader={currentCall.remoteUser} />
           </View>
 
           <Text variant={'headlineMedium'} style={styles.username}>
