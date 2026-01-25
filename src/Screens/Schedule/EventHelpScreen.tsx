@@ -4,8 +4,10 @@ import React from 'react';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
+import {NeedsPhotographerHelpTopicView} from '#src/Components/Views/Help/Common/NeedsPhotographerHelpTopicView';
 import {OfficialPerformersHelpTopicView} from '#src/Components/Views/Help/Common/OfficialPerformersHelpTopicView';
 import {OverlappingHelpTopicView} from '#src/Components/Views/Help/Common/OverlappingHelpTopicView';
+import {PhotographingHelpTopicView} from '#src/Components/Views/Help/Common/PhotographingHelpTopicView';
 import {ShadowPerformerProfilesHelpTopicView} from '#src/Components/Views/Help/Common/ShadowPerformerProfilesHelpTopicView';
 import {ShareButtonHelpTopicView} from '#src/Components/Views/Help/Common/ShareButtonHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
@@ -68,6 +70,9 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
           </HelpTopicView>
         )}
         <HelpButtonHelpTopicView />
+        <HelpChapterTitleView title={'Privileged Actions'} />
+        <PhotographingHelpTopicView />
+        <NeedsPhotographerHelpTopicView />
       </ScrollingContentView>
     </AppView>
   );
