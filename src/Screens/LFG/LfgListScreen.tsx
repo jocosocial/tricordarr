@@ -45,7 +45,6 @@ interface LfgListScreenInnerProps {
   showFab?: boolean;
   onlyNewInitial?: boolean;
   cruiseDayInitial?: number;
-  // route: StackScreenProps<LfgStackParamList, LfgStackComponents.lfgListScreen>['route'];
 }
 
 /**
@@ -61,7 +60,6 @@ const LfgListScreenInner = ({
   showFab = true,
   onlyNewInitial,
   cruiseDayInitial,
-  // route,
 }: LfgListScreenInnerProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} = useLfgFilter();
   const {commonStyles} = useStyles();
@@ -181,21 +179,6 @@ const LfgListScreenInner = ({
     }
   }, [onlyNewInitial, setLfgOnlyNew]);
 
-  /**
-   * Handle intent-based navigation for cruise day changes.
-   * Uses a ref to track processed intents, ensuring each intent only triggers once.
-   * This prevents re-render loops when selectedCruiseDay changes.
-   */
-  // useEffect(() => {
-  //   const intent = route.params?.intent;
-  //   const cruiseDay = route.params?.cruiseDay;
-
-  //   if (intent && cruiseDay !== undefined && intent !== processedIntentRef.current) {
-  //     processedIntentRef.current = intent;
-  //     handleSetCruiseDay(cruiseDay);
-  //   }
-  // }, [route.params?.intent, route.params?.cruiseDay, handleSetCruiseDay]);
-
   // Reset switching state on error to prevent stuck loading spinner
   useEffect(() => {
     if (isError) {
@@ -286,7 +269,6 @@ const LfgListScreenWithEndpoint = ({route, navigation}: LfgListScreenWithEndpoin
         showFab={showFab}
         onlyNewInitial={route.params.onlyNew}
         cruiseDayInitial={route.params.cruiseDay}
-        // route={route}
       />
     </DisabledFeatureScreen>
   );
