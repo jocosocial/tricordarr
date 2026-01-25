@@ -13,6 +13,11 @@ interface UseCruiseDayPickerOptions<T> {
    * This runs synchronously before React re-renders, providing instant feedback.
    */
   clearList: () => void;
+  /**
+   * Optional default cruise day to use instead of adjustedCruiseDayToday.
+   * Useful for navigation where a specific day should be shown initially.
+   */
+  defaultCruiseDay?: number;
 }
 
 interface UseCruiseDayPickerResult {
@@ -74,12 +79,18 @@ interface UseCruiseDayPickerResult {
  * }, [isError, onQueryError]);
  * ```
  */
-export function useCruiseDayPicker<T>({listRef, clearList}: UseCruiseDayPickerOptions<T>): UseCruiseDayPickerResult {
+export function useCruiseDayPicker<T>({
+  listRef,
+  clearList,
+  defaultCruiseDay,
+}: UseCruiseDayPickerOptions<T>): UseCruiseDayPickerResult {
   const {adjustedCruiseDayToday} = useCruise();
 
-  // Default to current day if cruise context is ready, otherwise day 1
+  // Default to defaultCruiseDay if provided, otherwise current day if cruise context is ready, otherwise day 1
   // Note: selectedCruiseDay can be 0 (meaning "All Days"), which is different from cruiseDay: 0 in the API
-  const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday || 1);
+  const [selectedCruiseDay, setSelectedCruiseDay] = useState(
+    defaultCruiseDay !== undefined ? defaultCruiseDay : adjustedCruiseDayToday || 1,
+  );
   const [isSwitchingDays, setIsSwitchingDays] = useState(false);
 
   const handleSetCruiseDay = useCallback(

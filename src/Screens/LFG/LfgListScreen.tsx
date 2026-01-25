@@ -44,6 +44,7 @@ interface LfgListScreenInnerProps {
   listHeader?: ReactElement;
   showFab?: boolean;
   onlyNewInitial?: boolean;
+  cruiseDayInitial?: number;
 }
 
 /**
@@ -58,6 +59,7 @@ const LfgListScreenInner = ({
   listHeader,
   showFab = true,
   onlyNewInitial,
+  cruiseDayInitial,
 }: LfgListScreenInnerProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} = useFilter();
   const {commonStyles} = useStyles();
@@ -67,6 +69,7 @@ const LfgListScreenInner = ({
   const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
     listRef,
     clearList: useCallback(() => setFezList([]), []),
+    defaultCruiseDay: cruiseDayInitial,
   });
   const {data, refetch, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching} =
     useLfgListQuery({
@@ -263,6 +266,7 @@ const LfgListScreenWithEndpoint = ({route, navigation}: LfgListScreenWithEndpoin
         enableReportOnly={enableReportOnly}
         showFab={showFab}
         onlyNewInitial={route.params.onlyNew}
+        cruiseDayInitial={route.params.cruiseDay}
       />
     </DisabledFeatureScreen>
   );
