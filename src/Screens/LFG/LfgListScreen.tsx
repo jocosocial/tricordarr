@@ -73,7 +73,8 @@ const LfgListScreenInner = ({
       endpoint: endpoint,
       fezType: lfgTypeFilter,
       // @TODO we intend to change this some day. Upstream Swiftarr issue.
-      cruiseDay: selectedCruiseDay - 1,
+      // Don't pass cruiseDay for 'former' endpoint to show all days
+      cruiseDay: endpoint === 'former' ? undefined : selectedCruiseDay - 1,
       hidePast: lfgHidePastFilter,
       onlyNew: lfgOnlyNew,
     });
@@ -183,11 +184,13 @@ const LfgListScreenInner = ({
   return (
     <AppView>
       <TimezoneWarningView />
-      <ScheduleHeaderView
-        selectedCruiseDay={selectedCruiseDay}
-        setCruiseDay={handleSetCruiseDay}
-        scrollToNow={scrollToNow}
-      />
+      {endpoint !== 'former' && (
+        <ScheduleHeaderView
+          selectedCruiseDay={selectedCruiseDay}
+          setCruiseDay={handleSetCruiseDay}
+          scrollToNow={scrollToNow}
+        />
+      )}
       <View style={[commonStyles.flex]}>
         {isLoading || isSwitchingDays ? (
           <View style={commonStyles.loadingContainer}>
