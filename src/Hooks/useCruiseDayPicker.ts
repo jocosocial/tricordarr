@@ -17,7 +17,8 @@ interface UseCruiseDayPickerOptions<T> {
 
 interface UseCruiseDayPickerResult {
   /**
-   * The currently selected cruise day (1-indexed).
+   * The currently selected cruise day (1-indexed, or 0 for "All Days").
+   * Note: 0 means "All Days" in the UI, not the same as cruiseDay: 0 in the API.
    */
   selectedCruiseDay: number;
   /**
@@ -76,7 +77,8 @@ interface UseCruiseDayPickerResult {
 export function useCruiseDayPicker<T>({listRef, clearList}: UseCruiseDayPickerOptions<T>): UseCruiseDayPickerResult {
   const {adjustedCruiseDayToday} = useCruise();
 
-  // Default to day 1 if cruise context isn't ready yet
+  // Default to current day if cruise context is ready, otherwise day 1
+  // Note: selectedCruiseDay can be 0 (meaning "All Days"), which is different from cruiseDay: 0 in the API
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday || 1);
   const [isSwitchingDays, setIsSwitchingDays] = useState(false);
 
@@ -86,6 +88,7 @@ export function useCruiseDayPicker<T>({listRef, clearList}: UseCruiseDayPickerOp
       const newDay = typeof day === 'function' ? day(selectedCruiseDay) : day;
 
       // Skip if selecting the same day - prevents stuck loading spinner
+      // Note: 0 is a valid value (means "All Days")
       if (newDay === selectedCruiseDay) {
         return;
       }

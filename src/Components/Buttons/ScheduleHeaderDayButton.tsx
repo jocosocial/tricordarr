@@ -1,11 +1,8 @@
 import {format} from 'date-fns';
 import React from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Text} from 'react-native-paper';
 
+import {ScheduleHeaderButton} from '#src/Components/Buttons/ScheduleHeaderButton';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CruiseDayData} from '#src/Types';
 
 interface ScheduleHeaderDayViewProps {
@@ -16,47 +13,17 @@ interface ScheduleHeaderDayViewProps {
 }
 
 export const ScheduleHeaderDayButton = (props: ScheduleHeaderDayViewProps) => {
-  const {commonStyles} = useStyles();
-  const {theme} = useAppTheme();
   const {adjustedCruiseDayToday} = useCruise();
   const isToday = props.cruiseDay.cruiseDay === adjustedCruiseDayToday;
 
-  const styles = StyleSheet.create({
-    view: {
-      backgroundColor: props.isSelectedDay ? theme.colors.inverseSurface : theme.colors.inverseOnSurface,
-      ...commonStyles.roundedBorderLarge,
-      ...commonStyles.justifyCenter,
-      ...commonStyles.alignItemsCenter,
-      ...commonStyles.paddingHorizontalSmall,
-      ...commonStyles.paddingVerticalSmall,
-    },
-    dayText: {
-      ...commonStyles.bold,
-      ...(isToday ? commonStyles.underline : undefined),
-      color: props.isSelectedDay ? theme.colors.inverseOnSurface : theme.colors.inverseSurface,
-    },
-    dateText: {
-      color: props.isSelectedDay ? theme.colors.inverseOnSurface : theme.colors.inverseSurface,
-    },
-    buttonContainer: {
-      ...commonStyles.paddingHorizontalTiny,
-    },
-  });
-
   return (
-    <TouchableOpacity
-      style={styles.buttonContainer}
+    <ScheduleHeaderButton
+      isSelected={props.isSelectedDay}
       onPress={props.onPress}
       disabled={props.disabled}
-      activeOpacity={1}>
-      <View style={styles.view}>
-        <Text style={styles.dayText} variant={'titleLarge'}>
-          {format(props.cruiseDay.date, 'EEE')}
-        </Text>
-        <Text style={styles.dateText} variant={'bodyMedium'}>
-          {format(props.cruiseDay.date, 'MMM dd')}
-        </Text>
-      </View>
-    </TouchableOpacity>
+      primaryText={format(props.cruiseDay.date, 'EEE')}
+      secondaryText={format(props.cruiseDay.date, 'MMM dd')}
+      underlinePrimary={isToday}
+    />
   );
 };

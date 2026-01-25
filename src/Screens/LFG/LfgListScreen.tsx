@@ -74,7 +74,8 @@ const LfgListScreenInner = ({
       fezType: lfgTypeFilter,
       // @TODO we intend to change this some day. Upstream Swiftarr issue.
       // Don't pass cruiseDay for 'former' endpoint to show all days
-      cruiseDay: endpoint === 'former' ? undefined : selectedCruiseDay - 1,
+      // selectedCruiseDay === 0 means "All Days" in the UI, pass undefined to API to get all days
+      cruiseDay: endpoint === 'former' || selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
       hidePast: lfgHidePastFilter,
       onlyNew: lfgOnlyNew,
     });
@@ -189,6 +190,7 @@ const LfgListScreenInner = ({
           selectedCruiseDay={selectedCruiseDay}
           setCruiseDay={handleSetCruiseDay}
           scrollToNow={scrollToNow}
+          enableAll={true}
         />
       )}
       <View style={[commonStyles.flex]}>
