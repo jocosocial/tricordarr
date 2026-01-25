@@ -182,15 +182,6 @@ export const getAppConfig = async () => {
   if (appConfig.schedule.overlapExcludeDurationHours === undefined) {
     appConfig.schedule.overlapExcludeDurationHours = 4;
   }
-  // Migration: defaultLfgScreen -> defaultLfgList
-  if ((appConfig.schedule as any).defaultLfgScreen !== undefined && appConfig.schedule.defaultLfgList === undefined) {
-    appConfig.schedule.defaultLfgList = (appConfig.schedule as any).defaultLfgScreen;
-    delete (appConfig.schedule as any).defaultLfgScreen;
-  }
-  // Ensure defaultLfgList exists, defaulting to 'open'
-  if (appConfig.schedule.defaultLfgList === undefined) {
-    appConfig.schedule.defaultLfgList = 'open';
-  }
 
   // Ok now we're done
   return appConfig;
