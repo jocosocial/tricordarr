@@ -120,7 +120,7 @@ export const NotificationsMenu = () => {
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.scheduleTab, {
               screen: CommonStackComponents.scheduleDayScreen,
-              params: {cruiseDay: 0, setPersonalFilter: true},
+              params: {cruiseDay: 0, setPersonalFilter: true, onlyNew: true, intent: `personalEventAddedTo_${Date.now()}`},
             })
           }
         />
@@ -129,7 +129,12 @@ export const NotificationsMenu = () => {
         <Menu.Item
           title={`${data?.newPrivateEventMessageCount} new private event ${pluralize('message', data?.newPrivateEventMessageCount)}`}
           leadingIcon={AppIcons.personalEvent}
-          onPress={() => bottomTabNavigator.navigate(BottomTabComponents.scheduleTab)}
+          onPress={() =>
+            bottomTabNavigator.navigate(BottomTabComponents.scheduleTab, {
+              screen: CommonStackComponents.scheduleDayScreen,
+              params: {cruiseDay: 0, setPersonalFilter: true, onlyNew: true, intent: `personalEventMessage_${Date.now()}`},
+            })
+          }
         />
       )}
       <Divider bold={true} />

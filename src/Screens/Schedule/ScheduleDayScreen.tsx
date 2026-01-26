@@ -32,27 +32,25 @@ import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScre
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
+interface ScheduleDayScreenActualProps {
+  onlyNewInitial?: boolean;
+  cruiseDayInitial?: number;
+  setPersonalFilterInitial?: boolean;
+  navigation: any;
+}
+
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
 
-export const ScheduleDayScreen = (props: Props) => {
-  const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
-
-  useEffect(() => {
-    props.navigation.setOptions({
-      headerLeft: props.route.params?.noDrawer ? getLeftBackHeaderButtons : getLeftMainHeaderButtons,
-    });
-  }, [getLeftMainHeaderButtons, getLeftBackHeaderButtons, props.navigation, props.route.params?.noDrawer]);
-
-  return (
-    <LoggedInScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events'}>
-        <ScheduleDayScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </LoggedInScreen>
-  );
-};
-
-const ScheduleDayScreenInner = ({navigation, route}: Props) => {
+/**
+ * Inner component containing the actual schedule day logic.
+ * This assumes LoggedIn and Disabled checkpoints have been handled.
+ */
+const ScheduleDayScreenActual = ({
+  navigation,
+  onlyNewInitial,
+  cruiseDayInitial,
+  setPersonalFilterInitial,
+}: ScheduleDayScreenActualProps) => {
   const {commonStyles} = useStyles();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
@@ -60,11 +58,11 @@ const ScheduleDayScreenInner = ({navigation, route}: Props) => {
   const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
     listRef,
     clearList: useCallback(() => setScheduleList([]), []),
-    defaultCruiseDay: route.params?.cruiseDay,
+    defaultCruiseDay: cruiseDayInitial,
   });
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
-  const {scheduleFilterSettings, setEventPersonalFilter} = useScheduleFilter();
+  const {scheduleFilterSettings, setEventPersonalFilter, setEventPersonalUnreadFilter} = useScheduleFilter();
 
   const {
     data: eventData,
@@ -200,10 +198,21 @@ const ScheduleDayScreenInner = ({navigation, route}: Props) => {
    * because they want to see personal events. All other cases should be normal.
    */
   useEffect(() => {
-    if (route.params?.setPersonalFilter !== undefined) {
-      setEventPersonalFilter(route.params.setPersonalFilter);
+    if (setPersonalFilterInitial !== undefined) {
+      setEventPersonalFilter(setPersonalFilterInitial);
     }
-  }, [route.params, setEventPersonalFilter]);
+  }, [setPersonalFilterInitial, setEventPersonalFilter]);
+
+  /**
+   * This operates more like an intent than a state.
+   * When the user navigates from the NotificationsMenu it's almost certainly
+   * because they want to see unread personal events. All other cases should be normal.
+   */
+  useEffect(() => {
+    if (onlyNewInitial !== undefined) {
+      setEventPersonalUnreadFilter(onlyNewInitial);
+    }
+  }, [onlyNewInitial, setEventPersonalUnreadFilter]);
 
   useEffect(() => {
     console.log('[ScheduleDayScreen.tsx] Starting buildScheduleList useEffect.');
@@ -279,5 +288,41 @@ const ScheduleDayScreenInner = ({navigation, route}: Props) => {
       </View>
       <DayPlannerFAB selectedDay={selectedCruiseDay} />
     </AppView>
+  );
+};
+
+/**
+ * Middleware component that handles route parameters.
+ */
+const ScheduleDayScreenInner = ({navigation, route}: Props) => {
+  return (
+    <ScheduleDayScreenActual
+      key={route.params?.intent}
+      navigation={navigation}
+      onlyNewInitial={route.params?.onlyNew}
+      cruiseDayInitial={route.params?.cruiseDay}
+      setPersonalFilterInitial={route.params?.setPersonalFilter}
+    />
+  );
+};
+
+/**
+ * Main schedule day screen that handles checkpoints.
+ */
+export const ScheduleDayScreen = (props: Props) => {
+  const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
+
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerLeft: props.route.params?.noDrawer ? getLeftBackHeaderButtons : getLeftMainHeaderButtons,
+    });
+  }, [getLeftMainHeaderButtons, getLeftBackHeaderButtons, props.navigation, props.route.params?.noDrawer]);
+
+  return (
+    <LoggedInScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events'}>
+        <ScheduleDayScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </LoggedInScreen>
   );
 };

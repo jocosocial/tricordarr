@@ -9,10 +9,11 @@ export type WithIntent<T = {}> = T & {
 /**
  * Route params specific to ScheduleDayScreen.
  */
-export type ScheduleDayParams = {
+export type ScheduleDayParams = WithIntent<{
   cruiseDay?: number;
   setPersonalFilter?: boolean;
-};
+  onlyNew?: boolean;
+}>;
 
 /**
  * Optional route params for screens that don't need the drawer.
