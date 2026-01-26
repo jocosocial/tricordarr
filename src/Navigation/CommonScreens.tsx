@@ -39,6 +39,8 @@ import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen'
 import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
 import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
 import {LfgHelpScreen} from '#src/Screens/LFG/LfgHelpScreen';
+import {LfgListHelpScreen} from '#src/Screens/LFG/LfgListHelpScreen';
+import {LfgParticipationHelpScreen} from '#src/Screens/LFG/LfgParticipationHelpScreen';
 import {LfgParticipationScreen} from '#src/Screens/LFG/LfgParticipationScreen';
 import {LfgScreen} from '#src/Screens/LFG/LfgScreen';
 import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen';
@@ -276,7 +278,9 @@ export type CommonStackParamList = {
   SiteUIHelpScreen: undefined;
   DisabledHelpScreen: undefined;
   LfgHelpScreen: undefined;
+  LfgListHelpScreen: undefined;
   LfgCreateHelpScreen: undefined;
+  LfgParticipationHelpScreen: undefined;
   PersonalEventCreateHelpScreen: undefined;
   EventHelpScreen: {
     mode?: 'official' | 'shadow';
@@ -394,7 +398,9 @@ export enum CommonStackComponents {
   siteUIHelpScreen = 'SiteUIHelpScreen',
   disabledHelpScreen = 'DisabledHelpScreen',
   lfgHelpScreen = 'LfgHelpScreen',
+  lfgListHelpScreen = 'LfgListHelpScreen',
   lfgCreateHelpScreen = 'LfgCreateHelpScreen',
+  lfgParticipationHelpScreen = 'LfgParticipationHelpScreen',
   personalEventCreateHelpScreen = 'PersonalEventCreateHelpScreen',
   eventHelpScreen = 'EventHelpScreen',
   personalEventHelpScreen = 'PersonalEventHelpScreen',
@@ -454,7 +460,9 @@ export type HelpScreenComponents =
   | CommonStackComponents.siteUIHelpScreen
   | CommonStackComponents.disabledHelpScreen
   | CommonStackComponents.lfgHelpScreen
+  | CommonStackComponents.lfgListHelpScreen
   | CommonStackComponents.lfgCreateHelpScreen
+  | CommonStackComponents.lfgParticipationHelpScreen
   | CommonStackComponents.eventHelpScreen
   | CommonStackComponents.personalEventHelpScreen
   | CommonStackComponents.timeZoneHelpScreen
@@ -816,9 +824,19 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Looking For Group Help'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.lfgListHelpScreen}
+        component={LfgListHelpScreen}
+        options={{title: 'LFG List Help'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.lfgCreateHelpScreen}
         component={LfgCreateHelpScreen}
         options={{title: 'New LFG Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.lfgParticipationHelpScreen}
+        component={LfgParticipationHelpScreen}
+        options={{title: 'LFG Participation Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.personalEventCreateHelpScreen}

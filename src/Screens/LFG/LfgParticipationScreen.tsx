@@ -89,7 +89,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.lfgHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.lfgParticipationHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>
