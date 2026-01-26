@@ -15,8 +15,8 @@ export const LfgListHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
-            The LFG list screen shows all LFG events. You can browse, search, and filter LFGs to find activities to
-            join or manage the ones you've created.
+            The LFG list screen shows all LFG events. You can browse, search, and filter LFGs to find activities to join
+            or manage the ones you've created.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Floating Action Button'}>
