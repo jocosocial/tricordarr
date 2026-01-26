@@ -96,7 +96,7 @@ export const NotificationsMenu = () => {
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.lfgTab, {
               screen: LfgStackComponents.lfgListScreen,
-              params: {endpoint: 'joined', cruiseDay: 0, intent: `lfgAddedTo_${Date.now()}`},
+              params: {endpoint: 'joined', cruiseDay: 0, onlyNew: true, intent: `lfgAddedTo_${Date.now()}`},
             })
           }
         />
