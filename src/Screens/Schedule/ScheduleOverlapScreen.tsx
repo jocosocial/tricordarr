@@ -285,7 +285,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
               leadingIcon={AppIcons.help}
               onPress={() => {
                 closeMenu();
-                commonNavigation.push(CommonStackComponents.scheduleHelpScreen);
+                commonNavigation.push(CommonStackComponents.scheduleOverlapHelpScreen);
               }}
             />
           </AppMenu>

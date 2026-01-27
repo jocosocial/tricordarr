@@ -76,6 +76,12 @@ export const ScheduleHelpScreen = () => {
             icon={AppIcons.dayPlanner}
             onPress={() => commonNavigation.push(CommonStackComponents.scheduleDayPlannerHelpScreen)}
           />
+          <DataFieldListItem
+            title={'Overlapping Events'}
+            description={'View events, LFGs, and personal events that occur at the same time.'}
+            icon={AppIcons.calendarMultiple}
+            onPress={() => commonNavigation.push(CommonStackComponents.scheduleOverlapHelpScreen)}
+          />
         </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>

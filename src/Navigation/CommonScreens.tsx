@@ -72,6 +72,7 @@ import {ScheduleDayPlannerScreen} from '#src/Screens/Schedule/ScheduleDayPlanner
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {ScheduleHelpScreen} from '#src/Screens/Schedule/ScheduleHelpScreen';
 import {ScheduleImportScreen} from '#src/Screens/Schedule/ScheduleImportScreen';
+import {ScheduleOverlapHelpScreen} from '#src/Screens/Schedule/ScheduleOverlapHelpScreen';
 import {ScheduleOverlapScreen} from '#src/Screens/Schedule/ScheduleOverlapScreen';
 import {SeamailAddParticipantScreen} from '#src/Screens/Seamail/SeamailAddParticipantScreen';
 import {SeamailCreateHelpScreen} from '#src/Screens/Seamail/SeamailCreateHelpScreen';
@@ -258,6 +259,7 @@ export type CommonStackParamList = {
   ScheduleHelpScreen: undefined;
   ScheduleDayHelpScreen: undefined;
   ScheduleDayPlannerHelpScreen: undefined;
+  ScheduleOverlapHelpScreen: undefined;
   ForumPostSearchScreen: {
     category?: CategoryData;
     forum?: ForumListData | ForumData;
@@ -384,6 +386,7 @@ export enum CommonStackComponents {
   scheduleHelpScreen = 'ScheduleHelpScreen',
   scheduleDayHelpScreen = 'ScheduleDayHelpScreen',
   scheduleDayPlannerHelpScreen = 'ScheduleDayPlannerHelpScreen',
+  scheduleOverlapHelpScreen = 'ScheduleOverlapHelpScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
   seamailListHelpScreen = 'SeamailListHelpScreen',
@@ -441,6 +444,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.scheduleHelpScreen
   | CommonStackComponents.scheduleDayHelpScreen
   | CommonStackComponents.scheduleDayPlannerHelpScreen
+  | CommonStackComponents.scheduleOverlapHelpScreen
   | CommonStackComponents.userDirectoryHelpScreen
   | CommonStackComponents.forumHelpScreen
   | CommonStackComponents.forumCategoriesHelpScreen
@@ -752,6 +756,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.scheduleDayPlannerHelpScreen}
         component={ScheduleDayPlannerHelpScreen}
         options={{title: 'Day Planner Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleOverlapHelpScreen}
+        component={ScheduleOverlapHelpScreen}
+        options={{title: 'Overlapping Events Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostSearchScreen}
