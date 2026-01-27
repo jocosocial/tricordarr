@@ -4,6 +4,7 @@ import {ActivityIndicator, Text} from 'react-native-paper';
 
 import {SubmitIconButton} from '#src/Components/Buttons/IconButtons/SubmitIconButton';
 import {LaughReaction, LikeReaction, LoveReaction} from '#src/Components/Text/Reactions';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {LikeType} from '#src/Enums/LikeType';
@@ -20,7 +21,8 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
   const reactionMutation = useForumPostReactionMutation();
   const {commonStyles} = useStyles();
   const {data: profilePublicData} = useUserProfileQuery();
-  const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
+  const {currentUserID} = useSession();
+  const bySelf = currentUserID === forumPost.author.userID;
   const {data, isLoading, refetch} = useForumPostQuery(forumPost.postID.toString());
   const {theme} = useAppTheme();
 

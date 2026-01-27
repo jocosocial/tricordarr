@@ -7,11 +7,11 @@ import {ListItem} from '#src/Components/Lists/ListItem';
 import {SeamailListItemSwipeable} from '#src/Components/Swipeables/SeamailListItemSwipeable';
 import {SeamailMessageCountIndicator} from '#src/Components/Text/SeamailMessageCountIndicator';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface SeamailListItemProps {
@@ -19,7 +19,7 @@ interface SeamailListItemProps {
 }
 
 const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const navigation = useChatStack();
   const {commonStyles} = useStyles();
   let badgeCount = 0;
@@ -59,7 +59,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     },
   });
 
-  const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
+  const otherParticipants = fez.members?.participants.filter(p => p.userID !== currentUserID) || [];
   const description = otherParticipants.map(p => p.username).join(', ');
 
   const getAvatar = () => (

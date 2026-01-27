@@ -15,6 +15,7 @@ import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -38,6 +39,7 @@ export const ForumThreadScreenActionsMenu = ({
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const commonNavigation = useCommonStack();
   const relationMutation = useForumRelationMutation();
   const [refreshing, setRefreshing] = useState(false);
@@ -116,7 +118,7 @@ export const ForumThreadScreenActionsMenu = ({
         isFavorite={forumData.isFavorite}
         refreshing={refreshing}
       />
-      {forumData.creator.userID !== profilePublicData?.header.userID && (
+      {forumData.creator.userID !== currentUserID && (
         <MuteMenuItem
           onPress={handleMute}
           disabled={forumData.isFavorite}
@@ -124,7 +126,7 @@ export const ForumThreadScreenActionsMenu = ({
           refreshing={refreshing}
         />
       )}
-      {forumData.creator.userID === profilePublicData?.header.userID && (
+      {forumData.creator.userID === currentUserID && (
         <>
           <Menu.Item
             dense={false}

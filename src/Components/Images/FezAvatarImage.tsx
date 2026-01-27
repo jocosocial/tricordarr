@@ -3,9 +3,9 @@ import {TouchableOpacity} from 'react-native';
 import {Avatar} from 'react-native-paper';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {styleDefaults} from '#src/Styles';
 
@@ -14,9 +14,9 @@ interface FezAvatarImageProps {
 }
 
 export const FezAvatarImage = ({fez}: FezAvatarImageProps) => {
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const commonNavigation = useCommonStack();
-  const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
+  const otherParticipants = fez.members?.participants.filter(p => p.userID !== currentUserID) || [];
 
   // More than 1 other person makes this a group chat.
   // 0 others is probably an error but to deal with it, we make it a chat with yourself.

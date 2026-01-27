@@ -15,7 +15,7 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 export const AccountInfoSettingsScreen = () => {
   const {data: profilePublicData, refetch: refetchProfile} = useUserProfileQuery();
-  const {currentSession} = useSession();
+  const {currentSession, currentUserID} = useSession();
   const tokenData = currentSession?.tokenData || null;
   const {roles, refetch: refetchRoles} = useRoles();
   const [refreshing, setRefreshing] = useState(false);
@@ -34,7 +34,7 @@ export const AccountInfoSettingsScreen = () => {
       <ScrollView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View>
           <ListSubheader>Profile Public Data</ListSubheader>
-          <DataFieldListItem title={'UserID'} description={profilePublicData?.header.userID} />
+          <DataFieldListItem title={'UserID'} description={currentUserID} />
           <DataFieldListItem title={'Username'} description={profilePublicData?.header.username} />
         </View>
         <View>

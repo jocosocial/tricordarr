@@ -13,6 +13,7 @@ import {FezChatDetailsScreenActionsMenu} from '#src/Components/Menus/Fez/FezChat
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -20,7 +21,6 @@ import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.fezChatDetailsScreen>;
@@ -34,7 +34,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const {data, refetch, isFetching} = useFezQuery({fezID: route.params.fezID});
   const {fezSockets} = useSocket();
   const [fez, setFez] = useState<FezData>();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const queryClient = useQueryClient();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
 
@@ -87,7 +87,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
     return <LoadingView />;
   }
 
-  const manageUsers = fez.fezType === FezType.open && fez.owner.userID === profilePublicData?.header.userID;
+  const manageUsers = fez.fezType === FezType.open && fez.owner.userID === currentUserID;
 
   const fezSocket = fezSockets[fez.fezID];
 

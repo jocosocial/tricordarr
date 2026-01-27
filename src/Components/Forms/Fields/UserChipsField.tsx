@@ -4,8 +4,8 @@ import {View} from 'react-native';
 
 import {UserChip} from '#src/Components/Chips/UserChip';
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 interface UserChipsFieldProps {
@@ -21,7 +21,7 @@ export const UserChipsField = ({
   searchFavorersOnly = false,
 }: UserChipsFieldProps) => {
   const {commonStyles} = useStyles();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const [field, _, helpers] = useField<UserHeader[]>(name);
 
   const styles = {
@@ -38,7 +38,7 @@ export const UserChipsField = ({
   };
 
   const removeUserHeader = async (user: UserHeader) => {
-    if (!allowRemoveSelf && user.userID === profilePublicData?.header.userID) {
+    if (!allowRemoveSelf && user.userID === currentUserID) {
       return;
     }
     await helpers.setValue(field.value.filter(header => header.userID !== user.userID));
@@ -66,7 +66,7 @@ export const UserChipsField = ({
                 key={user.userID}
                 userHeader={user}
                 onClose={() => removeUserHeader(user)}
-                disabled={user.userID === profilePublicData?.header.userID}
+                disabled={user.userID === currentUserID}
               />
             ))}
           </View>

@@ -8,13 +8,13 @@ import {PostAsModeratorMenuItem} from '#src/Components/Menus/Items/PostAsModerat
 import {PostAsTwitarrTeamMenuItem} from '#src/Components/Menus/Items/PostAsTwitarrTeamMenuItem';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface FezChatActionsMenuProps {
@@ -31,7 +31,7 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
   const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
   const queryClient = useQueryClient();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
 
   const detailsAction = () => {
     navigation.push(CommonStackComponents.fezChatDetailsScreen, {fezID: fez.fezID});
@@ -44,7 +44,7 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
   };
 
   const isSeamail = FezType.isSeamailType(fez.fezType);
-  const isOwner = profilePublicData?.header.userID === fez.owner.userID;
+  const isOwner = currentUserID === fez.owner.userID;
   const showEdit = isSeamail && isOwner;
 
   const handleMute = () => {

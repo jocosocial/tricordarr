@@ -4,11 +4,11 @@ import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -19,7 +19,7 @@ interface FezChatDetailsScreenActionsMenuProps {
 export const FezChatDetailsScreenActionsMenu = ({fez}: FezChatDetailsScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const userFavoriteMutation = useUserFavoriteMutation();
   const queryClient = useQueryClient();
   const {setSnackbarPayload} = useSnackbar();
@@ -27,14 +27,12 @@ export const FezChatDetailsScreenActionsMenu = ({fez}: FezChatDetailsScreenActio
   const handleFavoriteAll = React.useCallback(async () => {
     closeMenu();
 
-    if (!fez.members?.participants || !profilePublicData?.header.userID) {
+    if (!fez.members?.participants || !currentUserID) {
       return;
     }
 
     // Filter out the current user from participants
-    const otherParticipants = fez.members.participants.filter(
-      participant => participant.userID !== profilePublicData.header.userID,
-    );
+    const otherParticipants = fez.members.participants.filter(participant => participant.userID !== currentUserID);
 
     if (otherParticipants.length === 0) {
       setSnackbarPayload({
@@ -81,14 +79,7 @@ export const FezChatDetailsScreenActionsMenu = ({fez}: FezChatDetailsScreenActio
       // Error handling is done by useTokenAuthMutation, but we can add additional handling here if needed
       console.error('[FezChatDetailsScreenActionsMenu] Error favoriting users:', error);
     }
-  }, [
-    fez.members?.participants,
-    profilePublicData?.header.userID,
-    userFavoriteMutation,
-    queryClient,
-    setSnackbarPayload,
-    closeMenu,
-  ]);
+  }, [fez.members?.participants, currentUserID, userFavoriteMutation, queryClient, setSnackbarPayload, closeMenu]);
 
   const handleHelp = React.useCallback(() => {
     closeMenu();

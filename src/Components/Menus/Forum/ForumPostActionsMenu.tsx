@@ -9,11 +9,11 @@ import {ForumPostActionsReactionItem} from '#src/Components/Menus/Forum/Items/Fo
 import {ForumPostActionsReportItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReportItem';
 import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsShowThreadItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostActionsMenuProps {
@@ -35,8 +35,8 @@ export const ForumPostActionsMenu = ({
   enablePinnedPosts,
   forumData,
 }: ForumPostActionsMenuProps) => {
-  const {data: profilePublicData} = useUserProfileQuery();
-  const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
+  const {currentUserID} = useSession();
+  const bySelf = currentUserID === forumPost.author.userID;
   // Apparently this doesn't get to be available in the sub items? That's annoying.
   const commonNavigation = useCommonStack();
   const {setString} = useClipboard();

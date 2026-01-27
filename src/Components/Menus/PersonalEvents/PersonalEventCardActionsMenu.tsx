@@ -4,10 +4,10 @@ import {Divider, Menu} from 'react-native-paper';
 import {PersonalEventDeleteModal} from '#src/Components/Views/Modals/PersonalEventDeleteModal';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface PersonalEventCardActionsMenuProps {
@@ -18,7 +18,7 @@ interface PersonalEventCardActionsMenuProps {
 
 export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useCommonStack();
 
@@ -38,7 +38,7 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
         title={'Overlapping'}
         onPress={() => navigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.eventData})}
       />
-      {props.eventData.owner.userID === profilePublicData?.header.userID && (
+      {props.eventData.owner.userID === currentUserID && (
         <>
           <Menu.Item
             leadingIcon={AppIcons.edit}

@@ -8,9 +8,9 @@ import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView';
 import {MessageView} from '#src/Components/Views/MessageView';
 import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
@@ -21,14 +21,14 @@ interface FezPostListItemProps {
 }
 
 const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const {asPrivilegedUser} = usePrivilege();
   const seamailNavigation = useChatStack();
 
   let showAuthor = fez.participantCount > 2;
 
   // Do not show the author for the users own messages.
-  if (fezPost.author.userID === profilePublicData?.header.userID) {
+  if (fezPost.author.userID === currentUserID) {
     showAuthor = false;
   }
 
@@ -37,8 +37,7 @@ const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
     showAuthor = true;
   }
 
-  const messageOnRight =
-    fezPost.author.userID === profilePublicData?.header.userID || fezPost.author.username === asPrivilegedUser;
+  const messageOnRight = fezPost.author.userID === currentUserID || fezPost.author.username === asPrivilegedUser;
 
   const onPress = () => {
     seamailNavigation.push(CommonStackComponents.userProfileScreen, {
