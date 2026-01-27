@@ -108,7 +108,7 @@ export const NotificationsMenu = () => {
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.lfgTab, {
               screen: LfgStackComponents.lfgListScreen,
-              params: {endpoint: 'joined', onlyNew: true},
+              params: {endpoint: 'joined', onlyNew: true, intent: `lfgMessage_${Date.now()}`, cruiseDay: 0},
             })
           }
         />
@@ -120,7 +120,12 @@ export const NotificationsMenu = () => {
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.scheduleTab, {
               screen: CommonStackComponents.scheduleDayScreen,
-              params: {cruiseDay: 0, setPersonalFilter: true, onlyNew: true, intent: `personalEventAddedTo_${Date.now()}`},
+              params: {
+                cruiseDay: 0,
+                setPersonalFilter: true,
+                onlyNew: true,
+                intent: `personalEventAddedTo_${Date.now()}`,
+              },
             })
           }
         />
@@ -132,7 +137,12 @@ export const NotificationsMenu = () => {
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.scheduleTab, {
               screen: CommonStackComponents.scheduleDayScreen,
-              params: {cruiseDay: 0, setPersonalFilter: true, onlyNew: true, intent: `personalEventMessage_${Date.now()}`},
+              params: {
+                cruiseDay: 0,
+                setPersonalFilter: true,
+                onlyNew: true,
+                intent: `personalEventMessage_${Date.now()}`,
+              },
             })
           }
         />
