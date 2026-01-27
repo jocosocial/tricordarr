@@ -19,8 +19,8 @@ export const ScheduleOverlapHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Navigation'}>
           <HelpTopicView title={'Only Your Events'} icon={AppIcons.user}>
-            Filter the list to show only events you're participating in, events you own, or events you've favorited. When
-            active, the filter button appears in blue.
+            Filter the list to show only events you're participating in, events you own, or events you've favorited.
+            When active, the filter button appears in blue.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>

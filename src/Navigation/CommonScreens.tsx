@@ -283,7 +283,6 @@ export type CommonStackParamList = {
   LfgListHelpScreen: undefined;
   LfgCreateHelpScreen: undefined;
   LfgParticipationHelpScreen: undefined;
-  PersonalEventCreateHelpScreen: undefined;
   EventHelpScreen: {
     mode?: 'official' | 'shadow';
   };
@@ -404,7 +403,6 @@ export enum CommonStackComponents {
   lfgListHelpScreen = 'LfgListHelpScreen',
   lfgCreateHelpScreen = 'LfgCreateHelpScreen',
   lfgParticipationHelpScreen = 'LfgParticipationHelpScreen',
-  personalEventCreateHelpScreen = 'PersonalEventCreateHelpScreen',
   eventHelpScreen = 'EventHelpScreen',
   personalEventHelpScreen = 'PersonalEventHelpScreen',
   mainTimeZoneScreen = 'MainTimeZoneScreen',
@@ -848,11 +846,6 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'LFG Participation Help'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.personalEventCreateHelpScreen}
-        component={PersonalEventHelpScreen}
-        options={{title: 'Personal Event Help'}}
-      />
-      <Stack.Screen
         name={CommonStackComponents.eventHelpScreen}
         component={EventHelpScreen}
         options={({route}: {route: RouteProp<CommonStackParamList, 'EventHelpScreen'>}) => ({
@@ -934,7 +927,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         component={HelpManualScreen}
         options={{title: 'Help Manual'}}
       />
-      <Stack.Screen name={CommonStackComponents.mainHelpScreen} component={MainHelpScreen} options={{title: 'Help'}} />
+      <Stack.Screen
+        name={CommonStackComponents.mainHelpScreen}
+        component={MainHelpScreen}
+        options={{title: 'General Help'}}
+      />
       <Stack.Screen
         name={CommonStackComponents.aboutTricordarrScreen}
         component={AboutTricordarrScreen}

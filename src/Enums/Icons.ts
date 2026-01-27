@@ -146,4 +146,5 @@ export enum AppIcons {
   feedback = 'comment-quote',
   session = 'cloud-outline',
   privacy = 'incognito',
+  disabled = 'minus-circle-outline',
 }
