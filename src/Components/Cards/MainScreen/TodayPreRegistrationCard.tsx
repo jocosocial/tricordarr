@@ -37,7 +37,7 @@ export const TodayPreRegistrationCard = () => {
       <Card.Content style={styles.content}>
         <Text style={styles.text}>
           Twitarr's social media features aren't enabled right now (see the JoCo Discord instead). Here are some
-          suggested actions to get your started:
+          suggested actions that you can do to get you started:
         </Text>
         <ListSection>
           <PreRegistrationListItem
@@ -67,7 +67,7 @@ export const TodayPreRegistrationCard = () => {
           />
 
           <PreRegistrationListItem
-            title={'Help'}
+            title={'Help Manual'}
             iconName={AppIcons.help}
             onPress={() => mainNavigation.push(CommonStackComponents.helpIndexScreen)}
           />

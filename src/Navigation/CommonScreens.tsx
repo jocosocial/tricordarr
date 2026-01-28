@@ -55,6 +55,7 @@ import {MapScreen} from '#src/Screens/Main/MapScreen';
 import {PrivacyScreen} from '#src/Screens/Main/PrivacyScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
 import {TodayHelpScreen} from '#src/Screens/Main/TodayHelpScreen';
+import {MicroKaraokeHelpScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeHelpScreen';
 import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScreen';
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {PerformerHelpScreen} from '#src/Screens/Performer/PerformerHelpScreen';
@@ -323,6 +324,7 @@ export type CommonStackParamList = {
   ModeratorHelpScreen: undefined;
   BoardgameHelpScreen: undefined;
   PhotostreamHelpScreen: undefined;
+  MicroKaraokeHelpScreen: undefined;
   MapHelpScreen: undefined;
   CruiseHelpScreen: undefined;
   DailyThemeHelpScreen: undefined;
@@ -427,6 +429,7 @@ export enum CommonStackComponents {
   moderatorHelpScreen = 'ModeratorHelpScreen',
   boardgameHelpScreen = 'BoardgameHelpScreen',
   photostreamHelpScreen = 'PhotostreamHelpScreen',
+  microKaraokeHelpScreen = 'MicroKaraokeHelpScreen',
   mapHelpScreen = 'MapHelpScreen',
   cruiseHelpScreen = 'CruiseHelpScreen',
   dailyThemeHelpScreen = 'DailyThemeHelpScreen',
@@ -475,6 +478,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.shutternautHelpScreen
   | CommonStackComponents.boardgameHelpScreen
   | CommonStackComponents.photostreamHelpScreen
+  | CommonStackComponents.microKaraokeHelpScreen
   | CommonStackComponents.userProfileHelpScreen
   | CommonStackComponents.mapHelpScreen
   | CommonStackComponents.cruiseHelpScreen
@@ -823,7 +827,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.disabledHelpScreen}
         component={DisabledHelpScreen}
-        options={{title: 'Help'}}
+        options={{title: 'Disabled Feature Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgHelpScreen}
@@ -966,6 +970,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.photostreamHelpScreen}
         component={PhotostreamHelpScreen}
         options={{title: 'Photostream Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.microKaraokeHelpScreen}
+        component={MicroKaraokeHelpScreen}
+        options={{title: 'Microkaraoke Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.mapHelpScreen}

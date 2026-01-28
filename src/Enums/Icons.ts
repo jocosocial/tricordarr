@@ -147,4 +147,5 @@ export enum AppIcons {
   session = 'cloud-outline',
   privacy = 'incognito',
   disabled = 'minus-circle-outline',
+  preregistration = 'plane-train',
 }

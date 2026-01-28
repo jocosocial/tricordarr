@@ -38,7 +38,7 @@ export const CruiseHelpScreen = () => {
             and where.
           </HelpTopicView>
           <HelpTopicView title={'JoCo Cruise Info Desk'} icon={AppIcons.info}>
-            Visit the JoCo Cruise Info Desk.
+            Visit the JoCo Cruise Info Desk. They can take a message for the TwitarrTeam.
           </HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>

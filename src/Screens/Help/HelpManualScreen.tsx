@@ -4,7 +4,6 @@ import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
-import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
@@ -24,12 +23,11 @@ export const HelpManualScreen = () => {
           <DataFieldListItem
             title={'Cruise Help'}
             description={'Where to get assistance with the JoCo Cruise event and/or Twitarr.'}
-            icon={AppIcons.help}
+            icon={AppIcons.faq}
             onPress={() => commonNavigation.push(CommonStackComponents.cruiseHelpScreen)}
           />
         </HelpChapterTitleView>
-        <HelpChapterTitleView title={'Major Features'}>
-          <HelpTopicView>These are the big buttons at the bottom of the app on every screen.</HelpTopicView>
+        <HelpChapterTitleView title={'Major Features'} noMargin={true}>
           <DataFieldListItem
             title={'Today'}
             description={'The main landing page of the app showing some useful information.'}
@@ -87,6 +85,12 @@ export const HelpManualScreen = () => {
             description={"It's a stream. Of photos. A photostream. Share what you're seeing on the ship."}
             icon={AppIcons.photostream}
             onPress={() => commonNavigation.push(CommonStackComponents.photostreamHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Microkaraoke'}
+            description={'Record yourself singing a line of a song, then see a video of everyones contributions.'}
+            icon={AppIcons.microKaraoke}
+            onPress={() => commonNavigation.push(CommonStackComponents.microKaraokeHelpScreen)}
           />
           <DataFieldListItem
             title={'Board Games'}
@@ -151,7 +155,7 @@ export const HelpManualScreen = () => {
           <DataFieldListItem
             title={'Pre-Registration'}
             description={'Features that are available before the cruise starts.'}
-            icon={AppIcons.help}
+            icon={AppIcons.preregistration}
             onPress={() => commonNavigation.push(CommonStackComponents.preRegistrationHelpScreen)}
           />
           <DataFieldListItem
