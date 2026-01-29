@@ -48,6 +48,8 @@ import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
 import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
 import {CruiseHelpScreen} from '#src/Screens/Main/CruiseHelpScreen';
 import {DailyThemeHelpScreen} from '#src/Screens/Main/DailyThemeHelpScreen';
+import {EasterEggHelpScreen} from '#src/Screens/Main/EasterEggHelpScreen';
+import {EasterEggScreen} from '#src/Screens/Main/EasterEggScreen';
 import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
 import {MainTimeZoneScreen} from '#src/Screens/Main/MainTimeZoneScreen';
 import {MapHelpScreen} from '#src/Screens/Main/MapHelpScreen';
@@ -162,6 +164,7 @@ export type CommonStackParamList = {
     deckNumber?: number;
   };
   AccountRecoveryScreen: undefined;
+  EasterEggScreen: undefined;
   ForumThreadUserScreen: {
     user: UserHeader;
   };
@@ -328,6 +331,7 @@ export type CommonStackParamList = {
   MapHelpScreen: undefined;
   CruiseHelpScreen: undefined;
   DailyThemeHelpScreen: undefined;
+  EasterEggHelpScreen: undefined;
   TodayHelpScreen: undefined;
 };
 
@@ -341,6 +345,7 @@ export enum CommonStackComponents {
   siteUIScreen = 'SiteUIScreen',
   mapScreen = 'MapScreen',
   accountRecoveryScreen = 'AccountRecoveryScreen',
+  easterEggScreen = 'EasterEggScreen',
   forumThreadUserScreen = 'ForumThreadUserScreen',
   forumPostUserScreen = 'ForumPostUserScreen',
   eventScreen = 'EventScreen',
@@ -433,6 +438,7 @@ export enum CommonStackComponents {
   mapHelpScreen = 'MapHelpScreen',
   cruiseHelpScreen = 'CruiseHelpScreen',
   dailyThemeHelpScreen = 'DailyThemeHelpScreen',
+  easterEggHelpScreen = 'EasterEggHelpScreen',
   todayHelpScreen = 'TodayHelpScreen',
 }
 
@@ -483,6 +489,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.mapHelpScreen
   | CommonStackComponents.cruiseHelpScreen
   | CommonStackComponents.dailyThemeHelpScreen
+  | CommonStackComponents.easterEggHelpScreen
   | CommonStackComponents.todayHelpScreen;
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
@@ -528,6 +535,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.accountRecoveryScreen}
         component={AccountRecoveryScreen}
         options={{title: 'Recovery'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.easterEggScreen}
+        component={EasterEggScreen}
+        options={{title: 'Easter Egg'}}
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostUserScreen}
@@ -995,6 +1007,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.todayHelpScreen}
         component={TodayHelpScreen}
         options={{title: 'Today Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.easterEggHelpScreen}
+        component={EasterEggHelpScreen}
+        options={{title: '...... why?'}}
       />
     </>
   );

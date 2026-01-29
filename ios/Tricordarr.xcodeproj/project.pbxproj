@@ -18,6 +18,7 @@
 		93ADC0812F07749D00C698D2 /* TricordarrKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */; };
 		93ADC0822F07749D00C698D2 /* TricordarrKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		93ADC0872F0774B500C698D2 /* TricordarrKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */; };
+		93D64E9E2F2B21B000082CE2 /* yeah.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 93D64E9D2F2B21B000082CE2 /* yeah.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +97,7 @@
 		93ADBFFB2F074E0700C698D2 /* LocalPushExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LocalPushExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		93ADBFFC2F074E0700C698D2 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TricordarrKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		93D64E9D2F2B21B000082CE2 /* yeah.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = yeah.mp3; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -112,6 +114,8 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9394DAB82F077F9E000B2338 /* Helpers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = Helpers;
 			sourceTree = "<group>";
 		};
@@ -125,6 +129,8 @@
 		};
 		93ADC07C2F07749D00C698D2 /* TricordarrKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = TricordarrKit;
 			sourceTree = "<group>";
 		};
@@ -192,6 +198,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				93D64E9D2F2B21B000082CE2 /* yeah.mp3 */,
 				93690EF02EAB266C00CA8914 /* NativeTricordarrModule */,
 				13B07FAE1A68108700A75B9A /* Tricordarr */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -368,6 +375,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				93D64E9E2F2B21B000082CE2 /* yeah.mp3 in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				4C1CD608D8B56BA06748D9CD /* PrivacyInfo.xcprivacy in Resources */,
 			);
@@ -414,13 +422,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -457,13 +461,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tricordarr/Pods-Tricordarr-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

@@ -1,16 +1,13 @@
 import React from 'react';
 
 import {SecretHeaderTitle} from '#src/Components/Navigation/SecretHeaderTitle';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 export const TodayHeaderTitle = () => {
-  const {appConfig, updateAppConfig} = useConfig();
+  const navigation = useCommonStack();
 
   const onReveal = () => {
-    updateAppConfig({
-      ...appConfig,
-      enableEasterEgg: !appConfig.enableEasterEgg,
-    });
+    navigation.push(CommonStackComponents.easterEggScreen);
   };
-  return <SecretHeaderTitle title={'Today'} onReveal={onReveal} triggerCount={10} />;
+  return <SecretHeaderTitle title={'Today'} onReveal={onReveal} triggerCount={5} />;
 };
