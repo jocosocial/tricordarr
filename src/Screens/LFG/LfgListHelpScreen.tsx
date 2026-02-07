@@ -52,8 +52,8 @@ export const LfgListHelpScreen = () => {
             Configure your LFG preferences, including the default LFG screen (Find, Joined, Owned) and whether to hide
             past LFGs by default.
           </HelpTopicView>
-          <HelpButtonHelpTopicView />
           <OverlappingHelpTopicView />
+          <HelpButtonHelpTopicView />
         </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>
