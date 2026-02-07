@@ -26,38 +26,32 @@ function formatPerformanceTime(isoTime: string): string {
 interface KaraokeSongListItemProps {
   /** Song or performance data. */
   item: KaraokeSongListItemData;
-  /** Show favorite button (only when songID/isFavorite available). */
-  showFavoriteButton?: boolean;
   /** Optional press handler (e.g. navigate to log screen). */
   onPress?: () => void;
 }
 
-const KaraokeSongListItemInner = ({item, showFavoriteButton = false, onPress}: KaraokeSongListItemProps) => {
+const KaraokeSongListItemInner = ({item, onPress}: KaraokeSongListItemProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const queryClient = useQueryClient();
   const favoriteMutation = useKaraokeFavoriteMutation();
   const {refreshing, setRefreshing} = useRefresh({});
 
-  const songID = 'songID' in item ? item.songID : undefined;
-  const isFavorite = 'isFavorite' in item ? item.isFavorite : undefined;
-  const hasFavoriteData = songID !== undefined && isFavorite !== undefined;
-
   const onFavoritePress = useCallback(() => {
-    if (!songID || isFavorite === undefined) return;
+    if (!item.songID || item.isFavorite === undefined) return;
     setRefreshing(true);
     favoriteMutation.mutate(
-      {songID, action: isFavorite ? 'unfavorite' : 'favorite'},
+      {songID: item.songID, action: item.isFavorite ? 'unfavorite' : 'favorite'},
       {
         onSuccess: async () => {
           const {KaraokeSongData: K} = await import('#src/Structs/ControllerStructs');
-          const keys = K.getCacheKeys(songID);
+          const keys = K.getCacheKeys(item.songID);
           await Promise.all(keys.map(key => queryClient.invalidateQueries({queryKey: key})));
         },
         onSettled: () => setRefreshing(false),
       },
     );
-  }, [songID, isFavorite, favoriteMutation, queryClient, setRefreshing]);
+  }, [item, favoriteMutation, queryClient, setRefreshing]);
 
   const title = item.songName;
   const performerLine =
@@ -106,13 +100,13 @@ const KaraokeSongListItemInner = ({item, showFavoriteButton = false, onPress}: K
       item.artist
     );
 
-  const rightContent =
-    showFavoriteButton && hasFavoriteData ? (
+  const rightContent = useCallback(
+    () => (
       <View style={styles.rightContainer}>
         {refreshing && <ActivityIndicator />}
         {!refreshing && (
           <TouchableOpacity onPress={onFavoritePress}>
-            {isFavorite ? (
+            {item.isFavorite ? (
               <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
             ) : (
               <AppIcon icon={AppIcons.toggleFavorite} />
@@ -120,7 +114,9 @@ const KaraokeSongListItemInner = ({item, showFavoriteButton = false, onPress}: K
           </TouchableOpacity>
         )}
       </View>
-    ) : null;
+    ),
+    [item, refreshing, onFavoritePress, styles.rightContainer, theme.colors.twitarrYellow],
+  );
 
   return (
     <List.Item
@@ -132,7 +128,7 @@ const KaraokeSongListItemInner = ({item, showFavoriteButton = false, onPress}: K
       descriptionStyle={styles.text}
       titleStyle={styles.title}
       onPress={onPress}
-      right={rightContent ? () => rightContent : undefined}
+      right={rightContent}
     />
   );
 };

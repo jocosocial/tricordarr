@@ -20,8 +20,6 @@ function isKaraokeSongData(item: KaraokeSongListItem): item is KaraokeSongData {
 
 interface KaraokeSongListProps {
   items: KaraokeSongListItem[];
-  /** Show favorite button on items that have songID/isFavorite. */
-  showFavoriteButton?: boolean;
   /** Wrap items in swipeable (Favorite + Log if karaokemanager). */
   swipeableEnabled?: boolean;
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -34,7 +32,6 @@ interface KaraokeSongListProps {
 const KaraokeSongListInner = (
   {
     items,
-    showFavoriteButton = true,
     swipeableEnabled = false,
     refreshControl,
     hasNextPage,
@@ -48,7 +45,7 @@ const KaraokeSongListInner = (
 
   const renderItem = useCallback(
     ({item}: {item: KaraokeSongListItem}) => {
-      const listItem = <KaraokeSongListItem item={item} showFavoriteButton={showFavoriteButton} />;
+      const listItem = <KaraokeSongListItem item={item} />;
       if (swipeableEnabled) {
         return (
           <KaraokeListItemSwipeable song={item} showLogButton={true}>
@@ -58,7 +55,7 @@ const KaraokeSongListInner = (
       }
       return listItem;
     },
-    [showFavoriteButton, swipeableEnabled],
+    [swipeableEnabled],
   );
 
   const keyExtractor = useCallback((item: KaraokeSongListItem) => {

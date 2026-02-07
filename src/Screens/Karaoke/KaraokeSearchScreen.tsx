@@ -73,8 +73,6 @@ const KaraokeSearchScreenInner = (_props: Props) => {
       <KaraokeSongList
         ref={listRef}
         items={items}
-        showFavoriteButton={true}
-        swipeableEnabled={false}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         handleLoadNext={handleLoadNext}
