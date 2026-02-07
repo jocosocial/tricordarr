@@ -47,7 +47,7 @@
     "formik": "^2.4.6",
     "html-entities": "^2.6.0",
     "humanize-duration": "^3.33.1",
-    "javascript-time-ago": "^2.5.12",
+    "javascript-time-ago": "^2.6.2",
     "moment-timezone": "^0.6.0",
     "node-ical": "^0.21.0",
     "patch-package": "^8.0.0",
