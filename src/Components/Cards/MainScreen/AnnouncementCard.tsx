@@ -28,15 +28,13 @@ export const AnnouncementCard = ({announcement}: {announcement: AnnouncementData
     <Card style={commonStyles.twitarrPositive}>
       <Card.Content>
         <Text variant={'bodyLarge'} style={styles.title}>
-          From {getUserBylineString(announcement.author, false, true)}:
+          Announcement from {getUserBylineString(announcement.author, false, true)}:
         </Text>
         <ContentText textStyle={styles.contentText} text={announcement.text} />
       </Card.Content>
       <Card.Title
         title={`Display Until: ${moment(announcement.displayUntil).format('ddd MMM D hh:mm A')}`}
         titleStyle={[commonStyles.onTwitarrButton, commonStyles.italics]}
-        subtitleVariant={'bodyLarge'}
-        subtitleStyle={[commonStyles.onTwitarrButton]}
       />
     </Card>
   );

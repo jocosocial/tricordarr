@@ -3,9 +3,10 @@ import React from 'react';
 import {NextEventCard} from '#src/Components/Cards/MainScreen/NextEventCard';
 import {NextLFGCard} from '#src/Components/Cards/MainScreen/NextLFGCard';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
-export const TodayNextAppointmentView = () => {
+const TodayNextAppointmentViewInner = () => {
   const {data} = useUserNotificationDataQuery();
 
   if (!data) {
@@ -52,4 +53,14 @@ export const TodayNextAppointmentView = () => {
       )}
     </>
   );
+};
+
+export const TodayNextAppointmentView = () => {
+  const {preRegistrationMode} = usePreRegistration();
+
+  if (preRegistrationMode) {
+    return <></>;
+  }
+
+  return <TodayNextAppointmentViewInner />;
 };
