@@ -14,30 +14,25 @@ export const KaraokeHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'} />
         <HelpTopicView>
-          Karaoke shows recent performances and lets you search the song library and manage favorites. The main screen
-          lists the latest performed songs; you can open Favorites or search the library from the header and FAB.
+          Karaoke shows recent performances and lets you search the song library and manage favorites.
         </HelpTopicView>
         <HelpChapterTitleView title={'Floating Action Button'} />
         <HelpFABView icon={AppIcons.search} label={'Search Library'} />
-        <HelpTopicView>Press "Search Library" to open the search screen.</HelpTopicView>
+        <HelpTopicView>Search the on-board karaoke song library.</HelpTopicView>
         <HelpChapterTitleView title={'Actions'} />
         <HelpTopicView icon={AppIcons.favorite} title={'Favorites'}>
-          Use the "Favorites" button in the header to view your favorited karaoke songs.
+          Add this song to your favorites list.
         </HelpTopicView>
-        <HelpTopicView>
-          On Recent Performances, Search, and Favorites you can favorite songs (star icon when favorite state is shown)
-          and, if you have the karaoke manager role, swipe to reveal "Log" to record a performance.
-        </HelpTopicView>
-        <HelpChapterTitleView title={'Privileged Actions'} />
-        <HelpTopicView icon={AppIcons.karaokeLog} title={'Log Performance'}>
-          Karaoke managers can log a performance from any list (Recent Performances, Search, or Favorites) by swiping a
-          song and tapping "Log", then entering the performers and saving. This is a privileged action.
-        </HelpTopicView>
-        <HelpTopicView title={'Search History'}>
+        <HelpTopicView icon={AppIcons.search} title={'Search History'}>
           Karaoke managers can turn on "Search History" in the actions menu on the main screen to filter the recent
           performances list by a search query.
         </HelpTopicView>
         <HelpButtonHelpTopicView />
+        <HelpChapterTitleView title={'Privileged Actions'} />
+        <HelpTopicView icon={AppIcons.karaokeLog} title={'Log Performance'}>
+          Karaoke managers can log a performance from any list by swiping a song and tapping "Log". Contact the
+          TwitarrTeam or THO to be assigned the Karaoke Manager role.
+        </HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );
