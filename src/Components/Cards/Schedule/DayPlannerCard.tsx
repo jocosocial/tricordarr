@@ -73,13 +73,15 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
 
   // Calculate how many lines the title can have based on available space
   const titleLines = useMemo(() => {
+    const availableHeight = item.height - LAYOUT.cardPadding;
     if (contentLevel === 'titleOnly') {
       // Use all available space for title when that's all we're showing
-      const availableHeight = item.height - LAYOUT.cardPadding;
       return Math.max(1, Math.floor(availableHeight / LAYOUT.lineHeights.title));
     }
-    return 2; // Default to 2 lines for title when showing other content
-  }, [contentLevel, item.height]);
+    // titleAndLocation: reserve two lines for location when present, else use all space for title
+    const spaceForTitle = item.location ? availableHeight - 2 * LAYOUT.lineHeights.location : availableHeight;
+    return Math.max(1, Math.floor(spaceForTitle / LAYOUT.lineHeights.title));
+  }, [contentLevel, item.height, item.location]);
 
   // Calculate how many lines the location can have based on remaining space
   const locationLines = useMemo(() => {
@@ -92,7 +94,7 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
 
     // Calculate remaining space for location
     const remainingHeight = item.height - usedSpace;
-    const maxLocationLines = Math.max(1, Math.floor(remainingHeight / LAYOUT.lineHeights.location));
+    const maxLocationLines = Math.max(2, Math.floor(remainingHeight / LAYOUT.lineHeights.location));
 
     return maxLocationLines;
   }, [contentLevel, item.height, item.location, titleLines]);
