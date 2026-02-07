@@ -18,10 +18,12 @@ interface DayPlannerTimelineViewProps {
   items: DayPlannerItem[];
   dayStart: Date;
   dayEnd: Date;
+  /** Boat timezone for slot labels (e.g. America/Lower_Princes). When set, labels show boat time. */
+  timeZoneID?: string;
 }
 
 export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineViewProps>(
-  ({items, dayStart, dayEnd}, ref) => {
+  ({items, dayStart, dayEnd, timeZoneID}, ref) => {
     const {theme} = useAppTheme();
     const {commonStyles} = useStyles();
     const commonNavigation = useCommonStack();
@@ -31,10 +33,10 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
       return calculateItemLayout(items, dayStart, dayEnd);
     }, [items, dayStart, dayEnd]);
 
-    // Generate time slot labels
+    // Generate time slot labels (in boat time when timeZoneID provided)
     const timeSlots = useMemo(() => {
-      return generateTimeSlotLabels(dayStart);
-    }, [dayStart]);
+      return generateTimeSlotLabels(dayStart, timeZoneID);
+    }, [dayStart, timeZoneID]);
 
     const handleItemPress = useCallback(
       (item: DayPlannerItemWithLayout) => {

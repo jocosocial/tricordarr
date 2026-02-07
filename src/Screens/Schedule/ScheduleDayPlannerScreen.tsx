@@ -108,10 +108,18 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     return buildDayPlannerItems(eventData, lfgJoinedData, personalEventData);
   }, [eventData, lfgJoinedData, personalEventData]);
 
-  // Calculate day boundaries for the timeline
+  // Boat timezone for the selected day (from first event/LFG/personal, or port). Used for day boundaries and labels.
+  const boatTimeZoneID = useMemo(() => {
+    const fromEvent = eventData?.[0]?.timeZoneID;
+    const fromLfg = lfgJoinedData?.pages?.[0]?.fezzes?.[0]?.timeZoneID;
+    const fromPersonal = personalEventData?.pages?.[0]?.fezzes?.[0]?.timeZoneID;
+    return fromEvent ?? fromLfg ?? fromPersonal ?? appConfig.portTimeZoneID;
+  }, [appConfig.portTimeZoneID, eventData, lfgJoinedData?.pages, personalEventData?.pages]);
+
+  // Calculate day boundaries for the timeline (midnight in boat TZ)
   const {dayStart, dayEnd} = useMemo(() => {
-    return getDayBoundaries(startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip);
-  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip]);
+    return getDayBoundaries(startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID);
+  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID]);
 
   // Calculate loading state - only show loading spinner on initial fetch (when no cached data exists)
   // Using isLoading instead of isFetching avoids showing spinner on refetch
@@ -180,7 +188,13 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
             <ActivityIndicator size={'large'} />
           </View>
         ) : (
-          <DayPlannerTimelineView ref={scrollViewRef} items={dayPlannerItems} dayStart={dayStart} dayEnd={dayEnd} />
+          <DayPlannerTimelineView
+            ref={scrollViewRef}
+            items={dayPlannerItems}
+            dayStart={dayStart}
+            dayEnd={dayEnd}
+            timeZoneID={boatTimeZoneID}
+          />
         )}
       </View>
       {!preRegistrationMode && <SchedulePersonalEventCreateFAB />}

@@ -1,4 +1,5 @@
 import {InfiniteData} from '@tanstack/react-query';
+import moment from 'moment-timezone';
 
 import {EventData, FezListData} from '#src/Structs/ControllerStructs';
 import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
@@ -176,14 +177,18 @@ export const calculateItemLayout = (
 /**
  * Generate time slot labels for the Day Planner timeline.
  * Returns an array of time slots with labels only on the hour marks.
+ * When timeZoneID is provided, labels show the hour in that timezone (boat time); otherwise device local.
  */
-export const generateTimeSlotLabels = (dayStart: Date): {time: Date; label: string; slotType: TimeSlotType}[] => {
+export const generateTimeSlotLabels = (
+  dayStart: Date,
+  timeZoneID?: string,
+): {time: Date; label: string; slotType: TimeSlotType}[] => {
   const slots: {time: Date; label: string; slotType: TimeSlotType}[] = [];
   const totalSlots = DAY_PLANNER_CONFIG.TOTAL_HOURS * DAY_PLANNER_CONFIG.SLOTS_PER_HOUR;
 
   for (let i = 0; i < totalSlots; i++) {
     const slotTime = new Date(dayStart.getTime() + i * DAY_PLANNER_CONFIG.MINUTES_PER_ROW * 60 * 1000);
-    const hours = slotTime.getHours();
+    const hours = timeZoneID ? moment(slotTime).tz(timeZoneID).hours() : slotTime.getHours();
     const slotInHour = i % DAY_PLANNER_CONFIG.SLOTS_PER_HOUR;
 
     // Determine slot type based on position within the hour
@@ -212,28 +217,32 @@ export const generateTimeSlotLabels = (dayStart: Date): {time: Date; label: stri
 };
 
 /**
- * Calculate the day start and end times for a given cruise day.
+ * Calculate the day start and end times for a given cruise day in the boat timezone.
  * Day runs from 00:00 to either 24:00 (midnight) or 03:00 the next day (27 hours),
  * depending on the enableLateDayFlip setting.
  *
  * @param cruiseStartDate - The start date of the cruise
  * @param cruiseDay - The cruise day (1-indexed)
  * @param enableLateDayFlip - If true, day extends to 03:00 next day (27 hours). If false, day ends at midnight (24 hours).
+ * @param timeZoneID - IANA timezone for the boat (e.g. America/New_York). Day boundaries are midnight in this zone.
  */
 export const getDayBoundaries = (
   cruiseStartDate: Date,
   cruiseDay: number,
   enableLateDayFlip: boolean,
+  timeZoneID: string,
 ): {dayStart: Date; dayEnd: Date} => {
-  // cruiseDay is 1-indexed, so subtract 1 to get the offset
-  const dayStart = new Date(cruiseStartDate);
-  dayStart.setDate(dayStart.getDate() + cruiseDay - 1);
-  dayStart.setHours(0, 0, 0, 0);
-
-  // Day ends at either midnight (24 hours) or 03:00 the next day (27 hours)
-  const dayEnd = new Date(dayStart);
   const endHour = enableLateDayFlip ? DAY_PLANNER_CONFIG.TOTAL_HOURS : 24;
-  dayEnd.setHours(endHour, 0, 0, 0);
+  const dayStart = moment(cruiseStartDate)
+    .tz(timeZoneID)
+    .add(cruiseDay - 1, 'days')
+    .startOf('day')
+    .toDate();
+  const dayEnd = moment(cruiseStartDate)
+    .tz(timeZoneID)
+    .add(cruiseDay - 1, 'days')
+    .add(endHour, 'hours')
+    .toDate();
 
   return {dayStart, dayEnd};
 };
