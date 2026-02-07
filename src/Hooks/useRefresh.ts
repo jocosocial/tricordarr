@@ -1,7 +1,8 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 
 export interface UseRefreshProps {
-  refresh: () => Promise<any>;
+  /** Async function to run on refresh. Optional when only using setRefreshing (e.g. per-item mutation loading). */
+  refresh?: () => Promise<any>;
   isRefreshing?: boolean;
 }
 
@@ -18,7 +19,7 @@ export interface UseRefreshReturn {
  * Supports both manual refresh calls and external signals via the `isRefreshing` prop.
  *
  * @param props - Configuration props
- * @param props.refresh - Async function to execute during refresh
+ * @param props.refresh - Optional async function to execute during refresh. Omit when only using setRefreshing for manual state (e.g. mutation loading).
  * @param props.isRefreshing - Optional external signal indicating refresh activity. When it transitions from true to false/undefined, the internal refreshing state is set to false.
  *
  * @returns An object with refreshing state, setter, and onRefresh callback
@@ -41,7 +42,7 @@ export function useRefresh({refresh, isRefreshing}: UseRefreshProps): UseRefresh
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      await refresh();
+      await (refresh?.() ?? Promise.resolve());
     } finally {
       setRefreshing(false);
     }

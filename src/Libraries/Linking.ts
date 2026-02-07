@@ -59,6 +59,10 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             PerformerListScreen: getPath(MainStackComponents.performerListScreen),
             MainTimeZoneScreen: getPath(CommonStackComponents.mainTimeZoneScreen),
             BoardgameListScreen: getPath(MainStackComponents.boardgameListScreen),
+            KaraokePerformanceListScreen: getPath(MainStackComponents.karaokePerformanceListScreen),
+            KaraokeSearchScreen: getPath(MainStackComponents.karaokeSearchScreen),
+            KaraokeFavoritesListScreen: getPath(MainStackComponents.karaokeFavoritesListScreen),
+            KaraokeLogPerformanceScreen: getPath(MainStackComponents.karaokeLogPerformanceScreen),
           },
         },
         SeamailTab: {
