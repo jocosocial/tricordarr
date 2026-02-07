@@ -36,7 +36,7 @@ export const ScheduleDayPlannerScreen = (props: Props) => {
 };
 
 const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
-  const {adjustedCruiseDayToday, startDate} = useCruise();
+  const {adjustedCruiseDayToday, startDate, endDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(route.params?.cruiseDay ?? adjustedCruiseDayToday);
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
@@ -194,6 +194,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
             dayStart={dayStart}
             dayEnd={dayEnd}
             timeZoneID={boatTimeZoneID}
+            selectedCruiseDay={selectedCruiseDay}
           />
         )}
       </View>

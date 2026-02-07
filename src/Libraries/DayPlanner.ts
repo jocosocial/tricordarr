@@ -12,8 +12,8 @@ export const DAY_PLANNER_CONFIG = {
   MINUTES_PER_ROW: 15,
   // Height of each 15-minute row in pixels
   ROW_HEIGHT: 25,
-  // Total hours displayed (from 00:00 to 03:00 next day = 27 hours)
-  TOTAL_HOURS: 27,
+  // Total hours displayed (24 hours, always)
+  TOTAL_HOURS: 24,
   // Minimum event height to ensure visibility of short events
   MIN_EVENT_HEIGHT: 40,
   // Minimum event duration in minutes (events shorter than this will be extended for display)
@@ -177,6 +177,7 @@ export const calculateItemLayout = (
 /**
  * Generate time slot labels for the Day Planner timeline.
  * Returns an array of time slots with labels only on the hour marks.
+ * Timeline always shows 24 hours starting from dayStart.
  * When timeZoneID is provided, labels show the hour in that timezone (boat time); otherwise device local.
  */
 export const generateTimeSlotLabels = (
@@ -218,13 +219,14 @@ export const generateTimeSlotLabels = (
 
 /**
  * Calculate the day start and end times for a given cruise day in the boat timezone.
- * Day runs from 00:00 to either 24:00 (midnight) or 03:00 the next day (27 hours),
- * depending on the enableLateDayFlip setting.
+ * Day always runs for 24 hours:
+ * - If enableLateDayFlip is false: 00:00 to 24:00 (midnight to midnight)
+ * - If enableLateDayFlip is true: 03:00 to 03:00 next day (3AM to 3AM)
  *
  * @param cruiseStartDate - The start date of the cruise
  * @param cruiseDay - The cruise day (1-indexed)
- * @param enableLateDayFlip - If true, day extends to 03:00 next day (27 hours). If false, day ends at midnight (24 hours).
- * @param timeZoneID - IANA timezone for the boat (e.g. America/New_York). Day boundaries are midnight in this zone.
+ * @param enableLateDayFlip - If true, day runs from 3AM to 3AM. If false, midnight to midnight.
+ * @param timeZoneID - IANA timezone for the boat (e.g. America/New_York).
  */
 export const getDayBoundaries = (
   cruiseStartDate: Date,
@@ -232,16 +234,18 @@ export const getDayBoundaries = (
   enableLateDayFlip: boolean,
   timeZoneID: string,
 ): {dayStart: Date; dayEnd: Date} => {
-  const endHour = enableLateDayFlip ? DAY_PLANNER_CONFIG.TOTAL_HOURS : 24;
+  const startHour = enableLateDayFlip ? 3 : 0;
   const dayStart = moment(cruiseStartDate)
     .tz(timeZoneID)
     .add(cruiseDay - 1, 'days')
     .startOf('day')
+    .add(startHour, 'hours')
     .toDate();
   const dayEnd = moment(cruiseStartDate)
     .tz(timeZoneID)
     .add(cruiseDay - 1, 'days')
-    .add(endHour, 'hours')
+    .startOf('day')
+    .add(startHour + DAY_PLANNER_CONFIG.TOTAL_HOURS, 'hours')
     .toDate();
 
   return {dayStart, dayEnd};
@@ -255,41 +259,25 @@ export const getTimelineHeight = (): number => {
 };
 
 /**
- * Calculate the scroll offset in pixels for the current time of day.
+ * Calculate the scroll offset in pixels for a given time relative to dayStart.
+ * The timeline always shows 24 hours starting from dayStart.
  *
- * The timeline shows 27 hours: from 00:00 (midnight) to 03:00 the next day.
- * When dayStart is provided, we can correctly handle the extended hours (00:00-03:00)
- * that fall on the next calendar day by adding 24 hours to the offset.
- *
- * @param now The current date/time
- * @param dayStart Optional start of the viewed day's timeline. When provided, enables
- *                 correct positioning for times in the extended hours (next calendar day).
+ * @param now The current date/time to calculate offset for
+ * @param dayStart The start of the viewed day's timeline (either midnight or 3AM depending on late day flip)
  * @returns The scroll offset in pixels
  */
-export const getScrollOffsetForTime = (now: Date, dayStart?: Date): number => {
-  // Extract just the time-of-day from "now" (hours and minutes)
-  const nowHours = now.getHours();
-  const nowMinutes = now.getMinutes();
+export const getScrollOffsetForTime = (now: Date, dayStart: Date): number => {
+  // Calculate minutes from dayStart
+  const minutesFromDayStart = (now.getTime() - dayStart.getTime()) / (1000 * 60);
 
-  // Calculate minutes from midnight (00:00)
-  let minutesFromMidnight = nowHours * 60 + nowMinutes;
-
-  // If dayStart is provided and now is on a later calendar date,
-  // we're in the extended hours (00:00-03:00 next day) and need to add 24 hours
-  if (dayStart) {
-    const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const dayStartDate = new Date(dayStart.getFullYear(), dayStart.getMonth(), dayStart.getDate());
-    if (nowDate.getTime() > dayStartDate.getTime()) {
-      minutesFromMidnight += 24 * 60; // Add 24 hours worth of minutes
-    }
-  }
+  // If negative or beyond 24 hours, clamp to valid range
+  const clampedMinutes = Math.max(0, Math.min(minutesFromDayStart, DAY_PLANNER_CONFIG.TOTAL_HOURS * 60));
 
   // Convert to pixel offset
-  // Each 15-minute slot is ROW_HEIGHT pixels tall
-  const offset = (minutesFromMidnight / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
+  const offset = (clampedMinutes / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
 
   // Subtract some offset so the current time appears near the top of the view, not at the very top
-  const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2; // Show ~1 hour before current time
+  const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2; // Show ~30 minutes before current time
 
   const finalOffset = Math.max(0, offset - viewOffset);
 

@@ -3,6 +3,7 @@ import {ScrollView, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {DayPlannerCard} from '#src/Components/Cards/Schedule/DayPlannerCard';
+import {DayPlannerNowDivider} from '#src/Components/Views/Schedule/DayPlannerNowDivider';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {
@@ -20,10 +21,12 @@ interface DayPlannerTimelineViewProps {
   dayEnd: Date;
   /** Boat timezone for slot labels (e.g. America/Lower_Princes). When set, labels show boat time. */
   timeZoneID?: string;
+  /** The cruise day being viewed (1-indexed). Used by DayPlannerNowDivider to show "now" when viewing today. */
+  selectedCruiseDay?: number;
 }
 
 export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineViewProps>(
-  ({items, dayStart, dayEnd, timeZoneID}, ref) => {
+  ({items, dayStart, dayEnd, timeZoneID, selectedCruiseDay}, ref) => {
     const {theme} = useAppTheme();
     const {commonStyles} = useStyles();
     const commonNavigation = useCommonStack();
@@ -108,6 +111,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         left: 0,
         right: 0,
         bottom: 0,
+        zIndex: 2,
       },
       emptyMessage: {
         ...commonStyles.paddingVertical,
@@ -156,6 +160,8 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
               <View key={index} style={[styles.gridLine, getGridLineStyle(slot.slotType)]} />
             ))}
           </View>
+
+          <DayPlannerNowDivider dayStart={dayStart} selectedCruiseDay={selectedCruiseDay} />
 
           {/* Event cards */}
           <View style={styles.eventsContainer}>
