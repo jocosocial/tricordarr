@@ -116,6 +116,8 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
           flex: 1,
           backgroundColor,
           borderRadius: 4,
+          borderWidth: 1,
+          borderColor: theme.colors.background,
           padding: 4,
           overflow: 'hidden',
         },
@@ -127,7 +129,7 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
           color: textColor,
         },
       }),
-    [item.topOffset, item.height, leftPosition, columnWidth, backgroundColor, textColor],
+    [item.topOffset, item.height, leftPosition, columnWidth, backgroundColor, textColor, theme.colors.background],
   );
 
   const showLocation = contentLevel === 'titleAndLocation' && item.location;
