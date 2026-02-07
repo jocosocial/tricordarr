@@ -69,7 +69,7 @@ export const DayPlannerNowDivider = ({dayStart, selectedCruiseDay}: DayPlannerNo
       right: 0,
       height: 2,
       backgroundColor: theme.colors.error,
-      zIndex: 1,
+      zIndex: 0,
     },
   });
 

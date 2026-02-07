@@ -77,10 +77,17 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
       },
       scrollContent: {
         flexDirection: 'row',
+        flexGrow: 1,
+      },
+      timelineRow: {
+        flex: 1,
+        flexDirection: 'row',
+        position: 'relative',
       },
       timeColumn: {
         width: 60,
         paddingRight: 8,
+        zIndex: 1,
       },
       timeSlot: {
         height: DAY_PLANNER_CONFIG.ROW_HEIGHT,
@@ -88,8 +95,9 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         alignItems: 'flex-end',
       },
       timeLabel: {
-        color: theme.colors.onSurfaceVariant,
+        color: theme.colors.onBackground,
         marginTop: 0,
+        backgroundColor: theme.colors.background,
       },
       eventsColumn: {
         flex: 1,
@@ -139,35 +147,37 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
 
     return (
       <ScrollView ref={ref} style={styles.container} contentContainerStyle={styles.scrollContent}>
-        {/* Time labels column */}
-        <View style={[styles.timeColumn, {height: timelineHeight}]}>
-          {timeSlots.map((slot, index) => (
-            <View key={index} style={[styles.timeSlot, getGridLineStyle(slot.slotType)]}>
-              {slot.label ? (
-                <Text style={styles.timeLabel} variant={'bodyMedium'}>
-                  {slot.label}
-                </Text>
-              ) : null}
-            </View>
-          ))}
-        </View>
+        <View style={[styles.timelineRow, {height: timelineHeight}]}>
+          <DayPlannerNowDivider dayStart={dayStart} selectedCruiseDay={selectedCruiseDay} />
 
-        {/* Events column */}
-        <View style={[styles.eventsColumn, {height: timelineHeight}]}>
-          {/* Grid lines */}
-          <View style={styles.gridLines}>
+          {/* Time labels column — zIndex so it renders above the now divider */}
+          <View style={[styles.timeColumn, {height: timelineHeight}]}>
             {timeSlots.map((slot, index) => (
-              <View key={index} style={[styles.gridLine, getGridLineStyle(slot.slotType)]} />
+              <View key={index} style={[styles.timeSlot, getGridLineStyle(slot.slotType)]}>
+                {slot.label ? (
+                  <Text style={styles.timeLabel} variant={'bodyMedium'}>
+                    {slot.label}
+                  </Text>
+                ) : null}
+              </View>
             ))}
           </View>
 
-          <DayPlannerNowDivider dayStart={dayStart} selectedCruiseDay={selectedCruiseDay} />
+          {/* Events column */}
+          <View style={[styles.eventsColumn, {height: timelineHeight}]}>
+            {/* Grid lines */}
+            <View style={styles.gridLines}>
+              {timeSlots.map((slot, index) => (
+                <View key={index} style={[styles.gridLine, getGridLineStyle(slot.slotType)]} />
+              ))}
+            </View>
 
-          {/* Event cards */}
-          <View style={styles.eventsContainer}>
-            {layoutItems.map(item => (
-              <DayPlannerCard key={item.id} item={item} onPress={() => handleItemPress(item)} />
-            ))}
+            {/* Event cards */}
+            <View style={styles.eventsContainer}>
+              {layoutItems.map(item => (
+                <DayPlannerCard key={item.id} item={item} onPress={() => handleItemPress(item)} />
+              ))}
+            </View>
           </View>
         </View>
       </ScrollView>
