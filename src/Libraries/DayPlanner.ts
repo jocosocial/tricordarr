@@ -259,27 +259,45 @@ export const getTimelineHeight = (): number => {
 };
 
 /**
+ * Calculate the scroll offset in pixels for "current time of day" in a timezone.
+ * Use this when viewing "today" so the position is correct even when the cruise
+ * calendar date is in the past (e.g. demo data).
+ *
+ * @param timeZoneID IANA timezone (e.g. boat timezone)
+ * @param dayStart The start of the viewed day's timeline (hour in TZ defines start, e.g. 3AM)
+ * @returns The scroll offset in pixels
+ */
+export const getScrollOffsetForTimeOfDay = (timeZoneID: string, dayStart: Date): number => {
+  const nowInTz = moment().tz(timeZoneID);
+  const startInTz = moment(dayStart).tz(timeZoneID);
+  const minutesFromDayStart = (nowInTz.hours() - startInTz.hours()) * 60 + (nowInTz.minutes() - startInTz.minutes());
+
+  const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
+  const clamped = Math.max(0, Math.min(minutesFromDayStart, dayMinutesMax));
+
+  const offset = (clamped / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
+  const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2;
+  return Math.max(0, offset - viewOffset);
+};
+
+/**
  * Calculate the scroll offset in pixels for a given time relative to dayStart.
  * The timeline always shows 24 hours starting from dayStart.
+ * Returns 0 when now is outside the displayed day (e.g. viewing a past/future cruise day).
  *
  * @param now The current date/time to calculate offset for
  * @param dayStart The start of the viewed day's timeline (either midnight or 3AM depending on late day flip)
  * @returns The scroll offset in pixels
  */
-export const getScrollOffsetForTime = (now: Date, dayStart: Date): number => {
-  // Calculate minutes from dayStart
-  const minutesFromDayStart = (now.getTime() - dayStart.getTime()) / (1000 * 60);
+// export const getScrollOffsetForTime = (now: Date, dayStart: Date): number => {
+//   const minutesFromDayStart = (now.getTime() - dayStart.getTime()) / (1000 * 60);
 
-  // If negative or beyond 24 hours, clamp to valid range
-  const clampedMinutes = Math.max(0, Math.min(minutesFromDayStart, DAY_PLANNER_CONFIG.TOTAL_HOURS * 60));
+//   const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
+//   if (minutesFromDayStart < 0 || minutesFromDayStart > dayMinutesMax) {
+//     return 0;
+//   }
 
-  // Convert to pixel offset
-  const offset = (clampedMinutes / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
-
-  // Subtract some offset so the current time appears near the top of the view, not at the very top
-  const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2; // Show ~30 minutes before current time
-
-  const finalOffset = Math.max(0, offset - viewOffset);
-
-  return finalOffset;
-};
+//   const offset = (minutesFromDayStart / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
+//   const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2;
+//   return Math.max(0, offset - viewOffset);
+// };

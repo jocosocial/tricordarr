@@ -15,7 +15,7 @@ import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForTime} from '#src/Libraries/DayPlanner';
+import {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForTimeOfDay} from '#src/Libraries/DayPlanner';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
@@ -125,15 +125,14 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   // Using isLoading instead of isFetching avoids showing spinner on refetch
   const showLoading = isEventLoading || isLfgJoinedLoading || isPersonalEventLoading;
 
-  // Scroll to current time position in the timeline
+  // Scroll to current time-of-day position in the timeline (boat TZ). Position is consistent regardless of which cruise day is selected.
   const scrollToNow = useCallback(() => {
     if (!scrollViewRef.current) {
       return;
     }
-    const now = new Date();
-    const offset = getScrollOffsetForTime(now, dayStart);
+    const offset = getScrollOffsetForTimeOfDay(boatTimeZoneID, dayStart);
     scrollViewRef.current.scrollTo({y: offset, animated: true});
-  }, [dayStart]);
+  }, [boatTimeZoneID, dayStart]);
 
   // Refresh all data
   const onRefresh = useCallback(async () => {
