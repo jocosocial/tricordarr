@@ -3,7 +3,10 @@ import {StyleSheet, View} from 'react-native';
 import {Text, TouchableRipple} from 'react-native-paper';
 
 import {CancelledBadge} from '#src/Components/Badges/CancelledBadge';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {DayPlannerItem, DayPlannerItemWithLayout} from '#src/Types/DayPlanner';
 
 type DayPlannerCardContentLevel = 'titleOnly' | 'titleAndLocation';
@@ -42,6 +45,13 @@ const staticStyles = StyleSheet.create({
 
 export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
   const {theme} = useAppTheme();
+  const {hasShutternaut} = useRoles();
+
+  const showPhotographerIcon = useMemo(
+    () =>
+      item.type === 'event' && hasShutternaut === true && item.eventData?.shutternautData?.userIsPhotographer === true,
+    [item.type, item.eventData?.shutternautData?.userIsPhotographer, hasShutternaut],
+  );
 
   // Colors must be derived at render time because they depend on both the item's
   // color category (event type, LFG, personal, team events) and the current theme.
@@ -126,6 +136,10 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
         <View style={staticStyles.content}>
           {item.cancelled && <CancelledBadge align={'left'} />}
           <Text style={dynamicStyles.text} numberOfLines={titleLines} ellipsizeMode={'tail'}>
+            {showPhotographerIcon && (
+              <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} small />
+            )}
+            {showPhotographerIcon && ' '}
             {item.title}
           </Text>
           {showLocation && (
