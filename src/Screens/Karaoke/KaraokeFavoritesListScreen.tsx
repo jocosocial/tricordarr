@@ -1,8 +1,9 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useMemo} from 'react';
+import {type FlashListRef} from '@shopify/flash-list';
+import React, {useMemo, useRef} from 'react';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {KaraokeSongList} from '#src/Components/Lists/Karaoke/KaraokeSongList';
+import {KaraokeSongList, type KaraokeSongListItem} from '#src/Components/Lists/Karaoke/KaraokeSongList';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -31,6 +32,7 @@ export const KaraokeFavoritesListScreen = (props: Props) => {
 };
 
 const KaraokeFavoritesListScreenInner = (_props: Props) => {
+  const listRef = useRef<FlashListRef<KaraokeSongListItem>>(null);
   const {data, refetch, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage} = useKaraokeSongsQuery({
     favorite: true,
   });
@@ -50,6 +52,7 @@ const KaraokeFavoritesListScreenInner = (_props: Props) => {
     <AppView>
       <ListTitleView title={'Favorites'} />
       <KaraokeSongList
+        ref={listRef}
         items={items}
         showFavoriteButton={true}
         swipeableEnabled={true}

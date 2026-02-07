@@ -148,4 +148,5 @@ export enum AppIcons {
   privacy = 'incognito',
   disabled = 'minus-circle-outline',
   preregistration = 'plane-train',
+  karaokeLog = 'microphone-plus',
 }

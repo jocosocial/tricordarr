@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query';
 import React, {PropsWithChildren, useCallback} from 'react';
 import {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SharedValue} from 'react-native-reanimated';
@@ -8,9 +7,7 @@ import {BaseSwipeable} from '#src/Components/Swipeables/BaseSwipeable';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useRefresh} from '#src/Hooks/useRefresh';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
-import {useKaraokeFavoriteMutation} from '#src/Queries/Karaoke/KaraokeMutations';
 import {KaraokePerformedSongsData, KaraokeSongData} from '#src/Structs/ControllerStructs';
 
 interface KaraokeListItemSwipeableProps extends PropsWithChildren {
@@ -28,36 +25,9 @@ export const KaraokeListItemSwipeable = ({
 }: KaraokeListItemSwipeableProps) => {
   const {theme} = useAppTheme();
   const navigation = useMainStack();
-  const queryClient = useQueryClient();
-  const favoriteMutation = useKaraokeFavoriteMutation();
   const {hasKaraokeManager} = useRoles();
-  const {refreshing, setRefreshing} = useRefresh({});
 
   const showLogButton = showLogButtonProp !== false && hasKaraokeManager;
-  const invalidationKeys = KaraokeSongData.getCacheKeys(song.songID);
-  const isFavorite = 'isFavorite' in song ? song.isFavorite : false;
-
-  const handleFavorite = useCallback(
-    (swipeable: SwipeableMethods) => {
-      setRefreshing(true);
-      favoriteMutation.mutate(
-        {
-          songID: song.songID,
-          action: isFavorite ? 'unfavorite' : 'favorite',
-        },
-        {
-          onSuccess: async () => {
-            await Promise.all(invalidationKeys.map(key => queryClient.invalidateQueries({queryKey: key})));
-          },
-          onSettled: () => {
-            setRefreshing(false);
-            swipeable.reset();
-          },
-        },
-      );
-    },
-    [favoriteMutation, song.songID, isFavorite, invalidationKeys, queryClient, setRefreshing],
-  );
 
   const handleLog = useCallback(
     (swipeable: SwipeableMethods) => {
@@ -76,35 +46,19 @@ export const KaraokeListItemSwipeable = ({
     _dragAnimatedValue: SharedValue<number>,
     swipeable: SwipeableMethods,
   ) => {
+    if (!showLogButton) return null;
     return (
       <SwipeableButton
-        text={isFavorite ? 'Unfavorite' : 'Favorite'}
-        iconName={isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
-        onPress={() => handleFavorite(swipeable)}
-        refreshing={refreshing}
+        text={'Log'}
+        iconName={AppIcons.karaokeLog}
+        onPress={() => handleLog(swipeable)}
         style={{backgroundColor: theme.colors.elevation.level1}}
       />
     );
   };
 
-  const renderLeftPanel = (
-    _progressAnimatedValue: SharedValue<number>,
-    _dragAnimatedValue: SharedValue<number>,
-    swipeable: SwipeableMethods,
-  ) => {
-    if (!showLogButton) return null;
-    return (
-      <SwipeableButton
-        text={'Log'}
-        iconName={AppIcons.edit}
-        onPress={() => handleLog(swipeable)}
-        style={{backgroundColor: theme.colors.elevation.level2}}
-      />
-    );
-  };
-
   return (
-    <BaseSwipeable enabled={enabled} renderLeftPanel={renderLeftPanel} renderRightPanel={renderRightPanel}>
+    <BaseSwipeable enabled={enabled} renderRightPanel={renderRightPanel}>
       {children}
     </BaseSwipeable>
   );

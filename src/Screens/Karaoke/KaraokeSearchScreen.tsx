@@ -1,11 +1,11 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useMemo, useState} from 'react';
+import {type FlashListRef} from '@shopify/flash-list';
+import React, {useMemo, useRef, useState} from 'react';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {KaraokeSongList} from '#src/Components/Lists/Karaoke/KaraokeSongList';
+import {KaraokeSongList, type KaraokeSongListItem} from '#src/Components/Lists/Karaoke/KaraokeSongList';
 import {KaraokeSearchBar} from '#src/Components/Search/KaraokeSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
-import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {usePagination} from '#src/Hooks/usePagination';
@@ -32,6 +32,7 @@ export const KaraokeSearchScreen = (props: Props) => {
 };
 
 const KaraokeSearchScreenInner = (_props: Props) => {
+  const listRef = useRef<FlashListRef<KaraokeSongListItem>>(null);
   const [searchQuery, setSearchQuery] = useState('');
   /** Only search when user submits (search icon or keyboard submit). */
   const [submittedQuery, setSubmittedQuery] = useState('');
@@ -69,8 +70,8 @@ const KaraokeSearchScreenInner = (_props: Props) => {
           setSubmittedQuery('');
         }}
       />
-      <ListTitleView title={canSearch ? 'Results' : 'Search Song Library'} />
       <KaraokeSongList
+        ref={listRef}
         items={items}
         showFavoriteButton={true}
         swipeableEnabled={false}

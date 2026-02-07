@@ -7,6 +7,7 @@ interface KaraokeSearchBarProps {
   onChangeSearch?: (query: string) => void;
   onSearch?: () => void;
   onClear?: () => void;
+  placeholder?: string;
 }
 
 /**
@@ -14,10 +15,16 @@ interface KaraokeSearchBarProps {
  * Backend allows: search ≥3 chars, or single letter, or #.
  * We use minLength 1 so single character and # are accepted; parent controls when to run the query.
  */
-export const KaraokeSearchBar = ({searchQuery, onChangeSearch, onSearch, onClear}: KaraokeSearchBarProps) => {
+export const KaraokeSearchBar = ({
+  searchQuery,
+  onChangeSearch,
+  onSearch,
+  onClear,
+  placeholder = 'Search Song Library',
+}: KaraokeSearchBarProps) => {
   return (
     <SearchBarBase
-      placeholder={'Search Song Library'}
+      placeholder={placeholder}
       minLength={1}
       searchQuery={searchQuery}
       onChangeSearch={onChangeSearch}
