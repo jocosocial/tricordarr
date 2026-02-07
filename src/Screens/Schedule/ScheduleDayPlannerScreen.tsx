@@ -36,7 +36,7 @@ export const ScheduleDayPlannerScreen = (props: Props) => {
 };
 
 const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
-  const {adjustedCruiseDayToday, startDate, endDate} = useCruise();
+  const {adjustedCruiseDayToday, startDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(route.params?.cruiseDay ?? adjustedCruiseDayToday);
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
@@ -149,7 +149,10 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     return (
       <View>
         <MaterialHeaderButtons>
-          <ScheduleDayScreenActionsMenu onRefresh={onRefresh} />
+          <ScheduleDayScreenActionsMenu
+            onRefresh={onRefresh}
+            helpScreen={CommonStackComponents.scheduleDayPlannerHelpScreen}
+          />
         </MaterialHeaderButtons>
       </View>
     );
