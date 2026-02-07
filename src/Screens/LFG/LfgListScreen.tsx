@@ -118,7 +118,7 @@ const LfgListScreenInner = ({
               <LfgFilterMenu enableUnread={endpoint === 'joined'} />
             </>
           )}
-          <LfgListActionsMenu />
+          <LfgListActionsMenu endpoint={endpoint} />
         </MaterialHeaderButtons>
       </View>
     );

@@ -1,4 +1,4 @@
-import {FlashList} from '@shopify/flash-list';
+import {type FlashListRef} from '@shopify/flash-list';
 import React, {useEffect, useRef, useState} from 'react';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -27,7 +27,7 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
     },
     endpoint: endpoint,
   });
-  const listRef = useRef<FlashList<FezData>>(null);
+  const listRef = useRef<FlashListRef<FezData>>(null);
   const [lfgList, setLfgList] = useState<FezData[]>([]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: refetch,

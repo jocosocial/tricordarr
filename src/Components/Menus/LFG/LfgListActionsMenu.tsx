@@ -6,22 +6,22 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {LfgStackComponents, useLFGStackNavigation, useLFGStackRoute} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {FezListEndpoints} from '#src/Types';
 
-export const LfgListActionsMenu = () => {
+interface LfgListActionsMenuProps {
+  endpoint: FezListEndpoints;
+}
+
+export const LfgListActionsMenu = ({endpoint}: LfgListActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const navigation = useLFGStackNavigation();
-  const route = useLFGStackRoute();
 
   const menuAnchor = <Item title={'Schedule Options'} iconName={AppIcons.menu} onPress={openMenu} />;
 
-  // Check if we're on the former LFGs screen
-  const isFormerScreen =
-    route.name === LfgStackComponents.lfgListScreen && 'endpoint' in route.params && route.params.endpoint === 'former';
-
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      {!isFormerScreen && (
+      {endpoint !== 'former' && (
         <>
           <Menu.Item
             leadingIcon={AppIcons.lfgFormer}

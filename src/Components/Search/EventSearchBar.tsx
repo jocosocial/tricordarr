@@ -1,4 +1,4 @@
-import {FlashList} from '@shopify/flash-list';
+import {type FlashListRef} from '@shopify/flash-list';
 import React, {useRef, useState} from 'react';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -17,7 +17,7 @@ export const EventSearchBar = () => {
       enabled: queryEnable,
     },
   });
-  const listRef = useRef<FlashList<EventData>>(null);
+  const listRef = useRef<FlashListRef<EventData>>(null);
 
   const onChangeSearch = (query: string) => {
     if (query !== searchQuery) {
