@@ -661,14 +661,16 @@ export interface UserProfileUploadData {
   discordUsername?: string;
 }
 
-/// Karaoke performance row (artist, songName, performers, time only; no songID or isFavorite).
-/// Returned by GET /api/v3/karaoke/latest and inside KaraokeSongData.performances.
+/// Karaoke performance row. Returned by GET /api/v3/karaoke/latest and inside KaraokeSongData.performances.
+/// Includes songID; isFavorite may be present when returned by the backend.
 export interface KaraokePerformedSongsData {
+  songID: string;
   artist: string;
   songName: string;
   performers: string;
   /// ISO 8601 date string.
   time: string;
+  isFavorite?: boolean;
 }
 
 /// Single karaoke song from GET /api/v3/karaoke or GET /api/v3/karaoke/:song_id.

@@ -12,17 +12,17 @@ import type {KaraokeSongListItemData} from '#src/Components/Lists/Items/KaraokeS
 import {KaraokeListItemSwipeable} from '#src/Components/Swipeables/KaraokeListItemSwipeable';
 import {KaraokePerformedSongsData, KaraokeSongData} from '#src/Structs/ControllerStructs';
 
-export type KaraokeSongListItem = KaraokeSongListItemData | KaraokePerformedSongsData;
+export type KaraokeSongListItem = KaraokeSongListItemData;
 
 function isKaraokeSongData(item: KaraokeSongListItem): item is KaraokeSongData {
-  return 'songID' in item && typeof (item as KaraokeSongData).songID === 'string';
+  return 'performances' in item;
 }
 
 interface KaraokeSongListProps {
   items: KaraokeSongListItem[];
   /** Show favorite button on items that have songID/isFavorite. */
   showFavoriteButton?: boolean;
-  /** Wrap items that have full song data in swipeable (Favorite + Log if karaokemanager). */
+  /** Wrap items in swipeable (Favorite + Log if karaokemanager). */
   swipeableEnabled?: boolean;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   hasNextPage?: boolean;
@@ -48,10 +48,8 @@ const KaraokeSongListInner = (
 
   const renderItem = useCallback(
     ({item}: {item: KaraokeSongListItem}) => {
-      const listItem = (
-        <KaraokeSongListItem item={item as KaraokeSongListItemData} showFavoriteButton={showFavoriteButton} />
-      );
-      if (swipeableEnabled && isKaraokeSongData(item)) {
+      const listItem = <KaraokeSongListItem item={item} showFavoriteButton={showFavoriteButton} />;
+      if (swipeableEnabled) {
         return (
           <KaraokeListItemSwipeable song={item} showLogButton={true}>
             {listItem}
@@ -66,7 +64,7 @@ const KaraokeSongListInner = (
   const keyExtractor = useCallback((item: KaraokeSongListItem) => {
     if (isKaraokeSongData(item)) return item.songID;
     const p = item as KaraokePerformedSongsData;
-    return `${p.artist}-${p.songName}-${p.time}-${p.performers}`;
+    return `${p.songID}-${p.time}-${p.performers}`;
   }, []);
 
   const getListFooter = useCallback(() => {

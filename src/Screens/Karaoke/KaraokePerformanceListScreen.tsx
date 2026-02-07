@@ -124,8 +124,8 @@ const KaraokePerformanceListScreenInner = ({navigation}: Props) => {
       <ListTitleView title={'Recent Performances'} />
       <KaraokeSongList
         items={items}
-        showFavoriteButton={false}
-        swipeableEnabled={false}
+        showFavoriteButton={true}
+        swipeableEnabled={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         handleLoadNext={handleLoadNext}

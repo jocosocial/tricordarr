@@ -11,10 +11,10 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useKaraokeFavoriteMutation} from '#src/Queries/Karaoke/KaraokeMutations';
-import {KaraokeSongData} from '#src/Structs/ControllerStructs';
+import {KaraokePerformedSongsData, KaraokeSongData} from '#src/Structs/ControllerStructs';
 
 interface KaraokeListItemSwipeableProps extends PropsWithChildren {
-  song: KaraokeSongData;
+  song: KaraokePerformedSongsData | KaraokeSongData;
   enabled?: boolean;
   /** When true, show Log action (karaokemanager). */
   showLogButton?: boolean;
@@ -35,6 +35,7 @@ export const KaraokeListItemSwipeable = ({
 
   const showLogButton = showLogButtonProp !== false && hasKaraokeManager;
   const invalidationKeys = KaraokeSongData.getCacheKeys(song.songID);
+  const isFavorite = 'isFavorite' in song ? song.isFavorite : false;
 
   const handleFavorite = useCallback(
     (swipeable: SwipeableMethods) => {
@@ -42,7 +43,7 @@ export const KaraokeListItemSwipeable = ({
       favoriteMutation.mutate(
         {
           songID: song.songID,
-          action: song.isFavorite ? 'unfavorite' : 'favorite',
+          action: isFavorite ? 'unfavorite' : 'favorite',
         },
         {
           onSuccess: async () => {
@@ -55,7 +56,7 @@ export const KaraokeListItemSwipeable = ({
         },
       );
     },
-    [favoriteMutation, song.songID, song.isFavorite, invalidationKeys, queryClient, setRefreshing],
+    [favoriteMutation, song.songID, isFavorite, invalidationKeys, queryClient, setRefreshing],
   );
 
   const handleLog = useCallback(
@@ -77,8 +78,8 @@ export const KaraokeListItemSwipeable = ({
   ) => {
     return (
       <SwipeableButton
-        text={song.isFavorite ? 'Unfavorite' : 'Favorite'}
-        iconName={song.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
+        text={isFavorite ? 'Unfavorite' : 'Favorite'}
+        iconName={isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
         onPress={() => handleFavorite(swipeable)}
         refreshing={refreshing}
         style={{backgroundColor: theme.colors.elevation.level1}}

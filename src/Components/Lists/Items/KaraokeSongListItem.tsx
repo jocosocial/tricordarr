@@ -10,12 +10,10 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useKaraokeFavoriteMutation} from '#src/Queries/Karaoke/KaraokeMutations';
-import {KaraokeSongData} from '#src/Structs/ControllerStructs';
+import {KaraokePerformedSongsData, KaraokeSongData} from '#src/Structs/ControllerStructs';
 
 /** Display item: performance row (latest list) or full song (search/favorites). */
-export type KaraokeSongListItemData =
-  | {songID?: string; isFavorite?: boolean; songName: string; artist: string; performers?: string; time?: string}
-  | KaraokeSongData;
+export type KaraokeSongListItemData = KaraokePerformedSongsData | KaraokeSongData;
 
 function formatPerformanceTime(isoTime: string): string {
   try {

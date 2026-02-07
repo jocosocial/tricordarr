@@ -25,14 +25,13 @@ export const KaraokeHelpScreen = () => {
           Use the "Favorites" button in the header to view your favorited karaoke songs.
         </HelpTopicView>
         <HelpTopicView>
-          On the main list (Recent Performances), items are display-only—there are no per-item Favorite or Log actions
-          on that list. On the Search and Favorites screens, where full song data is available, you can favorite songs
-          (star icon) and, if you have the karaoke manager role, swipe to reveal "Log" to record a performance.
+          On Recent Performances, Search, and Favorites you can favorite songs (star icon when favorite state is shown)
+          and, if you have the karaoke manager role, swipe to reveal "Favorite" and "Log" to record a performance.
         </HelpTopicView>
         <HelpChapterTitleView title={'Privileged Actions'} />
         <HelpTopicView icon={AppIcons.edit} title={'Log Performance'}>
-          Karaoke managers can log a performance from the Search and Favorites screens by swiping a song and tapping
-          "Log", then entering the performers and saving. This is a privileged action.
+          Karaoke managers can log a performance from any list (Recent Performances, Search, or Favorites) by swiping a
+          song and tapping "Log", then entering the performers and saving. This is a privileged action.
         </HelpTopicView>
         <HelpTopicView title={'Search History'}>
           Karaoke managers can turn on "Search History" in the actions menu on the main screen to filter the recent
