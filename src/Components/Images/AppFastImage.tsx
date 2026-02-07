@@ -2,13 +2,11 @@ import FastImage, {
   type Source as FastImageSource,
   type ImageStyle as FastImageStyle,
   type OnErrorEvent,
+  type OnLoadEvent,
   type OnProgressEvent,
 } from '@d11/react-native-fast-image';
-import React, {useEffect, useState} from 'react';
-import {Image, StyleProp, StyleSheet} from 'react-native';
-import {ActivityIndicator, Card} from 'react-native-paper';
-
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import React, {useCallback, useState} from 'react';
+import {StyleProp, StyleSheet} from 'react-native';
 
 interface ImageDimensionProps {
   width?: number;
@@ -24,44 +22,42 @@ interface AppScaledImageProps {
 }
 
 /**
- * Displays an image using FastImage which seems to work for dynamically sized images.
- * I found that this lets me display an image at 100% width and a height that is proportional
- * to the original image. Haven't tried to see if this pattern can be modified to use the regular
- * RN Image component. But also at this point, I don't care. It works.
- *
- * This has some overlap and origin in MapScreen.tsx where it was used to display the ship map.
- * Maybe dedupe with that some day?
- * @constructor
+ * Displays an image using FastImage with aspect ratio from the loaded image.
+ * Dimensions are taken from FastImage's onLoad (one network request) instead of
+ * Image.getSize (which would use a different HTTP client and cause duplicate requests).
  */
 export const AppScaledImage = ({image, style, onLoad, onError, onProgress}: AppScaledImageProps) => {
   const [imageSize, setImageSize] = useState<ImageDimensionProps>({width: undefined, height: undefined});
-  const {commonStyles} = useStyles();
 
-  // ChatGPT had the idea to load this from the image and store it in state.
-  useEffect(() => {
-    if (image.uri) {
-      Image.getSize(image.uri, (width, height) => {
-        setImageSize({width: width, height: height});
-      });
-    }
-  }, [image.uri]);
+  /**
+   * This used to call Image.getSize() which secretly was fetching the image
+   * again which is not cool in low network conditions. This issue was unique
+   * to AppScaledImage due to the aspect ratio things.
+   */
+  const handleLoad = useCallback(
+    (event: OnLoadEvent) => {
+      const {width, height} = event.nativeEvent;
+      setImageSize({width, height});
+      onLoad?.();
+    },
+    [onLoad],
+  );
 
-  // 0 / 0 by default is NaN which produces very funky not helpful errors.
-  if (!imageSize.width || !imageSize.height || !image.uri) {
-    return (
-      <Card.Content style={[commonStyles.marginVerticalSmall]}>
-        <ActivityIndicator />
-      </Card.Content>
-    );
+  if (!image.uri) {
+    return null;
   }
 
-  // https://stackoverflow.com/questions/36436913/image-contain-resizemode-not-working-in-react-native
+  const aspectRatio =
+    imageSize.width != null && imageSize.height != null && imageSize.height > 0
+      ? imageSize.width / imageSize.height
+      : 1;
+
   const styles = StyleSheet.create({
     image: {
       flex: 1,
       height: undefined,
       width: undefined,
-      aspectRatio: imageSize.width / imageSize.height,
+      aspectRatio,
     },
   });
 
@@ -69,7 +65,7 @@ export const AppScaledImage = ({image, style, onLoad, onError, onProgress}: AppS
     <FastImage
       style={[styles.image, style]}
       source={{uri: image.uri}}
-      onLoad={onLoad}
+      onLoad={handleLoad}
       onError={onError}
       onProgress={onProgress}
     />
