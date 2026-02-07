@@ -661,6 +661,51 @@ export interface UserProfileUploadData {
   discordUsername?: string;
 }
 
+/// Karaoke performance row (artist, songName, performers, time only; no songID or isFavorite).
+/// Returned by GET /api/v3/karaoke/latest and inside KaraokeSongData.performances.
+export interface KaraokePerformedSongsData {
+  artist: string;
+  songName: string;
+  performers: string;
+  /// ISO 8601 date string.
+  time: string;
+}
+
+/// Single karaoke song from GET /api/v3/karaoke or GET /api/v3/karaoke/:song_id.
+export interface KaraokeSongData {
+  songID: string;
+  artist: string;
+  songName: string;
+  isMidi: boolean;
+  isVoiceReduced: boolean;
+  isFavorite: boolean;
+  performances: KaraokePerformedSongsData[];
+}
+
+/// Response from GET /api/v3/karaoke (search/favorites).
+export interface KaraokeSongResponseData {
+  totalSongs: number;
+  start: number;
+  limit: number;
+  songs: KaraokeSongData[];
+}
+
+/// Response from GET /api/v3/karaoke/latest.
+export interface KaraokePerformedSongsResult {
+  songs: KaraokePerformedSongsData[];
+  paginator: Paginator;
+}
+
+export namespace KaraokeSongData {
+  export const getCacheKeys = (songID?: string): QueryKey[] => {
+    const keys: QueryKey[] = [['/karaoke'], ['/karaoke/latest']];
+    if (songID) {
+      keys.push([`/karaoke/${songID}`]);
+    }
+    return keys;
+  };
+}
+
 export interface NoteCreateData {
   /// The text of the note.
   note: string;

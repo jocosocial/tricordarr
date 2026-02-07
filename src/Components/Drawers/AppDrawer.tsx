@@ -131,7 +131,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'Karaoke'}
                 icon={AppIcons.karaoke}
-                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/karaoke`)}
+                onPress={() => Linking.openURL('tricordarr://karaoke')}
               />
               <PaperDrawer.Item
                 label={'Lighter'}

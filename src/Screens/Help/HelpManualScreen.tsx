@@ -102,7 +102,7 @@ export const HelpManualScreen = () => {
             title={'Karaoke'}
             description={'Sing your heart out with other attendees.'}
             icon={AppIcons.karaoke}
-            onPress={() => commonNavigation.push(CommonStackComponents.siteUIHelpScreen)}
+            onPress={() => commonNavigation.push(CommonStackComponents.karaokeHelpScreen)}
           />
           <DataFieldListItem
             title={'Daily Themes'}

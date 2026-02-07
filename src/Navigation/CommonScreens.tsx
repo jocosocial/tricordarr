@@ -35,6 +35,7 @@ import {ForumThreadUserScreen} from '#src/Screens/Forum/Thread/ForumThreadUserSc
 import {HelpManualScreen} from '#src/Screens/Help/HelpManualScreen';
 import {ModeratorHelpScreen} from '#src/Screens/Help/ModeratorHelpScreen';
 import {ShutternautHelpScreen} from '#src/Screens/Help/ShutternautHelpScreen';
+import {KaraokeHelpScreen} from '#src/Screens/Karaoke/KaraokeHelpScreen';
 import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen';
 import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
 import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
@@ -327,6 +328,7 @@ export type CommonStackParamList = {
   ModeratorHelpScreen: undefined;
   BoardgameHelpScreen: undefined;
   PhotostreamHelpScreen: undefined;
+  KaraokeHelpScreen: undefined;
   MicroKaraokeHelpScreen: undefined;
   MapHelpScreen: undefined;
   CruiseHelpScreen: undefined;
@@ -434,6 +436,7 @@ export enum CommonStackComponents {
   moderatorHelpScreen = 'ModeratorHelpScreen',
   boardgameHelpScreen = 'BoardgameHelpScreen',
   photostreamHelpScreen = 'PhotostreamHelpScreen',
+  karaokeHelpScreen = 'KaraokeHelpScreen',
   microKaraokeHelpScreen = 'MicroKaraokeHelpScreen',
   mapHelpScreen = 'MapHelpScreen',
   cruiseHelpScreen = 'CruiseHelpScreen',
@@ -484,6 +487,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.shutternautHelpScreen
   | CommonStackComponents.boardgameHelpScreen
   | CommonStackComponents.photostreamHelpScreen
+  | CommonStackComponents.karaokeHelpScreen
   | CommonStackComponents.microKaraokeHelpScreen
   | CommonStackComponents.userProfileHelpScreen
   | CommonStackComponents.mapHelpScreen
@@ -982,6 +986,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.photostreamHelpScreen}
         component={PhotostreamHelpScreen}
         options={{title: 'Photostream Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.karaokeHelpScreen}
+        component={KaraokeHelpScreen}
+        options={{title: 'Karaoke Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.microKaraokeHelpScreen}
