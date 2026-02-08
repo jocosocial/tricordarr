@@ -16,6 +16,7 @@ import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {ServerUrlFormValues} from '#src/Types/FormValues';
@@ -27,6 +28,7 @@ export const ConfigServerUrlScreen = () => {
   const queryClient = useQueryClient();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const {hasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const {performSignOut} = useSignOut();
@@ -43,7 +45,7 @@ export const ConfigServerUrlScreen = () => {
     // Update session serverUrl - persists immediately
     await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
 
-    refetch().then(() =>
+    refetch().finally(() =>
       formikHelpers.resetForm({
         values: {
           serverChoice: ServerChoices.fromUrl(values.serverUrl),
@@ -68,7 +70,7 @@ export const ConfigServerUrlScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <Text>Do not change this unless instructed to do so by the Twitarr Dev Team or THO.</Text>
         </PaddedContentView>
