@@ -40,10 +40,22 @@ export const ConfigServerUrlScreen = () => {
     }
 
     const oldServerUrl = currentSession.serverUrl;
+    const serverUrlChanging = oldServerUrl !== values.serverUrl;
     await queryClient.cancelQueries({queryKey: ['/client/health']});
 
-    // Update session serverUrl - persists immediately
-    await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
+    if (serverUrlChanging) {
+      const sessionID = currentSession.sessionID;
+      // Perform sign-out first so FGS is stopped and notifications disabled before any re-render.
+      // Otherwise updateSession(serverUrl) triggers signOut() and a re-render with isLoggedIn=false
+      // but enableUserNotifications still true, so PushNotificationService starts the FGS worker
+      // which then calls buildWebSocket() with no token.
+      await performSignOut();
+      // Update session serverUrl only (token already cleared by performSignOut; updateSession will not call signOut again).
+      await updateSession(sessionID, {serverUrl: values.serverUrl});
+    } else {
+      // Update session serverUrl - persists immediately
+      await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
+    }
 
     refetch().finally(() =>
       formikHelpers.resetForm({
@@ -53,10 +65,6 @@ export const ConfigServerUrlScreen = () => {
         },
       }),
     );
-    if (oldServerUrl !== values.serverUrl) {
-      // Perform full sign-out when server URL changes (handles notifications, sockets, privileges, session, query cache, image cache)
-      await performSignOut();
-    }
     setSnackbarPayload(undefined);
   };
 

@@ -222,15 +222,17 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
 
   const updateSession = useCallback(
     async (sessionID: string, updates: Partial<Session>) => {
-      const session = state.sessions.find(s => s.sessionID === sessionID);
+      // Use store.getState() so we see the latest state (e.g. after performSignOut already cleared token).
+      const currentState = store.getState();
+      const session = currentState.sessions.find(s => s.sessionID === sessionID);
       if (!session) {
         console.warn('[SessionProvider] Attempted to update non-existent session:', sessionID);
         return;
       }
 
-      // If server URL is changing and this is the current session, sign out first
+      // If server URL is changing and this is the current session, sign out first (only if still have token).
       if (updates.serverUrl !== undefined && updates.serverUrl !== session.serverUrl) {
-        if (sessionID === state.currentSessionID && session.tokenData) {
+        if (sessionID === currentState.currentSessionID && session.tokenData) {
           // Clear token data when server URL changes
           await signOut();
         }
@@ -243,7 +245,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
         updates,
       });
     },
-    [state.sessions, state.currentSessionID, store, signOut],
+    [store, signOut],
   );
 
   const deleteSession = useCallback(

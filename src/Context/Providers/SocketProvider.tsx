@@ -7,7 +7,7 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SocketContext} from '#src/Context/Contexts/SocketContext';
 import {useWebSocketStorageReducer, WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
-import {buildWebSocket, OpenFezSocket} from '#src/Libraries/Network/Websockets';
+import {buildWebSocket, getToken, OpenFezSocket} from '#src/Libraries/Network/Websockets';
 
 export const SocketProvider = ({children}: PropsWithChildren) => {
   const {isLoggedIn} = useSession();
@@ -71,7 +71,18 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
     ) {
       console.log('[SocketProvider.tsx] NotificationSocket already exists. Skipping buildWebSocket.');
     } else {
-      buildWebSocket().then(ws => setNotificationSocket(ws));
+      getToken()
+        .then(token => {
+          if (!token) {
+            console.log('[SocketProvider.tsx] No token available. Skipping buildWebSocket.');
+            return;
+          }
+          return buildWebSocket();
+        })
+        .then(ws => ws != null && setNotificationSocket(ws))
+        .catch(err => {
+          console.warn('[SocketProvider.tsx] Error building notification socket:', err);
+        });
     }
     console.log(`[SocketProvider.tsx] NotificationSocket open complete! State: ${notificationSocket?.readyState}`);
   }, [appConfig.enableNotificationSocket, notificationSocket, preRegistrationMode]);
