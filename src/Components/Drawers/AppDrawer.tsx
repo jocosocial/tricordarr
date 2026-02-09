@@ -2,6 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import * as React from 'react';
 import {PropsWithChildren, useEffect} from 'react';
 import {Linking, ScrollView, StyleSheet} from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import {Drawer} from 'react-native-drawer-layout';
 import {Badge, Drawer as PaperDrawer} from 'react-native-paper';
 
@@ -224,6 +225,9 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.webview}
                 onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}`)}
               />
+            </PaperDrawer.Section>
+            <PaperDrawer.Section title={`Version ${DeviceInfo.getVersion()}`} showDivider={false}>
+              <></>
             </PaperDrawer.Section>
           </ScrollView>
         );
