@@ -14,7 +14,7 @@ index 86ee08e..3c2940c 100644
      }
  
 diff --git a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
-index 0bbaece..6758ed8 100644
+index 0bbaece..81d6d37 100644
 --- a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
 +++ b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
 @@ -11,6 +11,12 @@ import com.facebook.react.bridge.ReadableArray;
@@ -38,7 +38,7 @@ index 0bbaece..6758ed8 100644
  
      private Activity getCurrentActivity(){
          return reactContext.getCurrentActivity();
-@@ -82,4 +89,42 @@ class FastImageViewModuleImplementation {
+@@ -82,4 +89,81 @@ class FastImageViewModuleImplementation {
          Glide.get(activity.getApplicationContext()).clearDiskCache();
          promise.resolve(null);
      }
@@ -80,12 +80,51 @@ index 0bbaece..6758ed8 100644
 +            }
 +        });
 +    }
++
++    public void getOriginalSize(final ReadableMap source, final ReadableMap options, final Promise promise) {
++        final Activity activity = getCurrentActivity();
++        if (activity == null) {
++            promise.resolve(null);
++            return;
++        }
++
++        activity.runOnUiThread(new Runnable() {
++            @Override
++            public void run() {
++                final FastImageSource imageSource = FastImageViewConverter.getImageSource(activity, source);
++                final GlideUrl glideUrl = imageSource.getGlideUrl();
++
++                Glide.with(activity.getApplicationContext())
++                    .asBitmap()
++                    .load(glideUrl)
++                    .into(new com.bumptech.glide.request.target.CustomTarget<android.graphics.Bitmap>() {
++                        @Override
++                        public void onResourceReady(@NonNull android.graphics.Bitmap resource, @androidx.annotation.Nullable com.bumptech.glide.request.transition.Transition<? super android.graphics.Bitmap> transition) {
++                            com.facebook.react.bridge.WritableMap result = com.facebook.react.bridge.Arguments.createMap();
++                            result.putInt("width", resource.getWidth());
++                            result.putInt("height", resource.getHeight());
++                            promise.resolve(result);
++                        }
++
++                        @Override
++                        public void onLoadCleared(@androidx.annotation.Nullable android.graphics.drawable.Drawable placeholder) {
++                            // Do nothing
++                        }
++
++                        @Override
++                        public void onLoadFailed(@androidx.annotation.Nullable android.graphics.drawable.Drawable errorDrawable) {
++                            promise.reject("failure", "Failed to load image");
++                        }
++                    });
++            }
++        });
++    }
  }
 diff --git a/node_modules/@d11/react-native-fast-image/android/src/newarch/java/com/FastImageViewModule.java b/node_modules/@d11/react-native-fast-image/android/src/newarch/java/com/FastImageViewModule.java
-index c55d4bb..ae20560 100644
+index c55d4bb..214e19d 100644
 --- a/node_modules/@d11/react-native-fast-image/android/src/newarch/java/com/FastImageViewModule.java
 +++ b/node_modules/@d11/react-native-fast-image/android/src/newarch/java/com/FastImageViewModule.java
-@@ -43,4 +43,9 @@ class FastImageViewModule extends NativeFastImageViewModuleSpec {
+@@ -43,4 +43,14 @@ class FastImageViewModule extends NativeFastImageViewModuleSpec {
      public void clearDiskCache(Promise promise) {
          impl.clearDiskCache(promise);
      }
@@ -94,12 +133,17 @@ index c55d4bb..ae20560 100644
 +    public void getCachePath(final ReadableMap source, final Promise promise) {
 +        impl.getCachePath(source, promise);
 +    }
++
++    @Override
++    public void getOriginalSize(final ReadableMap source, final ReadableMap options, final Promise promise) {
++        impl.getOriginalSize(source, options, promise);
++    }
  }
 diff --git a/node_modules/@d11/react-native-fast-image/android/src/oldarch/java/com/FastImageViewModule.java b/node_modules/@d11/react-native-fast-image/android/src/oldarch/java/com/FastImageViewModule.java
-index 2a59c61..3155ada 100644
+index 2a59c61..8c2b899 100644
 --- a/node_modules/@d11/react-native-fast-image/android/src/oldarch/java/com/FastImageViewModule.java
 +++ b/node_modules/@d11/react-native-fast-image/android/src/oldarch/java/com/FastImageViewModule.java
-@@ -43,4 +43,9 @@ class FastImageViewModule extends ReactContextBaseJavaModule {
+@@ -43,4 +43,14 @@ class FastImageViewModule extends ReactContextBaseJavaModule {
      public void clearDiskCache(Promise promise) {
          impl.clearDiskCache(promise);
      }
@@ -108,24 +152,31 @@ index 2a59c61..3155ada 100644
 +    public void getCachePath(final ReadableMap source, final Promise promise) {
 +        impl.getCachePath(source, promise);
 +    }
++
++    @ReactMethod
++    public void getOriginalSize(final ReadableMap source, final ReadableMap options, final Promise promise) {
++        impl.getOriginalSize(source, options, promise);
++    }
  }
 diff --git a/node_modules/@d11/react-native-fast-image/dist/index.d.ts b/node_modules/@d11/react-native-fast-image/dist/index.d.ts
-index be7bb96..a457320 100644
+index be7bb96..fe27fcc 100644
 --- a/node_modules/@d11/react-native-fast-image/dist/index.d.ts
 +++ b/node_modules/@d11/react-native-fast-image/dist/index.d.ts
-@@ -102,6 +102,7 @@ export interface FastImageStaticProperties {
+@@ -102,6 +102,9 @@ export interface FastImageStaticProperties {
      preload: (sources: Source[]) => void;
      clearMemoryCache: () => Promise<void>;
      clearDiskCache: () => Promise<void>;
 +    getCachePath: (source: Source) => Promise<string | null>;
++    getSize: (uri: string, success: (width: number, height: number) => void, failure?: (error: any) => void) => void;
++    getSizeWithHeaders: (uri: string, headers: { [key: string]: string }, success: (width: number, height: number) => void, failure?: (error: any) => void) => void;
  }
  declare const FastImage: React.ComponentType<FastImageProps> & FastImageStaticProperties;
  export default FastImage;
 diff --git a/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm b/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
-index 554b190..5a55665 100644
+index 554b190..7e23b82 100644
 --- a/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
 +++ b/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
-@@ -35,6 +35,29 @@ @implementation FFFastImageViewModule
+@@ -35,6 +35,53 @@ @implementation FFFastImageViewModule
          resolve(NULL);
      }];
  }
@@ -152,14 +203,38 @@ index 554b190..5a55665 100644
 +    }
 +}
 +
++RCT_EXPORT_METHOD(getOriginalSize:(FFFastImageSource *)source
++                  options:(NSDictionary *)options
++                  resolve:(RCTPromiseResolveBlock)resolve
++                  reject:(RCTPromiseRejectBlock)reject)
++{
++    [source.headers enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString* header, BOOL *stop) {
++        [[SDWebImageDownloader sharedDownloader] setValue:header forHTTPHeaderField:key];
++    }];
++
++    [[SDWebImageManager sharedManager] loadImageWithURL:source.url
++                                                options:SDWebImageRetryFailed
++                                               progress:nil
++                                              completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
++        if (error != nil) {
++            reject(@"failure", [error localizedDescription], error);
++        } else {
++            resolve(@{
++                @"width": @(image.size.width),
++                @"height": @(image.size.height)
++            });
++        }
++    }];
++}
++
  #ifdef RCT_NEW_ARCH_ENABLED
  - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
      (const facebook::react::ObjCTurboModule::InitParams &)params
 diff --git a/node_modules/@d11/react-native-fast-image/src/NativeFastImageViewModule.ts b/node_modules/@d11/react-native-fast-image/src/NativeFastImageViewModule.ts
-index d984e09..626bca2 100644
+index d984e09..af85122 100644
 --- a/node_modules/@d11/react-native-fast-image/src/NativeFastImageViewModule.ts
 +++ b/node_modules/@d11/react-native-fast-image/src/NativeFastImageViewModule.ts
-@@ -6,6 +6,12 @@ export interface Spec extends TurboModule {
+@@ -6,6 +6,18 @@ export interface Spec extends TurboModule {
      preload: (sources: Source[]) => void
      clearMemoryCache: () => Promise<void>
      clearDiskCache: () => Promise<void>
@@ -169,26 +244,58 @@ index d984e09..626bca2 100644
 +        priority?: string
 +        cache?: string
 +    }) => Promise<string | null>
++    getOriginalSize: (source: {
++        uri?: string
++        headers?: Readonly<{ [key: string]: string }>
++        priority?: string
++        cache?: string
++    }, options: { headers?: { [key: string]: string } }) => Promise<{ width: number; height: number }>
  }
  
  export default TurboModuleRegistry.getEnforcing<Spec>('FastImageViewModule')
 diff --git a/node_modules/@d11/react-native-fast-image/src/index.tsx b/node_modules/@d11/react-native-fast-image/src/index.tsx
-index c4e471e..926981d 100644
+index c4e471e..9057b71 100644
 --- a/node_modules/@d11/react-native-fast-image/src/index.tsx
 +++ b/node_modules/@d11/react-native-fast-image/src/index.tsx
-@@ -272,6 +272,7 @@ export interface FastImageStaticProperties {
+@@ -272,6 +272,9 @@ export interface FastImageStaticProperties {
      preload: (sources: Source[]) => void
      clearMemoryCache: () => Promise<void>
      clearDiskCache: () => Promise<void>
 +    getCachePath: (source: Source) => Promise<string | null>
++    getSize: (uri: string, success: (width: number, height: number) => void, failure?: (error: any) => void) => void
++    getSizeWithHeaders: (uri: string, headers: { [key: string]: string }, success: (width: number, height: number) => void, failure?: (error: any) => void) => void
  }
  
  const FastImage: React.ComponentType<FastImageProps> &
-@@ -289,6 +290,8 @@ FastImage.clearMemoryCache = () => FastImageViewModule.clearMemoryCache()
+@@ -289,6 +292,32 @@ FastImage.clearMemoryCache = () => FastImageViewModule.clearMemoryCache()
  
  FastImage.clearDiskCache = () => FastImageViewModule.clearDiskCache()
  
 +FastImage.getCachePath = (source: Source) => FastImageViewModule.getCachePath(source)
++
++FastImage.getSize = (uri: string, success: (width: number, height: number) => void, failure?: (error: any) => void) => {
++    FastImageViewModule.getOriginalSize({ uri }, {})
++        .then((result: { width: number; height: number }) => {
++            success(result.width, result.height)
++        })
++        .catch((error: any) => {
++            if (failure) {
++                failure(error)
++            }
++        })
++}
++
++FastImage.getSizeWithHeaders = (uri: string, headers: { [key: string]: string }, success: (width: number, height: number) => void, failure?: (error: any) => void) => {
++    FastImageViewModule.getOriginalSize({ uri, headers }, {})
++        .then((result: { width: number; height: number }) => {
++            success(result.width, result.height)
++        })
++        .catch((error: any) => {
++            if (failure) {
++                failure(error)
++            }
++        })
++}
 +
  const styles = StyleSheet.create({
      imageContainer: {
