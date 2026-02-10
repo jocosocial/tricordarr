@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import RNFS from 'react-native-fs';
 import {SegmentedButtons} from 'react-native-paper';
+import Share from 'react-native-share';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -17,6 +18,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {clearAllLogs, flushLogs, getCurrentLogFile, getLogFileInfo, setLogLevel} from '#src/Libraries/Logger';
 import {LogLevel} from '#src/Libraries/Logger/types';
+import {isAndroid} from '#src/Libraries/Platform/Detection';
 
 export const LoggingSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -71,15 +73,40 @@ export const LoggingSettingsScreen = () => {
       // Create filename with epoch timestamp
       const epochTime = Math.floor(Date.now() / 1000);
       const downloadFileName = `tricordarr-${epochTime}.txt`;
-      const downloadPath = `${RNFS.DownloadDirectoryPath}/${downloadFileName}`;
 
-      // Copy the log file to Downloads
-      await RNFS.copyFile(logFilePath, downloadPath);
+      if (isAndroid) {
+        // Android: Copy directly to Downloads folder
+        // Check if DownloadDirectoryPath exists
+        if (!RNFS.DownloadDirectoryPath) {
+          // Fallback to ExternalStorageDirectoryPath/Download
+          const downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Download/${downloadFileName}`;
+          await RNFS.copyFile(logFilePath, downloadPath);
+        } else {
+          const downloadPath = `${RNFS.DownloadDirectoryPath}/${downloadFileName}`;
+          await RNFS.copyFile(logFilePath, downloadPath);
+        }
 
-      setSnackbarPayload({
-        message: `Log file saved to Downloads as ${downloadFileName}`,
-        messageType: 'success',
-      });
+        setSnackbarPayload({
+          message: `Log file saved to Downloads as ${downloadFileName}`,
+          messageType: 'success',
+        });
+      } else {
+        // iOS: Use share sheet
+        const shareResult = await Share.open({
+          url: `file://${logFilePath}`,
+          type: 'text/plain',
+          filename: downloadFileName,
+          failOnCancel: false,
+        });
+
+        // Only show success message if user actually shared (not cancelled)
+        if (shareResult.success || shareResult.message) {
+          setSnackbarPayload({
+            message: 'Log file shared successfully',
+            messageType: 'success',
+          });
+        }
+      }
     } catch (error) {
       setSnackbarPayload({
         message: `Could not export log file: ${error}`,
