@@ -182,14 +182,10 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     });
 
     // Filter by "only your events" if enabled
+    // This used to always include the route's eventData even if it didn't match the filter.
+    // But the more I thought about it the more I found that was kinda weird.
     if (onlyYourEvents && profilePublicData?.header) {
       const userFilteredItems = featureFilteredItems.filter(item => {
-        // Always include the route's eventData, even if it doesn't match the filter
-        const itemId = 'fezID' in item ? item.fezID : item.eventID;
-        if (itemId === routeEventId) {
-          return true;
-        }
-
         if ('fezID' in item) {
           // LFGs or PersonalEvents: check if user is participant or owner
           return (
