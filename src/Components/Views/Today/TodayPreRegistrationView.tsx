@@ -12,7 +12,7 @@ export const TodayPreRegistrationView = () => {
   }
 
   return (
-    <PaddedContentView padBottom={false}>
+    <PaddedContentView>
       <TodayPreRegistrationCard />
     </PaddedContentView>
   );
