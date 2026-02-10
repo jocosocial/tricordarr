@@ -18,6 +18,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
@@ -39,6 +40,10 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
   const {data, isFetching, refetch} = useUserFavoritesQuery();
   const queryClient = useQueryClient();
   const {preRegistrationMode} = usePreRegistration();
+  const {refreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
 
   const getNavButtons = useCallback(() => {
     return (
@@ -100,10 +105,7 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView
-        refreshControl={
-          <AppRefreshControl refreshing={isFetching || userFavoriteMutation.isPending} onRefresh={refetch} />
-        }>
+      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <Text>
             Favoriting a user allows them to call you with KrakenTalk™. You will only be able to call them if they
