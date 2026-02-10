@@ -30,8 +30,9 @@ export const EventSearchBar = () => {
     setQueryEnable(true);
   };
 
-  // Deal with some undefined issues below by defaulting to empty list.
-  const eventList = data || [];
+  // Only show results after user has performed a search; otherwise list stays empty
+  // (avoids showing cached "all event days" from ScheduleDayScreen when query key matches).
+  const eventList = queryEnable ? data || [] : [];
 
   return (
     <>

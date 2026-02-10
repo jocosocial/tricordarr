@@ -1,6 +1,6 @@
 import {Query, useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect} from 'react';
-import {StyleSheet, ViewStyle} from 'react-native';
+import {Keyboard, StyleSheet, ViewStyle} from 'react-native';
 import {HelperText, Searchbar} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -62,6 +62,7 @@ export const SearchBarBase = ({
 
     // Execute the search
     // The parent's searchQuery state will already be updated with the trimmed value
+    Keyboard.dismiss();
     if (onSearch) {
       onSearch();
     }
@@ -127,6 +128,7 @@ export const SearchBarBase = ({
         setShowHelp(false);
         // Call onSearch if provided (for explicit search triggers)
         // If not provided, the query hook will handle reactive searching
+        Keyboard.dismiss();
         if (onSearch) {
           onSearch();
         }
