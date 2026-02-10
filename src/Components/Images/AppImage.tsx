@@ -3,8 +3,8 @@ import React, {useState} from 'react';
 import {Image, ImageStyle as RNImageStyle, StyleProp, TouchableOpacity, View} from 'react-native';
 import {Card} from 'react-native-paper';
 
-import {AppScaledImage} from '#src/Components/Images/AppFastImage';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
+import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 

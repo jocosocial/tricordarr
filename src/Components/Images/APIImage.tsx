@@ -13,8 +13,8 @@ import {
 import {Card} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {AppScaledImage} from '#src/Components/Images/AppFastImage';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
+import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
