@@ -14,7 +14,7 @@ index 86ee08e..3c2940c 100644
      }
  
 diff --git a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
-index 0bbaece..81d6d37 100644
+index 0bbaece..db5babb 100644
 --- a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
 +++ b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
 @@ -11,6 +11,12 @@ import com.facebook.react.bridge.ReadableArray;
@@ -38,7 +38,7 @@ index 0bbaece..81d6d37 100644
  
      private Activity getCurrentActivity(){
          return reactContext.getCurrentActivity();
-@@ -82,4 +89,81 @@ class FastImageViewModuleImplementation {
+@@ -82,4 +89,80 @@ class FastImageViewModuleImplementation {
          Glide.get(activity.getApplicationContext()).clearDiskCache();
          promise.resolve(null);
      }
@@ -92,11 +92,10 @@ index 0bbaece..81d6d37 100644
 +            @Override
 +            public void run() {
 +                final FastImageSource imageSource = FastImageViewConverter.getImageSource(activity, source);
-+                final GlideUrl glideUrl = imageSource.getGlideUrl();
 +
 +                Glide.with(activity.getApplicationContext())
 +                    .asBitmap()
-+                    .load(glideUrl)
++                    .load(imageSource.getSourceForLoad())
 +                    .into(new com.bumptech.glide.request.target.CustomTarget<android.graphics.Bitmap>() {
 +                        @Override
 +                        public void onResourceReady(@NonNull android.graphics.Bitmap resource, @androidx.annotation.Nullable com.bumptech.glide.request.transition.Transition<? super android.graphics.Bitmap> transition) {
@@ -173,10 +172,10 @@ index be7bb96..fe27fcc 100644
  declare const FastImage: React.ComponentType<FastImageProps> & FastImageStaticProperties;
  export default FastImage;
 diff --git a/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm b/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
-index 554b190..7e23b82 100644
+index 554b190..0290a90 100644
 --- a/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
 +++ b/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
-@@ -35,6 +35,53 @@ @implementation FFFastImageViewModule
+@@ -35,6 +35,55 @@ @implementation FFFastImageViewModule
          resolve(NULL);
      }];
  }
@@ -203,16 +202,18 @@ index 554b190..7e23b82 100644
 +    }
 +}
 +
-+RCT_EXPORT_METHOD(getOriginalSize:(FFFastImageSource *)source
-+                  options:(NSDictionary *)options
++RCT_EXPORT_METHOD(getOriginalSize:(JS::NativeFastImageViewModule::SpecGetOriginalSizeSource &)source
++                  options:(JS::NativeFastImageViewModule::SpecGetOriginalSizeOptions &)options
 +                  resolve:(RCTPromiseResolveBlock)resolve
 +                  reject:(RCTPromiseRejectBlock)reject)
 +{
-+    [source.headers enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString* header, BOOL *stop) {
-+        [[SDWebImageDownloader sharedDownloader] setValue:header forHTTPHeaderField:key];
-+    }];
++    NSURL *url = [NSURL URLWithString:source.uri()];
++    if (url == nil) {
++        reject(@"failure", @"Invalid URL", nil);
++        return;
++    }
 +
-+    [[SDWebImageManager sharedManager] loadImageWithURL:source.url
++    [[SDWebImageManager sharedManager] loadImageWithURL:url
 +                                                options:SDWebImageRetryFailed
 +                                               progress:nil
 +                                              completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
