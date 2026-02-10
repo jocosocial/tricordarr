@@ -85,7 +85,7 @@ export const BoardgameListItemSwipeable = (props: BoardgameListItemSwipeableProp
   };
 
   return (
-    <BaseSwipeable enabled={props.enabled} renderRightPanel={renderRightPanel}>
+    <BaseSwipeable key={props.boardgame.gameID} enabled={props.enabled} renderRightPanel={renderRightPanel}>
       {props.children}
     </BaseSwipeable>
   );

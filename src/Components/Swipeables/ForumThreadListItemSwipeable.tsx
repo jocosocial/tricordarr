@@ -210,7 +210,11 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
   };
 
   return (
-    <BaseSwipeable enabled={props.enabled} renderLeftPanel={renderLeftPanel} renderRightPanel={renderRightPanel}>
+    <BaseSwipeable
+      key={props.forumListData.forumID}
+      enabled={props.enabled}
+      renderLeftPanel={renderLeftPanel}
+      renderRightPanel={renderRightPanel}>
       {props.children}
     </BaseSwipeable>
   );

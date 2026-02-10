@@ -76,3 +76,7 @@ LoggedInScreen
 ## Code Smells
 
 - NEVER disable ESLint validation such as `eslint-disable-next-line react-hooks/exhaustive-deps`
+
+## Lists
+
+- Implementors of `BaseSwipeable.tsx` must have a `key`

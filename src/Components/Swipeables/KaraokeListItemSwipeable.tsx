@@ -58,7 +58,7 @@ export const KaraokeListItemSwipeable = ({
   };
 
   return (
-    <BaseSwipeable enabled={enabled} renderRightPanel={renderRightPanel}>
+    <BaseSwipeable key={song.songID} enabled={enabled} renderRightPanel={renderRightPanel}>
       {children}
     </BaseSwipeable>
   );
