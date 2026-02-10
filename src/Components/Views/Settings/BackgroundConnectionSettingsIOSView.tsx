@@ -19,12 +19,15 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {buildWebsocketURL} from '#src/Libraries/Network/Websockets';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {commonStyles} from '#src/Styles';
 import {BackgroundConnectionSettingsFormValues} from '#src/Types/FormValues';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
+
+const logger = createLogger('BackgroundConnectionSettingsIOSView.tsx');
 
 interface ManagerStatus {
   isActive?: boolean;
@@ -122,13 +125,13 @@ export const BackgroundConnectionSettingsIOSView = () => {
     }
     try {
       const socketUrl = await buildWebsocketURL();
-      console.log('setupLocalPushManager', socketUrl, tokenData.token, enable);
+      logger.debug('setupLocalPushManager', socketUrl, tokenData.token, enable);
       NativeTricordarrModule.setupLocalPushManager(socketUrl, tokenData.token, enable);
       // Refresh status after recycling worker
       fetchManagerStatus();
       fetchForegroundProviderStatus();
     } catch (error) {
-      console.error('[BackgroundConnectionSettingsIOSView] Error getting socket URL:', error);
+      logger.error('Error getting socket URL:', error);
     }
   };
 
@@ -163,7 +166,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
       const status = await NativeTricordarrModule.getBackgroundPushManagerStatus();
       setManagerStatus(status);
     } catch (error) {
-      console.error('Failed to fetch manager status:', error);
+      logger.error('Failed to fetch manager status:', error);
     }
   };
 
@@ -172,7 +175,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
       const status = await NativeTricordarrModule.getForegroundPushProviderStatus();
       setForegroundProviderStatus(status);
     } catch (error) {
-      console.error('Failed to fetch foreground provider status:', error);
+      logger.error('Failed to fetch foreground provider status:', error);
     }
   };
 
@@ -183,7 +186,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
     try {
       return JSON.parse(configJson);
     } catch (error) {
-      console.error('Failed to parse provider configuration JSON:', error);
+      logger.error('Failed to parse provider configuration JSON:', error);
       return null;
     }
   };

@@ -4,9 +4,12 @@ import {v4 as uuidv4} from 'uuid';
 import {SessionContext, SessionContextType} from '#src/Context/Contexts/SessionContext';
 import {SessionStore} from '#src/Context/State/SessionStore';
 import {useOneTaskAtATime} from '#src/Hooks/useOneTaskAtATime';
+import {createLogger} from '#src/Libraries/Logger';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {Session} from '#src/Structs/SessionStructs';
+
+const logger = createLogger('SessionProvider.tsx');
 
 /**
  * SessionProvider refactored to use reducer pattern and useSyncExternalStore
@@ -55,7 +58,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
           lastSessionID,
         });
       } catch (error) {
-        console.error('[SessionProvider] Error loading sessions:', error);
+        logger.error('Error loading sessions:', error);
         // Still dispatch with empty state to mark as loaded
         if (!signal.aborted) {
           store.dispatch({
@@ -100,7 +103,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
           store.markPersisted();
         }
       } catch (error) {
-        console.error('[SessionProvider] Error persisting sessions:', error);
+        logger.error('Error persisting sessions:', error);
       }
     };
 
@@ -128,7 +131,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
     async (sessionID: string) => {
       const session = state.sessions.find(s => s.sessionID === sessionID);
       if (!session) {
-        console.warn('[SessionProvider] Attempted to switch to non-existent session:', sessionID);
+        logger.warn('Attempted to switch to non-existent session:', sessionID);
         return;
       }
 
@@ -187,7 +190,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
     async (sessionID: string, tokenData: TokenStringData | null) => {
       const session = state.sessions.find(s => s.sessionID === sessionID);
       if (!session) {
-        console.warn('[SessionProvider] Attempted to update token for non-existent session:', sessionID);
+        logger.warn('Attempted to update token for non-existent session:', sessionID);
         return;
       }
 
@@ -204,7 +207,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
   const signIn = useCallback(
     async (tokenData: TokenStringData) => {
       if (!currentSession) {
-        console.error('[SessionProvider] Cannot sign in: no current session');
+        logger.error('Cannot sign in: no current session');
         return;
       }
       await updateSessionToken(currentSession.sessionID, tokenData);
@@ -214,7 +217,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
 
   const signOut = useCallback(async () => {
     if (!currentSession) {
-      console.error('[SessionProvider] Cannot sign out: no current session');
+      logger.error('Cannot sign out: no current session');
       return;
     }
     await updateSessionToken(currentSession.sessionID, null);
@@ -226,7 +229,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       const currentState = store.getState();
       const session = currentState.sessions.find(s => s.sessionID === sessionID);
       if (!session) {
-        console.warn('[SessionProvider] Attempted to update non-existent session:', sessionID);
+        logger.warn('Attempted to update non-existent session:', sessionID);
         return;
       }
 
@@ -263,7 +266,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
           await SessionStorage.setLastSessionID('');
         }
       } catch (error) {
-        console.error('[SessionProvider] Error deleting session from storage:', error);
+        logger.error('Error deleting session from storage:', error);
       }
     },
     [state.currentSessionID, store],

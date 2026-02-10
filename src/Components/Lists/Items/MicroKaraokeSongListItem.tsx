@@ -6,9 +6,12 @@ import {IconButton, List, ProgressBar, Text} from 'react-native-paper';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {createLogger} from '#src/Libraries/Logger';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useMicroKaraokeSongQuery} from '#src/Queries/MicroKaraoke/MicroKaraokeQueries';
 import {MicroKaraokeCompletedSong} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('MicroKaraokeSongListItem.tsx');
 
 interface MicroKaraokeSongListItemProps {
   mkSong: MicroKaraokeCompletedSong;
@@ -25,7 +28,7 @@ const downloadFile = async (url: string) => {
 
   const exists = await RNFS.exists(destinationPath);
   if (exists) {
-    console.log(`File ${destinationPath} already exists`);
+    logger.debug(`File ${destinationPath} already exists`);
     return destinationPath;
   }
 
@@ -33,10 +36,10 @@ const downloadFile = async (url: string) => {
     fromUrl: url,
     toFile: destinationPath,
   }).promise;
-  console.log('Got status', result.statusCode);
+  logger.debug('Got status', result.statusCode);
 
   if (result.statusCode === 200) {
-    console.log(`Successfully saved ${url} to ${destinationPath}`);
+    logger.debug(`Successfully saved ${url} to ${destinationPath}`);
   }
   return destinationPath;
 };
@@ -76,15 +79,14 @@ export const MicroKaraokeSongListItem = ({mkSong}: MicroKaraokeSongListItemProps
     setDownloadedSnippets(0);
     await refetch();
     if (data) {
-      console.log(`There are ${data.snippetVideoURLs.length} snippets available`);
+      logger.debug(`There are ${data.snippetVideoURLs.length} snippets available`);
       setAvailableSnippets(data.snippetVideoURLs.length);
       for (const snippetVideoURL of data.snippetVideoURLs) {
         try {
           await downloadFile(snippetVideoURL);
           setDownloadedSnippets(prev => prev + 1);
         } catch (error) {
-          console.error(`Error with url ${snippetVideoURL}`);
-          console.error(error);
+          logger.error(`Error with url ${snippetVideoURL}`, error);
         }
       }
     }
@@ -100,11 +102,11 @@ export const MicroKaraokeSongListItem = ({mkSong}: MicroKaraokeSongListItemProps
         if (!fileName) {
           return;
         }
-        console.log(`Clearing ${fileName}`);
+        logger.debug(`Clearing ${fileName}`);
         try {
           await RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${fileName}`);
         } catch (error) {
-          console.error(error);
+          logger.error('Error clearing file:', error);
         }
       });
       await Promise.all(results);
@@ -115,7 +117,7 @@ export const MicroKaraokeSongListItem = ({mkSong}: MicroKaraokeSongListItemProps
     <IconButton disabled={downloading} loading={downloading} icon={AppIcons.download} onPress={onDownload} />
   );
   const getClearButton = () => <IconButton icon={AppIcons.delete} onPress={onClear} />;
-  console.log('Downloaded', downloadedSnippets, 'Available', availableSnippets);
+  logger.debug('Downloaded', downloadedSnippets, 'Available', availableSnippets);
 
   return (
     <View>

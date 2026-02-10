@@ -5,6 +5,9 @@ import {EnableUserNotificationContext} from '#src/Context/Contexts/EnableUserNot
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('EnableUserNotificationProvider.tsx');
 
 /**
  * "User Notifications" means both:
@@ -23,15 +26,15 @@ export const EnableUserNotificationProvider = ({children}: PropsWithChildren) =>
    */
   useEffect(() => {
     if (isLoading) {
-      console.log('[EnableUserNotificationProvider.tsx] App is still loading');
+      logger.debug('App is still loading');
       return;
     }
     if (isLoggedIn && oobeCompleted && !preRegistrationMode) {
-      console.log('[EnableUserNotificationProvider.tsx] User notifications can start.');
-      console.log('[EnableUserNotificationProvider.tsx] Enabled is', appConfig.enableBackgroundWorker);
+      logger.debug('User notifications can start.');
+      logger.debug('Enabled is', appConfig.enableBackgroundWorker);
       setEnableUserNotifications(appConfig.enableBackgroundWorker);
     } else {
-      console.log('[EnableUserNotificationProvider.tsx] Disabling user notifications');
+      logger.debug('Disabling user notifications');
       setEnableUserNotifications(false);
     }
   }, [isLoggedIn, isLoading, appConfig.enableBackgroundWorker, oobeCompleted, preRegistrationMode]);

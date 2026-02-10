@@ -4,8 +4,11 @@ import {Dirs, FileSystem} from 'react-native-file-access';
 import RNFS from 'react-native-fs';
 import * as mime from 'react-native-mime-types';
 
+import {createLogger} from '#src/Libraries/Logger';
 import {ImageQueryData} from '#src/Types';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+
+const logger = createLogger('ImageStorage.ts');
 
 const extensionRegExp = new RegExp('\\.', 'i');
 
@@ -18,7 +21,7 @@ const getImageDestinationPath = (fileName: string, mimeType: string) => {
 };
 
 export const saveImageToCameraRoll = async (localURI: string) => {
-  console.log('[ImageStorage.ts] Saving image to camera roll from', localURI);
+  logger.debug('Saving image to camera roll from', localURI);
   const response = await CameraRoll.saveAsset(localURI, {
     type: 'photo',
     album: 'Tricordarr',
@@ -27,10 +30,10 @@ export const saveImageToCameraRoll = async (localURI: string) => {
 };
 
 export const saveImageURIToLocal = async (fileName: string, imageURI: string) => {
-  console.log(`[ImageStorage.ts] Saving image to ${fileName} from ${imageURI}`);
+  logger.debug(`Saving image to ${fileName} from ${imageURI}`);
   const cachePath = `${RNFS.CachesDirectoryPath}/${fileName}`;
   if (imageURI.startsWith('http')) {
-    console.log('[ImageStorage.ts] Downloading file from', imageURI, 'to', cachePath);
+    logger.debug('Downloading file from', imageURI, 'to', cachePath);
     const result = await RNFS.downloadFile({
       fromUrl: imageURI,
       toFile: cachePath,
@@ -39,12 +42,12 @@ export const saveImageURIToLocal = async (fileName: string, imageURI: string) =>
       throw new Error(`Failed to download file: HTTP ${result.statusCode}`);
     }
   } else {
-    console.log('[ImageStorage.ts] Copying file from', imageURI, 'to', cachePath);
+    logger.debug('Copying file from', imageURI, 'to', cachePath);
     await RNFS.copyFile(imageURI, cachePath);
   }
   await saveImageToCameraRoll(cachePath);
   await RNFS.unlink(cachePath);
-  console.log('[ImageStorage.ts] Saved to camera roll');
+  logger.debug('Saved to camera roll');
 };
 
 /**
@@ -56,14 +59,14 @@ export const saveImageDataURIToCameraRoll = async (imageData: AppImageMetaData) 
   if (!dataURI) {
     throw Error(`No data to save to file ${destPath}`);
   }
-  console.log('[ImageStorage.ts] Writing data to', destPath, imageData.mimeType);
+  logger.debug('Writing data to', destPath, imageData.mimeType);
   await RNFS.writeFile(destPath, dataURI, 'base64');
   const cameraRollSaveResult = await CameraRoll.save(destPath, {
     type: 'photo',
     album: 'Tricordarr',
   });
   await RNFS.unlink(destPath);
-  console.log('[ImageStorage.ts] Saved to camera roll at', cameraRollSaveResult);
+  logger.debug('Saved to camera roll at', cameraRollSaveResult);
   return cameraRollSaveResult;
 };
 
@@ -75,14 +78,14 @@ export const saveImageQueryToLocal = async (imageData: ImageQueryData) => {
   if (!imageData.base64) {
     throw Error(`No data to save to file ${destPath}`);
   }
-  console.log('[ImageStorage.ts] Writing data to', destPath, imageData.mimeType);
+  logger.debug('Writing data to', destPath, imageData.mimeType);
   await RNFS.writeFile(destPath, imageData.base64, 'base64');
   const cameraRollSaveResult = await CameraRoll.save(destPath, {
     type: 'photo',
     album: 'Tricordarr',
   });
   await RNFS.unlink(destPath);
-  console.log('[ImageStorage.ts] Saved to camera roll at', cameraRollSaveResult);
+  logger.debug('Saved to camera roll at', cameraRollSaveResult);
   return cameraRollSaveResult;
 };
 
@@ -113,11 +116,11 @@ export const newSaveImage = async (image: AppImageMetaData) => {
     // Handle different types of dataURI
     if (dataURI.startsWith('file://')) {
       // Copy file from local file system to destination
-      console.log('[ImageStorage.ts] Copying file from', dataURI, 'to', destPath);
+      logger.debug('Copying file from', dataURI, 'to', destPath);
       await RNFS.copyFile(dataURI, destPath);
     } else if (dataURI.startsWith('http://') || dataURI.startsWith('https://')) {
       // Download file from URL to destination
-      console.log('[ImageStorage.ts] Downloading file from', dataURI, 'to', destPath);
+      logger.debug('Downloading file from', dataURI, 'to', destPath);
       const result = await RNFS.downloadFile({
         fromUrl: dataURI,
         toFile: destPath,
@@ -130,11 +133,11 @@ export const newSaveImage = async (image: AppImageMetaData) => {
       // Handle bundled assets - these are typically referenced by name like 'asset_mainview_day'
       // The fromAsset function in APIImageV2Data resolves these to actual file paths
       // so we can treat them like regular file:// URIs
-      console.log('[ImageStorage.ts] Handling bundled asset:', dataURI);
+      logger.debug('Handling bundled asset:', dataURI);
       await RNFS.copyFile(dataURI, destPath);
     } else if (dataURI.startsWith('data:')) {
       // Handle base64 data URI
-      console.log('[ImageStorage.ts] Writing base64 data to', destPath);
+      logger.debug('Writing base64 data to', destPath);
       const base64Data = dataURI.split(',')[1]; // Remove the data:image/jpeg;base64, prefix
       await RNFS.writeFile(destPath, base64Data, 'base64');
     } else {
@@ -142,7 +145,7 @@ export const newSaveImage = async (image: AppImageMetaData) => {
     }
 
     // Always save to camera roll and return the response
-    console.log('[ImageStorage.ts] Saving to camera roll:', destPath);
+    logger.debug('Saving to camera roll:', destPath);
     const response = await CameraRoll.saveAsset(destPath, {
       type: 'photo',
       album: 'Tricordarr',
@@ -151,7 +154,7 @@ export const newSaveImage = async (image: AppImageMetaData) => {
     // Clean up the temporary file
     await RNFS.unlink(destPath);
 
-    console.log('[ImageStorage.ts] Successfully saved to camera roll:', response);
+    logger.debug('Successfully saved to camera roll:', response);
     return response;
   } catch (error) {
     // Clean up the temporary file if it exists
@@ -161,10 +164,10 @@ export const newSaveImage = async (image: AppImageMetaData) => {
         await RNFS.unlink(destPath);
       }
     } catch (cleanupError) {
-      console.warn('[ImageStorage.ts] Failed to clean up temporary file:', cleanupError);
+      logger.warn('Failed to clean up temporary file:', cleanupError);
     }
 
-    console.error('[ImageStorage.ts] Failed to save image:', error);
+    logger.error('Failed to save image:', error);
     throw error;
   }
 };

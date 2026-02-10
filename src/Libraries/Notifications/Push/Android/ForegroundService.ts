@@ -6,12 +6,15 @@ import tinycolor from 'tinycolor2';
 
 import {fgsWorkerNotificationIDs, PressAction} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';
+import {createLogger} from '#src/Libraries/Logger';
 import {buildWebSocket, wsHealthcheck} from '#src/Libraries/Network/Websockets';
 import {serviceChannel} from '#src/Libraries/Notifications/Channels';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
 import {getTheme} from '#src/Styles/Theme';
+
+const logger = createLogger('ForegroundService.ts');
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;
 let fgsWorkerTimer: ReturnType<typeof setInterval>;
@@ -28,7 +31,7 @@ export let fgsFailedThreshold = 10;
  * and maybe shutdown if we've failed too many times.
  */
 const fgsWorkerHealthcheck = async () => {
-  console.log('[Service.ts] Performing WebSocket Healthcheck');
+  logger.debug('Performing WebSocket Healthcheck');
   const ws = await getSharedWebSocket();
   const healthcheckResult: SocketHealthcheckData = {
     result: wsHealthcheck(ws),
@@ -45,8 +48,8 @@ const fgsWorkerHealthcheck = async () => {
 
   // If we've failed too many times, shut down.
   if (fgsFailedCounter >= fgsFailedThreshold) {
-    console.error(
-      `[Service.ts] WebSocket failed too many consecutive times (${fgsFailedCounter} of ${fgsFailedThreshold}). Shutting down.`,
+    logger.error(
+      `WebSocket failed too many consecutive times (${fgsFailedCounter} of ${fgsFailedThreshold}). Shutting down.`,
     );
     await generateFgsShutdownNotification();
     await stopForegroundServiceWorker();
@@ -58,8 +61,8 @@ const fgsWorkerHealthcheck = async () => {
  * Generates push notifications from socket events.
  */
 const fgsEventHandler = (event: WebSocketMessageEvent) => {
-  console.log('[Service.ts] responding to event', event);
-  generatePushNotificationFromEvent(event).catch(console.error);
+  logger.debug('responding to event', event);
+  generatePushNotificationFromEvent(event).catch(err => logger.error('Error generating push notification:', err));
 };
 
 /**
@@ -68,12 +71,12 @@ const fgsEventHandler = (event: WebSocketMessageEvent) => {
 const createSharedWebSocket = async () => {
   const existingSocket = await getSharedWebSocket();
   if (existingSocket && existingSocket.readyState === WebSocket.OPEN) {
-    console.log('[Service.ts] Socket already exists and is open!');
+    logger.debug('Socket already exists and is open!');
     return existingSocket;
   }
   const newWs = await buildWebSocket();
   await setSharedWebSocket(newWs);
-  console.log('[Service.ts] Created new socket.');
+  logger.debug('Created new socket.');
   return newWs;
 };
 
@@ -82,11 +85,11 @@ const createSharedWebSocket = async () => {
  * when the worker starts.
  */
 const fgsWorker = async () => {
-  console.log('[Service.ts] Worker is starting');
+  logger.debug('Worker is starting');
 
   const appConfig = await getAppConfig();
   if (!appConfig.enableNotificationSocket) {
-    console.log('[Service.ts] notification socket not enabled in app config. Shutting down.');
+    logger.debug('notification socket not enabled in app config. Shutting down.');
     // I've thought about generating a notification for when the worker shuts down, but this
     // would trigger every time the worker "shut down" explicitly or implicitly which is not
     // desirable behavior. For debugging the log message should be sufficient. Besides, any
@@ -103,9 +106,9 @@ const fgsWorker = async () => {
     // Start a regular socket health check to help ensure the socket stays open.
     // Or at least yell at the user when it fails.
     fgsWorkerTimer = setInterval(fgsWorkerHealthcheck, appConfig.fgsWorkerHealthTimer);
-    console.log('[Service.ts] Worker startup complete.');
+    logger.debug('Worker startup complete.');
   } catch (error) {
-    console.error('[Service.ts] Error creating websocket. Shutting down worker:', error);
+    logger.error('Error creating websocket. Shutting down worker:', error);
     await stopForegroundServiceWorker();
   }
 };
@@ -118,7 +121,7 @@ const fgsWorker = async () => {
  * https://notifee.app/react-native/docs/android/foreground-service
  */
 export const registerFgsWorker = () => {
-  console.log('[Service.ts] Registering foreground service worker function.');
+  logger.debug('Registering foreground service worker function.');
   notifee.registerForegroundService(() => {
     return new Promise(fgsWorker);
   });
@@ -128,11 +131,11 @@ export const registerFgsWorker = () => {
  * Stop the foreground service worker that was registered in App.tsx.
  */
 export async function stopForegroundServiceWorker() {
-  console.log('[Service.ts] Stopping foreground service worker.');
+  logger.debug('Stopping foreground service worker.');
   try {
     const ws = await getSharedWebSocket();
     if (ws) {
-      console.log(`[Service.ts] Closing websocket in state ${ws.readyState}`);
+      logger.debug(`Closing websocket in state ${ws.readyState}`);
       ws.close();
     }
     await notifee.stopForegroundService();
@@ -140,12 +143,12 @@ export async function stopForegroundServiceWorker() {
 
     // Clear the healthcheck interval that was started.
     clearInterval(fgsWorkerTimer);
-    console.log('[Service.ts] Cleared fgsWorkerTimer with ID', fgsWorkerTimer);
+    logger.debug('Cleared fgsWorkerTimer with ID', fgsWorkerTimer);
 
     // Done
-    console.log('[Service.ts] Foreground service worker stopped.');
+    logger.debug('Foreground service worker stopped.');
   } catch (error) {
-    console.error('[Service.ts] Error stopping service:', error);
+    logger.error('Error stopping service:', error);
   }
 }
 
@@ -166,10 +169,10 @@ export async function startForegroundServiceWorker() {
   // Android 13 API Level 33 added POST_NOTIFICATIONS permission. Devices less than that return UNAVAILABLE.
   // We can safely assume that notifications are allowed and available if that is the case.
   if (notificationPermission !== RESULTS.UNAVAILABLE && notificationPermission !== RESULTS.GRANTED) {
-    console.log('[Service.ts] Notification permission not allowed. Not starting FGS or socket.');
+    logger.debug('Notification permission not allowed. Not starting FGS or socket.');
     return;
   }
-  console.log('[Service.ts] Starting foreground service worker.');
+  logger.debug('Starting foreground service worker.');
   const ws = await getSharedWebSocket();
 
   // Reset the health counter
@@ -177,14 +180,14 @@ export async function startForegroundServiceWorker() {
 
   // Check if we should trigger the worker.
   if (ws && ws.readyState === WebSocket.OPEN) {
-    console.log('[Service.ts] Worker assumed to be running since websocket is open.');
+    logger.debug('Worker assumed to be running since websocket is open.');
     return;
   } else {
-    console.log('[Service.ts] Worker assumed to not be running since socket doesnt exist or is not open.');
+    logger.debug('Worker assumed to not be running since socket doesnt exist or is not open.');
   }
 
   // This actually starts the worker. You should see a log message when the worker function
-  // starts up (assuming the console.log is still in there).
+  // starts up (assuming the logger.debug is still in there).
   await AsyncStorage.setItem(StorageKeys.FGS_START, JSON.stringify(new Date().toISOString()));
   await generateForegroundServiceNotification();
 }

@@ -6,9 +6,12 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {TwitarrContext} from '#src/Context/Contexts/TwitarrContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {isNavigationReady, push} from '#src/Libraries/NavigationRef';
 import {findRouteByScreen, pushableRoutes} from '#src/Libraries/RouteDefinitions';
 import {extractPathFromTricordarrUrl, parseDeepLinkUrl} from '#src/Libraries/UrlParser';
+
+const logger = createLogger('TwitarrProvider.tsx');
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
@@ -52,15 +55,15 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
           const isPushable = route && pushableRoutes.some(r => r.screen === route.screen);
 
           if (isPushable) {
-            console.log('[TwitarrProvider.tsx] Push navigating to', parsed.screen, parsed.params);
+            logger.debug('Push navigating to', parsed.screen, parsed.params);
             push(parsed.screen, parsed.params);
             return;
           } else {
             // For stack-specific screens, fall back to Linking.openURL()
             // React Navigation's linking system handles tab navigation correctly
-            console.log('[TwitarrProvider.tsx] Stack-specific screen, using Linking.openURL for', finalUrl);
+            logger.debug('Stack-specific screen, using Linking.openURL for', finalUrl);
             Linking.openURL(finalUrl).catch(err => {
-              console.error('[TwitarrProvider.tsx] Failed to open URL:', finalUrl, err);
+              logger.error('Failed to open URL:', finalUrl, err);
               setErrorBanner('Failed to open URL: ' + finalUrl);
             });
             return;
@@ -69,9 +72,9 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
       }
 
       // Fall back to Linking.openURL() for unrecognized routes
-      console.log('[TwitarrProvider.tsx] Falling back to Linking.openURL for', finalUrl);
+      logger.debug('Falling back to Linking.openURL for', finalUrl);
       Linking.openURL(finalUrl).catch(err => {
-        console.error('[TwitarrProvider.tsx] Failed to open URL:', finalUrl, err);
+        logger.error('Failed to open URL:', finalUrl, err);
         setErrorBanner('Failed to open URL: ' + finalUrl);
       });
     },
@@ -116,7 +119,7 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
 
       // External URL - open directly
       Linking.openURL(url).catch(err => {
-        console.error('[TwitarrProvider.tsx] Failed to open external URL:', url, err);
+        logger.error('Failed to open external URL:', url, err);
         setErrorBanner('Failed to open URL: ' + url);
       });
     },

@@ -1,4 +1,7 @@
+import {createLogger} from '#src/Libraries/Logger';
 import {Session} from '#src/Structs/SessionStructs';
+
+const logger = createLogger('SessionState.ts');
 
 /**
  * Internal state structure for session management.
@@ -78,7 +81,7 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     case 'switched-to-session': {
       const session = state.sessions.find(s => s.sessionID === action.sessionID);
       if (!session) {
-        console.warn('[sessionReducer] Attempted to switch to non-existent session:', action.sessionID);
+        logger.warn('Attempted to switch to non-existent session:', action.sessionID);
         return state;
       }
 
@@ -121,7 +124,7 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     case 'updated-session': {
       const sessionIndex = state.sessions.findIndex(s => s.sessionID === action.sessionID);
       if (sessionIndex < 0) {
-        console.warn('[sessionReducer] Attempted to update non-existent session:', action.sessionID);
+        logger.warn('Attempted to update non-existent session:', action.sessionID);
         return state;
       }
 

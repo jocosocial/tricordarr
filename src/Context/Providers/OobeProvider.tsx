@@ -3,7 +3,10 @@ import React, {PropsWithChildren, useCallback, useMemo} from 'react';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {OobeContext} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
+
+const logger = createLogger('OobeProvider.tsx');
 
 export const OobeProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
@@ -16,7 +19,7 @@ export const OobeProvider = ({children}: PropsWithChildren) => {
 
   const oobeFinish = useCallback(async () => {
     if (!currentSession) {
-      console.warn('[OobeProvider] Cannot finish OOBE: no current session');
+      logger.warn('Cannot finish OOBE: no current session');
       return;
     }
     await updateSession(currentSession.sessionID, {

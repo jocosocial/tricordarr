@@ -8,9 +8,12 @@ import {useLayout} from '#src/Context/Contexts/LayoutContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {OobeStackNavigator, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {BottomTabNavigator, BottomTabParamList} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {LighterScreen} from '#src/Screens/Main/LighterScreen';
+
+const logger = createLogger('RootStackNavigator.tsx');
 
 export type RootStackParamList = {
   OobeStackNavigator: NavigatorScreenParams<OobeStackParamList>;
@@ -51,14 +54,14 @@ export const RootStackNavigator = () => {
         // Navigating away - save current height and clear it
         if (footerHeight.value > 0) {
           lastKnownFooterHeightRef.current = footerHeight.value;
-          console.log('[RootStackNavigator.tsx] Saving footerHeight', lastKnownFooterHeightRef.current);
+          logger.debug('Saving footerHeight', lastKnownFooterHeightRef.current);
         }
-        console.log('[RootStackNavigator.tsx] Navigating away from RootContentScreen, clearing footerHeight');
+        logger.debug('Navigating away from RootContentScreen, clearing footerHeight');
         footerHeight.set(0);
       } else {
         // Navigating back to RootContentScreen - restore height
         if (lastKnownFooterHeightRef.current > 0) {
-          console.log('[RootStackNavigator.tsx] Restoring footerHeight to', lastKnownFooterHeightRef.current);
+          logger.debug('Restoring footerHeight to', lastKnownFooterHeightRef.current);
           footerHeight.set(lastKnownFooterHeightRef.current);
         }
       }
@@ -73,7 +76,7 @@ export const RootStackNavigator = () => {
       screenOptions={{...screenOptions, headerShown: false}}
       screenListeners={{
         state: () => {
-          console.log('[RootStackNavigator.tsx] navigation state change handler.');
+          logger.debug('navigation state change handler.');
           setHasUnsavedWork(false);
           setSnackbarPayload(undefined);
         },

@@ -103,6 +103,11 @@ export const SettingsScreen = ({navigation}: Props) => {
           <ListSection>
             <ListSubheader>Troubleshooting</ListSubheader>
             <SettingsNavigationListItem
+              title={'Logging'}
+              description={'Configure app logging and export log files.'}
+              navComponent={SettingsStackScreenComponents.loggingSettings}
+            />
+            <SettingsNavigationListItem
               title={'Time'}
               description={'Clock and time settings for this app.'}
               navComponent={SettingsStackScreenComponents.timeSettingsScreen}

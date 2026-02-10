@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
+import {LogLevel} from '#src/Libraries/Logger/types';
 import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from '#src/Libraries/Network/APIClient';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
@@ -76,6 +77,7 @@ export interface AppConfig {
   manualTimeOffset: number;
   wifiNetworkNames: string[];
   forceShowTimezoneWarning: boolean;
+  logLevel: LogLevel;
 }
 
 export const defaultAppConfig: AppConfig = {
@@ -155,6 +157,7 @@ export const defaultAppConfig: AppConfig = {
   enableExperiments: false,
   wifiNetworkNames: [],
   forceShowTimezoneWarning: false,
+  logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
 };
 
 /**
@@ -181,6 +184,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.schedule.overlapExcludeDurationHours === undefined) {
     appConfig.schedule.overlapExcludeDurationHours = 4;
+  }
+  if (appConfig.logLevel === undefined) {
+    appConfig.logLevel = LogLevel.DEBUG;
   }
 
   // Ok now we're done

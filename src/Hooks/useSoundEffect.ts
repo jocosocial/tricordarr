@@ -1,6 +1,10 @@
 import {useCallback, useEffect, useRef} from 'react';
 import Sound from 'react-native-sound';
 
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('useSoundEffect.ts');
+
 interface UseSoundEffectResult {
   playSound: () => void;
 }
@@ -17,7 +21,7 @@ export const useSoundEffect = (soundName: string): UseSoundEffectResult => {
 
     const sound = new Sound(soundName, Sound.MAIN_BUNDLE, error => {
       if (error) {
-        console.log('failed to load sound', error);
+        logger.debug('failed to load sound', error);
       }
     });
 

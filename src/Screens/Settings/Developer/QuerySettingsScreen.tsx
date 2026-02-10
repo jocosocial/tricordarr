@@ -15,10 +15,13 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {commonStyles} from '#src/Styles';
 import {QuerySettingsFormValues} from '#src/Types/FormValues';
+
+const logger = createLogger('QuerySettingsScreen.tsx');
 
 export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.querySettingsScreen>;
 
@@ -35,7 +38,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
   const [oldestCacheItem, setOldestCacheItem] = useState<Date>();
 
   const bustQueryCache = () => {
-    console.log('[QuerySettingsScreen.tsx] Busting query cache.');
+    logger.debug('Busting query cache.');
     updateAppConfig({
       ...appConfig,
       apiClientConfig: {
@@ -86,7 +89,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
 
   const refreshCacheStats = useCallback(() => {
     const contents = queryClient.getQueryCache().getAll();
-    console.log('[QuerySettingsScreen.tsx] refreshing stats, had count', contents.length);
+    logger.debug('refreshing stats, had count', contents.length);
     const cachedDates = contents
       .map(c => {
         return c.state.dataUpdatedAt;

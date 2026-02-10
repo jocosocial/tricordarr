@@ -11,10 +11,13 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '#src/Queries/User/UserAvatarMutations';
 import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
 import {styleDefaults} from '#src/Styles';
+
+const logger = createLogger('UserProfileAvatar.tsx');
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -31,7 +34,7 @@ const UserProfileAvatarImage = ({user}: {user: ProfilePublicData}) => {
   });
 
   if (!user.header.userImage) {
-    console.log('[UserProfileAvatarImage.tsx] ITS AN IDENTICON');
+    logger.debug('Using identicon for user avatar');
     return <APIImage path={user.header.userID} mode={'image'} style={styles.image} staticSize={'identicon'} />;
   }
   return <APIImage path={user.header.userImage} mode={'image'} style={styles.image} />;
@@ -80,7 +83,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   const takeImage = async () => {
     const cameraPermission = isIOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
     const permissionStatus = await requestPermission(cameraPermission);
-    console.log('[UserProfileAvatar.tsx] Camera permission is', permissionStatus);
+    logger.debug('Camera permission is', permissionStatus);
     try {
       const image = await ImagePicker.openCamera({
         cropping: true,

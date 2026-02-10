@@ -23,10 +23,13 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, ForumListData, PostContentData, PostData} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('ForumThreadScreenBase.tsx');
 
 interface Props {
   data?: InfiniteData<ForumData>;
@@ -139,12 +142,10 @@ export const ForumThreadScreenBase = ({
   useEffect(() => {
     if (forumData) {
       if (forumListData && forumListData.readCount === forumListData.postCount) {
-        console.log(`[ForumThreadScreenBase.tsx] Forum ${forumData.forumID} has already been read.`);
+        logger.debug(`Forum ${forumData.forumID} has already been read.`);
         return;
       }
-      console.log(
-        `[ForumThreadScreenBase.tsx] Marking forum ${forumData.forumID} in category ${forumData.categoryID} as read.`,
-      );
+      logger.debug(`Marking forum ${forumData.forumID} in category ${forumData.categoryID} as read.`);
       markReadInvalidationKeys.map(key => {
         queryClient.invalidateQueries({queryKey: key});
       });

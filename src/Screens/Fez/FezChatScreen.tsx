@@ -30,6 +30,7 @@ import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {createLogger} from '#src/Libraries/Logger';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -43,6 +44,8 @@ import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScre
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData, PostContentData} from '#src/Structs/ControllerStructs';
 import {SocketFezMemberChangeData} from '#src/Structs/SocketStructs';
+
+const logger = createLogger('FezChatScreen.tsx');
 
 type Props = StackScreenProps<
   CommonStackParamList,
@@ -147,7 +150,7 @@ const FezChatScreenInner = ({route}: Props) => {
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
-      console.info('[FezChatScreen.tsx] fezSocketMessageHandler responding event', event);
+      logger.info('fezSocketMessageHandler responding event', event);
       const socketMessage = JSON.parse(event.data);
       if ('joined' in socketMessage) {
         // Then it's SocketFezMemberChangeData
@@ -249,7 +252,7 @@ const FezChatScreenInner = ({route}: Props) => {
       if (fez) {
         const newSocketInfo = await openFezSocket(fez.fezID);
         if (newSocketInfo.isNew && newSocketInfo.ws) {
-          console.log(`[FezChatScreen.tsx] Adding handler to fezSocket for fez ${fez.fezID} (${fez.fezType})`);
+          logger.debug(`Adding handler to fezSocket for fez ${fez.fezID} (${fez.fezType})`);
           newSocketInfo.ws.addEventListener('message', fezSocketMessageHandler);
           dispatchFezSockets({
             type: WebSocketStorageActions.upsert,
@@ -257,7 +260,7 @@ const FezChatScreenInner = ({route}: Props) => {
             socket: newSocketInfo.ws,
           });
         } else {
-          console.log(`[FezChatScreen.tsx] Skipping fezSocket handler for fez ${fez.fezID} (${fez.fezType})`);
+          logger.debug(`Skipping fezSocket handler for fez ${fez.fezID} (${fez.fezType})`);
         }
       }
     };
@@ -289,7 +292,7 @@ const FezChatScreenInner = ({route}: Props) => {
 
   // Mark as Read useEffect
   useEffect(() => {
-    console.log('[FezChatScreen.tsx] Mark As Read useEffect');
+    logger.debug('Mark As Read useEffect');
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
       // This does not invalidate the current key because that's how we determine
       // where the NEW marker goes.
@@ -298,7 +301,7 @@ const FezChatScreenInner = ({route}: Props) => {
       });
       Promise.all(invalidations);
       if (appConfig.markReadCancelPush) {
-        console.log('[FezChatScreen.tsx] auto canceling notifications.');
+        logger.debug('auto canceling notifications.');
         // This is a no-op on iOS. The system automatically dismisses notifications on press.
         notifee.cancelDisplayedNotification(fez.fezID);
       }
@@ -316,7 +319,7 @@ const FezChatScreenInner = ({route}: Props) => {
         await refetch();
       }
     };
-    console.log('[FezChatScreen.tsx] Triggering appStateVisible useEffect', appStateVisible);
+    logger.debug('Triggering appStateVisible useEffect', appStateVisible);
     checkInitial();
   }, [appStateVisible, refetch]);
 
@@ -326,7 +329,7 @@ const FezChatScreenInner = ({route}: Props) => {
   // would be the invalidation.
   useEffect(() => {
     return () => {
-      console.log('[FezChatScreen.tsx] useEffect return is running.');
+      logger.debug('useEffect return is running.');
       if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
         refetch();
       }

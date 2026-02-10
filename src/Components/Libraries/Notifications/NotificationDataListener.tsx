@@ -7,10 +7,13 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
+
+const logger = createLogger('NotificationDataListener.tsx');
 
 /**
  * Functional component to respond to Notification Socket events from Swiftarr.
@@ -32,7 +35,7 @@ export const NotificationDataListener = () => {
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
-      console.log(`[NotificationDataListener.tsx] wsMessageHandler received data from server: ${event.data}`);
+      logger.debug('wsMessageHandler received data from server:', event.data);
       const notificationData = JSON.parse(event.data) as SocketNotificationData;
       const notificationType = SocketNotificationData.getType(notificationData);
       // Always refetch the UserNotificationData when we got a socket event.
@@ -66,12 +69,12 @@ export const NotificationDataListener = () => {
   );
 
   const addHandler = useCallback(() => {
-    console.log('[NotificationDataListener.tsx] Adding handler.');
+    logger.debug('Adding handler.');
     notificationSocket?.addEventListener('message', wsMessageHandler);
   }, [notificationSocket, wsMessageHandler]);
 
   const removeHandler = useCallback(() => {
-    console.log('[NotificationDataListener.tsx] Removing handler.');
+    logger.debug('Removing handler.');
     notificationSocket?.removeEventListener('message', wsMessageHandler);
   }, [notificationSocket, wsMessageHandler]);
 
@@ -85,12 +88,7 @@ export const NotificationDataListener = () => {
     } else {
       removeHandler();
     }
-    console.log(
-      '[NotificationDataListener.tsx] useEffect state is',
-      enableUserNotifications,
-      appStateVisible,
-      isLoggedIn,
-    );
+    logger.debug('useEffect state is', enableUserNotifications, appStateVisible, isLoggedIn);
     return () => removeHandler();
   }, [addHandler, appStateVisible, enableUserNotifications, removeHandler, isLoggedIn]);
 

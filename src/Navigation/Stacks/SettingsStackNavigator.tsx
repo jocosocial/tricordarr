@@ -23,6 +23,7 @@ import {QueryKeysSettingsScreen} from '#src/Screens/Settings/Developer/QueryKeys
 import {QuerySettingsScreen} from '#src/Screens/Settings/Developer/QuerySettingsScreen';
 import {TestErrorScreen} from '#src/Screens/Settings/Developer/TestErrorScreen';
 import {TestNotificationScreen} from '#src/Screens/Settings/Developer/TestNotificationScreen';
+import {LoggingSettingsScreen} from '#src/Screens/Settings/LoggingSettingsScreen';
 import {BackgroundConnectionSettingsScreen} from '#src/Screens/Settings/Notifications/BackgroundConnectionSettingsScreen';
 import {NotificationPollerSettingsScreen} from '#src/Screens/Settings/Notifications/NotificationPollerSettingsScreen';
 import {PushNotificationSettingsScreen} from '#src/Screens/Settings/Notifications/PushNotificationSettingsScreen';
@@ -60,6 +61,7 @@ export type SettingsStackParamList = CommonStackParamList & {
   SessionDetailsScreen: {
     sessionID: string;
   };
+  LoggingSettingsScreen: undefined;
 };
 
 export enum SettingsStackScreenComponents {
@@ -87,6 +89,7 @@ export enum SettingsStackScreenComponents {
   timeSettingsScreen = 'TimeSettingsScreen',
   sessionSettings = 'SessionSettingsScreen',
   sessionDetails = 'SessionDetailsScreen',
+  loggingSettings = 'LoggingSettingsScreen',
 }
 
 export const SettingsStackNavigator = () => {
@@ -213,6 +216,11 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.sessionDetails}
         component={SessionDetailsScreen}
         options={{title: 'Session Details'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.loggingSettings}
+        component={LoggingSettingsScreen}
+        options={{title: 'Logging'}}
       />
     </Stack.Navigator>
   );

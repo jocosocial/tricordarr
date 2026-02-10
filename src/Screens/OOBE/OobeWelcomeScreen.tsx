@@ -13,8 +13,11 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+
+const logger = createLogger('OobeWelcomeScreen.tsx');
 
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
@@ -46,7 +49,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
 
   const onPreRegistrationPress = () => {
     if (!currentSession) {
-      console.warn('[OobeWelcomeScreen] Cannot update session: no current session');
+      logger.warn('Cannot update session: no current session');
       return;
     }
     updateSession(currentSession.sessionID, {
@@ -58,7 +61,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
 
   const onPress = () => {
     if (!currentSession) {
-      console.warn('[OobeWelcomeScreen] Cannot update session: no current session');
+      logger.warn('Cannot update session: no current session');
       return;
     }
     updateSession(currentSession.sessionID, {

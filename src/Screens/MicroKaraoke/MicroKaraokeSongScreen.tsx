@@ -12,10 +12,13 @@ import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {createLogger} from '#src/Libraries/Logger';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useMicroKaraokeSongQuery} from '#src/Queries/MicroKaraoke/MicroKaraokeQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
+
+const logger = createLogger('MicroKaraokeSongScreen.tsx');
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.microKaraokeSongScreen>;
 
@@ -30,7 +33,7 @@ export const MicroKaraokeSongScreen = (props: Props) => {
 };
 
 const MicroKaraokeSongScreenInner = ({route}: Props) => {
-  console.log(route.params.songID);
+  logger.debug('songID', route.params.songID);
   const {data} = useMicroKaraokeSongQuery(route.params.songID);
   const [currentIndex, setCurrentIndex] = useState(0);
   const {commonStyles} = useStyles();
@@ -48,24 +51,23 @@ const MicroKaraokeSongScreenInner = ({route}: Props) => {
 
   const handleEnd = () => {
     if (currentIndex < filePaths.length - 1) {
-      console.log('NEXT');
+      logger.debug('NEXT');
       setCurrentIndex(currentIndex + 1);
     } else {
-      console.log('end');
+      logger.debug('end');
     }
   };
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      console.log('NEXT');
+      logger.debug('PREVIOUS');
       setCurrentIndex(currentIndex - 1);
     } else {
-      console.log('beginning');
+      logger.debug('beginning');
     }
   };
 
-  console.log(filePaths);
-  console.log(filePaths[currentIndex]);
+  logger.debug('filePaths', filePaths, 'current', filePaths[currentIndex]);
   return (
     <AppView>
       {/*<ScrollingContentView*/}

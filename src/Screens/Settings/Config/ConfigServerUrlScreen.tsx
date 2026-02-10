@@ -17,9 +17,12 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {createLogger} from '#src/Libraries/Logger';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {ServerUrlFormValues} from '#src/Types/FormValues';
+
+const logger = createLogger('ConfigServerUrlScreen.tsx');
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
@@ -35,7 +38,7 @@ export const ConfigServerUrlScreen = () => {
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     if (!currentSession) {
-      console.error('[ConfigServerUrlScreen] Cannot save: no current session');
+      logger.error('Cannot save: no current session');
       return;
     }
 

@@ -8,9 +8,12 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
+import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('FezChatDetailsScreenActionsMenu.tsx');
 
 interface FezChatDetailsScreenActionsMenuProps {
   fez: FezData;
@@ -77,7 +80,7 @@ export const FezChatDetailsScreenActionsMenu = ({fez}: FezChatDetailsScreenActio
       // If all failed, error messages are already shown by useTokenAuthMutation
     } catch (error) {
       // Error handling is done by useTokenAuthMutation, but we can add additional handling here if needed
-      console.error('[FezChatDetailsScreenActionsMenu] Error favoriting users:', error);
+      logger.error('Error favoriting users:', error);
     }
   }, [fez.members?.participants, currentUserID, userFavoriteMutation, queryClient, setSnackbarPayload, closeMenu]);
 

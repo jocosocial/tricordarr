@@ -12,7 +12,10 @@ import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '#src/Types/FormValues';
+
+const logger = createLogger('CruiseSettingsScreen.tsx');
 
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -80,11 +83,11 @@ export const CruiseSettingsScreen = () => {
 
   const togglePreRegistrationMode = async () => {
     if (!currentSession) {
-      console.error('[CruiseSettingsScreen.tsx] Cannot toggle pre-registration mode: no current session');
+      logger.error('Cannot toggle pre-registration mode: no current session');
       return;
     }
     const newPreRegistrationMode = !currentSession.preRegistrationMode;
-    console.log('[CruiseSettingsScreen.tsx] toggling pre-registration mode to', newPreRegistrationMode);
+    logger.debug('toggling pre-registration mode to', newPreRegistrationMode);
     await updateSession(currentSession.sessionID, {preRegistrationMode: newPreRegistrationMode});
   };
 

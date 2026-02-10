@@ -1,9 +1,12 @@
 import {checkNotifications, RESULTS} from 'react-native-permissions';
 
 import {getAppConfig} from '#src/Libraries/AppConfig';
+import {createLogger} from '#src/Libraries/Logger';
 import {buildWebsocketURL, getToken} from '#src/Libraries/Network/Websockets';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
+
+const logger = createLogger('LocalPushManager.ts');
 
 /**
  * Start the iOS Local Push Manager and Websocket notifier. See `NativeTricordarrModule` on
@@ -15,19 +18,19 @@ export const startLocalPushManager = async () => {
   // Android 13 API Level 33 added POST_NOTIFICATIONS permission. Devices less than that return UNAVAILABLE.
   // We can safely assume that notifications are allowed and available if that is the case.
   if (notificationPermission !== RESULTS.UNAVAILABLE && notificationPermission !== RESULTS.GRANTED) {
-    console.log('[LocalPushManager.ts] Notification permission not allowed. Not starting manager.');
+    logger.debug('Notification permission not allowed. Not starting manager.');
     return;
   }
   try {
     const [socketUrl, token, appConfig] = await Promise.all([buildWebsocketURL(), getToken(), getAppConfig()]);
     if (!socketUrl || !token) {
-      console.error('[LocalPushManager.ts] Failed to get socket URL or token. Not starting manager.');
+      logger.error('Failed to get socket URL or token. Not starting manager.');
       return;
     }
-    console.log('[LocalPushManager.ts] Starting local push manager.');
+    logger.debug('Starting local push manager.');
     NativeTricordarrModule.setupLocalPushManager(socketUrl, token, appConfig.enableNotificationSocket);
   } catch (error) {
-    console.error('[LocalPushManager.ts] Error getting socket URL or token:', error);
+    logger.error('Error getting socket URL or token:', error);
     return;
   }
 }; /**
@@ -39,14 +42,14 @@ export const stopLocalPushManager = async () => {
   try {
     const [socketUrl, token] = await Promise.all([buildWebsocketURL(), getToken()]);
     if (!socketUrl || !token) {
-      console.error('[LocalPushManager.ts] Failed to get socket URL or token. Cant stop manager.');
+      logger.error('Failed to get socket URL or token. Cant stop manager.');
       return;
     }
-    console.log('[LocalPushManager.ts] Stopping local push manager.');
+    logger.debug('Stopping local push manager.');
     // @TODO should we make a dedicated stop function?
     NativeTricordarrModule.setupLocalPushManager(socketUrl, token, false);
   } catch (error) {
-    console.error('[LocalPushManager.ts] Error getting socket URL or token:', error);
+    logger.error('Error getting socket URL or token:', error);
     return;
   }
 };
@@ -57,6 +60,6 @@ export const stopLocalPushManager = async () => {
  * and stopping/clearing the foreground push provider.
  */
 export const clearLocalPushManager = () => {
-  console.log('[LocalPushManager.ts] Clearing local push manager.');
+  logger.debug('Clearing local push manager.');
   NativeTricordarrModule.clearLocalPushManager();
 };

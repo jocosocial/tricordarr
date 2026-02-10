@@ -15,11 +15,14 @@ import {
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {createLogger} from '#src/Libraries/Logger';
 import {
   FlatListSeparatorProps,
   FloatingScrollButtonHorizontalPosition,
   FloatingScrollButtonVerticalPosition,
 } from '#src/Types';
+
+const logger = createLogger('AppFlatList.tsx');
 
 export interface ConversationFlatListProps<TItem> {
   scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
@@ -86,7 +89,7 @@ export const AppFlatList = <TItem,>({
 
   // @TODO fix this by moving to FlashList.
   if (!maintainViewPosition) {
-    console.warn('maintainViewPosition is no longer supported in RN 0.82.');
+    logger.warn('maintainViewPosition is no longer supported in RN 0.82.');
   }
 
   const styles = StyleSheet.create({
@@ -211,12 +214,12 @@ export const AppFlatList = <TItem,>({
       if (inputComponent === undefined) {
         return;
       }
-      console.error('Invalid component type provided to renderComponentInternal.');
+      logger.error('Invalid component type provided to renderComponentInternal.');
       return null;
     },
     [styles.itemContainerView],
   );
-  console.log('[AppFlatList.tsx] Rendering AppFlatList at', new Date());
+  logger.debug('Rendering AppFlatList at', new Date());
 
   // https://github.com/facebook/react-native/issues/25239
   return (
@@ -234,7 +237,7 @@ export const AppFlatList = <TItem,>({
         onStartReachedThreshold={onStartReachedThreshold}
         onEndReachedThreshold={onEndReachedThreshold}
         keyExtractor={keyExtractor}
-        onScrollToIndexFailed={info => console.warn('scroll failed', info)}
+        onScrollToIndexFailed={info => logger.warn('scroll failed', info)}
         // Just setting initialScrollIndex is causing the list to be empty. Allegedly this is
         // because FlatList skips rendering for invisible items.
         // disableVirtualization={true} made this work, though I feel like I'm going to

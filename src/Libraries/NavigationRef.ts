@@ -1,6 +1,9 @@
 import {createNavigationContainerRef, StackActions} from '@react-navigation/native';
 
+import {createLogger} from '#src/Libraries/Logger';
 import {RootStackParamList} from '#src/Navigation/Stacks/RootStackNavigator';
+
+const logger = createLogger('NavigationRef.ts');
 
 /**
  * Global navigation ref that can be used outside of React components.
@@ -25,7 +28,7 @@ export const navigate = (name: string, params?: object): void => {
     // @ts-ignore - we're using dynamic screen names
     navigationRef.navigate(name, params);
   } else {
-    console.warn('[NavigationRef.ts] Navigation not ready, cannot navigate to', name);
+    logger.warn('Navigation not ready, cannot navigate to', name);
   }
 };
 
@@ -36,6 +39,6 @@ export const push = (name: string, params?: object): void => {
   if (navigationRef.isReady()) {
     navigationRef.dispatch(StackActions.push(name, params));
   } else {
-    console.warn('[NavigationRef.ts] Navigation not ready, cannot push', name);
+    logger.warn('Navigation not ready, cannot push', name);
   }
 };

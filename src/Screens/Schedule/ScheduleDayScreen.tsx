@@ -24,6 +24,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToNow} from '#src/Hooks/useScrollToNow';
+import {createLogger} from '#src/Libraries/Logger';
 import {buildScheduleList} from '#src/Libraries/Schedule';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
@@ -31,6 +32,8 @@ import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueri
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('ScheduleDayScreen.tsx');
 
 interface ScheduleDayScreenActualProps {
   onlyNewInitial?: boolean;
@@ -215,7 +218,7 @@ const ScheduleDayScreenActual = ({
   }, [onlyNewInitial, setEventPersonalUnreadFilter]);
 
   useEffect(() => {
-    console.log('[ScheduleDayScreen.tsx] Starting buildScheduleList useEffect.');
+    logger.debug('Starting buildScheduleList useEffect.');
     const listData = buildScheduleList(
       scheduleFilterSettings,
       lfgJoinedData,
@@ -226,7 +229,7 @@ const ScheduleDayScreenActual = ({
     );
     setScheduleList(listData);
     onDataLoaded();
-    console.log('[ScheduleDayScreen.tsx] Finished buildScheduleList useEffect.');
+    logger.debug('Finished buildScheduleList useEffect.');
   }, [scheduleFilterSettings, lfgJoinedData, lfgOwnedData, lfgOpenData, eventData, personalEventData, onDataLoaded]);
 
   // Reset switching state on error to prevent stuck loading spinner
@@ -237,7 +240,7 @@ const ScheduleDayScreenActual = ({
   }, [isEventError, isLfgOpenError, isLfgJoinedError, isLfgOwnedError, isPersonalEventError, onQueryError]);
 
   useEffect(() => {
-    console.log('[ScheduleDayScreen.tsx] Firing pagination useEffect');
+    logger.debug('Firing pagination useEffect');
     if (appConfig.schedule.eventsShowOpenLfgs && openHasNextPage) {
       openFetchNextPage();
     }

@@ -26,8 +26,11 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {createLogger} from '#src/Libraries/Logger';
 import {APIImageSizePaths} from '#src/Types/AppImageMetaData';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+
+const logger = createLogger('APIImage.tsx');
 
 interface APIImageV2Props {
   path: string;
@@ -148,7 +151,7 @@ export const APIImage = ({
    * testing in low network conditions nothing happened. EDGE might have been too low.
    */
   const onProgress = useCallback((event: OnProgressEvent) => {
-    console.log('onProgress', event.nativeEvent.loaded, event.nativeEvent.total);
+    logger.debug('onProgress', event.nativeEvent.loaded, event.nativeEvent.total);
   }, []);
 
   /**

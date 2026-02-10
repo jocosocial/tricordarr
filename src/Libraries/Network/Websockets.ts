@@ -1,9 +1,12 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import {getAppConfig} from '#src/Libraries/AppConfig';
+import {createLogger} from '#src/Libraries/Logger';
 import {getAuthHeaders} from '#src/Libraries/Network/APIClient';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
 import {WebSocketOptions} from '#src/Types';
+
+const logger = createLogger('Websockets.ts');
 
 /**
  * This function returns a normalized URL of a WebSocket API endpoint to connect to.
@@ -71,7 +74,7 @@ export const buildWebSocket = async (fezID?: string) => {
   // Swiftarr should probably fix this some day.
   const token = await getToken();
   const authHeaders = getAuthHeaders(undefined, undefined, token);
-  console.log(`[Websockets.ts] built new socket to ${wsUrl}`);
+  logger.debug(`built new socket to ${wsUrl}`);
 
   // https://www.npmjs.com/package/reconnecting-websocket
   return new ReconnectingWebSocket(wsUrl, [], {
@@ -93,10 +96,10 @@ export const buildWebSocket = async (fezID?: string) => {
  */
 export const wsHealthcheck = (ws?: ReconnectingWebSocket) => {
   if (ws && ws.readyState === WebSocket.OPEN) {
-    console.log('[Websockets.ts] WebSocket is open and healthy');
+    logger.debug('WebSocket is open and healthy');
     return true;
   }
-  console.warn('[Websockets.ts] WebSocket is unhealthy!');
+  logger.warn('WebSocket is unhealthy!');
   return false;
 };
 

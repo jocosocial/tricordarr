@@ -8,8 +8,11 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {createLogger} from '#src/Libraries/Logger';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('FezParticipantFavoriteAllItem.tsx');
 
 interface FezParticipantFavoriteAllItemProps {
   fez: FezData;
@@ -76,7 +79,7 @@ export const FezParticipantFavoriteAllItem = ({fez}: FezParticipantFavoriteAllIt
       // If all failed, error messages are already shown by useTokenAuthMutation
     } catch (error) {
       // Error handling is done by useTokenAuthMutation, but we can add additional handling here if needed
-      console.error('[FezParticipantFavoriteAllItem] Error favoriting users:', error);
+      logger.error('Error favoriting users:', error);
     } finally {
       setIsLoading(false);
     }

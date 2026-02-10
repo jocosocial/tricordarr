@@ -2,7 +2,10 @@ import {useEffect} from 'react';
 
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
+
+const logger = createLogger('PushNotificationService.tsx');
 
 /**
  * Functional component to control the lifecycle of the platform-dependent push notification
@@ -19,11 +22,9 @@ export const PushNotificationService = () => {
   const {isLoading, isLoggedIn} = useSession();
 
   useEffect(() => {
-    console.log(
-      `[PushNotificationService.tsx] isLoggedIn ${isLoggedIn}, enableUserNotifications ${enableUserNotifications}`,
-    );
+    logger.debug('isLoggedIn', isLoggedIn, 'enableUserNotifications', enableUserNotifications);
     if (isLoading || enableUserNotifications === null) {
-      console.log('[PushNotificationService.tsx] Conditions for push notifications not met. Not starting.');
+      logger.debug('Conditions for push notifications not met. Not starting.');
       return;
     }
 

@@ -11,12 +11,15 @@ import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
 import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+
+const logger = createLogger('OobePreregistrationScreen.tsx');
 
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
@@ -42,7 +45,7 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
 
   const onPress = async () => {
     if (!currentSession) {
-      console.warn('[OobePreregistrationScreen] Cannot update session: no current session');
+      logger.warn('Cannot update session: no current session');
       return;
     }
     // Store some current session data so we can restore it if we go back.
@@ -58,7 +61,7 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
 
   const onBackPress = async () => {
     if (!currentSession) {
-      console.warn('[OobePreregistrationScreen] Cannot update session: no current session');
+      logger.warn('Cannot update session: no current session');
       return;
     }
     // Update current session server URL to whatever it was using before.

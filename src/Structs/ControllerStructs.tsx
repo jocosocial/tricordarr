@@ -10,7 +10,10 @@ import {FezType} from '#src/Enums/FezType';
 import {LikeType} from '#src/Enums/LikeType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {UserRoleType} from '#src/Enums/UserRoleType';
+import {createLogger} from '#src/Libraries/Logger';
 import {StorageKeys} from '#src/Libraries/Storage';
+
+const logger = createLogger('ControllerStructs.tsx');
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -1376,7 +1379,7 @@ export namespace ClientSettingsData {
       // protocol includes the colon, so we need to add "//"
       return `${urlObj.protocol}//${urlObj.host}`;
     } catch (error) {
-      console.warn('[ControllerStructs.tsx] Error parsing URL:', error);
+      logger.warn('Error parsing URL:', error);
       return url;
     }
   };
@@ -1390,7 +1393,7 @@ export namespace ClientSettingsData {
   export const parseCruiseStartDate = (dateString: string): Date => {
     const parsed = new Date(dateString);
     if (isNaN(parsed.getTime())) {
-      console.warn('[ControllerStructs.tsx] Unexpected date format for cruiseStartDate:', dateString);
+      logger.warn('Unexpected date format for cruiseStartDate:', dateString);
       return parsed;
     }
     return new Date(parsed.getUTCFullYear(), parsed.getUTCMonth(), parsed.getUTCDate());
