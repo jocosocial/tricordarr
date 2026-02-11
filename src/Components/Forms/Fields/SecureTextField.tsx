@@ -9,6 +9,7 @@ interface SecureTextFieldProps {
   label: string;
   textContentType?: 'password' | 'newPassword';
   autoComplete?: 'password' | 'password-new';
+  showErrorWithoutTouch?: boolean;
 }
 
 export const SecureTextField = (props: SecureTextFieldProps) => {
@@ -26,6 +27,7 @@ export const SecureTextField = (props: SecureTextFieldProps) => {
       onBlur={onBlur}
       textContentType={props.textContentType}
       autoComplete={props.autoComplete}
+      showErrorWithoutTouch={props.showErrorWithoutTouch}
     />
   );
 };

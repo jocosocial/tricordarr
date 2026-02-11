@@ -53,6 +53,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
             maxLength={7}
             textContentType={'oneTimeCode'}
             autoComplete={'off'}
+            showErrorWithoutTouch={false}
           />
           <TextField
             viewStyle={styles.inputContainer}
@@ -62,18 +63,21 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
             autoCapitalize={'none'}
             textContentType={'username'}
             autoComplete={'username-new'}
+            showErrorWithoutTouch={false}
           />
           <SecureTextField
             name={'password'}
             label={'Password'}
             textContentType={'newPassword'}
             autoComplete={'password-new'}
+            showErrorWithoutTouch={false}
           />
           <SecureTextField
             name={'passwordVerify'}
             label={'Verify Password'}
             textContentType={'newPassword'}
             autoComplete={'password-new'}
+            showErrorWithoutTouch={false}
           />
           <PrimaryActionButton
             disabled={
