@@ -51,6 +51,8 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
             left={<TextInput.Icon icon={AppIcons.registrationCode} />}
             autoCapitalize={'characters'}
             maxLength={7}
+            textContentType={'oneTimeCode'}
+            autoComplete={'off'}
           />
           <TextField
             viewStyle={styles.inputContainer}
@@ -58,9 +60,21 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
             label={'Username'}
             left={<TextInput.Icon icon={AppIcons.user} />}
             autoCapitalize={'none'}
+            textContentType={'username'}
+            autoComplete={'username-new'}
           />
-          <SecureTextField name={'password'} label={'Password'} />
-          <SecureTextField name={'passwordVerify'} label={'Verify Password'} />
+          <SecureTextField
+            name={'password'}
+            label={'Password'}
+            textContentType={'newPassword'}
+            autoComplete={'password-new'}
+          />
+          <SecureTextField
+            name={'passwordVerify'}
+            label={'Verify Password'}
+            textContentType={'newPassword'}
+            autoComplete={'password-new'}
+          />
           <PrimaryActionButton
             disabled={
               !values.username ||

@@ -38,6 +38,73 @@ export interface TextFieldProps {
   disabled?: boolean;
   onSelectionChange?: (event: TextInputSelectionChangeEvent) => void;
   trimOnBlur?: boolean;
+  textContentType?:
+    | 'none'
+    | 'URL'
+    | 'addressCity'
+    | 'addressCityAndState'
+    | 'addressState'
+    | 'countryName'
+    | 'creditCardNumber'
+    | 'emailAddress'
+    | 'familyName'
+    | 'fullStreetAddress'
+    | 'givenName'
+    | 'jobTitle'
+    | 'location'
+    | 'middleName'
+    | 'name'
+    | 'namePrefix'
+    | 'nameSuffix'
+    | 'nickname'
+    | 'organizationName'
+    | 'postalCode'
+    | 'streetAddressLine1'
+    | 'streetAddressLine2'
+    | 'sublocality'
+    | 'telephoneNumber'
+    | 'username'
+    | 'password'
+    | 'newPassword'
+    | 'oneTimeCode';
+  autoComplete?:
+    | 'birthdate-day'
+    | 'birthdate-full'
+    | 'birthdate-month'
+    | 'birthdate-year'
+    | 'cc-csc'
+    | 'cc-exp'
+    | 'cc-exp-day'
+    | 'cc-exp-month'
+    | 'cc-exp-year'
+    | 'cc-number'
+    | 'email'
+    | 'gender'
+    | 'name'
+    | 'name-family'
+    | 'name-given'
+    | 'name-middle'
+    | 'name-middle-initial'
+    | 'name-prefix'
+    | 'name-suffix'
+    | 'password'
+    | 'password-new'
+    | 'postal-address'
+    | 'postal-address-country'
+    | 'postal-address-extended'
+    | 'postal-address-extended-postal-code'
+    | 'postal-address-locality'
+    | 'postal-address-region'
+    | 'postal-code'
+    | 'street-address'
+    | 'sms-otp'
+    | 'tel'
+    | 'tel-country-code'
+    | 'tel-national'
+    | 'tel-device'
+    | 'username'
+    | 'username-new'
+    | 'off';
 }
 
 // @TODO make this type-generic
@@ -63,6 +130,8 @@ export const TextField = ({
   disabled,
   onSelectionChange,
   trimOnBlur = true,
+  textContentType,
+  autoComplete,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, isSubmitting, setFieldValue, setFieldTouched} = useFormikContext();
   const {theme} = useAppTheme();
@@ -138,6 +207,8 @@ export const TextField = ({
             style={[styles.textInput, innerTextStyle]}
             onSelectionChange={onSelectionChange}
             outlineStyle={styles.outline}
+            textContentType={textContentType}
+            autoComplete={autoComplete}
           />
           {infoText && <HelperText type={'info'}>{infoText}</HelperText>}
           <HelperText type={'error'} visible={!!meta.error && meta.touched}>

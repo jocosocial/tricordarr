@@ -48,8 +48,15 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
             label={'Username'}
             left={<TextInput.Icon icon={AppIcons.user} />}
             autoCapitalize={'none'}
+            textContentType={'username'}
+            autoComplete={'username'}
           />
-          <SecureTextField name={'password'} label={'Password'} />
+          <SecureTextField
+            name={'password'}
+            label={'Password'}
+            textContentType={'password'}
+            autoComplete={'password'}
+          />
           <PrimaryActionButton
             disabled={!values.username || !values.password || isSubmitting}
             isLoading={isSubmitting}
