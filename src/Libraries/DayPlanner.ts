@@ -288,9 +288,13 @@ export const getScrollOffsetForFirstItem = (items: {startTime: Date}[], dayStart
 export const getScrollOffsetForTimeOfDay = (timeZoneID: string, dayStart: Date): number => {
   const nowInTz = moment().tz(timeZoneID);
   const startInTz = moment(dayStart).tz(timeZoneID);
-  const minutesFromDayStart = (nowInTz.hours() - startInTz.hours()) * 60 + (nowInTz.minutes() - startInTz.minutes());
+  let minutesFromDayStart = (nowInTz.hours() - startInTz.hours()) * 60 + (nowInTz.minutes() - startInTz.minutes());
 
   const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
+  // When "now" is before day start in clock terms (e.g. 12:56 AM vs 3 AM), it's the late-night segment of the 24h timeline — wrap into range.
+  if (minutesFromDayStart < 0) {
+    minutesFromDayStart += dayMinutesMax;
+  }
   const clamped = Math.max(0, Math.min(minutesFromDayStart, dayMinutesMax));
 
   const offset = (clamped / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
