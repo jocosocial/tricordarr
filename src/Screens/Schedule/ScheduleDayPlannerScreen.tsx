@@ -37,7 +37,11 @@ export const ScheduleDayPlannerScreen = (props: Props) => {
 
 const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   const {adjustedCruiseDayToday, startDate} = useCruise();
-  const [selectedCruiseDay, setSelectedCruiseDay] = useState(route.params?.cruiseDay ?? adjustedCruiseDayToday);
+  const cruiseDayParam = route.params?.cruiseDay;
+  // Day Planner doesn't support cruiseDay 0 (all days).
+  const [selectedCruiseDay, setSelectedCruiseDay] = useState(
+    cruiseDayParam === 0 || cruiseDayParam === undefined ? adjustedCruiseDayToday : cruiseDayParam,
+  );
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const scrollViewRef = useRef<ScrollView>(null);
