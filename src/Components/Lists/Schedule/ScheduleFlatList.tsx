@@ -1,5 +1,5 @@
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react';
+import React, {ReactElement, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 
 import {FezCard} from '#src/Components/Cards/Schedule/FezCard';
@@ -23,7 +23,7 @@ interface ScheduleFlatListProps<TItem> {
   listHeader?: ReactElement;
   listFooter?: ReactElement;
   initialScrollIndex?: number;
-  setRefreshing?: Dispatch<SetStateAction<boolean>>;
+  setRefreshing?: (value: boolean) => void;
   onScrollThreshold?: (condition: boolean) => void;
   handleLoadNext?: () => void;
   hasNextPage?: boolean;
@@ -38,7 +38,7 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
   onScrollThreshold,
   handleLoadNext,
   hasNextPage,
-}: ScheduleFlatListProps<TItem>) => {
+}: ScheduleFlatListProps<TItem>): React.JSX.Element => {
   const commonNavigation = useCommonStack();
   const {appConfig} = useConfig();
   const {startDate, endDate} = useCruise();

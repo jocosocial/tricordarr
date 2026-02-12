@@ -1,4 +1,4 @@
-import React, {Dispatch, memo, SetStateAction} from 'react';
+import React, {memo} from 'react';
 
 import {EventCard} from '#src/Components/Cards/Schedule/EventCard';
 import {EventCardActionsMenu} from '#src/Components/Menus/Events/EventCardActionsMenu';
@@ -9,7 +9,7 @@ interface EventCardListItemProps {
   eventData: EventData;
   onPress?: () => void;
   marker?: ScheduleCardMarkerType;
-  setRefreshing?: Dispatch<SetStateAction<boolean>>;
+  setRefreshing?: (value: boolean) => void;
 }
 
 const EventCardListItemInternal = (props: EventCardListItemProps) => {

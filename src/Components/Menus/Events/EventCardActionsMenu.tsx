@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
@@ -18,7 +18,7 @@ import {EventData} from '#src/Structs/ControllerStructs';
 interface EventCardActionsMenuProps {
   anchor: React.JSX.Element;
   eventData: EventData;
-  setRefreshing?: Dispatch<SetStateAction<boolean>>;
+  setRefreshing?: (value: boolean) => void;
 }
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
