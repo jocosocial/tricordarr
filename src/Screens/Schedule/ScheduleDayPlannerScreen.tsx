@@ -182,27 +182,19 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  // Auto-scroll on initial load: current time for today, first item for other cruise days.
+  /**
+   * Auto-scroll on initial load. This used to scroll to current time for the current day,
+   * and the start of the list for other days. But that is somewhat inconsistent with
+   * other list behaviors.
+   */
   useEffect(() => {
     if (scrollViewRef.current && !showLoading) {
       const rafId = requestAnimationFrame(() => {
-        if (selectedCruiseDay === adjustedCruiseDayToday) {
-          scrollToNow();
-        } else {
-          scrollToFirstItem();
-        }
+        scrollToFirstItem();
       });
       return () => cancelAnimationFrame(rafId);
     }
-  }, [
-    selectedCruiseDay,
-    adjustedCruiseDayToday,
-    showLoading,
-    scrollToNow,
-    scrollToFirstItem,
-    dayPlannerItems,
-    dayStart,
-  ]);
+  }, [showLoading, scrollToFirstItem]);
 
   return (
     <AppView>
