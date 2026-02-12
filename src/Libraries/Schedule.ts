@@ -152,7 +152,6 @@ export const getScheduleScrollIndex = (
   cruiseEndDate: Date,
   portTimeZoneID: string,
 ) => {
-  // console.info(nowDayTime, itemList.length, cruiseStartDate, cruiseEndDate, portTimeZoneID);
   for (let i = 0; i < itemList.length; i++) {
     // Creating a dedicated variable makes the parser happier.
     const scheduleItem = itemList[i];

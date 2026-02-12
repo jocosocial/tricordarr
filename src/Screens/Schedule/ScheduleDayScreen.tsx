@@ -171,6 +171,7 @@ const ScheduleDayScreenActual = ({
   const {scrollToNow, scrollNowIndex} = useScrollToNow({
     items: scheduleList,
     listRef,
+    selectedCruiseDay,
   });
 
   const getNavButtons = useCallback(() => {
