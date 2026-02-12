@@ -43,6 +43,14 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
           </HelpTopicView>
         )}
         {isOfficial ? <OfficialPerformersHelpTopicView /> : <ShadowPerformerProfilesHelpTopicView />}
+        {isOfficial && (
+          <HelpChapterTitleView title={'Team Colors'}>
+            <HelpTopicView>
+              Red and Gold team events such as main shows and dining room sittings are displayed with team-specific
+              colors within this app. They are still considered "Official Events".
+            </HelpTopicView>
+          </HelpChapterTitleView>
+        )}
         <HelpChapterTitleView title={'Actions'} />
         <HelpTopicView title={'Favorite/Follow'} icon={AppIcons.favorite}>
           Favoriting an event adds it to a list of all of your favorites. You can see all of your favorite events with a

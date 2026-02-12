@@ -17,6 +17,8 @@ interface ScheduleItemCardBaseProps {
   location?: string;
   onPress?: () => void;
   cardStyle?: StyleProp<ViewStyle>;
+  /** When set (e.g. gold team cards), overrides default text color for title and body. */
+  contentColor?: string;
   titleRight?: () => ReactNode;
   startTime?: string;
   endTime?: string;
@@ -26,6 +28,8 @@ interface ScheduleItemCardBaseProps {
   onLongPress?: () => void;
   marker?: ScheduleCardMarkerType;
   titleHeader?: string;
+  /** When true and marker is 'soon', the soon marker gets a 1px black right border (e.g. gold card contrast). */
+  showMarkerBorder?: boolean;
 }
 
 export const ScheduleItemCardBase = ({
@@ -33,6 +37,7 @@ export const ScheduleItemCardBase = ({
   author,
   participation,
   cardStyle,
+  contentColor,
   location,
   onPress,
   titleRight,
@@ -44,6 +49,7 @@ export const ScheduleItemCardBase = ({
   description,
   titleHeader,
   showDay = false,
+  showMarkerBorder = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
 
@@ -65,10 +71,12 @@ export const ScheduleItemCardBase = ({
     },
     bodyText: {
       ...commonStyles.onTwitarrButton,
+      ...(contentColor !== undefined && {color: contentColor}),
     },
     titleText: {
       ...commonStyles.bold,
       ...commonStyles.onTwitarrButton,
+      ...(contentColor !== undefined && {color: contentColor}),
       // I am convinced there is a regression in Android 15 or RN 0.76 on A15
       // because everything worked without it. Now for certain string lengths
       // an extra blank line gets drawn in the Text element. Happens with Paper
@@ -105,7 +113,7 @@ export const ScheduleItemCardBase = ({
         <Card.Content style={styles.cardContent}>
           <View style={styles.contentView}>
             {marker === 'now' && <EventCardNowView />}
-            {marker === 'soon' && <EventCardSoonView />}
+            {marker === 'soon' && <EventCardSoonView showMarkerBorder={showMarkerBorder} />}
             <View style={styles.contentBody}>
               <View style={styles.titleContainer}>
                 <View style={styles.titleTextContainer}>
