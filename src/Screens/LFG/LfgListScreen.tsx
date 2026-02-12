@@ -206,12 +206,14 @@ const LfgListScreenInner = ({
           <LFGFlatList
             listRef={listRef}
             items={fezList}
+            showDayInDividers={selectedCruiseDay === 0 || endpoint === 'former'}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            separator={'day'}
+            separator={'time'}
             onScrollThreshold={onScrollThreshold}
             handleLoadNext={handleLoadNext}
             hasNextPage={hasNextPage}
             enableReportOnly={enableReportOnly}
+            showDayInCard={false}
             listHeader={listHeader}
           />
         )}

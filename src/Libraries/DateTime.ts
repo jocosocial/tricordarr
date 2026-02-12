@@ -183,12 +183,14 @@ export const getTimeMarker = (dateTimeStr: string, timeZoneID: string, includeDa
  * to determine whether to show a spacer between two events in a list.
  * @param dateTimeStr String of the Date.
  * @param timeZoneID String of the Time Zone ID.
+ * @param includeDay When false, omits the day of week (e.g. "Monday") for single-day views.
  */
-export const getDayMarker = (dateTimeStr?: string, timeZoneID?: string) => {
+export const getDayMarker = (dateTimeStr?: string, timeZoneID?: string, includeDay: boolean = true) => {
   if (!dateTimeStr || !timeZoneID) {
     return;
   }
-  return getBoatTimeMoment(dateTimeStr, timeZoneID).format('dddd MMM Do');
+  const format = includeDay ? 'dddd MMM Do' : 'MMM Do';
+  return getBoatTimeMoment(dateTimeStr, timeZoneID).format(format);
 };
 
 /**

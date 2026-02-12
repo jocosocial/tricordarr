@@ -67,7 +67,13 @@ const FezCardInternal = ({
 
   const getBadge = () => {
     if (enableReportOnly) {
-      return <AppIcon icon={AppIcons.report} onPress={() => handleModal(<ReportModalView fez={fez} />)} />;
+      return (
+        <AppIcon
+          color={theme.colors.constantWhite}
+          icon={AppIcons.report}
+          onPress={() => handleModal(<ReportModalView fez={fez} />)}
+        />
+      );
     }
     if (fez.cancelled) {
       return <CancelledBadge />;

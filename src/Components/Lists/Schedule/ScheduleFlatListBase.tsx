@@ -59,7 +59,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
 
     let label: string | undefined = getTimeMarker(firstItem.startTime, firstItem.timeZoneID, showDayInDividers);
     if (separator === 'day') {
-      label = getDayMarker(firstItem.startTime, firstItem.timeZoneID);
+      label = getDayMarker(firstItem.startTime, firstItem.timeZoneID, showDayInDividers);
     }
     return <TimeDivider label={label} />;
   }, [items, separator, showDayInDividers]);
@@ -110,12 +110,12 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
     if (!leadingItem.timeZoneID || !trailingItem.timeZoneID) {
       return <SpaceDivider />;
     }
-    const leadingTimeMarker = getDayMarker(leadingItem.startTime, leadingItem.timeZoneID);
-    const trailingTimeMarker = getDayMarker(trailingItem.startTime, trailingItem.timeZoneID);
+    const leadingTimeMarker = getDayMarker(leadingItem.startTime, leadingItem.timeZoneID, showDayInDividers);
+    const trailingTimeMarker = getDayMarker(trailingItem.startTime, trailingItem.timeZoneID, showDayInDividers);
     if (leadingTimeMarker === trailingTimeMarker) {
       return <SpaceDivider />;
     }
-    return <TimeDivider label={getDayMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
+    return <TimeDivider label={getDayMarker(trailingItem.startTime, trailingItem.timeZoneID, showDayInDividers)} />;
   };
 
   const renderSeparatorNone = () => <SpaceDivider />;
