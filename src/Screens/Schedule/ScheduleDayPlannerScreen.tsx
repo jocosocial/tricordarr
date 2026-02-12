@@ -15,7 +15,12 @@ import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForTimeOfDay} from '#src/Libraries/DayPlanner';
+import {
+  buildDayPlannerItems,
+  getDayBoundaries,
+  getScrollOffsetForFirstItem,
+  getScrollOffsetForTimeOfDay,
+} from '#src/Libraries/DayPlanner';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
@@ -138,6 +143,15 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     scrollViewRef.current.scrollTo({y: offset, animated: true});
   }, [boatTimeZoneID, dayStart]);
 
+  // Scroll to first item (for non-current days so list doesn't start at day start e.g. 3AM).
+  const scrollToFirstItem = useCallback(() => {
+    if (!scrollViewRef.current) {
+      return;
+    }
+    const offset = getScrollOffsetForFirstItem(dayPlannerItems, dayStart);
+    scrollViewRef.current.scrollTo({y: offset, animated: true});
+  }, [dayPlannerItems, dayStart]);
+
   // Refresh all data
   const onRefresh = useCallback(async () => {
     const refreshes: Promise<any>[] = [refetchEvents()];
@@ -168,17 +182,27 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  // Auto-scroll to current time on initial load for any selected day
+  // Auto-scroll on initial load: current time for today, first item for other cruise days.
   useEffect(() => {
     if (scrollViewRef.current && !showLoading) {
-      // Use requestAnimationFrame to ensure scroll happens after layout/render is complete
-      // This is more reliable than setTimeout as it syncs with the rendering cycle
       const rafId = requestAnimationFrame(() => {
-        scrollToNow();
+        if (selectedCruiseDay === adjustedCruiseDayToday) {
+          scrollToNow();
+        } else {
+          scrollToFirstItem();
+        }
       });
       return () => cancelAnimationFrame(rafId);
     }
-  }, [selectedCruiseDay, showLoading, scrollToNow]);
+  }, [
+    selectedCruiseDay,
+    adjustedCruiseDayToday,
+    showLoading,
+    scrollToNow,
+    scrollToFirstItem,
+    dayPlannerItems,
+    dayStart,
+  ]);
 
   return (
     <AppView>

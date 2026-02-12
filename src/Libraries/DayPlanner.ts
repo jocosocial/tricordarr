@@ -259,6 +259,24 @@ export const getTimelineHeight = (): number => {
 };
 
 /**
+ * Get the scroll offset in pixels to show the first item near the top (with small padding).
+ * Use when viewing a cruise day that is not today, so the list doesn't start at day start (e.g. 3AM).
+ *
+ * @param items Day planner items (should be sorted by start time)
+ * @param dayStart The start of the viewed day's timeline
+ * @returns The scroll offset in pixels (0 if no items)
+ */
+export const getScrollOffsetForFirstItem = (items: {startTime: Date}[], dayStart: Date): number => {
+  if (items.length === 0) return 0;
+  // Use first item that starts on or after dayStart (items before day boundary yield negative offset and clamp to 0).
+  const firstOnOrAfterDayStart = items.find(item => item.startTime >= dayStart) ?? items[0];
+  const minutesFromDayStart = (firstOnOrAfterDayStart.startTime.getTime() - dayStart.getTime()) / (1000 * 60);
+  const offset = (minutesFromDayStart / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
+  const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2;
+  return Math.max(0, offset - viewOffset);
+};
+
+/**
  * Calculate the scroll offset in pixels for "current time of day" in a timezone.
  * Use this when viewing "today" so the position is correct even when the cruise
  * calendar date is in the past (e.g. demo data).
