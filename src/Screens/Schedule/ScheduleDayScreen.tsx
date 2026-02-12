@@ -283,6 +283,7 @@ const ScheduleDayScreenActual = ({
           <ScheduleFlatList
             listRef={listRef}
             items={scheduleList}
+            showDayInDividers={selectedCruiseDay === 0}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
             setRefreshing={setRefreshing}
             initialScrollIndex={scrollNowIndex}

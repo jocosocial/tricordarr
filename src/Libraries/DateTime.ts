@@ -170,9 +170,11 @@ export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseE
  * Returns a formatted string with the time and time zone.
  * @param dateTimeStr ISO time string.
  * @param timeZoneID The common ID string of a timezone (such as "America/New_York")
+ * @param includeDay When false, omits the day of week (e.g. "Monday") for single-day views.
  */
-export const getTimeMarker = (dateTimeStr: string, timeZoneID: string) => {
-  const formattedTime = getBoatTimeMoment(dateTimeStr, timeZoneID).format('dddd hh:mm A');
+export const getTimeMarker = (dateTimeStr: string, timeZoneID: string, includeDay: boolean = true) => {
+  const format = includeDay ? 'dddd hh:mm A' : 'hh:mm A';
+  const formattedTime = getBoatTimeMoment(dateTimeStr, timeZoneID).format(format);
   return `${formattedTime} ${moment.tz(timeZoneID).zoneAbbr()}`;
 };
 

@@ -20,6 +20,8 @@ interface ScheduleFlatListProps<TItem> {
   refreshControl?: React.ReactElement<RefreshControlProps>;
   listRef: React.RefObject<FlashListRef<TItem> | null>;
   separator?: ScheduleFlatListSeparator;
+  /** When false, time separators omit the day of week. Use when viewing a single cruise day. */
+  showDayInDividers?: boolean;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
   initialScrollIndex?: number;
@@ -33,6 +35,7 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
   items,
   refreshControl,
   separator = 'time',
+  showDayInDividers = true,
   listRef,
   setRefreshing,
   onScrollThreshold,
@@ -105,6 +108,7 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
       items={items}
       renderItem={renderItem}
       separator={separator}
+      showDayInDividers={showDayInDividers}
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
       handleLoadNext={handleLoadNext}

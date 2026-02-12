@@ -14,6 +14,8 @@ import {styleDefaults} from '#src/Styles';
 interface ScheduleFlatListBaseProps<TItem> {
   items: TItem[];
   separator?: 'day' | 'time' | 'none';
+  /** When false, time separators omit the day of week (e.g. "Monday"). Use when viewing a single day. */
+  showDayInDividers?: boolean;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -31,6 +33,7 @@ interface ScheduleFlatListBaseProps<TItem> {
 export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
   items,
   separator,
+  showDayInDividers = true,
   refreshControl,
   listHeader,
   listFooter,
@@ -54,12 +57,12 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
       return <SpaceDivider />;
     }
 
-    let label: string | undefined = getTimeMarker(firstItem.startTime, firstItem.timeZoneID);
+    let label: string | undefined = getTimeMarker(firstItem.startTime, firstItem.timeZoneID, showDayInDividers);
     if (separator === 'day') {
       label = getDayMarker(firstItem.startTime, firstItem.timeZoneID);
     }
     return <TimeDivider label={label} />;
-  }, [items, separator]);
+  }, [items, separator, showDayInDividers]);
 
   const renderListFooter = useCallback(() => {
     if (items.length <= 1) {
@@ -88,7 +91,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
     if (leadingTimeMarker === trailingTimeMarker) {
       return <SpaceDivider />;
     }
-    return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
+    return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZoneID, showDayInDividers)} />;
   };
 
   // FlashList skips separator when paginating.
