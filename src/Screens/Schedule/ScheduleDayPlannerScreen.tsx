@@ -15,6 +15,7 @@ import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {
   buildDayPlannerItems,
   getDayBoundaries,
@@ -117,50 +118,27 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     return buildDayPlannerItems(eventData, lfgJoinedData, personalEventData);
   }, [eventData, lfgJoinedData, personalEventData]);
 
-  // Boat timezone for the selected day. Use the most common timezone across all events/LFGs/personal events.
-  // This prevents issues when the first event has a different timezone than most events (e.g., DST notifications).
+  const {tzAtTime} = useTimeZone();
+
+  // Calculate day boundaries first using port timezone as initial reference
+  // We need these boundaries to determine the actual time to check for the timezone
+  const preliminaryBoundaries = useMemo(() => {
+    return getDayBoundaries(
+      startDate,
+      selectedCruiseDay,
+      appConfig.schedule.enableLateDayFlip,
+      appConfig.portTimeZoneID,
+    );
+  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, appConfig.portTimeZoneID]);
+
+  // Boat timezone for the selected day - determine from server's timezone change schedule
+  // Check the timezone at the actual day start time (which accounts for late day flip)
+  // This uses the authoritative timezone data rather than inferring from event timezones
   const boatTimeZoneID = useMemo(() => {
-    const timezoneCounts = new Map<string, number>();
+    return tzAtTime(preliminaryBoundaries.dayStart);
+  }, [preliminaryBoundaries.dayStart, tzAtTime]);
 
-    // Count timezones from all events
-    eventData?.forEach(event => {
-      if (event.timeZoneID) {
-        timezoneCounts.set(event.timeZoneID, (timezoneCounts.get(event.timeZoneID) || 0) + 1);
-      }
-    });
-
-    // Count timezones from LFGs
-    lfgJoinedData?.pages?.forEach(page => {
-      page.fezzes.forEach(fez => {
-        if (fez.timeZoneID) {
-          timezoneCounts.set(fez.timeZoneID, (timezoneCounts.get(fez.timeZoneID) || 0) + 1);
-        }
-      });
-    });
-
-    // Count timezones from personal events
-    personalEventData?.pages?.forEach(page => {
-      page.fezzes.forEach(fez => {
-        if (fez.timeZoneID) {
-          timezoneCounts.set(fez.timeZoneID, (timezoneCounts.get(fez.timeZoneID) || 0) + 1);
-        }
-      });
-    });
-
-    // Find the most common timezone
-    let mostCommonTZ: string | undefined;
-    let maxCount = 0;
-    for (const [tz, count] of timezoneCounts.entries()) {
-      if (count > maxCount) {
-        maxCount = count;
-        mostCommonTZ = tz;
-      }
-    }
-
-    return mostCommonTZ ?? appConfig.portTimeZoneID;
-  }, [appConfig.portTimeZoneID, eventData, lfgJoinedData?.pages, personalEventData?.pages, selectedCruiseDay]);
-
-  // Calculate day boundaries for the timeline (midnight in boat TZ)
+  // Recalculate day boundaries using the correct boat timezone
   const {dayStart, dayEnd} = useMemo(() => {
     return getDayBoundaries(startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID);
   }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID]);
