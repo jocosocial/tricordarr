@@ -9,7 +9,7 @@ import {useTwitarr} from '#src/Context/Contexts/TwitarrContext';
 
 /**
  * Hook to create markdown link handler that processes URLs for deep linking.
- * Delegates to TwitarrProvider.openWebUrl for URL processing.
+ * Delegates to LinkingProvider (useTwitarr().openWebUrl) for URL processing.
  * https://github.com/jocosocial/tricordarr/issues/252
  */
 export const useMarkdownLinkHandler = () => {

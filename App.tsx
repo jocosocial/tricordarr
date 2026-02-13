@@ -26,6 +26,7 @@ import {EnableUserNotificationProvider} from '#src/Context/Providers/EnableUserN
 import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
 import {FeatureProvider} from '#src/Context/Providers/FeatureProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
+import {LinkingProvider} from '#src/Context/Providers/LinkingProvider';
 import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
 import {NavigationProvider} from '#src/Context/Providers/NavigationProvider';
 import {OobeProvider} from '#src/Context/Providers/OobeProvider';
@@ -42,7 +43,6 @@ import {StyleProvider} from '#src/Context/Providers/StyleProvider';
 import {SwiftarrQueryClientProvider} from '#src/Context/Providers/SwiftarrQueryClientProvider';
 import {ThemeProvider} from '#src/Context/Providers/ThemeProvider';
 import {TimeZoneChangesProvider} from '#src/Context/Providers/TimeZoneChangesProvider';
-import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
 import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
@@ -98,7 +98,7 @@ function App(): React.JSX.Element {
    * SwiftarrQueryClientProvider requires ErrorHandlerProvider for global error callback.
    * LoadingProvider requires SafeAreaProvider since it's the first usage of AppView.
    * SnackbarProvider shouldn't need anything.
-   * TwitarrProvider needs ConfigProvider and SwiftarrQueryClientProvider.
+   * LinkingProvider needs ConfigProvider and SwiftarrQueryClientProvider.
    * AppNavigationThemeProvider should be within SafeAreaProvider.
    * SessionProvider needs ConfigProvider for defaultAppConfig.
    * SwiftarrQueryClientProvider needs SessionProvider for currentSession.
@@ -123,7 +123,7 @@ function App(): React.JSX.Element {
                                     <PrivilegeProvider>
                                       <RoleProvider>
                                         <SocketProvider>
-                                          <TwitarrProvider>
+                                          <LinkingProvider>
                                             <EnableUserNotificationProvider>
                                               <FeatureProvider>
                                                 <ClientSettingsProvider>
@@ -146,7 +146,7 @@ function App(): React.JSX.Element {
                                                 </ClientSettingsProvider>
                                               </FeatureProvider>
                                             </EnableUserNotificationProvider>
-                                          </TwitarrProvider>
+                                          </LinkingProvider>
                                         </SocketProvider>
                                       </RoleProvider>
                                     </PrivilegeProvider>

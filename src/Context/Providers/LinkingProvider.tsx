@@ -11,9 +11,9 @@ import {isNavigationReady, push} from '#src/Libraries/NavigationRef';
 import {findRouteByScreen, pushableRoutes} from '#src/Libraries/RouteDefinitions';
 import {extractPathFromTricordarrUrl, parseDeepLinkUrl} from '#src/Libraries/UrlParser';
 
-const logger = createLogger('TwitarrProvider.tsx');
+const logger = createLogger('LinkingProvider.tsx');
 
-export const TwitarrProvider = ({children}: PropsWithChildren) => {
+export const LinkingProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
   const {setErrorBanner} = useErrorHandler();

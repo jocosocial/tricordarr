@@ -7,7 +7,7 @@ const logger = createLogger('NavigationRef.ts');
 
 /**
  * Global navigation ref that can be used outside of React components.
- * This enables navigation from contexts like TwitarrProvider.
+ * This enables navigation from contexts like LinkingProvider.
  *
  * https://reactnavigation.org/docs/navigating-without-navigation-prop/
  */
