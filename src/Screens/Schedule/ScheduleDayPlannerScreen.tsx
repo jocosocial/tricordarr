@@ -117,13 +117,48 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     return buildDayPlannerItems(eventData, lfgJoinedData, personalEventData);
   }, [eventData, lfgJoinedData, personalEventData]);
 
-  // Boat timezone for the selected day (from first event/LFG/personal, or port). Used for day boundaries and labels.
+  // Boat timezone for the selected day. Use the most common timezone across all events/LFGs/personal events.
+  // This prevents issues when the first event has a different timezone than most events (e.g., DST notifications).
   const boatTimeZoneID = useMemo(() => {
-    const fromEvent = eventData?.[0]?.timeZoneID;
-    const fromLfg = lfgJoinedData?.pages?.[0]?.fezzes?.[0]?.timeZoneID;
-    const fromPersonal = personalEventData?.pages?.[0]?.fezzes?.[0]?.timeZoneID;
-    return fromEvent ?? fromLfg ?? fromPersonal ?? appConfig.portTimeZoneID;
-  }, [appConfig.portTimeZoneID, eventData, lfgJoinedData?.pages, personalEventData?.pages]);
+    const timezoneCounts = new Map<string, number>();
+
+    // Count timezones from all events
+    eventData?.forEach(event => {
+      if (event.timeZoneID) {
+        timezoneCounts.set(event.timeZoneID, (timezoneCounts.get(event.timeZoneID) || 0) + 1);
+      }
+    });
+
+    // Count timezones from LFGs
+    lfgJoinedData?.pages?.forEach(page => {
+      page.fezzes.forEach(fez => {
+        if (fez.timeZoneID) {
+          timezoneCounts.set(fez.timeZoneID, (timezoneCounts.get(fez.timeZoneID) || 0) + 1);
+        }
+      });
+    });
+
+    // Count timezones from personal events
+    personalEventData?.pages?.forEach(page => {
+      page.fezzes.forEach(fez => {
+        if (fez.timeZoneID) {
+          timezoneCounts.set(fez.timeZoneID, (timezoneCounts.get(fez.timeZoneID) || 0) + 1);
+        }
+      });
+    });
+
+    // Find the most common timezone
+    let mostCommonTZ: string | undefined;
+    let maxCount = 0;
+    for (const [tz, count] of timezoneCounts.entries()) {
+      if (count > maxCount) {
+        maxCount = count;
+        mostCommonTZ = tz;
+      }
+    }
+
+    return mostCommonTZ ?? appConfig.portTimeZoneID;
+  }, [appConfig.portTimeZoneID, eventData, lfgJoinedData?.pages, personalEventData?.pages, selectedCruiseDay]);
 
   // Calculate day boundaries for the timeline (midnight in boat TZ)
   const {dayStart, dayEnd} = useMemo(() => {
