@@ -18,31 +18,24 @@ import {AppFocusHandler} from '#src/Components/Libraries/AppFocusHandler';
 import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
 import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
 import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
-import {ClientSettingsProvider} from '#src/Context/Providers/ClientSettingsProvider';
 import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
-import {CruiseProvider} from '#src/Context/Providers/CruiseProvider';
 import {EnableUserNotificationProvider} from '#src/Context/Providers/EnableUserNotificationProvider';
 import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
-import {FeatureProvider} from '#src/Context/Providers/FeatureProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
-import {LinkingProvider} from '#src/Context/Providers/LinkingProvider';
 import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
 import {NavigationProvider} from '#src/Context/Providers/NavigationProvider';
 import {OobeProvider} from '#src/Context/Providers/OobeProvider';
 import {PermissionsProvider} from '#src/Context/Providers/PermissionsProvider';
 import {PreRegistrationProvider} from '#src/Context/Providers/PreRegistrationProvider';
-import {PrivilegeProvider} from '#src/Context/Providers/PrivilegeProvider';
-import {RoleProvider} from '#src/Context/Providers/RoleProvider';
 import {SessionProvider} from '#src/Context/Providers/SessionProvider';
 import {ShellProvider} from '#src/Context/Providers/ShellProvider';
 import {SignOutProvider} from '#src/Context/Providers/SignOutProvider';
 import {SnackbarProvider} from '#src/Context/Providers/SnackbarProvider';
-import {SocketProvider} from '#src/Context/Providers/SocketProvider';
 import {StyleProvider} from '#src/Context/Providers/StyleProvider';
 import {SwiftarrQueryClientProvider} from '#src/Context/Providers/SwiftarrQueryClientProvider';
 import {ThemeProvider} from '#src/Context/Providers/ThemeProvider';
-import {TimeZoneChangesProvider} from '#src/Context/Providers/TimeZoneChangesProvider';
+import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
 import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
@@ -120,36 +113,22 @@ function App(): React.JSX.Element {
                               <SwiftarrQueryClientProvider>
                                 <LoadingProvider>
                                   <CriticalErrorProvider>
-                                    <PrivilegeProvider>
-                                      <RoleProvider>
-                                        <SocketProvider>
-                                          <LinkingProvider>
-                                            <EnableUserNotificationProvider>
-                                              <FeatureProvider>
-                                                <ClientSettingsProvider>
-                                                  <CruiseProvider>
-                                                    <TimeZoneChangesProvider>
-                                                      <FilterProvider>
-                                                        <SignOutProvider>
-                                                          <ShellProvider>
-                                                            <AppEventHandler />
-                                                            <AppFocusHandler />
-                                                            <PushNotificationService />
-                                                            <NotificationDataListener />
-                                                            <NotificationDataPoller />
-                                                            <RootStackNavigator />
-                                                          </ShellProvider>
-                                                        </SignOutProvider>
-                                                      </FilterProvider>
-                                                    </TimeZoneChangesProvider>
-                                                  </CruiseProvider>
-                                                </ClientSettingsProvider>
-                                              </FeatureProvider>
-                                            </EnableUserNotificationProvider>
-                                          </LinkingProvider>
-                                        </SocketProvider>
-                                      </RoleProvider>
-                                    </PrivilegeProvider>
+                                    <TwitarrProvider>
+                                      <EnableUserNotificationProvider>
+                                        <FilterProvider>
+                                          <SignOutProvider>
+                                            <ShellProvider>
+                                              <AppEventHandler />
+                                              <AppFocusHandler />
+                                              <PushNotificationService />
+                                              <NotificationDataListener />
+                                              <NotificationDataPoller />
+                                              <RootStackNavigator />
+                                            </ShellProvider>
+                                          </SignOutProvider>
+                                        </FilterProvider>
+                                      </EnableUserNotificationProvider>
+                                    </TwitarrProvider>
                                   </CriticalErrorProvider>
                                 </LoadingProvider>
                               </SwiftarrQueryClientProvider>
