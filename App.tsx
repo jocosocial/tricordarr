@@ -41,6 +41,7 @@ import {SocketProvider} from '#src/Context/Providers/SocketProvider';
 import {StyleProvider} from '#src/Context/Providers/StyleProvider';
 import {SwiftarrQueryClientProvider} from '#src/Context/Providers/SwiftarrQueryClientProvider';
 import {ThemeProvider} from '#src/Context/Providers/ThemeProvider';
+import {TimeZoneChangesProvider} from '#src/Context/Providers/TimeZoneChangesProvider';
 import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
@@ -127,18 +128,20 @@ function App(): React.JSX.Element {
                                               <FeatureProvider>
                                                 <ClientSettingsProvider>
                                                   <CruiseProvider>
-                                                    <FilterProvider>
-                                                      <SignOutProvider>
-                                                        <ShellProvider>
-                                                          <AppEventHandler />
-                                                          <AppFocusHandler />
-                                                          <PushNotificationService />
-                                                          <NotificationDataListener />
-                                                          <NotificationDataPoller />
-                                                          <RootStackNavigator />
-                                                        </ShellProvider>
-                                                      </SignOutProvider>
-                                                    </FilterProvider>
+                                                    <TimeZoneChangesProvider>
+                                                      <FilterProvider>
+                                                        <SignOutProvider>
+                                                          <ShellProvider>
+                                                            <AppEventHandler />
+                                                            <AppFocusHandler />
+                                                            <PushNotificationService />
+                                                            <NotificationDataListener />
+                                                            <NotificationDataPoller />
+                                                            <RootStackNavigator />
+                                                          </ShellProvider>
+                                                        </SignOutProvider>
+                                                      </FilterProvider>
+                                                    </TimeZoneChangesProvider>
                                                   </CruiseProvider>
                                                 </ClientSettingsProvider>
                                               </FeatureProvider>

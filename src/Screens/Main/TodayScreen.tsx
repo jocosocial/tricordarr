@@ -46,7 +46,7 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
   const {refetch: refetchClientConfig} = useClientConfigQuery({enabled: false});
-  const {refetch: refetchTimeZoneChanges} = useTimeZoneChangesQuery();
+  const {refetch: refetchTimeZoneChanges} = useTimeZoneChangesQuery({enabled: false});
 
   const {isLoggedIn} = useSession();
   usePrivilege();
