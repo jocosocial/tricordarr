@@ -276,6 +276,30 @@ export const getScrollOffsetForFirstItem = (items: {startTime: Date}[], dayStart
   return Math.max(0, offset - viewOffset);
 };
 
+const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
+
+/**
+ * Minutes from day start for "now" for the now-line.
+ * Uses device local time for "now" and boat timezone for "day start" so the line
+ * matches the user's clock on the timeline (e.g. 10:36 device → line at 10:36 position).
+ */
+export const getMinutesFromDayStartForNow = (timeZoneID: string, dayStart: Date, now: Date): number | null => {
+  const nowH = now.getHours();
+  const nowM = now.getMinutes();
+  const startInTz = moment(dayStart).tz(timeZoneID);
+  const startH = startInTz.hours();
+  const startM = startInTz.minutes();
+  let minutesFromDayStart = (nowH - startH) * 60 + (nowM - startM);
+
+  if (minutesFromDayStart < 0) {
+    minutesFromDayStart += dayMinutesMax;
+  }
+  if (minutesFromDayStart >= dayMinutesMax) {
+    return null;
+  }
+  return minutesFromDayStart;
+};
+
 /**
  * Calculate the scroll offset in pixels for "current time of day" in a timezone.
  * Use this when viewing "today" so the position is correct even when the cruise
@@ -286,16 +310,8 @@ export const getScrollOffsetForFirstItem = (items: {startTime: Date}[], dayStart
  * @returns The scroll offset in pixels
  */
 export const getScrollOffsetForTimeOfDay = (timeZoneID: string, dayStart: Date): number => {
-  const nowInTz = moment().tz(timeZoneID);
-  const startInTz = moment(dayStart).tz(timeZoneID);
-  let minutesFromDayStart = (nowInTz.hours() - startInTz.hours()) * 60 + (nowInTz.minutes() - startInTz.minutes());
-
-  const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
-  // When "now" is before day start in clock terms (e.g. 12:56 AM vs 3 AM), it's the late-night segment of the 24h timeline — wrap into range.
-  if (minutesFromDayStart < 0) {
-    minutesFromDayStart += dayMinutesMax;
-  }
-  const clamped = Math.max(0, Math.min(minutesFromDayStart, dayMinutesMax));
+  const minutesFromDayStart = getMinutesFromDayStartForNow(timeZoneID, dayStart, new Date());
+  const clamped = minutesFromDayStart === null ? 0 : Math.min(minutesFromDayStart, dayMinutesMax);
 
   const offset = (clamped / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
   const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2;

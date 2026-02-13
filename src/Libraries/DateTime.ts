@@ -128,22 +128,70 @@ export const getCruiseDayData = (startDate: Date, cruiseDayIndex: number): Cruis
 };
 
 /**
- * Lifted from https://github.com/jocosocial/swiftarr/blob/70d83bc65e1a70557e6eb12ed941ea01973aca27/Sources/App/Resources/Assets/js/swiftarr.js#L470
- * We somewhat arbitrarily pick 3:00AM boat time as the breaker for when days roll over. But really it just serves as a
- * point in time that we can do maths again.
- * For example: An event at 05:00UTC (00:00EST aka Midnight) will be adjusted backwards three hours (02:00UTC, 21:00EST)
- * and if the client is in EST will result in a return value of 1260 (21 hours * 60 minutes, plus 00 minutes).
- * @TODO this has a bug with events schedule between 00:00-03:00UTC on embarkation day
- * @TODO behavior gets weird with DST, seems to work but eeek.
- * @param dateValue
- * @param cruiseStartDate
- * @param cruiseEndDate
+ * Calculate the cruise day and day-minutes for a given date/time.
+ * 
+ * When getBoatTzAt is provided, uses timezone-aware day boundaries that follow the ship's actual
+ * timezone changes. This fixes DST and late-night edge cases (00:00-03:00 on embarkation day).
+ * 
+ * When getBoatTzAt is not provided, uses the legacy fixed 3-hour offset behavior for backward compatibility.
+ * 
+ * @param dateValue The date/time to compute cruise day for
+ * @param cruiseStartDate The start date of the cruise
+ * @param cruiseEndDate The end date of the cruise
+ * @param getBoatTzAt Optional function to get boat timezone at a given time (e.g., tzAtTime from useTimeZone)
+ * @returns CruiseDayTime with cruiseDay (1-indexed) and dayMinutes (minutes since day start, e.g. 3am)
  */
-export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseEndDate: Date) => CruiseDayTime = (
+export const calcCruiseDayTime: (
   dateValue: Date,
   cruiseStartDate: Date,
   cruiseEndDate: Date,
-) => {
+  getBoatTzAt?: (date: Date) => string,
+) => CruiseDayTime = (dateValue: Date, cruiseStartDate: Date, cruiseEndDate: Date, getBoatTzAt?) => {
+  // If getBoatTzAt is provided, use timezone-aware calculation
+  if (getBoatTzAt) {
+    const boatTz = getBoatTzAt(dateValue);
+    const dateInBoatTz = moment(dateValue).tz(boatTz);
+    const cruiseStartInBoatTz = moment(cruiseStartDate).tz(boatTz);
+    
+    // Day starts at 3am in boat timezone
+    const dayStartHour = 3;
+    
+    // Calculate which cruise day this is (1-indexed)
+    let cruiseDay: number;
+    const daysSinceCruiseStart = dateInBoatTz.diff(cruiseStartInBoatTz, 'days');
+    
+    // Check if we're before 3am on the calendar day - if so, we're still in the previous cruise day
+    if (dateInBoatTz.hours() < dayStartHour) {
+      cruiseDay = daysSinceCruiseStart; // Previous day (will add 1 below)
+    } else {
+      cruiseDay = daysSinceCruiseStart + 1; // Current day (will add 0 below, then 1)
+    }
+    
+    // Ensure we're within cruise bounds
+    if (dateValue < cruiseStartDate) {
+      cruiseDay = 0;
+    } else if (dateValue >= cruiseEndDate) {
+      const totalDays = moment(cruiseEndDate).diff(moment(cruiseStartDate), 'days');
+      cruiseDay = totalDays;
+    }
+    
+    // Add 1 to make it 1-indexed (cruise day 1, 2, 3, etc.)
+    cruiseDay += 1;
+    
+    // Calculate minutes from day start (3am)
+    let dayMinutes = (dateInBoatTz.hours() - dayStartHour) * 60 + dateInBoatTz.minutes();
+    // If we're in the 00:00-03:00 window, wrap into the 24-hour day (21:00-24:00 range)
+    if (dayMinutes < 0) {
+      dayMinutes += 24 * 60;
+    }
+    
+    return {
+      cruiseDay,
+      dayMinutes,
+    };
+  }
+  
+  // Legacy behavior: fixed 3-hour offset
   // Subtract 3 hours so the 'day' divider for events is 3AM. NOT doing timezone math here.
   let adjustedDate = new Date(dateValue.getTime() - 3 * 60 * 60 * 1000);
   // Day index of the cruiseStartDate, an integer 0 (Sunday) through 6 (Saturday).

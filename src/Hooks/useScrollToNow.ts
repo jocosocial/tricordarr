@@ -3,6 +3,7 @@ import {useCallback, useEffect, useState} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
 import useDateTime, {calcCruiseDayTime} from '#src/Libraries/DateTime';
 import {getScheduleScrollIndex} from '#src/Libraries/Schedule';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
@@ -75,6 +76,7 @@ export function useScrollToNow<T extends EventData | FezData>({
 }: UseScrollToNowOptions<T>): UseScrollToNowReturn {
   const {appConfig} = useConfig();
   const {startDate, endDate} = useCruise();
+  const {tzAtTime} = useTimeZone();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
 
@@ -82,15 +84,18 @@ export function useScrollToNow<T extends EventData | FezData>({
   // use current time of day on that day so we scroll to the same time position as on today.
   useEffect(() => {
     if (items.length > 0) {
-      const realNowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
+      // Use timezone-aware cruise day calculation
+      const realNowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate, tzAtTime);
       const nowDayTime =
         selectedCruiseDay != null && selectedCruiseDay > 0
           ? {cruiseDay: selectedCruiseDay, dayMinutes: realNowDayTime.dayMinutes}
           : realNowDayTime;
-      const index = getScheduleScrollIndex(nowDayTime, items, startDate, endDate, appConfig.portTimeZoneID);
+      // Use boat timezone at current moment for "now" reference
+      const referenceTimeZoneID = tzAtTime(minutelyUpdatingDate);
+      const index = getScheduleScrollIndex(nowDayTime, items, startDate, endDate, referenceTimeZoneID);
       setScrollNowIndex(index);
     }
-  }, [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, items, startDate, selectedCruiseDay]);
+  }, [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, items, startDate, selectedCruiseDay, tzAtTime]);
 
   const scrollToNow = useCallback(() => {
     if (items.length === 0 || !listRef.current) {

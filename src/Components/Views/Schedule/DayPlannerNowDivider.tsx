@@ -3,22 +3,24 @@ import {StyleSheet, View} from 'react-native';
 
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {calcCruiseDayTime} from '#src/Libraries/DateTime';
 import useDateTime from '#src/Libraries/DateTime';
-import {DAY_PLANNER_CONFIG} from '#src/Libraries/DayPlanner';
+import {DAY_PLANNER_CONFIG, getMinutesFromDayStartForNow} from '#src/Libraries/DayPlanner';
 
 interface DayPlannerNowDividerProps {
   /** Start of the displayed day (for pixel offset calculation) */
   dayStart: Date;
   /** The cruise day being viewed (1-indexed) */
   selectedCruiseDay: number | undefined;
+  /** Boat timezone for the selected day (must match timeline labels and scroll-to-now). */
+  boatTimeZoneID: string;
 }
 
 /**
  * Renders a "now" indicator on the day planner timeline when viewing today's
- * effective cruise day. Uses CruiseContext; updates every minute.
+ * effective cruise day. Uses the same logic as getScrollOffsetForTimeOfDay
+ * so the line and "scroll to now" stay in sync.
  */
-export const DayPlannerNowDivider = ({dayStart, selectedCruiseDay}: DayPlannerNowDividerProps) => {
+export const DayPlannerNowDivider = ({dayStart, selectedCruiseDay, boatTimeZoneID}: DayPlannerNowDividerProps) => {
   const {theme} = useAppTheme();
   const {startDate, endDate, adjustedCruiseDayToday} = useCruise();
 
@@ -37,26 +39,13 @@ export const DayPlannerNowDivider = ({dayStart, selectedCruiseDay}: DayPlannerNo
       return null;
     }
 
-    const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
-    if (nowDayTime.cruiseDay !== selectedCruiseDay) {
-      return null;
-    }
-
-    const nowHours = minutelyUpdatingDate.getHours();
-    const nowMinutes = minutelyUpdatingDate.getMinutes();
-    const dayStartHour = dayStart.getHours();
-
-    let minutesFromDayStart = nowHours * 60 + nowMinutes - dayStartHour * 60;
-    if (minutesFromDayStart < 0) {
-      minutesFromDayStart += 24 * 60;
-    }
-
-    if (minutesFromDayStart >= DAY_PLANNER_CONFIG.TOTAL_HOURS * 60) {
+    const minutesFromDayStart = getMinutesFromDayStartForNow(boatTimeZoneID, dayStart, minutelyUpdatingDate);
+    if (minutesFromDayStart === null) {
       return null;
     }
 
     return (minutesFromDayStart / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
-  }, [minutelyUpdatingDate, selectedCruiseDay, adjustedCruiseDayToday, startDate, endDate, dayStart]);
+  }, [minutelyUpdatingDate, selectedCruiseDay, adjustedCruiseDayToday, startDate, endDate, dayStart, boatTimeZoneID]);
 
   if (nowLineOffset === null) {
     return null;

@@ -143,14 +143,14 @@ export const buildScheduleList = (
  * @param itemList List of items
  * @param cruiseStartDate Start Date of the cruise
  * @param cruiseEndDate End Date of the cruise
- * @param portTimeZoneID Time Zone ID of the port in which the ship departed.
+ * @param referenceTimeZoneID Time Zone ID to use for "now" (typically the boat timezone at current time).
  */
 export const getScheduleScrollIndex = (
   nowDayTime: CruiseDayTime,
   itemList: (EventData | FezData)[],
   cruiseStartDate: Date,
   cruiseEndDate: Date,
-  portTimeZoneID: string,
+  referenceTimeZoneID: string,
 ) => {
   for (let i = 0; i < itemList.length; i++) {
     // Creating a dedicated variable makes the parser happier.
@@ -159,7 +159,7 @@ export const getScheduleScrollIndex = (
       break;
     }
     const itemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), cruiseStartDate, cruiseEndDate);
-    const tzOffset = getTimeZoneOffset(portTimeZoneID, scheduleItem.timeZoneID, scheduleItem.startTime);
+    const tzOffset = getTimeZoneOffset(referenceTimeZoneID, scheduleItem.timeZoneID, scheduleItem.startTime);
     // ScheduleItems that are present in the early hours of the day (00:00-03:00)
     // mess with the detection since their dayMinutes are large (coming from the previous day).
     // Skip these for consideration of the now index.
@@ -204,7 +204,7 @@ export const getScheduleScrollIndex = (
     //   return itemList.length - 1;
     // }
     // const lastItemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), cruiseStartDate, cruiseEndDate);
-    // const lastItemTzOffset = getTimeZoneOffset(portTimeZoneID, scheduleItem.timeZoneID, scheduleItem.startTime);
+    // const lastItemTzOffset = getTimeZoneOffset(referenceTimeZoneID, scheduleItem.timeZoneID, scheduleItem.startTime);
     // if (
     //   nowDayTime.cruiseDay === lastItemStartDayTime.cruiseDay &&
     //   nowDayTime.dayMinutes - lastItemTzOffset >= lastItemStartDayTime.dayMinutes
@@ -218,10 +218,10 @@ export const getScheduleScrollIndex = (
 };
 
 /**
- *
- * @param item
- * @param tzOffset Offset from the port time zone @TODO problem in DST for 2025.
- * @param nowDate
+ * Determines if a schedule item should display a "now" or "soon" marker.
+ * @param item The schedule item (event or LFG)
+ * @param tzOffset Offset from the boat timezone at "now" to the item's timezone (in minutes)
+ * @param nowDate Current date/time
  * @param startDate Start Date() of the cruise, typically midnight in the port TZ.
  * @param endDate End Date() of the cruise, typically midnight in the port TZ.
  */
@@ -240,6 +240,7 @@ export const getScheduleItemMarker = (
   const eventStartDayTime = calcCruiseDayTime(itemStartTime, startDate, endDate);
   const eventEndDayTime = calcCruiseDayTime(itemEndTime, startDate, endDate);
   const nowDayTime = calcCruiseDayTime(nowDate, startDate, endDate);
+
   if (
     nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
     nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes &&

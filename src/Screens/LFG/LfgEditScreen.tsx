@@ -36,8 +36,11 @@ export const LfgEditScreen = (props: Props) => {
 const LfgEditScreenInner = ({route, navigation}: Props) => {
   const updateMutation = useFezUpdateMutation();
   const {appConfig} = useConfig();
+  const {tzAtTime} = useTimeZone();
+  // Use boat timezone at event time as origin for timezone offset calculation
+  const originTz = route.params.fez.startTime ? tzAtTime(parseISO(route.params.fez.startTime)) : appConfig.portTimeZoneID;
   const offset = getEventTimezoneOffset(
-    appConfig.portTimeZoneID,
+    originTz,
     route.params.fez.startTime,
     route.params.fez.timeZoneID,
   );

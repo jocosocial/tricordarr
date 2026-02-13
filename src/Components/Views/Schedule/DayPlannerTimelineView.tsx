@@ -4,6 +4,7 @@ import {Text} from 'react-native-paper';
 
 import {DayPlannerCard} from '#src/Components/Cards/Schedule/DayPlannerCard';
 import {DayPlannerNowDivider} from '#src/Components/Views/Schedule/DayPlannerNowDivider';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {
@@ -30,6 +31,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     const {theme} = useAppTheme();
     const {commonStyles} = useStyles();
     const commonNavigation = useCommonStack();
+    const {appConfig} = useConfig();
 
     // Calculate layout for all items
     const layoutItems = useMemo(() => {
@@ -148,7 +150,11 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     return (
       <ScrollView ref={ref} style={styles.container} contentContainerStyle={styles.scrollContent}>
         <View style={[styles.timelineRow, {height: timelineHeight}]}>
-          <DayPlannerNowDivider dayStart={dayStart} selectedCruiseDay={selectedCruiseDay} />
+          <DayPlannerNowDivider
+            dayStart={dayStart}
+            selectedCruiseDay={selectedCruiseDay}
+            boatTimeZoneID={timeZoneID ?? appConfig.portTimeZoneID}
+          />
 
           {/* Time labels column — zIndex so it renders above the now divider */}
           <View style={[styles.timeColumn, {height: timelineHeight}]}>

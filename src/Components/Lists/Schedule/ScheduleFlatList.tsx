@@ -9,7 +9,8 @@ import {ScheduleFlatListBase} from '#src/Components/Lists/Schedule/ScheduleFlatL
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {FezType} from '#src/Enums/FezType';
-import useDateTime from '#src/Libraries/DateTime';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
+import useDateTime, {getTimeZoneOffset} from '#src/Libraries/DateTime';
 import {getScheduleItemMarker} from '#src/Libraries/Schedule';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
@@ -45,16 +46,18 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
   const commonNavigation = useCommonStack();
   const {appConfig} = useConfig();
   const {startDate, endDate} = useCruise();
+  const {tzAtTime} = useTimeZone();
   const minutelyUpdatingDate = useDateTime('minute');
 
   // https://reactnative.dev/docs/optimizing-flatlist-configuration
   const renderItem = useCallback(
     ({item}: {item: TItem}) => {
-      // const tzOffset = getTimeZoneOffset(portTimeZoneID, item.timeZoneID, item.startTime);
-      // @TODO this is a manual hack, need to undo this and understand what went wr
-      // const tzOffset = 0;
-      // console.log(tzOffset);
-      const marker = getScheduleItemMarker(item, appConfig.manualTimeOffset, minutelyUpdatingDate, startDate, endDate);
+      // Compute timezone offset from boat-at-now to item timezone for marker calculation
+      const tzOffset =
+        item.startTime && item.timeZoneID
+          ? getTimeZoneOffset(tzAtTime(minutelyUpdatingDate), item.timeZoneID, item.startTime)
+          : 0;
+      const marker = getScheduleItemMarker(item, tzOffset, minutelyUpdatingDate, startDate, endDate);
       if ('fezID' in item) {
         if (FezType.isLFGType(item.fezType)) {
           return (
@@ -90,7 +93,7 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
       }
       return <></>;
     },
-    [appConfig.manualTimeOffset, minutelyUpdatingDate, startDate, endDate, commonNavigation, setRefreshing],
+    [tzAtTime, minutelyUpdatingDate, startDate, endDate, commonNavigation, setRefreshing],
   );
 
   const keyExtractor = (item: TItem) => {

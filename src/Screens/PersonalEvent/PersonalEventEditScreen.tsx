@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
-import {addMinutes, differenceInMinutes} from 'date-fns';
+import {addMinutes, differenceInMinutes, parseISO} from 'date-fns';
 import {FormikHelpers} from 'formik';
 import React, {useEffect} from 'react';
 
@@ -53,11 +53,12 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
     );
   };
 
-  const offset = getEventTimezoneOffset(
-    appConfig.portTimeZoneID,
-    route.params.personalEvent.startTime,
-    route.params.personalEvent.timeZoneID,
-  );
+  const {tzAtTime} = useTimeZone();
+  // Use boat timezone at event time as origin for timezone offset calculation
+  const originTz = route.params.personalEvent.startTime
+    ? tzAtTime(parseISO(route.params.personalEvent.startTime))
+    : appConfig.portTimeZoneID;
+  const offset = getEventTimezoneOffset(originTz, route.params.personalEvent.startTime, route.params.personalEvent.timeZoneID);
   let startDate = new Date(route.params.personalEvent.startTime || new Date());
   startDate = addMinutes(startDate, offset);
   let endDate = new Date(route.params.personalEvent.endTime || new Date());

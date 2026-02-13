@@ -22,6 +22,7 @@ import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {calcCruiseDayTime, eventsOverlap, getDurationString} from '#src/Libraries/DateTime';
 import {CommonStackComponents, CommonStackParamList, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
@@ -36,6 +37,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {startDate, endDate} = useCruise();
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
+  const {tzAtTime} = useTimeZone();
   const {data: profilePublicData} = useUserProfileQuery();
   const {getIsDisabled} = useFeature();
   const {preRegistrationMode} = usePreRegistration();
@@ -51,9 +53,10 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     if (!inputStartTime) {
       return undefined;
     }
-    const cruiseDayTime = calcCruiseDayTime(new Date(inputStartTime), startDate, endDate);
+    // Use timezone-aware cruise day calculation
+    const cruiseDayTime = calcCruiseDayTime(new Date(inputStartTime), startDate, endDate, tzAtTime);
     return cruiseDayTime.cruiseDay;
-  }, [inputStartTime, startDate, endDate]);
+  }, [inputStartTime, startDate, endDate, tzAtTime]);
 
   // Query all three data types for the same cruiseDay
   const {
