@@ -23,6 +23,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -45,13 +46,14 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
   const {refetch: refetchClientConfig} = useClientConfigQuery({enabled: false});
+  const {refetch: refetchTimeZoneChanges} = useTimeZoneChangesQuery();
 
   const {isLoggedIn} = useSession();
   usePrivilege();
   const {preRegistrationMode} = usePreRegistration();
   const {refreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
-      var refreshes: Promise<any>[] = [refetchAnnouncements(), refetchClientConfig()];
+      var refreshes: Promise<any>[] = [refetchAnnouncements(), refetchClientConfig(), refetchTimeZoneChanges()];
       // These queries not available in pre-registration mode.
       if (!preRegistrationMode) {
         refreshes.push(refetchThemes(), refetchUserNotificationData());
@@ -72,6 +74,7 @@ export const TodayScreen = ({navigation}: Props) => {
       refetchProfile,
       refetchFavorites,
       refetchClientConfig,
+      refetchTimeZoneChanges,
     ]),
   });
 
