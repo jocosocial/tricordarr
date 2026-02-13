@@ -75,8 +75,9 @@ import UserNotifications
 		// Clear foreground push provider config
 		instance.foregroundPushProvider.updateConfig(serverURL: nil, token: nil)
 
-		// Disable background push manager if it exists
-		if let manager = instance.backgroundPushManager {
+		// Disable background push manager if it exists and is currently enabled.
+		// Skip save when already disabled to avoid duplicate save and "configuration is unchanged" / NEAppPushErrorDomain errors.
+		if let manager = instance.backgroundPushManager, manager.isEnabled {
 			manager.isEnabled = false
 			manager.saveToPreferences { error in
 				if let error = error {
