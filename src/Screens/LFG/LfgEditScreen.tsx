@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
-import {addMinutes, differenceInMinutes} from 'date-fns';
+import {differenceInMinutes} from 'date-fns';
 import {FormikHelpers} from 'formik';
 import React from 'react';
 
@@ -9,9 +9,9 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
+import {getScheduleItemStartEndTime, getTimePartsInTz} from '#src/Libraries/DateTime';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -35,30 +35,27 @@ export const LfgEditScreen = (props: Props) => {
 
 const LfgEditScreenInner = ({route, navigation}: Props) => {
   const updateMutation = useFezUpdateMutation();
-  const {appConfig} = useConfig();
-  const {tzAtTime} = useTimeZone();
-  // Use boat timezone at event time as origin for timezone offset calculation
-  const originTz = route.params.fez.startTime ? tzAtTime(parseISO(route.params.fez.startTime)) : appConfig.portTimeZoneID;
-  const offset = getEventTimezoneOffset(
-    originTz,
-    route.params.fez.startTime,
-    route.params.fez.timeZoneID,
-  );
   const queryClient = useQueryClient();
+  const {tzAtTime} = useTimeZone();
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
-    let {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);
+    let {startTime, endTime} = getScheduleItemStartEndTime(
+      values.startDate,
+      values.startTime,
+      values.duration,
+      tzAtTime(values.startDate),
+    );
 
     updateMutation.mutate(
       {
         fezID: route.params.fez.fezID,
         fezContentData: {
-          fezType: values.fezType,
           title: values.title,
           info: values.info,
           startTime: startTime.toISOString(),
           endTime: endTime.toISOString(),
           location: values.location,
+          fezType: values.fezType,
           minCapacity: Number(values.minCapacity),
           maxCapacity: Number(values.maxCapacity),
           initialUsers: [],
@@ -78,23 +75,19 @@ const LfgEditScreenInner = ({route, navigation}: Props) => {
   };
 
   let startDate = new Date(route.params.fez.startTime || new Date());
-  startDate = addMinutes(startDate, offset);
   let endDate = new Date(route.params.fez.endTime || new Date());
-  endDate = addMinutes(endDate, offset);
+  const durationMinutes = differenceInMinutes(endDate, startDate);
 
   const initialValues: FezFormValues = {
     title: route.params.fez.title,
-    location: route.params.fez.location || '',
+    location: route.params.fez.location,
     fezType: route.params.fez.fezType,
     startDate: startDate,
-    duration: differenceInMinutes(endDate, startDate).toString(),
+    duration: durationMinutes.toString(),
     minCapacity: route.params.fez.minParticipants.toString(),
     maxCapacity: route.params.fez.maxParticipants.toString(),
     info: route.params.fez.info,
-    startTime: {
-      hours: startDate.getHours(),
-      minutes: startDate.getMinutes(),
-    },
+    startTime: getTimePartsInTz(startDate, tzAtTime(startDate)),
     initialUsers: [],
   };
 

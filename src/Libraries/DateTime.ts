@@ -129,12 +129,12 @@ export const getCruiseDayData = (startDate: Date, cruiseDayIndex: number): Cruis
 
 /**
  * Calculate the cruise day and day-minutes for a given date/time.
- * 
+ *
  * When getBoatTzAt is provided, uses timezone-aware day boundaries that follow the ship's actual
  * timezone changes. This fixes DST and late-night edge cases (00:00-03:00 on embarkation day).
- * 
+ *
  * When getBoatTzAt is not provided, uses the legacy fixed 3-hour offset behavior for backward compatibility.
- * 
+ *
  * @param dateValue The date/time to compute cruise day for
  * @param cruiseStartDate The start date of the cruise
  * @param cruiseEndDate The end date of the cruise
@@ -152,21 +152,21 @@ export const calcCruiseDayTime: (
     const boatTz = getBoatTzAt(dateValue);
     const dateInBoatTz = moment(dateValue).tz(boatTz);
     const cruiseStartInBoatTz = moment(cruiseStartDate).tz(boatTz);
-    
+
     // Day starts at 3am in boat timezone
     const dayStartHour = 3;
-    
+
     // Calculate which cruise day this is (1-indexed)
     let cruiseDay: number;
     const daysSinceCruiseStart = dateInBoatTz.diff(cruiseStartInBoatTz, 'days');
-    
+
     // Check if we're before 3am on the calendar day - if so, we're still in the previous cruise day
     if (dateInBoatTz.hours() < dayStartHour) {
       cruiseDay = daysSinceCruiseStart; // Previous day (will add 1 below)
     } else {
       cruiseDay = daysSinceCruiseStart + 1; // Current day (will add 0 below, then 1)
     }
-    
+
     // Ensure we're within cruise bounds
     if (dateValue < cruiseStartDate) {
       cruiseDay = 0;
@@ -174,23 +174,23 @@ export const calcCruiseDayTime: (
       const totalDays = moment(cruiseEndDate).diff(moment(cruiseStartDate), 'days');
       cruiseDay = totalDays;
     }
-    
+
     // Add 1 to make it 1-indexed (cruise day 1, 2, 3, etc.)
     cruiseDay += 1;
-    
+
     // Calculate minutes from day start (3am)
     let dayMinutes = (dateInBoatTz.hours() - dayStartHour) * 60 + dateInBoatTz.minutes();
     // If we're in the 00:00-03:00 window, wrap into the 24-hour day (21:00-24:00 range)
     if (dayMinutes < 0) {
       dayMinutes += 24 * 60;
     }
-    
+
     return {
       cruiseDay,
       dayMinutes,
     };
   }
-  
+
   // Legacy behavior: fixed 3-hour offset
   // Subtract 3 hours so the 'day' divider for events is 3AM. NOT doing timezone math here.
   let adjustedDate = new Date(dateValue.getTime() - 3 * 60 * 60 * 1000);
@@ -281,6 +281,24 @@ export const getEventTimeString = (startTimeStr?: string, timeZoneID?: string) =
 export const getBoatTimeMoment = (dateTimeStr: string, timeZoneID: string) => {
   const date = moment(dateTimeStr);
   return date.tz(timeZoneID);
+};
+
+/**
+ * Return hours and minutes of a Date in a given IANA timezone (e.g. from tzAtTime).
+ * Use this instead of date.getHours()/getMinutes() when the time should be shown in
+ * the event's or boat's timezone rather than the device's.
+ */
+export const getTimePartsInTz = (date: Date, timeZoneID: string): {hours: number; minutes: number} => {
+  const m = moment(date).tz(timeZoneID);
+  return {hours: m.hours(), minutes: m.minutes()};
+};
+
+/**
+ * Return the start of the calendar day (midnight) in the given timezone for the given instant.
+ * Useful for form date pickers when the "day" should be in boat/event timezone.
+ */
+export const getStartOfDayInTz = (date: Date, timeZoneID: string): Date => {
+  return moment(date).tz(timeZoneID).startOf('day').toDate();
 };
 
 /**
@@ -395,13 +413,44 @@ export const getApparentCruiseDate = (startDate: Date, adjustedCruiseDayToday: n
  * @param startDate Arbitrary precision Date with the starting Date of the schedule.
  * @param startTime Object containing the hours and minutes that the thing starts.
  * @param duration How long the thing is.
+ * @param timeZoneID When provided, startTime is interpreted in this timezone (e.g. tzAtTime(startDate)); otherwise device local.
  */
 export const getScheduleItemStartEndTime = (
   startDate: Date | string,
   startTime: StartTime,
   duration: string | number,
+  _?: string,
 ): StartEndTime => {
-  let eventStartTime = new Date(startDate);
+  const start = new Date(startDate);
+  let eventStartTime: Date;
+
+  // All of the callers of this function already handled the tzAtTime logic.
+  // Doing it again here caused events to be correct in the form but get POSTed
+  // with incorrect values. I am leaving this in here just in case we want to come
+  // back it to some day.
+  // if (timeZoneID) {
+  //   const inTz = moment(start).tz(timeZoneID);
+  //   const eventMoment = moment.tz(
+  //     {
+  //       year: inTz.year(),
+  //       month: inTz.month(),
+  //       date: inTz.date(),
+  //       hour: startTime.hours,
+  //       minute: startTime.minutes,
+  //       second: 0,
+  //       millisecond: 0,
+  //     },
+  //     timeZoneID,
+  //   );
+  //   eventStartTime = eventMoment.toDate();
+  // } else {
+  //   eventStartTime = new Date(start);
+  //   eventStartTime.setHours(startTime.hours);
+  //   eventStartTime.setMinutes(startTime.minutes);
+  //   eventStartTime.setSeconds(0);
+  //   eventStartTime.setMilliseconds(0);
+  // }
+  eventStartTime = new Date(start);
   eventStartTime.setHours(startTime.hours);
   eventStartTime.setMinutes(startTime.minutes);
   eventStartTime.setSeconds(0);
