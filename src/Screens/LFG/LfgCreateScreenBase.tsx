@@ -15,6 +15,7 @@ interface Props {
   duration?: number;
   minCapacity?: number;
   maxCapacity?: number;
+  cruiseDay?: number;
 }
 
 export const LfgCreateScreenBase = ({
@@ -25,6 +26,7 @@ export const LfgCreateScreenBase = ({
   duration = 30,
   minCapacity = 2,
   maxCapacity = 2,
+  cruiseDay,
 }: Props) => {
   const navigation = useCommonStack();
   const {getInitialValues} = useFezForm();
@@ -36,6 +38,7 @@ export const LfgCreateScreenBase = ({
     duration,
     minCapacity,
     maxCapacity,
+    cruiseDay,
   });
 
   return (

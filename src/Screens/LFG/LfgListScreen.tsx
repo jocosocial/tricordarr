@@ -218,7 +218,9 @@ const LfgListScreenInner = ({
           />
         )}
       </View>
-      {showFab && <LfgFAB showLabel={showFabLabel} endpoint={endpoint} setEndpoint={setEndpoint} />}
+      {showFab && (
+        <LfgFAB showLabel={showFabLabel} endpoint={endpoint} setEndpoint={setEndpoint} cruiseDay={selectedCruiseDay} />
+      )}
     </AppView>
   );
 };

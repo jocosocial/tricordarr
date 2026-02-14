@@ -17,7 +17,7 @@ export type LfgStackParamList = CommonStackParamList & {
     onlyNew?: boolean;
     cruiseDay?: number;
   }>;
-  LfgCreateScreen: undefined;
+  LfgCreateScreen: {cruiseDay?: number};
   LfgSearchScreen: {
     endpoint: FezListEndpoints;
   };
