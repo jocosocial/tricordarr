@@ -1,8 +1,6 @@
 import React from 'react';
-import DeviceInfo from 'react-native-device-info';
 
 import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
-import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
@@ -25,12 +23,6 @@ export const AboutTricordarrScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
-        <ListSection>
-          <ListSubheader>Version</ListSubheader>
-        </ListSection>
-        <DataFieldListItem title={'App Version'} description={DeviceInfo.getVersion()} />
-        <DataFieldListItem title={'Build'} description={DeviceInfo.getBuildNumber()} />
-        <DataFieldListItem title={'System Version'} description={DeviceInfo.getSystemVersion()} />
         <ListSection>
           <ListSubheader>Background</ListSubheader>
         </ListSection>
