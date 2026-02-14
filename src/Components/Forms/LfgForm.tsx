@@ -46,7 +46,7 @@ export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFor
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({handleSubmit, values, isSubmitting, isValid}) => (
+      {({handleSubmit, values, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
           <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} autoCapitalize={'words'} />
@@ -89,7 +89,7 @@ export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFor
             numberOfLines={3}
           />
           <PrimaryActionButton
-            disabled={!values.title || isSubmitting || !isValid}
+            disabled={!values.title || isSubmitting || !isValid || !dirty}
             isLoading={isSubmitting}
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
