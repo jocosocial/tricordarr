@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {useState} from 'react';
 
 import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
 import {SelectionButtons} from '#src/Components/Buttons/SegmentedButtons/SelectionButtons';
@@ -7,6 +7,7 @@ import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {usePagination} from '#src/Hooks/usePagination';
+import {SetRefreshing} from '#src/Hooks/useRefresh';
 import {CategoryData, ForumListData} from '#src/Structs/ControllerStructs';
 
 interface ForumThreadListViewProps {
@@ -14,7 +15,7 @@ interface ForumThreadListViewProps {
   hasPreviousPage?: boolean;
   enableFAB?: boolean;
   category?: CategoryData;
-  setRefreshing: Dispatch<SetStateAction<boolean>>;
+  setRefreshing: SetRefreshing;
   fetchNextPage: () => Promise<unknown>;
   fetchPreviousPage: () => Promise<unknown>;
   isFetchingNextPage: boolean;

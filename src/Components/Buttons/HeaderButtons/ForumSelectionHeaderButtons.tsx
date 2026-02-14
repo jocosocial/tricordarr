@@ -1,18 +1,19 @@
 import {QueryKey, useQueryClient} from '@tanstack/react-query';
 import {AxiosResponse} from 'axios';
-import React, {Dispatch, SetStateAction} from 'react';
+import React from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {SetRefreshing} from '#src/Hooks/useRefresh';
 import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 import {Selectable} from '#src/Types/Selectable';
 
 interface ForumSelectionHeaderButtonsProps {
-  setRefreshing: Dispatch<SetStateAction<boolean>>;
+  setRefreshing: SetRefreshing;
   categoryID?: string;
   items?: ForumListData[];
   selectedItems: Selectable[];

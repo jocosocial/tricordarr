@@ -6,6 +6,7 @@ import {ForumThreadListView} from '#src/Components/Views/Forum/ForumThreadListVi
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useForumFilter} from '#src/Context/Contexts/ForumFilterContext';
 import {ForumSort} from '#src/Enums/ForumSortFilter';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {ForumRelationQueryType, useForumRelationQuery} from '#src/Queries/Forum/ForumThreadRelationQueries';
 import {CategoryData, ForumListData} from '#src/Structs/ControllerStructs';
 
@@ -29,6 +30,7 @@ export const ForumThreadsRelationsView = ({relationType, category, title, onData
     data,
     refetch,
     isLoading,
+    isFetching,
     hasPreviousPage,
     fetchPreviousPage,
     isFetchingPreviousPage,
@@ -40,14 +42,11 @@ export const ForumThreadsRelationsView = ({relationType, category, title, onData
     ...(forumSortOrder && forumSortOrder !== ForumSort.event ? {sort: forumSortOrder} : undefined),
     ...(forumSortDirection ? {order: forumSortDirection} : undefined),
   });
-  const [refreshing, setRefreshing] = useState(false);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  };
 
   useEffect(() => {
     if (data && data.pages) {

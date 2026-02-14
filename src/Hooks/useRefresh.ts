@@ -12,6 +12,9 @@ export interface UseRefreshReturn {
   onRefresh: () => Promise<void>;
 }
 
+/** Type for setRefreshing from useRefresh; use this for props that receive it. */
+export type SetRefreshing = UseRefreshReturn['setRefreshing'];
+
 /**
  * Hook to manage pull-to-refresh state and operations.
  *

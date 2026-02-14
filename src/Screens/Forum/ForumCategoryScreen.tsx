@@ -1,7 +1,7 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import pluralize from 'pluralize';
-import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 
 import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
@@ -73,21 +73,10 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
   const {selectedItems, enableSelection} = useSelection();
-  const {
-    refreshing,
-    setRefreshing: setRefreshingDirect,
-    onRefresh,
-  } = useRefresh({
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: refetch,
     isRefreshing: isFetching,
   });
-  // Wrapper to match Dispatch<SetStateAction<boolean>> type expected by child components
-  const setRefreshing: Dispatch<SetStateAction<boolean>> = useCallback(
-    (value: SetStateAction<boolean>) => {
-      setRefreshingDirect(typeof value === 'function' ? value(refreshing) : value);
-    },
-    [setRefreshingDirect, refreshing],
-  );
 
   useEffect(() => {
     if (data && data.pages) {

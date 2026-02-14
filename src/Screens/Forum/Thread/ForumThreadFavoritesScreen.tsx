@@ -12,6 +12,7 @@ import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {ForumRelationQueryType} from '#src/Queries/Forum/ForumThreadRelationQueries';
@@ -38,7 +39,7 @@ export const ForumThreadFavoritesScreen = (props: Props) => {
 
 const ForumThreadFavoritesScreenInner = ({navigation}: Props) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
+  const {setRefreshing} = useRefresh({});
   const {selectedItems, enableSelection} = useSelection();
 
   const getNavButtons = useCallback(() => {
@@ -66,7 +67,7 @@ const ForumThreadFavoritesScreenInner = ({navigation}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableSelection, forumListData, selectedItems, navigation]);
+  }, [enableSelection, forumListData, selectedItems, navigation, setRefreshing]);
 
   useEffect(() => {
     navigation.setOptions({
