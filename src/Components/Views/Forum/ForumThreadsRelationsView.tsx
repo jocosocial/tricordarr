@@ -13,9 +13,17 @@ interface Props {
   relationType: ForumRelationQueryType;
   category?: CategoryData;
   title?: string;
+  onDataChange?: (data: ForumListData[]) => void;
 }
 
-export const ForumThreadsRelationsView = ({relationType, category, title}: Props) => {
+/**
+ * View for lists of forum threads where the user has a relation to them. Examples:
+ * All of your Favorites/Muted/Unread/Owned threads.
+ *
+ * Also used when a filter is being applied to a list of threads within a category.
+ * Example: "Favorites in the "General" category"
+ */
+export const ForumThreadsRelationsView = ({relationType, category, title, onDataChange}: Props) => {
   const {forumSortOrder, forumSortDirection} = useForumFilter();
   const {
     data,
@@ -43,9 +51,11 @@ export const ForumThreadsRelationsView = ({relationType, category, title}: Props
 
   useEffect(() => {
     if (data && data.pages) {
-      setForumListData(data.pages.flatMap(p => p.forumThreads || []));
+      const list = data.pages.flatMap(p => p.forumThreads || []);
+      setForumListData(list);
+      onDataChange?.(list);
     }
-  }, [data, setForumListData]);
+  }, [data, onDataChange]);
 
   if (isLoading || !data) {
     return <LoadingView />;
