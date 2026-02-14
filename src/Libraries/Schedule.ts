@@ -25,88 +25,89 @@ export const buildScheduleList = (
   eventData?: EventData[],
   personalEventData?: InfiniteData<FezListData>,
 ): (FezData | EventData)[] => {
-  let anyLfgFilter =
-    filterSettings.eventLfgJoinedFilter || filterSettings.eventLfgOwnedFilter || filterSettings.eventLfgOpenFilter;
-  let anyOtherFilter = filterSettings.eventFavoriteFilter || filterSettings.eventPersonalFilter;
-  let anyPersonalFilter = anyLfgFilter || anyOtherFilter;
+  const anyFilter = !!(
+    filterSettings.eventTypeFilter ||
+    filterSettings.eventFavoriteFilter ||
+    filterSettings.eventPersonalFilter ||
+    filterSettings.eventPersonalUnreadFilter ||
+    filterSettings.eventLfgJoinedFilter ||
+    filterSettings.eventLfgOwnedFilter ||
+    filterSettings.eventLfgOpenFilter ||
+    filterSettings.eventShutternautFilter
+  );
 
   let lfgList: FezData[] = [];
-  // If shutternaut filter is active, only show LFGs if an LFG filter is also active
-  if (filterSettings.eventShutternautFilter && !anyLfgFilter) {
-    // Don't show LFGs when shutternaut filter is active without an LFG filter
-  } else if (anyLfgFilter) {
-    // If any LFG filter is active, show only those specific LFGs
-    if (filterSettings.eventLfgJoinedFilter && filterSettings.showJoinedLfgs && lfgJoinedData) {
-      lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
-    }
-    if (filterSettings.eventLfgOwnedFilter && lfgOwnedData) {
-      lfgOwnedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
-    }
-    if (
-      filterSettings.eventLfgOpenFilter &&
-      (!filterSettings.eventFavoriteFilter || !filterSettings.eventPersonalFilter) &&
-      filterSettings.showOpenLfgs &&
-      lfgOpenData
-    ) {
-      lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
-    }
-  } else if (!anyOtherFilter && !filterSettings.eventTypeFilter) {
-    // If no filter is active at all, show all enabled LFGs (default behavior)
-    // Note: eventTypeFilter excludes LFGs in default view, but LFG filters can work with eventTypeFilter
+  let eventList: EventData[] = [];
+  let personalEventList: FezData[] = [];
+
+  if (!anyFilter) {
+    // Default: all events, default LFGs per config, all personal events
     if (filterSettings.showJoinedLfgs && lfgJoinedData) {
-      lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+      lfgJoinedData.pages.forEach(page => (lfgList = lfgList.concat(page.fezzes)));
     }
     if (filterSettings.showOpenLfgs && lfgOpenData) {
-      lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+      lfgOpenData.pages.forEach(page => (lfgList = lfgList.concat(page.fezzes)));
     }
-  }
-  // If other filters are active but no LFG filter, don't show LFGs
-
-  let eventList: EventData[] = [];
-  // Show events if: favorite filter is on, OR no personal filters are on, OR eventType filter is on (to allow combining with LFG filters)
-  if (filterSettings.eventFavoriteFilter || !anyPersonalFilter || filterSettings.eventTypeFilter) {
-    eventData?.map(event => {
-      if (
-        (filterSettings.eventTypeFilter && event.eventType !== EventType[filterSettings.eventTypeFilter]) ||
-        (filterSettings.eventFavoriteFilter && !event.isFavorite)
-      ) {
-        return;
-      }
-      // Apply shutternaut filter if set and event has shutternaut data
-      if (filterSettings.eventShutternautFilter && event.shutternautData) {
-        const shutternautFilter = filterSettings.eventShutternautFilter;
-        let shouldInclude = false;
-        switch (shutternautFilter) {
-          case 'needsPhotographer':
-            shouldInclude =
-              event.shutternautData.needsPhotographer === true && event.shutternautData.photographers.length === 0;
-            break;
-          case 'hasphotographer':
-            shouldInclude = event.shutternautData.photographers.length > 0;
-            break;
-          case 'nophotographer':
-            shouldInclude = event.shutternautData.photographers.length === 0;
-            break;
-          case 'imphotographer':
-            shouldInclude = event.shutternautData.userIsPhotographer === true;
-            break;
-        }
-        if (!shouldInclude) {
-          return;
-        }
-      }
-      eventList.push(event);
-    });
-  }
-
-  let personalEventList: FezData[] = [];
-  // If shutternaut filter is active, only show personal events if personal filter is also active
-  if (filterSettings.eventShutternautFilter && !filterSettings.eventPersonalFilter) {
-    // Don't show personal events when shutternaut filter is active without personal filter
-  } else if ((filterSettings.eventPersonalFilter || !anyPersonalFilter) && !filterSettings.eventTypeFilter) {
-    // personalEventList = personalEventData.pages.map || [];
+    eventData?.forEach(event => eventList.push(event));
     if (personalEventData?.pages) {
-      personalEventData.pages.map(page => (personalEventList = personalEventList.concat(page.fezzes)));
+      personalEventData.pages.forEach(page => (personalEventList = personalEventList.concat(page.fezzes)));
+    }
+  } else {
+    // Restrictive: show only items matching at least one active filter (OR across filter types)
+    if (filterSettings.eventLfgJoinedFilter && filterSettings.showJoinedLfgs && lfgJoinedData) {
+      lfgJoinedData.pages.forEach(page => (lfgList = lfgList.concat(page.fezzes)));
+    }
+    if (filterSettings.eventLfgOwnedFilter && lfgOwnedData) {
+      lfgOwnedData.pages.forEach(page => (lfgList = lfgList.concat(page.fezzes)));
+    }
+    if (filterSettings.eventLfgOpenFilter && filterSettings.showOpenLfgs && lfgOpenData) {
+      lfgOpenData.pages.forEach(page => (lfgList = lfgList.concat(page.fezzes)));
+    }
+
+    const eventFilterOn =
+      !!filterSettings.eventTypeFilter ||
+      !!filterSettings.eventFavoriteFilter ||
+      !!filterSettings.eventShutternautFilter;
+    if (eventFilterOn && eventData) {
+      eventData.forEach(event => {
+        const matchesType = filterSettings.eventTypeFilter
+          ? event.eventType === EventType[filterSettings.eventTypeFilter]
+          : false;
+        const matchesFavorite = filterSettings.eventFavoriteFilter ? event.isFavorite : false;
+        let matchesShutternaut = false;
+        if (filterSettings.eventShutternautFilter && event.shutternautData) {
+          const sf = filterSettings.eventShutternautFilter;
+          switch (sf) {
+            case 'needsPhotographer':
+              matchesShutternaut =
+                event.shutternautData.needsPhotographer === true && event.shutternautData.photographers.length === 0;
+              break;
+            case 'hasphotographer':
+              matchesShutternaut = event.shutternautData.photographers.length > 0;
+              break;
+            case 'nophotographer':
+              matchesShutternaut = event.shutternautData.photographers.length === 0;
+              break;
+            case 'imphotographer':
+              matchesShutternaut = event.shutternautData.userIsPhotographer === true;
+              break;
+          }
+        }
+        if (matchesType || matchesFavorite || matchesShutternaut) {
+          eventList.push(event);
+        }
+      });
+    }
+
+    // Shutternaut + personal: only show personal events if a personal filter is also active
+    const personalFilterOn = !!filterSettings.eventPersonalFilter || !!filterSettings.eventPersonalUnreadFilter;
+    if (
+      !filterSettings.eventShutternautFilter ||
+      personalFilterOn
+    ) {
+      if (personalFilterOn && personalEventData?.pages) {
+        personalEventData.pages.forEach(page => (personalEventList = personalEventList.concat(page.fezzes)));
+      }
     }
   }
 

@@ -137,7 +137,10 @@ const ScheduleDayScreenActual = ({
     // and subject to correct refetching.
     // https://github.com/jocosocial/tricordarr/issues/253
     hidePast: false,
-    onlyNew: scheduleFilterSettings.eventPersonalUnreadFilter ? true : undefined,
+    onlyNew:
+      scheduleFilterSettings.eventPersonalUnreadFilter && !scheduleFilterSettings.eventPersonalFilter
+        ? true
+        : undefined,
     options: {
       enabled: !preRegistrationMode,
     },
