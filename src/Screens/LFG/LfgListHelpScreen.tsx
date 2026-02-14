@@ -25,7 +25,8 @@ export const LfgListHelpScreen = () => {
             Press this to create a new LFG event.
           </HelpTopicView>
           <HelpTopicView title={'Find'} icon={AppIcons.lfgFind}>
-            Also referred to as Open. Switch to view LFGs created by others that you can join.
+            Also referred to as Open. Switch to view LFGs created by others that you can join. This does not include
+            LFGs that you created.
           </HelpTopicView>
           <HelpTopicView title={'Joined'} icon={AppIcons.lfgJoined}>
             Switch to view LFGs that you have joined. This also includes any LFGs that you created.

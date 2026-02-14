@@ -14,6 +14,12 @@ export const LfgCreateHelpScreen = () => {
         <HelpChapterTitleView title={'Maximum Attendees Desired'}>
           <HelpTopicView>Use 0 for unlimited</HelpTopicView>
         </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Misc'}>
+          <HelpTopicView>
+            If you just created an LFG and can't seem to find it in the list, ensure that you are looking at the "Owned
+            LFGs" list and not the "Find LFGs" list.
+          </HelpTopicView>
+        </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>
   );
