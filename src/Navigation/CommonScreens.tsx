@@ -654,7 +654,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         component={FezChatScreen}
         options={{title: FezType.getChatTitle(FezType.activity)}}
       />
-      <Stack.Screen name={CommonStackComponents.lfgEditScreen} component={LfgEditScreen} options={{title: 'Edit'}} />
+      <Stack.Screen
+        name={CommonStackComponents.lfgEditScreen}
+        component={LfgEditScreen}
+        options={{title: 'Edit LFG'}}
+      />
       <Stack.Screen
         name={CommonStackComponents.lfgSettingsScreen}
         component={LfgSettingsScreen}

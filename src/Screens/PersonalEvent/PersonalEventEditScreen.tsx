@@ -18,6 +18,7 @@ export const PersonalEventEditScreen = (props: Props) => {
       <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={`/privateevent/${fez.fezID}/update`}>
         <FezEditScreenBase
           fez={fez}
+          helpScreen={CommonStackComponents.personalEventHelpScreen}
           screenTitle={fez.fezType === FezType.privateEvent ? 'Edit Private Event' : 'Edit Personal Event'}
           renderForm={({onSubmit, initialValues}) => (
             <PersonalEventForm onSubmit={onSubmit} initialValues={initialValues} create={false} />

@@ -1,15 +1,19 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {differenceInMinutes} from 'date-fns';
 import {FormikHelpers} from 'formik';
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
+import {View} from 'react-native';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
+import {AppIcons} from '#src/Enums/Icons';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {getScheduleItemStartEndTime, getTimePartsInTz} from '#src/Libraries/DateTime';
-import {useCommonStack} from '#src/Navigation/CommonScreens';
+import {HelpScreenComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
@@ -22,20 +26,37 @@ export interface FezEditScreenBaseFormProps {
 interface FezEditScreenBaseProps {
   fez: FezData;
   renderForm: (props: FezEditScreenBaseFormProps) => React.ReactNode;
+  helpScreen?: HelpScreenComponents;
   screenTitle?: string;
 }
 
-export const FezEditScreenBase = ({fez, renderForm, screenTitle}: FezEditScreenBaseProps) => {
+export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: FezEditScreenBaseProps) => {
   const navigation = useCommonStack();
   const updateMutation = useFezUpdateMutation();
   const queryClient = useQueryClient();
   const {tzAtTime} = useTimeZone();
 
+  const getNavButtons = useCallback(() => {
+    if (helpScreen === undefined) return undefined;
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => (navigation.push as (name: HelpScreenComponents) => void)(helpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [helpScreen, navigation]);
+
   useEffect(() => {
-    if (screenTitle !== undefined) {
-      navigation.setOptions({title: screenTitle});
-    }
-  }, [navigation, screenTitle]);
+    const options: {title?: string; headerRight?: () => React.ReactNode} = {};
+    if (screenTitle !== undefined) options.title = screenTitle;
+    if (helpScreen !== undefined) options.headerRight = getNavButtons;
+    navigation.setOptions(options);
+  }, [navigation, screenTitle, helpScreen, getNavButtons]);
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     const {startTime, endTime} = getScheduleItemStartEndTime(

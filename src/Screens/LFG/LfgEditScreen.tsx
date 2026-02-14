@@ -18,6 +18,7 @@ export const LfgEditScreen = (props: Props) => {
         urlPath={`/lfg/${props.route.params.fez.fezID}/update`}>
         <FezEditScreenBase
           fez={props.route.params.fez}
+          helpScreen={CommonStackComponents.lfgHelpScreen}
           renderForm={({onSubmit, initialValues}) => (
             <LfgForm onSubmit={onSubmit} initialValues={initialValues} buttonText={'Save'} />
           )}
