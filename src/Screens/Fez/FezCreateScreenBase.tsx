@@ -1,4 +1,4 @@
-import {useQueryClient} from '@tanstack/react-query';
+import {QueryClient, useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
@@ -8,34 +8,38 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {AppIcons} from '#src/Enums/Icons';
-import {useFezForm} from '#src/Hooks/useFezForm';
-import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {HelpScreenComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
-import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
+import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
+import {FezContentData, FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
-export interface FezEditScreenBaseFormProps {
+export interface FezCreateScreenBaseFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
   initialValues: FezFormValues;
 }
 
-interface FezEditScreenBaseProps {
-  fez: FezData;
-  renderForm: (props: FezEditScreenBaseFormProps) => React.ReactNode;
+interface FezCreateScreenBaseProps {
+  renderForm: (props: FezCreateScreenBaseFormProps) => React.ReactNode;
+  initialValues: FezFormValues;
+  buildFezContentData: (values: FezFormValues, startTime: Date, endTime: Date) => FezContentData;
+  onSuccess: (response: FezData, queryClient: QueryClient) => Promise<void>;
   helpScreen?: HelpScreenComponents;
   screenTitle?: string;
 }
 
-export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: FezEditScreenBaseProps) => {
+export const FezCreateScreenBase = ({
+  renderForm,
+  initialValues,
+  buildFezContentData,
+  onSuccess,
+  helpScreen,
+  screenTitle,
+}: FezCreateScreenBaseProps) => {
   const navigation = useCommonStack();
-  const updateMutation = useFezUpdateMutation();
+  const createMutation = useFezCreateMutation();
   const queryClient = useQueryClient();
-  const {tzAtTime} = useTimeZone();
-  const {getInitialValuesFromFez} = useFezForm();
 
   const getNavButtons = useCallback(() => {
     if (helpScreen === undefined) return undefined;
@@ -60,47 +64,30 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
   }, [navigation, screenTitle, helpScreen, getNavButtons]);
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
+    helpers.setSubmitting(true);
     const {startTime, endTime} = getScheduleItemStartEndTime(
       values.startDate,
       values.startTime,
       values.duration,
-      tzAtTime(values.startDate),
     );
+    const fezContentData = buildFezContentData(values, startTime, endTime);
 
-    updateMutation.mutate(
+    createMutation.mutate(
+      {fezContentData},
       {
-        fezID: fez.fezID,
-        fezContentData: {
-          title: values.title,
-          info: values.info,
-          startTime: startTime.toISOString(),
-          endTime: endTime.toISOString(),
-          location: values.location,
-          fezType: values.fezType,
-          minCapacity: Number(values.minCapacity),
-          maxCapacity: Number(values.maxCapacity),
-          initialUsers: [],
+        onSuccess: async response => {
+          await onSuccess(response.data, queryClient);
         },
-      },
-      {
-        onSuccess: async () => {
-          const invalidations = UserNotificationData.getCacheKeys()
-            .concat(FezData.getCacheKeys(fez.fezID))
-            .map(key => queryClient.invalidateQueries({queryKey: key}));
-          await Promise.all(invalidations);
-          navigation.goBack();
+        onSettled: () => {
+          helpers.setSubmitting(false);
         },
-        onSettled: () => helpers.setSubmitting(false),
       },
     );
   };
 
-  const initialValues = getInitialValuesFromFez(fez);
-
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
-        {fez.cancelled && <FezCanceledView update={true} fezType={fez.fezType} />}
         <PaddedContentView padTop={true}>{renderForm({onSubmit, initialValues})}</PaddedContentView>
       </ScrollingContentView>
     </AppView>
