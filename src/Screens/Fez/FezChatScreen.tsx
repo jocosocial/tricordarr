@@ -4,16 +4,17 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
+import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
-import {TConversationListRef} from '#src/Components/Lists/ConversationList';
-import {ChatFlatList} from '#src/Components/Lists/Fez/ChatFlatList';
+import {type TConversationListV2Ref} from '#src/Components/Lists/ConversationListV2';
+import {FezConversationListV2} from '#src/Components/Lists/Fez/FezConversationListV2';
 import {FezChatScreenActionsMenu} from '#src/Components/Menus/Fez/FezChatScreenActionsMenu';
 import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
 import {AppView} from '#src/Components/Views/AppView';
@@ -23,6 +24,8 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezPostsActions, useFezPostsReducer} from '#src/Context/Reducers/Fez/FezPostsReducers';
 import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -111,7 +114,7 @@ const FezChatScreenInner = ({route}: Props) => {
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
   const appStateVisible = useAppState();
-  const flatListRef = useRef<TConversationListRef>(null);
+  const flatListRef = useRef<TConversationListV2Ref>(null);
   const [fez, setFez] = useState<FezData>();
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
@@ -337,27 +340,67 @@ const FezChatScreenInner = ({route}: Props) => {
     };
   }, [fez, refetch, refetchUserNotificationData]);
 
+  const [readyToShow, setReadyToShow] = useState(false);
+  const {commonStyles} = useStyles();
+  const {theme} = useAppTheme();
+
+  const onReadyToShow = useCallback(() => {
+    logger.debug('Fez chat list ready to show');
+    setReadyToShow(true);
+  }, []);
+
   // This is kinda hax for the fezPostData below
   if (!fez) {
     return <LoadingView />;
   }
+
+  const getInitialScrollIndex = () => {
+    if (!fez.members || fez.members.readCount === fez.members.postCount) {
+      return fezPostsData.length > 0 ? fezPostsData.length - 1 : undefined;
+    }
+    const loadedStart = fez.members.paginator.start;
+    return Math.max(fez.members.readCount - loadedStart, 0);
+  };
+
+  const overlayStyles = StyleSheet.create({
+    overlay: {
+      ...commonStyles.positionAbsolute,
+      ...commonStyles.flex,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: theme.colors.background,
+      zIndex: 1,
+    },
+  });
 
   return (
     <AppView>
       <ListTitleView title={fez.title} />
       <PostAsUserBanner />
       {fez.members?.isMuted && <FezMutedView />}
-      <ChatFlatList
-        fez={fez}
-        fezPostData={fezPostsData}
-        flatListRef={flatListRef}
-        hasNextPage={hasNextPage}
-        hasPreviousPage={hasPreviousPage}
-        scrollButtonPosition={'raised'}
-        handleLoadNext={handleLoadNext}
-        handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
-      />
+      <View style={commonStyles.flex}>
+        <FezConversationListV2
+          fez={fez}
+          fezPostData={fezPostsData}
+          listRef={flatListRef}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          handleLoadNext={handleLoadNext}
+          handleLoadPrevious={handleLoadPrevious}
+          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
+          initialScrollIndex={getInitialScrollIndex()}
+          onReadyToShow={onReadyToShow}
+        />
+        {!readyToShow && (
+          <View style={overlayStyles.overlay}>
+            <ActivityIndicator size={'large'} />
+          </View>
+        )}
+      </View>
       <ContentPostForm onSubmit={onSubmit} enablePhotos={false} />
     </AppView>
   );
