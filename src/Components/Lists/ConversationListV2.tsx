@@ -71,13 +71,49 @@ export const ConversationListV2 = <TItem,>({
   const [showScrollButton, setShowScrollButton] = useState(false);
   const readyFiredRef = useRef(false);
 
+  // Stabilization state: tracks content height changes between onLoad and readyToShow.
+  const isStabilizingRef = useRef(false);
+  const lastSeenContentHeightRef = useRef(0);
+  const stabilizeRafRef = useRef<number | null>(null);
+
   const fireReadyToShow = useCallback(() => {
     if (!readyFiredRef.current && onReadyToShow) {
       readyFiredRef.current = true;
+      isStabilizingRef.current = false;
       logger.debug('Firing onReadyToShow');
       onReadyToShow();
     }
   }, [onReadyToShow]);
+
+  /**
+   * Start (or restart) a rAF countdown that calls scrollToEnd each frame.
+   * When the countdown completes without being reset, fires readyToShow.
+   *
+   * Reset by onScroll when it detects a content height change during stabilization.
+   */
+  const scheduleReadyToShow = useCallback(() => {
+    if (stabilizeRafRef.current !== null) {
+      cancelAnimationFrame(stabilizeRafRef.current);
+    }
+    // 8 frames at 60fps ≈ 133ms. Logs showed content changes up to ~86ms after
+    // onLoad, so 133ms provides a safety margin while staying imperceptible.
+    let framesRemaining = 8;
+    const tick = () => {
+      if (!isStabilizingRef.current) {
+        return;
+      }
+      if (alignItemsAtEnd) {
+        listRef.current?.scrollToEnd({animated: false});
+      }
+      framesRemaining--;
+      if (framesRemaining <= 0) {
+        fireReadyToShow();
+      } else {
+        stabilizeRafRef.current = requestAnimationFrame(tick);
+      }
+    };
+    stabilizeRafRef.current = requestAnimationFrame(tick);
+  }, [alignItemsAtEnd, listRef, fireReadyToShow]);
 
   const handleScrollButtonPress = useCallback(() => {
     listRef.current?.scrollToEnd({animated: true});
@@ -85,46 +121,57 @@ export const ConversationListV2 = <TItem,>({
 
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const distanceFromBottom =
-        event.nativeEvent.contentSize.height -
-        event.nativeEvent.layoutMeasurement.height -
-        event.nativeEvent.contentOffset.y;
+      const {contentSize, layoutMeasurement, contentOffset} = event.nativeEvent;
+      const distanceFromBottom = contentSize.height - layoutMeasurement.height - contentOffset.y;
       const scrollThresholdCondition = distanceFromBottom > styleDefaults.listScrollThreshold;
       setShowScrollButton(scrollThresholdCondition);
       if (onScrollThreshold) {
         onScrollThreshold(scrollThresholdCondition);
       }
+
+      // During stabilization, detect content height changes and re-scroll + reset timer.
+      if (isStabilizingRef.current) {
+        if (contentSize.height !== lastSeenContentHeightRef.current) {
+          lastSeenContentHeightRef.current = contentSize.height;
+          if (alignItemsAtEnd) {
+            listRef.current?.scrollToEnd({animated: false});
+          }
+          scheduleReadyToShow(); // Reset stabilization countdown
+        }
+      }
     },
-    [onScrollThreshold, styleDefaults.listScrollThreshold],
+    [onScrollThreshold, styleDefaults.listScrollThreshold, alignItemsAtEnd, listRef, scheduleReadyToShow],
   );
 
   /**
    * LegendList fires `onLoad` after it has completed initial layout and rendering.
-   * We use this as the signal that the list is positioned correctly.
    *
-   * Two-phase positioning for alignItemsAtEnd (fully-read threads):
+   * Three-phase positioning for alignItemsAtEnd (fully-read threads):
    *   Phase 1: `initialScrollIndex` (set by the parent) gets the viewport near the
-   *            last item during LegendList's layout engine. This is approximate because
-   *            LegendList uses `estimatedItemSize` for off-screen items -- images,
-   *            multi-line text, and separators make actual heights vary.
-   *   Phase 2: Once `onLoad` fires (items near the target are rendered with real heights),
-   *            `scrollToEnd` snaps to the true bottom. Because phase 1 already placed
-   *            us close, the nearby content is laid out and `scrollToEnd` targets the
-   *            correct offset (unlike calling it from position 0 where most content
-   *            hasn't been rendered yet).
+   *            last item during LegendList's layout engine.
+   *   Phase 2: `scrollToEnd` in onLoad snaps to the current bottom.
+   *   Phase 3: Stabilization loop — rAF frames keep calling `scrollToEnd` while
+   *            onScroll monitors for content height changes. If content changes,
+   *            the loop resets. Once content is stable for several frames,
+   *            `fireReadyToShow` removes the overlay.
    *
-   * The overlay stays up until after `fireReadyToShow`, so both phases are invisible.
+   * The overlay stays up through all three phases, so positioning is invisible.
    */
   const onLoad = useCallback(() => {
     logger.debug('LegendList onLoad fired');
     if (alignItemsAtEnd && data.length > 0) {
       listRef.current?.scrollToEnd({animated: false});
+      isStabilizingRef.current = true;
+      lastSeenContentHeightRef.current = 0;
+      scheduleReadyToShow();
+    } else {
+      // Non-alignItemsAtEnd case: single rAF is sufficient since we don't need
+      // to be at the bottom.
+      requestAnimationFrame(() => {
+        fireReadyToShow();
+      });
     }
-    // Give one extra frame for layout to settle, then signal ready.
-    requestAnimationFrame(() => {
-      fireReadyToShow();
-    });
-  }, [fireReadyToShow, alignItemsAtEnd, data.length, listRef]);
+  }, [fireReadyToShow, scheduleReadyToShow, alignItemsAtEnd, data.length, listRef]);
 
   return (
     <View style={commonStyles.flex}>
