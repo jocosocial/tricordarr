@@ -47,6 +47,40 @@ interface ConversationListV2Props<TItem> {
  * - Configurable `alignItemsAtEnd` (not always-on).
  * - `maintainVisibleContentPosition` to stabilize scroll on layout shifts.
  * - `estimatedItemSize` passthrough for LegendList.
+ *
+ * ## Implementation Guide for Domain Wrappers
+ *
+ * This component is not used directly by screens. Instead, create a domain-specific
+ * wrapper that composes it (see `ForumConversationListV2`, `FezConversationListV2`).
+ * The wrapper is responsible for:
+ * - Providing `renderItem`, `keyExtractor`, header/footer/separator components.
+ * - Deriving `alignItemsAtEnd` and computing `showNewDivider` from domain data.
+ * - Choosing an appropriate `estimatedItemSize` for the content type
+ *   (forum posts ~120, chat messages ~100).
+ *
+ * ## Overlay / readyToShow Pattern
+ *
+ * Parent screens should:
+ * 1. Hold `readyToShow` state (initially `false`).
+ * 2. Pass an `onReadyToShow` callback that sets it to `true`.
+ * 3. Render a full-size `ActivityIndicator` overlay (position absolute, zIndex 1,
+ *    background matching `theme.colors.background`) over the list area while
+ *    `!readyToShow`. This hides the initial scroll positioning from the user.
+ * See `ForumThreadScreenBase` and `FezChatScreen` for reference implementations.
+ *
+ * ## alignItemsAtEnd
+ *
+ * - `true` for fully-read threads: content bottom-aligns so the latest message
+ *   is visible. Pair with `initialScrollIndex = data.length - 1`.
+ * - `false` for partially-read threads: the list scrolls to `initialScrollIndex`
+ *   (typically the first unread item). Calculate as:
+ *     `Math.max(readCount - paginator.start, 0)`
+ *
+ * ## estimatedItemSize
+ *
+ * Provide a best-guess average rendered height for items in the list. LegendList
+ * uses this for its virtual layout engine. Overestimating causes gaps; underestimating
+ * causes jumps. Measure a few representative items to calibrate.
  */
 export const ConversationListV2 = <TItem,>({
   listRef,
