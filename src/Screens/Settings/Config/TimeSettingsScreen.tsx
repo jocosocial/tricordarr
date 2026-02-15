@@ -27,6 +27,7 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
   const {commonStyles} = useStyles();
   const [forceShowTimezoneWarning, setForceShowTimezoneWarning] = useState(appConfig.forceShowTimezoneWarning);
+  const [silenceTimezoneWarnings, setSilenceTimezoneWarnings] = useState(appConfig.silenceTimezoneWarnings);
   const {cruiseDayToday, adjustedCruiseDayToday, cruiseDayIndex, adjustedCruiseDayIndex} = useCruise();
 
   const onSubmit = (values: TimeSettingsFormValues, helpers: FormikHelpers<TimeSettingsFormValues>) => {
@@ -37,13 +38,30 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
     helpers.setSubmitting(false);
   };
 
+  const toggleSilenceTimezoneWarnings = () => {
+    const newValue = !silenceTimezoneWarnings;
+    updateAppConfig({
+      ...appConfig,
+      silenceTimezoneWarnings: newValue,
+      forceShowTimezoneWarning: newValue ? false : appConfig.forceShowTimezoneWarning,
+    });
+    setSilenceTimezoneWarnings(newValue);
+    if (newValue) {
+      setForceShowTimezoneWarning(false);
+    }
+  };
+
   const toggleForceShowTimezoneWarning = () => {
     const newValue = !forceShowTimezoneWarning;
     updateAppConfig({
       ...appConfig,
       forceShowTimezoneWarning: newValue,
+      silenceTimezoneWarnings: newValue ? false : appConfig.silenceTimezoneWarnings,
     });
     setForceShowTimezoneWarning(newValue);
+    if (newValue) {
+      setSilenceTimezoneWarnings(false);
+    }
   };
 
   const getNavButtons = useCallback(() => {
@@ -78,6 +96,21 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
         <PaddedContentView padTop={true}>
           <TimeSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
         </PaddedContentView>
+        <ListSection>
+          <ListSubheader>Warnings</ListSubheader>
+        </ListSection>
+        <Formik initialValues={{}} onSubmit={() => {}}>
+          <View>
+            <BooleanField
+              name={'silenceTimezoneWarnings'}
+              label={'Silence Timezone Warnings'}
+              onPress={toggleSilenceTimezoneWarnings}
+              value={silenceTimezoneWarnings}
+              helperText={'Hide timezone warnings throughout the app.'}
+              style={commonStyles.paddingHorizontalSmall}
+            />
+          </View>
+        </Formik>
         {appConfig.enableDeveloperOptions && (
           <>
             <ListSubheader>Date Internals</ListSubheader>
@@ -96,6 +129,7 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
                   onPress={toggleForceShowTimezoneWarning}
                   value={forceShowTimezoneWarning}
                   helperText={'Always show the timezone warning on the Today screen.'}
+                  disabled={appConfig.silenceTimezoneWarnings}
                   style={commonStyles.paddingHorizontalSmall}
                 />
               </View>

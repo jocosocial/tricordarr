@@ -7,6 +7,7 @@ import {LinkingProvider} from '#src/Context/Providers/LinkingProvider';
 import {PrivilegeProvider} from '#src/Context/Providers/PrivilegeProvider';
 import {RoleProvider} from '#src/Context/Providers/RoleProvider';
 import {SocketProvider} from '#src/Context/Providers/SocketProvider';
+import {TimeProvider} from '#src/Context/Providers/TimeProvider';
 import {TimeZoneChangesProvider} from '#src/Context/Providers/TimeZoneChangesProvider';
 
 /**
@@ -21,9 +22,11 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
           <LinkingProvider>
             <FeatureProvider>
               <ClientSettingsProvider>
-                <CruiseProvider>
-                  <TimeZoneChangesProvider>{children}</TimeZoneChangesProvider>
-                </CruiseProvider>
+                <TimeProvider>
+                  <CruiseProvider>
+                    <TimeZoneChangesProvider>{children}</TimeZoneChangesProvider>
+                  </CruiseProvider>
+                </TimeProvider>
               </ClientSettingsProvider>
             </FeatureProvider>
           </LinkingProvider>

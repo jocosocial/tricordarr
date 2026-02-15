@@ -77,6 +77,7 @@ export interface AppConfig {
   manualTimeOffset: number;
   wifiNetworkNames: string[];
   forceShowTimezoneWarning: boolean;
+  silenceTimezoneWarnings: boolean;
   logLevel: LogLevel;
 }
 
@@ -157,6 +158,7 @@ export const defaultAppConfig: AppConfig = {
   enableExperiments: false,
   wifiNetworkNames: [],
   forceShowTimezoneWarning: false,
+  silenceTimezoneWarnings: false,
   logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
 };
 
@@ -187,6 +189,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.logLevel === undefined) {
     appConfig.logLevel = LogLevel.DEBUG;
+  }
+  if (appConfig.silenceTimezoneWarnings === undefined) {
+    appConfig.silenceTimezoneWarnings = false;
   }
 
   // Ok now we're done
