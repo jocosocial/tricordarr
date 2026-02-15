@@ -1,4 +1,3 @@
-import {CacheManager} from '@georstat/react-native-image-cache';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
@@ -16,8 +15,8 @@ import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
@@ -33,10 +32,10 @@ export const OobeServerScreen = ({navigation}: Props) => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
   const {hasUnsavedWork} = useErrorHandler();
-  const {clearPrivileges} = usePrivilege();
   const {serverUrl} = useSwiftarrQueryClient();
   const queryClient = useQueryClient();
   const {setSnackbarPayload} = useSnackbar();
+  const {performSignOut} = useSignOut();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     if (!currentSession) {
@@ -44,13 +43,20 @@ export const OobeServerScreen = ({navigation}: Props) => {
       return;
     }
 
-    const oldServerUrl = serverUrl;
+    const oldServerUrl = currentSession.serverUrl;
+    const serverUrlChanging = oldServerUrl !== values.serverUrl;
     await queryClient.cancelQueries({queryKey: ['/client/health']});
 
-    // Update session serverUrl - persists immediately
-    await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
+    if (serverUrlChanging) {
+      const sessionID = currentSession.sessionID;
+      // Perform sign-out first so FGS is stopped and notifications disabled before any re-render.
+      await performSignOut();
+      await updateSession(sessionID, {serverUrl: values.serverUrl});
+    } else {
+      await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
+    }
 
-    refetch().then(() =>
+    refetch().finally(() =>
       formikHelpers.resetForm({
         values: {
           serverChoice: ServerChoices.fromUrl(values.serverUrl),
@@ -58,11 +64,6 @@ export const OobeServerScreen = ({navigation}: Props) => {
         },
       }),
     );
-    if (oldServerUrl !== values.serverUrl) {
-      clearPrivileges();
-      queryClient.clear();
-      await CacheManager.clearCache();
-    }
     setSnackbarPayload(undefined);
   };
 
