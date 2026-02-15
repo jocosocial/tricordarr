@@ -1,12 +1,12 @@
 import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list';
 import React, {useCallback, useRef, useState} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {FloatingScrollButtonVerticalPosition, RNFlatListSeparatorComponent} from '#src/Types';
+import {RNFlatListSeparatorComponent} from '#src/Types';
 
 const logger = createLogger('ConversationListV2.tsx');
 
@@ -28,7 +28,6 @@ interface ConversationListV2Props<TItem> {
   ItemSeparatorComponent?: RNFlatListSeparatorComponent<TItem>;
   initialScrollIndex?: number;
   style?: StyleProp<ViewStyle>;
-  scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
   /** When true, items are bottom-aligned (chat-style). Use for fully-read threads. */
   alignItemsAtEnd?: boolean;
   /** Estimated average item height for LegendList's layout engine. */
@@ -65,12 +64,11 @@ export const ConversationListV2 = <TItem,>({
   ItemSeparatorComponent,
   initialScrollIndex,
   style,
-  scrollButtonVerticalPosition = 'raised',
   alignItemsAtEnd = false,
   estimatedItemSize,
   onReadyToShow,
 }: ConversationListV2Props<TItem>) => {
-  const {styleDefaults} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
   const {appConfig} = useConfig();
   const readyFiredRef = useRef(false);
@@ -121,7 +119,7 @@ export const ConversationListV2 = <TItem,>({
   }, [fireReadyToShow, alignItemsAtEnd, initialScrollIndex, data.length, listRef]);
 
   return (
-    <>
+    <View style={commonStyles.flex}>
       <LegendList
         ref={listRef}
         // Required Props
@@ -155,10 +153,9 @@ export const ConversationListV2 = <TItem,>({
       {enableScrollButton && showScrollButton && (
         <FloatingScrollButton
           onPress={handleScrollButtonPress}
-          verticalPosition={scrollButtonVerticalPosition}
           horizontalPosition={appConfig.userPreferences.reverseSwipeOrientation ? 'left' : 'right'}
         />
       )}
-    </>
+    </View>
   );
 };
