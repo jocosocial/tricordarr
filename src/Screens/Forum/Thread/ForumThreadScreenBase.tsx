@@ -1,6 +1,6 @@
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
@@ -79,7 +79,6 @@ export const ForumThreadScreenBase = ({
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
   const queryClient = useQueryClient();
-  const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   const [readyToShow, setReadyToShow] = useState(false);
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
@@ -138,12 +137,12 @@ export const ForumThreadScreenBase = ({
     });
   }, [getNavButtons, navigation]);
 
-  useEffect(() => {
+  const forumPosts = useMemo(() => {
     if (data && data.pages) {
-      const postListData = data.pages.flatMap(fd => fd.posts);
-      setForumPosts(postListData);
+      return data.pages.flatMap(fd => fd.posts);
     }
-  }, [data, setForumPosts, invertList]);
+    return [];
+  }, [data]);
 
   useEffect(() => {
     if (forumData) {
