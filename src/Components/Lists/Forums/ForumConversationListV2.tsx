@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {RefreshControlProps, View} from 'react-native';
 
 import {type TConversationListV2RefObject} from '#src/Components/Lists/ConversationListV2';
@@ -59,6 +59,15 @@ export const ForumConversationListV2 = ({
 
   // The thread is fully read when readCount equals postCount.
   const isFullyRead = forumListData ? forumListData.readCount === forumListData.postCount : true;
+
+  // Compute the divider index for the scroll button. Only set when the divider
+  // is within the loaded data range.
+  const newDividerIndex = useMemo(() => {
+    if (!forumListData || !forumData) return undefined;
+    if (forumListData.postCount === forumListData.readCount) return undefined;
+    const idx = forumListData.readCount - forumData.paginator.start;
+    return idx >= 0 && idx < postList.length ? idx : undefined;
+  }, [forumData, forumListData, postList.length]);
 
   const showNewDivider = useCallback(
     (index: number) => {
@@ -132,6 +141,7 @@ export const ForumConversationListV2 = ({
       alignItemsAtEnd={isFullyRead}
       estimatedItemSize={120}
       onReadyToShow={onReadyToShow}
+      newDividerIndex={newDividerIndex}
       // Style is here rather than in the renderItem because the padding we use is
       // also needed for the dividers. It could be added to the divider function as
       // well but this is slightly simpler and covers cases I am not remembering.
