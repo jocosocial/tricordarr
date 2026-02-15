@@ -1,3 +1,4 @@
+import moment from 'moment-timezone';
 import React, {useCallback, useRef} from 'react';
 import {RefreshControlProps, View} from 'react-native';
 
@@ -5,11 +6,14 @@ import {type TConversationListV2RefObject} from '#src/Components/Lists/Conversat
 import {ConversationListV2} from '#src/Components/Lists/ConversationListV2';
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
+import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
 import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
 interface FezConversationListV2Props {
@@ -49,6 +53,38 @@ export const FezConversationListV2 = ({
   onReadyToShow,
 }: FezConversationListV2Props) => {
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
+  const {tzAtTime} = useTimeZone();
+
+  /**
+   * Return a moment adjusted for lateDayFlip. When enabled, subtracts 3 hours
+   * so that posts between midnight and 3:00 AM are grouped with the previous day.
+   */
+  const getAdjustedMoment = useCallback(
+    (timestamp: string) => {
+      const date = new Date(timestamp);
+      const tz = tzAtTime(date);
+      let m = moment(timestamp).tz(tz);
+      if (appConfig.schedule.enableLateDayFlip) {
+        m = m.subtract(3, 'hours');
+      }
+      return m;
+    },
+    [appConfig.schedule.enableLateDayFlip, tzAtTime],
+  );
+
+  /** Show a TimeDivider above the first item and at each day boundary. */
+  const showTimeDivider = useCallback(
+    (index: number) => {
+      if (index === 0) {
+        return true;
+      }
+      const currentKey = getAdjustedMoment(fezPostData[index].timestamp).format('YYYY-MM-DD');
+      const prevKey = getAdjustedMoment(fezPostData[index - 1].timestamp).format('YYYY-MM-DD');
+      return currentKey !== prevKey;
+    },
+    [fezPostData, getAdjustedMoment],
+  );
 
   // Lock initial read state on mount. The server's readCount lags behind postCount
   // when new messages arrive via socket, which causes oscillation. Locking prevents:
@@ -84,12 +120,13 @@ export const FezConversationListV2 = ({
     ({item, index}: {item: FezPostData; index: number}) => {
       return (
         <View>
+          {showTimeDivider(index) && <TimeDivider label={getAdjustedMoment(item.timestamp).format('dddd MMM Do')} />}
           {showNewDivider(index) && <LabelDivider label={'New'} />}
           <FezPostListItem fezPost={item} index={index} fez={fez} />
         </View>
       );
     },
-    [fez, showNewDivider],
+    [fez, showNewDivider, showTimeDivider, getAdjustedMoment],
   );
 
   const renderSeparator = useCallback(() => <SpaceDivider />, []);
