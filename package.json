@@ -129,6 +129,10 @@
     "typescript": "^5.8.3",
     "uri-scheme": "^2.0.8"
   },
+  "overrides": {
+    "diff": "5.2.2",
+    "markdown-it": "14.1.1"
+  },
   "engines": {
     "node": ">=20"
   },
