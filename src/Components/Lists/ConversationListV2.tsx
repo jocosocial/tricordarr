@@ -4,6 +4,7 @@ import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp,
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {createLogger} from '#src/Libraries/Logger';
 import {RNFlatListSeparatorComponent} from '#src/Types';
 
@@ -45,6 +46,14 @@ interface ConversationListV2Props<TItem> {
    * The parent should hide any overlay/loader once this fires.
    */
   onReadyToShow?: () => void;
+  /**
+   * Index of the "New" divider item in the data array. When set, the floating
+   * scroll button navigates to this divider instead of the end of the list, and
+   * its icon reflects whether the divider is above or below the current viewport.
+   * The button hides when the user is within `listScrollThreshold` of the divider
+   * or the bottom of the list.
+   */
+  newDividerIndex?: number;
 }
 
 /**
@@ -110,17 +119,25 @@ export const ConversationListV2 = <TItem,>({
   maintainScrollAtEnd,
   estimatedItemSize,
   onReadyToShow,
+  newDividerIndex,
 }: ConversationListV2Props<TItem>) => {
   // Default maintainScrollAtEnd to follow alignItemsAtEnd when not explicitly provided.
   const effectiveMaintainScrollAtEnd = maintainScrollAtEnd ?? alignItemsAtEnd;
   const {commonStyles, styleDefaults} = useStyles();
-  const [showScrollButton, setShowScrollButton] = useState(false);
+  // null = hidden, 'up' | 'down' = visible with that icon direction.
+  const [scrollButtonDirection, setScrollButtonDirection] = useState<'up' | 'down' | null>(null);
   const readyFiredRef = useRef(false);
   const prevDataLengthRef = useRef(data.length);
 
   // Track whether the user is near the bottom of the list. Used to decide whether
   // to auto-scroll when new items arrive. Updated in onScroll.
   const isNearBottomRef = useRef(true);
+
+  // Track content height to detect pagination-induced layout shifts that would
+  // cause the scroll button to flash. When content height jumps significantly
+  // (new page loaded), we suppress hidden→visible transitions for the button.
+  const prevContentHeightRef = useRef(0);
+  const prevButtonDirectionRef = useRef<'up' | 'down' | null>(null);
 
   // Stabilization state: tracks content height changes between onLoad and readyToShow.
   const isStabilizingRef = useRef(false);
@@ -179,23 +196,96 @@ export const ConversationListV2 = <TItem,>({
   }, [alignItemsAtEnd, listRef, fireReadyToShow]);
 
   const handleScrollButtonPress = useCallback(() => {
-    listRef.current?.scrollToEnd({animated: true});
-  }, [listRef]);
+    if (newDividerIndex !== undefined) {
+      listRef.current?.scrollToIndex({index: newDividerIndex, animated: true});
+    } else {
+      listRef.current?.scrollToEnd({animated: true});
+    }
+  }, [listRef, newDividerIndex]);
 
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const {contentSize, layoutMeasurement, contentOffset} = event.nativeEvent;
       const distanceFromBottom = contentSize.height - layoutMeasurement.height - contentOffset.y;
-      const scrollThresholdCondition = distanceFromBottom > styleDefaults.listScrollThreshold;
-      setShowScrollButton(scrollThresholdCondition);
+      const threshold = styleDefaults.listScrollThreshold;
 
       // Track whether the user is near the bottom. Used by the data-grow scroll
       // logic above. A generous threshold (~1.5 items) ensures we catch cases where
       // maintainScrollAtEnd would have been slightly out of range.
       isNearBottomRef.current = distanceFromBottom <= (estimatedItemSize ?? 100) * 1.5;
 
+      // onScrollThreshold always uses distance-from-bottom, regardless of divider.
+      const scrollThresholdCondition = distanceFromBottom > threshold;
       if (onScrollThreshold) {
         onScrollThreshold(scrollThresholdCondition);
+      }
+
+      // Scroll button visibility & direction.
+      if (newDividerIndex !== undefined) {
+        const viewportTop = contentOffset.y;
+        const viewportBottom = contentOffset.y + layoutMeasurement.height;
+
+        // Estimate the divider's pixel position. This is approximate (~100px error)
+        // because it doesn't account for headers, separators, or variable item heights.
+        // However, it naturally tracks pagination changes because newDividerIndex
+        // updates when pages are prepended/appended.
+        const estimatedDividerPosition = newDividerIndex * (estimatedItemSize ?? 100);
+
+        // Distance from the nearest viewport edge to the divider.
+        let distanceFromDivider: number;
+        if (estimatedDividerPosition < viewportTop) {
+          distanceFromDivider = viewportTop - estimatedDividerPosition;
+        } else if (estimatedDividerPosition > viewportBottom) {
+          distanceFromDivider = estimatedDividerPosition - viewportBottom;
+        } else {
+          distanceFromDivider = 0; // Divider is within the viewport.
+        }
+
+        const nearDivider = distanceFromDivider <= threshold;
+        const nearBottom = distanceFromBottom <= threshold;
+
+        // Hysteresis: once hidden, require a larger distance to re-show.
+        // This prevents oscillation when contentHeight fluctuates from cell
+        // recycling, causing distances to wobble across the hide threshold.
+        const hysteresis = (estimatedItemSize ?? 100) * 2;
+        const wasHidden = prevButtonDirectionRef.current === null;
+        const showThreshold = threshold + hysteresis;
+
+        // Determine the desired button direction for this frame.
+        let newDirection: 'up' | 'down' | null;
+        if (wasHidden) {
+          // Button is hidden — require extra clearance to show (hysteresis).
+          if (distanceFromDivider <= showThreshold || distanceFromBottom <= showThreshold) {
+            newDirection = null;
+          } else {
+            newDirection = estimatedDividerPosition < viewportTop ? 'up' : 'down';
+          }
+        } else {
+          // Button is visible — use normal threshold to hide.
+          if (nearDivider || nearBottom) {
+            newDirection = null;
+          } else {
+            newDirection = estimatedDividerPosition < viewportTop ? 'up' : 'down';
+          }
+        }
+
+        // Suppress hidden→visible transitions caused by pagination/recycling.
+        // When content height changes (a page loaded or items recycled),
+        // distanceFromBottom can briefly jump. We suppress the SHOW transition.
+        const contentHeightDelta = Math.abs(contentSize.height - prevContentHeightRef.current);
+        prevContentHeightRef.current = contentSize.height;
+        if (newDirection !== null && wasHidden && contentHeightDelta > 0) {
+          newDirection = null;
+        }
+        prevButtonDirectionRef.current = newDirection;
+
+        setScrollButtonDirection(newDirection);
+      } else {
+        // No divider — original behavior: show down arrow when far from bottom.
+        const newDir = scrollThresholdCondition ? 'down' : null;
+        prevButtonDirectionRef.current = newDir;
+        prevContentHeightRef.current = contentSize.height;
+        setScrollButtonDirection(newDir);
       }
 
       // During stabilization, detect content height changes and re-scroll + reset timer.
@@ -216,6 +306,7 @@ export const ConversationListV2 = <TItem,>({
       listRef,
       scheduleReadyToShow,
       estimatedItemSize,
+      newDividerIndex,
     ],
   );
 
@@ -281,7 +372,12 @@ export const ConversationListV2 = <TItem,>({
         onLoad={onLoad}
         style={style}
       />
-      {enableScrollButton && showScrollButton && <FloatingScrollButton onPress={handleScrollButtonPress} />}
+      {enableScrollButton && scrollButtonDirection !== null && (
+        <FloatingScrollButton
+          onPress={handleScrollButtonPress}
+          icon={scrollButtonDirection === 'up' ? AppIcons.scrollUp : AppIcons.scrollDown}
+        />
+      )}
     </View>
   );
 };

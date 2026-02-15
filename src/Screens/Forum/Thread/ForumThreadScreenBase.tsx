@@ -2,8 +2,8 @@ import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {ActivityIndicator} from 'react-native-paper';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
+import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
@@ -218,7 +218,10 @@ export const ForumThreadScreenBase = ({
       return forumPosts.length > 0 ? forumPosts.length - 1 : undefined;
     }
     const loadedStart = data.pages[0].paginator.start;
-    return Math.max(forumListData.readCount - loadedStart, 0);
+    const idx = Math.max(forumListData.readCount - loadedStart, 0);
+    // Clamp to the loaded data range. readCount can exceed the loaded page
+    // when only a subset of posts have been fetched.
+    return Math.min(idx, forumPosts.length - 1);
   };
 
   const showForm = !data.pages[0].isLocked || hasModerator;
