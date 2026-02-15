@@ -30,7 +30,7 @@ import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {ForumData, ForumListData, PostContentData, PostData} from '#src/Structs/ControllerStructs';
+import {ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
 
 const logger = createLogger('ForumThreadScreenBase.tsx');
 
@@ -211,9 +211,11 @@ export const ForumThreadScreenBase = ({
   }
 
   const getInitialScrollIndex = () => {
-    // Fully read: let alignItemsAtEnd handle positioning.
     if (!forumListData || forumListData.readCount === forumListData.postCount) {
-      return undefined;
+      // Fully read: scroll to the last post via initialScrollIndex.
+      // We use this instead of scrollToEnd because scrollToEnd fires before
+      // LegendList has fully laid out recycled content, causing it to land mid-list.
+      return forumPosts.length > 0 ? forumPosts.length - 1 : undefined;
     }
     const loadedStart = data.pages[0].paginator.start;
     return Math.max(forumListData.readCount - loadedStart, 0);

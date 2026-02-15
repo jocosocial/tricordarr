@@ -101,20 +101,30 @@ export const ConversationListV2 = <TItem,>({
   /**
    * LegendList fires `onLoad` after it has completed initial layout and rendering.
    * We use this as the signal that the list is positioned correctly.
+   *
+   * Two-phase positioning for alignItemsAtEnd (fully-read threads):
+   *   Phase 1: `initialScrollIndex` (set by the parent) gets the viewport near the
+   *            last item during LegendList's layout engine. This is approximate because
+   *            LegendList uses `estimatedItemSize` for off-screen items -- images,
+   *            multi-line text, and separators make actual heights vary.
+   *   Phase 2: Once `onLoad` fires (items near the target are rendered with real heights),
+   *            `scrollToEnd` snaps to the true bottom. Because phase 1 already placed
+   *            us close, the nearby content is laid out and `scrollToEnd` targets the
+   *            correct offset (unlike calling it from position 0 where most content
+   *            hasn't been rendered yet).
+   *
+   * The overlay stays up until after `fireReadyToShow`, so both phases are invisible.
    */
   const onLoad = useCallback(() => {
     logger.debug('LegendList onLoad fired');
-    // alignItemsAtEnd only bottom-aligns content shorter than the viewport.
-    // For content taller than the viewport (fully-read threads), we need to
-    // explicitly scroll to the end before revealing the list.
-    if (alignItemsAtEnd && initialScrollIndex === undefined && data.length > 0) {
+    if (alignItemsAtEnd && data.length > 0) {
       listRef.current?.scrollToEnd({animated: false});
     }
     // Give one extra frame for layout to settle, then signal ready.
     requestAnimationFrame(() => {
       fireReadyToShow();
     });
-  }, [fireReadyToShow, alignItemsAtEnd, initialScrollIndex, data.length, listRef]);
+  }, [fireReadyToShow, alignItemsAtEnd, data.length, listRef]);
 
   return (
     <View style={commonStyles.flex}>
