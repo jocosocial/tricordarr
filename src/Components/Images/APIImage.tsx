@@ -141,7 +141,12 @@ export const APIImage = ({
    */
   const onError = useCallback(
     (event: OnErrorEvent) => {
-      setSnackbarPayload({message: String(event.nativeEvent.error), messageType: 'error'});
+      const message = String(event.nativeEvent.error);
+      // Native image load cancellation (e.g. scroll/cell reuse) should not surface as user error.
+      const isCancellation = /cancell(ed|ation)/i.test(message) || /operation cancelled/i.test(message);
+      if (!isCancellation) {
+        setSnackbarPayload({message, messageType: 'error'});
+      }
     },
     [setSnackbarPayload],
   );
