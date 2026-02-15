@@ -44,7 +44,6 @@ const ForumThreadScreenInner = ({route}: Props) => {
       isFetchingPreviousPage={isFetchingPreviousPage}
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
-      invertList={route.params.forumListData?.postCount === route.params.forumListData?.readCount}
       forumListData={route.params.forumListData}
     />
   );

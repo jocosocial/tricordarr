@@ -45,7 +45,6 @@ interface Props {
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
   getListHeader?: () => React.JSX.Element;
-  invertList?: boolean;
   forumListData?: ForumListData;
 }
 
@@ -66,7 +65,6 @@ export const ForumThreadScreenBase = ({
   hasNextPage,
   hasPreviousPage,
   getListHeader,
-  invertList,
   forumListData,
 }: Props) => {
   const navigation = useCommonStack();

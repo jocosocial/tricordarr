@@ -6,7 +6,6 @@ import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 interface AppFlashListProps<TItem> {
-  invertList?: boolean;
   handleLoadNext?: () => void;
   onEndReachedThreshold?: number;
   onStartReachedThreshold?: number;
@@ -33,7 +32,6 @@ interface AppFlashListProps<TItem> {
 const AppFlashListInner = <TItem,>(
   {
     scrollButtonSmall,
-    invertList,
     onEndReachedThreshold = 1,
     keyExtractor,
     initialScrollIndex = 0,
@@ -105,11 +103,7 @@ const AppFlashListInner = <TItem,>(
         masonry={masonry}
       />
       {enableScrollButton && showScrollButton && (
-        <FloatingScrollButton
-          icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
-          onPress={handleScrollButtonPress}
-          small={scrollButtonSmall}
-        />
+        <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} small={scrollButtonSmall} />
       )}
     </View>
   );
