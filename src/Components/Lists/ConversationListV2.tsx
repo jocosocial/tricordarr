@@ -3,7 +3,6 @@ import React, {useCallback, useRef, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {RNFlatListSeparatorComponent} from '#src/Types';
@@ -70,7 +69,6 @@ export const ConversationListV2 = <TItem,>({
 }: ConversationListV2Props<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const {appConfig} = useConfig();
   const readyFiredRef = useRef(false);
 
   const fireReadyToShow = useCallback(() => {
@@ -150,12 +148,7 @@ export const ConversationListV2 = <TItem,>({
         onLoad={onLoad}
         style={style}
       />
-      {enableScrollButton && showScrollButton && (
-        <FloatingScrollButton
-          onPress={handleScrollButtonPress}
-          horizontalPosition={appConfig.userPreferences.reverseSwipeOrientation ? 'left' : 'right'}
-        />
-      )}
+      {enableScrollButton && showScrollButton && <FloatingScrollButton onPress={handleScrollButtonPress} />}
     </View>
   );
 };

@@ -5,11 +5,10 @@ import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp,
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {FloatingScrollButtonHorizontalPosition, FloatingScrollButtonVerticalPosition} from '#src/Types';
+import {FloatingScrollButtonVerticalPosition} from '#src/Types';
 
 interface AppFlashListProps<TItem> {
   scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
-  scrollButtonHorizontalPosition?: FloatingScrollButtonHorizontalPosition;
   invertList?: boolean;
   handleLoadNext?: () => void;
   onEndReachedThreshold?: number;
@@ -37,7 +36,6 @@ interface AppFlashListProps<TItem> {
 const AppFlashListInner = <TItem,>(
   {
     scrollButtonVerticalPosition,
-    scrollButtonHorizontalPosition,
     scrollButtonSmall,
     invertList,
     onEndReachedThreshold = 1,
@@ -115,7 +113,6 @@ const AppFlashListInner = <TItem,>(
           icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}
           verticalPosition={scrollButtonVerticalPosition}
-          horizontalPosition={scrollButtonHorizontalPosition}
           small={scrollButtonSmall}
         />
       )}
