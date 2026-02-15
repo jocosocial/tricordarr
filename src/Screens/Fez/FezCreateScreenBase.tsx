@@ -65,11 +65,7 @@ export const FezCreateScreenBase = ({
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     helpers.setSubmitting(true);
-    const {startTime, endTime} = getScheduleItemStartEndTime(
-      values.startDate,
-      values.startTime,
-      values.duration,
-    );
+    const {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);
     const fezContentData = buildFezContentData(values, startTime, endTime);
 
     createMutation.mutate(
