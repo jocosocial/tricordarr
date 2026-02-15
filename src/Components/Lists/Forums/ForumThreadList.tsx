@@ -9,7 +9,6 @@ import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {ForumThreadListItem} from '#src/Components/Lists/Items/Forum/ForumThreadListItem';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
@@ -42,7 +41,6 @@ export const ForumThreadList = ({
 }: ForumThreadListProps) => {
   const listRef = useRef<FlashListRef<ForumListData>>(null);
   const {enableSelection, setEnableSelection, selectedItems} = useSelection();
-  const {appConfig} = useConfig();
 
   const renderListHeader = () => {
     // Turning this off because the list renders too quickly based on the state data.
@@ -95,7 +93,6 @@ export const ForumThreadList = ({
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       renderItemSeparator={renderItemSeparator}
-      scrollButtonHorizontalPosition={appConfig.userPreferences.reverseSwipeOrientation ? 'left' : 'right'}
     />
   );
 };

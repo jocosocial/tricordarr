@@ -9,7 +9,6 @@ import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter
 import {ForumPostListHeader} from '#src/Components/Lists/Headers/ForumPostListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostListItem';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {timeAgo} from '#src/Libraries/DateTime';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
@@ -46,7 +45,6 @@ export const ForumPostList = ({
   initialScrollIndex,
 }: ForumPostListProps) => {
   const {commonStyles} = useStyles();
-  const {appConfig} = useConfig();
 
   const renderItem = useCallback(
     ({item}: {item: PostData}) => {
@@ -139,7 +137,6 @@ export const ForumPostList = ({
       // handleLoadNext={handleLoadNext}
       // handleLoadPrevious={handleLoadPrevious}
       // loadPrevious={handleLoadPrevious}
-      scrollButtonHorizontalPosition={appConfig.userPreferences.reverseSwipeOrientation ? 'left' : 'right'}
       enableScrollButton={true}
       initialScrollIndex={initialScrollIndex}
       // Style is here rather than in the renderItem because the padding we use is

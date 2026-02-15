@@ -16,17 +16,12 @@ import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {createLogger} from '#src/Libraries/Logger';
-import {
-  FlatListSeparatorProps,
-  FloatingScrollButtonHorizontalPosition,
-  FloatingScrollButtonVerticalPosition,
-} from '#src/Types';
+import {FlatListSeparatorProps, FloatingScrollButtonVerticalPosition} from '#src/Types';
 
 const logger = createLogger('AppFlatList.tsx');
 
 export interface ConversationFlatListProps<TItem> {
   scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
-  scrollButtonHorizontalPosition?: FloatingScrollButtonHorizontalPosition;
   invertList?: boolean;
   flatListRef: React.RefObject<FlatList<TItem>>;
   hasPreviousPage?: boolean;
@@ -58,7 +53,6 @@ export interface ConversationFlatListProps<TItem> {
  */
 export const AppFlatList = <TItem,>({
   scrollButtonVerticalPosition,
-  scrollButtonHorizontalPosition,
   invertList,
   flatListRef,
   hasNextPage,
@@ -268,7 +262,6 @@ export const AppFlatList = <TItem,>({
           icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}
           verticalPosition={scrollButtonVerticalPosition}
-          horizontalPosition={scrollButtonHorizontalPosition}
         />
       )}
     </>

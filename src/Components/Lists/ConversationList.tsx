@@ -3,7 +3,6 @@ import React, {useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FloatingScrollButtonVerticalPosition, RNFlatListSeparatorComponent} from '#src/Types';
 
@@ -56,7 +55,6 @@ export const ConversationList = <TItem,>({
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [init, setInit] = useState(true);
   const [hasLayout, setHasLayout] = useState(false);
-  const {appConfig} = useConfig();
 
   /**
    * Callback handler for when the scroll button is pressed.
@@ -154,7 +152,6 @@ export const ConversationList = <TItem,>({
         <FloatingScrollButton
           onPress={handleScrollButtonPress}
           verticalPosition={scrollButtonVerticalPosition}
-          horizontalPosition={appConfig.userPreferences.reverseSwipeOrientation ? 'left' : 'right'}
         />
       )}
     </>
