@@ -13,7 +13,6 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
-import {FloatingScrollButtonVerticalPosition} from '#src/Types';
 
 interface ForumConversationListV2Props {
   postList: PostData[];
@@ -28,7 +27,6 @@ interface ForumConversationListV2Props {
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
   initialScrollIndex?: number;
-  scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
   /** Callback fired once the list has reached its initial scroll position. */
   onReadyToShow?: () => void;
 }
@@ -53,7 +51,6 @@ export const ForumConversationListV2 = ({
   forumListData,
   hasNextPage,
   initialScrollIndex,
-  scrollButtonVerticalPosition,
   onReadyToShow,
 }: ForumConversationListV2Props) => {
   const {commonStyles} = useStyles();
@@ -139,7 +136,6 @@ export const ForumConversationListV2 = ({
       // also needed for the dividers. It could be added to the divider function as
       // well but this is slightly simpler and covers cases I am not remembering.
       style={commonStyles.paddingHorizontalSmall}
-      scrollButtonVerticalPosition={scrollButtonVerticalPosition}
     />
   );
 };

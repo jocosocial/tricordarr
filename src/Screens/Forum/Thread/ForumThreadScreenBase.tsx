@@ -255,7 +255,6 @@ export const ForumThreadScreenBase = ({
           hasNextPage={hasNextPage}
           forumListData={forumListData}
           initialScrollIndex={getInitialScrollIndex()}
-          scrollButtonVerticalPosition={showForm ? 'raised' : 'bottom'}
           onReadyToShow={onReadyToShow}
         />
         {!readyToShow && (
