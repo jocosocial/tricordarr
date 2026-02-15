@@ -12,6 +12,7 @@ export enum ForumRelationQueryType {
   owner = 'owner',
   favorites = 'favorites',
   mutes = 'mutes',
+  /** Recent means recently marked as read, not recently viewed. */
   recent = 'recent',
   unread = 'unread',
 }
