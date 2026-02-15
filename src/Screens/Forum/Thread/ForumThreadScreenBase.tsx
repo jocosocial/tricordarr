@@ -29,6 +29,7 @@ import {useRefresh} from '#src/Hooks/useRefresh';
 import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
+import {getNextPageParam, getPreviousPageParam} from '#src/Queries/Pagination';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
 
@@ -174,7 +175,36 @@ export const ForumThreadScreenBase = ({
           // https://github.com/jocosocial/swiftarr/issues/168
           // Refetch needed to "mark" the forum as read.
           // Also needed to load the data into the list.
-          await refetch();
+          const refetchResult = await refetch();
+          // React Query v5's refetch() resets infinite queries to a single
+          // page. When a new post tips the thread over a page boundary, the
+          // new post may land on a page that refetch() didn't fetch.
+          // Additionally, refetch() uses initialPageParam (start=undefined),
+          // so the server may return a mid-thread page based on the user's
+          // read position, dropping earlier pages. Explicitly restore any
+          // missing next/previous pages here.
+          const refetchData = refetchResult.data as InfiniteData<ForumData> | undefined;
+          if (refetchData) {
+            const lastPage = refetchData.pages[refetchData.pages.length - 1];
+            if (getNextPageParam(lastPage)) {
+              await fetchNextPage();
+            }
+            const firstPage = refetchData.pages[0];
+            if (getPreviousPageParam(firstPage)) {
+              let prevResult = await fetchPreviousPage();
+              // If the thread is more than 2 pages deep, keep fetching
+              // until we reach the beginning (start=0).
+              while (prevResult.data) {
+                const prevData = prevResult.data as InfiniteData<ForumData>;
+                const prevFirstPage = prevData.pages[0];
+                if (getPreviousPageParam(prevFirstPage)) {
+                  prevResult = await fetchPreviousPage();
+                } else {
+                  break;
+                }
+              }
+            }
+          }
           if (data.pages[0]) {
             // This used to not include the forum itself. idk if that's a problem.
             // If it is, use otherInvalidationKeys.
