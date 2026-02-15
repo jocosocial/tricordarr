@@ -1,7 +1,8 @@
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -9,8 +10,8 @@ import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
-import {type TConversationListRef} from '#src/Components/Lists/ConversationList';
-import {ForumConversationList} from '#src/Components/Lists/Forums/ForumConversationList';
+import {type TConversationListV2Ref} from '#src/Components/Lists/ConversationListV2';
+import {ForumConversationListV2} from '#src/Components/Lists/Forums/ForumConversationListV2';
 import {ForumThreadScreenActionsMenu} from '#src/Components/Menus/Forum/ForumThreadScreenActionsMenu';
 import {ForumThreadPinnedPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadPinnedPostsItem';
 import {ForumThreadSearchPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadSearchPostsItem';
@@ -19,6 +20,8 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {usePagination} from '#src/Hooks/usePagination';
@@ -69,7 +72,7 @@ export const ForumThreadScreenBase = ({
   const navigation = useCommonStack();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
-  const flatListRef = useRef<TConversationListRef>(null);
+  const flatListRef = useRef<TConversationListV2Ref>(null);
   const {hasModerator} = usePrivilege();
   const maxForumPostImages = useMaxForumPostImages();
   // This is used deep in the FlatList to star posts by favorite users.
@@ -77,6 +80,9 @@ export const ForumThreadScreenBase = ({
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
   const queryClient = useQueryClient();
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
+  const [readyToShow, setReadyToShow] = useState(false);
+  const {commonStyles} = useStyles();
+  const {theme} = useAppTheme();
   // Needed for useEffect checking.
   const forumData = data?.pages[0];
   // This should not expire the `/forum/:ID` data on mark-as-read because there is no read data in there
@@ -196,62 +202,68 @@ export const ForumThreadScreenBase = ({
     );
   };
 
+  const onReadyToShow = useCallback(() => {
+    logger.debug('Forum thread list ready to show');
+    setReadyToShow(true);
+  }, []);
+
   if (!data || isLoading || isLoadingFavorites) {
     return <LoadingView />;
   }
 
-  const _getInitialScrollIndex = () => {
-    // Inverted list means that we are starting from the bottom, so the
-    // ISI (InitialScrollIndex) is meaningless.
-    // console.log('### getInitialScrollIndex');
-    // console.log('invert', invertList);
-    // console.log('readCount', forumListData?.readCount);
-    // console.log('postCount', forumListData?.postCount);
-    if (invertList) {
+  const getInitialScrollIndex = () => {
+    // Fully read: let alignItemsAtEnd handle positioning.
+    if (!forumListData || forumListData.readCount === forumListData.postCount) {
       return undefined;
     }
-
-    const loadedStartIndex = data.pages[0].paginator.start;
-    // console.log('loadedStartIndex', loadedStartIndex);
-
-    // The forum has been completely read
-    if (forumListData && forumListData.readCount === forumListData.postCount) {
-      return undefined;
-    }
-    // The forum has not been completely read. There is going to be a point in
-    // the loaded data that we need to scroll to.
-    // @TODO this is buggy. Getting an index that is the length. Worked around with the Math.max.
-    // @TODO also can get value that is longer than the list
-    if (forumListData && forumListData.readCount !== forumListData.postCount) {
-      return Math.max(forumListData.readCount - loadedStartIndex - 1, 0);
-    }
-
-    // Default answer.
-    return 0;
+    const loadedStart = data.pages[0].paginator.start;
+    return Math.max(forumListData.readCount - loadedStart, 0);
   };
 
   const showForm = !data.pages[0].isLocked || hasModerator;
+
+  const overlayStyles = StyleSheet.create({
+    overlay: {
+      ...commonStyles.positionAbsolute,
+      ...commonStyles.flex,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: theme.colors.background,
+      zIndex: 1,
+    },
+  });
 
   return (
     <AppView>
       <PostAsUserBanner />
       <ListTitleView title={data.pages[0].title} />
       {data.pages[0].isLocked && <ForumLockedView />}
-      <ForumConversationList
-        postList={forumPosts}
-        handleLoadNext={handleLoadNext}
-        handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
-        forumData={data.pages[0]}
-        hasPreviousPage={hasPreviousPage}
-        // maintainViewPosition={maintainViewPosition}
-        getListHeader={getListHeader}
-        listRef={flatListRef}
-        hasNextPage={hasNextPage}
-        forumListData={forumListData}
-        // initialScrollIndex={getInitialScrollIndex()}
-        scrollButtonVerticalPosition={showForm ? 'raised' : 'bottom'}
-      />
+      <View style={commonStyles.flex}>
+        <ForumConversationListV2
+          postList={forumPosts}
+          handleLoadNext={handleLoadNext}
+          handleLoadPrevious={handleLoadPrevious}
+          refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
+          forumData={data.pages[0]}
+          hasPreviousPage={hasPreviousPage}
+          getListHeader={getListHeader}
+          listRef={flatListRef}
+          hasNextPage={hasNextPage}
+          forumListData={forumListData}
+          initialScrollIndex={getInitialScrollIndex()}
+          scrollButtonVerticalPosition={showForm ? 'raised' : 'bottom'}
+          onReadyToShow={onReadyToShow}
+        />
+        {!readyToShow && (
+          <View style={overlayStyles.overlay}>
+            <ActivityIndicator size={'large'} />
+          </View>
+        )}
+      </View>
       {showForm && (
         <ContentPostForm
           onSubmit={onPostSubmit}

@@ -5,10 +5,13 @@ import FastImage, {
   type OnProgressEvent,
 } from '@d11/react-native-fast-image';
 import React, {useEffect, useState} from 'react';
-import {StyleProp, StyleSheet} from 'react-native';
-import {ActivityIndicator, Card} from 'react-native-paper';
+import {StyleProp, StyleSheet, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+
+const IMAGE_PLACEHOLDER_HEIGHT = 200;
 
 interface ImageDimensionProps {
   width?: number;
@@ -29,10 +32,14 @@ interface AppScaledImageProps {
  * to the original image. Uses FastImage.getSize to retrieve the image dimensions from the
  * FastImage cache rather than Image.getSize (which would use a different HTTP client and
  * cause duplicate requests).
+ *
+ * While dimensions are loading, renders a placeholder View with a reserved minimum height
+ * to bound layout shift. This prevents scroll jumps when images load in a list.
  */
 export const AppScaledImage = ({image, style, onLoad, onError, onProgress}: AppScaledImageProps) => {
   const [imageSize, setImageSize] = useState<ImageDimensionProps>({width: undefined, height: undefined});
   const {commonStyles} = useStyles();
+  const {theme} = useAppTheme();
 
   useEffect(() => {
     if (image.uri) {
@@ -44,10 +51,22 @@ export const AppScaledImage = ({image, style, onLoad, onError, onProgress}: AppS
 
   // 0 / 0 by default is NaN which produces very funky not helpful errors.
   if (!imageSize.width || !imageSize.height || !image.uri) {
+    const placeholderStyles = StyleSheet.create({
+      placeholder: {
+        height: IMAGE_PLACEHOLDER_HEIGHT,
+        width: '100%',
+        backgroundColor: theme.colors.surfaceVariant,
+        borderRadius: 8,
+        ...commonStyles.justifyCenter,
+        ...commonStyles.alignItemsCenter,
+        ...commonStyles.marginVerticalSmall,
+      },
+    });
+
     return (
-      <Card.Content style={[commonStyles.marginVerticalSmall]}>
+      <View style={placeholderStyles.placeholder}>
         <ActivityIndicator />
-      </Card.Content>
+      </View>
     );
   }
 
