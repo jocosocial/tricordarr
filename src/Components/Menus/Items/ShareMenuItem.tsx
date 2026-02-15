@@ -1,4 +1,5 @@
 import React from 'react';
+import {Linking} from 'react-native';
 import {Menu} from 'react-native-paper';
 
 import {useOobe} from '#src/Context/Contexts/OobeContext';
@@ -20,20 +21,27 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
   const {serverUrl} = useSwiftarrQueryClient();
   const {setString} = useClipboard();
 
-  const handlePress = React.useCallback(() => {
+  const getFullURL = React.useCallback(() => {
     let fullURL = '';
     if (contentType === ShareContentType.siteUI) {
       fullURL = contentID as string;
     } else {
       fullURL = `${serverUrl}/${contentType}/${contentID}`;
     }
+    return fullURL;
+  }, [contentType, contentID, serverUrl]);
 
-    setString(fullURL);
+  const handlePress = React.useCallback(() => {
+    setString(getFullURL());
 
     if (closeMenu) {
       closeMenu();
     }
-  }, [contentType, contentID, serverUrl, closeMenu, setString]);
+  }, [getFullURL, closeMenu, setString]);
+
+  const handleLongPress = React.useCallback(() => {
+    Linking.openURL(getFullURL());
+  }, [getFullURL]);
 
   /**
    * If the user hasn't finished setup or is in pre-registration mode,
@@ -45,6 +53,7 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
       title={'Share'}
       leadingIcon={AppIcons.share}
       onPress={handlePress}
+      onLongPress={handleLongPress}
     />
   );
 };
