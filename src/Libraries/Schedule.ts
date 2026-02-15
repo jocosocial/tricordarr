@@ -101,10 +101,7 @@ export const buildScheduleList = (
 
     // Shutternaut + personal: only show personal events if a personal filter is also active
     const personalFilterOn = !!filterSettings.eventPersonalFilter || !!filterSettings.eventPersonalUnreadFilter;
-    if (
-      !filterSettings.eventShutternautFilter ||
-      personalFilterOn
-    ) {
+    if (!filterSettings.eventShutternautFilter || personalFilterOn) {
       if (personalFilterOn && personalEventData?.pages) {
         personalEventData.pages.forEach(page => (personalEventList = personalEventList.concat(page.fezzes)));
       }
