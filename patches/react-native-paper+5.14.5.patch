@@ -239,3 +239,34 @@ index 55922c1..27e0bec 100644
                    >
                      {children}
                    </ScrollView>
+diff --git a/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx b/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx
+index 4b8eb37..ff8d74a 100644
+--- a/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx
++++ b/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx
+@@ -61,6 +61,10 @@ export type Props = {
+    * Function to execute on press.
+    */
+   onPress?: (e: GestureResponderEvent) => void;
++    /**
++   * Function to execute on long press.
++   */
++    onLongPress?: (e: GestureResponderEvent) => void;
+   /**
+    * Specifies the largest possible scale a title font can reach.
+    */
+@@ -138,6 +142,7 @@ const MenuItem = ({
+   disabled,
+   background,
+   onPress,
++  onLongPress,
+   style,
+   containerStyle,
+   contentStyle,
+@@ -187,6 +192,7 @@ const MenuItem = ({
+         style,
+       ]}
+       onPress={onPress}
++      onLongPress={onLongPress}
+       disabled={disabled}
+       testID={testID}
+       background={background}
