@@ -125,8 +125,6 @@ export interface StartEndTime {
   endTime: Date;
 }
 
-export type FloatingScrollButtonVerticalPosition = 'raised' | 'bottom' | undefined;
-
 export interface FlatListSeparatorProps<TItem> {
   highlighted: boolean;
   leadingItem: TItem;

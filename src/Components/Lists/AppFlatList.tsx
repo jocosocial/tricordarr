@@ -16,12 +16,11 @@ import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {createLogger} from '#src/Libraries/Logger';
-import {FlatListSeparatorProps, FloatingScrollButtonVerticalPosition} from '#src/Types';
+import {FlatListSeparatorProps} from '#src/Types';
 
 const logger = createLogger('AppFlatList.tsx');
 
 export interface ConversationFlatListProps<TItem> {
-  scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
   invertList?: boolean;
   flatListRef: React.RefObject<FlatList<TItem>>;
   hasPreviousPage?: boolean;
@@ -52,7 +51,6 @@ export interface ConversationFlatListProps<TItem> {
  * @deprecated Use AppFlashList instead.
  */
 export const AppFlatList = <TItem,>({
-  scrollButtonVerticalPosition,
   invertList,
   flatListRef,
   hasNextPage,
@@ -217,7 +215,7 @@ export const AppFlatList = <TItem,>({
 
   // https://github.com/facebook/react-native/issues/25239
   return (
-    <>
+    <View style={commonStyles.flex}>
       <FlatList
         ref={flatListRef}
         data={data}
@@ -261,9 +259,8 @@ export const AppFlatList = <TItem,>({
         <FloatingScrollButton
           icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}
-          verticalPosition={scrollButtonVerticalPosition}
         />
       )}
-    </>
+    </View>
   );
 };
