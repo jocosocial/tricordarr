@@ -1,14 +1,11 @@
 import {FlashList, type FlashListRef, ListRenderItem} from '@shopify/flash-list';
 import React, {forwardRef, useCallback, useState} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {FloatingScrollButtonVerticalPosition} from '#src/Types';
-
 interface AppFlashListProps<TItem> {
-  scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
   invertList?: boolean;
   handleLoadNext?: () => void;
   onEndReachedThreshold?: number;
@@ -35,7 +32,6 @@ interface AppFlashListProps<TItem> {
 
 const AppFlashListInner = <TItem,>(
   {
-    scrollButtonVerticalPosition,
     scrollButtonSmall,
     invertList,
     onEndReachedThreshold = 1,
@@ -57,7 +53,7 @@ const AppFlashListInner = <TItem,>(
   }: AppFlashListProps<TItem>,
   ref: React.ForwardedRef<FlashListRef<TItem>>,
 ) => {
-  const {styleDefaults} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
 
   /**
@@ -88,7 +84,7 @@ const AppFlashListInner = <TItem,>(
 
   // https://github.com/facebook/react-native/issues/25239
   return (
-    <>
+    <View style={commonStyles.flex}>
       <FlashList
         ref={ref}
         data={data}
@@ -112,11 +108,10 @@ const AppFlashListInner = <TItem,>(
         <FloatingScrollButton
           icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}
-          verticalPosition={scrollButtonVerticalPosition}
           small={scrollButtonSmall}
         />
       )}
-    </>
+    </View>
   );
 };
 
