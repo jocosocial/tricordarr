@@ -193,12 +193,14 @@ const FezChatScreenInner = ({route}: Props) => {
     setRefreshing,
   });
 
-  // @TODO Disabling this since the new list component can dynamically load
-  // in both directions
-  // This will always load all future pages. Hopefully this isn't a bad thing.
-  // if (hasNextPage) {
-  //   handleLoadNext();
-  // }
+  // Proactively fetch the next page when it exists. In a real-time chat, new
+  // messages arriving via socket can push past a page boundary. The user is at
+  // the bottom so onEndReached won't fire — we need to fetch explicitly.
+  useEffect(() => {
+    if (hasNextPage) {
+      handleLoadNext();
+    }
+  }, [hasNextPage, handleLoadNext]);
 
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {

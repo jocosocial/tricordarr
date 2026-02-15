@@ -29,6 +29,15 @@ interface ConversationListV2Props<TItem> {
   style?: StyleProp<ViewStyle>;
   /** When true, items are bottom-aligned (chat-style). Use for fully-read threads. */
   alignItemsAtEnd?: boolean;
+  /**
+   * When true, LegendList will keep the scroll position at the end when new items
+   * are appended (if the user is already near the bottom).
+   *
+   * Defaults to the value of `alignItemsAtEnd`. Override to `true` for real-time
+   * chat lists where `alignItemsAtEnd` may oscillate due to server read-state lag
+   * but the user should still see new messages immediately.
+   */
+  maintainScrollAtEnd?: boolean;
   /** Estimated average item height for LegendList's layout engine. */
   estimatedItemSize?: number;
   /**
@@ -98,17 +107,37 @@ export const ConversationListV2 = <TItem,>({
   initialScrollIndex,
   style,
   alignItemsAtEnd = false,
+  maintainScrollAtEnd,
   estimatedItemSize,
   onReadyToShow,
 }: ConversationListV2Props<TItem>) => {
+  // Default maintainScrollAtEnd to follow alignItemsAtEnd when not explicitly provided.
+  const effectiveMaintainScrollAtEnd = maintainScrollAtEnd ?? alignItemsAtEnd;
   const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
   const readyFiredRef = useRef(false);
+  const prevDataLengthRef = useRef(data.length);
+
+  // Track whether the user is near the bottom of the list. Used to decide whether
+  // to auto-scroll when new items arrive. Updated in onScroll.
+  const isNearBottomRef = useRef(true);
 
   // Stabilization state: tracks content height changes between onLoad and readyToShow.
   const isStabilizingRef = useRef(false);
   const lastSeenContentHeightRef = useRef(0);
   const stabilizeRafRef = useRef<number | null>(null);
+
+  // When data grows and the user was near the bottom, explicitly scroll to the end.
+  // LegendList's maintainScrollAtEnd is unreliable for dynamic appends, so we
+  // supplement it with our own scroll-to-end call.
+  if (data.length > prevDataLengthRef.current && readyFiredRef.current) {
+    if (effectiveMaintainScrollAtEnd && isNearBottomRef.current) {
+      requestAnimationFrame(() => {
+        listRef.current?.scrollToEnd({animated: true});
+      });
+    }
+  }
+  prevDataLengthRef.current = data.length;
 
   const fireReadyToShow = useCallback(() => {
     if (!readyFiredRef.current && onReadyToShow) {
@@ -159,6 +188,12 @@ export const ConversationListV2 = <TItem,>({
       const distanceFromBottom = contentSize.height - layoutMeasurement.height - contentOffset.y;
       const scrollThresholdCondition = distanceFromBottom > styleDefaults.listScrollThreshold;
       setShowScrollButton(scrollThresholdCondition);
+
+      // Track whether the user is near the bottom. Used by the data-grow scroll
+      // logic above. A generous threshold (~1.5 items) ensures we catch cases where
+      // maintainScrollAtEnd would have been slightly out of range.
+      isNearBottomRef.current = distanceFromBottom <= (estimatedItemSize ?? 100) * 1.5;
+
       if (onScrollThreshold) {
         onScrollThreshold(scrollThresholdCondition);
       }
@@ -174,7 +209,14 @@ export const ConversationListV2 = <TItem,>({
         }
       }
     },
-    [onScrollThreshold, styleDefaults.listScrollThreshold, alignItemsAtEnd, listRef, scheduleReadyToShow],
+    [
+      onScrollThreshold,
+      styleDefaults.listScrollThreshold,
+      alignItemsAtEnd,
+      listRef,
+      scheduleReadyToShow,
+      estimatedItemSize,
+    ],
   );
 
   /**
@@ -219,9 +261,9 @@ export const ConversationListV2 = <TItem,>({
         recycleItems={true}
         // Chat interface props
         alignItemsAtEnd={alignItemsAtEnd}
-        maintainScrollAtEnd={alignItemsAtEnd}
+        maintainScrollAtEnd={effectiveMaintainScrollAtEnd}
         maintainVisibleContentPosition={true}
-        maintainScrollAtEndThreshold={alignItemsAtEnd ? 0.1 : undefined}
+        maintainScrollAtEndThreshold={effectiveMaintainScrollAtEnd ? 0.1 : undefined}
         // Layout
         estimatedItemSize={estimatedItemSize}
         initialScrollIndex={initialScrollIndex}

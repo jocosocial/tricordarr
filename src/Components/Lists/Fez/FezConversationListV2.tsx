@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useRef} from 'react';
 import {RefreshControlProps, View} from 'react-native';
 
 import {type TConversationListV2RefObject} from '#src/Components/Lists/ConversationListV2';
@@ -50,22 +50,26 @@ export const FezConversationListV2 = ({
 }: FezConversationListV2Props) => {
   const {commonStyles} = useStyles();
 
-  // The chat is fully read when readCount equals postCount.
-  const isFullyRead = fez.members ? fez.members.readCount === fez.members.postCount : true;
+  // Lock initial read state on mount. The server's readCount lags behind postCount
+  // when new messages arrive via socket, which causes oscillation. Locking prevents:
+  // - alignItemsAtEnd layout thrash that breaks maintainScrollAtEnd
+  // - "New" divider jumping to a new position on every incoming message
+  const initialReadStateRef = useRef({
+    isFullyRead: fez.members ? fez.members.readCount === fez.members.postCount : true,
+    readCount: fez.members?.readCount ?? 0,
+    paginatorStart: fez.members?.paginator?.start ?? 0,
+  });
 
-  const showNewDivider = useCallback(
-    (index: number) => {
-      if (fez.members) {
-        if (fez.members.postCount === fez.members.readCount) {
-          return false;
-        }
-        const loadedStartIndex = fez.members.paginator.start;
-        return fez.members.readCount - loadedStartIndex === index;
-      }
+  const showNewDivider = useCallback((index: number) => {
+    // Use the locked initial read state so the divider position is stable.
+    // If the chat was fully read when opened, never show a divider — the user
+    // is actively watching and doesn't need a "New" marker.
+    const {isFullyRead, readCount, paginatorStart} = initialReadStateRef.current;
+    if (isFullyRead) {
       return false;
-    },
-    [fez.members],
-  );
+    }
+    return readCount - paginatorStart === index;
+  }, []);
 
   const renderItem = useCallback(
     ({item, index}: {item: FezPostData; index: number}) => {
@@ -111,7 +115,8 @@ export const FezConversationListV2 = ({
       handleLoadPrevious={handleLoadPrevious}
       enableScrollButton={true}
       initialScrollIndex={initialScrollIndex}
-      alignItemsAtEnd={isFullyRead}
+      alignItemsAtEnd={initialReadStateRef.current.isFullyRead}
+      maintainScrollAtEnd={true}
       estimatedItemSize={100}
       onReadyToShow={onReadyToShow}
       // Style is here rather than in the renderItem because the padding we use is
