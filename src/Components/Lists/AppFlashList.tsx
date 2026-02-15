@@ -34,7 +34,8 @@ const AppFlashListInner = <TItem,>(
     scrollButtonSmall,
     onEndReachedThreshold = 1,
     keyExtractor,
-    initialScrollIndex = 0,
+    /** 0 == first item, undefined == start, including header */
+    initialScrollIndex,
     renderListHeader,
     renderListFooter,
     renderItem,
