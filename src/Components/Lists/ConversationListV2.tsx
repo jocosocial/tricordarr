@@ -108,11 +108,17 @@ export const ConversationListV2 = <TItem,>({
    */
   const onLoad = useCallback(() => {
     logger.debug('LegendList onLoad fired');
+    // alignItemsAtEnd only bottom-aligns content shorter than the viewport.
+    // For content taller than the viewport (fully-read threads), we need to
+    // explicitly scroll to the end before revealing the list.
+    if (alignItemsAtEnd && initialScrollIndex === undefined && data.length > 0) {
+      listRef.current?.scrollToEnd({animated: false});
+    }
     // Give one extra frame for layout to settle, then signal ready.
     requestAnimationFrame(() => {
       fireReadyToShow();
     });
-  }, [fireReadyToShow]);
+  }, [fireReadyToShow, alignItemsAtEnd, initialScrollIndex, data.length, listRef]);
 
   return (
     <>
