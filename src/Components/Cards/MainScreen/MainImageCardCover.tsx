@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {AppImage} from '#src/Components/Images/AppImage';
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useTime} from '#src/Context/Contexts/TimeContext';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
@@ -22,7 +22,7 @@ import SunsetImage from '#assets/mainview_sunset.jpg';
  */
 export const MainImageCardCover = () => {
   // const {userNotificationData} = useUserNotificationData();
-  const {hourlyUpdatingDate} = useCruise();
+  const {hourlyUpdatingDate} = useTime();
 
   // Default to local, but override with the server offset.
   let currentHour = hourlyUpdatingDate.getHours();

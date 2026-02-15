@@ -2,22 +2,18 @@ import React from 'react';
 import {Linking, StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useTime} from '#src/Context/Contexts/TimeContext';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 export const TimezoneWarningView = () => {
   const {commonStyles} = useStyles();
-  const {showTimeZoneWarning} = useCruise();
+  const {showTimeZoneWarning} = useTime();
   const {serverUrl} = useSwiftarrQueryClient();
   const commonStack = useCommonStack();
-  const onPress = () => {
-    commonStack.push(CommonStackComponents.siteUIScreen, {
-      resource: 'time',
-      timestamp: new Date().toISOString(),
-    });
-  };
+  const onPress = () => commonStack.push(CommonStackComponents.mainTimeZoneScreen);
+
   // The WebView seems to be reporting the wrong time. It sticks with a device default
   // and not what its currently set to.
   // This here for debugging.
@@ -39,7 +35,7 @@ export const TimezoneWarningView = () => {
   });
 
   if (!showTimeZoneWarning) {
-    return <></>;
+    return null;
   }
 
   return (
