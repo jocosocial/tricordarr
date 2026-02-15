@@ -1,5 +1,4 @@
 import {FlashListRef} from '@shopify/flash-list';
-import moment from 'moment-timezone';
 import React, {useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 
@@ -10,9 +9,8 @@ import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter
 import {ForumPostListHeader} from '#src/Components/Lists/Headers/ForumPostListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostListItem';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useTimeZone} from '#src/Hooks/useTimeZone';
+import {useTime} from '#src/Context/Contexts/TimeContext';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostListProps {
@@ -47,25 +45,7 @@ export const ForumPostList = ({
   initialScrollIndex,
 }: ForumPostListProps) => {
   const {commonStyles} = useStyles();
-  const {appConfig} = useConfig();
-  const {tzAtTime} = useTimeZone();
-
-  /**
-   * Return a moment adjusted for lateDayFlip. When enabled, subtracts 3 hours
-   * so that posts between midnight and 3:00 AM are grouped with the previous day.
-   */
-  const getAdjustedMoment = useCallback(
-    (timestamp: string) => {
-      const date = new Date(timestamp);
-      const tz = tzAtTime(date);
-      let m = moment(timestamp).tz(tz);
-      if (appConfig.schedule.enableLateDayFlip) {
-        m = m.subtract(3, 'hours');
-      }
-      return m;
-    },
-    [appConfig.schedule.enableLateDayFlip, tzAtTime],
-  );
+  const {getAdjustedMoment} = useTime();
 
   const renderItem = useCallback(
     ({item}: {item: PostData}) => {

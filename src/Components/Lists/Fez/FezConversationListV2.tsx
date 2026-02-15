@@ -1,4 +1,3 @@
-import moment from 'moment-timezone';
 import React, {useCallback, useRef} from 'react';
 import {RefreshControlProps, View} from 'react-native';
 
@@ -11,9 +10,8 @@ import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useTimeZone} from '#src/Hooks/useTimeZone';
+import {useTime} from '#src/Context/Contexts/TimeContext';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
 interface FezConversationListV2Props {
@@ -53,25 +51,7 @@ export const FezConversationListV2 = ({
   onReadyToShow,
 }: FezConversationListV2Props) => {
   const {commonStyles} = useStyles();
-  const {appConfig} = useConfig();
-  const {tzAtTime} = useTimeZone();
-
-  /**
-   * Return a moment adjusted for lateDayFlip. When enabled, subtracts 3 hours
-   * so that posts between midnight and 3:00 AM are grouped with the previous day.
-   */
-  const getAdjustedMoment = useCallback(
-    (timestamp: string) => {
-      const date = new Date(timestamp);
-      const tz = tzAtTime(date);
-      let m = moment(timestamp).tz(tz);
-      if (appConfig.schedule.enableLateDayFlip) {
-        m = m.subtract(3, 'hours');
-      }
-      return m;
-    },
-    [appConfig.schedule.enableLateDayFlip, tzAtTime],
-  );
+  const {getAdjustedMoment} = useTime();
 
   /** Show a TimeDivider above the first item and at each day boundary. */
   const showTimeDivider = useCallback(
