@@ -1,6 +1,4 @@
-import {CacheManager} from '@georstat/react-native-image-cache';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import {Dirs, FileSystem} from 'react-native-file-access';
 import RNFS from 'react-native-fs';
 import * as mime from 'react-native-mime-types';
 
@@ -170,33 +168,4 @@ export const newSaveImage = async (image: AppImageMetaData) => {
     logger.error('Failed to save image:', error);
     throw error;
   }
-};
-
-export const configureImageCache = () => {
-  CacheManager.config = {
-    baseDir: `${Dirs.CacheDir}/images_cache/`,
-    blurRadius: 15,
-    cacheLimit: 0,
-    maxRetries: 3 /* optional, if not provided defaults to 0 */,
-    retryDelay: 3000 /* in milliseconds, optional, if not provided defaults to 0 */,
-    sourceAnimationDuration: 1000,
-    thumbnailAnimationDuration: 1000,
-  };
-};
-
-// https://github.com/georstat/react-native-image-cache/issues/81
-export const getDirSize = async (dir: string, rootDir: string = dir) => {
-  const files = await FileSystem.statDir(dir);
-
-  const paths = files.map(async (file): Promise<number> => {
-    const filePath = `${rootDir}${file.path}`;
-
-    if (file.type === 'directory') {
-      return getDirSize(filePath, rootDir);
-    }
-
-    return file.size;
-  });
-
-  return (await Promise.all(paths)).flat(Infinity).reduce((i, size) => i + size, 0);
 };

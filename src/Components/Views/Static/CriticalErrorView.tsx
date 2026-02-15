@@ -1,4 +1,3 @@
-import {CacheManager} from '@georstat/react-native-image-cache';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
@@ -94,13 +93,6 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Clear Query Cache'}
             onPress={() => queryClient.clear()}
-          />
-        </PaddedContentView>
-        <PaddedContentView>
-          <PrimaryActionButton
-            buttonColor={theme.colors.twitarrNegativeButton}
-            buttonText={'Clear Image Cache'}
-            onPress={async () => await CacheManager.clearCache()}
           />
         </PaddedContentView>
         <PaddedContentView>

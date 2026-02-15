@@ -39,7 +39,6 @@ import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
 import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
-import {configureImageCache} from '#src/Libraries/Storage/ImageStorage.ts';
 import {RootStackNavigator} from '#src/Navigation/Stacks/RootStackNavigator';
 
 // https://github.com/facebook/react-native/issues/30034
@@ -66,9 +65,6 @@ registerFgsWorker();
 
 // Time and locale setup, used in various places within the app.
 registerTranslation('en', paperEn);
-
-// Set up image caching
-configureImageCache();
 
 function App(): React.JSX.Element {
   setupChannels().catch(error => {

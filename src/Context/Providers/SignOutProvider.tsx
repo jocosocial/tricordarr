@@ -1,4 +1,3 @@
-import {CacheManager} from '@georstat/react-native-image-cache';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {PropsWithChildren, useCallback} from 'react';
 
@@ -52,9 +51,6 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
 
     // Clear React Query cache
     queryClient.clear();
-
-    // Clear image cache
-    await CacheManager.clearCache();
 
     // Clear webview cookies
     await clearCookies();
