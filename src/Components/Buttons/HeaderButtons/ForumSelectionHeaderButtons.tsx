@@ -1,4 +1,3 @@
-import {QueryKey, useQueryClient} from '@tanstack/react-query';
 import {AxiosResponse} from 'axios';
 import React from 'react';
 import {Item} from 'react-navigation-header-buttons';
@@ -6,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {SetRefreshing} from '#src/Hooks/useRefresh';
 import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
@@ -21,9 +21,9 @@ interface ForumSelectionHeaderButtonsProps {
 
 export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsProps) => {
   const relationMutation = useForumRelationMutation();
-  const queryClient = useQueryClient();
   const {commonStyles} = useStyles();
   const markReadMutation = useForumMarkReadMutation();
+  const {markRead, updateFavorite, updateMute} = useForumCacheReducer();
 
   const onPress = async (relation: 'mute' | 'favorite') => {
     props.setRefreshing(true);
@@ -42,35 +42,24 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
         },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: [`/forum/${selectedItem.id}`]});
+            if (relation === 'favorite') {
+              updateFavorite(sourceItem.forumID, props.categoryID, !sourceItem.isFavorite);
+            } else {
+              updateMute(sourceItem.forumID, props.categoryID, !sourceItem.isMuted);
+            }
           },
         },
       );
       mutations.push(mutation);
     });
     await Promise.allSettled(mutations);
-    const invalidationQueryKeys = ForumListData.getCacheKeys(props.categoryID);
-    invalidationQueryKeys.forEach(key => queryClient.invalidateQueries({queryKey: key}));
     props.setRefreshing(false);
   };
 
   const markAsRead = async () => {
     props.setRefreshing(true);
     const mutations: Promise<AxiosResponse<void, any>>[] = [];
-    const invalidationQueryKeysSet = new Set<string>();
 
-    // Collect all keys upfront for all selected forums
-    props.selectedItems.forEach(selectedItem => {
-      const sourceItem = props.items?.find(item => item.forumID === selectedItem.id);
-      if (!sourceItem) return;
-      const keys = ForumListData.getCacheKeys(props.categoryID, sourceItem.forumID);
-      // Serialize keys to strings for deduplication
-      keys.forEach(key => {
-        invalidationQueryKeysSet.add(JSON.stringify(key));
-      });
-    });
-
-    // Execute all mutations
     props.selectedItems.forEach(selectedItem => {
       const sourceItem = props.items?.find(item => item.forumID === selectedItem.id);
       if (!sourceItem) return;
@@ -81,9 +70,10 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
     });
     await Promise.allSettled(mutations);
 
-    // Deduplicate and invalidate all unique keys
-    const uniqueKeys: QueryKey[] = Array.from(invalidationQueryKeysSet).map(keyStr => JSON.parse(keyStr));
-    uniqueKeys.forEach(key => queryClient.invalidateQueries({queryKey: key}));
+    // Update local caches for all selected items.
+    props.selectedItems.forEach(selectedItem => {
+      markRead(selectedItem.id, props.categoryID);
+    });
     props.setRefreshing(false);
   };
 

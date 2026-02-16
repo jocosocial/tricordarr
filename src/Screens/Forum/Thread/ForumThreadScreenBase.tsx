@@ -91,9 +91,18 @@ export const ForumThreadScreenBase = ({
   const forumPosts = forumData?.posts ?? [];
 
   // Cache reducer -- operates directly on queryClient.
-  const {appendPost} = useForumCacheReducer();
+  const {appendPost, markRead} = useForumCacheReducer();
 
-  const otherInvalidationKeys = ForumListData.getCacheKeys(forumData?.categoryID, forumData?.forumID);
+  // Mark forum as read in local caches when thread data loads.
+  useEffect(() => {
+    if (forumData) {
+      if (forumListData && forumListData.readCount === forumListData.postCount) {
+        return;
+      }
+      markRead(forumData.forumID, forumData.categoryID);
+    }
+  }, [forumData, forumListData, markRead]);
+
   const fullRefresh = useCallback(async () => {
     await refetch();
     // After refetch, the server may report more posts than we have pages for
@@ -132,15 +141,11 @@ export const ForumThreadScreenBase = ({
           )}
           <ForumThreadPinnedPostsItem forumID={forumData.forumID} navigation={navigation} />
           <ForumThreadSearchPostsItem navigation={navigation} forum={forumData} />
-          <ForumThreadScreenActionsMenu
-            forumData={forumData}
-            invalidationQueryKeys={otherInvalidationKeys}
-            onRefresh={onRefresh}
-          />
+          <ForumThreadScreenActionsMenu forumData={forumData} onRefresh={onRefresh} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [forumData, otherInvalidationKeys, navigation, onRefresh]);
+  }, [forumData, navigation, onRefresh]);
 
   useEffect(() => {
     navigation.setOptions({

@@ -781,33 +781,6 @@ export interface ForumListData {
   isPinned?: boolean;
 }
 
-export namespace ForumListData {
-  /**
-   * Returns an array of QueryKeys that would need invalidated when a Forum's
-   * state is known to have changed.
-   * @param categoryID Optional string of the category ID.
-   * @param forumID Optional string of the Forum ID.
-   */
-  export const getCacheKeys = (categoryID?: string, forumID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [
-      ['/forum/search'],
-      ['/forum/favorites'],
-      ['/forum/mutes'],
-      ['/forum/unread'],
-      ['/forum/categories'],
-      ['/forum/owner'],
-      ['/forum/recent'],
-    ];
-    if (forumID) {
-      queryKeys.push([`/forum/${forumID}`]);
-    }
-    if (categoryID) {
-      queryKeys.push([`/forum/categories/${categoryID}`]);
-    }
-    return queryKeys;
-  };
-}
-
 export interface CategoryData {
   /// The ID of the category.
   categoryID: string;

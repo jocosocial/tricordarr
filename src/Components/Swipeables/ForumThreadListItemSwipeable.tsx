@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query';
 import React, {PropsWithChildren, useCallback, useState} from 'react';
 import {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SharedValue} from 'react-native-reanimated';
@@ -8,6 +7,7 @@ import {BaseSwipeable} from '#src/Components/Swipeables/BaseSwipeable';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {useForumPinMutation} from '#src/Queries/Forum/ForumThreadPinMutations';
@@ -23,7 +23,6 @@ interface ForumThreadListItemSwipeableProps extends PropsWithChildren {
 export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeableProps) => {
   const {theme} = useAppTheme();
   const relationMutation = useForumRelationMutation();
-  const queryClient = useQueryClient();
   const [muteRefreshing, setMuteRefreshing] = useState(false);
   const [favoriteRefreshing, setFavoriteRefreshing] = useState(false);
   const [readRefreshing, setReadRefreshing] = useState(false);
@@ -33,28 +32,19 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
   const {hasModerator} = usePrivilege();
   const pinMutation = useForumPinMutation();
   const markReadMutation = useForumMarkReadMutation();
-
-  const invalidationQueryKeys = ForumListData.getCacheKeys(props.categoryID, props.forumListData.forumID);
+  const {markRead, updateFavorite, updateMute, updatePinned} = useForumCacheReducer();
 
   const handleMarkAsRead = useCallback(
     async (swipeable: SwipeableMethods) => {
-      // Reset first. Improves response time.
       swipeable.reset();
       setReadRefreshing(true);
-      // We need to "refetch" (which triggers markAsRead) before we then go invalidate
-      // the other keys. This had an issue where marking a favorite forum as read would
-      // not update the favorites list.
-      // await refetch();
       markReadMutation.mutate(
         {
           forumID: props.forumListData.forumID,
         },
         {
-          onSuccess: async () => {
-            const invalidations = invalidationQueryKeys.map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-            await Promise.all(invalidations);
+          onSuccess: () => {
+            markRead(props.forumListData.forumID, props.categoryID);
           },
           onSettled: () => {
             setReadRefreshing(false);
@@ -63,7 +53,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
         },
       );
     },
-    [queryClient, invalidationQueryKeys, markReadMutation, props.forumListData.forumID],
+    [markRead, markReadMutation, props.forumListData.forumID, props.categoryID],
   );
 
   const handleFavorite = useCallback(
@@ -76,11 +66,8 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           action: props.forumListData.isFavorite ? 'delete' : 'create',
         },
         {
-          onSuccess: async () => {
-            const invalidations = invalidationQueryKeys.map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-            await Promise.all(invalidations);
+          onSuccess: () => {
+            updateFavorite(props.forumListData.forumID, props.categoryID, !props.forumListData.isFavorite);
           },
           onSettled: () => {
             setFavoriteRefreshing(false);
@@ -89,7 +76,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
         },
       );
     },
-    [relationMutation, props.forumListData.forumID, props.forumListData.isFavorite, invalidationQueryKeys, queryClient],
+    [relationMutation, props.forumListData.forumID, props.forumListData.isFavorite, props.categoryID, updateFavorite],
   );
 
   const handleMute = useCallback(
@@ -102,11 +89,8 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           action: props.forumListData.isMuted ? 'delete' : 'create',
         },
         {
-          onSuccess: async () => {
-            const invalidations = invalidationQueryKeys.map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-            await Promise.all(invalidations);
+          onSuccess: () => {
+            updateMute(props.forumListData.forumID, props.categoryID, !props.forumListData.isMuted);
           },
           onSettled: () => {
             setMuteRefreshing(false);
@@ -115,7 +99,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
         },
       );
     },
-    [relationMutation, props.forumListData.forumID, props.forumListData.isMuted, invalidationQueryKeys, queryClient],
+    [relationMutation, props.forumListData.forumID, props.forumListData.isMuted, props.categoryID, updateMute],
   );
 
   const handlePin = (swipeable: SwipeableMethods) => {
@@ -126,11 +110,8 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
         action: props.forumListData.isPinned ? 'unpin' : 'pin',
       },
       {
-        onSuccess: async () => {
-          const invalidations = invalidationQueryKeys.map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          await Promise.all([invalidations].flat());
+        onSuccess: () => {
+          updatePinned(props.forumListData.forumID, props.categoryID, !props.forumListData.isPinned);
         },
         onSettled: () => {
           setPinRefreshing(false);

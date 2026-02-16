@@ -7,6 +7,7 @@ import {
   ForumListData,
   ForumSearchData,
   PostData,
+  PostSearchData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
 
@@ -57,39 +58,11 @@ export const useForumCacheReducer = () => {
   const queryClient = useQueryClient();
 
   /**
-   * Append a newly created post to the thread cache and update all forum
-   * list caches with the new post count / last poster info.
+   * Update a ForumListData entry (matched by forumID) across all ForumSearchData
+   * list caches and the CategoryData cache for the given category.
    */
-  const appendPost = useCallback(
-    (forumID: string, categoryID: string, newPost: PostData, authorHeader: UserHeader) => {
-      // 1. Update the thread cache (InfiniteData<ForumData>)
-      // Only append the post to the last page's posts array. Leave the paginator
-      // untouched so getNextPageParam still returns undefined and no spurious
-      // fetchNextPage is triggered. The server will correct the paginator on
-      // the next real refetch.
-      queryClient.setQueriesData<InfiniteData<ForumData>>({queryKey: [`/forum/${forumID}`]}, oldData => {
-        if (!oldData) {
-          return oldData;
-        }
-        const lastPageIndex = oldData.pages.length - 1;
-        return {
-          ...oldData,
-          pages: oldData.pages.map((page, i) => {
-            if (i !== lastPageIndex) {
-              return page;
-            }
-            if (page.posts.some(p => p.postID === newPost.postID)) {
-              return page;
-            }
-            return {
-              ...page,
-              posts: [...page.posts, newPost],
-            };
-          }),
-        };
-      });
-
-      // 2. Update ForumSearchData list caches
+  const updateForumListInAllCaches = useCallback(
+    (forumID: string, categoryID: string | undefined, updater: (entry: ForumListData) => ForumListData) => {
       for (const keyPrefix of forumSearchDataKeys) {
         queryClient.setQueriesData<InfiniteData<ForumSearchData>>({queryKey: [keyPrefix]}, oldData => {
           if (!oldData) {
@@ -99,13 +72,11 @@ export const useForumCacheReducer = () => {
             ...oldData,
             pages: oldData.pages.map(page => ({
               ...page,
-              forumThreads: page.forumThreads.map(entry => updateForumListEntry(entry, forumID, authorHeader, newPost)),
+              forumThreads: page.forumThreads.map(entry => (entry.forumID === forumID ? updater(entry) : entry)),
             })),
           };
         });
       }
-
-      // 3. Update CategoryData cache for the specific category
       if (categoryID) {
         queryClient.setQueriesData<InfiniteData<CategoryData>>(
           {queryKey: [`/forum/categories/${categoryID}`]},
@@ -117,9 +88,7 @@ export const useForumCacheReducer = () => {
               ...oldData,
               pages: oldData.pages.map(page => ({
                 ...page,
-                forumThreads: page.forumThreads?.map(entry =>
-                  updateForumListEntry(entry, forumID, authorHeader, newPost),
-                ),
+                forumThreads: page.forumThreads?.map(entry => (entry.forumID === forumID ? updater(entry) : entry)),
               })),
             };
           },
@@ -129,5 +98,182 @@ export const useForumCacheReducer = () => {
     [queryClient],
   );
 
-  return {appendPost};
+  /**
+   * Update the ForumData in the thread detail cache (InfiniteData<ForumData>).
+   */
+  const updateForumThreadCache = useCallback(
+    (forumID: string, updater: (page: ForumData, index: number, pages: ForumData[]) => ForumData) => {
+      queryClient.setQueriesData<InfiniteData<ForumData>>({queryKey: [`/forum/${forumID}`]}, oldData => {
+        if (!oldData) {
+          return oldData;
+        }
+        return {
+          ...oldData,
+          pages: oldData.pages.map(updater),
+        };
+      });
+    },
+    [queryClient],
+  );
+
+  /**
+   * Append a newly created post to the thread cache and update all forum
+   * list caches with the new post count / last poster info.
+   */
+  const appendPost = useCallback(
+    (forumID: string, categoryID: string, newPost: PostData, authorHeader: UserHeader) => {
+      // Update the thread cache (InfiniteData<ForumData>).
+      // Only append the post to the last page's posts array. Leave the paginator
+      // untouched so getNextPageParam still returns undefined and no spurious
+      // fetchNextPage is triggered. The server will correct the paginator on
+      // the next real refetch.
+      updateForumThreadCache(forumID, (page, i, pages) => {
+        if (i !== pages.length - 1) {
+          return page;
+        }
+        if (page.posts.some(p => p.postID === newPost.postID)) {
+          return page;
+        }
+        return {
+          ...page,
+          posts: [...page.posts, newPost],
+        };
+      });
+
+      // Update ForumSearchData and CategoryData list caches.
+      updateForumListInAllCaches(forumID, categoryID, entry =>
+        updateForumListEntry(entry, forumID, authorHeader, newPost),
+      );
+    },
+    [updateForumThreadCache, updateForumListInAllCaches],
+  );
+
+  /**
+   * Mark a forum as fully read in all list caches. Local-only, no server call.
+   */
+  const markRead = useCallback(
+    (forumID: string, categoryID?: string) => {
+      updateForumListInAllCaches(forumID, categoryID, entry => ({
+        ...entry,
+        readCount: entry.postCount,
+      }));
+    },
+    [updateForumListInAllCaches],
+  );
+
+  /**
+   * Update isFavorite for a forum in all list and thread caches.
+   */
+  const updateFavorite = useCallback(
+    (forumID: string, categoryID: string | undefined, newValue: boolean) => {
+      updateForumListInAllCaches(forumID, categoryID, entry => ({
+        ...entry,
+        isFavorite: newValue,
+      }));
+      updateForumThreadCache(forumID, page => ({...page, isFavorite: newValue}));
+    },
+    [updateForumListInAllCaches, updateForumThreadCache],
+  );
+
+  /**
+   * Update isMuted for a forum in all list and thread caches.
+   */
+  const updateMute = useCallback(
+    (forumID: string, categoryID: string | undefined, newValue: boolean) => {
+      updateForumListInAllCaches(forumID, categoryID, entry => ({
+        ...entry,
+        isMuted: newValue,
+      }));
+      updateForumThreadCache(forumID, page => ({...page, isMuted: newValue}));
+    },
+    [updateForumListInAllCaches, updateForumThreadCache],
+  );
+
+  /**
+   * Update isPinned for a forum in all list and thread caches.
+   */
+  const updatePinned = useCallback(
+    (forumID: string, categoryID: string | undefined, newValue: boolean) => {
+      updateForumListInAllCaches(forumID, categoryID, entry => ({
+        ...entry,
+        isPinned: newValue,
+      }));
+      updateForumThreadCache(forumID, page => ({...page, isPinned: newValue}));
+    },
+    [updateForumListInAllCaches, updateForumThreadCache],
+  );
+
+  /**
+   * Prepend a newly created forum thread to the category, recent, and owner
+   * list caches. Also prepends the first post to the "your posts" cache.
+   */
+  const createThread = useCallback(
+    (createdForum: ForumData, authorHeader: UserHeader) => {
+      const firstPost = createdForum.posts[0];
+      const forumListData: ForumListData = {
+        forumID: createdForum.forumID,
+        creator: authorHeader,
+        title: createdForum.title,
+        postCount: createdForum.posts.length,
+        readCount: createdForum.posts.length,
+        createdAt: firstPost?.createdAt ?? new Date().toISOString(),
+        lastPoster: authorHeader,
+        lastPostAt: firstPost?.createdAt,
+        isLocked: createdForum.isLocked,
+        isFavorite: createdForum.isFavorite,
+        isMuted: createdForum.isMuted,
+        isPinned: createdForum.isPinned,
+      };
+
+      // Prepend to category cache.
+      queryClient.setQueriesData<InfiniteData<CategoryData>>(
+        {queryKey: [`/forum/categories/${createdForum.categoryID}`]},
+        oldData => {
+          if (!oldData) {
+            return oldData;
+          }
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page, i) =>
+              i === 0 ? {...page, forumThreads: [forumListData, ...(page.forumThreads ?? [])]} : page,
+            ),
+          };
+        },
+      );
+
+      // Prepend to /forum/recent and /forum/owner ForumSearchData caches.
+      for (const keyPrefix of ['/forum/recent', '/forum/owner']) {
+        queryClient.setQueriesData<InfiniteData<ForumSearchData>>({queryKey: [keyPrefix]}, oldData => {
+          if (!oldData) {
+            return oldData;
+          }
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page, i) =>
+              i === 0 ? {...page, forumThreads: [forumListData, ...page.forumThreads]} : page,
+            ),
+          };
+        });
+      }
+
+      // Prepend the first post to "your posts" (byself) PostSearchData cache.
+      if (firstPost) {
+        queryClient.setQueriesData<InfiniteData<PostSearchData>>(
+          {queryKey: ['/forum/post/search', {byself: true}]},
+          oldData => {
+            if (!oldData) {
+              return oldData;
+            }
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page, i) => (i === 0 ? {...page, posts: [firstPost, ...page.posts]} : page)),
+            };
+          },
+        );
+      }
+    },
+    [queryClient],
+  );
+
+  return {appendPost, createThread, markRead, updateFavorite, updateMute, updatePinned};
 };

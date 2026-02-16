@@ -1,15 +1,14 @@
-import {QueryKey, useQueryClient} from '@tanstack/react-query';
 import React, {Dispatch, SetStateAction} from 'react';
 import {Menu} from 'react-native-paper';
 
 import {StateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
 import {AppIcons} from '#src/Enums/Icons';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useForumPinMutation} from '#src/Queries/Forum/ForumThreadPinMutations';
 
 interface ForumThreadPinItemProps {
   isPinned?: boolean;
   refreshing: boolean;
-  invalidationQueryKeys: QueryKey[];
   closeMenu: () => void;
   setRefreshing: Dispatch<SetStateAction<boolean>>;
   categoryID: string;
@@ -18,7 +17,7 @@ interface ForumThreadPinItemProps {
 
 export const ForumThreadPinItem = (props: ForumThreadPinItemProps) => {
   const pinMutation = useForumPinMutation();
-  const queryClient = useQueryClient();
+  const {updatePinned} = useForumCacheReducer();
 
   const handlePin = () => {
     pinMutation.mutate(
@@ -27,11 +26,8 @@ export const ForumThreadPinItem = (props: ForumThreadPinItemProps) => {
         action: props.isPinned ? 'unpin' : 'pin',
       },
       {
-        onSuccess: async () => {
-          const invalidations = props.invalidationQueryKeys.map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          await Promise.all([invalidations].flat());
+        onSuccess: () => {
+          updatePinned(props.forumID, props.categoryID, !props.isPinned);
         },
         onSettled: () => {
           props.setRefreshing(false);
