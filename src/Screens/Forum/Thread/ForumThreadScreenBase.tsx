@@ -1,6 +1,6 @@
-import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
+import {InfiniteData, QueryObserverResult} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {ActivityIndicator} from 'react-native-paper';
@@ -23,13 +23,16 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
+import {useForumData} from '#src/Hooks/Forum/useForumData';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
-import {getNextPageParam, getPreviousPageParam} from '#src/Queries/Pagination';
+import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
 
@@ -71,22 +74,26 @@ export const ForumThreadScreenBase = ({
   const navigation = useCommonStack();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
+  const markReadMutation = useForumMarkReadMutation();
   const flatListRef = useRef<TConversationListV2Ref>(null);
   const {hasModerator} = usePrivilege();
   const maxForumPostImages = useMaxForumPostImages();
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
-  const queryClient = useQueryClient();
   const [readyToShow, setReadyToShow] = useState(false);
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
-  // Needed for useEffect checking.
-  const forumData = data?.pages[0];
-  // This should not expire the `/forum/:ID` data on mark-as-read because there is no read data in there
-  // to care about. It's all in the category (ForumListData) queries.
-  const markReadInvalidationKeys = ForumListData.getCacheKeys(data?.pages[0].categoryID);
-  const otherInvalidationKeys = ForumListData.getCacheKeys(data?.pages[0].categoryID, data?.pages[0].forumID);
+  const {data: profilePublicData} = useUserProfileQuery();
+
+  // Derive unified ForumData from the React Query cache (no local state).
+  const forumData = useForumData(data);
+  const forumPosts = forumData?.posts ?? [];
+
+  // Cache reducer -- operates directly on queryClient.
+  const {appendPost} = useForumCacheReducer();
+
+  const otherInvalidationKeys = ForumListData.getCacheKeys(forumData?.categoryID, forumData?.forumID);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: refetch,
   });
@@ -102,33 +109,31 @@ export const ForumThreadScreenBase = ({
   });
 
   const getNavButtons = useCallback(() => {
-    // Typescript struggles
-    if (!data?.pages[0]) {
+    if (!forumData) {
       return <></>;
     }
-    const eventID = data.pages[0].eventID;
 
     return (
       <View>
         <MaterialHeaderButtons>
-          {eventID && (
+          {forumData.eventID && (
             <Item
               title={'Event'}
               iconName={AppIcons.events}
-              onPress={() => navigation.push(CommonStackComponents.eventScreen, {eventID: eventID})}
+              onPress={() => navigation.push(CommonStackComponents.eventScreen, {eventID: forumData.eventID!})}
             />
           )}
-          <ForumThreadPinnedPostsItem forumID={data.pages[0].forumID} navigation={navigation} />
-          <ForumThreadSearchPostsItem navigation={navigation} forum={data.pages[0]} />
+          <ForumThreadPinnedPostsItem forumID={forumData.forumID} navigation={navigation} />
+          <ForumThreadSearchPostsItem navigation={navigation} forum={forumData} />
           <ForumThreadScreenActionsMenu
-            forumData={data.pages[0]}
+            forumData={forumData}
             invalidationQueryKeys={otherInvalidationKeys}
             onRefresh={onRefresh}
           />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [data?.pages, otherInvalidationKeys, navigation, onRefresh]);
+  }, [forumData, otherInvalidationKeys, navigation, onRefresh]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -136,94 +141,40 @@ export const ForumThreadScreenBase = ({
     });
   }, [getNavButtons, navigation]);
 
-  const forumPosts = useMemo(() => {
-    if (data && data.pages) {
-      return data.pages.flatMap(fd => fd.posts);
-    }
-    return [];
-  }, [data]);
-
-  useEffect(() => {
-    if (forumData) {
-      if (forumListData && forumListData.readCount === forumListData.postCount) {
-        logger.debug(`Forum ${forumData.forumID} has already been read.`);
-        return;
-      }
-      logger.debug(`Marking forum ${forumData.forumID} in category ${forumData.categoryID} as read.`);
-      markReadInvalidationKeys.map(key => {
-        queryClient.invalidateQueries({queryKey: key});
-      });
-    }
-  }, [forumData, queryClient, forumListData, markReadInvalidationKeys]);
-
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     formikHelpers.setSubmitting(true);
-    if (!data?.pages[0]) {
+    if (!forumData) {
       formikHelpers.setSubmitting(false);
       return;
     }
     values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
     postCreateMutation.mutate(
       {
-        forumID: data.pages[0].forumID,
+        forumID: forumData.forumID,
         postData: values,
       },
       {
-        onSuccess: async () => {
+        onSuccess: response => {
           formikHelpers.resetForm();
-          // https://github.com/jocosocial/swiftarr/issues/237
-          // https://github.com/jocosocial/swiftarr/issues/168
-          // Refetch needed to "mark" the forum as read.
-          // Also needed to load the data into the list.
-          const refetchResult = await refetch();
-          // React Query v5's refetch() resets infinite queries to a single
-          // page. When a new post tips the thread over a page boundary, the
-          // new post may land on a page that refetch() didn't fetch.
-          // Additionally, refetch() uses initialPageParam (start=undefined),
-          // so the server may return a mid-thread page based on the user's
-          // read position, dropping earlier pages. Explicitly restore any
-          // missing next/previous pages here.
-          const refetchData = refetchResult.data as InfiniteData<ForumData> | undefined;
-          if (refetchData) {
-            const lastPage = refetchData.pages[refetchData.pages.length - 1];
-            if (getNextPageParam(lastPage)) {
-              await fetchNextPage();
-            }
-            const firstPage = refetchData.pages[0];
-            if (getPreviousPageParam(firstPage)) {
-              let prevResult = await fetchPreviousPage();
-              // If the thread is more than 2 pages deep, keep fetching
-              // until we reach the beginning (start=0).
-              while (prevResult.data) {
-                const prevData = prevResult.data as InfiniteData<ForumData>;
-                const prevFirstPage = prevData.pages[0];
-                if (getPreviousPageParam(prevFirstPage)) {
-                  prevResult = await fetchPreviousPage();
-                } else {
-                  break;
-                }
-              }
-            }
+
+          // Update React Query caches (instant, no network).
+          // This triggers a re-render via the derived useForumData.
+          if (profilePublicData) {
+            appendPost(forumData.forumID, forumData.categoryID, response.data, profilePublicData.header);
           }
-          if (data.pages[0]) {
-            // This used to not include the forum itself. idk if that's a problem.
-            // If it is, use otherInvalidationKeys.
-            const invalidations = markReadInvalidationKeys.map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-            await Promise.all(invalidations);
-            // Wait for the next render cycle to ensure the new post is rendered before scrolling.
-            // Had an issue where the new post was not coming into view after it was made.
+
+          // Clear server unread status (fire-and-forget).
+          markReadMutation.mutate({forumID: forumData.forumID});
+
+          // Scroll to the new post.
+          requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
-                flatListRef.current?.scrollToEnd({animated: false});
-              });
+              flatListRef.current?.scrollToEnd({animated: false});
             });
-          }
+          });
         },
         onSettled: () => {
           formikHelpers.setSubmitting(false);
-          // flatListRef.current?.scrollToIndex({index: forumPosts.length - 1, animated: true});
         },
       },
     );
@@ -245,14 +196,14 @@ export const ForumThreadScreenBase = ({
       // LegendList has fully laid out recycled content, causing it to land mid-list.
       return forumPosts.length > 0 ? forumPosts.length - 1 : undefined;
     }
-    const loadedStart = data.pages[0].paginator.start;
+    const loadedStart = forumData?.paginator.start ?? 0;
     const idx = Math.max(forumListData.readCount - loadedStart, 0);
     // Clamp to the loaded data range. readCount can exceed the loaded page
     // when only a subset of posts have been fetched.
     return Math.min(idx, forumPosts.length - 1);
   };
 
-  const showForm = !data.pages[0].isLocked || hasModerator;
+  const showForm = !forumData?.isLocked || hasModerator;
 
   const overlayStyles = StyleSheet.create({
     overlay: {
@@ -272,15 +223,15 @@ export const ForumThreadScreenBase = ({
   return (
     <AppView>
       <PostAsUserBanner />
-      <ListTitleView title={data.pages[0].title} />
-      {data.pages[0].isLocked && <ForumLockedView />}
+      <ListTitleView title={forumData?.title ?? ''} />
+      {forumData?.isLocked && <ForumLockedView />}
       <View style={commonStyles.flex}>
         <ForumConversationListV2
           postList={forumPosts}
           handleLoadNext={handleLoadNext}
           handleLoadPrevious={handleLoadPrevious}
           refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
-          forumData={data.pages[0]}
+          forumData={forumData}
           hasPreviousPage={hasPreviousPage}
           getListHeader={getListHeader}
           listRef={flatListRef}
