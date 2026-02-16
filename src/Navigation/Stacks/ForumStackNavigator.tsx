@@ -23,6 +23,7 @@ export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
   ForumCategoryScreen: {
     category: CategoryData;
+    scrollToTopIntent?: number;
   };
   ForumPostMentionScreen: undefined;
   ForumPostSelfScreen: undefined;

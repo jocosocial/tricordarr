@@ -160,6 +160,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
         enableFAB={!isUserRestricted}
         title={route.params.category.title}
         subtitle={`${data.pages[0].paginator.total} ${pluralize('forum', data.pages[0].paginator.total)}`}
+        scrollToTopIntent={route.params.scrollToTopIntent}
       />
     </AppView>
   );
