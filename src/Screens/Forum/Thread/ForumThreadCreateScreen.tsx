@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
@@ -14,13 +13,15 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {ForumCreateData, ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
+import {ForumCreateData, ForumData, PostContentData} from '#src/Structs/ControllerStructs';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadCreateScreen>;
@@ -43,8 +44,9 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   const [submitting, setSubmitting] = useState(false);
   const [forumFormValid, setForumFormValid] = useState(false);
   const forumCreateMutation = useForumCreateMutation();
-  const queryClient = useQueryClient();
   const maxForumPostImages = useMaxForumPostImages();
+  const {createThread} = useForumCacheReducer();
+  const {data: profilePublicData} = useUserProfileQuery();
   // Use a ref to store the created forum data immediately (synchronously) to avoid race condition
   const createdForumRef = useRef<ForumData | null>(null);
 
@@ -80,21 +82,17 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
               forumID: createdForum.forumID,
             });
           }
+          // Update list caches asynchronously so navigation is not held up.
+          if (profilePublicData) {
+            createThread(response.data, profilePublicData.header);
+          }
         },
         onSettled: () => formikHelpers.setSubmitting(false),
       },
     );
   };
 
-  const onPostSubmit = async (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => {
-    // Invalidations moved here from onForumSubmit to match pattern from SeamailCreateScreen
-    const createdForum = createdForumRef.current;
-    if (createdForum) {
-      const invalidations = ForumListData.getCacheKeys(createdForum.categoryID, createdForum.forumID).map(key => {
-        return queryClient.invalidateQueries({queryKey: key});
-      });
-      await Promise.all(invalidations);
-    }
+  const onPostSubmit = async (_values: PostContentData, formikBag: FormikHelpers<PostContentData>) => {
     formikBag.setSubmitting(false);
   };
 
