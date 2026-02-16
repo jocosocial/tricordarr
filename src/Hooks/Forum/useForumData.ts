@@ -18,7 +18,18 @@ export const useForumData = (data: InfiniteData<ForumData> | undefined): ForumDa
     }
 
     const firstPage = data.pages[0];
-    const posts = data.pages.flatMap(p => p.posts);
+    // Deduplicate by postID so overlapping pages (e.g. from race conditions
+    // or stale cache) never produce duplicate keys in the list.
+    const seen = new Set<number>();
+    const posts = data.pages
+      .flatMap(p => p.posts)
+      .filter(p => {
+        if (seen.has(p.postID)) {
+          return false;
+        }
+        seen.add(p.postID);
+        return true;
+      });
 
     return {
       forumID: firstPage.forumID,

@@ -63,6 +63,10 @@ export const useForumCacheReducer = () => {
   const appendPost = useCallback(
     (forumID: string, categoryID: string, newPost: PostData, authorHeader: UserHeader) => {
       // 1. Update the thread cache (InfiniteData<ForumData>)
+      // Only append the post to the last page's posts array. Leave the paginator
+      // untouched so getNextPageParam still returns undefined and no spurious
+      // fetchNextPage is triggered. The server will correct the paginator on
+      // the next real refetch.
       queryClient.setQueriesData<InfiniteData<ForumData>>({queryKey: [`/forum/${forumID}`]}, oldData => {
         if (!oldData) {
           return oldData;
@@ -71,21 +75,16 @@ export const useForumCacheReducer = () => {
         return {
           ...oldData,
           pages: oldData.pages.map((page, i) => {
-            const updatedPage: ForumData = {
-              ...page,
-              paginator: {
-                ...page.paginator,
-                total: page.paginator.total + 1,
-              },
-            };
-            if (i === lastPageIndex) {
-              // Duplicate guard: don't append if the post is already there.
-              const alreadyExists = page.posts.some(p => p.postID === newPost.postID);
-              if (!alreadyExists) {
-                updatedPage.posts = [...page.posts, newPost];
-              }
+            if (i !== lastPageIndex) {
+              return page;
             }
-            return updatedPage;
+            if (page.posts.some(p => p.postID === newPost.postID)) {
+              return page;
+            }
+            return {
+              ...page,
+              posts: [...page.posts, newPost],
+            };
           }),
         };
       });
