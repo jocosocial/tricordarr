@@ -47,6 +47,31 @@ const updateForumListEntry = (
 };
 
 /**
+ * Build ForumListData from the first page of a thread cache (ForumData).
+ * Used when prepending a thread to the recent list that wasn't already in that cache.
+ */
+const forumListDataFromForumData = (page: ForumData): ForumListData => {
+  const posts = page.posts;
+  const firstPost = posts[0];
+  const lastPost = posts[posts.length - 1];
+  const postCount = page.paginator?.total ?? posts.length;
+  return {
+    forumID: page.forumID,
+    creator: page.creator,
+    title: page.title,
+    postCount,
+    readCount: postCount,
+    createdAt: firstPost?.createdAt ?? new Date().toISOString(),
+    lastPoster: lastPost?.author ?? page.creator,
+    lastPostAt: lastPost?.createdAt,
+    isLocked: page.isLocked,
+    isFavorite: page.isFavorite,
+    isMuted: page.isMuted,
+    isPinned: page.isPinned,
+  };
+};
+
+/**
  * Hook that exposes discrete actions for optimistically updating React Query
  * caches after forum mutations. Each action calls `setQueryData` /
  * `setQueriesData` and always returns new objects so React Query detects the
@@ -60,10 +85,20 @@ export const useForumCacheReducer = () => {
   /**
    * Update a ForumListData entry (matched by forumID) across all ForumSearchData
    * list caches and the CategoryData cache for the given category.
+   * Optionally exclude certain key prefixes (e.g. when handling them separately).
    */
   const updateForumListInAllCaches = useCallback(
-    (forumID: string, categoryID: string | undefined, updater: (entry: ForumListData) => ForumListData) => {
+    (
+      forumID: string,
+      categoryID: string | undefined,
+      updater: (entry: ForumListData) => ForumListData,
+      excludeKeyPrefixes?: string[],
+    ) => {
+      const excludeSet = excludeKeyPrefixes ? new Set(excludeKeyPrefixes) : undefined;
       for (const keyPrefix of forumSearchDataKeys) {
+        if (excludeSet?.has(keyPrefix)) {
+          continue;
+        }
         queryClient.setQueriesData<InfiniteData<ForumSearchData>>({queryKey: [keyPrefix]}, oldData => {
           if (!oldData) {
             return oldData;
@@ -150,15 +185,64 @@ export const useForumCacheReducer = () => {
 
   /**
    * Mark a forum as fully read in all list caches. Local-only, no server call.
+   * When the update was not a no-op (readCount differed from postCount), the
+   * thread is moved to the top of the recent list.
    */
   const markRead = useCallback(
     (forumID: string, categoryID?: string) => {
-      updateForumListInAllCaches(forumID, categoryID, entry => ({
-        ...entry,
-        readCount: entry.postCount,
-      }));
+      const updater = (entry: ForumListData) => ({...entry, readCount: entry.postCount});
+      updateForumListInAllCaches(forumID, categoryID, updater, ['/forum/recent']);
+
+      queryClient.setQueriesData<InfiniteData<ForumSearchData>>({queryKey: ['/forum/recent']}, oldData => {
+        if (!oldData) {
+          return oldData;
+        }
+        let found: {pageIndex: number; entry: ForumListData} | null = null;
+        for (let pi = 0; pi < oldData.pages.length; pi++) {
+          const entry = oldData.pages[pi].forumThreads.find(t => t.forumID === forumID);
+          if (entry) {
+            found = {pageIndex: pi, entry};
+            break;
+          }
+        }
+        if (!found) {
+          const threadCacheEntries = queryClient.getQueriesData<InfiniteData<ForumData>>({
+            queryKey: [`/forum/${forumID}`],
+          });
+          const firstPage = threadCacheEntries[0]?.[1]?.pages?.[0];
+          if (firstPage) {
+            const newEntry = forumListDataFromForumData(firstPage);
+            return {
+              ...oldData,
+              pages: oldData.pages.map((p, i) => (i === 0 ? {...p, forumThreads: [newEntry, ...p.forumThreads]} : p)),
+            };
+          }
+          return oldData;
+        }
+        const {entry} = found;
+        const updatedEntry = {...entry, readCount: entry.postCount};
+        if (entry.readCount === entry.postCount) {
+          return {
+            ...oldData,
+            pages: oldData.pages.map(p => ({
+              ...p,
+              forumThreads: p.forumThreads.map(t => (t.forumID === forumID ? updatedEntry : t)),
+            })),
+          };
+        }
+        return {
+          ...oldData,
+          pages: oldData.pages.map((p, i) => {
+            if (i === 0) {
+              const withoutEntry = p.forumThreads.filter(t => t.forumID !== forumID);
+              return {...p, forumThreads: [updatedEntry, ...withoutEntry]};
+            }
+            return {...p, forumThreads: p.forumThreads.filter(t => t.forumID !== forumID)};
+          }),
+        };
+      });
     },
-    [updateForumListInAllCaches],
+    [queryClient, updateForumListInAllCaches],
   );
 
   /**
