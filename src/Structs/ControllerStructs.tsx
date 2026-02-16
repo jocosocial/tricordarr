@@ -285,9 +285,9 @@ export interface FezPostData {
 
 export interface MembersOnlyData {
   /// The users participating in the fez.
-  participants: [UserHeader];
+  participants: UserHeader[];
   /// The users on a waiting list for the fez.
-  waitingList: [UserHeader];
+  waitingList: UserHeader[];
   /// How many posts the user can see in the fez. The count is returned even for calls that don't return the actual posts, but is not returned for
   /// fezzes where the user is not a member. PostCount does not include posts from blocked/muted users.
   postCount: number;
@@ -297,7 +297,7 @@ export interface MembersOnlyData {
   /// Paginates the array in posts--gives the start and limit of the returned posts array relative to all the posts in the thread.
   paginator: Paginator;
   /// The FezPosts in the fez discussion. Methods that return arrays of Fezzes, or that add or remove users, do not populate this field (it will be nil).
-  posts?: [FezPostData];
+  posts?: FezPostData[];
   /// Whether user has muted the fez.
   isMuted: boolean;
 }
@@ -729,7 +729,7 @@ export interface NoteData {
 
 export interface RegistrationCodeUserData {
   // User accounts associated with the reg code. First item in the array is the primary account.
-  users: [UserHeader];
+  users: UserHeader[];
   /// The registration code associated with this account. If this account doesn't have an associated regcode, will be the empty string.
   regCode: string;
 }
@@ -820,7 +820,7 @@ export interface CategoryData {
   /// if TRUE, this category is for Event Forums, and is prepopulated with forum threads for each Schedule Event.
   isEventCategory: boolean;
   /// The threads in the category. Only populated for /categories/ID.
-  forumThreads?: [ForumListData];
+  forumThreads?: ForumListData[];
   /// Pagination of the results
   paginator: Paginator;
 }
@@ -860,7 +860,7 @@ export interface PostData {
   /// The text of the post.
   text: string;
   /// The filenames of the post's optional images.
-  images?: [string];
+  images?: string[];
   /// Whether the current user has bookmarked the post.
   isBookmarked: boolean;
   /// The current user's `LikeType` reaction on the post.
@@ -968,7 +968,7 @@ export interface PhotostreamImageData {
 /// However: `/api/v3/photostream` returns one of thse objects even for non-mod users--it just returns 30 photos and sets `paginator.total` to 30.
 ///
 export interface PhotostreamListData {
-  photos: [PhotostreamImageData];
+  photos: PhotostreamImageData[];
   paginator: Paginator;
 }
 
@@ -977,8 +977,8 @@ export interface PhotostreamListData {
 /// a photo is uploaded, its tag is validated, and validation will fail if the tagged event has ended.
 ///
 export interface PhotostreamLocationData {
-  events: [EventData];
-  locations: [string];
+  events: EventData[];
+  locations: string[];
 }
 
 /// Uploads a photo to the photostream. Either the eventID or the locationName must be set.
@@ -1200,7 +1200,7 @@ export interface BoardgameRecommendationData {
 /// * `GET /api/v3/boardgames`
 export interface BoardgameResponseData {
   /// Array of boardgames.
-  gameArray: [BoardgameData];
+  gameArray: BoardgameData[];
   /// Total games in result set, and the start and limit into the found set.
   paginator: Paginator;
 }
