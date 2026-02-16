@@ -94,8 +94,15 @@ export const ForumThreadScreenBase = ({
   const {appendPost} = useForumCacheReducer();
 
   const otherInvalidationKeys = ForumListData.getCacheKeys(forumData?.categoryID, forumData?.forumID);
+  const fullRefresh = useCallback(async () => {
+    await refetch();
+    // After refetch, the server may report more posts than we have pages for
+    // (e.g. optimistically-added posts that crossed a page boundary).
+    // fetchNextPage is a no-op when getNextPageParam returns undefined.
+    await fetchNextPage();
+  }, [refetch, fetchNextPage]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
-    refresh: refetch,
+    refresh: fullRefresh,
   });
 
   const {handleLoadNext, handleLoadPrevious} = usePagination({
