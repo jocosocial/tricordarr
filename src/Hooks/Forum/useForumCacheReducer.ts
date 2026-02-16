@@ -225,6 +225,17 @@ export const useForumCacheReducer = () => {
         isPinned: createdForum.isPinned,
       };
 
+      // Pre-seed the thread detail cache so useForumThreadQuery(forumID) has data when navigating to the thread.
+      queryClient.setQueriesData<InfiniteData<ForumData>>({queryKey: [`/forum/${createdForum.forumID}`]}, oldData => {
+        if (oldData) {
+          return oldData;
+        }
+        return {
+          pages: [createdForum],
+          pageParams: [{start: createdForum.paginator.start, limit: createdForum.paginator.limit}],
+        };
+      });
+
       // Prepend to category cache.
       queryClient.setQueriesData<InfiniteData<CategoryData>>(
         {queryKey: [`/forum/categories/${createdForum.categoryID}`]},
