@@ -1,5 +1,5 @@
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {RefreshControlProps} from 'react-native';
 import {Divider} from 'react-native-paper';
 
@@ -23,6 +23,7 @@ interface ForumThreadListProps {
   categoryID?: string;
   keyExtractor?: (item: ForumListData) => string;
   onScrollThreshold?: (value: boolean) => void;
+  scrollToTopIntent?: number;
 }
 
 /**
@@ -38,9 +39,16 @@ export const ForumThreadList = ({
   categoryID,
   keyExtractor = (item: ForumListData) => item.forumID,
   onScrollThreshold,
+  scrollToTopIntent,
 }: ForumThreadListProps) => {
   const listRef = useRef<FlashListRef<ForumListData>>(null);
   const {enableSelection, setEnableSelection, selectedItems} = useSelection();
+
+  useEffect(() => {
+    if (scrollToTopIntent) {
+      listRef.current?.scrollToOffset({offset: 0, animated: false});
+    }
+  }, [scrollToTopIntent]);
 
   const renderListHeader = () => {
     // Turning this off because the list renders too quickly based on the state data.

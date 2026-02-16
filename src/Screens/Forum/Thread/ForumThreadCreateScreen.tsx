@@ -1,3 +1,4 @@
+import {CommonActions} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -78,6 +79,14 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
           // Use ref instead of response.data to avoid race condition - ref is set synchronously
           const createdForum = createdForumRef.current;
           if (createdForum) {
+            const state = navigation.getState();
+            const categoryRoute = state.routes.find(r => r.name === ForumStackComponents.forumCategoryScreen);
+            if (categoryRoute) {
+              navigation.dispatch({
+                ...CommonActions.setParams({scrollToTopIntent: Date.now()}),
+                source: categoryRoute.key,
+              });
+            }
             navigation.replace(CommonStackComponents.forumThreadScreen, {
               forumID: createdForum.forumID,
             });

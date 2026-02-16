@@ -25,6 +25,7 @@ interface ForumThreadListViewProps {
   onRefresh: () => void;
   forumListData: ForumListData[];
   subtitle?: string;
+  scrollToTopIntent?: number;
 }
 
 export const ForumThreadListView = ({
@@ -42,6 +43,7 @@ export const ForumThreadListView = ({
   onRefresh,
   forumListData,
   subtitle,
+  scrollToTopIntent,
 }: ForumThreadListViewProps) => {
   const {enableSelection} = useSelection();
   const [showFabLabel, setShowFabLabel] = useState(true);
@@ -73,6 +75,7 @@ export const ForumThreadListView = ({
         hasPreviousPage={hasPreviousPage}
         categoryID={category?.categoryID}
         onScrollThreshold={onScrollThreshold}
+        scrollToTopIntent={scrollToTopIntent}
       />
       {enableFAB && category && <ForumCategoryFAB category={category} showLabel={showFabLabel} />}
     </>
