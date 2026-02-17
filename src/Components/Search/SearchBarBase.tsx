@@ -119,26 +119,15 @@ export const SearchBarBase = ({
     queryClient.removeQueries({predicate});
   }, [queryClient]);
 
-  // Handle auto-search: trigger search automatically when query meets minLength
-  // Also manage helper text visibility for reactive search patterns
+  // Manage helper text visibility for auto-search patterns.
+  // The query hook handles the actual searching reactively via searchQuery state.
+  // Do NOT dismiss the keyboard here — this effect fires on every keystroke.
   useEffect(() => {
     if (autoSearch) {
       const trimmedQuery = searchQuery.trim();
-      if (trimmedQuery.length >= minLength) {
-        setShowHelp(false);
-        // Call onSearch if provided (for explicit search triggers)
-        // If not provided, the query hook will handle reactive searching
-        Keyboard.dismiss();
-        if (onSearch) {
-          onSearch();
-        }
-      } else if (trimmedQuery.length > 0 && trimmedQuery.length < minLength) {
-        setShowHelp(true);
-      } else {
-        setShowHelp(false);
-      }
+      setShowHelp(trimmedQuery.length > 0 && trimmedQuery.length < minLength);
     }
-  }, [autoSearch, onSearch, searchQuery, minLength]);
+  }, [autoSearch, searchQuery, minLength]);
 
   // Clear search results when you go back or otherwise unmount this screen
   // React Query v5: use queryClient.removeQueries() instead of the removed remove() method
