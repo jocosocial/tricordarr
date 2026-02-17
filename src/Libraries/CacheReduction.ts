@@ -115,3 +115,16 @@ export const sortedInsertIntoPages = <TPage, TItem>(
   }
   return {...data, pages};
 };
+
+/**
+ * Compute the high-water mark (highest position reached) across all pages
+ * of an InfiniteData result. Useful for determining how many items have
+ * actually been fetched in a paginated query.
+ */
+export const paginatedHighWaterMark = <TPage>(
+  data: InfiniteData<TPage>,
+  getStart: (page: TPage) => number,
+  getItemCount: (page: TPage) => number,
+): number => {
+  return data.pages.reduce((max, page) => Math.max(max, getStart(page) + getItemCount(page)), 0);
+};

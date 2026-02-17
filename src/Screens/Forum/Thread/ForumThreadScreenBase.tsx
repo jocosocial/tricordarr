@@ -29,6 +29,7 @@ import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {paginatedHighWaterMark} from '#src/Libraries/CacheReduction';
 import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents} from '#src/Navigation/Stacks/ForumStackNavigator';
@@ -95,14 +96,20 @@ export const ForumThreadScreenBase = ({
   const dispatchScrollToTop = useScrollToTopIntent();
 
   // Mark forum as read in local caches when thread data loads.
+  // Only mark as many posts read as have actually been fetched.
   useEffect(() => {
-    if (forumData) {
+    if (forumData && data) {
       if (forumListData && forumListData.readCount === forumListData.postCount) {
         return;
       }
-      markRead(forumData.forumID, forumData.categoryID);
+      const fetchedUpTo = paginatedHighWaterMark(
+        data,
+        page => page.paginator.start,
+        page => page.posts.length,
+      );
+      markRead(forumData.forumID, forumData.categoryID, fetchedUpTo);
     }
-  }, [forumData, forumListData, markRead]);
+  }, [forumData, forumListData, markRead, data]);
 
   const fullRefresh = useCallback(async () => {
     await refetch();

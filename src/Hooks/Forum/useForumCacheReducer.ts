@@ -494,13 +494,19 @@ export const useForumCacheReducer = () => {
   );
 
   /**
-   * Mark a forum as fully read in all list caches. Local-only, no server call.
-   * When the update was not a no-op (readCount differed from postCount), the
-   * thread is moved to the top of the recent list.
+   * Mark a forum as read in all list caches. Local-only, no server call.
+   * When readCount is provided, sets readCount to the higher of the existing
+   * value and the given count (partial read from fetched pages). When omitted,
+   * marks the thread fully read (readCount = postCount).
+   * When the update was not a no-op, the thread is moved to the top of the
+   * recent list.
    */
   const markRead = useCallback(
-    (forumID: string, categoryID?: string) => {
-      const updater = (entry: ForumListData) => ({...entry, readCount: entry.postCount});
+    (forumID: string, categoryID?: string, readCount?: number) => {
+      const resolveReadCount = (entry: ForumListData) =>
+        readCount !== undefined ? Math.max(entry.readCount, readCount) : entry.postCount;
+
+      const updater = (entry: ForumListData) => ({...entry, readCount: resolveReadCount(entry)});
       updateForumListInAllCaches(forumID, categoryID, updater, ['/forum/recent']);
 
       const matchesForum = (t: ForumListData) => t.forumID === forumID;
@@ -532,13 +538,20 @@ export const useForumCacheReducer = () => {
             });
             const firstPage = threadCacheEntries[0]?.[1]?.pages?.[0];
             if (firstPage) {
-              return insertAtEdge(oldData, forumSearchAccessor, forumListDataFromForumData(firstPage), edge);
+              const fallbackEntry = forumListDataFromForumData(firstPage);
+              return insertAtEdge(
+                oldData,
+                forumSearchAccessor,
+                {...fallbackEntry, readCount: resolveReadCount(fallbackEntry)},
+                edge,
+              );
             }
             return oldData;
           }
 
-          const updatedEntry = {...foundEntry, readCount: foundEntry.postCount};
-          if (foundEntry.readCount === foundEntry.postCount) {
+          const newReadCount = resolveReadCount(foundEntry);
+          const updatedEntry = {...foundEntry, readCount: newReadCount};
+          if (foundEntry.readCount >= newReadCount) {
             return updateItemsInPages(oldData, forumSearchAccessor, t => (matchesForum(t) ? updatedEntry : t));
           }
           return moveItemToEdge(oldData, forumSearchAccessor, matchesForum, updatedEntry, edge);
