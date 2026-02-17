@@ -3,6 +3,7 @@ import React, {useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {RNFlatListSeparatorComponent} from '#src/Types';
 
@@ -41,7 +42,7 @@ export const ConversationList = <TItem,>({
   handleLoadNext,
   // hasNextPage,
   onScrollThreshold,
-  enableScrollButton = true,
+  enableScrollButton,
   keyExtractor,
   renderItem,
   ListHeaderComponent,
@@ -51,6 +52,8 @@ export const ConversationList = <TItem,>({
   style,
 }: ConversationListProps<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
+  const {appConfig} = useConfig();
+  const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [init, setInit] = useState(true);
   const [hasLayout, setHasLayout] = useState(false);
@@ -147,7 +150,7 @@ export const ConversationList = <TItem,>({
         initialScrollIndex={initialScrollIndex}
         style={style}
       />
-      {enableScrollButton && showScrollButton && <FloatingScrollButton onPress={handleScrollButtonPress} />}
+      {effectiveScrollButton && showScrollButton && <FloatingScrollButton onPress={handleScrollButtonPress} />}
     </View>
   );
 };

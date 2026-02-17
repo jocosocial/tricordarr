@@ -3,6 +3,7 @@ import React, {useCallback, useRef, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {createLogger} from '#src/Libraries/Logger';
@@ -107,7 +108,7 @@ export const ConversationListV2 = <TItem,>({
   handleLoadPrevious,
   handleLoadNext,
   onScrollThreshold,
-  enableScrollButton = true,
+  enableScrollButton,
   keyExtractor,
   renderItem,
   ListHeaderComponent,
@@ -124,6 +125,8 @@ export const ConversationListV2 = <TItem,>({
   // Default maintainScrollAtEnd to follow alignItemsAtEnd when not explicitly provided.
   const effectiveMaintainScrollAtEnd = maintainScrollAtEnd ?? alignItemsAtEnd;
   const {commonStyles, styleDefaults} = useStyles();
+  const {appConfig} = useConfig();
+  const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
   // null = hidden, 'up' | 'down' = visible with that icon direction.
   const [scrollButtonDirection, setScrollButtonDirection] = useState<'up' | 'down' | null>(null);
   const readyFiredRef = useRef(false);
@@ -372,7 +375,7 @@ export const ConversationListV2 = <TItem,>({
         onLoad={onLoad}
         style={style}
       />
-      {enableScrollButton && scrollButtonDirection !== null && (
+      {effectiveScrollButton && scrollButtonDirection !== null && (
         <FloatingScrollButton
           onPress={handleScrollButtonPress}
           icon={scrollButtonDirection === 'up' ? AppIcons.scrollUp : AppIcons.scrollDown}

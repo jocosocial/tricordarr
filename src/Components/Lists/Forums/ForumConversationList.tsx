@@ -124,7 +124,6 @@ export const ForumConversationList = ({
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
-      enableScrollButton={true}
       initialScrollIndex={initialScrollIndex}
       // Style is here rather than in the renderItem because the padding we use is
       // also needed for the dividers. It could be added to the divider function as

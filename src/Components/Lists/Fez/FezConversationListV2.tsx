@@ -139,7 +139,6 @@ export const FezConversationListV2 = ({
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
-      enableScrollButton={true}
       initialScrollIndex={initialScrollIndex}
       alignItemsAtEnd={initialReadStateRef.current.isFullyRead}
       maintainScrollAtEnd={true}

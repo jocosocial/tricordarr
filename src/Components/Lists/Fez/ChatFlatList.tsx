@@ -8,6 +8,7 @@ import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
@@ -39,9 +40,11 @@ export const ChatFlatList = ({
   // hasNextPage,
   fezPostData,
   onScrollThreshold,
-  enableScrollButton = true,
+  enableScrollButton,
 }: ChatFlatListProps) => {
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
+  const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
 
   const styles = StyleSheet.create({
     itemContainer: {
@@ -104,7 +107,7 @@ export const ChatFlatList = ({
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
-      enableScrollButton={enableScrollButton}
+      enableScrollButton={effectiveScrollButton}
       onScrollThreshold={onScrollThreshold}
     />
   );

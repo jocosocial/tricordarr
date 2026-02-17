@@ -46,7 +46,7 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={CommonStackComponents.configServerUrl}
             />
             <SettingsNavigationListItem
-              title={'Accessibility'}
+              title={'Appearance'}
               description={'Theme and styling options for this app.'}
               navComponent={CommonStackComponents.accessibilitySettingsScreen}
             />

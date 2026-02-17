@@ -3,6 +3,7 @@ import React, {forwardRef, useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 interface AppFlashListProps<TItem> {
@@ -43,7 +44,7 @@ const AppFlashListInner = <TItem,>(
     data,
     refreshControl,
     onScrollThreshold,
-    enableScrollButton = true,
+    enableScrollButton,
     numColumns,
     handleLoadNext,
     extraData,
@@ -53,6 +54,8 @@ const AppFlashListInner = <TItem,>(
   ref: React.ForwardedRef<FlashListRef<TItem>>,
 ) => {
   const {commonStyles, styleDefaults} = useStyles();
+  const {appConfig} = useConfig();
+  const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
   const [showScrollButton, setShowScrollButton] = useState(false);
 
   /**
@@ -88,7 +91,7 @@ const AppFlashListInner = <TItem,>(
         ref={ref}
         data={data}
         renderItem={renderItem}
-        onScroll={enableScrollButton ? onScroll : undefined}
+        onScroll={effectiveScrollButton ? onScroll : undefined}
         onEndReachedThreshold={onEndReachedThreshold}
         keyExtractor={keyExtractor}
         initialScrollIndex={initialScrollIndex}
@@ -103,7 +106,7 @@ const AppFlashListInner = <TItem,>(
         // columnWrapperStyle is not supported in FlashList v2.
         masonry={masonry}
       />
-      {enableScrollButton && showScrollButton && (
+      {effectiveScrollButton && showScrollButton && (
         <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} small={scrollButtonSmall} />
       )}
     </View>

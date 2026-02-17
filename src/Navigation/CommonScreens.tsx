@@ -672,7 +672,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.accessibilitySettingsScreen}
         component={AccessibilitySettingsScreen}
-        options={{title: 'Accessibility'}}
+        options={{title: 'Appearance'}}
       />
       <Stack.Screen
         name={CommonStackComponents.imageSettingsScreen}

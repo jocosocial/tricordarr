@@ -42,6 +42,7 @@ export interface AccessibilityConfig {
  */
 export interface UserPreferences {
   reverseSwipeOrientation: boolean;
+  showScrollButton: boolean;
   defaultForumSortOrder: ForumSort | undefined;
   defaultForumSortDirection: ForumSortDirection | undefined;
   highlightForumAlertWords: boolean;
@@ -148,6 +149,7 @@ export const defaultAppConfig: AppConfig = {
   schedBaseUrl: '',
   userPreferences: {
     reverseSwipeOrientation: false,
+    showScrollButton: true,
     defaultForumSortDirection: undefined,
     defaultForumSortOrder: undefined,
     highlightForumAlertWords: true,
@@ -192,6 +194,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.silenceTimezoneWarnings === undefined) {
     appConfig.silenceTimezoneWarnings = false;
+  }
+  if (appConfig.userPreferences.showScrollButton === undefined) {
+    appConfig.userPreferences.showScrollButton = true;
   }
 
   // Ok now we're done

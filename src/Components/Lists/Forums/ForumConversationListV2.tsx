@@ -136,7 +136,6 @@ export const ForumConversationListV2 = ({
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
-      enableScrollButton={true}
       initialScrollIndex={initialScrollIndex}
       alignItemsAtEnd={isFullyRead}
       estimatedItemSize={120}
