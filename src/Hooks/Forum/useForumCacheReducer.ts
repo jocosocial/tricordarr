@@ -2,6 +2,7 @@ import {InfiniteData, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {
   filterItemsFromPages,
@@ -17,6 +18,7 @@ import {
   ForumListData,
   ForumSearchData,
   PostData,
+  PostDetailData,
   PostSearchData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
@@ -44,6 +46,18 @@ const forumSearchAccessor: PageItemAccessor<ForumSearchData, ForumListData> = {
 const categoryAccessor: PageItemAccessor<CategoryData, ForumListData> = {
   get: page => page.forumThreads,
   set: (page, items) => ({...page, forumThreads: items}),
+};
+
+/** Accessor for PostSearchData pages. */
+const postSearchAccessor: PageItemAccessor<PostSearchData, PostData> = {
+  get: page => page.posts,
+  set: (page, items) => ({...page, posts: items}),
+};
+
+/** Accessor for ForumData posts within thread pages. */
+const forumDataPostAccessor: PageItemAccessor<ForumData, PostData> = {
+  get: page => page.posts,
+  set: (page, items) => ({...page, posts: items}),
 };
 
 /**
@@ -208,6 +222,7 @@ export const useForumCacheReducer = () => {
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
   const {defaultForumSortOrder, defaultForumSortDirection} = appConfig.userPreferences;
+  const {currentUserID} = useSession();
 
   /**
    * Search all forum list caches (ForumSearchData, CategoryData, thread detail)
@@ -301,6 +316,38 @@ export const useForumCacheReducer = () => {
   );
 
   /**
+   * Update a PostData (matched by postID) across thread caches.
+   * Handles both /forum/{forumID} and /forum/post/{postID}/forum.
+   */
+  const updatePostInThreadCaches = useCallback(
+    (postID: number, forumID: string | undefined, updater: (post: PostData) => PostData) => {
+      const postUpdater = (post: PostData) => (post.postID === postID ? updater(post) : post);
+      if (forumID) {
+        queryClient.setQueriesData<InfiniteData<ForumData>>({queryKey: [`/forum/${forumID}`]}, oldData =>
+          oldData ? updateItemsInPages(oldData, forumDataPostAccessor, postUpdater) : oldData,
+        );
+      }
+      queryClient.setQueriesData<InfiniteData<ForumData>>({queryKey: [`/forum/post/${postID}/forum`]}, oldData =>
+        oldData ? updateItemsInPages(oldData, forumDataPostAccessor, postUpdater) : oldData,
+      );
+    },
+    [queryClient],
+  );
+
+  /**
+   * Update a PostData (matched by postID) across all post search caches.
+   */
+  const updatePostInSearchCaches = useCallback(
+    (postID: number, updater: (post: PostData) => PostData) => {
+      const postUpdater = (post: PostData) => (post.postID === postID ? updater(post) : post);
+      queryClient.setQueriesData<InfiniteData<PostSearchData>>({queryKey: ['/forum/post/search']}, oldData =>
+        oldData ? updateItemsInPages(oldData, postSearchAccessor, postUpdater) : oldData,
+      );
+    },
+    [queryClient],
+  );
+
+  /**
    * Append a newly created post to the thread cache and update all forum
    * list caches with the new post count / last poster info.
    */
@@ -319,8 +366,26 @@ export const useForumCacheReducer = () => {
         };
       });
       updateForumListInAllCaches(forumID, categoryID, entry => updateForumListEntry(entry, forumID, newPost));
+
+      // Prepend to "your posts" (byself) cache when the post was created by the current user.
+      if (newPost.author.userID === currentUserID) {
+        queryClient.setQueriesData<InfiniteData<PostSearchData>>(
+          {queryKey: ['/forum/post/search', {byself: true}]},
+          oldData => {
+            if (!oldData) {
+              return oldData;
+            }
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page, i) =>
+                i === 0 ? {...page, posts: [newPost, ...page.posts]} : page,
+              ),
+            };
+          },
+        );
+      }
     },
-    [updateForumThreadCache, updateForumListInAllCaches],
+    [updateForumThreadCache, updateForumListInAllCaches, queryClient, currentUserID],
   );
 
   /**
@@ -472,6 +537,122 @@ export const useForumCacheReducer = () => {
   );
 
   /**
+   * Rename a forum thread in all list and thread caches.
+   */
+  const renameThread = useCallback(
+    (forumID: string, categoryID: string | undefined, newTitle: string) => {
+      updateForumListInAllCaches(forumID, categoryID, entry => ({...entry, title: newTitle}));
+      updateForumThreadCache(forumID, page => ({...page, title: newTitle}));
+    },
+    [updateForumListInAllCaches, updateForumThreadCache],
+  );
+
+  /**
+   * Toggle isPinned on a post across thread, search, and pinned posts caches.
+   */
+  const updatePostPin = useCallback(
+    (postID: number, forumID: string | undefined, newValue: boolean) => {
+      const updater = (post: PostData): PostData => ({...post, isPinned: newValue});
+      updatePostInThreadCaches(postID, forumID, updater);
+      updatePostInSearchCaches(postID, updater);
+      if (forumID) {
+        queryClient.setQueriesData<PostData[]>({queryKey: [`/forum/${forumID}/pinnedposts`]}, oldData => {
+          if (!oldData) {
+            return oldData;
+          }
+          if (newValue) {
+            const threadEntries = queryClient.getQueriesData<InfiniteData<ForumData>>({
+              queryKey: [`/forum/${forumID}`],
+            });
+            let post: PostData | undefined;
+            for (const [, data] of threadEntries) {
+              for (const page of data?.pages ?? []) {
+                post = page.posts.find(p => p.postID === postID);
+                if (post) break;
+              }
+              if (post) break;
+            }
+            return post ? [...oldData, {...post, isPinned: true}] : oldData;
+          }
+          return oldData.filter(p => p.postID !== postID);
+        });
+      }
+    },
+    [queryClient, updatePostInThreadCaches, updatePostInSearchCaches],
+  );
+
+  /**
+   * Toggle isBookmarked on a post across thread, search, and post detail caches.
+   */
+  const updatePostBookmark = useCallback(
+    (postID: number, forumID: string | undefined, newValue: boolean) => {
+      const updater = (post: PostData): PostData => ({...post, isBookmarked: newValue});
+      updatePostInThreadCaches(postID, forumID, updater);
+      updatePostInSearchCaches(postID, updater);
+      queryClient.setQueriesData<PostDetailData>({queryKey: [`/forum/post/${postID}`]}, oldData =>
+        oldData ? {...oldData, isBookmarked: newValue} : oldData,
+      );
+    },
+    [queryClient, updatePostInThreadCaches, updatePostInSearchCaches],
+  );
+
+  /**
+   * Replace a PostData in thread, search, and post detail caches after an edit.
+   */
+  const updatePost = useCallback(
+    (postID: number, forumID: string | undefined, updatedPost: PostData) => {
+      const updater = (): PostData => updatedPost;
+      updatePostInThreadCaches(postID, forumID, updater);
+      updatePostInSearchCaches(postID, updater);
+      queryClient.setQueriesData<PostDetailData>({queryKey: [`/forum/post/${postID}`]}, oldData =>
+        oldData ? {...oldData, text: updatedPost.text, images: updatedPost.images} : oldData,
+      );
+    },
+    [queryClient, updatePostInThreadCaches, updatePostInSearchCaches],
+  );
+
+  /**
+   * Remove a post from thread, search, pinned posts, and post detail caches.
+   * Decrements postCount in all forum list caches.
+   */
+  const deletePost = useCallback(
+    (postID: number, forumID: string | undefined, categoryID: string | undefined) => {
+      if (forumID) {
+        updateForumThreadCache(forumID, page => ({
+          ...page,
+          posts: page.posts.filter(p => p.postID !== postID),
+          paginator: page.paginator ? {...page.paginator, total: page.paginator.total - 1} : page.paginator,
+        }));
+        queryClient.setQueriesData<PostData[]>({queryKey: [`/forum/${forumID}/pinnedposts`]}, oldData =>
+          oldData ? oldData.filter(p => p.postID !== postID) : oldData,
+        );
+        updateForumListInAllCaches(forumID, categoryID, entry => ({
+          ...entry,
+          postCount: Math.max(0, entry.postCount - 1),
+          readCount: Math.min(entry.readCount, Math.max(0, entry.postCount - 1)),
+        }));
+      }
+      queryClient.setQueriesData<InfiniteData<ForumData>>({queryKey: [`/forum/post/${postID}/forum`]}, oldData =>
+        oldData
+          ? {
+              ...oldData,
+              pages: oldData.pages.map(page => ({
+                ...page,
+                posts: page.posts.filter(p => p.postID !== postID),
+                paginator: page.paginator ? {...page.paginator, total: page.paginator.total - 1} : page.paginator,
+              })),
+            }
+          : oldData,
+      );
+      queryClient.setQueriesData<InfiniteData<PostSearchData>>({queryKey: ['/forum/post/search']}, oldData =>
+        oldData ? filterItemsFromPages(oldData, postSearchAccessor, p => p.postID !== postID) : oldData,
+      );
+      queryClient.removeQueries({queryKey: [`/forum/post/${postID}`]});
+    },
+    [queryClient, updateForumThreadCache, updateForumListInAllCaches],
+  );
+
+  /**
    * Prepend a newly created forum thread to the category, recent, and owner
    * list caches. Also prepends the first post to the "your posts" cache.
    */
@@ -580,5 +761,17 @@ export const useForumCacheReducer = () => {
     [queryClient, defaultForumSortOrder, defaultForumSortDirection],
   );
 
-  return {appendPost, createThread, markRead, updateFavorite, updateMute, updatePinned};
+  return {
+    appendPost,
+    createThread,
+    deletePost,
+    markRead,
+    renameThread,
+    updateFavorite,
+    updateMute,
+    updatePinned,
+    updatePost,
+    updatePostBookmark,
+    updatePostPin,
+  };
 };

@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -8,6 +7,7 @@ import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useForumPostDeleteMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
@@ -29,7 +29,7 @@ export const ForumPostDeleteModalView = ({postData, forumData}: Props) => {
   const {setModalVisible} = useModal();
   const {theme} = useAppTheme();
   const deleteMutation = useForumPostDeleteMutation();
-  const queryClient = useQueryClient();
+  const {deletePost} = useForumCacheReducer();
 
   const onSubmit = () => {
     deleteMutation.mutate(
@@ -37,18 +37,8 @@ export const ForumPostDeleteModalView = ({postData, forumData}: Props) => {
         postID: postData.postID.toString(),
       },
       {
-        onSuccess: async () => {
-          await Promise.all([
-            queryClient.invalidateQueries({queryKey: [`/forum/post/${postData.postID}`]}),
-            queryClient.invalidateQueries({queryKey: ['/forum/post/search']}),
-            queryClient.invalidateQueries({queryKey: [`/forum/post/${postData.postID}/forum`]}),
-          ]);
-          if (forumData) {
-            await Promise.all([
-              queryClient.invalidateQueries({queryKey: [`/forum/${forumData.forumID}`]}),
-              queryClient.invalidateQueries({queryKey: [`/forum/${forumData.forumID}/pinnedposts`]}),
-            ]);
-          }
+        onSuccess: () => {
+          deletePost(postData.postID, forumData?.forumID, forumData?.categoryID);
           setModalVisible(false);
         },
       },

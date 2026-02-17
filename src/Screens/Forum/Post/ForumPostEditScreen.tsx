@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React from 'react';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
@@ -8,6 +7,7 @@ import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumPostUpdateMutation} from '#src/Queries/Forum/ForumPostMutations';
@@ -31,7 +31,7 @@ export const ForumPostEditScreen = (props: Props) => {
 
 const ForumPostEditScreenInner = ({route, navigation}: Props) => {
   const postUpdateMutation = useForumPostUpdateMutation();
-  const queryClient = useQueryClient();
+  const {updatePost} = useForumCacheReducer();
   const maxForumPostImages = useMaxForumPostImages();
 
   const onSubmit = (values: PostContentData, helpers: FormikHelpers<PostContentData>) => {
@@ -42,17 +42,8 @@ const ForumPostEditScreenInner = ({route, navigation}: Props) => {
         postContentData: values,
       },
       {
-        onSuccess: async () => {
-          await Promise.all([
-            queryClient.invalidateQueries({queryKey: [`/forum/post/${route.params.postData.postID}`]}),
-            queryClient.invalidateQueries({queryKey: ['/forum/post/search']}),
-            queryClient.invalidateQueries({queryKey: [`/forum/post/${route.params.postData.postID}/forum`]}),
-          ]);
-          if (route.params.forumData) {
-            await Promise.all([
-              queryClient.invalidateQueries({queryKey: [`/forum/${route.params.forumData.forumID}`]}),
-            ]);
-          }
+        onSuccess: response => {
+          updatePost(route.params.postData.postID, route.params.forumData?.forumID, response.data);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

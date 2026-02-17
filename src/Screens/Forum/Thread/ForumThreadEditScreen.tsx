@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React from 'react';
 
@@ -8,6 +7,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumRenameMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -30,7 +30,7 @@ export const ForumThreadEditScreen = (props: Props) => {
 
 const ForumThreadEditScreenInner = ({route, navigation}: Props) => {
   const editMutation = useForumRenameMutation();
-  const queryClient = useQueryClient();
+  const {renameThread} = useForumCacheReducer();
 
   const onSubmit = (values: ForumThreadValues, helpers: FormikHelpers<ForumThreadValues>) => {
     editMutation.mutate(
@@ -39,12 +39,8 @@ const ForumThreadEditScreenInner = ({route, navigation}: Props) => {
         name: values.title,
       },
       {
-        onSuccess: async () => {
-          await Promise.all([
-            queryClient.invalidateQueries({queryKey: [`/forum/${route.params.forumData.forumID}`]}),
-            queryClient.invalidateQueries({queryKey: [`/forum/categories/${route.params.forumData.categoryID}`]}),
-            queryClient.invalidateQueries({queryKey: ['/forum/search']}),
-          ]);
+        onSuccess: () => {
+          renameThread(route.params.forumData.forumID, route.params.forumData.categoryID, values.title);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),
