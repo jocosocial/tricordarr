@@ -37,7 +37,7 @@ export const ForumThreadRecentScreen = (props: Props) => {
   );
 };
 
-const ForumThreadRecentScreenInner = ({navigation}: Props) => {
+const ForumThreadRecentScreenInner = ({navigation, route}: Props) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const {setRefreshing} = useRefresh({});
   const {selectedItems, enableSelection} = useSelection();
@@ -78,7 +78,11 @@ const ForumThreadRecentScreenInner = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ForumThreadsRelationsView relationType={ForumRelationQueryType.recent} onDataChange={setForumListData} />
+      <ForumThreadsRelationsView
+        relationType={ForumRelationQueryType.recent}
+        onDataChange={setForumListData}
+        scrollToTopIntent={route.params?.scrollToTopIntent}
+      />
     </AppView>
   );
 };

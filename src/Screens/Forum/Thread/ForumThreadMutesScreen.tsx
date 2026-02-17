@@ -37,7 +37,7 @@ export const ForumThreadMutesScreen = (props: Props) => {
   );
 };
 
-const ForumThreadMutesScreenInner = ({navigation}: Props) => {
+const ForumThreadMutesScreenInner = ({navigation, route}: Props) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const {setRefreshing} = useRefresh({});
   const {selectedItems, enableSelection} = useSelection();
@@ -78,7 +78,11 @@ const ForumThreadMutesScreenInner = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ForumThreadsRelationsView relationType={ForumRelationQueryType.mutes} onDataChange={setForumListData} />
+      <ForumThreadsRelationsView
+        relationType={ForumRelationQueryType.mutes}
+        onDataChange={setForumListData}
+        scrollToTopIntent={route.params?.scrollToTopIntent}
+      />
     </AppView>
   );
 };

@@ -15,6 +15,7 @@ interface Props {
   category?: CategoryData;
   title?: string;
   onDataChange?: (data: ForumListData[]) => void;
+  scrollToTopIntent?: number;
 }
 
 /**
@@ -24,7 +25,7 @@ interface Props {
  * Also used when a filter is being applied to a list of threads within a category.
  * Example: "Favorites in the "General" category"
  */
-export const ForumThreadsRelationsView = ({relationType, category, title, onDataChange}: Props) => {
+export const ForumThreadsRelationsView = ({relationType, category, title, onDataChange, scrollToTopIntent}: Props) => {
   const {forumSortOrder, forumSortDirection} = useForumFilter();
   const {
     data,
@@ -81,6 +82,7 @@ export const ForumThreadsRelationsView = ({relationType, category, title, onData
       setRefreshing={setRefreshing}
       enableFAB={false}
       subtitle={`${data.pages[0].paginator.total} ${pluralize('forum', data.pages[0].paginator.total)}`}
+      scrollToTopIntent={scrollToTopIntent}
     />
   );
 };

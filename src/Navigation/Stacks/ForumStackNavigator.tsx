@@ -28,10 +28,10 @@ export type ForumStackParamList = CommonStackParamList & {
   ForumPostMentionScreen: undefined;
   ForumPostSelfScreen: WithScrollToTopIntent;
   ForumPostFavoriteScreen: undefined;
-  ForumFavoritesScreen: undefined;
-  ForumMutesScreen: undefined;
-  ForumOwnedScreen: undefined;
-  ForumRecentScreen: undefined;
+  ForumFavoritesScreen: WithScrollToTopIntent;
+  ForumMutesScreen: WithScrollToTopIntent;
+  ForumOwnedScreen: WithScrollToTopIntent;
+  ForumRecentScreen: WithScrollToTopIntent;
   ForumPostAlertwordScreen: {
     alertWord: string;
   };

@@ -182,7 +182,14 @@ export const ForumThreadScreenBase = ({
           appendPost(forumData.forumID, forumData.categoryID, response.data);
 
           // Signal screens to scroll to the top when the user navigates back.
-          dispatchScrollToTop(ForumStackComponents.forumCategoryScreen, ForumStackComponents.forumPostSelfScreen);
+          dispatchScrollToTop(
+            ForumStackComponents.forumCategoryScreen,
+            ForumStackComponents.forumPostSelfScreen,
+            ForumStackComponents.forumFavoritesScreen,
+            ForumStackComponents.forumMutesScreen,
+            ForumStackComponents.forumOwnedScreen,
+            ForumStackComponents.forumRecentScreen,
+          );
 
           // Clear server unread status (fire-and-forget).
           markReadMutation.mutate({forumID: forumData.forumID});

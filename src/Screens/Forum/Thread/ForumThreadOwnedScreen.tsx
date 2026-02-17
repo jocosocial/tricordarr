@@ -37,7 +37,7 @@ export const ForumThreadOwnedScreen = (props: Props) => {
   );
 };
 
-const ForumThreadOwnedScreenInner = ({navigation}: Props) => {
+const ForumThreadOwnedScreenInner = ({navigation, route}: Props) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const {setRefreshing} = useRefresh({});
   const {selectedItems, enableSelection} = useSelection();
@@ -78,7 +78,11 @@ const ForumThreadOwnedScreenInner = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ForumThreadsRelationsView relationType={ForumRelationQueryType.owner} onDataChange={setForumListData} />
+      <ForumThreadsRelationsView
+        relationType={ForumRelationQueryType.owner}
+        onDataChange={setForumListData}
+        scrollToTopIntent={route.params?.scrollToTopIntent}
+      />
     </AppView>
   );
 };

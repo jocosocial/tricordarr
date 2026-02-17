@@ -37,7 +37,7 @@ export const ForumThreadFavoritesScreen = (props: Props) => {
   );
 };
 
-const ForumThreadFavoritesScreenInner = ({navigation}: Props) => {
+const ForumThreadFavoritesScreenInner = ({navigation, route}: Props) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const {setRefreshing} = useRefresh({});
   const {selectedItems, enableSelection} = useSelection();
@@ -78,7 +78,11 @@ const ForumThreadFavoritesScreenInner = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ForumThreadsRelationsView relationType={ForumRelationQueryType.favorites} onDataChange={setForumListData} />
+      <ForumThreadsRelationsView
+        relationType={ForumRelationQueryType.favorites}
+        onDataChange={setForumListData}
+        scrollToTopIntent={route.params?.scrollToTopIntent}
+      />
     </AppView>
   );
 };
