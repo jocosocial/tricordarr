@@ -4,7 +4,6 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {OobeContext} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
 
 const logger = createLogger('OobeProvider.tsx');
 
@@ -25,9 +24,7 @@ export const OobeProvider = ({children}: PropsWithChildren) => {
     await updateSession(currentSession.sessionID, {
       oobeCompletedVersion: appConfig.oobeExpectedVersion,
     });
-    // Set lastSessionID when OOBE completes - this ensures sessions created during
-    // OOBE flow don't become the "last active" until onboarding is finished
-    await SessionStorage.setLastSessionID(currentSession.sessionID);
+    // The persist effect handles writing lastSessionID based on currentSessionID
   }, [currentSession, updateSession, appConfig.oobeExpectedVersion]);
 
   const contextValue = useMemo(

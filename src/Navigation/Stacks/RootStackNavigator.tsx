@@ -32,18 +32,13 @@ export const RootStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createStackNavigator<RootStackParamList>();
   const {appConfig} = useConfig();
-  const {currentSession} = useSession();
+  const {currentSession, isLoading} = useSession();
   const {setHasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const {footerHeight} = useLayout();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   // Store the last known footer height so we can restore it when navigating back
   const lastKnownFooterHeightRef = useRef<number>(0);
-
-  let initialRouteName = RootStackComponents.oobeNavigator;
-  if ((currentSession?.oobeCompletedVersion ?? 0) >= appConfig.oobeExpectedVersion) {
-    initialRouteName = RootStackComponents.rootContentScreen;
-  }
 
   // Clear or restore footerHeight based on current route
   useEffect(() => {
@@ -69,6 +64,16 @@ export const RootStackNavigator = () => {
 
     return unsubscribe;
   }, [navigation, footerHeight]);
+
+  // Wait for session loading to complete before deciding initial route
+  if (isLoading) {
+    return null;
+  }
+
+  let initialRouteName = RootStackComponents.oobeNavigator;
+  if ((currentSession?.oobeCompletedVersion ?? 0) >= appConfig.oobeExpectedVersion) {
+    initialRouteName = RootStackComponents.rootContentScreen;
+  }
 
   return (
     <Stack.Navigator

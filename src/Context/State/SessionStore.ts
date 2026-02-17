@@ -51,14 +51,4 @@ export class SessionStore {
   needsPersist(): boolean {
     return this.state.needsPersist;
   }
-
-  /**
-   * Mark persistence as complete.
-   */
-  markPersisted(): void {
-    this.state = {
-      ...this.state,
-      needsPersist: false,
-    };
-  }
 }

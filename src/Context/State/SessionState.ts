@@ -47,6 +47,9 @@ export type SessionAction =
       type: 'synced-from-storage';
       sessions: Session[];
       lastSessionID: string | null;
+    }
+  | {
+      type: 'persisted';
     };
 
 /**
@@ -56,7 +59,7 @@ export function getInitialState(sessions: Session[] = [], lastSessionID: string 
   return {
     sessions,
     currentSessionID: lastSessionID,
-    isLoading: false,
+    isLoading: true,
     needsPersist: false,
   };
 }
@@ -170,6 +173,13 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
         currentSessionID: currentSession ? state.currentSessionID : action.lastSessionID,
         isLoading: false,
         needsPersist: false, // Already persisted externally
+      };
+    }
+
+    case 'persisted': {
+      return {
+        ...state,
+        needsPersist: false,
       };
     }
 

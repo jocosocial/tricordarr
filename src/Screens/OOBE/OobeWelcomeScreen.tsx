@@ -47,24 +47,24 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
 
   const isInitializing = !currentSession;
 
-  const onPreRegistrationPress = () => {
+  const onPreRegistrationPress = async () => {
     if (!currentSession) {
       logger.warn('Cannot update session: no current session');
       return;
     }
-    updateSession(currentSession.sessionID, {
+    await updateSession(currentSession.sessionID, {
       serverUrl: appConfig.preRegistrationServerUrl,
       preRegistrationMode: true,
     });
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
-  const onPress = () => {
+  const onPress = async () => {
     if (!currentSession) {
       logger.warn('Cannot update session: no current session');
       return;
     }
-    updateSession(currentSession.sessionID, {
+    await updateSession(currentSession.sessionID, {
       serverUrl: appConfig.serverUrl,
       preRegistrationMode: false,
     });

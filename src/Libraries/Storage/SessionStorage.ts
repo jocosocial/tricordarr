@@ -52,6 +52,13 @@ export namespace SessionStorage {
   };
 
   /**
+   * Save all sessions atomically, replacing the entire stored array.
+   */
+  export const saveAll = async (sessions: Session[]): Promise<void> => {
+    await EncryptedStorage.setItem(StorageKeys.SESSIONS_DATA, JSON.stringify(sessions));
+  };
+
+  /**
    * Delete a session by ID.
    */
   export const deleteSession = async (sessionID: string): Promise<void> => {
