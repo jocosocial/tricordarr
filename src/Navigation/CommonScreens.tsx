@@ -118,7 +118,7 @@ import {
   ProfilePublicData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
-import {NoDrawerParamsOptional, ScheduleDayParams} from '#src/Types/RouteParams';
+import {NoDrawerParams, Optional, ScheduleDayParams, WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -175,9 +175,9 @@ export type CommonStackParamList = {
   EventScreen: {
     eventID: string;
   };
-  PhotostreamEventScreen: {
+  PhotostreamEventScreen: WithScrollToTopIntent<{
     eventID: string;
-  };
+  }>;
   PersonalEventScreen: {
     eventID: string;
   };
@@ -311,7 +311,7 @@ export type CommonStackParamList = {
     eventID: string;
   };
   EventSettingsScreen: undefined;
-  ScheduleDayScreen: ScheduleDayParams & NoDrawerParamsOptional;
+  ScheduleDayScreen: ScheduleDayParams & Optional<NoDrawerParams>;
   ScheduleDayPlannerScreen: {
     cruiseDay?: number;
   };

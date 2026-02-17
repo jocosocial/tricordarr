@@ -33,6 +33,7 @@ const PhotostreamEventScreenInner = ({navigation, route}: Props) => {
     eventID: route.params.eventID,
   });
   const queryResult = usePhotostreamEventQuery(route.params.eventID);
+  const {scrollToTopIntent} = route.params;
 
   const getNavButtons = useCallback(() => {
     return (
@@ -52,5 +53,7 @@ const PhotostreamEventScreenInner = ({navigation, route}: Props) => {
 
   const titleView = eventData ? <ListTitleView title={eventData.title} /> : undefined;
 
-  return <PhotostreamScreenBase queryResult={queryResult} titleView={titleView} />;
+  return (
+    <PhotostreamScreenBase queryResult={queryResult} titleView={titleView} scrollToTopIntent={scrollToTopIntent} />
+  );
 };

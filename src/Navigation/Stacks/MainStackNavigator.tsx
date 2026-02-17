@@ -28,6 +28,7 @@ import {PhotostreamImageCreateScreen} from '#src/Screens/Photostream/Photostream
 import {PhotostreamScreen} from '#src/Screens/Photostream/PhotostreamScreen';
 import {UserDirectoryScreen} from '#src/Screens/User/UserDirectoryScreen';
 import {BoardgameData, DailyThemeData} from '#src/Structs/ControllerStructs';
+import {Optional, WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -39,7 +40,7 @@ export type MainStackParamList = CommonStackParamList & {
   };
   MainConductScreen: undefined;
   DailyThemesScreen: undefined;
-  PhotostreamScreen: undefined;
+  PhotostreamScreen: Optional<WithScrollToTopIntent>;
   PhotostreamImageCreateScreen: undefined;
   MicroKaraokeListScreen: undefined;
   MicroKaraokeSongScreen: {

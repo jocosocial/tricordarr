@@ -937,6 +937,12 @@ export interface PhotostreamImageData {
   location: string;
 }
 
+export namespace PhotostreamImageData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/photostream'], ['/photostream/placenames']];
+  };
+}
+
 /// Returns paginated data on photos in the photo stream. Non-Mods should only have access to the most recent photos, with no pagination.
 /// However: `/api/v3/photostream` returns one of thse objects even for non-mod users--it just returns 30 photos and sets `paginator.total` to 30.
 ///
