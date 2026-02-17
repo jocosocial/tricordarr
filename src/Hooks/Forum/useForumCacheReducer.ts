@@ -387,8 +387,8 @@ export const useForumCacheReducer = () => {
       const listUpdater = (entry: ForumListData) => updateForumListEntry(entry, forumID, newPost);
       const matchesForum = (t: ForumListData) => t.forumID === forumID;
 
-      // Update all ForumSearchData list caches except /forum/recent (handled below).
-      updateForumListInAllCaches(forumID, undefined, listUpdater, ['/forum/recent']);
+      // Update all ForumSearchData list caches except /forum/recent and /forum/favorites (handled below).
+      updateForumListInAllCaches(forumID, undefined, listUpdater, ['/forum/recent', '/forum/favorites']);
 
       // Re-sort the category cache: remove the old entry, update it, and
       // re-insert in sorted position (muted-last, pinned-first, then field sort).
@@ -422,6 +422,36 @@ export const useForumCacheReducer = () => {
           const compareFn = (a: ForumListData, b: ForumListData) => compareCategoryForumListData(a, b, sort, direction);
           const filtered = filterItemsFromPages(oldData, categoryAccessor, t => !matchesForum(t));
           return sortedInsertIntoPages(filtered, categoryAccessor, updatedEntry, compareFn);
+        });
+      }
+
+      // Move the thread to the correct edge in the /forum/favorites cache.
+      for (const query of queryClient.getQueryCache().findAll({queryKey: ['/forum/favorites']})) {
+        const params = query.queryKey[1] as Record<string, string> | undefined;
+        const favoritesDirection = getEffectiveDirection(
+          ForumSort.update,
+          (params?.order as ForumSortDirection) ?? defaultForumSortDirection,
+        );
+        const edge = favoritesDirection === ForumSortDirection.descending ? 'start' : 'end';
+
+        queryClient.setQueryData<InfiniteData<ForumSearchData>>(query.queryKey, oldData => {
+          if (!oldData) {
+            return oldData;
+          }
+
+          let foundEntry: ForumListData | undefined;
+          for (const page of oldData.pages) {
+            foundEntry = page.forumThreads.find(matchesForum);
+            if (foundEntry) {
+              break;
+            }
+          }
+
+          if (!foundEntry) {
+            return oldData;
+          }
+
+          return moveItemToEdge(oldData, forumSearchAccessor, matchesForum, listUpdater(foundEntry), edge);
         });
       }
 
