@@ -350,6 +350,8 @@ export const useForumCacheReducer = () => {
   /**
    * Append a newly created post to the thread cache and update all forum
    * list caches with the new post count / last poster info.
+   * The category and recent caches are handled separately so that the
+   * thread is moved to the correct sorted position (not just updated in place).
    */
   const appendPost = useCallback(
     (forumID: string, categoryID: string, newPost: PostData) => {
@@ -365,7 +367,89 @@ export const useForumCacheReducer = () => {
           posts: [...page.posts, newPost],
         };
       });
-      updateForumListInAllCaches(forumID, categoryID, entry => updateForumListEntry(entry, forumID, newPost));
+
+      const listUpdater = (entry: ForumListData) => updateForumListEntry(entry, forumID, newPost);
+      const matchesForum = (t: ForumListData) => t.forumID === forumID;
+
+      // Update all ForumSearchData list caches except /forum/recent (handled below).
+      updateForumListInAllCaches(forumID, undefined, listUpdater, ['/forum/recent']);
+
+      // Re-sort the category cache: remove the old entry, update it, and
+      // re-insert in sorted position (muted-last, pinned-first, then field sort).
+      for (const query of queryClient.getQueryCache().findAll({
+        queryKey: [`/forum/categories/${categoryID}`],
+      })) {
+        queryClient.setQueryData<InfiniteData<CategoryData>>(query.queryKey, oldData => {
+          if (!oldData) {
+            return oldData;
+          }
+
+          let foundEntry: ForumListData | undefined;
+          for (const page of oldData.pages) {
+            foundEntry = page.forumThreads?.find(matchesForum);
+            if (foundEntry) {
+              break;
+            }
+          }
+          if (!foundEntry) {
+            return oldData;
+          }
+
+          const updatedEntry = listUpdater(foundEntry);
+          const isEventCategory = oldData.pages[0]?.isEventCategory ?? false;
+          const {sort, direction} = extractSortParams(
+            query.queryKey,
+            query.queryKey[0] as string,
+            {sort: defaultForumSortOrder, direction: defaultForumSortDirection},
+            isEventCategory,
+          );
+          const compareFn = (a: ForumListData, b: ForumListData) => compareCategoryForumListData(a, b, sort, direction);
+          const filtered = filterItemsFromPages(oldData, categoryAccessor, t => !matchesForum(t));
+          return sortedInsertIntoPages(filtered, categoryAccessor, updatedEntry, compareFn);
+        });
+      }
+
+      // Move the thread to the correct edge in the /forum/recent cache.
+      for (const query of queryClient.getQueryCache().findAll({queryKey: ['/forum/recent']})) {
+        const params = query.queryKey[1] as Record<string, string> | undefined;
+        const recentDirection = getEffectiveDirection(
+          ForumSort.update,
+          (params?.order as ForumSortDirection) ?? defaultForumSortDirection,
+        );
+        const edge = recentDirection === ForumSortDirection.descending ? 'start' : 'end';
+
+        queryClient.setQueryData<InfiniteData<ForumSearchData>>(query.queryKey, oldData => {
+          if (!oldData) {
+            return oldData;
+          }
+
+          let foundEntry: ForumListData | undefined;
+          for (const page of oldData.pages) {
+            foundEntry = page.forumThreads.find(matchesForum);
+            if (foundEntry) {
+              break;
+            }
+          }
+
+          if (!foundEntry) {
+            const threadCacheEntries = queryClient.getQueriesData<InfiniteData<ForumData>>({
+              queryKey: [`/forum/${forumID}`],
+            });
+            const firstPage = threadCacheEntries[0]?.[1]?.pages?.[0];
+            if (firstPage) {
+              return insertAtEdge(
+                oldData,
+                forumSearchAccessor,
+                listUpdater(forumListDataFromForumData(firstPage)),
+                edge,
+              );
+            }
+            return oldData;
+          }
+
+          return moveItemToEdge(oldData, forumSearchAccessor, matchesForum, listUpdater(foundEntry), edge);
+        });
+      }
 
       // Prepend to "your posts" (byself) cache when the post was created by the current user.
       if (newPost.author.userID === currentUserID) {
@@ -377,15 +461,20 @@ export const useForumCacheReducer = () => {
             }
             return {
               ...oldData,
-              pages: oldData.pages.map((page, i) =>
-                i === 0 ? {...page, posts: [newPost, ...page.posts]} : page,
-              ),
+              pages: oldData.pages.map((page, i) => (i === 0 ? {...page, posts: [newPost, ...page.posts]} : page)),
             };
           },
         );
       }
     },
-    [updateForumThreadCache, updateForumListInAllCaches, queryClient, currentUserID],
+    [
+      updateForumThreadCache,
+      updateForumListInAllCaches,
+      queryClient,
+      currentUserID,
+      defaultForumSortOrder,
+      defaultForumSortDirection,
+    ],
   );
 
   /**
