@@ -28,8 +28,10 @@ import {useForumData} from '#src/Hooks/Forum/useForumData';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {ForumStackComponents} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
@@ -90,6 +92,7 @@ export const ForumThreadScreenBase = ({
 
   // Cache reducer -- operates directly on queryClient.
   const {appendPost, markRead} = useForumCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
 
   // Mark forum as read in local caches when thread data loads.
   useEffect(() => {
@@ -170,6 +173,9 @@ export const ForumThreadScreenBase = ({
           // Update React Query caches (instant, no network).
           // This triggers a re-render via the derived useForumData.
           appendPost(forumData.forumID, forumData.categoryID, response.data);
+
+          // Signal the category screen to scroll to the top when the user navigates back.
+          dispatchScrollToTop(ForumStackComponents.forumCategoryScreen);
 
           // Clear server unread status (fire-and-forget).
           markReadMutation.mutate({forumID: forumData.forumID});

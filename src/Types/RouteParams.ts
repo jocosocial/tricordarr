@@ -7,6 +7,14 @@ export type WithIntent<T = {}> = T & {
 };
 
 /**
+ * Generic type for route params that support scroll-to-top intent.
+ * A numeric timestamp that triggers a one-time scroll-to-top effect via useEffect.
+ */
+export type WithScrollToTopIntent<T = {}> = T & {
+  scrollToTopIntent?: number;
+};
+
+/**
  * Route params specific to ScheduleDayScreen.
  */
 export type ScheduleDayParams = WithIntent<{

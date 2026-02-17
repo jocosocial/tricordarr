@@ -18,13 +18,13 @@ import {ForumThreadOwnedScreen} from '#src/Screens/Forum/Thread/ForumThreadOwned
 import {ForumThreadRecentScreen} from '#src/Screens/Forum/Thread/ForumThreadRecentScreen';
 import {ForumThreadSearchScreen} from '#src/Screens/Forum/Thread/ForumThreadSearchScreen';
 import {CategoryData} from '#src/Structs/ControllerStructs';
+import {WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
-  ForumCategoryScreen: {
+  ForumCategoryScreen: WithScrollToTopIntent<{
     category: CategoryData;
-    scrollToTopIntent?: number;
-  };
+  }>;
   ForumPostMentionScreen: undefined;
   ForumPostSelfScreen: undefined;
   ForumPostFavoriteScreen: undefined;

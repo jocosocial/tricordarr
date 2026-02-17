@@ -1,4 +1,3 @@
-import {CommonActions} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -16,6 +15,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
@@ -48,6 +48,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   const maxForumPostImages = useMaxForumPostImages();
   const {createThread} = useForumCacheReducer();
   const {data: profilePublicData} = useUserProfileQuery();
+  const dispatchScrollToTop = useScrollToTopIntent();
   // Use a ref to store the created forum data immediately (synchronously) to avoid race condition
   const createdForumRef = useRef<ForumData | null>(null);
 
@@ -79,14 +80,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
           // Use ref instead of response.data to avoid race condition - ref is set synchronously
           const createdForum = createdForumRef.current;
           if (createdForum) {
-            const state = navigation.getState();
-            const categoryRoute = state.routes.find(r => r.name === ForumStackComponents.forumCategoryScreen);
-            if (categoryRoute) {
-              navigation.dispatch({
-                ...CommonActions.setParams({scrollToTopIntent: Date.now()}),
-                source: categoryRoute.key,
-              });
-            }
+            dispatchScrollToTop(ForumStackComponents.forumCategoryScreen);
             navigation.replace(CommonStackComponents.forumThreadScreen, {
               forumID: createdForum.forumID,
             });
