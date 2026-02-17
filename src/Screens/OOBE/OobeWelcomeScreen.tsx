@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect} from 'react';
-import {StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Pressable, StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Text} from 'react-native-paper';
 
@@ -24,11 +24,19 @@ import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
 
+const VERSION_TAPS_TO_FAULT = 10;
+
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
   const {currentSession, findOrCreateSession, updateSession} = useSession();
   const {appConfig} = useConfig();
   const {theme} = useAppTheme();
+  const [versionTapCount, setVersionTapCount] = useState(0);
+  const [fault, setFault] = useState(false);
+
+  if (fault) {
+    throw Error("Intentional critical fault. I hope you know what you're doing.");
+  }
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
@@ -71,6 +79,14 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
+  const onVersionPress = () => {
+    const next = versionTapCount + 1;
+    setVersionTapCount(next);
+    if (next >= VERSION_TAPS_TO_FAULT) {
+      setFault(true);
+    }
+  };
+
   // This used to have a useFocusEffect that would disable preregistration mode
   // which caught if you entered prereg and then changed your mind. This actually
   // sucks as a pattern so I'm turning it off and making that happen depending on
@@ -97,10 +113,12 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
           />
         </PaddedContentView>
         <PaddedContentView>
-          <Text style={styles.text} variant={'labelLarge'}>
-            Version {DeviceInfo.getVersion()} (Build {DeviceInfo.getBuildNumber()}){'\n'}
-            {__DEV__ ? 'Development Mode' : undefined}
-          </Text>
+          <Pressable onPress={onVersionPress}>
+            <Text style={styles.text} variant={'labelLarge'}>
+              Version {DeviceInfo.getVersion()} (Build {DeviceInfo.getBuildNumber()}){'\n'}
+              {__DEV__ ? 'Development Mode' : undefined}
+            </Text>
+          </Pressable>
         </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView
