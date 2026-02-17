@@ -298,7 +298,8 @@ export const useForumCacheReducer = () => {
   );
 
   /**
-   * Update the ForumData in the thread detail cache (InfiniteData<ForumData>).
+   * Update the ForumData in thread detail caches (InfiniteData<ForumData>).
+   * Handles both /forum/{forumID} and /forum/post/{postID}/forum key patterns.
    */
   const updateForumThreadCache = useCallback(
     (forumID: string, updater: (page: ForumData, index: number, pages: ForumData[]) => ForumData) => {
@@ -311,6 +312,21 @@ export const useForumCacheReducer = () => {
           pages: oldData.pages.map(updater),
         };
       });
+      // Also update /forum/post/{postID}/forum caches for this forum.
+      for (const query of queryClient.getQueryCache().findAll({
+        predicate: q =>
+          typeof q.queryKey[0] === 'string' && /^\/forum\/post\/\d+\/forum$/.test(q.queryKey[0] as string),
+      })) {
+        queryClient.setQueryData<InfiniteData<ForumData>>(query.queryKey, oldData => {
+          if (!oldData || oldData.pages[0]?.forumID !== forumID) {
+            return oldData;
+          }
+          return {
+            ...oldData,
+            pages: oldData.pages.map(updater),
+          };
+        });
+      }
     },
     [queryClient],
   );
@@ -721,18 +737,6 @@ export const useForumCacheReducer = () => {
           readCount: Math.min(entry.readCount, Math.max(0, entry.postCount - 1)),
         }));
       }
-      queryClient.setQueriesData<InfiniteData<ForumData>>({queryKey: [`/forum/post/${postID}/forum`]}, oldData =>
-        oldData
-          ? {
-              ...oldData,
-              pages: oldData.pages.map(page => ({
-                ...page,
-                posts: page.posts.filter(p => p.postID !== postID),
-                paginator: page.paginator ? {...page.paginator, total: page.paginator.total - 1} : page.paginator,
-              })),
-            }
-          : oldData,
-      );
       queryClient.setQueriesData<InfiniteData<PostSearchData>>({queryKey: ['/forum/post/search']}, oldData =>
         oldData ? filterItemsFromPages(oldData, postSearchAccessor, p => p.postID !== postID) : oldData,
       );
