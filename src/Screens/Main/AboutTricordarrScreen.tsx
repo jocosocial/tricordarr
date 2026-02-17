@@ -43,6 +43,10 @@ export const AboutTricordarrScreen = () => {
             Grant Cohoe (@grant) is the primary developer of this app. If you're looking for someone to shout at, it's
             him.
           </ContributorView>
+          <ContributorView image={AppImageMetaData.fromAsset(gowtam, 'gowtam.jpg')}>
+            Gowtam Lal (@baconmania) brought the day planner to the app and a whole lot of iOS support and general
+            improvements. His greatest contribution is the recurring hackathons at the local pub.
+          </ContributorView>
           <ContributorView image={AppImageMetaData.fromAsset(hendu, 'hendu.jpg')}>
             Dustin Hendrickson (@hendu) contributed the fantastic built-in webview integration, many bug fixes, and
             plenty of PR tests & reviews.
@@ -51,11 +55,6 @@ export const AboutTricordarrScreen = () => {
             Chall Fry (@cfry) is the lead architect of the Twitarr service and the iOS app The Kraken. His guidance and
             insight on software engineering and the mobile app world has been invaluable. He made the cool lighter video
             and most of the native-side code.
-          </ContributorView>
-          <ContributorView image={AppImageMetaData.fromAsset(gowtam, 'gowtam.jpg')}>
-            Gowtam Lal (@baconmania) brought the day planner to the app and a whole lot of iOS support and general
-            improvements. His greatest contribution is the recurring hackathons at the local pub. Turns out friends make
-            great beta testers.
           </ContributorView>
           <OobeNoteCard />
         </PaddedContentView>
