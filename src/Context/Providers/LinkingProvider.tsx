@@ -4,8 +4,8 @@ import URLParse from 'url-parse';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
+import {LinkingContext} from '#src/Context/Contexts/LinkingContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {TwitarrContext} from '#src/Context/Contexts/TwitarrContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {isNavigationReady, push} from '#src/Libraries/NavigationRef';
 import {findRouteByScreen, pushableRoutes} from '#src/Libraries/RouteDefinitions';
@@ -127,12 +127,12 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
   );
 
   return (
-    <TwitarrContext.Provider
+    <LinkingContext.Provider
       value={{
         openWebUrl,
         openAppUrl,
       }}>
       {children}
-    </TwitarrContext.Provider>
+    </LinkingContext.Provider>
   );
 };

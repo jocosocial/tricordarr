@@ -1,10 +1,10 @@
 import {createContext, useContext} from 'react';
 
-interface TwitarrContextType {
+interface LinkingContextType {
   openWebUrl: (url: string) => void;
   openAppUrl: (url: string, queryParams?: Record<string, string | number | boolean>) => void;
 }
 
-export const TwitarrContext = createContext(<TwitarrContextType>{});
+export const LinkingContext = createContext(<LinkingContextType>{});
 
-export const useTwitarr = () => useContext(TwitarrContext);
+export const useLinking = () => useContext(LinkingContext);

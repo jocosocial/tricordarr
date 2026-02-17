@@ -5,9 +5,9 @@ import {ReactElementWithType} from 'react-native-hyperlink/dist/typescript/src/t
 import URLParse from 'url-parse';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useLinking} from '#src/Context/Contexts/LinkingContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {useTwitarr} from '#src/Context/Contexts/TwitarrContext';
 import {useClipboard} from '#src/Hooks/useClipboard';
 
 // https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift
@@ -33,7 +33,7 @@ interface HyperlinkTextProps {
 }
 
 export const HyperlinkText = ({children, disableLinkInterpolation = false}: HyperlinkTextProps) => {
-  const {openWebUrl} = useTwitarr();
+  const {openWebUrl} = useLinking();
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
   const {commonStyles} = useStyles();
