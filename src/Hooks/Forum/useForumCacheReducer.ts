@@ -4,6 +4,14 @@ import {useCallback} from 'react';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {
+  filterItemsFromPages,
+  insertAtEdge,
+  moveItemToEdge,
+  PageItemAccessor,
+  sortedInsertIntoPages,
+  updateItemsInPages,
+} from '#src/Libraries/CacheReduction';
+import {
   CategoryData,
   ForumData,
   ForumListData,
@@ -25,6 +33,18 @@ const forumSearchDataKeys: string[] = [
   '/forum/owner',
   '/forum/recent',
 ];
+
+/** Accessor for ForumSearchData pages (forumThreads is required). */
+const forumSearchAccessor: PageItemAccessor<ForumSearchData, ForumListData> = {
+  get: page => page.forumThreads,
+  set: (page, items) => ({...page, forumThreads: items}),
+};
+
+/** Accessor for CategoryData pages (forumThreads is optional). */
+const categoryAccessor: PageItemAccessor<CategoryData, ForumListData> = {
+  get: page => page.forumThreads,
+  set: (page, items) => ({...page, forumThreads: items}),
+};
 
 /**
  * Updates a ForumListData entry in-place-style (returns new object) when
@@ -154,31 +174,31 @@ const compareCategoryForumListData = (
 };
 
 /**
- * Insert a ForumListData entry into the correct sorted position across paginated pages.
- * The compareFn should represent the final sort order (including direction).
+ * Build a directional comparator from a base ascending sort and a direction.
  */
-const sortedInsertIntoPages = <T extends {forumThreads?: ForumListData[]}>(
-  pages: T[],
-  newEntry: ForumListData,
-  compareFn: (a: ForumListData, b: ForumListData) => number,
-): T[] => {
-  let inserted = false;
-  const result = pages.map(page => {
-    if (inserted) return page;
-    const threads = page.forumThreads ?? [];
-    const index = threads.findIndex(t => compareFn(newEntry, t) <= 0);
-    if (index !== -1) {
-      inserted = true;
-      return {...page, forumThreads: [...threads.slice(0, index), newEntry, ...threads.slice(index)]};
-    }
-    return page;
-  });
-  if (!inserted && result.length > 0) {
-    const lastIdx = result.length - 1;
-    const lastThreads = result[lastIdx].forumThreads ?? [];
-    result[lastIdx] = {...result[lastIdx], forumThreads: [...lastThreads, newEntry]};
-  }
-  return result;
+const buildDirectionalComparator = (
+  sort: ForumSort,
+  direction: ForumSortDirection,
+): ((a: ForumListData, b: ForumListData) => number) => {
+  return (a, b) => {
+    const cmp = compareForumListData(a, b, sort);
+    return direction === ForumSortDirection.ascending ? cmp : -cmp;
+  };
+};
+
+/**
+ * Extract effective sort and direction from a query's key params with user-preference defaults.
+ */
+const extractSortParams = (
+  queryKey: readonly unknown[],
+  endpoint: string,
+  defaults: {sort?: ForumSort; direction?: ForumSortDirection},
+  isEventCategory?: boolean,
+): {sort: ForumSort; direction: ForumSortDirection} => {
+  const params = queryKey[1] as Record<string, string> | undefined;
+  const sort = (params?.sort as ForumSort) ?? defaults.sort ?? getApiDefaultSort(endpoint, isEventCategory);
+  const direction = getEffectiveDirection(sort, (params?.order as ForumSortDirection) ?? defaults.direction);
+  return {sort, direction};
 };
 
 /**
@@ -195,6 +215,47 @@ export const useForumCacheReducer = () => {
   const {defaultForumSortOrder, defaultForumSortDirection} = appConfig.userPreferences;
 
   /**
+   * Search all forum list caches (ForumSearchData, CategoryData, thread detail)
+   * for a ForumListData entry matching forumID. Optionally exclude a key prefix.
+   */
+  const findForumListEntry = useCallback(
+    (forumID: string, categoryID: string | undefined, excludeKey?: string): ForumListData | undefined => {
+      for (const keyPrefix of forumSearchDataKeys) {
+        if (keyPrefix === excludeKey) {
+          continue;
+        }
+        for (const [, data] of queryClient.getQueriesData<InfiniteData<ForumSearchData>>({queryKey: [keyPrefix]})) {
+          for (const page of data?.pages ?? []) {
+            const entry = page.forumThreads.find(t => t.forumID === forumID);
+            if (entry) {
+              return entry;
+            }
+          }
+        }
+      }
+      if (categoryID) {
+        for (const [, data] of queryClient.getQueriesData<InfiniteData<CategoryData>>({
+          queryKey: [`/forum/categories/${categoryID}`],
+        })) {
+          for (const page of data?.pages ?? []) {
+            const entry = page.forumThreads?.find(t => t.forumID === forumID);
+            if (entry) {
+              return entry;
+            }
+          }
+        }
+      }
+      const threadEntries = queryClient.getQueriesData<InfiniteData<ForumData>>({queryKey: [`/forum/${forumID}`]});
+      const firstPage = threadEntries[0]?.[1]?.pages?.[0];
+      if (firstPage) {
+        return forumListDataFromForumData(firstPage);
+      }
+      return undefined;
+    },
+    [queryClient],
+  );
+
+  /**
    * Update a ForumListData entry (matched by forumID) across all ForumSearchData
    * list caches and the CategoryData cache for the given category.
    * Optionally exclude certain key prefixes (e.g. when handling them separately).
@@ -206,39 +267,20 @@ export const useForumCacheReducer = () => {
       updater: (entry: ForumListData) => ForumListData,
       excludeKeyPrefixes?: string[],
     ) => {
+      const idUpdater = (entry: ForumListData) => (entry.forumID === forumID ? updater(entry) : entry);
       const excludeSet = excludeKeyPrefixes ? new Set(excludeKeyPrefixes) : undefined;
       for (const keyPrefix of forumSearchDataKeys) {
         if (excludeSet?.has(keyPrefix)) {
           continue;
         }
-        queryClient.setQueriesData<InfiniteData<ForumSearchData>>({queryKey: [keyPrefix]}, oldData => {
-          if (!oldData) {
-            return oldData;
-          }
-          return {
-            ...oldData,
-            pages: oldData.pages.map(page => ({
-              ...page,
-              forumThreads: page.forumThreads.map(entry => (entry.forumID === forumID ? updater(entry) : entry)),
-            })),
-          };
-        });
+        queryClient.setQueriesData<InfiniteData<ForumSearchData>>({queryKey: [keyPrefix]}, oldData =>
+          oldData ? updateItemsInPages(oldData, forumSearchAccessor, idUpdater) : oldData,
+        );
       }
       if (categoryID) {
         queryClient.setQueriesData<InfiniteData<CategoryData>>(
           {queryKey: [`/forum/categories/${categoryID}`]},
-          oldData => {
-            if (!oldData) {
-              return oldData;
-            }
-            return {
-              ...oldData,
-              pages: oldData.pages.map(page => ({
-                ...page,
-                forumThreads: page.forumThreads?.map(entry => (entry.forumID === forumID ? updater(entry) : entry)),
-              })),
-            };
-          },
+          oldData => (oldData ? updateItemsInPages(oldData, categoryAccessor, idUpdater) : oldData),
         );
       }
     },
@@ -269,11 +311,6 @@ export const useForumCacheReducer = () => {
    */
   const appendPost = useCallback(
     (forumID: string, categoryID: string, newPost: PostData, authorHeader: UserHeader) => {
-      // Update the thread cache (InfiniteData<ForumData>).
-      // Only append the post to the last page's posts array. Leave the paginator
-      // untouched so getNextPageParam still returns undefined and no spurious
-      // fetchNextPage is triggered. The server will correct the paginator on
-      // the next real refetch.
       updateForumThreadCache(forumID, (page, i, pages) => {
         if (i !== pages.length - 1) {
           return page;
@@ -286,8 +323,6 @@ export const useForumCacheReducer = () => {
           posts: [...page.posts, newPost],
         };
       });
-
-      // Update ForumSearchData and CategoryData list caches.
       updateForumListInAllCaches(forumID, categoryID, entry =>
         updateForumListEntry(entry, forumID, authorHeader, newPost),
       );
@@ -305,88 +340,106 @@ export const useForumCacheReducer = () => {
       const updater = (entry: ForumListData) => ({...entry, readCount: entry.postCount});
       updateForumListInAllCaches(forumID, categoryID, updater, ['/forum/recent']);
 
+      const matchesForum = (t: ForumListData) => t.forumID === forumID;
+
       for (const query of queryClient.getQueryCache().findAll({queryKey: ['/forum/recent']})) {
         const params = query.queryKey[1] as Record<string, string> | undefined;
         const recentDirection = getEffectiveDirection(
           ForumSort.update,
           (params?.order as ForumSortDirection) ?? defaultForumSortDirection,
         );
+        const edge = recentDirection === ForumSortDirection.descending ? 'start' : 'end';
 
         queryClient.setQueryData<InfiniteData<ForumSearchData>>(query.queryKey, oldData => {
           if (!oldData) {
             return oldData;
           }
-          let found: {pageIndex: number; entry: ForumListData} | null = null;
-          for (let pi = 0; pi < oldData.pages.length; pi++) {
-            const entry = oldData.pages[pi].forumThreads.find(t => t.forumID === forumID);
-            if (entry) {
-              found = {pageIndex: pi, entry};
+
+          let foundEntry: ForumListData | undefined;
+          for (const page of oldData.pages) {
+            foundEntry = page.forumThreads.find(matchesForum);
+            if (foundEntry) {
               break;
             }
           }
-          if (!found) {
+
+          if (!foundEntry) {
             const threadCacheEntries = queryClient.getQueriesData<InfiniteData<ForumData>>({
               queryKey: [`/forum/${forumID}`],
             });
             const firstPage = threadCacheEntries[0]?.[1]?.pages?.[0];
             if (firstPage) {
-              const newEntry = forumListDataFromForumData(firstPage);
-              if (recentDirection === ForumSortDirection.descending) {
-                return {
-                  ...oldData,
-                  pages: oldData.pages.map((p, i) =>
-                    i === 0 ? {...p, forumThreads: [newEntry, ...p.forumThreads]} : p,
-                  ),
-                };
-              }
-              const lastIdx = oldData.pages.length - 1;
-              return {
-                ...oldData,
-                pages: oldData.pages.map((p, i) =>
-                  i === lastIdx ? {...p, forumThreads: [...p.forumThreads, newEntry]} : p,
-                ),
-              };
+              return insertAtEdge(oldData, forumSearchAccessor, forumListDataFromForumData(firstPage), edge);
             }
             return oldData;
           }
-          const {entry} = found;
-          const updatedEntry = {...entry, readCount: entry.postCount};
-          if (entry.readCount === entry.postCount) {
-            return {
-              ...oldData,
-              pages: oldData.pages.map(p => ({
-                ...p,
-                forumThreads: p.forumThreads.map(t => (t.forumID === forumID ? updatedEntry : t)),
-              })),
-            };
+
+          const updatedEntry = {...foundEntry, readCount: foundEntry.postCount};
+          if (foundEntry.readCount === foundEntry.postCount) {
+            return updateItemsInPages(oldData, forumSearchAccessor, t => (matchesForum(t) ? updatedEntry : t));
           }
-          if (recentDirection === ForumSortDirection.descending) {
-            return {
-              ...oldData,
-              pages: oldData.pages.map((p, i) => {
-                if (i === 0) {
-                  const withoutEntry = p.forumThreads.filter(t => t.forumID !== forumID);
-                  return {...p, forumThreads: [updatedEntry, ...withoutEntry]};
-                }
-                return {...p, forumThreads: p.forumThreads.filter(t => t.forumID !== forumID)};
-              }),
-            };
-          }
-          const lastIdx = oldData.pages.length - 1;
-          return {
-            ...oldData,
-            pages: oldData.pages.map((p, i) => {
-              if (i === lastIdx) {
-                const withoutEntry = p.forumThreads.filter(t => t.forumID !== forumID);
-                return {...p, forumThreads: [...withoutEntry, updatedEntry]};
-              }
-              return {...p, forumThreads: p.forumThreads.filter(t => t.forumID !== forumID)};
-            }),
-          };
+          return moveItemToEdge(oldData, forumSearchAccessor, matchesForum, updatedEntry, edge);
         });
       }
     },
     [queryClient, updateForumListInAllCaches, defaultForumSortDirection],
+  );
+
+  /**
+   * Toggle a boolean field (isFavorite or isMuted) for a forum across all caches.
+   * When toggling on, the entry is inserted into the target list cache in sorted order.
+   * When toggling off, the entry is removed from the target list cache.
+   */
+  const updateToggleListCache = useCallback(
+    (
+      forumID: string,
+      categoryID: string | undefined,
+      newValue: boolean,
+      field: 'isFavorite' | 'isMuted',
+      targetKeyPrefix: string,
+    ) => {
+      if (newValue) {
+        updateForumListInAllCaches(forumID, categoryID, entry => ({...entry, [field]: true}), [targetKeyPrefix]);
+
+        const foundEntry = findForumListEntry(forumID, categoryID, targetKeyPrefix);
+        if (foundEntry) {
+          const updatedEntry: ForumListData = {...foundEntry, [field]: true};
+          for (const query of queryClient.getQueryCache().findAll({queryKey: [targetKeyPrefix]})) {
+            const {sort, direction} = extractSortParams(query.queryKey, targetKeyPrefix, {
+              sort: defaultForumSortOrder,
+              direction: defaultForumSortDirection,
+            });
+            const compareFn = buildDirectionalComparator(sort, direction);
+            queryClient.setQueryData<InfiniteData<ForumSearchData>>(query.queryKey, oldData => {
+              if (!oldData) {
+                return oldData;
+              }
+              const alreadyExists = oldData.pages.some(p => p.forumThreads.some(t => t.forumID === forumID));
+              if (alreadyExists) {
+                return updateItemsInPages(oldData, forumSearchAccessor, t =>
+                  t.forumID === forumID ? updatedEntry : t,
+                );
+              }
+              return sortedInsertIntoPages(oldData, forumSearchAccessor, updatedEntry, compareFn);
+            });
+          }
+        }
+      } else {
+        updateForumListInAllCaches(forumID, categoryID, entry => ({...entry, [field]: false}), [targetKeyPrefix]);
+        queryClient.setQueriesData<InfiniteData<ForumSearchData>>({queryKey: [targetKeyPrefix]}, oldData =>
+          oldData ? filterItemsFromPages(oldData, forumSearchAccessor, entry => entry.forumID !== forumID) : oldData,
+        );
+      }
+      updateForumThreadCache(forumID, page => ({...page, [field]: newValue}));
+    },
+    [
+      queryClient,
+      findForumListEntry,
+      updateForumListInAllCaches,
+      updateForumThreadCache,
+      defaultForumSortOrder,
+      defaultForumSortDirection,
+    ],
   );
 
   /**
@@ -395,97 +448,9 @@ export const useForumCacheReducer = () => {
    * When unfavoriting, the entry is removed from /forum/favorites.
    */
   const updateFavorite = useCallback(
-    (forumID: string, categoryID: string | undefined, newValue: boolean) => {
-      if (newValue) {
-        // Update all caches except /forum/favorites (handled separately below).
-        updateForumListInAllCaches(forumID, categoryID, entry => ({...entry, isFavorite: true}), ['/forum/favorites']);
-
-        // Find the ForumListData from any available cache to insert into /forum/favorites.
-        // Other caches were already updated synchronously above so entries there have isFavorite: true.
-        let favoriteEntry: ForumListData | undefined;
-        for (const keyPrefix of forumSearchDataKeys) {
-          if (keyPrefix === '/forum/favorites') {
-            continue;
-          }
-          for (const [, data] of queryClient.getQueriesData<InfiniteData<ForumSearchData>>({queryKey: [keyPrefix]})) {
-            for (const page of data?.pages ?? []) {
-              favoriteEntry = page.forumThreads.find(t => t.forumID === forumID);
-              if (favoriteEntry) break;
-            }
-            if (favoriteEntry) break;
-          }
-          if (favoriteEntry) break;
-        }
-        if (!favoriteEntry && categoryID) {
-          for (const [, data] of queryClient.getQueriesData<InfiniteData<CategoryData>>({
-            queryKey: [`/forum/categories/${categoryID}`],
-          })) {
-            for (const page of data?.pages ?? []) {
-              favoriteEntry = page.forumThreads?.find(t => t.forumID === forumID);
-              if (favoriteEntry) break;
-            }
-            if (favoriteEntry) break;
-          }
-        }
-        if (!favoriteEntry) {
-          const threadEntries = queryClient.getQueriesData<InfiniteData<ForumData>>({queryKey: [`/forum/${forumID}`]});
-          const firstPage = threadEntries[0]?.[1]?.pages?.[0];
-          if (firstPage) {
-            favoriteEntry = forumListDataFromForumData(firstPage);
-          }
-        }
-
-        if (favoriteEntry) {
-          const entryWithFavorite: ForumListData = {...favoriteEntry, isFavorite: true};
-          for (const query of queryClient.getQueryCache().findAll({queryKey: ['/forum/favorites']})) {
-            const params = query.queryKey[1] as Record<string, string> | undefined;
-            const sort = (params?.sort as ForumSort) ?? defaultForumSortOrder ?? getApiDefaultSort('/forum/favorites');
-            const direction = getEffectiveDirection(
-              sort,
-              (params?.order as ForumSortDirection) ?? defaultForumSortDirection,
-            );
-            const compareFn = (a: ForumListData, b: ForumListData) => {
-              const cmp = compareForumListData(a, b, sort);
-              return direction === ForumSortDirection.ascending ? cmp : -cmp;
-            };
-            queryClient.setQueryData<InfiniteData<ForumSearchData>>(query.queryKey, oldData => {
-              if (!oldData) {
-                return oldData;
-              }
-              const alreadyExists = oldData.pages.some(p => p.forumThreads.some(t => t.forumID === forumID));
-              if (alreadyExists) {
-                return {
-                  ...oldData,
-                  pages: oldData.pages.map(p => ({
-                    ...p,
-                    forumThreads: p.forumThreads.map(t => (t.forumID === forumID ? entryWithFavorite : t)),
-                  })),
-                };
-              }
-              return {...oldData, pages: sortedInsertIntoPages(oldData.pages, entryWithFavorite, compareFn)};
-            });
-          }
-        }
-      } else {
-        // Update all caches except /forum/favorites (removed below).
-        updateForumListInAllCaches(forumID, categoryID, entry => ({...entry, isFavorite: false}), ['/forum/favorites']);
-        // Remove the entry from /forum/favorites.
-        queryClient.setQueriesData<InfiniteData<ForumSearchData>>({queryKey: ['/forum/favorites']}, oldData => {
-          if (!oldData) {
-            return oldData;
-          }
-          return {
-            ...oldData,
-            pages: oldData.pages.map(page => ({
-              ...page,
-              forumThreads: page.forumThreads.filter(entry => entry.forumID !== forumID),
-            })),
-          };
-        });
-      }
-      updateForumThreadCache(forumID, page => ({...page, isFavorite: newValue}));
-    },
-    [queryClient, updateForumListInAllCaches, updateForumThreadCache, defaultForumSortOrder, defaultForumSortDirection],
+    (forumID: string, categoryID: string | undefined, newValue: boolean) =>
+      updateToggleListCache(forumID, categoryID, newValue, 'isFavorite', '/forum/favorites'),
+    [updateToggleListCache],
   );
 
   /**
@@ -494,96 +459,9 @@ export const useForumCacheReducer = () => {
    * When unmuting, the entry is removed from /forum/mutes.
    */
   const updateMute = useCallback(
-    (forumID: string, categoryID: string | undefined, newValue: boolean) => {
-      if (newValue) {
-        // Update all caches except /forum/mutes (handled separately below).
-        updateForumListInAllCaches(forumID, categoryID, entry => ({...entry, isMuted: true}), ['/forum/mutes']);
-
-        // Find the ForumListData from any available cache to insert into /forum/mutes.
-        let muteEntry: ForumListData | undefined;
-        for (const keyPrefix of forumSearchDataKeys) {
-          if (keyPrefix === '/forum/mutes') {
-            continue;
-          }
-          for (const [, data] of queryClient.getQueriesData<InfiniteData<ForumSearchData>>({queryKey: [keyPrefix]})) {
-            for (const page of data?.pages ?? []) {
-              muteEntry = page.forumThreads.find(t => t.forumID === forumID);
-              if (muteEntry) break;
-            }
-            if (muteEntry) break;
-          }
-          if (muteEntry) break;
-        }
-        if (!muteEntry && categoryID) {
-          for (const [, data] of queryClient.getQueriesData<InfiniteData<CategoryData>>({
-            queryKey: [`/forum/categories/${categoryID}`],
-          })) {
-            for (const page of data?.pages ?? []) {
-              muteEntry = page.forumThreads?.find(t => t.forumID === forumID);
-              if (muteEntry) break;
-            }
-            if (muteEntry) break;
-          }
-        }
-        if (!muteEntry) {
-          const threadEntries = queryClient.getQueriesData<InfiniteData<ForumData>>({queryKey: [`/forum/${forumID}`]});
-          const firstPage = threadEntries[0]?.[1]?.pages?.[0];
-          if (firstPage) {
-            muteEntry = forumListDataFromForumData(firstPage);
-          }
-        }
-
-        if (muteEntry) {
-          const entryWithMuted: ForumListData = {...muteEntry, isMuted: true};
-          for (const query of queryClient.getQueryCache().findAll({queryKey: ['/forum/mutes']})) {
-            const params = query.queryKey[1] as Record<string, string> | undefined;
-            const sort = (params?.sort as ForumSort) ?? defaultForumSortOrder ?? getApiDefaultSort('/forum/mutes');
-            const direction = getEffectiveDirection(
-              sort,
-              (params?.order as ForumSortDirection) ?? defaultForumSortDirection,
-            );
-            const compareFn = (a: ForumListData, b: ForumListData) => {
-              const cmp = compareForumListData(a, b, sort);
-              return direction === ForumSortDirection.ascending ? cmp : -cmp;
-            };
-            queryClient.setQueryData<InfiniteData<ForumSearchData>>(query.queryKey, oldData => {
-              if (!oldData) {
-                return oldData;
-              }
-              const alreadyExists = oldData.pages.some(p => p.forumThreads.some(t => t.forumID === forumID));
-              if (alreadyExists) {
-                return {
-                  ...oldData,
-                  pages: oldData.pages.map(p => ({
-                    ...p,
-                    forumThreads: p.forumThreads.map(t => (t.forumID === forumID ? entryWithMuted : t)),
-                  })),
-                };
-              }
-              return {...oldData, pages: sortedInsertIntoPages(oldData.pages, entryWithMuted, compareFn)};
-            });
-          }
-        }
-      } else {
-        // Update all caches except /forum/mutes (removed below).
-        updateForumListInAllCaches(forumID, categoryID, entry => ({...entry, isMuted: false}), ['/forum/mutes']);
-        // Remove the entry from /forum/mutes.
-        queryClient.setQueriesData<InfiniteData<ForumSearchData>>({queryKey: ['/forum/mutes']}, oldData => {
-          if (!oldData) {
-            return oldData;
-          }
-          return {
-            ...oldData,
-            pages: oldData.pages.map(page => ({
-              ...page,
-              forumThreads: page.forumThreads.filter(entry => entry.forumID !== forumID),
-            })),
-          };
-        });
-      }
-      updateForumThreadCache(forumID, page => ({...page, isMuted: newValue}));
-    },
-    [queryClient, updateForumListInAllCaches, updateForumThreadCache, defaultForumSortOrder, defaultForumSortDirection],
+    (forumID: string, categoryID: string | undefined, newValue: boolean) =>
+      updateToggleListCache(forumID, categoryID, newValue, 'isMuted', '/forum/mutes'),
+    [updateToggleListCache],
   );
 
   /**
@@ -637,43 +515,32 @@ export const useForumCacheReducer = () => {
       for (const query of queryClient.getQueryCache().findAll({
         queryKey: [`/forum/categories/${createdForum.categoryID}`],
       })) {
-        const params = query.queryKey[1] as Record<string, string> | undefined;
         queryClient.setQueryData<InfiniteData<CategoryData>>(query.queryKey, oldData => {
           if (!oldData) {
             return oldData;
           }
           const isEventCategory = oldData.pages[0]?.isEventCategory ?? false;
-          const sort =
-            (params?.sort as ForumSort) ??
-            defaultForumSortOrder ??
-            getApiDefaultSort(query.queryKey[0] as string, isEventCategory);
-          const direction = getEffectiveDirection(
-            sort,
-            (params?.order as ForumSortDirection) ?? defaultForumSortDirection,
+          const {sort, direction} = extractSortParams(
+            query.queryKey,
+            query.queryKey[0] as string,
+            {sort: defaultForumSortOrder, direction: defaultForumSortDirection},
+            isEventCategory,
           );
           const compareFn = (a: ForumListData, b: ForumListData) => compareCategoryForumListData(a, b, sort, direction);
-          return {...oldData, pages: sortedInsertIntoPages(oldData.pages, forumListData, compareFn)};
+          return sortedInsertIntoPages(oldData, categoryAccessor, forumListData, compareFn);
         });
       }
 
       // Insert into /forum/owner with sorted insertion honoring sort order and direction.
       for (const query of queryClient.getQueryCache().findAll({queryKey: ['/forum/owner']})) {
-        const params = query.queryKey[1] as Record<string, string> | undefined;
-        const sort = (params?.sort as ForumSort) ?? defaultForumSortOrder ?? ForumSort.title;
-        const direction = getEffectiveDirection(
-          sort,
-          (params?.order as ForumSortDirection) ?? defaultForumSortDirection,
-        );
-        const compareFn = (a: ForumListData, b: ForumListData) => {
-          const cmp = compareForumListData(a, b, sort);
-          return direction === ForumSortDirection.ascending ? cmp : -cmp;
-        };
-        queryClient.setQueryData<InfiniteData<ForumSearchData>>(query.queryKey, oldData => {
-          if (!oldData) {
-            return oldData;
-          }
-          return {...oldData, pages: sortedInsertIntoPages(oldData.pages, forumListData, compareFn)};
+        const {sort, direction} = extractSortParams(query.queryKey, '/forum/owner', {
+          sort: defaultForumSortOrder,
+          direction: defaultForumSortDirection,
         });
+        const compareFn = buildDirectionalComparator(sort, direction);
+        queryClient.setQueryData<InfiniteData<ForumSearchData>>(query.queryKey, oldData =>
+          oldData ? sortedInsertIntoPages(oldData, forumSearchAccessor, forumListData, compareFn) : oldData,
+        );
       }
 
       // Insert into /forum/recent. Sort is always update; honor direction.
@@ -683,26 +550,10 @@ export const useForumCacheReducer = () => {
           ForumSort.update,
           (params?.order as ForumSortDirection) ?? defaultForumSortDirection,
         );
-        queryClient.setQueryData<InfiniteData<ForumSearchData>>(query.queryKey, oldData => {
-          if (!oldData) {
-            return oldData;
-          }
-          if (recentDirection === ForumSortDirection.descending) {
-            return {
-              ...oldData,
-              pages: oldData.pages.map((page, i) =>
-                i === 0 ? {...page, forumThreads: [forumListData, ...page.forumThreads]} : page,
-              ),
-            };
-          }
-          const lastIdx = oldData.pages.length - 1;
-          return {
-            ...oldData,
-            pages: oldData.pages.map((page, i) =>
-              i === lastIdx ? {...page, forumThreads: [...page.forumThreads, forumListData]} : page,
-            ),
-          };
-        });
+        const edge = recentDirection === ForumSortDirection.descending ? 'start' : 'end';
+        queryClient.setQueryData<InfiniteData<ForumSearchData>>(query.queryKey, oldData =>
+          oldData ? insertAtEdge(oldData, forumSearchAccessor, forumListData, edge) : oldData,
+        );
       }
 
       // Increment thread count in the /forum/categories list cache.
