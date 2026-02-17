@@ -43,6 +43,24 @@ export const filterItemsFromPages = <TPage, TItem>(
 });
 
 /**
+ * Find the first item matching a predicate across all pages.
+ * Returns the item or undefined if not found.
+ */
+export const findInPages = <TPage, TItem>(
+  data: InfiniteData<TPage>,
+  accessor: PageItemAccessor<TPage, TItem>,
+  predicate: (item: TItem) => boolean,
+): TItem | undefined => {
+  for (const page of data.pages) {
+    const found = accessor.get(page)?.find(predicate);
+    if (found) {
+      return found;
+    }
+  }
+  return undefined;
+};
+
+/**
  * Insert an item at the beginning of the first page ('start')
  * or end of the last page ('end').
  */
