@@ -32,7 +32,6 @@ import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
 
@@ -84,7 +83,6 @@ export const ForumThreadScreenBase = ({
   const [readyToShow, setReadyToShow] = useState(false);
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
-  const {data: profilePublicData} = useUserProfileQuery();
 
   // Derive unified ForumData from the React Query cache (no local state).
   const forumData = useForumData(data);
@@ -171,19 +169,17 @@ export const ForumThreadScreenBase = ({
 
           // Update React Query caches (instant, no network).
           // This triggers a re-render via the derived useForumData.
-          if (profilePublicData) {
-            appendPost(forumData.forumID, forumData.categoryID, response.data, profilePublicData.header);
-          }
+          appendPost(forumData.forumID, forumData.categoryID, response.data);
 
           // Clear server unread status (fire-and-forget).
           markReadMutation.mutate({forumID: forumData.forumID});
 
           // Scroll to the new post.
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              flatListRef.current?.scrollToEnd({animated: false});
-            });
-          });
+          // requestAnimationFrame(() => {
+          //   requestAnimationFrame(() => {
+          flatListRef.current?.scrollToEnd({animated: false});
+          //   });
+          // });
         },
         onSettled: () => {
           formikHelpers.setSubmitting(false);

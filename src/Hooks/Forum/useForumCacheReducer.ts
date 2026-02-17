@@ -50,12 +50,7 @@ const categoryAccessor: PageItemAccessor<CategoryData, ForumListData> = {
  * Updates a ForumListData entry in-place-style (returns new object) when
  * it matches the given forumID.
  */
-const updateForumListEntry = (
-  entry: ForumListData,
-  forumID: string,
-  authorHeader: UserHeader,
-  newPost: PostData,
-): ForumListData => {
+const updateForumListEntry = (entry: ForumListData, forumID: string, newPost: PostData): ForumListData => {
   if (entry.forumID !== forumID) {
     return entry;
   }
@@ -63,7 +58,7 @@ const updateForumListEntry = (
     ...entry,
     postCount: entry.postCount + 1,
     readCount: entry.readCount + 1,
-    lastPoster: authorHeader,
+    lastPoster: newPost.author,
     lastPostAt: newPost.createdAt,
   };
 };
@@ -310,7 +305,7 @@ export const useForumCacheReducer = () => {
    * list caches with the new post count / last poster info.
    */
   const appendPost = useCallback(
-    (forumID: string, categoryID: string, newPost: PostData, authorHeader: UserHeader) => {
+    (forumID: string, categoryID: string, newPost: PostData) => {
       updateForumThreadCache(forumID, (page, i, pages) => {
         if (i !== pages.length - 1) {
           return page;
@@ -323,9 +318,7 @@ export const useForumCacheReducer = () => {
           posts: [...page.posts, newPost],
         };
       });
-      updateForumListInAllCaches(forumID, categoryID, entry =>
-        updateForumListEntry(entry, forumID, authorHeader, newPost),
-      );
+      updateForumListInAllCaches(forumID, categoryID, entry => updateForumListEntry(entry, forumID, newPost));
     },
     [updateForumThreadCache, updateForumListInAllCaches],
   );
