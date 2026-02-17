@@ -49,6 +49,9 @@ export type SessionAction =
       lastSessionID: string | null;
     }
   | {
+      type: 'clear-all-sessions';
+    }
+  | {
       type: 'persisted';
     };
 
@@ -173,6 +176,14 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
         currentSessionID: currentSession ? state.currentSessionID : action.lastSessionID,
         isLoading: false,
         needsPersist: false, // Already persisted externally
+      };
+    }
+
+    case 'clear-all-sessions': {
+      return {
+        ...getInitialState([], null),
+        isLoading: false,
+        needsPersist: true,
       };
     }
 

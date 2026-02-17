@@ -263,6 +263,10 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
     [store],
   );
 
+  const clearAllSessions = useCallback(async () => {
+    store.dispatch({type: 'clear-all-sessions'});
+  }, [store]);
+
   const contextValue: SessionContextType = useMemo(
     () => ({
       currentSession,
@@ -273,6 +277,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       findOrCreateSession,
       updateSession,
       deleteSession,
+      clearAllSessions,
       updateSessionToken,
       signIn,
       signOut,
@@ -289,6 +294,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       findOrCreateSession,
       updateSession,
       deleteSession,
+      clearAllSessions,
       updateSessionToken,
       signIn,
       signOut,

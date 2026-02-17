@@ -36,7 +36,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const [showSessions, setShowSessions] = React.useState(false);
   const [sessionsJson, setSessionsJson] = React.useState<string | null>(null);
   const [isLoadingSessions, setIsLoadingSessions] = React.useState(false);
-  const {signOut} = useSession();
+  const {signOut, clearAllSessions} = useSession();
   const {updateAppConfig} = useConfig();
   const {setString: copyToClipboard} = useClipboard();
 
@@ -130,6 +130,13 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Sign Out'}
             onPress={async () => await signOut()}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton
+            buttonColor={theme.colors.twitarrNegativeButton}
+            buttonText={'Clear Sessions'}
+            onPress={async () => await clearAllSessions()}
           />
         </PaddedContentView>
         <PaddedContentView>
