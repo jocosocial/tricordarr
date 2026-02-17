@@ -58,21 +58,23 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
 
   const markAsRead = async () => {
     props.setRefreshing(true);
-    const mutations: Promise<AxiosResponse<void, any>>[] = [];
+    const itemMutations: {id: string; mutation: Promise<AxiosResponse<void, any>>}[] = [];
 
     props.selectedItems.forEach(selectedItem => {
       const sourceItem = props.items?.find(item => item.forumID === selectedItem.id);
       if (!sourceItem) return;
-      const mutation = markReadMutation.mutateAsync({
-        forumID: sourceItem.forumID,
+      itemMutations.push({
+        id: selectedItem.id,
+        mutation: markReadMutation.mutateAsync({forumID: sourceItem.forumID}),
       });
-      mutations.push(mutation);
     });
-    await Promise.allSettled(mutations);
+    const results = await Promise.allSettled(itemMutations.map(m => m.mutation));
 
-    // Update local caches for all selected items.
-    props.selectedItems.forEach(selectedItem => {
-      markRead(selectedItem.id, props.categoryID);
+    // Only update local caches for successfully settled mutations.
+    results.forEach((result, i) => {
+      if (result.status === 'fulfilled') {
+        markRead(itemMutations[i].id, props.categoryID);
+      }
     });
     props.setRefreshing(false);
   };
