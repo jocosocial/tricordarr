@@ -76,6 +76,7 @@ const KaraokeSearchScreenInner = (_props: Props) => {
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         handleLoadNext={handleLoadNext}
+        swipeableEnabled={true}
       />
     </AppView>
   );
