@@ -12,7 +12,6 @@ import {ShadowPerformerProfilesHelpTopicView} from '#src/Components/Views/Help/C
 import {ShareButtonHelpTopicView} from '#src/Components/Views/Help/Common/ShareButtonHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 
@@ -25,7 +24,6 @@ interface EventHelpScreenProps {
 export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
   const mode = route.params?.mode ?? 'official';
   const isOfficial = mode === 'official';
-  const {appConfig} = useConfig();
 
   return (
     <AppView>
@@ -61,11 +59,9 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
           has a forum.
         </HelpTopicView>
         <OverlappingHelpTopicView />
-        {appConfig.enableExperiments && (
-          <HelpTopicView title={'Photostream'} icon={AppIcons.photostream}>
-            View photos from the Photostream associated with this event.
-          </HelpTopicView>
-        )}
+        <HelpTopicView title={'Photostream'} icon={AppIcons.photostream}>
+          View photos from the Photostream associated with this event.
+        </HelpTopicView>
         <ShareButtonHelpTopicView />
         <HelpTopicView title={'Download'} icon={AppIcons.download}>
           Download this event as an ICS calendar file that you can import into your calendar app.

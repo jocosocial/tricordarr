@@ -6,7 +6,6 @@ import {NeedsPhotographerMenuItem} from '#src/Components/Menus/Events/Items/Need
 import {PhotographingMenuItem} from '#src/Components/Menus/Events/Items/PhotographingMenuItem';
 import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
@@ -23,7 +22,6 @@ interface EventCardActionsMenuProps {
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
-  const {appConfig} = useConfig();
   const {hasShutternaut, hasShutternautManager} = useRoles();
 
   const anchorWithMenu = React.cloneElement(props.anchor, {
@@ -46,17 +44,15 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
         leadingIcon={AppIcons.calendarMultiple}
         onPress={() => commonNavigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.eventData})}
       />
-      {appConfig.enableExperiments && (
-        <Menu.Item
-          title={'Photostream'}
-          leadingIcon={AppIcons.photostream}
-          onPress={() =>
-            commonNavigation.push(CommonStackComponents.photostreamEventScreen, {
-              eventID: props.eventData.eventID,
-            })
-          }
-        />
-      )}
+      <Menu.Item
+        title={'Photostream'}
+        leadingIcon={AppIcons.photostream}
+        onPress={() =>
+          commonNavigation.push(CommonStackComponents.photostreamEventScreen, {
+            eventID: props.eventData.eventID,
+          })
+        }
+      />
       <Divider bold={true} />
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.eventData.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.eventData} />

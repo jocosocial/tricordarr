@@ -3,7 +3,6 @@ import React from 'react';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useMenu} from '#src/Hooks/useMenu';
 import {usePhotostreamLocationDataQuery} from '#src/Queries/Photostream/PhotostreamQueries';
 
@@ -14,13 +13,7 @@ interface PhotostreamFilterMenuProps {
 
 export const PhotostreamFilterMenu = ({locationName, onLocationChange}: PhotostreamFilterMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {appConfig} = useConfig();
   const {data: locationData} = usePhotostreamLocationDataQuery();
-
-  // Only render when experiments are enabled
-  if (!appConfig.enableExperiments) {
-    return null;
-  }
 
   const menuAnchor = (
     <FilterMenuAnchor active={!!locationName} onPress={openMenu} onLongPress={() => onLocationChange(undefined)} />
