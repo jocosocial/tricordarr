@@ -174,8 +174,8 @@ export const ForumThreadScreenBase = ({
           // This triggers a re-render via the derived useForumData.
           appendPost(forumData.forumID, forumData.categoryID, response.data);
 
-          // Signal the category screen to scroll to the top when the user navigates back.
-          dispatchScrollToTop(ForumStackComponents.forumCategoryScreen);
+          // Signal screens to scroll to the top when the user navigates back.
+          dispatchScrollToTop(ForumStackComponents.forumCategoryScreen, ForumStackComponents.forumPostSelfScreen);
 
           // Clear server unread status (fire-and-forget).
           markReadMutation.mutate({forumID: forumData.forumID});

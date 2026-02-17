@@ -23,13 +23,14 @@ interface Props {
   queryParams: ForumPostSearchQueryParams;
   refreshOnUserNotification?: boolean;
   title?: string;
+  scrollToTopIntent?: number;
 }
 
 /**
  * Used for screens listing posts such as Favorites, Hashtags, Mentions, By User, By Self.
  * Not used for Post Search
  */
-export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title}: Props) => {
+export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title, scrollToTopIntent}: Props) => {
   const {data, refetch, isFetchingNextPage, hasNextPage, hasPreviousPage, fetchNextPage, isLoading, isFetching} =
     useForumPostSearchQuery(queryParams);
   const commonNavigation = useCommonStack();
@@ -87,6 +88,12 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
       refetchUserNotificationData();
     }
   }, [data, setForumPosts, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
+
+  useEffect(() => {
+    if (scrollToTopIntent) {
+      flatListRef.current?.scrollToOffset({offset: 0, animated: false});
+    }
+  }, [scrollToTopIntent]);
 
   if (isLoading || isLoadingFavorites || !data) {
     return <LoadingView />;

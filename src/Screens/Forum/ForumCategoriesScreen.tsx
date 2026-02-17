@@ -144,7 +144,7 @@ const ForumCategoriesScreenInner = ({navigation}: Props) => {
             <Divider bold={true} />
             <ForumCategoryListItemBase
               title={'Your Posts'}
-              onPress={() => navigation.push(ForumStackComponents.forumPostSelfScreen)}
+              onPress={() => navigation.push(ForumStackComponents.forumPostSelfScreen, {})}
               description={'Posts that you have made in forums.'}
             />
             <Divider bold={true} />
