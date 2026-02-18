@@ -27,7 +27,7 @@ import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePreregistrationScreen>;
 
-export const OobePreregistrationScreen = ({navigation}: Props) => {
+export const OobePreregistrationScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const {currentSession, updateSession, signIn} = useSession();
   const rootNavigation = useRootStack();
@@ -54,9 +54,11 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
     setSessionServerURL(currentSession.serverUrl);
     setSessionTokenData(currentSession.tokenData);
     // Update current session to production mode
+    const useOnboardingServerUrl = route.params?.intent === 'onboarding' || !oobeCompleted;
     await updateSession(currentSession.sessionID, {
-      // Preserve existing server URL when re-running OOBE after completion
-      ...(oobeCompleted ? {} : {serverUrl: appConfig.serverUrl}),
+      // When intent is onboarding, always use appConfig.serverUrl
+      // Otherwise preserve existing server URL when re-running OOBE after completion
+      ...(useOnboardingServerUrl ? {serverUrl: appConfig.serverUrl} : {}),
       preRegistrationMode: false,
     });
     navigation.push(OobeStackComponents.oobeServerScreen);

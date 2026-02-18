@@ -12,6 +12,7 @@ export const PreRegistrationWarningView = () => {
   const onPress = () => {
     navigation.replace(RootStackComponents.oobeNavigator, {
       screen: OobeStackComponents.oobePreregistrationScreen,
+      params: {intent: 'onboarding'},
     });
   };
 

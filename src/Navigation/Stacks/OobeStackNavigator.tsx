@@ -24,7 +24,7 @@ export type OobeStackParamList = CommonStackParamList & {
   OobeFinishScreen: undefined;
   RegisterScreen: undefined;
   OobePermissionsScreen: undefined;
-  OobePreregistrationScreen: undefined;
+  OobePreregistrationScreen: {intent?: 'onboarding'};
   OobeUserDataScreen: undefined;
   OobeScheduleDayScreen: undefined;
 };
