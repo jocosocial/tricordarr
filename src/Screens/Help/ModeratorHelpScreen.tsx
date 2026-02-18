@@ -17,7 +17,7 @@ export const ModeratorHelpScreen = () => {
         </HelpTopicView>
         <HelpChapterTitleView title={'Posting'} />
         <HelpTopicView>
-          When you are posting as Moderator the post button will be a different color. In some circimstances you will
+          When you are posting as Moderator the post button will be a different color. In some circumstances you will
           also see a red banner at the top of the screen.
         </HelpTopicView>
         <HelpChapterTitleView title={'More Information'} />

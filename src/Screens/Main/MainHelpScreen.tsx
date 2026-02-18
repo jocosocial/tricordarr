@@ -28,8 +28,15 @@ export const MainHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Interaction'}>
+          <HelpTopicView title={'Pull to Refresh'}>
+            Most screens support pulling down from the top of the screen to refresh the data.
+          </HelpTopicView>
           <HelpTopicView title={'Long Press'}>
             Most items in a list can be long-pressed to open a menu of additional context-specific actions.
+          </HelpTopicView>
+          <HelpTopicView title={'Swipe'}>
+            Some list items can be swiped to the left or right to perform actions. The orientation of the swipe can be
+            customized in the Appearance Settings.
           </HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>

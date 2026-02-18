@@ -4,7 +4,6 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ClearSearchHelpTopicView} from '#src/Components/Views/Help/Common/ClearSearchHelpTopicView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
-import {PullToRefreshHelpTopicView} from '#src/Components/Views/Help/Common/PullToRefreshHelpTopicView';
 import {SearchBarHelpTopicView} from '#src/Components/Views/Help/Common/SearchBarHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
@@ -22,7 +21,6 @@ export const SeamailSearchHelpScreen = () => {
         <HelpChapterTitleView title={'Search'}>
           <SearchBarHelpTopicView />
           <ClearSearchHelpTopicView />
-          <PullToRefreshHelpTopicView />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
           <HelpButtonHelpTopicView />

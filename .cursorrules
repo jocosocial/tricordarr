@@ -80,3 +80,7 @@ LoggedInScreen
 ## Lists
 
 - Implementors of `BaseSwipeable.tsx` must have a `key`
+
+## Logging
+
+Use `createLogger` rather than `console.log`
