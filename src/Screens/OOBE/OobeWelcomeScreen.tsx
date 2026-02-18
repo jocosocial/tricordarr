@@ -10,6 +10,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -31,6 +32,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {currentSession, findOrCreateSession, updateSession} = useSession();
   const {appConfig} = useConfig();
   const {theme} = useAppTheme();
+  const {oobeCompleted} = useOobe();
   const [versionTapCount, setVersionTapCount] = useState(0);
   const [fault, setFault] = useState(false);
 
@@ -61,7 +63,8 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
       return;
     }
     await updateSession(currentSession.sessionID, {
-      serverUrl: appConfig.preRegistrationServerUrl,
+      // Preserve existing server URL when re-running OOBE after completion
+      ...(oobeCompleted ? {} : {serverUrl: appConfig.preRegistrationServerUrl}),
       preRegistrationMode: true,
     });
     navigation.push(OobeStackComponents.oobeServerScreen);
@@ -73,7 +76,8 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
       return;
     }
     await updateSession(currentSession.sessionID, {
-      serverUrl: appConfig.serverUrl,
+      // Preserve existing server URL when re-running OOBE after completion
+      ...(oobeCompleted ? {} : {serverUrl: appConfig.serverUrl}),
       preRegistrationMode: false,
     });
     navigation.push(OobeStackComponents.oobeServerScreen);

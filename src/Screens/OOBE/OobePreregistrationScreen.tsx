@@ -9,6 +9,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {createLogger} from '#src/Libraries/Logger';
@@ -31,6 +32,7 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
   const {currentSession, updateSession, signIn} = useSession();
   const rootNavigation = useRootStack();
   const {appConfig} = useConfig();
+  const {oobeCompleted} = useOobe();
   const [sessionServerURL, setSessionServerURL] = React.useState(appConfig.preRegistrationServerUrl);
   const [sessionTokenData, setSessionTokenData] = React.useState<TokenStringData | null>(null);
 
@@ -53,7 +55,8 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
     setSessionTokenData(currentSession.tokenData);
     // Update current session to production mode
     await updateSession(currentSession.sessionID, {
-      serverUrl: appConfig.serverUrl,
+      // Preserve existing server URL when re-running OOBE after completion
+      ...(oobeCompleted ? {} : {serverUrl: appConfig.serverUrl}),
       preRegistrationMode: false,
     });
     navigation.push(OobeStackComponents.oobeServerScreen);
