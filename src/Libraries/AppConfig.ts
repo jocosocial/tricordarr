@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment-timezone';
 
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {LogLevel} from '#src/Libraries/Logger/types';
@@ -62,6 +63,7 @@ export interface AppConfig {
   oobeExpectedVersion: number;
   enableDeveloperOptions: boolean;
   enableExperiments: boolean;
+  cruiseStartDateStr: string;
   cruiseStartDate: Date;
   cruiseLength: number;
   schedule: ScheduleConfig;
@@ -117,6 +119,7 @@ export const defaultAppConfig: AppConfig = {
   fgsWorkerHealthTimer: 20000, // 20000 == 20 seconds
   oobeExpectedVersion: 3,
   enableDeveloperOptions: false,
+  cruiseStartDateStr: '2023-04-05',
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
   manualTimeOffset: 0,
@@ -173,11 +176,23 @@ export const getAppConfig = async () => {
     return defaultAppConfig;
   }
   let appConfig = JSON.parse(rawConfig) as AppConfig;
-  // Certain keys should always be loaded from the app environment.
-  // I'm becoming less certain about this. Dropped cruise settings because I have screens for that.
-  // Avoid putting things from the SwiftarrClientData endpoint in here. It's confusing.
-  // Type conversions on a couple of keys. Barf.
-  appConfig.cruiseStartDate = new Date(appConfig.cruiseStartDate);
+  // Reconstruct cruiseStartDate as midnight in the port timezone.
+  // Prefer cruiseStartDateStr (timezone-safe) with fallback for old stored configs.
+  if (appConfig.cruiseStartDateStr) {
+    appConfig.cruiseStartDate = moment
+      .tz(appConfig.cruiseStartDateStr, 'YYYY-MM-DD', appConfig.portTimeZoneID)
+      .toDate();
+  } else {
+    // Backward compat: extract UTC date from legacy stored ISO string
+    const raw = new Date(appConfig.cruiseStartDate as unknown as string);
+    const y = raw.getUTCFullYear();
+    const m = String(raw.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(raw.getUTCDate()).padStart(2, '0');
+    appConfig.cruiseStartDateStr = `${y}-${m}-${d}`;
+    appConfig.cruiseStartDate = moment
+      .tz(appConfig.cruiseStartDateStr, 'YYYY-MM-DD', appConfig.portTimeZoneID)
+      .toDate();
+  }
   if (appConfig.muteNotifications) {
     appConfig.muteNotifications = new Date(appConfig.muteNotifications);
   }

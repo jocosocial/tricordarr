@@ -12,10 +12,12 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
   const updateClientSettings = useCallback(async () => {
     const response = await refetch();
     if (response.data) {
+      const dateStr = ClientSettingsData.parseCruiseStartDate(response.data.cruiseStartDate);
       updateAppConfig({
         ...appConfig,
         cruiseLength: response.data.cruiseLengthInDays,
-        cruiseStartDate: ClientSettingsData.parseCruiseStartDate(response.data.cruiseStartDate),
+        cruiseStartDateStr: dateStr,
+        cruiseStartDate: ClientSettingsData.buildCruiseStartDate(dateStr, response.data.portTimeZoneID),
         portTimeZoneID: response.data.portTimeZoneID,
         schedBaseUrl: ClientSettingsData.parseScheduleUpdateURL(response.data.scheduleUpdateURL),
       });

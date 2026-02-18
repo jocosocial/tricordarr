@@ -151,7 +151,7 @@ export const calcCruiseDayTime: (
   if (getBoatTzAt) {
     const boatTz = getBoatTzAt(dateValue);
     const dateInBoatTz = moment(dateValue).tz(boatTz);
-    const cruiseStartInBoatTz = moment(cruiseStartDate).tz(boatTz);
+    const cruiseStartInBoatTz = moment(cruiseStartDate).tz(boatTz).startOf('day');
 
     // Day starts at 3am in boat timezone
     const dayStartHour = 3;
@@ -160,11 +160,11 @@ export const calcCruiseDayTime: (
     let cruiseDay: number;
     const daysSinceCruiseStart = dateInBoatTz.diff(cruiseStartInBoatTz, 'days');
 
-    // Check if we're before 3am on the calendar day - if so, we're still in the previous cruise day
+    // Before 3am we're still in the previous cruise day (0-indexed, += 1 below makes it 1-indexed)
     if (dateInBoatTz.hours() < dayStartHour) {
-      cruiseDay = daysSinceCruiseStart; // Previous day (will add 1 below)
+      cruiseDay = daysSinceCruiseStart - 1;
     } else {
-      cruiseDay = daysSinceCruiseStart + 1; // Current day (will add 0 below, then 1)
+      cruiseDay = daysSinceCruiseStart;
     }
 
     // Ensure we're within cruise bounds

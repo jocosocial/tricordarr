@@ -13,7 +13,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '#src/Types/FormValues';
+import {CruiseSettingsFormValues} from '#src/Types/FormValues';
 
 const logger = createLogger('CruiseSettingsScreen.tsx');
 
@@ -31,20 +31,20 @@ export const CruiseSettingsScreen = () => {
     schedBaseUrl: appConfig.schedBaseUrl,
   };
 
-  const preRegistrationInitialValues: PreRegistrationSettingsFormValues = {
-    preRegistrationServerUrl: appConfig.preRegistrationServerUrl,
-  };
-
   const onSubmit = (values: CruiseSettingsFormValues, helpers: FormikHelpers<CruiseSettingsFormValues>) => {
     let startDate = values.startDate;
     startDate.setHours(0);
     startDate.setMinutes(0);
     startDate.setSeconds(0);
     startDate.setMilliseconds(0);
+    const y = startDate.getFullYear();
+    const m = String(startDate.getMonth() + 1).padStart(2, '0');
+    const d = String(startDate.getDate()).padStart(2, '0');
     updateAppConfig({
       ...appConfig,
       portTimeZoneID: values.portTimeZoneID,
       cruiseLength: Number(values.cruiseLength),
+      cruiseStartDateStr: `${y}-${m}-${d}`,
       cruiseStartDate: startDate,
       schedBaseUrl: values.schedBaseUrl,
     });
@@ -55,22 +55,6 @@ export const CruiseSettingsScreen = () => {
         cruiseLength: values.cruiseLength,
         startDate: values.startDate,
         schedBaseUrl: values.schedBaseUrl,
-      },
-    });
-  };
-
-  const onPreRegistrationSubmit = (
-    values: PreRegistrationSettingsFormValues,
-    helpers: FormikHelpers<PreRegistrationSettingsFormValues>,
-  ) => {
-    updateAppConfig({
-      ...appConfig,
-      preRegistrationServerUrl: values.preRegistrationServerUrl,
-    });
-    helpers.setSubmitting(false);
-    helpers.resetForm({
-      values: {
-        preRegistrationServerUrl: values.preRegistrationServerUrl,
       },
     });
   };
