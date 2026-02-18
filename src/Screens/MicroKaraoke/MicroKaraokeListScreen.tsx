@@ -2,7 +2,6 @@ import React from 'react';
 
 import {KrakenView} from '#src/Components/Views/Static/KrakenView';
 import {NotImplementedView} from '#src/Components/Views/Static/NotImplementedView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -21,7 +20,7 @@ export const MicroKaraokeListScreen = () => {
 const MicroKaraokeListScreenInner = () => {
   // const {data, refetch, isFetching} = useMicroKaraokeSonglistQuery();
   // console.log(data);
-  const {appConfig} = useConfig();
+  // const {appConfig} = useConfig();
 
   // if (data === undefined) {
   //   return <LoadingView />;

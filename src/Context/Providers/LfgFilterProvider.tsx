@@ -7,7 +7,7 @@ import {FezType} from '#src/Enums/FezType';
 export const LfgFilterProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const [lfgCruiseDayFilter, setLfgCruiseDayFilter] = useState<number>();
-  const [lfgTypeFilter, setLfgTypeFilter] = useState<keyof typeof FezType>();
+  const [lfgTypeFilter, setLfgTypeFilter] = useState<FezType | undefined>();
   const [lfgHidePastFilter, setLfgHidePastFilter] = useState(appConfig.schedule.hidePastLfgs);
   const [lfgOnlyNew, setLfgOnlyNew] = useState<boolean | undefined>(undefined);
 
