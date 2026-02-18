@@ -22,6 +22,7 @@ interface KaraokeSongListProps {
   items: KaraokeSongListItem[];
   /** Wrap items in swipeable (Favorite + Log if karaokemanager). */
   swipeableEnabled?: boolean;
+  showFavoriteButton?: boolean;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   hasNextPage?: boolean;
   handleLoadNext?: () => void;
@@ -86,4 +87,6 @@ const KaraokeSongListInner = (
   );
 };
 
-export const KaraokeSongList = forwardRef(KaraokeSongListInner);
+export const KaraokeSongList = forwardRef<FlashListRef<KaraokeSongListItem>, KaraokeSongListProps>(
+  KaraokeSongListInner,
+);

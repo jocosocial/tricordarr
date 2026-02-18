@@ -18,7 +18,7 @@ import {ForumThreadOwnedScreen} from '#src/Screens/Forum/Thread/ForumThreadOwned
 import {ForumThreadRecentScreen} from '#src/Screens/Forum/Thread/ForumThreadRecentScreen';
 import {ForumThreadSearchScreen} from '#src/Screens/Forum/Thread/ForumThreadSearchScreen';
 import {CategoryData} from '#src/Structs/ControllerStructs';
-import {WithScrollToTopIntent} from '#src/Types/RouteParams';
+import {Optional, WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
@@ -26,12 +26,12 @@ export type ForumStackParamList = CommonStackParamList & {
     category: CategoryData;
   }>;
   ForumPostMentionScreen: undefined;
-  ForumPostSelfScreen: WithScrollToTopIntent;
+  ForumPostSelfScreen: Optional<WithScrollToTopIntent>;
   ForumPostFavoriteScreen: undefined;
-  ForumFavoritesScreen: WithScrollToTopIntent;
-  ForumMutesScreen: WithScrollToTopIntent;
-  ForumOwnedScreen: WithScrollToTopIntent;
-  ForumRecentScreen: WithScrollToTopIntent;
+  ForumFavoritesScreen: Optional<WithScrollToTopIntent>;
+  ForumMutesScreen: Optional<WithScrollToTopIntent>;
+  ForumOwnedScreen: Optional<WithScrollToTopIntent>;
+  ForumRecentScreen: Optional<WithScrollToTopIntent>;
   ForumPostAlertwordScreen: {
     alertWord: string;
   };

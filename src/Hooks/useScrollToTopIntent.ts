@@ -14,7 +14,7 @@ export const useScrollToTopIntent = () => {
       const state = navigation.getState();
       const timestamp = Date.now();
       for (const screenName of screenNames) {
-        const route = state.routes.find(r => r.name === screenName);
+        const route = state?.routes.find(r => r.name === screenName);
         if (route) {
           navigation.dispatch({
             ...CommonActions.setParams({scrollToTopIntent: timestamp}),
