@@ -1,5 +1,5 @@
 import {useQueryClient} from '@tanstack/react-query';
-import React, {Dispatch, SetStateAction} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
@@ -11,6 +11,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {SetRefreshing} from '#src/Hooks/useRefresh';
 import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '#src/Queries/User/UserAvatarMutations';
@@ -21,7 +22,7 @@ const logger = createLogger('UserProfileAvatar.tsx');
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
-  setRefreshing: Dispatch<SetStateAction<boolean>>;
+  setRefreshing: SetRefreshing;
 }
 
 const UserProfileAvatarImage = ({user}: {user: ProfilePublicData}) => {
