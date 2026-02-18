@@ -46,6 +46,30 @@ index 46a45f4..85863c9 100644
      });
    }, [removeListeners, theme]);
    const updateVisibility = React.useCallback(async display => {
+diff --git a/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts b/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts
+index d4d611a..8216cd3 100644
+--- a/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts
++++ b/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts
+@@ -39,6 +39,10 @@ export type Props = {
+      * Function to execute on press.
+      */
+     onPress?: (e: GestureResponderEvent) => void;
++    /**
++     * Function to execute on long press.
++     */
++    onLongPress?: (e: GestureResponderEvent) => void;
+     /**
+      * Specifies the largest possible scale a title font can reach.
+      */
+@@ -108,7 +112,7 @@ export type Props = {
+  * ```
+  */
+ declare const MenuItem: {
+-    ({ leadingIcon, trailingIcon, dense, title, disabled, background, onPress, style, containerStyle, contentStyle, titleStyle, rippleColor: customRippleColor, testID, accessibilityLabel, accessibilityState, theme: themeOverrides, titleMaxFontSizeMultiplier, hitSlop, }: Props): React.JSX.Element;
++    ({ leadingIcon, trailingIcon, dense, title, disabled, background, onPress, onLongPress, style, containerStyle, contentStyle, titleStyle, rippleColor: customRippleColor, testID, accessibilityLabel, accessibilityState, theme: themeOverrides, titleMaxFontSizeMultiplier, hitSlop, }: Props): React.JSX.Element;
+     displayName: string;
+ };
+ export default MenuItem;
 diff --git a/node_modules/react-native-paper/src/components/BottomNavigation/BottomNavigationBar.tsx b/node_modules/react-native-paper/src/components/BottomNavigation/BottomNavigationBar.tsx
 index 05264c6..d644195 100644
 --- a/node_modules/react-native-paper/src/components/BottomNavigation/BottomNavigationBar.tsx
