@@ -49,6 +49,7 @@ const AppFlashListInner = <TItem,>(
     handleLoadNext,
     extraData,
     style,
+    contentContainerStyle,
     masonry = false,
   }: AppFlashListProps<TItem>,
   ref: React.ForwardedRef<FlashListRef<TItem>>,
@@ -103,6 +104,7 @@ const AppFlashListInner = <TItem,>(
         onEndReached={handleLoadNext}
         extraData={extraData}
         style={style}
+        contentContainerStyle={contentContainerStyle}
         // columnWrapperStyle is not supported in FlashList v2.
         masonry={masonry}
       />

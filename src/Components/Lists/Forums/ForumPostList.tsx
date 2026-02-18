@@ -137,7 +137,7 @@ export const ForumPostList = ({
       // Style is here rather than in the renderItem because the padding we use is
       // also needed for the dividers. It could be added to the divider function as
       // well but this is slightly simpler and covers cases I am not remembering.
-      style={commonStyles.paddingHorizontalSmall}
+      contentContainerStyle={commonStyles.paddingHorizontalSmall}
     />
   );
 };
