@@ -2,8 +2,8 @@
  * Generic type for route params that support intent-based navigation.
  * Intent is a unique string (action_epochSeconds) that triggers one-time effects.
  */
-export type WithIntent<T = {}> = T & {
-  intent?: string;
+export type WithIntent<TParams = Optional<{}>, TIntent = string> = TParams & {
+  intent?: TIntent;
 };
 
 /**
