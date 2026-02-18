@@ -1,11 +1,11 @@
-name: Lint
+name: Checks
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  lint:
+  typescript:
     runs-on: ubuntu-latest
 
     steps:
