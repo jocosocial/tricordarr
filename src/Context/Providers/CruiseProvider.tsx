@@ -1,4 +1,4 @@
-import {differenceInCalendarDays, differenceInDays} from 'date-fns';
+import {differenceInCalendarDays} from 'date-fns';
 import React, {PropsWithChildren} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -26,10 +26,13 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   let endDate = new Date(startDate.getTime());
   endDate.setDate(startDate.getDate() + cruiseLength - 1);
   // Day Index. Similar to the Swiftarr Site UI this is used to show "days before/days after" the sailing.
-  // There is a difference in behavior between differenceInDays and differenceInCalendarDays. IMO the latter
-  // is more accurate but that's not what we do in the Site UI / Swift lang. So we have to be a little weird.
+  // Both use differenceInCalendarDays (calendar-date-based, ignoring time) rather than differenceInDays
+  // (full 24-hour periods). Since adjustedDate already has the lateDayFlip 3-hour offset applied,
+  // differenceInCalendarDays correctly flips the day at 3 AM: at 2:59 AM the adjusted date is still the
+  // previous calendar day (11:59 PM), at 3:00 AM it becomes midnight of the new day.
+  // See https://github.com/jocosocial/tricordarr/issues/282
   const cruiseDayIndex = differenceInCalendarDays(hourlyUpdatingDate, startDate);
-  const adjustedCruiseDayIndex = differenceInDays(adjustedDate, startDate);
+  const adjustedCruiseDayIndex = differenceInCalendarDays(adjustedDate, startDate);
   // Days Since.
   const daysSince = cruiseDayIndex - cruiseLength;
   // Array of cruise day names and configs.

@@ -14,6 +14,7 @@ import en from 'javascript-time-ago/locale/en';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
 import {useEffect, useRef, useState} from 'react';
+import {AppState} from 'react-native';
 
 import {CruiseDayData, CruiseDayTime, StartEndTime} from '#src/Types';
 import {StartTime} from '#src/Types/FormValues';
@@ -60,6 +61,11 @@ function startOfThreshold(threshold: keyof typeof thresholdMap) {
  * https://dev.to/dcwither/tracking-time-with-react-hooks-4b8b
  *
  * Make a date object that react-ifys itself and makes it available as a hook.
+ *
+ * An AppState listener forces an immediate refresh when the app returns to foreground.
+ * On iOS/Android, setTimeout callbacks are suspended while the app is backgrounded or
+ * the device is asleep, so the recursive timer alone can miss hour boundaries (e.g. the
+ * 3 AM lateDayFlip rollover). See https://github.com/jocosocial/tricordarr/issues/282
  */
 export default function useDateTime(threshold: keyof typeof thresholdMap) {
   const [date, setDate] = useState(startOfThreshold(threshold));
@@ -67,16 +73,29 @@ export default function useDateTime(threshold: keyof typeof thresholdMap) {
 
   useEffect(() => {
     if (threshold) {
-      function delayedTimeChange() {
+      function scheduleNext() {
+        clearTimeout(timer.current);
         timer.current = setTimeout(() => {
-          delayedTimeChange();
+          scheduleNext();
         }, msUntilNext(threshold));
 
         setDate(startOfThreshold(threshold));
       }
 
-      delayedTimeChange();
-      return () => clearTimeout(timer.current);
+      scheduleNext();
+
+      // When the app returns from background/sleep, setTimeout callbacks may
+      // have been suspended. Force an immediate refresh so the UI catches up.
+      const subscription = AppState.addEventListener('change', state => {
+        if (state === 'active') {
+          scheduleNext();
+        }
+      });
+
+      return () => {
+        clearTimeout(timer.current);
+        subscription.remove();
+      };
     }
   }, [threshold]);
 
