@@ -164,7 +164,8 @@ export const defaultAppConfig: AppConfig = {
   wifiNetworkNames: [],
   forceShowTimezoneWarning: false,
   silenceTimezoneWarnings: false,
-  logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
+  // logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
+  logLevel: LogLevel.DEBUG,
 };
 
 /**
