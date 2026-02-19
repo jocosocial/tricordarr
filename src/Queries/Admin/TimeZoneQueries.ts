@@ -13,6 +13,7 @@ type TimeZoneChangesQueryOptions = Omit<
 export const useTimeZoneChangesQuery = (options?: TimeZoneChangesQueryOptions) => {
   return useOpenQuery<TimeZoneChangeData>('/admin/timezonechanges', {
     staleTime: STALE.HOURS.TWENTY_FOUR,
+    enabled: false, // default: only TimeZoneChangesProvider enables when oobeCompleted
     ...options,
   });
 };
