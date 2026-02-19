@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, useCallback, useMemo} from 'react';
+import React, {PropsWithChildren, useCallback, useMemo, useState} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {OobeContext} from '#src/Context/Contexts/OobeContext';
@@ -10,6 +10,7 @@ const logger = createLogger('OobeProvider.tsx');
 export const OobeProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const {currentSession, updateSession} = useSession();
+  const [onboarding, setOnboarding] = useState(false);
 
   const oobeCompleted = useMemo(() => {
     const completedVersion = currentSession?.oobeCompletedVersion ?? 0;
@@ -24,6 +25,7 @@ export const OobeProvider = ({children}: PropsWithChildren) => {
     await updateSession(currentSession.sessionID, {
       oobeCompletedVersion: appConfig.oobeExpectedVersion,
     });
+    setOnboarding(false);
     // The persist effect handles writing lastSessionID based on currentSessionID
   }, [currentSession, updateSession, appConfig.oobeExpectedVersion]);
 
@@ -31,8 +33,10 @@ export const OobeProvider = ({children}: PropsWithChildren) => {
     () => ({
       oobeCompleted,
       oobeFinish,
+      onboarding,
+      setOnboarding,
     }),
-    [oobeCompleted, oobeFinish],
+    [oobeCompleted, oobeFinish, onboarding],
   );
 
   return <OobeContext.Provider value={contextValue}>{children}</OobeContext.Provider>;

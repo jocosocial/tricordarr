@@ -32,7 +32,7 @@ export const OobePreregistrationScreen = ({navigation, route}: Props) => {
   const {currentSession, updateSession, signIn} = useSession();
   const rootNavigation = useRootStack();
   const {appConfig} = useConfig();
-  const {oobeCompleted} = useOobe();
+  const {oobeCompleted, setOnboarding} = useOobe();
   const [sessionServerURL, setSessionServerURL] = React.useState(appConfig.preRegistrationServerUrl);
   const [sessionTokenData, setSessionTokenData] = React.useState<TokenStringData | null>(null);
 
@@ -61,6 +61,9 @@ export const OobePreregistrationScreen = ({navigation, route}: Props) => {
       ...(useOnboardingServerUrl ? {serverUrl: appConfig.serverUrl} : {}),
       preRegistrationMode: false,
     });
+    if (useOnboardingServerUrl) {
+      setOnboarding(true);
+    }
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
