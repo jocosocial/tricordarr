@@ -18,7 +18,6 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
@@ -32,7 +31,8 @@ export const OobeServerScreen = ({navigation}: Props) => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
   const {hasUnsavedWork} = useErrorHandler();
-  const {serverUrl} = useSwiftarrQueryClient();
+  // const {serverUrl} = useSwiftarrQueryClient();
+  const serverUrl = 'http://10.0.2.2:5050';
   const queryClient = useQueryClient();
   const {setSnackbarPayload} = useSnackbar();
   const {performSignOut} = useSignOut();
@@ -112,8 +112,8 @@ export const OobeServerScreen = ({navigation}: Props) => {
           <ServerUrlSettingForm
             onSubmit={onSave}
             initialValues={{
-              serverChoice: ServerChoices.fromUrl(serverUrl),
-              serverUrl: serverUrl,
+              serverChoice: {name: 'Start', serverUrl: 'https://start.twitarr.com'},
+              serverUrl: 'https://start.twitarr.com',
             }}
           />
         </PaddedContentView>

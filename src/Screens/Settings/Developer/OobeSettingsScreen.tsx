@@ -14,7 +14,7 @@ import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStac
 export const OobeSettingsScreen = () => {
   const {appConfig} = useConfig();
   const {currentSession, updateSession} = useSession();
-  const navigation = useRootStack();
+  const rootNavigation = useRootStack();
   const {theme} = useAppTheme();
 
   async function resetOobeVersion() {
@@ -38,9 +38,16 @@ export const OobeSettingsScreen = () => {
         <ListSubheader>Debugging</ListSubheader>
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
+            buttonText={'OOBE Title'}
+            buttonColor={theme.colors.twitarrNeutralButton}
+            onPress={() => rootNavigation.push(RootStackComponents.oobeTitleScreen)}
+          />
+        </PaddedContentView>
+        <PaddedContentView padTop={true}>
+          <PrimaryActionButton
             buttonText={'Enter OOBE'}
             buttonColor={theme.colors.twitarrNeutralButton}
-            onPress={() => navigation.push(RootStackComponents.oobeNavigator)}
+            onPress={() => rootNavigation.push(RootStackComponents.oobeNavigator)}
           />
         </PaddedContentView>
       </ScrollingContentView>

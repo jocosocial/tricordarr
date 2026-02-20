@@ -12,6 +12,7 @@ import {createLogger} from '#src/Libraries/Logger';
 import {OobeStackNavigator, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {BottomTabNavigator, BottomTabParamList} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {LighterScreen} from '#src/Screens/Main/LighterScreen';
+import {OobeTitleScreen} from '#src/Screens/OOBE/OobeTitleScreen';
 
 const logger = createLogger('RootStackNavigator.tsx');
 
@@ -20,12 +21,14 @@ export type RootStackParamList = {
   RootContentScreen: NavigatorScreenParams<BottomTabParamList>;
   // Lighter has to be here until I can figure out how to fullscreen a video
   LighterScreen: undefined;
+  OobeTitleScreen: undefined;
 };
 
 export enum RootStackComponents {
   oobeNavigator = 'OobeStackNavigator',
   rootContentScreen = 'RootContentScreen',
   lighterScreen = 'LighterScreen',
+  oobeTitleScreen = 'OobeTitleScreen',
 }
 
 export const RootStackNavigator = () => {
@@ -89,6 +92,11 @@ export const RootStackNavigator = () => {
       <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />
       <Stack.Screen name={RootStackComponents.rootContentScreen} component={BottomTabNavigator} />
       <Stack.Screen name={RootStackComponents.lighterScreen} component={LighterScreen} />
+      <Stack.Screen
+        name={RootStackComponents.oobeTitleScreen}
+        component={OobeTitleScreen}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };
