@@ -4,6 +4,7 @@ import {HelpFABView} from '#src/Components/Buttons/FloatingActionButtons/HelpFAB
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
+import {SelectionHelpTopicView} from '#src/Components/Views/Help/Common/SelectionHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -23,6 +24,9 @@ export const SeamailListHelpScreen = () => {
           <HelpTopicView>
             Press the "Create Seamail" button in the lower right to create a new seamail conversation.
           </HelpTopicView>
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'List Item Actions'}>
+          <SelectionHelpTopicView />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
           <HelpTopicView title={'Filter Unread'} icon={AppIcons.seamailUnread}>

@@ -64,10 +64,12 @@ const SeamailListItemInternal = ({fez, enableSelection, setEnableSelection, sele
     },
     item: {
       ...commonStyles.background,
+      ...commonStyles.paddingRightSmall,
     },
     checkboxContainer: {
       ...commonStyles.flexColumn,
       ...commonStyles.justifyCenter,
+      ...commonStyles.paddingLeftSmall,
     },
   });
 
