@@ -7,6 +7,7 @@ import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
 import {SeamailListItem} from '#src/Components/Lists/Items/SeamailListItem';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface SeamailFlatListProps {
@@ -23,6 +24,7 @@ interface SeamailFlatListProps {
  */
 export const SeamailFlatList = (props: SeamailFlatListProps) => {
   const flatListRef = useRef<FlashListRef<FezData>>(null);
+  const {enableSelection, setEnableSelection, selectedItems} = useSelection();
 
   const getListSeparator = useCallback(() => {
     if (props.fezList.length > 0) {
@@ -31,10 +33,17 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
     return <></>;
   }, [props.fezList]);
 
-  const renderItem = ({item}: {item: FezData}) => (
-    // The key is needed to force a re-render when the mute state changes
-    // so that the swipables don't get all out of alignment in the list.
-    <SeamailListItem key={`${item.fezID}-${item.members?.isMuted ?? false}`} fez={item} />
+  const renderItem = useCallback(
+    ({item}: {item: FezData}) => (
+      <SeamailListItem
+        key={`${item.fezID}-${item.members?.isMuted ?? false}`}
+        fez={item}
+        enableSelection={enableSelection}
+        setEnableSelection={setEnableSelection}
+        selected={selectedItems.some(i => i.id === item.fezID)}
+      />
+    ),
+    [enableSelection, setEnableSelection, selectedItems],
   );
 
   const getListHeader = useCallback(() => {

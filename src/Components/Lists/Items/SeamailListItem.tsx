@@ -1,5 +1,6 @@
-import React, {memo} from 'react';
+import React, {Dispatch, memo, SetStateAction} from 'react';
 import {StyleSheet, View} from 'react-native';
+import {Checkbox} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezAvatarImage} from '#src/Components/Images/FezAvatarImage';
@@ -7,21 +8,28 @@ import {ListItem} from '#src/Components/Lists/ListItem';
 import {SeamailListItemSwipeable} from '#src/Components/Swipeables/SeamailListItemSwipeable';
 import {SeamailMessageCountIndicator} from '#src/Components/Text/SeamailMessageCountIndicator';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {FezData} from '#src/Structs/ControllerStructs';
+import {Selectable} from '#src/Types/Selectable';
 
 interface SeamailListItemProps {
   fez: FezData;
+  enableSelection: boolean;
+  setEnableSelection: Dispatch<SetStateAction<boolean>>;
+  selected: boolean;
 }
 
-const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
+const SeamailListItemInternal = ({fez, enableSelection, setEnableSelection, selected}: SeamailListItemProps) => {
   const {currentUserID} = useSession();
   const navigation = useChatStack();
   const {commonStyles} = useStyles();
+  const {dispatchSelectedItems} = useSelection();
   let badgeCount = 0;
   if (fez.members) {
     badgeCount = fez.members.postCount - fez.members.readCount;
@@ -57,16 +65,40 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     item: {
       ...commonStyles.background,
     },
+    checkboxContainer: {
+      ...commonStyles.flexColumn,
+      ...commonStyles.justifyCenter,
+    },
   });
 
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== currentUserID) || [];
   const description = otherParticipants.map(p => p.username).join(', ');
+
+  const handleSelection = () => {
+    dispatchSelectedItems({
+      type: SelectionActions.select,
+      item: Selectable.fromFezData(fez),
+    });
+  };
+
+  const onLongPress = () => {
+    setEnableSelection(true);
+    handleSelection();
+  };
 
   const getAvatar = () => (
     <View style={styles.avatar}>
       <FezAvatarImage fez={fez} />
     </View>
   );
+
+  const getLeft = () => {
+    return (
+      <View style={styles.checkboxContainer}>
+        <Checkbox status={selected ? 'checked' : 'unchecked'} onPress={handleSelection} />
+      </View>
+    );
+  };
 
   const onPress = () =>
     navigation.push(CommonStackComponents.seamailChatScreen, {
@@ -105,7 +137,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
    * the description to one line.
    */
   return (
-    <SeamailListItemSwipeable fez={fez}>
+    <SeamailListItemSwipeable fez={fez} enabled={!enableSelection}>
       <ListItem
         style={styles.item}
         title={fez.title}
@@ -114,8 +146,9 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
         description={description}
         descriptionStyle={styles.description}
         descriptionNumberOfLines={1}
-        onPress={onPress}
-        left={getAvatar}
+        onPress={enableSelection ? handleSelection : onPress}
+        onLongPress={onLongPress}
+        left={enableSelection ? getLeft : getAvatar}
         right={getRight}
       />
     </SeamailListItemSwipeable>

@@ -6,8 +6,10 @@ import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {SeamailFAB} from '#src/Components/Buttons/FloatingActionButtons/SeamailFAB';
+import {SeamailSelectionHeaderButtons} from '#src/Components/Buttons/HeaderButtons/SeamailSelectionHeaderButtons';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SeamailAccountButtons} from '#src/Components/Buttons/SegmentedButtons/SeamailAccountButtons';
+import {SelectionButtons} from '#src/Components/Buttons/SegmentedButtons/SelectionButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
@@ -15,8 +17,10 @@ import {SeamailListScreenActionsMenu} from '#src/Components/Menus/Seamail/Seamai
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {usePagination} from '#src/Hooks/usePagination';
@@ -31,6 +35,7 @@ import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
+import {Selectable} from '#src/Types/Selectable';
 
 type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
@@ -39,7 +44,9 @@ export const SeamailListScreen = (props: Props) => {
     <LoggedInScreen>
       <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
-          <SeamailListScreenInner {...props} />
+          <SelectionProvider>
+            <SeamailListScreenInner {...props} />
+          </SelectionProvider>
         </DisabledFeatureScreen>
       </PreRegistrationScreen>
     </LoggedInScreen>
@@ -64,12 +71,13 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const [fezList, setFezList] = useState<FezData[]>([]);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const queryClient = useQueryClient();
+  const {selectedItems, enableSelection} = useSelection();
   const {handleLoadNext} = usePagination({
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
   });
-  const {refreshing, onRefresh} = useRefresh({
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
       await Promise.all([refetch(), refetchUserNotificationData()]);
     }, [refetch, refetchUserNotificationData]),
@@ -102,6 +110,13 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   );
 
   const getNavButtons = useCallback(() => {
+    if (enableSelection) {
+      return (
+        <View>
+          <SeamailSelectionHeaderButtons setRefreshing={setRefreshing} items={fezList} selectedItems={selectedItems} />
+        </View>
+      );
+    }
     return (
       <View>
         <MaterialHeaderButtons>
@@ -124,7 +139,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [showUnreadOnly, asPrivilegedUser, navigation]);
+  }, [enableSelection, showUnreadOnly, asPrivilegedUser, navigation, setRefreshing, fezList, selectedItems]);
 
   useEffect(() => {
     if (notificationSocket) {
@@ -141,7 +156,12 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
     navigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [isFocused, closeFezSocket, navigation, getNavButtons]);
+    if (enableSelection) {
+      navigation.setOptions({title: `Selected: ${selectedItems.length}`});
+    } else {
+      navigation.setOptions({title: 'Seamail'});
+    }
+  }, [isFocused, closeFezSocket, navigation, getNavButtons, enableSelection, selectedItems.length]);
 
   /**
    * This operates more like an intent than a state.
@@ -160,11 +180,16 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      {profilePublicData && (hasTwitarrTeam || hasModerator) && (
-        // For some reason, SegmentedButtons hates the flex in PaddedContentView.
-        <View style={[commonStyles.paddingSmall]}>
-          <SeamailAccountButtons />
-        </View>
+      {enableSelection ? (
+        <SelectionButtons items={fezList.map(Selectable.fromFezData)} />
+      ) : (
+        profilePublicData &&
+        (hasTwitarrTeam || hasModerator) && (
+          // For some reason, SegmentedButtons hates the flex in PaddedContentView.
+          <View style={[commonStyles.paddingSmall]}>
+            <SeamailAccountButtons />
+          </View>
+        )
       )}
       <SeamailFlatList
         fezList={fezList}

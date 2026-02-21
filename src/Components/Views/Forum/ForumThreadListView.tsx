@@ -9,6 +9,7 @@ import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {usePagination} from '#src/Hooks/usePagination';
 import {SetRefreshing} from '#src/Hooks/useRefresh';
 import {CategoryData, ForumListData} from '#src/Structs/ControllerStructs';
+import {Selectable} from '#src/Types/Selectable';
 
 interface ForumThreadListViewProps {
   hasNextPage?: boolean;
@@ -62,7 +63,7 @@ export const ForumThreadListView = ({
   return (
     <>
       {enableSelection ? (
-        <SelectionButtons items={forumListData} />
+        <SelectionButtons items={forumListData.map(Selectable.fromForumListData)} />
       ) : (
         <ListTitleView title={title} subtitle={subtitle} />
       )}

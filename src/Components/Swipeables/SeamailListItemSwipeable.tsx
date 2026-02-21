@@ -8,17 +8,21 @@ import {BaseSwipeable} from '#src/Components/Swipeables/BaseSwipeable';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
+import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface SeamailListItemSwipeableProps extends PropsWithChildren {
   fez: FezData;
+  enabled?: boolean;
 }
 
 export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) => {
   const {theme} = useAppTheme();
   const muteMutation = useFezMuteMutation();
   const queryClient = useQueryClient();
+  const {refetch} = useFezQuery({fezID: props.fez.fezID, options: {enabled: false}});
   const [muteRefreshing, setMuteRefreshing] = useState(false);
+  const [readRefreshing, setReadRefreshing] = useState(false);
   // The optimistic state is needed to ensure that the swipeable doesnt leave visual ghosts
   // when the mute state changes. Maybe some day removing the mutation invalidation pattern
   // can improve this behavior. They addition of the key was key.
@@ -63,6 +67,21 @@ export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) =
     [muteMutation, props.fez.fezID, props.fez.members, queryClient],
   );
 
+  const handleMarkAsRead = useCallback(
+    async (swipeable: SwipeableMethods) => {
+      swipeable.reset();
+      setReadRefreshing(true);
+      await refetch();
+      const invalidations = FezData.getCacheKeys().map(key => {
+        return queryClient.invalidateQueries({queryKey: key});
+      });
+      await Promise.all(invalidations);
+      setReadRefreshing(false);
+      swipeable.reset();
+    },
+    [refetch, queryClient],
+  );
+
   const renderRightPanel = (
     progressAnimatedValue: SharedValue<number>,
     dragAnimatedValue: SharedValue<number>,
@@ -73,20 +92,29 @@ export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) =
     }
 
     return (
-      <SwipeableButton
-        text={optimisticMuted ? 'Unmute' : 'Mute'}
-        iconName={optimisticMuted ? AppIcons.unmute : AppIcons.mute}
-        style={{backgroundColor: theme.colors.elevation.level2}}
-        onPress={() => handleMute(swipeable)}
-        refreshing={muteRefreshing}
-      />
+      <>
+        <SwipeableButton
+          text={optimisticMuted ? 'Unmute' : 'Mute'}
+          iconName={optimisticMuted ? AppIcons.unmute : AppIcons.mute}
+          style={{backgroundColor: theme.colors.elevation.level2}}
+          onPress={() => handleMute(swipeable)}
+          refreshing={muteRefreshing}
+        />
+        <SwipeableButton
+          text={'Read'}
+          iconName={AppIcons.markAsRead}
+          onPress={() => handleMarkAsRead(swipeable)}
+          refreshing={readRefreshing}
+          style={{backgroundColor: theme.colors.elevation.level3}}
+        />
+      </>
     );
   };
 
   return (
     <BaseSwipeable
       key={`${props.fez.fezID}-${optimisticMuted}`}
-      enabled={!!props.fez.members}
+      enabled={props.enabled !== undefined ? props.enabled && !!props.fez.members : !!props.fez.members}
       renderRightPanel={renderRightPanel}>
       {props.children}
     </BaseSwipeable>
