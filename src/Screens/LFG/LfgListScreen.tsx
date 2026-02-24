@@ -203,7 +203,7 @@ const LfgListScreenInner = ({
         <ScheduleHeaderView
           selectedCruiseDay={selectedCruiseDay}
           setCruiseDay={handleSetCruiseDay}
-          scrollToNow={scrollToNow}
+          scrollToNow={endpoint === 'open' ? scrollToNow : undefined}
           enableAll={true}
         />
       )}
