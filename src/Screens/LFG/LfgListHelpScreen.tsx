@@ -26,13 +26,14 @@ export const LfgListHelpScreen = () => {
           </HelpTopicView>
           <HelpTopicView title={'Find'} icon={AppIcons.lfgFind}>
             Also referred to as Open. Switch to view LFGs created by others that you can join. This does not include
-            LFGs that you created.
+            LFGs that you created. These are sorted by start time.
           </HelpTopicView>
           <HelpTopicView title={'Joined'} icon={AppIcons.lfgJoined}>
-            Switch to view LFGs that you have joined. This also includes any LFGs that you created.
+            Switch to view LFGs that you have joined. This also includes any LFGs that you created. These are sorted by
+            last modification time.
           </HelpTopicView>
           <HelpTopicView title={'Owned'} icon={AppIcons.lfgOwned}>
-            Switch to view LFGs that you have created.
+            Switch to view LFGs that you have created. These are sorted by creation time.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>

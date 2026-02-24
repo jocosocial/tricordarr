@@ -1,7 +1,14 @@
 import {InfiniteData, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
 
-import {filterItemsFromPages, PageItemAccessor, updateItemsInPages} from '#src/Libraries/CacheReduction';
+import {FezType} from '#src/Enums/FezType';
+import {
+  filterItemsFromPages,
+  insertAtEdge,
+  PageItemAccessor,
+  sortedInsertIntoPages,
+  updateItemsInPages,
+} from '#src/Libraries/CacheReduction';
 import {FezData, FezListData, FezPostData} from '#src/Structs/ControllerStructs';
 
 const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
@@ -10,6 +17,8 @@ const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
 };
 
 const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/former'];
+
+const startTimeAscComparator = (a: FezData, b: FezData) => (a.startTime ?? '').localeCompare(b.startTime ?? '');
 
 /**
  * Hook that exposes discrete actions for optimistically updating React Query
@@ -85,9 +94,17 @@ export const useFezCacheReducer = () => {
 
   /**
    * Insert a newly created fez into relevant list caches and seed its detail cache.
+   * Seamail lists are sorted by lastModificationTime (descending) so new items prepend.
+   * LFG/PersonalEvent API sort orders per endpoint:
+   *   /fez/open   -> startTime ascending
+   *   /fez/owner  -> createdAt descending
+   *   /fez/joined -> updatedAt descending
+   *   /fez/former -> createdAt descending
+   * FezData lacks createdAt/updatedAt so descending lists use insertAtEdge('start').
    */
   const createFez = useCallback(
     (fezData: FezData) => {
+      const isSeamail = FezType.isSeamailType(fezData.fezType);
       for (const keyPrefix of fezListKeyPrefixes) {
         queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]}, oldData => {
           if (!oldData) {
@@ -97,12 +114,10 @@ export const useFezCacheReducer = () => {
           if (alreadyExists) {
             return oldData;
           }
-          return {
-            ...oldData,
-            pages: oldData.pages.map((page, i) =>
-              i === 0 ? {...page, fezzes: [fezData, ...page.fezzes]} : page,
-            ),
-          };
+          if (!isSeamail && keyPrefix === '/fez/open') {
+            return sortedInsertIntoPages(oldData, fezListAccessor, fezData, startTimeAscComparator);
+          }
+          return insertAtEdge(oldData, fezListAccessor, fezData, 'start');
         });
       }
       queryClient.setQueryData<InfiniteData<FezData>>([`/fez/${fezData.fezID}`], oldData => {
@@ -220,9 +235,7 @@ export const useFezCacheReducer = () => {
     (fezID: string) => {
       const readUpdater = (fez: FezData): FezData => ({
         ...fez,
-        members: fez.members
-          ? {...fez.members, readCount: fez.members.postCount}
-          : fez.members,
+        members: fez.members ? {...fez.members, readCount: fez.members.postCount} : fez.members,
       });
       updateFezInAllListCaches(fezID, readUpdater);
       updateFezDetailCache(fezID, readUpdater);

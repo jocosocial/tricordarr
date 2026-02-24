@@ -35,7 +35,7 @@ import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScre
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
-import {FezListEndpoints} from '#src/Types';
+import {FezListEndpoints, ScheduleFlatListSeparator} from '#src/Types';
 
 interface LfgListScreenInnerProps {
   endpoint: FezListEndpoints;
@@ -102,6 +102,8 @@ const LfgListScreenInner = ({
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const {invalidateFez} = useFezCacheReducer();
+  const listSeparator: ScheduleFlatListSeparator =
+    endpoint === 'joined' || endpoint === 'owner' ? 'none' : 'time';
 
   const getNavButtons = useCallback(() => {
     return (
@@ -211,13 +213,14 @@ const LfgListScreenInner = ({
             items={fezList}
             showDayInDividers={selectedCruiseDay === 0 || endpoint === 'former'}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            separator={'time'}
+            separator={listSeparator}
             onScrollThreshold={onScrollThreshold}
             handleLoadNext={handleLoadNext}
             hasNextPage={hasNextPage}
             enableReportOnly={enableReportOnly}
             showDayInCard={false}
             listHeader={listHeader}
+            overScroll={true}
           />
         )}
       </View>
