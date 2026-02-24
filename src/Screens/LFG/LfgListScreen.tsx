@@ -21,8 +21,8 @@ import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToNow} from '#src/Hooks/useScrollToNow';
@@ -34,7 +34,6 @@ import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
-
 import {FezListEndpoints, ScheduleFlatListSeparator} from '#src/Types';
 
 interface LfgListScreenInnerProps {
@@ -102,8 +101,7 @@ const LfgListScreenInner = ({
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const {invalidateFez} = useFezCacheReducer();
-  const listSeparator: ScheduleFlatListSeparator =
-    endpoint === 'joined' || endpoint === 'owner' ? 'none' : 'time';
+  const listSeparator: ScheduleFlatListSeparator = endpoint === 'joined' || endpoint === 'owner' ? 'none' : 'time';
 
   const getNavButtons = useCallback(() => {
     return (
@@ -190,6 +188,13 @@ const LfgListScreenInner = ({
       listRef.current?.scrollToOffset({offset: 0, animated: false});
     }
   }, [scrollToTopIntent]);
+
+  /**
+   * Scroll to top when the endpoint changes.
+   */
+  useEffect(() => {
+    listRef.current?.scrollToOffset({offset: 0, animated: false});
+  }, [endpoint]);
 
   return (
     <AppView>
