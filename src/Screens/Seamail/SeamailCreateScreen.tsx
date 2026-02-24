@@ -14,7 +14,9 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -42,6 +44,7 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
   const fezPostMutation = useFezPostMutation();
   const [seamailFormValid, setSeamailFormValid] = useState(false);
   const {createFez, appendPost} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
   // Use a ref to store the created fez data immediately (synchronously) to avoid race condition
   const createdFezRef = useRef<FezData | null>(null);
 
@@ -101,6 +104,7 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
             onSuccess: response => {
               appendPost(fezData.fezID, response.data);
               resetSubmitting();
+              dispatchScrollToTop(ChatStackScreenComponents.seamailListScreen);
               navigation.replace(CommonStackComponents.seamailChatScreen, {
                 fezID: fezData.fezID,
               });
@@ -115,7 +119,7 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
         resetSubmitting();
       }
     },
-    [fezPostMutation, navigation, resetSubmitting, appendPost],
+    [fezPostMutation, navigation, resetSubmitting, appendPost, dispatchScrollToTop],
   );
 
   // Handler to trigger the chain of events needed to complete this screen.

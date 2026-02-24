@@ -46,6 +46,7 @@ interface LfgListScreenInnerProps {
   showFab?: boolean;
   onlyNewInitial?: boolean;
   cruiseDayInitial?: number;
+  scrollToTopIntent?: number;
 }
 
 /**
@@ -61,6 +62,7 @@ const LfgListScreenInner = ({
   showFab = true,
   onlyNewInitial,
   cruiseDayInitial,
+  scrollToTopIntent,
 }: LfgListScreenInnerProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} = useLfgFilter();
   const {commonStyles} = useStyles();
@@ -181,6 +183,12 @@ const LfgListScreenInner = ({
     }
   }, [isError, onQueryError]);
 
+  useEffect(() => {
+    if (scrollToTopIntent) {
+      listRef.current?.scrollToOffset({offset: 0, animated: false});
+    }
+  }, [scrollToTopIntent]);
+
   return (
     <AppView>
       <TimezoneWarningView />
@@ -268,6 +276,7 @@ const LfgListScreenWithEndpoint = ({route, navigation}: LfgListScreenWithEndpoin
         showFab={showFab}
         onlyNewInitial={route.params.onlyNew}
         cruiseDayInitial={route.params.cruiseDay}
+        scrollToTopIntent={route.params.scrollToTopIntent}
       />
     </DisabledFeatureScreen>
   );

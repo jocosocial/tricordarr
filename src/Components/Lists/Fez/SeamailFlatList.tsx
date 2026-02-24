@@ -1,5 +1,5 @@
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {RefreshControlProps} from 'react-native';
 import {Divider} from 'react-native-paper';
 
@@ -17,6 +17,7 @@ interface SeamailFlatListProps {
   onScrollThreshold?: (condition: boolean) => void;
   hasNextPage?: boolean;
   handleLoadNext?: () => void;
+  scrollToTopIntent?: number;
 }
 
 /**
@@ -25,6 +26,12 @@ interface SeamailFlatListProps {
 export const SeamailFlatList = (props: SeamailFlatListProps) => {
   const flatListRef = useRef<FlashListRef<FezData>>(null);
   const {enableSelection, setEnableSelection, selectedItems} = useSelection();
+
+  useEffect(() => {
+    if (props.scrollToTopIntent) {
+      flatListRef.current?.scrollToOffset({offset: 0, animated: false});
+    }
+  }, [props.scrollToTopIntent]);
 
   const getListSeparator = useCallback(() => {
     if (props.fezList.length > 0) {

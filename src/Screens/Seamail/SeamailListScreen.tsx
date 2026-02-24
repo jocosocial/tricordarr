@@ -192,6 +192,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
         onScrollThreshold={onScrollThreshold}
         hasNextPage={hasNextPage}
         handleLoadNext={handleLoadNext}
+        scrollToTopIntent={route.params?.scrollToTopIntent}
       />
       <SeamailFAB showLabel={showFabLabel} />
     </AppView>

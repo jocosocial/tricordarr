@@ -4,7 +4,9 @@ import {LfgForm} from '#src/Components/Forms/LfgForm';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/useFezForm';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {FezCreateScreenBase} from '#src/Screens/Fez/FezCreateScreenBase';
 
 interface Props {
@@ -31,6 +33,7 @@ export const LfgCreateScreenBase = ({
   const navigation = useCommonStack();
   const {getInitialValues} = useFezForm();
   const {createFez} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
   const initialValues = getInitialValues({
     title,
     info,
@@ -58,6 +61,7 @@ export const LfgCreateScreenBase = ({
       })}
       onSuccess={response => {
         createFez(response);
+        dispatchScrollToTop(LfgStackComponents.lfgListScreen);
         navigation.replace(CommonStackComponents.lfgScreen, {fezID: response.fezID});
       }}
       helpScreen={CommonStackComponents.lfgCreateHelpScreen}
