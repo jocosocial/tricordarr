@@ -4,7 +4,9 @@ import {useCallback} from 'react';
 import {FezType} from '#src/Enums/FezType';
 import {
   filterItemsFromPages,
+  findInPages,
   insertAtEdge,
+  moveItemToEdge,
   PageItemAccessor,
   sortedInsertIntoPages,
   updateItemsInPages,
@@ -17,6 +19,7 @@ const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
 };
 
 const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/former'];
+const otherListKeyPrefixes = ['/fez/owner', '/fez/open', '/fez/former'];
 
 const startTimeAscComparator = (a: FezData, b: FezData) => (a.startTime ?? '').localeCompare(b.startTime ?? '');
 
@@ -38,6 +41,32 @@ export const useFezCacheReducer = () => {
     (fezID: string, updater: (entry: FezData) => FezData) => {
       const idUpdater = (entry: FezData) => (entry.fezID === fezID ? updater(entry) : entry);
       for (const keyPrefix of fezListKeyPrefixes) {
+        queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]}, oldData =>
+          oldData ? updateItemsInPages(oldData, fezListAccessor, idUpdater) : oldData,
+        );
+      }
+    },
+    [queryClient],
+  );
+
+  /**
+   * Like updateFezInAllListCaches but moves the updated item to the top of
+   * /fez/joined (sorted by updatedAt descending). Other list caches get an
+   * in-place update only. Use for mutations that change lastModificationTime.
+   */
+  const updateFezInListCachesWithReorder = useCallback(
+    (fezID: string, updater: (entry: FezData) => FezData) => {
+      const matchesFez = (f: FezData) => f.fezID === fezID;
+
+      queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: ['/fez/joined']}, oldData => {
+        if (!oldData) return oldData;
+        const existing = findInPages(oldData, fezListAccessor, matchesFez);
+        if (!existing) return oldData;
+        return moveItemToEdge(oldData, fezListAccessor, matchesFez, updater(existing), 'start');
+      });
+
+      const idUpdater = (entry: FezData) => (entry.fezID === fezID ? updater(entry) : entry);
+      for (const keyPrefix of otherListKeyPrefixes) {
         queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]}, oldData =>
           oldData ? updateItemsInPages(oldData, fezListAccessor, idUpdater) : oldData,
         );
@@ -82,14 +111,23 @@ export const useFezCacheReducer = () => {
 
   /**
    * Replace a FezData in all list and detail caches with server response data.
-   * Use after edit/update mutations that return the full FezData.
+   * Moves the item to the top of /fez/joined and re-sorts /fez/open by startTime
+   * since both fields may change on edit.
    */
   const updateFez = useCallback(
     (fezID: string, updatedFez: FezData) => {
-      updateFezInAllListCaches(fezID, () => updatedFez);
+      updateFezInListCachesWithReorder(fezID, () => updatedFez);
       updateFezDetailCache(fezID, () => updatedFez);
+
+      const matchesFez = (f: FezData) => f.fezID === fezID;
+      queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: ['/fez/open']}, oldData => {
+        if (!oldData) return oldData;
+        if (!findInPages(oldData, fezListAccessor, matchesFez)) return oldData;
+        const filtered = filterItemsFromPages(oldData, fezListAccessor, f => !matchesFez(f));
+        return sortedInsertIntoPages(filtered, fezListAccessor, updatedFez, startTimeAscComparator);
+      });
     },
-    [updateFezInAllListCaches, updateFezDetailCache],
+    [updateFezInListCachesWithReorder, updateFezDetailCache, queryClient],
   );
 
   /**
@@ -149,10 +187,10 @@ export const useFezCacheReducer = () => {
    */
   const cancelFez = useCallback(
     (fezID: string, updatedFez: FezData) => {
-      updateFezInAllListCaches(fezID, () => updatedFez);
+      updateFezInListCachesWithReorder(fezID, () => updatedFez);
       updateFezDetailCache(fezID, () => updatedFez);
     },
-    [updateFezInAllListCaches, updateFezDetailCache],
+    [updateFezInListCachesWithReorder, updateFezDetailCache],
   );
 
   /**
@@ -184,7 +222,7 @@ export const useFezCacheReducer = () => {
         };
       });
 
-      updateFezInAllListCaches(fezID, fez => ({
+      updateFezInListCachesWithReorder(fezID, fez => ({
         ...fez,
         lastModificationTime: now,
         members: fez.members
@@ -196,7 +234,7 @@ export const useFezCacheReducer = () => {
           : fez.members,
       }));
     },
-    [updateFezDetailCache, updateFezInAllListCaches],
+    [updateFezDetailCache, updateFezInListCachesWithReorder],
   );
 
   /**
@@ -205,10 +243,10 @@ export const useFezCacheReducer = () => {
    */
   const updateMembership = useCallback(
     (fezID: string, updatedFez: FezData) => {
-      updateFezInAllListCaches(fezID, () => updatedFez);
+      updateFezInListCachesWithReorder(fezID, () => updatedFez);
       updateFezDetailCache(fezID, () => updatedFez);
     },
-    [updateFezInAllListCaches, updateFezDetailCache],
+    [updateFezInListCachesWithReorder, updateFezDetailCache],
   );
 
   /**
