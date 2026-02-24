@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
@@ -19,6 +18,7 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
@@ -50,7 +50,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   const {data: profilePublicData} = useUserProfileQuery();
   const {setModalContent, setModalVisible} = useModal();
   const membershipMutation = useFezMembershipMutation();
-  const queryClient = useQueryClient();
+  const {updateMembership} = useFezCacheReducer();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -74,8 +74,8 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
         userID: userID,
       },
       {
-        onSuccess: async () => {
-          await queryClient.invalidateQueries({queryKey: [`/fez/${fezData.fezID}`]});
+        onSuccess: response => {
+          updateMembership(fezData.fezID, response.data);
         },
         onSettled: () => setRefreshing(false),
       },
@@ -112,14 +112,14 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
           action: 'join',
         },
         {
-          onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: [`/fez/${lfg.fezID}`]});
+          onSuccess: response => {
+            updateMembership(lfg.fezID, response.data);
           },
           onSettled: () => setRefreshing(false),
         },
       );
     }
-  }, [lfg, membershipMutation, profilePublicData, queryClient, setModalContent, setModalVisible]);
+  }, [lfg, membershipMutation, profilePublicData, updateMembership, setModalContent, setModalVisible]);
 
   useEffect(() => {
     navigation.setOptions({

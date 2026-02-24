@@ -2,10 +2,10 @@ import React from 'react';
 
 import {LfgForm} from '#src/Components/Forms/LfgForm';
 import {FezType} from '#src/Enums/FezType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/useFezForm';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {FezCreateScreenBase} from '#src/Screens/Fez/FezCreateScreenBase';
-import {UserNotificationData} from '#src/Structs/ControllerStructs';
 
 interface Props {
   title?: string;
@@ -30,6 +30,7 @@ export const LfgCreateScreenBase = ({
 }: Props) => {
   const navigation = useCommonStack();
   const {getInitialValues} = useFezForm();
+  const {createFez} = useFezCacheReducer();
   const initialValues = getInitialValues({
     title,
     info,
@@ -55,10 +56,8 @@ export const LfgCreateScreenBase = ({
         maxCapacity: Number(values.maxCapacity),
         initialUsers: [],
       })}
-      onSuccess={async (response, queryClient) => {
-        await Promise.all(
-          UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
-        );
+      onSuccess={response => {
+        createFez(response);
         navigation.replace(CommonStackComponents.lfgScreen, {fezID: response.fezID});
       }}
       helpScreen={CommonStackComponents.lfgCreateHelpScreen}

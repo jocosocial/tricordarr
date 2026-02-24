@@ -398,14 +398,6 @@ export namespace FezData {
     }
     return fezData.members.participants.length >= fezData.maxParticipants;
   };
-
-  export const getCacheKeys = (fezID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [['/fez/joined'], ['/fez/owner'], ['/fez/open'], ['/fez/former']];
-    if (fezID) {
-      queryKeys.push([`/fez/${fezID}`]);
-    }
-    return queryKeys;
-  };
 }
 
 export interface FezListData {

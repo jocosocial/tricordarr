@@ -4,12 +4,12 @@ import React from 'react';
 import {PersonalEventForm} from '#src/Components/Forms/PersonalEventForm';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/useFezForm';
 import {CommonStackComponents, CommonStackParamList, useCommonStack} from '#src/Navigation/CommonScreens';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezCreateScreenBase} from '#src/Screens/Fez/FezCreateScreenBase';
-import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 
 export const PersonalEventCreateScreen = (props: Props) => {
   return (
@@ -26,6 +26,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.person
 const PersonalEventCreateScreenInner = ({route}: Props) => {
   const navigation = useCommonStack();
   const {getInitialValues} = useFezForm();
+  const {createFez} = useFezCacheReducer();
   const initialValues = getInitialValues({
     cruiseDay: route.params.cruiseDay,
     fezType: FezType.personalEvent,
@@ -49,11 +50,8 @@ const PersonalEventCreateScreenInner = ({route}: Props) => {
         initialUsers: values.initialUsers.map(u => u.userID),
         fezType: values.initialUsers.length > 0 ? FezType.privateEvent : FezType.personalEvent,
       })}
-      onSuccess={async (response, queryClient) => {
-        await Promise.all([
-          ...UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
-          ...FezData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
-        ]);
+      onSuccess={response => {
+        createFez(response);
         navigation.replace(CommonStackComponents.personalEventScreen, {
           eventID: response.fezID,
         });

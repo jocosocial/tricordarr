@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {Text} from 'react-native-paper';
 
@@ -11,6 +10,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
@@ -36,7 +36,7 @@ const LfgAddParticipantScreenInner = ({route, navigation}: Props) => {
     fezID: route.params.fezID,
   });
   const lfg = data?.pages[0];
-  const queryClient = useQueryClient();
+  const {updateMembership} = useFezCacheReducer();
 
   const onPress = (user: UserHeader) => {
     participantMutation.mutate(
@@ -46,8 +46,8 @@ const LfgAddParticipantScreenInner = ({route, navigation}: Props) => {
         userID: user.userID,
       },
       {
-        onSuccess: async () => {
-          await queryClient.invalidateQueries({queryKey: [`/fez/${route.params.fezID}`]});
+        onSuccess: response => {
+          updateMembership(route.params.fezID, response.data);
           navigation.goBack();
         },
       },

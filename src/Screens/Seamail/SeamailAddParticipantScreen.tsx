@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
@@ -7,11 +6,12 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
+import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamailAddParticipantScreen>;
 
@@ -28,7 +28,7 @@ export const SeamailAddParticipantScreen = (props: Props) => {
 
 const SeamailAddParticipantScreenInner = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
-  const queryClient = useQueryClient();
+  const {updateMembership} = useFezCacheReducer();
 
   const onPress = (user: UserHeader) => {
     participantMutation.mutate(
@@ -38,11 +38,8 @@ const SeamailAddParticipantScreenInner = ({route, navigation}: Props) => {
         userID: user.userID,
       },
       {
-        onSuccess: async () => {
-          const invalidations = FezData.getCacheKeys(route.params.fez.fezID).map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          await Promise.all(invalidations);
+        onSuccess: response => {
+          updateMembership(route.params.fez.fezID, response.data);
           navigation.goBack();
         },
       },

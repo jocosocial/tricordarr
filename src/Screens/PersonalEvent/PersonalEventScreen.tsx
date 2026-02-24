@@ -1,6 +1,5 @@
 import notifee from '@notifee/react-native';
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
@@ -12,13 +11,14 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
-import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
+import {FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
@@ -38,7 +38,7 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
     fezID: route.params.eventID,
   });
   const {data: profilePublicData} = useUserProfileQuery();
-  const queryClient = useQueryClient();
+  const {markRead} = useFezCacheReducer();
 
   const eventData = data?.pages[0];
   const showChat =
@@ -88,12 +88,9 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
 
   useEffect(() => {
     if (eventData) {
-      Promise.all([
-        ...UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
-        ...FezData.getCacheKeys(eventData.fezID).map(key => queryClient.invalidateQueries({queryKey: key})),
-      ]);
+      markRead(eventData.fezID);
     }
-  }, [eventData, queryClient]);
+  }, [eventData, markRead]);
 
   return (
     <ScheduleItemScreenBase eventData={eventData} onRefresh={refetch} refreshing={isFetching} showLfgChat={showChat} />

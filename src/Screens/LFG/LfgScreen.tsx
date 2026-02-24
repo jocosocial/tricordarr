@@ -1,6 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
@@ -13,13 +12,14 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
-import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
+import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
@@ -43,7 +43,7 @@ const LfgScreenInner = ({navigation, route}: Props) => {
   const {notificationSocket} = useSocket();
   const isFocused = useIsFocused();
   const {hasModerator} = usePrivilege();
-  const queryClient = useQueryClient();
+  const {markRead} = useFezCacheReducer();
 
   const showChat =
     hasModerator ||
@@ -109,12 +109,9 @@ const LfgScreenInner = ({navigation, route}: Props) => {
    */
   useEffect(() => {
     if (lfg?.members && lfg.members.postCount > lfg.members.readCount) {
-      Promise.all([
-        ...UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
-        ...FezData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
-      ]);
+      markRead(lfg.fezID);
     }
-  }, [lfg, queryClient]);
+  }, [lfg, markRead]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {

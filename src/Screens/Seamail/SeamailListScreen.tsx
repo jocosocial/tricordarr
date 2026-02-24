@@ -1,6 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
@@ -23,6 +22,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -35,6 +35,7 @@ import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
+
 import {Selectable} from '#src/Types/Selectable';
 
 type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
@@ -70,7 +71,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const [showFabLabel, setShowFabLabel] = useState(true);
   const [fezList, setFezList] = useState<FezData[]>([]);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
-  const queryClient = useQueryClient();
+  const {invalidateFez} = useFezCacheReducer();
   const {selectedItems, enableSelection} = useSelection();
   const {handleLoadNext} = usePagination({
     fetchNextPage,
@@ -94,19 +95,12 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
     (event: WebSocketMessageEvent) => {
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
-        const invalidations = FezData.getCacheKeys().map(key => {
-          return queryClient.invalidateQueries({queryKey: key});
-        });
-        Promise.all(invalidations);
+        invalidateFez();
       } else {
-        // This is kinda a lazy way out, but it works.
-        // Not using onRefresh() so that we don't show the sudden refreshing circle.
-        // Hopefully that's a decent idea.
         refetch();
       }
-      // }
     },
-    [queryClient, refetch],
+    [invalidateFez, refetch],
   );
 
   const getNavButtons = useCallback(() => {

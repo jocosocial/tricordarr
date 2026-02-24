@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 
@@ -16,6 +15,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
@@ -35,7 +35,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const {fezSockets} = useSocket();
   const [fez, setFez] = useState<FezData>();
   const {currentUserID} = useSession();
-  const queryClient = useQueryClient();
+  const {updateMembership} = useFezCacheReducer();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
 
   const onParticipantRemove = (fezID: string, userID: string) => {
@@ -46,11 +46,8 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
         userID: userID,
       },
       {
-        onSuccess: async response => {
-          const invalidations = FezData.getCacheKeys(fezID).map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          await Promise.all(invalidations);
+        onSuccess: response => {
+          updateMembership(fezID, response.data);
           setFez(response.data);
         },
       },

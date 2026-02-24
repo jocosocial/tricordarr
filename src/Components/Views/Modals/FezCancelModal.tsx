@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -10,8 +9,9 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezCancelMutation} from '#src/Queries/Fez/FezMutations';
-import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
+import {FezData} from '#src/Structs/ControllerStructs';
 
 const ModalContent = ({fez}: {fez: FezData}) => {
   const {commonStyles} = useStyles();
@@ -34,7 +34,7 @@ export const FezCancelModal = ({fezData}: {fezData: FezData}) => {
   const {setModalVisible} = useModal();
   const {theme} = useAppTheme();
   const cancelMutation = useFezCancelMutation();
-  const queryClient = useQueryClient();
+  const {cancelFez} = useFezCacheReducer();
 
   const onSubmit = () => {
     cancelMutation.mutate(
@@ -42,12 +42,9 @@ export const FezCancelModal = ({fezData}: {fezData: FezData}) => {
         fezID: fezData.fezID,
       },
       {
-        onSuccess: async () => {
+        onSuccess: response => {
           setSnackbarPayload({message: 'Successfully canceled this event.', messageType: 'info'});
-          const invalidations = UserNotificationData.getCacheKeys()
-            .concat(FezData.getCacheKeys(fezData.fezID))
-            .map(key => queryClient.invalidateQueries({queryKey: key}));
-          await Promise.all(invalidations);
+          cancelFez(fezData.fezID, response.data);
           setModalVisible(false);
         },
       },

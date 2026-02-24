@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 
@@ -10,6 +9,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -23,7 +23,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
   const {theme} = useAppTheme();
   const {data: profilePublicData} = useUserProfileQuery();
   const {currentUserID} = useSession();
-  const queryClient = useQueryClient();
+  const {updateMembership} = useFezCacheReducer();
   const {setModalVisible, setModalContent} = useModal();
   const [refreshing, setRefreshing] = useState(false);
   const membershipMutation = useFezMembershipMutation();
@@ -43,11 +43,8 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
           action: 'join',
         },
         {
-          onSuccess: async () => {
-            const invalidations = FezData.getCacheKeys(lfg.fezID).map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-            await Promise.all(invalidations);
+          onSuccess: response => {
+            updateMembership(lfg.fezID, response.data);
           },
           onSettled: () => {
             setRefreshing(false);
@@ -55,7 +52,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
         },
       );
     }
-  }, [lfg, membershipMutation, profilePublicData, queryClient, setModalContent, setModalVisible]);
+  }, [lfg, membershipMutation, profilePublicData, updateMembership, setModalContent, setModalVisible]);
 
   const styles = StyleSheet.create({
     outerContainer: {

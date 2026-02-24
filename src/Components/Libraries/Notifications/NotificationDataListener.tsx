@@ -1,5 +1,4 @@
 import {useAppState} from '@react-native-community/hooks';
-import {useQueryClient} from '@tanstack/react-query';
 import {useCallback, useEffect} from 'react';
 
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
@@ -7,10 +6,10 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {createLogger} from '#src/Libraries/Logger';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('NotificationDataListener.tsx');
@@ -31,7 +30,7 @@ export const NotificationDataListener = () => {
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
-  const queryClient = useQueryClient();
+  const {invalidateFez} = useFezCacheReducer();
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -57,15 +56,12 @@ export const NotificationDataListener = () => {
         case NotificationTypeData.lfgCanceled:
         case NotificationTypeData.privateEventCanceled:
         case NotificationTypeData.addedToSeamail: {
-          const invalidations = FezData.getCacheKeys(notificationData.contentID).map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          Promise.all(invalidations);
+          invalidateFez(notificationData.contentID);
           break;
         }
       }
     },
-    [queryClient, refetchAnnouncements, refetchUserNotificationData],
+    [invalidateFez, refetchAnnouncements, refetchUserNotificationData],
   );
 
   const addHandler = useCallback(() => {

@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {SetRefreshing} from '#src/Hooks/useRefresh';
 import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -20,6 +21,7 @@ export const SeamailSelectionHeaderButtons = (props: SeamailSelectionHeaderButto
   const {commonStyles} = useStyles();
   const muteMutation = useFezMuteMutation();
   const queryClient = useQueryClient();
+  const {markRead, updateMute} = useFezCacheReducer();
 
   const markAsRead = async () => {
     props.setRefreshing(true);
@@ -27,10 +29,9 @@ export const SeamailSelectionHeaderButtons = (props: SeamailSelectionHeaderButto
       return queryClient.refetchQueries({queryKey: [`/fez/${selectedItem.id}`]});
     });
     await Promise.allSettled(refetches);
-    const invalidations = FezData.getCacheKeys().map(key => {
-      return queryClient.invalidateQueries({queryKey: key});
-    });
-    await Promise.all(invalidations);
+    for (const selectedItem of props.selectedItems) {
+      markRead(selectedItem.id);
+    }
     props.setRefreshing(false);
   };
 
@@ -39,18 +40,10 @@ export const SeamailSelectionHeaderButtons = (props: SeamailSelectionHeaderButto
     const mutations = props.selectedItems.map(selectedItem => {
       const sourceItem = props.items?.find(item => item.fezID === selectedItem.id);
       if (!sourceItem?.members) return Promise.resolve();
+      const newMuted = !sourceItem.members.isMuted;
       const action = sourceItem.members.isMuted ? 'unmute' : 'mute';
-      return muteMutation.mutateAsync(
-        {action, fezID: sourceItem.fezID},
-        {
-          onSuccess: async () => {
-            const itemInvalidations = FezData.getCacheKeys(sourceItem.fezID).map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-            await Promise.all(itemInvalidations);
-          },
-        },
-      );
+      updateMute(sourceItem.fezID, newMuted);
+      return muteMutation.mutateAsync({action, fezID: sourceItem.fezID});
     });
     await Promise.allSettled(mutations);
     props.setRefreshing(false);

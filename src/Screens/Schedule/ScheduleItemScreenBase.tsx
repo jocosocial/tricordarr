@@ -76,19 +76,6 @@ export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData
     );
   };
 
-  // I wrote this thinking it was needed, and now I don't believe that is true.
-  // useEffect(() => {
-  //   if (eventData && 'fezID' in eventData) {
-  //     // Intentionally doesn't expire itself. Save that until you open the chat.
-  //     // There's a bit of a race condition since opening this screen technically
-  //     // marks it as read from the server perspective.
-  //     console.log(`[ScheduleItemScreenBase.tsx] Marking fez as read ${eventData.fezID}`);
-  //     const invalidations = FezData.getCacheKeys().map(key => {
-  //       return queryClient.invalidateQueries(key);
-  //     });
-  //     Promise.all(invalidations);
-  //   }
-  // }, [eventData, queryClient]);
 
   if (!eventData) {
     return <LoadingView />;

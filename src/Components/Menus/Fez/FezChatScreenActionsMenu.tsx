@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query';
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -12,6 +11,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
@@ -30,7 +30,7 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
   const muteMutation = useFezMuteMutation();
   const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
-  const queryClient = useQueryClient();
+  const {updateMute} = useFezCacheReducer();
   const {currentUserID} = useSession();
 
   const detailsAction = () => {
@@ -51,6 +51,7 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
     if (!fez.members) {
       return;
     }
+    const newMuted = !fez.members.isMuted;
     const action = fez.members.isMuted ? 'unmute' : 'mute';
     muteMutation.mutate(
       {
@@ -58,11 +59,8 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
         fezID: fez.fezID,
       },
       {
-        onSuccess: async () => {
-          const invalidations = FezData.getCacheKeys(fez.fezID).map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          await Promise.all(invalidations);
+        onSuccess: () => {
+          updateMute(fez.fezID, newMuted);
         },
         onSettled: () => closeMenu(),
       },

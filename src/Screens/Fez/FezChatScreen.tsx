@@ -1,7 +1,6 @@
 import notifee from '@notifee/react-native';
 import {useAppState} from '@react-native-community/hooks';
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
@@ -31,6 +30,7 @@ import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReduce
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {createLogger} from '#src/Libraries/Logger';
@@ -111,7 +111,7 @@ const FezChatScreenInner = ({route}: Props) => {
   const {setSnackbarPayload} = useSnackbar();
   const {fezSockets, openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
-  const queryClient = useQueryClient();
+  const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
   const {appConfig} = useConfig();
   const appStateVisible = useAppState();
   const flatListRef = useRef<TConversationListV2Ref>(null);
@@ -218,24 +218,19 @@ const FezChatScreenInner = ({route}: Props) => {
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {
-          onSuccess: async response => {
+          onSuccess: response => {
             formikHelpers.resetForm();
             dispatchFezPostsData({
               type: FezPostsActions.appendPost,
               fezPostData: response.data,
             });
-            // Mark stale so that it refetches with your new posts
-            // Some day this should just update the query data.
-            const invalidations = FezData.getCacheKeys(route.params.fezID).map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-            await Promise.all(invalidations);
+            appendPostToCache(route.params.fezID, response.data);
           },
           onSettled: () => formikHelpers.setSubmitting(false),
         },
       );
     },
-    [fez, fezPostMutation, route.params.fezID, setFez, queryClient, dispatchFezPostsData],
+    [fez, fezPostMutation, route.params.fezID, setFez, appendPostToCache, dispatchFezPostsData],
   );
 
   // Initial set useEffect
@@ -299,19 +294,13 @@ const FezChatScreenInner = ({route}: Props) => {
   useEffect(() => {
     logger.debug('Mark As Read useEffect');
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-      // This does not invalidate the current key because that's how we determine
-      // where the NEW marker goes.
-      const invalidations = FezData.getCacheKeys().map(key => {
-        return queryClient.invalidateQueries({queryKey: key});
-      });
-      Promise.all(invalidations);
+      markRead(fez.fezID);
       if (appConfig.markReadCancelPush) {
         logger.debug('auto canceling notifications.');
-        // This is a no-op on iOS. The system automatically dismisses notifications on press.
         notifee.cancelDisplayedNotification(fez.fezID);
       }
     }
-  }, [fez, queryClient, appConfig.markReadCancelPush]);
+  }, [fez, markRead, appConfig.markReadCancelPush]);
 
   // Visible useEffect
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background
