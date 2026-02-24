@@ -1,5 +1,5 @@
 import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
@@ -342,6 +342,17 @@ export const ConversationListV2 = <TItem,>({
       });
     }
   }, [fireReadyToShow, scheduleReadyToShow, alignItemsAtEnd, data.length, listRef]);
+
+  // LegendList does not fire onLoad when data is empty, so the overlay would never
+  // hide. Fire onReadyToShow when there are no items so the parent can remove the spinner.
+  // Allegedly this is safe since the screens handle the "if (!data)" checks.
+  useEffect(() => {
+    if (data.length === 0) {
+      requestAnimationFrame(() => {
+        fireReadyToShow();
+      });
+    }
+  }, [data.length, fireReadyToShow]);
 
   return (
     <View style={commonStyles.flex}>
