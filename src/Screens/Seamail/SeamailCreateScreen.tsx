@@ -77,7 +77,12 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
         {
           onSuccess: response => {
             createdFezRef.current = response.data;
-            createFez(response.data);
+            const forUser = values.createdByTwitarrTeam
+              ? 'TwitarrTeam'
+              : values.createdByModerator
+                ? 'moderator'
+                : undefined;
+            createFez(response.data, forUser);
             // Whatever we picked in the SeamailCreate is what should be set in the Post.
             seamailPostFormRef.current?.setFieldValue('postAsModerator', values.createdByModerator);
             seamailPostFormRef.current?.setFieldValue('postAsTwitarrTeam', values.createdByTwitarrTeam);

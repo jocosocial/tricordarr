@@ -139,24 +139,36 @@ export const useFezCacheReducer = () => {
    *   /fez/joined -> updatedAt descending
    *   /fez/former -> createdAt descending
    * FezData lacks createdAt/updatedAt so descending lists use insertAtEdge('start').
+   * When forUser is provided (e.g. 'TwitarrTeam', 'moderator'), only caches for that
+   * user are updated so seamails created as a privileged user do not appear in other lists.
    */
   const createFez = useCallback(
-    (fezData: FezData) => {
+    (fezData: FezData, forUser?: string) => {
+      const normalizedForUser = forUser?.toLowerCase();
       const isSeamail = FezType.isSeamailType(fezData.fezType);
       for (const keyPrefix of fezListKeyPrefixes) {
-        queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]}, oldData => {
-          if (!oldData) {
-            return oldData;
-          }
-          const alreadyExists = oldData.pages.some(p => p.fezzes.some(f => f.fezID === fezData.fezID));
-          if (alreadyExists) {
-            return oldData;
-          }
-          if (!isSeamail && keyPrefix === '/fez/open') {
-            return sortedInsertIntoPages(oldData, fezListAccessor, fezData, startTimeAscComparator);
-          }
-          return insertAtEdge(oldData, fezListAccessor, fezData, 'start');
-        });
+        queryClient.setQueriesData<InfiniteData<FezListData>>(
+          {
+            queryKey: [keyPrefix],
+            predicate: query => {
+              const params = query.queryKey[1] as Record<string, string> | undefined;
+              return (params?.foruser ?? undefined) === normalizedForUser;
+            },
+          },
+          oldData => {
+            if (!oldData) {
+              return oldData;
+            }
+            const alreadyExists = oldData.pages.some(p => p.fezzes.some(f => f.fezID === fezData.fezID));
+            if (alreadyExists) {
+              return oldData;
+            }
+            if (!isSeamail && keyPrefix === '/fez/open') {
+              return sortedInsertIntoPages(oldData, fezListAccessor, fezData, startTimeAscComparator);
+            }
+            return insertAtEdge(oldData, fezListAccessor, fezData, 'start');
+          },
+        );
       }
       queryClient.setQueryData<InfiniteData<FezData>>([`/fez/${fezData.fezID}`], oldData => {
         if (oldData) {
