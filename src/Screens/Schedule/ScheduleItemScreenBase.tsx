@@ -72,7 +72,8 @@ export const ScheduleItemScreenBase = ({
     if (!eventData || !('fezID' in eventData) || !eventData.members) {
       return;
     }
-    const unreadCount = eventData.members.postCount - eventData.members.readCount;
+    const readCountForBadge = initialReadCount ?? eventData.members.readCount;
+    const unreadCount = eventData.members.postCount - readCountForBadge;
     return (
       <View style={styles.chatCountContainer}>
         <Text>

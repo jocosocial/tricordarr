@@ -1,6 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -34,13 +34,22 @@ export const LfgScreen = (props: Props) => {
 };
 
 const LfgScreenInner = ({navigation, route}: Props) => {
-  const {fezData, isOwner, isParticipant, isWaitlist, refetch, initialReadCount} = useFez({
-    fezID: route.params.fezID,
-  });
+  const {fezData, isOwner, isParticipant, isWaitlist, refetch, initialReadCount, resetInitialReadCount} =
+    useFez({
+      fezID: route.params.fezID,
+    });
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const [lfg, setLfg] = useState<FezData>();
   const {notificationSocket} = useSocket();
   const isFocused = useIsFocused();
+  const wasFocusedRef = useRef(isFocused);
+
+  useEffect(() => {
+    if (isFocused && !wasFocusedRef.current) {
+      resetInitialReadCount();
+    }
+    wasFocusedRef.current = isFocused;
+  }, [isFocused, resetInitialReadCount]);
   const {hasModerator} = usePrivilege();
   const showChat = hasModerator || isParticipant || isWaitlist;
 

@@ -116,6 +116,9 @@ const FezChatScreenInner = ({route}: Props) => {
   const appStateVisible = useAppState();
   const flatListRef = useRef<TConversationListV2Ref>(null);
   const [fez, setFez] = useState<FezData>();
+  const [localInitialReadCount, setLocalInitialReadCount] = useState(
+    route.params.initialReadCount,
+  );
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
@@ -291,16 +294,25 @@ const FezChatScreenInner = ({route}: Props) => {
   }, [getFezHeaderTitle, getNavButtons, navigation]);
 
   // Mark as Read useEffect
+  // Fire when detail has unread, or when initialReadCount (from list cache) indicates unread
+  // even if the detail GET already marked as read on the server.
   useEffect(() => {
     logger.debug('Mark As Read useEffect');
-    if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-      markRead(fez.fezID);
-      if (appConfig.markReadCancelPush) {
-        logger.debug('auto canceling notifications.');
-        notifee.cancelDisplayedNotification(fez.fezID);
+    if (fez && fez.members) {
+      const hasUnread =
+        fez.members.readCount !== fez.members.postCount ||
+        (localInitialReadCount !== undefined &&
+          localInitialReadCount < fez.members.postCount);
+      if (hasUnread) {
+        markRead(fez.fezID);
+        setLocalInitialReadCount(fez.members.postCount);
+        if (appConfig.markReadCancelPush) {
+          logger.debug('auto canceling notifications.');
+          notifee.cancelDisplayedNotification(fez.fezID);
+        }
       }
     }
-  }, [fez, markRead, appConfig.markReadCancelPush]);
+  }, [fez, markRead, localInitialReadCount, appConfig.markReadCancelPush]);
 
   // Visible useEffect
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background
@@ -388,6 +400,7 @@ const FezChatScreenInner = ({route}: Props) => {
           handleLoadPrevious={handleLoadPrevious}
           refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
           initialScrollIndex={getInitialScrollIndex()}
+          initialReadCount={route.params.initialReadCount}
           onReadyToShow={onReadyToShow}
         />
         {!readyToShow && (

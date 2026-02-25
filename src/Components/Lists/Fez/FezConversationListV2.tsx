@@ -24,6 +24,8 @@ interface FezConversationListV2Props {
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
   initialScrollIndex?: number;
+  /** When provided (e.g. from list cache), used for "New" divider instead of fez.members.readCount. */
+  initialReadCount?: number;
   /** Callback fired once the list has reached its initial scroll position. */
   onReadyToShow?: () => void;
 }
@@ -48,6 +50,7 @@ export const FezConversationListV2 = ({
   hasPreviousPage,
   hasNextPage,
   initialScrollIndex,
+  initialReadCount,
   onReadyToShow,
 }: FezConversationListV2Props) => {
   const {commonStyles} = useStyles();
@@ -66,13 +69,12 @@ export const FezConversationListV2 = ({
     [fezPostData, getAdjustedMoment],
   );
 
-  // Lock initial read state on mount. The server's readCount lags behind postCount
-  // when new messages arrive via socket, which causes oscillation. Locking prevents:
-  // - alignItemsAtEnd layout thrash that breaks maintainScrollAtEnd
-  // - "New" divider jumping to a new position on every incoming message
+  // Lock initial read state on mount. Use initialReadCount when provided (e.g. from list cache)
+  // so the "New" divider shows correctly on subsequent visits when detail cache is already marked read.
+  const effectiveReadCount = initialReadCount ?? fez.members?.readCount ?? 0;
   const initialReadStateRef = useRef({
-    isFullyRead: fez.members ? fez.members.readCount === fez.members.postCount : true,
-    readCount: fez.members?.readCount ?? 0,
+    isFullyRead: fez.members ? effectiveReadCount === fez.members.postCount : true,
+    readCount: effectiveReadCount,
     paginatorStart: fez.members?.paginator?.start ?? 0,
   });
 
