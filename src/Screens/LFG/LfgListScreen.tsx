@@ -101,7 +101,14 @@ const LfgListScreenInner = ({
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const {invalidateFez} = useFezCacheReducer();
-  const listSeparator: ScheduleFlatListSeparator = endpoint === 'joined' || endpoint === 'owner' ? 'none' : 'time';
+
+  // We used to show the time separators for all days all lists. However since realizing that sorting
+  // LFGs is highly variable by endpoint (find, joined, owned all different) that divider is kinda
+  // meaningless. Especially since we already show the time in the card.
+  // Open and Former sort by startTime so those are the only ones we potentially want to show
+  // the dividers in.
+  const showDayInDividers = (selectedCruiseDay === 0 && endpoint === 'open') || endpoint === 'former';
+  const listSeparator: ScheduleFlatListSeparator = showDayInDividers ? 'day' : 'none';
 
   const getNavButtons = useCallback(() => {
     return (
@@ -196,6 +203,10 @@ const LfgListScreenInner = ({
     listRef.current?.scrollToOffset({offset: 0, animated: false});
   }, [endpoint]);
 
+  /**
+   * showDayInCard used to be false for all lists. But with the added complexity of dividers
+   * (see above) I think the consistency is more better with true.
+   */
   return (
     <AppView>
       <TimezoneWarningView />
@@ -216,14 +227,14 @@ const LfgListScreenInner = ({
           <LFGFlatList
             listRef={listRef}
             items={fezList}
-            showDayInDividers={selectedCruiseDay === 0 || endpoint === 'former'}
+            showDayInDividers={showDayInDividers}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             separator={listSeparator}
             onScrollThreshold={onScrollThreshold}
             handleLoadNext={handleLoadNext}
             hasNextPage={hasNextPage}
             enableReportOnly={enableReportOnly}
-            showDayInCard={false}
+            showDayInCard={true}
             listHeader={listHeader}
             overScroll={true}
           />
