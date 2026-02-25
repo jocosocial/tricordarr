@@ -23,6 +23,34 @@ const otherListKeyPrefixes = ['/fez/owner', '/fez/open', '/fez/former'];
 
 const startTimeAscComparator = (a: FezData, b: FezData) => (a.startTime ?? '').localeCompare(b.startTime ?? '');
 
+/** True if the list cache (query params) is intended to contain fezzes of this type. */
+function listParamsIncludeFezType(params: Record<string, unknown> | undefined, fezType: FezType): boolean {
+  if (!params || typeof params !== 'object') {
+    return true;
+  }
+  const typeParam = params['type'];
+  if (typeParam !== undefined) {
+    const allowed = Array.isArray(typeParam) ? (typeParam as FezType[]) : [typeParam as FezType];
+    if (!allowed.includes(fezType)) {
+      return false;
+    }
+  }
+  const excludeParam = params['excludetype'];
+  if (excludeParam !== undefined) {
+    const excluded = Array.isArray(excludeParam) ? (excludeParam as FezType[]) : [excludeParam as FezType];
+    if (excluded.includes(fezType)) {
+      return false;
+    }
+  }
+  const lfgOnly = params['lfgtypes'];
+  if (lfgOnly) {
+    if (!FezType.isLFGType(fezType)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 /**
  * Hook that exposes discrete actions for optimistically updating React Query
  * caches after fez mutations (Seamail, LFG, PersonalEvent). Each action calls
@@ -151,8 +179,10 @@ export const useFezCacheReducer = () => {
           {
             queryKey: [keyPrefix],
             predicate: query => {
-              const params = query.queryKey[1] as Record<string, string> | undefined;
-              return (params?.foruser ?? undefined) === normalizedForUser;
+              const params = query.queryKey[1] as Record<string, unknown> | undefined;
+              const forUserMatch = (params?.foruser ?? undefined) === normalizedForUser;
+              const typeMatch = listParamsIncludeFezType(params, fezData.fezType);
+              return forUserMatch && typeMatch;
             },
           },
           oldData => {
