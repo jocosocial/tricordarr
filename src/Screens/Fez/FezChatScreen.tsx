@@ -33,6 +33,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {createLogger} from '#src/Libraries/Logger';
 import {
   CommonStackComponents,
@@ -40,6 +41,7 @@ import {
   HelpScreenComponents,
   useCommonStack,
 } from '#src/Navigation/CommonScreens';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
@@ -112,6 +114,7 @@ const FezChatScreenInner = ({route}: Props) => {
   const {fezSockets, openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
   const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
   const {appConfig} = useConfig();
   const appStateVisible = useAppState();
   const flatListRef = useRef<TConversationListV2Ref>(null);
@@ -228,12 +231,13 @@ const FezChatScreenInner = ({route}: Props) => {
               fezPostData: response.data,
             });
             appendPostToCache(route.params.fezID, response.data);
+            dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           },
           onSettled: () => formikHelpers.setSubmitting(false),
         },
       );
     },
-    [fez, fezPostMutation, route.params.fezID, setFez, appendPostToCache, dispatchFezPostsData],
+    [fez, fezPostMutation, route.params.fezID, setFez, appendPostToCache, dispatchFezPostsData, dispatchScrollToTop],
   );
 
   // Initial set useEffect

@@ -11,9 +11,11 @@ import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/useFezForm';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {HelpScreenComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
@@ -34,6 +36,7 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
   const navigation = useCommonStack();
   const updateMutation = useFezUpdateMutation();
   const {updateFez} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
   const {tzAtTime} = useTimeZone();
   const {getInitialValuesFromFez} = useFezForm();
 
@@ -85,6 +88,7 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
       {
         onSuccess: response => {
           updateFez(fez.fezID, response.data);
+          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

@@ -17,8 +17,10 @@ import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -36,6 +38,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const [fez, setFez] = useState<FezData>();
   const {currentUserID} = useSession();
   const {updateMembership} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
 
   const onParticipantRemove = (fezID: string, userID: string) => {
@@ -48,6 +51,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
       {
         onSuccess: response => {
           updateMembership(fezID, response.data);
+          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           setFez(response.data);
         },
       },

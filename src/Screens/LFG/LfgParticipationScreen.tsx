@@ -19,7 +19,9 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
@@ -51,6 +53,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   const {setModalContent, setModalVisible} = useModal();
   const membershipMutation = useFezMembershipMutation();
   const {updateMembership} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -76,6 +79,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
       {
         onSuccess: response => {
           updateMembership(fezData.fezID, response.data);
+          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
         },
         onSettled: () => setRefreshing(false),
       },
@@ -114,12 +118,13 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
         {
           onSuccess: response => {
             updateMembership(lfg.fezID, response.data);
+            dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           },
           onSettled: () => setRefreshing(false),
         },
       );
     }
-  }, [lfg, membershipMutation, profilePublicData, updateMembership, setModalContent, setModalVisible]);
+  }, [lfg, membershipMutation, profilePublicData, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop]);
 
   useEffect(() => {
     navigation.setOptions({

@@ -10,6 +10,8 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezCancelMutation} from '#src/Queries/Fez/FezMutations';
 import {FezData} from '#src/Structs/ControllerStructs';
 
@@ -35,6 +37,7 @@ export const FezCancelModal = ({fezData}: {fezData: FezData}) => {
   const {theme} = useAppTheme();
   const cancelMutation = useFezCancelMutation();
   const {cancelFez} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
 
   const onSubmit = () => {
     cancelMutation.mutate(
@@ -45,6 +48,7 @@ export const FezCancelModal = ({fezData}: {fezData: FezData}) => {
         onSuccess: response => {
           setSnackbarPayload({message: 'Successfully canceled this event.', messageType: 'info'});
           cancelFez(fezData.fezID, response.data);
+          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           setModalVisible(false);
         },
       },

@@ -9,6 +9,8 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
@@ -32,6 +34,7 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
   const {theme} = useAppTheme();
   const membershipMutation = useFezMembershipMutation();
   const {updateMembership} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
 
   const onSubmit = () => {
     membershipMutation.mutate(
@@ -43,6 +46,7 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
         onSuccess: response => {
           setModalVisible(false);
           updateMembership(fezData.fezID, response.data);
+          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
         },
       },
     );

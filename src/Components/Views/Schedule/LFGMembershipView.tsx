@@ -10,6 +10,8 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -27,6 +29,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
   const {setModalVisible, setModalContent} = useModal();
   const [refreshing, setRefreshing] = useState(false);
   const membershipMutation = useFezMembershipMutation();
+  const dispatchScrollToTop = useScrollToTopIntent();
 
   const handleMembershipPress = useCallback(() => {
     if (!lfg || !profilePublicData) {
@@ -45,6 +48,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
         {
           onSuccess: response => {
             updateMembership(lfg.fezID, response.data);
+            dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           },
           onSettled: () => {
             setRefreshing(false);
@@ -52,7 +56,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
         },
       );
     }
-  }, [lfg, membershipMutation, profilePublicData, updateMembership, setModalContent, setModalVisible]);
+  }, [lfg, membershipMutation, profilePublicData, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop]);
 
   const styles = StyleSheet.create({
     outerContainer: {
