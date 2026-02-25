@@ -346,11 +346,12 @@ const FezChatScreenInner = ({route}: Props) => {
   }
 
   const getInitialScrollIndex = () => {
-    if (!fez.members || fez.members.readCount === fez.members.postCount) {
+    const readCount = route.params.initialReadCount ?? fez.members?.readCount;
+    if (!fez.members || readCount === undefined || readCount === fez.members.postCount) {
       return fezPostsData.length > 0 ? fezPostsData.length - 1 : undefined;
     }
     const loadedStart = fez.members.paginator.start;
-    const idx = Math.max(fez.members.readCount - loadedStart, 0);
+    const idx = Math.max(readCount - loadedStart, 0);
     // Clamp to the loaded data range. readCount can exceed the loaded page
     // when only a subset of posts have been fetched.
     return Math.min(idx, fezPostsData.length - 1);

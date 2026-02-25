@@ -208,6 +208,7 @@ export type CommonStackParamList = {
   };
   SeamailChatScreen: {
     fezID: string;
+    initialReadCount?: number;
   };
   FezChatDetailsScreen: {
     fezID: string;
@@ -230,6 +231,7 @@ export type CommonStackParamList = {
   };
   LfgChatScreen: {
     fezID: string;
+    initialReadCount?: number;
   };
   LfgEditScreen: {
     fez: FezData;
@@ -296,6 +298,7 @@ export type CommonStackParamList = {
   TimeZoneHelpScreen: undefined;
   PrivateEventChatScreen: {
     fezID: string;
+    initialReadCount?: number;
   };
   ScheduleImportScreen: undefined;
   EventSearchScreen: undefined;

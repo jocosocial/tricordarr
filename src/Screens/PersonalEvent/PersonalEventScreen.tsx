@@ -12,13 +12,11 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useFez} from '#src/Hooks/useFez';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
-import {FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
@@ -34,15 +32,12 @@ export const PersonalEventScreen = (props: Props) => {
 
 const PersonalEventScreenInner = ({navigation, route}: Props) => {
   const {appConfig} = useConfig();
-  const {data, refetch, isFetching} = useFezQuery({
+  const {fezData: eventData, isFetching, isOwner, isParticipant, refetch, initialReadCount} = useFez({
     fezID: route.params.eventID,
   });
-  const {data: profilePublicData} = useUserProfileQuery();
   const {markRead} = useFezCacheReducer();
 
-  const eventData = data?.pages[0];
-  const showChat =
-    eventData?.fezType === FezType.privateEvent && FezData.isParticipant(eventData, profilePublicData?.header);
+  const showChat = eventData?.fezType === FezType.privateEvent && isParticipant;
 
   const getNavButtons = useCallback(() => {
     return (
@@ -54,10 +49,15 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
                 <Item
                   title={'Chat'}
                   iconName={AppIcons.chat}
-                  onPress={() => navigation.push(CommonStackComponents.lfgChatScreen, {fezID: eventData.fezID})}
+                  onPress={() =>
+                    navigation.push(CommonStackComponents.lfgChatScreen, {
+                      fezID: eventData.fezID,
+                      initialReadCount,
+                    })
+                  }
                 />
               )}
-              {eventData.owner.userID === profilePublicData?.header.userID && (
+              {isOwner && (
                 <HeaderEditButton
                   iconName={AppIcons.edit}
                   onPress={() =>
@@ -73,7 +73,7 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [eventData, navigation, profilePublicData?.header.userID, showChat]);
+  }, [eventData, navigation, showChat, isOwner, initialReadCount]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -93,6 +93,12 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
   }, [eventData, markRead]);
 
   return (
-    <ScheduleItemScreenBase eventData={eventData} onRefresh={refetch} refreshing={isFetching} showLfgChat={showChat} />
+    <ScheduleItemScreenBase
+      eventData={eventData}
+      onRefresh={refetch}
+      refreshing={isFetching}
+      showLfgChat={showChat}
+      initialReadCount={initialReadCount}
+    />
   );
 };

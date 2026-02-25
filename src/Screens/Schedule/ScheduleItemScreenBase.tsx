@@ -30,9 +30,16 @@ interface Props {
   onRefresh?: () => void;
   eventData?: FezData | EventData;
   showLfgChat?: boolean;
+  initialReadCount?: number;
 }
 
-export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData, showLfgChat = false}: Props) => {
+export const ScheduleItemScreenBase = ({
+  refreshing = false,
+  onRefresh,
+  eventData,
+  showLfgChat = false,
+  initialReadCount,
+}: Props) => {
   const navigation = useCommonStack();
   const {commonStyles} = useStyles();
 
@@ -75,7 +82,6 @@ export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData
       </View>
     );
   };
-
 
   if (!eventData) {
     return <LoadingView />;
@@ -150,7 +156,7 @@ export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData
                           FezType.isPrivateEventType(eventData.fezType)
                             ? CommonStackComponents.privateEventChatScreen
                             : CommonStackComponents.lfgChatScreen,
-                          {fezID: eventData.fezID},
+                          {fezID: eventData.fezID, initialReadCount},
                         )
                       }
                     />
