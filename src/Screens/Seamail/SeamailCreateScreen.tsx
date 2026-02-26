@@ -94,7 +94,7 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
         },
       );
     },
-    [fezMutation, resetSubmitting],
+    [fezMutation, resetSubmitting, createFez],
   );
 
   // Handler for pushing the FezPost submit button.
