@@ -114,14 +114,18 @@ const FezChatScreenInner = ({route}: Props) => {
   const fezPostMutation = useFezPostMutation();
   const {setSnackbarPayload} = useSnackbar();
   const {currentUserID} = useSession();
-  const {fezSockets, openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
+  const {openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
   const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
   const {appConfig} = useConfig();
   const appStateVisible = useAppState();
   const flatListRef = useRef<TConversationListV2Ref>(null);
-  const fezSocketWithHandlerRef = useRef<ReconnectingWebSocket | null>(null);
+  const fezSocketWithHandlerRef = useRef<{
+    ws: ReconnectingWebSocket;
+    handler: (e: WebSocketMessageEvent) => void;
+  } | null>(null);
+  const fezSocketMessageHandlerRef = useRef<(event: WebSocketMessageEvent) => void>(() => {});
   const [fez, setFez] = useState<FezData>();
   const [localInitialReadCount, setLocalInitialReadCount] = useState(route.params.initialReadCount);
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
@@ -177,6 +181,7 @@ const FezChatScreenInner = ({route}: Props) => {
     },
     [appendPostToCache, currentUserID, route.params.fezID, setSnackbarPayload],
   );
+  fezSocketMessageHandlerRef.current = fezSocketMessageHandler;
 
   const {handleLoadNext, handleLoadPrevious} = usePagination({
     fetchNextPage,
@@ -240,42 +245,42 @@ const FezChatScreenInner = ({route}: Props) => {
     }
   }, [data, dispatchFezPostsData, setFez]);
 
-  // Socket useEffect
-  // Don't put anything else in this useEffect. The socket stuff can get a little over-excited
-  // with rendering. Cleanup must remove the message listener before closing to avoid leaking
-  // handlers when navigating away (e.g. back to Seamail list).
+  // Socket useEffect: open/attach once per fezID (route param). Cleanup removes listener and
+  // closes only on unmount or fezID change. Handler is read from a ref so message updates
+  // do not retrigger this effect and create duplicate sockets.
+  const fezID = route.params.fezID;
   useEffect(() => {
-    const fezID = fez?.fezID;
-    const handleFezSocket = async () => {
-      if (fez) {
-        const newSocketInfo = await openFezSocket(fez.fezID);
-        if (newSocketInfo.isNew && newSocketInfo.ws) {
-          logger.debug(`Adding handler to fezSocket for fez ${fez.fezID} (${fez.fezType})`);
-          newSocketInfo.ws.addEventListener('message', fezSocketMessageHandler);
-          fezSocketWithHandlerRef.current = newSocketInfo.ws;
-          dispatchFezSockets({
-            type: WebSocketStorageActions.upsert,
-            key: fez.fezID,
-            socket: newSocketInfo.ws,
-          });
-        } else {
-          fezSocketWithHandlerRef.current = null;
-          logger.debug(`Skipping fezSocket handler for fez ${fez.fezID} (${fez.fezType})`);
+    let cancelled = false;
+    const attachSocket = async () => {
+      const socketInfo = await openFezSocket(fezID);
+      if (cancelled || !socketInfo.ws) {
+        if (socketInfo.ws) {
+          socketInfo.ws.close();
         }
+        return;
       }
+      const wrapper = (e: WebSocketMessageEvent) => fezSocketMessageHandlerRef.current?.(e);
+      socketInfo.ws.addEventListener('message', wrapper);
+      fezSocketWithHandlerRef.current = {ws: socketInfo.ws, handler: wrapper};
+      if (socketInfo.isNew) {
+        dispatchFezSockets({
+          type: WebSocketStorageActions.upsert,
+          key: fezID,
+          socket: socketInfo.ws,
+        });
+      }
+      logger.debug(`Fez socket attached for fez ${fezID} (isNew: ${socketInfo.isNew})`);
     };
-    handleFezSocket();
+    attachSocket();
     return () => {
-      const ws = fezSocketWithHandlerRef.current;
-      if (ws) {
-        ws.removeEventListener('message', fezSocketMessageHandler);
+      const current = fezSocketWithHandlerRef.current;
+      if (current) {
+        current.ws.removeEventListener('message', current.handler);
         fezSocketWithHandlerRef.current = null;
       }
-      if (fezID) {
-        closeFezSocket(fezID);
-      }
+      closeFezSocket(fezID);
     };
-  }, [closeFezSocket, dispatchFezSockets, fez, fezSocketMessageHandler, fezSockets, openFezSocket]);
+  }, [fezID, closeFezSocket, dispatchFezSockets, openFezSocket]);
 
   const getFezHeaderTitle = useCallback(() => {
     if (fez) {
