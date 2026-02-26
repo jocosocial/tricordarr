@@ -9,6 +9,7 @@ import {
   moveItemToEdge,
   PageItemAccessor,
   sortedInsertIntoPages,
+  sortItemsInPages,
   updateItemsInPages,
 } from '#src/Libraries/CacheReduction';
 import {swiftTimestampToISO} from '#src/Libraries/DateTime';
@@ -23,6 +24,16 @@ const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/form
 const otherListKeyPrefixes = ['/fez/owner', '/fez/open', '/fez/former'];
 
 const startTimeAscComparator = (a: FezData, b: FezData) => (a.startTime ?? '').localeCompare(b.startTime ?? '');
+
+/**
+ * Joined list sort: isMuted descending (muted first), then lastModificationTime descending.
+ * Only seamails can be muted, not LFGs or PersonalEvents.
+ */
+const joinedSortComparator = (a: FezData, b: FezData): number => {
+  const muteCompare = (b.members?.isMuted ? 1 : 0) - (a.members?.isMuted ? 1 : 0);
+  if (muteCompare !== 0) return muteCompare;
+  return (b.lastModificationTime ?? '').localeCompare(a.lastModificationTime ?? '');
+};
 
 /** True if the list cache (query params) is intended to contain fezzes of this type. */
 function listParamsIncludeFezType(params: Record<string, unknown> | undefined, fezType: FezType): boolean {
@@ -299,7 +310,8 @@ export const useFezCacheReducer = () => {
 
   /**
    * Toggle isMuted on a fez in all caches. The mute mutation returns void,
-   * so we optimistically flip the flag.
+   * so we optimistically flip the flag. Re-sorts /fez/joined by isMuted desc
+   * then lastModificationTime desc to match the API.
    */
   const updateMute = useCallback(
     (fezID: string, isMuted: boolean) => {
@@ -309,8 +321,11 @@ export const useFezCacheReducer = () => {
       });
       updateFezInAllListCaches(fezID, muteUpdater);
       updateFezDetailCache(fezID, muteUpdater);
+      queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: ['/fez/joined']}, oldData =>
+        oldData ? sortItemsInPages(oldData, fezListAccessor, joinedSortComparator) : oldData,
+      );
     },
-    [updateFezInAllListCaches, updateFezDetailCache],
+    [updateFezInAllListCaches, updateFezDetailCache, queryClient],
   );
 
   /**
