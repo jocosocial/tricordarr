@@ -17,6 +17,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
@@ -29,13 +30,11 @@ import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
-
 import {Selectable} from '#src/Types/Selectable';
 
 type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
@@ -67,7 +66,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const isFocused = useIsFocused();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {commonStyles} = useStyles();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const [fezList, setFezList] = useState<FezData[]>([]);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
@@ -177,7 +176,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
       {enableSelection ? (
         <SelectionButtons items={fezList.map(Selectable.fromFezData)} />
       ) : (
-        profilePublicData &&
+        currentUserID != null &&
         (hasTwitarrTeam || hasModerator) && (
           // For some reason, SegmentedButtons hates the flex in PaddedContentView.
           <View style={[commonStyles.paddingSmall]}>

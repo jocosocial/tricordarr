@@ -366,30 +366,19 @@ export namespace FezData {
     return `${attendeeCountString}, ${waitlistCount} waitlisted${minimumSuffix}`;
   };
 
-  const isMember = (members: UserHeader[] | undefined, user: UserHeader) => {
-    if (!members) {
-      return false;
-    }
-    for (let i = 0; i < members.length; i++) {
-      if (members[i].userID === user.userID) {
-        return true;
-      }
-    }
-    return false;
+  const isMemberByID = (members: UserHeader[] | undefined, userID: string) => {
+    if (!members) return false;
+    return members.some(m => m.userID === userID);
   };
 
-  export const isParticipant = (fezData?: FezData, user?: UserHeader) => {
-    if (!user || !fezData) {
-      return false;
-    }
-    return isMember(fezData.members?.participants, user);
+  export const isParticipant = (fezData?: FezData, userID?: string) => {
+    if (!fezData || !userID) return false;
+    return isMemberByID(fezData.members?.participants, userID);
   };
 
-  export const isWaitlist = (fezData?: FezData, user?: UserHeader) => {
-    if (!user || !fezData) {
-      return false;
-    }
-    return isMember(fezData.members?.waitingList, user);
+  export const isWaitlist = (fezData?: FezData, userID?: string) => {
+    if (!fezData || !userID) return false;
+    return isMemberByID(fezData.members?.waitingList, userID);
   };
 
   export const isFull = (fezData: FezData) => {
@@ -881,17 +870,17 @@ export interface PostDetailData {
 }
 
 export namespace PostDetailData {
-  export const hasUserReacted = (postData: PostDetailData, userHeader: UserHeader, likeType?: LikeType) => {
+  export const hasUserReacted = (postData: PostDetailData, userID: string, likeType?: LikeType) => {
     if (!likeType) {
       return !!postData.userLike;
     }
     switch (likeType) {
       case LikeType.like:
-        return postData.likes.flatMap(uh => uh.userID).includes(userHeader.userID);
+        return postData.likes.flatMap(uh => uh.userID).includes(userID);
       case LikeType.laugh:
-        return postData.laughs.flatMap(uh => uh.userID).includes(userHeader.userID);
+        return postData.laughs.flatMap(uh => uh.userID).includes(userID);
       case LikeType.love:
-        return postData.loves.flatMap(uh => uh.userID).includes(userHeader.userID);
+        return postData.loves.flatMap(uh => uh.userID).includes(userID);
     }
   };
 }

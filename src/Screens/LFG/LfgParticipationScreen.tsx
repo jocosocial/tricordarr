@@ -15,6 +15,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LfgLeaveModal} from '#src/Components/Views/Modals/LfgLeaveModal';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
@@ -25,7 +26,6 @@ import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -49,7 +49,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   const lfg = data?.pages[0];
   const [refreshing, setRefreshing] = useState(false);
   const participantMutation = useFezParticipantMutation();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const {setModalContent, setModalVisible} = useModal();
   const membershipMutation = useFezMembershipMutation();
   const {updateMembership} = useFezCacheReducer();
@@ -63,7 +63,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
 
   const onParticipantRemove = (fezData: FezData, userID: string) => {
     // Call the join/unjoin if you are working on yourself.
-    if (userID === profilePublicData?.header.userID) {
+    if (userID === currentUserID) {
       setModalContent(<LfgLeaveModal fezData={fezData} />);
       setModalVisible(true);
       return;
@@ -102,10 +102,10 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   );
 
   const handleJoin = useCallback(() => {
-    if (!lfg || !profilePublicData) {
+    if (!lfg || !currentUserID) {
       return;
     }
-    if (FezData.isParticipant(lfg, profilePublicData.header)) {
+    if (FezData.isParticipant(lfg, currentUserID)) {
       setModalContent(<LfgLeaveModal fezData={lfg} />);
       setModalVisible(true);
     } else {
@@ -124,7 +124,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
         },
       );
     }
-  }, [lfg, membershipMutation, profilePublicData, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop]);
+  }, [lfg, membershipMutation, currentUserID, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -136,11 +136,11 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
     return <LoadingView />;
   }
 
-  const manageUsers = lfg.owner.userID === profilePublicData?.header.userID;
+  const manageUsers = lfg.owner.userID === currentUserID;
   const isFull = FezData.isFull(lfg);
   const isUnlimited = lfg.maxParticipants === 0;
-  const isMember = FezData.isParticipant(lfg, profilePublicData?.header);
-  const isWaitlist = FezData.isWaitlist(lfg, profilePublicData?.header);
+  const isMember = FezData.isParticipant(lfg, currentUserID ?? undefined);
+  const isWaitlist = FezData.isWaitlist(lfg, currentUserID ?? undefined);
 
   return (
     <AppView>

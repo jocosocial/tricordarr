@@ -13,7 +13,6 @@ import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface LFGMembershipViewProps {
@@ -23,7 +22,6 @@ interface LFGMembershipViewProps {
 export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
-  const {data: profilePublicData} = useUserProfileQuery();
   const {currentUserID} = useSession();
   const {updateMembership} = useFezCacheReducer();
   const {setModalVisible, setModalContent} = useModal();
@@ -32,10 +30,10 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
   const dispatchScrollToTop = useScrollToTopIntent();
 
   const handleMembershipPress = useCallback(() => {
-    if (!lfg || !profilePublicData) {
+    if (!lfg || !currentUserID) {
       return;
     }
-    if (FezData.isParticipant(lfg, profilePublicData.header) || FezData.isWaitlist(lfg, profilePublicData.header)) {
+    if (FezData.isParticipant(lfg, currentUserID) || FezData.isWaitlist(lfg, currentUserID)) {
       setModalContent(<LfgLeaveModal fezData={lfg} />);
       setModalVisible(true);
     } else {
@@ -56,7 +54,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
         },
       );
     }
-  }, [lfg, membershipMutation, profilePublicData, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop]);
+  }, [lfg, membershipMutation, currentUserID, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop]);
 
   const styles = StyleSheet.create({
     outerContainer: {
@@ -70,28 +68,24 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
 
   return (
     <View style={styles.outerContainer}>
-      {profilePublicData && lfg.owner.userID !== currentUserID && (
+      {currentUserID != null && lfg.owner.userID !== currentUserID && (
         <PaddedContentView>
-          {(FezData.isParticipant(lfg, profilePublicData?.header) ||
-            FezData.isWaitlist(lfg, profilePublicData?.header)) && (
+          {(FezData.isParticipant(lfg, currentUserID) || FezData.isWaitlist(lfg, currentUserID)) && (
             <PrimaryActionButton
-              buttonText={
-                FezData.isWaitlist(lfg, profilePublicData.header) ? 'Leave the waitlist' : `Leave this ${lfgNoun}`
-              }
+              buttonText={FezData.isWaitlist(lfg, currentUserID) ? 'Leave the waitlist' : `Leave this ${lfgNoun}`}
               onPress={handleMembershipPress}
               buttonColor={theme.colors.twitarrNegativeButton}
               isLoading={refreshing}
             />
           )}
-          {!FezData.isParticipant(lfg, profilePublicData?.header) &&
-            !FezData.isWaitlist(lfg, profilePublicData?.header) && (
-              <PrimaryActionButton
-                buttonText={FezData.isFull(lfg) ? 'Join the waitlist' : 'Join this LFG'}
-                onPress={handleMembershipPress}
-                buttonColor={theme.colors.twitarrPositiveButton}
-                isLoading={refreshing}
-              />
-            )}
+          {!FezData.isParticipant(lfg, currentUserID) && !FezData.isWaitlist(lfg, currentUserID) && (
+            <PrimaryActionButton
+              buttonText={FezData.isFull(lfg) ? 'Join the waitlist' : 'Join this LFG'}
+              onPress={handleMembershipPress}
+              buttonColor={theme.colors.twitarrPositiveButton}
+              isLoading={refreshing}
+            />
+          )}
         </PaddedContentView>
       )}
     </View>

@@ -18,13 +18,10 @@ import {
   SettingsStackScreenComponents,
   useSettingsStack,
 } from '#src/Navigation/Stacks/SettingsStackNavigator';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
-
 type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.accountManagement>;
 export const AccountManagementScreen = ({navigation}: Props) => {
   const settingsNavigation = useSettingsStack();
-  const {data: profilePublicData} = useUserProfileQuery();
-  const {isLoggedIn} = useSession();
+  const {isLoggedIn, currentUserID} = useSession();
   const {setModalContent, setModalVisible} = useModal();
 
   const handleLogoutModal = (allDevices = false) => {
@@ -36,14 +33,11 @@ export const AccountManagementScreen = ({navigation}: Props) => {
     return <NotLoggedInView />;
   }
 
-  // Need to conditional on ProfilePublicData in case it never loaded because the user lost communication
-  // with the server. Logout device should still be allowed when no local data because it clears state.
-  // I'm not sure how true that is now that SessionProvider is a thing.
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padSides={false}>
-          {profilePublicData && (
+          {currentUserID != null && (
             <>
               <ListSection>
                 <ListSubheader>Manage Your Account</ListSubheader>
@@ -84,7 +78,7 @@ export const AccountManagementScreen = ({navigation}: Props) => {
               icon={AppIcons.logout}
               onPress={() => handleLogoutModal()}
             />
-            {profilePublicData && (
+            {currentUserID != null && (
               <MinorActionListItem
                 title={'Logout all devices'}
                 icon={AppIcons.error}

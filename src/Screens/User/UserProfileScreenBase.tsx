@@ -23,12 +23,12 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {UserProfileAvatar} from '#src/Components/Views/UserProfileAvatar';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
@@ -55,7 +55,7 @@ export const UserProfileScreenBase = (props: Props) => {
  * If the user hasn't completed the OOBE, they will not see the content card.
  */
 const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
-  const {data: profilePublicData, refetch: refetchSelf} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const {commonStyles} = useStyles();
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
@@ -66,18 +66,15 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
   const {preRegistrationMode} = usePreRegistration();
   const {oobeCompleted} = useOobe();
-  const isSelf = data?.header.userID === profilePublicData?.header.userID;
+  const isSelf = data?.header.userID === currentUserID;
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
-      let refreshes = [refetch()];
-      if (!preRegistrationMode) {
-        refreshes.push(refetchFavorites(), refetchMutes(), refetchBlocks());
-      }
-      if (isSelf) {
-        refreshes.push(refetchSelf());
-      }
+      const refreshes = [
+        refetch(),
+        ...(preRegistrationMode ? [] : [refetchFavorites(), refetchMutes(), refetchBlocks()]),
+      ];
       await Promise.all(refreshes);
-    }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, isSelf, refetchSelf, preRegistrationMode]),
+    }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, preRegistrationMode]),
   });
 
   const getNavButtons = useCallback(() => {

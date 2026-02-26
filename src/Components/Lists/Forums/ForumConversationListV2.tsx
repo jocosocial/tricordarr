@@ -10,8 +10,8 @@ import {ForumPostListHeader} from '#src/Components/Lists/Headers/ForumPostListHe
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostListItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumConversationListV2Props {
@@ -54,7 +54,7 @@ export const ForumConversationListV2 = ({
   onReadyToShow,
 }: ForumConversationListV2Props) => {
   const {commonStyles} = useStyles();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const {hasModerator} = usePrivilege();
 
   // The thread is fully read when readCount equals postCount.
@@ -85,7 +85,7 @@ export const ForumConversationListV2 = ({
 
   const renderItem = useCallback(
     ({item, index}: {item: PostData; index: number}) => {
-      const enablePinnedPosts = hasModerator || forumData?.creator.userID === profilePublicData?.header.userID;
+      const enablePinnedPosts = hasModerator || forumData?.creator.userID === currentUserID;
       return (
         <View>
           {showNewDivider(index) && <LabelDivider label={'New'} />}
@@ -98,7 +98,7 @@ export const ForumConversationListV2 = ({
         </View>
       );
     },
-    [hasModerator, forumData, profilePublicData?.header.userID, showNewDivider, enableShowInThread],
+    [hasModerator, forumData, currentUserID, showNewDivider, enableShowInThread],
   );
 
   const renderSeparator = useCallback(() => <SpaceDivider />, []);

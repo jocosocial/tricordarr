@@ -16,6 +16,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
@@ -27,7 +28,6 @@ import {calcCruiseDayTime, eventsOverlap, getDurationString} from '#src/Librarie
 import {CommonStackComponents, CommonStackParamList, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleOverlapScreen>;
@@ -38,7 +38,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
   const {tzAtTime} = useTimeZone();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const {getIsDisabled} = useFeature();
   const {preRegistrationMode} = usePreRegistration();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
@@ -187,14 +187,11 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     // Filter by "only your events" if enabled
     // This used to always include the route's eventData even if it didn't match the filter.
     // But the more I thought about it the more I found that was kinda weird.
-    if (onlyYourEvents && profilePublicData?.header) {
+    if (onlyYourEvents && currentUserID) {
       const userFilteredItems = featureFilteredItems.filter(item => {
         if ('fezID' in item) {
           // LFGs or PersonalEvents: check if user is participant or owner
-          return (
-            FezData.isParticipant(item, profilePublicData.header) ||
-            item.owner.userID === profilePublicData.header.userID
-          );
+          return FezData.isParticipant(item, currentUserID) || item.owner.userID === currentUserID;
         } else {
           // Events: check if favorited
           return item.isFavorite === true;
@@ -227,7 +224,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     lfgJoinedData,
     personalEventData,
     onlyYourEvents,
-    profilePublicData,
+    currentUserID,
     appConfig.schedule.overlapExcludeDurationHours,
     appConfig.schedule.eventsShowOpenLfgs,
     getIsDisabled,

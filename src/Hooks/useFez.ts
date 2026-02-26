@@ -1,9 +1,9 @@
 import {InfiniteData, QueryClient, useQueryClient} from '@tanstack/react-query';
 import {useCallback, useMemo, useRef, useState} from 'react';
 
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {findInPages, PageItemAccessor} from '#src/Libraries/CacheReduction';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData, FezListData} from '#src/Structs/ControllerStructs';
 
 const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/former'];
@@ -56,7 +56,7 @@ interface UseFezReturn {
 export const useFez = ({fezID}: UseFezOptions): UseFezReturn => {
   const queryClient = useQueryClient();
   const queryResult = useFezQuery({fezID});
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const {data, isFetching, isLoading, refetch} = queryResult;
   const initialReadCountRef = useRef<number | undefined>(undefined);
   const [, setReadCountVersion] = useState(0);
@@ -83,29 +83,29 @@ export const useFez = ({fezID}: UseFezOptions): UseFezReturn => {
   }, [data]);
 
   const isOwner = useMemo(() => {
-    if (!fezData || !profilePublicData) {
+    if (!fezData || !currentUserID) {
       return false;
     }
-    return fezData.owner.userID === profilePublicData.header.userID;
-  }, [fezData, profilePublicData]);
+    return fezData.owner.userID === currentUserID;
+  }, [fezData, currentUserID]);
 
   const isMember = useMemo(() => {
     return fezData?.members !== undefined;
   }, [fezData]);
 
   const isParticipant = useMemo(() => {
-    if (!fezData || !profilePublicData) {
+    if (!fezData || !currentUserID) {
       return false;
     }
-    return FezData.isParticipant(fezData, profilePublicData.header);
-  }, [fezData, profilePublicData]);
+    return FezData.isParticipant(fezData, currentUserID);
+  }, [fezData, currentUserID]);
 
   const isWaitlist = useMemo(() => {
-    if (!fezData || !profilePublicData) {
+    if (!fezData || !currentUserID) {
       return false;
     }
-    return FezData.isWaitlist(fezData, profilePublicData.header);
-  }, [fezData, profilePublicData]);
+    return FezData.isWaitlist(fezData, currentUserID);
+  }, [fezData, currentUserID]);
 
   return {
     fezData,
