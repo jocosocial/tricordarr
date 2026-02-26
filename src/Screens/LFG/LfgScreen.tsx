@@ -34,10 +34,9 @@ export const LfgScreen = (props: Props) => {
 };
 
 const LfgScreenInner = ({navigation, route}: Props) => {
-  const {fezData, isOwner, isParticipant, isWaitlist, refetch, initialReadCount, resetInitialReadCount} =
-    useFez({
-      fezID: route.params.fezID,
-    });
+  const {fezData, isOwner, isParticipant, isWaitlist, refetch, initialReadCount, resetInitialReadCount} = useFez({
+    fezID: route.params.fezID,
+  });
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const [lfg, setLfg] = useState<FezData>();
   const {notificationSocket} = useSocket();

@@ -12,8 +12,8 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {useFez} from '#src/Hooks/useFez';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useFez} from '#src/Hooks/useFez';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';

@@ -119,9 +119,7 @@ const FezChatScreenInner = ({route}: Props) => {
   const appStateVisible = useAppState();
   const flatListRef = useRef<TConversationListV2Ref>(null);
   const [fez, setFez] = useState<FezData>();
-  const [localInitialReadCount, setLocalInitialReadCount] = useState(
-    route.params.initialReadCount,
-  );
+  const [localInitialReadCount, setLocalInitialReadCount] = useState(route.params.initialReadCount);
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
@@ -305,8 +303,7 @@ const FezChatScreenInner = ({route}: Props) => {
     if (fez && fez.members) {
       const hasUnread =
         fez.members.readCount !== fez.members.postCount ||
-        (localInitialReadCount !== undefined &&
-          localInitialReadCount < fez.members.postCount);
+        (localInitialReadCount !== undefined && localInitialReadCount < fez.members.postCount);
       if (hasUnread) {
         markRead(fez.fezID);
         setLocalInitialReadCount(fez.members.postCount);

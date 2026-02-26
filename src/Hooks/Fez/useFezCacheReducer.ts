@@ -28,21 +28,21 @@ function listParamsIncludeFezType(params: Record<string, unknown> | undefined, f
   if (!params || typeof params !== 'object') {
     return true;
   }
-  const typeParam = params['type'];
+  const typeParam = params.type;
   if (typeParam !== undefined) {
     const allowed = Array.isArray(typeParam) ? (typeParam as FezType[]) : [typeParam as FezType];
     if (!allowed.includes(fezType)) {
       return false;
     }
   }
-  const excludeParam = params['excludetype'];
+  const excludeParam = params.excludetype;
   if (excludeParam !== undefined) {
     const excluded = Array.isArray(excludeParam) ? (excludeParam as FezType[]) : [excludeParam as FezType];
     if (excluded.includes(fezType)) {
       return false;
     }
   }
-  const lfgOnly = params['lfgtypes'];
+  const lfgOnly = params.lfgtypes;
   if (lfgOnly) {
     if (!FezType.isLFGType(fezType)) {
       return false;

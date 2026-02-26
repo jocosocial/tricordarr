@@ -32,7 +32,14 @@ export const PersonalEventScreen = (props: Props) => {
 
 const PersonalEventScreenInner = ({navigation, route}: Props) => {
   const {appConfig} = useConfig();
-  const {fezData: eventData, isFetching, isOwner, isParticipant, refetch, initialReadCount} = useFez({
+  const {
+    fezData: eventData,
+    isFetching,
+    isOwner,
+    isParticipant,
+    refetch,
+    initialReadCount,
+  } = useFez({
     fezID: route.params.eventID,
   });
   const {markRead} = useFezCacheReducer();
