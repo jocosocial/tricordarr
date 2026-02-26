@@ -7,6 +7,7 @@ import {StyleSheet, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -21,6 +22,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {FezMutedView} from '#src/Components/Views/Static/FezMutedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -48,7 +50,7 @@ import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData, PostContentData} from '#src/Structs/ControllerStructs';
-import {SocketFezMemberChangeData} from '#src/Structs/SocketStructs';
+import {SocketFezMemberChangeData, SocketFezPostData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('FezChatScreen.tsx');
 
@@ -111,6 +113,7 @@ const FezChatScreenInner = ({route}: Props) => {
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const fezPostMutation = useFezPostMutation();
   const {setSnackbarPayload} = useSnackbar();
+  const {currentUserID} = useSession();
   const {fezSockets, openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
   const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
@@ -118,6 +121,7 @@ const FezChatScreenInner = ({route}: Props) => {
   const {appConfig} = useConfig();
   const appStateVisible = useAppState();
   const flatListRef = useRef<TConversationListV2Ref>(null);
+  const fezSocketWithHandlerRef = useRef<ReconnectingWebSocket | null>(null);
   const [fez, setFez] = useState<FezData>();
   const [localInitialReadCount, setLocalInitialReadCount] = useState(route.params.initialReadCount);
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
@@ -160,31 +164,18 @@ const FezChatScreenInner = ({route}: Props) => {
       logger.info('fezSocketMessageHandler responding event', event);
       const socketMessage = JSON.parse(event.data);
       if ('joined' in socketMessage) {
-        // Then it's SocketFezMemberChangeData
         const memberChangeData = socketMessage as SocketFezMemberChangeData;
         const changeActionString = memberChangeData.joined ? 'joined' : 'left';
-        let changeString = `User ${memberChangeData.user.username} has ${changeActionString} the chat.`;
+        const changeString = `User ${memberChangeData.user.username} has ${changeActionString} the chat.`;
         setSnackbarPayload({message: changeString});
       } else if ('postID' in socketMessage) {
-        // Don't push our own posts via the socket.
-        // const socketFezPostData = socketMessage as SocketFezPostData;
-        // Apparently Swiftarr sends back a garbage timestamp?
-        // Replace it with now since it's probably now-ish anyway and we can fix it
-        // on reload.
-        // socketFezPostData.timestamp = new Date();
-        //  After all that, the server still considers the message unread until you do a GET containing it
-        //  So dynamically putting messages to the screen will help the local state but that's it.
-        //  And confuse any other client applications.
-        refetch();
-        // if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
-        //   dispatchFezPostsData({
-        //     type: FezPostsActions.appendPost,
-        //     fezPostData: socketFezPostData,
-        //   });
-        // }
+        const socketFezPostData = socketMessage as SocketFezPostData;
+        if (currentUserID != null && socketFezPostData.author.userID !== currentUserID) {
+          appendPostToCache(route.params.fezID, socketFezPostData);
+        }
       }
     },
-    [refetch, setSnackbarPayload],
+    [appendPostToCache, currentUserID, route.params.fezID, setSnackbarPayload],
   );
 
   const {handleLoadNext, handleLoadPrevious} = usePagination({
@@ -251,28 +242,37 @@ const FezChatScreenInner = ({route}: Props) => {
 
   // Socket useEffect
   // Don't put anything else in this useEffect. The socket stuff can get a little over-excited
-  // with rendering.
+  // with rendering. Cleanup must remove the message listener before closing to avoid leaking
+  // handlers when navigating away (e.g. back to Seamail list).
   useEffect(() => {
+    const fezID = fez?.fezID;
     const handleFezSocket = async () => {
       if (fez) {
         const newSocketInfo = await openFezSocket(fez.fezID);
         if (newSocketInfo.isNew && newSocketInfo.ws) {
           logger.debug(`Adding handler to fezSocket for fez ${fez.fezID} (${fez.fezType})`);
           newSocketInfo.ws.addEventListener('message', fezSocketMessageHandler);
+          fezSocketWithHandlerRef.current = newSocketInfo.ws;
           dispatchFezSockets({
             type: WebSocketStorageActions.upsert,
             key: fez.fezID,
             socket: newSocketInfo.ws,
           });
         } else {
+          fezSocketWithHandlerRef.current = null;
           logger.debug(`Skipping fezSocket handler for fez ${fez.fezID} (${fez.fezType})`);
         }
       }
     };
     handleFezSocket();
     return () => {
-      if (fez) {
-        closeFezSocket(fez.fezID);
+      const ws = fezSocketWithHandlerRef.current;
+      if (ws) {
+        ws.removeEventListener('message', fezSocketMessageHandler);
+        fezSocketWithHandlerRef.current = null;
+      }
+      if (fezID) {
+        closeFezSocket(fezID);
       }
     };
   }, [closeFezSocket, dispatchFezSockets, fez, fezSocketMessageHandler, fezSockets, openFezSocket]);

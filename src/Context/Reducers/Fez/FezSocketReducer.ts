@@ -30,9 +30,8 @@ const webSocketStorageReducer = (storage: WebSocketStorage, action: WebSocketSto
       };
     }
     case WebSocketStorageActions.delete: {
-      const localStorage = storage;
-      delete localStorage[action.key];
-      return localStorage;
+      const {[action.key]: _removed, ...rest} = storage;
+      return rest;
     }
     case WebSocketStorageActions.clear: {
       // @TODO should this also close?

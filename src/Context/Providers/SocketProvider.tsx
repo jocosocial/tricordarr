@@ -100,17 +100,22 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
         return;
       }
       const fezSocket = fezSockets[fezID];
-      logger.debug(`FezSocket enabled for ${fezID}. State: ${fezSocket?.readyState}`);
-      if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CLOSED)) {
+      const readyState = fezSocket?.readyState;
+      logger.debug(`FezSocket enabled for ${fezID}. State: ${readyState}`);
+      // Close for OPEN, CONNECTING, or CLOSED so the socket is always removed from storage
+      // and never reused with a stale message handler (e.g. after navigating back to list).
+      if (fezSocket && readyState !== WebSocket.CLOSING) {
         fezSocket.close();
         dispatchFezSockets({
           type: WebSocketStorageActions.delete,
           key: fezID,
         });
+      } else if (fezSocket) {
+        logger.debug('FezSocket already CLOSING.');
       } else {
-        logger.debug(`FezSocket ineligible for close. State: ${fezSocket?.readyState}`);
+        logger.debug(`FezSocket ineligible for close. State: ${readyState}`);
       }
-      logger.debug(`FezSocket close complete. State: ${fezSocket?.readyState}`);
+      logger.debug(`FezSocket close complete. State: ${readyState}`);
     },
     [appConfig.enableFezSocket, dispatchFezSockets, fezSockets],
   );
