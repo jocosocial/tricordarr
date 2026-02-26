@@ -11,6 +11,7 @@ import {
   sortedInsertIntoPages,
   updateItemsInPages,
 } from '#src/Libraries/CacheReduction';
+import {swiftTimestampToISO} from '#src/Libraries/DateTime';
 import {FezData, FezListData, FezPostData} from '#src/Structs/ControllerStructs';
 
 const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
@@ -239,16 +240,21 @@ export const useFezCacheReducer = () => {
    * Add a new post to the detail cache and update lastModificationTime,
    * postCount, and readCount in both list and detail caches.
    * The post mutation returns FezPostData (not the full FezData).
+   * Socket payloads may send timestamp as a number: Swiftarr uses seconds since
+   * 2001-01-01 (Swift Date reference). Normalize to ISO8601 string.
    */
   const appendPost = useCallback(
     (fezID: string, newPost: FezPostData) => {
       const now = new Date().toISOString();
+      const rawTs = (newPost as {timestamp: string | number}).timestamp;
+      const timestamp = swiftTimestampToISO(rawTs);
+      const post: FezPostData = {...newPost, timestamp};
 
       updateFezDetailCache(fezID, fez => {
         if (!fez.members) {
           return fez;
         }
-        const alreadyExists = fez.members.posts?.some(p => p.postID === newPost.postID);
+        const alreadyExists = fez.members.posts?.some(p => p.postID === post.postID);
         if (alreadyExists) {
           return fez;
         }
@@ -259,7 +265,7 @@ export const useFezCacheReducer = () => {
             ...fez.members,
             postCount: fez.members.postCount + 1,
             readCount: fez.members.readCount + 1,
-            posts: [...(fez.members.posts ?? []), newPost],
+            posts: [...(fez.members.posts ?? []), post],
           },
         };
       });
