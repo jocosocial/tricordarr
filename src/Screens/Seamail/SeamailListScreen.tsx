@@ -23,7 +23,6 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -34,7 +33,6 @@ import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScre
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 import {Selectable} from '#src/Types/Selectable';
 
 type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
@@ -62,7 +60,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
     forUser: asPrivilegedUser,
     onlyNew: showUnreadOnly,
   });
-  const {notificationSocket, closeFezSocket} = useSocket();
+  const {closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {commonStyles} = useStyles();
@@ -70,7 +68,6 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const [showFabLabel, setShowFabLabel] = useState(true);
   const [fezList, setFezList] = useState<FezData[]>([]);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
-  const {invalidateFez} = useFezCacheReducer();
   const {selectedItems, enableSelection} = useSelection();
   const {handleLoadNext} = usePagination({
     fetchNextPage,
@@ -89,18 +86,6 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
       setFezList(data.pages.flatMap(p => p.fezzes));
     }
   }, [data]);
-
-  const notificationHandler = useCallback(
-    (event: WebSocketMessageEvent) => {
-      const socketMessage = JSON.parse(event.data) as SocketNotificationData;
-      if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
-        invalidateFez();
-      } else {
-        refetch();
-      }
-    },
-    [invalidateFez, refetch],
-  );
 
   const getNavButtons = useCallback(() => {
     if (enableSelection) {
@@ -133,17 +118,6 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
       </View>
     );
   }, [enableSelection, showUnreadOnly, asPrivilegedUser, navigation, setRefreshing, fezList, selectedItems]);
-
-  useEffect(() => {
-    if (notificationSocket) {
-      notificationSocket.addEventListener('message', notificationHandler);
-    }
-    return () => {
-      if (notificationSocket) {
-        notificationSocket.removeEventListener('message', notificationHandler);
-      }
-    };
-  }, [notificationHandler, notificationSocket]);
 
   useEffect(() => {
     navigation.setOptions({

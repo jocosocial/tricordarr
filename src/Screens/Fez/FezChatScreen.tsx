@@ -334,15 +334,18 @@ const FezChatScreenInner = ({route}: Props) => {
   // This doesn't do an invalidation so that the local data is fresh if the
   // user goes back in quickly. queryClient.invalidateQueries([`/fez/${fez.fezID}`]);
   // would be the invalidation.
-  useEffect(() => {
-    return () => {
-      logger.debug('useEffect return is running.');
-      if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-        refetch();
-      }
-      refetchUserNotificationData();
-    };
-  }, [fez, refetch, refetchUserNotificationData]);
+  //
+  // 20260225 Disabling this because I don't think we need it anymore with all of the
+  // local state mutation stuff.
+  // useEffect(() => {
+  //   return () => {
+  //     logger.debug('useEffect return is running.');
+  //     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
+  //       refetch();
+  //     }
+  //     refetchUserNotificationData();
+  //   };
+  // }, [fez, refetch, refetchUserNotificationData]);
 
   const [readyToShow, setReadyToShow] = useState(false);
   const {commonStyles} = useStyles();
