@@ -105,6 +105,7 @@ const SeamailListItemInternal = ({fez, enableSelection, setEnableSelection, sele
   const onPress = () =>
     navigation.push(CommonStackComponents.seamailChatScreen, {
       fezID: fez.fezID,
+      initialReadCount: fez.members?.readCount,
     });
 
   const getRight = () => {

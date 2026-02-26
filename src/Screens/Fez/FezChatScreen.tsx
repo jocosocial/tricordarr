@@ -49,10 +49,22 @@ import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {FezData, PostContentData} from '#src/Structs/ControllerStructs';
+import {type FezData, type FezPostData, type PostContentData} from '#src/Structs/ControllerStructs';
 import {SocketFezMemberChangeData, SocketFezPostData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('FezChatScreen.tsx');
+
+const getInitialScrollIndex = (fez: FezData, fezPostsData: FezPostData[], initialReadCount?: number) => {
+  const readCount = initialReadCount ?? fez.members?.readCount;
+  if (!fez.members || readCount === undefined || readCount === fez.members.postCount) {
+    return fezPostsData.length > 0 ? fezPostsData.length - 1 : undefined;
+  }
+  const loadedStart = fez.members.paginator.start;
+  const idx = Math.max(readCount - loadedStart, 0);
+  // Clamp to the loaded data range. readCount can exceed the loaded page
+  // when only a subset of posts have been fetched.
+  return Math.min(idx, fezPostsData.length - 1);
+};
 
 type Props = StackScreenProps<
   CommonStackParamList,
@@ -366,17 +378,8 @@ const FezChatScreenInner = ({route}: Props) => {
     return <LoadingView />;
   }
 
-  const getInitialScrollIndex = () => {
-    const readCount = route.params.initialReadCount ?? fez.members?.readCount;
-    if (!fez.members || readCount === undefined || readCount === fez.members.postCount) {
-      return fezPostsData.length > 0 ? fezPostsData.length - 1 : undefined;
-    }
-    const loadedStart = fez.members.paginator.start;
-    const idx = Math.max(readCount - loadedStart, 0);
-    // Clamp to the loaded data range. readCount can exceed the loaded page
-    // when only a subset of posts have been fetched.
-    return Math.min(idx, fezPostsData.length - 1);
-  };
+  const initialScrollIndex = getInitialScrollIndex(fez, fezPostsData, route.params.initialReadCount);
+  const listKey = `${fez.fezID}-${initialScrollIndex ?? 'bottom'}`;
 
   const overlayStyles = StyleSheet.create({
     overlay: {
@@ -400,6 +403,7 @@ const FezChatScreenInner = ({route}: Props) => {
       {fez.members?.isMuted && <FezMutedView />}
       <View style={commonStyles.flex}>
         <FezConversationListV2
+          key={listKey}
           fez={fez}
           fezPostData={fezPostsData}
           listRef={flatListRef}
@@ -408,7 +412,7 @@ const FezChatScreenInner = ({route}: Props) => {
           handleLoadNext={handleLoadNext}
           handleLoadPrevious={handleLoadPrevious}
           refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
-          initialScrollIndex={getInitialScrollIndex()}
+          initialScrollIndex={initialScrollIndex}
           initialReadCount={route.params.initialReadCount}
           onReadyToShow={onReadyToShow}
         />
