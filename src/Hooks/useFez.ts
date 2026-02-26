@@ -4,6 +4,7 @@ import {useCallback, useMemo, useRef, useState} from 'react';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {findInPages, PageItemAccessor} from '#src/Libraries/CacheReduction';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
+import {TokenAuthPaginationQueryOptionsTypeV2} from '#src/Queries/TokenAuthQuery';
 import {FezData, FezListData} from '#src/Structs/ControllerStructs';
 
 const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/former'];
@@ -30,6 +31,7 @@ function getListCacheReadCount(queryClient: QueryClient, fezID: string): number 
 
 interface UseFezOptions {
   fezID: string;
+  queryOptions?: TokenAuthPaginationQueryOptionsTypeV2<FezData>;
 }
 
 interface UseFezReturn {
@@ -53,9 +55,9 @@ interface UseFezReturn {
  * mark-as-read), then from detail data, so callers can pass it forward (e.g. to a
  * chat screen) and show the correct unread badge.
  */
-export const useFez = ({fezID}: UseFezOptions): UseFezReturn => {
+export const useFez = ({fezID, queryOptions}: UseFezOptions): UseFezReturn => {
   const queryClient = useQueryClient();
-  const queryResult = useFezQuery({fezID});
+  const queryResult = useFezQuery({fezID, options: queryOptions});
   const {currentUserID} = useSession();
   const {data, isFetching, isLoading, refetch} = queryResult;
   const initialReadCountRef = useRef<number | undefined>(undefined);

@@ -31,7 +31,9 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.fezCha
  */
 export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
-  const {fezData, refetch, isFetching, isOwner} = useFez({fezID: route.params.fezID});
+  // This overrides the default query options of refetchOnFocus and refetchOnMount. Since the user
+  // just came from the chat screen the data is probably fresh enough to be just fine.
+  const {fezData, refetch, isFetching, isOwner} = useFez({fezID: route.params.fezID, queryOptions: {}});
   const {fezSockets} = useSocket();
   const {updateMembership} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
