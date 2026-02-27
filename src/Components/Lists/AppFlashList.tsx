@@ -6,6 +6,8 @@ import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {MaintainVisibleContentPosition} from '#src/Types/Lists';
+
 interface AppFlashListProps<TItem> {
   handleLoadNext?: () => void;
   onEndReachedThreshold?: number;
@@ -19,11 +21,7 @@ interface AppFlashListProps<TItem> {
   renderItemSeparator?: React.ComponentType<any>;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   /** When set (e.g. { disabled: true }), forwarded to FlashList to control scroll correction on reorder. */
-  maintainVisibleContentPosition?: {
-    disabled?: boolean;
-    minIndexForVisible?: number;
-    autoscrollToTopThreshold?: number;
-  };
+  maintainVisibleContentPosition?: MaintainVisibleContentPosition;
   onScrollThreshold?: (condition: boolean) => void;
   listStyle?: StyleProp<ViewStyle>;
   enableScrollButton?: boolean;

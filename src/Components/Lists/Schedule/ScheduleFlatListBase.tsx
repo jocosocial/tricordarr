@@ -10,6 +10,7 @@ import {getDayMarker, getTimeMarker} from '#src/Libraries/DateTime';
 import {getScheduleListTimeSeparatorID} from '#src/Libraries/Schedule';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 import {styleDefaults} from '#src/Styles';
+import {MaintainVisibleContentPosition} from '#src/Types/Lists';
 
 interface ScheduleFlatListBaseProps<TItem> {
   items: TItem[];
@@ -29,6 +30,7 @@ interface ScheduleFlatListBaseProps<TItem> {
   hasNextPage?: boolean;
   extraData?: any;
   overScroll?: boolean;
+  maintainVisibleContentPosition?: MaintainVisibleContentPosition;
 }
 
 export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
@@ -47,6 +49,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
   hasNextPage,
   extraData,
   overScroll,
+  maintainVisibleContentPosition,
 }: ScheduleFlatListBaseProps<TItem>) => {
   const {commonStyles} = useStyles();
 
@@ -167,6 +170,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
       onScroll={handleScroll}
       onEndReached={handleLoadNext}
       extraData={extraData}
+      maintainVisibleContentPosition={maintainVisibleContentPosition}
     />
   );
 };

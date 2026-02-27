@@ -71,6 +71,11 @@ export const LFGFlatList = ({
 
   const keyExtractor = useCallback((item: FezData) => item.fezID, []);
 
+  /**
+   * The maintainVisibleContentPostion={{disabled: true}} is used to prevent the list from
+   * getting out of whack when the first item gets muted and sent to or near the bottom.
+   * Apparently FlashList uses the first item for some internal anchoring.
+   */
   return (
     <ScheduleFlatListBase
       listRef={listRef}
@@ -86,6 +91,7 @@ export const LFGFlatList = ({
       hasNextPage={hasNextPage}
       listHeader={listHeader}
       overScroll={overScroll}
+      maintainVisibleContentPosition={{disabled: true}}
     />
   );
 };
