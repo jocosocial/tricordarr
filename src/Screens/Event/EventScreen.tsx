@@ -9,7 +9,7 @@ import {EventScreenActionsMenu} from '#src/Components/Menus/Events/EventScreenAc
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventQuery} from '#src/Queries/Events/EventQueries';
-import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
+import {EventScreenBase} from '#src/Screens/Schedule/EventScreenBase';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.eventScreen>;
@@ -62,5 +62,5 @@ export const EventScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  return <ScheduleItemScreenBase eventData={eventData} onRefresh={refetch} />;
+  return <EventScreenBase eventData={eventData} onRefresh={refetch} />;
 };

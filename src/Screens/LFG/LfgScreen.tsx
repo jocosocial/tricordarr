@@ -17,7 +17,7 @@ import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
+import {FezScreenBase} from '#src/Screens/Schedule/FezScreenBase';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
@@ -33,6 +33,10 @@ export const LfgScreen = (props: Props) => {
   );
 };
 
+/**
+ * This used to be part of a common ScheduleItemScreenBase, but the conditionalling got
+ * a little too complicated.
+ */
 const LfgScreenInner = ({navigation, route}: Props) => {
   const {fezData, isOwner, isParticipant, isWaitlist, refetch, initialReadCount, resetInitialReadCount} = useFez({
     fezID: route.params.fezID,
@@ -139,10 +143,10 @@ const LfgScreenInner = ({navigation, route}: Props) => {
   }, [isFocused, notificationHandler, notificationSocket]);
 
   return (
-    <ScheduleItemScreenBase
+    <FezScreenBase
+      fezData={lfg}
       refreshing={refreshing}
       onRefresh={onRefresh}
-      eventData={lfg}
       showLfgChat={showChat}
       initialReadCount={initialReadCount}
     />

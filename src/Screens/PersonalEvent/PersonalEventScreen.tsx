@@ -16,7 +16,7 @@ import {useFez} from '#src/Hooks/useFez';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
+import {FezScreenBase} from '#src/Screens/Schedule/FezScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
@@ -100,8 +100,8 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
   }, [eventData, markRead]);
 
   return (
-    <ScheduleItemScreenBase
-      eventData={eventData}
+    <FezScreenBase
+      fezData={eventData}
       onRefresh={refetch}
       refreshing={isFetching}
       showLfgChat={showChat}
