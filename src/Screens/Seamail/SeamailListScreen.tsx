@@ -1,6 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -67,6 +67,8 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {currentUserID} = useSession();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const [fezList, setFezList] = useState<FezData[]>([]);
+  const [userSwitchScrollToTopIntent, setUserSwitchScrollToTopIntent] = useState<number | undefined>(undefined);
+  const prevAsPrivilegedUserRef = useRef(asPrivilegedUser);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const {selectedItems, enableSelection} = useSelection();
   const {handleLoadNext} = usePagination({
@@ -86,6 +88,13 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
       setFezList(data.pages.flatMap(p => p.fezzes));
     }
   }, [data]);
+
+  useEffect(() => {
+    if (prevAsPrivilegedUserRef.current !== asPrivilegedUser) {
+      prevAsPrivilegedUserRef.current = asPrivilegedUser;
+      setUserSwitchScrollToTopIntent(Date.now());
+    }
+  }, [asPrivilegedUser]);
 
   const getNavButtons = useCallback(() => {
     if (enableSelection) {
@@ -165,7 +174,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
         onScrollThreshold={onScrollThreshold}
         hasNextPage={hasNextPage}
         handleLoadNext={handleLoadNext}
-        scrollToTopIntent={route.params?.scrollToTopIntent}
+        scrollToTopIntent={route.params?.scrollToTopIntent ?? userSwitchScrollToTopIntent}
       />
       <SeamailFAB showLabel={showFabLabel} />
     </AppView>
