@@ -2,6 +2,7 @@ import {InfiniteData, QueryClient, useQueryClient} from '@tanstack/react-query';
 import {useCallback, useMemo, useRef, useState} from 'react';
 
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {FezType} from '#src/Enums/FezType';
 import {findInPages, PageItemAccessor} from '#src/Libraries/CacheReduction';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {TokenAuthPaginationQueryOptionsTypeV2} from '#src/Queries/TokenAuthQuery';
@@ -44,6 +45,8 @@ interface UseFezReturn {
   isMember: boolean;
   isParticipant: boolean;
   isWaitlist: boolean;
+  isChatEditable: boolean;
+  isMuted: boolean;
   refetch: () => Promise<unknown>;
   resetInitialReadCount: () => void;
 }
@@ -80,10 +83,16 @@ export const useFez = ({fezID, queryOptions}: UseFezOptions): UseFezReturn => {
     setReadCountVersion(v => v + 1);
   }, []);
 
+  /**
+   * Get the query pages.
+   */
   const fezPages = useMemo(() => {
     return data?.pages || [];
   }, [data]);
 
+  /**
+   * Check if you are the owner of the fez.
+   */
   const isOwner = useMemo(() => {
     if (!fezData || !currentUserID) {
       return false;
@@ -91,23 +100,53 @@ export const useFez = ({fezID, queryOptions}: UseFezOptions): UseFezReturn => {
     return fezData.owner.userID === currentUserID;
   }, [fezData, currentUserID]);
 
-  const isMember = useMemo(() => {
-    return fezData?.members !== undefined;
-  }, [fezData]);
-
+  /**
+   * Check if you are a Participant.
+   */
   const isParticipant = useMemo(() => {
-    if (!fezData || !currentUserID) {
+    if (!fezData?.members || !currentUserID) {
       return false;
     }
-    return FezData.isParticipant(fezData, currentUserID);
+    return fezData?.members.participants.some(p => p.userID === currentUserID);
   }, [fezData, currentUserID]);
 
+  /**
+   * Check if you are on the Waitlist.
+   */
   const isWaitlist = useMemo(() => {
-    if (!fezData || !currentUserID) {
+    if (!fezData?.members || !currentUserID) {
       return false;
     }
-    return FezData.isWaitlist(fezData, currentUserID);
+    return fezData?.members.waitingList.some(p => p.userID === currentUserID);
   }, [fezData, currentUserID]);
+
+  /**
+   * Check if you are either a Participant or Waitlist member.
+   */
+  const isMember = useMemo(() => {
+    return isWaitlist || isParticipant;
+  }, [isWaitlist, isParticipant]);
+
+  /**
+   * For LFGs and PersonalEvents we do not show the Edit button in the chat screen.
+   * But for Seamails the chat screen is the only place where the owner could edit.
+   */
+  const isChatEditable = useMemo(() => {
+    if (!fezData) {
+      return false;
+    }
+    return isOwner && FezType.isSeamailType(fezData.fezType);
+  }, [isOwner, fezData]);
+
+  /**
+   * Check if this chat is muted.
+   */
+  const isMuted = useMemo(() => {
+    if (!fezData?.members) {
+      return false;
+    }
+    return fezData.members.isMuted;
+  }, [fezData]);
 
   return {
     fezData,
@@ -119,6 +158,8 @@ export const useFez = ({fezID, queryOptions}: UseFezOptions): UseFezReturn => {
     isMember,
     isParticipant,
     isWaitlist,
+    isMuted,
+    isChatEditable,
     refetch: () => refetch(),
     resetInitialReadCount,
   };

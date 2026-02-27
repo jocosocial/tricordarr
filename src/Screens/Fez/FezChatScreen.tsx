@@ -169,11 +169,11 @@ const FezChatScreenInner = ({route}: Props) => {
               }
             />
           )}
-          <FezChatScreenActionsMenu fez={fez} onRefresh={onRefresh} />
+          <FezChatScreenActionsMenu fezID={route.params.fezID} onRefresh={onRefresh} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [fez, onRefresh, navigation]);
+  }, [fez, onRefresh, navigation, route.params.fezID]);
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {

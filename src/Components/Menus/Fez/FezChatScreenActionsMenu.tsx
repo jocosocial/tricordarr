@@ -3,64 +3,52 @@ import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {MuteMenuItem} from '#src/Components/Menus/Items/MuteMenuItem';
 import {PostAsModeratorMenuItem} from '#src/Components/Menus/Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '#src/Components/Menus/Items/PostAsTwitarrTeamMenuItem';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useFez} from '#src/Hooks/useFez';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
-import {FezData} from '#src/Structs/ControllerStructs';
 
 interface FezChatActionsMenuProps {
-  fez: FezData;
-  enableDetails?: boolean;
+  fezID: string;
   onRefresh: () => void;
 }
 
-export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}: FezChatActionsMenuProps) => {
+export const FezChatScreenActionsMenu = ({fezID, onRefresh}: FezChatActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
+  const {isChatEditable, isParticipant, isMuted} = useFez({fezID: fezID});
   const navigation = useCommonStack();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const muteMutation = useFezMuteMutation();
-  const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
   const {updateMute} = useFezCacheReducer();
-  const {currentUserID} = useSession();
 
   const detailsAction = () => {
-    navigation.push(CommonStackComponents.fezChatDetailsScreen, {fezID: fez.fezID});
+    navigation.push(CommonStackComponents.fezChatDetailsScreen, {fezID: fezID});
     closeMenu();
   };
 
   const editAction = () => {
-    navigation.push(CommonStackComponents.seamailEditScreen, {fezID: fez.fezID});
+    navigation.push(CommonStackComponents.seamailEditScreen, {fezID: fezID});
     closeMenu();
   };
 
-  const isSeamail = FezType.isSeamailType(fez.fezType);
-  const isOwner = currentUserID === fez.owner.userID;
-  const showEdit = isSeamail && isOwner;
-
   const handleMute = () => {
-    if (!fez.members) {
-      return;
-    }
-    const newMuted = !fez.members.isMuted;
-    const action = fez.members.isMuted ? 'unmute' : 'mute';
+    const newMuted = !isMuted;
     muteMutation.mutate(
       {
-        action: action,
-        fezID: fez.fezID,
+        action: isMuted ? 'unmute' : 'mute',
+        fezID: fezID,
       },
       {
         onSuccess: () => {
-          updateMute(fez.fezID, newMuted);
+          updateMute(fezID, newMuted);
         },
         onSettled: () => closeMenu(),
       },
@@ -74,18 +62,9 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
       <Divider bold={true} />
-      {enableDetails && <Menu.Item leadingIcon={AppIcons.details} onPress={detailsAction} title={'Details'} />}
-      {showEdit && <Menu.Item leadingIcon={AppIcons.edit} onPress={editAction} title={'Edit'} />}
-      {fez.members && (
-        <>
-          <Menu.Item
-            leadingIcon={AppIcons.mute}
-            onPress={handleMute}
-            title={'Mute'}
-            style={fez.members.isMuted ? commonStyles.surfaceVariant : undefined}
-          />
-        </>
-      )}
+      <Menu.Item leadingIcon={AppIcons.details} onPress={detailsAction} title={'Details'} />
+      {isChatEditable && <Menu.Item leadingIcon={AppIcons.edit} onPress={editAction} title={'Edit'} />}
+      {isParticipant && <MuteMenuItem onPress={handleMute} isMuted={isMuted} />}
       {(hasModerator || hasTwitarrTeam) && (
         <>
           <Divider bold={true} />

@@ -366,21 +366,33 @@ export namespace FezData {
     return `${attendeeCountString}, ${waitlistCount} waitlisted${minimumSuffix}`;
   };
 
+  /**
+   * @deprecated use useFez hook instead
+   */
   const isMemberByID = (members: UserHeader[] | undefined, userID: string) => {
     if (!members) return false;
     return members.some(m => m.userID === userID);
   };
 
+  /**
+   * @deprecated use useFez hook instead
+   */
   export const isParticipant = (fezData?: FezData, userID?: string) => {
     if (!fezData || !userID) return false;
     return isMemberByID(fezData.members?.participants, userID);
   };
 
+  /**
+   * @deprecated use useFez hook instead
+   */
   export const isWaitlist = (fezData?: FezData, userID?: string) => {
     if (!fezData || !userID) return false;
     return isMemberByID(fezData.members?.waitingList, userID);
   };
 
+  /**
+   * @deprecated use useFez hook instead
+   */
   export const isFull = (fezData: FezData) => {
     if (fezData.maxParticipants === 0 || !fezData.members) {
       return false;
