@@ -64,8 +64,18 @@ export const buildDayPlannerItems = (
     });
   }
 
+  // Deduplicate by ID in case the same fez/event appears in multiple sources
+  const seenIds = new Set<string>();
+  const dedupedItems: DayPlannerItem[] = [];
+  for (const item of items) {
+    if (!seenIds.has(item.id)) {
+      seenIds.add(item.id);
+      dedupedItems.push(item);
+    }
+  }
+
   // Sort by start time
-  return items.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+  return dedupedItems.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 };
 
 /**
