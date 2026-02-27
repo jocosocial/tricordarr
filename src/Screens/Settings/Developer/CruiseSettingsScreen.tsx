@@ -1,5 +1,6 @@
 import {FormikHelpers} from 'formik';
 import React, {useState} from 'react';
+import {Alert} from 'react-native';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -70,9 +71,25 @@ export const CruiseSettingsScreen = () => {
       logger.error('Cannot toggle pre-registration mode: no current session');
       return;
     }
-    const newPreRegistrationMode = !currentSession.preRegistrationMode;
-    logger.debug('toggling pre-registration mode to', newPreRegistrationMode);
-    await updateSession(currentSession.sessionID, {preRegistrationMode: newPreRegistrationMode});
+    if (currentSession.preRegistrationMode) {
+      Alert.alert(
+        'Disable Pre-Registration',
+        'Disabling pre-registration mode may cause unexpected behavior and voids your nonexistent warranty. Continue?',
+        [
+          {text: 'Cancel', style: 'cancel'},
+          {
+            text: 'Disable',
+            onPress: async () => {
+              logger.debug('toggling pre-registration mode to', false);
+              await updateSession(currentSession.sessionID, {preRegistrationMode: false});
+            },
+          },
+        ],
+      );
+      return;
+    }
+    logger.debug('toggling pre-registration mode to', true);
+    await updateSession(currentSession.sessionID, {preRegistrationMode: true});
   };
 
   return (
@@ -95,18 +112,14 @@ export const CruiseSettingsScreen = () => {
             disabled={!appConfig.enableDeveloperOptions}
           />
         </PaddedContentView>
-        {appConfig.enableDeveloperOptions && (
-          <>
-            <ListSubheader>Pre-Registration</ListSubheader>
-            <PaddedContentView padTop={true}>
-              <PrimaryActionButton
-                buttonText={currentSession?.preRegistrationMode ? 'Disable' : 'Enable'}
-                onPress={togglePreRegistrationMode}
-                buttonColor={theme.colors.twitarrNeutralButton}
-              />
-            </PaddedContentView>
-          </>
-        )}
+        <ListSubheader>Pre-Registration</ListSubheader>
+        <PaddedContentView padTop={true}>
+          <PrimaryActionButton
+            buttonText={currentSession?.preRegistrationMode ? 'Disable' : 'Enable'}
+            onPress={togglePreRegistrationMode}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );
