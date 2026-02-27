@@ -31,6 +31,7 @@ export const MessageView = ({fezPost, messageOnRight = false, showAuthor, fez}: 
       ...commonStyles.roundedBorderLarge,
       ...(messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer),
       ...(messageOnRight ? commonStyles.flexEnd : commonStyles.flexStart),
+      ...commonStyles.relativeTimeMinWidth,
     },
     messageText: {
       ...(messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer),
@@ -39,9 +40,6 @@ export const MessageView = ({fezPost, messageOnRight = false, showAuthor, fez}: 
       ...(messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer),
       ...(showAuthor ? commonStyles.displayFlex : commonStyles.displayNone),
       ...commonStyles.bold,
-    },
-    messageDateText: {
-      ...commonStyles.messageDateText,
     },
     opacity: {
       ...commonStyles.paddingSmall,
@@ -64,7 +62,7 @@ export const MessageView = ({fezPost, messageOnRight = false, showAuthor, fez}: 
           fez={fez}
         />
         {fezPost.timestamp && (
-          <RelativeTimeTag date={new Date(fezPost.timestamp)} style={styles.messageDateText} variant={'labelSmall'} />
+          <RelativeTimeTag date={new Date(fezPost.timestamp)} style={commonStyles.variantLabelSmall} />
         )}
       </TouchableOpacity>
     </View>

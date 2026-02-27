@@ -26,7 +26,7 @@ interface ForumPostMessageViewProps {
 /**
  * This is a View container for a text message in the style of Android Messages or Signal.
  * It only contains the message itself.
- * Maybe dedupe with MessageView?
+ * @TODO Absolutely dedupe with MessageView.
  */
 export const ForumPostMessageView = ({
   postData,
@@ -44,11 +44,11 @@ export const ForumPostMessageView = ({
 
   const styles = StyleSheet.create({
     messageView: {
-      // commonStyles.paddingSmall,
       ...commonStyles.roundedBorderLarge,
       ...(messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer),
       ...(messageOnRight ? commonStyles.flexEnd : commonStyles.flexStart),
       ...commonStyles.fullWidth,
+      ...commonStyles.relativeTimeMinWidth,
     },
     messageText: {
       ...(messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer),
@@ -57,9 +57,6 @@ export const ForumPostMessageView = ({
       ...(messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer),
       ...(showAuthor ? commonStyles.displayFlex : commonStyles.displayNone),
       ...commonStyles.bold,
-      ...commonStyles.flexStart,
-    },
-    messageDateText: {
       ...commonStyles.flexStart,
     },
     opacity: {
@@ -71,11 +68,6 @@ export const ForumPostMessageView = ({
       ...commonStyles.alignItemsCenter,
       ...commonStyles.flex,
     },
-    // authorInnerContainer: {
-    //   ...commonStyles.flexRow,
-    //   ...commonStyles.alignItemsCenter,
-
-    // },
     postIconsContainer: {
       ...commonStyles.flex0,
       ...commonStyles.flexRow,
@@ -153,13 +145,7 @@ export const ForumPostMessageView = ({
         />
         <View style={styles.postFooterContainer}>
           <View style={commonStyles.flex0}>
-            {postData.createdAt && (
-              <RelativeTimeTag
-                date={new Date(postData.createdAt)}
-                style={styles.messageDateText}
-                variant={'labelSmall'}
-              />
-            )}
+            <RelativeTimeTag date={new Date(postData.createdAt)} style={commonStyles.variantLabelSmall} />
           </View>
           <View style={styles.postIconsContainer}>
             {postData.isBookmarked && (

@@ -52,8 +52,9 @@ const SeamailListItemInternal = ({fez, enableSelection, setEnableSelection, sele
     postCountColor: {
       color: '#cfcfcf',
     },
-    timeStyleActive: {
-      ...commonStyles.bold,
+    timeStyle: {
+      ...commonStyles.variantBodyMedium,
+      ...(badgeCount ? commonStyles.bold : undefined),
     },
     rightContainer: {
       ...commonStyles.verticalContainer,
@@ -126,11 +127,7 @@ const SeamailListItemInternal = ({fez, enableSelection, setEnableSelection, sele
       <View style={styles.rightContainer}>
         <SeamailMessageCountIndicator badgeCount={badgeCount} totalPostCount={totalPostCount} />
         <View>
-          <RelativeTimeTag
-            date={new Date(fez.lastModificationTime)}
-            variant={'bodyMedium'}
-            style={badgeCount ? styles.timeStyleActive : undefined}
-          />
+          <RelativeTimeTag date={new Date(fez.lastModificationTime)} style={styles.timeStyle} />
         </View>
       </View>
     );

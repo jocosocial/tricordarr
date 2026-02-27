@@ -1,6 +1,5 @@
 import React, {CSSProperties, PropsWithChildren} from 'react';
-import {StyleProp, TextStyle} from 'react-native';
-import {Text} from 'react-native-paper';
+import {Text as NativeText, StyleProp, TextStyle} from 'react-native';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
 import ReactTimeAgo from 'react-time-ago';
 
@@ -10,7 +9,6 @@ import {useClipboard} from '#src/Hooks/useClipboard';
 interface RelativeTimeTagProps {
   date?: Date;
   style?: StyleProp<TextStyle>;
-  variant?: keyof typeof MD3TypescaleKey;
 }
 
 interface StylizedTextProps extends PropsWithChildren {
@@ -22,11 +20,19 @@ interface StylizedTextProps extends PropsWithChildren {
 
 // ReactTimeAgo doesn't support dynamic styling of the component, and it's own
 // style parameter is not what you think it is.
-const StylizedText = (props: StylizedTextProps) => {
+// const StylizedText = (props: StylizedTextProps) => {
+//   return (
+//     <Text variant={props.variant} style={props.style} onPress={props.onPress} onLongPress={props.onLongPress}>
+//       {props.children}
+//     </Text>
+//   );
+// };
+
+const StylizedNativeText = (props: StylizedTextProps) => {
   return (
-    <Text variant={props.variant} style={props.style} onPress={props.onPress} onLongPress={props.onLongPress}>
+    <NativeText style={props.style} onPress={props.onPress} onLongPress={props.onLongPress}>
       {props.children}
-    </Text>
+    </NativeText>
   );
 };
 
@@ -40,8 +46,14 @@ const StylizedText = (props: StylizedTextProps) => {
  *
  * Many moons later I learned that Axios decodes a struct with ISO8601 strings for dates rather than
  * returning a Date object. This component and all consumer screens need to be updated for this reality.
+ *
+ * This had an annoying bug where every now and then the "now" part of "just now" would not render.
+ * Multiple AI models failed to fix it but finally broke through when switching to NativeText
+ * instead of [Paper]Text. There is some sort of layout race condition with measuring the width
+ * with flexEnd. The fix for some of it is to set a minWidth on the parent. For others is to
+ * avoid using the [Paper]Text component and switch this to NativeText, mimicking the styles.
  */
-export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) => {
+export const RelativeTimeTag = ({date, style}: RelativeTimeTagProps) => {
   const [showRawTime, setShowRawTime] = React.useState(false);
   const {appConfig} = useConfig();
   const {setString} = useClipboard();
@@ -57,9 +69,9 @@ export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) =>
 
   if (showRawTime) {
     return (
-      <StylizedText onPress={onPress} onLongPress={onLongPress} style={style} variant={variant}>
+      <StylizedNativeText onPress={onPress} onLongPress={onLongPress} style={style}>
         {date?.toISOString()}
-      </StylizedText>
+      </StylizedNativeText>
     );
   }
 
@@ -71,9 +83,9 @@ export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) =>
     <ReactTimeAgo
       date={Date.parse(date.toString())}
       locale={'en-US'}
-      component={StylizedText}
+      component={StylizedNativeText}
       // @ts-ignore
-      variant={variant}
+      // variant={variant}
       onPress={appConfig.enableDeveloperOptions ? onPress : undefined}
       onLongPress={appConfig.enableDeveloperOptions ? onLongPress : undefined}
       style={style as CSSProperties}
