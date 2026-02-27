@@ -11,6 +11,7 @@ import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -30,6 +31,8 @@ const SeamailListItemInternal = ({fez, enableSelection, setEnableSelection, sele
   const navigation = useChatStack();
   const {commonStyles} = useStyles();
   const {dispatchSelectedItems} = useSelection();
+  const {theme} = useAppTheme();
+
   let badgeCount = 0;
   if (fez.members) {
     badgeCount = fez.members.postCount - fez.members.readCount;
@@ -114,7 +117,7 @@ const SeamailListItemInternal = ({fez, enableSelection, setEnableSelection, sele
     if (fez.members?.isMuted) {
       return (
         <View style={styles.leftContainer}>
-          <AppIcon icon={AppIcons.mute} />
+          <AppIcon icon={AppIcons.mute} color={theme.colors.twitarrNegativeButton} />
         </View>
       );
     }

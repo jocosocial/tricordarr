@@ -87,6 +87,7 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
       renderListFooter={getListFooter}
       onScrollThreshold={props.onScrollThreshold}
       handleLoadNext={props.handleLoadNext}
+      maintainVisibleContentPosition={{disabled: true}}
     />
   );
 };
