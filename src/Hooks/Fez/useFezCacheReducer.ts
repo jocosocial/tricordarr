@@ -138,6 +138,18 @@ export const useFezCacheReducer = () => {
     [queryClient],
   );
 
+  const computeCruiseDay = useCallback(
+    (startTime: string | undefined): number | undefined => {
+      if (!startTime) return undefined;
+      try {
+        return calcCruiseDayTime(new Date(startTime), startDate, endDate, tzAtTime).cruiseDay;
+      } catch {
+        return undefined;
+      }
+    },
+    [startDate, endDate, tzAtTime],
+  );
+
   /**
    * Remove a fez from all list caches and delete its detail cache.
    */
@@ -160,10 +172,24 @@ export const useFezCacheReducer = () => {
    */
   const updateFez = useCallback(
     (fezID: string, updatedFez: FezData) => {
-      updateFezInListCachesWithReorder(fezID, () => updatedFez);
+      const matchesFez = (f: FezData) => f.fezID === fezID;
+
+      queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: ['/fez/joined']}, oldData => {
+        if (!oldData) return oldData;
+        const existing = findInPages(oldData, fezListAccessor, matchesFez);
+        if (!existing) return oldData;
+        return moveItemToEdge(oldData, fezListAccessor, matchesFez, updatedFez, 'start');
+      });
+
+      const idUpdater = (entry: FezData) => (entry.fezID === fezID ? updatedFez : entry);
+      for (const keyPrefix of ['/fez/owner', '/fez/former'] as const) {
+        queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]}, oldData =>
+          oldData ? updateItemsInPages(oldData, fezListAccessor, idUpdater) : oldData,
+        );
+      }
+
       updateFezDetailCache(fezID, () => updatedFez);
 
-      const matchesFez = (f: FezData) => f.fezID === fezID;
       queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: ['/fez/open']}, oldData => {
         if (!oldData) return oldData;
         if (!findInPages(oldData, fezListAccessor, matchesFez)) return oldData;
@@ -172,83 +198,60 @@ export const useFezCacheReducer = () => {
       });
 
       /**
-       * When a personal/private event (or LFG) moves to a different cruise
-       * day (startTime changes across day boundaries), the joined list caches
-       * that are filtered by ?cruiseday should no longer contain it for the
-       * old day and should include it for the new day. The original
-       * updateFezInListCachesWithReorder only updates entries where they
-       * already exist and never reassigns between day-specific caches,
-       * which caused personal events edited to a new day to disappear from
-       * the old day but not show up on the correct one.
-       *
-       * Here we realign /fez/joined caches with the updated startTime by:
-       *  - removing the fez from day-scoped caches whose cruiseday no longer
-       *    matches the computed cruise day
-       *  - inserting/sorting it into day-scoped caches whose cruiseday does
-       *    match the new cruise day
-       *
+       * When a fez moves to a different cruise day (startTime changes across
+       * day boundaries), day-scoped list caches need realignment: remove from
+       * caches whose cruiseday no longer matches, insert into those that do.
        * All-days queries (cruiseday undefined) are left untouched.
        */
       if (
         updatedFez.startTime &&
         (FezType.isLFGType(updatedFez.fezType) || FezType.isPrivateEventType(updatedFez.fezType))
       ) {
-        let fezCruiseDay: number | undefined;
-        try {
-          const {cruiseDay} = calcCruiseDayTime(new Date(updatedFez.startTime), startDate, endDate, tzAtTime);
-          fezCruiseDay = cruiseDay;
-        } catch {
-          fezCruiseDay = undefined;
-        }
+        const fezCruiseDay = computeCruiseDay(updatedFez.startTime);
 
         if (fezCruiseDay !== undefined) {
-          // First, remove from joined-list caches whose cruiseday no longer matches.
+          const wrongDayPredicate = (query: {queryKey: readonly unknown[]}) => {
+            const params = query.queryKey[1] as Record<string, unknown> | undefined;
+            const cruiseDayParam = params?.cruiseday as number | string | undefined;
+            if (cruiseDayParam === undefined) return false;
+            return Number(cruiseDayParam) + 1 !== fezCruiseDay;
+          };
+          const rightDayPredicate = (query: {queryKey: readonly unknown[]}) => {
+            const params = query.queryKey[1] as Record<string, unknown> | undefined;
+            const cruiseDayParam = params?.cruiseday as number | string | undefined;
+            if (cruiseDayParam === undefined) return false;
+            return Number(cruiseDayParam) + 1 === fezCruiseDay;
+          };
+
           queryClient.setQueriesData<InfiniteData<FezListData>>(
-            {
-              queryKey: ['/fez/joined'],
-              predicate: query => {
-                const params = query.queryKey[1] as Record<string, unknown> | undefined;
-                const cruiseDayParam = params?.cruiseday as number | string | undefined;
-                if (cruiseDayParam === undefined) {
-                  // Leave all-days / non-day-scoped queries alone.
-                  return false;
-                }
-                // Fez list queries use 0-based "cruiseday" in params; cruiseDay is 1-based.
-                return Number(cruiseDayParam) + 1 !== fezCruiseDay;
-              },
-            },
+            {queryKey: ['/fez/joined'], predicate: wrongDayPredicate},
             oldData => (oldData ? filterItemsFromPages(oldData, fezListAccessor, f => f.fezID !== fezID) : oldData),
           );
-
-          // Then, ensure it's present (sorted by startTime) in caches whose cruiseday matches.
           queryClient.setQueriesData<InfiniteData<FezListData>>(
-            {
-              queryKey: ['/fez/joined'],
-              predicate: query => {
-                const params = query.queryKey[1] as Record<string, unknown> | undefined;
-                const cruiseDayParam = params?.cruiseday as number | string | undefined;
-                if (cruiseDayParam === undefined) {
-                  return false;
-                }
-                return Number(cruiseDayParam) + 1 === fezCruiseDay;
-              },
-            },
+            {queryKey: ['/fez/joined'], predicate: rightDayPredicate},
             oldData => {
-              if (!oldData) {
-                return oldData;
-              }
-              const alreadyExists = oldData.pages.some(p => p.fezzes.some(f => f.fezID === updatedFez.fezID));
-              if (alreadyExists) {
-                // Keep existing position/order for this specific cache.
-                return oldData;
-              }
+              if (!oldData) return oldData;
+              if (oldData.pages.some(p => p.fezzes.some(f => f.fezID === updatedFez.fezID))) return oldData;
+              return insertAtEdge(oldData, fezListAccessor, updatedFez, 'start');
+            },
+          );
+
+          queryClient.setQueriesData<InfiniteData<FezListData>>(
+            {queryKey: ['/fez/open'], predicate: wrongDayPredicate},
+            oldData => (oldData ? filterItemsFromPages(oldData, fezListAccessor, f => f.fezID !== fezID) : oldData),
+          );
+          queryClient.setQueriesData<InfiniteData<FezListData>>(
+            {queryKey: ['/fez/open'], predicate: rightDayPredicate},
+            oldData => {
+              if (!oldData) return oldData;
+              if (oldData.pages.some(p => p.fezzes.some(f => f.fezID === updatedFez.fezID))) return oldData;
               return sortedInsertIntoPages(oldData, fezListAccessor, updatedFez, startTimeAscComparator);
             },
           );
         }
       }
     },
-    [updateFezInListCachesWithReorder, updateFezDetailCache, queryClient, startDate, endDate, tzAtTime],
+    [computeCruiseDay, updateFezDetailCache, queryClient],
   );
 
   /**
@@ -268,15 +271,7 @@ export const useFezCacheReducer = () => {
       const normalizedForUser = forUser?.toLowerCase();
       const isSeamail = FezType.isSeamailType(fezData.fezType);
 
-      let fezCruiseDay: number | undefined;
-      if (fezData.startTime) {
-        try {
-          const {cruiseDay} = calcCruiseDayTime(new Date(fezData.startTime), startDate, endDate, tzAtTime);
-          fezCruiseDay = cruiseDay;
-        } catch {
-          fezCruiseDay = undefined;
-        }
-      }
+      const fezCruiseDay = computeCruiseDay(fezData.startTime);
 
       for (const keyPrefix of fezListKeyPrefixes) {
         queryClient.setQueriesData<InfiniteData<FezListData>>(
@@ -322,7 +317,7 @@ export const useFezCacheReducer = () => {
         };
       });
     },
-    [queryClient, startDate, endDate, tzAtTime],
+    [queryClient, computeCruiseDay],
   );
 
   /**
