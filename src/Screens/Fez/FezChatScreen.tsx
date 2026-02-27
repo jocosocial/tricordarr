@@ -232,10 +232,6 @@ const FezChatScreenInner = ({route}: Props) => {
         {
           onSuccess: response => {
             formikHelpers.resetForm();
-            dispatchFezPostsData({
-              type: FezPostsActions.appendPost,
-              fezPostData: response.data,
-            });
             appendPostToCache(route.params.fezID, response.data);
             dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           },
@@ -243,7 +239,7 @@ const FezChatScreenInner = ({route}: Props) => {
         },
       );
     },
-    [fez, fezPostMutation, route.params.fezID, setFez, appendPostToCache, dispatchFezPostsData, dispatchScrollToTop],
+    [fez, fezPostMutation, route.params.fezID, setFez, appendPostToCache, dispatchScrollToTop],
   );
 
   // Initial set useEffect

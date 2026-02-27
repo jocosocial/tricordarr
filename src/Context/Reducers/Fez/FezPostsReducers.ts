@@ -21,15 +21,11 @@ const fezPostsReducer = (fezPosts: FezPostData[] = [], action: FezPostsActionsTy
       return action.fezPosts;
     }
     case FezPostsActions.appendPost: {
-      let posts = fezPosts;
-      if (posts.some(p => p.postID === action.fezPostData.postID)) {
-        // This is probably a React-ism like you have duplicate listeners because
-        // React development is hard.
+      if (fezPosts.some(p => p.postID === action.fezPostData.postID)) {
         logger.warn('Skipping appendPost for ID', action.fezPostData.postID);
-        return posts;
+        return fezPosts;
       }
-      posts.unshift(action.fezPostData);
-      return posts;
+      return [...fezPosts, action.fezPostData];
     }
     default: {
       throw new Error('Unknown FezAction action');

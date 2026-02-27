@@ -84,3 +84,7 @@ LoggedInScreen
 ## Logging
 
 Use `createLogger` rather than `console.log`
+
+## Reducers
+
+- Never mutate state within a reducer
