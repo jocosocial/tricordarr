@@ -3,7 +3,7 @@ import React, {memo, ReactNode, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import {Badge} from 'react-native-paper';
 
-import {CancelledBadge} from '#src/Components/Badges/CancelledBadge';
+import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
 import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezCardActionsMenu} from '#src/Components/Menus/Fez/FezCardActionsMenu';
@@ -76,7 +76,10 @@ const FezCardInternal = ({
       );
     }
     if (fez.cancelled) {
-      return <CancelledBadge />;
+      return <ScheduleItemStatusBadge status={'Cancelled'} />;
+    }
+    if (fez.members?.isMuted) {
+      return <ScheduleItemStatusBadge status={'Muted'} />;
     }
     if (unreadCount) {
       return <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>;

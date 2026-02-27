@@ -1,8 +1,9 @@
 import pluralize from 'pluralize';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Badge, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 
+import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPerformerListItem';
@@ -48,9 +49,7 @@ export const ScheduleItemScreenBase = ({
       ...commonStyles.displayFlex,
       ...commonStyles.flexColumn,
     },
-    badge: {
-      ...commonStyles.bold,
-      ...commonStyles.paddingHorizontalSmall,
+    badgeContainer: {
       ...commonStyles.marginLeftSmall,
     },
     chatCountContainer: {
@@ -79,7 +78,15 @@ export const ScheduleItemScreenBase = ({
         <Text>
           {eventData.members.postCount} {pluralize('post', eventData.members.postCount)}
         </Text>
-        {unreadCount !== 0 && <Badge style={styles.badge}>{`${unreadCount} new`}</Badge>}
+        {eventData.members?.isMuted ? (
+          <View style={styles.badgeContainer}>
+            <ScheduleItemStatusBadge status={'Muted'} />
+          </View>
+        ) : unreadCount !== 0 ? (
+          <View style={styles.badgeContainer}>
+            <ScheduleItemStatusBadge status={`${unreadCount} new`} />
+          </View>
+        ) : null}
       </View>
     );
   };

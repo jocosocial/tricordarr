@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text, TouchableRipple} from 'react-native-paper';
 
-import {CancelledBadge} from '#src/Components/Badges/CancelledBadge';
+import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -134,11 +134,15 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
 
   const showLocation = contentLevel === 'titleAndLocation' && item.location;
 
+  /**
+   * Making the conscious decision to not show a muted badge here. Being muted is not
+   * really a day planning concern.
+   */
   return (
     <View style={dynamicStyles.container}>
       <TouchableRipple style={dynamicStyles.card} onPress={onPress} borderless>
         <View style={staticStyles.content}>
-          {item.cancelled && <CancelledBadge align={'left'} />}
+          {item.cancelled && <ScheduleItemStatusBadge status={'Cancelled'} align={'left'} />}
           <Text style={dynamicStyles.text} numberOfLines={titleLines} ellipsizeMode={'tail'}>
             {showPhotographerIcon && (
               <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} small />
