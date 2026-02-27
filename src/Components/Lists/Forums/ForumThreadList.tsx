@@ -17,7 +17,6 @@ interface ForumThreadListProps {
   forumListData: ForumListData[];
   handleLoadNext: () => void;
   handleLoadPrevious?: () => void;
-  maintainViewPosition?: boolean;
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
   categoryID?: string;
@@ -33,7 +32,6 @@ export const ForumThreadList = ({
   forumListData,
   refreshControl,
   handleLoadNext,
-  maintainViewPosition,
   hasNextPage,
   hasPreviousPage,
   categoryID,
@@ -97,7 +95,6 @@ export const ForumThreadList = ({
       data={forumListData}
       onScrollThreshold={onScrollThreshold}
       keyExtractor={keyExtractor}
-      maintainViewPosition={maintainViewPosition}
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       renderItemSeparator={renderItemSeparator}
