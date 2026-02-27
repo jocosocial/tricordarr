@@ -79,7 +79,10 @@ const FezCardInternal = ({
       return <ScheduleItemStatusBadge status={'Cancelled'} />;
     }
     if (fez.members?.isMuted) {
-      return <ScheduleItemStatusBadge status={'Muted'} />;
+      // Other mute icons in this app are Red. Because this one is not on the background
+      // (is on a FezCard) instead I didn't like the contrast of the red on grey so I'm
+      // making this white to match the text and other icons of this card style.
+      return <AppIcon icon={AppIcons.mute} color={theme.colors.constantWhite} />;
     }
     if (unreadCount) {
       return <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>;
