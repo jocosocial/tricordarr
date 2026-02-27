@@ -1,7 +1,9 @@
 import {InfiniteData, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
 
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {FezType} from '#src/Enums/FezType';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {
   filterItemsFromPages,
   findInPages,
@@ -12,7 +14,7 @@ import {
   sortItemsInPages,
   updateItemsInPages,
 } from '#src/Libraries/CacheReduction';
-import {swiftTimestampToISO} from '#src/Libraries/DateTime';
+import {calcCruiseDayTime, swiftTimestampToISO} from '#src/Libraries/DateTime';
 import {FezData, FezListData, FezPostData} from '#src/Structs/ControllerStructs';
 
 const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
@@ -71,6 +73,8 @@ function listParamsIncludeFezType(params: Record<string, unknown> | undefined, f
  */
 export const useFezCacheReducer = () => {
   const queryClient = useQueryClient();
+  const {startDate, endDate} = useCruise();
+  const {tzAtTime} = useTimeZone();
 
   /**
    * Update a FezData entry (matched by fezID) across all four list endpoint
@@ -186,6 +190,17 @@ export const useFezCacheReducer = () => {
     (fezData: FezData, forUser?: string) => {
       const normalizedForUser = forUser?.toLowerCase();
       const isSeamail = FezType.isSeamailType(fezData.fezType);
+
+      let fezCruiseDay: number | undefined;
+      if (fezData.startTime) {
+        try {
+          const {cruiseDay} = calcCruiseDayTime(new Date(fezData.startTime), startDate, endDate, tzAtTime);
+          fezCruiseDay = cruiseDay;
+        } catch {
+          fezCruiseDay = undefined;
+        }
+      }
+
       for (const keyPrefix of fezListKeyPrefixes) {
         queryClient.setQueriesData<InfiniteData<FezListData>>(
           {
@@ -194,7 +209,15 @@ export const useFezCacheReducer = () => {
               const params = query.queryKey[1] as Record<string, unknown> | undefined;
               const forUserMatch = (params?.foruser ?? undefined) === normalizedForUser;
               const typeMatch = listParamsIncludeFezType(params, fezData.fezType);
-              return forUserMatch && typeMatch;
+              const cruiseDayParam = params?.cruiseday as number | string | undefined;
+              // Fez list queries (including personal events) use a 0-based "cruiseday" index
+              // in query params, while calcCruiseDayTime returns a 1-based cruiseDay.
+              // Align them before comparing so we only update caches for the correct day.
+              const cruiseDayMatch =
+                cruiseDayParam === undefined ||
+                fezCruiseDay === undefined ||
+                Number(cruiseDayParam) + 1 === fezCruiseDay;
+              return forUserMatch && typeMatch && cruiseDayMatch;
             },
           },
           oldData => {
