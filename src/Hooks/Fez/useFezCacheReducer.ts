@@ -26,11 +26,11 @@ const otherListKeyPrefixes = ['/fez/owner', '/fez/open', '/fez/former'];
 const startTimeAscComparator = (a: FezData, b: FezData) => (a.startTime ?? '').localeCompare(b.startTime ?? '');
 
 /**
- * Joined list sort: isMuted descending (muted first), then lastModificationTime descending.
- * Only seamails can be muted, not LFGs or PersonalEvents.
+ * Joined list sort: unmuted first, muted last, then lastModificationTime descending.
+ * Matches the API which sorts isMuted ASC (NULL/false before true), then updatedAt DESC.
  */
 const joinedSortComparator = (a: FezData, b: FezData): number => {
-  const muteCompare = (b.members?.isMuted ? 1 : 0) - (a.members?.isMuted ? 1 : 0);
+  const muteCompare = (a.members?.isMuted ? 1 : 0) - (b.members?.isMuted ? 1 : 0);
   if (muteCompare !== 0) return muteCompare;
   return (b.lastModificationTime ?? '').localeCompare(a.lastModificationTime ?? '');
 };
@@ -310,8 +310,8 @@ export const useFezCacheReducer = () => {
 
   /**
    * Toggle isMuted on a fez in all caches. The mute mutation returns void,
-   * so we optimistically flip the flag. Re-sorts /fez/joined by isMuted desc
-   * then lastModificationTime desc to match the API.
+   * so we optimistically flip the flag. Re-sorts /fez/joined: unmuted first,
+   * muted last, then lastModificationTime desc to match the API.
    */
   const updateMute = useCallback(
     (fezID: string, isMuted: boolean) => {
@@ -319,13 +319,25 @@ export const useFezCacheReducer = () => {
         ...fez,
         members: fez.members ? {...fez.members, isMuted} : fez.members,
       });
-      updateFezInAllListCaches(fezID, muteUpdater);
+      const idUpdater = (entry: FezData) => (entry.fezID === fezID ? muteUpdater(entry) : entry);
+
+      // /fez/joined: apply mute + re-sort in a single callback
+      queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: ['/fez/joined']}, oldData => {
+        if (!oldData) return oldData;
+        const withMute = updateItemsInPages(oldData, fezListAccessor, idUpdater);
+        return sortItemsInPages(withMute, fezListAccessor, joinedSortComparator);
+      });
+
+      // Other list caches: in-place mute update only (no sort needed)
+      for (const keyPrefix of otherListKeyPrefixes) {
+        queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]}, oldData =>
+          oldData ? updateItemsInPages(oldData, fezListAccessor, idUpdater) : oldData,
+        );
+      }
+
       updateFezDetailCache(fezID, muteUpdater);
-      queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: ['/fez/joined']}, oldData =>
-        oldData ? sortItemsInPages(oldData, fezListAccessor, joinedSortComparator) : oldData,
-      );
     },
-    [updateFezInAllListCaches, updateFezDetailCache, queryClient],
+    [updateFezDetailCache, queryClient],
   );
 
   /**
