@@ -1,5 +1,6 @@
 import React, {CSSProperties, PropsWithChildren} from 'react';
 import {Text as NativeText, StyleProp, TextStyle} from 'react-native';
+import {Text} from 'react-native-paper';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
 import ReactTimeAgo from 'react-time-ago';
 
@@ -20,13 +21,13 @@ interface StylizedTextProps extends PropsWithChildren {
 
 // ReactTimeAgo doesn't support dynamic styling of the component, and it's own
 // style parameter is not what you think it is.
-// const StylizedText = (props: StylizedTextProps) => {
-//   return (
-//     <Text variant={props.variant} style={props.style} onPress={props.onPress} onLongPress={props.onLongPress}>
-//       {props.children}
-//     </Text>
-//   );
-// };
+const StylizedText = (props: StylizedTextProps) => {
+  return (
+    <Text variant={props.variant} style={props.style} onPress={props.onPress} onLongPress={props.onLongPress}>
+      {props.children}
+    </Text>
+  );
+};
 
 const StylizedNativeText = (props: StylizedTextProps) => {
   return (
@@ -75,13 +76,16 @@ export const RelativeTimeTag = ({date, style}: RelativeTimeTagProps) => {
     );
   }
 
+  // Normalize to whole seconds so sub-second precision doesn't show "in a moment" on initial render.
+  const dateMs = Math.floor(date.getTime() / 1000) * 1000;
+
   // https://github.com/catamphetamine/react-time-ago/issues/18
   // No, no. He's right. We is buggy.
   // "Unknown" props are passed through to the component.
   // https://github.com/Microsoft/TypeScript/issues/19573
   return (
     <ReactTimeAgo
-      date={Date.parse(date.toString())}
+      date={dateMs}
       locale={'en-US'}
       component={StylizedNativeText}
       // @ts-ignore
