@@ -26,6 +26,8 @@ interface FezConversationListV2Props {
   initialScrollIndex?: number;
   /** When provided (e.g. from list cache), used for "New" divider instead of fez.members.readCount. */
   initialReadCount?: number;
+  /** When provided, day dividers are only shown when this is > 2. Omit to always show dividers. */
+  postDayCount?: number;
   /** Callback fired once the list has reached its initial scroll position. */
   onReadyToShow?: () => void;
 }
@@ -51,10 +53,13 @@ export const FezConversationListV2 = ({
   hasNextPage,
   initialScrollIndex,
   initialReadCount,
+  postDayCount,
   onReadyToShow,
 }: FezConversationListV2Props) => {
   const {commonStyles} = useStyles();
   const {getAdjustedMoment} = useTime();
+
+  const showDayDividers = postDayCount === undefined || postDayCount > 2;
 
   /** Show a TimeDivider above the first item and at each day boundary. */
   const showTimeDivider = useCallback(
@@ -111,13 +116,15 @@ export const FezConversationListV2 = ({
     ({item, index}: {item: FezPostData; index: number}) => {
       return (
         <View>
-          {showTimeDivider(index) && <TimeDivider label={getAdjustedMoment(item.timestamp).format('dddd MMM Do')} />}
+          {showDayDividers && showTimeDivider(index) && (
+            <TimeDivider label={getAdjustedMoment(item.timestamp).format('dddd MMM Do')} />
+          )}
           {showNewDivider(index) && <LabelDivider label={'New'} />}
           <FezPostListItem fezPost={item} index={index} fez={fez} />
         </View>
       );
     },
-    [fez, showNewDivider, showTimeDivider, getAdjustedMoment],
+    [fez, showDayDividers, showNewDivider, showTimeDivider, getAdjustedMoment],
   );
 
   const renderSeparator = useCallback(() => <SpaceDivider />, []);

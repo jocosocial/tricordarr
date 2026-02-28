@@ -114,6 +114,7 @@ const FezChatScreenInner = ({route}: Props) => {
   const {
     fezData: fez,
     fezPages,
+    postDayCount,
     initialReadCount,
     resetInitialReadCount,
     refetch,
@@ -412,6 +413,7 @@ const FezChatScreenInner = ({route}: Props) => {
           refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
           initialScrollIndex={initialScrollIndex}
           initialReadCount={initialReadCount}
+          postDayCount={postDayCount}
           onReadyToShow={onReadyToShow}
         />
         {!readyToShow && (

@@ -2,6 +2,7 @@ import {InfiniteData, QueryClient, useQueryClient} from '@tanstack/react-query';
 import {useCallback, useMemo, useRef, useState} from 'react';
 
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useTime} from '#src/Context/Contexts/TimeContext';
 import {FezType} from '#src/Enums/FezType';
 import {findInPages, PageItemAccessor} from '#src/Libraries/CacheReduction';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
@@ -39,6 +40,7 @@ interface UseFezOptions {
 interface UseFezReturn {
   fezData: FezData | undefined;
   fezPages: FezData[];
+  postDayCount: number;
   initialReadCount: number | undefined;
   fetchNextPage: () => Promise<unknown>;
   fetchPreviousPage: () => Promise<unknown>;
@@ -69,6 +71,7 @@ export const useFez = ({fezID, initialReadCountHint, queryOptions}: UseFezOption
   const queryClient = useQueryClient();
   const queryResult = useFezQuery({fezID, options: queryOptions});
   const {currentUserID} = useSession();
+  const {getAdjustedMoment} = useTime();
   const {
     data,
     fetchNextPage,
@@ -119,6 +122,16 @@ export const useFez = ({fezID, initialReadCountHint, queryOptions}: UseFezOption
   const fezPages = useMemo(() => {
     return data?.pages || [];
   }, [data]);
+
+  /**
+   * Number of distinct calendar days (in adjusted timezone) among all loaded posts.
+   * Used by the chat list to decide whether to show day dividers (e.g. only when > 2).
+   */
+  const postDayCount = useMemo(() => {
+    const posts = fezPages.flatMap(p => p.members?.posts ?? []);
+    const dayKeys = new Set(posts.map(post => getAdjustedMoment(post.timestamp).format('YYYY-MM-DD')));
+    return dayKeys.size;
+  }, [fezPages, getAdjustedMoment]);
 
   /**
    * Check if you are the owner of the fez.
@@ -181,6 +194,7 @@ export const useFez = ({fezID, initialReadCountHint, queryOptions}: UseFezOption
   return {
     fezData,
     fezPages,
+    postDayCount,
     initialReadCount: initialReadCountRef.current,
     fetchNextPage: () => fetchNextPage(),
     fetchPreviousPage: () => fetchPreviousPage(),
