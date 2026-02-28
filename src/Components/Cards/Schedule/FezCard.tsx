@@ -13,7 +13,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {useFez} from '#src/Hooks/useFez';
+import {useFezData} from '#src/Hooks/useFezData';
 import {useMenu} from '#src/Hooks/useMenu';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
@@ -53,7 +53,7 @@ const FezCardInternal = ({
     },
     [setModalContent, setModalVisible],
   );
-  const {isParticipant, participantLabel} = useFez({fezID: fez.fezID});
+  const {isParticipant, participantLabel} = useFezData({fezID: fez.fezID});
 
   const styles = StyleSheet.create({
     badge: {

@@ -12,7 +12,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFez} from '#src/Hooks/useFez';
+import {useFezData} from '#src/Hooks/useFezData';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -39,7 +39,7 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
     isParticipant,
     refetch,
     initialReadCount,
-  } = useFez({
+  } = useFezData({
     fezID: route.params.eventID,
   });
   const {markRead} = useFezCacheReducer();

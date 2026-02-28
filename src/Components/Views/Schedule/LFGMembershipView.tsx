@@ -9,7 +9,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
-import {useFez} from '#src/Hooks/useFez';
+import {useFezData} from '#src/Hooks/useFezData';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
@@ -24,7 +24,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const {currentUserID} = useSession();
-  const {isParticipant, isWaitlist, isFull} = useFez({fezID: lfg.fezID});
+  const {isParticipant, isWaitlist, isFull} = useFezData({fezID: lfg.fezID});
   const {updateMembership} = useFezCacheReducer();
   const {setModalVisible, setModalContent} = useModal();
   const [refreshing, setRefreshing] = useState(false);

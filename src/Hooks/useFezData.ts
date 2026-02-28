@@ -62,13 +62,13 @@ function getListCacheReadCount(queryClient: QueryClient, fezID: string): number 
   return undefined;
 }
 
-interface UseFezOptions {
+interface UseFezDataOptions {
   fezID: string;
   initialReadCountHint?: number;
   queryOptions?: TokenAuthPaginationQueryOptionsTypeV2<FezData>;
 }
 
-interface UseFezReturn {
+interface UseFezDataReturn {
   fezData: FezData | undefined;
   fezPages: FezData[];
   postDayCount: number;
@@ -100,7 +100,7 @@ interface UseFezReturn {
  * mark-as-read), then from detail data, so callers can pass it forward (e.g. to a
  * chat screen) and show the correct unread badge.
  */
-export const useFez = ({fezID, initialReadCountHint, queryOptions}: UseFezOptions): UseFezReturn => {
+export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDataOptions): UseFezDataReturn => {
   const queryClient = useQueryClient();
   const queryResult = useFezQuery({fezID, options: queryOptions});
   const {currentUserID} = useSession();

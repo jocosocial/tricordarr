@@ -20,7 +20,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFez} from '#src/Hooks/useFez';
+import {useFezData} from '#src/Hooks/useFezData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
@@ -44,7 +44,7 @@ export const LfgParticipationScreen = (props: Props) => {
 };
 
 const LfgParticipationScreenInner = ({navigation, route}: Props) => {
-  const {fezData: lfg, refetch, isFetching, isParticipant, isWaitlist, isFull, isMember} = useFez({
+  const {fezData: lfg, refetch, isFetching, isParticipant, isWaitlist, isFull, isMember} = useFezData({
     fezID: route.params.fezID,
   });
   const {refreshing, setRefreshing, onRefresh} = useRefresh({

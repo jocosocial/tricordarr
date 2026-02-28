@@ -15,7 +15,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFez} from '#src/Hooks/useFez';
+import {useFezData} from '#src/Hooks/useFezData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
@@ -33,7 +33,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   // This overrides the default query options of refetchOnFocus and refetchOnMount. Since the user
   // just came from the chat screen the data is probably fresh enough to be just fine.
-  const {fezData, refetch, isFetching, isOwner} = useFez({fezID: route.params.fezID, queryOptions: {}});
+  const {fezData, refetch, isFetching, isOwner} = useFezData({fezID: route.params.fezID, queryOptions: {}});
   const {fezSockets} = useSocket();
   const {updateMembership} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();

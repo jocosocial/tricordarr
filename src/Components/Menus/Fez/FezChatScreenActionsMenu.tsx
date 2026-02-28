@@ -10,7 +10,7 @@ import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFez} from '#src/Hooks/useFez';
+import {useFezData} from '#src/Hooks/useFezData';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
@@ -22,7 +22,7 @@ interface FezChatActionsMenuProps {
 
 export const FezChatScreenActionsMenu = ({fezID, onRefresh}: FezChatActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {isChatEditable, isParticipant, isMuted} = useFez({fezID: fezID});
+  const {isChatEditable, isParticipant, isMuted} = useFezData({fezID: fezID});
   const navigation = useCommonStack();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const muteMutation = useFezMuteMutation();

@@ -13,7 +13,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFez} from '#src/Hooks/useFez';
+import {useFezData} from '#src/Hooks/useFezData';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -33,7 +33,7 @@ export const SeamailEditScreen = (props: Props) => {
 };
 
 const SeamailEditScreenInner = ({route, navigation}: Props) => {
-  const {fezData, isLoading} = useFez({fezID: route.params.fezID});
+  const {fezData, isLoading} = useFezData({fezID: route.params.fezID});
   const updateMutation = useFezUpdateMutation();
   const {updateFez} = useFezCacheReducer();
 
