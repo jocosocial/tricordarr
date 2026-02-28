@@ -849,6 +849,22 @@ export const useForumCacheReducer = () => {
       // Insert into category cache with category-specific sorting.
       sortedUpsertInCategoryCaches(createdForum.categoryID, forumListData);
 
+      // Increment forum count in the category detail infinite query (subtitle uses paginator.total).
+      queryClient.setQueriesData<InfiniteData<CategoryData>>(
+        {queryKey: [`/forum/categories/${createdForum.categoryID}`]},
+        oldData => {
+          if (!oldData) {
+            return oldData;
+          }
+          return {
+            ...oldData,
+            pages: oldData.pages.map(page =>
+              page.paginator ? {...page, paginator: {...page.paginator, total: page.paginator.total + 1}} : page,
+            ),
+          };
+        },
+      );
+
       // Insert into /forum/owner with sorted insertion honoring sort order and direction.
       sortedInsertIntoSearchCaches('/forum/owner', forumListData);
 
