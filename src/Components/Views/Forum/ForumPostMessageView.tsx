@@ -48,7 +48,6 @@ export const ForumPostMessageView = ({
       ...(messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer),
       ...(messageOnRight ? commonStyles.flexEnd : commonStyles.flexStart),
       ...commonStyles.fullWidth,
-      ...commonStyles.relativeTimeMinWidth,
     },
     messageText: {
       ...(messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer),
@@ -145,7 +144,7 @@ export const ForumPostMessageView = ({
         />
         <View style={styles.postFooterContainer}>
           <View style={commonStyles.flex0}>
-            <RelativeTimeTag date={new Date(postData.createdAt)} style={commonStyles.variantLabelSmall} />
+            <RelativeTimeTag date={new Date(postData.createdAt)} variant={'labelSmall'} />
           </View>
           <View style={styles.postIconsContainer}>
             {postData.isBookmarked && (

@@ -1,41 +1,18 @@
-import React, {CSSProperties, PropsWithChildren} from 'react';
-import {Text as NativeText, StyleProp, TextStyle} from 'react-native';
+import React from 'react';
+import {StyleProp, TextStyle, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
-import ReactTimeAgo from 'react-time-ago';
+import {useTimeAgo} from 'react-time-ago';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useClipboard} from '#src/Hooks/useClipboard';
 
 interface RelativeTimeTagProps {
   date?: Date;
   style?: StyleProp<TextStyle>;
-}
-
-interface StylizedTextProps extends PropsWithChildren {
   variant?: keyof typeof MD3TypescaleKey;
-  style?: StyleProp<TextStyle>;
-  onPress?: () => void;
-  onLongPress?: () => void;
 }
-
-// ReactTimeAgo doesn't support dynamic styling of the component, and it's own
-// style parameter is not what you think it is.
-const StylizedText = (props: StylizedTextProps) => {
-  return (
-    <Text variant={props.variant} style={props.style} onPress={props.onPress} onLongPress={props.onLongPress}>
-      {props.children}
-    </Text>
-  );
-};
-
-const StylizedNativeText = (props: StylizedTextProps) => {
-  return (
-    <NativeText style={props.style} onPress={props.onPress} onLongPress={props.onLongPress}>
-      {props.children}
-    </NativeText>
-  );
-};
 
 /**
  * This follows the RelativeTimeTag from Swiftarr.
@@ -49,15 +26,22 @@ const StylizedNativeText = (props: StylizedTextProps) => {
  * returning a Date object. This component and all consumer screens need to be updated for this reality.
  *
  * This had an annoying bug where every now and then the "now" part of "just now" would not render.
- * Multiple AI models failed to fix it but finally broke through when switching to NativeText
- * instead of [Paper]Text. There is some sort of layout race condition with measuring the width
- * with flexEnd. The fix for some of it is to set a minWidth on the parent. For others is to
- * avoid using the [Paper]Text component and switch this to NativeText, mimicking the styles.
+ * This was due to a layout race with flex-end: the extra component boundary was giving Yoga a frame where
+ * the text node did not yet have its final measured width.
+ * https://github.com/jocosocial/tricordarr/issues/419
  */
-export const RelativeTimeTag = ({date, style}: RelativeTimeTagProps) => {
+export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) => {
   const [showRawTime, setShowRawTime] = React.useState(false);
   const {appConfig} = useConfig();
   const {setString} = useClipboard();
+  const {commonStyles} = useStyles();
+
+  // Normalize to whole seconds so sub-second precision doesn't show "in a moment" on initial render.
+  const dateMs = date ? Math.floor(date.getTime() / 1000) * 1000 : 0;
+  const {formattedDate} = useTimeAgo({
+    date: dateMs,
+    locale: 'en-US',
+  });
 
   const onPress = () => {
     setShowRawTime(!showRawTime);
@@ -70,29 +54,21 @@ export const RelativeTimeTag = ({date, style}: RelativeTimeTagProps) => {
 
   if (showRawTime) {
     return (
-      <StylizedNativeText onPress={onPress} onLongPress={onLongPress} style={style}>
-        {date?.toISOString()}
-      </StylizedNativeText>
+      <Text variant={variant} onPress={onPress} onLongPress={onLongPress} style={style}>
+        {date.toISOString()}
+      </Text>
     );
   }
 
-  // Normalize to whole seconds so sub-second precision doesn't show "in a moment" on initial render.
-  const dateMs = Math.floor(date.getTime() / 1000) * 1000;
-
-  // https://github.com/catamphetamine/react-time-ago/issues/18
-  // No, no. He's right. We is buggy.
-  // "Unknown" props are passed through to the component.
-  // https://github.com/Microsoft/TypeScript/issues/19573
   return (
-    <ReactTimeAgo
-      date={dateMs}
-      locale={'en-US'}
-      component={StylizedNativeText}
-      // @ts-ignore
-      // variant={variant}
-      onPress={appConfig.enableDeveloperOptions ? onPress : undefined}
-      onLongPress={appConfig.enableDeveloperOptions ? onLongPress : undefined}
-      style={style as CSSProperties}
-    />
+    <View>
+      <Text
+        variant={variant}
+        style={[style, commonStyles.relativeTimeMinWidth]}
+        onPress={appConfig.enableDeveloperOptions ? onPress : undefined}
+        onLongPress={appConfig.enableDeveloperOptions ? onLongPress : undefined}>
+        {formattedDate}
+      </Text>
+    </View>
   );
 };

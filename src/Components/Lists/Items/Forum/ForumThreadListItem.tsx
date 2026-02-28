@@ -95,12 +95,12 @@ const ForumThreadListInternal = ({
         {forumListData.postCount} {pluralize('post', forumListData.postCount)}
       </Text>
       <Text variant={'bodyMedium'}>
-        Created <RelativeTimeTag date={new Date(forumListData.createdAt)} style={commonStyles.variantBodyMedium} /> by{' '}
+        Created <RelativeTimeTag date={new Date(forumListData.createdAt)} variant={'bodyMedium'} /> by{' '}
         <UserBylineTag user={forumListData.creator} includePronoun={false} variant={'bodyMedium'} />
       </Text>
       {forumListData.lastPostAt && (
         <Text variant={'bodyMedium'}>
-          Last post <RelativeTimeTag date={new Date(forumListData.lastPostAt)} style={commonStyles.variantBodyMedium} />
+          Last post <RelativeTimeTag date={new Date(forumListData.lastPostAt)} variant={'bodyMedium'} />
           {forumListData.lastPoster && (
             <UserBylineTag
               user={forumListData.lastPoster}

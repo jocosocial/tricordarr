@@ -151,34 +151,11 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       marginRight: isAndroid ? 16 : 15,
       marginLeft: isAndroid ? 14 : 5,
     },
-    // This was the "now" not rendering.
-    // https://github.com/jocosocial/tricordarr/issues/419
     relativeTimeMinWidth: {
-      minWidth: 70,
+      minWidth: styleDefaults.marginSize * 3,
     },
-    variantLabelSmall: {
-      fontFamily: 'System', // iOS; 'sans-serif-medium' on Android
-      fontWeight: '500',
-      letterSpacing: 0.5, // overrides mediumType's 0.15
-      lineHeight: 16,
-      fontSize: 11,
-      color: theme.colors.onBackground,
-    },
-    variantLabelMedium: {
-      fontFamily: 'System',
-      fontWeight: '500',
-      letterSpacing: 0.5,
-      lineHeight: 16,
-      fontSize: 12,
-      color: theme.colors.onBackground,
-    },
-    variantBodyMedium: {
-      fontFamily: 'System',
-      fontWeight: '400',
-      letterSpacing: 0.25,
-      lineHeight: 20,
-      fontSize: 14,
-      color: theme.colors.onBackground,
+    textAlignRight: {
+      textAlign: 'right',
     },
   });
 

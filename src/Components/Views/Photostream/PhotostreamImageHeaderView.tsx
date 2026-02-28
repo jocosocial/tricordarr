@@ -54,7 +54,7 @@ export const PhotostreamImageHeaderView = (props: PhotostreamAuthorViewProps) =>
         <TouchableOpacity onPress={onHeaderPress}>
           <UserBylineTag user={props.image.author} style={commonStyles.bold} />
         </TouchableOpacity>
-        <RelativeTimeTag date={new Date(props.image.createdAt)} style={commonStyles.variantLabelMedium} />
+        <RelativeTimeTag date={new Date(props.image.createdAt)} variant={'labelMedium'} />
       </View>
       <View>
         <PhotostreamImageActionsMenu
