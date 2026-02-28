@@ -141,6 +141,7 @@ const FezChatScreenInner = ({route}: Props) => {
     handler: (e: WebSocketMessageEvent) => void;
   } | null>(null);
   const fezSocketMessageHandlerRef = useRef<(event: WebSocketMessageEvent) => void>(() => {});
+  const lastProcessedPostIDRef = useRef<number | null>(null);
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
@@ -187,6 +188,10 @@ const FezChatScreenInner = ({route}: Props) => {
         setSnackbarPayload({message: changeString});
       } else if ('postID' in socketMessage) {
         const socketFezPostData = socketMessage as SocketFezPostData;
+        if (lastProcessedPostIDRef.current === socketFezPostData.postID) {
+          return;
+        }
+        lastProcessedPostIDRef.current = socketFezPostData.postID;
         if (currentUserID != null && socketFezPostData.author.userID !== currentUserID) {
           appendPostToCache(route.params.fezID, socketFezPostData);
         }
@@ -355,6 +360,7 @@ const FezChatScreenInner = ({route}: Props) => {
   const [readyToShow, setReadyToShow] = useState(false);
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
+  const frozenScrollIndexRef = useRef<number | null>(null);
 
   const onReadyToShow = useCallback(() => {
     logger.debug('Fez chat list ready to show');
@@ -366,7 +372,11 @@ const FezChatScreenInner = ({route}: Props) => {
     return <LoadingView />;
   }
 
-  const initialScrollIndex = getInitialScrollIndex(fez, fezPostsData, initialReadCount);
+  const computedScrollIndex = getInitialScrollIndex(fez, fezPostsData, initialReadCount);
+  if (frozenScrollIndexRef.current === null && computedScrollIndex !== undefined && computedScrollIndex >= 0) {
+    frozenScrollIndexRef.current = computedScrollIndex;
+  }
+  const initialScrollIndex = frozenScrollIndexRef.current ?? computedScrollIndex;
   const listKey = `${fez.fezID}-${initialScrollIndex ?? 'bottom'}`;
 
   const overlayStyles = StyleSheet.create({
