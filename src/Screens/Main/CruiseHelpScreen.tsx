@@ -1,7 +1,5 @@
 import React from 'react';
-import {Text} from 'react-native-paper';
 
-import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
@@ -12,16 +10,21 @@ export const CruiseHelpScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>
+        <HelpChapterTitleView title={'Conduct Violation'}>
+          <HelpTopicView>
+            During the cruise, if you are subject to or witness behavior that violates our Code of Conduct, contact any
+            Helper or JoCo Cruise staff member. Alternately, you can submit a Code of Conduct Violation Report form at
+            the JoCo Cruise Info Desk. (This may be done anonymously if you wish.) You can also dial 74501 from any
+            ship's phone. Off-ship, you can email conduct@jococruise.com. JoCo Cruise will make every effort to protect
+            the privacy of anyone reporting a violation.
+          </HelpTopicView>
+        </HelpChapterTitleView>
         <HelpChapterTitleView title={'Cruise Assistance'}>
           <HelpTopicView title={'At Sea'}>
-            Visit the JoCo Cruise Info Desk, typically located in the atrium on deck 1 midship.
+            Visit the JoCo Cruise Info Desk, typically located in the atrium on deck 1 midship. Staffed hours for the
+            Info Desk are typically found in the daily schedule. You can leave a written message at any time.
           </HelpTopicView>
-          <HelpTopicView title={'On Land'}>
-            Contact The Home Office via email at{' '}
-            <HyperlinkText>
-              <Text>info@jococruise.com</Text>
-            </HyperlinkText>
-          </HelpTopicView>
+          <HelpTopicView title={'On Land'}>Contact The Home Office via email at info@jococruise.com.</HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Twitarr Assistance'}>
           <HelpTopicView>

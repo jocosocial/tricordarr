@@ -8,6 +8,7 @@ import {LinkingContext} from '#src/Context/Contexts/LinkingContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {isNavigationReady, push} from '#src/Libraries/NavigationRef';
+import {isEmulator, isIOS} from '#src/Libraries/Platform/Detection';
 import {findRouteByScreen, pushableRoutes} from '#src/Libraries/RouteDefinitions';
 import {extractPathFromTricordarrUrl, parseDeepLinkUrl} from '#src/Libraries/UrlParser';
 
@@ -118,6 +119,19 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
       }
 
       // External URL - open directly
+      if (url.startsWith('mailto:') && isIOS) {
+        isEmulator().then(emulator => {
+          if (emulator) {
+            setErrorBanner('mail links on iPhone simulator are not supported');
+            return;
+          }
+          Linking.openURL(url).catch(err => {
+            logger.error('Failed to open external URL:', url, err);
+            setErrorBanner('Failed to open URL: ' + url);
+          });
+        });
+        return;
+      }
       Linking.openURL(url).catch(err => {
         logger.error('Failed to open external URL:', url, err);
         setErrorBanner('Failed to open URL: ' + url);
