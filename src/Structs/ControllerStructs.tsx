@@ -2,7 +2,6 @@ import {QueryKey} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import URLParse from 'url-parse';
 
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -12,7 +11,6 @@ import {LikeType} from '#src/Enums/LikeType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {createLogger} from '#src/Libraries/Logger';
-import {StorageKeys} from '#src/Libraries/Storage';
 
 const logger = createLogger('ControllerStructs.tsx');
 
@@ -27,18 +25,6 @@ export interface TokenStringData {
   accessLevel: UserAccessLevel;
   /// The token string.
   token: string;
-}
-
-/**
- * Custom functions to interact with the local encrypted copy of the users token data.
- * I really hope I don't regret doing this.
- */
-export namespace TokenStringData {
-  export const getLocal = async (key: keyof typeof StorageKeys) => await EncryptedStorage.getItem(key);
-  export const setLocal = async (key: keyof typeof StorageKeys, data: TokenStringData) => {
-    await EncryptedStorage.setItem(key, JSON.stringify(data));
-  };
-  export const clearLocal = async (key: keyof typeof StorageKeys) => await EncryptedStorage.removeItem(key);
 }
 
 export interface UserHeader {
