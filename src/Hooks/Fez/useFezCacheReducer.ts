@@ -334,6 +334,19 @@ export const useFezCacheReducer = () => {
               return sortedInsertIntoPages(oldData, fezListAccessor, updatedFez, startTimeAscComparator);
             },
           );
+
+          queryClient.setQueriesData<InfiniteData<FezListData>>(
+            {queryKey: ['/fez/owner'], predicate: wrongDayPredicate},
+            oldData => (oldData ? filterItemsFromPages(oldData, fezListAccessor, f => f.fezID !== fezID) : oldData),
+          );
+          queryClient.setQueriesData<InfiniteData<FezListData>>(
+            {queryKey: ['/fez/owner'], predicate: rightDayPredicate},
+            oldData => {
+              if (!oldData) return oldData;
+              if (oldData.pages.some(p => p.fezzes.some(f => f.fezID === updatedFez.fezID))) return oldData;
+              return insertAtEdge(oldData, fezListAccessor, updatedFez, 'start');
+            },
+          );
         }
       }
     },
