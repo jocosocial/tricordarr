@@ -21,6 +21,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {getParticipantLabel} from '#src/Hooks/useFez';
 import {getDurationString} from '#src/Libraries/DateTime';
 import {guessDeckNumber} from '#src/Libraries/Ship';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
@@ -184,7 +185,7 @@ export const ScheduleItemScreenBase = ({
                   {FezType.isLFGType(eventData.fezType) && showLfgChat && (
                     <DataFieldListItem
                       icon={AppIcons.group}
-                      description={FezData.getParticipantLabel(eventData)}
+                      description={getParticipantLabel(eventData)}
                       title={'Participation'}
                       onPress={() =>
                         navigation.push(CommonStackComponents.lfgParticipationScreen, {fezID: eventData.fezID})

@@ -88,3 +88,12 @@ Use `createLogger` rather than `console.log`
 ## Reducers
 
 - Never mutate state within a reducer
+
+## Components
+
+- Components must be pure
+
+## Hooks
+
+- No conditional hooks
+- No new namespaces in `ControllerStructs.tsx`. New hooks named after the struct. `FezData` => `useFezData`

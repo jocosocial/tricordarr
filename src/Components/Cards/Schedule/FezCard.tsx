@@ -9,11 +9,11 @@ import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezCardActionsMenu} from '#src/Components/Menus/Fez/FezCardActionsMenu';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFez} from '#src/Hooks/useFez';
 import {useMenu} from '#src/Hooks/useMenu';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
@@ -53,7 +53,7 @@ const FezCardInternal = ({
     },
     [setModalContent, setModalVisible],
   );
-  const {currentUserID} = useSession();
+  const {isParticipant, participantLabel} = useFez({fezID: fez.fezID});
 
   const styles = StyleSheet.create({
     badge: {
@@ -100,7 +100,7 @@ const FezCardInternal = ({
    */
   const showParticipation =
     FezType.isLFGType(fez.fezType) ||
-    (FezType.isPrivateEventType(fez.fezType) && FezData.isParticipant(fez, currentUserID ?? undefined));
+    (FezType.isPrivateEventType(fez.fezType) && isParticipant);
 
   const handleLongPress = useCallback(() => {
     if (onLongPress) {
@@ -117,7 +117,7 @@ const FezCardInternal = ({
       cardStyle={styles.card}
       title={fez.title}
       author={fez.fezType === FezType.personalEvent ? undefined : fez.owner}
-      participation={showParticipation ? FezData.getParticipantLabel(fez) : undefined}
+      participation={showParticipation ? participantLabel : undefined}
       location={fez.location}
       titleRight={getBadge}
       startTime={fez.startTime}

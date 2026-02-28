@@ -44,7 +44,9 @@ export const LfgParticipationScreen = (props: Props) => {
 };
 
 const LfgParticipationScreenInner = ({navigation, route}: Props) => {
-  const {fezData: lfg, refetch, isFetching} = useFez({fezID: route.params.fezID});
+  const {fezData: lfg, refetch, isFetching, isParticipant, isWaitlist, isFull, isMember} = useFez({
+    fezID: route.params.fezID,
+  });
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: refetch,
     isRefreshing: isFetching,
@@ -100,7 +102,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
     if (!lfg || !currentUserID) {
       return;
     }
-    if (FezData.isParticipant(lfg, currentUserID)) {
+    if (isParticipant) {
       setModalContent(<LfgLeaveModal fezData={lfg} />);
       setModalVisible(true);
     } else {
@@ -119,7 +121,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
         },
       );
     }
-  }, [lfg, membershipMutation, currentUserID, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop, setRefreshing]);
+  }, [lfg, membershipMutation, isParticipant, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop, setRefreshing]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -132,10 +134,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   }
 
   const manageUsers = lfg.owner.userID === currentUserID;
-  const isFull = FezData.isFull(lfg);
   const isUnlimited = lfg.maxParticipants === 0;
-  const isMember = FezData.isParticipant(lfg, currentUserID ?? undefined);
-  const isWaitlist = FezData.isWaitlist(lfg, currentUserID ?? undefined);
 
   return (
     <AppView>

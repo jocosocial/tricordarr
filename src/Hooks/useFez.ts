@@ -1,4 +1,5 @@
 import {InfiniteData, QueryClient, useQueryClient} from '@tanstack/react-query';
+import pluralize from 'pluralize';
 import {useCallback, useMemo, useRef, useState} from 'react';
 
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -8,6 +9,36 @@ import {findInPages, PageItemAccessor} from '#src/Libraries/CacheReduction';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {TokenAuthPaginationQueryOptionsTypeV2} from '#src/Queries/TokenAuthQuery';
 import {FezData, FezListData} from '#src/Structs/ControllerStructs';
+
+/**
+ * Get a label for the number of attendees of this Fez. If maxParticipants is 0
+ * that means unlimited and we don't need to tell users how many are remaining.
+ */
+export const getParticipantLabel = (fez: FezData): string => {
+  let minimumSuffix = '';
+  if (fez.minParticipants !== 0) {
+    minimumSuffix = `, ${fez.minParticipants} minimum`;
+  }
+  if (fez.maxParticipants === 0) {
+    return `${fez.participantCount} ${pluralize('attendee', fez.participantCount)}${minimumSuffix}`;
+  }
+  const waitlistCount: number = fez.members?.waitingList.length || 0;
+  let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} ${pluralize(
+    'participant',
+    fez.maxParticipants,
+  )}`;
+  if (fez.participantCount >= fez.maxParticipants) {
+    attendeeCountString = 'Full';
+  }
+  return `${attendeeCountString}, ${waitlistCount} waitlisted${minimumSuffix}`;
+};
+
+export const isFezFull = (fez: FezData): boolean => {
+  if (fez.maxParticipants === 0 || !fez.members) {
+    return false;
+  }
+  return fez.members.participants.length >= fez.maxParticipants;
+};
 
 const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/former'];
 const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
@@ -56,6 +87,8 @@ interface UseFezReturn {
   isWaitlist: boolean;
   isChatEditable: boolean;
   isMuted: boolean;
+  isFull: boolean;
+  participantLabel: string | undefined;
   refetch: () => Promise<unknown>;
   resetInitialReadCount: () => void;
 }
@@ -191,6 +224,13 @@ export const useFez = ({fezID, initialReadCountHint, queryOptions}: UseFezOption
     return fezData.members.isMuted;
   }, [fezData]);
 
+  const isFull = useMemo(() => (fezData ? isFezFull(fezData) : false), [fezData]);
+
+  const participantLabel = useMemo(
+    () => (fezData ? getParticipantLabel(fezData) : undefined),
+    [fezData],
+  );
+
   return {
     fezData,
     fezPages,
@@ -210,6 +250,8 @@ export const useFez = ({fezID, initialReadCountHint, queryOptions}: UseFezOption
     isWaitlist,
     isMuted,
     isChatEditable,
+    isFull,
+    participantLabel,
     refetch: () => refetch(),
     resetInitialReadCount,
   };

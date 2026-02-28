@@ -324,69 +324,6 @@ export interface FezData {
   members?: MembersOnlyData;
 }
 
-/**
- * Bonus helper functions for FezData.
- */
-export namespace FezData {
-  /**
-   * Get a label for the number of attendees of this Fez. If the count is 0 that means
-   * it is unlimited and we don't need to tell users how many are remaining.
-   * @param fez This particular chat.
-   */
-  export const getParticipantLabel = (fez: FezData) => {
-    var minimumSuffix = '';
-    if (fez.minParticipants !== 0) {
-      minimumSuffix = `, ${fez.minParticipants} minimum`;
-    }
-    if (fez.maxParticipants === 0) {
-      return `${fez.participantCount} ${pluralize('attendee', fez.participantCount)}${minimumSuffix}`;
-    }
-    const waitlistCount: number = fez.members?.waitingList.length || 0;
-    let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} ${pluralize(
-      'participant',
-      fez.maxParticipants,
-    )}`;
-    if (fez.participantCount >= fez.maxParticipants) {
-      attendeeCountString = 'Full';
-    }
-    return `${attendeeCountString}, ${waitlistCount} waitlisted${minimumSuffix}`;
-  };
-
-  /**
-   * @deprecated use useFez hook instead
-   */
-  const isMemberByID = (members: UserHeader[] | undefined, userID: string) => {
-    if (!members) return false;
-    return members.some(m => m.userID === userID);
-  };
-
-  /**
-   * @deprecated use useFez hook instead
-   */
-  export const isParticipant = (fezData?: FezData, userID?: string) => {
-    if (!fezData || !userID) return false;
-    return isMemberByID(fezData.members?.participants, userID);
-  };
-
-  /**
-   * @deprecated use useFez hook instead
-   */
-  export const isWaitlist = (fezData?: FezData, userID?: string) => {
-    if (!fezData || !userID) return false;
-    return isMemberByID(fezData.members?.waitingList, userID);
-  };
-
-  /**
-   * @deprecated use useFez hook instead
-   */
-  export const isFull = (fezData: FezData) => {
-    if (fezData.maxParticipants === 0 || !fezData.members) {
-      return false;
-    }
-    return fezData.members.participants.length >= fezData.maxParticipants;
-  };
-}
-
 export interface FezListData {
   /// Pagination into the results set.
   paginator: Paginator;

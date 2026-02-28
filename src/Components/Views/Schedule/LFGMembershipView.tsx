@@ -9,6 +9,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
+import {useFez} from '#src/Hooks/useFez';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
@@ -23,6 +24,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const {currentUserID} = useSession();
+  const {isParticipant, isWaitlist, isFull} = useFez({fezID: lfg.fezID});
   const {updateMembership} = useFezCacheReducer();
   const {setModalVisible, setModalContent} = useModal();
   const [refreshing, setRefreshing] = useState(false);
@@ -33,7 +35,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
     if (!lfg || !currentUserID) {
       return;
     }
-    if (FezData.isParticipant(lfg, currentUserID) || FezData.isWaitlist(lfg, currentUserID)) {
+    if (isParticipant || isWaitlist) {
       setModalContent(<LfgLeaveModal fezData={lfg} />);
       setModalVisible(true);
     } else {
@@ -70,17 +72,17 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
     <View style={styles.outerContainer}>
       {currentUserID != null && lfg.owner.userID !== currentUserID && (
         <PaddedContentView>
-          {(FezData.isParticipant(lfg, currentUserID) || FezData.isWaitlist(lfg, currentUserID)) && (
+          {(isParticipant || isWaitlist) && (
             <PrimaryActionButton
-              buttonText={FezData.isWaitlist(lfg, currentUserID) ? 'Leave the waitlist' : `Leave this ${lfgNoun}`}
+              buttonText={isWaitlist ? 'Leave the waitlist' : `Leave this ${lfgNoun}`}
               onPress={handleMembershipPress}
               buttonColor={theme.colors.twitarrNegativeButton}
               isLoading={refreshing}
             />
           )}
-          {!FezData.isParticipant(lfg, currentUserID) && !FezData.isWaitlist(lfg, currentUserID) && (
+          {!isParticipant && !isWaitlist && (
             <PrimaryActionButton
-              buttonText={FezData.isFull(lfg) ? 'Join the waitlist' : 'Join this LFG'}
+              buttonText={isFull ? 'Join the waitlist' : 'Join this LFG'}
               onPress={handleMembershipPress}
               buttonColor={theme.colors.twitarrPositiveButton}
               isLoading={refreshing}
