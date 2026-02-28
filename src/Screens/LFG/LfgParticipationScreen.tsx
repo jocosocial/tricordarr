@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -20,11 +20,12 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useFez} from '#src/Hooks/useFez';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -43,23 +44,17 @@ export const LfgParticipationScreen = (props: Props) => {
 };
 
 const LfgParticipationScreenInner = ({navigation, route}: Props) => {
-  const {data, refetch, isFetching} = useFezQuery({
-    fezID: route.params.fezID,
+  const {fezData: lfg, refetch, isFetching} = useFez({fezID: route.params.fezID});
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
   });
-  const lfg = data?.pages[0];
-  const [refreshing, setRefreshing] = useState(false);
   const participantMutation = useFezParticipantMutation();
   const {currentUserID} = useSession();
   const {setModalContent, setModalVisible} = useModal();
   const membershipMutation = useFezMembershipMutation();
   const {updateMembership} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  };
 
   const onParticipantRemove = (fezData: FezData, userID: string) => {
     // Call the join/unjoin if you are working on yourself.
@@ -124,7 +119,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
         },
       );
     }
-  }, [lfg, membershipMutation, currentUserID, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop]);
+  }, [lfg, membershipMutation, currentUserID, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop, setRefreshing]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -146,7 +141,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<AppRefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <DataFieldListItem title={'Title'} description={lfg.title} />
         <DataFieldListItem title={'Hosted By'} />
         <FezParticipantListItem
