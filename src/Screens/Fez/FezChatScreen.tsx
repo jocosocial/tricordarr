@@ -124,7 +124,7 @@ const FezChatScreenInner = ({route}: Props) => {
     isFetchingNextPage,
     isFetchingPreviousPage,
     isFetching,
-  } = useFez({fezID: route.params.fezID});
+  } = useFez({fezID: route.params.fezID, initialReadCountHint: route.params.initialReadCount});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const fezPostMutation = useFezPostMutation();
   const {setSnackbarPayload} = useSnackbar();
@@ -228,13 +228,14 @@ const FezChatScreenInner = ({route}: Props) => {
           onSuccess: response => {
             formikHelpers.resetForm();
             appendPostToCache(route.params.fezID, response.data);
+            resetInitialReadCount();
             dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           },
           onSettled: () => formikHelpers.setSubmitting(false),
         },
       );
     },
-    [fez, markRead, fezPostMutation, route.params.fezID, appendPostToCache, dispatchScrollToTop],
+    [fez, markRead, fezPostMutation, route.params.fezID, appendPostToCache, resetInitialReadCount, dispatchScrollToTop],
   );
 
   // Initial set useEffect
@@ -311,14 +312,13 @@ const FezChatScreenInner = ({route}: Props) => {
         (initialReadCount !== undefined && initialReadCount < fez.members.postCount);
       if (hasUnread) {
         markRead(fez.fezID);
-        resetInitialReadCount();
         if (appConfig.markReadCancelPush) {
           logger.debug('auto canceling notifications.');
           notifee.cancelDisplayedNotification(fez.fezID);
         }
       }
     }
-  }, [fez, markRead, initialReadCount, resetInitialReadCount, appConfig.markReadCancelPush]);
+  }, [fez, markRead, initialReadCount, appConfig.markReadCancelPush]);
 
   // Visible useEffect
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background

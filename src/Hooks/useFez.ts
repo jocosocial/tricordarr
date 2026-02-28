@@ -32,6 +32,7 @@ function getListCacheReadCount(queryClient: QueryClient, fezID: string): number 
 
 interface UseFezOptions {
   fezID: string;
+  initialReadCountHint?: number;
   queryOptions?: TokenAuthPaginationQueryOptionsTypeV2<FezData>;
 }
 
@@ -64,7 +65,7 @@ interface UseFezReturn {
  * mark-as-read), then from detail data, so callers can pass it forward (e.g. to a
  * chat screen) and show the correct unread badge.
  */
-export const useFez = ({fezID, queryOptions}: UseFezOptions): UseFezReturn => {
+export const useFez = ({fezID, initialReadCountHint, queryOptions}: UseFezOptions): UseFezReturn => {
   const queryClient = useQueryClient();
   const queryResult = useFezQuery({fezID, options: queryOptions});
   const {currentUserID} = useSession();
@@ -81,18 +82,30 @@ export const useFez = ({fezID, queryOptions}: UseFezOptions): UseFezReturn => {
     refetch,
   } = queryResult;
   const initialReadCountRef = useRef<number | undefined>(undefined);
+  const hasConsumedHintRef = useRef(false);
   const [, setReadCountVersion] = useState(0);
 
   const fezData = useMemo(() => {
     return data?.pages[0];
   }, [data]);
 
-  // Capture readCount from list caches first (correct unread state), then fall back
-  // to detail data. Subsequent cache mutations (markRead, socket-driven postCount bumps)
-  // will not overwrite this value until resetInitialReadCount is called.
-  if (fezData?.members && initialReadCountRef.current === undefined) {
-    const listReadCount = getListCacheReadCount(queryClient, fezID);
-    initialReadCountRef.current = listReadCount ?? fezData.members.readCount;
+  // Capture readCount once using highest-priority sources:
+  // route hint -> list caches -> detail data. Subsequent cache mutations
+  // (markRead, socket-driven postCount bumps) will not overwrite this value
+  // until resetInitialReadCount is called.
+  if (initialReadCountRef.current === undefined) {
+    if (initialReadCountHint !== undefined && !hasConsumedHintRef.current) {
+      initialReadCountRef.current = initialReadCountHint;
+      hasConsumedHintRef.current = true;
+    } else if (initialReadCountHint !== undefined && hasConsumedHintRef.current) {
+      if (fezData?.members) {
+        const listReadCount = getListCacheReadCount(queryClient, fezID);
+        initialReadCountRef.current = listReadCount ?? fezData.members.readCount;
+      }
+    } else if (fezData?.members) {
+      const listReadCount = getListCacheReadCount(queryClient, fezID);
+      initialReadCountRef.current = listReadCount ?? fezData.members.readCount;
+    }
   }
 
   const resetInitialReadCount = useCallback(() => {
