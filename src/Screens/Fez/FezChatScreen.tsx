@@ -33,6 +33,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useFez} from '#src/Hooks/useFez';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
@@ -46,7 +47,6 @@ import {
 import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {type FezData, type FezPostData, type PostContentData} from '#src/Structs/ControllerStructs';
@@ -112,7 +112,10 @@ export const FezChatScreen = (props: Props) => {
 
 const FezChatScreenInner = ({route}: Props) => {
   const {
-    data,
+    fezData: fez,
+    fezPages,
+    initialReadCount,
+    resetInitialReadCount,
     refetch,
     fetchNextPage,
     fetchPreviousPage,
@@ -121,7 +124,7 @@ const FezChatScreenInner = ({route}: Props) => {
     isFetchingNextPage,
     isFetchingPreviousPage,
     isFetching,
-  } = useFezQuery({fezID: route.params.fezID});
+  } = useFez({fezID: route.params.fezID});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const fezPostMutation = useFezPostMutation();
   const {setSnackbarPayload} = useSnackbar();
@@ -138,8 +141,6 @@ const FezChatScreenInner = ({route}: Props) => {
     handler: (e: WebSocketMessageEvent) => void;
   } | null>(null);
   const fezSocketMessageHandlerRef = useRef<(event: WebSocketMessageEvent) => void>(() => {});
-  const [fez, setFez] = useState<FezData>();
-  const [localInitialReadCount, setLocalInitialReadCount] = useState(route.params.initialReadCount);
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
@@ -219,13 +220,7 @@ const FezChatScreenInner = ({route}: Props) => {
       values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
       // Mark as read if applicable.
       if (fez && fez.members) {
-        setFez({
-          ...fez,
-          members: {
-            ...fez.members,
-            readCount: fez.members.postCount,
-          },
-        });
+        markRead(fez.fezID);
       }
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
@@ -239,19 +234,16 @@ const FezChatScreenInner = ({route}: Props) => {
         },
       );
     },
-    [fez, fezPostMutation, route.params.fezID, setFez, appendPostToCache, dispatchScrollToTop],
+    [fez, markRead, fezPostMutation, route.params.fezID, appendPostToCache, dispatchScrollToTop],
   );
 
   // Initial set useEffect
   useEffect(() => {
-    if (data) {
-      dispatchFezPostsData({
-        type: FezPostsActions.set,
-        fezPosts: [...data.pages.flatMap(page => page.members?.posts || [])],
-      });
-      setFez(data?.pages[0]);
-    }
-  }, [data, dispatchFezPostsData, setFez]);
+    dispatchFezPostsData({
+      type: FezPostsActions.set,
+      fezPosts: [...fezPages.flatMap(page => page.members?.posts || [])],
+    });
+  }, [fezPages, dispatchFezPostsData]);
 
   // Socket useEffect: open/attach once per fezID (route param). Cleanup removes listener and
   // closes only on unmount or fezID change. Handler is read from a ref so message updates
@@ -316,17 +308,17 @@ const FezChatScreenInner = ({route}: Props) => {
     if (fez && fez.members) {
       const hasUnread =
         fez.members.readCount !== fez.members.postCount ||
-        (localInitialReadCount !== undefined && localInitialReadCount < fez.members.postCount);
+        (initialReadCount !== undefined && initialReadCount < fez.members.postCount);
       if (hasUnread) {
         markRead(fez.fezID);
-        setLocalInitialReadCount(fez.members.postCount);
+        resetInitialReadCount();
         if (appConfig.markReadCancelPush) {
           logger.debug('auto canceling notifications.');
           notifee.cancelDisplayedNotification(fez.fezID);
         }
       }
     }
-  }, [fez, markRead, localInitialReadCount, appConfig.markReadCancelPush]);
+  }, [fez, markRead, initialReadCount, resetInitialReadCount, appConfig.markReadCancelPush]);
 
   // Visible useEffect
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background
@@ -374,7 +366,7 @@ const FezChatScreenInner = ({route}: Props) => {
     return <LoadingView />;
   }
 
-  const initialScrollIndex = getInitialScrollIndex(fez, fezPostsData, route.params.initialReadCount);
+  const initialScrollIndex = getInitialScrollIndex(fez, fezPostsData, initialReadCount);
   const listKey = `${fez.fezID}-${initialScrollIndex ?? 'bottom'}`;
 
   const overlayStyles = StyleSheet.create({
@@ -409,7 +401,7 @@ const FezChatScreenInner = ({route}: Props) => {
           handleLoadPrevious={handleLoadPrevious}
           refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
           initialScrollIndex={initialScrollIndex}
-          initialReadCount={route.params.initialReadCount}
+          initialReadCount={initialReadCount}
           onReadyToShow={onReadyToShow}
         />
         {!readyToShow && (

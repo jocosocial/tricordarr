@@ -39,6 +39,12 @@ interface UseFezReturn {
   fezData: FezData | undefined;
   fezPages: FezData[];
   initialReadCount: number | undefined;
+  fetchNextPage: () => Promise<unknown>;
+  fetchPreviousPage: () => Promise<unknown>;
+  hasNextPage: boolean | undefined;
+  hasPreviousPage: boolean | undefined;
+  isFetchingNextPage: boolean;
+  isFetchingPreviousPage: boolean;
   isFetching: boolean;
   isLoading: boolean;
   isOwner: boolean;
@@ -62,7 +68,18 @@ export const useFez = ({fezID, queryOptions}: UseFezOptions): UseFezReturn => {
   const queryClient = useQueryClient();
   const queryResult = useFezQuery({fezID, options: queryOptions});
   const {currentUserID} = useSession();
-  const {data, isFetching, isLoading, refetch} = queryResult;
+  const {
+    data,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetching,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    isLoading,
+    refetch,
+  } = queryResult;
   const initialReadCountRef = useRef<number | undefined>(undefined);
   const [, setReadCountVersion] = useState(0);
 
@@ -152,6 +169,12 @@ export const useFez = ({fezID, queryOptions}: UseFezOptions): UseFezReturn => {
     fezData,
     fezPages,
     initialReadCount: initialReadCountRef.current,
+    fetchNextPage: () => fetchNextPage(),
+    fetchPreviousPage: () => fetchPreviousPage(),
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
     isFetching,
     isLoading,
     isOwner,
