@@ -45,7 +45,7 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
       {
         onSuccess: response => {
           setModalVisible(false);
-          updateMembership(fezData.fezID, response.data);
+          updateMembership(fezData.fezID, response.data, 'unjoin');
           dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
         },
       },

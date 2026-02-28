@@ -151,6 +151,92 @@ export const useFezCacheReducer = () => {
   );
 
   /**
+   * Handles membership transitions that require moving a fez between list endpoints
+   * rather than only updating in-place.
+   */
+  const updateMembershipInListCaches = useCallback(
+    (fezID: string, updatedFez: FezData, action?: 'join' | 'unjoin'): {removeDetail: boolean} => {
+      const isMember = !!updatedFez.members;
+      const isLfg = FezType.isLFGType(updatedFez.fezType);
+      const isPrivateEvent = FezType.isPrivateEventType(updatedFez.fezType);
+      const fezCruiseDay = computeCruiseDay(updatedFez.startTime);
+      const isJoinAction = action === 'join';
+      const isUnjoinAction = action === 'unjoin';
+
+      const shouldInsertIntoQuery = (query: {queryKey: readonly unknown[]}) => {
+        const params = query.queryKey[1] as Record<string, unknown> | undefined;
+        const typeMatch = listParamsIncludeFezType(params, updatedFez.fezType);
+        const cruiseDayParam = params?.cruiseday as number | string | undefined;
+        const cruiseDayMatch =
+          cruiseDayParam === undefined || fezCruiseDay === undefined || Number(cruiseDayParam) + 1 === fezCruiseDay;
+        return typeMatch && cruiseDayMatch;
+      };
+
+      // LFG join: move from /fez/open to /fez/joined, preserving endpoint sort behavior.
+      if (isLfg && (isJoinAction || (isMember && !isUnjoinAction))) {
+        queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: ['/fez/open']}, oldData =>
+          oldData ? filterItemsFromPages(oldData, fezListAccessor, entry => entry.fezID !== fezID) : oldData,
+        );
+        queryClient.setQueriesData<InfiniteData<FezListData>>(
+          {queryKey: ['/fez/joined'], predicate: shouldInsertIntoQuery},
+          oldData => {
+            if (!oldData) return oldData;
+            const withoutFez = filterItemsFromPages(oldData, fezListAccessor, entry => entry.fezID !== fezID);
+            const inserted = insertAtEdge(withoutFez, fezListAccessor, updatedFez, 'start');
+            return sortItemsInPages(inserted, fezListAccessor, joinedSortComparator);
+          },
+        );
+
+        const idUpdater = (entry: FezData) => (entry.fezID === fezID ? updatedFez : entry);
+        for (const keyPrefix of ['/fez/owner', '/fez/former'] as const) {
+          queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]}, oldData =>
+            oldData ? updateItemsInPages(oldData, fezListAccessor, idUpdater) : oldData,
+          );
+        }
+        return {removeDetail: false};
+      }
+
+      // LFG unjoin/leave: move from /fez/joined back into /fez/open ordered by startTime.
+      if (isLfg && (isUnjoinAction || !isMember)) {
+        queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: ['/fez/joined']}, oldData =>
+          oldData ? filterItemsFromPages(oldData, fezListAccessor, entry => entry.fezID !== fezID) : oldData,
+        );
+        queryClient.setQueriesData<InfiniteData<FezListData>>(
+          {queryKey: ['/fez/open'], predicate: shouldInsertIntoQuery},
+          oldData => {
+            if (!oldData) return oldData;
+            const withoutFez = filterItemsFromPages(oldData, fezListAccessor, entry => entry.fezID !== fezID);
+            return sortedInsertIntoPages(withoutFez, fezListAccessor, updatedFez, startTimeAscComparator);
+          },
+        );
+
+        const idUpdater = (entry: FezData) => (entry.fezID === fezID ? updatedFez : entry);
+        for (const keyPrefix of ['/fez/owner', '/fez/former'] as const) {
+          queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]}, oldData =>
+            oldData ? updateItemsInPages(oldData, fezListAccessor, idUpdater) : oldData,
+          );
+        }
+        return {removeDetail: false};
+      }
+
+      // Personal/private leave: remove stale entries; user no longer has membership visibility.
+      if (isPrivateEvent && !isMember) {
+        for (const keyPrefix of fezListKeyPrefixes) {
+          queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]}, oldData =>
+            oldData ? filterItemsFromPages(oldData, fezListAccessor, entry => entry.fezID !== fezID) : oldData,
+          );
+        }
+        return {removeDetail: true};
+      }
+
+      // No transition required (e.g. participant edits, seamail membership updates).
+      updateFezInListCachesWithReorder(fezID, () => updatedFez);
+      return {removeDetail: false};
+    },
+    [computeCruiseDay, queryClient, updateFezInListCachesWithReorder],
+  );
+
+  /**
    * Remove a fez from all list caches and delete its detail cache.
    */
   const removeFezFromAllCaches = useCallback(
@@ -407,11 +493,15 @@ export const useFezCacheReducer = () => {
    * add participant, remove participant). These mutations return updated FezData.
    */
   const updateMembership = useCallback(
-    (fezID: string, updatedFez: FezData) => {
-      updateFezInListCachesWithReorder(fezID, () => updatedFez);
+    (fezID: string, updatedFez: FezData, action?: 'join' | 'unjoin') => {
+      const {removeDetail} = updateMembershipInListCaches(fezID, updatedFez, action);
+      if (removeDetail) {
+        queryClient.removeQueries({queryKey: [`/fez/${fezID}`]});
+        return;
+      }
       updateFezDetailCache(fezID, () => updatedFez);
     },
-    [updateFezInListCachesWithReorder, updateFezDetailCache],
+    [queryClient, updateMembershipInListCaches, updateFezDetailCache],
   );
 
   /**

@@ -117,7 +117,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
         },
         {
           onSuccess: response => {
-            updateMembership(lfg.fezID, response.data);
+            updateMembership(lfg.fezID, response.data, 'join');
             dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           },
           onSettled: () => setRefreshing(false),

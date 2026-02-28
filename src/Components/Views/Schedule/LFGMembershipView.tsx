@@ -45,7 +45,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
         },
         {
           onSuccess: response => {
-            updateMembership(lfg.fezID, response.data);
+            updateMembership(lfg.fezID, response.data, 'join');
             dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           },
           onSettled: () => {
