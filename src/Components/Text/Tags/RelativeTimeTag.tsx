@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleProp, TextStyle, View} from 'react-native';
+import {StyleProp, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
 import {useTimeAgo} from 'react-time-ago';
@@ -61,14 +61,12 @@ export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) =>
   }
 
   return (
-    <View>
-      <Text
-        variant={variant}
-        style={[style, commonStyles.relativeTimeMinWidth]}
-        onPress={appConfig.enableDeveloperOptions ? onPress : undefined}
-        onLongPress={appConfig.enableDeveloperOptions ? onLongPress : undefined}>
-        {formattedDate}
-      </Text>
-    </View>
+    <Text
+      variant={variant}
+      style={[style, commonStyles.relativeTimeMinWidth]}
+      onPress={appConfig.enableDeveloperOptions ? onPress : undefined}
+      onLongPress={appConfig.enableDeveloperOptions ? onLongPress : undefined}>
+      {formattedDate}
+    </Text>
   );
 };
