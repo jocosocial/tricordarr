@@ -356,23 +356,34 @@ export const useFezCacheReducer = () => {
       const timestamp = swiftTimestampToISO(rawTs);
       const post: FezPostData = {...newPost, timestamp};
 
-      updateFezDetailCache(fezID, fez => {
-        if (!fez.members) {
-          return fez;
+      // Add the new post only to the last page. updateFezDetailCache runs the updater on
+      // every page, which would duplicate the post when fezPostsData is built from
+      // data.pages.flatMap(page => page.members?.posts ?? []).
+      queryClient.setQueriesData<InfiniteData<FezData>>({queryKey: [`/fez/${fezID}`]}, oldData => {
+        if (!oldData?.pages.length) {
+          return oldData;
         }
-        const alreadyExists = fez.members.posts?.some(p => p.postID === post.postID);
-        if (alreadyExists) {
-          return fez;
-        }
+        const lastIndex = oldData.pages.length - 1;
         return {
-          ...fez,
-          lastModificationTime: now,
-          members: {
-            ...fez.members,
-            postCount: fez.members.postCount + 1,
-            readCount: fez.members.readCount + 1,
-            posts: [...(fez.members.posts ?? []), post],
-          },
+          ...oldData,
+          pages: oldData.pages.map((page, index) => {
+            if (!page.members) {
+              return page;
+            }
+            const isLastPage = index === lastIndex;
+            const alreadyExists = page.members.posts?.some(p => p.postID === post.postID);
+            const posts = isLastPage && !alreadyExists ? [...(page.members.posts ?? []), post] : page.members.posts;
+            return {
+              ...page,
+              lastModificationTime: now,
+              members: {
+                ...page.members,
+                postCount: page.members.postCount + 1,
+                readCount: page.members.readCount + 1,
+                posts,
+              },
+            };
+          }),
         };
       });
 
@@ -388,7 +399,7 @@ export const useFezCacheReducer = () => {
           : fez.members,
       }));
     },
-    [updateFezDetailCache, updateFezInListCachesWithReorder],
+    [queryClient, updateFezInListCachesWithReorder],
   );
 
   /**
