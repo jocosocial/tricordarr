@@ -99,8 +99,7 @@ const FezCardInternal = ({
    * It's a Personal or Private Event and you are a member.
    */
   const showParticipation =
-    FezType.isLFGType(fez.fezType) ||
-    (FezType.isPrivateEventType(fez.fezType) && isParticipant);
+    FezType.isLFGType(fez.fezType) || (FezType.isPrivateEventType(fez.fezType) && isParticipant);
 
   const handleLongPress = useCallback(() => {
     if (onLongPress) {

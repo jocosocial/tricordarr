@@ -44,7 +44,15 @@ export const LfgParticipationScreen = (props: Props) => {
 };
 
 const LfgParticipationScreenInner = ({navigation, route}: Props) => {
-  const {fezData: lfg, refetch, isFetching, isParticipant, isWaitlist, isFull, isMember} = useFezData({
+  const {
+    fezData: lfg,
+    refetch,
+    isFetching,
+    isParticipant,
+    isWaitlist,
+    isFull,
+    isMember,
+  } = useFezData({
     fezID: route.params.fezID,
   });
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
@@ -121,7 +129,17 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
         },
       );
     }
-  }, [lfg, membershipMutation, isParticipant, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop, setRefreshing]);
+  }, [
+    lfg,
+    membershipMutation,
+    isParticipant,
+    updateMembership,
+    setModalContent,
+    setModalVisible,
+    dispatchScrollToTop,
+    setRefreshing,
+    currentUserID,
+  ]);
 
   useEffect(() => {
     navigation.setOptions({

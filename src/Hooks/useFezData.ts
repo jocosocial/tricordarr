@@ -226,10 +226,7 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
 
   const isFull = useMemo(() => (fezData ? isFezFull(fezData) : false), [fezData]);
 
-  const participantLabel = useMemo(
-    () => (fezData ? getParticipantLabel(fezData) : undefined),
-    [fezData],
-  );
+  const participantLabel = useMemo(() => (fezData ? getParticipantLabel(fezData) : undefined), [fezData]);
 
   return {
     fezData,

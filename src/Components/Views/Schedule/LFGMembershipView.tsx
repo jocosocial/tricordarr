@@ -9,8 +9,8 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
-import {useFezData} from '#src/Hooks/useFezData';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useFezData} from '#src/Hooks/useFezData';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
@@ -56,7 +56,18 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
         },
       );
     }
-  }, [lfg, membershipMutation, currentUserID, updateMembership, setModalContent, setModalVisible, dispatchScrollToTop]);
+  }, [
+    lfg,
+    membershipMutation,
+    currentUserID,
+    updateMembership,
+    setModalContent,
+    setModalVisible,
+    dispatchScrollToTop,
+    isParticipant,
+    isWaitlist,
+    setRefreshing,
+  ]);
 
   const styles = StyleSheet.create({
     outerContainer: {
