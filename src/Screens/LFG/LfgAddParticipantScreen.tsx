@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {Text} from 'react-native-paper';
 
@@ -11,8 +10,9 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useFezData} from '#src/Hooks/useFezData';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -32,11 +32,8 @@ export const LfgAddParticipantScreen = (props: Props) => {
 
 const LfgAddParticipantScreenInner = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
-  const {data} = useFezQuery({
-    fezID: route.params.fezID,
-  });
-  const lfg = data?.pages[0];
-  const queryClient = useQueryClient();
+  const {fezData: lfg} = useFezData({fezID: route.params.fezID});
+  const {updateMembership} = useFezCacheReducer();
 
   const onPress = (user: UserHeader) => {
     participantMutation.mutate(
@@ -46,8 +43,8 @@ const LfgAddParticipantScreenInner = ({route, navigation}: Props) => {
         userID: user.userID,
       },
       {
-        onSuccess: async () => {
-          await queryClient.invalidateQueries({queryKey: [`/fez/${route.params.fezID}`]});
+        onSuccess: response => {
+          updateMembership(route.params.fezID, response.data);
           navigation.goBack();
         },
       },

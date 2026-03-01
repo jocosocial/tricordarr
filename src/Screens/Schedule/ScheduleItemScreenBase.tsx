@@ -1,8 +1,9 @@
 import pluralize from 'pluralize';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Badge, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 
+import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPerformerListItem';
@@ -20,6 +21,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {getParticipantLabel} from '#src/Hooks/useFezData';
 import {getDurationString} from '#src/Libraries/DateTime';
 import {guessDeckNumber} from '#src/Libraries/Ship';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
@@ -30,9 +32,16 @@ interface Props {
   onRefresh?: () => void;
   eventData?: FezData | EventData;
   showLfgChat?: boolean;
+  initialReadCount?: number;
 }
 
-export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData, showLfgChat = false}: Props) => {
+export const ScheduleItemScreenBase = ({
+  refreshing = false,
+  onRefresh,
+  eventData,
+  showLfgChat = false,
+  initialReadCount,
+}: Props) => {
   const navigation = useCommonStack();
   const {commonStyles} = useStyles();
 
@@ -41,9 +50,7 @@ export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData
       ...commonStyles.displayFlex,
       ...commonStyles.flexColumn,
     },
-    badge: {
-      ...commonStyles.bold,
-      ...commonStyles.paddingHorizontalSmall,
+    badgeContainer: {
       ...commonStyles.marginLeftSmall,
     },
     chatCountContainer: {
@@ -65,30 +72,25 @@ export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData
     if (!eventData || !('fezID' in eventData) || !eventData.members) {
       return;
     }
-    const unreadCount = eventData.members.postCount - eventData.members.readCount;
+    const readCountForBadge = initialReadCount ?? eventData.members.readCount;
+    const unreadCount = eventData.members.postCount - readCountForBadge;
     return (
       <View style={styles.chatCountContainer}>
         <Text>
           {eventData.members.postCount} {pluralize('post', eventData.members.postCount)}
         </Text>
-        {unreadCount !== 0 && <Badge style={styles.badge}>{`${unreadCount} new`}</Badge>}
+        {eventData.members?.isMuted ? (
+          <View style={styles.badgeContainer}>
+            <ScheduleItemStatusBadge status={'Muted'} />
+          </View>
+        ) : unreadCount !== 0 ? (
+          <View style={styles.badgeContainer}>
+            <ScheduleItemStatusBadge status={`${unreadCount} new`} />
+          </View>
+        ) : null}
       </View>
     );
   };
-
-  // I wrote this thinking it was needed, and now I don't believe that is true.
-  // useEffect(() => {
-  //   if (eventData && 'fezID' in eventData) {
-  //     // Intentionally doesn't expire itself. Save that until you open the chat.
-  //     // There's a bit of a race condition since opening this screen technically
-  //     // marks it as read from the server perspective.
-  //     console.log(`[ScheduleItemScreenBase.tsx] Marking fez as read ${eventData.fezID}`);
-  //     const invalidations = FezData.getCacheKeys().map(key => {
-  //       return queryClient.invalidateQueries(key);
-  //     });
-  //     Promise.all(invalidations);
-  //   }
-  // }, [eventData, queryClient]);
 
   if (!eventData) {
     return <LoadingView />;
@@ -163,7 +165,7 @@ export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData
                           FezType.isPrivateEventType(eventData.fezType)
                             ? CommonStackComponents.privateEventChatScreen
                             : CommonStackComponents.lfgChatScreen,
-                          {fezID: eventData.fezID},
+                          {fezID: eventData.fezID, initialReadCount},
                         )
                       }
                     />
@@ -183,7 +185,7 @@ export const ScheduleItemScreenBase = ({refreshing = false, onRefresh, eventData
                   {FezType.isLFGType(eventData.fezType) && showLfgChat && (
                     <DataFieldListItem
                       icon={AppIcons.group}
-                      description={FezData.getParticipantLabel(eventData)}
+                      description={getParticipantLabel(eventData)}
                       title={'Participation'}
                       onPress={() =>
                         navigation.push(CommonStackComponents.lfgParticipationScreen, {fezID: eventData.fezID})

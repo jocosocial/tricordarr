@@ -1,13 +1,13 @@
 import notifee from '@notifee/react-native';
 import {useAppState} from '@react-native-community/hooks';
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -22,6 +22,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {FezMutedView} from '#src/Components/Views/Static/FezMutedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -31,8 +32,11 @@ import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReduce
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useFezData} from '#src/Hooks/useFezData';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {createLogger} from '#src/Libraries/Logger';
 import {
   CommonStackComponents,
@@ -40,15 +44,27 @@ import {
   HelpScreenComponents,
   useCommonStack,
 } from '#src/Navigation/CommonScreens';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {FezData, PostContentData} from '#src/Structs/ControllerStructs';
-import {SocketFezMemberChangeData} from '#src/Structs/SocketStructs';
+import {type FezData, type FezPostData, type PostContentData} from '#src/Structs/ControllerStructs';
+import {SocketFezMemberChangeData, SocketFezPostData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('FezChatScreen.tsx');
+
+const getInitialScrollIndex = (fez: FezData, fezPostsData: FezPostData[], initialReadCount?: number) => {
+  const readCount = initialReadCount ?? fez.members?.readCount;
+  if (!fez.members || readCount === undefined || readCount === fez.members.postCount) {
+    return fezPostsData.length > 0 ? fezPostsData.length - 1 : undefined;
+  }
+  const loadedStart = fez.members.paginator.start;
+  const idx = Math.max(readCount - loadedStart, 0);
+  // Clamp to the loaded data range. readCount can exceed the loaded page
+  // when only a subset of posts have been fetched.
+  return Math.min(idx, fezPostsData.length - 1);
+};
 
 type Props = StackScreenProps<
   CommonStackParamList,
@@ -96,7 +112,11 @@ export const FezChatScreen = (props: Props) => {
 
 const FezChatScreenInner = ({route}: Props) => {
   const {
-    data,
+    fezData: fez,
+    fezPages,
+    postDayCount,
+    initialReadCount,
+    resetInitialReadCount,
     refetch,
     fetchNextPage,
     fetchPreviousPage,
@@ -105,17 +125,24 @@ const FezChatScreenInner = ({route}: Props) => {
     isFetchingNextPage,
     isFetchingPreviousPage,
     isFetching,
-  } = useFezQuery({fezID: route.params.fezID});
+  } = useFezData({fezID: route.params.fezID, initialReadCountHint: route.params.initialReadCount});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const fezPostMutation = useFezPostMutation();
   const {setSnackbarPayload} = useSnackbar();
-  const {fezSockets, openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
+  const {currentUserID} = useSession();
+  const {openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
-  const queryClient = useQueryClient();
+  const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
   const {appConfig} = useConfig();
   const appStateVisible = useAppState();
   const flatListRef = useRef<TConversationListV2Ref>(null);
-  const [fez, setFez] = useState<FezData>();
+  const fezSocketWithHandlerRef = useRef<{
+    ws: ReconnectingWebSocket;
+    handler: (e: WebSocketMessageEvent) => void;
+  } | null>(null);
+  const fezSocketMessageHandlerRef = useRef<(event: WebSocketMessageEvent) => void>(() => {});
+  const lastProcessedPostIDRef = useRef<number | null>(null);
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
@@ -145,43 +172,35 @@ const FezChatScreenInner = ({route}: Props) => {
               }
             />
           )}
-          <FezChatScreenActionsMenu fez={fez} onRefresh={onRefresh} />
+          <FezChatScreenActionsMenu fezID={route.params.fezID} onRefresh={onRefresh} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [fez, onRefresh, navigation]);
+  }, [fez, onRefresh, navigation, route.params.fezID]);
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       logger.info('fezSocketMessageHandler responding event', event);
       const socketMessage = JSON.parse(event.data);
       if ('joined' in socketMessage) {
-        // Then it's SocketFezMemberChangeData
         const memberChangeData = socketMessage as SocketFezMemberChangeData;
         const changeActionString = memberChangeData.joined ? 'joined' : 'left';
-        let changeString = `User ${memberChangeData.user.username} has ${changeActionString} the chat.`;
+        const changeString = `User ${memberChangeData.user.username} has ${changeActionString} the chat.`;
         setSnackbarPayload({message: changeString});
       } else if ('postID' in socketMessage) {
-        // Don't push our own posts via the socket.
-        // const socketFezPostData = socketMessage as SocketFezPostData;
-        // Apparently Swiftarr sends back a garbage timestamp?
-        // Replace it with now since it's probably now-ish anyway and we can fix it
-        // on reload.
-        // socketFezPostData.timestamp = new Date();
-        //  After all that, the server still considers the message unread until you do a GET containing it
-        //  So dynamically putting messages to the screen will help the local state but that's it.
-        //  And confuse any other client applications.
-        refetch();
-        // if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
-        //   dispatchFezPostsData({
-        //     type: FezPostsActions.appendPost,
-        //     fezPostData: socketFezPostData,
-        //   });
-        // }
+        const socketFezPostData = socketMessage as SocketFezPostData;
+        if (lastProcessedPostIDRef.current === socketFezPostData.postID) {
+          return;
+        }
+        lastProcessedPostIDRef.current = socketFezPostData.postID;
+        if (currentUserID != null && socketFezPostData.author.userID !== currentUserID) {
+          appendPostToCache(route.params.fezID, socketFezPostData);
+        }
       }
     },
-    [refetch, setSnackbarPayload],
+    [appendPostToCache, currentUserID, route.params.fezID, setSnackbarPayload],
   );
+  fezSocketMessageHandlerRef.current = fezSocketMessageHandler;
 
   const {handleLoadNext, handleLoadPrevious} = usePagination({
     fetchNextPage,
@@ -207,75 +226,68 @@ const FezChatScreenInner = ({route}: Props) => {
       values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
       // Mark as read if applicable.
       if (fez && fez.members) {
-        setFez({
-          ...fez,
-          members: {
-            ...fez.members,
-            readCount: fez.members.postCount,
-          },
-        });
+        markRead(fez.fezID);
       }
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {
-          onSuccess: async response => {
+          onSuccess: response => {
             formikHelpers.resetForm();
-            dispatchFezPostsData({
-              type: FezPostsActions.appendPost,
-              fezPostData: response.data,
-            });
-            // Mark stale so that it refetches with your new posts
-            // Some day this should just update the query data.
-            const invalidations = FezData.getCacheKeys(route.params.fezID).map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-            await Promise.all(invalidations);
+            appendPostToCache(route.params.fezID, response.data);
+            resetInitialReadCount();
+            dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           },
           onSettled: () => formikHelpers.setSubmitting(false),
         },
       );
     },
-    [fez, fezPostMutation, route.params.fezID, setFez, queryClient, dispatchFezPostsData],
+    [fez, markRead, fezPostMutation, route.params.fezID, appendPostToCache, resetInitialReadCount, dispatchScrollToTop],
   );
 
   // Initial set useEffect
   useEffect(() => {
-    if (data) {
-      dispatchFezPostsData({
-        type: FezPostsActions.set,
-        fezPosts: [...data.pages.flatMap(page => page.members?.posts || [])],
-      });
-      setFez(data?.pages[0]);
-    }
-  }, [data, dispatchFezPostsData, setFez]);
+    dispatchFezPostsData({
+      type: FezPostsActions.set,
+      fezPosts: [...fezPages.flatMap(page => page.members?.posts || [])],
+    });
+  }, [fezPages, dispatchFezPostsData]);
 
-  // Socket useEffect
-  // Don't put anything else in this useEffect. The socket stuff can get a little over-excited
-  // with rendering.
+  // Socket useEffect: open/attach once per fezID (route param). Cleanup removes listener and
+  // closes only on unmount or fezID change. Handler is read from a ref so message updates
+  // do not retrigger this effect and create duplicate sockets.
+  const fezID = route.params.fezID;
   useEffect(() => {
-    const handleFezSocket = async () => {
-      if (fez) {
-        const newSocketInfo = await openFezSocket(fez.fezID);
-        if (newSocketInfo.isNew && newSocketInfo.ws) {
-          logger.debug(`Adding handler to fezSocket for fez ${fez.fezID} (${fez.fezType})`);
-          newSocketInfo.ws.addEventListener('message', fezSocketMessageHandler);
-          dispatchFezSockets({
-            type: WebSocketStorageActions.upsert,
-            key: fez.fezID,
-            socket: newSocketInfo.ws,
-          });
-        } else {
-          logger.debug(`Skipping fezSocket handler for fez ${fez.fezID} (${fez.fezType})`);
+    let cancelled = false;
+    const attachSocket = async () => {
+      const socketInfo = await openFezSocket(fezID);
+      if (cancelled || !socketInfo.ws) {
+        if (socketInfo.ws) {
+          socketInfo.ws.close();
         }
+        return;
       }
+      const wrapper = (e: WebSocketMessageEvent) => fezSocketMessageHandlerRef.current?.(e);
+      socketInfo.ws.addEventListener('message', wrapper);
+      fezSocketWithHandlerRef.current = {ws: socketInfo.ws, handler: wrapper};
+      if (socketInfo.isNew) {
+        dispatchFezSockets({
+          type: WebSocketStorageActions.upsert,
+          key: fezID,
+          socket: socketInfo.ws,
+        });
+      }
+      logger.debug(`Fez socket attached for fez ${fezID} (isNew: ${socketInfo.isNew})`);
     };
-    handleFezSocket();
+    attachSocket();
     return () => {
-      if (fez) {
-        closeFezSocket(fez.fezID);
+      const current = fezSocketWithHandlerRef.current;
+      if (current) {
+        current.ws.removeEventListener('message', current.handler);
+        fezSocketWithHandlerRef.current = null;
       }
+      closeFezSocket(fezID);
     };
-  }, [closeFezSocket, dispatchFezSockets, fez, fezSocketMessageHandler, fezSockets, openFezSocket]);
+  }, [fezID, closeFezSocket, dispatchFezSockets, openFezSocket]);
 
   const getFezHeaderTitle = useCallback(() => {
     if (fez) {
@@ -296,22 +308,23 @@ const FezChatScreenInner = ({route}: Props) => {
   }, [getFezHeaderTitle, getNavButtons, navigation]);
 
   // Mark as Read useEffect
+  // Fire when detail has unread, or when initialReadCount (from list cache) indicates unread
+  // even if the detail GET already marked as read on the server.
   useEffect(() => {
     logger.debug('Mark As Read useEffect');
-    if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-      // This does not invalidate the current key because that's how we determine
-      // where the NEW marker goes.
-      const invalidations = FezData.getCacheKeys().map(key => {
-        return queryClient.invalidateQueries({queryKey: key});
-      });
-      Promise.all(invalidations);
-      if (appConfig.markReadCancelPush) {
-        logger.debug('auto canceling notifications.');
-        // This is a no-op on iOS. The system automatically dismisses notifications on press.
-        notifee.cancelDisplayedNotification(fez.fezID);
+    if (fez && fez.members) {
+      const hasUnread =
+        fez.members.readCount !== fez.members.postCount ||
+        (initialReadCount !== undefined && initialReadCount < fez.members.postCount);
+      if (hasUnread) {
+        markRead(fez.fezID);
+        if (appConfig.markReadCancelPush) {
+          logger.debug('auto canceling notifications.');
+          notifee.cancelDisplayedNotification(fez.fezID);
+        }
       }
     }
-  }, [fez, queryClient, appConfig.markReadCancelPush]);
+  }, [fez, markRead, initialReadCount, appConfig.markReadCancelPush]);
 
   // Visible useEffect
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background
@@ -332,19 +345,23 @@ const FezChatScreenInner = ({route}: Props) => {
   // This doesn't do an invalidation so that the local data is fresh if the
   // user goes back in quickly. queryClient.invalidateQueries([`/fez/${fez.fezID}`]);
   // would be the invalidation.
-  useEffect(() => {
-    return () => {
-      logger.debug('useEffect return is running.');
-      if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-        refetch();
-      }
-      refetchUserNotificationData();
-    };
-  }, [fez, refetch, refetchUserNotificationData]);
+  //
+  // 20260225 Disabling this because I don't think we need it anymore with all of the
+  // local state mutation stuff.
+  // useEffect(() => {
+  //   return () => {
+  //     logger.debug('useEffect return is running.');
+  //     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
+  //       refetch();
+  //     }
+  //     refetchUserNotificationData();
+  //   };
+  // }, [fez, refetch, refetchUserNotificationData]);
 
   const [readyToShow, setReadyToShow] = useState(false);
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
+  const frozenScrollIndexRef = useRef<number | null>(null);
 
   const onReadyToShow = useCallback(() => {
     logger.debug('Fez chat list ready to show');
@@ -356,16 +373,12 @@ const FezChatScreenInner = ({route}: Props) => {
     return <LoadingView />;
   }
 
-  const getInitialScrollIndex = () => {
-    if (!fez.members || fez.members.readCount === fez.members.postCount) {
-      return fezPostsData.length > 0 ? fezPostsData.length - 1 : undefined;
-    }
-    const loadedStart = fez.members.paginator.start;
-    const idx = Math.max(fez.members.readCount - loadedStart, 0);
-    // Clamp to the loaded data range. readCount can exceed the loaded page
-    // when only a subset of posts have been fetched.
-    return Math.min(idx, fezPostsData.length - 1);
-  };
+  const computedScrollIndex = getInitialScrollIndex(fez, fezPostsData, initialReadCount);
+  if (frozenScrollIndexRef.current === null && computedScrollIndex !== undefined && computedScrollIndex >= 0) {
+    frozenScrollIndexRef.current = computedScrollIndex;
+  }
+  const initialScrollIndex = frozenScrollIndexRef.current ?? computedScrollIndex;
+  const listKey = `${fez.fezID}-${initialScrollIndex ?? 'bottom'}`;
 
   const overlayStyles = StyleSheet.create({
     overlay: {
@@ -389,6 +402,7 @@ const FezChatScreenInner = ({route}: Props) => {
       {fez.members?.isMuted && <FezMutedView />}
       <View style={commonStyles.flex}>
         <FezConversationListV2
+          key={listKey}
           fez={fez}
           fezPostData={fezPostsData}
           listRef={flatListRef}
@@ -397,7 +411,9 @@ const FezChatScreenInner = ({route}: Props) => {
           handleLoadNext={handleLoadNext}
           handleLoadPrevious={handleLoadPrevious}
           refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
-          initialScrollIndex={getInitialScrollIndex()}
+          initialScrollIndex={initialScrollIndex}
+          initialReadCount={initialReadCount}
+          postDayCount={postDayCount}
           onReadyToShow={onReadyToShow}
         />
         {!readyToShow && (

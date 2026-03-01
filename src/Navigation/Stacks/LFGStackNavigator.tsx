@@ -9,14 +9,16 @@ import {LfgCreateScreen} from '#src/Screens/LFG/LfgCreateScreen';
 import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
 import {LfgSearchScreen} from '#src/Screens/LFG/LfgSearchScreen';
 import {FezListEndpoints} from '#src/Types';
-import {WithIntent} from '#src/Types/RouteParams';
+import {WithIntent, WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 export type LfgStackParamList = CommonStackParamList & {
-  LfgListScreen: WithIntent<{
-    endpoint: FezListEndpoints;
-    onlyNew?: boolean;
-    cruiseDay?: number;
-  }>;
+  LfgListScreen: WithScrollToTopIntent<
+    WithIntent<{
+      endpoint: FezListEndpoints;
+      onlyNew?: boolean;
+      cruiseDay?: number;
+    }>
+  >;
   LfgCreateScreen: {cruiseDay?: number};
   LfgSearchScreen: {
     endpoint: FezListEndpoints;

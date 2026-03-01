@@ -3,7 +3,7 @@ import React, {memo, ReactNode, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import {Badge} from 'react-native-paper';
 
-import {CancelledBadge} from '#src/Components/Badges/CancelledBadge';
+import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
 import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezCardActionsMenu} from '#src/Components/Menus/Fez/FezCardActionsMenu';
@@ -13,8 +13,8 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezData} from '#src/Hooks/useFezData';
 import {useMenu} from '#src/Hooks/useMenu';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
 
@@ -53,7 +53,7 @@ const FezCardInternal = ({
     },
     [setModalContent, setModalVisible],
   );
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {isParticipant, participantLabel} = useFezData({fezID: fez.fezID});
 
   const styles = StyleSheet.create({
     badge: {
@@ -76,7 +76,13 @@ const FezCardInternal = ({
       );
     }
     if (fez.cancelled) {
-      return <CancelledBadge />;
+      return <ScheduleItemStatusBadge status={'Cancelled'} />;
+    }
+    if (fez.members?.isMuted) {
+      // Other mute icons in this app are Red. Because this one is not on the background
+      // (is on a FezCard) instead I didn't like the contrast of the red on grey so I'm
+      // making this white to match the text and other icons of this card style.
+      return <AppIcon icon={AppIcons.mute} color={theme.colors.constantWhite} />;
     }
     if (unreadCount) {
       return <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>;
@@ -93,8 +99,7 @@ const FezCardInternal = ({
    * It's a Personal or Private Event and you are a member.
    */
   const showParticipation =
-    FezType.isLFGType(fez.fezType) ||
-    (FezType.isPrivateEventType(fez.fezType) && FezData.isParticipant(fez, profilePublicData?.header));
+    FezType.isLFGType(fez.fezType) || (FezType.isPrivateEventType(fez.fezType) && isParticipant);
 
   const handleLongPress = useCallback(() => {
     if (onLongPress) {
@@ -111,7 +116,7 @@ const FezCardInternal = ({
       cardStyle={styles.card}
       title={fez.title}
       author={fez.fezType === FezType.personalEvent ? undefined : fez.owner}
-      participation={showParticipation ? FezData.getParticipantLabel(fez) : undefined}
+      participation={showParticipation ? participantLabel : undefined}
       location={fez.location}
       titleRight={getBadge}
       startTime={fez.startTime}

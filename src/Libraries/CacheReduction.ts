@@ -135,6 +135,27 @@ export const sortedInsertIntoPages = <TPage, TItem>(
 };
 
 /**
+ * Re-sort all items across pages: flatten, sort with compareFn, then re-split
+ * using the original page sizes so InfiniteData shape is preserved.
+ */
+export const sortItemsInPages = <TPage, TItem>(
+  data: InfiniteData<TPage>,
+  accessor: PageItemAccessor<TPage, TItem>,
+  compareFn: (a: TItem, b: TItem) => number,
+): InfiniteData<TPage> => {
+  const pageSizes = data.pages.map(page => (accessor.get(page) ?? []).length);
+  const items = data.pages.flatMap(page => accessor.get(page) ?? []);
+  const sorted = [...items].sort(compareFn);
+  let offset = 0;
+  const pages = data.pages.map((page, i) => {
+    const slice = sorted.slice(offset, offset + pageSizes[i]);
+    offset += pageSizes[i];
+    return accessor.set(page, slice);
+  });
+  return {...data, pages};
+};
+
+/**
  * Compute the high-water mark (highest position reached) across all pages
  * of an InfiniteData result. Useful for determining how many items have
  * actually been fetched in a paginated query.

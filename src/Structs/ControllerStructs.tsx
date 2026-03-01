@@ -2,7 +2,6 @@ import {QueryKey} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import URLParse from 'url-parse';
 
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -12,7 +11,6 @@ import {LikeType} from '#src/Enums/LikeType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {createLogger} from '#src/Libraries/Logger';
-import {StorageKeys} from '#src/Libraries/Storage';
 
 const logger = createLogger('ControllerStructs.tsx');
 
@@ -27,18 +25,6 @@ export interface TokenStringData {
   accessLevel: UserAccessLevel;
   /// The token string.
   token: string;
-}
-
-/**
- * Custom functions to interact with the local encrypted copy of the users token data.
- * I really hope I don't regret doing this.
- */
-export namespace TokenStringData {
-  export const getLocal = async (key: keyof typeof StorageKeys) => await EncryptedStorage.getItem(key);
-  export const setLocal = async (key: keyof typeof StorageKeys, data: TokenStringData) => {
-    await EncryptedStorage.setItem(key, JSON.stringify(data));
-  };
-  export const clearLocal = async (key: keyof typeof StorageKeys) => await EncryptedStorage.removeItem(key);
 }
 
 export interface UserHeader {
@@ -336,76 +322,6 @@ export interface FezData {
   lastModificationTime: string;
   /// Will be nil if user is not a member of the fez (in the participant or waiting lists).
   members?: MembersOnlyData;
-}
-
-/**
- * Bonus helper functions for FezData.
- */
-export namespace FezData {
-  /**
-   * Get a label for the number of attendees of this Fez. If the count is 0 that means
-   * it is unlimited and we don't need to tell users how many are remaining.
-   * @param fez This particular chat.
-   */
-  export const getParticipantLabel = (fez: FezData) => {
-    var minimumSuffix = '';
-    if (fez.minParticipants !== 0) {
-      minimumSuffix = `, ${fez.minParticipants} minimum`;
-    }
-    if (fez.maxParticipants === 0) {
-      return `${fez.participantCount} ${pluralize('attendee', fez.participantCount)}${minimumSuffix}`;
-    }
-    const waitlistCount: number = fez.members?.waitingList.length || 0;
-    let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} ${pluralize(
-      'participant',
-      fez.maxParticipants,
-    )}`;
-    if (fez.participantCount >= fez.maxParticipants) {
-      attendeeCountString = 'Full';
-    }
-    return `${attendeeCountString}, ${waitlistCount} waitlisted${minimumSuffix}`;
-  };
-
-  const isMember = (members: UserHeader[] | undefined, user: UserHeader) => {
-    if (!members) {
-      return false;
-    }
-    for (let i = 0; i < members.length; i++) {
-      if (members[i].userID === user.userID) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  export const isParticipant = (fezData?: FezData, user?: UserHeader) => {
-    if (!user || !fezData) {
-      return false;
-    }
-    return isMember(fezData.members?.participants, user);
-  };
-
-  export const isWaitlist = (fezData?: FezData, user?: UserHeader) => {
-    if (!user || !fezData) {
-      return false;
-    }
-    return isMember(fezData.members?.waitingList, user);
-  };
-
-  export const isFull = (fezData: FezData) => {
-    if (fezData.maxParticipants === 0 || !fezData.members) {
-      return false;
-    }
-    return fezData.members.participants.length >= fezData.maxParticipants;
-  };
-
-  export const getCacheKeys = (fezID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [['/fez/joined'], ['/fez/owner'], ['/fez/open'], ['/fez/former']];
-    if (fezID) {
-      queryKeys.push([`/fez/${fezID}`]);
-    }
-    return queryKeys;
-  };
 }
 
 export interface FezListData {
@@ -889,17 +805,17 @@ export interface PostDetailData {
 }
 
 export namespace PostDetailData {
-  export const hasUserReacted = (postData: PostDetailData, userHeader: UserHeader, likeType?: LikeType) => {
+  export const hasUserReacted = (postData: PostDetailData, userID: string, likeType?: LikeType) => {
     if (!likeType) {
       return !!postData.userLike;
     }
     switch (likeType) {
       case LikeType.like:
-        return postData.likes.flatMap(uh => uh.userID).includes(userHeader.userID);
+        return postData.likes.flatMap(uh => uh.userID).includes(userID);
       case LikeType.laugh:
-        return postData.laughs.flatMap(uh => uh.userID).includes(userHeader.userID);
+        return postData.laughs.flatMap(uh => uh.userID).includes(userID);
       case LikeType.love:
-        return postData.loves.flatMap(uh => uh.userID).includes(userHeader.userID);
+        return postData.loves.flatMap(uh => uh.userID).includes(userID);
     }
   };
 }

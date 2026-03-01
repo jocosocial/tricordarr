@@ -24,6 +24,10 @@ interface FezConversationListV2Props {
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
   initialScrollIndex?: number;
+  /** When provided (e.g. from list cache), used for "New" divider instead of fez.members.readCount. */
+  initialReadCount?: number;
+  /** When provided, day dividers are only shown when this is > 2. Omit to always show dividers. */
+  postDayCount?: number;
   /** Callback fired once the list has reached its initial scroll position. */
   onReadyToShow?: () => void;
 }
@@ -48,10 +52,14 @@ export const FezConversationListV2 = ({
   hasPreviousPage,
   hasNextPage,
   initialScrollIndex,
+  initialReadCount,
+  postDayCount,
   onReadyToShow,
 }: FezConversationListV2Props) => {
   const {commonStyles} = useStyles();
   const {getAdjustedMoment} = useTime();
+
+  const showDayDividers = postDayCount === undefined || postDayCount > 2;
 
   /** Show a TimeDivider above the first item and at each day boundary. */
   const showTimeDivider = useCallback(
@@ -66,47 +74,57 @@ export const FezConversationListV2 = ({
     [fezPostData, getAdjustedMoment],
   );
 
-  // Lock initial read state on mount. The server's readCount lags behind postCount
-  // when new messages arrive via socket, which causes oscillation. Locking prevents:
-  // - alignItemsAtEnd layout thrash that breaks maintainScrollAtEnd
-  // - "New" divider jumping to a new position on every incoming message
+  // Lock initial read state on mount. Use initialReadCount when provided (e.g. from list cache)
+  // so the "New" divider shows correctly on subsequent visits when detail cache is already marked read.
+  const effectiveReadCount = initialReadCount ?? fez.members?.readCount ?? 0;
   const initialReadStateRef = useRef({
-    isFullyRead: fez.members ? fez.members.readCount === fez.members.postCount : true,
-    readCount: fez.members?.readCount ?? 0,
+    readCount: effectiveReadCount,
     paginatorStart: fez.members?.paginator?.start ?? 0,
   });
 
-  // Compute the divider index once from the locked read state for the scroll button.
-  // Only set when the divider is within the loaded data range.
+  // alignItemsAtEnd is a layout concern — once set false (unreads detected) it must
+  // not flip back to true or the list layout will jump. Locked via one-way ref.
+  const alignAtEndRef = useRef(fez.members ? effectiveReadCount === fez.members.postCount : true);
+  if (alignAtEndRef.current && fez.members && effectiveReadCount !== fez.members.postCount) {
+    alignAtEndRef.current = false;
+  }
+
+  // Divider visibility is dynamic: effectiveReadCount uses the frozen initialReadCount
+  // (stable until resetInitialReadCount), so this naturally shows the divider for
+  // unreads and clears it when the user posts (which resets initialReadCount).
+  const isFullyRead = fez.members ? effectiveReadCount === fez.members.postCount : true;
+
   const newDividerIndex = (() => {
-    const {isFullyRead, readCount, paginatorStart} = initialReadStateRef.current;
     if (isFullyRead) return undefined;
+    const {readCount, paginatorStart} = initialReadStateRef.current;
     const idx = readCount - paginatorStart;
     return idx >= 0 && idx < fezPostData.length ? idx : undefined;
   })();
 
-  const showNewDivider = useCallback((index: number) => {
-    // Use the locked initial read state so the divider position is stable.
-    // If the chat was fully read when opened, never show a divider — the user
-    // is actively watching and doesn't need a "New" marker.
-    const {isFullyRead, readCount, paginatorStart} = initialReadStateRef.current;
-    if (isFullyRead) {
-      return false;
-    }
-    return readCount - paginatorStart === index;
-  }, []);
+  const showNewDivider = useCallback(
+    (index: number) => {
+      if (isFullyRead) {
+        return false;
+      }
+      const {readCount, paginatorStart} = initialReadStateRef.current;
+      return readCount - paginatorStart === index;
+    },
+    [isFullyRead],
+  );
 
   const renderItem = useCallback(
     ({item, index}: {item: FezPostData; index: number}) => {
       return (
         <View>
-          {showTimeDivider(index) && <TimeDivider label={getAdjustedMoment(item.timestamp).format('dddd MMM Do')} />}
+          {showDayDividers && showTimeDivider(index) && (
+            <TimeDivider label={getAdjustedMoment(item.timestamp).format('dddd MMM Do')} />
+          )}
           {showNewDivider(index) && <LabelDivider label={'New'} />}
           <FezPostListItem fezPost={item} index={index} fez={fez} />
         </View>
       );
     },
-    [fez, showNewDivider, showTimeDivider, getAdjustedMoment],
+    [fez, showDayDividers, showNewDivider, showTimeDivider, getAdjustedMoment],
   );
 
   const renderSeparator = useCallback(() => <SpaceDivider />, []);
@@ -140,7 +158,7 @@ export const FezConversationListV2 = ({
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
       initialScrollIndex={initialScrollIndex}
-      alignItemsAtEnd={initialReadStateRef.current.isFullyRead}
+      alignItemsAtEnd={alignAtEndRef.current}
       maintainScrollAtEnd={true}
       estimatedItemSize={100}
       onReadyToShow={onReadyToShow}

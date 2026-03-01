@@ -1,4 +1,3 @@
-import {QueryClient, useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
@@ -24,7 +23,7 @@ interface FezCreateScreenBaseProps {
   renderForm: (props: FezCreateScreenBaseFormProps) => React.ReactNode;
   initialValues: FezFormValues;
   buildFezContentData: (values: FezFormValues, startTime: Date, endTime: Date) => FezContentData;
-  onSuccess: (response: FezData, queryClient: QueryClient) => Promise<void>;
+  onSuccess: (response: FezData) => void;
   helpScreen?: HelpScreenComponents;
   screenTitle?: string;
 }
@@ -39,7 +38,6 @@ export const FezCreateScreenBase = ({
 }: FezCreateScreenBaseProps) => {
   const navigation = useCommonStack();
   const createMutation = useFezCreateMutation();
-  const queryClient = useQueryClient();
 
   const getNavButtons = useCallback(() => {
     if (helpScreen === undefined) return undefined;
@@ -71,8 +69,8 @@ export const FezCreateScreenBase = ({
     createMutation.mutate(
       {fezContentData},
       {
-        onSuccess: async response => {
-          await onSuccess(response.data, queryClient);
+        onSuccess: response => {
+          onSuccess(response.data);
         },
         onSettled: () => {
           helpers.setSubmitting(false);

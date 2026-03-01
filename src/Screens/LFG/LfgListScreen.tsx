@@ -1,7 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
-import {useQueryClient} from '@tanstack/react-query';
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
@@ -22,6 +21,7 @@ import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -34,7 +34,7 @@ import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
-import {FezListEndpoints} from '#src/Types';
+import {FezListEndpoints, ScheduleFlatListSeparator} from '#src/Types';
 
 interface LfgListScreenInnerProps {
   endpoint: FezListEndpoints;
@@ -45,6 +45,7 @@ interface LfgListScreenInnerProps {
   showFab?: boolean;
   onlyNewInitial?: boolean;
   cruiseDayInitial?: number;
+  scrollToTopIntent?: number;
 }
 
 /**
@@ -60,6 +61,7 @@ const LfgListScreenInner = ({
   showFab = true,
   onlyNewInitial,
   cruiseDayInitial,
+  scrollToTopIntent,
 }: LfgListScreenInnerProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} = useLfgFilter();
   const {commonStyles} = useStyles();
@@ -98,7 +100,15 @@ const LfgListScreenInner = ({
   const {notificationSocket} = useSocket();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
-  const queryClient = useQueryClient();
+  const {invalidateFez} = useFezCacheReducer();
+
+  // We used to show the time separators for all days all lists. However since realizing that sorting
+  // LFGs is highly variable by endpoint (find, joined, owned all different) that divider is kinda
+  // meaningless. Especially since we already show the time in the card.
+  // Open and Former sort by startTime so those are the only ones we potentially want to show
+  // the dividers in.
+  const showDayInDividers = (selectedCruiseDay === 0 && endpoint === 'open') || endpoint === 'former';
+  const listSeparator: ScheduleFlatListSeparator = showDayInDividers ? 'day' : 'none';
 
   const getNavButtons = useCallback(() => {
     return (
@@ -128,18 +138,12 @@ const LfgListScreenInner = ({
     (event: WebSocketMessageEvent) => {
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.fezUnreadMsg) {
-        const invalidations = FezData.getCacheKeys().map(key => {
-          return queryClient.invalidateQueries({queryKey: key});
-        });
-        Promise.all(invalidations);
+        invalidateFez();
       } else {
-        // This is kinda a lazy way out, but it works.
-        // Not using onRefresh() so that we don't show the sudden refreshing circle.
-        // Hopefully that's a decent idea.
         refetch();
       }
     },
-    [queryClient, refetch],
+    [invalidateFez, refetch],
   );
 
   useEffect(() => {
@@ -186,6 +190,23 @@ const LfgListScreenInner = ({
     }
   }, [isError, onQueryError]);
 
+  useEffect(() => {
+    if (scrollToTopIntent) {
+      listRef.current?.scrollToOffset({offset: 0, animated: false});
+    }
+  }, [scrollToTopIntent]);
+
+  /**
+   * Scroll to top when the endpoint changes.
+   */
+  useEffect(() => {
+    listRef.current?.scrollToOffset({offset: 0, animated: false});
+  }, [endpoint]);
+
+  /**
+   * showDayInCard used to be false for all lists. But with the added complexity of dividers
+   * (see above) I think the consistency is more better with true.
+   */
   return (
     <AppView>
       <TimezoneWarningView />
@@ -193,7 +214,7 @@ const LfgListScreenInner = ({
         <ScheduleHeaderView
           selectedCruiseDay={selectedCruiseDay}
           setCruiseDay={handleSetCruiseDay}
-          scrollToNow={scrollToNow}
+          scrollToNow={endpoint === 'open' ? scrollToNow : undefined}
           enableAll={true}
         />
       )}
@@ -206,15 +227,16 @@ const LfgListScreenInner = ({
           <LFGFlatList
             listRef={listRef}
             items={fezList}
-            showDayInDividers={selectedCruiseDay === 0 || endpoint === 'former'}
+            showDayInDividers={showDayInDividers}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            separator={'time'}
+            separator={listSeparator}
             onScrollThreshold={onScrollThreshold}
             handleLoadNext={handleLoadNext}
             hasNextPage={hasNextPage}
             enableReportOnly={enableReportOnly}
-            showDayInCard={false}
+            showDayInCard={true}
             listHeader={listHeader}
+            overScroll={true}
           />
         )}
       </View>
@@ -273,6 +295,7 @@ const LfgListScreenWithEndpoint = ({route, navigation}: LfgListScreenWithEndpoin
         showFab={showFab}
         onlyNewInitial={route.params.onlyNew}
         cruiseDayInitial={route.params.cruiseDay}
+        scrollToTopIntent={route.params.scrollToTopIntent}
       />
     </DisabledFeatureScreen>
   );

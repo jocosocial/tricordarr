@@ -21,7 +21,6 @@ interface ForumPostListProps {
   forumData?: ForumData;
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
-  maintainViewPosition?: boolean;
   enableShowInThread?: boolean;
   listRef: React.RefObject<FlashListRef<PostData> | null>;
   getListHeader?: () => React.JSX.Element;

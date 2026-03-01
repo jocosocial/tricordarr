@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -9,6 +8,9 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
@@ -31,7 +33,8 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
   const {setModalVisible} = useModal();
   const {theme} = useAppTheme();
   const membershipMutation = useFezMembershipMutation();
-  const queryClient = useQueryClient();
+  const {updateMembership} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
 
   const onSubmit = () => {
     membershipMutation.mutate(
@@ -40,12 +43,10 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
         action: 'unjoin',
       },
       {
-        onSuccess: async () => {
+        onSuccess: response => {
           setModalVisible(false);
-          const invalidations = FezData.getCacheKeys(fezData.fezID).map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          await Promise.all(invalidations);
+          updateMembership(fezData.fezID, response.data, 'unjoin');
+          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
         },
       },
     );

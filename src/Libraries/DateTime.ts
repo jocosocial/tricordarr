@@ -382,6 +382,20 @@ export const getEventTimezoneOffset = (originTimeZoneID: string, startTime?: str
   return 0;
 };
 
+/**
+ * Swift measures time from 2001-01-01 instead of the Unix epoch like every other
+ * system on the planet. Pass seconds since that arbitrary reference date and we'll
+ * give you a proper ISO8601 string. If you already have a string (e.g. from the API),
+ * we return it unchanged.
+ */
+export function swiftTimestampToISO(raw: string | number): string {
+  if (typeof raw === 'string') {
+    return raw;
+  }
+  // 978307200 = seconds from Unix epoch (1970-01-01) to Swift's reference (2001-01-01)
+  return new Date((978307200 + raw) * 1000).toISOString();
+}
+
 // Formatter for relative time
 export const timeAgo = new TimeAgo('en-US');
 

@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
@@ -10,12 +9,15 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/useFezForm';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {HelpScreenComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
-import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
+import {FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
 export interface FezEditScreenBaseFormProps {
@@ -33,7 +35,8 @@ interface FezEditScreenBaseProps {
 export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: FezEditScreenBaseProps) => {
   const navigation = useCommonStack();
   const updateMutation = useFezUpdateMutation();
-  const queryClient = useQueryClient();
+  const {updateFez} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
   const {tzAtTime} = useTimeZone();
   const {getInitialValuesFromFez} = useFezForm();
 
@@ -83,11 +86,9 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
         },
       },
       {
-        onSuccess: async () => {
-          const invalidations = UserNotificationData.getCacheKeys()
-            .concat(FezData.getCacheKeys(fez.fezID))
-            .map(key => queryClient.invalidateQueries({queryKey: key}));
-          await Promise.all(invalidations);
+        onSuccess: response => {
+          updateFez(fez.fezID, response.data);
+          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

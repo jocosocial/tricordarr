@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import {FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
@@ -14,7 +13,10 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -41,7 +43,8 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
   const fezMutation = useFezCreateMutation();
   const fezPostMutation = useFezPostMutation();
   const [seamailFormValid, setSeamailFormValid] = useState(false);
-  const queryClient = useQueryClient();
+  const {createFez, appendPost} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
   // Use a ref to store the created fez data immediately (synchronously) to avoid race condition
   const createdFezRef = useRef<FezData | null>(null);
 
@@ -73,8 +76,13 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
         {fezContentData: contentData},
         {
           onSuccess: response => {
-            // Store in ref immediately (synchronously) to avoid race condition with submitForm
             createdFezRef.current = response.data;
+            const forUser = values.createdByTwitarrTeam
+              ? 'TwitarrTeam'
+              : values.createdByModerator
+                ? 'moderator'
+                : undefined;
+            createFez(response.data, forUser);
             // Whatever we picked in the SeamailCreate is what should be set in the Post.
             seamailPostFormRef.current?.setFieldValue('postAsModerator', values.createdByModerator);
             seamailPostFormRef.current?.setFieldValue('postAsTwitarrTeam', values.createdByTwitarrTeam);
@@ -86,7 +94,7 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
         },
       );
     },
-    [fezMutation, resetSubmitting],
+    [fezMutation, resetSubmitting, createFez],
   );
 
   // Handler for pushing the FezPost submit button.
@@ -98,12 +106,10 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
         fezPostMutation.mutate(
           {fezID: fezData.fezID, postContentData: values},
           {
-            onSuccess: async () => {
-              const invalidations = FezData.getCacheKeys().map(key => {
-                return queryClient.invalidateQueries({queryKey: key});
-              });
-              await Promise.all(invalidations);
+            onSuccess: response => {
+              appendPost(fezData.fezID, response.data);
               resetSubmitting();
+              dispatchScrollToTop(ChatStackScreenComponents.seamailListScreen);
               navigation.replace(CommonStackComponents.seamailChatScreen, {
                 fezID: fezData.fezID,
               });
@@ -118,7 +124,7 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
         resetSubmitting();
       }
     },
-    [fezPostMutation, navigation, resetSubmitting, queryClient],
+    [fezPostMutation, navigation, resetSubmitting, appendPost, dispatchScrollToTop],
   );
 
   // Handler to trigger the chain of events needed to complete this screen.

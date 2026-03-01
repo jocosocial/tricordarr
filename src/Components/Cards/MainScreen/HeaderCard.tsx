@@ -3,6 +3,7 @@ import {Card} from 'react-native-paper';
 
 import {MainImageCardCover} from '#src/Components/Cards/MainScreen/MainImageCardCover';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useTime} from '#src/Context/Contexts/TimeContext';
 
 /**
  * Card for the main screen.
@@ -12,14 +13,14 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
  */
 export const HeaderCard = () => {
   const {commonStyles} = useStyles();
+  const {hourlyUpdatingDate} = useTime();
 
-  const date = new Date();
   const options: Intl.DateTimeFormatOptions = {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
   };
-  const formattedDate = date.toLocaleString('en-US', options);
+  const formattedDate = hourlyUpdatingDate.toLocaleString('en-US', options);
 
   return (
     <Card>

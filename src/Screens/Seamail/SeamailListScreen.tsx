@@ -1,7 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -18,6 +17,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
@@ -29,12 +29,10 @@ import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 import {Selectable} from '#src/Types/Selectable';
 
 type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
@@ -62,15 +60,16 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
     forUser: asPrivilegedUser,
     onlyNew: showUnreadOnly,
   });
-  const {notificationSocket, closeFezSocket} = useSocket();
+  const {closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {commonStyles} = useStyles();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const [fezList, setFezList] = useState<FezData[]>([]);
+  const [userSwitchScrollToTopIntent, setUserSwitchScrollToTopIntent] = useState<number | undefined>(undefined);
+  const prevAsPrivilegedUserRef = useRef(asPrivilegedUser);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
-  const queryClient = useQueryClient();
   const {selectedItems, enableSelection} = useSelection();
   const {handleLoadNext} = usePagination({
     fetchNextPage,
@@ -90,24 +89,12 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
     }
   }, [data]);
 
-  const notificationHandler = useCallback(
-    (event: WebSocketMessageEvent) => {
-      const socketMessage = JSON.parse(event.data) as SocketNotificationData;
-      if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
-        const invalidations = FezData.getCacheKeys().map(key => {
-          return queryClient.invalidateQueries({queryKey: key});
-        });
-        Promise.all(invalidations);
-      } else {
-        // This is kinda a lazy way out, but it works.
-        // Not using onRefresh() so that we don't show the sudden refreshing circle.
-        // Hopefully that's a decent idea.
-        refetch();
-      }
-      // }
-    },
-    [queryClient, refetch],
-  );
+  useEffect(() => {
+    if (prevAsPrivilegedUserRef.current !== asPrivilegedUser) {
+      prevAsPrivilegedUserRef.current = asPrivilegedUser;
+      setUserSwitchScrollToTopIntent(Date.now());
+    }
+  }, [asPrivilegedUser]);
 
   const getNavButtons = useCallback(() => {
     if (enableSelection) {
@@ -142,17 +129,6 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   }, [enableSelection, showUnreadOnly, asPrivilegedUser, navigation, setRefreshing, fezList, selectedItems]);
 
   useEffect(() => {
-    if (notificationSocket) {
-      notificationSocket.addEventListener('message', notificationHandler);
-    }
-    return () => {
-      if (notificationSocket) {
-        notificationSocket.removeEventListener('message', notificationHandler);
-      }
-    };
-  }, [notificationHandler, notificationSocket]);
-
-  useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
     });
@@ -183,7 +159,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
       {enableSelection ? (
         <SelectionButtons items={fezList.map(Selectable.fromFezData)} />
       ) : (
-        profilePublicData &&
+        currentUserID != null &&
         (hasTwitarrTeam || hasModerator) && (
           // For some reason, SegmentedButtons hates the flex in PaddedContentView.
           <View style={[commonStyles.paddingSmall]}>
@@ -198,6 +174,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
         onScrollThreshold={onScrollThreshold}
         hasNextPage={hasNextPage}
         handleLoadNext={handleLoadNext}
+        scrollToTopIntent={route.params?.scrollToTopIntent ?? userSwitchScrollToTopIntent}
       />
       <SeamailFAB showLabel={showFabLabel} />
     </AppView>

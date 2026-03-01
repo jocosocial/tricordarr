@@ -15,7 +15,10 @@ export const useUserKeywordQuery = ({keywordType, options}: KeywordQueryProps) =
 };
 
 export const useUserProfileQuery = <TData = ProfilePublicData>(options: TokenAuthQueryOptionsType<TData> = {}) => {
-  return useTokenAuthQuery<TData>('/user/profile', options);
+  return useTokenAuthQuery<TData>('/user/profile', {
+    staleTime: STALE.MINUTES.THIRTY,
+    ...options,
+  });
 };
 
 export const useUserWhoamiQuery = (

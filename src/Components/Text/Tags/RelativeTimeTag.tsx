@@ -1,10 +1,11 @@
-import React, {CSSProperties, PropsWithChildren} from 'react';
+import React from 'react';
 import {StyleProp, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
-import ReactTimeAgo from 'react-time-ago';
+import {useTimeAgo} from 'react-time-ago';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useClipboard} from '#src/Hooks/useClipboard';
 
 interface RelativeTimeTagProps {
@@ -12,23 +13,6 @@ interface RelativeTimeTagProps {
   style?: StyleProp<TextStyle>;
   variant?: keyof typeof MD3TypescaleKey;
 }
-
-interface StylizedTextProps extends PropsWithChildren {
-  variant?: keyof typeof MD3TypescaleKey;
-  style?: StyleProp<TextStyle>;
-  onPress?: () => void;
-  onLongPress?: () => void;
-}
-
-// ReactTimeAgo doesn't support dynamic styling of the component, and it's own
-// style parameter is not what you think it is.
-const StylizedText = (props: StylizedTextProps) => {
-  return (
-    <Text variant={props.variant} style={props.style} onPress={props.onPress} onLongPress={props.onLongPress}>
-      {props.children}
-    </Text>
-  );
-};
 
 /**
  * This follows the RelativeTimeTag from Swiftarr.
@@ -40,11 +24,24 @@ const StylizedText = (props: StylizedTextProps) => {
  *
  * Many moons later I learned that Axios decodes a struct with ISO8601 strings for dates rather than
  * returning a Date object. This component and all consumer screens need to be updated for this reality.
+ *
+ * This had an annoying bug where every now and then the "now" part of "just now" would not render.
+ * This was due to a layout race with flex-end: the extra component boundary was giving Yoga a frame where
+ * the text node did not yet have its final measured width.
+ * https://github.com/jocosocial/tricordarr/issues/419
  */
 export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) => {
   const [showRawTime, setShowRawTime] = React.useState(false);
   const {appConfig} = useConfig();
   const {setString} = useClipboard();
+  const {commonStyles} = useStyles();
+
+  // Normalize to whole seconds so sub-second precision doesn't show "in a moment" on initial render.
+  const dateMs = date ? Math.floor(date.getTime() / 1000) * 1000 : 0;
+  const {formattedDate} = useTimeAgo({
+    date: dateMs,
+    locale: 'en-US',
+  });
 
   const onPress = () => {
     setShowRawTime(!showRawTime);
@@ -57,26 +54,19 @@ export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) =>
 
   if (showRawTime) {
     return (
-      <StylizedText onPress={onPress} onLongPress={onLongPress} style={style} variant={variant}>
-        {date?.toISOString()}
-      </StylizedText>
+      <Text variant={variant} onPress={onPress} onLongPress={onLongPress} style={style}>
+        {date.toISOString()}
+      </Text>
     );
   }
 
-  // https://github.com/catamphetamine/react-time-ago/issues/18
-  // No, no. He's right. We is buggy.
-  // "Unknown" props are passed through to the component.
-  // https://github.com/Microsoft/TypeScript/issues/19573
   return (
-    <ReactTimeAgo
-      date={Date.parse(date.toString())}
-      locale={'en-US'}
-      component={StylizedText}
-      // @ts-ignore
+    <Text
       variant={variant}
+      style={[style, commonStyles.relativeTimeMinWidth]}
       onPress={appConfig.enableDeveloperOptions ? onPress : undefined}
-      onLongPress={appConfig.enableDeveloperOptions ? onLongPress : undefined}
-      style={style as CSSProperties}
-    />
+      onLongPress={appConfig.enableDeveloperOptions ? onLongPress : undefined}>
+      {formattedDate}
+    </Text>
   );
 };

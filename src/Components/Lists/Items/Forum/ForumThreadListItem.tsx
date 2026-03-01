@@ -10,6 +10,7 @@ import {ForumThreadListItemSwipeable} from '#src/Components/Swipeables/ForumThre
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {AppIcons} from '#src/Enums/Icons';
@@ -17,7 +18,6 @@ import {getEventTimeString} from '#src/Libraries/DateTime';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {ForumListData} from '#src/Structs/ControllerStructs';
-import {commonStyles} from '#src/Styles';
 import {Selectable} from '#src/Types/Selectable';
 
 interface ForumThreadListItemProps {
@@ -37,6 +37,7 @@ const ForumThreadListInternal = ({
   setEnableSelection,
 }: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
+  const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const {dispatchSelectedItems} = useSelection();
 
@@ -94,12 +95,12 @@ const ForumThreadListInternal = ({
         {forumListData.postCount} {pluralize('post', forumListData.postCount)}
       </Text>
       <Text variant={'bodyMedium'}>
-        Created <RelativeTimeTag variant={'bodyMedium'} date={new Date(forumListData.createdAt)} /> by{' '}
+        Created <RelativeTimeTag date={new Date(forumListData.createdAt)} variant={'bodyMedium'} /> by{' '}
         <UserBylineTag user={forumListData.creator} includePronoun={false} variant={'bodyMedium'} />
       </Text>
       {forumListData.lastPostAt && (
         <Text variant={'bodyMedium'}>
-          Last post <RelativeTimeTag variant={'bodyMedium'} date={new Date(forumListData.lastPostAt)} />
+          Last post <RelativeTimeTag date={new Date(forumListData.lastPostAt)} variant={'bodyMedium'} />
           {forumListData.lastPoster && (
             <UserBylineTag
               user={forumListData.lastPoster}

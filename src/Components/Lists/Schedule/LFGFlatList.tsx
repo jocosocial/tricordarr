@@ -28,6 +28,7 @@ interface LFGFlatListProps {
   enableReportOnly?: boolean;
   /** When false, card shows time only (e.g. "2:00 PM - 3:00 PM"), no "Wed Mar 5" day part. Default true. */
   showDayInCard?: boolean;
+  overScroll?: boolean;
 }
 
 export const LFGFlatList = ({
@@ -44,6 +45,7 @@ export const LFGFlatList = ({
   enableReportOnly,
   showDayInCard = true,
   listHeader,
+  overScroll,
 }: LFGFlatListProps) => {
   const navigation = useLFGStackNavigation();
 
@@ -83,6 +85,11 @@ export const LFGFlatList = ({
       handleLoadPrevious={handleLoadPrevious}
       hasNextPage={hasNextPage}
       listHeader={listHeader}
+      overScroll={overScroll}
+      // This is used to prevent the list from getting out of whack when the first item
+      // gets muted and sent to or near the bottom.
+      // Apparently FlashList uses the first item for some internal anchoring.
+      maintainVisibleContentPosition={{disabled: true}}
     />
   );
 };

@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, useCallback, useEffect, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useEffect, useRef, useState} from 'react';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -16,6 +16,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
   const {isLoggedIn} = useSession();
   const [notificationSocket, setNotificationSocket] = useState<ReconnectingWebSocket>();
   const [fezSockets, dispatchFezSockets] = useWebSocketStorageReducer({});
+  const openFezSocketInFlightRef = useRef<Map<string, Promise<OpenFezSocket>>>(new Map());
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
   const {oobeCompleted} = useOobe();
@@ -24,9 +25,8 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
 
   /**
    * Open a Fez Socket for a given FezID. Only one Fez Socket can be open at a time.
-   * If sockets are disabled, then don't do anything. If a socket already
-   * exists and is open, then don't do anything. But otherwise, try building a new one.
-   * Returns a boolean whether a new socket was created or not.
+   * Concurrent calls for the same fezID share a single creation promise to avoid
+   * duplicate sockets. Returns whether a new socket was created and the socket to use.
    */
   const openFezSocket = useCallback(
     async (fezID: string): Promise<OpenFezSocket> => {
@@ -37,25 +37,30 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
         };
       }
       const existingSocket = fezSockets[fezID];
-      logger.debug(`FezSocket enabled for ${fezID}. State: ${existingSocket?.readyState}`);
-      let isNew = false;
-      let ws: ReconnectingWebSocket;
       if (
         existingSocket &&
         (existingSocket.readyState === WebSocket.OPEN || existingSocket.readyState === WebSocket.CONNECTING)
       ) {
-        logger.debug('FezSocket already exists. Skipping buildWebSocket.');
-        ws = existingSocket;
-      } else {
-        const newSocket = await buildWebSocket(fezID);
-        isNew = true;
-        ws = newSocket;
+        logger.debug(`FezSocket already exists for ${fezID}. State: ${existingSocket.readyState}`);
+        return {isNew: false, ws: existingSocket};
       }
-      logger.debug(`FezSocket open complete! State: ${existingSocket?.readyState}`);
-      return {
-        isNew: isNew,
-        ws: ws,
-      };
+      const pending = openFezSocketInFlightRef.current.get(fezID);
+      if (pending) {
+        logger.debug(`FezSocket open already in flight for ${fezID}, awaiting.`);
+        return pending;
+      }
+      const promise = (async (): Promise<OpenFezSocket> => {
+        try {
+          logger.debug(`FezSocket building for ${fezID}.`);
+          const ws = await buildWebSocket(fezID);
+          logger.debug(`FezSocket open complete for ${fezID}. State: ${ws.readyState}`);
+          return {isNew: true, ws};
+        } finally {
+          openFezSocketInFlightRef.current.delete(fezID);
+        }
+      })();
+      openFezSocketInFlightRef.current.set(fezID, promise);
+      return promise;
     },
     [appConfig.enableFezSocket, fezSockets],
   );
@@ -100,17 +105,22 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
         return;
       }
       const fezSocket = fezSockets[fezID];
-      logger.debug(`FezSocket enabled for ${fezID}. State: ${fezSocket?.readyState}`);
-      if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CLOSED)) {
+      const readyState = fezSocket?.readyState;
+      logger.debug(`FezSocket enabled for ${fezID}. State: ${readyState}`);
+      // Close for OPEN, CONNECTING, or CLOSED so the socket is always removed from storage
+      // and never reused with a stale message handler (e.g. after navigating back to list).
+      if (fezSocket && readyState !== WebSocket.CLOSING) {
         fezSocket.close();
         dispatchFezSockets({
           type: WebSocketStorageActions.delete,
           key: fezID,
         });
+      } else if (fezSocket) {
+        logger.debug('FezSocket already CLOSING.');
       } else {
-        logger.debug(`FezSocket ineligible for close. State: ${fezSocket?.readyState}`);
+        logger.debug(`FezSocket ineligible for close. State: ${readyState}`);
       }
-      logger.debug(`FezSocket close complete. State: ${fezSocket?.readyState}`);
+      logger.debug(`FezSocket close complete. State: ${readyState}`);
     },
     [appConfig.enableFezSocket, dispatchFezSockets, fezSockets],
   );

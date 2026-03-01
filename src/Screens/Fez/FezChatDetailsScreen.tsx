@@ -1,6 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -13,15 +12,16 @@ import {FezChatDetailsScreenActionsMenu} from '#src/Components/Menus/Fez/FezChat
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useFezData} from '#src/Hooks/useFezData';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
-import {FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.fezChatDetailsScreen>;
 
@@ -31,11 +31,12 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.fezCha
  */
 export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
-  const {data, refetch, isFetching} = useFezQuery({fezID: route.params.fezID});
+  // This overrides the default query options of refetchOnFocus and refetchOnMount. Since the user
+  // just came from the chat screen the data is probably fresh enough to be just fine.
+  const {fezData, refetch, isFetching, isOwner} = useFezData({fezID: route.params.fezID, queryOptions: {}});
   const {fezSockets} = useSocket();
-  const [fez, setFez] = useState<FezData>();
-  const {currentUserID} = useSession();
-  const queryClient = useQueryClient();
+  const {updateMembership} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
 
   const onParticipantRemove = (fezID: string, userID: string) => {
@@ -46,29 +47,26 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
         userID: userID,
       },
       {
-        onSuccess: async response => {
-          const invalidations = FezData.getCacheKeys(fezID).map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          await Promise.all(invalidations);
-          setFez(response.data);
+        onSuccess: response => {
+          updateMembership(fezID, response.data);
+          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
         },
       },
     );
   };
 
   const getHeaderRight = useCallback(() => {
-    if (!fez) {
+    if (!fezData) {
       return <></>;
     }
     return (
       <View>
         <MaterialHeaderButtons left>
-          <FezChatDetailsScreenActionsMenu fez={fez} />
+          <FezChatDetailsScreenActionsMenu fez={fezData} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [fez]);
+  }, [fezData]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -76,29 +74,22 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
     });
   }, [getHeaderRight, navigation]);
 
-  // Initial set useEffect
-  useEffect(() => {
-    if (data) {
-      setFez(data?.pages[0]);
-    }
-  }, [data, setFez]);
-
-  if (!fez) {
+  if (!fezData) {
     return <LoadingView />;
   }
 
-  const manageUsers = fez.fezType === FezType.open && fez.owner.userID === currentUserID;
+  const manageUsers = fezData.fezType === FezType.open && isOwner;
 
-  const fezSocket = fezSockets[fez.fezID];
+  const fezSocket = fezSockets[fezData.fezID];
 
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <DataFieldListItem title={'Title'} description={fez.title} />
-        <DataFieldListItem title={'Type'} description={fez.fezType} />
-        {fez.members && <DataFieldListItem title={'Total Posts'} description={fez.members?.postCount} />}
+        <DataFieldListItem title={'Title'} description={fezData.title} />
+        <DataFieldListItem title={'Type'} description={fezData.fezType} />
+        {fezData.members && <DataFieldListItem title={'Total Posts'} description={fezData.members?.postCount} />}
         <DataFieldListItem
           title={'Websocket'}
           description={fezSocket ? WebSocketState[fezSocket.readyState as keyof typeof WebSocketState] : 'undefined'}
@@ -108,17 +99,17 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
           {manageUsers && (
             <FezParticipantAddItem
               onPress={() => {
-                navigation.push(CommonStackComponents.seamailAddParticipantScreen, {fez: fez});
+                navigation.push(CommonStackComponents.seamailAddParticipantScreen, {fez: fezData});
               }}
             />
           )}
-          {fez.members &&
-            fez.members.participants.map(u => (
+          {fezData.members &&
+            fezData.members.participants.map(u => (
               <FezParticipantListItem
-                onRemove={() => onParticipantRemove(fez.fezID, u.userID)}
+                onRemove={() => onParticipantRemove(fezData.fezID, u.userID)}
                 key={u.userID}
                 user={u}
-                fez={fez}
+                fez={fezData}
                 onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
               />
             ))}

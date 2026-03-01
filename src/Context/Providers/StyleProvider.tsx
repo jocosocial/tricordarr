@@ -151,6 +151,12 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       marginRight: isAndroid ? 16 : 15,
       marginLeft: isAndroid ? 14 : 5,
     },
+    relativeTimeMinWidth: {
+      minWidth: styleDefaults.marginSize * 3,
+    },
+    textAlignRight: {
+      textAlign: 'right',
+    },
   });
 
   const screenOptions = {

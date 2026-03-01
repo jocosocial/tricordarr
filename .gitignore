@@ -78,6 +78,7 @@ yarn-error.log
 .cursor/debug.log
 .claude/settings.local.json
 .cursor/debug*.log
+.cursor/plans
 
 # Custom Things They Forgot or I added.
 .watchman-cookie*
