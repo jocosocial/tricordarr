@@ -178,6 +178,26 @@ public class WebsocketNotifier: NSObject {
 		}
 	}
 
+	/// Replaces the foreground ping timer with the current `fgsWorkerHealthTimer` interval.
+	/// No-op when running as a background extension or when the provider is stopped.
+	func refreshPingTimer() {
+		guard pushProvider == nil else { return }
+		guard startState else { return }
+
+		let pingIntervalSeconds = Double(AppConfig.shared?.fgsWorkerHealthTimer ?? 10000) / 1000.0
+		self.logger.log(
+			"[WebsocketNotifier.swift] refreshPingTimer: updating interval to \(pingIntervalSeconds, privacy: .public)s"
+		)
+
+		socketPingTimer?.invalidate()
+		socketPingTimer = Timer(timeInterval: pingIntervalSeconds, repeats: true) { [weak self] _ in
+			self?.handleTimerEvent()
+		}
+		if let timer = socketPingTimer {
+			RunLoop.main.add(timer, forMode: .common)
+		}
+	}
+
 	// MARK: - Message/Event Processing
 
 	private func generatePushNotificationFromEvent(_ socketNotification: SocketNotificationData) {

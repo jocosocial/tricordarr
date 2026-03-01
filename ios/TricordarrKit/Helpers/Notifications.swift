@@ -33,6 +33,19 @@ import UserNotifications
 	private var storedToken: String?
 	/// KVO observation token for backgroundPushManager.isActive
 	private var isActiveObservation: NSKeyValueObservation?
+	/// Observer token for AppConfig change notifications
+	private var appConfigObserver: NSObjectProtocol?
+
+	override init() {
+		super.init()
+		appConfigObserver = NotificationCenter.default.addObserver(
+			forName: .appConfigDidChange,
+			object: nil,
+			queue: .main
+		) { [weak self] notification in
+			self?.handleAppConfigChange(notification)
+		}
+	}
 
 	/**
 	 Configure the providers with settings. Called from the JavaScript side over the "bridge".
@@ -97,6 +110,9 @@ import UserNotifications
 		// Invalidate and clear the KVO observer
 		instance.isActiveObservation?.invalidate()
 		instance.isActiveObservation = nil
+
+		// AppConfig observer is intentionally kept alive; the handler
+		// guards on prerequisites and will no-op after clearSettings.
 
 		instance.logger.log("[Notifications.swift] clearSettings completed")
 	}
@@ -435,6 +451,33 @@ import UserNotifications
 		}
 		else {
 			logger.log("[Notifications.swift] Extension push provider is nil")
+		}
+	}
+
+	// MARK: - AppConfig Change Handling
+
+	/// Reacts to `AppConfig.setAppConfig` updates by re-saving background manager
+	/// settings and reconciling foreground/background provider ownership.
+	private func handleAppConfigChange(_ notification: Foundation.Notification) {
+		logger.log("[Notifications.swift] appConfigDidChange received")
+
+		guard storedSocketUrl != nil, storedToken != nil, AppConfig.shared != nil else {
+			logger.log("[Notifications.swift] appConfigDidChange: prerequisites missing (socketUrl/token/appConfig), skipping")
+			return
+		}
+
+		let oldConfig = notification.userInfo?["oldConfig"] as? AppConfigData
+		let newConfig = notification.userInfo?["newConfig"] as? AppConfigData
+
+		if oldConfig?.fgsWorkerHealthTimer != newConfig?.fgsWorkerHealthTimer {
+			logger.log("[Notifications.swift] appConfigDidChange: fgsWorkerHealthTimer changed, refreshing foreground ping timer")
+			foregroundPushProvider.refreshPingTimer()
+		}
+
+		if let manager = backgroundPushManager {
+			saveSettings(for: manager)
+		} else {
+			reconcileProviderCycle(reason: "app-config-changed")
 		}
 	}
 
