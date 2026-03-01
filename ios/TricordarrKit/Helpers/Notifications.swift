@@ -36,7 +36,7 @@ import UserNotifications
 
 	/**
 	 Configure the providers with settings. Called from the JavaScript side over the "bridge".
-   @TODO this should ensure the background manager and foreground provider cycle.
+	 Ensures foreground/background providers are reconciled after config updates.
 	 */
 	@objc static func saveSettings(socketUrl: String, token: String) {
 		// Store settings for background manager configuration
@@ -47,7 +47,7 @@ import UserNotifications
 		if let urlComponents = URLComponents(string: socketUrl) {
 			Notifications.shared.foregroundPushProvider.updateConfig(serverURL: urlComponents.url, token: token)
 		}
-		Notifications.shared.checkStartInAppSocket()
+		Notifications.shared.reconcileProviderCycle(reason: "saveSettings")
 
 		// Update background manager if it exists
 		if let manager = Notifications.shared.backgroundPushManager {
@@ -285,28 +285,30 @@ import UserNotifications
 			return
 		}
 
-    let settings = PushManagerSettings(socketUrl: socketUrl, token: token, appConfig: appConfig)
+		let settings = PushManagerSettings(socketUrl: socketUrl, token: token, appConfig: appConfig)
 
-    manager.providerConfiguration = settings.providerConfiguration
+		guard settings.hasManagerChanged(manager) else {
+			logger.log("[Notifications.swift] Configuration unchanged, skipping saveToPreferences")
+			return
+		}
+
+		manager.providerConfiguration = settings.providerConfiguration
 		manager.matchSSIDs = settings.matchSSIDs
 		manager.isEnabled = true
 		manager.providerBundleIdentifier = "com.grantcohoe.tricordarr.LocalPushExtension"
 		manager.localizedDescription = "App Extension for Background Server Communication"
-
-    guard settings.hasManagerChanged(manager) else {
-			logger.log("[Notifications.swift] Configuration unchanged, skipping saveToPreferences")
-			return
-		}
 
 		manager.saveToPreferences { error in
 			if let error = error {
 				self.logger.error(
 					"[Notifications.swift] Error saving push manager preferences: \(error.localizedDescription, privacy: .public)"
 				)
+				self.reconcileProviderCycle(reason: "saveToPreferences-failure")
 				return
 			}
 
 			self.logger.log("[Notifications.swift] Push manager preferences saved successfully")
+			self.reconcileProviderCycle(reason: "saveToPreferences-success")
 		}
 	}
 
@@ -330,6 +332,35 @@ import UserNotifications
 		if foregroundPushProvider.startState == true {
 			foregroundPushProvider.stop(with: .superceded) {}
 		}
+	}
+
+	/// Reconciles ownership between background manager and in-app foreground provider.
+	/// If the background provider is active, the in-app provider is stopped.
+	/// Otherwise the in-app provider is started immediately or after an optional delay.
+	private func reconcileProviderCycle(reason: String, fallbackDelay: TimeInterval? = nil) {
+		if backgroundPushManager?.isActive == true {
+			logger.log("[Notifications.swift] reconcileProviderCycle \(reason, privacy: .public): background active, stopping in-app provider")
+			providerDownTimer?.invalidate()
+			providerDownTimer = nil
+			checkStopInAppSocket()
+			return
+		}
+
+		if let fallbackDelay {
+			logger.log(
+				"[Notifications.swift] reconcileProviderCycle \(reason, privacy: .public): background inactive, scheduling in-app provider in \(fallbackDelay, privacy: .public)s"
+			)
+			providerDownTimer?.invalidate()
+			providerDownTimer = Timer.scheduledTimer(withTimeInterval: fallbackDelay, repeats: false) { [weak self] _ in
+				self?.checkStartInAppSocket()
+			}
+			return
+		}
+
+		logger.log("[Notifications.swift] reconcileProviderCycle \(reason, privacy: .public): background inactive, starting in-app provider")
+		providerDownTimer?.invalidate()
+		providerDownTimer = nil
+		checkStartInAppSocket()
 	}
 
 	// MARK: - App Startup
@@ -362,9 +393,7 @@ import UserNotifications
 				instance.setupIsActiveObserver()
 
 				// If at app launch the extension isn't running, start using in-app provider after 5 seconds
-				instance.providerDownTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
-					instance.checkStartInAppSocket()
-				}
+				instance.reconcileProviderCycle(reason: "appStarted", fallbackDelay: 5)
 			}
 		#endif
 	}
@@ -395,18 +424,13 @@ import UserNotifications
 		if let manager = backgroundPushManager {
 			if manager.isActive {
 				logger.log("[Notifications.swift] Extension push provider is active")
-				checkStopInAppSocket()
-				providerDownTimer?.invalidate()
-				providerDownTimer = nil
+				reconcileProviderCycle(reason: "manager-active")
 			}
 			else {
 				logger.log("[Notifications.swift] Extension push provider is inactive")
 				// Start a 30 second timer. If the provider extension is still offline, enable the
 				// in-app provider. This should prevent extra socket cycling for very short Wifi unavailability.
-				providerDownTimer?.invalidate()
-				providerDownTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: false) { [weak self] _ in
-					self?.checkStartInAppSocket()
-				}
+				reconcileProviderCycle(reason: "manager-inactive", fallbackDelay: 30)
 			}
 		}
 		else {

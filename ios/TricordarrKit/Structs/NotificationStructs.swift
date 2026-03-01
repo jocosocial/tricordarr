@@ -113,6 +113,7 @@ struct PushManagerSettings {
   let token: String
   let matchSSIDs: [String]
   let pushNotifications: [String: Bool]
+  /// ISO8601 date string for mute-until; stored as-is in provider config and parsed downstream (e.g. WebsocketNotifier).
   let muteNotifications: String?
   let enableDeveloperOptions: Bool
 }

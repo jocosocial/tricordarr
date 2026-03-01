@@ -39,6 +39,18 @@ public class WebsocketNotifier: NSObject {
     self.logger.log("[WebsocketNotifier.swift] de-init. inApp: \(self.isInApp)")
 	}
 
+	/// Parses an ISO8601 date string (with or without fractional seconds) for mute-until. Returns nil if unparseable.
+	private static func parseMuteUntilDate(_ string: String) -> Date? {
+		let withFractional: ISO8601DateFormatter = {
+			let f = ISO8601DateFormatter()
+			f.formatOptions.insert(.withFractionalSeconds)
+			return f
+		}()
+		if let date = withFractional.date(from: string) { return date }
+		let standard = ISO8601DateFormatter()
+		return standard.date(from: string)
+	}
+
 	// MARK: - Debug lifecycle notifications
 
 	/// Posts a local debug notification only when developer mode is enabled.
@@ -215,15 +227,17 @@ public class WebsocketNotifier: NSObject {
 
 		// Do not generate a notification if the user has muted notifications.
 		if let muteString = muteNotifications {
-			let formatter = ISO8601DateFormatter()
-			formatter.formatOptions.insert(.withFractionalSeconds)
-			if let muteUntil = formatter.date(from: muteString) {
+			if let muteUntil = Self.parseMuteUntilDate(muteString) {
 				if Date() < muteUntil {
 					self.logger.log(
 						"[WebsocketNotifier.swift] user has muted notifications until \(muteUntil, privacy: .public)"
 					)
 					return
 				}
+			} else {
+				self.logger.warning(
+					"[WebsocketNotifier.swift] Could not parse muteNotifications date string, allowing notification"
+				)
 			}
 		}
 
