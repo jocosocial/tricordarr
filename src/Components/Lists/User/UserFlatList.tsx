@@ -7,6 +7,7 @@ import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {UserListItemSwipeable} from '#src/Components/Swipeables/UserListItemSwipeable';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {type UserRelationMode} from '#src/Queries/Users/UserRelationConstants';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -24,6 +25,7 @@ interface UserFlatListProps {
  */
 export const UserFlatList = (props: UserFlatListProps) => {
   const {userHeaders, refreshControl, renderListHeader, onUserPress, swipeableMode} = props;
+  const {enableSelection, setEnableSelection, selectedItems} = useSelection();
 
   const getListSeparator = useCallback(() => {
     if (userHeaders.length > 0) {
@@ -34,17 +36,26 @@ export const UserFlatList = (props: UserFlatListProps) => {
 
   const renderItem = useCallback(
     ({item}: {item: UserHeader}) => {
-      const listItem = <UserListItem userHeader={item} onPress={() => onUserPress(item)} />;
+      const selected = selectedItems.some(s => s.id === item.userID);
+      const listItem = (
+        <UserListItem
+          userHeader={item}
+          onPress={() => onUserPress(item)}
+          enableSelection={enableSelection}
+          setEnableSelection={setEnableSelection}
+          selected={selected}
+        />
+      );
       if (swipeableMode) {
         return (
-          <UserListItemSwipeable userHeader={item} mode={swipeableMode}>
+          <UserListItemSwipeable userHeader={item} mode={swipeableMode} enabled={!enableSelection}>
             {listItem}
           </UserListItemSwipeable>
         );
       }
       return listItem;
     },
-    [onUserPress, swipeableMode],
+    [onUserPress, swipeableMode, enableSelection, setEnableSelection, selectedItems],
   );
 
   const getListFooter = useCallback(() => {

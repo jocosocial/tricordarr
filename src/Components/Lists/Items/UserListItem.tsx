@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {IconButton, List} from 'react-native-paper';
+import {Checkbox, IconButton, List} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {UserHeader} from '#src/Structs/ControllerStructs';
+import {Selectable} from '#src/Types/Selectable';
 
 interface UserListItemProps {
   onPress?: () => void;
@@ -15,20 +18,27 @@ interface UserListItemProps {
   buttonOnPress?: (uh: UserHeader) => void;
   buttonIcon?: IconSource;
   disabled?: boolean;
+  enableSelection?: boolean;
+  setEnableSelection?: Dispatch<SetStateAction<boolean>>;
+  selected?: boolean;
 }
 
-/**
- * Generic List.Item for displaying a user. Takes a UserHeader and lets you add special features like an action button
- * or something that happens when you press it.
- */
-export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, disabled = false}: UserListItemProps) => {
+export const UserListItem = ({
+  userHeader,
+  onPress,
+  buttonOnPress,
+  buttonIcon,
+  disabled = false,
+  enableSelection = false,
+  setEnableSelection,
+  selected = false,
+}: UserListItemProps) => {
   const {styleDefaults, commonStyles} = useStyles();
   const {preRegistrationMode} = usePreRegistration();
   const {theme} = useAppTheme();
+  const {dispatchSelectedItems} = useSelection();
 
   const styles = StyleSheet.create({
-    // This has to account for some Paper bullshit where there is a secret View added when you define
-    // a Right, and it has things that we can't override.
     item: {
       ...commonStyles.paddingHorizontalSmall,
       paddingVertical: 2,
@@ -44,7 +54,18 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
     descriptionStyle: {
       ...(disabled ? commonStyles.disabled : {}),
     },
+    checkboxContainer: {
+      ...commonStyles.flexColumn,
+      ...commonStyles.justifyCenter,
+    },
   });
+
+  const handleSelection = () => {
+    dispatchSelectedItems({
+      type: SelectionActions.select,
+      item: Selectable.fromUserHeader(userHeader),
+    });
+  };
 
   const getAvatar = React.useCallback(
     () => (
@@ -53,6 +74,12 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
       </View>
     ),
     [userHeader, styles.avatar, preRegistrationMode],
+  );
+
+  const getCheckbox = () => (
+    <View style={styles.checkboxContainer}>
+      <Checkbox status={selected ? 'checked' : 'unchecked'} onPress={handleSelection} />
+    </View>
   );
 
   const getActionButton = React.useCallback(() => {
@@ -68,6 +95,13 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
     }
   }, [buttonOnPress, buttonIcon, userHeader, styleDefaults.avatarSizeSmall]);
 
+  const onLongPress = () => {
+    if (setEnableSelection) {
+      setEnableSelection(true);
+      handleSelection();
+    }
+  };
+
   return (
     <List.Item
       style={styles.item}
@@ -75,10 +109,11 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
       description={preRegistrationMode ? undefined : userHeader.displayName}
       titleStyle={styles.titleStyle}
       descriptionStyle={styles.descriptionStyle}
-      onPress={onPress}
-      left={getAvatar}
-      right={getActionButton}
+      onPress={enableSelection ? handleSelection : onPress}
+      left={enableSelection ? getCheckbox : getAvatar}
+      right={enableSelection ? undefined : getActionButton}
       disabled={disabled}
+      onLongPress={setEnableSelection ? onLongPress : undefined}
     />
   );
 };

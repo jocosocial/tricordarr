@@ -1,4 +1,4 @@
-import {FezData, ForumListData} from '#src/Structs/ControllerStructs';
+import {FezData, ForumListData, UserHeader} from '#src/Structs/ControllerStructs';
 
 /**
  * A selectable item. This is used to identify an item that can be selected in a list.
@@ -30,6 +30,17 @@ export namespace Selectable {
   export const fromFezData = (fezData: FezData): Selectable => {
     return {
       id: fezData.fezID,
+    };
+  };
+
+  /**
+   * Create a Selectable from a UserHeader.
+   * @param userHeader - The UserHeader to create a Selectable from.
+   * @returns A Selectable with the userID as the id.
+   */
+  export const fromUserHeader = (userHeader: UserHeader): Selectable => {
+    return {
+      id: userHeader.userID,
     };
   };
 }
