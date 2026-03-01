@@ -22,7 +22,7 @@ const formatCallDuration = (seconds: number): string => {
   return `${minutes}:${secs.toString().padStart(2, '0')}`;
 };
 
-export const ActiveCallScreen = ({route, navigation}: Props) => {
+export const ActiveCallScreen = ({navigation}: Props) => {
   const {currentCall, callState, callDuration, isMuted, isSpeakerOn, toggleMute, toggleSpeaker, endCall} = useCall();
   const {theme} = useAppTheme();
   const callStartTimeRef = React.useRef<number | null>(null);

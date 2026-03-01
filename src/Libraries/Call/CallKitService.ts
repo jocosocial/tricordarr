@@ -150,7 +150,7 @@ class CallKitServiceClass {
     });
 
     // Call load with calls - for debugging restart scenarios
-    RNCallKeep.addEventListener('didLoadWithEvents', (events) => {
+    RNCallKeep.addEventListener('didLoadWithEvents', events => {
       console.log('[CallKitService] didLoadWithEvents:', events);
     });
   }
@@ -233,7 +233,15 @@ class CallKitServiceClass {
       await this.setup();
     }
 
-    console.log('[CallKitService] Starting outgoing call:', callUUID, calleeName, 'handle:', handle, 'initialized:', this.initialized);
+    console.log(
+      '[CallKitService] Starting outgoing call:',
+      callUUID,
+      calleeName,
+      'handle:',
+      handle,
+      'initialized:',
+      this.initialized,
+    );
     try {
       RNCallKeep.startCall(callUUID, handle, calleeName, 'generic', false);
       console.log('[CallKitService] startCall succeeded');
@@ -343,4 +351,3 @@ class CallKitServiceClass {
 
 // Export singleton instance
 export const CallKitService = new CallKitServiceClass();
-

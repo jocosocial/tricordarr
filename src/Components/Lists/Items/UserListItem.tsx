@@ -99,7 +99,14 @@ export const UserListItem = ({
         ))}
       </View>
     );
-  }, [buttonOnPress, buttonIcon, additionalButtons, userHeader, styleDefaults.avatarSizeSmall, styles.buttonsContainer]);
+  }, [
+    buttonOnPress,
+    buttonIcon,
+    additionalButtons,
+    userHeader,
+    styleDefaults.avatarSizeSmall,
+    styles.buttonsContainer,
+  ]);
 
   return (
     <List.Item

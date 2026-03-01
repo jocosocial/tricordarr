@@ -19,6 +19,7 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {navigate} from '#src/Libraries/NavigationRef';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
@@ -26,7 +27,6 @@ import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations'
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-import {navigate} from '#src/Libraries/NavigationRef';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.favoriteUsers>;
 
@@ -151,9 +151,7 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
               }}
               buttonOnPress={handleUnfavoriteUser}
               additionalButtons={
-                preRegistrationMode
-                  ? undefined
-                  : [{icon: AppIcons.krakentalkCreate, onPress: handleCallUser}]
+                preRegistrationMode ? undefined : [{icon: AppIcons.krakentalkCreate, onPress: handleCallUser}]
               }
             />
           ))}

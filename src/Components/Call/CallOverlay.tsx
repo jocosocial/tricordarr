@@ -1,14 +1,14 @@
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import ErrorBoundary from 'react-native-error-boundary';
-import { IconButton, Text } from 'react-native-paper';
+import {IconButton, Text} from 'react-native-paper';
 
-import { AvatarImage } from '#src/Components/Images/AvatarImage';
-import { CallState, useCall } from '#src/Context/Contexts/CallContext';
-import { useAppTheme } from '#src/Context/Contexts/ThemeContext';
-import { ChatStackParamList, ChatStackScreenComponents } from '#src/Navigation/Stacks/ChatStackNavigator';
+import {AvatarImage} from '#src/Components/Images/AvatarImage';
+import {CallState, useCall} from '#src/Context/Contexts/CallContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 
 type NavigationProp = StackNavigationProp<ChatStackParamList>;
 
@@ -30,8 +30,8 @@ const formatCallDuration = (seconds: number): string => {
  * the ErrorBoundary will catch them and render the fallback.
  */
 const CallOverlayInner = () => {
-  const { currentCall, callState, callDuration, endCall } = useCall();
-  const { theme } = useAppTheme();
+  const {currentCall, callState, callDuration, endCall} = useCall();
+  const {theme} = useAppTheme();
 
   // useNavigation will throw if not inside NavigationContainer - ErrorBoundary will catch it
   const navigation = useNavigation<NavigationProp>();
@@ -93,7 +93,7 @@ const CallOverlayInner = () => {
 
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.8}>
-      <View style={[styles.content, { backgroundColor: theme.colors.surface }]}>
+      <View style={[styles.content, {backgroundColor: theme.colors.surface}]}>
         <View style={styles.avatarContainer}>
           <AvatarImage userHeader={currentCall.remoteUser} small={true} />
         </View>
@@ -102,7 +102,7 @@ const CallOverlayInner = () => {
           <Text variant={'bodyMedium'} style={styles.username} numberOfLines={1}>
             {currentCall.remoteUser.username}
           </Text>
-          <Text variant={'bodySmall'} style={[styles.duration, { color: theme.colors.onSurfaceVariant }]}>
+          <Text variant={'bodySmall'} style={[styles.duration, {color: theme.colors.onSurfaceVariant}]}>
             {formatCallDuration(callDuration)}
           </Text>
         </View>
@@ -135,7 +135,7 @@ const CallOverlayFallback = () => {
  * Wrapped in error boundary to handle cases where navigation context is not available.
  */
 export const CallOverlay = () => {
-  const { currentCall, callState } = useCall();
+  const {currentCall, callState} = useCall();
 
   // Only try to render if there's an active call
   if (callState !== CallState.ACTIVE || !currentCall) {
@@ -147,7 +147,7 @@ export const CallOverlay = () => {
   return (
     <ErrorBoundary
       FallbackComponent={CallOverlayFallback}
-      onError={(error, errorInfo) => {
+      onError={(error, _errorInfo) => {
         // Log the error for debugging, but don't crash the app
         console.warn(
           '[CallOverlay] Navigation context error (this is expected if rendered outside a navigator):',
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     elevation: 4,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
