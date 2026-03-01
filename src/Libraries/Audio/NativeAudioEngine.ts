@@ -122,13 +122,13 @@ export class NativeAudioEngine {
 
     this.audioDataListener = listener;
 
-    if (listener && eventEmitter) {
+    if (eventEmitter) {
       this.eventSubscription = eventEmitter.addListener('onAudioData', (event: AudioDataEvent) => {
         if (this.audioDataListener) {
           this.audioDataListener(event);
         }
       });
-    } else if (listener && !eventEmitter) {
+    } else {
       console.warn('[NativeAudioEngine] Cannot set audio data listener - AudioEngine module not available');
     }
   }

@@ -205,25 +205,6 @@ export const getUrlForNotificationEvent = (
   }
   logger.debug('Got press action:', pressAction);
   if (type === EventType.PRESS || type === EventType.ACTION_PRESS) {
-    // Handle default press action (tapping notification body) - use notification data to determine URL
-    if (pressAction.id === PressAction.default || pressAction.id === 'default') {
-      if (notification?.data?.url) {
-        console.log(
-          '[SocketNotification.ts] Default press action, using notification data URL:',
-          notification.data.url,
-        );
-        // Don't cancel ongoing notifications (like phone calls)
-        if (notification.data.type === NotificationTypeData.incomingPhoneCall) {
-          return notification.data.url;
-        }
-        if (notification.id) {
-          notifee.cancelNotification(notification.id);
-        }
-        return notification.data.url;
-      }
-      return;
-    }
-
     switch (pressAction.id) {
       case PressAction.twitarrTab: {
         if (notification.id) {

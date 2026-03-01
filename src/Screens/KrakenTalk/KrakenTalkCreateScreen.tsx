@@ -14,6 +14,17 @@ type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.krak
 export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
   const {initiateCall, currentCall, callState} = useCall();
 
+  const handleInitiateCall = useCallback(
+    async (userHeader: UserHeader) => {
+      try {
+        await initiateCall(userHeader);
+      } catch (error) {
+        console.error('[KrakenTalkCreateScreen] Failed to initiate call:', error);
+      }
+    },
+    [initiateCall],
+  );
+
   // If initialUserHeader is provided, initiate call immediately
   useEffect(() => {
     if (route.params?.initialUserHeader) {
@@ -32,17 +43,6 @@ export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
       });
     }
   }, [currentCall, callState, navigation]);
-
-  const handleInitiateCall = useCallback(
-    async (userHeader: UserHeader) => {
-      try {
-        await initiateCall(userHeader);
-      } catch (error) {
-        console.error('[KrakenTalkCreateScreen] Failed to initiate call:', error);
-      }
-    },
-    [initiateCall],
-  );
 
   return (
     <AppView>

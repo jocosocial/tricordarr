@@ -1,4 +1,4 @@
-import notifee from '@notifee/react-native';
+import notifee, {AndroidCategory} from '@notifee/react-native';
 import tinycolor from 'tinycolor2';
 
 import {PressAction} from '#src/Enums/Notifications';
@@ -41,7 +41,7 @@ export async function showCallForegroundNotification(remoteUser: UserHeader, cal
         id: PressAction.krakentalk,
       },
       ongoing: true,
-      category: 'call',
+      category: AndroidCategory.CALL,
       smallIcon: 'ic_notification',
       // Update notification every second to show current duration
       chronometerDirection: 'up',
@@ -70,7 +70,7 @@ export async function updateCallForegroundNotification(remoteUser: UserHeader, c
         id: PressAction.krakentalk,
       },
       ongoing: true,
-      category: 'call',
+      category: AndroidCategory.CALL,
       smallIcon: 'ic_notification',
     },
   });
