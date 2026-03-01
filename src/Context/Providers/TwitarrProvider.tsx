@@ -1,5 +1,6 @@
 import {PropsWithChildren} from 'react';
 
+import {CallProvider} from '#src/Context/Providers/CallProvider';
 import {ClientSettingsProvider} from '#src/Context/Providers/ClientSettingsProvider';
 import {CruiseProvider} from '#src/Context/Providers/CruiseProvider';
 import {FeatureProvider} from '#src/Context/Providers/FeatureProvider';
@@ -22,11 +23,13 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
           <LinkingProvider>
             <FeatureProvider>
               <ClientSettingsProvider>
-                <TimeProvider>
-                  <CruiseProvider>
-                    <TimeZoneChangesProvider>{children}</TimeZoneChangesProvider>
-                  </CruiseProvider>
-                </TimeProvider>
+                <CallProvider>
+                  <TimeProvider>
+                    <CruiseProvider>
+                      <TimeZoneChangesProvider>{children}</TimeZoneChangesProvider>
+                    </CruiseProvider>
+                  </TimeProvider>
+                </CallProvider>
               </ClientSettingsProvider>
             </FeatureProvider>
           </LinkingProvider>

@@ -19,7 +19,10 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {navigate} from '#src/Libraries/NavigationRef';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -44,6 +47,17 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
     refresh: refetch,
     isRefreshing: isFetching,
   });
+
+  const handleCallUser = useCallback((userHeader: UserHeader) => {
+    // Navigate to the Seamail tab first, then to the KrakenTalkCreateScreen
+    // This is needed because KrakenTalkCreateScreen is in a nested navigator
+    navigate(BottomTabComponents.seamailTab, {
+      screen: ChatStackScreenComponents.krakentalkCreateScreen,
+      params: {
+        initialUserHeader: userHeader,
+      },
+    });
+  }, []);
 
   const getNavButtons = useCallback(() => {
     return (
@@ -136,6 +150,9 @@ const FavoriteUsersScreenInner = ({navigation}: Props) => {
                 });
               }}
               buttonOnPress={handleUnfavoriteUser}
+              additionalButtons={
+                preRegistrationMode ? undefined : [{icon: AppIcons.krakentalkCreate, onPress: handleCallUser}]
+              }
             />
           ))}
         </PaddedContentView>

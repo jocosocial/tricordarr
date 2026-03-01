@@ -8,11 +8,18 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
+interface ActionButton {
+  icon: IconSource;
+  onPress: (uh: UserHeader) => void;
+}
+
 interface UserListItemProps {
   onPress?: () => void;
   userHeader: UserHeader;
   buttonOnPress?: (uh: UserHeader) => void;
   buttonIcon?: IconSource;
+  /** Additional action buttons to display on the right side */
+  additionalButtons?: ActionButton[];
   disabled?: boolean;
 }
 
@@ -20,7 +27,14 @@ interface UserListItemProps {
  * Generic List.Item for displaying a user. Takes a UserHeader and lets you add special features like an action button
  * or something that happens when you press it.
  */
-export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, disabled = false}: UserListItemProps) => {
+export const UserListItem = ({
+  userHeader,
+  onPress,
+  buttonOnPress,
+  buttonIcon,
+  additionalButtons,
+  disabled = false,
+}: UserListItemProps) => {
   const {styleDefaults, commonStyles} = useStyles();
   const {preRegistrationMode} = usePreRegistration();
 
@@ -41,6 +55,10 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
     descriptionStyle: {
       ...(disabled ? commonStyles.disabled : {}),
     },
+    buttonsContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
   });
 
   const getAvatar = React.useCallback(
@@ -53,17 +71,42 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
   );
 
   const getActionButton = React.useCallback(() => {
-    if (buttonOnPress && buttonIcon) {
-      return (
-        <IconButton
-          mode={'outlined'}
-          size={styleDefaults.avatarSizeSmall}
-          icon={buttonIcon}
-          onPress={() => buttonOnPress(userHeader)}
-        />
-      );
+    const hasMainButton = buttonOnPress && buttonIcon;
+    const hasAdditionalButtons = additionalButtons && additionalButtons.length > 0;
+
+    if (!hasMainButton && !hasAdditionalButtons) {
+      return null;
     }
-  }, [buttonOnPress, buttonIcon, userHeader, styleDefaults.avatarSizeSmall]);
+
+    return (
+      <View style={styles.buttonsContainer}>
+        {hasMainButton && (
+          <IconButton
+            mode={'outlined'}
+            size={styleDefaults.avatarSizeSmall}
+            icon={buttonIcon}
+            onPress={() => buttonOnPress(userHeader)}
+          />
+        )}
+        {additionalButtons?.map((button, index) => (
+          <IconButton
+            key={index}
+            mode={'outlined'}
+            size={styleDefaults.avatarSizeSmall}
+            icon={button.icon}
+            onPress={() => button.onPress(userHeader)}
+          />
+        ))}
+      </View>
+    );
+  }, [
+    buttonOnPress,
+    buttonIcon,
+    additionalButtons,
+    userHeader,
+    styleDefaults.avatarSizeSmall,
+    styles.buttonsContainer,
+  ]);
 
   return (
     <List.Item

@@ -5,6 +5,7 @@ import React from 'react';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {ActiveCallScreen} from '#src/Screens/KrakenTalk/ActiveCallScreen';
 import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateScreen';
 import {KrakenTalkReceiveScreen} from '#src/Screens/KrakenTalk/KrakenTalkReceiveScreen';
 import {SeamailListScreen} from '#src/Screens/Seamail/SeamailListScreen';
@@ -28,6 +29,9 @@ export type ChatStackParamList = CommonStackParamList & {
     callerUserID: string;
     callerUsername: string;
   };
+  ActiveCallScreen: {
+    callID: string;
+  };
 };
 
 const ChatStack = createStackNavigator<ChatStackParamList>();
@@ -37,6 +41,7 @@ export enum ChatStackScreenComponents {
   krakentalkCreateScreen = 'KrakenTalkCreateScreen',
   seamailSearchScreen = 'SeamailSearchScreen',
   krakenTalkReceiveScreen = 'KrakenTalkReceiveScreen',
+  activeCallScreen = 'ActiveCallScreen',
 }
 
 export const ChatStackNavigator = () => {
@@ -67,6 +72,11 @@ export const ChatStackNavigator = () => {
         name={ChatStackScreenComponents.krakenTalkReceiveScreen}
         component={KrakenTalkReceiveScreen}
         options={{title: 'Incoming Call'}}
+      />
+      <ChatStack.Screen
+        name={ChatStackScreenComponents.activeCallScreen}
+        component={ActiveCallScreen}
+        options={{title: 'Call', headerShown: false}}
       />
       {CommonScreens(ChatStack)}
     </ChatStack.Navigator>

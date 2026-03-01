@@ -18,6 +18,8 @@
 		93ADC0812F07749D00C698D2 /* TricordarrKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */; };
 		93ADC0822F07749D00C698D2 /* TricordarrKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		93ADC0872F0774B500C698D2 /* TricordarrKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */; };
+		E2D58DC82EF8D45700200352 /* AudioEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D58DC62EF8D45700200352 /* AudioEngine.m */; };
+		E2D58DC92EF8D45700200352 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D58DC72EF8D45700200352 /* AudioEngine.swift */; };
 		93D64E9E2F2B21B000082CE2 /* yeah.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 93D64E9D2F2B21B000082CE2 /* yeah.mp3 */; };
 /* End PBXBuildFile section */
 
@@ -97,6 +99,8 @@
 		93ADBFFB2F074E0700C698D2 /* LocalPushExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LocalPushExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		93ADBFFC2F074E0700C698D2 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TricordarrKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2D58DC62EF8D45700200352 /* AudioEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioEngine.m; sourceTree = "<group>"; };
+		E2D58DC72EF8D45700200352 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		93D64E9D2F2B21B000082CE2 /* yeah.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = yeah.mp3; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -227,6 +231,8 @@
 			isa = PBXGroup;
 			children = (
 				9394DAB82F077F9E000B2338 /* Helpers */,
+				E2D58DC62EF8D45700200352 /* AudioEngine.m */,
+				E2D58DC72EF8D45700200352 /* AudioEngine.swift */,
 				93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */,
 				93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */,
 				93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */,
@@ -477,6 +483,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2D58DC82EF8D45700200352 /* AudioEngine.m in Sources */,
+				E2D58DC92EF8D45700200352 /* AudioEngine.swift in Sources */,
 				93690EF42EAB269900CA8914 /* RCTNativeTricordarrModule.mm in Sources */,
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
 			);

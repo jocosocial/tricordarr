@@ -117,3 +117,56 @@ export interface OpenFezSocket {
   ws?: ReconnectingWebSocket;
   isNew: boolean;
 }
+
+/**
+ * Build a WebSocket connection for phone calls.
+ * For caller: connects to /phone/socket/initiate/{callID}/to/{userID}
+ * For callee: connects to /phone/socket/answer/{callID}
+ */
+export const buildPhoneCallWebSocket = async (callID: string, userID?: string) => {
+  // Use session serverUrl (not app config) to ensure we connect to the correct server
+  const session = await SessionStorage.getCurrentSession();
+  if (!session?.serverUrl) {
+    throw new Error('[Websockets.ts] No current session found or session missing serverUrl for phone call');
+  }
+
+  const {urlPrefix} = await getAppConfig();
+
+  let wsUrl;
+  if (userID) {
+    wsUrl = `${session.serverUrl}${urlPrefix}/phone/socket/initiate/${callID}/to/${userID}`;
+  } else {
+    wsUrl = `${session.serverUrl}${urlPrefix}/phone/socket/answer/${callID}`;
+  }
+
+  if (wsUrl.startsWith('https://')) {
+    wsUrl = wsUrl.replace('https', 'wss');
+  } else {
+    wsUrl = wsUrl.replace('http', 'ws');
+  }
+
+  const token = await getToken();
+  const authHeaders = getAuthHeaders(undefined, undefined, token);
+  console.log(`[Websockets.ts] built new phone call socket to ${wsUrl}`);
+
+  // Phone calls are time-sensitive - don't retry on failure
+  const ws = new ReconnectingWebSocket(wsUrl, [], {
+    WebSocket: WebSocketConstructor({
+      headers: authHeaders,
+    }),
+    connectionTimeout: 10000,
+    maxRetries: 0, // Don't retry phone calls - they're time-sensitive
+    minReconnectionDelay: 500,
+    maxReconnectionDelay: 2000,
+    reconnectionDelayGrowFactor: 2,
+  });
+
+  // Set binaryType to 'arraybuffer' to receive binary messages as ArrayBuffer instead of Blob
+  // This ensures consistent handling across platforms in React Native
+  // ReconnectingWebSocket should proxy this to the underlying WebSocket
+  if ('binaryType' in ws) {
+    (ws as any).binaryType = 'arraybuffer';
+  }
+
+  return ws;
+};

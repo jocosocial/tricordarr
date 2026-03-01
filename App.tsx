@@ -13,6 +13,7 @@ import {KeyboardProvider} from 'react-native-keyboard-controller';
 import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
+import {CallOverlay} from '#src/Components/Call/CallOverlay';
 import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
 import {AppFocusHandler} from '#src/Components/Libraries/AppFocusHandler';
 import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
@@ -120,6 +121,7 @@ function App(): React.JSX.Element {
                                               <NotificationDataListener />
                                               <NotificationDataPoller />
                                               <RootStackNavigator />
+                                              <CallOverlay />
                                             </ShellProvider>
                                           </SignOutProvider>
                                         </FilterProvider>
