@@ -6,11 +6,9 @@ import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {ActiveCallScreen} from '#src/Screens/KrakenTalk/ActiveCallScreen';
-import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateScreen';
 import {KrakenTalkReceiveScreen} from '#src/Screens/KrakenTalk/KrakenTalkReceiveScreen';
 import {SeamailListScreen} from '#src/Screens/Seamail/SeamailListScreen';
 import {SeamailSearchScreen} from '#src/Screens/Seamail/SeamailSearchScreen';
-import {UserHeader} from '#src/Structs/ControllerStructs';
 import {WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
@@ -18,9 +16,6 @@ export type ChatStackParamList = CommonStackParamList & {
   SeamailListScreen: WithScrollToTopIntent<{
     onlyNew?: boolean;
   }>;
-  KrakenTalkCreateScreen?: {
-    initialUserHeader?: UserHeader;
-  };
   SeamailSearchScreen: {
     forUser?: string;
   };
@@ -38,7 +33,6 @@ const ChatStack = createStackNavigator<ChatStackParamList>();
 
 export enum ChatStackScreenComponents {
   seamailListScreen = 'SeamailListScreen',
-  krakentalkCreateScreen = 'KrakenTalkCreateScreen',
   seamailSearchScreen = 'SeamailSearchScreen',
   krakenTalkReceiveScreen = 'KrakenTalkReceiveScreen',
   activeCallScreen = 'ActiveCallScreen',
@@ -57,11 +51,6 @@ export const ChatStackNavigator = () => {
           headerLeft: getLeftMainHeaderButtons,
           title: 'Seamail',
         }}
-      />
-      <ChatStack.Screen
-        name={ChatStackScreenComponents.krakentalkCreateScreen}
-        component={KrakenTalkCreateScreen}
-        options={{title: 'New Call'}}
       />
       <ChatStack.Screen
         name={ChatStackScreenComponents.seamailSearchScreen}

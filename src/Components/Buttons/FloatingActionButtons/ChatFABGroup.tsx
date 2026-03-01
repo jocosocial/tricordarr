@@ -6,7 +6,6 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 
 interface ChatFABGroupProps {
   showLabel?: boolean;
@@ -29,7 +28,7 @@ export const ChatFABGroup = (props: ChatFABGroupProps) => {
     FabGroupAction({
       icon: AppIcons.krakentalkCreate,
       label: 'New Call',
-      onPress: () => chatNavigation.push(ChatStackScreenComponents.krakentalkCreateScreen),
+      onPress: () => chatNavigation.push(CommonStackComponents.krakenTalkCreateScreen),
     }),
   ];
 

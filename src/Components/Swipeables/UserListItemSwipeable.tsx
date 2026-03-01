@@ -9,8 +9,6 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useUserCacheReducer} from '#src/Hooks/User/useUserCacheReducer';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';
@@ -27,7 +25,6 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
   const {theme} = useAppTheme();
   const {preRegistrationMode} = usePreRegistration();
   const commonNavigation = useCommonStack();
-  const bottomTabNavigation = useBottomTabNavigator();
   const {removeRelation} = useUserCacheReducer();
   const favoriteMutation = useUserFavoriteMutation();
   const muteMutation = useUserMuteMutation();
@@ -72,9 +69,8 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
 
   const handleCall = (swipeable: SwipeableMethods) => {
     swipeable.reset();
-    bottomTabNavigation.navigate(BottomTabComponents.seamailTab, {
-      screen: ChatStackScreenComponents.krakentalkCreateScreen,
-      params: {initialUserHeader: userHeader},
+    commonNavigation.push(CommonStackComponents.krakenTalkCreateScreen, {
+      initialUserHeader: userHeader,
     });
   };
 
