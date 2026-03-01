@@ -4,9 +4,12 @@ import {useCallback} from 'react';
 import {getRelationListQueryKey, type UserRelationMode} from '#src/Queries/Users/UserRelationConstants';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
-/** Compare by username (alphabetical, case-insensitive). Matches API sort order. */
-const usernameComparator = (a: UserHeader, b: UserHeader): number =>
-  a.username.localeCompare(b.username, undefined, {sensitivity: 'base'});
+/** Compare by Unicode code points. Matches Swift's `$0.username < $1.username`. */
+const usernameComparator = (a: UserHeader, b: UserHeader): number => {
+  if (a.username < b.username) return -1;
+  if (a.username > b.username) return 1;
+  return 0;
+};
 
 /**
  * Insert a UserHeader into a sorted array by username. Returns a new array.
