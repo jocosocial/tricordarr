@@ -95,6 +95,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
           wifiNetworkNames: [data.shipWifiSSID],
         },
       });
+      fetchManagerStatus();
     } else {
       setSnackbarPayload({
         message: 'No SSID found in server payload.',
@@ -117,6 +118,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
         wifiNetworkNames: values.wifiNetworkNames,
       },
     });
+    fetchManagerStatus();
   };
 
   const handleSetupManager = async () => {
@@ -265,27 +267,28 @@ export const BackgroundConnectionSettingsIOSView = () => {
           />
         </PaddedContentView>
         <ListSection>
-          <ListSubheader>Status</ListSubheader>
+          <ListSubheader>Background Manager Status</ListSubheader>
         </ListSection>
-        <DataFieldListItem title={'Default Networks'} description={appConfig.wifiNetworkNames?.join(', ')} />
         {managerStatus && (
           <>
             <DataFieldListItem
-              title={'Manager Active'}
+              title={'Background Manager Networks'}
+              description={managerStatus.matchSSIDs.length > 0 ? managerStatus.matchSSIDs.join(', ') : 'None'}
+            />
+            <DataFieldListItem
+              title={'Background Manager Active'}
               description={managerStatus.isActive !== undefined ? (managerStatus.isActive ? 'Yes' : 'No') : 'Unknown'}
             />
             <DataFieldListItem
-              title={'Manager Enabled'}
+              title={'Background Manager Enabled'}
               description={managerStatus.isEnabled !== undefined ? (managerStatus.isEnabled ? 'Yes' : 'No') : 'Unknown'}
-            />
-            <DataFieldListItem
-              title={'Match SSIDs'}
-              description={managerStatus.matchSSIDs.length > 0 ? managerStatus.matchSSIDs.join(', ') : 'None'}
             />
           </>
         )}
+        <DataFieldListItem title={'Server Default Network'} description={data?.shipWifiSSID} />
+
         <ListSection>
-          <ListSubheader>Provider Configuration</ListSubheader>
+          <ListSubheader>Background Provider Configuration</ListSubheader>
         </ListSection>
         {(() => {
           const providerConfig = parseProviderConfiguration(managerStatus?.providerConfiguration);
@@ -305,7 +308,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
           );
         })()}
         <ListSection>
-          <ListSubheader>In-App Socket Status</ListSubheader>
+          <ListSubheader>Foreground Provider Status</ListSubheader>
         </ListSection>
         {foregroundProviderStatus && (
           <>
