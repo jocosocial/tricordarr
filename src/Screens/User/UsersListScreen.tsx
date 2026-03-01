@@ -132,7 +132,7 @@ const UsersListScreenInner = ({navigation, mode}: Props & {mode: UserRelationMod
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderListHeader={renderListHeader}
         onUserPress={handleUserPress}
-        swipeableMode={preRegistrationMode ? undefined : mode}
+        swipeableMode={mode}
       />
       {!enableSelection && (
         <UserListFAB

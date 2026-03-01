@@ -90,11 +90,10 @@ const SearchUsersScreenInner = ({navigation, route}: Props) => {
   }, [getNavButtons, mode, navigation]);
 
   const handleAddRelation = (userHeader: UserHeader) => {
-    const displayName = userHeader.displayName || userHeader.username;
     const successMessages: Record<typeof mode, string> = {
-      favorite: `Added ${displayName} to favorites`,
-      mute: `Muted ${displayName}`,
-      block: `Blocked ${displayName}`,
+      favorite: `Added ${userHeader.username} to favorites`,
+      mute: `Muted ${userHeader.username}`,
+      block: `Blocked ${userHeader.username}`,
     };
 
     if (mode === 'favorite') {

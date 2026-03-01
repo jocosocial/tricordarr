@@ -4,6 +4,7 @@ import {SharedValue} from 'react-native-reanimated';
 
 import {SwipeableButton} from '#src/Components/Buttons/SwipeableButton';
 import {BaseSwipeable} from '#src/Components/Swipeables/BaseSwipeable';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useUserCacheReducer} from '#src/Hooks/User/useUserCacheReducer';
@@ -24,6 +25,7 @@ interface UserListItemSwipeableProps extends PropsWithChildren {
 
 export const UserListItemSwipeable = ({userHeader, mode, children, enabled = true}: UserListItemSwipeableProps) => {
   const {theme} = useAppTheme();
+  const {preRegistrationMode} = usePreRegistration();
   const commonNavigation = useCommonStack();
   const bottomTabNavigation = useBottomTabNavigator();
   const {removeRelation} = useUserCacheReducer();
@@ -90,7 +92,7 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
   ) => {
     return (
       <>
-        {mode === 'favorite' && (
+        {mode === 'favorite' && !preRegistrationMode && (
           <>
             <SwipeableButton
               text={'Seamail'}
