@@ -14,6 +14,7 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -70,6 +71,10 @@ export const BackgroundConnectionSettingsIOSView = () => {
       enableBackgroundWorker: newValue,
     });
     setEnable(newValue);
+    setTimeout(() => {
+      fetchManagerStatus();
+      fetchForegroundProviderStatus();
+    }, 1000);
   };
 
   const handleHealthChange = (seconds: number) => {
@@ -95,6 +100,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
           wifiNetworkNames: [data.shipWifiSSID],
         },
       });
+      fetchManagerStatus();
     } else {
       setSnackbarPayload({
         message: 'No SSID found in server payload.',
@@ -117,6 +123,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
         wifiNetworkNames: values.wifiNetworkNames,
       },
     });
+    fetchManagerStatus();
   };
 
   const handleSetupManager = async () => {
@@ -265,46 +272,70 @@ export const BackgroundConnectionSettingsIOSView = () => {
           />
         </PaddedContentView>
         <ListSection>
-          <ListSubheader>Status</ListSubheader>
+          <ListSubheader>Background Manager Status</ListSubheader>
         </ListSection>
-        <DataFieldListItem title={'Default Networks'} description={appConfig.wifiNetworkNames?.join(', ')} />
+        <PaddedContentView padTop={true} padSides={false} padBottom={false}>
+          <HelpTopicView>
+            The background manager handles push notifications when the app is closed and you are connected to one of the
+            configured WiFi networks above. During normal operations it is expected to be active.
+          </HelpTopicView>
+        </PaddedContentView>
         {managerStatus && (
           <>
             <DataFieldListItem
-              title={'Manager Active'}
+              title={'Background Manager Networks'}
+              description={managerStatus.matchSSIDs.length > 0 ? managerStatus.matchSSIDs.join(', ') : 'None'}
+            />
+            <DataFieldListItem
+              title={'Background Manager Active'}
               description={managerStatus.isActive !== undefined ? (managerStatus.isActive ? 'Yes' : 'No') : 'Unknown'}
             />
             <DataFieldListItem
-              title={'Manager Enabled'}
+              title={'Background Manager Enabled'}
               description={managerStatus.isEnabled !== undefined ? (managerStatus.isEnabled ? 'Yes' : 'No') : 'Unknown'}
-            />
-            <DataFieldListItem
-              title={'Match SSIDs'}
-              description={managerStatus.matchSSIDs.length > 0 ? managerStatus.matchSSIDs.join(', ') : 'None'}
             />
           </>
         )}
+        <DataFieldListItem title={'Server Default Network'} description={data?.shipWifiSSID} />
+
         <ListSection>
-          <ListSubheader>Provider Configuration</ListSubheader>
+          <ListSubheader>Background Provider Configuration</ListSubheader>
         </ListSection>
         {(() => {
           const providerConfig = parseProviderConfiguration(managerStatus?.providerConfiguration);
           return providerConfig ? (
-            Object.entries(providerConfig).map(([key, value]) => (
-              <DataFieldListItem
-                key={key}
-                title={key}
-                description={formatProviderConfigValue(value)}
-                sensitive={key.toLowerCase().includes('token')}
-              />
-            ))
+            [...Object.entries(providerConfig)]
+              .sort(([a], [b]) => a.localeCompare(b, undefined, {sensitivity: 'base'}))
+              .map(([key, value]) => (
+                <DataFieldListItem
+                  key={key}
+                  title={key}
+                  description={formatProviderConfigValue(value)}
+                  sensitive={key.toLowerCase().includes('token')}
+                />
+              ))
           ) : (
             <DataFieldListItem title={'Provider Configuration'} description={'Not available'} />
           );
         })()}
+        <PaddedContentView padTop={true}>
+          <PrimaryActionButton
+            buttonText={'Reconfigure Provider'}
+            onPress={handleSetupManager}
+            disabled={!tokenData || preRegistrationMode}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+        </PaddedContentView>
         <ListSection>
-          <ListSubheader>In-App Socket Status</ListSubheader>
+          <ListSubheader>Foreground Provider Status</ListSubheader>
         </ListSection>
+        <PaddedContentView padTop={true} padSides={false} padBottom={false}>
+          <HelpTopicView>
+            The foreground provider handles push notifications when the app is open and you are not connected to one of
+            the configured WiFi networks above. During normal operations it is not expected to be active and the ping
+            time may be quite old.
+          </HelpTopicView>
+        </PaddedContentView>
         {foregroundProviderStatus && (
           <>
             <DataFieldListItem
@@ -339,17 +370,6 @@ export const BackgroundConnectionSettingsIOSView = () => {
             />
           </>
         )}
-        <ListSection>
-          <ListSubheader>Control</ListSubheader>
-        </ListSection>
-        <PaddedContentView padTop={true}>
-          <PrimaryActionButton
-            buttonText={'Recycle Worker'}
-            onPress={handleSetupManager}
-            disabled={!tokenData || preRegistrationMode}
-            buttonColor={theme.colors.twitarrNeutralButton}
-          />
-        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );

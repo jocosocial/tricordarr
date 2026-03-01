@@ -7,6 +7,10 @@
 
 import Foundation
 
+extension Notification.Name {
+	static let appConfigDidChange = Notification.Name("appConfigDidChange")
+}
+
 /// Singleton helper class to manage AppConfig decoded from JSON.
 /// Provides access to the decoded AppConfig struct throughout the native iOS code.
 @objc public class AppConfig: NSObject {
@@ -20,8 +24,18 @@ import Foundation
 		}
 
 		do {
+			let oldConfig = shared
 			shared = try JSONDecoder().decode(AppConfigData.self, from: jsonData)
 			Logging.logger.log("[AppConfig.swift] Successfully decoded and stored AppConfig")
+
+			var userInfo: [String: Any] = [:]
+			if let oldConfig = oldConfig {
+				userInfo["oldConfig"] = oldConfig
+			}
+			if let newConfig = shared {
+				userInfo["newConfig"] = newConfig
+			}
+			NotificationCenter.default.post(name: .appConfigDidChange, object: nil, userInfo: userInfo)
 		}
 		catch {
 			Logging.logger.error(
