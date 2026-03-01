@@ -290,14 +290,16 @@ export const BackgroundConnectionSettingsIOSView = () => {
         {(() => {
           const providerConfig = parseProviderConfiguration(managerStatus?.providerConfiguration);
           return providerConfig ? (
-            Object.entries(providerConfig).map(([key, value]) => (
-              <DataFieldListItem
-                key={key}
-                title={key}
-                description={formatProviderConfigValue(value)}
-                sensitive={key.toLowerCase().includes('token')}
-              />
-            ))
+            [...Object.entries(providerConfig)]
+              .sort(([a], [b]) => a.localeCompare(b, undefined, {sensitivity: 'base'}))
+              .map(([key, value]) => (
+                <DataFieldListItem
+                  key={key}
+                  title={key}
+                  description={formatProviderConfigValue(value)}
+                  sensitive={key.toLowerCase().includes('token')}
+                />
+              ))
           ) : (
             <DataFieldListItem title={'Provider Configuration'} description={'Not available'} />
           );
