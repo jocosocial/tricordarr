@@ -63,7 +63,7 @@ export const TodayPreRegistrationCard = () => {
           <PreRegistrationListItem
             title={'Favorite Users'}
             iconName={AppIcons.userFavorite}
-            onPress={() => mainNavigation.push(CommonStackComponents.favoriteUsers)}
+            onPress={() => mainNavigation.push(CommonStackComponents.usersList, {mode: 'favorite'})}
           />
 
           <PreRegistrationListItem

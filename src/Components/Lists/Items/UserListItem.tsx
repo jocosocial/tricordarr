@@ -1,17 +1,16 @@
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {IconButton, List} from 'react-native-paper';
+import {Checkbox, IconButton, List} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-
-interface ActionButton {
-  icon: IconSource;
-  onPress: (uh: UserHeader) => void;
-}
+import {Selectable} from '#src/Types/Selectable';
 
 interface UserListItemProps {
   onPress?: () => void;
@@ -21,29 +20,31 @@ interface UserListItemProps {
   /** Additional action buttons to display on the right side */
   additionalButtons?: ActionButton[];
   disabled?: boolean;
+  enableSelection?: boolean;
+  setEnableSelection?: Dispatch<SetStateAction<boolean>>;
+  selected?: boolean;
 }
 
-/**
- * Generic List.Item for displaying a user. Takes a UserHeader and lets you add special features like an action button
- * or something that happens when you press it.
- */
 export const UserListItem = ({
   userHeader,
   onPress,
   buttonOnPress,
   buttonIcon,
-  additionalButtons,
   disabled = false,
+  enableSelection = false,
+  setEnableSelection,
+  selected = false,
 }: UserListItemProps) => {
   const {styleDefaults, commonStyles} = useStyles();
   const {preRegistrationMode} = usePreRegistration();
+  const {theme} = useAppTheme();
+  const {dispatchSelectedItems} = useSelection();
 
   const styles = StyleSheet.create({
-    // This has to account for some Paper bullshit where there is a secret View added when you define
-    // a Right, and it has things that we can't override.
     item: {
       ...commonStyles.paddingHorizontalSmall,
       paddingVertical: 2,
+      backgroundColor: theme.colors.background,
     },
     avatar: {
       ...commonStyles.justifyCenter,
@@ -55,11 +56,18 @@ export const UserListItem = ({
     descriptionStyle: {
       ...(disabled ? commonStyles.disabled : {}),
     },
-    buttonsContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
+    checkboxContainer: {
+      ...commonStyles.flexColumn,
+      ...commonStyles.justifyCenter,
     },
   });
+
+  const handleSelection = () => {
+    dispatchSelectedItems({
+      type: SelectionActions.select,
+      item: Selectable.fromUserHeader(userHeader),
+    });
+  };
 
   const getAvatar = React.useCallback(
     () => (
@@ -70,43 +78,31 @@ export const UserListItem = ({
     [userHeader, styles.avatar, preRegistrationMode],
   );
 
+  const getCheckbox = () => (
+    <View style={styles.checkboxContainer}>
+      <Checkbox status={selected ? 'checked' : 'unchecked'} onPress={handleSelection} />
+    </View>
+  );
+
   const getActionButton = React.useCallback(() => {
-    const hasMainButton = buttonOnPress && buttonIcon;
-    const hasAdditionalButtons = additionalButtons && additionalButtons.length > 0;
-
-    if (!hasMainButton && !hasAdditionalButtons) {
-      return null;
+    if (buttonOnPress && buttonIcon) {
+      return (
+        <IconButton
+          mode={'outlined'}
+          size={styleDefaults.avatarSizeSmall}
+          icon={buttonIcon}
+          onPress={() => buttonOnPress(userHeader)}
+        />
+      );
     }
+  }, [buttonOnPress, buttonIcon, userHeader, styleDefaults.avatarSizeSmall]);
 
-    return (
-      <View style={styles.buttonsContainer}>
-        {hasMainButton && (
-          <IconButton
-            mode={'outlined'}
-            size={styleDefaults.avatarSizeSmall}
-            icon={buttonIcon}
-            onPress={() => buttonOnPress(userHeader)}
-          />
-        )}
-        {additionalButtons?.map((button, index) => (
-          <IconButton
-            key={index}
-            mode={'outlined'}
-            size={styleDefaults.avatarSizeSmall}
-            icon={button.icon}
-            onPress={() => button.onPress(userHeader)}
-          />
-        ))}
-      </View>
-    );
-  }, [
-    buttonOnPress,
-    buttonIcon,
-    additionalButtons,
-    userHeader,
-    styleDefaults.avatarSizeSmall,
-    styles.buttonsContainer,
-  ]);
+  const onLongPress = () => {
+    if (setEnableSelection) {
+      setEnableSelection(true);
+      handleSelection();
+    }
+  };
 
   return (
     <List.Item
@@ -115,10 +111,11 @@ export const UserListItem = ({
       description={preRegistrationMode ? undefined : userHeader.displayName}
       titleStyle={styles.titleStyle}
       descriptionStyle={styles.descriptionStyle}
-      onPress={onPress}
-      left={getAvatar}
-      right={getActionButton}
+      onPress={enableSelection ? handleSelection : onPress}
+      left={enableSelection ? getCheckbox : getAvatar}
+      right={enableSelection ? undefined : getActionButton}
       disabled={disabled}
+      onLongPress={setEnableSelection ? onLongPress : undefined}
     />
   );
 };
