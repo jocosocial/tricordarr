@@ -12,5 +12,11 @@ interface NavigationListItemProps {
 export const SettingsNavigationListItem = ({title, description, navComponent}: NavigationListItemProps) => {
   const navigation = useSettingsStack();
 
-  return <ListItem title={title} description={description} onPress={() => navigation.push(navComponent)} />;
+  return (
+    <ListItem
+      title={title}
+      description={description}
+      onPress={() => (navigation.push as (name: keyof SettingsStackParamList) => void)(navComponent)}
+    />
+  );
 };

@@ -35,10 +35,13 @@ import {ForumThreadUserScreen} from '#src/Screens/Forum/Thread/ForumThreadUserSc
 import {HelpManualScreen} from '#src/Screens/Help/HelpManualScreen';
 import {ModeratorHelpScreen} from '#src/Screens/Help/ModeratorHelpScreen';
 import {ShutternautHelpScreen} from '#src/Screens/Help/ShutternautHelpScreen';
+import {KaraokeHelpScreen} from '#src/Screens/Karaoke/KaraokeHelpScreen';
 import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen';
 import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
 import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
 import {LfgHelpScreen} from '#src/Screens/LFG/LfgHelpScreen';
+import {LfgListHelpScreen} from '#src/Screens/LFG/LfgListHelpScreen';
+import {LfgParticipationHelpScreen} from '#src/Screens/LFG/LfgParticipationHelpScreen';
 import {LfgParticipationScreen} from '#src/Screens/LFG/LfgParticipationScreen';
 import {LfgScreen} from '#src/Screens/LFG/LfgScreen';
 import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen';
@@ -46,6 +49,8 @@ import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
 import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
 import {CruiseHelpScreen} from '#src/Screens/Main/CruiseHelpScreen';
 import {DailyThemeHelpScreen} from '#src/Screens/Main/DailyThemeHelpScreen';
+import {EasterEggHelpScreen} from '#src/Screens/Main/EasterEggHelpScreen';
+import {EasterEggScreen} from '#src/Screens/Main/EasterEggScreen';
 import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
 import {MainTimeZoneScreen} from '#src/Screens/Main/MainTimeZoneScreen';
 import {MapHelpScreen} from '#src/Screens/Main/MapHelpScreen';
@@ -53,11 +58,11 @@ import {MapScreen} from '#src/Screens/Main/MapScreen';
 import {PrivacyScreen} from '#src/Screens/Main/PrivacyScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
 import {TodayHelpScreen} from '#src/Screens/Main/TodayHelpScreen';
+import {MicroKaraokeHelpScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeHelpScreen';
 import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScreen';
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {PerformerHelpScreen} from '#src/Screens/Performer/PerformerHelpScreen';
 import {PerformerScreen} from '#src/Screens/Performer/PerformerScreen';
-import {PersonalEventCreateHelpScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateHelpScreen';
 import {PersonalEventCreateScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateScreen';
 import {PersonalEventEditScreen} from '#src/Screens/PersonalEvent/PersonalEventEditScreen';
 import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScreen';
@@ -65,10 +70,13 @@ import {PhotostreamEventScreen} from '#src/Screens/Photostream/PhotostreamEventS
 import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
 import {EventHelpScreen} from '#src/Screens/Schedule/EventHelpScreen';
 import {PersonalEventHelpScreen} from '#src/Screens/Schedule/PersonalEventHelpScreen';
+import {ScheduleDayHelpScreen} from '#src/Screens/Schedule/ScheduleDayHelpScreen';
+import {ScheduleDayPlannerHelpScreen} from '#src/Screens/Schedule/ScheduleDayPlannerHelpScreen';
 import {ScheduleDayPlannerScreen} from '#src/Screens/Schedule/ScheduleDayPlannerScreen';
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {ScheduleHelpScreen} from '#src/Screens/Schedule/ScheduleHelpScreen';
 import {ScheduleImportScreen} from '#src/Screens/Schedule/ScheduleImportScreen';
+import {ScheduleOverlapHelpScreen} from '#src/Screens/Schedule/ScheduleOverlapHelpScreen';
 import {ScheduleOverlapScreen} from '#src/Screens/Schedule/ScheduleOverlapScreen';
 import {SeamailAddParticipantScreen} from '#src/Screens/Seamail/SeamailAddParticipantScreen';
 import {SeamailCreateHelpScreen} from '#src/Screens/Seamail/SeamailCreateHelpScreen';
@@ -110,7 +118,7 @@ import {
   ProfilePublicData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
-import {NoDrawerParamsOptional} from '#src/Types/RouteParams';
+import {NoDrawerParams, Optional, ScheduleDayParams, WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -157,6 +165,7 @@ export type CommonStackParamList = {
     deckNumber?: number;
   };
   AccountRecoveryScreen: undefined;
+  EasterEggScreen: undefined;
   ForumThreadUserScreen: {
     user: UserHeader;
   };
@@ -166,9 +175,9 @@ export type CommonStackParamList = {
   EventScreen: {
     eventID: string;
   };
-  PhotostreamEventScreen: {
+  PhotostreamEventScreen: WithScrollToTopIntent<{
     eventID: string;
-  };
+  }>;
   PersonalEventScreen: {
     eventID: string;
   };
@@ -199,6 +208,7 @@ export type CommonStackParamList = {
   };
   SeamailChatScreen: {
     fezID: string;
+    initialReadCount?: number;
   };
   FezChatDetailsScreen: {
     fezID: string;
@@ -221,6 +231,7 @@ export type CommonStackParamList = {
   };
   LfgChatScreen: {
     fezID: string;
+    initialReadCount?: number;
   };
   LfgEditScreen: {
     fez: FezData;
@@ -253,6 +264,9 @@ export type CommonStackParamList = {
   ForumPostSearchHelpScreen: undefined;
   KeywordsHelpScreen: undefined;
   ScheduleHelpScreen: undefined;
+  ScheduleDayHelpScreen: undefined;
+  ScheduleDayPlannerHelpScreen: undefined;
+  ScheduleOverlapHelpScreen: undefined;
   ForumPostSearchScreen: {
     category?: CategoryData;
     forum?: ForumListData | ForumData;
@@ -273,8 +287,9 @@ export type CommonStackParamList = {
   SiteUIHelpScreen: undefined;
   DisabledHelpScreen: undefined;
   LfgHelpScreen: undefined;
+  LfgListHelpScreen: undefined;
   LfgCreateHelpScreen: undefined;
-  PersonalEventCreateHelpScreen: undefined;
+  LfgParticipationHelpScreen: undefined;
   EventHelpScreen: {
     mode?: 'official' | 'shadow';
   };
@@ -283,6 +298,7 @@ export type CommonStackParamList = {
   TimeZoneHelpScreen: undefined;
   PrivateEventChatScreen: {
     fezID: string;
+    initialReadCount?: number;
   };
   ScheduleImportScreen: undefined;
   EventSearchScreen: undefined;
@@ -298,7 +314,7 @@ export type CommonStackParamList = {
     eventID: string;
   };
   EventSettingsScreen: undefined;
-  ScheduleDayScreen: NoDrawerParamsOptional;
+  ScheduleDayScreen: ScheduleDayParams & Optional<NoDrawerParams>;
   ScheduleDayPlannerScreen: {
     cruiseDay?: number;
   };
@@ -315,9 +331,12 @@ export type CommonStackParamList = {
   ModeratorHelpScreen: undefined;
   BoardgameHelpScreen: undefined;
   PhotostreamHelpScreen: undefined;
+  KaraokeHelpScreen: undefined;
+  MicroKaraokeHelpScreen: undefined;
   MapHelpScreen: undefined;
   CruiseHelpScreen: undefined;
   DailyThemeHelpScreen: undefined;
+  EasterEggHelpScreen: undefined;
   TodayHelpScreen: undefined;
 };
 
@@ -331,6 +350,7 @@ export enum CommonStackComponents {
   siteUIScreen = 'SiteUIScreen',
   mapScreen = 'MapScreen',
   accountRecoveryScreen = 'AccountRecoveryScreen',
+  easterEggScreen = 'EasterEggScreen',
   forumThreadUserScreen = 'ForumThreadUserScreen',
   forumPostUserScreen = 'ForumPostUserScreen',
   eventScreen = 'EventScreen',
@@ -375,6 +395,9 @@ export enum CommonStackComponents {
   forumPostSearchHelpScreen = 'ForumPostSearchHelpScreen',
   keywordsHelpScreen = 'KeywordsHelpScreen',
   scheduleHelpScreen = 'ScheduleHelpScreen',
+  scheduleDayHelpScreen = 'ScheduleDayHelpScreen',
+  scheduleDayPlannerHelpScreen = 'ScheduleDayPlannerHelpScreen',
+  scheduleOverlapHelpScreen = 'ScheduleOverlapHelpScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
   seamailListHelpScreen = 'SeamailListHelpScreen',
@@ -389,8 +412,9 @@ export enum CommonStackComponents {
   siteUIHelpScreen = 'SiteUIHelpScreen',
   disabledHelpScreen = 'DisabledHelpScreen',
   lfgHelpScreen = 'LfgHelpScreen',
+  lfgListHelpScreen = 'LfgListHelpScreen',
   lfgCreateHelpScreen = 'LfgCreateHelpScreen',
-  personalEventCreateHelpScreen = 'PersonalEventCreateHelpScreen',
+  lfgParticipationHelpScreen = 'LfgParticipationHelpScreen',
   eventHelpScreen = 'EventHelpScreen',
   personalEventHelpScreen = 'PersonalEventHelpScreen',
   mainTimeZoneScreen = 'MainTimeZoneScreen',
@@ -415,9 +439,12 @@ export enum CommonStackComponents {
   moderatorHelpScreen = 'ModeratorHelpScreen',
   boardgameHelpScreen = 'BoardgameHelpScreen',
   photostreamHelpScreen = 'PhotostreamHelpScreen',
+  karaokeHelpScreen = 'KaraokeHelpScreen',
+  microKaraokeHelpScreen = 'MicroKaraokeHelpScreen',
   mapHelpScreen = 'MapHelpScreen',
   cruiseHelpScreen = 'CruiseHelpScreen',
   dailyThemeHelpScreen = 'DailyThemeHelpScreen',
+  easterEggHelpScreen = 'EasterEggHelpScreen',
   todayHelpScreen = 'TodayHelpScreen',
 }
 
@@ -428,6 +455,9 @@ export type HelpScreenComponents =
   | CommonStackComponents.preRegistrationHelpScreen
   | CommonStackComponents.moderatorHelpScreen
   | CommonStackComponents.scheduleHelpScreen
+  | CommonStackComponents.scheduleDayHelpScreen
+  | CommonStackComponents.scheduleDayPlannerHelpScreen
+  | CommonStackComponents.scheduleOverlapHelpScreen
   | CommonStackComponents.userDirectoryHelpScreen
   | CommonStackComponents.forumHelpScreen
   | CommonStackComponents.forumCategoriesHelpScreen
@@ -447,8 +477,9 @@ export type HelpScreenComponents =
   | CommonStackComponents.siteUIHelpScreen
   | CommonStackComponents.disabledHelpScreen
   | CommonStackComponents.lfgHelpScreen
+  | CommonStackComponents.lfgListHelpScreen
   | CommonStackComponents.lfgCreateHelpScreen
-  | CommonStackComponents.personalEventCreateHelpScreen
+  | CommonStackComponents.lfgParticipationHelpScreen
   | CommonStackComponents.eventHelpScreen
   | CommonStackComponents.personalEventHelpScreen
   | CommonStackComponents.timeZoneHelpScreen
@@ -459,10 +490,13 @@ export type HelpScreenComponents =
   | CommonStackComponents.shutternautHelpScreen
   | CommonStackComponents.boardgameHelpScreen
   | CommonStackComponents.photostreamHelpScreen
+  | CommonStackComponents.karaokeHelpScreen
+  | CommonStackComponents.microKaraokeHelpScreen
   | CommonStackComponents.userProfileHelpScreen
   | CommonStackComponents.mapHelpScreen
   | CommonStackComponents.cruiseHelpScreen
   | CommonStackComponents.dailyThemeHelpScreen
+  | CommonStackComponents.easterEggHelpScreen
   | CommonStackComponents.todayHelpScreen;
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
@@ -508,6 +542,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.accountRecoveryScreen}
         component={AccountRecoveryScreen}
         options={{title: 'Recovery'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.easterEggScreen}
+        component={EasterEggScreen}
+        options={{title: 'Easter Egg'}}
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostUserScreen}
@@ -618,7 +657,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         component={FezChatScreen}
         options={{title: FezType.getChatTitle(FezType.activity)}}
       />
-      <Stack.Screen name={CommonStackComponents.lfgEditScreen} component={LfgEditScreen} options={{title: 'Edit'}} />
+      <Stack.Screen
+        name={CommonStackComponents.lfgEditScreen}
+        component={LfgEditScreen}
+        options={{title: 'Edit LFG'}}
+      />
       <Stack.Screen
         name={CommonStackComponents.lfgSettingsScreen}
         component={LfgSettingsScreen}
@@ -632,7 +675,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.accessibilitySettingsScreen}
         component={AccessibilitySettingsScreen}
-        options={{title: 'Accessibility'}}
+        options={{title: 'Appearance'}}
       />
       <Stack.Screen
         name={CommonStackComponents.imageSettingsScreen}
@@ -730,6 +773,21 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Schedule Help'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.scheduleDayHelpScreen}
+        component={ScheduleDayHelpScreen}
+        options={{title: 'Schedule Day Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleDayPlannerHelpScreen}
+        component={ScheduleDayPlannerHelpScreen}
+        options={{title: 'Day Planner Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleOverlapHelpScreen}
+        component={ScheduleOverlapHelpScreen}
+        options={{title: 'Overlapping Events Help'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.forumPostSearchScreen}
         component={ForumPostSearchScreen}
         options={{title: 'Post Search'}}
@@ -792,7 +850,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.disabledHelpScreen}
         component={DisabledHelpScreen}
-        options={{title: 'Help'}}
+        options={{title: 'Disabled Feature Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgHelpScreen}
@@ -800,14 +858,19 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Looking For Group Help'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.lfgListHelpScreen}
+        component={LfgListHelpScreen}
+        options={{title: 'LFG List Help'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.lfgCreateHelpScreen}
         component={LfgCreateHelpScreen}
         options={{title: 'New LFG Help'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.personalEventCreateHelpScreen}
-        component={PersonalEventCreateHelpScreen}
-        options={{title: 'Create Personal Event Help'}}
+        name={CommonStackComponents.lfgParticipationHelpScreen}
+        component={LfgParticipationHelpScreen}
+        options={{title: 'LFG Participation Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.eventHelpScreen}
@@ -891,7 +954,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         component={HelpManualScreen}
         options={{title: 'Help Manual'}}
       />
-      <Stack.Screen name={CommonStackComponents.mainHelpScreen} component={MainHelpScreen} options={{title: 'Help'}} />
+      <Stack.Screen
+        name={CommonStackComponents.mainHelpScreen}
+        component={MainHelpScreen}
+        options={{title: 'General Help'}}
+      />
       <Stack.Screen
         name={CommonStackComponents.aboutTricordarrScreen}
         component={AboutTricordarrScreen}
@@ -928,6 +995,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Photostream Help'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.karaokeHelpScreen}
+        component={KaraokeHelpScreen}
+        options={{title: 'Karaoke Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.microKaraokeHelpScreen}
+        component={MicroKaraokeHelpScreen}
+        options={{title: 'Microkaraoke Help'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.mapHelpScreen}
         component={MapHelpScreen}
         options={{title: 'Map Help'}}
@@ -946,6 +1023,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.todayHelpScreen}
         component={TodayHelpScreen}
         options={{title: 'Today Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.easterEggHelpScreen}
+        component={EasterEggHelpScreen}
+        options={{title: '...... why?'}}
       />
     </>
   );

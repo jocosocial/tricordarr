@@ -1,4 +1,3 @@
-import {CacheManager} from '@georstat/react-native-image-cache';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {PropsWithChildren, useCallback} from 'react';
 
@@ -9,7 +8,6 @@ import {SignOutContext, SignOutContextType} from '#src/Context/Contexts/SignOutC
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
-import {stopForegroundServiceWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 
 /**
  * SignOutProvider consolidates all sign-out logic into a single performSignOut function.
@@ -31,7 +29,10 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
   const {clearCookies} = useTwitarrWebview();
 
   const performSignOut = useCallback(async () => {
-    // Disable user notifications
+    // Disable user notifications. Push provider teardown (stopPushProvider) is handled by
+    // PushNotificationService when this state flips: its effect calls stopPushProvider() once.
+    // We do not call stopPushProvider() here to avoid duplicate clearSettings on iOS and
+    // NEAppPushManager "configuration is unchanged" errors.
     setEnableUserNotifications(false);
 
     // Close notification socket
@@ -42,9 +43,6 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
       type: WebSocketStorageActions.clear,
     });
 
-    // Stop foreground service worker (Android)
-    await stopForegroundServiceWorker();
-
     // Sign out from session (clears token data)
     await signOut();
 
@@ -53,9 +51,6 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
 
     // Clear React Query cache
     queryClient.clear();
-
-    // Clear image cache
-    await CacheManager.clearCache();
 
     // Clear webview cookies
     await clearCookies();

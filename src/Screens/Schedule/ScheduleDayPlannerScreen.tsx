@@ -15,7 +15,13 @@ import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForTime} from '#src/Libraries/DayPlanner';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
+import {
+  buildDayPlannerItems,
+  getDayBoundaries,
+  getScrollOffsetForFirstItem,
+  getScrollOffsetForTimeOfDay,
+} from '#src/Libraries/DayPlanner';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
@@ -37,7 +43,11 @@ export const ScheduleDayPlannerScreen = (props: Props) => {
 
 const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   const {adjustedCruiseDayToday, startDate} = useCruise();
-  const [selectedCruiseDay, setSelectedCruiseDay] = useState(route.params?.cruiseDay ?? adjustedCruiseDayToday);
+  const cruiseDayParam = route.params?.cruiseDay;
+  // Day Planner doesn't support cruiseDay 0 (all days).
+  const [selectedCruiseDay, setSelectedCruiseDay] = useState(
+    cruiseDayParam === 0 || cruiseDayParam === undefined ? adjustedCruiseDayToday : cruiseDayParam,
+  );
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const scrollViewRef = useRef<ScrollView>(null);
@@ -108,24 +118,52 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     return buildDayPlannerItems(eventData, lfgJoinedData, personalEventData);
   }, [eventData, lfgJoinedData, personalEventData]);
 
-  // Calculate day boundaries for the timeline
+  const {tzAtTime} = useTimeZone();
+
+  // Calculate day boundaries first using port timezone as initial reference
+  // We need these boundaries to determine the actual time to check for the timezone
+  const preliminaryBoundaries = useMemo(() => {
+    return getDayBoundaries(
+      startDate,
+      selectedCruiseDay,
+      appConfig.schedule.enableLateDayFlip,
+      appConfig.portTimeZoneID,
+    );
+  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, appConfig.portTimeZoneID]);
+
+  // Boat timezone for the selected day - determine from server's timezone change schedule
+  // Check the timezone at the actual day start time (which accounts for late day flip)
+  // This uses the authoritative timezone data rather than inferring from event timezones
+  const boatTimeZoneID = useMemo(() => {
+    return tzAtTime(preliminaryBoundaries.dayStart);
+  }, [preliminaryBoundaries.dayStart, tzAtTime]);
+
+  // Recalculate day boundaries using the correct boat timezone
   const {dayStart, dayEnd} = useMemo(() => {
-    return getDayBoundaries(startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip);
-  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip]);
+    return getDayBoundaries(startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID);
+  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID]);
 
   // Calculate loading state - only show loading spinner on initial fetch (when no cached data exists)
   // Using isLoading instead of isFetching avoids showing spinner on refetch
   const showLoading = isEventLoading || isLfgJoinedLoading || isPersonalEventLoading;
 
-  // Scroll to current time position in the timeline
+  // Scroll to current time-of-day position in the timeline (boat TZ). Position is consistent regardless of which cruise day is selected.
   const scrollToNow = useCallback(() => {
     if (!scrollViewRef.current) {
       return;
     }
-    const now = new Date();
-    const offset = getScrollOffsetForTime(now, dayStart);
+    const offset = getScrollOffsetForTimeOfDay(boatTimeZoneID, dayStart);
     scrollViewRef.current.scrollTo({y: offset, animated: true});
-  }, [dayStart]);
+  }, [boatTimeZoneID, dayStart]);
+
+  // Scroll to first item (for non-current days so list doesn't start at day start e.g. 3AM).
+  const scrollToFirstItem = useCallback(() => {
+    if (!scrollViewRef.current) {
+      return;
+    }
+    const offset = getScrollOffsetForFirstItem(dayPlannerItems, dayStart);
+    scrollViewRef.current.scrollTo({y: offset, animated: true});
+  }, [dayPlannerItems, dayStart]);
 
   // Refresh all data
   const onRefresh = useCallback(async () => {
@@ -141,7 +179,10 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     return (
       <View>
         <MaterialHeaderButtons>
-          <ScheduleDayScreenActionsMenu onRefresh={onRefresh} />
+          <ScheduleDayScreenActionsMenu
+            onRefresh={onRefresh}
+            helpScreen={CommonStackComponents.scheduleDayPlannerHelpScreen}
+          />
         </MaterialHeaderButtons>
       </View>
     );
@@ -154,17 +195,19 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  // Auto-scroll to current time on initial load for any selected day
+  /**
+   * Auto-scroll on initial load. This used to scroll to current time for the current day,
+   * and the start of the list for other days. But that is somewhat inconsistent with
+   * other list behaviors.
+   */
   useEffect(() => {
     if (scrollViewRef.current && !showLoading) {
-      // Use requestAnimationFrame to ensure scroll happens after layout/render is complete
-      // This is more reliable than setTimeout as it syncs with the rendering cycle
       const rafId = requestAnimationFrame(() => {
-        scrollToNow();
+        scrollToFirstItem();
       });
       return () => cancelAnimationFrame(rafId);
     }
-  }, [selectedCruiseDay, showLoading, scrollToNow]);
+  }, [showLoading, scrollToFirstItem]);
 
   return (
     <AppView>
@@ -180,7 +223,14 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
             <ActivityIndicator size={'large'} />
           </View>
         ) : (
-          <DayPlannerTimelineView ref={scrollViewRef} items={dayPlannerItems} dayStart={dayStart} dayEnd={dayEnd} />
+          <DayPlannerTimelineView
+            ref={scrollViewRef}
+            items={dayPlannerItems}
+            dayStart={dayStart}
+            dayEnd={dayEnd}
+            timeZoneID={boatTimeZoneID}
+            selectedCruiseDay={selectedCruiseDay}
+          />
         )}
       </View>
       {!preRegistrationMode && <SchedulePersonalEventCreateFAB />}

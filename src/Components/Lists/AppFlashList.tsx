@@ -1,16 +1,14 @@
 import {FlashList, type FlashListRef, ListRenderItem} from '@shopify/flash-list';
 import React, {forwardRef, useCallback, useState} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {FloatingScrollButtonHorizontalPosition, FloatingScrollButtonVerticalPosition} from '#src/Types';
+import {MaintainVisibleContentPosition} from '#src/Types/Lists';
 
 interface AppFlashListProps<TItem> {
-  scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
-  scrollButtonHorizontalPosition?: FloatingScrollButtonHorizontalPosition;
-  invertList?: boolean;
   handleLoadNext?: () => void;
   onEndReachedThreshold?: number;
   onStartReachedThreshold?: number;
@@ -22,7 +20,8 @@ interface AppFlashListProps<TItem> {
   data: TItem[];
   renderItemSeparator?: React.ComponentType<any>;
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  maintainViewPosition?: boolean;
+  /** When set (e.g. { disabled: true }), forwarded to FlashList to control scroll correction on reorder. */
+  maintainVisibleContentPosition?: MaintainVisibleContentPosition;
   onScrollThreshold?: (condition: boolean) => void;
   listStyle?: StyleProp<ViewStyle>;
   enableScrollButton?: boolean;
@@ -36,30 +35,32 @@ interface AppFlashListProps<TItem> {
 
 const AppFlashListInner = <TItem,>(
   {
-    scrollButtonVerticalPosition,
-    scrollButtonHorizontalPosition,
     scrollButtonSmall,
-    invertList,
     onEndReachedThreshold = 1,
     keyExtractor,
-    initialScrollIndex = 0,
+    /** 0 == first item, undefined == start, including header */
+    initialScrollIndex,
     renderListHeader,
     renderListFooter,
     renderItem,
     renderItemSeparator,
     data,
     refreshControl,
+    maintainVisibleContentPosition,
     onScrollThreshold,
-    enableScrollButton = true,
+    enableScrollButton,
     numColumns,
     handleLoadNext,
     extraData,
     style,
+    contentContainerStyle,
     masonry = false,
   }: AppFlashListProps<TItem>,
   ref: React.ForwardedRef<FlashListRef<TItem>>,
 ) => {
-  const {styleDefaults} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
+  const {appConfig} = useConfig();
+  const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
   const [showScrollButton, setShowScrollButton] = useState(false);
 
   /**
@@ -90,12 +91,12 @@ const AppFlashListInner = <TItem,>(
 
   // https://github.com/facebook/react-native/issues/25239
   return (
-    <>
+    <View style={commonStyles.flex}>
       <FlashList
         ref={ref}
         data={data}
         renderItem={renderItem}
-        onScroll={enableScrollButton ? onScroll : undefined}
+        onScroll={effectiveScrollButton ? onScroll : undefined}
         onEndReachedThreshold={onEndReachedThreshold}
         keyExtractor={keyExtractor}
         initialScrollIndex={initialScrollIndex}
@@ -107,19 +108,15 @@ const AppFlashListInner = <TItem,>(
         onEndReached={handleLoadNext}
         extraData={extraData}
         style={style}
+        contentContainerStyle={contentContainerStyle}
+        maintainVisibleContentPosition={maintainVisibleContentPosition}
         // columnWrapperStyle is not supported in FlashList v2.
         masonry={masonry}
       />
-      {enableScrollButton && showScrollButton && (
-        <FloatingScrollButton
-          icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
-          onPress={handleScrollButtonPress}
-          verticalPosition={scrollButtonVerticalPosition}
-          horizontalPosition={scrollButtonHorizontalPosition}
-          small={scrollButtonSmall}
-        />
+      {effectiveScrollButton && showScrollButton && (
+        <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} small={scrollButtonSmall} />
       )}
-    </>
+    </View>
   );
 };
 

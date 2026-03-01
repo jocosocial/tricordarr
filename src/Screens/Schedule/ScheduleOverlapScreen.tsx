@@ -22,11 +22,11 @@ import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {calcCruiseDayTime, eventsOverlap, getDurationString} from '#src/Libraries/DateTime';
 import {CommonStackComponents, CommonStackParamList, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleOverlapScreen>;
@@ -36,7 +36,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {startDate, endDate} = useCruise();
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {tzAtTime} = useTimeZone();
   const {getIsDisabled} = useFeature();
   const {preRegistrationMode} = usePreRegistration();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
@@ -51,9 +51,10 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     if (!inputStartTime) {
       return undefined;
     }
-    const cruiseDayTime = calcCruiseDayTime(new Date(inputStartTime), startDate, endDate);
+    // Use timezone-aware cruise day calculation
+    const cruiseDayTime = calcCruiseDayTime(new Date(inputStartTime), startDate, endDate, tzAtTime);
     return cruiseDayTime.cruiseDay;
-  }, [inputStartTime, startDate, endDate]);
+  }, [inputStartTime, startDate, endDate, tzAtTime]);
 
   // Query all three data types for the same cruiseDay
   const {
@@ -122,7 +123,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     }
 
     // Add LFGs
-    if (lfgOpenData && appConfig.schedule.eventsShowOpenLfgs) {
+    if (lfgOpenData && appConfig.schedule.eventsShowOpenLfgs && !onlyYourEvents) {
       lfgOpenData.pages.forEach(page => {
         allItems.push(...page.fezzes);
       });
@@ -182,24 +183,12 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     });
 
     // Filter by "only your events" if enabled
-    if (onlyYourEvents && profilePublicData?.header) {
+    if (onlyYourEvents) {
       const userFilteredItems = featureFilteredItems.filter(item => {
-        // Always include the route's eventData, even if it doesn't match the filter
-        const itemId = 'fezID' in item ? item.fezID : item.eventID;
-        if (itemId === routeEventId) {
-          return true;
-        }
-
         if ('fezID' in item) {
-          // LFGs or PersonalEvents: check if user is participant or owner
-          return (
-            FezData.isParticipant(item, profilePublicData.header) ||
-            item.owner.userID === profilePublicData.header.userID
-          );
-        } else {
-          // Events: check if favorited
-          return item.isFavorite === true;
+          return true; // already from joined/personal queries
         }
+        return item.isFavorite === true;
       });
       // Sort by startTime
       return userFilteredItems.sort((a, b) => {
@@ -228,7 +217,6 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     lfgJoinedData,
     personalEventData,
     onlyYourEvents,
-    profilePublicData,
     appConfig.schedule.overlapExcludeDurationHours,
     appConfig.schedule.eventsShowOpenLfgs,
     getIsDisabled,
@@ -285,7 +273,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
               leadingIcon={AppIcons.help}
               onPress={() => {
                 closeMenu();
-                commonNavigation.push(CommonStackComponents.scheduleHelpScreen);
+                commonNavigation.push(CommonStackComponents.scheduleOverlapHelpScreen);
               }}
             />
           </AppMenu>

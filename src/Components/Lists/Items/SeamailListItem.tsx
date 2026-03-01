@@ -1,5 +1,6 @@
-import React, {memo} from 'react';
+import React, {Dispatch, memo, SetStateAction} from 'react';
 import {StyleSheet, View} from 'react-native';
+import {Checkbox} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezAvatarImage} from '#src/Components/Images/FezAvatarImage';
@@ -7,21 +8,31 @@ import {ListItem} from '#src/Components/Lists/ListItem';
 import {SeamailListItemSwipeable} from '#src/Components/Swipeables/SeamailListItemSwipeable';
 import {SeamailMessageCountIndicator} from '#src/Components/Text/SeamailMessageCountIndicator';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
+import {Selectable} from '#src/Types/Selectable';
 
 interface SeamailListItemProps {
   fez: FezData;
+  enableSelection: boolean;
+  setEnableSelection: Dispatch<SetStateAction<boolean>>;
+  selected: boolean;
 }
 
-const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
-  const {data: profilePublicData} = useUserProfileQuery();
+const SeamailListItemInternal = ({fez, enableSelection, setEnableSelection, selected}: SeamailListItemProps) => {
+  const {currentUserID} = useSession();
   const navigation = useChatStack();
   const {commonStyles} = useStyles();
+  const {dispatchSelectedItems} = useSelection();
+  const {theme} = useAppTheme();
+
   let badgeCount = 0;
   if (fez.members) {
     badgeCount = fez.members.postCount - fez.members.readCount;
@@ -41,8 +52,9 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     postCountColor: {
       color: '#cfcfcf',
     },
-    timeStyleActive: {
-      ...commonStyles.bold,
+    timeStyle: {
+      ...(badgeCount ? commonStyles.bold : undefined),
+      ...commonStyles.textAlignRight,
     },
     rightContainer: {
       ...commonStyles.verticalContainer,
@@ -56,11 +68,29 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     },
     item: {
       ...commonStyles.background,
+      ...commonStyles.paddingRightSmall,
+    },
+    checkboxContainer: {
+      ...commonStyles.flexColumn,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.paddingLeftSmall,
     },
   });
 
-  const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
+  const otherParticipants = fez.members?.participants.filter(p => p.userID !== currentUserID) || [];
   const description = otherParticipants.map(p => p.username).join(', ');
+
+  const handleSelection = () => {
+    dispatchSelectedItems({
+      type: SelectionActions.select,
+      item: Selectable.fromFezData(fez),
+    });
+  };
+
+  const onLongPress = () => {
+    setEnableSelection(true);
+    handleSelection();
+  };
 
   const getAvatar = () => (
     <View style={styles.avatar}>
@@ -68,9 +98,18 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     </View>
   );
 
+  const getLeft = () => {
+    return (
+      <View style={styles.checkboxContainer}>
+        <Checkbox status={selected ? 'checked' : 'unchecked'} onPress={handleSelection} />
+      </View>
+    );
+  };
+
   const onPress = () =>
     navigation.push(CommonStackComponents.seamailChatScreen, {
       fezID: fez.fezID,
+      initialReadCount: fez.members?.readCount,
     });
 
   const getRight = () => {
@@ -79,7 +118,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     if (fez.members?.isMuted) {
       return (
         <View style={styles.leftContainer}>
-          <AppIcon icon={AppIcons.mute} />
+          <AppIcon icon={AppIcons.mute} color={theme.colors.twitarrNegativeButton} />
         </View>
       );
     }
@@ -88,11 +127,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
       <View style={styles.rightContainer}>
         <SeamailMessageCountIndicator badgeCount={badgeCount} totalPostCount={totalPostCount} />
         <View>
-          <RelativeTimeTag
-            date={new Date(fez.lastModificationTime)}
-            variant={'bodyMedium'}
-            style={badgeCount ? styles.timeStyleActive : undefined}
-          />
+          <RelativeTimeTag date={new Date(fez.lastModificationTime)} variant={'bodyMedium'} style={styles.timeStyle} />
         </View>
       </View>
     );
@@ -105,7 +140,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
    * the description to one line.
    */
   return (
-    <SeamailListItemSwipeable fez={fez}>
+    <SeamailListItemSwipeable fez={fez} enabled={!enableSelection}>
       <ListItem
         style={styles.item}
         title={fez.title}
@@ -114,8 +149,9 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
         description={description}
         descriptionStyle={styles.description}
         descriptionNumberOfLines={1}
-        onPress={onPress}
-        left={getAvatar}
+        onPress={enableSelection ? handleSelection : onPress}
+        onLongPress={onLongPress}
+        left={enableSelection ? getLeft : getAvatar}
         right={getRight}
       />
     </SeamailListItemSwipeable>

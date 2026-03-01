@@ -1,5 +1,5 @@
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {RefreshControlProps} from 'react-native';
 import {Divider} from 'react-native-paper';
 
@@ -9,7 +9,6 @@ import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {ForumThreadListItem} from '#src/Components/Lists/Items/Forum/ForumThreadListItem';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
@@ -18,12 +17,12 @@ interface ForumThreadListProps {
   forumListData: ForumListData[];
   handleLoadNext: () => void;
   handleLoadPrevious?: () => void;
-  maintainViewPosition?: boolean;
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
   categoryID?: string;
   keyExtractor?: (item: ForumListData) => string;
   onScrollThreshold?: (value: boolean) => void;
+  scrollToTopIntent?: number;
 }
 
 /**
@@ -33,16 +32,21 @@ export const ForumThreadList = ({
   forumListData,
   refreshControl,
   handleLoadNext,
-  maintainViewPosition,
   hasNextPage,
   hasPreviousPage,
   categoryID,
   keyExtractor = (item: ForumListData) => item.forumID,
   onScrollThreshold,
+  scrollToTopIntent,
 }: ForumThreadListProps) => {
   const listRef = useRef<FlashListRef<ForumListData>>(null);
   const {enableSelection, setEnableSelection, selectedItems} = useSelection();
-  const {appConfig} = useConfig();
+
+  useEffect(() => {
+    if (scrollToTopIntent) {
+      listRef.current?.scrollToOffset({offset: 0, animated: false});
+    }
+  }, [scrollToTopIntent]);
 
   const renderListHeader = () => {
     // Turning this off because the list renders too quickly based on the state data.
@@ -91,11 +95,9 @@ export const ForumThreadList = ({
       data={forumListData}
       onScrollThreshold={onScrollThreshold}
       keyExtractor={keyExtractor}
-      maintainViewPosition={maintainViewPosition}
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       renderItemSeparator={renderItemSeparator}
-      scrollButtonHorizontalPosition={appConfig.userPreferences.reverseSwipeOrientation ? 'left' : 'right'}
     />
   );
 };

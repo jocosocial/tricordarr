@@ -3,6 +3,8 @@ import {ScrollView, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {DayPlannerCard} from '#src/Components/Cards/Schedule/DayPlannerCard';
+import {DayPlannerNowDivider} from '#src/Components/Views/Schedule/DayPlannerNowDivider';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {
@@ -18,23 +20,28 @@ interface DayPlannerTimelineViewProps {
   items: DayPlannerItem[];
   dayStart: Date;
   dayEnd: Date;
+  /** Boat timezone for slot labels (e.g. America/Lower_Princes). When set, labels show boat time. */
+  timeZoneID?: string;
+  /** The cruise day being viewed (1-indexed). Used by DayPlannerNowDivider to show "now" when viewing today. */
+  selectedCruiseDay?: number;
 }
 
 export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineViewProps>(
-  ({items, dayStart, dayEnd}, ref) => {
+  ({items, dayStart, dayEnd, timeZoneID, selectedCruiseDay}, ref) => {
     const {theme} = useAppTheme();
     const {commonStyles} = useStyles();
     const commonNavigation = useCommonStack();
+    const {appConfig} = useConfig();
 
     // Calculate layout for all items
     const layoutItems = useMemo(() => {
       return calculateItemLayout(items, dayStart, dayEnd);
     }, [items, dayStart, dayEnd]);
 
-    // Generate time slot labels
+    // Generate time slot labels (in boat time when timeZoneID provided)
     const timeSlots = useMemo(() => {
-      return generateTimeSlotLabels(dayStart);
-    }, [dayStart]);
+      return generateTimeSlotLabels(dayStart, timeZoneID);
+    }, [dayStart, timeZoneID]);
 
     const handleItemPress = useCallback(
       (item: DayPlannerItemWithLayout) => {
@@ -72,10 +79,17 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
       },
       scrollContent: {
         flexDirection: 'row',
+        flexGrow: 1,
+      },
+      timelineRow: {
+        flex: 1,
+        flexDirection: 'row',
+        position: 'relative',
       },
       timeColumn: {
         width: 60,
         paddingRight: 8,
+        zIndex: 1,
       },
       timeSlot: {
         height: DAY_PLANNER_CONFIG.ROW_HEIGHT,
@@ -83,8 +97,9 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         alignItems: 'flex-end',
       },
       timeLabel: {
-        color: theme.colors.onSurfaceVariant,
+        color: theme.colors.onBackground,
         marginTop: 0,
+        backgroundColor: theme.colors.background,
       },
       eventsColumn: {
         flex: 1,
@@ -106,6 +121,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         left: 0,
         right: 0,
         bottom: 0,
+        zIndex: 2,
       },
       emptyMessage: {
         ...commonStyles.paddingVertical,
@@ -133,33 +149,41 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
 
     return (
       <ScrollView ref={ref} style={styles.container} contentContainerStyle={styles.scrollContent}>
-        {/* Time labels column */}
-        <View style={[styles.timeColumn, {height: timelineHeight}]}>
-          {timeSlots.map((slot, index) => (
-            <View key={index} style={[styles.timeSlot, getGridLineStyle(slot.slotType)]}>
-              {slot.label ? (
-                <Text style={styles.timeLabel} variant={'bodyMedium'}>
-                  {slot.label}
-                </Text>
-              ) : null}
-            </View>
-          ))}
-        </View>
+        <View style={[styles.timelineRow, {height: timelineHeight}]}>
+          <DayPlannerNowDivider
+            dayStart={dayStart}
+            selectedCruiseDay={selectedCruiseDay}
+            boatTimeZoneID={timeZoneID ?? appConfig.portTimeZoneID}
+          />
 
-        {/* Events column */}
-        <View style={[styles.eventsColumn, {height: timelineHeight}]}>
-          {/* Grid lines */}
-          <View style={styles.gridLines}>
+          {/* Time labels column — zIndex so it renders above the now divider */}
+          <View style={[styles.timeColumn, {height: timelineHeight}]}>
             {timeSlots.map((slot, index) => (
-              <View key={index} style={[styles.gridLine, getGridLineStyle(slot.slotType)]} />
+              <View key={index} style={[styles.timeSlot, getGridLineStyle(slot.slotType)]}>
+                {slot.label ? (
+                  <Text style={styles.timeLabel} variant={'bodyMedium'}>
+                    {slot.label}
+                  </Text>
+                ) : null}
+              </View>
             ))}
           </View>
 
-          {/* Event cards */}
-          <View style={styles.eventsContainer}>
-            {layoutItems.map(item => (
-              <DayPlannerCard key={item.id} item={item} onPress={() => handleItemPress(item)} />
-            ))}
+          {/* Events column */}
+          <View style={[styles.eventsColumn, {height: timelineHeight}]}>
+            {/* Grid lines */}
+            <View style={styles.gridLines}>
+              {timeSlots.map((slot, index) => (
+                <View key={index} style={[styles.gridLine, getGridLineStyle(slot.slotType)]} />
+              ))}
+            </View>
+
+            {/* Event cards */}
+            <View style={styles.eventsContainer}>
+              {layoutItems.map(item => (
+                <DayPlannerCard key={item.id} item={item} onPress={() => handleItemPress(item)} />
+              ))}
+            </View>
           </View>
         </View>
       </ScrollView>

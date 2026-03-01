@@ -16,6 +16,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
@@ -45,6 +46,7 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
   const uploadMutation = usePhotostreamImageUploadMutation();
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
+  const dispatchScrollToTop = useScrollToTopIntent();
 
   const onSubmit = async (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => {
     if (!values.image) {
@@ -68,11 +70,17 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
       },
       {
         onSuccess: async () => {
-          queryClient.invalidateQueries({queryKey: ['/photostream']});
+          // Refetch only active photostream queries (more targeted than invalidation)
+          // @TODO https://github.com/jocosocial/swiftarr/issues/481
+          await queryClient.refetchQueries({
+            queryKey: ['/photostream'],
+            type: 'active',
+          });
+
+          // Signal photostream screens to scroll to top when user navigates back
+          dispatchScrollToTop(MainStackComponents.photostreamScreen, CommonStackComponents.photostreamEventScreen);
+
           navigation.goBack();
-          // Wait for navigation transition to start before onSettled runs
-          // This is some AI shit that needs tested.
-          await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         },
         onSettled: () => {
           helpers.setSubmitting(false);

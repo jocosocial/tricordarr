@@ -3,18 +3,17 @@ import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
-import {ModeratorCard} from '#src/Components/Cards/MainScreen/ModeratorCard';
-import {TodayPreRegistrationCard} from '#src/Components/Cards/MainScreen/TodayPreRegistrationCard';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {MainAccountMenu} from '#src/Components/Menus/MainAccountMenu';
 import {NotificationsMenu} from '#src/Components/Menus/NotificationsMenu';
 import {TodayHeaderTitle} from '#src/Components/Navigation/TodayHeaderTitle';
 import {AppView} from '#src/Components/Views/AppView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {TodayAnnouncementView} from '#src/Components/Views/Today/TodayAnnouncementView';
 import {TodayHeaderView} from '#src/Components/Views/Today/TodayHeaderView';
+import {TodayModeratorView} from '#src/Components/Views/Today/TodayModeratorView';
 import {TodayNextAppointmentView} from '#src/Components/Views/Today/TodayNextAppointmentView';
+import {TodayPreRegistrationView} from '#src/Components/Views/Today/TodayPreRegistrationView';
 import {TodayThemeView} from '#src/Components/Views/Today/TodayThemeView';
 import {TodayTimezoneWarningView} from '#src/Components/Views/Today/TodayTimezoneWarningView';
 import {TodayAppUpdateView} from '#src/Components/Views/TodayAppUpdateView';
@@ -24,9 +23,11 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 
@@ -44,15 +45,18 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchFavorites} = useUserFavoritesQuery({enabled: false});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
+  const {refetch: refetchClientConfig} = useClientConfigQuery({enabled: false});
+  const {refetch: refetchTimeZoneChanges} = useTimeZoneChangesQuery({enabled: false});
+
   const {isLoggedIn} = useSession();
-  const {hasModerator} = usePrivilege();
+  usePrivilege();
   const {preRegistrationMode} = usePreRegistration();
   const {refreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
-      var refreshes: Promise<any>[] = [];
+      var refreshes: Promise<any>[] = [refetchAnnouncements(), refetchClientConfig(), refetchTimeZoneChanges()];
       // These queries not available in pre-registration mode.
       if (!preRegistrationMode) {
-        refreshes.push(refetchAnnouncements(), refetchThemes(), refetchUserNotificationData());
+        refreshes.push(refetchThemes(), refetchUserNotificationData());
         if (isLoggedIn) {
           // useUserProfileQuery is here because the menu has the users picture.
           // useUserFavoritesQuery is here because the favorites list is sneakily used
@@ -69,6 +73,8 @@ export const TodayScreen = ({navigation}: Props) => {
       refetchUserNotificationData,
       refetchProfile,
       refetchFavorites,
+      refetchClientConfig,
+      refetchTimeZoneChanges,
     ]),
   });
 
@@ -99,24 +105,12 @@ export const TodayScreen = ({navigation}: Props) => {
         isStack={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <TodayHeaderView />
-        {preRegistrationMode && (
-          <PaddedContentView padBottom={false}>
-            <TodayPreRegistrationCard />
-          </PaddedContentView>
-        )}
-        {!preRegistrationMode && (
-          <>
-            <TodayTimezoneWarningView />
-            <TodayAnnouncementView />
-            <TodayThemeView />
-            <TodayNextAppointmentView />
-            {hasModerator && (
-              <PaddedContentView padBottom={false}>
-                <ModeratorCard />
-              </PaddedContentView>
-            )}
-          </>
-        )}
+        <TodayTimezoneWarningView />
+        <TodayAnnouncementView />
+        <TodayPreRegistrationView />
+        <TodayThemeView />
+        <TodayNextAppointmentView />
+        <TodayModeratorView />
         <TodayAppUpdateView />
       </ScrollingContentView>
     </AppView>

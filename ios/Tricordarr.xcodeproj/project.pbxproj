@@ -20,6 +20,7 @@
 		93ADC0872F0774B500C698D2 /* TricordarrKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */; };
 		E2D58DC82EF8D45700200352 /* AudioEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D58DC62EF8D45700200352 /* AudioEngine.m */; };
 		E2D58DC92EF8D45700200352 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D58DC72EF8D45700200352 /* AudioEngine.swift */; };
+		93D64E9E2F2B21B000082CE2 /* yeah.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 93D64E9D2F2B21B000082CE2 /* yeah.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +101,7 @@
 		93ADC07B2F07749D00C698D2 /* TricordarrKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TricordarrKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2D58DC62EF8D45700200352 /* AudioEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioEngine.m; sourceTree = "<group>"; };
 		E2D58DC72EF8D45700200352 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
+		93D64E9D2F2B21B000082CE2 /* yeah.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = yeah.mp3; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -200,6 +202,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				93D64E9D2F2B21B000082CE2 /* yeah.mp3 */,
 				93690EF02EAB266C00CA8914 /* NativeTricordarrModule */,
 				13B07FAE1A68108700A75B9A /* Tricordarr */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -378,6 +381,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				93D64E9E2F2B21B000082CE2 /* yeah.mp3 in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				4C1CD608D8B56BA06748D9CD /* PrivacyInfo.xcprivacy in Resources */,
 			);
@@ -530,7 +534,7 @@
 				CODE_SIGN_ENTITLEMENTS = Tricordarr/Tricordarr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 44;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Tricordarr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tricordarr;
@@ -540,7 +544,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2026.0.10;
+				MARKETING_VERSION = 2026.0.13;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -569,7 +573,7 @@
 				CODE_SIGN_ENTITLEMENTS = Tricordarr/Tricordarr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 44;
 				INFOPLIST_FILE = Tricordarr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tricordarr;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
@@ -578,7 +582,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2026.0.10;
+				MARKETING_VERSION = 2026.0.13;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -758,7 +762,7 @@
 				CODE_SIGN_ENTITLEMENTS = LocalPushExtension/LocalPushExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 44;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -774,7 +778,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2026.0.9;
+				MARKETING_VERSION = 2026.0.13;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr.LocalPushExtension;
@@ -807,7 +811,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 44;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -823,7 +827,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2026.0.9;
+				MARKETING_VERSION = 2026.0.13;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr.LocalPushExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";

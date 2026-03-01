@@ -8,12 +8,12 @@ import {FezCancelModal} from '#src/Components/Views/Modals/FezCancelModal';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
@@ -22,7 +22,7 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   const commonNavigation = useCommonStack();
   const {hasModerator} = usePrivilege();
   const {setModalContent, setModalVisible} = useModal();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
 
   const menuAnchor = <Item title={'LFG Menu'} iconName={AppIcons.menu} onPress={openMenu} />;
 
@@ -43,7 +43,7 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
         }}
       />
       <Divider bold={true} />
-      {fezData.owner.userID === profilePublicData?.header.userID && (
+      {fezData.owner.userID === currentUserID && (
         <Menu.Item
           leadingIcon={AppIcons.cancel}
           title={'Cancel'}

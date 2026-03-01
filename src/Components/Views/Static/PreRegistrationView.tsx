@@ -35,7 +35,8 @@ export const PreRegistrationView = ({
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => {
-              commonNavigation.push(helpScreen);
+              // blehhhhh
+              (commonNavigation.push as (name: HelpScreenComponents) => void)(helpScreen);
             }}
           />
         </MaterialHeaderButtons>

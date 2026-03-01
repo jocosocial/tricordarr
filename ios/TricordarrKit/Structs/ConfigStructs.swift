@@ -29,7 +29,7 @@ struct ScheduleConfig: Codable {
 	var eventsShowOpenLfgs: Bool
 	var hidePastLfgs: Bool
 	var enableLateDayFlip: Bool
-	var defaultLfgScreen: LfgStackComponents
+	var defaultLfgList: FezListEndpoints
 	var overlapExcludeDurationHours: Int
 }
 

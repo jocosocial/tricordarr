@@ -9,8 +9,11 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrQueryClientContext} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {BadResponseFormatError, createQueryClient, createSessionPersister} from '#src/Libraries/Network/APIClient';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('SwiftarrQueryClientProvider.tsx');
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
@@ -46,7 +49,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     });
     client.interceptors.request.use(async config => {
       // This logs even when the response is returned from cache.
-      console.info(
+      logger.info(
         `API Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.baseURL}${config.url}`,
         config.params,
       );
@@ -71,7 +74,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     });
     client.interceptors.request.use(async config => {
       // This logs even when the response is returned from cache.
-      console.info(
+      logger.info(
         `Public Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.baseURL}${config.url}`,
         config.params,
       );
@@ -134,7 +137,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
 
         hasManuallyRestoredRef.current = true;
       } catch (error) {
-        console.error('[SwiftarrQueryClientProvider] Error manually restoring cache:', error);
+        logger.error('Error manually restoring cache:', error);
       }
     };
 
@@ -220,10 +223,10 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   // https://tanstack.com/query/v4/docs/react/guides/query-invalidation
   const onSuccess = () => {
     if (!queryClientRef.current) return;
-    console.log('[SwiftarrQueryClientProvider.tsx] Successfully loaded query client.');
+    logger.debug('Successfully loaded query client.');
     queryClientRef.current.resumePausedMutations().then(() => {
       queryClientRef.current?.invalidateQueries().then(() => {
-        console.log('[SwiftarrQueryClientProvider.tsx] Finished resuming offline data.');
+        logger.debug('Finished resuming offline data.');
       });
     });
   };
@@ -243,11 +246,11 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
             const errorData = error.response.data as ErrorResponse;
             errorString += `. ${errorData.reason}`;
           } catch {
-            console.warn('[SwiftarrQueryClientProvider.tsx] Unable to decode error response.');
+            logger.warn('Unable to decode error response.');
           }
         }
-        console.log('[SwiftarrQueryClientProvider.tsx] Query error encountered via', query.queryKey);
-        console.log('[SwiftarrQueryClientProvider.tsx]', error);
+        logger.debug('Query error encountered via', query.queryKey);
+        logger.debug('Error details:', error);
         setErrorCount(prev => prev + 1);
         if (!disruptionDetected) {
           setSnackbarPayload({message: errorString, messageType: 'error'});
@@ -262,10 +265,10 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
           // is working again. This is sorta a hack unless I can figure out a way to "disable" Axios
           // caching, which doesn't feel like the right decision.
           // if (String(query.queryKey[0]).includes('/image/')) {
-          //   console.log('[SwiftarrQueryClientProvider.tsx] Skipping image path because Axios is weird.');
+          //   logger.debug('Skipping image path because Axios is weird.');
           //   return;
           // }
-          console.log('[SwiftarrQueryClientProvider.tsx] Resetting error count via', query.queryKey);
+          logger.debug('Resetting error count via', query.queryKey);
           setErrorCount(0);
         }
       },
@@ -312,7 +315,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
 
     // Only clear cache when switching between two different real sessions (not initial load from null)
     if (currentSession && previousSessionID !== null && previousSessionID !== currentSessionID) {
-      console.log('[SwiftarrQueryClientProvider.tsx] Session changed, clearing query cache');
+      logger.debug('Session changed, clearing query cache');
       queryClientRef.current.clear();
     }
 
@@ -322,7 +325,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
 
   useEffect(() => {
     if (!queryClientRef.current) return;
-    console.log('[SwiftarrQueryClientProvider.tsx] Configuring query client');
+    logger.debug('Configuring query client');
     const currentOptions = queryClientRef.current.getDefaultOptions();
     queryClientRef.current.setDefaultOptions({
       ...currentOptions,

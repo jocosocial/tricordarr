@@ -1,6 +1,9 @@
 import {useReducer} from 'react';
 
+import {createLogger} from '#src/Libraries/Logger';
 import {FezPostData} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('FezPostsReducers.ts');
 
 export enum FezPostsActions {
   appendPost = 'APPEND_POST',
@@ -12,21 +15,17 @@ export type FezPostsActionsType =
   | {type: FezPostsActions.appendPost; fezPostData: FezPostData};
 
 const fezPostsReducer = (fezPosts: FezPostData[] = [], action: FezPostsActionsType) => {
-  console.log('[FezPostsReducer.ts] Got action:', action.type);
+  logger.debug('Got action:', action.type);
   switch (action.type) {
     case FezPostsActions.set: {
       return action.fezPosts;
     }
     case FezPostsActions.appendPost: {
-      let posts = fezPosts;
-      if (posts.some(p => p.postID === action.fezPostData.postID)) {
-        // This is probably a React-ism like you have duplicate listeners because
-        // React development is hard.
-        console.warn('Skipping appendPost for ID', action.fezPostData.postID);
-        return posts;
+      if (fezPosts.some(p => p.postID === action.fezPostData.postID)) {
+        logger.warn('Skipping appendPost for ID', action.fezPostData.postID);
+        return fezPosts;
       }
-      posts.unshift(action.fezPostData);
-      return posts;
+      return [...fezPosts, action.fezPostData];
     }
     default: {
       throw new Error('Unknown FezAction action');

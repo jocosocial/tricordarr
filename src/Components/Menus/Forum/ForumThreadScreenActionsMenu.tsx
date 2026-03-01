@@ -1,4 +1,3 @@
-import {QueryKey, useQueryClient} from '@tanstack/react-query';
 import React, {ReactNode, useCallback, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -15,8 +14,10 @@ import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
@@ -25,23 +26,19 @@ import {ForumData} from '#src/Structs/ControllerStructs';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
-  invalidationQueryKeys: QueryKey[];
   onRefresh: () => void;
 }
 
-export const ForumThreadScreenActionsMenu = ({
-  forumData,
-  invalidationQueryKeys,
-  onRefresh,
-}: ForumThreadActionsMenuProps) => {
+export const ForumThreadScreenActionsMenu = ({forumData, onRefresh}: ForumThreadActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const commonNavigation = useCommonStack();
   const relationMutation = useForumRelationMutation();
   const [refreshing, setRefreshing] = useState(false);
-  const queryClient = useQueryClient();
+  const {updateFavorite, updateMute} = useForumCacheReducer();
 
   const handleModal = (content: ReactNode) => {
     closeMenu();
@@ -59,11 +56,8 @@ export const ForumThreadScreenActionsMenu = ({
           action: forumData.isFavorite ? 'delete' : 'create',
         },
         {
-          onSuccess: async () => {
-            const invalidations = invalidationQueryKeys.map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-            await Promise.all(invalidations);
+          onSuccess: () => {
+            updateFavorite(forumData.forumID, forumData.categoryID, !forumData.isFavorite);
           },
           onSettled: () => {
             setRefreshing(false);
@@ -72,7 +66,7 @@ export const ForumThreadScreenActionsMenu = ({
         },
       );
     }
-  }, [forumData, invalidationQueryKeys, queryClient, relationMutation, closeMenu]);
+  }, [forumData, updateFavorite, relationMutation, closeMenu]);
 
   const handleMute = useCallback(() => {
     if (forumData) {
@@ -84,11 +78,8 @@ export const ForumThreadScreenActionsMenu = ({
           action: forumData.isMuted ? 'delete' : 'create',
         },
         {
-          onSuccess: async () => {
-            const invalidations = invalidationQueryKeys.map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-            await Promise.all(invalidations);
+          onSuccess: () => {
+            updateMute(forumData.forumID, forumData.categoryID, !forumData.isMuted);
           },
           onSettled: () => {
             setRefreshing(false);
@@ -97,7 +88,7 @@ export const ForumThreadScreenActionsMenu = ({
         },
       );
     }
-  }, [forumData, invalidationQueryKeys, queryClient, relationMutation, closeMenu]);
+  }, [forumData, updateMute, relationMutation, closeMenu]);
 
   const handleHelp = () => {
     closeMenu();
@@ -116,7 +107,7 @@ export const ForumThreadScreenActionsMenu = ({
         isFavorite={forumData.isFavorite}
         refreshing={refreshing}
       />
-      {forumData.creator.userID !== profilePublicData?.header.userID && (
+      {forumData.creator.userID !== currentUserID && (
         <MuteMenuItem
           onPress={handleMute}
           disabled={forumData.isFavorite}
@@ -124,7 +115,7 @@ export const ForumThreadScreenActionsMenu = ({
           refreshing={refreshing}
         />
       )}
-      {forumData.creator.userID === profilePublicData?.header.userID && (
+      {forumData.creator.userID === currentUserID && (
         <>
           <Menu.Item
             dense={false}
@@ -173,7 +164,6 @@ export const ForumThreadScreenActionsMenu = ({
             forumID={forumData.forumID}
             closeMenu={closeMenu}
             setRefreshing={setRefreshing}
-            invalidationQueryKeys={invalidationQueryKeys}
           />
           <Divider bold={true} />
         </>

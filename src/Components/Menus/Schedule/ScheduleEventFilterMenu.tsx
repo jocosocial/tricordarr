@@ -5,9 +5,9 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {useScheduleFilter} from '#src/Context/Contexts/ScheduleFilterContext';
 import {EventType} from '#src/Enums/EventType';
 import {useMenu} from '#src/Hooks/useMenu';
 
@@ -28,7 +28,9 @@ export const ScheduleEventFilterMenu = () => {
     setEventLfgOpenFilter,
     eventShutternautFilter,
     setEventShutternautFilter,
-  } = useFilter();
+    eventPersonalUnreadFilter,
+    setEventPersonalUnreadFilter,
+  } = useScheduleFilter();
   const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
   const {hasShutternaut} = useRoles();
@@ -56,6 +58,11 @@ export const ScheduleEventFilterMenu = () => {
 
   const handleLfgOpenSelection = () => {
     setEventLfgOpenFilter(!eventLfgOpenFilter);
+    closeMenu();
+  };
+
+  const handlePersonalUnreadSelection = () => {
+    setEventPersonalUnreadFilter(!eventPersonalUnreadFilter);
     closeMenu();
   };
 
@@ -99,19 +106,14 @@ export const ScheduleEventFilterMenu = () => {
     eventLfgJoinedFilter ||
     eventLfgOwnedFilter ||
     eventLfgOpenFilter ||
-    eventShutternautFilter !== undefined;
+    eventShutternautFilter !== undefined ||
+    eventPersonalUnreadFilter;
 
   const menuAnchor = <FilterMenuAnchor active={!!anyActiveFilter} onPress={openMenu} onLongPress={clearFilters} />;
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <SelectableMenuItem title={'Favorite Events'} onPress={handleFavoriteSelection} selected={eventFavoriteFilter} />
-      <SelectableMenuItem
-        title={'Personal Events'}
-        onPress={handlePersonalSelection}
-        selected={eventPersonalFilter}
-        disabled={!oobeCompleted}
-      />
       <Divider bold={true} />
       {Object.keys(EventType).map(eventType => {
         return (
@@ -123,6 +125,19 @@ export const ScheduleEventFilterMenu = () => {
           />
         );
       })}
+      <Divider bold={true} />
+      <SelectableMenuItem
+        title={'Personal Events'}
+        onPress={handlePersonalSelection}
+        selected={eventPersonalFilter}
+        disabled={!oobeCompleted}
+      />
+      <SelectableMenuItem
+        title={'Unread Personal Events'}
+        onPress={handlePersonalUnreadSelection}
+        selected={eventPersonalUnreadFilter}
+        disabled={!oobeCompleted}
+      />
       <Divider bold={true} />
       <SelectableMenuItem
         title={'Joined LFGs'}

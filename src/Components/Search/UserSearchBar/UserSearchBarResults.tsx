@@ -2,7 +2,7 @@ import React from 'react';
 
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 /**
@@ -16,6 +16,25 @@ interface UserSearchBarResultsProps {
 }
 
 /**
+ * Returns true when the given user should not be selectable in the results list.
+ * A user is excluded when:
+ * - excludeSelf is true and the user is the current session's user (uses session userID, not profile query), or
+ * - the user appears in the excludeHeaders list (e.g. already-selected participants).
+ * Excluded users are shown but disabled so the list stays predictable.
+ */
+function isExcluded(
+  user: UserHeader,
+  excludeSelf: boolean,
+  currentUserID: string | null,
+  excludeHeaders: UserHeader[],
+): boolean {
+  if (excludeSelf && currentUserID != null && user.userID === currentUserID) {
+    return true;
+  }
+  return excludeHeaders.some(excluded => excluded.userID === user.userID);
+}
+
+/**
  * Shared results component for displaying user search results
  */
 export const UserSearchBarResults = ({
@@ -24,27 +43,19 @@ export const UserSearchBarResults = ({
   handlePress,
   excludeSelf = false,
 }: UserSearchBarResultsProps) => {
-  const {data: profilePublicData} = useUserProfileQuery({enabled: excludeSelf});
-
-  const excludeHeadersInternal = React.useMemo(
-    () =>
-      [excludeSelf ? profilePublicData?.header : undefined, ...(excludeHeaders ?? [])].filter(
-        (header): header is UserHeader => header !== undefined,
-      ),
-    [excludeSelf, profilePublicData, excludeHeaders],
-  );
+  const {currentUserID} = useSession();
 
   return (
     <ListSection>
       {data &&
         data.map(user => {
-          const isExcluded = excludeHeadersInternal.some(excluded => excluded.userID === user.userID);
+          const excluded = isExcluded(user, excludeSelf, currentUserID, excludeHeaders ?? []);
           return (
             <UserListItem
               key={user.userID}
               userHeader={user}
-              onPress={isExcluded ? undefined : () => handlePress(user)}
-              disabled={isExcluded}
+              onPress={excluded ? undefined : () => handlePress(user)}
+              disabled={excluded}
             />
           );
         })}

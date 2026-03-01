@@ -46,7 +46,7 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={CommonStackComponents.configServerUrl}
             />
             <SettingsNavigationListItem
-              title={'Accessibility'}
+              title={'Appearance'}
               description={'Theme and styling options for this app.'}
               navComponent={CommonStackComponents.accessibilitySettingsScreen}
             />
@@ -102,6 +102,11 @@ export const SettingsScreen = ({navigation}: Props) => {
           <Divider bold={true} />
           <ListSection>
             <ListSubheader>Troubleshooting</ListSubheader>
+            <SettingsNavigationListItem
+              title={'Logging'}
+              description={'Configure app logging and export log files.'}
+              navComponent={SettingsStackScreenComponents.loggingSettings}
+            />
             <SettingsNavigationListItem
               title={'Time'}
               description={'Clock and time settings for this app.'}

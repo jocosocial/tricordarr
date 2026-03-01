@@ -6,32 +6,28 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {LfgCreateScreen} from '#src/Screens/LFG/LfgCreateScreen';
-import {LfgFindScreen} from '#src/Screens/LFG/LfgFindScreen';
-import {LfgFormerScreen} from '#src/Screens/LFG/LfgFormerScreen';
-import {LfgJoinedScreen} from '#src/Screens/LFG/LfgJoinedScreen';
-import {LfgOwnedScreen} from '#src/Screens/LFG/LfgOwnedScreen';
+import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
 import {LfgSearchScreen} from '#src/Screens/LFG/LfgSearchScreen';
 import {FezListEndpoints} from '#src/Types';
+import {WithIntent, WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 export type LfgStackParamList = CommonStackParamList & {
-  LfgJoinedScreen: {
-    onlyNew?: boolean;
-  };
-  LfgFindScreen: undefined;
-  LfgOwnedScreen: undefined;
-  LfgCreateScreen: undefined;
-  LfgFormerScreen: undefined;
+  LfgListScreen: WithScrollToTopIntent<
+    WithIntent<{
+      endpoint: FezListEndpoints;
+      onlyNew?: boolean;
+      cruiseDay?: number;
+    }>
+  >;
+  LfgCreateScreen: {cruiseDay?: number};
   LfgSearchScreen: {
     endpoint: FezListEndpoints;
   };
 };
 
 export enum LfgStackComponents {
-  lfgOwnedScreen = 'LfgOwnedScreen',
-  lfgJoinedScreen = 'LfgJoinedScreen',
-  lfgFindScreen = 'LfgFindScreen',
+  lfgListScreen = 'LfgListScreen',
   lfgCreateScreen = 'LfgCreateScreen',
-  lfgFormerScreen = 'LfgFormerScreen',
   lfgSearchScreen = 'LfgSearchScreen',
 }
 
@@ -42,32 +38,28 @@ export const LfgStackNavigator = () => {
 
   return (
     <Stack.Navigator
-      initialRouteName={appConfig.schedule.defaultLfgScreen}
+      initialRouteName={LfgStackComponents.lfgListScreen}
       screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
-        name={LfgStackComponents.lfgJoinedScreen}
-        component={LfgJoinedScreen}
-        options={{title: 'Joined Groups'}}
-      />
-      <Stack.Screen
-        name={LfgStackComponents.lfgFindScreen}
-        component={LfgFindScreen}
-        options={{title: 'Find Groups'}}
-      />
-      <Stack.Screen
-        name={LfgStackComponents.lfgOwnedScreen}
-        component={LfgOwnedScreen}
-        options={{title: 'Your Groups'}}
+        name={LfgStackComponents.lfgListScreen}
+        component={LfgListScreen}
+        initialParams={{endpoint: appConfig.schedule.defaultLfgList}}
+        options={({route}: {route: RouteProp<LfgStackParamList, 'LfgListScreen'>}) => {
+          const titleMap: Record<FezListEndpoints, string> = {
+            open: 'Find Groups',
+            joined: 'Joined Groups',
+            owner: 'Your Groups',
+            former: 'Former Groups',
+          };
+          return {
+            title: titleMap[route.params.endpoint],
+          };
+        }}
       />
       <Stack.Screen
         name={LfgStackComponents.lfgCreateScreen}
         component={LfgCreateScreen}
         options={{title: 'New LFG'}}
-      />
-      <Stack.Screen
-        name={LfgStackComponents.lfgFormerScreen}
-        component={LfgFormerScreen}
-        options={{title: 'Former Groups'}}
       />
       <Stack.Screen
         name={LfgStackComponents.lfgSearchScreen}

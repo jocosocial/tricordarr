@@ -53,7 +53,10 @@ export const OobeAccountScreen = ({navigation}: Props) => {
             />
           </PaddedContentView>
           <PaddedContentView>
-            <Text>If you already created an account this year you can log in with it below.</Text>
+            <Text>
+              If you already created an account this year (including during pre-registration) you can log in with it
+              below.
+            </Text>
           </PaddedContentView>
           <PaddedContentView>
             <PrimaryActionButton

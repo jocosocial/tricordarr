@@ -7,11 +7,11 @@ import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemC
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
+import {DayPlannerItem} from '#src/Types/DayPlanner';
 
 interface EventCardProps {
   eventData: EventData;
@@ -27,9 +27,11 @@ interface EventCardRightIconsProps {
   eventData: EventData;
   refreshing: boolean;
   onFavoritePress: () => void;
+  /** When set (e.g. gold team), favorite icons use this color for contrast. */
+  contentColor?: string;
 }
 
-const EventCardRightIcons = ({eventData, refreshing, onFavoritePress}: EventCardRightIconsProps) => {
+const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentColor}: EventCardRightIconsProps) => {
   const {theme} = useAppTheme();
   const {hasShutternaut} = useRoles();
 
@@ -55,17 +57,18 @@ const EventCardRightIcons = ({eventData, refreshing, onFavoritePress}: EventCard
     return <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} />;
   }, [hasShutternaut, eventData.shutternautData?.userIsPhotographer, theme.colors.onTwitarrNegativeButton]);
 
+  const favoriteIconColor = contentColor ?? theme.colors.twitarrYellow;
   const favoriteIcon = useMemo(() => {
     return (
       <TouchableOpacity onPress={onFavoritePress}>
         {eventData.isFavorite ? (
-          <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
+          <AppIcon icon={AppIcons.favorite} color={favoriteIconColor} />
         ) : (
-          <AppIcon icon={AppIcons.toggleFavorite} />
+          <AppIcon icon={AppIcons.toggleFavorite} color={favoriteIconColor} />
         )}
       </TouchableOpacity>
     );
-  }, [onFavoritePress, eventData.isFavorite, theme.colors.twitarrYellow]);
+  }, [onFavoritePress, eventData.isFavorite, favoriteIconColor]);
 
   return (
     <View style={styles.iconContainer}>
@@ -115,28 +118,42 @@ export const EventCard = ({
     );
   }, [eventData.eventID, eventData.isFavorite, eventFavoriteMutation, queryClient]);
 
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        card: {
-          backgroundColor:
-            eventData.eventType === EventType.shadow ? theme.colors.jocoPurple : theme.colors.twitarrNeutralButton,
-        },
-      }),
-    [eventData.eventType, theme.colors.jocoPurple, theme.colors.twitarrNeutralButton],
-  );
+  const cardStyleAndContentColor = useMemo(() => {
+    const color = DayPlannerItem.getDayPlannerColor({
+      type: 'event',
+      title: eventData.title,
+      eventType: eventData.eventType,
+    });
+    const backgroundColor = DayPlannerItem.getBackgroundColor(color, theme.colors);
+    const contentColor = DayPlannerItem.getTextColor(color, theme.colors);
+    const showMarkerBorder = color === 'goldTeam';
+    return {
+      cardStyle: StyleSheet.create({card: {backgroundColor}}).card,
+      contentColor,
+      showMarkerBorder,
+    };
+  }, [eventData.title, eventData.eventType, theme.colors]);
 
   const getRight = useCallback(() => {
     if (hideFavorite) {
       return null;
     }
-    return <EventCardRightIcons eventData={eventData} refreshing={refreshing} onFavoritePress={onFavoritePress} />;
-  }, [eventData, refreshing, hideFavorite, onFavoritePress]);
+    return (
+      <EventCardRightIcons
+        eventData={eventData}
+        refreshing={refreshing}
+        onFavoritePress={onFavoritePress}
+        contentColor={cardStyleAndContentColor.contentColor}
+      />
+    );
+  }, [eventData, refreshing, hideFavorite, onFavoritePress, cardStyleAndContentColor.contentColor]);
 
   return (
     <ScheduleItemCardBase
       onPress={onPress}
-      cardStyle={styles.card}
+      cardStyle={cardStyleAndContentColor.cardStyle}
+      contentColor={cardStyleAndContentColor.contentColor}
+      showMarkerBorder={cardStyleAndContentColor.showMarkerBorder}
       title={eventData.title}
       location={eventData.location}
       titleRight={getRight}

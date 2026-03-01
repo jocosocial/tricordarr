@@ -1,5 +1,4 @@
 import {useNavigation} from '@react-navigation/native';
-import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -10,8 +9,9 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezDeleteMutation} from '#src/Queries/Fez/FezMutations';
-import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
+import {FezData} from '#src/Structs/ControllerStructs';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();
@@ -28,7 +28,7 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
   const {setModalVisible} = useModal();
   const {theme} = useAppTheme();
   const deleteMutation = useFezDeleteMutation();
-  const queryClient = useQueryClient();
+  const {deleteFez} = useFezCacheReducer();
   const navigation = useNavigation();
 
   const onSubmit = () => {
@@ -37,16 +37,13 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
         fezID: personalEvent.fezID,
       },
       {
-        onSuccess: async () => {
+        onSuccess: () => {
           if (handleNavigation) {
             navigation.goBack();
           }
           setModalVisible(false);
           setSnackbarPayload({message: 'Successfully deleted this event.', messageType: 'info'});
-          const invalidations = UserNotificationData.getCacheKeys()
-            .concat(FezData.getCacheKeys())
-            .map(key => queryClient.invalidateQueries({queryKey: key}));
-          await Promise.all(invalidations);
+          deleteFez(personalEvent.fezID);
         },
       },
     );

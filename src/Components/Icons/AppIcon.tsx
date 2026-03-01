@@ -5,6 +5,8 @@ import {StyleProp, TextStyle} from 'react-native';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
+type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
+
 interface AppIconProps {
   icon: string;
   color?: string;
@@ -27,7 +29,7 @@ export const AppIcon = ({icon, size, color, style, onPress, onLongPress, small}:
     <MaterialCommunityIcons
       onPress={onPress}
       style={style}
-      name={icon}
+      name={icon as IconName}
       size={size || small ? styleDefaults.iconSizeSmall : styleDefaults.iconSize}
       color={color || theme.colors.onBackground}
       onLongPress={onLongPress}

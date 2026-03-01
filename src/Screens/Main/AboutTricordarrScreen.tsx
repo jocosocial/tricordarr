@@ -1,8 +1,6 @@
 import React from 'react';
-import DeviceInfo from 'react-native-device-info';
 
 import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
-import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
@@ -15,6 +13,8 @@ import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 // @ts-ignore
 import cfry from '#assets/contributors/cfry.jpg';
 // @ts-ignore
+import gowtam from '#assets/contributors/gowtam.jpg';
+// @ts-ignore
 import grant from '#assets/contributors/grant.jpg';
 // @ts-ignore
 import hendu from '#assets/contributors/hendu.jpg';
@@ -25,12 +25,6 @@ export const AboutTricordarrScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
-        <ListSection>
-          <ListSubheader>Version</ListSubheader>
-        </ListSection>
-        <DataFieldListItem title={'App Version'} description={DeviceInfo.getVersion()} />
-        <DataFieldListItem title={'Build'} description={DeviceInfo.getBuildNumber()} />
-        <DataFieldListItem title={'System Version'} description={DeviceInfo.getSystemVersion()} />
         <ListSection>
           <ListSubheader>Background</ListSubheader>
         </ListSection>
@@ -48,6 +42,10 @@ export const AboutTricordarrScreen = () => {
           <ContributorView image={AppImageMetaData.fromAsset(grant, 'grant.jpg')}>
             Grant Cohoe (@grant) is the primary developer of this app. If you're looking for someone to shout at, it's
             him.
+          </ContributorView>
+          <ContributorView image={AppImageMetaData.fromAsset(gowtam, 'gowtam.jpg')}>
+            Gowtam Lal (@baconmania) brought the day planner to the app and a whole lot of iOS support and general
+            improvements. His greatest contribution is the recurring hackathons at the local pub.
           </ContributorView>
           <ContributorView image={AppImageMetaData.fromAsset(hendu, 'hendu.jpg')}>
             Dustin Hendrickson (@hendu) contributed the fantastic built-in webview integration, many bug fixes, and

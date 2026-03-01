@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect} from 'react';
-import {StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Pressable, StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Text} from 'react-native-paper';
 
@@ -10,22 +10,35 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+
+const logger = createLogger('OobeWelcomeScreen.tsx');
 
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
 
+const VERSION_TAPS_TO_FAULT = 10;
+
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
   const {currentSession, findOrCreateSession, updateSession} = useSession();
   const {appConfig} = useConfig();
   const {theme} = useAppTheme();
+  const {oobeCompleted} = useOobe();
+  const [versionTapCount, setVersionTapCount] = useState(0);
+  const [fault, setFault] = useState(false);
+
+  if (fault) {
+    throw Error("Intentional critical fault. I hope you know what you're doing.");
+  }
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
@@ -44,28 +57,38 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
 
   const isInitializing = !currentSession;
 
-  const onPreRegistrationPress = () => {
+  const onPreRegistrationPress = async () => {
     if (!currentSession) {
-      console.warn('[OobeWelcomeScreen] Cannot update session: no current session');
+      logger.warn('Cannot update session: no current session');
       return;
     }
-    updateSession(currentSession.sessionID, {
-      serverUrl: appConfig.preRegistrationServerUrl,
+    await updateSession(currentSession.sessionID, {
+      // Preserve existing server URL when re-running OOBE after completion
+      ...(oobeCompleted ? {} : {serverUrl: appConfig.preRegistrationServerUrl}),
       preRegistrationMode: true,
     });
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
-  const onPress = () => {
+  const onPress = async () => {
     if (!currentSession) {
-      console.warn('[OobeWelcomeScreen] Cannot update session: no current session');
+      logger.warn('Cannot update session: no current session');
       return;
     }
-    updateSession(currentSession.sessionID, {
-      serverUrl: appConfig.serverUrl,
+    await updateSession(currentSession.sessionID, {
+      // Preserve existing server URL when re-running OOBE after completion
+      ...(oobeCompleted ? {} : {serverUrl: appConfig.serverUrl}),
       preRegistrationMode: false,
     });
     navigation.push(OobeStackComponents.oobeServerScreen);
+  };
+
+  const onVersionPress = () => {
+    const next = versionTapCount + 1;
+    setVersionTapCount(next);
+    if (next >= VERSION_TAPS_TO_FAULT) {
+      setFault(true);
+    }
   };
 
   // This used to have a useFocusEffect that would disable preregistration mode
@@ -94,10 +117,12 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
           />
         </PaddedContentView>
         <PaddedContentView>
-          <Text style={styles.text} variant={'labelLarge'}>
-            Version {DeviceInfo.getVersion()} (Build {DeviceInfo.getBuildNumber()}){'\n'}
-            {__DEV__ ? 'Development Mode' : undefined}
-          </Text>
+          <Pressable onPress={onVersionPress}>
+            <Text style={styles.text} variant={'labelLarge'}>
+              Version {DeviceInfo.getVersion()} (Build {DeviceInfo.getBuildNumber()}){'\n'}
+              {__DEV__ ? 'Development Mode' : undefined}
+            </Text>
+          </Pressable>
         </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView

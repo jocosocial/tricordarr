@@ -14,6 +14,7 @@ import {OobeUserDataScreen} from '#src/Screens/OOBE/OobeUserDataScreen';
 import {OobeWelcomeScreen} from '#src/Screens/OOBE/OobeWelcomeScreen';
 import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
 import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
+import {WithIntent} from '#src/Types/RouteParams';
 
 export type OobeStackParamList = CommonStackParamList & {
   OobeWelcomeScreen: undefined;
@@ -24,7 +25,7 @@ export type OobeStackParamList = CommonStackParamList & {
   OobeFinishScreen: undefined;
   RegisterScreen: undefined;
   OobePermissionsScreen: undefined;
-  OobePreregistrationScreen: undefined;
+  OobePreregistrationScreen: WithIntent<{}, 'onboarding'>;
   OobeUserDataScreen: undefined;
   OobeScheduleDayScreen: undefined;
 };

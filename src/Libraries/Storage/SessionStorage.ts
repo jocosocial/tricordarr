@@ -1,7 +1,10 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
 
+import {createLogger} from '#src/Libraries/Logger';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {Session} from '#src/Structs/SessionStructs';
+
+const logger = createLogger('SessionStorage.ts');
 
 /**
  * Storage namespace for managing sessions in EncryptedStorage.
@@ -19,7 +22,7 @@ export namespace SessionStorage {
       }
       return JSON.parse(data) as Session[];
     } catch (error) {
-      console.error('[SessionStorage] Error loading sessions:', error);
+      logger.error('Error loading sessions:', error);
       return [];
     }
   };
@@ -49,6 +52,13 @@ export namespace SessionStorage {
   };
 
   /**
+   * Save all sessions atomically, replacing the entire stored array.
+   */
+  export const saveAll = async (sessions: Session[]): Promise<void> => {
+    await EncryptedStorage.setItem(StorageKeys.SESSIONS_DATA, JSON.stringify(sessions));
+  };
+
+  /**
    * Delete a session by ID.
    */
   export const deleteSession = async (sessionID: string): Promise<void> => {
@@ -64,7 +74,7 @@ export namespace SessionStorage {
     try {
       return await EncryptedStorage.getItem(StorageKeys.LAST_SESSION_ID);
     } catch (error) {
-      console.error('[SessionStorage] Error loading last session ID:', error);
+      logger.error('Error loading last session ID:', error);
       return null;
     }
   };

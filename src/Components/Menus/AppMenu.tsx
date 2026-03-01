@@ -92,6 +92,10 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
     }
   };
 
+  const scrollToBottom = () => {
+    scrollViewRef.current?.scrollToEnd({animated: false});
+  };
+
   // Render header component or call header function
   const renderHeader = () => {
     if (!header) return null;
@@ -116,7 +120,7 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
           scrollEventThrottle={16}>
           {children}
         </ScrollView>
-        <MenuScrollIndicator visible={showIndicator} />
+        <MenuScrollIndicator visible={showIndicator} onPress={scrollToBottom} />
       </View>
     </Menu>
   );

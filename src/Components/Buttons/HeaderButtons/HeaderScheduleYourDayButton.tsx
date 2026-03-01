@@ -2,7 +2,7 @@ import React from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useScheduleFilter} from '#src/Context/Contexts/ScheduleFilterContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 
@@ -19,7 +19,7 @@ export const HeaderScheduleYourDayButton = () => {
     eventLfgOpenFilter,
     setEventLfgOpenFilter,
     setEventTypeFilter,
-  } = useFilter();
+  } = useScheduleFilter();
   const {appConfig} = useConfig();
   const {theme} = useAppTheme();
 

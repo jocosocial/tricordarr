@@ -3,6 +3,7 @@ import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {IconButton, Text} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
+import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
@@ -53,7 +54,9 @@ export const HelpTopicView = (props: HelpTopicViewProps) => {
               </View>
             )}
         <View style={styles.bodyTextContainer}>
-          <Text selectable={true}>{props.children}</Text>
+          <HyperlinkText>
+            <Text selectable={true}>{props.children}</Text>
+          </HyperlinkText>
         </View>
       </View>
     </PaddedContentView>

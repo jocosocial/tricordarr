@@ -17,7 +17,10 @@ import {useLayout} from '#src/Context/Contexts/LayoutContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
+
+const logger = createLogger('AppView.tsx');
 
 interface AppViewProps extends PropsWithChildren {
   disablePreRegistrationWarning?: boolean;
@@ -77,7 +80,7 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
    */
   useFocusEffect(
     useCallback(() => {
-      console.log('[AppView.tsx] useFocusEffect setting headerHeight', directHeaderHeight);
+      logger.debug('useFocusEffect setting headerHeight', directHeaderHeight);
       headerHeight.set(directHeaderHeight);
     }, [directHeaderHeight, headerHeight]),
   );

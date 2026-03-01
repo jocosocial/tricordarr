@@ -12,7 +12,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useForumFilter} from '#src/Context/Contexts/ForumFilterContext';
 import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
@@ -28,7 +28,7 @@ export const ForumSettingsScreen = () => {
   const navigation = useCommonStack();
   const [defaultSortOrder, setDefaultSortOrder] = useState(appConfig.userPreferences.defaultForumSortOrder);
   const [defaultSortDirection, setDefaultSortDirection] = useState(appConfig.userPreferences.defaultForumSortDirection);
-  const {setForumSortOrder, setForumSortDirection} = useFilter();
+  const {setForumSortOrder, setForumSortDirection} = useForumFilter();
   const [highlightAlertWords, setHighlightAlertWords] = useState(appConfig.userPreferences.highlightForumAlertWords);
 
   const handleSortOrder = (value: ForumSort | undefined) => {

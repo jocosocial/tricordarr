@@ -10,7 +10,6 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {FezContentData} from '#src/Structs/ControllerStructs';
 import {SeamailFormValues} from '#src/Types/FormValues';
 
 interface SeamailCreateFormProps {
@@ -21,6 +20,7 @@ interface SeamailCreateFormProps {
 }
 
 const validationSchema = Yup.object().shape({
+  initialUsers: Yup.array().min(1, 'Add at least one participant.'),
   title: Yup.string().required('Subject cannot be empty.'),
 });
 
@@ -29,7 +29,7 @@ interface InnerSeamailCreateFormProps {
 }
 
 const InnerSeamailCreateForm = ({onValidationChange}: InnerSeamailCreateFormProps) => {
-  const {values, setFieldValue, isValid, dirty} = useFormikContext<FezContentData>();
+  const {values, setFieldValue, isValid, dirty} = useFormikContext<SeamailFormValues>();
   const {setAsModerator, setAsTwitarrTeam, clearPrivileges, hasTwitarrTeam, hasModerator} = usePrivilege();
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const InnerSeamailCreateForm = ({onValidationChange}: InnerSeamailCreateFormProp
   return (
     <PaddedContentView>
       <DirtyDetectionField />
-      <UserChipsField name={'initialUsers'} label={'Participants'} />
+      <UserChipsField name={'initialUsers'} label={'Participants'} minCount={1} />
       <TextField name={'title'} label={'Subject'} />
       <BooleanField
         name={'fezType'}

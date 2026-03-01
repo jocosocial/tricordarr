@@ -27,10 +27,9 @@ export const TimeZoneHelpScreen = () => {
           match. This should be in your settings somewhere. If you can't find it, ask a tech nerd. There's probably one
           nearby.
         </HelpTopicView>
-        <HelpTopicView>
-          If you changed your device time zone you may need to kill and restart the app to see the changes.
-        </HelpTopicView>
+        <HelpTopicView>You may need to kill and restart the app to see the time or timezone change.</HelpTopicView>
         <HelpTopicView>In a pinch you can manually specify a time offset in the app settings.</HelpTopicView>
+        <HelpTopicView>You can also disable all timezone warnings in the Time settings.</HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );

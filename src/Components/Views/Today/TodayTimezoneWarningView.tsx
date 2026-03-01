@@ -2,15 +2,13 @@ import React from 'react';
 
 import {TimezoneWarningCard} from '#src/Components/Cards/MainScreen/TimezoneWarningCard';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useTime} from '#src/Context/Contexts/TimeContext';
 
 export const TodayTimezoneWarningView = () => {
-  const {showTimeZoneWarning} = useCruise();
-  const {appConfig} = useConfig();
+  const {showTimeZoneWarning} = useTime();
 
-  if (!showTimeZoneWarning && !appConfig.forceShowTimezoneWarning) {
-    return <></>;
+  if (!showTimeZoneWarning) {
+    return null;
   }
 
   return (

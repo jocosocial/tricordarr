@@ -1,7 +1,7 @@
 import {QueryKey} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
+import moment from 'moment-timezone';
 import pluralize from 'pluralize';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import URLParse from 'url-parse';
 
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -10,7 +10,9 @@ import {FezType} from '#src/Enums/FezType';
 import {LikeType} from '#src/Enums/LikeType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {UserRoleType} from '#src/Enums/UserRoleType';
-import {StorageKeys} from '#src/Libraries/Storage';
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('ControllerStructs.tsx');
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -23,18 +25,6 @@ export interface TokenStringData {
   accessLevel: UserAccessLevel;
   /// The token string.
   token: string;
-}
-
-/**
- * Custom functions to interact with the local encrypted copy of the users token data.
- * I really hope I don't regret doing this.
- */
-export namespace TokenStringData {
-  export const getLocal = async (key: keyof typeof StorageKeys) => await EncryptedStorage.getItem(key);
-  export const setLocal = async (key: keyof typeof StorageKeys, data: TokenStringData) => {
-    await EncryptedStorage.setItem(key, JSON.stringify(data));
-  };
-  export const clearLocal = async (key: keyof typeof StorageKeys) => await EncryptedStorage.removeItem(key);
 }
 
 export interface UserHeader {
@@ -225,11 +215,10 @@ export namespace UserNotificationData {
       valueOrZero(data.newSeamailMessageCount) +
       valueOrZero(data.newFezMessageCount) +
       valueOrZero(data.newPrivateEventMessageCount) +
-      valueOrZero(data.addedToSeamailCount)
+      valueOrZero(data.addedToSeamailCount) +
       // We have no way to list "new LFGs/PEs you've been added to" in the API.
-      // Only unread messages. So this is disabled until we can.
-      // valueOrZero(data.addedToLFGCount) +
-      // valueOrZero(data.addedToPrivateEventCount)
+      valueOrZero(data.addedToLFGCount) +
+      valueOrZero(data.addedToPrivateEventCount)
     );
   };
 
@@ -283,9 +272,9 @@ export interface FezPostData {
 
 export interface MembersOnlyData {
   /// The users participating in the fez.
-  participants: [UserHeader];
+  participants: UserHeader[];
   /// The users on a waiting list for the fez.
-  waitingList: [UserHeader];
+  waitingList: UserHeader[];
   /// How many posts the user can see in the fez. The count is returned even for calls that don't return the actual posts, but is not returned for
   /// fezzes where the user is not a member. PostCount does not include posts from blocked/muted users.
   postCount: number;
@@ -295,7 +284,7 @@ export interface MembersOnlyData {
   /// Paginates the array in posts--gives the start and limit of the returned posts array relative to all the posts in the thread.
   paginator: Paginator;
   /// The FezPosts in the fez discussion. Methods that return arrays of Fezzes, or that add or remove users, do not populate this field (it will be nil).
-  posts?: [FezPostData];
+  posts?: FezPostData[];
   /// Whether user has muted the fez.
   isMuted: boolean;
 }
@@ -333,76 +322,6 @@ export interface FezData {
   lastModificationTime: string;
   /// Will be nil if user is not a member of the fez (in the participant or waiting lists).
   members?: MembersOnlyData;
-}
-
-/**
- * Bonus helper functions for FezData.
- */
-export namespace FezData {
-  /**
-   * Get a label for the number of attendees of this Fez. If the count is 0 that means
-   * it is unlimited and we don't need to tell users how many are remaining.
-   * @param fez This particular chat.
-   */
-  export const getParticipantLabel = (fez: FezData) => {
-    var minimumSuffix = '';
-    if (fez.minParticipants !== 0) {
-      minimumSuffix = `, ${fez.minParticipants} minimum`;
-    }
-    if (fez.maxParticipants === 0) {
-      return `${fez.participantCount} ${pluralize('attendee', fez.participantCount)}${minimumSuffix}`;
-    }
-    const waitlistCount: number = fez.members?.waitingList.length || 0;
-    let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} ${pluralize(
-      'participant',
-      fez.maxParticipants,
-    )}`;
-    if (fez.participantCount >= fez.maxParticipants) {
-      attendeeCountString = 'Full';
-    }
-    return `${attendeeCountString}, ${waitlistCount} waitlisted${minimumSuffix}`;
-  };
-
-  const isMember = (members: UserHeader[] | undefined, user: UserHeader) => {
-    if (!members) {
-      return false;
-    }
-    for (let i = 0; i < members.length; i++) {
-      if (members[i].userID === user.userID) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  export const isParticipant = (fezData?: FezData, user?: UserHeader) => {
-    if (!user || !fezData) {
-      return false;
-    }
-    return isMember(fezData.members?.participants, user);
-  };
-
-  export const isWaitlist = (fezData?: FezData, user?: UserHeader) => {
-    if (!user || !fezData) {
-      return false;
-    }
-    return isMember(fezData.members?.waitingList, user);
-  };
-
-  export const isFull = (fezData: FezData) => {
-    if (fezData.maxParticipants === 0 || !fezData.members) {
-      return false;
-    }
-    return fezData.members.participants.length >= fezData.maxParticipants;
-  };
-
-  export const getCacheKeys = (fezID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [['/fez/joined'], ['/fez/owner'], ['/fez/open'], ['/fez/former']];
-    if (fezID) {
-      queryKeys.push([`/fez/${fezID}`]);
-    }
-    return queryKeys;
-  };
 }
 
 export interface FezListData {
@@ -662,6 +581,53 @@ export interface UserProfileUploadData {
   discordUsername?: string;
 }
 
+/// Karaoke performance row. Returned by GET /api/v3/karaoke/latest and inside KaraokeSongData.performances.
+/// Includes songID; isFavorite may be present when returned by the backend.
+export interface KaraokePerformedSongsData {
+  songID: string;
+  artist: string;
+  songName: string;
+  performers: string;
+  /// ISO 8601 date string.
+  time: string;
+  isFavorite?: boolean;
+}
+
+/// Single karaoke song from GET /api/v3/karaoke or GET /api/v3/karaoke/:song_id.
+export interface KaraokeSongData {
+  songID: string;
+  artist: string;
+  songName: string;
+  isMidi: boolean;
+  isVoiceReduced: boolean;
+  isFavorite: boolean;
+  performances: KaraokePerformedSongsData[];
+}
+
+/// Response from GET /api/v3/karaoke (search/favorites).
+export interface KaraokeSongResponseData {
+  totalSongs: number;
+  start: number;
+  limit: number;
+  songs: KaraokeSongData[];
+}
+
+/// Response from GET /api/v3/karaoke/latest.
+export interface KaraokePerformedSongsResult {
+  songs: KaraokePerformedSongsData[];
+  paginator: Paginator;
+}
+
+export namespace KaraokeSongData {
+  export const getCacheKeys = (songID?: string): QueryKey[] => {
+    const keys: QueryKey[] = [['/karaoke'], ['/karaoke/latest']];
+    if (songID) {
+      keys.push([`/karaoke/${songID}`]);
+    }
+    return keys;
+  };
+}
+
 export interface NoteCreateData {
   /// The text of the note.
   note: string;
@@ -680,7 +646,7 @@ export interface NoteData {
 
 export interface RegistrationCodeUserData {
   // User accounts associated with the reg code. First item in the array is the primary account.
-  users: [UserHeader];
+  users: UserHeader[];
   /// The registration code associated with this account. If this account doesn't have an associated regcode, will be the empty string.
   regCode: string;
 }
@@ -732,33 +698,6 @@ export interface ForumListData {
   isPinned?: boolean;
 }
 
-export namespace ForumListData {
-  /**
-   * Returns an array of QueryKeys that would need invalidated when a Forum's
-   * state is known to have changed.
-   * @param categoryID Optional string of the category ID.
-   * @param forumID Optional string of the Forum ID.
-   */
-  export const getCacheKeys = (categoryID?: string, forumID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [
-      ['/forum/search'],
-      ['/forum/favorites'],
-      ['/forum/mutes'],
-      ['/forum/unread'],
-      ['/forum/categories'],
-      ['/forum/owner'],
-      ['/forum/recent'],
-    ];
-    if (forumID) {
-      queryKeys.push([`/forum/${forumID}`]);
-    }
-    if (categoryID) {
-      queryKeys.push([`/forum/categories/${categoryID}`]);
-    }
-    return queryKeys;
-  };
-}
-
 export interface CategoryData {
   /// The ID of the category.
   categoryID: string;
@@ -771,7 +710,7 @@ export interface CategoryData {
   /// if TRUE, this category is for Event Forums, and is prepopulated with forum threads for each Schedule Event.
   isEventCategory: boolean;
   /// The threads in the category. Only populated for /categories/ID.
-  forumThreads?: [ForumListData];
+  forumThreads?: ForumListData[];
   /// Pagination of the results
   paginator: Paginator;
 }
@@ -811,7 +750,7 @@ export interface PostData {
   /// The text of the post.
   text: string;
   /// The filenames of the post's optional images.
-  images?: [string];
+  images?: string[];
   /// Whether the current user has bookmarked the post.
   isBookmarked: boolean;
   /// The current user's `LikeType` reaction on the post.
@@ -866,17 +805,17 @@ export interface PostDetailData {
 }
 
 export namespace PostDetailData {
-  export const hasUserReacted = (postData: PostDetailData, userHeader: UserHeader, likeType?: LikeType) => {
+  export const hasUserReacted = (postData: PostDetailData, userID: string, likeType?: LikeType) => {
     if (!likeType) {
       return !!postData.userLike;
     }
     switch (likeType) {
       case LikeType.like:
-        return postData.likes.flatMap(uh => uh.userID).includes(userHeader.userID);
+        return postData.likes.flatMap(uh => uh.userID).includes(userID);
       case LikeType.laugh:
-        return postData.laughs.flatMap(uh => uh.userID).includes(userHeader.userID);
+        return postData.laughs.flatMap(uh => uh.userID).includes(userID);
       case LikeType.love:
-        return postData.loves.flatMap(uh => uh.userID).includes(userHeader.userID);
+        return postData.loves.flatMap(uh => uh.userID).includes(userID);
     }
   };
 }
@@ -915,11 +854,17 @@ export interface PhotostreamImageData {
   location: string;
 }
 
+export namespace PhotostreamImageData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/photostream'], ['/photostream/placenames']];
+  };
+}
+
 /// Returns paginated data on photos in the photo stream. Non-Mods should only have access to the most recent photos, with no pagination.
 /// However: `/api/v3/photostream` returns one of thse objects even for non-mod users--it just returns 30 photos and sets `paginator.total` to 30.
 ///
 export interface PhotostreamListData {
-  photos: [PhotostreamImageData];
+  photos: PhotostreamImageData[];
   paginator: Paginator;
 }
 
@@ -928,8 +873,8 @@ export interface PhotostreamListData {
 /// a photo is uploaded, its tag is validated, and validation will fail if the tagged event has ended.
 ///
 export interface PhotostreamLocationData {
-  events: [EventData];
-  locations: [string];
+  events: EventData[];
+  locations: string[];
 }
 
 /// Uploads a photo to the photostream. Either the eventID or the locationName must be set.
@@ -1151,7 +1096,7 @@ export interface BoardgameRecommendationData {
 /// * `GET /api/v3/boardgames`
 export interface BoardgameResponseData {
   /// Array of boardgames.
-  gameArray: [BoardgameData];
+  gameArray: BoardgameData[];
   /// Total games in result set, and the start and limit into the found set.
   paginator: Paginator;
 }
@@ -1330,24 +1275,38 @@ export namespace ClientSettingsData {
       // protocol includes the colon, so we need to add "//"
       return `${urlObj.protocol}//${urlObj.host}`;
     } catch (error) {
-      console.warn('[ControllerStructs.tsx] Error parsing URL:', error);
+      logger.warn('Error parsing URL:', error);
       return url;
     }
   };
 
   /**
-   * Return a Date object from the payload cruiseStartDate with local-midnight semantics.
+   * Extract a timezone-invariant date-only string from the server's cruiseStartDate.
    *
-   * The server returns an ISO-8601 timestamp (e.g. "2025-03-02T05:00:00.000Z").
-   * We normalize to local-midnight for the UTC date represented by that timestamp to avoid day shifting.
+   * The server returns an ISO-8601 timestamp (e.g. "2025-03-02T05:00:00.000Z")
+   * representing midnight in the port timezone. We extract the UTC calendar date
+   * as a "YYYY-MM-DD" string so it survives JSON round-trips and timezone changes.
    */
-  export const parseCruiseStartDate = (dateString: string): Date => {
+  export const parseCruiseStartDate = (dateString: string): string => {
     const parsed = new Date(dateString);
     if (isNaN(parsed.getTime())) {
-      console.warn('[ControllerStructs.tsx] Unexpected date format for cruiseStartDate:', dateString);
-      return parsed;
+      logger.warn('Unexpected date format for cruiseStartDate:', dateString);
+      return dateString;
     }
-    return new Date(parsed.getUTCFullYear(), parsed.getUTCMonth(), parsed.getUTCDate());
+    const y = parsed.getUTCFullYear();
+    const m = String(parsed.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(parsed.getUTCDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+
+  /**
+   * Build a Date representing midnight in the port timezone for a date-only string.
+   *
+   * This produces a consistent absolute time regardless of the device's local timezone,
+   * preventing day-shift bugs when the device timezone differs from the port timezone.
+   */
+  export const buildCruiseStartDate = (dateStr: string, portTimeZoneID: string): Date => {
+    return moment.tz(dateStr, 'YYYY-MM-DD', portTimeZoneID).toDate();
   };
 }
 

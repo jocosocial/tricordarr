@@ -1,25 +1,27 @@
 import React, {useState} from 'react';
 import {ScrollView, View} from 'react-native';
 
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
+/**
+ * Screen for displaying the user's account information.
+ *
+ * This used to have a dedicated button to reload roles. Which felt silly since
+ * pull to refresh is a thing.
+ */
 export const AccountInfoSettingsScreen = () => {
   const {data: profilePublicData, refetch: refetchProfile} = useUserProfileQuery();
-  const {currentSession} = useSession();
+  const {currentSession, currentUserID} = useSession();
   const tokenData = currentSession?.tokenData || null;
   const {roles, refetch: refetchRoles} = useRoles();
   const [refreshing, setRefreshing] = useState(false);
-  const {theme} = useAppTheme();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -34,7 +36,7 @@ export const AccountInfoSettingsScreen = () => {
       <ScrollView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View>
           <ListSubheader>Profile Public Data</ListSubheader>
-          <DataFieldListItem title={'UserID'} description={profilePublicData?.header.userID} />
+          <DataFieldListItem title={'UserID'} description={currentUserID ?? 'N/A'} />
           <DataFieldListItem title={'Username'} description={profilePublicData?.header.username} />
         </View>
         <View>
@@ -46,14 +48,6 @@ export const AccountInfoSettingsScreen = () => {
         <View>
           <ListSubheader>User Roles</ListSubheader>
           <DataFieldListItem title={'Roles'} description={rolesDescription} />
-          <PaddedContentView>
-            <PrimaryActionButton
-              buttonColor={theme.colors.twitarrNeutralButton}
-              buttonText={'Reload Roles'}
-              onPress={onRefresh}
-              isLoading={refreshing}
-            />
-          </PaddedContentView>
         </View>
       </ScrollView>
     </AppView>

@@ -5,7 +5,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useLfgFilter} from '#src/Context/Contexts/LfgFilterContext';
 import {FezType} from '#src/Enums/FezType';
 import {useMenu} from '#src/Hooks/useMenu';
 
@@ -17,7 +17,7 @@ interface LfgFilterMenuProps {
 export const LfgFilterMenu = ({showTypes = true, enableUnread = false}: LfgFilterMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} =
-    useFilter();
+    useLfgFilter();
   const {appConfig} = useConfig();
 
   const handleUnreadOnly = () => {

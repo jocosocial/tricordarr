@@ -1,4 +1,5 @@
 import {InfiniteData} from '@tanstack/react-query';
+import moment from 'moment-timezone';
 
 import {EventData, FezListData} from '#src/Structs/ControllerStructs';
 import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
@@ -11,8 +12,8 @@ export const DAY_PLANNER_CONFIG = {
   MINUTES_PER_ROW: 15,
   // Height of each 15-minute row in pixels
   ROW_HEIGHT: 25,
-  // Total hours displayed (from 00:00 to 03:00 next day = 27 hours)
-  TOTAL_HOURS: 27,
+  // Total hours displayed (24 hours, always)
+  TOTAL_HOURS: 24,
   // Minimum event height to ensure visibility of short events
   MIN_EVENT_HEIGHT: 40,
   // Minimum event duration in minutes (events shorter than this will be extended for display)
@@ -63,8 +64,18 @@ export const buildDayPlannerItems = (
     });
   }
 
+  // Deduplicate by ID in case the same fez/event appears in multiple sources
+  const seenIds = new Set<string>();
+  const dedupedItems: DayPlannerItem[] = [];
+  for (const item of items) {
+    if (!seenIds.has(item.id)) {
+      seenIds.add(item.id);
+      dedupedItems.push(item);
+    }
+  }
+
   // Sort by start time
-  return items.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+  return dedupedItems.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 };
 
 /**
@@ -176,14 +187,19 @@ export const calculateItemLayout = (
 /**
  * Generate time slot labels for the Day Planner timeline.
  * Returns an array of time slots with labels only on the hour marks.
+ * Timeline always shows 24 hours starting from dayStart.
+ * When timeZoneID is provided, labels show the hour in that timezone (boat time); otherwise device local.
  */
-export const generateTimeSlotLabels = (dayStart: Date): {time: Date; label: string; slotType: TimeSlotType}[] => {
+export const generateTimeSlotLabels = (
+  dayStart: Date,
+  timeZoneID?: string,
+): {time: Date; label: string; slotType: TimeSlotType}[] => {
   const slots: {time: Date; label: string; slotType: TimeSlotType}[] = [];
   const totalSlots = DAY_PLANNER_CONFIG.TOTAL_HOURS * DAY_PLANNER_CONFIG.SLOTS_PER_HOUR;
 
   for (let i = 0; i < totalSlots; i++) {
     const slotTime = new Date(dayStart.getTime() + i * DAY_PLANNER_CONFIG.MINUTES_PER_ROW * 60 * 1000);
-    const hours = slotTime.getHours();
+    const hours = timeZoneID ? moment(slotTime).tz(timeZoneID).hours() : slotTime.getHours();
     const slotInHour = i % DAY_PLANNER_CONFIG.SLOTS_PER_HOUR;
 
     // Determine slot type based on position within the hour
@@ -212,28 +228,35 @@ export const generateTimeSlotLabels = (dayStart: Date): {time: Date; label: stri
 };
 
 /**
- * Calculate the day start and end times for a given cruise day.
- * Day runs from 00:00 to either 24:00 (midnight) or 03:00 the next day (27 hours),
- * depending on the enableLateDayFlip setting.
+ * Calculate the day start and end times for a given cruise day in the boat timezone.
+ * Day always runs for 24 hours:
+ * - If enableLateDayFlip is false: 00:00 to 24:00 (midnight to midnight)
+ * - If enableLateDayFlip is true: 03:00 to 03:00 next day (3AM to 3AM)
  *
  * @param cruiseStartDate - The start date of the cruise
  * @param cruiseDay - The cruise day (1-indexed)
- * @param enableLateDayFlip - If true, day extends to 03:00 next day (27 hours). If false, day ends at midnight (24 hours).
+ * @param enableLateDayFlip - If true, day runs from 3AM to 3AM. If false, midnight to midnight.
+ * @param timeZoneID - IANA timezone for the boat (e.g. America/New_York).
  */
 export const getDayBoundaries = (
   cruiseStartDate: Date,
   cruiseDay: number,
   enableLateDayFlip: boolean,
+  timeZoneID: string,
 ): {dayStart: Date; dayEnd: Date} => {
-  // cruiseDay is 1-indexed, so subtract 1 to get the offset
-  const dayStart = new Date(cruiseStartDate);
-  dayStart.setDate(dayStart.getDate() + cruiseDay - 1);
-  dayStart.setHours(0, 0, 0, 0);
-
-  // Day ends at either midnight (24 hours) or 03:00 the next day (27 hours)
-  const dayEnd = new Date(dayStart);
-  const endHour = enableLateDayFlip ? DAY_PLANNER_CONFIG.TOTAL_HOURS : 24;
-  dayEnd.setHours(endHour, 0, 0, 0);
+  const startHour = enableLateDayFlip ? 3 : 0;
+  const dayStart = moment(cruiseStartDate)
+    .tz(timeZoneID)
+    .add(cruiseDay - 1, 'days')
+    .startOf('day')
+    .add(startHour, 'hours')
+    .toDate();
+  const dayEnd = moment(cruiseStartDate)
+    .tz(timeZoneID)
+    .add(cruiseDay - 1, 'days')
+    .startOf('day')
+    .add(startHour + DAY_PLANNER_CONFIG.TOTAL_HOURS, 'hours')
+    .toDate();
 
   return {dayStart, dayEnd};
 };
@@ -246,43 +269,83 @@ export const getTimelineHeight = (): number => {
 };
 
 /**
- * Calculate the scroll offset in pixels for the current time of day.
+ * Get the scroll offset in pixels to show the first item near the top (with small padding).
+ * Use when viewing a cruise day that is not today, so the list doesn't start at day start (e.g. 3AM).
  *
- * The timeline shows 27 hours: from 00:00 (midnight) to 03:00 the next day.
- * When dayStart is provided, we can correctly handle the extended hours (00:00-03:00)
- * that fall on the next calendar day by adding 24 hours to the offset.
+ * @param items Day planner items (should be sorted by start time)
+ * @param dayStart The start of the viewed day's timeline
+ * @returns The scroll offset in pixels (0 if no items)
+ */
+export const getScrollOffsetForFirstItem = (items: {startTime: Date}[], dayStart: Date): number => {
+  if (items.length === 0) return 0;
+  // Use first item that starts on or after dayStart (items before day boundary yield negative offset and clamp to 0).
+  const firstOnOrAfterDayStart = items.find(item => item.startTime >= dayStart) ?? items[0];
+  const minutesFromDayStart = (firstOnOrAfterDayStart.startTime.getTime() - dayStart.getTime()) / (1000 * 60);
+  const offset = (minutesFromDayStart / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
+  const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2;
+  return Math.max(0, offset - viewOffset);
+};
+
+const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
+
+/**
+ * Minutes from day start for "now" for the now-line.
+ * Uses device local time for "now" and boat timezone for "day start" so the line
+ * matches the user's clock on the timeline (e.g. 10:36 device → line at 10:36 position).
+ */
+export const getMinutesFromDayStartForNow = (timeZoneID: string, dayStart: Date, now: Date): number | null => {
+  const nowH = now.getHours();
+  const nowM = now.getMinutes();
+  const startInTz = moment(dayStart).tz(timeZoneID);
+  const startH = startInTz.hours();
+  const startM = startInTz.minutes();
+  let minutesFromDayStart = (nowH - startH) * 60 + (nowM - startM);
+
+  if (minutesFromDayStart < 0) {
+    minutesFromDayStart += dayMinutesMax;
+  }
+  if (minutesFromDayStart >= dayMinutesMax) {
+    return null;
+  }
+  return minutesFromDayStart;
+};
+
+/**
+ * Calculate the scroll offset in pixels for "current time of day" in a timezone.
+ * Use this when viewing "today" so the position is correct even when the cruise
+ * calendar date is in the past (e.g. demo data).
  *
- * @param now The current date/time
- * @param dayStart Optional start of the viewed day's timeline. When provided, enables
- *                 correct positioning for times in the extended hours (next calendar day).
+ * @param timeZoneID IANA timezone (e.g. boat timezone)
+ * @param dayStart The start of the viewed day's timeline (hour in TZ defines start, e.g. 3AM)
  * @returns The scroll offset in pixels
  */
-export const getScrollOffsetForTime = (now: Date, dayStart?: Date): number => {
-  // Extract just the time-of-day from "now" (hours and minutes)
-  const nowHours = now.getHours();
-  const nowMinutes = now.getMinutes();
+export const getScrollOffsetForTimeOfDay = (timeZoneID: string, dayStart: Date): number => {
+  const minutesFromDayStart = getMinutesFromDayStartForNow(timeZoneID, dayStart, new Date());
+  const clamped = minutesFromDayStart === null ? 0 : Math.min(minutesFromDayStart, dayMinutesMax);
 
-  // Calculate minutes from midnight (00:00)
-  let minutesFromMidnight = nowHours * 60 + nowMinutes;
-
-  // If dayStart is provided and now is on a later calendar date,
-  // we're in the extended hours (00:00-03:00 next day) and need to add 24 hours
-  if (dayStart) {
-    const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const dayStartDate = new Date(dayStart.getFullYear(), dayStart.getMonth(), dayStart.getDate());
-    if (nowDate.getTime() > dayStartDate.getTime()) {
-      minutesFromMidnight += 24 * 60; // Add 24 hours worth of minutes
-    }
-  }
-
-  // Convert to pixel offset
-  // Each 15-minute slot is ROW_HEIGHT pixels tall
-  const offset = (minutesFromMidnight / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
-
-  // Subtract some offset so the current time appears near the top of the view, not at the very top
-  const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2; // Show ~1 hour before current time
-
-  const finalOffset = Math.max(0, offset - viewOffset);
-
-  return finalOffset;
+  const offset = (clamped / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
+  const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2;
+  return Math.max(0, offset - viewOffset);
 };
+
+/**
+ * Calculate the scroll offset in pixels for a given time relative to dayStart.
+ * The timeline always shows 24 hours starting from dayStart.
+ * Returns 0 when now is outside the displayed day (e.g. viewing a past/future cruise day).
+ *
+ * @param now The current date/time to calculate offset for
+ * @param dayStart The start of the viewed day's timeline (either midnight or 3AM depending on late day flip)
+ * @returns The scroll offset in pixels
+ */
+// export const getScrollOffsetForTime = (now: Date, dayStart: Date): number => {
+//   const minutesFromDayStart = (now.getTime() - dayStart.getTime()) / (1000 * 60);
+
+//   const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
+//   if (minutesFromDayStart < 0 || minutesFromDayStart > dayMinutesMax) {
+//     return 0;
+//   }
+
+//   const offset = (minutesFromDayStart / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
+//   const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2;
+//   return Math.max(0, offset - viewOffset);
+// };

@@ -4,16 +4,16 @@ import {StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
+import {useLinking} from '#src/Context/Contexts/LinkingContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useTwitarr} from '#src/Context/Contexts/TwitarrContext';
 
 /**
  * Hook to create markdown link handler that processes URLs for deep linking.
- * Delegates to TwitarrProvider.openWebUrl for URL processing.
+ * Delegates to LinkingProvider (useTwitarr().openWebUrl) for URL processing.
  * https://github.com/jocosocial/tricordarr/issues/252
  */
 export const useMarkdownLinkHandler = () => {
-  const {openWebUrl} = useTwitarr();
+  const {openWebUrl} = useLinking();
 
   return useCallback(
     (url: string) => {

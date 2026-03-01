@@ -1,13 +1,16 @@
-import React, {PropsWithChildren, useCallback, useMemo} from 'react';
+import React, {PropsWithChildren, useCallback, useMemo, useState} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {OobeContext} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
-import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('OobeProvider.tsx');
 
 export const OobeProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const {currentSession, updateSession} = useSession();
+  const [onboarding, setOnboarding] = useState(false);
 
   const oobeCompleted = useMemo(() => {
     const completedVersion = currentSession?.oobeCompletedVersion ?? 0;
@@ -16,23 +19,24 @@ export const OobeProvider = ({children}: PropsWithChildren) => {
 
   const oobeFinish = useCallback(async () => {
     if (!currentSession) {
-      console.warn('[OobeProvider] Cannot finish OOBE: no current session');
+      logger.warn('Cannot finish OOBE: no current session');
       return;
     }
     await updateSession(currentSession.sessionID, {
       oobeCompletedVersion: appConfig.oobeExpectedVersion,
     });
-    // Set lastSessionID when OOBE completes - this ensures sessions created during
-    // OOBE flow don't become the "last active" until onboarding is finished
-    await SessionStorage.setLastSessionID(currentSession.sessionID);
+    setOnboarding(false);
+    // The persist effect handles writing lastSessionID based on currentSessionID
   }, [currentSession, updateSession, appConfig.oobeExpectedVersion]);
 
   const contextValue = useMemo(
     () => ({
       oobeCompleted,
       oobeFinish,
+      onboarding,
+      setOnboarding,
     }),
-    [oobeCompleted, oobeFinish],
+    [oobeCompleted, oobeFinish, onboarding],
   );
 
   return <OobeContext.Provider value={contextValue}>{children}</OobeContext.Provider>;

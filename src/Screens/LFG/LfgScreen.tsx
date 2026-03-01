@@ -1,7 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -13,13 +12,13 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezData} from '#src/Hooks/useFezData';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
-import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
+import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
@@ -35,33 +34,41 @@ export const LfgScreen = (props: Props) => {
 };
 
 const LfgScreenInner = ({navigation, route}: Props) => {
-  const {data, refetch, isFetching} = useFezQuery({
+  const {fezData, isOwner, isParticipant, isWaitlist, refetch, initialReadCount, resetInitialReadCount} = useFezData({
     fezID: route.params.fezID,
   });
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const [lfg, setLfg] = useState<FezData>();
   const {notificationSocket} = useSocket();
   const isFocused = useIsFocused();
-  const {hasModerator} = usePrivilege();
-  const queryClient = useQueryClient();
+  const wasFocusedRef = useRef(isFocused);
 
-  const showChat =
-    hasModerator ||
-    FezData.isParticipant(lfg, profilePublicData?.header) ||
-    FezData.isWaitlist(lfg, profilePublicData?.header);
+  useEffect(() => {
+    if (isFocused && !wasFocusedRef.current) {
+      resetInitialReadCount();
+    }
+    wasFocusedRef.current = isFocused;
+  }, [isFocused, resetInitialReadCount]);
+  const {hasModerator} = usePrivilege();
+  const showChat = hasModerator || isParticipant || isWaitlist;
 
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <MaterialHeaderButtons left>
-          {lfg && profilePublicData && showChat && (
+          {lfg && showChat && (
             <Item
               title={'Chat'}
               iconName={AppIcons.chat}
-              onPress={() => navigation.push(CommonStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
+              onPress={() =>
+                navigation.push(CommonStackComponents.lfgChatScreen, {
+                  fezID: lfg.fezID,
+                  initialReadCount,
+                })
+              }
             />
           )}
-          {lfg && lfg.owner.userID === profilePublicData?.header.userID && (
+          {lfg && isOwner && (
             <HeaderEditButton
               iconName={AppIcons.edit}
               onPress={() =>
@@ -75,7 +82,7 @@ const LfgScreenInner = ({navigation, route}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [lfg, navigation, profilePublicData, showChat]);
+  }, [lfg, navigation, showChat, isOwner, initialReadCount]);
 
   const getHeaderTitle = useCallback(() => {
     const onPress = () =>
@@ -95,26 +102,10 @@ const LfgScreenInner = ({navigation, route}: Props) => {
   }, [getNavButtons, lfg, navigation, getHeaderTitle]);
 
   useEffect(() => {
-    if (data) {
-      setLfg(data.pages[0]);
+    if (fezData) {
+      setLfg(fezData);
     }
-  }, [data, setLfg]);
-
-  /**
-   * Mark as Read. Even though you may not have "read" it (tapping the Chat screen)
-   * the API considers the GET in this screen as you reading it.
-   * Expire queries only if there are unread messages.
-   * This intentionally does not expire the Fez data query (ie, passing a fezID)
-   * because we want the user to have a chance to notice they have unread messages.
-   */
-  useEffect(() => {
-    if (lfg?.members && lfg.members.postCount > lfg.members.readCount) {
-      Promise.all([
-        ...UserNotificationData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
-        ...FezData.getCacheKeys().map(key => queryClient.invalidateQueries({queryKey: key})),
-      ]);
-    }
-  }, [lfg, queryClient]);
+  }, [fezData, setLfg]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -147,5 +138,13 @@ const LfgScreenInner = ({navigation, route}: Props) => {
     };
   }, [isFocused, notificationHandler, notificationSocket]);
 
-  return <ScheduleItemScreenBase refreshing={isFetching} onRefresh={refetch} eventData={lfg} showLfgChat={showChat} />;
+  return (
+    <ScheduleItemScreenBase
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      eventData={lfg}
+      showLfgChat={showChat}
+      initialReadCount={initialReadCount}
+    />
+  );
 };

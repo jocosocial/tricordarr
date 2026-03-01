@@ -1,7 +1,10 @@
 import React, {PropsWithChildren, useCallback, useState} from 'react';
 
 import {ErrorHandlerContext} from '#src/Context/Contexts/ErrorHandlerContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {StringOrError} from '#src/Types';
+
+const logger = createLogger('ErrorHandlerProvider.tsx');
 
 // https://stackoverflow.com/questions/30469261/checking-for-typeof-error-in-js
 function getErrorMessage(e: StringOrError) {
@@ -12,7 +15,7 @@ function getErrorMessage(e: StringOrError) {
   } else if (typeof e === 'undefined') {
     return undefined;
   }
-  console.error('Unable to determine error type!', e);
+  logger.error('Unable to determine error type!', e);
   return 'Unknown Error!';
 }
 

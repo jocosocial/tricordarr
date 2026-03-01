@@ -16,14 +16,15 @@ import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderV
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useScheduleFilter} from '#src/Context/Contexts/ScheduleFilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToNow} from '#src/Hooks/useScrollToNow';
+import {createLogger} from '#src/Libraries/Logger';
 import {buildScheduleList} from '#src/Libraries/Schedule';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
@@ -32,27 +33,27 @@ import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScre
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
+const logger = createLogger('ScheduleDayScreen.tsx');
+
+interface ScheduleDayScreenActualProps {
+  onlyNewInitial?: boolean;
+  cruiseDayInitial?: number;
+  setPersonalFilterInitial?: boolean;
+  navigation: any;
+}
+
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
 
-export const ScheduleDayScreen = (props: Props) => {
-  const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
-
-  useEffect(() => {
-    props.navigation.setOptions({
-      headerLeft: props.route.params?.noDrawer ? getLeftBackHeaderButtons : getLeftMainHeaderButtons,
-    });
-  }, [getLeftMainHeaderButtons, getLeftBackHeaderButtons, props.navigation, props.route.params?.noDrawer]);
-
-  return (
-    <LoggedInScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events'}>
-        <ScheduleDayScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </LoggedInScreen>
-  );
-};
-
-const ScheduleDayScreenInner = ({navigation}: Props) => {
+/**
+ * Inner component containing the actual schedule day logic.
+ * This assumes LoggedIn and Disabled checkpoints have been handled.
+ */
+const ScheduleDayScreenActual = ({
+  navigation,
+  onlyNewInitial,
+  cruiseDayInitial,
+  setPersonalFilterInitial,
+}: ScheduleDayScreenActualProps) => {
   const {commonStyles} = useStyles();
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
@@ -60,10 +61,11 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
     listRef,
     clearList: useCallback(() => setScheduleList([]), []),
+    defaultCruiseDay: cruiseDayInitial,
   });
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
-  const {scheduleFilterSettings} = useFilter();
+  const {scheduleFilterSettings, setEventPersonalFilter, setEventPersonalUnreadFilter} = useScheduleFilter();
 
   const {
     data: eventData,
@@ -71,7 +73,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     isError: isEventError,
     refetch: refetchEvents,
   } = useEventsQuery({
-    cruiseDay: selectedCruiseDay,
+    cruiseDay: selectedCruiseDay === 0 ? undefined : selectedCruiseDay,
   });
   const {
     data: lfgOpenData,
@@ -81,7 +83,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     hasNextPage: openHasNextPage,
     fetchNextPage: openFetchNextPage,
   } = useLfgListQuery({
-    cruiseDay: selectedCruiseDay - 1,
+    cruiseDay: selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
     endpoint: 'open',
     hidePast: false,
     options: {
@@ -96,7 +98,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     hasNextPage: joinedHasNextPage,
     fetchNextPage: joinedFetchNextPage,
   } = useLfgListQuery({
-    cruiseDay: selectedCruiseDay - 1,
+    cruiseDay: selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
     endpoint: 'joined',
     hidePast: false,
     options: {
@@ -111,7 +113,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     hasNextPage: ownedHasNextPage,
     fetchNextPage: ownedFetchNextPage,
   } = useLfgListQuery({
-    cruiseDay: selectedCruiseDay - 1,
+    cruiseDay: selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
     endpoint: 'owner',
     hidePast: false,
     options: {
@@ -126,7 +128,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     hasNextPage: personalHasNextPage,
     fetchNextPage: personalFetchNextPage,
   } = usePersonalEventsQuery({
-    cruiseDay: selectedCruiseDay - 1,
+    cruiseDay: selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
     // Adding this one line (hidePast: false) does some magic to prevent SchedulePrivateEventsScreen
     // from not refetching private event data even though it is stale. I suspect React Query may be
     // seeing the staleTime from the other instance of the query and thinking that its data is still
@@ -135,6 +137,10 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     // and subject to correct refetching.
     // https://github.com/jocosocial/tricordarr/issues/253
     hidePast: false,
+    onlyNew:
+      scheduleFilterSettings.eventPersonalUnreadFilter && !scheduleFilterSettings.eventPersonalFilter
+        ? true
+        : undefined,
     options: {
       enabled: !preRegistrationMode,
     },
@@ -168,6 +174,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   const {scrollToNow, scrollNowIndex} = useScrollToNow({
     items: scheduleList,
     listRef,
+    selectedCruiseDay,
   });
 
   const getNavButtons = useCallback(() => {
@@ -192,8 +199,30 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
+  /**
+   * This operates more like an intent than a state.
+   * When the user navigates from the NotificationsMenu it's almost certainly
+   * because they want to see personal events. All other cases should be normal.
+   */
   useEffect(() => {
-    console.log('[ScheduleDayScreen.tsx] Starting buildScheduleList useEffect.');
+    if (setPersonalFilterInitial !== undefined) {
+      setEventPersonalFilter(setPersonalFilterInitial);
+    }
+  }, [setPersonalFilterInitial, setEventPersonalFilter]);
+
+  /**
+   * This operates more like an intent than a state.
+   * When the user navigates from the NotificationsMenu it's almost certainly
+   * because they want to see unread personal events. All other cases should be normal.
+   */
+  useEffect(() => {
+    if (onlyNewInitial !== undefined) {
+      setEventPersonalUnreadFilter(onlyNewInitial);
+    }
+  }, [onlyNewInitial, setEventPersonalUnreadFilter]);
+
+  useEffect(() => {
+    logger.debug('Starting buildScheduleList useEffect.');
     const listData = buildScheduleList(
       scheduleFilterSettings,
       lfgJoinedData,
@@ -204,7 +233,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     );
     setScheduleList(listData);
     onDataLoaded();
-    console.log('[ScheduleDayScreen.tsx] Finished buildScheduleList useEffect.');
+    logger.debug('Finished buildScheduleList useEffect.');
   }, [scheduleFilterSettings, lfgJoinedData, lfgOwnedData, lfgOpenData, eventData, personalEventData, onDataLoaded]);
 
   // Reset switching state on error to prevent stuck loading spinner
@@ -215,7 +244,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   }, [isEventError, isLfgOpenError, isLfgJoinedError, isLfgOwnedError, isPersonalEventError, onQueryError]);
 
   useEffect(() => {
-    console.log('[ScheduleDayScreen.tsx] Firing pagination useEffect');
+    logger.debug('Firing pagination useEffect');
     if (appConfig.schedule.eventsShowOpenLfgs && openHasNextPage) {
       openFetchNextPage();
     }
@@ -247,6 +276,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
         selectedCruiseDay={selectedCruiseDay}
         setCruiseDay={handleSetCruiseDay}
         scrollToNow={scrollToNow}
+        enableAll={true}
       />
       <View style={[commonStyles.flex]}>
         {isSwitchingDays ? (
@@ -257,6 +287,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
           <ScheduleFlatList
             listRef={listRef}
             items={scheduleList}
+            showDayInDividers={selectedCruiseDay === 0}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
             setRefreshing={setRefreshing}
             initialScrollIndex={scrollNowIndex}
@@ -265,5 +296,41 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
       </View>
       <DayPlannerFAB selectedDay={selectedCruiseDay} />
     </AppView>
+  );
+};
+
+/**
+ * Middleware component that handles route parameters.
+ */
+const ScheduleDayScreenInner = ({navigation, route}: Props) => {
+  return (
+    <ScheduleDayScreenActual
+      key={route.params?.intent}
+      navigation={navigation}
+      onlyNewInitial={route.params?.onlyNew}
+      cruiseDayInitial={route.params?.cruiseDay}
+      setPersonalFilterInitial={route.params?.setPersonalFilter}
+    />
+  );
+};
+
+/**
+ * Main schedule day screen that handles checkpoints.
+ */
+export const ScheduleDayScreen = (props: Props) => {
+  const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
+
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerLeft: props.route.params?.noDrawer ? getLeftBackHeaderButtons : getLeftMainHeaderButtons,
+    });
+  }, [getLeftMainHeaderButtons, getLeftBackHeaderButtons, props.navigation, props.route.params?.noDrawer]);
+
+  return (
+    <LoggedInScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events'}>
+        <ScheduleDayScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </LoggedInScreen>
   );
 };

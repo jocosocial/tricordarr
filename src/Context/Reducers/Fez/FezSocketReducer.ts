@@ -1,6 +1,10 @@
 import {useReducer} from 'react';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('FezSocketReducer.ts');
+
 export interface WebSocketStorage {
   [key: string]: ReconnectingWebSocket;
 }
@@ -17,7 +21,7 @@ export type WebSocketStorageType =
   | {type: WebSocketStorageActions.clear};
 
 const webSocketStorageReducer = (storage: WebSocketStorage, action: WebSocketStorageType) => {
-  console.log('[WebSocketStorageReducer.ts] Got action:', action.type);
+  logger.debug('Got action:', action.type);
   switch (action.type) {
     case WebSocketStorageActions.upsert: {
       return {
@@ -26,9 +30,8 @@ const webSocketStorageReducer = (storage: WebSocketStorage, action: WebSocketSto
       };
     }
     case WebSocketStorageActions.delete: {
-      const localStorage = storage;
-      delete localStorage[action.key];
-      return localStorage;
+      const {[action.key]: _removed, ...rest} = storage;
+      return rest;
     }
     case WebSocketStorageActions.clear: {
       // @TODO should this also close?

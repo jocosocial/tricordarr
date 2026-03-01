@@ -1,19 +1,14 @@
-import {differenceInCalendarDays, differenceInDays} from 'date-fns';
+import {differenceInCalendarDays} from 'date-fns';
 import React, {PropsWithChildren} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {CruiseContext} from '#src/Context/Contexts/CruiseContext';
-import {useOobe} from '#src/Context/Contexts/OobeContext';
-import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
-import useDateTime, {getCruiseDay, getCruiseDays} from '#src/Libraries/DateTime';
-import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {useTime} from '#src/Context/Contexts/TimeContext';
+import {getCruiseDay, getCruiseDays} from '#src/Libraries/DateTime';
 
 export const CruiseProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
-  const {oobeCompleted} = useOobe();
-  const {preRegistrationMode} = usePreRegistration();
-  // The hourlyUpdatingDate is a Date that will trigger a state refresh every hour on the hour.
-  const hourlyUpdatingDate = useDateTime('hour');
+  const {hourlyUpdatingDate} = useTime();
   // We use 3AM as the day rollover point because many people stay up late. This is done in Swiftarr and elsewhere here.
   let lateNightOffset = 0;
   if (appConfig.schedule.enableLateDayFlip) {
@@ -31,23 +26,17 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   let endDate = new Date(startDate.getTime());
   endDate.setDate(startDate.getDate() + cruiseLength - 1);
   // Day Index. Similar to the Swiftarr Site UI this is used to show "days before/days after" the sailing.
-  // There is a difference in behavior between differenceInDays and differenceInCalendarDays. IMO the latter
-  // is more accurate but that's not what we do in the Site UI / Swift lang. So we have to be a little weird.
+  // Both use differenceInCalendarDays (calendar-date-based, ignoring time) rather than differenceInDays
+  // (full 24-hour periods). Since adjustedDate already has the lateDayFlip 3-hour offset applied,
+  // differenceInCalendarDays correctly flips the day at 3 AM: at 2:59 AM the adjusted date is still the
+  // previous calendar day (11:59 PM), at 3:00 AM it becomes midnight of the new day.
+  // See https://github.com/jocosocial/tricordarr/issues/282
   const cruiseDayIndex = differenceInCalendarDays(hourlyUpdatingDate, startDate);
-  const adjustedCruiseDayIndex = differenceInDays(adjustedDate, startDate);
+  const adjustedCruiseDayIndex = differenceInCalendarDays(adjustedDate, startDate);
   // Days Since.
   const daysSince = cruiseDayIndex - cruiseLength;
   // Array of cruise day names and configs.
   const cruiseDays = getCruiseDays(startDate, cruiseLength);
-
-  // Figure out of the device is in the wrong time zone.
-  const {data: userNotificationData} = useUserNotificationDataQuery({
-    enabled: oobeCompleted && !preRegistrationMode,
-  });
-  // .getTimezoneOffset() reports in minutes and from the opposite perspective
-  // as the server. Server says "you're -4" whereas device says "they're +4".
-  const deviceTimeOffset = new Date().getTimezoneOffset() * -60;
-  const showTimeZoneWarning = !!userNotificationData && deviceTimeOffset !== userNotificationData.serverTimeOffset;
 
   return (
     <CruiseContext.Provider
@@ -57,12 +46,10 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
         cruiseLength,
         cruiseDayIndex,
         daysSince,
-        hourlyUpdatingDate,
         cruiseDays,
         cruiseDayToday,
         adjustedCruiseDayIndex,
         adjustedCruiseDayToday,
-        showTimeZoneWarning,
       }}>
       {children}
     </CruiseContext.Provider>

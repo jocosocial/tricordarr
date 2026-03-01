@@ -33,10 +33,23 @@ import UserNotifications
 	private var storedToken: String?
 	/// KVO observation token for backgroundPushManager.isActive
 	private var isActiveObservation: NSKeyValueObservation?
+	/// Observer token for AppConfig change notifications
+	private var appConfigObserver: NSObjectProtocol?
+
+	override init() {
+		super.init()
+		appConfigObserver = NotificationCenter.default.addObserver(
+			forName: .appConfigDidChange,
+			object: nil,
+			queue: .main
+		) { [weak self] notification in
+			self?.handleAppConfigChange(notification)
+		}
+	}
 
 	/**
 	 Configure the providers with settings. Called from the JavaScript side over the "bridge".
-   @TODO this should ensure the background manager and foreground provider cycle.
+	 Ensures foreground/background providers are reconciled after config updates.
 	 */
 	@objc static func saveSettings(socketUrl: String, token: String) {
 		// Store settings for background manager configuration
@@ -47,7 +60,7 @@ import UserNotifications
 		if let urlComponents = URLComponents(string: socketUrl) {
 			Notifications.shared.foregroundPushProvider.updateConfig(serverURL: urlComponents.url, token: token)
 		}
-		Notifications.shared.checkStartInAppSocket()
+		Notifications.shared.reconcileProviderCycle(reason: "saveSettings")
 
 		// Update background manager if it exists
 		if let manager = Notifications.shared.backgroundPushManager {
@@ -75,8 +88,9 @@ import UserNotifications
 		// Clear foreground push provider config
 		instance.foregroundPushProvider.updateConfig(serverURL: nil, token: nil)
 
-		// Disable background push manager if it exists
-		if let manager = instance.backgroundPushManager {
+		// Disable background push manager if it exists and is currently enabled.
+		// Skip save when already disabled to avoid duplicate save and "configuration is unchanged" / NEAppPushErrorDomain errors.
+		if let manager = instance.backgroundPushManager, manager.isEnabled {
 			manager.isEnabled = false
 			manager.saveToPreferences { error in
 				if let error = error {
@@ -96,6 +110,9 @@ import UserNotifications
 		// Invalidate and clear the KVO observer
 		instance.isActiveObservation?.invalidate()
 		instance.isActiveObservation = nil
+
+		// AppConfig observer is intentionally kept alive; the handler
+		// guards on prerequisites and will no-op after clearSettings.
 
 		instance.logger.log("[Notifications.swift] clearSettings completed")
 	}
@@ -284,63 +301,31 @@ import UserNotifications
 			return
 		}
 
-		// Extract current configuration values for comparison
-		let currentProviderConfig = manager.providerConfiguration
-		let currentSocketUrl = currentProviderConfig["twitarrURL"] as? String
-		let currentToken = currentProviderConfig["token"] as? String
-		let currentMatchSSIDs = manager.matchSSIDs
-		let newMatchSSIDs = appConfig.wifiNetworkNames
+		let settings = PushManagerSettings(socketUrl: socketUrl, token: token, appConfig: appConfig)
 
-		// Convert pushNotifications from [NotificationTypeData: Bool] to [String: Bool] for storage
-		var pushNotificationsDict: [String: Bool] = [:]
-		for (key, value) in appConfig.pushNotifications {
-			pushNotificationsDict[key.rawValue] = value
-		}
-		let currentPushNotifications = currentProviderConfig["pushNotifications"] as? [String: Bool]
-		let currentMuteNotifications = currentProviderConfig["muteNotifications"] as? String
-
-		// Check if configuration has changed
-		let socketUrlChanged = currentSocketUrl != socketUrl
-		let tokenChanged = currentToken != token
-		let ssidsChanged = Set(currentMatchSSIDs) != Set(newMatchSSIDs)
-		let pushNotificationsChanged = currentPushNotifications != pushNotificationsDict
-		let muteNotificationsChanged = currentMuteNotifications != appConfig.muteNotifications
-		let configChanged =
-			socketUrlChanged || tokenChanged || ssidsChanged || pushNotificationsChanged || muteNotificationsChanged
-
-		// Configure provider configuration dictionary
-		var providerConfig: [String: Any] = [:]
-		providerConfig["twitarrURL"] = socketUrl
-		providerConfig["token"] = token
-		providerConfig["pushNotifications"] = pushNotificationsDict
-		if let muteNotifications = appConfig.muteNotifications {
-			providerConfig["muteNotifications"] = muteNotifications
-		}
-		manager.providerConfiguration = providerConfig
-
-		// Set matchSSIDs from AppConfig
-		manager.matchSSIDs = appConfig.wifiNetworkNames
-
-		manager.isEnabled = true
-		manager.providerBundleIdentifier = "com.grantcohoe.tricordarr.LocalPushExtension"
-		manager.localizedDescription = "App Extension for Background Server Communication"
-
-		// Only save to preferences if configuration has changed
-		guard configChanged else {
+		//
+		guard settings.hasManagerChanged(manager) || !manager.isEnabled else {
 			logger.log("[Notifications.swift] Configuration unchanged, skipping saveToPreferences")
 			return
 		}
 
-		// Save to preferences
+		manager.providerConfiguration = settings.providerConfiguration
+		manager.matchSSIDs = settings.matchSSIDs
+		manager.isEnabled = true
+		manager.providerBundleIdentifier = "com.grantcohoe.tricordarr.LocalPushExtension"
+		manager.localizedDescription = "App Extension for Background Server Communication"
+
 		manager.saveToPreferences { error in
 			if let error = error {
 				self.logger.error(
 					"[Notifications.swift] Error saving push manager preferences: \(error.localizedDescription, privacy: .public)"
 				)
+				self.reconcileProviderCycle(reason: "saveToPreferences-failure")
 				return
 			}
 
 			self.logger.log("[Notifications.swift] Push manager preferences saved successfully")
+			self.reconcileProviderCycle(reason: "saveToPreferences-success")
 		}
 	}
 
@@ -364,6 +349,39 @@ import UserNotifications
 		if foregroundPushProvider.startState == true {
 			foregroundPushProvider.stop(with: .superceded) {}
 		}
+	}
+
+	/// Reconciles ownership between background manager and in-app foreground provider.
+	/// If the background provider is active, the in-app provider is stopped.
+	/// Otherwise the in-app provider is started immediately or after an optional delay.
+	private func reconcileProviderCycle(reason: String, fallbackDelay: TimeInterval? = nil) {
+		if backgroundPushManager?.isActive == true {
+			logger.log(
+				"[Notifications.swift] reconcileProviderCycle \(reason, privacy: .public): background active, stopping in-app provider"
+			)
+			providerDownTimer?.invalidate()
+			providerDownTimer = nil
+			checkStopInAppSocket()
+			return
+		}
+
+		if let fallbackDelay {
+			logger.log(
+				"[Notifications.swift] reconcileProviderCycle \(reason, privacy: .public): background inactive, scheduling in-app provider in \(fallbackDelay, privacy: .public)s"
+			)
+			providerDownTimer?.invalidate()
+			providerDownTimer = Timer.scheduledTimer(withTimeInterval: fallbackDelay, repeats: false) { [weak self] _ in
+				self?.checkStartInAppSocket()
+			}
+			return
+		}
+
+		logger.log(
+			"[Notifications.swift] reconcileProviderCycle \(reason, privacy: .public): background inactive, starting in-app provider"
+		)
+		providerDownTimer?.invalidate()
+		providerDownTimer = nil
+		checkStartInAppSocket()
 	}
 
 	// MARK: - App Startup
@@ -396,9 +414,7 @@ import UserNotifications
 				instance.setupIsActiveObserver()
 
 				// If at app launch the extension isn't running, start using in-app provider after 5 seconds
-				instance.providerDownTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
-					instance.checkStartInAppSocket()
-				}
+				instance.reconcileProviderCycle(reason: "appStarted", fallbackDelay: 5)
 			}
 		#endif
 	}
@@ -429,22 +445,49 @@ import UserNotifications
 		if let manager = backgroundPushManager {
 			if manager.isActive {
 				logger.log("[Notifications.swift] Extension push provider is active")
-				checkStopInAppSocket()
-				providerDownTimer?.invalidate()
-				providerDownTimer = nil
+				reconcileProviderCycle(reason: "manager-active")
 			}
 			else {
 				logger.log("[Notifications.swift] Extension push provider is inactive")
 				// Start a 30 second timer. If the provider extension is still offline, enable the
 				// in-app provider. This should prevent extra socket cycling for very short Wifi unavailability.
-				providerDownTimer?.invalidate()
-				providerDownTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: false) { [weak self] _ in
-					self?.checkStartInAppSocket()
-				}
+				reconcileProviderCycle(reason: "manager-inactive", fallbackDelay: 30)
 			}
 		}
 		else {
 			logger.log("[Notifications.swift] Extension push provider is nil")
+		}
+	}
+
+	// MARK: - AppConfig Change Handling
+
+	/// Reacts to `AppConfig.setAppConfig` updates by re-saving background manager
+	/// settings and reconciling foreground/background provider ownership.
+	private func handleAppConfigChange(_ notification: Foundation.Notification) {
+		logger.log("[Notifications.swift] appConfigDidChange received")
+
+		guard storedSocketUrl != nil, storedToken != nil, AppConfig.shared != nil else {
+			logger.log(
+				"[Notifications.swift] appConfigDidChange: prerequisites missing (socketUrl/token/appConfig), skipping"
+			)
+			return
+		}
+
+		let oldConfig = notification.userInfo?["oldConfig"] as? AppConfigData
+		let newConfig = notification.userInfo?["newConfig"] as? AppConfigData
+
+		if oldConfig?.fgsWorkerHealthTimer != newConfig?.fgsWorkerHealthTimer {
+			logger.log(
+				"[Notifications.swift] appConfigDidChange: fgsWorkerHealthTimer changed, refreshing foreground ping timer"
+			)
+			foregroundPushProvider.refreshPingTimer()
+		}
+
+		if let manager = backgroundPushManager {
+			saveSettings(for: manager)
+		}
+		else {
+			reconcileProviderCycle(reason: "app-config-changed")
 		}
 	}
 

@@ -9,8 +9,10 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
@@ -18,16 +20,19 @@ import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
+const logger = createLogger('OobePreregistrationScreen.tsx');
+
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePreregistrationScreen>;
 
-export const OobePreregistrationScreen = ({navigation}: Props) => {
+export const OobePreregistrationScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const {currentSession, updateSession, signIn} = useSession();
   const rootNavigation = useRootStack();
   const {appConfig} = useConfig();
+  const {oobeCompleted, setOnboarding} = useOobe();
   const [sessionServerURL, setSessionServerURL] = React.useState(appConfig.preRegistrationServerUrl);
   const [sessionTokenData, setSessionTokenData] = React.useState<TokenStringData | null>(null);
 
@@ -42,23 +47,29 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
 
   const onPress = async () => {
     if (!currentSession) {
-      console.warn('[OobePreregistrationScreen] Cannot update session: no current session');
+      logger.warn('Cannot update session: no current session');
       return;
     }
     // Store some current session data so we can restore it if we go back.
     setSessionServerURL(currentSession.serverUrl);
     setSessionTokenData(currentSession.tokenData);
     // Update current session to production mode
+    const useOnboardingServerUrl = route.params?.intent === 'onboarding' || !oobeCompleted;
     await updateSession(currentSession.sessionID, {
-      serverUrl: appConfig.serverUrl,
+      // When intent is onboarding, always use appConfig.serverUrl
+      // Otherwise preserve existing server URL when re-running OOBE after completion
+      ...(useOnboardingServerUrl ? {serverUrl: appConfig.serverUrl} : {}),
       preRegistrationMode: false,
     });
+    if (useOnboardingServerUrl) {
+      setOnboarding(true);
+    }
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
   const onBackPress = async () => {
     if (!currentSession) {
-      console.warn('[OobePreregistrationScreen] Cannot update session: no current session');
+      logger.warn('Cannot update session: no current session');
       return;
     }
     // Update current session server URL to whatever it was using before.

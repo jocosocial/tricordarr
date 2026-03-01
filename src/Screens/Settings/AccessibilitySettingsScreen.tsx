@@ -18,6 +18,7 @@ export const AccessibilitySettingsScreen = () => {
   const [reverseSwipeOrientation, setReverseSwipeOrientation] = React.useState(
     appConfig.userPreferences.reverseSwipeOrientation,
   );
+  const [showScrollButton, setShowScrollButton] = useState(appConfig.userPreferences.showScrollButton);
 
   const toggleSystemTheme = () => {
     const newValue = !appConfig.accessibility.useSystemTheme;
@@ -54,6 +55,18 @@ export const AccessibilitySettingsScreen = () => {
     setReverseSwipeOrientation(!reverseSwipeOrientation);
   };
 
+  const handleShowScrollButton = () => {
+    const newValue = !showScrollButton;
+    updateAppConfig({
+      ...appConfig,
+      userPreferences: {
+        ...appConfig.userPreferences,
+        showScrollButton: newValue,
+      },
+    });
+    setShowScrollButton(newValue);
+  };
+
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -82,7 +95,7 @@ export const AccessibilitySettingsScreen = () => {
           </View>
         </Formik>
         <ListSection>
-          <ListSubheader>Interaction</ListSubheader>
+          <ListSubheader>Lists</ListSubheader>
         </ListSection>
         <Formik initialValues={{}} onSubmit={() => {}}>
           <View>
@@ -95,6 +108,14 @@ export const AccessibilitySettingsScreen = () => {
                 'Switches the orientation of certain horizontal swipe gestures and UI components. Could be useful if you are left-handed.'
               }
               value={reverseSwipeOrientation}
+            />
+            <BooleanField
+              name={'showScrollButton'}
+              label={'Show scroll button'}
+              onPress={handleShowScrollButton}
+              value={showScrollButton}
+              helperText={'Show a button to scroll to top or bottom in long lists.'}
+              style={commonStyles.paddingHorizontalSmall}
             />
           </View>
         </Formik>

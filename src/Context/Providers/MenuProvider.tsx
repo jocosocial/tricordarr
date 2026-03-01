@@ -1,6 +1,9 @@
 import React, {PropsWithChildren, useCallback, useRef} from 'react';
 
 import {MenuContext} from '#src/Context/Contexts/MenuContext';
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('MenuProvider.tsx');
 
 /**
  * Provider that manages menu state globally.
@@ -20,12 +23,12 @@ export const MenuProvider = ({children}: PropsWithChildren) => {
   }, []);
 
   const closeAllMenus = useCallback(() => {
-    console.log('[MenuProvider.tsx] closeAllMenus called, registered menus:', closeMenuFunctionsRef.current.size);
+    logger.debug('closeAllMenus called, registered menus:', closeMenuFunctionsRef.current.size);
     closeMenuFunctionsRef.current.forEach(closeMenu => {
       try {
         closeMenu();
       } catch (error) {
-        console.error('[MenuProvider.tsx] Error closing menu:', error);
+        logger.error('Error closing menu:', error);
       }
     });
   }, []);

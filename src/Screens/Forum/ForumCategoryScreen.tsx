@@ -1,7 +1,7 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import pluralize from 'pluralize';
-import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 
 import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
@@ -17,12 +17,13 @@ import {ForumThreadListView} from '#src/Components/Views/Forum/ForumThreadListVi
 import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThreadsRelationsView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useForumFilter} from '#src/Context/Contexts/ForumFilterContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
+import {useForumListData} from '#src/Hooks/Forum/useForumListData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
@@ -30,7 +31,6 @@ import {useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {ForumListData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 
@@ -51,10 +51,9 @@ export const ForumCategoryScreen = (props: Props) => {
 };
 
 const ForumCategoryScreenInner = ({route, navigation}: Props) => {
-  const {forumFilter} = useFilter();
+  const {forumFilter, forumSortOrder, forumSortDirection} = useForumFilter();
   const isFocused = useIsFocused();
   const {clearPrivileges} = usePrivilege();
-  const {forumSortOrder, forumSortDirection} = useFilter();
   const {
     data,
     refetch,
@@ -70,38 +69,12 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
     ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
     ...(forumSortDirection ? {order: forumSortDirection} : undefined),
   });
-  const [forumListData, setForumListData] = useState<ForumListData[]>([]);
-  const [isUserRestricted, setIsUserRestricted] = useState(false);
-  const {hasModerator} = usePrivilege();
+  const {forumListData, isUserRestricted} = useForumListData(data);
   const {selectedItems, enableSelection} = useSelection();
-  const {
-    refreshing,
-    setRefreshing: setRefreshingDirect,
-    onRefresh,
-  } = useRefresh({
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: refetch,
     isRefreshing: isFetching,
   });
-  // Wrapper to match Dispatch<SetStateAction<boolean>> type expected by child components
-  const setRefreshing: Dispatch<SetStateAction<boolean>> = useCallback(
-    (value: SetStateAction<boolean>) => {
-      setRefreshingDirect(typeof value === 'function' ? value(refreshing) : value);
-    },
-    [setRefreshingDirect, refreshing],
-  );
-
-  useEffect(() => {
-    if (data && data.pages) {
-      setForumListData(data.pages.flatMap(p => p.forumThreads || []));
-
-      const categoryData = data.pages[0];
-      if (hasModerator) {
-        setIsUserRestricted(false);
-      } else {
-        setIsUserRestricted(categoryData.isEventCategory || categoryData.isRestricted);
-      }
-    }
-  }, [data, setForumListData, hasModerator]);
 
   const getNavButtons = useCallback(() => {
     if (enableSelection) {
@@ -187,6 +160,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
         enableFAB={!isUserRestricted}
         title={route.params.category.title}
         subtitle={`${data.pages[0].paginator.total} ${pluralize('forum', data.pages[0].paginator.total)}`}
+        scrollToTopIntent={route.params.scrollToTopIntent}
       />
     </AppView>
   );

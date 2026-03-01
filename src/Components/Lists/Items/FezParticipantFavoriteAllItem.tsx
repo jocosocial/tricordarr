@@ -4,19 +4,22 @@ import {Avatar} from 'react-native-paper';
 
 import {ListItem} from '#src/Components/Lists/ListItem';
 import {LoadingAvatarView} from '#src/Components/Views/LoadingAvatarView';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {createLogger} from '#src/Libraries/Logger';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('FezParticipantFavoriteAllItem.tsx');
 
 interface FezParticipantFavoriteAllItemProps {
   fez: FezData;
 }
 
 export const FezParticipantFavoriteAllItem = ({fez}: FezParticipantFavoriteAllItemProps) => {
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const userFavoriteMutation = useUserFavoriteMutation();
   const queryClient = useQueryClient();
   const {setSnackbarPayload} = useSnackbar();
@@ -24,14 +27,12 @@ export const FezParticipantFavoriteAllItem = ({fez}: FezParticipantFavoriteAllIt
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFavoriteAll = useCallback(async () => {
-    if (!fez.members?.participants || !profilePublicData?.header.userID) {
+    if (!fez.members?.participants || !currentUserID) {
       return;
     }
 
     // Filter out the current user from participants
-    const otherParticipants = fez.members.participants.filter(
-      participant => participant.userID !== profilePublicData.header.userID,
-    );
+    const otherParticipants = fez.members.participants.filter(participant => participant.userID !== currentUserID);
 
     if (otherParticipants.length === 0) {
       setSnackbarPayload({
@@ -78,17 +79,11 @@ export const FezParticipantFavoriteAllItem = ({fez}: FezParticipantFavoriteAllIt
       // If all failed, error messages are already shown by useTokenAuthMutation
     } catch (error) {
       // Error handling is done by useTokenAuthMutation, but we can add additional handling here if needed
-      console.error('[FezParticipantFavoriteAllItem] Error favoriting users:', error);
+      logger.error('Error favoriting users:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [
-    fez.members?.participants,
-    profilePublicData?.header.userID,
-    userFavoriteMutation,
-    queryClient,
-    setSnackbarPayload,
-  ]);
+  }, [fez.members?.participants, currentUserID, userFavoriteMutation, queryClient, setSnackbarPayload]);
 
   const getAvatar = React.useCallback(() => {
     if (isLoading) {

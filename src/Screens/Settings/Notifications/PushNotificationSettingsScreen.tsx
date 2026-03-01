@@ -20,11 +20,14 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useHighlightAnimation} from '#src/Hooks/useHighlightAnimation';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
+import {createLogger} from '#src/Libraries/Logger';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {SegmentedButtonType} from '#src/Types';
+
+const logger = createLogger('PushNotificationSettingsScreen.tsx');
 
 export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.pushNotificationSettings>;
 
@@ -126,7 +129,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
 
   useEffect(() => {
     if (appConfig.muteNotifications && new Date() >= appConfig.muteNotifications) {
-      console.log('[PushNotificationSettingsScreen.tsx] muteNotifications expired, clearing');
+      logger.debug('muteNotifications expired, clearing');
       setMuteNotifications(undefined);
       updateAppConfig({
         ...appConfig,
@@ -165,7 +168,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
           }, 500);
         },
         () => {
-          console.warn('[PushNotificationSettingsScreen] Failed to measure layout for category:', notificationType);
+          logger.warn('Failed to measure layout for category:', notificationType);
         },
       );
     }

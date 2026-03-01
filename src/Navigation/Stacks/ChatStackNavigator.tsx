@@ -11,12 +11,13 @@ import {KrakenTalkReceiveScreen} from '#src/Screens/KrakenTalk/KrakenTalkReceive
 import {SeamailListScreen} from '#src/Screens/Seamail/SeamailListScreen';
 import {SeamailSearchScreen} from '#src/Screens/Seamail/SeamailSearchScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
+import {WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type ChatStackParamList = CommonStackParamList & {
-  SeamailListScreen: {
+  SeamailListScreen: WithScrollToTopIntent<{
     onlyNew?: boolean;
-  };
+  }>;
   KrakenTalkCreateScreen?: {
     initialUserHeader?: UserHeader;
   };

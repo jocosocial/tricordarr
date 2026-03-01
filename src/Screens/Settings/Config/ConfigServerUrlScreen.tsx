@@ -16,9 +16,13 @@ import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useRefresh} from '#src/Hooks/useRefresh';
+import {createLogger} from '#src/Libraries/Logger';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {ServerUrlFormValues} from '#src/Types/FormValues';
+
+const logger = createLogger('ConfigServerUrlScreen.tsx');
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
@@ -27,23 +31,36 @@ export const ConfigServerUrlScreen = () => {
   const queryClient = useQueryClient();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const {hasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const {performSignOut} = useSignOut();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     if (!currentSession) {
-      console.error('[ConfigServerUrlScreen] Cannot save: no current session');
+      logger.error('Cannot save: no current session');
       return;
     }
 
     const oldServerUrl = currentSession.serverUrl;
+    const serverUrlChanging = oldServerUrl !== values.serverUrl;
     await queryClient.cancelQueries({queryKey: ['/client/health']});
 
-    // Update session serverUrl - persists immediately
-    await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
+    if (serverUrlChanging) {
+      const sessionID = currentSession.sessionID;
+      // Perform sign-out first so FGS is stopped and notifications disabled before any re-render.
+      // Otherwise updateSession(serverUrl) triggers signOut() and a re-render with isLoggedIn=false
+      // but enableUserNotifications still true, so PushNotificationService starts the FGS worker
+      // which then calls buildWebSocket() with no token.
+      await performSignOut();
+      // Update session serverUrl only (token already cleared by performSignOut; updateSession will not call signOut again).
+      await updateSession(sessionID, {serverUrl: values.serverUrl});
+    } else {
+      // Update session serverUrl - persists immediately
+      await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
+    }
 
-    refetch().then(() =>
+    refetch().finally(() =>
       formikHelpers.resetForm({
         values: {
           serverChoice: ServerChoices.fromUrl(values.serverUrl),
@@ -51,10 +68,6 @@ export const ConfigServerUrlScreen = () => {
         },
       }),
     );
-    if (oldServerUrl !== values.serverUrl) {
-      // Perform full sign-out when server URL changes (handles notifications, sockets, privileges, session, query cache, image cache)
-      await performSignOut();
-    }
     setSnackbarPayload(undefined);
   };
 
@@ -68,7 +81,7 @@ export const ConfigServerUrlScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <Text>Do not change this unless instructed to do so by the Twitarr Dev Team or THO.</Text>
         </PaddedContentView>

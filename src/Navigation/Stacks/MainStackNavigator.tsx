@@ -12,6 +12,10 @@ import {BoardgameListScreen} from '#src/Screens/Boardgames/BoardgameListScreen';
 import {BoardgameRecommendScreen} from '#src/Screens/Boardgames/BoardgameRecommendScreen';
 import {BoardgameScreen} from '#src/Screens/Boardgames/BoardgameScreen';
 import {BoardgameSearchScreen} from '#src/Screens/Boardgames/BoardgameSearchScreen';
+import {KaraokeFavoritesListScreen} from '#src/Screens/Karaoke/KaraokeFavoritesListScreen';
+import {KaraokeLogPerformanceScreen} from '#src/Screens/Karaoke/KaraokeLogPerformanceScreen';
+import {KaraokePerformanceListScreen} from '#src/Screens/Karaoke/KaraokePerformanceListScreen';
+import {KaraokeSearchScreen} from '#src/Screens/Karaoke/KaraokeSearchScreen';
 import {DailyThemeScreen} from '#src/Screens/Main/DailyThemeScreen';
 import {DailyThemesScreen} from '#src/Screens/Main/DailyThemesScreen';
 import {FaqScreen} from '#src/Screens/Main/FaqScreen';
@@ -24,6 +28,7 @@ import {PhotostreamImageCreateScreen} from '#src/Screens/Photostream/Photostream
 import {PhotostreamScreen} from '#src/Screens/Photostream/PhotostreamScreen';
 import {UserDirectoryScreen} from '#src/Screens/User/UserDirectoryScreen';
 import {BoardgameData, DailyThemeData} from '#src/Structs/ControllerStructs';
+import {Optional, WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -35,7 +40,7 @@ export type MainStackParamList = CommonStackParamList & {
   };
   MainConductScreen: undefined;
   DailyThemesScreen: undefined;
-  PhotostreamScreen: undefined;
+  PhotostreamScreen: Optional<WithScrollToTopIntent>;
   PhotostreamImageCreateScreen: undefined;
   MicroKaraokeListScreen: undefined;
   MicroKaraokeSongScreen: {
@@ -55,6 +60,14 @@ export type MainStackParamList = CommonStackParamList & {
   };
   BoardgameCreateLfgScreen: {
     boardgame: BoardgameData;
+  };
+  KaraokePerformanceListScreen: undefined;
+  KaraokeSearchScreen: undefined;
+  KaraokeFavoritesListScreen: undefined;
+  KaraokeLogPerformanceScreen: {
+    songID: string;
+    artist: string;
+    songName: string;
   };
 };
 
@@ -79,6 +92,10 @@ export enum MainStackComponents {
   boardgameSearchScreen = 'BoardgameSearchScreen',
   boardgameExpansionsScreen = 'BoardgameExpansionsScreen',
   boardgameCreateLfgScreen = 'BoardgameCreateLfgScreen',
+  karaokePerformanceListScreen = 'KaraokePerformanceListScreen',
+  karaokeSearchScreen = 'KaraokeSearchScreen',
+  karaokeFavoritesListScreen = 'KaraokeFavoritesListScreen',
+  karaokeLogPerformanceScreen = 'KaraokeLogPerformanceScreen',
 }
 
 export const MainStackNavigator = () => {
@@ -167,6 +184,26 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.boardgameCreateLfgScreen}
         component={BoardgameCreateLfgScreen}
         options={{title: 'Create LFG'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.karaokePerformanceListScreen}
+        component={KaraokePerformanceListScreen}
+        options={{title: 'Karaoke'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.karaokeSearchScreen}
+        component={KaraokeSearchScreen}
+        options={{title: 'Search Library'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.karaokeFavoritesListScreen}
+        component={KaraokeFavoritesListScreen}
+        options={{title: 'Favorites'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.karaokeLogPerformanceScreen}
+        component={KaraokeLogPerformanceScreen}
+        options={{title: 'Log Performance'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>

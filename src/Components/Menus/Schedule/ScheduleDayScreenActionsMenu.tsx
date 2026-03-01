@@ -10,10 +10,17 @@ import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
 
+type ScheduleHelpScreen = CommonStackComponents.scheduleHelpScreen | CommonStackComponents.scheduleDayPlannerHelpScreen;
+
 interface ScheduleDayScreenActionsMenuProps {
   onRefresh?: () => void;
+  /** Help screen to open. Defaults to schedule help; day planner passes scheduleDayPlannerHelpScreen. */
+  helpScreen?: ScheduleHelpScreen;
 }
-export const ScheduleDayScreenActionsMenu = ({onRefresh}: ScheduleDayScreenActionsMenuProps) => {
+export const ScheduleDayScreenActionsMenu = ({
+  onRefresh,
+  helpScreen = CommonStackComponents.scheduleHelpScreen,
+}: ScheduleDayScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const navigation = useScheduleStackNavigation();
   const {oobeCompleted} = useOobe();
@@ -34,11 +41,7 @@ export const ScheduleDayScreenActionsMenu = ({onRefresh}: ScheduleDayScreenActio
         onPress={() => navigation.push(CommonStackComponents.eventSettingsScreen)}
         disabled={!oobeCompleted}
       />
-      <Menu.Item
-        title={'Help'}
-        leadingIcon={AppIcons.help}
-        onPress={() => navigation.push(CommonStackComponents.scheduleHelpScreen)}
-      />
+      <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={() => navigation.push(helpScreen)} />
     </AppMenu>
   );
 };

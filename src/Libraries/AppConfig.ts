@@ -1,10 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment-timezone';
 
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
+import {LogLevel} from '#src/Libraries/Logger/types';
 import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from '#src/Libraries/Network/APIClient';
 import {StorageKeys} from '#src/Libraries/Storage';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
+import {FezListEndpoints} from '#src/Types';
 
 export type PushNotificationConfig = {
   [_key in keyof typeof NotificationTypeData]: boolean;
@@ -27,7 +29,7 @@ export interface ScheduleConfig {
   eventsShowOpenLfgs: boolean;
   hidePastLfgs: boolean;
   enableLateDayFlip: boolean;
-  defaultLfgScreen: LfgStackComponents;
+  defaultLfgList: FezListEndpoints;
   overlapExcludeDurationHours: number;
 }
 
@@ -41,6 +43,7 @@ export interface AccessibilityConfig {
  */
 export interface UserPreferences {
   reverseSwipeOrientation: boolean;
+  showScrollButton: boolean;
   defaultForumSortOrder: ForumSort | undefined;
   defaultForumSortDirection: ForumSortDirection | undefined;
   highlightForumAlertWords: boolean;
@@ -60,6 +63,7 @@ export interface AppConfig {
   oobeExpectedVersion: number;
   enableDeveloperOptions: boolean;
   enableExperiments: boolean;
+  cruiseStartDateStr: string;
   cruiseStartDate: Date;
   cruiseLength: number;
   schedule: ScheduleConfig;
@@ -76,6 +80,8 @@ export interface AppConfig {
   manualTimeOffset: number;
   wifiNetworkNames: string[];
   forceShowTimezoneWarning: boolean;
+  silenceTimezoneWarnings: boolean;
+  logLevel: LogLevel;
 }
 
 export const defaultAppConfig: AppConfig = {
@@ -113,6 +119,7 @@ export const defaultAppConfig: AppConfig = {
   fgsWorkerHealthTimer: 20000, // 20000 == 20 seconds
   oobeExpectedVersion: 3,
   enableDeveloperOptions: false,
+  cruiseStartDateStr: '2023-04-05',
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
   manualTimeOffset: 0,
@@ -121,7 +128,7 @@ export const defaultAppConfig: AppConfig = {
     enableLateDayFlip: true,
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
-    defaultLfgScreen: LfgStackComponents.lfgFindScreen,
+    defaultLfgList: 'open',
     overlapExcludeDurationHours: 4,
   },
   portTimeZoneID: 'America/New_York',
@@ -145,6 +152,7 @@ export const defaultAppConfig: AppConfig = {
   schedBaseUrl: '',
   userPreferences: {
     reverseSwipeOrientation: false,
+    showScrollButton: true,
     defaultForumSortDirection: undefined,
     defaultForumSortOrder: undefined,
     highlightForumAlertWords: true,
@@ -155,6 +163,9 @@ export const defaultAppConfig: AppConfig = {
   enableExperiments: false,
   wifiNetworkNames: [],
   forceShowTimezoneWarning: false,
+  silenceTimezoneWarnings: false,
+  // logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
+  logLevel: LogLevel.DEBUG,
 };
 
 /**
@@ -166,11 +177,23 @@ export const getAppConfig = async () => {
     return defaultAppConfig;
   }
   let appConfig = JSON.parse(rawConfig) as AppConfig;
-  // Certain keys should always be loaded from the app environment.
-  // I'm becoming less certain about this. Dropped cruise settings because I have screens for that.
-  // Avoid putting things from the SwiftarrClientData endpoint in here. It's confusing.
-  // Type conversions on a couple of keys. Barf.
-  appConfig.cruiseStartDate = new Date(appConfig.cruiseStartDate);
+  // Reconstruct cruiseStartDate as midnight in the port timezone.
+  // Prefer cruiseStartDateStr (timezone-safe) with fallback for old stored configs.
+  if (appConfig.cruiseStartDateStr) {
+    appConfig.cruiseStartDate = moment
+      .tz(appConfig.cruiseStartDateStr, 'YYYY-MM-DD', appConfig.portTimeZoneID)
+      .toDate();
+  } else {
+    // Backward compat: extract UTC date from legacy stored ISO string
+    const raw = new Date(appConfig.cruiseStartDate as unknown as string);
+    const y = raw.getUTCFullYear();
+    const m = String(raw.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(raw.getUTCDate()).padStart(2, '0');
+    appConfig.cruiseStartDateStr = `${y}-${m}-${d}`;
+    appConfig.cruiseStartDate = moment
+      .tz(appConfig.cruiseStartDateStr, 'YYYY-MM-DD', appConfig.portTimeZoneID)
+      .toDate();
+  }
   if (appConfig.muteNotifications) {
     appConfig.muteNotifications = new Date(appConfig.muteNotifications);
   }
@@ -181,6 +204,15 @@ export const getAppConfig = async () => {
   }
   if (appConfig.schedule.overlapExcludeDurationHours === undefined) {
     appConfig.schedule.overlapExcludeDurationHours = 4;
+  }
+  if (appConfig.logLevel === undefined) {
+    appConfig.logLevel = LogLevel.DEBUG;
+  }
+  if (appConfig.silenceTimezoneWarnings === undefined) {
+    appConfig.silenceTimezoneWarnings = false;
+  }
+  if (appConfig.userPreferences.showScrollButton === undefined) {
+    appConfig.userPreferences.showScrollButton = true;
   }
 
   // Ok now we're done

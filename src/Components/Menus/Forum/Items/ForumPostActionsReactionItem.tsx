@@ -4,12 +4,12 @@ import {ActivityIndicator, Text} from 'react-native-paper';
 
 import {SubmitIconButton} from '#src/Components/Buttons/IconButtons/SubmitIconButton';
 import {LaughReaction, LikeReaction, LoveReaction} from '#src/Components/Text/Reactions';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {LikeType} from '#src/Enums/LikeType';
 import {useForumPostReactionMutation} from '#src/Queries/Forum/ForumPostBookmarkMutations';
 import {useForumPostQuery} from '#src/Queries/Forum/ForumPostQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {PostData, PostDetailData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostActionsReactionItemProps {
@@ -19,8 +19,8 @@ interface ForumPostActionsReactionItemProps {
 export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReactionItemProps) => {
   const reactionMutation = useForumPostReactionMutation();
   const {commonStyles} = useStyles();
-  const {data: profilePublicData} = useUserProfileQuery();
-  const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
+  const {currentUserID} = useSession();
+  const bySelf = currentUserID === forumPost.author.userID;
   const {data, isLoading, refetch} = useForumPostQuery(forumPost.postID.toString());
   const {theme} = useAppTheme();
 
@@ -34,7 +34,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
     },
   });
 
-  if (isLoading || !data || !profilePublicData) {
+  if (isLoading || !data) {
     return (
       <View style={styles.view}>
         <ActivityIndicator />
@@ -43,16 +43,17 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
   }
 
   const handleReaction = (newReaction: LikeType) => {
+    const userID = currentUserID ?? '';
     let hasReacted = false;
     switch (newReaction) {
       case LikeType.like:
-        hasReacted = PostDetailData.hasUserReacted(data, profilePublicData.header, LikeType.like);
+        hasReacted = PostDetailData.hasUserReacted(data, userID, LikeType.like);
         break;
       case LikeType.laugh:
-        hasReacted = PostDetailData.hasUserReacted(data, profilePublicData.header, LikeType.laugh);
+        hasReacted = PostDetailData.hasUserReacted(data, userID, LikeType.laugh);
         break;
       case LikeType.love:
-        hasReacted = PostDetailData.hasUserReacted(data, profilePublicData.header, LikeType.love);
+        hasReacted = PostDetailData.hasUserReacted(data, userID, LikeType.love);
         break;
     }
     const action = hasReacted ? 'delete' : 'create';
@@ -79,7 +80,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
         submitting={reactionMutation.isPending}
         disabled={bySelf}
         containerColor={
-          PostDetailData.hasUserReacted(data, profilePublicData.header, LikeType.like)
+          currentUserID != null && PostDetailData.hasUserReacted(data, currentUserID, LikeType.like)
             ? theme.colors.secondaryContainer
             : undefined
         }
@@ -91,7 +92,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
         submitting={reactionMutation.isPending}
         disabled={bySelf}
         containerColor={
-          PostDetailData.hasUserReacted(data, profilePublicData.header, LikeType.laugh)
+          currentUserID != null && PostDetailData.hasUserReacted(data, currentUserID, LikeType.laugh)
             ? theme.colors.secondaryContainer
             : undefined
         }
@@ -103,7 +104,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
         submitting={reactionMutation.isPending}
         disabled={bySelf}
         containerColor={
-          PostDetailData.hasUserReacted(data, profilePublicData.header, LikeType.love)
+          currentUserID != null && PostDetailData.hasUserReacted(data, currentUserID, LikeType.love)
             ? theme.colors.secondaryContainer
             : undefined
         }

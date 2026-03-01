@@ -1,8 +1,8 @@
 import React from 'react';
 
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
 
 interface FezParticipantListItemProps {
@@ -14,7 +14,7 @@ interface FezParticipantListItemProps {
 
 export const FezParticipantListItem = ({user, fez, onRemove, onPress}: FezParticipantListItemProps) => {
   let enableDelete = true;
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
 
   // Cannot delete participant if:
   // * They (or you) are the owner.
@@ -22,12 +22,9 @@ export const FezParticipantListItem = ({user, fez, onRemove, onPress}: FezPartic
   // But can if you are you.
   if (user.userID === fez.owner.userID) {
     enableDelete = false;
-  } else if (user.userID === profilePublicData?.header.userID && user.userID === fez.owner.userID) {
+  } else if (user.userID === currentUserID && user.userID === fez.owner.userID) {
     enableDelete = false;
-  } else if (
-    profilePublicData?.header.userID !== fez.owner.userID &&
-    profilePublicData?.header.userID !== user.userID
-  ) {
+  } else if (currentUserID !== fez.owner.userID && currentUserID !== user.userID) {
     enableDelete = false;
   }
 

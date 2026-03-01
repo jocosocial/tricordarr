@@ -43,43 +43,6 @@ export namespace AppImageMetaData {
   };
 
   /**
-   * @deprecated nope
-   * @param uri
-   * @returns
-   */
-  export const fromURI = (uri: string): AppImageMetaData => {
-    // Remove query parameters before extracting filename
-    const uriWithoutQuery = uri.split('?')[0];
-    const fileName = uriWithoutQuery.split('/').pop() || 'unknown';
-
-    // Check if this is a data URI and extract rawData and mimeType if so
-    let rawData: string | undefined;
-    let mimeType: string;
-
-    if (uri.startsWith('data:')) {
-      const base64Index = uri.indexOf('base64,');
-      if (base64Index !== -1) {
-        rawData = uri.substring(base64Index + 7);
-        // Extract mimeType from data URI (e.g., "data:image/jpeg;base64," -> "image/jpeg")
-        const mimeTypeMatch = uri.match(/^data:([^;]+);/);
-        mimeType = mimeTypeMatch ? mimeTypeMatch[1] : 'application/octet-stream';
-      } else {
-        mimeType = 'application/octet-stream';
-      }
-    } else {
-      mimeType = lookupMimeType(fileName) || 'application/octet-stream';
-    }
-
-    return {
-      fileName: fileName,
-      thumbURI: uri,
-      fullURI: uri,
-      mimeType: mimeType,
-      dataURI: `data:${mimeType};base64,${rawData}`,
-    };
-  };
-
-  /**
    * Create an object from a base64 data string. This is used when the user takes a photo
    * and we insert its base64 data into a form field. We do this so that the preview can
    * support the AppImageViewer component for inspection.

@@ -2,6 +2,7 @@ import notifee, {EventType, Notification, NotificationPressAction} from '@notife
 
 import {PressAction} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';
+import {createLogger} from '#src/Libraries/Logger';
 import {
   announcementsChannel,
   callMgmtChannel,
@@ -14,6 +15,8 @@ import {
 } from '#src/Libraries/Notifications/Channels';
 import {generateContentNotification} from '#src/Libraries/Notifications/Content';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
+
+const logger = createLogger('SocketNotification.ts');
 
 /**
  * Generate a Notifee notification from a WebSocket event. This usually means that something
@@ -35,19 +38,19 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
 
   // Do not generate a notification if the user has disabled that category.
   if (!appConfig.pushNotifications[notificationType]) {
-    console.log('[SocketNotification.ts] user has disabled category', notificationType);
+    logger.debug('user has disabled category', notificationType);
     return;
   }
 
   // Do not generate a notification if the user has muted notifications.
   if (appConfig.muteNotifications) {
     if (new Date() < appConfig.muteNotifications) {
-      console.log('[SocketNotification.ts] user has muted notifications.');
+      logger.debug('user has muted notifications.');
       return;
     }
   }
 
-  console.log('[SocketNotification.ts] Responding to message with type', notificationType);
+  logger.debug('Responding to message with type', notificationType);
 
   // Figure out what we want to display and how to display it.
   // Whenever you add notification types here, there needs to be entries in
@@ -167,11 +170,11 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       url = `/privateevent/${notificationData.contentID}`;
       break;
     default:
-      console.warn(`[SocketNotification.ts] Ignoring event of type ${notificationType}`);
+      logger.warn(`Ignoring event of type ${notificationType}`);
       break;
   }
 
-  console.info(`[SocketNotification.ts] Calling generateContentNotification() for type ${notificationType}`);
+  logger.info(`Calling generateContentNotification() for type ${notificationType}`);
   await generateContentNotification(
     notificationData.contentID,
     title,
@@ -200,7 +203,7 @@ export const getUrlForNotificationEvent = (
   if (!notification || !pressAction) {
     return;
   }
-  console.log('[SocketNotification.ts] Got press action:', pressAction);
+  logger.debug('Got press action:', pressAction);
   if (type === EventType.PRESS || type === EventType.ACTION_PRESS) {
     // Handle default press action (tapping notification body) - use notification data to determine URL
     if (pressAction.id === PressAction.default || pressAction.id === 'default') {

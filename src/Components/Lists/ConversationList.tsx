@@ -1,11 +1,11 @@
 import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list';
 import React, {useCallback, useState} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {FloatingScrollButtonVerticalPosition, RNFlatListSeparatorComponent} from '#src/Types';
+import {RNFlatListSeparatorComponent} from '#src/Types';
 
 export type TConversationListRef = LegendListRef | null;
 export type TConversationListRefObject = React.RefObject<TConversationListRef>;
@@ -27,11 +27,11 @@ interface ConversationListProps<TItem> {
   ItemSeparatorComponent?: RNFlatListSeparatorComponent<TItem>;
   initialScrollIndex?: number;
   style?: StyleProp<ViewStyle>;
-  scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
 }
 
 /**
  * A chat-style conversation.
+ * @deprecated Use ConversationListV2 instead.
  */
 export const ConversationList = <TItem,>({
   // hasPreviousPage,
@@ -42,7 +42,7 @@ export const ConversationList = <TItem,>({
   handleLoadNext,
   // hasNextPage,
   onScrollThreshold,
-  enableScrollButton = true,
+  enableScrollButton,
   keyExtractor,
   renderItem,
   ListHeaderComponent,
@@ -50,13 +50,13 @@ export const ConversationList = <TItem,>({
   ItemSeparatorComponent,
   initialScrollIndex,
   style,
-  scrollButtonVerticalPosition = 'raised',
 }: ConversationListProps<TItem>) => {
-  const {styleDefaults} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
+  const {appConfig} = useConfig();
+  const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [init, setInit] = useState(true);
   const [hasLayout, setHasLayout] = useState(false);
-  const {appConfig} = useConfig();
 
   /**
    * Callback handler for when the scroll button is pressed.
@@ -125,7 +125,7 @@ export const ConversationList = <TItem,>({
   }, [init, hasLayout, data, listRef, initialScrollIndex]);
 
   return (
-    <>
+    <View style={commonStyles.flex}>
       <LegendList
         ref={listRef}
         // Required Props
@@ -150,13 +150,7 @@ export const ConversationList = <TItem,>({
         initialScrollIndex={initialScrollIndex}
         style={style}
       />
-      {enableScrollButton && showScrollButton && (
-        <FloatingScrollButton
-          onPress={handleScrollButtonPress}
-          verticalPosition={scrollButtonVerticalPosition}
-          horizontalPosition={appConfig.userPreferences.reverseSwipeOrientation ? 'left' : 'right'}
-        />
-      )}
-    </>
+      {effectiveScrollButton && showScrollButton && <FloatingScrollButton onPress={handleScrollButtonPress} />}
+    </View>
   );
 };

@@ -7,12 +7,12 @@ import {FezCancelModal} from '#src/Components/Views/Modals/FezCancelModal';
 import {PersonalEventDeleteModal} from '#src/Components/Views/Modals/PersonalEventDeleteModal';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface PersonalEventScreenActionsMenuProps {
@@ -21,7 +21,7 @@ interface PersonalEventScreenActionsMenuProps {
 
 export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useScheduleStackNavigation();
 
@@ -45,7 +45,7 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
         }}
       />
       <Divider bold={true} />
-      {props.event.owner.userID === profilePublicData?.header.userID && (
+      {props.event.owner.userID === currentUserID && (
         <>
           {props.event.fezType === FezType.personalEvent ? (
             <Menu.Item

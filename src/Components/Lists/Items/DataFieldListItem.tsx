@@ -7,6 +7,8 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {toSecureString} from '#src/Libraries/StringUtils';
 
+type ListItemDescription = React.ComponentProps<typeof List.Item>['description'];
+
 interface DataFieldListItemProps {
   title?: string;
   description?: string | number | (() => ReactNode) | Element;
@@ -83,12 +85,15 @@ export const DataFieldListItem = ({
     onPress?.();
   }, [sensitive, onPress]);
 
-  // Mask sensitive string descriptions
-  const displayDescription = useMemo(() => {
+  // Mask sensitive string descriptions; wrap Element in callback for List.Item description type
+  const displayDescription = useMemo((): ListItemDescription => {
     if (sensitive && typeof description === 'string') {
       return showSensitive ? description : toSecureString(description);
     }
-    return description;
+    if (React.isValidElement(description)) {
+      return () => description;
+    }
+    return description as ListItemDescription;
   }, [description, sensitive, showSensitive]);
 
   return (

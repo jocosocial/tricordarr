@@ -14,6 +14,7 @@ import en from 'javascript-time-ago/locale/en';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
 import {useEffect, useRef, useState} from 'react';
+import {AppState} from 'react-native';
 
 import {CruiseDayData, CruiseDayTime, StartEndTime} from '#src/Types';
 import {StartTime} from '#src/Types/FormValues';
@@ -60,6 +61,11 @@ function startOfThreshold(threshold: keyof typeof thresholdMap) {
  * https://dev.to/dcwither/tracking-time-with-react-hooks-4b8b
  *
  * Make a date object that react-ifys itself and makes it available as a hook.
+ *
+ * An AppState listener forces an immediate refresh when the app returns to foreground.
+ * On iOS/Android, setTimeout callbacks are suspended while the app is backgrounded or
+ * the device is asleep, so the recursive timer alone can miss hour boundaries (e.g. the
+ * 3 AM lateDayFlip rollover). See https://github.com/jocosocial/tricordarr/issues/282
  */
 export default function useDateTime(threshold: keyof typeof thresholdMap) {
   const [date, setDate] = useState(startOfThreshold(threshold));
@@ -67,16 +73,29 @@ export default function useDateTime(threshold: keyof typeof thresholdMap) {
 
   useEffect(() => {
     if (threshold) {
-      function delayedTimeChange() {
+      function scheduleNext() {
+        clearTimeout(timer.current);
         timer.current = setTimeout(() => {
-          delayedTimeChange();
+          scheduleNext();
         }, msUntilNext(threshold));
 
         setDate(startOfThreshold(threshold));
       }
 
-      delayedTimeChange();
-      return () => clearTimeout(timer.current);
+      scheduleNext();
+
+      // When the app returns from background/sleep, setTimeout callbacks may
+      // have been suspended. Force an immediate refresh so the UI catches up.
+      const subscription = AppState.addEventListener('change', state => {
+        if (state === 'active') {
+          scheduleNext();
+        }
+      });
+
+      return () => {
+        clearTimeout(timer.current);
+        subscription.remove();
+      };
     }
   }, [threshold]);
 
@@ -128,22 +147,70 @@ export const getCruiseDayData = (startDate: Date, cruiseDayIndex: number): Cruis
 };
 
 /**
- * Lifted from https://github.com/jocosocial/swiftarr/blob/70d83bc65e1a70557e6eb12ed941ea01973aca27/Sources/App/Resources/Assets/js/swiftarr.js#L470
- * We somewhat arbitrarily pick 3:00AM boat time as the breaker for when days roll over. But really it just serves as a
- * point in time that we can do maths again.
- * For example: An event at 05:00UTC (00:00EST aka Midnight) will be adjusted backwards three hours (02:00UTC, 21:00EST)
- * and if the client is in EST will result in a return value of 1260 (21 hours * 60 minutes, plus 00 minutes).
- * @TODO this has a bug with events schedule between 00:00-03:00UTC on embarkation day
- * @TODO behavior gets weird with DST, seems to work but eeek.
- * @param dateValue
- * @param cruiseStartDate
- * @param cruiseEndDate
+ * Calculate the cruise day and day-minutes for a given date/time.
+ *
+ * When getBoatTzAt is provided, uses timezone-aware day boundaries that follow the ship's actual
+ * timezone changes. This fixes DST and late-night edge cases (00:00-03:00 on embarkation day).
+ *
+ * When getBoatTzAt is not provided, uses the legacy fixed 3-hour offset behavior for backward compatibility.
+ *
+ * @param dateValue The date/time to compute cruise day for
+ * @param cruiseStartDate The start date of the cruise
+ * @param cruiseEndDate The end date of the cruise
+ * @param getBoatTzAt Optional function to get boat timezone at a given time (e.g., tzAtTime from useTimeZone)
+ * @returns CruiseDayTime with cruiseDay (1-indexed) and dayMinutes (minutes since day start, e.g. 3am)
  */
-export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseEndDate: Date) => CruiseDayTime = (
+export const calcCruiseDayTime: (
   dateValue: Date,
   cruiseStartDate: Date,
   cruiseEndDate: Date,
-) => {
+  getBoatTzAt?: (date: Date) => string,
+) => CruiseDayTime = (dateValue: Date, cruiseStartDate: Date, cruiseEndDate: Date, getBoatTzAt?) => {
+  // If getBoatTzAt is provided, use timezone-aware calculation
+  if (getBoatTzAt) {
+    const boatTz = getBoatTzAt(dateValue);
+    const dateInBoatTz = moment(dateValue).tz(boatTz);
+    const cruiseStartInBoatTz = moment(cruiseStartDate).tz(boatTz).startOf('day');
+
+    // Day starts at 3am in boat timezone
+    const dayStartHour = 3;
+
+    // Calculate which cruise day this is (1-indexed)
+    let cruiseDay: number;
+    const daysSinceCruiseStart = dateInBoatTz.diff(cruiseStartInBoatTz, 'days');
+
+    // Before 3am we're still in the previous cruise day (0-indexed, += 1 below makes it 1-indexed)
+    if (dateInBoatTz.hours() < dayStartHour) {
+      cruiseDay = daysSinceCruiseStart - 1;
+    } else {
+      cruiseDay = daysSinceCruiseStart;
+    }
+
+    // Ensure we're within cruise bounds
+    if (dateValue < cruiseStartDate) {
+      cruiseDay = 0;
+    } else if (dateValue >= cruiseEndDate) {
+      const totalDays = moment(cruiseEndDate).diff(moment(cruiseStartDate), 'days');
+      cruiseDay = totalDays;
+    }
+
+    // Add 1 to make it 1-indexed (cruise day 1, 2, 3, etc.)
+    cruiseDay += 1;
+
+    // Calculate minutes from day start (3am)
+    let dayMinutes = (dateInBoatTz.hours() - dayStartHour) * 60 + dateInBoatTz.minutes();
+    // If we're in the 00:00-03:00 window, wrap into the 24-hour day (21:00-24:00 range)
+    if (dayMinutes < 0) {
+      dayMinutes += 24 * 60;
+    }
+
+    return {
+      cruiseDay,
+      dayMinutes,
+    };
+  }
+
+  // Legacy behavior: fixed 3-hour offset
   // Subtract 3 hours so the 'day' divider for events is 3AM. NOT doing timezone math here.
   let adjustedDate = new Date(dateValue.getTime() - 3 * 60 * 60 * 1000);
   // Day index of the cruiseStartDate, an integer 0 (Sunday) through 6 (Saturday).
@@ -170,9 +237,11 @@ export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseE
  * Returns a formatted string with the time and time zone.
  * @param dateTimeStr ISO time string.
  * @param timeZoneID The common ID string of a timezone (such as "America/New_York")
+ * @param includeDay When false, omits the day of week (e.g. "Monday") for single-day views.
  */
-export const getTimeMarker = (dateTimeStr: string, timeZoneID: string) => {
-  const formattedTime = getBoatTimeMoment(dateTimeStr, timeZoneID).format('dddd hh:mm A');
+export const getTimeMarker = (dateTimeStr: string, timeZoneID: string, includeDay: boolean = true) => {
+  const format = includeDay ? 'dddd hh:mm A' : 'hh:mm A';
+  const formattedTime = getBoatTimeMoment(dateTimeStr, timeZoneID).format(format);
   return `${formattedTime} ${moment.tz(timeZoneID).zoneAbbr()}`;
 };
 
@@ -181,12 +250,14 @@ export const getTimeMarker = (dateTimeStr: string, timeZoneID: string) => {
  * to determine whether to show a spacer between two events in a list.
  * @param dateTimeStr String of the Date.
  * @param timeZoneID String of the Time Zone ID.
+ * @param includeDay When false, omits the day of week (e.g. "Monday") for single-day views.
  */
-export const getDayMarker = (dateTimeStr?: string, timeZoneID?: string) => {
+export const getDayMarker = (dateTimeStr?: string, timeZoneID?: string, includeDay: boolean = true) => {
   if (!dateTimeStr || !timeZoneID) {
     return;
   }
-  return getBoatTimeMoment(dateTimeStr, timeZoneID).format('dddd MMM Do');
+  const format = includeDay ? 'dddd MMM Do' : 'MMM Do';
+  return getBoatTimeMoment(dateTimeStr, timeZoneID).format(format);
 };
 
 /**
@@ -229,6 +300,24 @@ export const getEventTimeString = (startTimeStr?: string, timeZoneID?: string) =
 export const getBoatTimeMoment = (dateTimeStr: string, timeZoneID: string) => {
   const date = moment(dateTimeStr);
   return date.tz(timeZoneID);
+};
+
+/**
+ * Return hours and minutes of a Date in a given IANA timezone (e.g. from tzAtTime).
+ * Use this instead of date.getHours()/getMinutes() when the time should be shown in
+ * the event's or boat's timezone rather than the device's.
+ */
+export const getTimePartsInTz = (date: Date, timeZoneID: string): {hours: number; minutes: number} => {
+  const m = moment(date).tz(timeZoneID);
+  return {hours: m.hours(), minutes: m.minutes()};
+};
+
+/**
+ * Return the start of the calendar day (midnight) in the given timezone for the given instant.
+ * Useful for form date pickers when the "day" should be in boat/event timezone.
+ */
+export const getStartOfDayInTz = (date: Date, timeZoneID: string): Date => {
+  return moment(date).tz(timeZoneID).startOf('day').toDate();
 };
 
 /**
@@ -293,6 +382,20 @@ export const getEventTimezoneOffset = (originTimeZoneID: string, startTime?: str
   return 0;
 };
 
+/**
+ * Swift measures time from 2001-01-01 instead of the Unix epoch like every other
+ * system on the planet. Pass seconds since that arbitrary reference date and we'll
+ * give you a proper ISO8601 string. If you already have a string (e.g. from the API),
+ * we return it unchanged.
+ */
+export function swiftTimestampToISO(raw: string | number): string {
+  if (typeof raw === 'string') {
+    return raw;
+  }
+  // 978307200 = seconds from Unix epoch (1970-01-01) to Swift's reference (2001-01-01)
+  return new Date((978307200 + raw) * 1000).toISOString();
+}
+
 // Formatter for relative time
 export const timeAgo = new TimeAgo('en-US');
 
@@ -343,13 +446,44 @@ export const getApparentCruiseDate = (startDate: Date, adjustedCruiseDayToday: n
  * @param startDate Arbitrary precision Date with the starting Date of the schedule.
  * @param startTime Object containing the hours and minutes that the thing starts.
  * @param duration How long the thing is.
+ * @param timeZoneID When provided, startTime is interpreted in this timezone (e.g. tzAtTime(startDate)); otherwise device local.
  */
 export const getScheduleItemStartEndTime = (
   startDate: Date | string,
   startTime: StartTime,
   duration: string | number,
+  _?: string,
 ): StartEndTime => {
-  let eventStartTime = new Date(startDate);
+  const start = new Date(startDate);
+  let eventStartTime: Date;
+
+  // All of the callers of this function already handled the tzAtTime logic.
+  // Doing it again here caused events to be correct in the form but get POSTed
+  // with incorrect values. I am leaving this in here just in case we want to come
+  // back it to some day.
+  // if (timeZoneID) {
+  //   const inTz = moment(start).tz(timeZoneID);
+  //   const eventMoment = moment.tz(
+  //     {
+  //       year: inTz.year(),
+  //       month: inTz.month(),
+  //       date: inTz.date(),
+  //       hour: startTime.hours,
+  //       minute: startTime.minutes,
+  //       second: 0,
+  //       millisecond: 0,
+  //     },
+  //     timeZoneID,
+  //   );
+  //   eventStartTime = eventMoment.toDate();
+  // } else {
+  //   eventStartTime = new Date(start);
+  //   eventStartTime.setHours(startTime.hours);
+  //   eventStartTime.setMinutes(startTime.minutes);
+  //   eventStartTime.setSeconds(0);
+  //   eventStartTime.setMilliseconds(0);
+  // }
+  eventStartTime = new Date(start);
   eventStartTime.setHours(startTime.hours);
   eventStartTime.setMinutes(startTime.minutes);
   eventStartTime.setSeconds(0);

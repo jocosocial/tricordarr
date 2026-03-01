@@ -49,6 +49,7 @@ export type ScheduleFilterSettings = {
   eventLfgOwnedFilter?: boolean;
   eventLfgOpenFilter?: boolean;
   eventShutternautFilter?: string;
+  eventPersonalUnreadFilter: boolean;
 };
 
 export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;
@@ -123,10 +124,6 @@ export interface StartEndTime {
   startTime: Date;
   endTime: Date;
 }
-
-export type FloatingScrollButtonVerticalPosition = 'raised' | 'bottom' | undefined;
-
-export type FloatingScrollButtonHorizontalPosition = 'left' | 'right' | undefined;
 
 export interface FlatListSeparatorProps<TItem> {
   highlighted: boolean;

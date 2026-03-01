@@ -1,7 +1,6 @@
-import {CacheManager} from '@georstat/react-native-image-cache';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Pressable, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
@@ -15,7 +14,9 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {defaultAppConfig} from '#src/Libraries/AppConfig';
+import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
 
 interface CriticalErrorViewProps {
   error: Error;
@@ -32,8 +33,12 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const {theme} = useAppTheme();
   const queryClient = useQueryClient();
   const [showStack, setShowStack] = React.useState(false);
-  const {signOut} = useSession();
+  const [showSessions, setShowSessions] = React.useState(false);
+  const [sessionsJson, setSessionsJson] = React.useState<string | null>(null);
+  const [isLoadingSessions, setIsLoadingSessions] = React.useState(false);
+  const {signOut, clearAllSessions} = useSession();
   const {updateAppConfig} = useConfig();
+  const {setString: copyToClipboard} = useClipboard();
 
   const styles = StyleSheet.create({
     screen: {
@@ -57,11 +62,35 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
 
   const toggleShowStack = () => setShowStack(!showStack);
 
-  const fixAll = async () => {
-    await signOut();
-    queryClient.clear();
-    updateAppConfig(defaultAppConfig);
-    props.resetError();
+  const toggleShowSessions = async () => {
+    if (showSessions) {
+      setShowSessions(false);
+      setSessionsJson(null);
+      return;
+    }
+    setIsLoadingSessions(true);
+    try {
+      const [sessions, lastSessionID] = await Promise.all([SessionStorage.getAll(), SessionStorage.getLastSessionID()]);
+      setSessionsJson(
+        JSON.stringify(
+          {
+            lastSessionID,
+            sessions,
+          },
+          null,
+          2,
+        ),
+      );
+      setShowSessions(true);
+    } finally {
+      setIsLoadingSessions(false);
+    }
+  };
+
+  const copySessionsToClipboard = () => {
+    if (sessionsJson) {
+      copyToClipboard(sessionsJson);
+    }
   };
 
   const resetAppConfig = async () => {
@@ -99,15 +128,15 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         <PaddedContentView>
           <PrimaryActionButton
             buttonColor={theme.colors.twitarrNegativeButton}
-            buttonText={'Clear Image Cache'}
-            onPress={async () => await CacheManager.clearCache()}
+            buttonText={'Sign Out'}
+            onPress={async () => await signOut()}
           />
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
             buttonColor={theme.colors.twitarrNegativeButton}
-            buttonText={'Sign Out'}
-            onPress={async () => await signOut()}
+            buttonText={'Clear Sessions'}
+            onPress={async () => await clearAllSessions()}
           />
         </PaddedContentView>
         <PaddedContentView>
@@ -119,11 +148,22 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
-            buttonColor={theme.colors.twitarrPositiveButton}
-            buttonText={'Fix it All'}
-            onPress={fixAll}
+            buttonColor={theme.colors.twitarrNeutralButton}
+            buttonText={'Show Sessions'}
+            onPress={toggleShowSessions}
+            isLoading={isLoadingSessions}
           />
         </PaddedContentView>
+        {showSessions && sessionsJson !== null && (
+          <PaddedContentView>
+            <BoldText>Sessions:</BoldText>
+            <Pressable onLongPress={copySessionsToClipboard}>
+              <Text variant={'labelSmall'} selectable={true}>
+                {sessionsJson}
+              </Text>
+            </Pressable>
+          </PaddedContentView>
+        )}
         {showStack && (
           <PaddedContentView>
             <BoldText>Stack Trace:</BoldText>

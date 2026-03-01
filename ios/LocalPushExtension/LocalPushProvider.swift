@@ -63,6 +63,13 @@ class LocalPushProvider: NEAppPushProvider {
 		websocketNotifier.updateConfig()
     logger.log("[LocalPushProvider.swift] Calling websocketNotifier.start()")
 		websocketNotifier.start()
+		if let config = providerConfiguration {
+			WebsocketNotifier.postDebugLifecycleNotification(
+				providerConfiguration: config,
+				title: "Background provider started",
+				body: "Extension push provider is running."
+			)
+		}
     logger.log("[LocalPushProvider.swift] start() completed")
 	}
 
@@ -70,6 +77,13 @@ class LocalPushProvider: NEAppPushProvider {
     logger.log(
 			"[LocalPushProvider.swift] stop() called with reason: \(reason.rawValue, privacy: .public)"
 		)
+		if let config = providerConfiguration {
+			WebsocketNotifier.postDebugLifecycleNotification(
+				providerConfiguration: config,
+				title: "Background provider stopped",
+				body: "Extension push provider stopped. Reason: \(reason.rawValue)."
+			)
+		}
 		websocketNotifier.stop(with: reason, completionHandler: completionHandler)
 	}
 

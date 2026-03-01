@@ -2,6 +2,7 @@ import React from 'react';
 
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {EventLocationHelpChapterView} from '#src/Components/Views/Help/Common/EventLocationHelpChapterView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {OverlappingHelpTopicView} from '#src/Components/Views/Help/Common/OverlappingHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
@@ -22,10 +23,7 @@ export const PersonalEventHelpScreen = () => {
           or remove users later on. If you have already created your personal event you cannot add users later. You'll
           need to create a new personal event and add them at the time of creation.
         </HelpTopicView>
-        <HelpTopicView>
-          For more information about creating personal events, see the Create Personal Event Help screen (available in
-          the app drawer).
-        </HelpTopicView>
+        <EventLocationHelpChapterView />
         <HelpChapterTitleView title={'Actions'} />
         <OverlappingHelpTopicView />
         <HelpTopicView title={'Edit'} icon={AppIcons.edit}>

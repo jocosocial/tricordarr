@@ -1,5 +1,5 @@
 import React, {Dispatch, SetStateAction} from 'react';
-import {Linking} from 'react-native';
+import {Alert, Linking} from 'react-native';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -32,11 +32,19 @@ export const SiteUIScreenActionsMenu = ({onHome, getCurrentUrl, setKey}: SiteUIS
     commonNavigation.push(CommonStackComponents.siteUIHelpScreen);
   };
 
-  const handleClear = async () => {
-    console.log('[SiteUIScreenActionsMenu.tsx] Clearing cookies');
-    closeMenu();
-    await clearCookies();
-    setKey(String(Date.now()));
+  const handleClear = () => {
+    Alert.alert('Clear Cookies', 'Are you sure you want to clear all webview cookies? You may need to sign in again.', [
+      {text: 'Cancel', style: 'cancel', onPress: closeMenu},
+      {
+        text: 'Clear',
+        style: 'destructive',
+        onPress: async () => {
+          await clearCookies();
+          setKey(String(Date.now()));
+          closeMenu();
+        },
+      },
+    ]);
   };
 
   const handleOpenInBrowser = () => {

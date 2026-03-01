@@ -8,7 +8,6 @@ import {NeedsPhotographerMenuItem} from '#src/Components/Menus/Events/Items/Need
 import {PhotographingMenuItem} from '#src/Components/Menus/Events/Items/PhotographingMenuItem';
 import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {EventType} from '#src/Enums/EventType';
@@ -25,7 +24,6 @@ interface EventScreenActionsMenuProps {
 export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
-  const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
   const {hasPerformerSelfEditor, hasShutternaut, hasShutternautManager} = useRoles();
 
@@ -65,18 +63,16 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
           commonNavigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.event});
         }}
       />
-      {appConfig.enableExperiments && (
-        <Menu.Item
-          title={'Photostream'}
-          leadingIcon={AppIcons.photostream}
-          onPress={() => {
-            closeMenu();
-            commonNavigation.push(CommonStackComponents.photostreamEventScreen, {
-              eventID: props.event.eventID,
-            });
-          }}
-        />
-      )}
+      <Menu.Item
+        title={'Photostream'}
+        leadingIcon={AppIcons.photostream}
+        onPress={() => {
+          closeMenu();
+          commonNavigation.push(CommonStackComponents.photostreamEventScreen, {
+            eventID: props.event.eventID,
+          });
+        }}
+      />
       <Divider bold={true} />
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.event.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />

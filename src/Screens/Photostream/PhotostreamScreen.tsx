@@ -1,4 +1,3 @@
-import {useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -31,12 +30,11 @@ export const PhotostreamScreen = (props: Props) => {
   );
 };
 
-const PhotostreamScreenInner = ({navigation}: Props) => {
+const PhotostreamScreenInner = ({navigation, route}: Props) => {
   const [locationName, setLocationName] = useState<string | undefined>(undefined);
   const queryResult = usePhotostreamQuery({locationName});
   const flashListRef = useRef<FlashListRef<PhotostreamImageData>>(null);
-  const shouldScrollToTopRef = useRef<boolean>(false);
-  const streamListLengthWhenNavigatedAwayRef = useRef<number | null>(null);
+  const {scrollToTopIntent} = route.params || {};
 
   const getNavButtons = useCallback(() => {
     return (
@@ -59,67 +57,12 @@ const PhotostreamScreenInner = ({navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  // Track when user navigates to create screen and store current list length
+  // Scroll to top when intent is dispatched (e.g., after uploading a photo)
   useEffect(() => {
-    const streamList = queryResult.data?.pages.flatMap(p => p.photos);
-    const unsubscribe = navigation.addListener('state', () => {
-      const state = navigation.getState();
-      const currentRoute = state.routes[state.index];
-      // If current route is the create screen, store current list length
-      if (currentRoute.name === MainStackComponents.photostreamImageCreateScreen) {
-        streamListLengthWhenNavigatedAwayRef.current = streamList?.length ?? null;
-        shouldScrollToTopRef.current = true;
-      }
-    });
-
-    return unsubscribe;
-  }, [navigation, queryResult.data?.pages]);
-
-  // Watch for list length changes when returning from posting
-  useEffect(() => {
-    const streamList = queryResult.data?.pages.flatMap(p => p.photos);
-    if (shouldScrollToTopRef.current && flashListRef.current) {
-      const previousLength = streamListLengthWhenNavigatedAwayRef.current;
-      const currentLength = streamList?.length ?? 0;
-
-      // Only scroll if the list length increased (indicating a successful post)
-      if (previousLength !== null && currentLength > previousLength) {
-        // Use requestAnimationFrame to ensure the list has rendered
-        requestAnimationFrame(() => {
-          try {
-            flashListRef.current?.scrollToIndex({index: 0, animated: true});
-          } catch {
-            // If scrollToIndex fails (e.g., list not fully rendered), use scrollToOffset as fallback
-            flashListRef.current?.scrollToOffset({offset: 0, animated: true});
-          }
-        });
-
-        // Reset flags after scrolling
-        shouldScrollToTopRef.current = false;
-        streamListLengthWhenNavigatedAwayRef.current = null;
-      }
+    if (scrollToTopIntent) {
+      flashListRef.current?.scrollToOffset({offset: 0, animated: false});
     }
-  }, [queryResult.data?.pages]);
-
-  // Reset flag if user navigates away without posting (length didn't change)
-  useFocusEffect(
-    useCallback(() => {
-      // When screen loses focus, if flag is still set but we're not on create screen, reset it
-      return () => {
-        const state = navigation.getState();
-        const currentRoute = state.routes[state.index];
-        if (shouldScrollToTopRef.current && currentRoute.name !== MainStackComponents.photostreamImageCreateScreen) {
-          // Give it a moment for the length check to happen, then reset if still set
-          setTimeout(() => {
-            if (shouldScrollToTopRef.current) {
-              shouldScrollToTopRef.current = false;
-              streamListLengthWhenNavigatedAwayRef.current = null;
-            }
-          }, 1000);
-        }
-      };
-    }, [navigation]),
-  );
+  }, [scrollToTopIntent]);
 
   return (
     <PhotostreamScreenBase
@@ -127,6 +70,7 @@ const PhotostreamScreenInner = ({navigation}: Props) => {
       showFAB={true}
       onScrollThreshold={onScrollThreshold}
       flashListRef={flashListRef}
+      scrollToTopIntent={scrollToTopIntent}
     />
   );
 };

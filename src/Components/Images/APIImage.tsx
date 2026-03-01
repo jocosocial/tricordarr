@@ -13,8 +13,8 @@ import {
 import {Card} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {AppScaledImage} from '#src/Components/Images/AppFastImage';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
+import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
@@ -26,8 +26,11 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {createLogger} from '#src/Libraries/Logger';
 import {APIImageSizePaths} from '#src/Types/AppImageMetaData';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+
+const logger = createLogger('APIImage.tsx');
 
 interface APIImageV2Props {
   path: string;
@@ -138,7 +141,12 @@ export const APIImage = ({
    */
   const onError = useCallback(
     (event: OnErrorEvent) => {
-      setSnackbarPayload({message: String(event.nativeEvent.error), messageType: 'error'});
+      const message = String(event.nativeEvent.error);
+      // Native image load cancellation (e.g. scroll/cell reuse) should not surface as user error.
+      const isCancellation = /cancell(ed|ation)/i.test(message) || /operation cancelled/i.test(message);
+      if (!isCancellation) {
+        setSnackbarPayload({message, messageType: 'error'});
+      }
     },
     [setSnackbarPayload],
   );
@@ -148,7 +156,7 @@ export const APIImage = ({
    * testing in low network conditions nothing happened. EDGE might have been too low.
    */
   const onProgress = useCallback((event: OnProgressEvent) => {
-    console.log('onProgress', event.nativeEvent.loaded, event.nativeEvent.total);
+    logger.debug('onProgress', event.nativeEvent.loaded, event.nativeEvent.total);
   }, []);
 
   /**

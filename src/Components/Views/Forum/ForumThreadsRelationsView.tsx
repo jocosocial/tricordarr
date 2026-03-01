@@ -4,8 +4,9 @@ import React, {useEffect, useState} from 'react';
 import {ForumEmptyListView} from '#src/Components/Views/Forum/ForumEmptyListView';
 import {ForumThreadListView} from '#src/Components/Views/Forum/ForumThreadListView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useForumFilter} from '#src/Context/Contexts/ForumFilterContext';
 import {ForumSort} from '#src/Enums/ForumSortFilter';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {ForumRelationQueryType, useForumRelationQuery} from '#src/Queries/Forum/ForumThreadRelationQueries';
 import {CategoryData, ForumListData} from '#src/Structs/ControllerStructs';
 
@@ -13,14 +14,24 @@ interface Props {
   relationType: ForumRelationQueryType;
   category?: CategoryData;
   title?: string;
+  onDataChange?: (data: ForumListData[]) => void;
+  scrollToTopIntent?: number;
 }
 
-export const ForumThreadsRelationsView = ({relationType, category, title}: Props) => {
-  const {forumSortOrder, forumSortDirection} = useFilter();
+/**
+ * View for lists of forum threads where the user has a relation to them. Examples:
+ * All of your Favorites/Muted/Unread/Owned threads.
+ *
+ * Also used when a filter is being applied to a list of threads within a category.
+ * Example: "Favorites in the "General" category"
+ */
+export const ForumThreadsRelationsView = ({relationType, category, title, onDataChange, scrollToTopIntent}: Props) => {
+  const {forumSortOrder, forumSortDirection} = useForumFilter();
   const {
     data,
     refetch,
     isLoading,
+    isFetching,
     hasPreviousPage,
     fetchPreviousPage,
     isFetchingPreviousPage,
@@ -32,20 +43,19 @@ export const ForumThreadsRelationsView = ({relationType, category, title}: Props
     ...(forumSortOrder && forumSortOrder !== ForumSort.event ? {sort: forumSortOrder} : undefined),
     ...(forumSortDirection ? {order: forumSortDirection} : undefined),
   });
-  const [refreshing, setRefreshing] = useState(false);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  };
 
   useEffect(() => {
     if (data && data.pages) {
-      setForumListData(data.pages.flatMap(p => p.forumThreads || []));
+      const list = data.pages.flatMap(p => p.forumThreads || []);
+      setForumListData(list);
+      onDataChange?.(list);
     }
-  }, [data, setForumListData]);
+  }, [data, onDataChange]);
 
   if (isLoading || !data) {
     return <LoadingView />;
@@ -72,6 +82,7 @@ export const ForumThreadsRelationsView = ({relationType, category, title}: Props
       setRefreshing={setRefreshing}
       enableFAB={false}
       subtitle={`${data.pages[0].paginator.total} ${pluralize('forum', data.pages[0].paginator.total)}`}
+      scrollToTopIntent={scrollToTopIntent}
     />
   );
 };

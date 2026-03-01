@@ -39,7 +39,12 @@ export const allRoutes: RouteDefinition[] = [
   {screen: MainStackComponents.dailyThemesScreen, path: 'dailyThemes'},
   {screen: MainStackComponents.photostreamScreen, path: 'photostream'},
   {screen: MainStackComponents.microKaraokeListScreen, path: 'microkaraoke'},
+  {screen: MainStackComponents.karaokePerformanceListScreen, path: 'karaoke'},
+  {screen: MainStackComponents.karaokeSearchScreen, path: 'karaoke/search'},
+  {screen: MainStackComponents.karaokeFavoritesListScreen, path: 'karaoke/favorites'},
+  {screen: MainStackComponents.karaokeLogPerformanceScreen, path: 'karaoke/log/:songID'},
   {screen: MainStackComponents.performerListScreen, path: 'performers'},
+  {screen: CommonStackComponents.performerScreen, path: 'performer/:id'},
   {screen: CommonStackComponents.mainTimeZoneScreen, path: 'time'},
   {screen: MainStackComponents.boardgameListScreen, path: 'boardgames'},
   {screen: CommonStackComponents.userSelfProfileScreen, path: 'profile'},
@@ -64,10 +69,9 @@ export const allRoutes: RouteDefinition[] = [
   },
 
   // ==================== LFG Tab Routes ====================
-  {screen: LfgStackComponents.lfgFindScreen, path: 'lfg'},
+  {screen: LfgStackComponents.lfgListScreen, path: 'lfg/:endpoint?'},
   {screen: CommonStackComponents.lfgChatScreen, path: 'lfg/:fezID/chat'},
   {screen: CommonStackComponents.lfgHelpScreen, path: 'lfg/faq'},
-  {screen: LfgStackComponents.lfgJoinedScreen, path: 'lfg/joined'},
   {screen: CommonStackComponents.lfgScreen, path: 'lfg/:fezID'},
 
   // ==================== Schedule Tab Routes ====================
@@ -105,6 +109,8 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.userProfileScreen,
     CommonStackComponents.usernameProfileScreen,
     CommonStackComponents.mapScreen,
+    // Performer routes
+    CommonStackComponents.performerScreen,
     // Info routes
     CommonStackComponents.privacyScreen,
   ].includes(route.screen as CommonStackComponents),

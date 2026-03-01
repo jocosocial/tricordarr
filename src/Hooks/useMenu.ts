@@ -1,6 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('useMenu.ts');
+
 /**
  * Module-level registry of all menu close functions.
  * This allows NavigationContainer's onStateChange to close all menus
@@ -22,12 +26,12 @@ export const registerMenuClose = (closeMenu: () => void) => {
  * Close all registered menus. Called by NavigationContainer's onStateChange.
  */
 export const closeAllMenus = () => {
-  console.log('[MenuHook.ts] closeAllMenus called, registered menus:', menuCloseFunctions.size);
+  logger.debug('closeAllMenus called, registered menus:', menuCloseFunctions.size);
   menuCloseFunctions.forEach(closeMenu => {
     try {
       closeMenu();
     } catch (error) {
-      console.error('[MenuHook.ts] Error closing menu:', error);
+      logger.error('Error closing menu:', error);
     }
   });
 };
@@ -52,12 +56,12 @@ export const useMenu = () => {
   const navigation = useNavigation();
 
   const openMenu = useCallback(() => {
-    console.log('[MenuHook.ts] openMenu');
+    logger.debug('openMenu');
     setVisible(true);
   }, []);
 
   const closeMenu = useCallback(() => {
-    console.log('[MenuHook.ts] closeMenu');
+    logger.debug('closeMenu');
     setVisible(false);
   }, []);
 
@@ -77,12 +81,12 @@ export const useMenu = () => {
   useEffect(() => {
     const closeMenuWrapper = () => {
       if (visibleRef.current) {
-        console.log('[MenuHook.ts] closeMenuWrapper called, closing menu');
+        logger.debug('closeMenuWrapper called, closing menu');
         closeMenuRef.current();
       }
     };
     const unsubscribe = registerMenuClose(closeMenuWrapper);
-    console.log('[MenuHook.ts] registered menu close function');
+    logger.debug('registered menu close function');
     return unsubscribe;
   }, []);
 
@@ -91,7 +95,7 @@ export const useMenu = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('state', () => {
       if (visible) {
-        console.log('[MenuHook.ts] navigation state changed, closing menu');
+        logger.debug('navigation state changed, closing menu');
         setVisible(false);
       }
     });

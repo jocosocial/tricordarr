@@ -9,9 +9,8 @@ import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter
 import {ForumPostListHeader} from '#src/Components/Lists/Headers/ForumPostListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostListItem';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {timeAgo} from '#src/Libraries/DateTime';
+import {useTime} from '#src/Context/Contexts/TimeContext';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostListProps {
@@ -22,7 +21,6 @@ interface ForumPostListProps {
   forumData?: ForumData;
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
-  maintainViewPosition?: boolean;
   enableShowInThread?: boolean;
   listRef: React.RefObject<FlashListRef<PostData> | null>;
   getListHeader?: () => React.JSX.Element;
@@ -46,7 +44,7 @@ export const ForumPostList = ({
   initialScrollIndex,
 }: ForumPostListProps) => {
   const {commonStyles} = useStyles();
-  const {appConfig} = useConfig();
+  const {getAdjustedMoment} = useTime();
 
   const renderItem = useCallback(
     ({item}: {item: PostData}) => {
@@ -62,34 +60,29 @@ export const ForumPostList = ({
     [enableShowInThread, forumData],
   );
 
-  // const renderSeparator = useCallback(
-  //   ({leadingItem}: {leadingItem: PostData}) => {
-  //     if (!itemSeparator) {
-  //       return <SpaceDivider />;
-  //     }
-  //     const leadingIndex = postList.indexOf(leadingItem);
-  //     if (leadingIndex === undefined) {
-  //       return <TimeDivider label={'Leading Unknown?'} />;
-  //     }
-  //     const trailingIndex = leadingIndex + 1;
-  //     const trailingItem = postList[trailingIndex];
-  //     if (!leadingItem.createdAt || !trailingItem.createdAt) {
-  //       return <SpaceDivider />;
-  //     }
-  //     const leadingDate = new Date(leadingItem.createdAt);
-  //     const trailingDate = new Date(trailingItem.createdAt);
-  //     const leadingTimeMarker = timeAgo.format(leadingDate, 'round');
-  //     const trailingTimeMarker = timeAgo.format(trailingDate, 'round');
-  //     if (leadingTimeMarker === trailingTimeMarker) {
-  //       return <SpaceDivider />;
-  //     }
-
-  //     return <TimeDivider label={timeAgo.format(trailingDate, 'round')} />;
-  //   },
-  //   [itemSeparator, postList],
-  // );
-
-  const renderSeparator = useCallback(() => <SpaceDivider />, []);
+  const renderSeparator = useCallback(
+    ({leadingItem}: {leadingItem: PostData}) => {
+      if (!itemSeparator) {
+        return <SpaceDivider />;
+      }
+      const leadingIndex = postList.indexOf(leadingItem);
+      if (leadingIndex === undefined) {
+        return <TimeDivider label={'Leading Unknown?'} />;
+      }
+      const trailingIndex = leadingIndex + 1;
+      const trailingItem = postList[trailingIndex];
+      if (!leadingItem.createdAt || !trailingItem?.createdAt) {
+        return <SpaceDivider />;
+      }
+      const leadingDay = getAdjustedMoment(leadingItem.createdAt).format('YYYY-MM-DD');
+      const trailingDay = getAdjustedMoment(trailingItem.createdAt).format('YYYY-MM-DD');
+      if (leadingDay === trailingDay) {
+        return <SpaceDivider />;
+      }
+      return <TimeDivider label={getAdjustedMoment(trailingItem.createdAt).format('dddd MMM Do')} />;
+    },
+    [itemSeparator, postList, getAdjustedMoment],
+  );
 
   const renderListHeader = useCallback(() => {
     if (forumData && !hasPreviousPage) {
@@ -112,9 +105,9 @@ export const ForumPostList = ({
       return <SpaceDivider />;
     }
 
-    let label = timeAgo.format(new Date(firstDisplayItem.createdAt), 'round');
+    let label = getAdjustedMoment(firstDisplayItem.createdAt).format('dddd MMM Do');
     return <TimeDivider label={label} />;
-  }, [forumData, hasPreviousPage, itemSeparator, postList, getListHeader]);
+  }, [forumData, hasPreviousPage, itemSeparator, postList, getListHeader, getAdjustedMoment]);
 
   const renderListFooter = useCallback(() => {
     if (hasNextPage) {
@@ -139,13 +132,11 @@ export const ForumPostList = ({
       // handleLoadNext={handleLoadNext}
       // handleLoadPrevious={handleLoadPrevious}
       // loadPrevious={handleLoadPrevious}
-      scrollButtonHorizontalPosition={appConfig.userPreferences.reverseSwipeOrientation ? 'left' : 'right'}
-      enableScrollButton={true}
       initialScrollIndex={initialScrollIndex}
       // Style is here rather than in the renderItem because the padding we use is
       // also needed for the dividers. It could be added to the divider function as
       // well but this is slightly simpler and covers cases I am not remembering.
-      style={commonStyles.paddingHorizontalSmall}
+      contentContainerStyle={commonStyles.paddingHorizontalSmall}
     />
   );
 };

@@ -1,7 +1,7 @@
 import {FlashListRef} from '@shopify/flash-list';
 import {InfiniteData, UseInfiniteQueryResult} from '@tanstack/react-query';
 import {AxiosError} from 'axios';
-import React, {ReactNode, useCallback, useMemo, useRef} from 'react';
+import React, {ReactNode, useCallback, useEffect, useMemo, useRef} from 'react';
 import {Text} from 'react-native-paper';
 
 import {PhotostreamFAB} from '#src/Components/Buttons/FloatingActionButtons/PhotostreamFAB';
@@ -27,6 +27,7 @@ interface PhotostreamScreenBaseProps {
   showFAB?: boolean;
   onScrollThreshold?: (condition: boolean) => void;
   flashListRef?: React.RefObject<FlashListRef<PhotostreamImageData> | null>;
+  scrollToTopIntent?: number;
 }
 
 export const PhotostreamScreenBase = ({
@@ -35,6 +36,7 @@ export const PhotostreamScreenBase = ({
   showFAB = false,
   onScrollThreshold,
   flashListRef: externalFlashListRef,
+  scrollToTopIntent,
 }: PhotostreamScreenBaseProps) => {
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isFetching} = queryResult;
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
@@ -45,6 +47,13 @@ export const PhotostreamScreenBase = ({
   });
   const internalFlashListRef = useRef<FlashListRef<PhotostreamImageData>>(null);
   const flashListRef = externalFlashListRef || internalFlashListRef;
+
+  // Scroll to top when intent is dispatched
+  useEffect(() => {
+    if (scrollToTopIntent) {
+      flashListRef.current?.scrollToOffset({offset: 0, animated: false});
+    }
+  }, [scrollToTopIntent, flashListRef]);
 
   const renderItem = useCallback(({item}: {item: PhotostreamImageData}) => <PhotostreamListItem item={item} />, []);
   const keyExtractor = useCallback((item: PhotostreamImageData) => item.postID.toString(), []);

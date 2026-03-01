@@ -1,6 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -16,14 +15,18 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LfgLeaveModal} from '#src/Components/Views/Modals/LfgLeaveModal';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useFezData} from '#src/Hooks/useFezData';
+import {useRefresh} from '#src/Hooks/useRefresh';
+import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -41,26 +44,31 @@ export const LfgParticipationScreen = (props: Props) => {
 };
 
 const LfgParticipationScreenInner = ({navigation, route}: Props) => {
-  const {data, refetch, isFetching} = useFezQuery({
+  const {
+    fezData: lfg,
+    refetch,
+    isFetching,
+    isParticipant,
+    isWaitlist,
+    isFull,
+    isMember,
+  } = useFezData({
     fezID: route.params.fezID,
   });
-  const lfg = data?.pages[0];
-  const [refreshing, setRefreshing] = useState(false);
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({
+    refresh: refetch,
+    isRefreshing: isFetching,
+  });
   const participantMutation = useFezParticipantMutation();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {currentUserID} = useSession();
   const {setModalContent, setModalVisible} = useModal();
   const membershipMutation = useFezMembershipMutation();
-  const queryClient = useQueryClient();
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  };
+  const {updateMembership} = useFezCacheReducer();
+  const dispatchScrollToTop = useScrollToTopIntent();
 
   const onParticipantRemove = (fezData: FezData, userID: string) => {
     // Call the join/unjoin if you are working on yourself.
-    if (userID === profilePublicData?.header.userID) {
+    if (userID === currentUserID) {
       setModalContent(<LfgLeaveModal fezData={fezData} />);
       setModalVisible(true);
       return;
@@ -74,8 +82,9 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
         userID: userID,
       },
       {
-        onSuccess: async () => {
-          await queryClient.invalidateQueries({queryKey: [`/fez/${fezData.fezID}`]});
+        onSuccess: response => {
+          updateMembership(fezData.fezID, response.data);
+          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
         },
         onSettled: () => setRefreshing(false),
       },
@@ -89,7 +98,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.lfgHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.lfgParticipationHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>
@@ -98,10 +107,10 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   );
 
   const handleJoin = useCallback(() => {
-    if (!lfg || !profilePublicData) {
+    if (!lfg || !currentUserID) {
       return;
     }
-    if (FezData.isParticipant(lfg, profilePublicData.header)) {
+    if (isParticipant) {
       setModalContent(<LfgLeaveModal fezData={lfg} />);
       setModalVisible(true);
     } else {
@@ -112,14 +121,25 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
           action: 'join',
         },
         {
-          onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: [`/fez/${lfg.fezID}`]});
+          onSuccess: response => {
+            updateMembership(lfg.fezID, response.data, 'join');
+            dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           },
           onSettled: () => setRefreshing(false),
         },
       );
     }
-  }, [lfg, membershipMutation, profilePublicData, queryClient, setModalContent, setModalVisible]);
+  }, [
+    lfg,
+    membershipMutation,
+    isParticipant,
+    updateMembership,
+    setModalContent,
+    setModalVisible,
+    dispatchScrollToTop,
+    setRefreshing,
+    currentUserID,
+  ]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -131,17 +151,14 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
     return <LoadingView />;
   }
 
-  const manageUsers = lfg.owner.userID === profilePublicData?.header.userID;
-  const isFull = FezData.isFull(lfg);
+  const manageUsers = lfg.owner.userID === currentUserID;
   const isUnlimited = lfg.maxParticipants === 0;
-  const isMember = FezData.isParticipant(lfg, profilePublicData?.header);
-  const isWaitlist = FezData.isWaitlist(lfg, profilePublicData?.header);
 
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<AppRefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <DataFieldListItem title={'Title'} description={lfg.title} />
         <DataFieldListItem title={'Hosted By'} />
         <FezParticipantListItem

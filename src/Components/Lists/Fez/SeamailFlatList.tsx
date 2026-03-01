@@ -1,5 +1,5 @@
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {RefreshControlProps} from 'react-native';
 import {Divider} from 'react-native-paper';
 
@@ -7,6 +7,7 @@ import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
 import {SeamailListItem} from '#src/Components/Lists/Items/SeamailListItem';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface SeamailFlatListProps {
@@ -16,6 +17,7 @@ interface SeamailFlatListProps {
   onScrollThreshold?: (condition: boolean) => void;
   hasNextPage?: boolean;
   handleLoadNext?: () => void;
+  scrollToTopIntent?: number;
 }
 
 /**
@@ -23,6 +25,13 @@ interface SeamailFlatListProps {
  */
 export const SeamailFlatList = (props: SeamailFlatListProps) => {
   const flatListRef = useRef<FlashListRef<FezData>>(null);
+  const {enableSelection, setEnableSelection, selectedItems} = useSelection();
+
+  useEffect(() => {
+    if (props.scrollToTopIntent) {
+      flatListRef.current?.scrollToOffset({offset: 0, animated: false});
+    }
+  }, [props.scrollToTopIntent]);
 
   const getListSeparator = useCallback(() => {
     if (props.fezList.length > 0) {
@@ -31,10 +40,22 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
     return <></>;
   }, [props.fezList]);
 
-  const renderItem = ({item}: {item: FezData}) => (
-    // The key is needed to force a re-render when the mute state changes
-    // so that the swipables don't get all out of alignment in the list.
-    <SeamailListItem key={`${item.fezID}-${item.members?.isMuted ?? false}`} fez={item} />
+  const renderItem = useCallback(
+    ({item}: {item: FezData}) => (
+      <SeamailListItem
+        // I don't remember why we needed the mute state in the key.
+        // I have a suspicion it was with all the panel background crap
+        // that boiled down to having the wrong backgroundColor set.
+        // Also isn't this what keyExtractor is for?
+        // key={`${item.fezID}-${item.members?.isMuted ?? false}`}
+        // key={item.fezID}
+        fez={item}
+        enableSelection={enableSelection}
+        setEnableSelection={setEnableSelection}
+        selected={selectedItems.some(i => i.id === item.fezID)}
+      />
+    ),
+    [enableSelection, setEnableSelection, selectedItems],
   );
 
   const getListHeader = useCallback(() => {
@@ -66,6 +87,8 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
       renderListFooter={getListFooter}
       onScrollThreshold={props.onScrollThreshold}
       handleLoadNext={props.handleLoadNext}
+      // This is because FlashListV2 uses the first item for some internal anchoring.
+      maintainVisibleContentPosition={{disabled: true}}
     />
   );
 };

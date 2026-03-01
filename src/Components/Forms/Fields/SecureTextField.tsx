@@ -7,6 +7,9 @@ import {AppIcons} from '#src/Enums/Icons';
 interface SecureTextFieldProps {
   name: string;
   label: string;
+  textContentType?: 'password' | 'newPassword';
+  autoComplete?: 'password' | 'password-new';
+  showErrorWithoutTouch?: boolean;
 }
 
 export const SecureTextField = (props: SecureTextFieldProps) => {
@@ -22,6 +25,9 @@ export const SecureTextField = (props: SecureTextFieldProps) => {
       right={<TextInput.Icon onPress={() => setSecure(!secure)} icon={secure ? AppIcons.show : AppIcons.hide} />}
       secureTextEntry={secure}
       onBlur={onBlur}
+      textContentType={props.textContentType}
+      autoComplete={props.autoComplete}
+      showErrorWithoutTouch={props.showErrorWithoutTouch}
     />
   );
 };

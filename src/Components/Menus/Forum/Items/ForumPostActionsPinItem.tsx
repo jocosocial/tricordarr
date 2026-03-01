@@ -1,9 +1,9 @@
-import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
 import {StateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
 import {AppIcons} from '#src/Enums/Icons';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useForumPostPinMutation} from '#src/Queries/Forum/ForumPostPinMutations';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
@@ -15,7 +15,7 @@ interface ForumPostActionsPinItemProps {
 
 export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => {
   const pinMutation = useForumPostPinMutation();
-  const queryClient = useQueryClient();
+  const {updatePostPin} = useForumCacheReducer();
 
   const handleFavorite = () => {
     pinMutation.mutate(
@@ -24,17 +24,11 @@ export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => 
         action: props.forumPost.isPinned ? 'unpin' : 'pin',
       },
       {
-        onSuccess: async () => {
+        onSuccess: () => {
+          updatePostPin(props.forumPost.postID, props.forumData?.forumID, !props.forumPost.isPinned);
+        },
+        onSettled: () => {
           props.closeMenu();
-          if (props.forumData) {
-            await Promise.all([
-              queryClient.invalidateQueries({queryKey: [`/forum/${props.forumData.forumID}`]}),
-              queryClient.invalidateQueries({queryKey: [`/forum/${props.forumData.forumID}/pinnedposts`]}),
-              queryClient.invalidateQueries({queryKey: [`/forum/post/${props.forumPost.postID}/forum`]}),
-            ]);
-          } else {
-            await queryClient.invalidateQueries({queryKey: [`/forum/post/${props.forumPost.postID}/forum`]});
-          }
         },
       },
     );

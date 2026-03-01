@@ -1,6 +1,6 @@
 import {FlashList, type FlashListRef} from '@shopify/flash-list';
 import React, {ReactElement, useCallback} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, View} from 'react-native';
 
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
@@ -10,10 +10,13 @@ import {getDayMarker, getTimeMarker} from '#src/Libraries/DateTime';
 import {getScheduleListTimeSeparatorID} from '#src/Libraries/Schedule';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 import {styleDefaults} from '#src/Styles';
+import {MaintainVisibleContentPosition} from '#src/Types/Lists';
 
 interface ScheduleFlatListBaseProps<TItem> {
   items: TItem[];
   separator?: 'day' | 'time' | 'none';
+  /** When false, time separators omit the day of week (e.g. "Monday"). Use when viewing a single day. */
+  showDayInDividers?: boolean;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -26,11 +29,14 @@ interface ScheduleFlatListBaseProps<TItem> {
   handleLoadPrevious?: () => void;
   hasNextPage?: boolean;
   extraData?: any;
+  overScroll?: boolean;
+  maintainVisibleContentPosition?: MaintainVisibleContentPosition;
 }
 
 export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
   items,
   separator,
+  showDayInDividers = true,
   refreshControl,
   listHeader,
   listFooter,
@@ -42,34 +48,51 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
   handleLoadNext,
   hasNextPage,
   extraData,
+  overScroll,
+  maintainVisibleContentPosition,
 }: ScheduleFlatListBaseProps<TItem>) => {
   const {commonStyles} = useStyles();
+
+  const contentStyle = {
+    ...commonStyles.paddingHorizontalSmall,
+  };
 
   const renderListHeader = useCallback(() => {
     if (!items[0]) {
       return <TimeDivider label={'No items to display'} />;
+    }
+    if (separator === 'none') {
+      return <></>;
     }
     const firstItem = items[0];
     if (!firstItem.startTime || !firstItem.timeZoneID) {
       return <SpaceDivider />;
     }
 
-    let label: string | undefined = getTimeMarker(firstItem.startTime, firstItem.timeZoneID);
+    let label: string | undefined = getTimeMarker(firstItem.startTime, firstItem.timeZoneID, showDayInDividers);
     if (separator === 'day') {
-      label = getDayMarker(firstItem.startTime, firstItem.timeZoneID);
+      label = getDayMarker(firstItem.startTime, firstItem.timeZoneID, showDayInDividers);
     }
     return <TimeDivider label={label} />;
-  }, [items, separator]);
+  }, [items, separator, showDayInDividers]);
 
   const renderListFooter = useCallback(() => {
-    if (items.length <= 1) {
-      return <></>;
+    let footer: ReactElement = <></>;
+    if (!(separator === 'none' || items.length <= 1)) {
+      if (hasNextPage) {
+        footer = <LoadingNextFooter />;
+      } else {
+        footer = <TimeDivider />;
+      }
     }
-    if (hasNextPage) {
-      return <LoadingNextFooter />;
-    }
-    return <TimeDivider />;
-  }, [hasNextPage, items.length]);
+    const overScrollSpacer = overScroll ? <View style={{height: styleDefaults.overScrollHeight}} /> : null;
+    return (
+      <>
+        {footer}
+        {overScrollSpacer}
+      </>
+    );
+  }, [hasNextPage, items.length, separator, overScroll]);
 
   const renderSeparatorTime = ({leadingItem}: {leadingItem: TItem}) => {
     const leadingIndex = items.indexOf(leadingItem);
@@ -88,7 +111,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
     if (leadingTimeMarker === trailingTimeMarker) {
       return <SpaceDivider />;
     }
-    return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
+    return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZoneID, showDayInDividers)} />;
   };
 
   // FlashList skips separator when paginating.
@@ -107,12 +130,12 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
     if (!leadingItem.timeZoneID || !trailingItem.timeZoneID) {
       return <SpaceDivider />;
     }
-    const leadingTimeMarker = getDayMarker(leadingItem.startTime, leadingItem.timeZoneID);
-    const trailingTimeMarker = getDayMarker(trailingItem.startTime, trailingItem.timeZoneID);
+    const leadingTimeMarker = getDayMarker(leadingItem.startTime, leadingItem.timeZoneID, showDayInDividers);
+    const trailingTimeMarker = getDayMarker(trailingItem.startTime, trailingItem.timeZoneID, showDayInDividers);
     if (leadingTimeMarker === trailingTimeMarker) {
       return <SpaceDivider />;
     }
-    return <TimeDivider label={getDayMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
+    return <TimeDivider label={getDayMarker(trailingItem.startTime, trailingItem.timeZoneID, showDayInDividers)} />;
   };
 
   const renderSeparatorNone = () => <SpaceDivider />;
@@ -143,12 +166,11 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
       ref={listRef}
       keyExtractor={keyExtractor}
       initialScrollIndex={initialScrollIndex}
-      contentContainerStyle={{
-        ...commonStyles.paddingHorizontalSmall,
-      }}
+      contentContainerStyle={contentStyle}
       onScroll={handleScroll}
       onEndReached={handleLoadNext}
       extraData={extraData}
+      maintainVisibleContentPosition={maintainVisibleContentPosition}
     />
   );
 };

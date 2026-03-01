@@ -1,5 +1,4 @@
 import {useAppState} from '@react-native-community/hooks';
-import {useQueryClient} from '@tanstack/react-query';
 import {useCallback, useEffect} from 'react';
 import {Platform} from 'react-native';
 
@@ -9,11 +8,14 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {createLogger} from '#src/Libraries/Logger';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
+
+const logger = createLogger('NotificationDataListener.tsx');
 
 /**
  * Functional component to respond to Notification Socket events from Swiftarr.
@@ -31,12 +33,12 @@ export const NotificationDataListener = () => {
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
-  const queryClient = useQueryClient();
   const {receiveCall} = useCall();
+  const {invalidateFez} = useFezCacheReducer();
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
-      console.log(`[NotificationDataListener.tsx] wsMessageHandler received data from server: ${event.data}`);
+      logger.debug('wsMessageHandler received data from server:', event.data);
       const notificationData = JSON.parse(event.data) as SocketNotificationData;
       const notificationType = SocketNotificationData.getType(notificationData);
       console.log(`[NotificationDataListener.tsx] Notification type: ${notificationType}`);
@@ -89,24 +91,21 @@ export const NotificationDataListener = () => {
         case NotificationTypeData.lfgCanceled:
         case NotificationTypeData.privateEventCanceled:
         case NotificationTypeData.addedToSeamail: {
-          const invalidations = FezData.getCacheKeys(notificationData.contentID).map(key => {
-            return queryClient.invalidateQueries({queryKey: key});
-          });
-          Promise.all(invalidations);
+          invalidateFez(notificationData.contentID);
           break;
         }
       }
     },
-    [queryClient, refetchAnnouncements, refetchUserNotificationData, receiveCall],
+    [invalidateFez, refetchAnnouncements, refetchUserNotificationData, receiveCall],
   );
 
   const addHandler = useCallback(() => {
-    console.log('[NotificationDataListener.tsx] Adding handler.');
+    logger.debug('Adding handler.');
     notificationSocket?.addEventListener('message', wsMessageHandler);
   }, [notificationSocket, wsMessageHandler]);
 
   const removeHandler = useCallback(() => {
-    console.log('[NotificationDataListener.tsx] Removing handler.');
+    logger.debug('Removing handler.');
     notificationSocket?.removeEventListener('message', wsMessageHandler);
   }, [notificationSocket, wsMessageHandler]);
 
@@ -120,12 +119,7 @@ export const NotificationDataListener = () => {
     } else {
       removeHandler();
     }
-    console.log(
-      '[NotificationDataListener.tsx] useEffect state is',
-      enableUserNotifications,
-      appStateVisible,
-      isLoggedIn,
-    );
+    logger.debug('useEffect state is', enableUserNotifications, appStateVisible, isLoggedIn);
     return () => removeHandler();
   }, [addHandler, appStateVisible, enableUserNotifications, removeHandler, isLoggedIn]);
 

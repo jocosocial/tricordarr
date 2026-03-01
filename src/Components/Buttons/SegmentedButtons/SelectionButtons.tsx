@@ -8,12 +8,11 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {AppIcons} from '#src/Enums/Icons';
-import {ForumListData} from '#src/Structs/ControllerStructs';
 import {SegmentedButtonType} from '#src/Types';
 import {Selectable} from '#src/Types/Selectable';
 
 interface SelectionButtonsProps {
-  items?: ForumListData[];
+  items?: Selectable[];
 }
 
 export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
@@ -74,16 +73,14 @@ export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
       case 'all':
         dispatchSelectedItems({
           type: SelectionActions.set,
-          items: items.map(Selectable.fromForumListData),
+          items: items,
         });
         break;
       case 'inverse':
-        const inverted = items.filter(
-          allItem => !selectedItems.some(selectedItem => selectedItem.id === allItem.forumID),
-        );
+        const inverted = items.filter(allItem => !selectedItems.some(selectedItem => selectedItem.id === allItem.id));
         dispatchSelectedItems({
           type: SelectionActions.set,
-          items: inverted.map(Selectable.fromForumListData),
+          items: inverted,
         });
         break;
       case 'cancel':

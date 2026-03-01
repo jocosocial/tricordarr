@@ -1,5 +1,6 @@
 import {FormikHelpers} from 'formik';
 import React, {useState} from 'react';
+import {Alert} from 'react-native';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -12,7 +13,10 @@ import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '#src/Types/FormValues';
+import {createLogger} from '#src/Libraries/Logger';
+import {CruiseSettingsFormValues} from '#src/Types/FormValues';
+
+const logger = createLogger('CruiseSettingsScreen.tsx');
 
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -28,20 +32,20 @@ export const CruiseSettingsScreen = () => {
     schedBaseUrl: appConfig.schedBaseUrl,
   };
 
-  const preRegistrationInitialValues: PreRegistrationSettingsFormValues = {
-    preRegistrationServerUrl: appConfig.preRegistrationServerUrl,
-  };
-
   const onSubmit = (values: CruiseSettingsFormValues, helpers: FormikHelpers<CruiseSettingsFormValues>) => {
     let startDate = values.startDate;
     startDate.setHours(0);
     startDate.setMinutes(0);
     startDate.setSeconds(0);
     startDate.setMilliseconds(0);
+    const y = startDate.getFullYear();
+    const m = String(startDate.getMonth() + 1).padStart(2, '0');
+    const d = String(startDate.getDate()).padStart(2, '0');
     updateAppConfig({
       ...appConfig,
       portTimeZoneID: values.portTimeZoneID,
       cruiseLength: Number(values.cruiseLength),
+      cruiseStartDateStr: `${y}-${m}-${d}`,
       cruiseStartDate: startDate,
       schedBaseUrl: values.schedBaseUrl,
     });
@@ -56,22 +60,6 @@ export const CruiseSettingsScreen = () => {
     });
   };
 
-  const onPreRegistrationSubmit = (
-    values: PreRegistrationSettingsFormValues,
-    helpers: FormikHelpers<PreRegistrationSettingsFormValues>,
-  ) => {
-    updateAppConfig({
-      ...appConfig,
-      preRegistrationServerUrl: values.preRegistrationServerUrl,
-    });
-    helpers.setSubmitting(false);
-    helpers.resetForm({
-      values: {
-        preRegistrationServerUrl: values.preRegistrationServerUrl,
-      },
-    });
-  };
-
   const reloadClientConfig = async () => {
     setRefreshing(true);
     await updateClientSettings();
@@ -80,12 +68,28 @@ export const CruiseSettingsScreen = () => {
 
   const togglePreRegistrationMode = async () => {
     if (!currentSession) {
-      console.error('[CruiseSettingsScreen.tsx] Cannot toggle pre-registration mode: no current session');
+      logger.error('Cannot toggle pre-registration mode: no current session');
       return;
     }
-    const newPreRegistrationMode = !currentSession.preRegistrationMode;
-    console.log('[CruiseSettingsScreen.tsx] toggling pre-registration mode to', newPreRegistrationMode);
-    await updateSession(currentSession.sessionID, {preRegistrationMode: newPreRegistrationMode});
+    if (currentSession.preRegistrationMode) {
+      Alert.alert(
+        'Disable Pre-Registration',
+        'Disabling pre-registration mode may cause unexpected behavior and voids your nonexistent warranty. Continue?',
+        [
+          {text: 'Cancel', style: 'cancel'},
+          {
+            text: 'Disable',
+            onPress: async () => {
+              logger.debug('toggling pre-registration mode to', false);
+              await updateSession(currentSession.sessionID, {preRegistrationMode: false});
+            },
+          },
+        ],
+      );
+      return;
+    }
+    logger.debug('toggling pre-registration mode to', true);
+    await updateSession(currentSession.sessionID, {preRegistrationMode: true});
   };
 
   return (
@@ -108,18 +112,14 @@ export const CruiseSettingsScreen = () => {
             disabled={!appConfig.enableDeveloperOptions}
           />
         </PaddedContentView>
-        {appConfig.enableDeveloperOptions && (
-          <>
-            <ListSubheader>Pre-Registration</ListSubheader>
-            <PaddedContentView padTop={true}>
-              <PrimaryActionButton
-                buttonText={currentSession?.preRegistrationMode ? 'Disable' : 'Enable'}
-                onPress={togglePreRegistrationMode}
-                buttonColor={theme.colors.twitarrNeutralButton}
-              />
-            </PaddedContentView>
-          </>
-        )}
+        <ListSubheader>Pre-Registration</ListSubheader>
+        <PaddedContentView padTop={true}>
+          <PrimaryActionButton
+            buttonText={currentSession?.preRegistrationMode ? 'Disable' : 'Enable'}
+            onPress={togglePreRegistrationMode}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );

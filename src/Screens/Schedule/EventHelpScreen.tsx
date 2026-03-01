@@ -4,13 +4,14 @@ import React from 'react';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
+import {NeedsPhotographerHelpTopicView} from '#src/Components/Views/Help/Common/NeedsPhotographerHelpTopicView';
 import {OfficialPerformersHelpTopicView} from '#src/Components/Views/Help/Common/OfficialPerformersHelpTopicView';
 import {OverlappingHelpTopicView} from '#src/Components/Views/Help/Common/OverlappingHelpTopicView';
+import {PhotographingHelpTopicView} from '#src/Components/Views/Help/Common/PhotographingHelpTopicView';
 import {ShadowPerformerProfilesHelpTopicView} from '#src/Components/Views/Help/Common/ShadowPerformerProfilesHelpTopicView';
 import {ShareButtonHelpTopicView} from '#src/Components/Views/Help/Common/ShareButtonHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 
@@ -23,7 +24,6 @@ interface EventHelpScreenProps {
 export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
   const mode = route.params?.mode ?? 'official';
   const isOfficial = mode === 'official';
-  const {appConfig} = useConfig();
 
   return (
     <AppView>
@@ -41,6 +41,14 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
           </HelpTopicView>
         )}
         {isOfficial ? <OfficialPerformersHelpTopicView /> : <ShadowPerformerProfilesHelpTopicView />}
+        {isOfficial && (
+          <HelpChapterTitleView title={'Team Colors'}>
+            <HelpTopicView>
+              Red and Gold team events such as main shows and dining room sittings are displayed with team-specific
+              colors within this app. They are still considered "Official Events".
+            </HelpTopicView>
+          </HelpChapterTitleView>
+        )}
         <HelpChapterTitleView title={'Actions'} />
         <HelpTopicView title={'Favorite/Follow'} icon={AppIcons.favorite}>
           Favoriting an event adds it to a list of all of your favorites. You can see all of your favorite events with a
@@ -51,11 +59,9 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
           has a forum.
         </HelpTopicView>
         <OverlappingHelpTopicView />
-        {appConfig.enableExperiments && (
-          <HelpTopicView title={'Photostream'} icon={AppIcons.photostream}>
-            View photos from the Photostream associated with this event.
-          </HelpTopicView>
-        )}
+        <HelpTopicView title={'Photostream'} icon={AppIcons.photostream}>
+          View photos from the Photostream associated with this event.
+        </HelpTopicView>
         <ShareButtonHelpTopicView />
         <HelpTopicView title={'Download'} icon={AppIcons.download}>
           Download this event as an ICS calendar file that you can import into your calendar app.
@@ -68,6 +74,9 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
           </HelpTopicView>
         )}
         <HelpButtonHelpTopicView />
+        <HelpChapterTitleView title={'Privileged Actions'} />
+        <PhotographingHelpTopicView />
+        <NeedsPhotographerHelpTopicView />
       </ScrollingContentView>
     </AppView>
   );

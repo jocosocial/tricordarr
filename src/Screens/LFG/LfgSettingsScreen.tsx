@@ -1,7 +1,7 @@
 import {Formik} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {HelperText, SegmentedButtons, Text} from 'react-native-paper';
+import {SegmentedButtons, Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -12,25 +12,24 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useLfgFilter} from '#src/Context/Contexts/LfgFilterContext';
 import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
-import {SegmentedButtonType} from '#src/Types';
+import {FezListEndpoints, SegmentedButtonType} from '#src/Types';
 
 export const LfgSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const {hasNotificationPermission} = usePermissions();
   const navigation = useSettingsStack();
   const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.schedule.hidePastLfgs);
-  const {setLfgHidePastFilter} = useFilter();
+  const {setLfgHidePastFilter} = useLfgFilter();
   const {commonStyles} = useStyles();
-  const [defaultScreen, setDefaultScreen] = useState(appConfig.schedule.defaultLfgScreen);
+  const [defaultScreen, setDefaultScreen] = useState<FezListEndpoints>(appConfig.schedule.defaultLfgList);
 
   const handleHidePastLfgs = () => {
     const newValue = !appConfig.schedule.hidePastLfgs;
@@ -47,17 +46,17 @@ export const LfgSettingsScreen = () => {
 
   const lfgDefaultButtons: SegmentedButtonType[] = [
     {
-      value: LfgStackComponents.lfgFindScreen,
+      value: 'open',
       label: 'Find',
       icon: AppIcons.lfgFind,
     },
     {
-      value: LfgStackComponents.lfgJoinedScreen,
+      value: 'joined',
       label: 'Joined',
       icon: AppIcons.lfgJoined,
     },
     {
-      value: LfgStackComponents.lfgOwnedScreen,
+      value: 'owner',
       label: 'Owned',
       icon: AppIcons.lfgOwned,
     },
@@ -68,10 +67,10 @@ export const LfgSettingsScreen = () => {
       ...appConfig,
       schedule: {
         ...appConfig.schedule,
-        defaultLfgScreen: value as LfgStackComponents,
+        defaultLfgList: value as FezListEndpoints,
       },
     });
-    setDefaultScreen(value as LfgStackComponents);
+    setDefaultScreen(value as FezListEndpoints);
   };
 
   const toggleValue = (configKey: keyof PushNotificationConfig) => {
@@ -129,9 +128,6 @@ export const LfgSettingsScreen = () => {
         <PaddedContentView>
           <Text style={commonStyles.marginBottomSmall}>Default LFG Screen</Text>
           <SegmentedButtons buttons={lfgDefaultButtons} value={defaultScreen} onValueChange={handleLfgDefaultScreen} />
-          <HelperText style={commonStyles.onBackground} type={'info'}>
-            Changing this setting requires an app restart.
-          </HelperText>
         </PaddedContentView>
         <PaddedContentView padSides={false}>
           <Formik initialValues={{}} onSubmit={() => {}}>

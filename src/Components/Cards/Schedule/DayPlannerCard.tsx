@@ -2,8 +2,11 @@ import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text, TouchableRipple} from 'react-native-paper';
 
-import {CancelledBadge} from '#src/Components/Badges/CancelledBadge';
+import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {DayPlannerItem, DayPlannerItemWithLayout} from '#src/Types/DayPlanner';
 
 type DayPlannerCardContentLevel = 'titleOnly' | 'titleAndLocation';
@@ -42,6 +45,13 @@ const staticStyles = StyleSheet.create({
 
 export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
   const {theme} = useAppTheme();
+  const {hasShutternaut} = useRoles();
+
+  const showPhotographerIcon = useMemo(
+    () =>
+      item.type === 'event' && hasShutternaut === true && item.eventData?.shutternautData?.userIsPhotographer === true,
+    [item.type, item.eventData?.shutternautData?.userIsPhotographer, hasShutternaut],
+  );
 
   // Colors must be derived at render time because they depend on both the item's
   // color category (event type, LFG, personal, team events) and the current theme.
@@ -63,13 +73,15 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
 
   // Calculate how many lines the title can have based on available space
   const titleLines = useMemo(() => {
+    const availableHeight = item.height - LAYOUT.cardPadding;
     if (contentLevel === 'titleOnly') {
       // Use all available space for title when that's all we're showing
-      const availableHeight = item.height - LAYOUT.cardPadding;
       return Math.max(1, Math.floor(availableHeight / LAYOUT.lineHeights.title));
     }
-    return 2; // Default to 2 lines for title when showing other content
-  }, [contentLevel, item.height]);
+    // titleAndLocation: reserve two lines for location when present, else use all space for title
+    const spaceForTitle = item.location ? availableHeight - 2 * LAYOUT.lineHeights.location : availableHeight;
+    return Math.max(1, Math.floor(spaceForTitle / LAYOUT.lineHeights.title));
+  }, [contentLevel, item.height, item.location]);
 
   // Calculate how many lines the location can have based on remaining space
   const locationLines = useMemo(() => {
@@ -82,7 +94,7 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
 
     // Calculate remaining space for location
     const remainingHeight = item.height - usedSpace;
-    const maxLocationLines = Math.max(1, Math.floor(remainingHeight / LAYOUT.lineHeights.location));
+    const maxLocationLines = Math.max(2, Math.floor(remainingHeight / LAYOUT.lineHeights.location));
 
     return maxLocationLines;
   }, [contentLevel, item.height, item.location, titleLines]);
@@ -104,6 +116,8 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
           flex: 1,
           backgroundColor,
           borderRadius: 4,
+          borderWidth: 1,
+          borderColor: theme.colors.background,
           padding: 4,
           overflow: 'hidden',
         },
@@ -115,17 +129,25 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
           color: textColor,
         },
       }),
-    [item.topOffset, item.height, leftPosition, columnWidth, backgroundColor, textColor],
+    [item.topOffset, item.height, leftPosition, columnWidth, backgroundColor, textColor, theme.colors.background],
   );
 
   const showLocation = contentLevel === 'titleAndLocation' && item.location;
 
+  /**
+   * Making the conscious decision to not show a muted badge here. Being muted is not
+   * really a day planning concern.
+   */
   return (
     <View style={dynamicStyles.container}>
       <TouchableRipple style={dynamicStyles.card} onPress={onPress} borderless>
         <View style={staticStyles.content}>
-          {item.cancelled && <CancelledBadge align={'left'} />}
+          {item.cancelled && <ScheduleItemStatusBadge status={'Cancelled'} align={'left'} />}
           <Text style={dynamicStyles.text} numberOfLines={titleLines} ellipsizeMode={'tail'}>
+            {showPhotographerIcon && (
+              <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} small />
+            )}
+            {showPhotographerIcon && ' '}
             {item.title}
           </Text>
           {showLocation && (

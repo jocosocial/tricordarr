@@ -38,6 +38,74 @@ export interface TextFieldProps {
   disabled?: boolean;
   onSelectionChange?: (event: TextInputSelectionChangeEvent) => void;
   trimOnBlur?: boolean;
+  showErrorWithoutTouch?: boolean;
+  textContentType?:
+    | 'none'
+    | 'URL'
+    | 'addressCity'
+    | 'addressCityAndState'
+    | 'addressState'
+    | 'countryName'
+    | 'creditCardNumber'
+    | 'emailAddress'
+    | 'familyName'
+    | 'fullStreetAddress'
+    | 'givenName'
+    | 'jobTitle'
+    | 'location'
+    | 'middleName'
+    | 'name'
+    | 'namePrefix'
+    | 'nameSuffix'
+    | 'nickname'
+    | 'organizationName'
+    | 'postalCode'
+    | 'streetAddressLine1'
+    | 'streetAddressLine2'
+    | 'sublocality'
+    | 'telephoneNumber'
+    | 'username'
+    | 'password'
+    | 'newPassword'
+    | 'oneTimeCode';
+  autoComplete?:
+    | 'birthdate-day'
+    | 'birthdate-full'
+    | 'birthdate-month'
+    | 'birthdate-year'
+    | 'cc-csc'
+    | 'cc-exp'
+    | 'cc-exp-day'
+    | 'cc-exp-month'
+    | 'cc-exp-year'
+    | 'cc-number'
+    | 'email'
+    | 'gender'
+    | 'name'
+    | 'name-family'
+    | 'name-given'
+    | 'name-middle'
+    | 'name-middle-initial'
+    | 'name-prefix'
+    | 'name-suffix'
+    | 'password'
+    | 'password-new'
+    | 'postal-address'
+    | 'postal-address-country'
+    | 'postal-address-extended'
+    | 'postal-address-extended-postal-code'
+    | 'postal-address-locality'
+    | 'postal-address-region'
+    | 'postal-code'
+    | 'street-address'
+    | 'sms-otp'
+    | 'tel'
+    | 'tel-country-code'
+    | 'tel-national'
+    | 'tel-device'
+    | 'username'
+    | 'username-new'
+    | 'off';
 }
 
 // @TODO make this type-generic
@@ -63,6 +131,9 @@ export const TextField = ({
   disabled,
   onSelectionChange,
   trimOnBlur = true,
+  showErrorWithoutTouch = true,
+  textContentType,
+  autoComplete,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, isSubmitting, setFieldValue, setFieldTouched} = useFormikContext();
   const {theme} = useAppTheme();
@@ -72,9 +143,19 @@ export const TextField = ({
   // Calculate minHeight based on numberOfLines
   const calculatedMinHeight = styleDefaults.fontSize * numberOfLines + styleDefaults.marginSize * 2;
 
+  // Determine whether to show validation errors.
+  // showErrorWithoutTouch=true (default): Show errors immediately, even if field hasn't been touched.
+  //   - Used in data entry forms where users need immediate feedback about required fields.
+  //   - E.g., LfgForm, where users should see what's required before interacting.
+  // showErrorWithoutTouch=false: Only show errors after field has been touched by user.
+  //   - Used in login/registration forms to prevent iOS autofill race conditions.
+  //   - Autofill can trigger blur before value syncs, causing false "field is empty" errors.
+  //   - By requiring 'touched', we avoid showing stale errors during autofill.
+  const shouldShowError = showErrorWithoutTouch ? !!meta.error : !!meta.error && meta.touched;
+
   const styles = StyleSheet.create({
     outline: {
-      borderColor: meta.error ? theme.colors.error : theme.colors.onBackground,
+      borderColor: shouldShowError ? theme.colors.error : theme.colors.onBackground,
     },
     textInput: {
       minHeight: calculatedMinHeight,
@@ -86,6 +167,16 @@ export const TextField = ({
   };
 
   const handleBlurEvent = (event: FocusEvent) => {
+    // For autofill-enabled forms (showErrorWithoutTouch=false), don't mark empty fields as touched on blur.
+    // This prevents autofill race condition where blur fires before value syncs, causing false errors.
+    // For regular forms (showErrorWithoutTouch=true), always mark as touched to show validation errors.
+    if (!showErrorWithoutTouch && (!field.value || (typeof field.value === 'string' && !field.value.trim()))) {
+      if (onBlur) {
+        onBlur(event);
+      }
+      return;
+    }
+
     if (trimOnBlur && field.value && typeof field.value === 'string') {
       const trimmedValue = field.value.trim();
       if (trimmedValue !== field.value) {
@@ -125,7 +216,7 @@ export const TextField = ({
             onChangeText={onChangeText || handleValueChange}
             onBlur={handleBlurEvent}
             value={field.value}
-            error={!!meta.error}
+            error={shouldShowError}
             numberOfLines={numberOfLines}
             disabled={disabled || isSubmitting}
             left={left}
@@ -138,9 +229,11 @@ export const TextField = ({
             style={[styles.textInput, innerTextStyle]}
             onSelectionChange={onSelectionChange}
             outlineStyle={styles.outline}
+            textContentType={textContentType}
+            autoComplete={autoComplete}
           />
           {infoText && <HelperText type={'info'}>{infoText}</HelperText>}
-          <HelperText type={'error'} visible={!!meta.error && meta.touched}>
+          <HelperText type={'error'} visible={shouldShowError}>
             {meta.error}
           </HelperText>
         </View>
