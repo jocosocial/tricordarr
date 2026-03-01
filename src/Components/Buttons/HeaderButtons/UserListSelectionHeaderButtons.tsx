@@ -38,23 +38,26 @@ export const UserListSelectionHeaderButtons = (props: UserListSelectionHeaderBut
 
   const handleRemove = async () => {
     props.setRefreshing(true);
+    const itemsToRemove: UserHeader[] = [];
     const mutations = props.selectedItems.map(selectedItem => {
       const sourceItem = props.items.find(item => item.userID === selectedItem.id);
       if (!sourceItem) return Promise.resolve();
+      itemsToRemove.push(sourceItem);
       const removeAction = USER_RELATION_ACTIONS[props.mode].remove;
-      const onSuccess = () => removeRelation(props.mode, sourceItem);
       if (props.mode === 'favorite') {
-        return favoriteMutation.mutateAsync(
-          {action: removeAction as 'unfavorite', userID: sourceItem.userID},
-          {onSuccess},
-        );
+        return favoriteMutation.mutateAsync({action: removeAction as 'unfavorite', userID: sourceItem.userID});
       } else if (props.mode === 'mute') {
-        return muteMutation.mutateAsync({action: removeAction as 'unmute', userID: sourceItem.userID}, {onSuccess});
+        return muteMutation.mutateAsync({action: removeAction as 'unmute', userID: sourceItem.userID});
       } else {
-        return blockMutation.mutateAsync({action: removeAction as 'unblock', userID: sourceItem.userID}, {onSuccess});
+        return blockMutation.mutateAsync({action: removeAction as 'unblock', userID: sourceItem.userID});
       }
     });
-    await Promise.allSettled(mutations);
+    const results = await Promise.allSettled(mutations);
+    results.forEach((result, i) => {
+      if (result.status === 'fulfilled' && itemsToRemove[i]) {
+        removeRelation(props.mode, itemsToRemove[i]);
+      }
+    });
     props.setRefreshing(false);
   };
 
