@@ -4,6 +4,11 @@ import React from 'react';
 
 import {FezType} from '#src/Enums/FezType';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
+import {
+  USER_RELATION_SCREEN_TITLES,
+  USER_RELATION_SEARCH_SCREEN_TITLES,
+  type UserRelationMode,
+} from '#src/Queries/Users/UserRelationConstants';
 import {BoardgameHelpScreen} from '#src/Screens/Boardgames/BoardgameHelpScreen';
 import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
 import {PreRegistrationHelpScreen} from '#src/Screens/Disabled/PreRegistrationHelpScreen';
@@ -96,9 +101,7 @@ import {MuteKeywordsScreen} from '#src/Screens/Settings/Content/MuteKeywordsSett
 import {SiteUIHelpScreen} from '#src/Screens/SiteUI/SiteUIHelpScreen';
 import {SiteUILinkScreen} from '#src/Screens/SiteUI/SiteUILinkScreen';
 import {SiteUIScreen} from '#src/Screens/SiteUI/SiteUIScreen';
-import {BlockUsersScreen} from '#src/Screens/User/BlockUsersScreen';
-import {FavoriteUsersScreen} from '#src/Screens/User/FavoriteUsersScreen';
-import {MuteUsersScreen} from '#src/Screens/User/MuteUsersScreen';
+import {SearchUsersScreen} from '#src/Screens/User/SearchUsersScreen';
 import {UserDirectoryHelpScreen} from '#src/Screens/User/UserDirectoryHelpScreen';
 import {UsernameProfileScreen} from '#src/Screens/User/UsernameProfileScreen';
 import {UserPrivateNoteScreen} from '#src/Screens/User/UserPrivateNoteScreen';
@@ -107,6 +110,7 @@ import {UserProfileHelpScreen} from '#src/Screens/User/UserProfileHelpScreen';
 import {UserProfileScreen} from '#src/Screens/User/UserProfileScreen';
 import {UserRegCodeScreen} from '#src/Screens/User/UserRegCodeScreen';
 import {UserSelfProfileScreen} from '#src/Screens/User/UserSelfProfileScreen';
+import {UsersListScreen} from '#src/Screens/User/UsersListScreen';
 import {
   CategoryData,
   EventData,
@@ -250,9 +254,12 @@ export type CommonStackParamList = {
     initialUserHeaders?: UserHeader[];
   };
   UserProfileHelpScreen: undefined;
-  BlockUsersScreen: undefined;
-  MuteUsersScreen: undefined;
-  FavoriteUsersScreen: undefined;
+  UsersListScreen: {
+    mode?: UserRelationMode;
+  };
+  SearchUsersScreen: {
+    mode: UserRelationMode;
+  };
   UserDirectoryHelpScreen: undefined;
   ForumSettingsScreen: undefined;
   ForumHelpScreen: undefined;
@@ -381,9 +388,8 @@ export enum CommonStackComponents {
   personalEventEditScreen = 'PersonalEventEditScreen',
   personalEventCreateScreen = 'PersonalEventCreateScreen',
   userProfileHelpScreen = 'UserProfileHelpScreen',
-  blockUsers = 'BlockUsersScreen',
-  muteUsers = 'MuteUsersScreen',
-  favoriteUsers = 'FavoriteUsersScreen',
+  usersList = 'UsersListScreen',
+  searchUsers = 'SearchUsersScreen',
   userDirectoryHelpScreen = 'UserDirectoryHelpScreen',
   forumSettingsScreen = 'ForumSettingsScreen',
   forumHelpScreen = 'ForumHelpScreen',
@@ -703,19 +709,18 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Profile Help'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.blockUsers}
-        component={BlockUsersScreen}
-        options={{title: 'Blocked Users'}}
+        name={CommonStackComponents.usersList}
+        component={UsersListScreen}
+        options={({route}: {route: RouteProp<CommonStackParamList, 'UsersListScreen'>}) => ({
+          title: USER_RELATION_SCREEN_TITLES[route.params?.mode ?? 'favorite'],
+        })}
       />
       <Stack.Screen
-        name={CommonStackComponents.muteUsers}
-        component={MuteUsersScreen}
-        options={{title: 'Muted Users'}}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.favoriteUsers}
-        component={FavoriteUsersScreen}
-        options={{title: 'Favorite Users'}}
+        name={CommonStackComponents.searchUsers}
+        component={SearchUsersScreen}
+        options={({route}: {route: RouteProp<CommonStackParamList, 'SearchUsersScreen'>}) => ({
+          title: USER_RELATION_SEARCH_SCREEN_TITLES[route.params.mode],
+        })}
       />
       <Stack.Screen
         name={CommonStackComponents.userDirectoryHelpScreen}

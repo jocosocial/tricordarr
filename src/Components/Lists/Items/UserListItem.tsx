@@ -4,8 +4,11 @@ import {IconButton, List} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
+import {UserListItemSwipeable} from '#src/Components/Swipeables/UserListItemSwipeable';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 interface UserListItemProps {
@@ -14,15 +17,30 @@ interface UserListItemProps {
   buttonOnPress?: (uh: UserHeader) => void;
   buttonIcon?: IconSource;
   disabled?: boolean;
+  swipeable?: {
+    enabled?: boolean;
+    relationActionLabel: string;
+    relationActionIcon: AppIcons;
+    onRelationAction: (userHeader: UserHeader) => void;
+    relationActionRefreshing?: boolean;
+  };
 }
 
 /**
  * Generic List.Item for displaying a user. Takes a UserHeader and lets you add special features like an action button
  * or something that happens when you press it.
  */
-export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, disabled = false}: UserListItemProps) => {
+export const UserListItem = ({
+  userHeader,
+  onPress,
+  buttonOnPress,
+  buttonIcon,
+  disabled = false,
+  swipeable,
+}: UserListItemProps) => {
   const {styleDefaults, commonStyles} = useStyles();
   const {preRegistrationMode} = usePreRegistration();
+  const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
     // This has to account for some Paper bullshit where there is a secret View added when you define
@@ -30,6 +48,7 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
     item: {
       ...commonStyles.paddingHorizontalSmall,
       paddingVertical: 2,
+      backgroundColor: theme.colors.background,
     },
     avatar: {
       ...commonStyles.justifyCenter,
@@ -65,7 +84,7 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
     }
   }, [buttonOnPress, buttonIcon, userHeader, styleDefaults.avatarSizeSmall]);
 
-  return (
+  const listItem = (
     <List.Item
       style={styles.item}
       title={userHeader.username}
@@ -78,4 +97,20 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, di
       disabled={disabled}
     />
   );
+
+  if (swipeable) {
+    return (
+      <UserListItemSwipeable
+        userHeader={userHeader}
+        enabled={swipeable.enabled}
+        relationActionLabel={swipeable.relationActionLabel}
+        relationActionIcon={swipeable.relationActionIcon}
+        onRelationAction={swipeable.onRelationAction}
+        relationActionRefreshing={swipeable.relationActionRefreshing}>
+        {listItem}
+      </UserListItemSwipeable>
+    );
+  }
+
+  return listItem;
 };

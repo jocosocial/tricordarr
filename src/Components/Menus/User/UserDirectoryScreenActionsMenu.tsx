@@ -19,17 +19,17 @@ export const UserDirectoryScreenActionsMenu = () => {
       <Menu.Item
         title={'Favorite Users'}
         leadingIcon={AppIcons.userFavorite}
-        onPress={() => commonNavigation.push(CommonStackComponents.favoriteUsers)}
+        onPress={() => commonNavigation.push(CommonStackComponents.usersList, {mode: 'favorite'})}
       />
       <Menu.Item
         title={'Muted Users'}
         leadingIcon={AppIcons.mute}
-        onPress={() => commonNavigation.push(CommonStackComponents.muteUsers)}
+        onPress={() => commonNavigation.push(CommonStackComponents.usersList, {mode: 'mute'})}
       />
       <Menu.Item
         title={'Blocked Users'}
         leadingIcon={AppIcons.block}
-        onPress={() => commonNavigation.push(CommonStackComponents.blockUsers)}
+        onPress={() => commonNavigation.push(CommonStackComponents.usersList, {mode: 'block'})}
       />
       <Divider bold={true} />
       <Menu.Item
