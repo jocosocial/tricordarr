@@ -21,7 +21,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {useFezData} from '#src/Hooks/useFezData';
+import {getParticipantLabel} from '#src/Hooks/useFezData';
 import {getDurationString} from '#src/Libraries/DateTime';
 import {guessDeckNumber} from '#src/Libraries/Ship';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
@@ -44,10 +44,6 @@ export const ScheduleItemScreenBase = ({
 }: Props) => {
   const navigation = useCommonStack();
   const {commonStyles} = useStyles();
-  const {getParticipantLabel} = useFezData({
-    fezID: eventData?.fezID ?? '',
-    queryOptions: {enabled: !!eventData?.fezID},
-  });
 
   const styles = StyleSheet.create({
     cancelContainer: {

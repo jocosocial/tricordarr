@@ -65,6 +65,30 @@ interface UseFezDataReturn {
 }
 
 /**
+ * Returns a string describing the number of participants in a fez.
+ * This is not in the hook because it gets called in at least one place that may not have
+ * a Fez (ScheduleItemScreenBase.tsx). And we know how we feel about conditional hooks.
+ */
+export const getParticipantLabel = (fez: FezData): string => {
+  let minimumSuffix = '';
+  if (fez.minParticipants !== 0) {
+    minimumSuffix = `, ${fez.minParticipants} minimum`;
+  }
+  if (fez.maxParticipants === 0) {
+    return `${fez.participantCount} ${pluralize('attendee', fez.participantCount)}${minimumSuffix}`;
+  }
+  const waitlistCount: number = fez.members?.waitingList.length || 0;
+  let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} ${pluralize(
+    'participant',
+    fez.maxParticipants,
+  )}`;
+  if (fez.participantCount >= fez.maxParticipants) {
+    attendeeCountString = 'Full';
+  }
+  return `${attendeeCountString}, ${waitlistCount} waitlisted${minimumSuffix}`;
+};
+
+/**
  * Hook that provides computed properties for a fez.
  * Fetches fez data and computes owner/member status.
  * Captures the initial readCount from list caches first (unaffected by detail GET
@@ -195,25 +219,6 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     return fezData.members.isMuted;
   }, [fezData]);
 
-  const getParticipantLabel = useCallback((fez: FezData): string => {
-    let minimumSuffix = '';
-    if (fez.minParticipants !== 0) {
-      minimumSuffix = `, ${fez.minParticipants} minimum`;
-    }
-    if (fez.maxParticipants === 0) {
-      return `${fez.participantCount} ${pluralize('attendee', fez.participantCount)}${minimumSuffix}`;
-    }
-    const waitlistCount: number = fez.members?.waitingList.length || 0;
-    let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} ${pluralize(
-      'participant',
-      fez.maxParticipants,
-    )}`;
-    if (fez.participantCount >= fez.maxParticipants) {
-      attendeeCountString = 'Full';
-    }
-    return `${attendeeCountString}, ${waitlistCount} waitlisted${minimumSuffix}`;
-  }, []);
-
   const isFull = useMemo(() => {
     if (!fezData || fezData.maxParticipants === 0 || !fezData.members) {
       return false;
@@ -221,10 +226,7 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     return fezData.members.participants.length >= fezData.maxParticipants;
   }, [fezData]);
 
-  const participantLabel = useMemo(
-    () => (fezData ? getParticipantLabel(fezData) : undefined),
-    [fezData, getParticipantLabel],
-  );
+  const participantLabel = useMemo(() => (fezData ? getParticipantLabel(fezData) : undefined), [fezData]);
 
   return {
     fezData,
