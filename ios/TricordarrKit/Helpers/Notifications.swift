@@ -285,58 +285,19 @@ import UserNotifications
 			return
 		}
 
-		// Extract current configuration values for comparison
-		let currentProviderConfig = manager.providerConfiguration
-		let currentSocketUrl = currentProviderConfig["twitarrURL"] as? String
-		let currentToken = currentProviderConfig["token"] as? String
-		let currentMatchSSIDs = manager.matchSSIDs
-		let newMatchSSIDs = appConfig.wifiNetworkNames
+    let settings = PushManagerSettings(socketUrl: socketUrl, token: token, appConfig: appConfig)
 
-		// Convert pushNotifications from [NotificationTypeData: Bool] to [String: Bool] for storage
-		var pushNotificationsDict: [String: Bool] = [:]
-		for (key, value) in appConfig.pushNotifications {
-			pushNotificationsDict[key.rawValue] = value
-		}
-		let currentPushNotifications = currentProviderConfig["pushNotifications"] as? [String: Bool]
-		let currentMuteNotifications = currentProviderConfig["muteNotifications"] as? String
-		let currentEnableDeveloperOptions = currentProviderConfig["enableDeveloperOptions"] as? Bool
-
-		// Check if configuration has changed
-		let socketUrlChanged = currentSocketUrl != socketUrl
-		let tokenChanged = currentToken != token
-		let ssidsChanged = Set(currentMatchSSIDs) != Set(newMatchSSIDs)
-		let pushNotificationsChanged = currentPushNotifications != pushNotificationsDict
-		let muteNotificationsChanged = currentMuteNotifications != appConfig.muteNotifications
-		let enableDeveloperOptionsChanged = currentEnableDeveloperOptions != appConfig.enableDeveloperOptions
-		let configChanged =
-			socketUrlChanged || tokenChanged || ssidsChanged || pushNotificationsChanged || muteNotificationsChanged
-			|| enableDeveloperOptionsChanged
-
-		// Configure provider configuration dictionary
-		var providerConfig: [String: Any] = [:]
-		providerConfig["twitarrURL"] = socketUrl
-		providerConfig["token"] = token
-		providerConfig["pushNotifications"] = pushNotificationsDict
-		providerConfig["enableDeveloperOptions"] = appConfig.enableDeveloperOptions
-		if let muteNotifications = appConfig.muteNotifications {
-			providerConfig["muteNotifications"] = muteNotifications
-		}
-		manager.providerConfiguration = providerConfig
-
-		// Set matchSSIDs from AppConfig
-		manager.matchSSIDs = appConfig.wifiNetworkNames
-
+    manager.providerConfiguration = settings.providerConfiguration
+		manager.matchSSIDs = settings.matchSSIDs
 		manager.isEnabled = true
 		manager.providerBundleIdentifier = "com.grantcohoe.tricordarr.LocalPushExtension"
 		manager.localizedDescription = "App Extension for Background Server Communication"
 
-		// Only save to preferences if configuration has changed
-		guard configChanged else {
+    guard settings.hasManagerChanged(manager) else {
 			logger.log("[Notifications.swift] Configuration unchanged, skipping saveToPreferences")
 			return
 		}
 
-		// Save to preferences
 		manager.saveToPreferences { error in
 			if let error = error {
 				self.logger.error(

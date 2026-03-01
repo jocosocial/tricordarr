@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import NetworkExtension
 
 struct UserInfoData: Codable {
 	var type: NotificationTypeData
@@ -104,4 +105,71 @@ extension ForegroundPushProviderStatus {
 		}
 		return dict
 	}
+}
+
+/// Normalized input used for building provider config and change detection.
+struct PushManagerSettings {
+  let socketUrl: String
+  let token: String
+  let matchSSIDs: [String]
+  let pushNotifications: [String: Bool]
+  let muteNotifications: String?
+  let enableDeveloperOptions: Bool
+}
+
+extension PushManagerSettings {
+  /// Converts AppConfig pushNotifications map to the string-keyed dictionary stored in provider configuration.
+  private static func pushNotificationsDictionary(from appConfigMap: [NotificationTypeData: Bool]) -> [String: Bool] {
+    var result: [String: Bool] = [:]
+    for (key, value) in appConfigMap {
+      result[key.rawValue] = value
+    }
+    return result
+  }
+
+  /// Builds normalized settings from stored URL, token, and AppConfig.
+  init(socketUrl: String, token: String, appConfig: AppConfigData) {
+    let pushNotifications = Self.pushNotificationsDictionary(from: appConfig.pushNotifications)
+
+    self.socketUrl = socketUrl
+    self.token = token
+    self.matchSSIDs = appConfig.wifiNetworkNames
+    self.pushNotifications = pushNotifications
+    self.muteNotifications = appConfig.muteNotifications
+    self.enableDeveloperOptions = appConfig.enableDeveloperOptions
+  }
+  
+  /// Builds the provider configuration dictionary for NEAppPushManager from normalized settings.
+  var providerConfiguration: [String: Any] {
+    var config: [String: Any] = [:]
+    config["twitarrURL"] = self.socketUrl
+    config["token"] = self.token
+    config["pushNotifications"] = self.pushNotifications
+    config["enableDeveloperOptions"] = self.enableDeveloperOptions
+    if let muteNotifications = self.muteNotifications {
+      config["muteNotifications"] = muteNotifications
+    }
+    return config
+  }
+  
+  /// Returns true if the manager's current configuration differs from the given normalized settings.
+  func hasManagerChanged(_ manager: NEAppPushManager) -> Bool {
+    let current = manager.providerConfiguration
+    let currentSocketUrl = current["twitarrURL"] as? String
+    let currentToken = current["token"] as? String
+    let currentMatchSSIDs = manager.matchSSIDs
+    let currentPushNotifications = current["pushNotifications"] as? [String: Bool]
+    let currentMuteNotifications = current["muteNotifications"] as? String
+    let currentEnableDeveloperOptions = current["enableDeveloperOptions"] as? Bool
+
+    let socketUrlChanged = currentSocketUrl != self.socketUrl
+    let tokenChanged = currentToken != self.token
+    let ssidsChanged = Set(currentMatchSSIDs) != Set(self.matchSSIDs)
+    let pushNotificationsChanged = currentPushNotifications != self.pushNotifications
+    let muteNotificationsChanged = currentMuteNotifications != self.muteNotifications
+    let enableDeveloperOptionsChanged = currentEnableDeveloperOptions != self.enableDeveloperOptions
+
+    return socketUrlChanged || tokenChanged || ssidsChanged || pushNotificationsChanged || muteNotificationsChanged
+      || enableDeveloperOptionsChanged
+  }
 }
