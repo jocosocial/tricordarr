@@ -303,7 +303,8 @@ import UserNotifications
 
 		let settings = PushManagerSettings(socketUrl: socketUrl, token: token, appConfig: appConfig)
 
-		guard settings.hasManagerChanged(manager) else {
+		//
+		guard settings.hasManagerChanged(manager) || !manager.isEnabled else {
 			logger.log("[Notifications.swift] Configuration unchanged, skipping saveToPreferences")
 			return
 		}
@@ -355,7 +356,9 @@ import UserNotifications
 	/// Otherwise the in-app provider is started immediately or after an optional delay.
 	private func reconcileProviderCycle(reason: String, fallbackDelay: TimeInterval? = nil) {
 		if backgroundPushManager?.isActive == true {
-			logger.log("[Notifications.swift] reconcileProviderCycle \(reason, privacy: .public): background active, stopping in-app provider")
+			logger.log(
+				"[Notifications.swift] reconcileProviderCycle \(reason, privacy: .public): background active, stopping in-app provider"
+			)
 			providerDownTimer?.invalidate()
 			providerDownTimer = nil
 			checkStopInAppSocket()
@@ -373,7 +376,9 @@ import UserNotifications
 			return
 		}
 
-		logger.log("[Notifications.swift] reconcileProviderCycle \(reason, privacy: .public): background inactive, starting in-app provider")
+		logger.log(
+			"[Notifications.swift] reconcileProviderCycle \(reason, privacy: .public): background inactive, starting in-app provider"
+		)
 		providerDownTimer?.invalidate()
 		providerDownTimer = nil
 		checkStartInAppSocket()
@@ -462,7 +467,9 @@ import UserNotifications
 		logger.log("[Notifications.swift] appConfigDidChange received")
 
 		guard storedSocketUrl != nil, storedToken != nil, AppConfig.shared != nil else {
-			logger.log("[Notifications.swift] appConfigDidChange: prerequisites missing (socketUrl/token/appConfig), skipping")
+			logger.log(
+				"[Notifications.swift] appConfigDidChange: prerequisites missing (socketUrl/token/appConfig), skipping"
+			)
 			return
 		}
 
@@ -470,13 +477,16 @@ import UserNotifications
 		let newConfig = notification.userInfo?["newConfig"] as? AppConfigData
 
 		if oldConfig?.fgsWorkerHealthTimer != newConfig?.fgsWorkerHealthTimer {
-			logger.log("[Notifications.swift] appConfigDidChange: fgsWorkerHealthTimer changed, refreshing foreground ping timer")
+			logger.log(
+				"[Notifications.swift] appConfigDidChange: fgsWorkerHealthTimer changed, refreshing foreground ping timer"
+			)
 			foregroundPushProvider.refreshPingTimer()
 		}
 
 		if let manager = backgroundPushManager {
 			saveSettings(for: manager)
-		} else {
+		}
+		else {
 			reconcileProviderCycle(reason: "app-config-changed")
 		}
 	}

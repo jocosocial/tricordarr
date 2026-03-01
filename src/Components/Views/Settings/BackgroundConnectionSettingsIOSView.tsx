@@ -14,6 +14,7 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -70,6 +71,10 @@ export const BackgroundConnectionSettingsIOSView = () => {
       enableBackgroundWorker: newValue,
     });
     setEnable(newValue);
+    setTimeout(() => {
+      fetchManagerStatus();
+      fetchForegroundProviderStatus();
+    }, 1000);
   };
 
   const handleHealthChange = (seconds: number) => {
@@ -269,6 +274,12 @@ export const BackgroundConnectionSettingsIOSView = () => {
         <ListSection>
           <ListSubheader>Background Manager Status</ListSubheader>
         </ListSection>
+        <PaddedContentView padTop={true} padSides={false} padBottom={false}>
+          <HelpTopicView>
+            The background manager handles push notifications when the app is closed and you are connected to one of the
+            configured WiFi networks above. During normal operations it is expected to be active.
+          </HelpTopicView>
+        </PaddedContentView>
         {managerStatus && (
           <>
             <DataFieldListItem
@@ -307,9 +318,24 @@ export const BackgroundConnectionSettingsIOSView = () => {
             <DataFieldListItem title={'Provider Configuration'} description={'Not available'} />
           );
         })()}
+        <PaddedContentView padTop={true}>
+          <PrimaryActionButton
+            buttonText={'Reconfigure Provider'}
+            onPress={handleSetupManager}
+            disabled={!tokenData || preRegistrationMode}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+        </PaddedContentView>
         <ListSection>
           <ListSubheader>Foreground Provider Status</ListSubheader>
         </ListSection>
+        <PaddedContentView padTop={true} padSides={false} padBottom={false}>
+          <HelpTopicView>
+            The foreground provider handles push notifications when the app is open and you are not connected to one of
+            the configured WiFi networks above. During normal operations it is not expected to be active and the ping
+            time may be quite old.
+          </HelpTopicView>
+        </PaddedContentView>
         {foregroundProviderStatus && (
           <>
             <DataFieldListItem
@@ -344,17 +370,6 @@ export const BackgroundConnectionSettingsIOSView = () => {
             />
           </>
         )}
-        <ListSection>
-          <ListSubheader>Control</ListSubheader>
-        </ListSection>
-        <PaddedContentView padTop={true}>
-          <PrimaryActionButton
-            buttonText={'Recycle Worker'}
-            onPress={handleSetupManager}
-            disabled={!tokenData || preRegistrationMode}
-            buttonColor={theme.colors.twitarrNeutralButton}
-          />
-        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );
