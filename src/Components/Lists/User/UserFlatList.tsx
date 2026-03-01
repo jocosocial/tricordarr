@@ -23,8 +23,13 @@ interface UserFlatListProps {
  * A virtualized list of users (e.g. favorites, blocks, mutes). Uses AppFlashList
  * with Divider separators and optional header/footer.
  */
-export const UserFlatList = (props: UserFlatListProps) => {
-  const {userHeaders, refreshControl, renderListHeader, onUserPress, swipeableMode} = props;
+export const UserFlatList = ({
+  userHeaders,
+  refreshControl,
+  renderListHeader,
+  onUserPress,
+  swipeableMode,
+}: UserFlatListProps) => {
   const {enableSelection, setEnableSelection, selectedItems} = useSelection();
 
   const getListSeparator = useCallback(() => {
