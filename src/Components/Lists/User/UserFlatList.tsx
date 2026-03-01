@@ -6,22 +6,16 @@ import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
-import {AppIcons} from '#src/Enums/Icons';
+import {UserListItemSwipeable} from '#src/Components/Swipeables/UserListItemSwipeable';
+import {type UserRelationMode} from '#src/Queries/Users/UserRelationConstants';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-
-interface UserFlatListSwipeableConfig {
-  relationActionLabel: string;
-  relationActionIcon: AppIcons;
-  onRelationAction: (userHeader: UserHeader) => void;
-  getRelationActionRefreshing: (userID: string) => boolean;
-}
 
 interface UserFlatListProps {
   userHeaders: UserHeader[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
   renderListHeader: () => React.ReactNode;
   onUserPress: (userHeader: UserHeader) => void;
-  swipeable?: UserFlatListSwipeableConfig | null;
+  swipeableMode?: UserRelationMode;
 }
 
 /**
@@ -29,7 +23,7 @@ interface UserFlatListProps {
  * with Divider separators and optional header/footer.
  */
 export const UserFlatList = (props: UserFlatListProps) => {
-  const {userHeaders, refreshControl, renderListHeader, onUserPress, swipeable} = props;
+  const {userHeaders, refreshControl, renderListHeader, onUserPress, swipeableMode} = props;
 
   const getListSeparator = useCallback(() => {
     if (userHeaders.length > 0) {
@@ -39,24 +33,18 @@ export const UserFlatList = (props: UserFlatListProps) => {
   }, [userHeaders.length]);
 
   const renderItem = useCallback(
-    ({item}: {item: UserHeader}) => (
-      <UserListItem
-        userHeader={item}
-        onPress={() => onUserPress(item)}
-        swipeable={
-          swipeable
-            ? {
-                enabled: true,
-                relationActionLabel: swipeable.relationActionLabel,
-                relationActionIcon: swipeable.relationActionIcon,
-                onRelationAction: swipeable.onRelationAction,
-                relationActionRefreshing: swipeable.getRelationActionRefreshing(item.userID),
-              }
-            : undefined
-        }
-      />
-    ),
-    [onUserPress, swipeable],
+    ({item}: {item: UserHeader}) => {
+      const listItem = <UserListItem userHeader={item} onPress={() => onUserPress(item)} />;
+      if (swipeableMode) {
+        return (
+          <UserListItemSwipeable userHeader={item} mode={swipeableMode}>
+            {listItem}
+          </UserListItemSwipeable>
+        );
+      }
+      return listItem;
+    },
+    [onUserPress, swipeableMode],
   );
 
   const getListFooter = useCallback(() => {

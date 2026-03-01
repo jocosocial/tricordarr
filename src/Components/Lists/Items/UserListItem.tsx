@@ -4,11 +4,9 @@ import {IconButton, List} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
-import {UserListItemSwipeable} from '#src/Components/Swipeables/UserListItemSwipeable';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {AppIcons} from '#src/Enums/Icons';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 interface UserListItemProps {
@@ -17,27 +15,13 @@ interface UserListItemProps {
   buttonOnPress?: (uh: UserHeader) => void;
   buttonIcon?: IconSource;
   disabled?: boolean;
-  swipeable?: {
-    enabled?: boolean;
-    relationActionLabel: string;
-    relationActionIcon: AppIcons;
-    onRelationAction: (userHeader: UserHeader) => void;
-    relationActionRefreshing?: boolean;
-  };
 }
 
 /**
  * Generic List.Item for displaying a user. Takes a UserHeader and lets you add special features like an action button
  * or something that happens when you press it.
  */
-export const UserListItem = ({
-  userHeader,
-  onPress,
-  buttonOnPress,
-  buttonIcon,
-  disabled = false,
-  swipeable,
-}: UserListItemProps) => {
+export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, disabled = false}: UserListItemProps) => {
   const {styleDefaults, commonStyles} = useStyles();
   const {preRegistrationMode} = usePreRegistration();
   const {theme} = useAppTheme();
@@ -84,7 +68,7 @@ export const UserListItem = ({
     }
   }, [buttonOnPress, buttonIcon, userHeader, styleDefaults.avatarSizeSmall]);
 
-  const listItem = (
+  return (
     <List.Item
       style={styles.item}
       title={userHeader.username}
@@ -97,20 +81,4 @@ export const UserListItem = ({
       disabled={disabled}
     />
   );
-
-  if (swipeable) {
-    return (
-      <UserListItemSwipeable
-        userHeader={userHeader}
-        enabled={swipeable.enabled}
-        relationActionLabel={swipeable.relationActionLabel}
-        relationActionIcon={swipeable.relationActionIcon}
-        onRelationAction={swipeable.onRelationAction}
-        relationActionRefreshing={swipeable.relationActionRefreshing}>
-        {listItem}
-      </UserListItemSwipeable>
-    );
-  }
-
-  return listItem;
 };
