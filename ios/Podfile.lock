@@ -2692,6 +2692,8 @@ PODS:
     - React-perflogger (= 0.82.0)
     - React-utils (= 0.82.0)
     - SocketRocket
+  - RNCallKeep (4.3.16):
+    - React
   - RNCAsyncStorage (2.2.0):
     - boost
     - DoubleConversion
@@ -3302,6 +3304,7 @@ DEPENDENCIES:
   - ReactAppDependencyProvider (from `build/generated/ios`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNCallKeep (from `../node_modules/react-native-callkeep`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
@@ -3500,6 +3503,8 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNCallKeep:
+    :path: "../node_modules/react-native-callkeep"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
@@ -3619,6 +3624,7 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: c5c4f5280e4ae0f9f4a739c64c4260fe0b3edaf1
   ReactCodegen: 1e282f4d3afe48827dbc68f0a952f22300689593
   ReactCommon: 25c7f94aee74ddd93a8287756a8ac0830a309544
+  RNCallKeep: 1930a01d8caf48f018be4f2db0c9f03405c2f977
   RNCAsyncStorage: 29f0230e1a25f36c20b05f65e2eb8958d6526e82
   RNCClipboard: 4b58c780f63676367640f23c8e114e9bd0cf86ac
   RNDeviceInfo: bcce8752b5043a623fe3c26789679b473f705d3c
