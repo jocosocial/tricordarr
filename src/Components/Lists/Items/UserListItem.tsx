@@ -17,8 +17,6 @@ interface UserListItemProps {
   userHeader: UserHeader;
   buttonOnPress?: (uh: UserHeader) => void;
   buttonIcon?: IconSource;
-  /** Additional action buttons to display on the right side */
-  additionalButtons?: ActionButton[];
   disabled?: boolean;
   enableSelection?: boolean;
   setEnableSelection?: Dispatch<SetStateAction<boolean>>;
