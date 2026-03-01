@@ -46,7 +46,8 @@ export const UserFavoriteText = () => {
   const {commonStyles} = useStyles();
   return (
     <Text style={[commonStyles.marginBottomSmall]}>
-      Favoriting a user allows them to call you (between iOS devices using The Kraken app only).
+      Favoriting a user allows them to call you with KrakenTalk™. You can swipe on each user to see additional actions.
+      Long-press to select multiple users.
     </Text>
   );
 };
