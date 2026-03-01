@@ -8,6 +8,7 @@
 import Foundation
 import NetworkExtension
 import os
+import UserNotifications
 
 public class WebsocketNotifier: NSObject {
 	public var pushProvider: NEAppPushProvider?  // NULL if notifier is being used in-app @TODO LocalPushProvider
@@ -36,6 +37,34 @@ public class WebsocketNotifier: NSObject {
 
 	deinit {
     self.logger.log("[WebsocketNotifier.swift] de-init. inApp: \(self.isInApp)")
+	}
+
+	// MARK: - Debug lifecycle notifications
+
+	/// Posts a local debug notification only when developer mode is enabled.
+	/// - Parameters:
+	///   - providerConfiguration: When non-nil (extension context), developer mode is read from this dict. When nil (app context), uses AppConfig.shared.
+	///   - title: Notification title.
+	///   - body: Notification body.
+	public static func postDebugLifecycleNotification(
+		providerConfiguration: [String: Any]?,
+		title: String,
+		body: String
+	) {
+		let developerModeEnabled: Bool
+		if let config = providerConfiguration {
+			developerModeEnabled = (config["enableDeveloperOptions"] as? Bool) == true
+		} else {
+			developerModeEnabled = AppConfig.shared?.enableDeveloperOptions == true
+		}
+		guard developerModeEnabled else { return }
+
+		let content = UNMutableNotificationContent()
+		content.title = title
+		content.body = body
+		content.sound = .default
+		let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+		UNUserNotificationCenter.current().add(request) { _ in }
 	}
 
 	// MARK: - Configuration
@@ -430,6 +459,13 @@ public class WebsocketNotifier: NSObject {
 		}
 		startState = true
 		openWebSocket()
+		if isInApp {
+			WebsocketNotifier.postDebugLifecycleNotification(
+				providerConfiguration: nil,
+				title: "Foreground provider started",
+				body: "In-app push provider is running."
+			)
+		}
 	}
 
 	/**
@@ -437,6 +473,13 @@ public class WebsocketNotifier: NSObject {
 	 */
 	public func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
     self.logger.log("[WebsocketNotifier.swift] stop called")
+		if isInApp {
+			WebsocketNotifier.postDebugLifecycleNotification(
+				providerConfiguration: nil,
+				title: "Foreground provider stopped",
+				body: "In-app push provider has stopped."
+			)
+		}
 		socket?.cancel(with: .goingAway, reason: nil)
 		socket = nil
 		session?.finishTasksAndInvalidate()

@@ -299,6 +299,7 @@ import UserNotifications
 		}
 		let currentPushNotifications = currentProviderConfig["pushNotifications"] as? [String: Bool]
 		let currentMuteNotifications = currentProviderConfig["muteNotifications"] as? String
+		let currentEnableDeveloperOptions = currentProviderConfig["enableDeveloperOptions"] as? Bool
 
 		// Check if configuration has changed
 		let socketUrlChanged = currentSocketUrl != socketUrl
@@ -306,14 +307,17 @@ import UserNotifications
 		let ssidsChanged = Set(currentMatchSSIDs) != Set(newMatchSSIDs)
 		let pushNotificationsChanged = currentPushNotifications != pushNotificationsDict
 		let muteNotificationsChanged = currentMuteNotifications != appConfig.muteNotifications
+		let enableDeveloperOptionsChanged = currentEnableDeveloperOptions != appConfig.enableDeveloperOptions
 		let configChanged =
 			socketUrlChanged || tokenChanged || ssidsChanged || pushNotificationsChanged || muteNotificationsChanged
+			|| enableDeveloperOptionsChanged
 
 		// Configure provider configuration dictionary
 		var providerConfig: [String: Any] = [:]
 		providerConfig["twitarrURL"] = socketUrl
 		providerConfig["token"] = token
 		providerConfig["pushNotifications"] = pushNotificationsDict
+		providerConfig["enableDeveloperOptions"] = appConfig.enableDeveloperOptions
 		if let muteNotifications = appConfig.muteNotifications {
 			providerConfig["muteNotifications"] = muteNotifications
 		}
