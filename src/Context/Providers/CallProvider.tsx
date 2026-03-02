@@ -580,13 +580,12 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     [startAudioStreaming, stopAudioStreaming, setSnackbarPayload, state.currentCall],
   );
 
-  const receiveCall = useCallback((callID: string, callerUserHeader: UserHeader) => {
+  const receiveCall = useCallback((callID: string, callerUserHeader: UserHeader, options?: {useCallKit?: boolean}) => {
     console.log('[CallProvider] Receiving incoming call from', callerUserHeader.username);
 
-    // Mark this call as using CallKit (incoming calls use CallKit for native UI)
-    callUsesCallKitRef.current = Platform.OS === 'ios';
+    const useCallKit = options?.useCallKit !== false;
+    callUsesCallKitRef.current = Platform.OS === 'ios' && useCallKit;
 
-    // First dispatch RECEIVE to update state immediately
     dispatch({
       type: CallActions.RECEIVE,
       payload: {
@@ -595,9 +594,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       },
     });
 
-    // Display incoming call via CallKit on iOS
-    // Note: displayIncomingCall will ensure setup is complete before proceeding
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' && useCallKit) {
       CallKitService.displayIncomingCall(callID, callerUserHeader.username, callerUserHeader.userID).catch(error => {
         console.error('[CallProvider] CallKit displayIncomingCall failed:', error);
       });
@@ -1178,11 +1175,10 @@ export const CallProvider = ({children}: PropsWithChildren) => {
         }
       },
       onEndCall: (callUUID: string) => {
-        // User ended via CallKit UI
-        // Use refs to get current state (avoids stale closure)
         const currentCallID = currentCallIDRef.current;
         const currentState = callStateRef.current;
         const usesCallKit = callUsesCallKitRef.current;
+        const uuidsMatch = currentCallID?.toLowerCase() === callUUID.toLowerCase();
         console.log(
           '[CallProvider] CallKit endCall event for:',
           callUUID,
@@ -1201,8 +1197,6 @@ export const CallProvider = ({children}: PropsWithChildren) => {
         }
 
         // Compare UUIDs case-insensitively (CallKit returns lowercase, server returns uppercase)
-        const uuidsMatch = currentCallID?.toLowerCase() === callUUID.toLowerCase();
-
         if (uuidsMatch) {
           console.log('[CallProvider] CallKit endCall matched current call - calling endCall()');
           endCall();

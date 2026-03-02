@@ -10,7 +10,11 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {createLogger} from '#src/Libraries/Logger';
+import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
+import {isEmulator} from '#src/Libraries/Platform/Detection';
+import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
@@ -58,13 +62,28 @@ export const NotificationDataListener = () => {
           console.log('[NotificationDataListener.tsx] Incoming phone call notification');
 
           if (Platform.OS === 'ios') {
-            // On iOS, use CallKit via receiveCall which triggers native incoming call UI
             const caller = notificationData.caller;
             if (caller) {
-              console.log('[NotificationDataListener.tsx] Displaying incoming call via CallKit');
-              receiveCall(notificationData.contentID, {
-                userID: caller.userID,
-                username: caller.username,
+              isEmulator().then(isSim => {
+                if (isSim) {
+                  navigationNavigate(BottomTabComponents.seamailTab, {
+                    screen: ChatStackScreenComponents.krakenTalkReceiveScreen,
+                    params: {
+                      callID: notificationData.contentID,
+                      callerUserID: String(caller.userID),
+                      callerUsername: caller.username,
+                    },
+                  });
+                  receiveCall(
+                    notificationData.contentID,
+                    {userID: caller.userID, username: caller.username},
+                    {
+                      useCallKit: false,
+                    },
+                  );
+                } else {
+                  receiveCall(notificationData.contentID, {userID: caller.userID, username: caller.username});
+                }
               });
             } else {
               console.warn('[NotificationDataListener.tsx] No caller info in phone call notification');

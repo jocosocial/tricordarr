@@ -18,10 +18,14 @@ export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
   const {theme} = useAppTheme();
 
   useEffect(() => {
-    receiveCall(route.params.callID, {
-      userID: route.params.callerUserID,
-      username: route.params.callerUsername,
-    });
+    receiveCall(
+      route.params.callID,
+      {
+        userID: route.params.callerUserID,
+        username: route.params.callerUsername,
+      },
+      {useCallKit: false},
+    );
   }, [route.params.callID, route.params.callerUserID, route.params.callerUsername, receiveCall]);
 
   const onAnswer = useCallback(async () => {

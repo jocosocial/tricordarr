@@ -31,7 +31,7 @@ export interface CallContextType {
 
   // Actions
   initiateCall: (userHeader: UserHeader) => Promise<void>;
-  receiveCall: (callID: string, callerUserHeader: UserHeader) => void;
+  receiveCall: (callID: string, callerUserHeader: UserHeader, options?: {useCallKit?: boolean}) => void;
   answerCall: (callID: string) => Promise<void>;
   declineCall: (callID: string) => Promise<void>;
   endCall: () => Promise<void>;
