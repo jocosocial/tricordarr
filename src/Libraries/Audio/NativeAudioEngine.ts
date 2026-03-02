@@ -1,6 +1,9 @@
-import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
+import {NativeEventEmitter, Platform} from 'react-native';
 
-const {AudioEngine} = NativeModules;
+import type {Spec} from '#specs/NativeAudioEngine';
+import NativeAudioEngineModule from '#specs/NativeAudioEngine';
+
+const AudioEngine: Spec | null = NativeAudioEngineModule;
 
 if (!AudioEngine) {
   console.error('[NativeAudioEngine] Native AudioEngine module not found');

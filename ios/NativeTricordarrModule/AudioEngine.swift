@@ -1,8 +1,14 @@
 import AVFoundation
 import React
 
-@objc(AudioEngine)
-class AudioEngine: RCTEventEmitter {
+@objc protocol AudioEngineCoreDelegate: AnyObject {
+	func audioEngineDidCaptureAudioData(_ samples: [NSNumber])
+}
+
+@objc(AudioEngineCore)
+class AudioEngine: NSObject {
+	@objc weak var delegate: AudioEngineCoreDelegate?
+
 	private var audioEngine: AVAudioEngine?
 	private var inputNode: AVAudioInputNode?
 	private var playerNode: AVAudioPlayerNode?
@@ -27,16 +33,6 @@ class AudioEngine: RCTEventEmitter {
 
 	deinit {
 		NotificationCenter.default.removeObserver(self)
-	}
-
-	// MARK: - RCTEventEmitter
-
-	override func supportedEvents() -> [String]! {
-		return ["onAudioData"]
-	}
-
-	override static func requiresMainQueueSetup() -> Bool {
-		return true
 	}
 
 	// MARK: - Audio Session Setup
@@ -85,12 +81,11 @@ class AudioEngine: RCTEventEmitter {
 		{
 			print("[AudioEngine] Route changed, reason: \(reason.rawValue)")
 
-			// Restart for route changes that might affect playback
 			// overrideOutputAudioPort has rawValue 8, but may not be available as enum case
 			// So we check both the enum cases and the raw value
 			let shouldRestart =
 				reason == .newDeviceAvailable || reason == .oldDeviceUnavailable || reason == .categoryChange
-				|| reasonValue == 8  // overrideOutputAudioPort
+				|| reasonValue == 8
 
 			if shouldRestart {
 				print("[AudioEngine] Route change requires engine restart")
@@ -98,7 +93,6 @@ class AudioEngine: RCTEventEmitter {
 			}
 		}
 		else {
-			// If we can't determine the reason, restart anyway to be safe
 			print("[AudioEngine] Route changed (unknown reason), restarting engine")
 			restartAudioEngineIfNeeded()
 		}
@@ -118,7 +112,6 @@ class AudioEngine: RCTEventEmitter {
 		if !audioEngine.isRunning {
 			print("[AudioEngine] Engine stopped, restarting...")
 			do {
-				// Restart the engine
 				try audioEngine.start()
 				print("[AudioEngine] Audio engine restarted successfully")
 			}
@@ -160,7 +153,7 @@ class AudioEngine: RCTEventEmitter {
 		}
 	}
 
-	// MARK: - Public Methods (Exposed to React Native)
+	// MARK: - Public Methods (called from ObjC++ TurboModule host)
 
 	@objc func start(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
 		DispatchQueue.main.async { [weak self] in
@@ -340,7 +333,6 @@ class AudioEngine: RCTEventEmitter {
 			}
 		}
 
-		// Schedule buffer for playback
 		playerNode.scheduleBuffer(buffer, completionHandler: nil)
 	}
 
@@ -510,6 +502,6 @@ class AudioEngine: RCTEventEmitter {
 
 		// Send to JavaScript as NSNumber array
 		let numberArray = amplifiedSamples.map { NSNumber(value: $0) }
-		sendEvent(withName: "onAudioData", body: ["samples": numberArray])
+		delegate?.audioEngineDidCaptureAudioData(numberArray)
 	}
 }

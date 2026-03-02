@@ -10,15 +10,13 @@ import android.media.MediaRecorder
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.tricordarr.nativemodule.NativeAudioEngineSpec
 import kotlin.concurrent.thread
 
 class AudioEngineModule(reactContext: ReactApplicationContext) :
-    ReactContextBaseJavaModule(reactContext) {
+    NativeAudioEngineSpec(reactContext) {
 
     private var audioRecord: AudioRecord? = null
     private var audioTrack: AudioTrack? = null
@@ -34,8 +32,7 @@ class AudioEngineModule(reactContext: ReactApplicationContext) :
 
     override fun getName(): String = "AudioEngine"
 
-    @ReactMethod
-    fun start(promise: Promise) {
+    override fun start(promise: Promise) {
         try {
             startAudioEngine()
             promise.resolve(true)
@@ -44,21 +41,18 @@ class AudioEngineModule(reactContext: ReactApplicationContext) :
         }
     }
 
-    @ReactMethod
-    fun stop(promise: Promise) {
+    override fun stop(promise: Promise) {
         stopAudioEngine()
         promise.resolve(true)
     }
 
-    @ReactMethod
-    fun setMuted(muted: Boolean, promise: Promise) {
+    override fun setMuted(muted: Boolean, promise: Promise) {
         isMuted = muted
         println("[AudioEngine] Microphone ${if (muted) "muted" else "unmuted"}")
         promise.resolve(true)
     }
 
-    @ReactMethod
-    fun setSpeakerOn(speakerOn: Boolean, promise: Promise) {
+    override fun setSpeakerOn(speakerOn: Boolean, promise: Promise) {
         try {
             val audioManager = reactApplicationContext.getSystemService(
                 Context.AUDIO_SERVICE
@@ -74,8 +68,7 @@ class AudioEngineModule(reactContext: ReactApplicationContext) :
         }
     }
 
-    @ReactMethod
-    fun playAudio(audioData: ReadableArray) {
+    override fun playAudio(audioData: ReadableArray) {
         val track = audioTrack ?: run {
             println("[AudioEngine] Cannot play audio - engine not initialized")
             return
@@ -88,6 +81,14 @@ class AudioEngineModule(reactContext: ReactApplicationContext) :
 
         // Write samples to audio track
         track.write(samples, 0, samples.size)
+    }
+
+    override fun addListener(eventName: String) {
+        // Required by TurboModule spec for event support. No-op.
+    }
+
+    override fun removeListeners(count: Double) {
+        // Required by TurboModule spec for event support. No-op.
     }
 
     private fun startAudioEngine() {

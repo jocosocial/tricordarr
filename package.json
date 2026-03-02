@@ -146,7 +146,8 @@
     },
     "ios": {
       "modulesProvider": {
-        "NativeTricordarrModule": "RCTNativeTricordarrModule"
+        "NativeTricordarrModule": "RCTNativeTricordarrModule",
+        "AudioEngine": "RCTAudioEngine"
       }
     }
   }
