@@ -56,11 +56,11 @@
 }
 
 - (void)addListener:(NSString *)eventName {
-  // Required by TurboModule spec for event support.
+  [super addListener:eventName];
 }
 
 - (void)removeListeners:(double)count {
-  // Required by TurboModule spec for event support.
+  [super removeListeners:count];
 }
 
 #pragma mark - AudioEngineCoreDelegate

@@ -117,6 +117,8 @@ class AudioEngine: NSObject {
 			}
 			catch {
 				print("[AudioEngine] Failed to restart audio engine: \(error)")
+				print("[AudioEngine] Attempting full audio graph rebuild for new hardware format")
+				rebuildAudioGraph()
 				return
 			}
 		}
@@ -132,6 +134,53 @@ class AudioEngine: NSObject {
 		}
 		else {
 			print("[AudioEngine] Warning: No player node available to restart")
+		}
+	}
+
+	/// Tears down and rebuilds the input tap and player node connections
+	/// using the current hardware format. Called when audioEngine.start() fails
+	/// due to a format mismatch (e.g. sample rate changed from 44100 to 48000 Hz
+	/// after a speaker toggle).
+	private func rebuildAudioGraph() {
+		guard let audioEngine = audioEngine else { return }
+
+		// Remove the stale input tap
+		if let inputNode = inputNode {
+			inputNode.removeTap(onBus: 0)
+		}
+
+		// Re-query the input node (same object, but its format has changed)
+		inputNode = audioEngine.inputNode
+		guard let inputNode = inputNode else {
+			print("[AudioEngine] Rebuild failed - no input node available")
+			return
+		}
+
+		let newInputFormat = inputNode.outputFormat(forBus: 0)
+		print("[AudioEngine] Rebuilding audio graph with new input format: \(newInputFormat)")
+
+		// Reinstall the tap with the current hardware format
+		inputNode.installTap(onBus: 0, bufferSize: 1024, format: newInputFormat) { [weak self] (buffer, time) in
+			self?.processMicrophoneBuffer(buffer, format: newInputFormat)
+		}
+
+		// Reconnect the player node — the mixer format may have changed too
+		if let playerNode = playerNode {
+			let newMixerFormat = audioEngine.mainMixerNode.inputFormat(forBus: 0)
+			audioEngine.disconnectNodeOutput(playerNode)
+			audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: newMixerFormat)
+			mixerFormat = newMixerFormat
+		}
+
+		audioEngine.prepare()
+
+		do {
+			try audioEngine.start()
+			playerNode?.play()
+			print("[AudioEngine] Audio graph rebuilt and engine restarted successfully")
+		}
+		catch {
+			print("[AudioEngine] Failed to start after audio graph rebuild: \(error)")
 		}
 	}
 
