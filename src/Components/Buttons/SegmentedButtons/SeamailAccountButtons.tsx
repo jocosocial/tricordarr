@@ -48,7 +48,9 @@ export const SeamailAccountButtons = () => {
     if (tempButtons.length !== 0 && profilePublicData) {
       tempButtons.unshift({
         value: profilePublicData.header.username,
-        label: profilePublicData.header.displayName || profilePublicData.header.username,
+        // This used to try for Display Name but those get long and make the button weird
+        // so I'm going back to just username.
+        label: profilePublicData.header.username,
         icon: userNotificationData?.newSeamailMessageCount ? AppIcons.notificationShow : AppIcons.user,
         onPress: () => clearPrivileges(),
       });
