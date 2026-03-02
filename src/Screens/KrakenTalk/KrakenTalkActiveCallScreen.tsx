@@ -1,11 +1,12 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {IconButton, Text} from 'react-native-paper';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {AppView} from '#src/Components/Views/AppView';
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 
@@ -25,16 +26,29 @@ const formatCallDuration = (seconds: number): string => {
 export const KrakenTalkActiveCallScreen = ({navigation}: Props) => {
   const {currentCall, callState, callDuration, isMuted, isSpeakerOn, toggleMute, toggleSpeaker, endCall} = useCall();
   const {theme} = useAppTheme();
+  const {setSnackbarPayload} = useSnackbar();
+  const endedByUserRef = useRef(false);
+  const remoteUsernameRef = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (currentCall?.remoteUser.username) {
+      remoteUsernameRef.current = currentCall.remoteUser.username;
+    }
+  }, [currentCall?.remoteUser.username]);
 
   useEffect(() => {
     if (callState === CallState.ENDED || !currentCall) {
+      if (!endedByUserRef.current && remoteUsernameRef.current) {
+        setSnackbarPayload({message: `Call with ${remoteUsernameRef.current} ended.`});
+      }
       if (navigation.canGoBack()) {
         navigation.goBack();
       }
     }
-  }, [callState, currentCall, navigation]);
+  }, [callState, currentCall, navigation, setSnackbarPayload]);
 
   const handleEndCall = async () => {
+    endedByUserRef.current = true;
     await endCall();
   };
 

@@ -37,7 +37,7 @@ export const NotificationDataListener = () => {
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
-  const {receiveCall} = useCall();
+  const {receiveCall, endCall} = useCall();
   const {invalidateFez} = useFezCacheReducer();
 
   const wsMessageHandler = useCallback(
@@ -51,6 +51,11 @@ export const NotificationDataListener = () => {
 
       // Some kinds of socket events should update other areas of the state.
       switch (notificationType) {
+        case NotificationTypeData.phoneCallEnded: {
+          // Initiator receives this when receiver declines or call ends - sync local call state
+          endCall();
+          break;
+        }
         case NotificationTypeData.announcement: {
           refetchAnnouncements();
           break;
@@ -115,7 +120,7 @@ export const NotificationDataListener = () => {
         }
       }
     },
-    [invalidateFez, refetchAnnouncements, refetchUserNotificationData, receiveCall],
+    [invalidateFez, refetchAnnouncements, refetchUserNotificationData, receiveCall, endCall],
   );
 
   const addHandler = useCallback(() => {

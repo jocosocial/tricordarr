@@ -14,6 +14,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.kraken
 export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
   const {initiateCall, currentCall, callState} = useCall();
   const initiatingRef = useRef(false);
+  const pushedCallIDRef = useRef<string | null>(null);
 
   const excludeHeaders = useMemo((): UserHeader[] => {
     const headers: UserHeader[] = [];
@@ -53,12 +54,23 @@ export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
     }
   }, [route.params?.initialUserHeader, handleInitiateCall]);
 
-  // Navigate to ActiveCallScreen when call is initiated
+  // Reset pushed ref when call ends so next call can push
+  useEffect(() => {
+    if (!currentCall) {
+      pushedCallIDRef.current = null;
+    }
+  }, [currentCall]);
+
+  // Navigate to ActiveCallScreen when call is initiated (once per call to avoid double push)
   useEffect(() => {
     if (
       currentCall &&
       (callState === CallState.INITIATING || callState === CallState.CONNECTING || callState === CallState.ACTIVE)
     ) {
+      if (pushedCallIDRef.current === currentCall.callID) {
+        return;
+      }
+      pushedCallIDRef.current = currentCall.callID;
       navigation.push(CommonStackComponents.krakenTalkActiveCallScreen, {
         callID: currentCall.callID,
       });
