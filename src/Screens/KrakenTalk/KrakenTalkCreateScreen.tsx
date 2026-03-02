@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
@@ -13,13 +13,34 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.kraken
 
 export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
   const {initiateCall, currentCall, callState} = useCall();
+  const initiatingRef = useRef(false);
+
+  const excludeHeaders = useMemo((): UserHeader[] => {
+    const headers: UserHeader[] = [];
+    if (route.params?.initialUserHeader) {
+      headers.push(route.params.initialUserHeader);
+    }
+    if (currentCall?.remoteUser) {
+      const alreadyIncluded = headers.some(h => h.userID === currentCall.remoteUser.userID);
+      if (!alreadyIncluded) {
+        headers.push(currentCall.remoteUser);
+      }
+    }
+    return headers;
+  }, [route.params?.initialUserHeader, currentCall?.remoteUser]);
 
   const handleInitiateCall = useCallback(
     async (userHeader: UserHeader) => {
+      if (initiatingRef.current) {
+        return;
+      }
+      initiatingRef.current = true;
       try {
         await initiateCall(userHeader);
       } catch (error) {
         console.error('[KrakenTalkCreateScreen] Failed to initiate call:', error);
+      } finally {
+        initiatingRef.current = false;
       }
     },
     [initiateCall],
@@ -49,6 +70,7 @@ export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
       <ScrollingContentView>
         <PaddedContentView>
           <UserMatchSearchBar
+            excludeHeaders={excludeHeaders}
             label={'Search for a user to call'}
             onPress={handleInitiateCall}
             clearOnPress={true}
