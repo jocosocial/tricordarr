@@ -65,7 +65,8 @@ export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
     }
   }, [currentCall]);
 
-  // Navigate to ActiveCallScreen when call is initiated (once per call to avoid double push)
+  // Navigate to ActiveCallScreen when call is initiated (once per call to avoid double push).
+  // When initialUserHeader is set (e.g. from users list swipe), replace so back returns to list.
   useEffect(() => {
     if (
       currentCall &&
@@ -75,11 +76,19 @@ export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
         return;
       }
       pushedCallIDRef.current = currentCall.callID;
-      navigation.push(CommonStackComponents.krakenTalkActiveCallScreen, {
-        callID: currentCall.callID,
-      });
+      const params = {callID: currentCall.callID};
+      /**
+       * I like the effect of push when coming from the new call screen more but we
+       * need replace for coming from list screens where we silently pass through
+       * this screen.
+       */
+      if (route.params?.initialUserHeader) {
+        navigation.replace(CommonStackComponents.krakenTalkActiveCallScreen, params);
+      } else {
+        navigation.push(CommonStackComponents.krakenTalkActiveCallScreen, params);
+      }
     }
-  }, [currentCall, callState, navigation]);
+  }, [currentCall, callState, navigation, route.params?.initialUserHeader]);
 
   return (
     <AppView>

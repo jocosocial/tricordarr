@@ -109,6 +109,9 @@ export const BackgroundConnectionSettingsIOSView = () => {
     }
   };
 
+  /**
+   * Handle changes to the WiFi network list.
+   */
   const handleSubmit = (
     values: BackgroundConnectionSettingsFormValues,
     helpers: FormikHelpers<BackgroundConnectionSettingsFormValues>,
