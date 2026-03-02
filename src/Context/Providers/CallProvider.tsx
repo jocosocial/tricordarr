@@ -43,6 +43,11 @@ export const CallProvider = ({children}: PropsWithChildren) => {
   const isMutedRef = useRef<boolean>(false);
   // Track if mute change originated from CallKit to prevent feedback loop
   const muteChangeFromCallKitRef = useRef<boolean>(false);
+  // Track phone socket via ref so endCall can access it without depending on
+  // the full state object. Without this, endCall would recreate every second
+  // (due to duration timer updating state), cascading through CallContext
+  // consumers and thrashing the NotificationDataListener WebSocket handler.
+  const phoneSocketRef = useRef<ReconnectingWebSocket | null>(null);
   const appState = useAppState();
   const {setSnackbarPayload} = useSnackbar();
 
@@ -64,6 +69,10 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     currentCallIDRef.current = state.currentCall?.callID;
     console.log('[CallProvider] currentCallIDRef updated to:', currentCallIDRef.current);
   }, [state.currentCall?.callID]);
+
+  useEffect(() => {
+    phoneSocketRef.current = state.currentCall?.phoneSocket ?? null;
+  }, [state.currentCall?.phoneSocket]);
 
   // Initialize CallKit on iOS
   useEffect(() => {
@@ -164,25 +173,12 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                 phoneSocket.send(packet);
               } catch (sendError) {
                 console.error('[CallProvider] Error sending audio packet:', sendError);
-                // If send fails, remove listener to prevent further errors
-                try {
-                  audioEngine.removeAudioDataListener();
-                } catch (e) {
-                  console.error('[CallProvider] Failed to remove audio listener:', e);
-                }
               }
             } else {
               console.warn('[CallProvider] Socket closed while preparing audio packet, state:', phoneSocket.readyState);
             }
           } catch (error) {
             console.error('[CallProvider] Failed to send audio packet:', error);
-            // If sending fails, it might mean the socket closed - don't crash
-            // Stop the audio listener to prevent further errors
-            try {
-              audioEngine.removeAudioDataListener();
-            } catch (e) {
-              console.error('[CallProvider] Failed to remove audio listener:', e);
-            }
           }
         });
 
@@ -941,9 +937,10 @@ export const CallProvider = ({children}: PropsWithChildren) => {
   );
 
   const endCall = useCallback(async () => {
-    const callID = state.currentCall?.callID;
-    const callState = state.state;
+    const callID = currentCallIDRef.current;
+    const callState = callStateRef.current;
     const usesCallKit = callUsesCallKitRef.current;
+    const phoneSocket = phoneSocketRef.current;
     console.log(
       '[CallProvider] endCall() called - callID:',
       callID,
@@ -955,9 +952,9 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       new Error().stack?.split('\n').slice(0, 5).join('\n'),
     );
 
-    if (state.currentCall?.phoneSocket) {
+    if (phoneSocket) {
       console.log('[CallProvider] endCall() closing phone socket');
-      state.currentCall.phoneSocket.close();
+      phoneSocket.close();
     }
 
     if (callID) {
@@ -989,7 +986,11 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     }
 
     dispatch({type: CallActions.END});
-  }, [state, declineMutation, stopAudioStreaming]);
+    // State accessed via refs (currentCallIDRef, callStateRef, phoneSocketRef)
+    // to keep endCall's identity stable. If state were a dependency, endCall would
+    // recreate every second from the duration timer, propagating through CallContext
+    // to NotificationDataListener and thrashing its WebSocket handler.
+  }, [declineMutation, stopAudioStreaming]);
 
   const toggleMute = useCallback(async () => {
     const newMutedState = !state.isMuted;
