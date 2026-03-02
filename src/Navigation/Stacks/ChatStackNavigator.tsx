@@ -31,7 +31,6 @@ export enum ChatStackScreenComponents {
   seamailListScreen = 'SeamailListScreen',
   seamailSearchScreen = 'SeamailSearchScreen',
   krakenTalkReceiveScreen = 'KrakenTalkReceiveScreen',
-  activeCallScreen = 'ActiveCallScreen',
 }
 
 export const ChatStackNavigator = () => {

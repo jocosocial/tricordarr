@@ -9,7 +9,7 @@ import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {ChatStackParamList} from '#src/Navigation/Stacks/ChatStackNavigator';
 
 type NavigationProp = StackNavigationProp<ChatStackParamList>;
 
@@ -59,7 +59,7 @@ const CallOverlayInner = () => {
             return navState;
           };
           const activeRoute = findActiveRoute(state);
-          setIsOnActiveCallScreen(activeRoute?.name === ChatStackScreenComponents.activeCallScreen);
+          setIsOnActiveCallScreen(activeRoute?.name === CommonStackComponents.krakenTalkActiveCallScreen);
         }
       } catch (error) {
         // Navigation state not available - assume we're not on ActiveCallScreen
