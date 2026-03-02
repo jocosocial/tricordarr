@@ -17,7 +17,7 @@ import {
 import {CallEndReason, CallKitService} from '#src/Libraries/Call/CallKitService';
 import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
 import {buildPhoneCallWebSocket} from '#src/Libraries/Network/Websockets';
-import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {usePhoneCallAnswerMutation, usePhoneCallDeclineMutation} from '#src/Queries/PhoneCall/PhoneCallMutations';
 import {CallActions, callReducer, initialCallState} from '#src/Reducers/Call/CallReducer';
@@ -1167,7 +1167,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           // Must navigate to the tab first since ActiveCallScreen is in a nested navigator
           console.log('[CallProvider] Navigating to ActiveCallScreen after CallKit answer');
           navigationNavigate(BottomTabComponents.seamailTab, {
-            screen: ChatStackScreenComponents.activeCallScreen,
+            screen: CommonStackComponents.krakenTalkActiveCallScreen,
             params: {callID: currentCallID!},
           });
         } else {
