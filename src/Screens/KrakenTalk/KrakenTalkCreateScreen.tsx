@@ -14,6 +14,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.kraken
 export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
   const {initiateCall, currentCall, callState} = useCall();
   const initiatingRef = useRef(false);
+  const initialCallMadeRef = useRef(false);
   const pushedCallIDRef = useRef<string | null>(null);
 
   const excludeHeaders = useMemo((): UserHeader[] => {
@@ -47,9 +48,12 @@ export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
     [initiateCall],
   );
 
-  // If initialUserHeader is provided, initiate call immediately
+  // If initialUserHeader is provided, initiate call immediately (once only).
+  // handleInitiateCall changes reference when call state changes, so the ref
+  // guard prevents the effect from re-initiating on every dependency change.
   useEffect(() => {
-    if (route.params?.initialUserHeader) {
+    if (route.params?.initialUserHeader && !initialCallMadeRef.current) {
+      initialCallMadeRef.current = true;
       handleInitiateCall(route.params.initialUserHeader);
     }
   }, [route.params?.initialUserHeader, handleInitiateCall]);
