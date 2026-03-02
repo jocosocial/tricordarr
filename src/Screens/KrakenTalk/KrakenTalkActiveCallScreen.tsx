@@ -25,25 +25,11 @@ const formatCallDuration = (seconds: number): string => {
 export const KrakenTalkActiveCallScreen = ({navigation}: Props) => {
   const {currentCall, callState, callDuration, isMuted, isSpeakerOn, toggleMute, toggleSpeaker, endCall} = useCall();
   const {theme} = useAppTheme();
-  const callStartTimeRef = React.useRef<number | null>(null);
-
-  // Track when call screen was mounted to prevent immediate exit
-  React.useEffect(() => {
-    if (currentCall && callState !== CallState.ENDED) {
-      callStartTimeRef.current = Date.now();
-    }
-  }, [currentCall, callState]);
 
   useEffect(() => {
     if (callState === CallState.ENDED || !currentCall) {
-      // Only navigate away if call has been active for at least 500ms
-      // This prevents immediate exit if socket closes right after opening
-      const timeSinceStart = callStartTimeRef.current ? Date.now() - callStartTimeRef.current : Infinity;
-      if (timeSinceStart > 500) {
-        console.log('[ActiveCallScreen] Call ended, navigating back', {timeSinceStart, callState});
+      if (navigation.canGoBack()) {
         navigation.goBack();
-      } else {
-        console.log('[ActiveCallScreen] Call ended too quickly, may be an error', {timeSinceStart, callState});
       }
     }
   }, [callState, currentCall, navigation]);

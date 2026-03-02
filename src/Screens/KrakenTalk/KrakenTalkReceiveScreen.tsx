@@ -26,7 +26,7 @@ export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
 
   const onAnswer = useCallback(async () => {
     await answerCall(route.params.callID);
-    navigation.replace(CommonStackComponents.krakenTalkActiveCallScreen, {
+    navigation.push(CommonStackComponents.krakenTalkActiveCallScreen, {
       callID: route.params.callID,
     });
   }, [answerCall, route.params.callID, navigation]);

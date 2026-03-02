@@ -59,7 +59,7 @@ export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
       currentCall &&
       (callState === CallState.INITIATING || callState === CallState.CONNECTING || callState === CallState.ACTIVE)
     ) {
-      navigation.replace(CommonStackComponents.krakenTalkActiveCallScreen, {
+      navigation.push(CommonStackComponents.krakenTalkActiveCallScreen, {
         callID: currentCall.callID,
       });
     }
@@ -73,7 +73,10 @@ export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
             excludeHeaders={excludeHeaders}
             label={'Search for a user to call'}
             onPress={handleInitiateCall}
-            clearOnPress={true}
+            // clearOnPress is false so that the user can come back to this screen and still have
+            // the search query. This is useful in error conditions when the call fails pretty
+            // quickly
+            clearOnPress={false}
             excludeSelf={true}
           />
         </PaddedContentView>
