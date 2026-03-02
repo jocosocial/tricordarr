@@ -9,6 +9,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useCall} from '#src/Context/Contexts/CallContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 
 type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.krakenTalkReceiveScreen>;
@@ -25,7 +26,7 @@ export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
 
   const onAnswer = useCallback(async () => {
     await answerCall(route.params.callID);
-    navigation.replace(ChatStackScreenComponents.activeCallScreen, {
+    navigation.replace(CommonStackComponents.krakenTalkActiveCallScreen, {
       callID: route.params.callID,
     });
   }, [answerCall, route.params.callID, navigation]);

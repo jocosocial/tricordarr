@@ -8,6 +8,7 @@ import {IconButton, Text} from 'react-native-paper';
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 
 type NavigationProp = StackNavigationProp<ChatStackParamList>;
@@ -82,7 +83,7 @@ const CallOverlayInner = () => {
 
   const handlePress = () => {
     // Navigate to ActiveCallScreen
-    navigation.navigate(ChatStackScreenComponents.activeCallScreen, {
+    navigation.navigate(CommonStackComponents.krakenTalkActiveCallScreen, {
       callID: currentCall.callID,
     });
   };

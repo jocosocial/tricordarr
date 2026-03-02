@@ -41,6 +41,7 @@ import {HelpManualScreen} from '#src/Screens/Help/HelpManualScreen';
 import {ModeratorHelpScreen} from '#src/Screens/Help/ModeratorHelpScreen';
 import {ShutternautHelpScreen} from '#src/Screens/Help/ShutternautHelpScreen';
 import {KaraokeHelpScreen} from '#src/Screens/Karaoke/KaraokeHelpScreen';
+import {KrakenTalkActiveCallScreen} from '#src/Screens/KrakenTalk/KrakenTalkActiveCallScreen';
 import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateScreen';
 import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen';
 import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
@@ -349,6 +350,9 @@ export type CommonStackParamList = {
   KrakenTalkCreateScreen?: {
     initialUserHeader?: UserHeader;
   };
+  KrakenTalkActiveCallScreen?: {
+    callID: string;
+  };
 };
 
 export enum CommonStackComponents {
@@ -457,6 +461,7 @@ export enum CommonStackComponents {
   easterEggHelpScreen = 'EasterEggHelpScreen',
   todayHelpScreen = 'TodayHelpScreen',
   krakenTalkCreateScreen = 'KrakenTalkCreateScreen',
+  krakenTalkActiveCallScreen = 'KrakenTalkActiveCallScreen',
 }
 
 /**
@@ -1043,6 +1048,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.krakenTalkCreateScreen}
         component={KrakenTalkCreateScreen}
         options={{title: 'New Call'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.krakenTalkActiveCallScreen}
+        component={KrakenTalkActiveCallScreen}
+        options={{title: 'Call', headerShown: false}}
       />
     </>
   );

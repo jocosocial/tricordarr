@@ -6,10 +6,10 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
-import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
-type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.krakentalkCreateScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.krakenTalkCreateScreen>;
 
 export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
   const {initiateCall, currentCall, callState} = useCall();
@@ -38,7 +38,7 @@ export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
       currentCall &&
       (callState === CallState.INITIATING || callState === CallState.CONNECTING || callState === CallState.ACTIVE)
     ) {
-      navigation.replace(ChatStackScreenComponents.activeCallScreen, {
+      navigation.replace(CommonStackComponents.krakenTalkActiveCallScreen, {
         callID: currentCall.callID,
       });
     }

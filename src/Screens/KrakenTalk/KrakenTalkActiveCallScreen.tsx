@@ -7,9 +7,9 @@ import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {AppView} from '#src/Components/Views/AppView';
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 
-type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.activeCallScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.krakenTalkActiveCallScreen>;
 
 const formatCallDuration = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);
@@ -22,7 +22,7 @@ const formatCallDuration = (seconds: number): string => {
   return `${minutes}:${secs.toString().padStart(2, '0')}`;
 };
 
-export const ActiveCallScreen = ({navigation}: Props) => {
+export const KrakenTalkActiveCallScreen = ({navigation}: Props) => {
   const {currentCall, callState, callDuration, isMuted, isSpeakerOn, toggleMute, toggleSpeaker, endCall} = useCall();
   const {theme} = useAppTheme();
   const callStartTimeRef = React.useRef<number | null>(null);
