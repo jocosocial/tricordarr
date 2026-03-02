@@ -74,6 +74,11 @@ export const SettingsScreen = ({navigation}: Props) => {
           <ListSection>
             <ListSubheader>Content</ListSubheader>
             <SettingsNavigationListItem
+              title={'Chat Settings'}
+              description={'Settings for Seamail and KrakenTalk.'}
+              navComponent={CommonStackComponents.chatSettingsScreen}
+            />
+            <SettingsNavigationListItem
               title={'Forum Settings'}
               description={'Settings for Forum threads and categories.'}
               navComponent={CommonStackComponents.forumSettingsScreen}
@@ -92,11 +97,6 @@ export const SettingsScreen = ({navigation}: Props) => {
               title={'Schedule Settings'}
               description={'Settings related to the day and schedule.'}
               navComponent={CommonStackComponents.eventSettingsScreen}
-            />
-            <SettingsNavigationListItem
-              title={'Seamail Settings'}
-              description={'Settings for Seamail conversations.'}
-              navComponent={CommonStackComponents.seamailSettingsScreen}
             />
           </ListSection>
           <Divider bold={true} />

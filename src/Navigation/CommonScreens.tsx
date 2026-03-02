@@ -92,9 +92,9 @@ import {SeamailEditScreen} from '#src/Screens/Seamail/SeamailEditScreen';
 import {SeamailHelpScreen} from '#src/Screens/Seamail/SeamailHelpScreen';
 import {SeamailListHelpScreen} from '#src/Screens/Seamail/SeamailListHelpScreen';
 import {SeamailSearchHelpScreen} from '#src/Screens/Seamail/SeamailSearchHelpScreen';
-import {SeamailSettingsScreen} from '#src/Screens/Seamail/SeamailSettingsScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
+import {ChatSettingsScreen} from '#src/Screens/Settings/ChatSettingsScreen';
 import {ConfigServerUrlScreen} from '#src/Screens/Settings/Config/ConfigServerUrlScreen';
 import {AlertKeywordsScreen} from '#src/Screens/Settings/Content/AlertKeywordsSettingsScreen';
 import {ForumSettingsScreen} from '#src/Screens/Settings/Content/ForumSettingsScreen';
@@ -284,7 +284,7 @@ export type CommonStackParamList = {
   SeamailListHelpScreen: undefined;
   SeamailSearchHelpScreen: undefined;
   SeamailCreateHelpScreen: undefined;
-  SeamailSettingsScreen: undefined;
+  ChatSettingsScreen: undefined;
   FezChatHelpScreen: undefined;
   FezChatDetailsHelpScreen: undefined;
   SiteUILinkScreen: undefined;
@@ -417,7 +417,7 @@ export enum CommonStackComponents {
   seamailListHelpScreen = 'SeamailListHelpScreen',
   seamailSearchHelpScreen = 'SeamailSearchHelpScreen',
   seamailCreateHelpScreen = 'SeamailCreateHelpScreen',
-  seamailSettingsScreen = 'SeamailSettingsScreen',
+  chatSettingsScreen = 'ChatSettingsScreen',
   fezChatHelpScreen = 'FezChatHelpScreen',
   fezChatDetailsHelpScreen = 'FezChatDetailsHelpScreen',
   siteUILinkScreen = 'SiteUILinkScreen',
@@ -828,9 +828,9 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Seamail Create Help'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.seamailSettingsScreen}
-        component={SeamailSettingsScreen}
-        options={{title: 'Seamail Settings'}}
+        name={CommonStackComponents.chatSettingsScreen}
+        component={ChatSettingsScreen}
+        options={{title: 'Chat Settings'}}
       />
       <Stack.Screen
         name={CommonStackComponents.fezChatHelpScreen}
