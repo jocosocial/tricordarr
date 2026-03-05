@@ -1,6 +1,5 @@
 import {useAppState} from '@react-native-community/hooks';
 import {useCallback, useEffect} from 'react';
-import {Platform} from 'react-native';
 
 import {useCall} from '#src/Context/Contexts/CallContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
@@ -12,7 +11,7 @@ import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {createLogger} from '#src/Libraries/Logger';
 import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
-import {isEmulator} from '#src/Libraries/Platform/Detection';
+import {isEmulator, isIOS} from '#src/Libraries/Platform/Detection';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
@@ -66,7 +65,7 @@ export const NotificationDataListener = () => {
           // - On Android: Generate push notification
           console.log('[NotificationDataListener.tsx] Incoming phone call notification');
 
-          if (Platform.OS === 'ios') {
+          if (isIOS) {
             const caller = notificationData.caller;
             if (caller) {
               isEmulator().then(isSim => {
