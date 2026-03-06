@@ -36,6 +36,12 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
     }
   };
 
+  const handleSetOrganizerPress = () => {
+    commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
+      eventID: String(props.eventData.eventID),
+    });
+  };
+
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchorWithMenu}>
       {props.eventData.forum && <Menu.Item title={'Forum'} leadingIcon={AppIcons.forum} onPress={handleForumPress} />}
@@ -59,7 +65,7 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
       {props.eventData.eventType === EventType.shadow && (
         <>
           <Divider bold={true} />
-          <SetOrganizerMenuItem eventID={props.eventData.eventID} closeMenu={closeMenu} />
+          <SetOrganizerMenuItem closeMenu={closeMenu} onPress={handleSetOrganizerPress} />
         </>
       )}
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}

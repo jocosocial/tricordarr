@@ -2,22 +2,20 @@ import React from 'react';
 import {Menu} from 'react-native-paper';
 
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 interface SetOrganizerMenuItemProps {
-  eventID: string | number;
   closeMenu: () => void;
+  onPress: () => void;
   disabled?: boolean;
 }
 
+/**
+ * Menu items portal up to the Portal.Host which likely does not have the navigators available.
+ */
 export const SetOrganizerMenuItem = (props: SetOrganizerMenuItemProps) => {
-  const commonNavigation = useCommonStack();
-
   const handlePress = () => {
     props.closeMenu();
-    commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
-      eventID: String(props.eventID),
-    });
+    props.onPress();
   };
 
   return (

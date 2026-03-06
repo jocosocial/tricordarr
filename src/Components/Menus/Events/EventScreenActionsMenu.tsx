@@ -78,7 +78,11 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />
       {props.event.eventType === EventType.shadow && (
         <SetOrganizerMenuItem
-          eventID={props.event.eventID}
+          onPress={() => {
+            commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
+              eventID: String(props.event.eventID),
+            });
+          }}
           closeMenu={closeMenu}
           disabled={!(preRegistrationMode || hasPerformerSelfEditor)}
         />
