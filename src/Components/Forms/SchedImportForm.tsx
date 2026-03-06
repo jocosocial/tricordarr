@@ -20,11 +20,7 @@ const validationSchema = Yup.object().shape({
 export const SchedImportForm = (props: SchedImportFormProps) => {
   const {commonStyles} = useStyles();
   return (
-    <Formik
-      initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
-      validationSchema={validationSchema}
-      enableReinitialize={true}>
+    <Formik initialValues={props.initialValues} onSubmit={props.onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <TextField name={'schedUrl'} label={'Sched URL'} autoCapitalize={'none'} keyboardType={'url'} />

@@ -2,7 +2,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import {VEvent} from 'node-ical';
 import pluralize from 'pluralize';
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {Text} from 'react-native-paper';
 
 import {SchedImportForm} from '#src/Components/Forms/SchedImportForm';
@@ -27,6 +27,11 @@ export const ScheduleImportScreen = () => {
   const queryClient = useQueryClient();
 
   const writeLog = (line: string) => setLog(prevLogs => [...prevLogs, line]);
+
+  const initialValues = useMemo<SchedImportFormValues>(
+    () => ({username: '', schedUrl: appConfig.schedBaseUrl}),
+    [appConfig.schedBaseUrl],
+  );
 
   const onSubmit = async (values: SchedImportFormValues, helpers: FormikHelpers<SchedImportFormValues>) => {
     setLog([]);
@@ -105,7 +110,7 @@ export const ScheduleImportScreen = () => {
           internet package.
         </HelpTopicView>
         <PaddedContentView>
-          <SchedImportForm initialValues={{username: '', schedUrl: appConfig.schedBaseUrl}} onSubmit={onSubmit} />
+          <SchedImportForm initialValues={initialValues} onSubmit={onSubmit} />
         </PaddedContentView>
         <PaddedContentView>
           {log.map((line, index) => (
