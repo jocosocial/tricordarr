@@ -8,6 +8,8 @@ import {AppView} from '#src/Components/Views/AppView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
 
+import NativeAudioEngineModule from '#specs/NativeAudioEngine';
+
 export const AboutSettingsScreen = () => {
   const [apiLevel, setApiLevel] = useState<number>();
   const [manufacturer, setManufacturer] = useState('');
@@ -44,6 +46,7 @@ export const AboutSettingsScreen = () => {
           <DataFieldListItem title={'App Name'} description={DeviceInfo.getApplicationName()} />
           <DataFieldListItem title={'App Version'} description={DeviceInfo.getVersion()} onPress={handleBuildPress} />
           <DataFieldListItem title={'Build'} description={DeviceInfo.getBuildNumber()} onPress={handleBuildPress} />
+          <DataFieldListItem title={'Audio Engine Enabled'} description={NativeAudioEngineModule ? 'Yes' : 'No'} />
           <ListSubheader>Your Device</ListSubheader>
           <DataFieldListItem title={'System Version'} description={DeviceInfo.getSystemVersion()} />
           {isAndroid && <DataFieldListItem title={'API Level'} description={apiLevel?.toString()} />}

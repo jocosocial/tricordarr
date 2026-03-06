@@ -22,7 +22,7 @@ export const SeamailListScreenActionsMenu = () => {
         title={'Settings'}
         onPress={() => {
           closeMenu();
-          navigation.push(CommonStackComponents.seamailSettingsScreen);
+          navigation.push(CommonStackComponents.chatSettingsScreen);
         }}
       />
       <Menu.Item

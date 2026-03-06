@@ -4,8 +4,8 @@ import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {BlockedOrMutedBanner} from '#src/Components/Banners/BlockedOrMutedBanner';
+import {UserProfileFABGroup} from '#src/Components/Buttons/FloatingActionButtons/UserProfileFABGroup';
 import {HeaderProfileFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileFavoriteButton';
-import {HeaderProfileSeamailButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileSeamailButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {UserAboutCard} from '#src/Components/Cards/UserProfile/UserAboutCard';
 import {UserContentCard} from '#src/Components/Cards/UserProfile/UserContentCard';
@@ -97,7 +97,6 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
         <MaterialHeaderButtons>
           {data && (
             <>
-              <HeaderProfileSeamailButton profile={data} />
               <HeaderProfileFavoriteButton profile={data} />
               <UserProfileScreenActionsMenu profile={data} isMuted={isMuted} isBlocked={isBlocked} />
             </>
@@ -196,6 +195,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
           </PaddedContentView>
         )}
       </ScrollingContentView>
+      {!isSelf && <UserProfileFABGroup profile={data} />}
     </AppView>
   );
 };

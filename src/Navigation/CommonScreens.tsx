@@ -41,7 +41,9 @@ import {HelpManualScreen} from '#src/Screens/Help/HelpManualScreen';
 import {ModeratorHelpScreen} from '#src/Screens/Help/ModeratorHelpScreen';
 import {ShutternautHelpScreen} from '#src/Screens/Help/ShutternautHelpScreen';
 import {KaraokeHelpScreen} from '#src/Screens/Karaoke/KaraokeHelpScreen';
+import {KrakenTalkActiveCallScreen} from '#src/Screens/KrakenTalk/KrakenTalkActiveCallScreen';
 import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateScreen';
+import {KrakenTalkHelpScreen} from '#src/Screens/KrakenTalk/KrakenTalkHelpScreen';
 import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen';
 import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
 import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
@@ -91,9 +93,9 @@ import {SeamailEditScreen} from '#src/Screens/Seamail/SeamailEditScreen';
 import {SeamailHelpScreen} from '#src/Screens/Seamail/SeamailHelpScreen';
 import {SeamailListHelpScreen} from '#src/Screens/Seamail/SeamailListHelpScreen';
 import {SeamailSearchHelpScreen} from '#src/Screens/Seamail/SeamailSearchHelpScreen';
-import {SeamailSettingsScreen} from '#src/Screens/Seamail/SeamailSettingsScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
+import {ChatSettingsScreen} from '#src/Screens/Settings/ChatSettingsScreen';
 import {ConfigServerUrlScreen} from '#src/Screens/Settings/Config/ConfigServerUrlScreen';
 import {AlertKeywordsScreen} from '#src/Screens/Settings/Content/AlertKeywordsSettingsScreen';
 import {ForumSettingsScreen} from '#src/Screens/Settings/Content/ForumSettingsScreen';
@@ -283,7 +285,7 @@ export type CommonStackParamList = {
   SeamailListHelpScreen: undefined;
   SeamailSearchHelpScreen: undefined;
   SeamailCreateHelpScreen: undefined;
-  SeamailSettingsScreen: undefined;
+  ChatSettingsScreen: undefined;
   FezChatHelpScreen: undefined;
   FezChatDetailsHelpScreen: undefined;
   SiteUILinkScreen: undefined;
@@ -349,6 +351,10 @@ export type CommonStackParamList = {
   KrakenTalkCreateScreen?: {
     initialUserHeader?: UserHeader;
   };
+  KrakenTalkActiveCallScreen?: {
+    callID: string;
+  };
+  KrakenTalkHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -413,7 +419,7 @@ export enum CommonStackComponents {
   seamailListHelpScreen = 'SeamailListHelpScreen',
   seamailSearchHelpScreen = 'SeamailSearchHelpScreen',
   seamailCreateHelpScreen = 'SeamailCreateHelpScreen',
-  seamailSettingsScreen = 'SeamailSettingsScreen',
+  chatSettingsScreen = 'ChatSettingsScreen',
   fezChatHelpScreen = 'FezChatHelpScreen',
   fezChatDetailsHelpScreen = 'FezChatDetailsHelpScreen',
   siteUILinkScreen = 'SiteUILinkScreen',
@@ -457,6 +463,8 @@ export enum CommonStackComponents {
   easterEggHelpScreen = 'EasterEggHelpScreen',
   todayHelpScreen = 'TodayHelpScreen',
   krakenTalkCreateScreen = 'KrakenTalkCreateScreen',
+  krakenTalkActiveCallScreen = 'KrakenTalkActiveCallScreen',
+  krakenTalkHelpScreen = 'KrakenTalkHelpScreen',
 }
 
 /**
@@ -508,7 +516,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.cruiseHelpScreen
   | CommonStackComponents.dailyThemeHelpScreen
   | CommonStackComponents.easterEggHelpScreen
-  | CommonStackComponents.todayHelpScreen;
+  | CommonStackComponents.todayHelpScreen
+  | CommonStackComponents.krakenTalkHelpScreen;
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
   return (
@@ -823,9 +832,9 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Seamail Create Help'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.seamailSettingsScreen}
-        component={SeamailSettingsScreen}
-        options={{title: 'Seamail Settings'}}
+        name={CommonStackComponents.chatSettingsScreen}
+        component={ChatSettingsScreen}
+        options={{title: 'Chat Settings'}}
       />
       <Stack.Screen
         name={CommonStackComponents.fezChatHelpScreen}
@@ -1043,6 +1052,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.krakenTalkCreateScreen}
         component={KrakenTalkCreateScreen}
         options={{title: 'New Call'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.krakenTalkActiveCallScreen}
+        component={KrakenTalkActiveCallScreen}
+        options={{title: 'Call', headerShown: false}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.krakenTalkHelpScreen}
+        component={KrakenTalkHelpScreen}
+        options={{title: 'KrakenTalk Help'}}
       />
     </>
   );

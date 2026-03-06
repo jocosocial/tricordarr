@@ -7,8 +7,9 @@ import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScree
 export const TimezoneWarningCard = () => {
   const {commonStyles} = useStyles();
   const navigation = useCommonStack();
-  // const onPress = () => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/time`);
+
   const onPress = () => navigation.push(CommonStackComponents.mainTimeZoneScreen);
+
   return (
     <Card style={commonStyles.twitarrNegative} onPress={onPress}>
       <Card.Title

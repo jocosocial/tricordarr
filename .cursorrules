@@ -76,6 +76,7 @@ LoggedInScreen
 ## Code Smells
 
 - NEVER disable ESLint validation such as `eslint-disable-next-line react-hooks/exhaustive-deps`
+- Do not remove comments unless they are no longer relevant or are being updated
 
 ## Lists
 

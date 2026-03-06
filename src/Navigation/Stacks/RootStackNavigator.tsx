@@ -39,6 +39,8 @@ export const RootStackNavigator = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   // Store the last known footer height so we can restore it when navigating back
   const lastKnownFooterHeightRef = useRef<number>(0);
+  // Track the previous root-level route so we only clear the snackbar on root route changes
+  const previousRootRouteRef = useRef<string | undefined>(undefined);
 
   // Clear or restore footerHeight based on current route
   useEffect(() => {
@@ -83,7 +85,14 @@ export const RootStackNavigator = () => {
         state: () => {
           logger.debug('navigation state change handler.');
           setHasUnsavedWork(false);
-          setSnackbarPayload(undefined);
+          // KrakenTalk call declined messages highlighted that this was previously
+          // clearing the snackbar too aggressively.
+          const state = navigation.getState();
+          const currentRootRoute = state?.routes[state.index]?.name;
+          if (previousRootRouteRef.current !== undefined && currentRootRoute !== previousRootRouteRef.current) {
+            setSnackbarPayload(undefined);
+          }
+          previousRootRouteRef.current = currentRootRoute;
         },
       }}>
       <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />
