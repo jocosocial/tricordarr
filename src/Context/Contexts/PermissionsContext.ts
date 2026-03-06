@@ -6,6 +6,9 @@ interface PermissionsContextType {
   setHasNotificationPermission: Dispatch<SetStateAction<boolean>>;
   notificationPermissionStatus: PermissionStatus | undefined;
   setNotificationPermissionStatus: Dispatch<SetStateAction<PermissionStatus | undefined>>;
+  microphonePermissionStatus: PermissionStatus | undefined;
+  checkMicrophonePermission: () => Promise<void>;
+  requestMicrophonePermission: () => Promise<PermissionStatus>;
 }
 
 export const PermissionsContext = createContext(<PermissionsContextType>{});

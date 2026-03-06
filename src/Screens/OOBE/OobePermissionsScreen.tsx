@@ -23,8 +23,13 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
   const {onboarding} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
-  const {setHasNotificationPermission, notificationPermissionStatus, setNotificationPermissionStatus} =
-    usePermissions();
+  const {
+    setHasNotificationPermission,
+    notificationPermissionStatus,
+    setNotificationPermissionStatus,
+    microphonePermissionStatus,
+    requestMicrophonePermission,
+  } = usePermissions();
 
   const enablePermissions = async () => {
     const {status} = await requestNotifications([]);
@@ -73,9 +78,6 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
             this? You can always change or make up your mind later.
           </Text>
           <Text style={commonStyles.marginBottomSmall}>
-            Example notifications include: chat messages, forum mentions, alert keywords, event reminders.
-          </Text>
-          <Text style={commonStyles.marginBottomSmall}>
             Enabling this setting will make this app consume more battery.
           </Text>
         </PaddedContentView>
@@ -97,6 +99,34 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
           )}
         </PaddedContentView>
         {notificationPermissionStatus === RESULTS.GRANTED && <BatteryOptimizationSettingsView />}
+        <ListSection>
+          <ListSubheader>Audio</ListSubheader>
+        </ListSection>
+        <PaddedContentView padTop={true}>
+          <Text style={commonStyles.marginBottomSmall}>
+            This app can make WiFi voice calls to other users on the cruise. Would you like to enable this? You can
+            always change or make up your mind later.
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          {microphonePermissionStatus === RESULTS.BLOCKED ? (
+            <Text>
+              Microphone access has been blocked by your device. You'll need to enable it for this app manually in your
+              device settings.
+            </Text>
+          ) : (
+            <PrimaryActionButton
+              buttonText={microphonePermissionStatus === RESULTS.GRANTED ? 'Already Allowed' : 'Allow Microphone'}
+              onPress={requestMicrophonePermission}
+              disabled={microphonePermissionStatus === RESULTS.GRANTED}
+            />
+          )}
+        </PaddedContentView>
+        <PaddedContentView>
+          {microphonePermissionStatus === RESULTS.GRANTED && (
+            <Text>Cool! You can make additional changes in the app settings.</Text>
+          )}
+        </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView leftOnPress={() => navigation.goBack()} rightText={'Next'} rightOnPress={onNextPress} />
     </AppView>

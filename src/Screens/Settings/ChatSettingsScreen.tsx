@@ -1,14 +1,8 @@
 import {Formik} from 'formik';
-import React, {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import {View} from 'react-native';
 import {DataTable, Text} from 'react-native-paper';
-import {
-  check as checkPermission,
-  PERMISSIONS,
-  PermissionStatus,
-  request as requestPermission,
-  RESULTS,
-} from 'react-native-permissions';
+import {RESULTS} from 'react-native-permissions';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
@@ -22,9 +16,6 @@ import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
-import {isIOS} from '#src/Libraries/Platform/Detection';
-
-const microphonePermission = isIOS ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO;
 
 const chatNotificationCategories = [
   contentNotificationCategories.seamailUnreadMsg,
@@ -36,23 +27,8 @@ const chatNotificationCategories = [
 
 export const ChatSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
-  const {hasNotificationPermission} = usePermissions();
+  const {hasNotificationPermission, microphonePermissionStatus, requestMicrophonePermission} = usePermissions();
   const {commonStyles} = useStyles();
-  const [micPermissionStatus, setMicPermissionStatus] = useState<PermissionStatus | undefined>();
-
-  const checkMicPermission = useCallback(async () => {
-    const status = await checkPermission(microphonePermission);
-    setMicPermissionStatus(status);
-  }, []);
-
-  useEffect(() => {
-    checkMicPermission();
-  }, [checkMicPermission]);
-
-  const handleEnableMicrophone = async () => {
-    const status = await requestPermission(microphonePermission);
-    setMicPermissionStatus(status);
-  };
 
   const toggleValue = (configKey: keyof PushNotificationConfig) => {
     let pushConfig = appConfig.pushNotifications;
@@ -71,17 +47,17 @@ export const ChatSettingsScreen = () => {
           <ListSubheader>Permissions</ListSubheader>
           <PaddedContentView padTop={true}>
             <DataTable>
-              {micPermissionStatus === RESULTS.BLOCKED && (
+              {microphonePermissionStatus === RESULTS.BLOCKED && (
                 <Text>
                   Microphone access has been blocked by your device. You'll need to enable it for this app manually in
                   your device settings.
                 </Text>
               )}
-              {micPermissionStatus !== RESULTS.BLOCKED && (
+              {microphonePermissionStatus !== RESULTS.BLOCKED && (
                 <PrimaryActionButton
-                  buttonText={micPermissionStatus === RESULTS.GRANTED ? 'Already Allowed' : 'Allow Microphone'}
-                  onPress={handleEnableMicrophone}
-                  disabled={micPermissionStatus === RESULTS.GRANTED}
+                  buttonText={microphonePermissionStatus === RESULTS.GRANTED ? 'Already Allowed' : 'Allow Microphone'}
+                  onPress={requestMicrophonePermission}
+                  disabled={microphonePermissionStatus === RESULTS.GRANTED}
                 />
               )}
             </DataTable>
