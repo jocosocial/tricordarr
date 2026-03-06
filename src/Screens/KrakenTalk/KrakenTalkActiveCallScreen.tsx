@@ -8,7 +8,11 @@ import {AppView} from '#src/Components/Views/AppView';
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.krakenTalkActiveCallScreen>;
 
@@ -23,7 +27,19 @@ const formatCallDuration = (seconds: number): string => {
   return `${minutes}:${secs.toString().padStart(2, '0')}`;
 };
 
-export const KrakenTalkActiveCallScreen = ({navigation}: Props) => {
+export const KrakenTalkActiveCallScreen = (props: Props) => {
+  return (
+    <LoggedInScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.krakenTalkHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.phone} urlPath={'/kraken/call'}>
+          <KrakenTalkActiveCallScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
+  );
+};
+
+const KrakenTalkActiveCallScreenInner = ({navigation}: Props) => {
   const {currentCall, callState, callDuration, isMuted, isSpeakerOn, toggleMute, toggleSpeaker, endCall} = useCall();
   const {theme} = useAppTheme();
   const {setSnackbarPayload} = useSnackbar();

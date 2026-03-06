@@ -9,13 +9,29 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.krakenTalkCreateScreen>;
 
-export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
+export const KrakenTalkCreateScreen = (props: Props) => {
+  return (
+    <LoggedInScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.krakenTalkHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.phone}>
+          <KrakenTalkCreateScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
+  );
+};
+
+const KrakenTalkCreateScreenInner = ({route, navigation}: Props) => {
   const {initiateCall, currentCall, callState} = useCall();
   const initiatingRef = useRef(false);
   const initialCallMadeRef = useRef(false);

@@ -9,11 +9,28 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useCall} from '#src/Context/Contexts/CallContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.krakenTalkReceiveScreen>;
-export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
+
+export const KrakenTalkReceiveScreen = (props: Props) => {
+  return (
+    <LoggedInScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.krakenTalkHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.phone} urlPath={'/kraken/receive'}>
+          <KrakenTalkReceiveScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </LoggedInScreen>
+  );
+};
+
+const KrakenTalkReceiveScreenInner = ({route, navigation}: Props) => {
   const {answerCall, declineCall, receiveCall} = useCall();
   const {theme} = useAppTheme();
 
