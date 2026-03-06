@@ -45,6 +45,8 @@ export const ServerUrlSettingForm = (props: ServerUrlFormProps) => {
           <TextField
             name={'serverUrl'}
             label={'URL'}
+            textContentType={'URL'}
+            keyboardType={'url'}
             disabled={values.serverChoice.name !== 'Other'}
             onChangeText={v => {
               setFieldValue('serverUrl', v);

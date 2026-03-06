@@ -23,7 +23,16 @@ export const SchedImportForm = (props: SchedImportFormProps) => {
     <Formik initialValues={props.initialValues} onSubmit={props.onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
-          <TextField name={'schedUrl'} label={'Sched URL'} autoCapitalize={'none'} keyboardType={'url'} />
+          <TextField
+            name={'schedUrl'}
+            label={'Sched URL'}
+            autoCapitalize={'none'}
+            // textContentType was needed to prevent the cursor from not being visible
+            // when trying to edit the field on iOS and Android.
+            // Setting inputMode had the same problem as just keyboardType.
+            textContentType={'URL'}
+            keyboardType={'url'}
+          />
           <TextField name={'username'} label={'Sched.com Username'} autoCapitalize={'none'} />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
