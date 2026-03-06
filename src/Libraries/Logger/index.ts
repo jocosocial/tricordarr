@@ -20,48 +20,6 @@ const getCurrentLogFilePath = (): string => {
   return `${LOG_DIR}/app-${dateStr}.log`;
 };
 
-const ensureLogDirectory = async (): Promise<void> => {
-  try {
-    const exists = await RNFS.exists(LOG_DIR);
-    if (!exists) {
-      await RNFS.mkdir(LOG_DIR);
-    }
-  } catch (error) {
-    console.error('[Logger] Failed to create log directory:', error);
-  }
-};
-
-const rotateLogFiles = async (): Promise<void> => {
-  try {
-    const files = await RNFS.readDir(LOG_DIR);
-    const now = Date.now();
-    const maxAge = LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000; // milliseconds
-
-    for (const file of files) {
-      if (file.name.startsWith('app-') && file.name.endsWith('.log')) {
-        if (!file.mtime) continue;
-        const fileAge = now - new Date(file.mtime).getTime();
-        if (fileAge > maxAge) {
-          await RNFS.unlink(file.path);
-        }
-      }
-    }
-  } catch (error) {
-    console.error('[Logger] Failed to rotate log files:', error);
-  }
-};
-
-const formatLogMessage = (level: string, tag: string, message: string): string => {
-  const timestamp =
-    new Date().toISOString().replace('T', ' ').split('.')[0] +
-    '.' +
-    new Date().getMilliseconds().toString().padStart(3, '0');
-  return `[${timestamp}] [${level.toUpperCase()}] [${tag}] ${message}`;
-};
-
-// Initialize buffer
-logBuffer = new LogBuffer(getCurrentLogFilePath);
-
 // Create base logger with console transport
 const config = {
   severity: currentLogLevel,
@@ -87,7 +45,53 @@ const config = {
   enabled: true,
 };
 
-const rootLogger = rnLogger.createLogger(config);
+export const rootLogger = rnLogger.createLogger(config);
+
+const logInternalError = (message: string, error: unknown) => {
+  rootLogger.error(`[Logger] ${message}`, error);
+};
+
+const ensureLogDirectory = async (): Promise<void> => {
+  try {
+    const exists = await RNFS.exists(LOG_DIR);
+    if (!exists) {
+      await RNFS.mkdir(LOG_DIR);
+    }
+  } catch (error) {
+    logInternalError('Failed to create log directory', error);
+  }
+};
+
+const rotateLogFiles = async (): Promise<void> => {
+  try {
+    const files = await RNFS.readDir(LOG_DIR);
+    const now = Date.now();
+    const maxAge = LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000; // milliseconds
+
+    for (const file of files) {
+      if (file.name.startsWith('app-') && file.name.endsWith('.log')) {
+        if (!file.mtime) continue;
+        const fileAge = now - new Date(file.mtime).getTime();
+        if (fileAge > maxAge) {
+          await RNFS.unlink(file.path);
+        }
+      }
+    }
+  } catch (error) {
+    logInternalError('Failed to rotate log files', error);
+  }
+};
+
+const formatLogMessage = (level: string, tag: string, message: string): string => {
+  const timestamp =
+    new Date().toISOString().replace('T', ' ').split('.')[0] +
+    '.' +
+    new Date().getMilliseconds().toString().padStart(3, '0');
+  return `[${timestamp}] [${level.toUpperCase()}] [${tag}] ${message}`;
+};
+
+// Initialize buffer
+logBuffer = new LogBuffer(getCurrentLogFilePath, logInternalError);
 
 // Initialize logging system
 const initializeLogger = async () => {
@@ -109,7 +113,7 @@ const initializeLogger = async () => {
     });
     return () => subscription.remove();
   } catch (error) {
-    console.error('[Logger] Failed to initialize logger:', error);
+    logInternalError('Failed to initialize logger', error);
   }
 };
 
@@ -168,7 +172,7 @@ export const getAllLogFiles = async (): Promise<string[]> => {
       .sort()
       .reverse(); // Most recent first
   } catch (error) {
-    console.error('[Logger] Failed to list log files:', error);
+    logInternalError('Failed to list log files', error);
     return [];
   }
 };
@@ -183,7 +187,7 @@ export const clearAllLogs = async (): Promise<void> => {
       await RNFS.unlink(filePath);
     }
   } catch (error) {
-    console.error('[Logger] Failed to clear logs:', error);
+    logInternalError('Failed to clear logs', error);
     throw error;
   }
 };
@@ -210,7 +214,7 @@ export const getLogFileInfo = async (): Promise<{
       lastModified: new Date(stat.mtime).toLocaleString(),
     };
   } catch (error) {
-    console.error('[Logger] Failed to get log file info:', error);
+    logInternalError('Failed to get log file info', error);
     return null;
   }
 };

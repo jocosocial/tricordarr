@@ -4,6 +4,9 @@ import {Keyboard, StyleSheet, ViewStyle} from 'react-native';
 import {HelperText, Searchbar} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('SearchBarBase.tsx');
 
 interface SearchBarBaseProps {
   onSearch?: () => void;
@@ -113,7 +116,7 @@ export const SearchBarBase = ({
     const removedKeys = matchingQueries.map(query => query.queryKey);
 
     if (removedKeys.length > 0) {
-      console.log('[SearchBarBase] Removing search query keys from cache:', removedKeys);
+      logger.debug('Removing search query keys from cache:', removedKeys);
     }
 
     queryClient.removeQueries({predicate});

@@ -17,6 +17,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
@@ -27,6 +28,8 @@ import {ForumCreateData, ForumData, PostContentData} from '#src/Structs/Controll
 import {ForumThreadValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadCreateScreen>;
+
+const logger = createLogger('ForumThreadCreateScreen.tsx');
 
 export const ForumThreadCreateScreen = (props: Props) => {
   return (
@@ -58,7 +61,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   const onForumSubmit = (values: ForumThreadValues, formikHelpers: FormikHelpers<ForumThreadValues>) => {
     setSubmitting(true);
     if (!postFormRef.current) {
-      console.error('Post form ref undefined.');
+      logger.error('Post form ref undefined.');
       setSubmitting(false);
       return;
     }

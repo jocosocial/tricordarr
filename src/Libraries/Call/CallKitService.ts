@@ -11,6 +11,10 @@
 import {Platform} from 'react-native';
 import RNCallKeep from 'react-native-callkeep';
 
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('CallKitService');
+
 // CallKeep configuration options
 const CALLKEEP_OPTIONS = {
   ios: {
@@ -69,12 +73,12 @@ class CallKitServiceClass {
    */
   async setup(): Promise<void> {
     if (!this.isAvailable()) {
-      console.log('[CallKitService] CallKit not available on this platform');
+      logger.debug('CallKit not available on this platform');
       return;
     }
 
     if (this.initialized) {
-      console.log('[CallKitService] Already initialized');
+      logger.debug('Already initialized');
       return;
     }
 
@@ -92,9 +96,9 @@ class CallKitServiceClass {
       await RNCallKeep.setup(CALLKEEP_OPTIONS);
       this.registerEventListeners();
       this.initialized = true;
-      console.log('[CallKitService] Setup complete');
+      logger.info('Setup complete');
     } catch (error) {
-      console.error('[CallKitService] Setup failed:', error);
+      logger.error('Setup failed', error);
       throw error;
     } finally {
       this.setupPromise = null;
@@ -107,51 +111,51 @@ class CallKitServiceClass {
   private registerEventListeners(): void {
     // User answered call via CallKit UI
     RNCallKeep.addEventListener('answerCall', ({callUUID}) => {
-      console.log('[CallKitService] answerCall event:', callUUID);
+      logger.debug('answerCall event', callUUID);
       onAnswerCallHandler?.(callUUID);
     });
 
     // User ended call via CallKit UI
     RNCallKeep.addEventListener('endCall', ({callUUID}) => {
-      console.log('[CallKitService] endCall event:', callUUID);
+      logger.debug('endCall event', callUUID);
       onEndCallHandler?.(callUUID);
     });
 
     // User toggled mute via CallKit UI
     RNCallKeep.addEventListener('didPerformSetMutedCallAction', ({muted, callUUID}) => {
-      console.log('[CallKitService] didPerformSetMutedCallAction:', muted, callUUID);
+      logger.debug('didPerformSetMutedCallAction', muted, callUUID);
       onMuteCallHandler?.(muted, callUUID);
     });
 
     // CallKit has activated the audio session - safe to start audio
     RNCallKeep.addEventListener('didActivateAudioSession', () => {
-      console.log('[CallKitService] Audio session activated by CallKit');
+      logger.debug('Audio session activated by CallKit');
       onAudioSessionActivatedHandler?.();
     });
 
     // CallKit has deactivated the audio session
     RNCallKeep.addEventListener('didDeactivateAudioSession', () => {
-      console.log('[CallKitService] Audio session deactivated by CallKit');
+      logger.debug('Audio session deactivated by CallKit');
     });
 
     // Call state changed - for debugging
     RNCallKeep.addEventListener('didDisplayIncomingCall', ({callUUID, handle, localizedCallerName}) => {
-      console.log('[CallKitService] didDisplayIncomingCall:', callUUID, handle, localizedCallerName);
+      logger.debug('didDisplayIncomingCall', callUUID, handle, localizedCallerName);
     });
 
     // Provider reset - can happen if system terminates the provider
     RNCallKeep.addEventListener('checkReachability', () => {
-      console.log('[CallKitService] checkReachability event');
+      logger.debug('checkReachability event');
     });
 
     // Start action received from system
     RNCallKeep.addEventListener('didReceiveStartCallAction', ({callUUID, handle, name}) => {
-      console.log('[CallKitService] didReceiveStartCallAction:', callUUID, handle, name);
+      logger.debug('didReceiveStartCallAction', callUUID, handle, name);
     });
 
     // Call load with calls - for debugging restart scenarios
     RNCallKeep.addEventListener('didLoadWithEvents', events => {
-      console.log('[CallKitService] didLoadWithEvents:', events);
+      logger.debug('didLoadWithEvents', events);
     });
   }
 
@@ -194,11 +198,11 @@ class CallKitServiceClass {
 
     // Ensure setup has completed before displaying incoming call
     if (!this.initialized) {
-      console.log('[CallKitService] displayIncomingCall: Setup not complete, waiting...');
+      logger.debug('displayIncomingCall: Setup not complete, waiting');
       await this.setup();
     }
 
-    console.log('[CallKitService] Displaying incoming call:', callUUID, callerName);
+    logger.info('Displaying incoming call', callUUID, callerName);
     RNCallKeep.displayIncomingCall(
       callUUID,
       handle,
@@ -223,35 +227,27 @@ class CallKitServiceClass {
    */
   async startOutgoingCall(callUUID: string, calleeName: string, handle: string): Promise<void> {
     if (!this.isAvailable()) {
-      console.log('[CallKitService] startOutgoingCall: Not available (not iOS)');
+      logger.debug('startOutgoingCall: Not available (not iOS)');
       return;
     }
 
     // Ensure setup has completed before starting call
     if (!this.initialized) {
-      console.log('[CallKitService] startOutgoingCall: Setup not complete, waiting...');
+      logger.debug('startOutgoingCall: Setup not complete, waiting');
       await this.setup();
     }
 
-    console.log(
-      '[CallKitService] Starting outgoing call:',
-      callUUID,
-      calleeName,
-      'handle:',
-      handle,
-      'initialized:',
-      this.initialized,
-    );
+    logger.info('Starting outgoing call', callUUID, calleeName, 'handle:', handle, 'initialized:', this.initialized);
     try {
       RNCallKeep.startCall(callUUID, handle, calleeName, 'generic', false);
-      console.log('[CallKitService] startCall succeeded');
+      logger.debug('startCall succeeded');
 
       // Immediately mark the call as active to prevent CallKit from auto-ending
       // This acknowledges the didReceiveStartCallAction that CallKit will fire
       RNCallKeep.setCurrentCallActive(callUUID);
-      console.log('[CallKitService] setCurrentCallActive called to prevent auto-end');
+      logger.debug('setCurrentCallActive called to prevent auto-end');
     } catch (error) {
-      console.error('[CallKitService] startCall failed:', error);
+      logger.error('startCall failed', error);
     }
   }
 
@@ -264,7 +260,7 @@ class CallKitServiceClass {
   reportCallConnected(callUUID: string): void {
     if (!this.isAvailable()) return;
 
-    console.log('[CallKitService] Reporting call connected:', callUUID);
+    logger.info('Reporting call connected', callUUID);
     RNCallKeep.setCurrentCallActive(callUUID);
   }
 
@@ -277,7 +273,7 @@ class CallKitServiceClass {
   endCall(callUUID: string): void {
     if (!this.isAvailable()) return;
 
-    console.log('[CallKitService] Ending call:', callUUID);
+    logger.info('Ending call', callUUID);
     RNCallKeep.endCall(callUUID);
   }
 
@@ -287,7 +283,7 @@ class CallKitServiceClass {
   endAllCalls(): void {
     if (!this.isAvailable()) return;
 
-    console.log('[CallKitService] Ending all calls');
+    logger.info('Ending all calls');
     RNCallKeep.endAllCalls();
   }
 
@@ -301,7 +297,7 @@ class CallKitServiceClass {
   setMuted(callUUID: string, muted: boolean): void {
     if (!this.isAvailable()) return;
 
-    console.log('[CallKitService] Setting muted:', muted, callUUID);
+    logger.debug('Setting muted', muted, callUUID);
     RNCallKeep.setMutedCall(callUUID, muted);
   }
 
@@ -315,7 +311,7 @@ class CallKitServiceClass {
   reportEndCallWithReason(callUUID: string, reason: CallEndReason): void {
     if (!this.isAvailable()) return;
 
-    console.log('[CallKitService] Reporting call ended:', callUUID, 'reason:', reason);
+    logger.info('Reporting call ended', callUUID, 'reason:', reason);
     RNCallKeep.reportEndCallWithUUID(callUUID, reason);
   }
 
@@ -329,7 +325,7 @@ class CallKitServiceClass {
   updateDisplay(callUUID: string, localizedCallerName: string, handle: string): void {
     if (!this.isAvailable()) return;
 
-    console.log('[CallKitService] Updating display:', callUUID, localizedCallerName);
+    logger.debug('Updating display', callUUID, localizedCallerName);
     RNCallKeep.updateDisplay(callUUID, localizedCallerName, handle);
   }
 
@@ -343,7 +339,7 @@ class CallKitServiceClass {
       const calls = await RNCallKeep.getCalls();
       return Boolean(calls && calls.length > 0);
     } catch (error) {
-      console.error('[CallKitService] Error checking active calls:', error);
+      logger.error('Error checking active calls', error);
       return false;
     }
   }

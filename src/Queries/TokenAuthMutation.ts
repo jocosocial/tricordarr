@@ -3,7 +3,10 @@ import {useMutation, UseMutationOptions, UseMutationResult} from '@tanstack/reac
 import {AxiosError} from 'axios';
 
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('TokenAuthMutation.ts');
 
 /**
  * Extracts a formatted error message from an AxiosError, including the HTTP status code.
@@ -63,7 +66,7 @@ export function useTokenAuthMutation<
     mutationFn: mutationFn,
     onError: error => {
       setSnackbarPayload({message: getErrorMessage(error), messageType: 'error'});
-      console.error('[TokenAuthMutation.ts]', error);
+      logger.error('Token auth mutation failed.', error);
     },
     ...options,
   });

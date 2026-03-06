@@ -2,9 +2,12 @@ import CookieManager from '@react-native-cookies/cookies';
 import {useCallback} from 'react';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {usePublicMutation} from '#src/Queries/PublicMutation';
 import {LoginFormValues} from '#src/Types/FormValues';
+
+const logger = createLogger('useTwitarrWebview.ts');
 
 /**
  * Hook for handling webview-based login that sets cookies.
@@ -52,7 +55,7 @@ export const useTwitarrWebview = () => {
         const cookieValue = extractCookieValue(setCookieHeader);
 
         if (cookieValue) {
-          console.log('[useTwitarrWebview.ts] Setting swiftarr_session cookie for serverUrl', serverUrl);
+          logger.info('Setting swiftarr_session cookie for server URL.', serverUrl);
           // Set the cookie using CookieManager
           await CookieManager.set(
             serverUrl,
@@ -65,7 +68,7 @@ export const useTwitarrWebview = () => {
             isIOS,
           );
         } else {
-          console.warn('[useTwitarrWebview] No swiftarr_session cookie found in response');
+          logger.warn('No swiftarr_session cookie found in response');
         }
 
         return response.data;

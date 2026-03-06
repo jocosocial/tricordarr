@@ -8,8 +8,11 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {AppIcons} from '#src/Enums/Icons';
+import {createLogger} from '#src/Libraries/Logger';
 import {SegmentedButtonType} from '#src/Types';
 import {Selectable} from '#src/Types/Selectable';
+
+const logger = createLogger('SelectionButtons.tsx');
 
 interface SelectionButtonsProps {
   items?: Selectable[];
@@ -94,7 +97,7 @@ export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
 
   useEffect(() => {
     if (!isFocused) {
-      console.log('[SelectionButtons.tsx] Focus has been lost, clearing selection.');
+      logger.debug('Focus has been lost, clearing selection.');
       dispatchSelectedItems({
         type: SelectionActions.clear,
       });

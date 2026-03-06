@@ -6,7 +6,10 @@ import {Text} from 'react-native-paper';
 import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
+
+const logger = createLogger('ImageMetadataView.tsx');
 
 interface ImageMetadataViewProps {
   image: AppImageMetaData;
@@ -51,7 +54,7 @@ export const ImageMetadataView = ({image}: ImageMetadataViewProps) => {
           const path = await FastImage.getCachePath({uri: sourceURI});
           setCachePath(path);
         } catch (error) {
-          console.error('Error fetching cache path:', error);
+          logger.error('Error fetching cache path:', error);
           setCachePath(null);
         }
       } else {

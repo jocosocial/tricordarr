@@ -10,10 +10,13 @@ import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
 import {useLayout} from '#src/Context/Contexts/LayoutContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList} from '#src/Navigation/Stacks/ChatStackNavigator';
 
 type NavigationProp = StackNavigationProp<ChatStackParamList>;
+
+const logger = createLogger('CallOverlay.tsx');
 
 const formatCallDuration = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);
@@ -157,10 +160,7 @@ export const CallOverlay = () => {
       FallbackComponent={CallOverlayFallback}
       onError={(error, _errorInfo) => {
         // Log the error for debugging, but don't crash the app
-        console.warn(
-          '[CallOverlay] Navigation context error (this is expected if rendered outside a navigator):',
-          error.message,
-        );
+        logger.warn('Navigation context error (this is expected if rendered outside a navigator):', error.message);
       }}>
       <CallOverlayInner />
     </ErrorBoundary>

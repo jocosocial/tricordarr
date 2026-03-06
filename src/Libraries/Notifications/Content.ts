@@ -3,7 +3,10 @@ import removeMd from 'remove-markdown';
 
 import {markAsReadPressAction, PressAction, settingsPressAction} from '#src/Enums/Notifications';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
+import {createLogger} from '#src/Libraries/Logger';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
+
+const logger = createLogger('Content');
 
 export interface ContentNotificationCategory {
   title: string;
@@ -142,7 +145,7 @@ export async function generateContentNotification(
   ongoing: boolean = false,
   markAsReadUrl?: string,
 ) {
-  console.log('[Content.ts] Displaying notification with pressID', pressActionID);
+  logger.debug('Displaying notification with pressID', pressActionID);
 
   let actions: AndroidAction[] = [settingsPressAction];
   if (markAsReadUrl) {

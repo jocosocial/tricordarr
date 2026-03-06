@@ -12,6 +12,7 @@ import {SchedImportForm} from '#src/Components/Forms/SchedImportForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -83,7 +84,7 @@ export const ScheduleImportScreen = () => {
       skipCount = 0;
     await refetch();
     if (!twitarrEvents) {
-      console.error('Unable to get events from Twitarr?');
+      logger.error('Unable to get events from Twitarr.');
       helpers.setSubmitting(false);
       return;
     }
@@ -133,6 +134,9 @@ export const ScheduleImportScreen = () => {
   return (
     <AppView>
       <ScrollingContentView overScroll={true}>
+        <HelpTopicView>
+          Import your Sched.com schedule favorites to Twitarr. See the Help screen for prerequisites and more details.
+        </HelpTopicView>
         <PaddedContentView>
           <SchedImportForm initialValues={initialValues} onSubmit={onSubmit} />
         </PaddedContentView>

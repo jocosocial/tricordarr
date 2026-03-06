@@ -3,6 +3,11 @@
  * Handles network latency variations by buffering incoming audio packets
  * before playing them back.
  */
+
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('AudioJitterBuffer');
+
 export class AudioJitterBuffer {
   private buffer: Int16Array[] = [];
   private readonly minBufferSize: number;
@@ -27,9 +32,7 @@ export class AudioJitterBuffer {
     // Drop oldest packet if buffer is full (overflow protection)
     if (this.buffer.length > this.maxBufferSize) {
       const dropped = this.buffer.shift();
-      console.warn(
-        `[AudioJitterBuffer] Buffer overflow, dropped ${dropped?.length || 0} samples. Buffer size: ${this.buffer.length}`,
-      );
+      logger.warn(`Buffer overflow, dropped ${dropped?.length || 0} samples. Buffer size: ${this.buffer.length}`);
     }
   }
 
@@ -66,7 +69,7 @@ export class AudioJitterBuffer {
    */
   clear(): void {
     this.buffer = [];
-    console.log('[AudioJitterBuffer] Buffer cleared');
+    logger.debug('Buffer cleared');
   }
 
   /**

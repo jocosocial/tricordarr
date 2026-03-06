@@ -4,6 +4,10 @@
  * Audio format: 16-bit PCM, 16kHz, mono
  */
 
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('AudioCodec');
+
 /**
  * Encode audio samples into a binary packet for transmission
  * @param audioSamples Int16 array of audio samples
@@ -43,9 +47,7 @@ export function decodeAudioPacket(buffer: ArrayBuffer): Int16Array {
   // Validate packet size
   const expectedSize = 4 + frameCount * 2;
   if (buffer.byteLength !== expectedSize) {
-    console.warn(
-      `[AudioCodec] Invalid packet size. Expected ${expectedSize}, got ${buffer.byteLength}. Frame count: ${frameCount}`,
-    );
+    logger.warn(`Invalid packet size. Expected ${expectedSize}, got ${buffer.byteLength}. Frame count: ${frameCount}`);
     // Return empty array to avoid playback issues
     return new Int16Array(0);
   }

@@ -15,6 +15,7 @@ import {
   updateCallForegroundNotification,
 } from '#src/Libraries/Call/CallForegroundService';
 import {CallEndReason, CallKitService} from '#src/Libraries/Call/CallKitService';
+import {createLogger} from '#src/Libraries/Logger';
 import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
 import {buildPhoneCallWebSocket} from '#src/Libraries/Network/Websockets';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -22,6 +23,8 @@ import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {usePhoneCallAnswerMutation, usePhoneCallDeclineMutation} from '#src/Queries/PhoneCall/PhoneCallMutations';
 import {CallActions, callReducer, initialCallState} from '#src/Reducers/Call/CallReducer';
 import {UserHeader} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('CallProvider.tsx');
 
 export const CallProvider = ({children}: PropsWithChildren) => {
   const [state, dispatch] = useReducer(callReducer, initialCallState);
@@ -67,7 +70,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
   // Keep currentCallIDRef in sync with state (for CallKit handlers)
   useEffect(() => {
     currentCallIDRef.current = state.currentCall?.callID;
-    console.log('[CallProvider] currentCallIDRef updated to:', currentCallIDRef.current);
+    logger.debug('[CallProvider] currentCallIDRef updated to:', currentCallIDRef.current);
   }, [state.currentCall?.callID]);
 
   useEffect(() => {
@@ -84,9 +87,9 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       try {
         await CallKitService.setup();
         callKitInitializedRef.current = true;
-        console.log('[CallProvider] CallKit initialized');
+        logger.debug('[CallProvider] CallKit initialized');
       } catch (error) {
-        console.error('[CallProvider] Failed to initialize CallKit:', error);
+        logger.error('[CallProvider] Failed to initialize CallKit:', error);
       }
     };
 
@@ -107,7 +110,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       try {
         // Check if native audio engine is available
         if (!NativeAudioEngine.isAvailable()) {
-          console.error(
+          logger.error(
             '[CallProvider] Native AudioEngine module not available. Call will continue but audio will not work.',
           );
           setSnackbarPayload({
@@ -139,7 +142,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           try {
             // Only send if socket is open and call is active
             if (phoneSocket.readyState !== WebSocket.OPEN) {
-              console.warn('[CallProvider] Cannot send audio packet - socket not open, state:', phoneSocket.readyState);
+              logger.warn('[CallProvider] Cannot send audio packet - socket not open, state:', phoneSocket.readyState);
               return;
             }
 
@@ -157,13 +160,13 @@ export const CallProvider = ({children}: PropsWithChildren) => {
 
             const packet = encodeAudioPacket(samples);
             if (!packet || packet.byteLength === 0) {
-              console.warn('[CallProvider] Encoded audio packet is empty');
+              logger.warn('[CallProvider] Encoded audio packet is empty');
               return;
             }
 
             // Validate packet size (should be at least 4 bytes for frame count + at least some audio data)
             if (packet.byteLength < 4) {
-              console.warn('[CallProvider] Audio packet too small:', packet.byteLength);
+              logger.warn('[CallProvider] Audio packet too small:', packet.byteLength);
               return;
             }
 
@@ -172,28 +175,28 @@ export const CallProvider = ({children}: PropsWithChildren) => {
               try {
                 phoneSocket.send(packet);
               } catch (sendError) {
-                console.error('[CallProvider] Error sending audio packet:', sendError);
+                logger.error('[CallProvider] Error sending audio packet:', sendError);
               }
             } else {
-              console.warn('[CallProvider] Socket closed while preparing audio packet, state:', phoneSocket.readyState);
+              logger.warn('[CallProvider] Socket closed while preparing audio packet, state:', phoneSocket.readyState);
             }
           } catch (error) {
-            console.error('[CallProvider] Failed to send audio packet:', error);
+            logger.error('[CallProvider] Failed to send audio packet:', error);
           }
         });
 
         // Start audio engine
         await audioEngine.start();
-        console.log('[CallProvider] Audio engine started');
+        logger.debug('[CallProvider] Audio engine started');
 
         // Set initial speaker state to match the current state
         // This ensures the native audio session matches the React state
         // Use ref to get the current speaker state (state updates are async)
         try {
           await audioEngine.setSpeakerOn(speakerStateRef.current);
-          console.log('[CallProvider] Set initial speaker state:', speakerStateRef.current);
+          logger.debug('[CallProvider] Set initial speaker state:', speakerStateRef.current);
         } catch (error) {
-          console.error('[CallProvider] Failed to set initial speaker state:', error);
+          logger.error('[CallProvider] Failed to set initial speaker state:', error);
         }
 
         // Start playback loop - pull from jitter buffer every 20ms
@@ -204,9 +207,9 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           }
         }, 20);
 
-        console.log('[CallProvider] Audio streaming started');
+        logger.debug('[CallProvider] Audio streaming started');
       } catch (error) {
-        console.error('[CallProvider] Failed to start audio streaming:', error);
+        logger.error('[CallProvider] Failed to start audio streaming:', error);
       }
     },
     [setSnackbarPayload],
@@ -232,22 +235,22 @@ export const CallProvider = ({children}: PropsWithChildren) => {
         await audioEngineRef.current.stop();
       }
 
-      console.log('[CallProvider] Audio streaming stopped');
+      logger.debug('[CallProvider] Audio streaming stopped');
     } catch (error) {
-      console.error('[CallProvider] Failed to stop audio streaming:', error);
+      logger.error('[CallProvider] Failed to stop audio streaming:', error);
     }
   }, []);
 
   const initiateCall = useCallback(
     async (userHeader: UserHeader) => {
       const callID = uuidv4();
-      console.log('[CallProvider] initiateCall() starting - callID:', callID, 'callee:', userHeader.username);
+      logger.debug('[CallProvider] initiateCall() starting - callID:', callID, 'callee:', userHeader.username);
 
       // Mark this call as NOT using CallKit (outgoing calls don't use CallKit)
       // Only incoming calls use CallKit for the native UI
       callUsesCallKitRef.current = false;
 
-      console.log('[CallProvider] initiateCall() dispatching INITIATE action');
+      logger.debug('[CallProvider] initiateCall() dispatching INITIATE action');
       dispatch({
         type: CallActions.INITIATE,
         payload: {
@@ -257,16 +260,16 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       });
 
       try {
-        console.log('[CallProvider] initiateCall() building WebSocket');
+        logger.debug('[CallProvider] initiateCall() building WebSocket');
         const ws = await buildPhoneCallWebSocket(callID, userHeader.userID);
-        console.log('[CallProvider] initiateCall() WebSocket built successfully');
-        console.log('[CallProvider] WebSocket created, readyState:', ws.readyState);
+        logger.debug('[CallProvider] initiateCall() WebSocket built successfully');
+        logger.debug('[CallProvider] WebSocket created, readyState:', ws.readyState);
         const socketOpenedRef = {current: false};
         const socketCreatedTime = Date.now();
 
         ws.addEventListener('open', () => {
           socketOpenedRef.current = true;
-          console.log('[CallProvider] Phone call socket opened for caller', {
+          logger.debug('[CallProvider] Phone call socket opened for caller', {
             readyState: ws.readyState,
             url: ws.url,
           });
@@ -299,10 +302,10 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             try {
               // Try to decode as UTF-8 text (for JSON messages like PhoneSocketStartData)
               const text = bufferToString(buffer);
-              console.log('[CallProvider] Received ArrayBuffer message, decoded as text:', text.substring(0, 100));
+              logger.debug('[CallProvider] Received ArrayBuffer message, decoded as text:', text.substring(0, 100));
               const data = JSON.parse(text);
               if (data.phonecallStartTime) {
-                console.log('[CallProvider] Call connected, starting audio');
+                logger.debug('[CallProvider] Call connected, starting audio');
                 dispatch({type: CallActions.CONNECT});
                 // Start audio streaming when call connects
                 startAudioStreaming(ws);
@@ -314,7 +317,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
               // If it's a small buffer, it might be a different message type
               if (buffer.byteLength < 100) {
                 const text = bufferToString(buffer);
-                console.warn('[CallProvider] Small ArrayBuffer message that failed JSON parse:', text, jsonError);
+                logger.warn('[CallProvider] Small ArrayBuffer message that failed JSON parse:', text, jsonError);
               }
               try {
                 const samples = decodeAudioPacket(buffer);
@@ -322,7 +325,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                   jitterBufferRef.current.enqueue(samples);
                 }
               } catch (audioError) {
-                console.error('[CallProvider] Failed to decode message as JSON or audio:', {
+                logger.error('[CallProvider] Failed to decode message as JSON or audio:', {
                   bufferSize: buffer.byteLength,
                   jsonError: jsonError instanceof Error ? jsonError.message : jsonError,
                   audioError: audioError instanceof Error ? audioError.message : audioError,
@@ -331,7 +334,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             }
           } else {
             // Handle other types (string, Blob, object, etc.)
-            console.log('[CallProvider] Received message of type:', typeof event.data, 'value:', event.data);
+            logger.debug('[CallProvider] Received message of type:', typeof event.data, 'value:', event.data);
 
             // First check if it's already a parsed object with phonecallStartTime
             if (
@@ -340,7 +343,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
               !(event.data instanceof ArrayBuffer) &&
               'phonecallStartTime' in event.data
             ) {
-              console.log('[CallProvider] Call connected, starting audio (from object)');
+              logger.debug('[CallProvider] Call connected, starting audio (from object)');
               dispatch({type: CallActions.CONNECT});
               startAudioStreaming(ws);
               return;
@@ -367,14 +370,14 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                   if (blobData && typeof blobData === 'string') {
                     const data = JSON.parse(blobData);
                     if (data.phonecallStartTime) {
-                      console.log('[CallProvider] Call connected, starting audio (from Blob.data)');
+                      logger.debug('[CallProvider] Call connected, starting audio (from Blob.data)');
                       dispatch({type: CallActions.CONNECT});
                       startAudioStreaming(ws);
                       return;
                     }
                   }
                 } catch (e) {
-                  console.warn('[CallProvider] Failed to access Blob.data directly', e);
+                  logger.warn('[CallProvider] Failed to access Blob.data directly', e);
                 }
               }
 
@@ -383,20 +386,20 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                 blob
                   .text()
                   .then((text: string) => {
-                    console.log('[CallProvider] Received Blob message, decoded as text:', text.substring(0, 100));
+                    logger.debug('[CallProvider] Received Blob message, decoded as text:', text.substring(0, 100));
                     try {
                       const data = JSON.parse(text);
                       if (data.phonecallStartTime) {
-                        console.log('[CallProvider] Call connected, starting audio');
+                        logger.debug('[CallProvider] Call connected, starting audio');
                         dispatch({type: CallActions.CONNECT});
                         startAudioStreaming(ws);
                       }
                     } catch (e) {
-                      console.warn('[CallProvider] Failed to parse Blob message as JSON', e);
+                      logger.warn('[CallProvider] Failed to parse Blob message as JSON', e);
                     }
                   })
                   .catch((error: Error) => {
-                    console.warn('[CallProvider] Failed to read Blob as text', error);
+                    logger.warn('[CallProvider] Failed to read Blob as text', error);
                   });
               } else if ('arrayBuffer' in blob && typeof blob.arrayBuffer === 'function') {
                 blob.arrayBuffer().then((buffer: ArrayBuffer) => {
@@ -412,16 +415,16 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                     const text = bufferToString(buffer);
                     const data = JSON.parse(text);
                     if (data.phonecallStartTime) {
-                      console.log('[CallProvider] Call connected, starting audio');
+                      logger.debug('[CallProvider] Call connected, starting audio');
                       dispatch({type: CallActions.CONNECT});
                       startAudioStreaming(ws);
                     }
                   } catch (e) {
-                    console.warn('[CallProvider] Failed to parse Blob message', e);
+                    logger.warn('[CallProvider] Failed to parse Blob message', e);
                   }
                 });
               } else {
-                console.error(
+                logger.error(
                   '[CallProvider] Blob does not support text() or arrayBuffer(), and data property not accessible',
                   event.data,
                 );
@@ -432,7 +435,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
               try {
                 textData = JSON.stringify(event.data);
               } catch (e) {
-                console.warn('[CallProvider] Could not stringify message data', e);
+                logger.warn('[CallProvider] Could not stringify message data', e);
               }
             }
 
@@ -441,12 +444,12 @@ export const CallProvider = ({children}: PropsWithChildren) => {
               try {
                 const data = JSON.parse(textData);
                 if (data.phonecallStartTime) {
-                  console.log('[CallProvider] Call connected, starting audio');
+                  logger.debug('[CallProvider] Call connected, starting audio');
                   dispatch({type: CallActions.CONNECT});
                   startAudioStreaming(ws);
                 }
               } catch (e) {
-                console.warn(
+                logger.warn(
                   '[CallProvider] Failed to parse socket message as JSON',
                   e,
                   'textData:',
@@ -454,7 +457,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                 );
               }
             } else {
-              console.warn('[CallProvider] Unhandled message type:', typeof event.data, event.data);
+              logger.warn('[CallProvider] Unhandled message type:', typeof event.data, event.data);
             }
           }
         });
@@ -468,7 +471,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             socketOpened: socketOpenedRef.current,
             timeSinceCreation: Date.now() - socketCreatedTime,
           };
-          console.log('[CallProvider] Phone call socket closed', closeInfo);
+          logger.debug('[CallProvider] Phone call socket closed', closeInfo);
 
           // If socket closed before opening, or closed very quickly after opening, it's likely a rejection
           // Even if it's a "clean" close (code 1000), a server can reject during handshake with 1000
@@ -497,7 +500,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           // Show error message if this looks like a rejection
           // Check state.currentCall before dispatch to ensure we have the call info
           const currentCall = state.currentCall;
-          console.log(
+          logger.debug(
             '[CallProvider] Close handler - isLikelyRejection:',
             isLikelyRejection,
             'currentCall:',
@@ -527,7 +530,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                 errorMessage += `Error code: ${event.code}`;
               }
 
-              console.error(
+              logger.error(
                 '[CallProvider] Call rejected by server:',
                 event.reason || `Close code: ${event.code}`,
                 closeInfo,
@@ -541,7 +544,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             // Call was rejected but currentCall is already null - show error anyway
             let errorMessage =
               'Call failed. Connection rejected. User may not be available, may have blocked you, or may not have favorited you.';
-            console.error(
+            logger.error(
               '[CallProvider] Call rejected by server (no currentCall):',
               event.reason || `Close code: ${event.code}`,
               closeInfo,
@@ -559,17 +562,17 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           // Check if socket is already closing/closed - if so, this is likely a normal close event
           // WebSocket error events can fire during normal closures in React Native
           if (ws.readyState === WebSocket.CLOSING || ws.readyState === WebSocket.CLOSED) {
-            console.log('[CallProvider] Phone call socket error during close (expected)');
+            logger.debug('[CallProvider] Phone call socket error during close (expected)');
             return;
           }
           // Only log as error if socket is still open/connecting
-          console.error('[CallProvider] Phone call socket error', error);
+          logger.error('[CallProvider] Phone call socket error', error);
           stopAudioStreaming();
           dispatch({type: CallActions.END});
         });
       } catch (error) {
-        console.error('[CallProvider] Failed to initiate call', error);
-        console.log('[CallProvider] initiateCall() dispatching END action due to error');
+        logger.error('[CallProvider] Failed to initiate call', error);
+        logger.debug('[CallProvider] initiateCall() dispatching END action due to error');
         dispatch({type: CallActions.END});
       }
     },
@@ -577,7 +580,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
   );
 
   const receiveCall = useCallback((callID: string, callerUserHeader: UserHeader, options?: {useCallKit?: boolean}) => {
-    console.log('[CallProvider] Receiving incoming call from', callerUserHeader.username);
+    logger.debug('[CallProvider] Receiving incoming call from', callerUserHeader.username);
 
     const useCallKit = options?.useCallKit !== false;
     callUsesCallKitRef.current = Platform.OS === 'ios' && useCallKit;
@@ -592,7 +595,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
 
     if (Platform.OS === 'ios' && useCallKit) {
       CallKitService.displayIncomingCall(callID, callerUserHeader.username, callerUserHeader.userID).catch(error => {
-        console.error('[CallProvider] CallKit displayIncomingCall failed:', error);
+        logger.error('[CallProvider] CallKit displayIncomingCall failed:', error);
       });
     }
   }, []);
@@ -600,7 +603,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
   const answerCall = useCallback(
     async (callID: string) => {
       if (!state.currentCall) {
-        console.warn('[CallProvider] No current call to answer');
+        logger.warn('[CallProvider] No current call to answer');
         return;
       }
 
@@ -608,13 +611,13 @@ export const CallProvider = ({children}: PropsWithChildren) => {
 
       try {
         const ws = await buildPhoneCallWebSocket(callID);
-        console.log('[CallProvider] WebSocket created for callee, readyState:', ws.readyState);
+        logger.debug('[CallProvider] WebSocket created for callee, readyState:', ws.readyState);
         const socketOpenedRef = {current: false};
         const socketCreatedTime = Date.now();
 
         ws.addEventListener('open', () => {
           socketOpenedRef.current = true;
-          console.log('[CallProvider] Phone call socket opened for callee', {
+          logger.debug('[CallProvider] Phone call socket opened for callee', {
             readyState: ws.readyState,
             url: ws.url,
           });
@@ -641,10 +644,10 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             try {
               // Try to decode as UTF-8 text (for JSON messages like PhoneSocketStartData)
               const text = bufferToString(buffer);
-              console.log('[CallProvider] Received ArrayBuffer message, decoded as text:', text.substring(0, 100));
+              logger.debug('[CallProvider] Received ArrayBuffer message, decoded as text:', text.substring(0, 100));
               const data = JSON.parse(text);
               if (data.phonecallStartTime) {
-                console.log('[CallProvider] Call connected, starting audio');
+                logger.debug('[CallProvider] Call connected, starting audio');
                 dispatch({type: CallActions.CONNECT});
                 // Start audio streaming when call connects
                 startAudioStreaming(ws);
@@ -656,7 +659,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
               // If it's a small buffer, it might be a different message type
               if (buffer.byteLength < 100) {
                 const text = bufferToString(buffer);
-                console.warn('[CallProvider] Small ArrayBuffer message that failed JSON parse:', text, jsonError);
+                logger.warn('[CallProvider] Small ArrayBuffer message that failed JSON parse:', text, jsonError);
               }
               try {
                 const samples = decodeAudioPacket(buffer);
@@ -664,7 +667,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                   jitterBufferRef.current.enqueue(samples);
                 }
               } catch (audioError) {
-                console.error('[CallProvider] Failed to decode message as JSON or audio:', {
+                logger.error('[CallProvider] Failed to decode message as JSON or audio:', {
                   bufferSize: buffer.byteLength,
                   jsonError: jsonError instanceof Error ? jsonError.message : jsonError,
                   audioError: audioError instanceof Error ? audioError.message : audioError,
@@ -673,7 +676,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             }
           } else {
             // Handle other types (string, Blob, object, etc.)
-            console.log('[CallProvider] Received message of type:', typeof event.data, 'value:', event.data);
+            logger.debug('[CallProvider] Received message of type:', typeof event.data, 'value:', event.data);
 
             // First check if it's already a parsed object with phonecallStartTime
             if (
@@ -682,7 +685,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
               !(event.data instanceof ArrayBuffer) &&
               'phonecallStartTime' in event.data
             ) {
-              console.log('[CallProvider] Call connected, starting audio (from object)');
+              logger.debug('[CallProvider] Call connected, starting audio (from object)');
               dispatch({type: CallActions.CONNECT});
               startAudioStreaming(ws);
               return;
@@ -709,14 +712,14 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                   if (blobData && typeof blobData === 'string') {
                     const data = JSON.parse(blobData);
                     if (data.phonecallStartTime) {
-                      console.log('[CallProvider] Call connected, starting audio (from Blob.data)');
+                      logger.debug('[CallProvider] Call connected, starting audio (from Blob.data)');
                       dispatch({type: CallActions.CONNECT});
                       startAudioStreaming(ws);
                       return;
                     }
                   }
                 } catch (e) {
-                  console.warn('[CallProvider] Failed to access Blob.data directly', e);
+                  logger.warn('[CallProvider] Failed to access Blob.data directly', e);
                 }
               }
 
@@ -725,20 +728,20 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                 blob
                   .text()
                   .then((text: string) => {
-                    console.log('[CallProvider] Received Blob message, decoded as text:', text.substring(0, 100));
+                    logger.debug('[CallProvider] Received Blob message, decoded as text:', text.substring(0, 100));
                     try {
                       const data = JSON.parse(text);
                       if (data.phonecallStartTime) {
-                        console.log('[CallProvider] Call connected, starting audio');
+                        logger.debug('[CallProvider] Call connected, starting audio');
                         dispatch({type: CallActions.CONNECT});
                         startAudioStreaming(ws);
                       }
                     } catch (e) {
-                      console.warn('[CallProvider] Failed to parse Blob message as JSON', e);
+                      logger.warn('[CallProvider] Failed to parse Blob message as JSON', e);
                     }
                   })
                   .catch((error: Error) => {
-                    console.warn('[CallProvider] Failed to read Blob as text', error);
+                    logger.warn('[CallProvider] Failed to read Blob as text', error);
                   });
               } else if ('arrayBuffer' in blob && typeof blob.arrayBuffer === 'function') {
                 blob.arrayBuffer().then((buffer: ArrayBuffer) => {
@@ -754,16 +757,16 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                     const text = bufferToString(buffer);
                     const data = JSON.parse(text);
                     if (data.phonecallStartTime) {
-                      console.log('[CallProvider] Call connected, starting audio');
+                      logger.debug('[CallProvider] Call connected, starting audio');
                       dispatch({type: CallActions.CONNECT});
                       startAudioStreaming(ws);
                     }
                   } catch (e) {
-                    console.warn('[CallProvider] Failed to parse Blob message', e);
+                    logger.warn('[CallProvider] Failed to parse Blob message', e);
                   }
                 });
               } else {
-                console.error(
+                logger.error(
                   '[CallProvider] Blob does not support text() or arrayBuffer(), and data property not accessible',
                   event.data,
                 );
@@ -774,7 +777,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
               try {
                 textData = JSON.stringify(event.data);
               } catch (e) {
-                console.warn('[CallProvider] Could not stringify message data', e);
+                logger.warn('[CallProvider] Could not stringify message data', e);
               }
             }
 
@@ -783,12 +786,12 @@ export const CallProvider = ({children}: PropsWithChildren) => {
               try {
                 const data = JSON.parse(textData);
                 if (data.phonecallStartTime) {
-                  console.log('[CallProvider] Call connected, starting audio');
+                  logger.debug('[CallProvider] Call connected, starting audio');
                   dispatch({type: CallActions.CONNECT});
                   startAudioStreaming(ws);
                 }
               } catch (e) {
-                console.warn(
+                logger.warn(
                   '[CallProvider] Failed to parse socket message as JSON',
                   e,
                   'textData:',
@@ -796,7 +799,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                 );
               }
             } else {
-              console.warn('[CallProvider] Unhandled message type:', typeof event.data, event.data);
+              logger.warn('[CallProvider] Unhandled message type:', typeof event.data, event.data);
             }
           }
         });
@@ -810,7 +813,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             socketOpened: socketOpenedRef.current,
             timeSinceCreation: Date.now() - socketCreatedTime,
           };
-          console.log('[CallProvider] Phone call socket closed', closeInfo);
+          logger.debug('[CallProvider] Phone call socket closed', closeInfo);
 
           // If socket closed before opening, or closed very quickly after opening, it's likely a rejection
           // Even if it's a "clean" close (code 1000), a server can reject during handshake with 1000
@@ -839,7 +842,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           // Show error message if this looks like a rejection
           // Check state.currentCall before dispatch to ensure we have the call info
           const currentCall = state.currentCall;
-          console.log(
+          logger.debug(
             '[CallProvider] Close handler - isLikelyRejection:',
             isLikelyRejection,
             'currentCall:',
@@ -869,7 +872,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                 errorMessage += `Error code: ${event.code}`;
               }
 
-              console.error(
+              logger.error(
                 '[CallProvider] Call rejected by server:',
                 event.reason || `Close code: ${event.code}`,
                 closeInfo,
@@ -883,7 +886,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             // Call was rejected but currentCall is already null - show error anyway
             let errorMessage =
               'Call failed. Connection rejected. User may not be available, may have blocked you, or may not have favorited you.';
-            console.error(
+            logger.error(
               '[CallProvider] Call rejected by server (no currentCall):',
               event.reason || `Close code: ${event.code}`,
               closeInfo,
@@ -901,18 +904,18 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           // Check if socket is already closing/closed - if so, this is likely a normal close event
           // WebSocket error events can fire during normal closures in React Native
           if (ws.readyState === WebSocket.CLOSING || ws.readyState === WebSocket.CLOSED) {
-            console.log('[CallProvider] Phone call socket error during close (expected)');
+            logger.debug('[CallProvider] Phone call socket error during close (expected)');
             return;
           }
           // Only log as error if socket is still open/connecting
-          console.error('[CallProvider] Phone call socket error', error);
+          logger.error('[CallProvider] Phone call socket error', error);
           stopAudioStreaming();
           dispatch({type: CallActions.END});
         });
 
         await answerMutation.mutateAsync({callID});
       } catch (error) {
-        console.error('[CallProvider] Failed to answer call', error);
+        logger.error('[CallProvider] Failed to answer call', error);
         dispatch({type: CallActions.END});
       }
     },
@@ -924,7 +927,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       try {
         await declineMutation.mutateAsync({callID});
       } catch (error) {
-        console.error('[CallProvider] Failed to decline call', error);
+        logger.error('[CallProvider] Failed to decline call', error);
       } finally {
         // End call via CallKit on iOS (reports as declined)
         if (Platform.OS === 'ios') {
@@ -941,7 +944,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     const callState = callStateRef.current;
     const usesCallKit = callUsesCallKitRef.current;
     const phoneSocket = phoneSocketRef.current;
-    console.log(
+    logger.debug(
       '[CallProvider] endCall() called - callID:',
       callID,
       'callState:',
@@ -953,17 +956,17 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     );
 
     if (phoneSocket) {
-      console.log('[CallProvider] endCall() closing phone socket');
+      logger.debug('[CallProvider] endCall() closing phone socket');
       phoneSocket.close();
     }
 
     if (callID) {
       try {
-        console.log('[CallProvider] endCall() calling decline mutation for callID:', callID);
+        logger.debug('[CallProvider] endCall() calling decline mutation for callID:', callID);
         await declineMutation.mutateAsync({callID});
-        console.log('[CallProvider] endCall() decline mutation succeeded');
+        logger.debug('[CallProvider] endCall() decline mutation succeeded');
       } catch (error) {
-        console.error('[CallProvider] Failed to end call', error);
+        logger.error('[CallProvider] Failed to end call', error);
       }
 
       // End call via CallKit on iOS (only if this call uses CallKit)
@@ -971,7 +974,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
         CallKitService.endCall(callID);
       }
     } else {
-      console.log('[CallProvider] endCall() no callID, skipping decline mutation');
+      logger.debug('[CallProvider] endCall() no callID, skipping decline mutation');
     }
 
     // Reset CallKit flag
@@ -995,7 +998,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
   const toggleMute = useCallback(async () => {
     const newMutedState = !state.isMuted;
     const fromCallKit = muteChangeFromCallKitRef.current;
-    console.log('[CallProvider] toggleMute called - newMutedState:', newMutedState, 'fromCallKit:', fromCallKit);
+    logger.debug('[CallProvider] toggleMute called - newMutedState:', newMutedState, 'fromCallKit:', fromCallKit);
 
     // Update ref synchronously BEFORE dispatch and CallKit sync
     // This ensures that when CallKit fires its callback, the ref already has the new value
@@ -1009,14 +1012,14 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       try {
         await audioEngineRef.current.setMuted(newMutedState);
       } catch (error) {
-        console.error('[CallProvider] Failed to toggle mute:', error);
+        logger.error('[CallProvider] Failed to toggle mute:', error);
       }
     }
 
     // Sync mute state with CallKit on iOS, but only if change didn't originate from CallKit
     // This prevents a feedback loop: CallKit -> app -> CallKit -> app...
     if (Platform.OS === 'ios' && state.currentCall?.callID && !fromCallKit) {
-      console.log('[CallProvider] Syncing mute state to CallKit:', newMutedState);
+      logger.debug('[CallProvider] Syncing mute state to CallKit:', newMutedState);
       CallKitService.setMuted(state.currentCall.callID, newMutedState);
     }
 
@@ -1033,7 +1036,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       try {
         await audioEngineRef.current.setSpeakerOn(newSpeakerState);
       } catch (error) {
-        console.error('[CallProvider] Failed to toggle speaker:', error);
+        logger.error('[CallProvider] Failed to toggle speaker:', error);
       }
     }
   }, [state.isSpeakerOn]);
@@ -1051,15 +1054,17 @@ export const CallProvider = ({children}: PropsWithChildren) => {
 
       // Show foreground notification on Android when call becomes active
       if (Platform.OS === 'android') {
-        showCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(
-          console.error,
-        );
+        showCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(error => {
+          logger.error('[CallProvider] Failed to show call foreground notification:', error);
+        });
 
         // Update notification every second with current duration and mute state
         notificationUpdateIntervalRef.current = setInterval(() => {
           if (state.currentCall) {
             updateCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(
-              console.error,
+              error => {
+                logger.error('[CallProvider] Failed to update call foreground notification:', error);
+              },
             );
           }
         }, 1000);
@@ -1077,7 +1082,9 @@ export const CallProvider = ({children}: PropsWithChildren) => {
 
       // Dismiss notification when call ends
       if (state.state === CallState.ENDED && Platform.OS === 'android') {
-        dismissCallForegroundNotification().catch(console.error);
+        dismissCallForegroundNotification().catch(error => {
+          logger.error('[CallProvider] Failed to dismiss call foreground notification:', error);
+        });
       }
     }
 
@@ -1094,9 +1101,9 @@ export const CallProvider = ({children}: PropsWithChildren) => {
   // Update notification when mute state changes
   useEffect(() => {
     if (state.state === CallState.ACTIVE && state.currentCall && Platform.OS === 'android') {
-      updateCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(
-        console.error,
-      );
+      updateCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(error => {
+        logger.error('[CallProvider] Failed to update call foreground notification after mute change:', error);
+      });
     }
   }, [state.isMuted, state.state, state.currentCall, state.duration]);
 
@@ -1106,9 +1113,9 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       if (appState === 'background' || appState === 'inactive') {
         // App is backgrounded - ensure foreground notification is showing
         if (Platform.OS === 'android') {
-          showCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(
-            console.error,
-          );
+          showCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(error => {
+            logger.error('[CallProvider] Failed to show call foreground notification in background:', error);
+          });
         }
       }
     }
@@ -1146,7 +1153,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
         // Use refs to get current state (avoids stale closure)
         const currentCallID = currentCallIDRef.current;
         const currentState = callStateRef.current;
-        console.log(
+        logger.debug(
           '[CallProvider] CallKit answerCall event for:',
           callUUID,
           'currentCallID:',
@@ -1166,13 +1173,13 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           // Navigate to ActiveCallScreen after answering
           // When device is unlocked, iOS hands control to the app after CallKit answer
           // Must navigate to the tab first since ActiveCallScreen is in a nested navigator
-          console.log('[CallProvider] Navigating to ActiveCallScreen after CallKit answer');
+          logger.debug('[CallProvider] Navigating to ActiveCallScreen after CallKit answer');
           navigationNavigate(BottomTabComponents.seamailTab, {
             screen: CommonStackComponents.krakenTalkActiveCallScreen,
             params: {callID: currentCallID!},
           });
         } else {
-          console.log('[CallProvider] CallKit answerCall did NOT match current call - ignoring');
+          logger.debug('[CallProvider] CallKit answerCall did NOT match current call - ignoring');
         }
       },
       onEndCall: (callUUID: string) => {
@@ -1180,7 +1187,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
         const currentState = callStateRef.current;
         const usesCallKit = callUsesCallKitRef.current;
         const uuidsMatch = currentCallID?.toLowerCase() === callUUID.toLowerCase();
-        console.log(
+        logger.debug(
           '[CallProvider] CallKit endCall event for:',
           callUUID,
           'currentCallID:',
@@ -1193,23 +1200,23 @@ export const CallProvider = ({children}: PropsWithChildren) => {
 
         // Only process CallKit events for calls that actually use CallKit (incoming calls)
         if (!usesCallKit) {
-          console.log('[CallProvider] CallKit endCall ignored - call does not use CallKit');
+          logger.debug('[CallProvider] CallKit endCall ignored - call does not use CallKit');
           return;
         }
 
         // Compare UUIDs case-insensitively (CallKit returns lowercase, server returns uppercase)
         if (uuidsMatch) {
-          console.log('[CallProvider] CallKit endCall matched current call - calling endCall()');
+          logger.debug('[CallProvider] CallKit endCall matched current call - calling endCall()');
           endCall();
         } else {
-          console.log('[CallProvider] CallKit endCall did NOT match current call - ignoring');
+          logger.debug('[CallProvider] CallKit endCall did NOT match current call - ignoring');
         }
       },
       onMuteCall: (muted: boolean, callUUID: string) => {
         // User toggled mute via CallKit UI
         const currentCallID = currentCallIDRef.current;
         const currentMuteState = isMutedRef.current;
-        console.log(
+        logger.debug(
           '[CallProvider] CallKit mute event:',
           muted,
           'for:',
@@ -1224,12 +1231,12 @@ export const CallProvider = ({children}: PropsWithChildren) => {
         // Only toggle if the requested state differs from current state
         // This prevents duplicate toggles when we sync state back to CallKit
         if (uuidsMatch && muted !== currentMuteState) {
-          console.log('[CallProvider] CallKit mute state differs from app state, toggling');
+          logger.debug('[CallProvider] CallKit mute state differs from app state, toggling');
           // Mark that this change originated from CallKit to prevent feedback loop
           muteChangeFromCallKitRef.current = true;
           toggleMute();
         } else if (uuidsMatch) {
-          console.log('[CallProvider] CallKit mute state matches app state, ignoring');
+          logger.debug('[CallProvider] CallKit mute state matches app state, ignoring');
         }
       },
     });

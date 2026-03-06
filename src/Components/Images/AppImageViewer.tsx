@@ -7,8 +7,11 @@ import {ImageViewerSnackbar} from '#src/Components/Snackbars/ImageViewerSnackbar
 import {ImageViewerFooterView} from '#src/Components/Views/Image/ImageViewerFooterView';
 import {ImageViewerHeaderView} from '#src/Components/Views/Image/ImageViewerHeaderView';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {saveImageDataURIToCameraRoll, saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
+
+const logger = createLogger('AppImageViewer.tsx');
 
 interface AppImageViewerProps {
   initialIndex?: number;
@@ -42,7 +45,7 @@ export const AppImageViewer = ({
    */
   const getImageCacheURI = useCallback(async (image: AppImageMetaData) => {
     const cachePath = await FastImage.getCachePath({uri: image.fullURI});
-    console.log('[AppImageViewer.tsx] cachePath', cachePath);
+    logger.debug('cachePath', cachePath);
     if (cachePath) {
       return `file://${cachePath}`;
     }
@@ -74,7 +77,7 @@ export const AppImageViewer = ({
         }
         setViewerMessage('Saved to camera roll.');
       } catch (error: any) {
-        console.error(error);
+        logger.error('Failed to save image:', error);
         setViewerMessage(error);
       }
     },
@@ -133,7 +136,7 @@ export const AppImageViewer = ({
    * Effect to get the underlying image sources for the image viewer.
    */
   useEffect(() => {
-    console.log('[AppImageViewer.tsx] Triggering useEffect to get images');
+    logger.debug('Triggering useEffect to get images');
     const getImages = async () => {
       const images = await Promise.all(
         viewerImages.map(async image => {

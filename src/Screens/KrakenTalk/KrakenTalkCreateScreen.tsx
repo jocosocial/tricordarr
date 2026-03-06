@@ -11,6 +11,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
@@ -18,6 +19,8 @@ import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScre
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.krakenTalkCreateScreen>;
+
+const logger = createLogger('KrakenTalkCreateScreen.tsx');
 
 export const KrakenTalkCreateScreen = (props: Props) => {
   return (
@@ -60,7 +63,7 @@ const KrakenTalkCreateScreenInner = ({route, navigation}: Props) => {
       try {
         await initiateCall(userHeader);
       } catch (error) {
-        console.error('[KrakenTalkCreateScreen] Failed to initiate call:', error);
+        logger.error('Failed to initiate call:', error);
       } finally {
         initiatingRef.current = false;
       }

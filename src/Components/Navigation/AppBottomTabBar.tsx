@@ -4,6 +4,9 @@ import {View} from 'react-native';
 import {BottomNavigation} from 'react-native-paper';
 
 import {useLayout} from '#src/Context/Contexts/LayoutContext';
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('AppBottomTabBar.tsx');
 
 /**
  * Holy fuck what a regression this was.
@@ -28,7 +31,7 @@ export const AppBottomTabBar = (props: BottomTabBarProps) => {
       collapsable={false}
       onLayout={e => {
         const height = e.nativeEvent.layout.height;
-        console.log('[AppBottomTabBar.tsx] onLayout found height', height);
+        logger.debug('onLayout found height', height);
         footerHeight.set(height);
       }}>
       <BottomNavigation.Bar

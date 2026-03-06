@@ -7,8 +7,11 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {SignedIntegerValidation} from '#src/Libraries/ValidationSchema';
 import {TimeSettingsFormValues} from '#src/Types/FormValues';
+
+const logger = createLogger('TimeSettingsForm.tsx');
 
 interface TimeSettingsFormProps {
   initialValues: TimeSettingsFormValues;
@@ -21,7 +24,7 @@ const validationSchema = Yup.object().shape({
 
 export const TimeSettingsForm = (props: TimeSettingsFormProps) => {
   const {commonStyles} = useStyles();
-  console.log(props.initialValues);
+  logger.debug('Initial values', props.initialValues);
 
   return (
     <Formik
