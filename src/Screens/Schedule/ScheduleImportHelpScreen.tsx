@@ -38,7 +38,11 @@ export const ScheduleImportHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
           <HelpTopicView title={'Open in Browser'} icon={AppIcons.webview}>
-            Open the configured Sched website in your device&apos;s system browser.
+            Open the configured Sched website from the Actions menu in your device&apos;s system browser.
+          </HelpTopicView>
+          <HelpTopicView title={'Cruise Settings'} icon={AppIcons.settings}>
+            Open Cruise Settings from the Actions menu to change the configured Sched website and other cruise-wide
+            schedule values.
           </HelpTopicView>
           <HelpButtonHelpTopicView />
         </HelpChapterTitleView>

@@ -102,6 +102,7 @@ import {AlertKeywordsScreen} from '#src/Screens/Settings/Content/AlertKeywordsSe
 import {ForumSettingsScreen} from '#src/Screens/Settings/Content/ForumSettingsScreen';
 import {ImageSettingsScreen} from '#src/Screens/Settings/Content/ImageSettingsScreen';
 import {MuteKeywordsScreen} from '#src/Screens/Settings/Content/MuteKeywordsSettingsScreen';
+import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
 import {SiteUIHelpScreen} from '#src/Screens/SiteUI/SiteUIHelpScreen';
 import {SiteUILinkScreen} from '#src/Screens/SiteUI/SiteUILinkScreen';
 import {SiteUIScreen} from '#src/Screens/SiteUI/SiteUIScreen';
@@ -317,6 +318,7 @@ export type CommonStackParamList = {
     initialReadCount?: number;
   };
   ScheduleImportScreen: undefined;
+  CruiseSettingsScreen: undefined;
   EventSearchScreen: undefined;
   EventAddPerformerScreen: {
     eventID: string;
@@ -444,6 +446,7 @@ export enum CommonStackComponents {
   timeZoneHelpScreen = 'TimeZoneHelpScreen',
   privateEventChatScreen = 'PrivateEventChatScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
+  cruiseSettingsScreen = 'CruiseSettingsScreen',
   eventSearchScreen = 'EventSearchScreen',
   eventAddPerformerScreen = 'EventAddPerformerScreen',
   performerCreateScreen = 'PerformerCreateScreen',
@@ -935,6 +938,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.scheduleImportScreen}
         component={ScheduleImportScreen}
         options={{title: 'Schedule Import'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.cruiseSettingsScreen}
+        component={CruiseSettingsScreen}
+        options={{title: 'Cruise Settings'}}
       />
       <Stack.Screen
         name={CommonStackComponents.eventSearchScreen}

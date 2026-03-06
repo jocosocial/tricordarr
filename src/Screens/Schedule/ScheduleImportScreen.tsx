@@ -3,22 +3,21 @@ import {FormikHelpers} from 'formik';
 import {VEvent} from 'node-ical';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {Linking, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SchedImportForm} from '#src/Components/Forms/SchedImportForm';
+import {ScheduleImportScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleImportScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {AppIcons} from '#src/Enums/Icons';
 import {createLogger} from '#src/Libraries/Logger';
 import {getCalFeedFromUrl, getEventUid} from '#src/Libraries/Schedule';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {useCommonStack} from '#src/Navigation/CommonScreens';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
@@ -42,27 +41,15 @@ export const ScheduleImportScreen = () => {
     [appConfig.schedBaseUrl],
   );
 
-  const handleOpenInBrowser = useCallback(() => {
-    Linking.openURL(appConfig.schedBaseUrl).catch(error => {
-      logger.error('Failed to open Sched URL in browser.', error);
-      setSnackbarPayload({message: 'Unable to open Sched in your browser.', messageType: 'error'});
-    });
-  }, [appConfig.schedBaseUrl, setSnackbarPayload]);
-
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <MaterialHeaderButtons>
-          <Item title={'Open in Browser'} iconName={AppIcons.webview} onPress={handleOpenInBrowser} />
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.scheduleImportHelpScreen)}
-          />
+          <ScheduleImportScreenActionsMenu />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [handleOpenInBrowser, navigation]);
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
