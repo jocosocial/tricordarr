@@ -3,7 +3,7 @@ import {FormikHelpers} from 'formik';
 import {VEvent} from 'node-ical';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View} from 'react-native';
+import {Linking, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -15,12 +15,15 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {createLogger} from '#src/Libraries/Logger';
 import {getCalFeedFromUrl, getEventUid} from '#src/Libraries/Schedule';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {SchedImportFormValues} from '#src/Types/FormValues';
+
+const logger = createLogger('ScheduleImportScreen.tsx');
 
 export const ScheduleImportScreen = () => {
   const navigation = useCommonStack();
@@ -38,10 +41,18 @@ export const ScheduleImportScreen = () => {
     [appConfig.schedBaseUrl],
   );
 
+  const handleOpenInBrowser = useCallback(() => {
+    Linking.openURL(appConfig.schedBaseUrl).catch(error => {
+      logger.error('Failed to open Sched URL in browser.', error);
+      setSnackbarPayload({message: 'Unable to open Sched in your browser.', messageType: 'error'});
+    });
+  }, [appConfig.schedBaseUrl, setSnackbarPayload]);
+
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <MaterialHeaderButtons>
+          <Item title={'Open in Browser'} iconName={AppIcons.webview} onPress={handleOpenInBrowser} />
           <Item
             title={'Help'}
             iconName={AppIcons.help}
@@ -50,7 +61,7 @@ export const ScheduleImportScreen = () => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [navigation]);
+  }, [handleOpenInBrowser, navigation]);
 
   useEffect(() => {
     navigation.setOptions({

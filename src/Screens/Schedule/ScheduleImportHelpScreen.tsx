@@ -5,6 +5,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
+import {AppIcons} from '#src/Enums/Icons';
 
 export const ScheduleImportHelpScreen = () => {
   return (
@@ -36,6 +37,9 @@ export const ScheduleImportHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
+          <HelpTopicView title={'Open in Browser'} icon={AppIcons.webview}>
+            Open the configured Sched website in your device&apos;s system browser.
+          </HelpTopicView>
           <HelpButtonHelpTopicView />
         </HelpChapterTitleView>
       </ScrollingContentView>
