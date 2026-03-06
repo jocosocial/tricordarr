@@ -4,9 +4,11 @@ import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import ErrorBoundary from 'react-native-error-boundary';
 import {IconButton, Text} from 'react-native-paper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
+import {useLayout} from '#src/Context/Contexts/LayoutContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList} from '#src/Navigation/Stacks/ChatStackNavigator';
@@ -33,9 +35,14 @@ const formatCallDuration = (seconds: number): string => {
 const CallOverlayInner = () => {
   const {currentCall, callState, callDuration, endCall} = useCall();
   const {theme} = useAppTheme();
+  const {headerHeightValue} = useLayout();
+  const insets = useSafeAreaInsets();
 
   // useNavigation will throw if not inside NavigationContainer - ErrorBoundary will catch it
   const navigation = useNavigation<NavigationProp>();
+
+  // Place overlay below stack header when present, otherwise below status/safe area
+  const topOffset = headerHeightValue > 0 ? headerHeightValue : insets.top;
 
   // Track if we're on the ActiveCallScreen using navigation state listener
   // This avoids using useNavigationState which throws outside a navigator
@@ -93,7 +100,7 @@ const CallOverlayInner = () => {
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.8}>
+    <TouchableOpacity style={[styles.container, {top: topOffset}]} onPress={handlePress} activeOpacity={0.8}>
       <View style={[styles.content, {backgroundColor: theme.colors.surface}]}>
         <View style={styles.avatarContainer}>
           <AvatarImage userHeader={currentCall.remoteUser} small={true} />
@@ -167,8 +174,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1000,
-    paddingHorizontal: 16,
-    paddingTop: 8,
+    paddingHorizontal: 10,
+    paddingTop: 10,
   },
   content: {
     flexDirection: 'row',
