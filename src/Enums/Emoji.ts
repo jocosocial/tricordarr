@@ -10,7 +10,6 @@ export const CustomEmoji = {
   ':pirate:': {source: require('#assets/emoji/small/pirate.png'), secret: false},
   ':ship:': {source: require('#assets/emoji/small/ship.png'), secret: false},
   ':ship-front:': {source: require('#assets/emoji/small/ship-front.png'), secret: false},
-  ':towel-monkey:': {source: require('#assets/emoji/small/towel-monkey.png'), secret: false},
   ':tropical-drink:': {source: require('#assets/emoji/small/tropical-drink.png'), secret: false},
   ':wangwang:': {source: require('#assets/emoji/small/wangwang.png'), secret: false},
   ':zombie:': {source: require('#assets/emoji/small/zombie.png'), secret: false},
