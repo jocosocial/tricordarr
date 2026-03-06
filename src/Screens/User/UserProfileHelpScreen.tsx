@@ -1,5 +1,6 @@
 import React from 'react';
 
+import {HelpFABView} from '#src/Components/Buttons/FloatingActionButtons/HelpFABView';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {BlockedUsersHelpTopicView} from '#src/Components/Views/Help/Common/BlockedUsersHelpTopicView';
@@ -31,18 +32,28 @@ export const UserProfileHelpScreen = () => {
             Edit your user profile information or add a profile picture.
           </HelpTopicView>
         </HelpChapterTitleView>
-        <HelpChapterTitleView title={'Actions (Other Profiles)'}>
+        <HelpChapterTitleView title={'Floating Action Button (Other Profiles)'}>
+          <HelpFABView icon={AppIcons.user} label={'User Profile'} />
+          <HelpTopicView>Access a menu of options to interact with this user.</HelpTopicView>
           <HelpTopicView title={'Seamail'} icon={AppIcons.seamailCreate}>
             Create a new Seamail conversation with that user.
           </HelpTopicView>
-          <HelpTopicView title={'Favorite'} icon={AppIcons.favorite}>
-            Add or remove the user from your favorites list. Favoriting a user allows them to call you with
-            KrakenTalk™.
+          <HelpTopicView title={'Call'} icon={AppIcons.krakentalkCreate}>
+            Start a KrakenTalk™ call with that user. You can only call users who have favorited you.
+          </HelpTopicView>
+          <HelpTopicView title={'Private Event'} icon={AppIcons.eventCreate}>
+            Create a new private event with this user. The event will be pre-filled with them as an invitee.
           </HelpTopicView>
           <HelpTopicView title={'Private Note'} icon={AppIcons.privateNoteEdit}>
             You can save a note about a user that is visible only to you. For example: "Met at the Lido Bar on Monday,
-            interested in my D&D campaign". You can also tap the Private Note card to edit it, or long-press to copy the
-            note text to your clipboard.
+            interested in my D&D campaign". You can also tap the Private Note card on the profile to edit it, or
+            long-press to copy the note text to your clipboard.
+          </HelpTopicView>
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Actions (Other Profiles)'}>
+          <HelpTopicView title={'Favorite'} icon={AppIcons.favorite}>
+            Add or remove the user from your favorites list. Favoriting a user allows them to call you with
+            KrakenTalk™.
           </HelpTopicView>
           <BlockedUsersHelpTopicView forListScreen={false} />
           <MutedUsersHelpTopicView forListScreen={false} />

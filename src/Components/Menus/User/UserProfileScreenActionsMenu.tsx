@@ -53,12 +53,6 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
       userID: profile.header.userID,
     });
   };
-  const handleNote = () => {
-    closeMenu();
-    commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {
-      user: profile,
-    });
-  };
   const handleHelp = () => {
     closeMenu();
     commonNavigation.push(CommonStackComponents.userProfileHelpScreen);
@@ -69,7 +63,6 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <Menu.Item leadingIcon={AppIcons.privateNoteEdit} title={'Private Note'} onPress={handleNote} />
       <ShareMenuItem contentType={ShareContentType.user} contentID={profile.header.userID} closeMenu={closeMenu} />
       <Divider bold={true} />
       <Menu.Item
