@@ -5,12 +5,20 @@ import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 
-export const PostAsModeratorMenuItem = ({closeMenu}: {closeMenu: () => void}) => {
+interface PostAsModeratorMenuItemProps {
+  closeMenu: () => void;
+  active?: boolean;
+  onPress?: () => void;
+}
+
+export const PostAsModeratorMenuItem = ({closeMenu, active, onPress}: PostAsModeratorMenuItemProps) => {
   const {hasModerator} = usePrivilege();
-  const {asModerator, becomeUser, clearElevation} = useElevation();
+  const {asModerator, toggleModerator} = useElevation();
   const {commonStyles} = useStyles();
+  const isActive = active ?? asModerator;
+  const handlePress = onPress ?? toggleModerator;
+
   if (!hasModerator) {
     return null;
   }
@@ -20,14 +28,10 @@ export const PostAsModeratorMenuItem = ({closeMenu}: {closeMenu: () => void}) =>
       dense={false}
       leadingIcon={AppIcons.moderator}
       onPress={() => {
-        if (asModerator) {
-          clearElevation();
-        } else {
-          becomeUser(PrivilegedUserAccounts.moderator);
-        }
+        handlePress();
         closeMenu();
       }}
-      style={asModerator ? commonStyles.surfaceVariant : undefined}
+      style={isActive ? commonStyles.surfaceVariant : undefined}
     />
   );
 };

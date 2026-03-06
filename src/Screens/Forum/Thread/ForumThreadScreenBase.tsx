@@ -19,7 +19,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {ElevationContext, useElevation} from '#src/Context/Contexts/ElevationContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -84,7 +84,7 @@ const ForumThreadScreenBaseInner = ({
   forumListData,
 }: Props) => {
   const navigation = useCommonStack();
-  const elevation = useElevation();
+  const {asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam} = useElevation();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const markReadMutation = useForumMarkReadMutation();
@@ -149,24 +149,29 @@ const ForumThreadScreenBaseInner = ({
     }
 
     return (
-      <ElevationContext.Provider value={elevation}>
-        <View>
-          <MaterialHeaderButtons>
-            {forumData.eventID && (
-              <Item
-                title={'Event'}
-                iconName={AppIcons.events}
-                onPress={() => navigation.push(CommonStackComponents.eventScreen, {eventID: forumData.eventID!})}
-              />
-            )}
-            <ForumThreadPinnedPostsItem forumID={forumData.forumID} navigation={navigation} />
-            <ForumThreadSearchPostsItem navigation={navigation} forum={forumData} />
-            <ForumThreadScreenActionsMenu forumData={forumData} onRefresh={onRefresh} />
-          </MaterialHeaderButtons>
-        </View>
-      </ElevationContext.Provider>
+      <View>
+        <MaterialHeaderButtons>
+          {forumData.eventID && (
+            <Item
+              title={'Event'}
+              iconName={AppIcons.events}
+              onPress={() => navigation.push(CommonStackComponents.eventScreen, {eventID: forumData.eventID!})}
+            />
+          )}
+          <ForumThreadPinnedPostsItem forumID={forumData.forumID} navigation={navigation} />
+          <ForumThreadSearchPostsItem navigation={navigation} forum={forumData} />
+          <ForumThreadScreenActionsMenu
+            forumData={forumData}
+            onRefresh={onRefresh}
+            asModerator={asModerator}
+            asTwitarrTeam={asTwitarrTeam}
+            toggleModerator={toggleModerator}
+            toggleTwitarrTeam={toggleTwitarrTeam}
+          />
+        </MaterialHeaderButtons>
+      </View>
     );
-  }, [forumData, navigation, onRefresh, elevation]);
+  }, [forumData, navigation, onRefresh, asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam]);
 
   useEffect(() => {
     navigation.setOptions({

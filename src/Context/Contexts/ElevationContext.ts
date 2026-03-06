@@ -8,6 +8,8 @@ export interface ElevationContextType {
   asTwitarrTeam: boolean;
   becomeUser: (user: keyof typeof PrivilegedUserAccounts) => void;
   clearElevation: () => void;
+  toggleModerator: () => void;
+  toggleTwitarrTeam: () => void;
 }
 
 export const ElevationContext = createContext(<ElevationContextType>{
@@ -16,6 +18,8 @@ export const ElevationContext = createContext(<ElevationContextType>{
   asTwitarrTeam: false,
   becomeUser: () => {},
   clearElevation: () => {},
+  toggleModerator: () => {},
+  toggleTwitarrTeam: () => {},
 });
 
 export const useElevation = () => useContext(ElevationContext);

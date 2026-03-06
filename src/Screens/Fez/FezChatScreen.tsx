@@ -21,8 +21,8 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {FezMutedView} from '#src/Components/Views/Static/FezMutedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {ElevationContext, useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
@@ -121,7 +121,7 @@ export const FezChatScreen = (props: Props) => {
 };
 
 const FezChatScreenInner = ({route}: Props) => {
-  const elevation = useElevation();
+  const {asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam} = useElevation();
   const {
     fezData: fez,
     fezPages,
@@ -170,26 +170,31 @@ const FezChatScreenInner = ({route}: Props) => {
     const canCreateEvent = FezType.isSeamailType(fez.fezType) && participants && participants.length > 0;
 
     return (
-      <ElevationContext.Provider value={elevation}>
-        <View>
-          <MaterialHeaderButtons>
-            {canCreateEvent && (
-              <Item
-                title={'Create Event'}
-                iconName={AppIcons.eventCreate}
-                onPress={() =>
-                  navigation.push(CommonStackComponents.personalEventCreateScreen, {
-                    initialUserHeaders: participants,
-                  })
-                }
-              />
-            )}
-            <FezChatScreenActionsMenu fezID={route.params.fezID} onRefresh={onRefresh} />
-          </MaterialHeaderButtons>
-        </View>
-      </ElevationContext.Provider>
+      <View>
+        <MaterialHeaderButtons>
+          {canCreateEvent && (
+            <Item
+              title={'Create Event'}
+              iconName={AppIcons.eventCreate}
+              onPress={() =>
+                navigation.push(CommonStackComponents.personalEventCreateScreen, {
+                  initialUserHeaders: participants,
+                })
+              }
+            />
+          )}
+          <FezChatScreenActionsMenu
+            fezID={route.params.fezID}
+            onRefresh={onRefresh}
+            asModerator={asModerator}
+            asTwitarrTeam={asTwitarrTeam}
+            toggleModerator={toggleModerator}
+            toggleTwitarrTeam={toggleTwitarrTeam}
+          />
+        </MaterialHeaderButtons>
+      </View>
     );
-  }, [fez, onRefresh, navigation, route.params.fezID, elevation]);
+  }, [fez, onRefresh, navigation, route.params.fezID, asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam]);
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {

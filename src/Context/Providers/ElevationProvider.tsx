@@ -27,9 +27,29 @@ export const ElevationProvider = ({children, initialElevation}: PropsWithChildre
   const asModerator = useMemo(() => asPrivilegedUser === PrivilegedUserAccounts.moderator, [asPrivilegedUser]);
   const asTwitarrTeam = useMemo(() => asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam, [asPrivilegedUser]);
 
+  const toggleModerator = useCallback(() => {
+    setAsPrivilegedUser(prev =>
+      prev === PrivilegedUserAccounts.moderator ? undefined : PrivilegedUserAccounts.moderator,
+    );
+  }, []);
+
+  const toggleTwitarrTeam = useCallback(() => {
+    setAsPrivilegedUser(prev =>
+      prev === PrivilegedUserAccounts.TwitarrTeam ? undefined : PrivilegedUserAccounts.TwitarrTeam,
+    );
+  }, []);
+
   const contextValue = useMemo(
-    () => ({asPrivilegedUser, asModerator, asTwitarrTeam, becomeUser, clearElevation}),
-    [asPrivilegedUser, asModerator, asTwitarrTeam, becomeUser, clearElevation],
+    () => ({
+      asPrivilegedUser,
+      asModerator,
+      asTwitarrTeam,
+      becomeUser,
+      clearElevation,
+      toggleModerator,
+      toggleTwitarrTeam,
+    }),
+    [asPrivilegedUser, asModerator, asTwitarrTeam, becomeUser, clearElevation, toggleModerator, toggleTwitarrTeam],
   );
 
   return <ElevationContext.Provider value={contextValue}>{children}</ElevationContext.Provider>;
