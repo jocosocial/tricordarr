@@ -83,6 +83,7 @@ import {ScheduleDayPlannerHelpScreen} from '#src/Screens/Schedule/ScheduleDayPla
 import {ScheduleDayPlannerScreen} from '#src/Screens/Schedule/ScheduleDayPlannerScreen';
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {ScheduleHelpScreen} from '#src/Screens/Schedule/ScheduleHelpScreen';
+import {ScheduleImportHelpScreen} from '#src/Screens/Schedule/ScheduleImportHelpScreen';
 import {ScheduleImportScreen} from '#src/Screens/Schedule/ScheduleImportScreen';
 import {ScheduleOverlapHelpScreen} from '#src/Screens/Schedule/ScheduleOverlapHelpScreen';
 import {ScheduleOverlapScreen} from '#src/Screens/Schedule/ScheduleOverlapScreen';
@@ -280,6 +281,7 @@ export type CommonStackParamList = {
   ScheduleHelpScreen: undefined;
   ScheduleDayHelpScreen: undefined;
   ScheduleDayPlannerHelpScreen: undefined;
+  ScheduleImportHelpScreen: undefined;
   ScheduleOverlapHelpScreen: undefined;
   ForumPostSearchScreen: {
     category?: CategoryData;
@@ -417,6 +419,7 @@ export enum CommonStackComponents {
   scheduleHelpScreen = 'ScheduleHelpScreen',
   scheduleDayHelpScreen = 'ScheduleDayHelpScreen',
   scheduleDayPlannerHelpScreen = 'ScheduleDayPlannerHelpScreen',
+  scheduleImportHelpScreen = 'ScheduleImportHelpScreen',
   scheduleOverlapHelpScreen = 'ScheduleOverlapHelpScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
@@ -480,6 +483,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.scheduleHelpScreen
   | CommonStackComponents.scheduleDayHelpScreen
   | CommonStackComponents.scheduleDayPlannerHelpScreen
+  | CommonStackComponents.scheduleImportHelpScreen
   | CommonStackComponents.scheduleOverlapHelpScreen
   | CommonStackComponents.userDirectoryHelpScreen
   | CommonStackComponents.forumHelpScreen
@@ -804,6 +808,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.scheduleDayPlannerHelpScreen}
         component={ScheduleDayPlannerHelpScreen}
         options={{title: 'Day Planner Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleImportHelpScreen}
+        component={ScheduleImportHelpScreen}
+        options={{title: 'Schedule Import Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.scheduleOverlapHelpScreen}

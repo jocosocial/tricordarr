@@ -82,6 +82,12 @@ export const ScheduleHelpScreen = () => {
             icon={AppIcons.calendarMultiple}
             onPress={() => commonNavigation.push(CommonStackComponents.scheduleOverlapHelpScreen)}
           />
+          <DataFieldListItem
+            title={'Schedule Import'}
+            description={'Import your Sched.com favorites into Twitarr.'}
+            icon={AppIcons.schedImport}
+            onPress={() => commonNavigation.push(CommonStackComponents.scheduleImportHelpScreen)}
+          />
         </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>

@@ -2,23 +2,28 @@ import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import {VEvent} from 'node-ical';
 import pluralize from 'pluralize';
-import React, {useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SchedImportForm} from '#src/Components/Forms/SchedImportForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {getCalFeedFromUrl, getEventUid} from '#src/Libraries/Schedule';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {SchedImportFormValues} from '#src/Types/FormValues';
 
 export const ScheduleImportScreen = () => {
+  const navigation = useCommonStack();
   const {appConfig, updateAppConfig} = useConfig();
   const {data: twitarrEvents, refetch} = useEventsQuery({});
   const eventFavoriteMutation = useEventFavoriteMutation();
@@ -32,6 +37,26 @@ export const ScheduleImportScreen = () => {
     () => ({username: '', schedUrl: appConfig.schedBaseUrl}),
     [appConfig.schedBaseUrl],
   );
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.scheduleImportHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const onSubmit = async (values: SchedImportFormValues, helpers: FormikHelpers<SchedImportFormValues>) => {
     setLog([]);
@@ -97,18 +122,6 @@ export const ScheduleImportScreen = () => {
   return (
     <AppView>
       <ScrollingContentView overScroll={true}>
-        <HelpTopicView>Import your Sched.com schedule favorites to Twitarr.</HelpTopicView>
-        <HelpTopicView title={'Prerequisites'}>
-          You must have already created a Sched.com account for JoCo Cruise this year.
-        </HelpTopicView>
-        <HelpTopicView>
-          Your personal schedule must be public, meaning others can see you in the attendee list. This only needs to be
-          set during the import. You can return your profile to private when you're done.
-        </HelpTopicView>
-        <HelpTopicView>
-          You do NOT need to have an internet package to do this! Sched.com is allowed on ship wifi without a paid
-          internet package.
-        </HelpTopicView>
         <PaddedContentView>
           <SchedImportForm initialValues={initialValues} onSubmit={onSubmit} />
         </PaddedContentView>
