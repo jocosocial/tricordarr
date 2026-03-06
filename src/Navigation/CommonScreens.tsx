@@ -125,7 +125,13 @@ import {
   ProfilePublicData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
-import {NoDrawerParams, Optional, ScheduleDayParams, WithScrollToTopIntent} from '#src/Types/RouteParams';
+import {
+  NoDrawerParams,
+  Optional,
+  ScheduleDayParams,
+  WithElevation,
+  WithScrollToTopIntent,
+} from '#src/Types/RouteParams';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -201,11 +207,9 @@ export type CommonStackParamList = {
     postData: PostData;
     forumData?: ForumData;
   };
-  SeamailCreateScreen?: {
+  SeamailCreateScreen?: WithElevation<{
     initialUserHeaders?: UserHeader[];
-    initialAsModerator?: boolean;
-    initialAsTwitarrTeam?: boolean;
-  };
+  }>;
   ForumPostPinnedScreen: {
     forumID: string;
   };
@@ -213,10 +217,10 @@ export type CommonStackParamList = {
   ForumPostHashtagScreen: {
     hashtag: string;
   };
-  SeamailChatScreen: {
+  SeamailChatScreen: WithElevation<{
     fezID: string;
     initialReadCount?: number;
-  };
+  }>;
   FezChatDetailsScreen: {
     fezID: string;
   };

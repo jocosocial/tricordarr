@@ -1,4 +1,3 @@
-import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
@@ -17,7 +16,6 @@ import {ForumCategoriesScreenSearchMenu} from '#src/Components/Menus/Forum/Forum
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -46,8 +44,6 @@ export const ForumCategoriesScreen = (props: Props) => {
 const ForumCategoriesScreenInner = ({navigation}: Props) => {
   const {data, refetch, isLoading, isFetching} = useForumCategoriesQuery();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
-  const isFocused = useIsFocused();
-  const {clearPrivileges} = usePrivilege();
   const {data: keywordData, refetch: refetchKeywordData} = useUserKeywordQuery({
     keywordType: 'alertwords',
   });
@@ -68,13 +64,6 @@ const ForumCategoriesScreenInner = ({navigation}: Props) => {
       </View>
     );
   }, []);
-
-  useEffect(() => {
-    // This clears the previous state of forum posts, specific forum, and the category list data.
-    if (isFocused) {
-      clearPrivileges();
-    }
-  }, [clearPrivileges, isFocused]);
 
   useEffect(() => {
     navigation.setOptions({

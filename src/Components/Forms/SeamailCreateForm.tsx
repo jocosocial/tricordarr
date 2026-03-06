@@ -7,9 +7,11 @@ import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionFi
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {UserChipsField} from '#src/Components/Forms/Fields/UserChipsField';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {SeamailFormValues} from '#src/Types/FormValues';
 
 interface SeamailCreateFormProps {
@@ -30,17 +32,18 @@ interface InnerSeamailCreateFormProps {
 
 const InnerSeamailCreateForm = ({onValidationChange}: InnerSeamailCreateFormProps) => {
   const {values, setFieldValue, isValid, dirty} = useFormikContext<SeamailFormValues>();
-  const {setAsModerator, setAsTwitarrTeam, clearPrivileges, hasTwitarrTeam, hasModerator} = usePrivilege();
+  const {hasTwitarrTeam, hasModerator} = usePrivilege();
+  const {becomeUser, clearElevation} = useElevation();
 
   useEffect(() => {
-    if (values.createdByModerator !== undefined) {
-      setAsModerator(values.createdByModerator);
+    if (values.createdByModerator) {
+      becomeUser(PrivilegedUserAccounts.moderator);
+    } else if (values.createdByTwitarrTeam) {
+      becomeUser(PrivilegedUserAccounts.TwitarrTeam);
+    } else {
+      clearElevation();
     }
-    if (values.createdByTwitarrTeam !== undefined) {
-      setAsTwitarrTeam(values.createdByTwitarrTeam);
-    }
-    // return () => clearPrivileges();
-  }, [values, setAsModerator, setAsTwitarrTeam, clearPrivileges]);
+  }, [values.createdByModerator, values.createdByTwitarrTeam, becomeUser, clearElevation]);
 
   useEffect(() => {
     // Only consider the form valid if it's both valid AND has been touched

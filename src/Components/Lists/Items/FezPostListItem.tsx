@@ -7,7 +7,7 @@ import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarCon
 import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView';
 import {MessageView} from '#src/Components/Views/MessageView';
 import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
@@ -22,7 +22,7 @@ interface FezPostListItemProps {
 
 const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
   const {currentUserID} = useSession();
-  const {asPrivilegedUser} = usePrivilege();
+  const {asPrivilegedUser} = useElevation();
   const seamailNavigation = useChatStack();
 
   let showAuthor = fez.participantCount > 2;

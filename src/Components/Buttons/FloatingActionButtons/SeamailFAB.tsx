@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
 
@@ -11,14 +11,13 @@ interface SeamailFABProps {
 
 export const SeamailFAB = (props: SeamailFABProps) => {
   const chatNavigation = useChatStack();
-  const {asModerator, asTwitarrTeam} = usePrivilege();
+  const {asPrivilegedUser} = useElevation();
 
   return (
     <BaseFAB
       onPress={() =>
         chatNavigation.push(CommonStackComponents.seamailCreateScreen, {
-          initialAsModerator: asModerator,
-          initialAsTwitarrTeam: asTwitarrTeam,
+          asPrivilegedUser,
         })
       }
       label={'New Seamail'}

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {SegmentedButtons} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -13,7 +14,8 @@ import {SegmentedButtonType} from '#src/Types';
 export const SeamailAccountButtons = () => {
   const {data: profilePublicData} = useUserProfileQuery();
   const {data: userNotificationData} = useUserNotificationDataQuery();
-  const {clearPrivileges, becomeUser, hasModerator, hasTwitarrTeam, asPrivilegedUser} = usePrivilege();
+  const {hasModerator, hasTwitarrTeam} = usePrivilege();
+  const {asPrivilegedUser, becomeUser, clearElevation} = useElevation();
   const [forUser, setForUser] = useState(asPrivilegedUser || profilePublicData?.header.username);
   const {theme} = useAppTheme();
   const [buttons, setButtons] = useState<SegmentedButtonType[]>([]);
@@ -52,14 +54,14 @@ export const SeamailAccountButtons = () => {
         // so I'm going back to just username.
         label: profilePublicData.header.username,
         icon: userNotificationData?.newSeamailMessageCount ? AppIcons.notificationShow : AppIcons.user,
-        onPress: () => clearPrivileges(),
+        onPress: () => clearElevation(),
       });
     }
 
     setButtons(tempButtons);
   }, [
     becomeUser,
-    clearPrivileges,
+    clearElevation,
     hasModerator,
     hasTwitarrTeam,
     profilePublicData,

@@ -1,7 +1,7 @@
 import {GestureResponderEvent} from 'react-native';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FabGroupActionType} from '#src/Types';
 
@@ -15,7 +15,7 @@ interface Props {
 
 export const FabGroupAction = ({icon, label, onPress, backgroundColor, color}: Props): FabGroupActionType => {
   const {theme} = useAppTheme();
-  const {asPrivilegedUser} = usePrivilege();
+  const {asPrivilegedUser} = useElevation();
 
   const actionColor = asPrivilegedUser ? theme.colors.constantWhite : color ? color : theme.colors.inverseOnSurface;
   const actionBackgroundColor = asPrivilegedUser

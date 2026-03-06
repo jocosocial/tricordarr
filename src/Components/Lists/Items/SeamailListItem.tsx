@@ -8,6 +8,7 @@ import {ListItem} from '#src/Components/Lists/ListItem';
 import {SeamailListItemSwipeable} from '#src/Components/Swipeables/SeamailListItemSwipeable';
 import {SeamailMessageCountIndicator} from '#src/Components/Text/SeamailMessageCountIndicator';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -31,6 +32,7 @@ const SeamailListItemInternal = ({fez, enableSelection, setEnableSelection, sele
   const navigation = useChatStack();
   const {commonStyles} = useStyles();
   const {dispatchSelectedItems} = useSelection();
+  const {asPrivilegedUser} = useElevation();
   const {theme} = useAppTheme();
 
   let badgeCount = 0;
@@ -110,6 +112,7 @@ const SeamailListItemInternal = ({fez, enableSelection, setEnableSelection, sele
     navigation.push(CommonStackComponents.seamailChatScreen, {
       fezID: fez.fezID,
       initialReadCount: fez.members?.readCount,
+      asPrivilegedUser,
     });
 
   const getRight = () => {

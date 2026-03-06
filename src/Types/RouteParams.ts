@@ -1,3 +1,5 @@
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
+
 /**
  * Generic type for route params that support intent-based navigation.
  * Intent is a unique string (action_epochSeconds) that triggers one-time effects.
@@ -29,6 +31,14 @@ export type ScheduleDayParams = WithIntent<{
  */
 export type NoDrawerParams = {
   noDrawer?: boolean;
+};
+
+/**
+ * Generic type for route params that support per-screen elevation.
+ * Carries the active privileged user identity to the destination screen.
+ */
+export type WithElevation<T = {}> = T & {
+  asPrivilegedUser?: keyof typeof PrivilegedUserAccounts;
 };
 
 /**

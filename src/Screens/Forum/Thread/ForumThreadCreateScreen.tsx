@@ -11,6 +11,7 @@ import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {ForumCreateForm} from '#src/Components/Forms/Forum/ForumCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
@@ -33,7 +34,9 @@ export const ForumThreadCreateScreen = (props: Props) => {
       <DisabledFeatureScreen
         feature={SwiftarrFeature.forums}
         urlPath={`/forums/${props.route.params.categoryId}/createForum`}>
-        <ForumThreadCreateScreenInner {...props} />
+        <ElevationProvider>
+          <ForumThreadCreateScreenInner {...props} />
+        </ElevationProvider>
       </DisabledFeatureScreen>
     </PreRegistrationScreen>
   );

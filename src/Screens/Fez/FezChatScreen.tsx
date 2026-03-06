@@ -21,12 +21,14 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {FezMutedView} from '#src/Components/Views/Static/FezMutedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {ElevationContext, useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {FezPostsActions, useFezPostsReducer} from '#src/Context/Reducers/Fez/FezPostsReducers';
 import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -101,16 +103,25 @@ export const FezChatScreen = (props: Props) => {
     helpScreen = CommonStackComponents.scheduleHelpScreen;
   }
 
+  // Only seamail routes carry elevation state.
+  const initialElevation =
+    routeName === CommonStackComponents.seamailChatScreen
+      ? (route.params as CommonStackParamList[CommonStackComponents.seamailChatScreen]).asPrivilegedUser
+      : undefined;
+
   return (
     <PreRegistrationScreen helpScreen={helpScreen}>
       <DisabledFeatureScreen feature={feature} urlPath={urlPath}>
-        <FezChatScreenInner {...props} />
+        <ElevationProvider initialElevation={initialElevation}>
+          <FezChatScreenInner {...props} />
+        </ElevationProvider>
       </DisabledFeatureScreen>
     </PreRegistrationScreen>
   );
 };
 
 const FezChatScreenInner = ({route}: Props) => {
+  const elevation = useElevation();
   const {
     fezData: fez,
     fezPages,
@@ -159,24 +170,26 @@ const FezChatScreenInner = ({route}: Props) => {
     const canCreateEvent = FezType.isSeamailType(fez.fezType) && participants && participants.length > 0;
 
     return (
-      <View>
-        <MaterialHeaderButtons>
-          {canCreateEvent && (
-            <Item
-              title={'Create Event'}
-              iconName={AppIcons.eventCreate}
-              onPress={() =>
-                navigation.push(CommonStackComponents.personalEventCreateScreen, {
-                  initialUserHeaders: participants,
-                })
-              }
-            />
-          )}
-          <FezChatScreenActionsMenu fezID={route.params.fezID} onRefresh={onRefresh} />
-        </MaterialHeaderButtons>
-      </View>
+      <ElevationContext.Provider value={elevation}>
+        <View>
+          <MaterialHeaderButtons>
+            {canCreateEvent && (
+              <Item
+                title={'Create Event'}
+                iconName={AppIcons.eventCreate}
+                onPress={() =>
+                  navigation.push(CommonStackComponents.personalEventCreateScreen, {
+                    initialUserHeaders: participants,
+                  })
+                }
+              />
+            )}
+            <FezChatScreenActionsMenu fezID={route.params.fezID} onRefresh={onRefresh} />
+          </MaterialHeaderButtons>
+        </View>
+      </ElevationContext.Provider>
     );
-  }, [fez, onRefresh, navigation, route.params.fezID]);
+  }, [fez, onRefresh, navigation, route.params.fezID, elevation]);
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {

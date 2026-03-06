@@ -11,7 +11,7 @@ import {ContentInsertMenuView} from '#src/Components/Views/Content/ContentInsert
 import {ContentInsertPhotosView} from '#src/Components/Views/Content/ContentInsertPhotosView';
 import {ContentPostLengthView} from '#src/Components/Views/Content/ContentPostLengthView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
@@ -44,7 +44,7 @@ export const ContentPostForm = ({
   disabled = false,
 }: ContentPostFormProps) => {
   const {commonStyles} = useStyles();
-  const {asPrivilegedUser} = usePrivilege();
+  const {asPrivilegedUser} = useElevation();
   const {appConfig} = useConfig();
   const [insertMenuVisible, setInsertMenuVisible] = React.useState(false);
   const [emojiPickerVisible, setEmojiPickerVisible] = React.useState(false);

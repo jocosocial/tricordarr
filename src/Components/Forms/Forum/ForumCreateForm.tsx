@@ -6,8 +6,10 @@ import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {InfoStringValidation} from '#src/Libraries/ValidationSchema';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
@@ -27,15 +29,18 @@ interface InnerFormProps {
 
 const InnerForm = ({onValidationChange}: InnerFormProps) => {
   const {values, isValid, dirty} = useFormikContext<ForumThreadValues>();
-  const {setAsModerator, setAsTwitarrTeam, hasModerator, hasTwitarrTeam} = usePrivilege();
+  const {hasModerator, hasTwitarrTeam} = usePrivilege();
+  const {becomeUser, clearElevation} = useElevation();
+
   useEffect(() => {
-    if (values.postAsModerator !== undefined) {
-      setAsModerator(values.postAsModerator);
+    if (values.postAsModerator) {
+      becomeUser(PrivilegedUserAccounts.moderator);
+    } else if (values.postAsTwitarrTeam) {
+      becomeUser(PrivilegedUserAccounts.TwitarrTeam);
+    } else {
+      clearElevation();
     }
-    if (values.postAsTwitarrTeam !== undefined) {
-      setAsTwitarrTeam(values.postAsTwitarrTeam);
-    }
-  }, [values, setAsModerator, setAsTwitarrTeam]);
+  }, [values.postAsModerator, values.postAsTwitarrTeam, becomeUser, clearElevation]);
 
   useEffect(() => {
     // Only consider the form valid if it's both valid AND has been touched
@@ -67,7 +72,6 @@ const InnerForm = ({onValidationChange}: InnerFormProps) => {
 };
 
 export const ForumCreateForm = ({onSubmit, formRef, onValidationChange}: ForumCreateFormProps) => {
-  const {} = usePrivilege();
   const initialValues: ForumThreadValues = {
     title: '',
     postAsModerator: false,

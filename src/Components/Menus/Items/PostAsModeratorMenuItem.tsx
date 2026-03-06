@@ -1,12 +1,15 @@
 import * as React from 'react';
 import {Menu} from 'react-native-paper';
 
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 
 export const PostAsModeratorMenuItem = ({closeMenu}: {closeMenu: () => void}) => {
-  const {asModerator, setAsTwitarrTeam, setAsModerator, hasModerator} = usePrivilege();
+  const {hasModerator} = usePrivilege();
+  const {asModerator, becomeUser, clearElevation} = useElevation();
   const {commonStyles} = useStyles();
   if (!hasModerator) {
     return null;
@@ -17,8 +20,11 @@ export const PostAsModeratorMenuItem = ({closeMenu}: {closeMenu: () => void}) =>
       dense={false}
       leadingIcon={AppIcons.moderator}
       onPress={() => {
-        setAsTwitarrTeam(false);
-        setAsModerator(!asModerator);
+        if (asModerator) {
+          clearElevation();
+        } else {
+          becomeUser(PrivilegedUserAccounts.moderator);
+        }
         closeMenu();
       }}
       style={asModerator ? commonStyles.surfaceVariant : undefined}
