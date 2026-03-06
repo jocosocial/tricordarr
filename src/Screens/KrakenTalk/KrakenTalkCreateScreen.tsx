@@ -1,11 +1,15 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import {View} from 'react-native';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {CallState, useCall} from '#src/Context/Contexts/CallContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -89,6 +93,26 @@ export const KrakenTalkCreateScreen = ({route, navigation}: Props) => {
       }
     }
   }, [currentCall, callState, navigation, route.params?.initialUserHeader]);
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.krakenTalkHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>

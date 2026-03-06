@@ -43,6 +43,7 @@ import {ShutternautHelpScreen} from '#src/Screens/Help/ShutternautHelpScreen';
 import {KaraokeHelpScreen} from '#src/Screens/Karaoke/KaraokeHelpScreen';
 import {KrakenTalkActiveCallScreen} from '#src/Screens/KrakenTalk/KrakenTalkActiveCallScreen';
 import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateScreen';
+import {KrakenTalkHelpScreen} from '#src/Screens/KrakenTalk/KrakenTalkHelpScreen';
 import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen';
 import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
 import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
@@ -353,6 +354,7 @@ export type CommonStackParamList = {
   KrakenTalkActiveCallScreen?: {
     callID: string;
   };
+  KrakenTalkHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -462,6 +464,7 @@ export enum CommonStackComponents {
   todayHelpScreen = 'TodayHelpScreen',
   krakenTalkCreateScreen = 'KrakenTalkCreateScreen',
   krakenTalkActiveCallScreen = 'KrakenTalkActiveCallScreen',
+  krakenTalkHelpScreen = 'KrakenTalkHelpScreen',
 }
 
 /**
@@ -513,7 +516,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.cruiseHelpScreen
   | CommonStackComponents.dailyThemeHelpScreen
   | CommonStackComponents.easterEggHelpScreen
-  | CommonStackComponents.todayHelpScreen;
+  | CommonStackComponents.todayHelpScreen
+  | CommonStackComponents.krakenTalkHelpScreen;
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
   return (
@@ -1053,6 +1057,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.krakenTalkActiveCallScreen}
         component={KrakenTalkActiveCallScreen}
         options={{title: 'Call', headerShown: false}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.krakenTalkHelpScreen}
+        component={KrakenTalkHelpScreen}
+        options={{title: 'KrakenTalk Help'}}
       />
     </>
   );

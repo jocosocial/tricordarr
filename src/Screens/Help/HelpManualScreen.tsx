@@ -78,6 +78,12 @@ export const HelpManualScreen = () => {
             icon={AppIcons.performer}
             onPress={() => commonNavigation.push(CommonStackComponents.performerHelpScreen)}
           />
+          <DataFieldListItem
+            title={'KrakenTalk'}
+            description={'On-board WiFi calling with your friends.'}
+            icon={AppIcons.krakentalk}
+            onPress={() => commonNavigation.push(CommonStackComponents.krakenTalkHelpScreen)}
+          />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Entertainment'} noMargin={true}>
           <DataFieldListItem
