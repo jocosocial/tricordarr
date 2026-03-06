@@ -47,7 +47,9 @@ const KrakenTalkReceiveScreenInner = ({route, navigation}: Props) => {
 
   const onAnswer = useCallback(async () => {
     await answerCall(route.params.callID);
-    navigation.push(CommonStackComponents.krakenTalkActiveCallScreen, {
+    // This is a replace instead of a push because we want to remove this screen
+    // from the stack and never go back.
+    navigation.replace(CommonStackComponents.krakenTalkActiveCallScreen, {
       callID: route.params.callID,
     });
   }, [answerCall, route.params.callID, navigation]);
