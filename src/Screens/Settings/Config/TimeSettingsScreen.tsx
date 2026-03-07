@@ -5,7 +5,6 @@ import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {TimeSettingsForm} from '#src/Components/Forms/Settings/TimeSettingsForm';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
@@ -17,10 +16,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useTimeZoneChangesContext} from '#src/Context/Contexts/TimeZoneChangesContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {TimeSettingsFormValues} from '#src/Types/FormValues';
@@ -33,9 +29,6 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
   const [forceShowTimezoneWarning, setForceShowTimezoneWarning] = useState(appConfig.forceShowTimezoneWarning);
   const [silenceTimezoneWarnings, setSilenceTimezoneWarnings] = useState(appConfig.silenceTimezoneWarnings);
   const {cruiseDayToday, adjustedCruiseDayToday, cruiseDayIndex, adjustedCruiseDayIndex} = useCruise();
-  const {reload} = useTimeZoneChangesContext();
-  const {refreshing, onRefresh} = useRefresh({refresh: reload});
-  const {theme} = useAppTheme();
 
   const onSubmit = (values: TimeSettingsFormValues, helpers: FormikHelpers<TimeSettingsFormValues>) => {
     updateAppConfig({
@@ -102,17 +95,6 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
         </ListSection>
         <PaddedContentView padTop={true}>
           <TimeSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
-        </PaddedContentView>
-        <ListSection>
-          <ListSubheader>Time Zone Changes</ListSubheader>
-        </ListSection>
-        <PaddedContentView padTop={true}>
-          <PrimaryActionButton
-            buttonText={'Reload Time Zone Changes'}
-            onPress={onRefresh}
-            isLoading={refreshing}
-            buttonColor={theme.colors.twitarrNeutralButton}
-          />
         </PaddedContentView>
         <ListSection>
           <ListSubheader>Warnings</ListSubheader>
