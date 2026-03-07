@@ -5,6 +5,7 @@ import {SnackbarPayload} from '#src/Types';
 interface SnackbarContextType {
   snackbarPayload?: SnackbarPayload;
   setSnackbarPayload: Dispatch<SetStateAction<SnackbarPayload | undefined>>;
+  snackbarTry: (callback: () => void | Promise<void>) => () => void;
 }
 
 export const SnackbarContext = createContext(<SnackbarContextType>{});
