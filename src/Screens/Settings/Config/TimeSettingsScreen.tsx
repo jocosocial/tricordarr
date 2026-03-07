@@ -16,7 +16,6 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useTimeZoneChangesContext} from '#src/Context/Contexts/TimeZoneChangesContext';
@@ -37,7 +36,6 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
   const {reload} = useTimeZoneChangesContext();
   const {refreshing, onRefresh} = useRefresh({refresh: reload});
   const {theme} = useAppTheme();
-  const {preRegistrationMode} = usePreRegistration();
 
   const onSubmit = (values: TimeSettingsFormValues, helpers: FormikHelpers<TimeSettingsFormValues>) => {
     updateAppConfig({
@@ -114,7 +112,6 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
             onPress={onRefresh}
             isLoading={refreshing}
             buttonColor={theme.colors.twitarrNeutralButton}
-            disabled={preRegistrationMode}
           />
         </PaddedContentView>
         <ListSection>
