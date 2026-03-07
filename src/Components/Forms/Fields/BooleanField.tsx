@@ -1,4 +1,4 @@
-import {Field, useField, useFormikContext} from 'formik';
+import {useField} from 'formik';
 import React from 'react';
 import {StyleProp, StyleSheet, Switch, View, ViewStyle} from 'react-native';
 import {HelperText, Text, TouchableRipple} from 'react-native-paper';
@@ -30,11 +30,10 @@ export const BooleanField = ({
 }: BooleanFieldProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const {theme} = useAppTheme();
-  const [field] = useField<boolean>(name);
-  const {setFieldValue} = useFormikContext();
+  const [field, , helpers] = useField<boolean>(name);
 
   const onPressDefault = () => {
-    setFieldValue(name, !field.value);
+    helpers.setValue(!field.value);
   };
 
   const styles = StyleSheet.create({
@@ -51,38 +50,32 @@ export const BooleanField = ({
     },
   });
 
-  // https://codereacter.medium.com/reducing-the-number-of-renders-when-using-formik-9790bf111ab9
-  // FastField didn't update correctly
   return (
-    <Field name={name}>
-      {() => (
-        <TouchableRipple style={[styles.ripple, style]} onPress={onPress || onPressDefault} disabled={disabled}>
-          <View>
-            <View style={styles.wrapper}>
-              <Text>
-                {icon && (
-                  // This is a bit hacky. I am not proud. View did weird aligning nonsense.
-                  <>
-                    <AppIcon size={styleDefaults.fontSize} icon={icon} />
-                    &nbsp;
-                  </>
-                )}
-                {label}
-              </Text>
-              <Switch
-                value={value === undefined ? field.value : value}
-                onValueChange={onPress || onPressDefault}
-                disabled={disabled}
-              />
-            </View>
-            {helperText && (
-              <HelperText style={styles.helperText} type={'info'}>
-                {helperText}
-              </HelperText>
+    <TouchableRipple style={[styles.ripple, style]} onPress={onPress || onPressDefault} disabled={disabled}>
+      <View>
+        <View style={styles.wrapper}>
+          <Text>
+            {icon && (
+              // This is a bit hacky. I am not proud. View did weird aligning nonsense.
+              <>
+                <AppIcon size={styleDefaults.fontSize} icon={icon} />
+                &nbsp;
+              </>
             )}
-          </View>
-        </TouchableRipple>
-      )}
-    </Field>
+            {label}
+          </Text>
+          <Switch
+            value={value === undefined ? field.value : value}
+            onValueChange={onPress || onPressDefault}
+            disabled={disabled}
+          />
+        </View>
+        {helperText && (
+          <HelperText style={styles.helperText} type={'info'}>
+            {helperText}
+          </HelperText>
+        )}
+      </View>
+    </TouchableRipple>
   );
 };

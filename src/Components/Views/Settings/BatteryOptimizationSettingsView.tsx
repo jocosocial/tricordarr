@@ -11,7 +11,10 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
+
+const logger = createLogger('BatteryOptimizationSettingsView.tsx');
 
 const BatteryOptimizationSettingsViewInternal = () => {
   const {theme} = useAppTheme();
@@ -48,7 +51,7 @@ const BatteryOptimizationSettingsViewInternal = () => {
           buttonColor={theme.colors.twitarrNeutralButton}
           onPress={() => {
             RequestDisableOptimization();
-            console.log('Battery optimization disabled - feature temporarily unavailable');
+            logger.info('Battery optimization disabled - feature temporarily unavailable');
           }}
           style={[commonStyles.marginTopSmall]}
           disabled={!optEnabled}

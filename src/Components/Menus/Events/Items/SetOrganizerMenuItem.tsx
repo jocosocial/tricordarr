@@ -1,30 +1,31 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {Menu} from 'react-native-paper';
 
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 interface SetOrganizerMenuItemProps {
-  eventID: string | number;
   closeMenu: () => void;
+  onPress: () => void;
   disabled?: boolean;
 }
 
+/**
+ * Menu items portal up to the Portal.Host which likely does not have the navigators available.
+ */
 export const SetOrganizerMenuItem = (props: SetOrganizerMenuItemProps) => {
-  const commonNavigation = useCommonStack();
+  const {snackbarTry} = useSnackbar();
 
-  const handlePress = () => {
+  const handlePress = useCallback(() => {
     props.closeMenu();
-    commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
-      eventID: String(props.eventID),
-    });
-  };
+    props.onPress();
+  }, [props]);
 
   return (
     <Menu.Item
       title={'Set Organizer'}
       leadingIcon={AppIcons.performer}
-      onPress={handlePress}
+      onPress={snackbarTry(handlePress)}
       disabled={props.disabled}
     />
   );

@@ -6,6 +6,9 @@ import {Button, Divider, HelperText, Menu} from 'react-native-paper';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useMenu} from '#src/Hooks/useMenu';
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('PickerField.tsx');
 
 interface PickerFieldProps<TData> {
   name: string;
@@ -42,7 +45,7 @@ export const PickerField = <TData,>({
   const [_, meta] = useField<TData>(name);
 
   const handleSelect = (newValue: TData | undefined) => {
-    console.log(`[PickerField.tsx] selecting ${newValue}`);
+    logger.debug('Selecting value', newValue);
     setFieldValue(name, newValue);
     closeMenu();
     if (onSelect) {

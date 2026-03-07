@@ -14,8 +14,11 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {useOpenQuery} from '#src/Queries/OpenQuery';
+
+const logger = createLogger('TestErrorScreen.tsx');
 
 export const TestErrorScreen = () => {
   const {theme} = useAppTheme();
@@ -32,7 +35,7 @@ export const TestErrorScreen = () => {
   });
   const [fault, setFault] = useState(false);
 
-  const onDismiss = () => console.log('[TestErrorScreen.tsx] Modal dismissed.');
+  const onDismiss = () => logger.info('Modal dismissed.');
   const onModal = () => {
     setModalContent(<HelpModalView text={'This is a test'} />);
     setModalVisible(true);

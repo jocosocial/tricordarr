@@ -44,7 +44,7 @@ export const NotificationDataListener = () => {
       logger.debug('wsMessageHandler received data from server:', event.data);
       const notificationData = JSON.parse(event.data) as SocketNotificationData;
       const notificationType = SocketNotificationData.getType(notificationData);
-      console.log(`[NotificationDataListener.tsx] Notification type: ${notificationType}`);
+      logger.debug(`Notification type: ${notificationType}`);
       // Always refetch the UserNotificationData when we got a socket event.
       refetchUserNotificationData();
 
@@ -63,7 +63,7 @@ export const NotificationDataListener = () => {
           // For incoming phone calls:
           // - On iOS: Use CallKit for native incoming call UI
           // - On Android: Generate push notification
-          console.log('[NotificationDataListener.tsx] Incoming phone call notification');
+          logger.debug('Incoming phone call notification');
 
           if (isIOS) {
             const caller = notificationData.caller;
@@ -90,16 +90,13 @@ export const NotificationDataListener = () => {
                 }
               });
             } else {
-              console.warn('[NotificationDataListener.tsx] No caller info in phone call notification');
+              logger.warn('No caller info in phone call notification');
             }
           } else {
             // On Android, use push notification
-            console.log('[NotificationDataListener.tsx] Generating push notification for incoming call');
+            logger.debug('Generating push notification for incoming call');
             generatePushNotificationFromEvent(event).catch(error => {
-              console.error(
-                '[NotificationDataListener.tsx] Failed to generate push notification for incoming call:',
-                error,
-              );
+              logger.error('Failed to generate push notification for incoming call:', error);
             });
           }
           break;

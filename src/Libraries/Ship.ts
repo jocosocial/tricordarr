@@ -1,6 +1,9 @@
 import {ImageRequireSource} from 'react-native';
 
+import {createLogger} from '#src/Libraries/Logger';
 import {ProfilePublicData} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('Ship');
 
 // @ts-ignore
 import deck1 from '#assets/map/deck1.png';
@@ -59,7 +62,7 @@ export const guessDeckNumber = (location?: string): number | undefined => {
   if (!location) {
     return undefined;
   }
-  console.log('Matching Location', location);
+  logger.debug('Matching location', location);
   // deckMatch typically catches Events that come from Sched.
   const deckMatch = location.match(/deck (\d+)/i);
   if (deckMatch) {

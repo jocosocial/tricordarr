@@ -2,11 +2,11 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const PostAsUserBanner = () => {
-  const {asPrivilegedUser} = usePrivilege();
+  const {asPrivilegedUser} = useElevation();
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({

@@ -13,12 +13,15 @@ import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezData} from '#src/Hooks/useFezData';
+import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
+
+const logger = createLogger('PersonalEventScreen.tsx');
 
 export const PersonalEventScreen = (props: Props) => {
   return (
@@ -88,7 +91,7 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
       title: eventData?.fezType === FezType.privateEvent ? 'Private Event' : 'Personal Event',
     });
     if (appConfig.markReadCancelPush && eventData) {
-      console.log('[PersonalEventScreen.tsx] auto canceling notifications.');
+      logger.info('Auto canceling notifications.');
       notifee.cancelDisplayedNotification(eventData.fezID);
     }
   }, [getNavButtons, navigation, eventData, appConfig.markReadCancelPush]);

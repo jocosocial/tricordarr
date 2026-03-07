@@ -2,7 +2,6 @@ import {useQueryClient} from '@tanstack/react-query';
 import React, {PropsWithChildren, useCallback} from 'react';
 
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SignOutContext, SignOutContextType} from '#src/Context/Contexts/SignOutContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
@@ -17,14 +16,12 @@ import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
  * - SessionProvider (for signOut)
  * - EnableUserNotificationProvider (for setEnableUserNotifications)
  * - SocketProvider (for closeNotificationSocket, dispatchFezSockets)
- * - PrivilegeProvider (for clearPrivileges)
  * - SwiftarrQueryClientProvider (for queryClient via useQueryClient)
  */
 export const SignOutProvider = ({children}: PropsWithChildren) => {
   const {setEnableUserNotifications} = useEnableUserNotification();
   const {closeNotificationSocket, dispatchFezSockets} = useSocket();
   const {signOut} = useSession();
-  const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
   const {clearCookies} = useTwitarrWebview();
 
@@ -46,23 +43,12 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
     // Sign out from session (clears token data)
     await signOut();
 
-    // Clear privileges
-    clearPrivileges();
-
     // Clear React Query cache
     queryClient.clear();
 
     // Clear webview cookies
     await clearCookies();
-  }, [
-    setEnableUserNotifications,
-    closeNotificationSocket,
-    dispatchFezSockets,
-    signOut,
-    clearPrivileges,
-    queryClient,
-    clearCookies,
-  ]);
+  }, [setEnableUserNotifications, closeNotificationSocket, dispatchFezSockets, signOut, queryClient, clearCookies]);
 
   const contextValue: SignOutContextType = React.useMemo(
     () => ({

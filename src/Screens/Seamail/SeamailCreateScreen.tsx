@@ -10,9 +10,13 @@ import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {SeamailCreateForm} from '#src/Components/Forms/SeamailCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
@@ -30,7 +34,9 @@ export const SeamailCreateScreen = (props: Props) => {
   return (
     <PreRegistrationScreen helpScreen={CommonStackComponents.seamailCreateHelpScreen}>
       <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail/create'}>
-        <SeamailCreateScreenInner {...props} />
+        <ElevationProvider initialElevation={props.route.params?.asPrivilegedUser}>
+          <SeamailCreateScreenInner {...props} />
+        </ElevationProvider>
       </DisabledFeatureScreen>
     </PreRegistrationScreen>
   );
@@ -45,8 +51,10 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
   const [seamailFormValid, setSeamailFormValid] = useState(false);
   const {createFez, appendPost} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
+  const {asPrivilegedUser} = useElevation();
   // Use a ref to store the created fez data immediately (synchronously) to avoid race condition
   const createdFezRef = useRef<FezData | null>(null);
+  const {setSnackbarPayload} = useSnackbar();
 
   // Helper to reset submitting state on both forms
   const resetSubmitting = useCallback(() => {
@@ -61,8 +69,8 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
     maxCapacity: 0,
     minCapacity: 0,
     title: '',
-    createdByTwitarrTeam: route.params?.initialAsTwitarrTeam || false,
-    createdByModerator: route.params?.initialAsModerator || false,
+    createdByTwitarrTeam: asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam,
+    createdByModerator: asPrivilegedUser === PrivilegedUserAccounts.moderator,
   };
 
   // Handler for creating the Fez.
@@ -112,6 +120,7 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
               dispatchScrollToTop(ChatStackScreenComponents.seamailListScreen);
               navigation.replace(CommonStackComponents.seamailChatScreen, {
                 fezID: fezData.fezID,
+                asPrivilegedUser,
               });
             },
             onError: () => {
@@ -120,11 +129,19 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
           },
         );
       } else {
-        console.error('Seamail is empty?');
+        setSnackbarPayload({message: 'Seamail is empty?', messageType: 'error'});
         resetSubmitting();
       }
     },
-    [fezPostMutation, navigation, resetSubmitting, appendPost, dispatchScrollToTop],
+    [
+      fezPostMutation,
+      navigation,
+      resetSubmitting,
+      appendPost,
+      dispatchScrollToTop,
+      asPrivilegedUser,
+      setSnackbarPayload,
+    ],
   );
 
   // Handler to trigger the chain of events needed to complete this screen.

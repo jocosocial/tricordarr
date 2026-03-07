@@ -19,12 +19,15 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {ServerUrlFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
+
+const logger = createLogger('OobeServerScreen.tsx');
 
 export const OobeServerScreen = ({navigation}: Props) => {
   const {currentSession, updateSession} = useSession();
@@ -39,7 +42,7 @@ export const OobeServerScreen = ({navigation}: Props) => {
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     if (!currentSession) {
-      console.error('[OobeServerScreen] Cannot save: no current session');
+      logger.error('Cannot save: no current session');
       return;
     }
 

@@ -19,9 +19,11 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useForumData} from '#src/Hooks/Forum/useForumData';
@@ -60,7 +62,15 @@ interface Props {
  *
  * @TODO test that this doesn't jump around, especially with the "thread from post".
  */
-export const ForumThreadScreenBase = ({
+export const ForumThreadScreenBase = (props: Props) => {
+  return (
+    <ElevationProvider>
+      <ForumThreadScreenBaseInner {...props} />
+    </ElevationProvider>
+  );
+};
+
+const ForumThreadScreenBaseInner = ({
   data,
   refetch,
   isLoading,
@@ -74,6 +84,7 @@ export const ForumThreadScreenBase = ({
   forumListData,
 }: Props) => {
   const navigation = useCommonStack();
+  const {asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam} = useElevation();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const markReadMutation = useForumMarkReadMutation();
@@ -149,11 +160,18 @@ export const ForumThreadScreenBase = ({
           )}
           <ForumThreadPinnedPostsItem forumID={forumData.forumID} navigation={navigation} />
           <ForumThreadSearchPostsItem navigation={navigation} forum={forumData} />
-          <ForumThreadScreenActionsMenu forumData={forumData} onRefresh={onRefresh} />
+          <ForumThreadScreenActionsMenu
+            forumData={forumData}
+            onRefresh={onRefresh}
+            asModerator={asModerator}
+            asTwitarrTeam={asTwitarrTeam}
+            toggleModerator={toggleModerator}
+            toggleTwitarrTeam={toggleTwitarrTeam}
+          />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [forumData, navigation, onRefresh]);
+  }, [forumData, navigation, onRefresh, asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam]);
 
   useEffect(() => {
     navigation.setOptions({

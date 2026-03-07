@@ -1,4 +1,4 @@
-import {Field, useField, useFormikContext} from 'formik';
+import {useField} from 'formik';
 import React, {useCallback, useMemo, useRef} from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
 import {TextInput} from 'react-native';
@@ -14,7 +14,6 @@ interface MentionTextFieldProps {
 
 export const MentionTextField = (props: MentionTextFieldProps) => {
   const {commonStyles} = useStyles();
-  const {handleBlur} = useFormikContext();
   const [field, _, helpers] = useField<string>(props.name);
   const textInputRef = useRef<TextInput>(null);
   const pendingMentionInsertionRef = useRef<boolean>(false);
@@ -104,21 +103,17 @@ export const MentionTextField = (props: MentionTextFieldProps) => {
   }, [triggers.mention, wrappedOnSelect]);
 
   return (
-    <Field name={props.name}>
-      {() => (
-        <>
-          {mentionTriggerProps && <ContentPostMentionSuggestionsView {...mentionTriggerProps} />}
-          <TextInput
-            ref={textInputRef}
-            // The textInputProps provides onChangeText and onSelectionChange.
-            {...textInputProps}
-            style={props.style}
-            onBlur={handleBlur(props.name)}
-            multiline={true}
-            underlineColorAndroid={'transparent'}
-          />
-        </>
-      )}
-    </Field>
+    <>
+      {mentionTriggerProps && <ContentPostMentionSuggestionsView {...mentionTriggerProps} />}
+      <TextInput
+        ref={textInputRef}
+        // The textInputProps provides onChangeText and onSelectionChange.
+        {...textInputProps}
+        style={props.style}
+        onBlur={() => helpers.setTouched(true, true)}
+        multiline={true}
+        underlineColorAndroid={'transparent'}
+      />
+    </>
   );
 };

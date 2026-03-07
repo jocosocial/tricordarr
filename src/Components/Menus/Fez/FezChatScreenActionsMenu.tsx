@@ -18,9 +18,20 @@ import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
 interface FezChatActionsMenuProps {
   fezID: string;
   onRefresh: () => void;
+  asModerator: boolean;
+  asTwitarrTeam: boolean;
+  toggleModerator: () => void;
+  toggleTwitarrTeam: () => void;
 }
 
-export const FezChatScreenActionsMenu = ({fezID, onRefresh}: FezChatActionsMenuProps) => {
+export const FezChatScreenActionsMenu = ({
+  fezID,
+  onRefresh,
+  asModerator,
+  asTwitarrTeam,
+  toggleModerator,
+  toggleTwitarrTeam,
+}: FezChatActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {isChatEditable, isParticipant, isMuted} = useFezData({fezID: fezID});
   const navigation = useCommonStack();
@@ -68,8 +79,8 @@ export const FezChatScreenActionsMenu = ({fezID, onRefresh}: FezChatActionsMenuP
       {(hasModerator || hasTwitarrTeam) && (
         <>
           <Divider bold={true} />
-          <PostAsModeratorMenuItem closeMenu={closeMenu} />
-          <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} />
+          <PostAsModeratorMenuItem closeMenu={closeMenu} active={asModerator} onPress={toggleModerator} />
+          <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} active={asTwitarrTeam} onPress={toggleTwitarrTeam} />
           <Divider bold={true} />
         </>
       )}

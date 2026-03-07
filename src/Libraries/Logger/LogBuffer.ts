@@ -2,15 +2,21 @@ import RNFS from 'react-native-fs';
 
 import {LogLevel} from '#src/Libraries/Logger/types';
 
+type WriteErrorLogger = (message: string, error: unknown) => void;
+
+const defaultWriteErrorLogger: WriteErrorLogger = () => {};
+
 export class LogBuffer {
   private buffer: string[] = [];
   private flushTimer: ReturnType<typeof setTimeout> | null = null;
   private readonly FLUSH_DELAY_MS = 5000;
   private readonly MAX_BUFFER_SIZE = 100;
   private getCurrentLogFilePath: () => string;
+  private readonly onWriteError: WriteErrorLogger;
 
-  constructor(getCurrentLogFilePath: () => string) {
+  constructor(getCurrentLogFilePath: () => string, onWriteError: WriteErrorLogger = defaultWriteErrorLogger) {
     this.getCurrentLogFilePath = getCurrentLogFilePath;
+    this.onWriteError = onWriteError;
   }
 
   addLog(message: string, severity: LogLevel) {
@@ -59,8 +65,8 @@ export class LogBuffer {
       const logFilePath = this.getCurrentLogFilePath();
       await RNFS.appendFile(logFilePath, logText, 'utf8');
     } catch (error) {
-      // Fallback to console if file write fails
-      console.error('[LogBuffer] Failed to write logs to file:', error);
+      // Logger/index injects a safe internal logger to avoid recursion here.
+      this.onWriteError('[LogBuffer] Failed to write logs to file', error);
     }
   }
 }

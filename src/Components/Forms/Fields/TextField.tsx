@@ -1,4 +1,4 @@
-import {Field, useField, useFormikContext} from 'formik';
+import {useField, useFormikContext} from 'formik';
 import React, {ReactNode} from 'react';
 import {
   FocusEvent,
@@ -135,9 +135,9 @@ export const TextField = ({
   textContentType,
   autoComplete,
 }: TextFieldProps) => {
-  const {handleChange, handleBlur, isSubmitting, setFieldValue, setFieldTouched} = useFormikContext();
+  const {isSubmitting} = useFormikContext();
   const {theme} = useAppTheme();
-  const [field, meta] = useField<string>(name);
+  const [field, meta, helpers] = useField<string>(name);
   const {styleDefaults} = useStyles();
 
   // Calculate minHeight based on numberOfLines
@@ -163,7 +163,7 @@ export const TextField = ({
   });
 
   const handleValueChange = (value: string) => {
-    handleChange(name)(value);
+    helpers.setValue(value);
   };
 
   const handleBlurEvent = (event: FocusEvent) => {
@@ -181,11 +181,11 @@ export const TextField = ({
       const trimmedValue = field.value.trim();
       if (trimmedValue !== field.value) {
         // Set the trimmed value first
-        setFieldValue(name, trimmedValue, false);
+        helpers.setValue(trimmedValue, false);
         // Use requestAnimationFrame to ensure state update propagates before validation
         requestAnimationFrame(() => {
           // Mark as touched and trigger validation on the trimmed value
-          setFieldTouched(name, true, true);
+          helpers.setTouched(true, true);
         });
         // Call user's onBlur callback
         if (onBlur) {
@@ -198,46 +198,40 @@ export const TextField = ({
     if (onBlur) {
       onBlur(event);
     }
-    return handleBlur(name)(event);
+    helpers.setTouched(true, true);
   };
 
-  // Went back to Field from FastField due to SuggestedTextField modal.
-  // Hopefully that's not a bad thing.
   return (
-    <Field name={name}>
-      {() => (
-        <View style={viewStyle}>
-          <TextInput
-            keyboardType={keyboardType}
-            textColor={disabled || isSubmitting ? theme.colors.onSurfaceDisabled : theme.colors.onBackground} // @TODO this isnt working
-            label={label}
-            mode={mode}
-            multiline={multiline}
-            onChangeText={onChangeText || handleValueChange}
-            onBlur={handleBlurEvent}
-            value={field.value}
-            error={shouldShowError}
-            numberOfLines={numberOfLines}
-            disabled={disabled || isSubmitting}
-            left={left}
-            right={right}
-            secureTextEntry={secureTextEntry}
-            inputMode={inputMode}
-            autoCapitalize={autoCapitalize}
-            maxLength={maxLength}
-            onFocus={onFocus}
-            style={[styles.textInput, innerTextStyle]}
-            onSelectionChange={onSelectionChange}
-            outlineStyle={styles.outline}
-            textContentType={textContentType}
-            autoComplete={autoComplete}
-          />
-          {infoText && <HelperText type={'info'}>{infoText}</HelperText>}
-          <HelperText type={'error'} visible={shouldShowError}>
-            {meta.error}
-          </HelperText>
-        </View>
-      )}
-    </Field>
+    <View style={viewStyle}>
+      <TextInput
+        keyboardType={keyboardType}
+        textColor={disabled || isSubmitting ? theme.colors.onSurfaceDisabled : theme.colors.onBackground} // @TODO this isnt working
+        label={label}
+        mode={mode}
+        multiline={multiline}
+        onChangeText={onChangeText || handleValueChange}
+        onBlur={handleBlurEvent}
+        value={field.value}
+        error={shouldShowError}
+        numberOfLines={numberOfLines}
+        disabled={disabled || isSubmitting}
+        left={left}
+        right={right}
+        secureTextEntry={secureTextEntry}
+        inputMode={inputMode}
+        autoCapitalize={autoCapitalize}
+        maxLength={maxLength}
+        onFocus={onFocus}
+        style={[styles.textInput, innerTextStyle]}
+        onSelectionChange={onSelectionChange}
+        outlineStyle={styles.outline}
+        textContentType={textContentType}
+        autoComplete={autoComplete}
+      />
+      {infoText && <HelperText type={'info'}>{infoText}</HelperText>}
+      <HelperText type={'error'} visible={shouldShowError}>
+        {meta.error}
+      </HelperText>
+    </View>
   );
 };

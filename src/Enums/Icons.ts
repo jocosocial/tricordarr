@@ -120,6 +120,7 @@ export enum AppIcons {
   dayPlanner = 'book-clock',
   calendarMultiple = 'calendar-multiple',
   schedImport = 'calendar-import',
+  schedOpen = 'calendar-export',
   sortAscending = 'sort-ascending',
   sortDescending = 'sort-descending',
   selectAll = 'select-all',

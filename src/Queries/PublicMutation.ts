@@ -3,7 +3,10 @@ import {useMutation, UseMutationOptions, UseMutationResult} from '@tanstack/reac
 import {AxiosError} from 'axios';
 
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('PublicMutation.ts');
 
 /**
  * Extracts a formatted error message from an AxiosError, including the HTTP status code.
@@ -63,7 +66,7 @@ export function usePublicMutation<
     mutationFn: mutationFn,
     onError: error => {
       setSnackbarPayload({message: getErrorMessage(error), messageType: 'error'});
-      console.error('[PublicMutation.ts]', error);
+      logger.error('Public mutation failed.', error);
     },
     ...options,
   });

@@ -11,13 +11,16 @@ import {ContentInsertMenuView} from '#src/Components/Views/Content/ContentInsert
 import {ContentInsertPhotosView} from '#src/Components/Views/Content/ContentInsertPhotosView';
 import {ContentPostLengthView} from '#src/Components/Views/Content/ContentPostLengthView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
+import {createLogger} from '#src/Libraries/Logger';
 import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {PostContentData} from '#src/Structs/ControllerStructs';
 import {ImageQueryData} from '#src/Types';
+
+const logger = createLogger('ContentPostForm.tsx');
 
 interface ContentPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -44,7 +47,7 @@ export const ContentPostForm = ({
   disabled = false,
 }: ContentPostFormProps) => {
   const {commonStyles} = useStyles();
-  const {asPrivilegedUser} = usePrivilege();
+  const {asPrivilegedUser} = useElevation();
   const {appConfig} = useConfig();
   const [insertMenuVisible, setInsertMenuVisible] = React.useState(false);
   const [emojiPickerVisible, setEmojiPickerVisible] = React.useState(false);
@@ -131,7 +134,7 @@ export const ContentPostForm = ({
   // the user had typed or attached.
   useEffect(() => {
     if (formRef?.current) {
-      console.log('[ContentPostForm.tsx] updating privilege user Formik context.');
+      logger.debug('Updating privilege user Formik context.');
       formRef.current.values.postAsModerator = asPrivilegedUser === PrivilegedUserAccounts.moderator;
       formRef.current.values.postAsTwitarrTeam = asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam;
     }

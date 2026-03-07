@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
 import {NeedsPhotographerMenuItem} from '#src/Components/Menus/Events/Items/NeedsPhotographerMenuItem';
+import {OpenInSchedMenuItem} from '#src/Components/Menus/Events/Items/OpenInSchedMenuItem';
 import {PhotographingMenuItem} from '#src/Components/Menus/Events/Items/PhotographingMenuItem';
 import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
@@ -76,9 +77,14 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       <Divider bold={true} />
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.event.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />
+      <OpenInSchedMenuItem closeMenu={closeMenu} eventUid={props.event.uid} />
       {props.event.eventType === EventType.shadow && (
         <SetOrganizerMenuItem
-          eventID={props.event.eventID}
+          onPress={() => {
+            commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
+              eventID: String(props.event.eventID),
+            });
+          }}
           closeMenu={closeMenu}
           disabled={!(preRegistrationMode || hasPerformerSelfEditor)}
         />

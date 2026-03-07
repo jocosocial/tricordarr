@@ -32,8 +32,33 @@ export const SnackbarProvider = ({children}: PropsWithChildren) => {
     }
   }, []);
 
+  // react-native-paper Menu renders its children inside a <Portal>, which re-mounts them
+  // at the Portal.Host level via PortalManager. React error boundaries (CriticalErrorProvider)
+  // do not catch errors thrown in event handlers, so an onPress that fails inside a portaled
+  // menu item would crash without any user-visible recovery. Wrap handlers with snackbarTry
+  // to catch those errors and surface them as a snackbar instead.
+  const snackbarTry = useCallback(
+    (callback: () => void | Promise<void>) => {
+      return () => {
+        try {
+          const result = callback();
+          if (result instanceof Promise) {
+            result.catch((error: unknown) => {
+              const message = error instanceof Error ? error.message : String(error);
+              wrappedSetSnackbarPayload({message, messageType: 'error'});
+            });
+          }
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : String(error);
+          wrappedSetSnackbarPayload({message, messageType: 'error'});
+        }
+      };
+    },
+    [wrappedSetSnackbarPayload],
+  );
+
   return (
-    <SnackbarContext.Provider value={{snackbarPayload, setSnackbarPayload: wrappedSetSnackbarPayload}}>
+    <SnackbarContext.Provider value={{snackbarPayload, setSnackbarPayload: wrappedSetSnackbarPayload, snackbarTry}}>
       {children}
     </SnackbarContext.Provider>
   );

@@ -19,7 +19,6 @@ import {TodayTimezoneWarningView} from '#src/Components/Views/Today/TodayTimezon
 import {TodayAppUpdateView} from '#src/Components/Views/TodayAppUpdateView';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
@@ -49,7 +48,6 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchTimeZoneChanges} = useTimeZoneChangesQuery({enabled: false});
 
   const {isLoggedIn} = useSession();
-  usePrivilege();
   const {preRegistrationMode} = usePreRegistration();
   const {refreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {

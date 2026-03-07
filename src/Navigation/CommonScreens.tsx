@@ -83,6 +83,7 @@ import {ScheduleDayPlannerHelpScreen} from '#src/Screens/Schedule/ScheduleDayPla
 import {ScheduleDayPlannerScreen} from '#src/Screens/Schedule/ScheduleDayPlannerScreen';
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {ScheduleHelpScreen} from '#src/Screens/Schedule/ScheduleHelpScreen';
+import {ScheduleImportHelpScreen} from '#src/Screens/Schedule/ScheduleImportHelpScreen';
 import {ScheduleImportScreen} from '#src/Screens/Schedule/ScheduleImportScreen';
 import {ScheduleOverlapHelpScreen} from '#src/Screens/Schedule/ScheduleOverlapHelpScreen';
 import {ScheduleOverlapScreen} from '#src/Screens/Schedule/ScheduleOverlapScreen';
@@ -101,6 +102,7 @@ import {AlertKeywordsScreen} from '#src/Screens/Settings/Content/AlertKeywordsSe
 import {ForumSettingsScreen} from '#src/Screens/Settings/Content/ForumSettingsScreen';
 import {ImageSettingsScreen} from '#src/Screens/Settings/Content/ImageSettingsScreen';
 import {MuteKeywordsScreen} from '#src/Screens/Settings/Content/MuteKeywordsSettingsScreen';
+import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
 import {SiteUIHelpScreen} from '#src/Screens/SiteUI/SiteUIHelpScreen';
 import {SiteUILinkScreen} from '#src/Screens/SiteUI/SiteUILinkScreen';
 import {SiteUIScreen} from '#src/Screens/SiteUI/SiteUIScreen';
@@ -125,7 +127,13 @@ import {
   ProfilePublicData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
-import {NoDrawerParams, Optional, ScheduleDayParams, WithScrollToTopIntent} from '#src/Types/RouteParams';
+import {
+  NoDrawerParams,
+  Optional,
+  ScheduleDayParams,
+  WithElevation,
+  WithScrollToTopIntent,
+} from '#src/Types/RouteParams';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -201,11 +209,9 @@ export type CommonStackParamList = {
     postData: PostData;
     forumData?: ForumData;
   };
-  SeamailCreateScreen?: {
+  SeamailCreateScreen?: WithElevation<{
     initialUserHeaders?: UserHeader[];
-    initialAsModerator?: boolean;
-    initialAsTwitarrTeam?: boolean;
-  };
+  }>;
   ForumPostPinnedScreen: {
     forumID: string;
   };
@@ -213,10 +219,10 @@ export type CommonStackParamList = {
   ForumPostHashtagScreen: {
     hashtag: string;
   };
-  SeamailChatScreen: {
+  SeamailChatScreen: WithElevation<{
     fezID: string;
     initialReadCount?: number;
-  };
+  }>;
   FezChatDetailsScreen: {
     fezID: string;
   };
@@ -276,6 +282,7 @@ export type CommonStackParamList = {
   ScheduleHelpScreen: undefined;
   ScheduleDayHelpScreen: undefined;
   ScheduleDayPlannerHelpScreen: undefined;
+  ScheduleImportHelpScreen: undefined;
   ScheduleOverlapHelpScreen: undefined;
   ForumPostSearchScreen: {
     category?: CategoryData;
@@ -311,6 +318,7 @@ export type CommonStackParamList = {
     initialReadCount?: number;
   };
   ScheduleImportScreen: undefined;
+  CruiseSettingsScreen: undefined;
   EventSearchScreen: undefined;
   EventAddPerformerScreen: {
     eventID: string;
@@ -413,6 +421,7 @@ export enum CommonStackComponents {
   scheduleHelpScreen = 'ScheduleHelpScreen',
   scheduleDayHelpScreen = 'ScheduleDayHelpScreen',
   scheduleDayPlannerHelpScreen = 'ScheduleDayPlannerHelpScreen',
+  scheduleImportHelpScreen = 'ScheduleImportHelpScreen',
   scheduleOverlapHelpScreen = 'ScheduleOverlapHelpScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
@@ -437,6 +446,7 @@ export enum CommonStackComponents {
   timeZoneHelpScreen = 'TimeZoneHelpScreen',
   privateEventChatScreen = 'PrivateEventChatScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
+  cruiseSettingsScreen = 'CruiseSettingsScreen',
   eventSearchScreen = 'EventSearchScreen',
   eventAddPerformerScreen = 'EventAddPerformerScreen',
   performerCreateScreen = 'PerformerCreateScreen',
@@ -476,6 +486,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.scheduleHelpScreen
   | CommonStackComponents.scheduleDayHelpScreen
   | CommonStackComponents.scheduleDayPlannerHelpScreen
+  | CommonStackComponents.scheduleImportHelpScreen
   | CommonStackComponents.scheduleOverlapHelpScreen
   | CommonStackComponents.userDirectoryHelpScreen
   | CommonStackComponents.forumHelpScreen
@@ -802,6 +813,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Day Planner Help'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.scheduleImportHelpScreen}
+        component={ScheduleImportHelpScreen}
+        options={{title: 'Schedule Import Help'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.scheduleOverlapHelpScreen}
         component={ScheduleOverlapHelpScreen}
         options={{title: 'Overlapping Events Help'}}
@@ -922,6 +938,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.scheduleImportScreen}
         component={ScheduleImportScreen}
         options={{title: 'Schedule Import'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.cruiseSettingsScreen}
+        component={CruiseSettingsScreen}
+        options={{title: 'Cruise Settings'}}
       />
       <Stack.Screen
         name={CommonStackComponents.eventSearchScreen}

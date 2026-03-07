@@ -27,9 +27,20 @@ import {ForumData} from '#src/Structs/ControllerStructs';
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
   onRefresh: () => void;
+  asModerator: boolean;
+  asTwitarrTeam: boolean;
+  toggleModerator: () => void;
+  toggleTwitarrTeam: () => void;
 }
 
-export const ForumThreadScreenActionsMenu = ({forumData, onRefresh}: ForumThreadActionsMenuProps) => {
+export const ForumThreadScreenActionsMenu = ({
+  forumData,
+  onRefresh,
+  asModerator,
+  asTwitarrTeam,
+  toggleModerator,
+  toggleTwitarrTeam,
+}: ForumThreadActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
@@ -144,13 +155,13 @@ export const ForumThreadScreenActionsMenu = ({forumData, onRefresh}: ForumThread
       <Divider bold={true} />
       {hasTwitarrTeam && (
         <>
-          <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} />
+          <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} active={asTwitarrTeam} onPress={toggleTwitarrTeam} />
           <Divider bold={true} />
         </>
       )}
       {hasModerator && (
         <>
-          <PostAsModeratorMenuItem closeMenu={closeMenu} />
+          <PostAsModeratorMenuItem closeMenu={closeMenu} active={asModerator} onPress={toggleModerator} />
           <ModerateMenuItem
             closeMenu={closeMenu}
             resourceID={forumData.forumID}

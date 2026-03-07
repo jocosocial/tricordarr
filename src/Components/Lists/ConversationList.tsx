@@ -5,7 +5,10 @@ import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp,
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {RNFlatListSeparatorComponent} from '#src/Types';
+
+const logger = createLogger('ConversationList.tsx');
 
 export type TConversationListRef = LegendListRef | null;
 export type TConversationListRefObject = React.RefObject<TConversationListRef>;
@@ -112,10 +115,10 @@ export const ConversationList = <TItem,>({
     if (!data || data.length === 0) return;
 
     if (initialScrollIndex) {
-      console.log('[ConversationList.tsx] useEffect scrollToIndex', initialScrollIndex);
+      logger.debug('useEffect scrollToIndex', initialScrollIndex);
       listRef.current?.scrollToIndex({index: initialScrollIndex, animated: false});
     } else {
-      console.log('[ConversationList.tsx] useEffect scrollToEnd');
+      logger.debug('useEffect scrollToEnd');
       listRef.current?.scrollToEnd({animated: false});
     }
 

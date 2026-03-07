@@ -2,7 +2,7 @@ import React from 'react';
 import {ActivityIndicator, IconButton} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -28,7 +28,7 @@ export const SubmitIconButton = ({
 }: SubmitIconButtonProps) => {
   const {theme} = useAppTheme();
   const {styleDefaults} = useStyles();
-  const {asPrivilegedUser} = usePrivilege();
+  const {asPrivilegedUser} = useElevation();
   const buttonContainerColor = asPrivilegedUser ? theme.colors.errorContainer : theme.colors.twitarrNeutralButton;
   const buttonColor = asPrivilegedUser ? theme.colors.onErrorContainer : theme.colors.onTwitarrNeutralButton;
 

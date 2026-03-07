@@ -15,11 +15,13 @@ import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {SeamailListScreenActionsMenu} from '#src/Components/Menus/Seamail/SeamailListScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
@@ -42,9 +44,11 @@ export const SeamailListScreen = (props: Props) => {
     <LoggedInScreen>
       <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
-          <SelectionProvider>
-            <SeamailListScreenInner {...props} />
-          </SelectionProvider>
+          <ElevationProvider>
+            <SelectionProvider>
+              <SeamailListScreenInner {...props} />
+            </SelectionProvider>
+          </ElevationProvider>
         </DisabledFeatureScreen>
       </PreRegistrationScreen>
     </LoggedInScreen>
@@ -52,7 +56,8 @@ export const SeamailListScreen = (props: Props) => {
 };
 
 const SeamailListScreenInner = ({navigation, route}: Props) => {
-  const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
+  const {hasTwitarrTeam, hasModerator} = usePrivilege();
+  const {asPrivilegedUser} = useElevation();
   // showUnreadOnly should almost never be false since that's not useful. The query will not
   // pass undefined to the API.
   const [showUnreadOnly, setShowUnreadOnly] = useState<boolean | undefined>(undefined);

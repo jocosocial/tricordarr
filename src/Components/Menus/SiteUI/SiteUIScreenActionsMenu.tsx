@@ -9,7 +9,10 @@ import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
+import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+
+const logger = createLogger('SiteUIScreenActionsMenu.tsx');
 
 interface SiteUIScreenActionsMenuProps {
   onHome: () => void;
@@ -51,7 +54,7 @@ export const SiteUIScreenActionsMenu = ({onHome, getCurrentUrl, setKey}: SiteUIS
     closeMenu();
     const currentUrl = getCurrentUrl();
     Linking.openURL(currentUrl).catch(err => {
-      console.error('[SiteUIScreenActionsMenu.tsx] Failed to open URL in browser:', err);
+      logger.error('Failed to open URL in browser:', err);
     });
   };
 

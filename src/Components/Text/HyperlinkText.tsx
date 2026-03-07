@@ -9,6 +9,9 @@ import {useLinking} from '#src/Context/Contexts/LinkingContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {createLogger} from '#src/Libraries/Logger';
+
+const logger = createLogger('HyperlinkText.tsx');
 
 // https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift
 const urlPathLabelMappings = [
@@ -41,7 +44,7 @@ export const HyperlinkText = ({children, disableLinkInterpolation = false}: Hype
 
   const handleLink = (linkUrl?: string) => {
     if (linkUrl) {
-      console.log(`[HyperlinkText.tsx] opening link to ${linkUrl}`);
+      logger.debug(`Opening link to ${linkUrl}`);
       if (disableLinkInterpolation) {
         // Open externally, not using the openWebUrl function.
         Linking.openURL(linkUrl);

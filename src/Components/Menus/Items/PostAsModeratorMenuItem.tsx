@@ -1,13 +1,24 @@
 import * as React from 'react';
 import {Menu} from 'react-native-paper';
 
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 
-export const PostAsModeratorMenuItem = ({closeMenu}: {closeMenu: () => void}) => {
-  const {asModerator, setAsTwitarrTeam, setAsModerator, hasModerator} = usePrivilege();
+interface PostAsModeratorMenuItemProps {
+  closeMenu: () => void;
+  active?: boolean;
+  onPress?: () => void;
+}
+
+export const PostAsModeratorMenuItem = ({closeMenu, active, onPress}: PostAsModeratorMenuItemProps) => {
+  const {hasModerator} = usePrivilege();
+  const {asModerator, toggleModerator} = useElevation();
   const {commonStyles} = useStyles();
+  const isActive = active ?? asModerator;
+  const handlePress = onPress ?? toggleModerator;
+
   if (!hasModerator) {
     return null;
   }
@@ -17,11 +28,10 @@ export const PostAsModeratorMenuItem = ({closeMenu}: {closeMenu: () => void}) =>
       dense={false}
       leadingIcon={AppIcons.moderator}
       onPress={() => {
-        setAsTwitarrTeam(false);
-        setAsModerator(!asModerator);
+        handlePress();
         closeMenu();
       }}
-      style={asModerator ? commonStyles.surfaceVariant : undefined}
+      style={isActive ? commonStyles.surfaceVariant : undefined}
     />
   );
 };

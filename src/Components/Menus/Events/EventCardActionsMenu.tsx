@@ -3,6 +3,7 @@ import {Divider, Menu} from 'react-native-paper';
 
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
 import {NeedsPhotographerMenuItem} from '#src/Components/Menus/Events/Items/NeedsPhotographerMenuItem';
+import {OpenInSchedMenuItem} from '#src/Components/Menus/Events/Items/OpenInSchedMenuItem';
 import {PhotographingMenuItem} from '#src/Components/Menus/Events/Items/PhotographingMenuItem';
 import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
@@ -36,6 +37,12 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
     }
   };
 
+  const handleSetOrganizerPress = () => {
+    commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
+      eventID: String(props.eventData.eventID),
+    });
+  };
+
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchorWithMenu}>
       {props.eventData.forum && <Menu.Item title={'Forum'} leadingIcon={AppIcons.forum} onPress={handleForumPress} />}
@@ -56,10 +63,11 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
       <Divider bold={true} />
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.eventData.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.eventData} />
+      <OpenInSchedMenuItem closeMenu={closeMenu} eventUid={props.eventData.uid} />
       {props.eventData.eventType === EventType.shadow && (
         <>
           <Divider bold={true} />
-          <SetOrganizerMenuItem eventID={props.eventData.eventID} closeMenu={closeMenu} />
+          <SetOrganizerMenuItem closeMenu={closeMenu} onPress={handleSetOrganizerPress} />
         </>
       )}
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}

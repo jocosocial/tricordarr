@@ -2,7 +2,10 @@ import {focusManager} from '@tanstack/react-query';
 import {useEffect} from 'react';
 import {AppState, AppStateStatus} from 'react-native';
 
+import {createLogger} from '#src/Libraries/Logger';
 import {isNative} from '#src/Libraries/Platform/Detection';
+
+const logger = createLogger('AppFocusHandler.tsx');
 
 /**
  * Callback function to handle app state changes.
@@ -10,7 +13,7 @@ import {isNative} from '#src/Libraries/Platform/Detection';
  */
 function onAppStateChange(status: AppStateStatus) {
   if (isNative) {
-    console.log('[AppFocusHandler.tsx] onAppStateChange setting focused', status);
+    logger.debug('onAppStateChange setting focused', status);
     focusManager.setFocused(status === 'active');
   }
 }
@@ -21,7 +24,7 @@ function onAppStateChange(status: AppStateStatus) {
  */
 export const AppFocusHandler = () => {
   useEffect(() => {
-    console.log('[AppFocusHandler.tsx] useEffect adding app state change listener');
+    logger.debug('useEffect adding app state change listener');
     const subscription = AppState.addEventListener('change', onAppStateChange);
     return () => subscription.remove();
   }, []);

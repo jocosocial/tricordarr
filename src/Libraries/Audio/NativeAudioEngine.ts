@@ -1,12 +1,16 @@
 import {NativeEventEmitter, Platform} from 'react-native';
 
+import {createLogger} from '#src/Libraries/Logger';
+
 import type {Spec} from '#specs/NativeAudioEngine';
 import NativeAudioEngineModule from '#specs/NativeAudioEngine';
+
+const logger = createLogger('NativeAudioEngine');
 
 const AudioEngine: Spec | null = NativeAudioEngineModule;
 
 if (!AudioEngine) {
-  console.error('[NativeAudioEngine] Native AudioEngine module not found');
+  logger.error('Native AudioEngine module not found');
 }
 
 // Only create event emitter if AudioEngine is available
@@ -37,9 +41,9 @@ export class NativeAudioEngine {
 
     try {
       await AudioEngine.start();
-      console.log('[NativeAudioEngine] Started successfully');
+      logger.info('Started successfully');
     } catch (error) {
-      console.error('[NativeAudioEngine] Failed to start:', error);
+      logger.error('Failed to start', error);
       throw error;
     }
   }
@@ -54,9 +58,9 @@ export class NativeAudioEngine {
 
     try {
       await AudioEngine.stop();
-      console.log('[NativeAudioEngine] Stopped');
+      logger.info('Stopped');
     } catch (error) {
-      console.error('[NativeAudioEngine] Failed to stop:', error);
+      logger.error('Failed to stop', error);
       throw error;
     }
   }
@@ -72,9 +76,9 @@ export class NativeAudioEngine {
 
     try {
       await AudioEngine.setMuted(muted);
-      console.log(`[NativeAudioEngine] Microphone ${muted ? 'muted' : 'unmuted'}`);
+      logger.info(`Microphone ${muted ? 'muted' : 'unmuted'}`);
     } catch (error) {
-      console.error('[NativeAudioEngine] Failed to set mute:', error);
+      logger.error('Failed to set mute', error);
       throw error;
     }
   }
@@ -90,9 +94,9 @@ export class NativeAudioEngine {
 
     try {
       await AudioEngine.setSpeakerOn(speakerOn);
-      console.log(`[NativeAudioEngine] Speaker ${speakerOn ? 'on' : 'off'}`);
+      logger.info(`Speaker ${speakerOn ? 'on' : 'off'}`);
     } catch (error) {
-      console.error('[NativeAudioEngine] Failed to set speaker:', error);
+      logger.error('Failed to set speaker', error);
       throw error;
     }
   }
@@ -109,7 +113,7 @@ export class NativeAudioEngine {
     try {
       AudioEngine.playAudio(samples);
     } catch (error) {
-      console.error('[NativeAudioEngine] Failed to play audio:', error);
+      logger.error('Failed to play audio', error);
     }
   }
 
@@ -132,7 +136,7 @@ export class NativeAudioEngine {
         }
       });
     } else {
-      console.warn('[NativeAudioEngine] Cannot set audio data listener - AudioEngine module not available');
+      logger.warn('Cannot set audio data listener - AudioEngine module not available');
     }
   }
 

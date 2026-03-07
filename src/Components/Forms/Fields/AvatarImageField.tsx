@@ -8,9 +8,12 @@ import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
 import {styleDefaults} from '#src/Styles';
+
+const logger = createLogger('AvatarImageField.tsx');
 
 interface AvatarImageFieldProps<TFormData> {
   name: keyof TFormData;
@@ -53,7 +56,7 @@ export const AvatarImageField = <TFormData,>({imageData, name}: AvatarImageField
   const takeImage = async () => {
     const cameraPermission = isIOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
     const permissionStatus = await requestPermission(cameraPermission);
-    console.log('[AvatarImageField.tsx] Camera permission is', permissionStatus);
+    logger.debug('Camera permission is', permissionStatus);
     try {
       const image = await ImagePicker.openCamera({
         cropping: true,

@@ -3,7 +3,7 @@ import {StyleProp, StyleSheet, ViewStyle} from 'react-native';
 import {FAB} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -16,7 +16,6 @@ interface BaseFABProps {
   onPress: () => void;
   label?: string;
   showLabel?: boolean;
-  asPrivilegedUser?: boolean;
 }
 
 export const BaseFAB = ({
@@ -29,7 +28,7 @@ export const BaseFAB = ({
   showLabel = true,
 }: BaseFABProps) => {
   const {theme} = useAppTheme();
-  const {asPrivilegedUser} = usePrivilege();
+  const {asPrivilegedUser} = useElevation();
   const {commonStyles, styleDefaults} = useStyles();
   const {snackbarPayload} = useSnackbar();
 

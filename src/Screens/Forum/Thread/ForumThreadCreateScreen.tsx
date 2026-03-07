@@ -11,11 +11,13 @@ import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {ForumCreateForm} from '#src/Components/Forms/Forum/ForumCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
@@ -27,13 +29,17 @@ import {ForumThreadValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadCreateScreen>;
 
+const logger = createLogger('ForumThreadCreateScreen.tsx');
+
 export const ForumThreadCreateScreen = (props: Props) => {
   return (
     <PreRegistrationScreen helpScreen={CommonStackComponents.forumThreadCreateHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.forums}
         urlPath={`/forums/${props.route.params.categoryId}/createForum`}>
-        <ForumThreadCreateScreenInner {...props} />
+        <ElevationProvider>
+          <ForumThreadCreateScreenInner {...props} />
+        </ElevationProvider>
       </DisabledFeatureScreen>
     </PreRegistrationScreen>
   );
@@ -55,7 +61,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   const onForumSubmit = (values: ForumThreadValues, formikHelpers: FormikHelpers<ForumThreadValues>) => {
     setSubmitting(true);
     if (!postFormRef.current) {
-      console.error('Post form ref undefined.');
+      logger.error('Post form ref undefined.');
       setSubmitting(false);
       return;
     }

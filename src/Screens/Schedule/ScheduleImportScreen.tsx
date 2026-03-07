@@ -2,23 +2,31 @@ import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import {VEvent} from 'node-ical';
 import pluralize from 'pluralize';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SchedImportForm} from '#src/Components/Forms/SchedImportForm';
+import {ScheduleImportScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleImportScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {createLogger} from '#src/Libraries/Logger';
 import {getCalFeedFromUrl, getEventUid} from '#src/Libraries/Schedule';
+import {useCommonStack} from '#src/Navigation/CommonScreens';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {SchedImportFormValues} from '#src/Types/FormValues';
 
+const logger = createLogger('ScheduleImportScreen.tsx');
+
 export const ScheduleImportScreen = () => {
+  const navigation = useCommonStack();
   const {appConfig, updateAppConfig} = useConfig();
   const {data: twitarrEvents, refetch} = useEventsQuery({});
   const eventFavoriteMutation = useEventFavoriteMutation();
@@ -27,6 +35,27 @@ export const ScheduleImportScreen = () => {
   const queryClient = useQueryClient();
 
   const writeLog = (line: string) => setLog(prevLogs => [...prevLogs, line]);
+
+  const initialValues = useMemo<SchedImportFormValues>(
+    () => ({username: '', schedUrl: appConfig.schedBaseUrl}),
+    [appConfig.schedBaseUrl],
+  );
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <ScheduleImportScreenActionsMenu />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const onSubmit = async (values: SchedImportFormValues, helpers: FormikHelpers<SchedImportFormValues>) => {
     setLog([]);
@@ -42,7 +71,7 @@ export const ScheduleImportScreen = () => {
       skipCount = 0;
     await refetch();
     if (!twitarrEvents) {
-      console.error('Unable to get events from Twitarr?');
+      logger.error('Unable to get events from Twitarr.');
       helpers.setSubmitting(false);
       return;
     }
@@ -92,20 +121,11 @@ export const ScheduleImportScreen = () => {
   return (
     <AppView>
       <ScrollingContentView overScroll={true}>
-        <HelpTopicView>Import your Sched.com schedule favorites to Twitarr.</HelpTopicView>
-        <HelpTopicView title={'Prerequisites'}>
-          You must have already created a Sched.com account for JoCo Cruise this year.
-        </HelpTopicView>
         <HelpTopicView>
-          Your personal schedule must be public, meaning others can see you in the attendee list. This only needs to be
-          set during the import. You can return your profile to private when you're done.
-        </HelpTopicView>
-        <HelpTopicView>
-          You do NOT need to have an internet package to do this! Sched.com is allowed on ship wifi without a paid
-          internet package.
+          Import your Sched.com schedule favorites to Twitarr. See the Help screen for prerequisites and more details.
         </HelpTopicView>
         <PaddedContentView>
-          <SchedImportForm initialValues={{username: '', schedUrl: appConfig.schedBaseUrl}} onSubmit={onSubmit} />
+          <SchedImportForm initialValues={initialValues} onSubmit={onSubmit} />
         </PaddedContentView>
         <PaddedContentView>
           {log.map((line, index) => (

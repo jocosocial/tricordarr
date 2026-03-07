@@ -18,7 +18,6 @@ import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThread
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useForumFilter} from '#src/Context/Contexts/ForumFilterContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -53,7 +52,6 @@ export const ForumCategoryScreen = (props: Props) => {
 const ForumCategoryScreenInner = ({route, navigation}: Props) => {
   const {forumFilter, forumSortOrder, forumSortDirection} = useForumFilter();
   const isFocused = useIsFocused();
-  const {clearPrivileges} = usePrivilege();
   const {
     data,
     refetch,
@@ -102,10 +100,6 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
   }, [enableSelection, route.params.category, forumListData, selectedItems, setRefreshing]);
 
   useEffect(() => {
-    // This clears the previous state of forum posts and a specific forum.
-    if (isFocused) {
-      clearPrivileges();
-    }
     navigation.setOptions({
       headerRight: getNavButtons,
     });
@@ -114,7 +108,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
     } else {
       navigation.setOptions({title: 'Forums'});
     }
-  }, [isFocused, getNavButtons, navigation, clearPrivileges, enableSelection, selectedItems.length]);
+  }, [isFocused, getNavButtons, navigation, enableSelection, selectedItems.length]);
 
   if (isLoading || !data) {
     return <LoadingView />;

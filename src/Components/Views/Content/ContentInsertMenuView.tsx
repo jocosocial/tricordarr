@@ -10,8 +10,11 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {PostContentData} from '#src/Structs/ControllerStructs';
+
+const logger = createLogger('ContentInsertMenuView.tsx');
 
 interface ContentInsertMenuViewProps {
   visible: boolean;
@@ -57,7 +60,7 @@ export const ContentInsertMenuView = ({
   const takeImage = async () => {
     const cameraPermission = isIOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
     const permissionStatus = await requestPermission(cameraPermission);
-    console.log('[ContentInsertMenuView.tsx] Camera permission is', permissionStatus);
+    logger.debug('Camera permission is', permissionStatus);
     try {
       const image = await ImagePicker.openCamera({
         includeBase64: true,
