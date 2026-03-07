@@ -13,6 +13,7 @@ import {MainTimeZoneScreenActionsMenu} from '#src/Components/Menus/Main/MainTime
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useTimeZoneChangesContext} from '#src/Context/Contexts/TimeZoneChangesContext';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
@@ -44,14 +45,15 @@ export const MainTimeZoneScreen = () => {
 };
 
 const TimeZoneScreen = () => {
-  const {data, refetch} = useTimeZoneChangesQuery();
+  const {data} = useTimeZoneChangesQuery();
   const navigation = useCommonStack();
-  const {data: notificationData, refetch: refetchNotificationData} = useUserNotificationDataQuery();
+  const {data: notificationData} = useUserNotificationDataQuery();
+  const {reload} = useTimeZoneChangesContext();
   const [refreshing, setRefreshing] = useState(false);
 
   const refresh = async () => {
     setRefreshing(true);
-    await Promise.all([refetch(), refetchNotificationData()]);
+    await reload();
     setRefreshing(false);
   };
 
