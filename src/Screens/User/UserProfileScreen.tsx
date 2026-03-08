@@ -14,7 +14,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userPr
 export const UserProfileScreen = (props: Props) => {
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen helpScreen={CommonStackComponents.userProfileHelpScreen}>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.userProfilesHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/profile'}>
           <UserProfileScreenInner {...props} />
         </DisabledFeatureScreen>

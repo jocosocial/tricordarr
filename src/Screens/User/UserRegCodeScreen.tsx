@@ -17,7 +17,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userRe
 
 export const UserRegCodeScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.userProfileHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.userProfilesHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.users}
         urlPath={`/admin/regcodes/showuser/${props.route.params.userID}`}>
