@@ -66,6 +66,9 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
         <HelpTopicView title={'Download'} icon={AppIcons.download}>
           Download this event as an ICS calendar file that you can import into your calendar app.
         </HelpTopicView>
+        <HelpTopicView title={'Open in Sched'} icon={AppIcons.schedOpen}>
+          Open this event in Sched.com in your device's web browser.
+        </HelpTopicView>
         {!isOfficial && (
           <HelpTopicView title={'Set Organizer'} icon={AppIcons.performer}>
             Create or edit a performer profile for yourself as the organizer of this Shadow Event. This can only be done
