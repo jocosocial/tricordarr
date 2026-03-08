@@ -569,6 +569,7 @@ export const useFezCacheReducer = () => {
    * Invalidate a specific fez's detail cache and all list caches.
    * Use when a server-driven event (e.g. socket notification) tells us data
    * may be stale but we don't have the updated data locally.
+   * TODO: derive the intended data from the socket payload.
    */
   const invalidateFez = useCallback(
     (fezID?: string) => {

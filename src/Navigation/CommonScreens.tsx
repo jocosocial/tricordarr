@@ -113,6 +113,8 @@ import {UserPrivateNoteScreen} from '#src/Screens/User/UserPrivateNoteScreen';
 import {UserProfileEditScreen} from '#src/Screens/User/UserProfileEditScreen';
 import {UserProfileHelpScreen} from '#src/Screens/User/UserProfileHelpScreen';
 import {UserProfileScreen} from '#src/Screens/User/UserProfileScreen';
+import {UserProfileSelfHelpScreen} from '#src/Screens/User/UserProfileSelfHelpScreen';
+import {UserProfilesHelpScreen} from '#src/Screens/User/UserProfilesHelpScreen';
 import {UserRegCodeScreen} from '#src/Screens/User/UserRegCodeScreen';
 import {UserSelfProfileScreen} from '#src/Screens/User/UserSelfProfileScreen';
 import {UsersListScreen} from '#src/Screens/User/UsersListScreen';
@@ -263,6 +265,8 @@ export type CommonStackParamList = {
     initialUserHeaders?: UserHeader[];
   };
   UserProfileHelpScreen: undefined;
+  UserProfilesHelpScreen: undefined;
+  UserProfileSelfHelpScreen: undefined;
   UsersListScreen: {
     mode?: UserRelationMode;
   };
@@ -406,6 +410,8 @@ export enum CommonStackComponents {
   personalEventEditScreen = 'PersonalEventEditScreen',
   personalEventCreateScreen = 'PersonalEventCreateScreen',
   userProfileHelpScreen = 'UserProfileHelpScreen',
+  userProfilesHelpScreen = 'UserProfilesHelpScreen',
+  userProfileSelfHelpScreen = 'UserProfileSelfHelpScreen',
   usersList = 'UsersListScreen',
   searchUsers = 'SearchUsersScreen',
   userDirectoryHelpScreen = 'UserDirectoryHelpScreen',
@@ -523,6 +529,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.karaokeHelpScreen
   | CommonStackComponents.microKaraokeHelpScreen
   | CommonStackComponents.userProfileHelpScreen
+  | CommonStackComponents.userProfilesHelpScreen
+  | CommonStackComponents.userProfileSelfHelpScreen
   | CommonStackComponents.mapHelpScreen
   | CommonStackComponents.cruiseHelpScreen
   | CommonStackComponents.dailyThemeHelpScreen
@@ -732,6 +740,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.userProfileHelpScreen}
         component={UserProfileHelpScreen}
         options={{title: 'Profile Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.userProfilesHelpScreen}
+        component={UserProfilesHelpScreen}
+        options={{title: 'User Profiles Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.userProfileSelfHelpScreen}
+        component={UserProfileSelfHelpScreen}
+        options={{title: 'Your Profile Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.usersList}

@@ -7,6 +7,7 @@ import {EventCardNowView} from '#src/Components/Views/Schedule/EventCardNowView'
 import {EventCardSoonView} from '#src/Components/Views/Schedule/EventCardSoonView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {getDurationString} from '#src/Libraries/DateTime';
+import {isAndroid} from '#src/Libraries/Platform/Detection';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
 
@@ -90,6 +91,8 @@ export const ScheduleItemCardBase = ({
       //   backgroundColor: 'pink',
       // };
       // <NativeText style={nativeTextStyle}>Theme: Robot Day</NativeText>
+      // GPT-5.4 added  the includeFOntPadding bit as well as minWidth below.
+      ...(isAndroid && {includeFontPadding: false}),
       lineHeight: undefined,
     },
     titleContainer: {
@@ -99,9 +102,11 @@ export const ScheduleItemCardBase = ({
     titleTextContainer: {
       ...commonStyles.flexStart,
       ...commonStyles.flex,
+      minWidth: 0,
     },
     badgeContainer: {
-      ...commonStyles.flexEnd,
+      ...commonStyles.flexStart,
+      ...commonStyles.marginLeftSmall,
     },
   });
 
@@ -126,7 +131,7 @@ export const ScheduleItemCardBase = ({
                     {title}
                   </Text>
                 </View>
-                <View style={commonStyles.badgeContainer}>{titleRight && titleRight()}</View>
+                <View style={styles.badgeContainer}>{titleRight && titleRight()}</View>
               </View>
               {duration && (
                 <Text style={styles.bodyText} variant={'bodyMedium'}>

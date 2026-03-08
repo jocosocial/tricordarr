@@ -1,5 +1,4 @@
 import notifee from '@notifee/react-native';
-import {useAppState} from '@react-native-community/hooks';
 import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -146,7 +145,6 @@ const FezChatScreenInner = ({route}: Props) => {
   const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
   const {appConfig} = useConfig();
-  const appStateVisible = useAppState();
   const flatListRef = useRef<TConversationListV2Ref>(null);
   const fezSocketWithHandlerRef = useRef<{
     ws: ReconnectingWebSocket;
@@ -336,45 +334,32 @@ const FezChatScreenInner = ({route}: Props) => {
         (initialReadCount !== undefined && initialReadCount < fez.members.postCount);
       if (hasUnread) {
         markRead(fez.fezID);
+        // The UND drives the tab bar and seamail account buttons badge count
+        // and we don't have a cache reducer for it yet.
+        refetchUserNotificationData();
         if (appConfig.markReadCancelPush) {
           logger.debug('auto canceling notifications.');
           notifee.cancelDisplayedNotification(fez.fezID);
         }
       }
     }
-  }, [fez, markRead, initialReadCount, appConfig.markReadCancelPush]);
+  }, [fez, markRead, initialReadCount, appConfig.markReadCancelPush, refetchUserNotificationData]);
 
   // Visible useEffect
+  // 20260308 The query now refetches on mount by default so this is no longer needed.
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background
   // it will update with the latest data. This refetches a little aggressively when coming from the background
   // so some day some debouncing should be implemented.
-  useEffect(() => {
-    const checkInitial = async () => {
-      const initialNotification = await notifee.getInitialNotification();
-      if (initialNotification && appStateVisible === 'active') {
-        await refetch();
-      }
-    };
-    logger.debug('Triggering appStateVisible useEffect', appStateVisible);
-    checkInitial();
-  }, [appStateVisible, refetch]);
-
-  // When the screen unmounts, refetch the current Fez.
-  // This doesn't do an invalidation so that the local data is fresh if the
-  // user goes back in quickly. queryClient.invalidateQueries([`/fez/${fez.fezID}`]);
-  // would be the invalidation.
-  //
-  // 20260225 Disabling this because I don't think we need it anymore with all of the
-  // local state mutation stuff.
   // useEffect(() => {
-  //   return () => {
-  //     logger.debug('useEffect return is running.');
-  //     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-  //       refetch();
+  //   const checkInitial = async () => {
+  //     const initialNotification = await notifee.getInitialNotification();
+  //     if (initialNotification && appStateVisible === 'active') {
+  //       await refetch();
   //     }
-  //     refetchUserNotificationData();
   //   };
-  // }, [fez, refetch, refetchUserNotificationData]);
+  //   logger.debug('Triggering appStateVisible useEffect', appStateVisible);
+  //   checkInitial();
+  // }, [appStateVisible, refetch]);
 
   const [readyToShow, setReadyToShow] = useState(false);
   const {commonStyles} = useStyles();

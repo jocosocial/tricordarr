@@ -55,7 +55,7 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
   };
   const handleHelp = () => {
     closeMenu();
-    commonNavigation.push(CommonStackComponents.userProfileHelpScreen);
+    commonNavigation.push(CommonStackComponents.userProfilesHelpScreen);
   };
 
   return (

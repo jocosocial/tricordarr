@@ -21,6 +21,7 @@ interface EventCardProps {
   hideFavorite?: boolean;
   onLongPress?: () => void;
   titleHeader?: string;
+  onFavorite?: () => void;
 }
 
 interface EventCardRightIconsProps {
@@ -92,6 +93,7 @@ export const EventCard = ({
   titleHeader,
   showDay = false,
   hideFavorite = false,
+  onFavorite,
 }: EventCardProps) => {
   const {theme} = useAppTheme();
   const eventFavoriteMutation = useEventFavoriteMutation();
@@ -107,6 +109,11 @@ export const EventCard = ({
       },
       {
         onSuccess: async () => {
+          // This is to enable triggering a refresh from the PerformerScreenBase where
+          // we don't hit the event endpoints directly. Eventually this will be removed since
+          // we can use a cache reducer to also hit any performers that have the eventID in
+          // their response.
+          onFavorite?.();
           // If this is too slow to reload, a setQueryData here may be in order.
           const invalidations = UserNotificationData.getCacheKeys()
             .concat(EventData.getCacheKeys(eventData.eventID))
@@ -116,7 +123,7 @@ export const EventCard = ({
         onSettled: () => setRefreshing(false),
       },
     );
-  }, [eventData.eventID, eventData.isFavorite, eventFavoriteMutation, queryClient]);
+  }, [eventData.eventID, eventData.isFavorite, eventFavoriteMutation, queryClient, onFavorite]);
 
   const cardStyleAndContentColor = useMemo(() => {
     const color = DayPlannerItem.getDayPlannerColor({

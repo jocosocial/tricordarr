@@ -52,7 +52,7 @@ const UserProfileEditScreenInner = ({route, navigation}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.userProfileHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.userProfileSelfHelpScreen)}
           />
         </MaterialHeaderButtons>
       </View>
