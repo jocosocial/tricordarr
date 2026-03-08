@@ -266,9 +266,14 @@ export const APIImage = ({
 
   const isThumbnail = imageSource.uri === imageSourceMetadata.thumbURI;
 
+  // disableTouch should also prevent even loading the AppImageViewer. Even if its never used
+  // just having it can trigger extra background processing that we do not need.
+  // AvatarImage always disables touch which is where I saw this.
   return (
     <View>
-      <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
+      {!disableTouch && (
+        <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
+      )}
       <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
         <View style={styles.imageContainer}>
           {mode === 'cardcover' && (
