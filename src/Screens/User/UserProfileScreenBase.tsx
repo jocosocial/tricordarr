@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {BlockedOrMutedBanner} from '#src/Components/Banners/BlockedOrMutedBanner';
 import {UserProfileFABGroup} from '#src/Components/Buttons/FloatingActionButtons/UserProfileFABGroup';
+import {UserProfileSelfFAB} from '#src/Components/Buttons/FloatingActionButtons/UserProfileSelfFAB';
 import {HeaderProfileFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileFavoriteButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {UserAboutCard} from '#src/Components/Cards/UserProfile/UserAboutCard';
@@ -67,6 +68,12 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const {preRegistrationMode} = usePreRegistration();
   const {oobeCompleted} = useOobe();
   const isSelf = data?.header.userID === currentUserID;
+  const onEditProfilePress = useCallback(() => {
+    if (!data) {
+      return;
+    }
+    commonNavigation.push(CommonStackComponents.userProfileEditScreen, {user: data});
+  }, [commonNavigation, data]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
       const refreshes = [
@@ -82,11 +89,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
       return (
         <View>
           <MaterialHeaderButtons left>
-            <Item
-              title={'Edit'}
-              iconName={AppIcons.edituser}
-              onPress={() => commonNavigation.push(CommonStackComponents.userProfileEditScreen, {user: data})}
-            />
+            <Item title={'Edit'} iconName={AppIcons.edituser} onPress={onEditProfilePress} />
             <UserProfileSelfActionsMenu userID={data.header.userID} />
           </MaterialHeaderButtons>
         </View>
@@ -104,7 +107,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [data, isSelf, isMuted, isBlocked, commonNavigation]);
+  }, [data, isSelf, isMuted, isBlocked, onEditProfilePress]);
 
   useEffect(() => {
     commonNavigation.setOptions({
@@ -195,7 +198,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
           </PaddedContentView>
         )}
       </ScrollingContentView>
-      {!isSelf && <UserProfileFABGroup profile={data} />}
+      {isSelf ? <UserProfileSelfFAB profile={data} /> : <UserProfileFABGroup profile={data} />}
     </AppView>
   );
 };
