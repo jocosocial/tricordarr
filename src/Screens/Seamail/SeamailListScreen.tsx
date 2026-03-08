@@ -64,6 +64,13 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isFetching} = useSeamailListQuery({
     forUser: asPrivilegedUser,
     onlyNew: showUnreadOnly,
+    // The refetch options here mimick what happens with UserNotificationData in
+    // NotificationDataPoller. The NotificationDataListener will handle updating based
+    // on socket events, but privileged user seamail actions do not get socket events.
+    options: {
+      refetchOnWindowFocus: asPrivilegedUser ? 'always' : false,
+      refetchOnMount: !!asPrivilegedUser,
+    },
   });
   const {closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
