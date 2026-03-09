@@ -174,6 +174,47 @@ export const APIImage = ({
   }, [setModalContent, setModalVisible]);
 
   /**
+   * Preloads the full size image.
+   */
+  const requestFullPreload = useCallback(() => {
+    if (!imageSourceMetadata.fullURI) {
+      return;
+    }
+    FastImage.preload([{uri: imageSourceMetadata.fullURI, priority: FastImage.priority.low}]);
+  }, [imageSourceMetadata.fullURI]);
+
+  /**
+   * Checks if the full size image is cached and sets the image source accordingly.
+   */
+  const checkCacheAndSetThumbSource = useCallback(async () => {
+    if (!imageSourceMetadata.fullURI) {
+      if (!imageSourceMetadata.thumbURI) {
+        return;
+      }
+      const thumbSource = {uri: imageSourceMetadata.thumbURI};
+      setImageSource(thumbSource);
+      return;
+    }
+
+    const cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI});
+    const isFullCached = !!cachePath;
+
+    if (isFullCached) {
+      const fullSource = {uri: imageSourceMetadata.fullURI};
+      setImageSource(fullSource);
+      return;
+    }
+
+    if (!imageSourceMetadata.thumbURI) {
+      return;
+    }
+
+    const thumbSource = {uri: imageSourceMetadata.thumbURI};
+    setImageSource(thumbSource);
+    requestFullPreload();
+  }, [imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI, requestFullPreload]);
+
+  /**
    * Effect to set the image source metadata on mount. This is used to display the image in
    * the image viewer and what to show in the underlying image component.
    */
@@ -186,26 +227,12 @@ export const APIImage = ({
   }, [path, appConfig, serverUrl, staticSize]);
 
   /**
-   * Effect to preload the full image if the initial size is set to thumb.
-   * That gets handled under the hood by the FastImage component.
-   */
-  React.useEffect(() => {
-    if (staticSize === 'thumb' && imageSourceMetadata.fullURI) {
-      FastImage.preload([{uri: imageSourceMetadata.fullURI, priority: FastImage.priority.low}]);
-    }
-  }, [staticSize, imageSourceMetadata.fullURI]);
-
-  /**
    * Sets the image source to the appropriate URI based on the initial size.
    * Soon to also include if we have a cache path for the full size!
    */
   React.useEffect(() => {
     if (staticSize === 'thumb') {
-      if (!imageSourceMetadata.thumbURI) {
-        return;
-      }
-      const thumbSource = {uri: imageSourceMetadata.thumbURI};
-      setImageSource(thumbSource);
+      checkCacheAndSetThumbSource();
       return;
     }
     if (staticSize === 'identicon') {
@@ -233,16 +260,22 @@ export const APIImage = ({
         }
         const fallbackSource = {uri: fallbackUri};
         setImageSource(fallbackSource);
+        if (!appConfig.skipThumbnails && fallbackUri === imageSourceMetadata.thumbURI) {
+          requestFullPreload();
+        }
       }
     };
     checkCacheAndSetSource();
   }, [
     mode,
+    path,
     staticSize,
     appConfig.skipThumbnails,
     imageSourceMetadata.fullURI,
     imageSourceMetadata.thumbURI,
     imageSourceMetadata.identiconURI,
+    requestFullPreload,
+    checkCacheAndSetThumbSource,
   ]);
 
   /**
