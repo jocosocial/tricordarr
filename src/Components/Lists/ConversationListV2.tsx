@@ -170,13 +170,14 @@ export const ConversationListV2 = <TItem,>({
   // animates the layout change over multiple frames, making a single scrollToEnd
   // insufficient.
   //
-  // Fix: Added keyboard event listeners (keyboardDidShow / keyboardDidHide) in
-  // ConversationListV2. When the keyboard state changes and the user was near
-  // the bottom with maintainScrollAtEnd enabled, a 10-frame requestAnimationFrame
-  // loop calls scrollToEnd({animated: false}) each frame — the same stabilization
-  // pattern already used for onLoad. This keeps the list pinned to the bottom
-  // throughout the KAV's layout animation on Android, while also working correctly
-  // on iOS where the layout change is immediate.
+  // Fix: Keyboard event listeners that keep the list pinned to the bottom
+  // throughout the KAV's layout animation. Uses both "Will" and "Did" events
+  // for full coverage: "Will" starts correction at animation start to prevent
+  // the ListHeaderComponent from visibly jittering out of view, and "Did"
+  // provides a final correction pass after the animation settles.
+  //
+  // react-native-keyboard-controller's KeyboardProvider augments the standard
+  // Keyboard API with cross-platform keyboardWillShow/keyboardWillHide events.
   const keyboardVisibleRef = useRef(false);
   const keyboardScrollRafRef = useRef<number | null>(null);
   useEffect(() => {
@@ -187,7 +188,9 @@ export const ConversationListV2 = <TItem,>({
       if (keyboardScrollRafRef.current !== null) {
         cancelAnimationFrame(keyboardScrollRafRef.current);
       }
-      let framesRemaining = 10;
+      // 20 frames at 60fps ≈ 333ms — covers the full keyboard animation
+      // duration (~250-300ms) when started from keyboardWillShow/Hide.
+      let framesRemaining = 20;
       const tick = () => {
         listRef.current?.scrollToEnd({animated: false});
         framesRemaining--;
@@ -199,17 +202,25 @@ export const ConversationListV2 = <TItem,>({
       };
       keyboardScrollRafRef.current = requestAnimationFrame(tick);
     };
-    const showSub = Keyboard.addListener('keyboardDidShow', () => {
+    const willShowSub = Keyboard.addListener('keyboardWillShow', () => {
       keyboardVisibleRef.current = true;
       scrollToEndIfNeeded();
     });
-    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+    const didShowSub = Keyboard.addListener('keyboardDidShow', () => {
+      scrollToEndIfNeeded();
+    });
+    const willHideSub = Keyboard.addListener('keyboardWillHide', () => {
       keyboardVisibleRef.current = false;
       scrollToEndIfNeeded();
     });
+    const didHideSub = Keyboard.addListener('keyboardDidHide', () => {
+      scrollToEndIfNeeded();
+    });
     return () => {
-      showSub.remove();
-      hideSub.remove();
+      willShowSub.remove();
+      didShowSub.remove();
+      willHideSub.remove();
+      didHideSub.remove();
       if (keyboardScrollRafRef.current !== null) {
         cancelAnimationFrame(keyboardScrollRafRef.current);
       }

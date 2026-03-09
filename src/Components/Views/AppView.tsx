@@ -68,6 +68,17 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
    * https://reactnative.dev/docs/keyboardavoidingview
    * https://stackoverflow.com/questions/43854912/react-native-keyboardavoidingview-covers-last-text-input
    * https://github.com/react-native-community/discussions-and-proposals/discussions/827
+   *
+   * behavior='padding' is used instead of 'translate-with-padding' because
+   * the latter applies a translateY transform AND padding simultaneously
+   * during the keyboard animation. In screens with LegendList-based
+   * conversation lists (FezChatScreen, ForumThreadScreenBase), the translateY
+   * fights with maintainVisibleContentPosition and alignItemsAtEnd — the list
+   * tries to adjust scroll position in response to layout changes while the
+   * view is also being physically displaced by the transform. This causes the
+   * ListHeaderComponent to visibly jitter out of view during the animation
+   * and pop back when it settles. 'padding' only adjusts bottom padding,
+   * which the list handles as a natural layout change without conflict.
    */
   var keyboardVerticalOffset = insets.top + insets.bottom;
   if (isIOS && insets.bottom === 0) {
@@ -89,8 +100,7 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
     <View style={styles.appView}>
       <ModuleKeyboardAvoidingView
         style={styles.keyboardView}
-        // behavior={isIOS ? 'padding' : 'height'}
-        behavior={'translate-with-padding'}
+        behavior={'padding'}
         keyboardVerticalOffset={keyboardVerticalOffset}>
         <Portal>
           <ErrorBanner />
