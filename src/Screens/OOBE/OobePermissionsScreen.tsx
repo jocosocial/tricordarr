@@ -11,9 +11,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
-import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
-import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 
@@ -21,8 +19,6 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePermis
 
 export const OobePermissionsScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {onboarding} = useOobe();
-  const {preRegistrationMode} = usePreRegistration();
   const {
     setHasNotificationPermission,
     notificationPermissionStatus,
@@ -53,17 +49,8 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
     }
   };
 
-  /**
-   * Skip the user data screen when onboarding (entered from preregistration) or
-   * in pre-registration mode. Users can set up profile later; we want to get
-   * them out of OOBE quickly.
-   */
   const onNextPress = () => {
-    if (onboarding || preRegistrationMode) {
-      navigation.push(OobeStackComponents.oobeFinishScreen);
-    } else {
-      navigation.push(OobeStackComponents.oobeUserDataScreen);
-    }
+    navigation.push(OobeStackComponents.oobeFinishScreen);
   };
 
   return (
