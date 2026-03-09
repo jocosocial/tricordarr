@@ -64,6 +64,7 @@ export const APIImage = ({
   const [viewerImages, setViewerImages] = useState<AppImageMetaData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const hasRequestedFullPreload = React.useRef(false);
+  const fullPreloadTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const {commonStyles, styleDefaults} = useStyles();
   const avatarSize = size ?? styleDefaults.avatarSize;
   const {getIsDisabled} = useFeature();
@@ -190,16 +191,7 @@ export const APIImage = ({
    */
   const onLoad = useCallback(() => {
     setViewerImages([imageSourceMetadata]);
-    const shouldPreloadAfterThumbLoad =
-      !appConfig.skipThumbnails &&
-      !!imageSourceMetadata.thumbURI &&
-      imageSource?.uri === imageSourceMetadata.thumbURI &&
-      !hasRequestedFullPreload.current;
-    if (shouldPreloadAfterThumbLoad) {
-      hasRequestedFullPreload.current = true;
-      requestFullPreload();
-    }
-  }, [appConfig.skipThumbnails, imageSource?.uri, imageSourceMetadata, requestFullPreload]);
+  }, [imageSourceMetadata]);
 
   /**
    * Checks if the full size image is cached and sets the image source accordingly.
@@ -248,7 +240,36 @@ export const APIImage = ({
 
   React.useEffect(() => {
     hasRequestedFullPreload.current = false;
+    if (fullPreloadTimer.current) {
+      clearTimeout(fullPreloadTimer.current);
+      fullPreloadTimer.current = null;
+    }
   }, [imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI]);
+
+  React.useEffect(() => {
+    const shouldScheduleFullPreload =
+      !appConfig.skipThumbnails &&
+      !!imageSourceMetadata.thumbURI &&
+      imageSource?.uri === imageSourceMetadata.thumbURI &&
+      !hasRequestedFullPreload.current;
+
+    if (!shouldScheduleFullPreload) {
+      return;
+    }
+
+    fullPreloadTimer.current = setTimeout(() => {
+      hasRequestedFullPreload.current = true;
+      fullPreloadTimer.current = null;
+      requestFullPreload();
+    }, 5000);
+
+    return () => {
+      if (fullPreloadTimer.current) {
+        clearTimeout(fullPreloadTimer.current);
+        fullPreloadTimer.current = null;
+      }
+    };
+  }, [appConfig.skipThumbnails, imageSource?.uri, imageSourceMetadata.thumbURI, requestFullPreload]);
 
   /**
    * Sets the image source to the appropriate URI based on the initial size.
