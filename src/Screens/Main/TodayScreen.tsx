@@ -16,6 +16,7 @@ import {TodayNextAppointmentView} from '#src/Components/Views/Today/TodayNextApp
 import {TodayPreRegistrationView} from '#src/Components/Views/Today/TodayPreRegistrationView';
 import {TodayThemeView} from '#src/Components/Views/Today/TodayThemeView';
 import {TodayTimezoneWarningView} from '#src/Components/Views/Today/TodayTimezoneWarningView';
+import {TodayWelcomeAboardView} from '#src/Components/Views/Today/TodayWelcomeAboardView';
 import {TodayAppUpdateView} from '#src/Components/Views/TodayAppUpdateView';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
@@ -106,6 +107,7 @@ export const TodayScreen = ({navigation}: Props) => {
         <TodayTimezoneWarningView />
         <TodayAnnouncementView />
         <TodayPreRegistrationView />
+        <TodayWelcomeAboardView />
         <TodayThemeView />
         <TodayNextAppointmentView />
         <TodayModeratorView />

@@ -12,7 +12,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
 
 export const OobeSettingsScreen = () => {
-  const {appConfig} = useConfig();
+  const {appConfig, updateAppConfig} = useConfig();
   const {currentSession, updateSession} = useSession();
   const navigation = useRootStack();
   const {theme} = useAppTheme();
@@ -34,6 +34,14 @@ export const OobeSettingsScreen = () => {
         <DataFieldListItem title={'Completed'} description={String(currentSession?.oobeCompletedVersion ?? 0)} />
         <PaddedContentView>
           <PrimaryActionButton buttonText={'Reset'} onPress={resetOobeVersion} />
+        </PaddedContentView>
+        <ListSubheader>Welcome Card</ListSubheader>
+        <DataFieldListItem title={'Dismissed'} description={String(appConfig.dismissWelcomeAboard)} />
+        <PaddedContentView>
+          <PrimaryActionButton
+            buttonText={'Re-enable Welcome Card'}
+            onPress={() => updateAppConfig({...appConfig, dismissWelcomeAboard: false})}
+          />
         </PaddedContentView>
         <ListSubheader>Debugging</ListSubheader>
         <PaddedContentView padTop={true}>

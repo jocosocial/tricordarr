@@ -8,7 +8,7 @@ import {createLogger} from '#src/Libraries/Logger';
 const logger = createLogger('OobeProvider.tsx');
 
 export const OobeProvider = ({children}: PropsWithChildren) => {
-  const {appConfig, updateAppConfig} = useConfig();
+  const {appConfig} = useConfig();
   const {currentSession, updateSession} = useSession();
   const [onboarding, setOnboarding] = useState(false);
 

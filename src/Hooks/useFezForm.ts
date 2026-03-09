@@ -68,26 +68,23 @@ export const useFezForm = (): UseFezFormReturn => {
     [startDate, adjustedCruiseDayToday],
   );
 
-  const getInitialValuesFromFez = useCallback(
-    (fez: FezData) => {
-      const fezStartDate = new Date(fez.startTime || new Date());
-      const fezEndDate = new Date(fez.endTime || new Date());
-      const durationMinutes = differenceInMinutes(fezEndDate, fezStartDate);
-      return {
-        title: fez.title,
-        location: fez.location,
-        fezType: fez.fezType,
-        startDate: fezStartDate,
-        duration: durationMinutes.toString(),
-        minCapacity: fez.minParticipants.toString(),
-        maxCapacity: fez.maxParticipants.toString(),
-        info: fez.info,
-        startTime: {hours: fezStartDate.getHours(), minutes: fezStartDate.getMinutes()},
-        initialUsers: [],
-      };
-    },
-    [],
-  );
+  const getInitialValuesFromFez = useCallback((fez: FezData) => {
+    const fezStartDate = new Date(fez.startTime || new Date());
+    const fezEndDate = new Date(fez.endTime || new Date());
+    const durationMinutes = differenceInMinutes(fezEndDate, fezStartDate);
+    return {
+      title: fez.title,
+      location: fez.location,
+      fezType: fez.fezType,
+      startDate: fezStartDate,
+      duration: durationMinutes.toString(),
+      minCapacity: fez.minParticipants.toString(),
+      maxCapacity: fez.maxParticipants.toString(),
+      info: fez.info,
+      startTime: {hours: fezStartDate.getHours(), minutes: fezStartDate.getMinutes()},
+      initialUsers: [],
+    };
+  }, []);
 
   return {getInitialValues, getInitialValuesFromFez};
 };

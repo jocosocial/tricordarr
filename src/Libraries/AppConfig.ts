@@ -82,6 +82,7 @@ export interface AppConfig {
   wifiNetworkNames: string[];
   forceShowTimezoneWarning: boolean;
   silenceTimezoneWarnings: boolean;
+  dismissWelcomeAboard: boolean;
   logLevel: LogLevel;
 }
 
@@ -166,6 +167,7 @@ export const defaultAppConfig: AppConfig = {
   wifiNetworkNames: [],
   forceShowTimezoneWarning: false,
   silenceTimezoneWarnings: false,
+  dismissWelcomeAboard: false,
   // logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
   logLevel: LogLevel.DEBUG,
 };
@@ -218,6 +220,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.userPreferences.showScrollButton === undefined) {
     appConfig.userPreferences.showScrollButton = true;
+  }
+  if (appConfig.dismissWelcomeAboard === undefined) {
+    appConfig.dismissWelcomeAboard = false;
   }
 
   // Ok now we're done
