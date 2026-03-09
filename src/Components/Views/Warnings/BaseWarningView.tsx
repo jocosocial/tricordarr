@@ -12,6 +12,7 @@ interface Props {
   disabled?: boolean;
   onLongPress?: () => void;
   onPress?: () => void;
+  messageStyle?: TextStyle;
 }
 export const BaseWarningView = (props: Props) => {
   const {commonStyles} = useStyles();
@@ -21,12 +22,18 @@ export const BaseWarningView = (props: Props) => {
       ...commonStyles.twitarrNeutral,
       ...commonStyles.alignItemsCenter,
       ...commonStyles.paddingVerticalSmall,
+      ...commonStyles.paddingHorizontalSmall,
       ...props.headerStyle,
     },
     titleText: {
       ...commonStyles.bold,
       ...commonStyles.onTwitarrButton,
       ...props.titleStyle,
+    },
+    messageText: {
+      ...commonStyles.onTwitarrButton,
+      ...commonStyles.textCenter,
+      ...props.messageStyle,
     },
   });
 
@@ -37,7 +44,7 @@ export const BaseWarningView = (props: Props) => {
       onLongPress={props.onLongPress}
       onPress={props.onPress}>
       <Text style={styles.titleText}>{props.title}</Text>
-      <Text variant={'labelMedium'} style={commonStyles.onTwitarrButton}>
+      <Text variant={'labelMedium'} style={styles.messageText}>
         {props.message}
       </Text>
     </TouchableOpacity>
