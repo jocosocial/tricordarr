@@ -2,9 +2,10 @@ import FastImage, {
   type Source as FastImageSource,
   type ImageStyle as FastImageStyle,
   type OnErrorEvent,
+  type OnLoadEvent,
   type OnProgressEvent,
 } from '@d11/react-native-fast-image';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {StyleProp, StyleSheet, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
@@ -33,21 +34,41 @@ interface AppScaledImageProps {
  * FastImage cache rather than Image.getSize (which would use a different HTTP client and
  * cause duplicate requests).
  *
+ * getSize is cache-only: on cache hit, dimensions arrive immediately without any network
+ * request. On cache miss, we render a hidden FastImage to trigger the actual download and
+ * obtain dimensions from its onLoad event (avoiding a duplicate fetch).
+ *
  * While dimensions are loading, renders a placeholder View with a reserved minimum height
  * to bound layout shift. This prevents scroll jumps when images load in a list.
  */
 export const AppScaledImage = ({image, style, onLoad, onError, onProgress}: AppScaledImageProps) => {
   const [imageSize, setImageSize] = useState<ImageDimensionProps>({width: undefined, height: undefined});
+  const [cacheMiss, setCacheMiss] = useState(false);
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
 
   useEffect(() => {
     if (image.uri) {
-      FastImage.getSize(image.uri, (width, height) => {
-        setImageSize({width: width, height: height});
-      });
+      setCacheMiss(false);
+      FastImage.getSize(
+        image.uri,
+        (width, height) => {
+          setImageSize({width, height});
+        },
+        () => {
+          setCacheMiss(true);
+        },
+      );
     }
   }, [image.uri]);
+
+  const handleFallbackLoad = useCallback(
+    (event: OnLoadEvent) => {
+      setImageSize({width: event.nativeEvent.width, height: event.nativeEvent.height});
+      onLoad?.();
+    },
+    [onLoad],
+  );
 
   // 0 / 0 by default is NaN which produces very funky not helpful errors.
   if (!imageSize.width || !imageSize.height || !image.uri) {
@@ -66,6 +87,14 @@ export const AppScaledImage = ({image, style, onLoad, onError, onProgress}: AppS
     return (
       <View style={placeholderStyles.placeholder}>
         <ActivityIndicator />
+        {cacheMiss && image.uri && (
+          <FastImage
+            style={placeholderHiddenImageStyle.hidden}
+            source={{uri: image.uri}}
+            onLoad={handleFallbackLoad}
+            onError={onError}
+          />
+        )}
       </View>
     );
   }
@@ -90,3 +119,11 @@ export const AppScaledImage = ({image, style, onLoad, onError, onProgress}: AppS
     />
   );
 };
+
+const placeholderHiddenImageStyle = StyleSheet.create({
+  hidden: {
+    width: 0,
+    height: 0,
+    position: 'absolute',
+  },
+});
