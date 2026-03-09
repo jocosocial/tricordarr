@@ -14,7 +14,7 @@ index 86ee08e..3c2940c 100644
      }
  
 diff --git a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
-index 0bbaece..db5babb 100644
+index 0bbaece..fa83fbe 100644
 --- a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
 +++ b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
 @@ -11,6 +11,12 @@ import com.facebook.react.bridge.ReadableArray;
@@ -30,22 +30,25 @@ index 0bbaece..db5babb 100644
  
  class FastImageViewModuleImplementation {
      ReactApplicationContext reactContext;
-@@ -20,6 +26,7 @@ class FastImageViewModuleImplementation {
+@@ -20,7 +26,6 @@ class FastImageViewModuleImplementation {
      }
  
      public static final String REACT_CLASS = "FastImageViewModule";
-+    private static final String ERROR_LOAD_FAILED = "ERROR_LOAD_FAILED";
- 
+-
      private Activity getCurrentActivity(){
          return reactContext.getCurrentActivity();
-@@ -82,4 +89,80 @@ class FastImageViewModuleImplementation {
+     }
+@@ -82,4 +87,87 @@ class FastImageViewModuleImplementation {
          Glide.get(activity.getApplicationContext()).clearDiskCache();
          promise.resolve(null);
      }
 +
 +    public void getCachePath(final ReadableMap source, final Promise promise) {
 +        final Activity activity = getCurrentActivity();
-+        if (activity == null) return;
++        if (activity == null) {
++            promise.resolve(null);
++            return;
++        }
 +
 +        activity.runOnUiThread(new Runnable() {
 +            @Override
@@ -62,18 +65,22 @@ index 0bbaece..db5babb 100644
 +                    .with(activity.getApplicationContext())
 +                    .asFile()
 +                    .load(glideUrl)
-+                    .apply(FastImageViewConverter.getOptions(activity, imageSource,  source))
++                    .apply(FastImageViewConverter.getOptions(activity, imageSource,  source).onlyRetrieveFromCache(true))
 +                    .listener(new RequestListener<File>() {
 +                        @Override
 +                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<File> target, boolean isFirstResource) {
-+                            promise.reject(ERROR_LOAD_FAILED, e);
-+                            return false;
++                            promise.resolve(null);
++                            return true;
 +                        }
 +
 +                        @Override
 +                        public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
-+                            promise.resolve(resource.getAbsolutePath());
-+                            return false;
++                            if (resource != null && resource.exists()) {
++                                promise.resolve(resource.getAbsolutePath());
++                            } else {
++                                promise.resolve(null);
++                            }
++                            return true;
 +                        }
 +                    })
 +                    .submit();
@@ -172,10 +179,10 @@ index be7bb96..fe27fcc 100644
  declare const FastImage: React.ComponentType<FastImageProps> & FastImageStaticProperties;
  export default FastImage;
 diff --git a/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm b/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
-index 554b190..0290a90 100644
+index 554b190..c1b49d8 100644
 --- a/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
 +++ b/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
-@@ -35,6 +35,55 @@ @implementation FFFastImageViewModule
+@@ -35,6 +35,59 @@ @implementation FFFastImageViewModule
          resolve(NULL);
      }];
  }
@@ -196,7 +203,11 @@ index 554b190..0290a90 100644
 +
 +    if (isCached) {
 +        NSString *cachePath = [[SDImageCache sharedImageCache] cachePathForKey:key];
-+        resolve(cachePath);
++        if (cachePath != nil && [[NSFileManager defaultManager] fileExistsAtPath:cachePath]) {
++            resolve(cachePath);
++        } else {
++            resolve([NSNull null]);
++        }
 +    } else {
 +        resolve([NSNull null]);
 +    }
