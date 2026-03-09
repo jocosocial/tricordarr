@@ -12,7 +12,6 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/useFezForm';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
-import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {HelpScreenComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
@@ -37,7 +36,6 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
   const updateMutation = useFezUpdateMutation();
   const {updateFez} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
-  const {tzAtTime} = useTimeZone();
   const {getInitialValuesFromFez} = useFezForm();
 
   const getNavButtons = useCallback(() => {
@@ -63,12 +61,7 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
   }, [navigation, screenTitle, helpScreen, getNavButtons]);
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
-    const {startTime, endTime} = getScheduleItemStartEndTime(
-      values.startDate,
-      values.startTime,
-      values.duration,
-      tzAtTime(values.startDate),
-    );
+    const {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);
 
     updateMutation.mutate(
       {

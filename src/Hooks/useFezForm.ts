@@ -3,8 +3,7 @@ import {useCallback} from 'react';
 
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {FezType} from '#src/Enums/FezType';
-import {useTimeZone} from '#src/Hooks/useTimeZone';
-import {getApparentCruiseDate, getTimePartsInTz} from '#src/Libraries/DateTime';
+import {getApparentCruiseDate} from '#src/Libraries/DateTime';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
@@ -38,7 +37,6 @@ export interface UseFezFormReturn {
  */
 export const useFezForm = (): UseFezFormReturn => {
   const {startDate, adjustedCruiseDayToday} = useCruise();
-  const {tzAtTime} = useTimeZone();
 
   const getInitialValues = useCallback(
     (params: UseFezFormParams = {}) => {
@@ -84,11 +82,11 @@ export const useFezForm = (): UseFezFormReturn => {
         minCapacity: fez.minParticipants.toString(),
         maxCapacity: fez.maxParticipants.toString(),
         info: fez.info,
-        startTime: getTimePartsInTz(fezStartDate, tzAtTime(fezStartDate)),
+        startTime: {hours: fezStartDate.getHours(), minutes: fezStartDate.getMinutes()},
         initialUsers: [],
       };
     },
-    [tzAtTime],
+    [],
   );
 
   return {getInitialValues, getInitialValuesFromFez};

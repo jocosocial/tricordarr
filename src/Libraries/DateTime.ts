@@ -444,52 +444,21 @@ export const getApparentCruiseDate = (startDate: Date, adjustedCruiseDayToday: n
  * schedule item to start on the whole minute. This function is a wrapper around
  * this smashing.
  * @param startDate Arbitrary precision Date with the starting Date of the schedule.
- * @param startTime Object containing the hours and minutes that the thing starts.
+ * @param startTime Object containing the hours and minutes that the thing starts (device-local).
  * @param duration How long the thing is.
- * @param timeZoneID When provided, startTime is interpreted in this timezone (e.g. tzAtTime(startDate)); otherwise device local.
  */
 export const getScheduleItemStartEndTime = (
   startDate: Date | string,
   startTime: StartTime,
   duration: string | number,
-  _?: string,
 ): StartEndTime => {
-  const start = new Date(startDate);
-  let eventStartTime: Date;
-
-  // All of the callers of this function already handled the tzAtTime logic.
-  // Doing it again here caused events to be correct in the form but get POSTed
-  // with incorrect values. I am leaving this in here just in case we want to come
-  // back it to some day.
-  // if (timeZoneID) {
-  //   const inTz = moment(start).tz(timeZoneID);
-  //   const eventMoment = moment.tz(
-  //     {
-  //       year: inTz.year(),
-  //       month: inTz.month(),
-  //       date: inTz.date(),
-  //       hour: startTime.hours,
-  //       minute: startTime.minutes,
-  //       second: 0,
-  //       millisecond: 0,
-  //     },
-  //     timeZoneID,
-  //   );
-  //   eventStartTime = eventMoment.toDate();
-  // } else {
-  //   eventStartTime = new Date(start);
-  //   eventStartTime.setHours(startTime.hours);
-  //   eventStartTime.setMinutes(startTime.minutes);
-  //   eventStartTime.setSeconds(0);
-  //   eventStartTime.setMilliseconds(0);
-  // }
-  eventStartTime = new Date(start);
+  const eventStartTime = new Date(startDate);
   eventStartTime.setHours(startTime.hours);
   eventStartTime.setMinutes(startTime.minutes);
   eventStartTime.setSeconds(0);
   eventStartTime.setMilliseconds(0);
 
-  let eventEndTime = addMinutes(eventStartTime, Number(duration));
+  const eventEndTime = addMinutes(eventStartTime, Number(duration));
   return {startTime: eventStartTime, endTime: eventEndTime};
 };
 
