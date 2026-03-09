@@ -117,6 +117,14 @@ export const APIImage = ({
   });
 
   /**
+   * Render cached hits from the local file path so FastImage does not revalidate the original
+   * remote URL and trigger another GET for images we already have on disk.
+   */
+  const getCachedFileSource = useCallback((cachePath: string): FastImageSource => {
+    return {uri: `file://${cachePath}`};
+  }, []);
+
+  /**
    * Callback that fires when the image is successfully loaded. This will give information
    * to the image viewer.
    */
@@ -200,7 +208,7 @@ export const APIImage = ({
     const isFullCached = !!cachePath;
 
     if (isFullCached) {
-      const fullSource = {uri: imageSourceMetadata.fullURI};
+      const fullSource = getCachedFileSource(cachePath);
       setImageSource(fullSource);
       return;
     }
@@ -212,7 +220,7 @@ export const APIImage = ({
     const thumbSource = {uri: imageSourceMetadata.thumbURI};
     setImageSource(thumbSource);
     requestFullPreload();
-  }, [imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI, requestFullPreload]);
+  }, [getCachedFileSource, imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI, requestFullPreload]);
 
   /**
    * Effect to set the image source metadata on mount. This is used to display the image in
@@ -249,12 +257,12 @@ export const APIImage = ({
     const checkCacheAndSetSource = async () => {
       const cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI!});
       const isFullCached = !!cachePath;
+      const fallbackUri = appConfig.skipThumbnails ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI;
 
       if (isFullCached) {
-        const fullSource = {uri: imageSourceMetadata.fullURI!};
+        const fullSource = getCachedFileSource(cachePath);
         setImageSource(fullSource);
       } else {
-        const fallbackUri = appConfig.skipThumbnails ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI;
         if (!fallbackUri) {
           return;
         }
@@ -267,6 +275,7 @@ export const APIImage = ({
     };
     checkCacheAndSetSource();
   }, [
+    getCachedFileSource,
     mode,
     path,
     staticSize,
