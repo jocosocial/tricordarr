@@ -44,10 +44,14 @@ export const AppImageViewer = ({
    * Function to get the FastImage cache URI for an image.
    */
   const getImageCacheURI = useCallback(async (image: AppImageMetaData) => {
-    const cachePath = await FastImage.getCachePath({uri: image.fullURI});
-    logger.debug('cachePath', cachePath);
-    if (cachePath) {
-      return `file://${cachePath}`;
+    try {
+      const cachePath = await FastImage.getCachePath({uri: image.fullURI});
+      logger.debug('cachePath', cachePath);
+      if (cachePath) {
+        return `file://${cachePath}`;
+      }
+    } catch (error) {
+      logger.warn('Failed to get image cache URI', error);
     }
     return undefined;
   }, []);

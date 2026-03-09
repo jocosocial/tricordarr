@@ -63,6 +63,8 @@ export const APIImage = ({
 }: APIImageV2Props) => {
   const [viewerImages, setViewerImages] = useState<AppImageMetaData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
+  const hasRequestedFullPreload = React.useRef(false);
+  const fullPreloadTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const {commonStyles, styleDefaults} = useStyles();
   const avatarSize = size ?? styleDefaults.avatarSize;
   const {getIsDisabled} = useFeature();
@@ -117,12 +119,12 @@ export const APIImage = ({
   });
 
   /**
-   * Callback that fires when the image is successfully loaded. This will give information
-   * to the image viewer.
+   * Render cached hits from the local file path so FastImage does not revalidate the original
+   * remote URL and trigger another GET for images we already have on disk.
    */
-  const onLoad = useCallback(() => {
-    setViewerImages([imageSourceMetadata]);
-  }, [imageSourceMetadata]);
+  const getCachedFileSource = useCallback((cachePath: string): FastImageSource => {
+    return {uri: `file://${cachePath}`};
+  }, []);
 
   /**
    * Callback that fires when the image is pressed. In our case this opens the image viewer.
@@ -174,26 +176,106 @@ export const APIImage = ({
   }, [setModalContent, setModalVisible]);
 
   /**
+   * Preloads the full size image.
+   */
+  const requestFullPreload = useCallback(() => {
+    if (!imageSourceMetadata.fullURI) {
+      return;
+    }
+    FastImage.preload([{uri: imageSourceMetadata.fullURI, priority: FastImage.priority.low}]);
+  }, [imageSourceMetadata.fullURI]);
+
+  /**
+   * Callback that fires when the image is successfully loaded. This will give information
+   * to the image viewer.
+   */
+  const onLoad = useCallback(() => {
+    setViewerImages([imageSourceMetadata]);
+  }, [imageSourceMetadata]);
+
+  /**
+   * Checks if the full size image is cached and sets the image source accordingly.
+   */
+  const checkCacheAndSetThumbSource = useCallback(async () => {
+    if (!imageSourceMetadata.fullURI) {
+      if (!imageSourceMetadata.thumbURI) {
+        return;
+      }
+      const thumbSource = {uri: imageSourceMetadata.thumbURI};
+      setImageSource(thumbSource);
+      return;
+    }
+
+    let cachePath: string | null = null;
+    try {
+      cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI});
+    } catch (error) {
+      logger.warn('Failed to get full image cache path', error);
+    }
+    if (cachePath) {
+      const fullSource = getCachedFileSource(cachePath);
+      setImageSource(fullSource);
+      return;
+    }
+
+    if (!imageSourceMetadata.thumbURI) {
+      return;
+    }
+
+    const thumbSource = {uri: imageSourceMetadata.thumbURI};
+    setImageSource(thumbSource);
+  }, [getCachedFileSource, imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI]);
+
+  /**
    * Effect to set the image source metadata on mount. This is used to display the image in
    * the image viewer and what to show in the underlying image component.
    */
   React.useEffect(() => {
-    setImageSourceMetadata(
+    const nextMetadata =
       staticSize === 'identicon'
         ? AppImageMetaData.fromIdenticon(path, appConfig, serverUrl)
-        : AppImageMetaData.fromFileName(path, appConfig, serverUrl),
-    );
-  }, [path, appConfig, serverUrl, staticSize]);
+        : AppImageMetaData.fromFileName(path, appConfig, serverUrl);
+    setImageSourceMetadata(nextMetadata);
+  }, [appConfig, path, serverUrl, staticSize]);
 
-  /**
-   * Effect to preload the full image if the initial size is set to thumb.
-   * That gets handled under the hood by the FastImage component.
-   */
   React.useEffect(() => {
-    if (staticSize === 'thumb' && imageSourceMetadata.fullURI) {
-      FastImage.preload([{uri: imageSourceMetadata.fullURI, priority: FastImage.priority.low}]);
+    hasRequestedFullPreload.current = false;
+    if (fullPreloadTimer.current) {
+      clearTimeout(fullPreloadTimer.current);
+      fullPreloadTimer.current = null;
     }
-  }, [staticSize, imageSourceMetadata.fullURI]);
+  }, [imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI]);
+
+  React.useEffect(() => {
+    const shouldScheduleFullPreload =
+      !appConfig.skipThumbnails &&
+      !!imageSourceMetadata.thumbURI &&
+      imageSource?.uri === imageSourceMetadata.thumbURI &&
+      !hasRequestedFullPreload.current;
+
+    if (!shouldScheduleFullPreload) {
+      return;
+    }
+
+    fullPreloadTimer.current = setTimeout(() => {
+      hasRequestedFullPreload.current = true;
+      fullPreloadTimer.current = null;
+      requestFullPreload();
+    }, appConfig.imagePreloadDelaySeconds * 1000);
+
+    return () => {
+      if (fullPreloadTimer.current) {
+        clearTimeout(fullPreloadTimer.current);
+        fullPreloadTimer.current = null;
+      }
+    };
+  }, [
+    appConfig.imagePreloadDelaySeconds,
+    appConfig.skipThumbnails,
+    imageSource?.uri,
+    imageSourceMetadata.thumbURI,
+    requestFullPreload,
+  ]);
 
   /**
    * Sets the image source to the appropriate URI based on the initial size.
@@ -201,11 +283,7 @@ export const APIImage = ({
    */
   React.useEffect(() => {
     if (staticSize === 'thumb') {
-      if (!imageSourceMetadata.thumbURI) {
-        return;
-      }
-      const thumbSource = {uri: imageSourceMetadata.thumbURI};
-      setImageSource(thumbSource);
+      checkCacheAndSetThumbSource();
       return;
     }
     if (staticSize === 'identicon') {
@@ -220,14 +298,18 @@ export const APIImage = ({
       return;
     }
     const checkCacheAndSetSource = async () => {
-      const cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI!});
-      const isFullCached = !!cachePath;
+      let cachePath: string | null = null;
+      try {
+        cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI!});
+      } catch (error) {
+        logger.warn('Failed to get image cache path', error);
+      }
+      const fallbackUri = appConfig.skipThumbnails ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI;
 
-      if (isFullCached) {
-        const fullSource = {uri: imageSourceMetadata.fullURI!};
+      if (cachePath) {
+        const fullSource = getCachedFileSource(cachePath);
         setImageSource(fullSource);
       } else {
-        const fallbackUri = appConfig.skipThumbnails ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI;
         if (!fallbackUri) {
           return;
         }
@@ -237,12 +319,15 @@ export const APIImage = ({
     };
     checkCacheAndSetSource();
   }, [
+    getCachedFileSource,
     mode,
+    path,
     staticSize,
     appConfig.skipThumbnails,
     imageSourceMetadata.fullURI,
     imageSourceMetadata.thumbURI,
     imageSourceMetadata.identiconURI,
+    checkCacheAndSetThumbSource,
   ]);
 
   /**

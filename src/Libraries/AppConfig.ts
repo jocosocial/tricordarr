@@ -73,6 +73,7 @@ export interface AppConfig {
   accessibility: AccessibilityConfig;
   muteNotifications?: Date;
   skipThumbnails: boolean;
+  imagePreloadDelaySeconds: number;
   schedBaseUrl: string;
   userPreferences: UserPreferences;
   markReadCancelPush: boolean;
@@ -148,7 +149,8 @@ export const defaultAppConfig: AppConfig = {
     useSystemTheme: true,
     darkMode: false,
   },
-  skipThumbnails: true,
+  skipThumbnails: false,
+  imagePreloadDelaySeconds: 5,
   schedBaseUrl: '',
   userPreferences: {
     reverseSwipeOrientation: false,
@@ -210,6 +212,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.silenceTimezoneWarnings === undefined) {
     appConfig.silenceTimezoneWarnings = false;
+  }
+  if (appConfig.imagePreloadDelaySeconds === undefined) {
+    appConfig.imagePreloadDelaySeconds = 5;
   }
   if (appConfig.userPreferences.showScrollButton === undefined) {
     appConfig.userPreferences.showScrollButton = true;
