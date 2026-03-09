@@ -149,7 +149,7 @@ export const defaultAppConfig: AppConfig = {
     useSystemTheme: true,
     darkMode: false,
   },
-  skipThumbnails: false,
+  skipThumbnails: true,
   imagePreloadDelaySeconds: 5,
   schedBaseUrl: '',
   userPreferences: {
@@ -214,7 +214,7 @@ export const getAppConfig = async () => {
     appConfig.silenceTimezoneWarnings = false;
   }
   if (appConfig.imagePreloadDelaySeconds === undefined) {
-    appConfig.imagePreloadDelaySeconds = 5;
+    appConfig.imagePreloadDelaySeconds = 2;
   }
   if (appConfig.userPreferences.showScrollButton === undefined) {
     appConfig.userPreferences.showScrollButton = true;
