@@ -1,6 +1,14 @@
 import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
+import {
+  Keyboard,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  RefreshControlProps,
+  StyleProp,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -146,6 +154,67 @@ export const ConversationListV2 = <TItem,>({
   const isStabilizingRef = useRef(false);
   const lastSeenContentHeightRef = useRef(0);
   const stabilizeRafRef = useRef<number | null>(null);
+
+  // When the keyboard shows or hides, the KAV adjusts the layout but
+  // maintainVisibleContentPosition doesn't fully restore the scroll offset.
+  // Explicitly scroll to end when the user was near the bottom.
+  //
+  // On Android the KAV animates the layout change over several frames, so a
+  // single rAF is not enough — we use the same multi-frame loop pattern as
+  // the onLoad stabilization to keep scrolling while the layout settles.
+  //
+  // Problem: When the keyboard opened/closed on the FezChatScreen, the scroll
+  // position was disrupted. On keyboard hide, maintainVisibleContentPosition
+  // didn't fully restore the offset — leaving 26-78px of whitespace below the
+  // last message. On Android, the KeyboardAvoidingView (translate-with-padding)
+  // animates the layout change over multiple frames, making a single scrollToEnd
+  // insufficient.
+  //
+  // Fix: Added keyboard event listeners (keyboardDidShow / keyboardDidHide) in
+  // ConversationListV2. When the keyboard state changes and the user was near
+  // the bottom with maintainScrollAtEnd enabled, a 10-frame requestAnimationFrame
+  // loop calls scrollToEnd({animated: false}) each frame — the same stabilization
+  // pattern already used for onLoad. This keeps the list pinned to the bottom
+  // throughout the KAV's layout animation on Android, while also working correctly
+  // on iOS where the layout change is immediate.
+  const keyboardVisibleRef = useRef(false);
+  const keyboardScrollRafRef = useRef<number | null>(null);
+  useEffect(() => {
+    const scrollToEndIfNeeded = () => {
+      if (!effectiveMaintainScrollAtEnd || !isNearBottomRef.current || !readyFiredRef.current) {
+        return;
+      }
+      if (keyboardScrollRafRef.current !== null) {
+        cancelAnimationFrame(keyboardScrollRafRef.current);
+      }
+      let framesRemaining = 10;
+      const tick = () => {
+        listRef.current?.scrollToEnd({animated: false});
+        framesRemaining--;
+        if (framesRemaining > 0) {
+          keyboardScrollRafRef.current = requestAnimationFrame(tick);
+        } else {
+          keyboardScrollRafRef.current = null;
+        }
+      };
+      keyboardScrollRafRef.current = requestAnimationFrame(tick);
+    };
+    const showSub = Keyboard.addListener('keyboardDidShow', () => {
+      keyboardVisibleRef.current = true;
+      scrollToEndIfNeeded();
+    });
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+      keyboardVisibleRef.current = false;
+      scrollToEndIfNeeded();
+    });
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+      if (keyboardScrollRafRef.current !== null) {
+        cancelAnimationFrame(keyboardScrollRafRef.current);
+      }
+    };
+  }, [effectiveMaintainScrollAtEnd, alignItemsAtEnd, listRef]);
 
   // When data grows and the user was near the bottom, explicitly scroll to the end.
   // LegendList's maintainScrollAtEnd is unreliable for dynamic appends, so we
