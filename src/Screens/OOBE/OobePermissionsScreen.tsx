@@ -98,7 +98,6 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
             </Text>
           )}
         </PaddedContentView>
-        {notificationPermissionStatus === RESULTS.GRANTED && <BatteryOptimizationSettingsView />}
         <ListSection>
           <ListSubheader>Audio</ListSubheader>
         </ListSection>
@@ -127,6 +126,7 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
             <Text>Cool! You can make additional changes in the app settings.</Text>
           )}
         </PaddedContentView>
+        {notificationPermissionStatus === RESULTS.GRANTED && <BatteryOptimizationSettingsView />}
       </ScrollingContentView>
       <OobeButtonsView leftOnPress={() => navigation.goBack()} rightText={'Next'} rightOnPress={onNextPress} />
     </AppView>
