@@ -261,7 +261,7 @@ export const APIImage = ({
       hasRequestedFullPreload.current = true;
       fullPreloadTimer.current = null;
       requestFullPreload();
-    }, 5000);
+    }, appConfig.imagePreloadDelaySeconds * 1000);
 
     return () => {
       if (fullPreloadTimer.current) {
@@ -269,7 +269,13 @@ export const APIImage = ({
         fullPreloadTimer.current = null;
       }
     };
-  }, [appConfig.skipThumbnails, imageSource?.uri, imageSourceMetadata.thumbURI, requestFullPreload]);
+  }, [
+    appConfig.imagePreloadDelaySeconds,
+    appConfig.skipThumbnails,
+    imageSource?.uri,
+    imageSourceMetadata.thumbURI,
+    requestFullPreload,
+  ]);
 
   /**
    * Sets the image source to the appropriate URI based on the initial size.
