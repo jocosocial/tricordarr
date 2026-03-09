@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Bump the app version across Android, iOS, and package.json.
-# Increments versionCode/CURRENT_PROJECT_VERSION by 1 and the patch
-# segment of versionName/MARKETING_VERSION by 1.
+# Without arguments: increments versionCode/CURRENT_PROJECT_VERSION by 1
+# and the patch segment of versionName/MARKETING_VERSION by 1.
+# With an argument: uses the given version string (e.g. 2026.1.0).
 # Prints the new version string to stdout.
-# Usage: ./scripts/bump-version.sh
+# Usage: ./scripts/bump-version.sh [VERSION]
 
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -24,9 +25,13 @@ OLD_VERSION_NAME=$(grep -E '^\s+versionName ' "$GRADLE" | head -1 | sed -E 's/.*
 
 NEW_VERSION_CODE=$((OLD_VERSION_CODE + 1))
 
-IFS='.' read -r MAJOR MINOR PATCH <<< "$OLD_VERSION_NAME"
-NEW_PATCH=$((PATCH + 1))
-NEW_VERSION_NAME="${MAJOR}.${MINOR}.${NEW_PATCH}"
+if [[ -n "${1:-}" ]]; then
+  NEW_VERSION_NAME="$1"
+else
+  IFS='.' read -r MAJOR MINOR PATCH <<< "$OLD_VERSION_NAME"
+  NEW_PATCH=$((PATCH + 1))
+  NEW_VERSION_NAME="${MAJOR}.${MINOR}.${NEW_PATCH}"
+fi
 
 # Android
 sedi "s/versionCode ${OLD_VERSION_CODE}/versionCode ${NEW_VERSION_CODE}/" "$GRADLE"
