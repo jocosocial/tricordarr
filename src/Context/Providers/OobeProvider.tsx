@@ -8,7 +8,7 @@ import {createLogger} from '#src/Libraries/Logger';
 const logger = createLogger('OobeProvider.tsx');
 
 export const OobeProvider = ({children}: PropsWithChildren) => {
-  const {appConfig, updateAppConfig} = useConfig();
+  const {appConfig} = useConfig();
   const {currentSession, updateSession} = useSession();
   const [onboarding, setOnboarding] = useState(false);
 
@@ -29,12 +29,13 @@ export const OobeProvider = ({children}: PropsWithChildren) => {
     // @TODO remove this after 2026. This is here because the decision to start with thumbs
     // happened after preregistration opened so a ton of people have the original default
     // of skipping thumbnails.
-    updateAppConfig({
-      ...appConfig,
-      skipThumbnails: false,
-    });
+    // @TODO: I changed my mind at the last minute, yolo.
+    // updateAppConfig({
+    //   ...appConfig,
+    //   skipThumbnails: false,
+    // });
     // The persist effect handles writing lastSessionID based on currentSessionID
-  }, [currentSession, updateSession, appConfig, updateAppConfig]);
+  }, [currentSession, updateSession, appConfig]);
 
   const contextValue = useMemo(
     () => ({

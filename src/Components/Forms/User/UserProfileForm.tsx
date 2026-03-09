@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {EmailTextField} from '#src/Components/Forms/Fields/EmailTextField';
 import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -82,13 +83,7 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             choices={['red', 'gold', 'sro', '']}
             getTitle={value => DinnerTeam.getLabel(value as DinnerTeam)}
           />
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'email'}
-            label={'Email'}
-            autoCapitalize={'none'}
-            keyboardType={'email-address'}
-          />
+          <EmailTextField viewStyle={styles.inputContainer} name={'email'} label={'Email'} />
           <TextField
             viewStyle={styles.inputContainer}
             name={'message'}

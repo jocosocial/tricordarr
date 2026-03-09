@@ -1,6 +1,7 @@
 import {useQueryClient} from '@tanstack/react-query';
 import React, {PropsWithChildren, useCallback} from 'react';
 
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SignOutContext, SignOutContextType} from '#src/Context/Contexts/SignOutContext';
@@ -13,12 +14,14 @@ import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
  * This ensures consistent sign-out behavior across the app and eliminates code duplication.
  *
  * This provider must be placed after all the providers it depends on:
+ * - ConfigProvider (for updateAppConfig)
  * - SessionProvider (for signOut)
  * - EnableUserNotificationProvider (for setEnableUserNotifications)
  * - SocketProvider (for closeNotificationSocket, dispatchFezSockets)
  * - SwiftarrQueryClientProvider (for queryClient via useQueryClient)
  */
 export const SignOutProvider = ({children}: PropsWithChildren) => {
+  const {appConfig, updateAppConfig} = useConfig();
   const {setEnableUserNotifications} = useEnableUserNotification();
   const {closeNotificationSocket, dispatchFezSockets} = useSocket();
   const {signOut} = useSession();
@@ -48,7 +51,22 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
 
     // Clear webview cookies
     await clearCookies();
-  }, [setEnableUserNotifications, closeNotificationSocket, dispatchFezSockets, signOut, queryClient, clearCookies]);
+
+    // Re-enable welcome aboard card for next login
+    updateAppConfig({
+      ...appConfig,
+      dismissWelcomeAboard: false,
+    });
+  }, [
+    setEnableUserNotifications,
+    closeNotificationSocket,
+    dispatchFezSockets,
+    signOut,
+    queryClient,
+    clearCookies,
+    appConfig,
+    updateAppConfig,
+  ]);
 
   const contextValue: SignOutContextType = React.useMemo(
     () => ({

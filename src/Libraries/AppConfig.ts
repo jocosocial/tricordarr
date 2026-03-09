@@ -82,6 +82,7 @@ export interface AppConfig {
   wifiNetworkNames: string[];
   forceShowTimezoneWarning: boolean;
   silenceTimezoneWarnings: boolean;
+  dismissWelcomeAboard: boolean;
   logLevel: LogLevel;
 }
 
@@ -149,7 +150,7 @@ export const defaultAppConfig: AppConfig = {
     useSystemTheme: true,
     darkMode: false,
   },
-  skipThumbnails: false,
+  skipThumbnails: true,
   imagePreloadDelaySeconds: 5,
   schedBaseUrl: '',
   userPreferences: {
@@ -166,6 +167,7 @@ export const defaultAppConfig: AppConfig = {
   wifiNetworkNames: [],
   forceShowTimezoneWarning: false,
   silenceTimezoneWarnings: false,
+  dismissWelcomeAboard: false,
   // logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
   logLevel: LogLevel.DEBUG,
 };
@@ -214,10 +216,13 @@ export const getAppConfig = async () => {
     appConfig.silenceTimezoneWarnings = false;
   }
   if (appConfig.imagePreloadDelaySeconds === undefined) {
-    appConfig.imagePreloadDelaySeconds = 5;
+    appConfig.imagePreloadDelaySeconds = 2;
   }
   if (appConfig.userPreferences.showScrollButton === undefined) {
     appConfig.userPreferences.showScrollButton = true;
+  }
+  if (appConfig.dismissWelcomeAboard === undefined) {
+    appConfig.dismissWelcomeAboard = false;
   }
 
   // Ok now we're done

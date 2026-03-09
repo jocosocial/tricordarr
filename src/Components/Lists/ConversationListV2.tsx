@@ -1,6 +1,14 @@
 import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
+import {
+  Keyboard,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  RefreshControlProps,
+  StyleProp,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -146,6 +154,78 @@ export const ConversationListV2 = <TItem,>({
   const isStabilizingRef = useRef(false);
   const lastSeenContentHeightRef = useRef(0);
   const stabilizeRafRef = useRef<number | null>(null);
+
+  // When the keyboard shows or hides, the KAV adjusts the layout but
+  // maintainVisibleContentPosition doesn't fully restore the scroll offset.
+  // Explicitly scroll to end when the user was near the bottom.
+  //
+  // On Android the KAV animates the layout change over several frames, so a
+  // single rAF is not enough — we use the same multi-frame loop pattern as
+  // the onLoad stabilization to keep scrolling while the layout settles.
+  //
+  // Problem: When the keyboard opened/closed on the FezChatScreen, the scroll
+  // position was disrupted. On keyboard hide, maintainVisibleContentPosition
+  // didn't fully restore the offset — leaving 26-78px of whitespace below the
+  // last message. On Android, the KeyboardAvoidingView (translate-with-padding)
+  // animates the layout change over multiple frames, making a single scrollToEnd
+  // insufficient.
+  //
+  // Fix: Keyboard event listeners that keep the list pinned to the bottom
+  // throughout the KAV's layout animation. Uses both "Will" and "Did" events
+  // for full coverage: "Will" starts correction at animation start to prevent
+  // the ListHeaderComponent from visibly jittering out of view, and "Did"
+  // provides a final correction pass after the animation settles.
+  //
+  // react-native-keyboard-controller's KeyboardProvider augments the standard
+  // Keyboard API with cross-platform keyboardWillShow/keyboardWillHide events.
+  const keyboardVisibleRef = useRef(false);
+  const keyboardScrollRafRef = useRef<number | null>(null);
+  useEffect(() => {
+    const scrollToEndIfNeeded = () => {
+      if (!effectiveMaintainScrollAtEnd || !isNearBottomRef.current || !readyFiredRef.current) {
+        return;
+      }
+      if (keyboardScrollRafRef.current !== null) {
+        cancelAnimationFrame(keyboardScrollRafRef.current);
+      }
+      // 20 frames at 60fps ≈ 333ms — covers the full keyboard animation
+      // duration (~250-300ms) when started from keyboardWillShow/Hide.
+      let framesRemaining = 20;
+      const tick = () => {
+        listRef.current?.scrollToEnd({animated: false});
+        framesRemaining--;
+        if (framesRemaining > 0) {
+          keyboardScrollRafRef.current = requestAnimationFrame(tick);
+        } else {
+          keyboardScrollRafRef.current = null;
+        }
+      };
+      keyboardScrollRafRef.current = requestAnimationFrame(tick);
+    };
+    const willShowSub = Keyboard.addListener('keyboardWillShow', () => {
+      keyboardVisibleRef.current = true;
+      scrollToEndIfNeeded();
+    });
+    const didShowSub = Keyboard.addListener('keyboardDidShow', () => {
+      scrollToEndIfNeeded();
+    });
+    const willHideSub = Keyboard.addListener('keyboardWillHide', () => {
+      keyboardVisibleRef.current = false;
+      scrollToEndIfNeeded();
+    });
+    const didHideSub = Keyboard.addListener('keyboardDidHide', () => {
+      scrollToEndIfNeeded();
+    });
+    return () => {
+      willShowSub.remove();
+      didShowSub.remove();
+      willHideSub.remove();
+      didHideSub.remove();
+      if (keyboardScrollRafRef.current !== null) {
+        cancelAnimationFrame(keyboardScrollRafRef.current);
+      }
+    };
+  }, [effectiveMaintainScrollAtEnd, alignItemsAtEnd, listRef]);
 
   // When data grows and the user was near the bottom, explicitly scroll to the end.
   // LegendList's maintainScrollAtEnd is unreliable for dynamic appends, so we

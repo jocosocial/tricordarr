@@ -53,7 +53,7 @@ const FezCardInternal = ({
     },
     [setModalContent, setModalVisible],
   );
-  const {isParticipant, participantLabel} = useFezData({fezID: fez.fezID});
+  const {participantLabel} = useFezData({fezID: fez.fezID});
 
   const styles = StyleSheet.create({
     badge: {
@@ -95,11 +95,11 @@ const FezCardInternal = ({
 
   /**
    * Only show the participation information if:
-   * It's an LFG (doesnt matter if you're a member or not).
-   * It's a Personal or Private Event and you are a member.
+   * - It's an LFG (doesnt matter if you're a member or not).
+   * - It's a Private Event (you're only seeing it because you're a participant).
+   * PersonalEvents are personal to you and only have one participant: you.
    */
-  const showParticipation =
-    FezType.isLFGType(fez.fezType) || (FezType.isPrivateEventType(fez.fezType) && isParticipant);
+  const showParticipation = FezType.isLFGType(fez.fezType) || fez.fezType === FezType.privateEvent;
 
   const handleLongPress = useCallback(() => {
     if (onLongPress) {
