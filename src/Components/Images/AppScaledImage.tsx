@@ -2,7 +2,6 @@ import FastImage, {
   type Source as FastImageSource,
   type ImageStyle as FastImageStyle,
   type OnErrorEvent,
-  type OnLoadEvent,
   type OnProgressEvent,
 } from '@d11/react-native-fast-image';
 import React, {useEffect, useState} from 'react';
@@ -28,8 +27,11 @@ interface AppScaledImageProps {
 }
 
 /**
- * Displays an image using FastImage at 100% width with a proportional height based on the
- * loaded image dimensions.
+ * Displays an image using FastImage which seems to work for dynamically sized images.
+ * I found that this lets me display an image at 100% width and a height that is proportional
+ * to the original image. Uses FastImage.getSize to retrieve the image dimensions from the
+ * FastImage cache rather than Image.getSize (which would use a different HTTP client and
+ * cause duplicate requests).
  *
  * While dimensions are loading, renders a placeholder View with a reserved minimum height
  * to bound layout shift. This prevents scroll jumps when images load in a list.
@@ -40,51 +42,51 @@ export const AppScaledImage = ({image, style, onLoad, onError, onProgress}: AppS
   const {theme} = useAppTheme();
 
   useEffect(() => {
-    setImageSize({width: undefined, height: undefined});
+    if (image.uri) {
+      FastImage.getSize(image.uri, (width, height) => {
+        setImageSize({width: width, height: height});
+      });
+    }
   }, [image.uri]);
 
-  const handleLoad = (event: OnLoadEvent) => {
-    const {width, height} = event.nativeEvent;
-    setImageSize({width, height});
-    onLoad?.();
-  };
+  // 0 / 0 by default is NaN which produces very funky not helpful errors.
+  if (!imageSize.width || !imageSize.height || !image.uri) {
+    const placeholderStyles = StyleSheet.create({
+      placeholder: {
+        height: IMAGE_PLACEHOLDER_HEIGHT,
+        width: '100%',
+        backgroundColor: theme.colors.surfaceVariant,
+        borderRadius: 8,
+        ...commonStyles.justifyCenter,
+        ...commonStyles.alignItemsCenter,
+        ...commonStyles.marginVerticalSmall,
+      },
+    });
 
-  const hasImageSize = !!imageSize.width && !!imageSize.height && !!image.uri;
+    return (
+      <View style={placeholderStyles.placeholder}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  // https://stackoverflow.com/questions/36436913/image-contain-resizemode-not-working-in-react-native
   const styles = StyleSheet.create({
-    placeholder: {
-      height: IMAGE_PLACEHOLDER_HEIGHT,
-      width: '100%',
-      backgroundColor: theme.colors.surfaceVariant,
-      borderRadius: 8,
-      overflow: 'hidden',
-      ...commonStyles.justifyCenter,
-      ...commonStyles.alignItemsCenter,
-      ...commonStyles.marginVerticalSmall,
-    },
-    loadingImage: {
-      width: '100%',
-      height: '100%',
-      opacity: 0,
-    },
     image: {
-      width: '100%',
-      aspectRatio: hasImageSize ? imageSize.width! / imageSize.height! : undefined,
-    },
-    loadingIndicator: {
-      position: 'absolute',
+      flex: 1,
+      height: undefined,
+      width: undefined,
+      aspectRatio: imageSize.width / imageSize.height,
     },
   });
 
   return (
-    <View style={!hasImageSize ? styles.placeholder : undefined}>
-      <FastImage
-        style={[hasImageSize ? styles.image : styles.loadingImage, style]}
-        source={{uri: image.uri}}
-        onLoad={handleLoad}
-        onError={onError}
-        onProgress={onProgress}
-      />
-      {!hasImageSize && <ActivityIndicator style={styles.loadingIndicator} />}
-    </View>
+    <FastImage
+      style={[styles.image, style]}
+      source={{uri: image.uri}}
+      onLoad={onLoad}
+      onError={onError}
+      onProgress={onProgress}
+    />
   );
 };
