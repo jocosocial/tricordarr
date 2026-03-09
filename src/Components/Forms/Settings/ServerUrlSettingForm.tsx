@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {PickerField} from '#src/Components/Forms/Fields/PickerField';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {UrlTextField} from '#src/Components/Forms/Fields/UrlTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ServerChoices, ServerUrlChoice} from '#src/Libraries/Network/ServerChoices';
 import {ServerURLValidation} from '#src/Libraries/ValidationSchema';
@@ -42,17 +42,14 @@ export const ServerUrlSettingForm = (props: ServerUrlFormProps) => {
               disabled={props.disabled}
             />
           </View>
-          <TextField
+          <UrlTextField
             name={'serverUrl'}
             label={'URL'}
-            textContentType={'URL'}
-            keyboardType={'url'}
             disabled={values.serverChoice.name !== 'Other'}
             onChangeText={v => {
               setFieldValue('serverUrl', v);
               setFieldValue('serverChoice', {name: 'Other', serverUrl: ''});
             }}
-            autoCapitalize={'none'}
           />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
