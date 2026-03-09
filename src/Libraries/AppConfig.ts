@@ -149,7 +149,7 @@ export const defaultAppConfig: AppConfig = {
     useSystemTheme: true,
     darkMode: false,
   },
-  skipThumbnails: true,
+  skipThumbnails: false,
   imagePreloadDelaySeconds: 5,
   schedBaseUrl: '',
   userPreferences: {
