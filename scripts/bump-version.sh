@@ -8,12 +8,19 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
+# macOS sed requires -i '', GNU sed requires -i alone
+if sed --version >/dev/null 2>&1; then
+  sedi() { sed -i "$@"; }
+else
+  sedi() { sed -i '' "$@"; }
+fi
+
 GRADLE="$ROOT/android/app/build.gradle"
 PBXPROJ="$ROOT/ios/Tricordarr.xcodeproj/project.pbxproj"
 PACKAGE_JSON="$ROOT/package.json"
 
 OLD_VERSION_CODE=$(grep -E '^\s+versionCode ' "$GRADLE" | head -1 | awk '{print $2}')
-OLD_VERSION_NAME=$(grep -E '^\s+versionName ' "$GRADLE" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+OLD_VERSION_NAME=$(grep -E '^\s+versionName ' "$GRADLE" | head -1 | sed -E 's/.*"(.*)".*/\1/')
 
 NEW_VERSION_CODE=$((OLD_VERSION_CODE + 1))
 
@@ -22,14 +29,14 @@ NEW_PATCH=$((PATCH + 1))
 NEW_VERSION_NAME="${MAJOR}.${MINOR}.${NEW_PATCH}"
 
 # Android
-sed -i'' -e "s/versionCode ${OLD_VERSION_CODE}/versionCode ${NEW_VERSION_CODE}/" "$GRADLE"
-sed -i'' -e "s/versionName \"${OLD_VERSION_NAME}\"/versionName \"${NEW_VERSION_NAME}\"/" "$GRADLE"
+sedi "s/versionCode ${OLD_VERSION_CODE}/versionCode ${NEW_VERSION_CODE}/" "$GRADLE"
+sedi "s/versionName \"${OLD_VERSION_NAME}\"/versionName \"${NEW_VERSION_NAME}\"/" "$GRADLE"
 
 # iOS — target exact old values to avoid touching unrelated targets (value 1 / 1.0)
-sed -i'' -e "s/CURRENT_PROJECT_VERSION = ${OLD_VERSION_CODE};/CURRENT_PROJECT_VERSION = ${NEW_VERSION_CODE};/g" "$PBXPROJ"
-sed -i'' -e "s/MARKETING_VERSION = ${OLD_VERSION_NAME};/MARKETING_VERSION = ${NEW_VERSION_NAME};/g" "$PBXPROJ"
+sedi "s/CURRENT_PROJECT_VERSION = ${OLD_VERSION_CODE};/CURRENT_PROJECT_VERSION = ${NEW_VERSION_CODE};/g" "$PBXPROJ"
+sedi "s/MARKETING_VERSION = ${OLD_VERSION_NAME};/MARKETING_VERSION = ${NEW_VERSION_NAME};/g" "$PBXPROJ"
 
 # package.json
-sed -i'' -e "s/\"version\": \".*\"/\"version\": \"${NEW_VERSION_NAME}\"/" "$PACKAGE_JSON"
+sedi "s/\"version\": \".*\"/\"version\": \"${NEW_VERSION_NAME}\"/" "$PACKAGE_JSON"
 
 echo "$NEW_VERSION_NAME"

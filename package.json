@@ -1,6 +1,6 @@
 {
   "name": "tricordarr",
-  "version": "0.0.1",
+  "version": "2026.0.15",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -12,7 +12,8 @@
     "test": "jest",
     "postinstall": "patch-package",
     "build-android-apk": "npx react-native build-android --tasks assembleRelease",
-    "build-android-aab": "npx react-native build-android --mode release"
+    "build-android-aab": "npx react-native build-android --mode release",
+    "bump-version": "bash scripts/bump-version.sh | xargs -I{} git commit -am '{} [skip ci]'"
   },
   "dependencies": {
     "@d11/react-native-fast-image": "^8.12.0",
