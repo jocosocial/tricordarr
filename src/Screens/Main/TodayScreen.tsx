@@ -21,13 +21,13 @@ import {TodayAppUpdateView} from '#src/Components/Views/TodayAppUpdateView';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useClientConfig} from '#src/Hooks/useClientConfig';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 
@@ -45,7 +45,7 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchFavorites} = useUserFavoritesQuery({enabled: false});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
-  const {refetch: refetchClientConfig} = useClientConfigQuery({enabled: false});
+  const {refetch: refetchClientConfig} = useClientConfig({enabled: false});
   const {refetch: refetchTimeZoneChanges} = useTimeZoneChangesQuery({enabled: false});
 
   const {isLoggedIn} = useSession();
