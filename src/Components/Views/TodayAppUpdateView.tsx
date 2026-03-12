@@ -4,18 +4,28 @@ import DeviceInfo from 'react-native-device-info';
 
 import {AppUpdateCard} from '#src/Components/Cards/MainScreen/AppUpdateCard';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
+import {useClientConfig} from '#src/Hooks/useClientConfig';
 
 export const TodayAppUpdateView = () => {
-  const {data} = useClientConfigQuery();
+  const {data} = useClientConfig();
+  const currentVersion = DeviceInfo.getVersion();
+  const latestVersion = data?.spec.latestVersion;
 
-  if (data && compareVersions(DeviceInfo.getVersion(), data.spec.latestVersion) < 0) {
-    return (
-      <PaddedContentView>
-        <AppUpdateCard latestVersion={data.spec.latestVersion} currentVersion={DeviceInfo.getVersion()} />
-      </PaddedContentView>
-    );
+  if (!latestVersion) {
+    return null;
   }
 
-  return <></>;
+  try {
+    if (compareVersions(currentVersion, latestVersion) < 0) {
+      return (
+        <PaddedContentView>
+          <AppUpdateCard latestVersion={latestVersion} currentVersion={currentVersion} />
+        </PaddedContentView>
+      );
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
 };
