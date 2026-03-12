@@ -45,12 +45,20 @@ const staticStyles = StyleSheet.create({
 
 export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
   const {theme} = useAppTheme();
-  const {hasShutternaut} = useRoles();
+  const {hasShutternaut, hasShutternautManager} = useRoles();
 
   const showPhotographerIcon = useMemo(
     () =>
       item.type === 'event' && hasShutternaut === true && item.eventData?.shutternautData?.userIsPhotographer === true,
     [item.type, item.eventData?.shutternautData?.userIsPhotographer, hasShutternaut],
+  );
+
+  const showNeedsPhotographerIcon = useMemo(
+    () =>
+      item.type === 'event' &&
+      (hasShutternaut === true || hasShutternautManager === true) &&
+      item.eventData?.shutternautData?.needsPhotographer === true,
+    [item.type, item.eventData?.shutternautData?.needsPhotographer, hasShutternaut, hasShutternautManager],
   );
 
   // Colors must be derived at render time because they depend on both the item's
@@ -144,6 +152,10 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
         <View style={staticStyles.content}>
           {item.cancelled && <ScheduleItemStatusBadge status={'Cancelled'} align={'left'} />}
           <Text style={dynamicStyles.text} numberOfLines={titleLines} ellipsizeMode={'tail'}>
+            {showNeedsPhotographerIcon && (
+              <AppIcon icon={AppIcons.needsPhotographer} color={theme.colors.onTwitarrNegativeButton} small />
+            )}
+            {showNeedsPhotographerIcon && ' '}
             {showPhotographerIcon && (
               <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} small />
             )}

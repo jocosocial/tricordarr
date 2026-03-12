@@ -33,7 +33,7 @@ export const ScheduleEventFilterMenu = () => {
   } = useScheduleFilter();
   const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
-  const {hasShutternaut} = useRoles();
+  const {hasShutternaut, hasShutternautManager} = useRoles();
 
   // This also shows joined LFGs, hopefully that's not too surprising
   const handleFavoriteSelection = () => {
@@ -159,7 +159,7 @@ export const ScheduleEventFilterMenu = () => {
           disabled={!oobeCompleted}
         />
       )}
-      {hasShutternaut && (
+      {(hasShutternaut || hasShutternautManager) && (
         <>
           <Divider bold={true} />
           <SelectableMenuItem
