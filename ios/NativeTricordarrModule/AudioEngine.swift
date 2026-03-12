@@ -27,7 +27,8 @@ class AudioEngine: NSObject {
 
 	override init() {
 		super.init()
-		setupAudioSession()
+		// Intentionally do NOT activate AVAudioSession here.
+		// Doing so during module initialization can pause external audio on app launch.
 		setupConfigurationChangeObserver()
 	}
 
@@ -187,13 +188,20 @@ class AudioEngine: NSObject {
 	private func setupAudioSession() {
 		let audioSession = AVAudioSession.sharedInstance()
 		do {
-			// Don't use .defaultToSpeaker - let the app control speaker/earpiece explicitly
-			// This allows the user to choose between speaker and earpiece
-			try audioSession.setCategory(
-				.playAndRecord,
-				mode: .voiceChat,
-				options: [.allowBluetooth]
-			)
+			let desiredCategory = AVAudioSession.Category.playAndRecord
+			let desiredMode = AVAudioSession.Mode.voiceChat
+
+			// Keep category/mode updates idempotent to avoid unnecessary churn.
+			if audioSession.category != desiredCategory || audioSession.mode != desiredMode {
+				// Don't use .defaultToSpeaker - let the app control speaker/earpiece explicitly
+				// This allows the user to choose between speaker and earpiece
+				try audioSession.setCategory(
+					.playAndRecord,
+					mode: .voiceChat,
+					options: [.allowBluetooth]
+				)
+			}
+
 			try audioSession.setActive(true)
 			print("[AudioEngine] Audio session configured for voice chat")
 		}
@@ -246,6 +254,12 @@ class AudioEngine: NSObject {
 		DispatchQueue.main.async { [weak self] in
 			guard let self = self else {
 				reject("ERROR", "AudioEngine instance deallocated", nil)
+				return
+			}
+
+			guard self.isRunning else {
+				print("[AudioEngine] Speaker mode change ignored - engine not running")
+				resolve(true)
 				return
 			}
 
@@ -393,6 +407,10 @@ class AudioEngine: NSObject {
 			return
 		}
 
+		// Activate the audio session only when call audio starts so cold launch
+		// does not interrupt music/podcasts from other apps.
+		setupAudioSession()
+
 		// Create audio engine
 		audioEngine = AVAudioEngine()
 		guard let audioEngine = audioEngine else {
@@ -484,6 +502,14 @@ class AudioEngine: NSObject {
 
 		playerNode?.stop()
 		audioEngine.stop()
+		do {
+			// Tell iOS we are done with call audio so interrupted apps can resume.
+			try AVAudioSession.sharedInstance().setActive(false, options: [.notifyOthersOnDeactivation])
+			print("[AudioEngine] Audio session deactivated")
+		}
+		catch {
+			print("[AudioEngine] Failed to deactivate audio session: \(error)")
+		}
 
 		isRunning = false
 		print("[AudioEngine] Stopped")
