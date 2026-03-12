@@ -34,7 +34,7 @@ interface EventCardRightIconsProps {
 
 const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentColor}: EventCardRightIconsProps) => {
   const {theme} = useAppTheme();
-  const {hasShutternaut} = useRoles();
+  const {hasShutternaut, hasShutternautManager} = useRoles();
 
   const styles = StyleSheet.create({
     iconContainer: {
@@ -45,11 +45,16 @@ const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentCol
   });
 
   const needsPhotographerIcon = useMemo(() => {
-    if (!hasShutternaut || !eventData.shutternautData?.needsPhotographer) {
+    if (!(hasShutternaut || hasShutternautManager) || !eventData.shutternautData?.needsPhotographer) {
       return null;
     }
     return <AppIcon icon={AppIcons.needsPhotographer} color={theme.colors.onTwitarrNegativeButton} />;
-  }, [hasShutternaut, eventData.shutternautData?.needsPhotographer, theme.colors.onTwitarrNegativeButton]);
+  }, [
+    hasShutternaut,
+    hasShutternautManager,
+    eventData.shutternautData?.needsPhotographer,
+    theme.colors.onTwitarrNegativeButton,
+  ]);
 
   const photographerIcon = useMemo(() => {
     if (!hasShutternaut || !eventData.shutternautData?.userIsPhotographer) {

@@ -183,7 +183,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.feedback}
                 onPress={() => Linking.openURL('tricordarr://eventfeedback')}
               />
-              {(hasShutternaut || hasTwitarrTeam) && (
+              {(hasShutternaut || hasShutternautManager || hasTwitarrTeam) && (
                 <PaperDrawer.Item
                   label={'Shutternaut Calendar'}
                   icon={AppIcons.shutternaut}
