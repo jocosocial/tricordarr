@@ -151,7 +151,7 @@ export const defaultAppConfig: AppConfig = {
     darkMode: false,
   },
   skipThumbnails: true,
-  imagePreloadDelaySeconds: 5,
+  imagePreloadDelaySeconds: 2,
   schedBaseUrl: '',
   userPreferences: {
     reverseSwipeOrientation: false,
