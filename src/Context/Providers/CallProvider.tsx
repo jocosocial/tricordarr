@@ -42,6 +42,9 @@ export const CallProvider = ({children}: PropsWithChildren) => {
   const answeredViaCallKitRef = useRef<boolean>(false);
   // Track if current call uses CallKit (only incoming calls use CallKit)
   const callUsesCallKitRef = useRef<boolean>(false);
+  // Track CallKit audio-session state to avoid starting call audio before iOS is ready.
+  const callKitAudioSessionActiveRef = useRef<boolean>(false);
+  const pendingAudioStartSocketRef = useRef<ReconnectingWebSocket | null>(null);
   // Track mute state for CallKit handler (avoids stale closure issues)
   const isMutedRef = useRef<boolean>(false);
   // Track if mute change originated from CallKit to prevent feedback loop
@@ -215,6 +218,22 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     [setSnackbarPayload],
   );
 
+  const startAudioWhenReady = useCallback(
+    (phoneSocket: ReconnectingWebSocket) => {
+      // For incoming CallKit calls, defer start until iOS owns an active call audio session.
+      // This avoids us forcing early audio-session activation that can pause external playback.
+      if (Platform.OS === 'ios' && callUsesCallKitRef.current && !callKitAudioSessionActiveRef.current) {
+        pendingAudioStartSocketRef.current = phoneSocket;
+        logger.debug('[CallProvider] Deferring audio start until CallKit audio session activates');
+        return;
+      }
+
+      pendingAudioStartSocketRef.current = null;
+      startAudioStreaming(phoneSocket);
+    },
+    [startAudioStreaming],
+  );
+
   // Stop audio engine and cleanup
   const stopAudioStreaming = useCallback(async () => {
     try {
@@ -249,6 +268,8 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       // Mark this call as NOT using CallKit (outgoing calls don't use CallKit)
       // Only incoming calls use CallKit for the native UI
       callUsesCallKitRef.current = false;
+      callKitAudioSessionActiveRef.current = false;
+      pendingAudioStartSocketRef.current = null;
 
       logger.debug('[CallProvider] initiateCall() dispatching INITIATE action');
       dispatch({
@@ -308,7 +329,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                 logger.debug('[CallProvider] Call connected, starting audio');
                 dispatch({type: CallActions.CONNECT});
                 // Start audio streaming when call connects
-                startAudioStreaming(ws);
+                startAudioWhenReady(ws);
                 return;
               }
             } catch (jsonError) {
@@ -345,7 +366,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             ) {
               logger.debug('[CallProvider] Call connected, starting audio (from object)');
               dispatch({type: CallActions.CONNECT});
-              startAudioStreaming(ws);
+              startAudioWhenReady(ws);
               return;
             }
 
@@ -372,7 +393,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                     if (data.phonecallStartTime) {
                       logger.debug('[CallProvider] Call connected, starting audio (from Blob.data)');
                       dispatch({type: CallActions.CONNECT});
-                      startAudioStreaming(ws);
+                      startAudioWhenReady(ws);
                       return;
                     }
                   }
@@ -392,7 +413,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                       if (data.phonecallStartTime) {
                         logger.debug('[CallProvider] Call connected, starting audio');
                         dispatch({type: CallActions.CONNECT});
-                        startAudioStreaming(ws);
+                        startAudioWhenReady(ws);
                       }
                     } catch (e) {
                       logger.warn('[CallProvider] Failed to parse Blob message as JSON', e);
@@ -417,7 +438,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                     if (data.phonecallStartTime) {
                       logger.debug('[CallProvider] Call connected, starting audio');
                       dispatch({type: CallActions.CONNECT});
-                      startAudioStreaming(ws);
+                      startAudioWhenReady(ws);
                     }
                   } catch (e) {
                     logger.warn('[CallProvider] Failed to parse Blob message', e);
@@ -446,7 +467,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                 if (data.phonecallStartTime) {
                   logger.debug('[CallProvider] Call connected, starting audio');
                   dispatch({type: CallActions.CONNECT});
-                  startAudioStreaming(ws);
+                  startAudioWhenReady(ws);
                 }
               } catch (e) {
                 logger.warn(
@@ -573,10 +594,11 @@ export const CallProvider = ({children}: PropsWithChildren) => {
       } catch (error) {
         logger.error('[CallProvider] Failed to initiate call', error);
         logger.debug('[CallProvider] initiateCall() dispatching END action due to error');
+        pendingAudioStartSocketRef.current = null;
         dispatch({type: CallActions.END});
       }
     },
-    [startAudioStreaming, stopAudioStreaming, setSnackbarPayload, state.currentCall],
+    [startAudioWhenReady, stopAudioStreaming, setSnackbarPayload, state.currentCall],
   );
 
   const receiveCall = useCallback((callID: string, callerUserHeader: UserHeader, options?: {useCallKit?: boolean}) => {
@@ -584,6 +606,8 @@ export const CallProvider = ({children}: PropsWithChildren) => {
 
     const useCallKit = options?.useCallKit !== false;
     callUsesCallKitRef.current = Platform.OS === 'ios' && useCallKit;
+    callKitAudioSessionActiveRef.current = false;
+    pendingAudioStartSocketRef.current = null;
 
     dispatch({
       type: CallActions.RECEIVE,
@@ -650,7 +674,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                 logger.debug('[CallProvider] Call connected, starting audio');
                 dispatch({type: CallActions.CONNECT});
                 // Start audio streaming when call connects
-                startAudioStreaming(ws);
+                startAudioWhenReady(ws);
                 return;
               }
             } catch (jsonError) {
@@ -687,7 +711,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
             ) {
               logger.debug('[CallProvider] Call connected, starting audio (from object)');
               dispatch({type: CallActions.CONNECT});
-              startAudioStreaming(ws);
+              startAudioWhenReady(ws);
               return;
             }
 
@@ -714,7 +738,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                     if (data.phonecallStartTime) {
                       logger.debug('[CallProvider] Call connected, starting audio (from Blob.data)');
                       dispatch({type: CallActions.CONNECT});
-                      startAudioStreaming(ws);
+                      startAudioWhenReady(ws);
                       return;
                     }
                   }
@@ -734,7 +758,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                       if (data.phonecallStartTime) {
                         logger.debug('[CallProvider] Call connected, starting audio');
                         dispatch({type: CallActions.CONNECT});
-                        startAudioStreaming(ws);
+                        startAudioWhenReady(ws);
                       }
                     } catch (e) {
                       logger.warn('[CallProvider] Failed to parse Blob message as JSON', e);
@@ -759,7 +783,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                     if (data.phonecallStartTime) {
                       logger.debug('[CallProvider] Call connected, starting audio');
                       dispatch({type: CallActions.CONNECT});
-                      startAudioStreaming(ws);
+                      startAudioWhenReady(ws);
                     }
                   } catch (e) {
                     logger.warn('[CallProvider] Failed to parse Blob message', e);
@@ -788,7 +812,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
                 if (data.phonecallStartTime) {
                   logger.debug('[CallProvider] Call connected, starting audio');
                   dispatch({type: CallActions.CONNECT});
-                  startAudioStreaming(ws);
+                  startAudioWhenReady(ws);
                 }
               } catch (e) {
                 logger.warn(
@@ -916,10 +940,11 @@ export const CallProvider = ({children}: PropsWithChildren) => {
         await answerMutation.mutateAsync({callID});
       } catch (error) {
         logger.error('[CallProvider] Failed to answer call', error);
+        pendingAudioStartSocketRef.current = null;
         dispatch({type: CallActions.END});
       }
     },
-    [state.currentCall, answerMutation, startAudioStreaming, stopAudioStreaming, setSnackbarPayload],
+    [state.currentCall, answerMutation, startAudioWhenReady, stopAudioStreaming, setSnackbarPayload],
   );
 
   const declineCall = useCallback(
@@ -979,6 +1004,8 @@ export const CallProvider = ({children}: PropsWithChildren) => {
 
     // Reset CallKit flag
     callUsesCallKitRef.current = false;
+    callKitAudioSessionActiveRef.current = false;
+    pendingAudioStartSocketRef.current = null;
 
     // Stop audio streaming
     await stopAudioStreaming();
@@ -1239,8 +1266,20 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           logger.debug('[CallProvider] CallKit mute state matches app state, ignoring');
         }
       },
+      onAudioSessionActivated: () => {
+        callKitAudioSessionActiveRef.current = true;
+        logger.debug('[CallProvider] CallKit audio session activated');
+
+        const pendingSocket = pendingAudioStartSocketRef.current;
+        if (pendingSocket) {
+          // Complete deferred start only after the system confirms audio-session activation.
+          logger.debug('[CallProvider] Starting deferred audio after CallKit activation');
+          pendingAudioStartSocketRef.current = null;
+          startAudioStreaming(pendingSocket);
+        }
+      },
     });
-  }, [answerCall, endCall, toggleMute]);
+  }, [answerCall, endCall, toggleMute, startAudioStreaming]);
 
   const value = {
     currentCall: state.currentCall,
