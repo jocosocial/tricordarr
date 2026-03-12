@@ -67,7 +67,7 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
           Download this event as an ICS calendar file that you can import into your calendar app.
         </HelpTopicView>
         <HelpTopicView title={'Open in Sched'} icon={AppIcons.schedOpen}>
-          Open this event in Sched.com in your device's web browser.
+          Tap to open this event in Sched.com in your browser. Long press to copy the Sched.com link to your clipboard.
         </HelpTopicView>
         {!isOfficial && (
           <HelpTopicView title={'Set Organizer'} icon={AppIcons.performer}>
