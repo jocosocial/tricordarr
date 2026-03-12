@@ -310,15 +310,15 @@ public class WebsocketNotifier: NSObject {
 
 		case .phoneCallAnswered:
 			sendNotification = false
-			UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
+			UserDefaults(suiteName: "group.com.grantcohoe.tricordarr")?
 				.set(socketNotification.contentID, forKey: "phoneCallAnswered")
-			self.logger.log("KrakenPushProvider set UserDefault for phoneCallAnswered")
+			self.logger.log("TricordarrPushProvider set UserDefault for phoneCallAnswered")
 
 		case .phoneCallEnded:
 			sendNotification = false
-			UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
+			UserDefaults(suiteName: "group.com.grantcohoe.tricordarr")?
 				.set(socketNotification.contentID, forKey: "phoneCallEnded")
-			self.logger.log("KrakenPushProvider set UserDefault for phoneCallEnded")
+			self.logger.log("TricordarrPushProvider set UserDefault for phoneCallEnded")
 
 		case .followedEventStarting:
 			title = "Followed Event Starting"
