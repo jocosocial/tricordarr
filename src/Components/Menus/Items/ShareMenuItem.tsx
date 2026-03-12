@@ -3,7 +3,6 @@ import {Linking} from 'react-native';
 import {Menu} from 'react-native-paper';
 
 import {useOobe} from '#src/Context/Contexts/OobeContext';
-import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
@@ -17,7 +16,6 @@ interface ShareMenuItemProps {
 
 export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItemProps) => {
   const {oobeCompleted} = useOobe();
-  const {preRegistrationMode} = usePreRegistration();
   const {serverUrl} = useSwiftarrQueryClient();
   const {setString} = useClipboard();
 
@@ -44,12 +42,13 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
   }, [getFullURL]);
 
   /**
-   * If the user hasn't finished setup or is in pre-registration mode,
-   * don't let them share content.
+   * If the user hasn't finished setup don't let them share content.
+   * This used to also disable in pre-registration mode, but I found cases where I
+   * wanted to share content from Start.
    */
   return (
     <Menu.Item
-      disabled={!oobeCompleted || preRegistrationMode}
+      disabled={!oobeCompleted}
       title={'Share'}
       leadingIcon={AppIcons.share}
       onPress={handlePress}
