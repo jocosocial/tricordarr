@@ -51,6 +51,49 @@ const logInternalError = (message: string, error: unknown) => {
   rootLogger.error(`[Logger] ${message}`, error);
 };
 
+const formatErrorArg = (error: Error): string => {
+  const header = `${error.name}: ${error.message}`;
+  return error.stack ? `${header}\n${error.stack}` : header;
+};
+
+const stringifyObjectArg = (value: object): string => {
+  try {
+    return JSON.stringify(value);
+  } catch (error) {
+    if (error instanceof Error) {
+      return `[UnserializableObject: ${error.message}]`;
+    }
+    return '[UnserializableObject]';
+  }
+};
+
+const formatLogArg = (arg: unknown): string => {
+  if (arg === null) return 'null';
+  if (arg === undefined) return 'undefined';
+  if (arg instanceof Error) return formatErrorArg(arg);
+
+  if (typeof arg === 'string') return arg;
+  if (typeof arg === 'number' || typeof arg === 'boolean' || typeof arg === 'bigint') {
+    return String(arg);
+  }
+  if (typeof arg === 'symbol') return String(arg);
+  if (typeof arg === 'function') {
+    const functionName = (arg as Function).name || 'anonymous';
+    return `[Function: ${functionName}]`;
+  }
+
+  if (arg instanceof Date) {
+    return arg.toISOString();
+  }
+
+  return stringifyObjectArg(arg as object);
+};
+
+const formatLogArgs = (args: unknown[]): string => {
+  if (args.length === 0) return '';
+  return args.map(formatLogArg).join(' ');
+};
+
 const ensureLogDirectory = async (): Promise<void> => {
   try {
     const exists = await RNFS.exists(LOG_DIR);
@@ -82,12 +125,14 @@ const rotateLogFiles = async (): Promise<void> => {
   }
 };
 
-const formatLogMessage = (level: string, tag: string, message: string): string => {
+const formatLogMessage = (level: string, tag: string, message: string, args: unknown[] = []): string => {
   const timestamp =
     new Date().toISOString().replace('T', ' ').split('.')[0] +
     '.' +
     new Date().getMilliseconds().toString().padStart(3, '0');
-  return `[${timestamp}] [${level.toUpperCase()}] [${tag}] ${message}`;
+  const formattedArgs = formatLogArgs(args);
+  const baseMessage = `[${timestamp}] [${level.toUpperCase()}] [${tag}] ${message}`;
+  return formattedArgs.length > 0 ? `${baseMessage} ${formattedArgs}` : baseMessage;
 };
 
 // Initialize buffer
@@ -124,28 +169,28 @@ initializeLogger();
 export const createLogger = (tag: string): Logger => {
   return {
     debug: (message: string, ...args: any[]) => {
-      const formattedMessage = formatLogMessage('debug', tag, message);
+      const formattedMessage = formatLogMessage('debug', tag, message, args);
       rootLogger.debug(message, ...args);
       if (currentLogLevel === LogLevel.DEBUG) {
         logBuffer?.addLog(formattedMessage, LogLevel.DEBUG);
       }
     },
     info: (message: string, ...args: any[]) => {
-      const formattedMessage = formatLogMessage('info', tag, message);
+      const formattedMessage = formatLogMessage('info', tag, message, args);
       rootLogger.info(message, ...args);
       if (currentLogLevel === LogLevel.DEBUG || currentLogLevel === LogLevel.INFO) {
         logBuffer?.addLog(formattedMessage, LogLevel.INFO);
       }
     },
     warn: (message: string, ...args: any[]) => {
-      const formattedMessage = formatLogMessage('warn', tag, message);
+      const formattedMessage = formatLogMessage('warn', tag, message, args);
       rootLogger.warn(message, ...args);
       if (currentLogLevel !== LogLevel.ERROR) {
         logBuffer?.addLog(formattedMessage, LogLevel.WARN);
       }
     },
     error: (message: string, ...args: any[]) => {
-      const formattedMessage = formatLogMessage('error', tag, message);
+      const formattedMessage = formatLogMessage('error', tag, message, args);
       rootLogger.error(message, ...args);
       logBuffer?.addLog(formattedMessage, LogLevel.ERROR);
     },
