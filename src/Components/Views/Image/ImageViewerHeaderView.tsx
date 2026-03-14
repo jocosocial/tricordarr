@@ -3,7 +3,6 @@ import {StyleSheet, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 
 import {ImageMetadataView} from '#src/Components/Views/Image/ImageMetadataView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -27,7 +26,6 @@ export const ImageViewerHeaderView = ({
 }: ImageViewerHeaderViewProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
-  const {appConfig} = useConfig();
   const [showMetadata, setShowMetadata] = React.useState(false);
 
   const styles = StyleSheet.create({
@@ -44,13 +42,11 @@ export const ImageViewerHeaderView = ({
   return (
     <View>
       <View style={styles.buttonContainer}>
-        {appConfig.enableDeveloperOptions && (
-          <IconButton
-            icon={AppIcons.info}
-            onPress={() => setShowMetadata(!showMetadata)}
-            iconColor={theme.colors.onImageViewer}
-          />
-        )}
+        <IconButton
+          icon={AppIcons.info}
+          onPress={() => setShowMetadata(!showMetadata)}
+          iconColor={theme.colors.onImageViewer}
+        />
         {enableDownload && (
           <IconButton icon={AppIcons.download} onPress={onSave} iconColor={theme.colors.onImageViewer} />
         )}
