@@ -61,9 +61,9 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
   });
 
   const renderItem = useCallback(
-    ({item}: {item: PerformerHeaderData}) => {
+    ({item, index}: {item: PerformerHeaderData; index: number}) => {
       return (
-        <View style={styles.cardContainer}>
+        <View key={`performer-${item.name}-${index}`} style={styles.cardContainer}>
           <PerformerHeaderCard header={item} />
         </View>
       );
