@@ -1,12 +1,12 @@
-import {ImageStyle as FastImageStyle} from '@d11/react-native-fast-image';
+import FastImage, {ImageStyle as FastImageStyle} from '@d11/react-native-fast-image';
 import React, {useState} from 'react';
-import {Image, ImageStyle as RNImageStyle, StyleProp, TouchableOpacity, View} from 'react-native';
+import {Image, ImageStyle as RNImageStyle, StyleProp, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Card} from 'react-native-paper';
 
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 
 interface AppImageProps {
   style?: StyleProp<FastImageStyle | RNImageStyle>;
@@ -19,7 +19,7 @@ interface AppImageProps {
 }
 
 /**
- * AppImage is for displaying an image. Very similar to APIImageV2, but without the API integration.
+ * AppImage is for displaying an image. Very similar to APIImage, but without the API integration.
  * Used for displaying app assets and locally taken image data.
  *
  * This also includes the AppImageViewer which is the "modal" component that appears when
@@ -57,6 +57,13 @@ export const AppImage = ({
 
   const imageUriSource = {uri: AppImageMetaData.getSourceURI(image)};
 
+  const isAssetScaledImage =
+    mode === 'scaledimage' &&
+    image.mode === AppImageMode.asset &&
+    !!image.assetSource &&
+    !!image.assetWidth &&
+    !!image.assetHeight;
+
   return (
     <View>
       <AppImageViewer
@@ -72,8 +79,27 @@ export const AppImage = ({
         {mode === 'image' && (
           <Image resizeMode={'cover'} style={[commonStyles.headerImage, style]} source={imageUriSource} />
         )}
-        {mode === 'scaledimage' && <AppScaledImage image={imageUriSource} style={style as FastImageStyle} />}
+        {isAssetScaledImage && (
+          <FastImage
+            source={image.assetSource!}
+            style={[assetScaledImageStyles(image.assetWidth!, image.assetHeight!).image, style as FastImageStyle]}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+        )}
+        {mode === 'scaledimage' && !isAssetScaledImage && (
+          <AppScaledImage image={imageUriSource} style={style as FastImageStyle} />
+        )}
       </TouchableOpacity>
     </View>
   );
 };
+
+const assetScaledImageStyles = (width: number, height: number) =>
+  StyleSheet.create({
+    image: {
+      flex: 1,
+      height: undefined,
+      width: undefined,
+      aspectRatio: width / height,
+    },
+  });

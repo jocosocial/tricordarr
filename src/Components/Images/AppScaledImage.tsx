@@ -28,15 +28,19 @@ interface AppScaledImageProps {
 }
 
 /**
- * Displays an image using FastImage which seems to work for dynamically sized images.
- * I found that this lets me display an image at 100% width and a height that is proportional
- * to the original image. Uses FastImage.getSize to retrieve the image dimensions from the
- * FastImage cache rather than Image.getSize (which would use a different HTTP client and
- * cause duplicate requests).
+ * @internal Do not use directly. Use {@link AppImage} or {@link APIImage} instead.
+ *
+ * Displays a remote image using FastImage at 100% width with proportional height.
+ * Uses FastImage.getSize to retrieve dimensions from the FastImage cache rather than
+ * Image.getSize (which would use a different HTTP client and cause duplicate requests).
  *
  * getSize is cache-only: on cache hit, dimensions arrive immediately without any network
  * request. On cache miss, we render a hidden FastImage to trigger the actual download and
  * obtain dimensions from its onLoad event (avoiding a duplicate fetch).
+ *
+ * Not suitable for bundled assets — FastImage's cache-based getSize does not work with
+ * local asset URIs on Android Release builds. Asset images with known dimensions are
+ * handled directly by AppImage using FastImage with pre-resolved dimensions.
  *
  * While dimensions are loading, renders a placeholder View with a reserved minimum height
  * to bound layout shift. This prevents scroll jumps when images load in a list.
