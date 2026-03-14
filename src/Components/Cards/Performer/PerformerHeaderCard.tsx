@@ -34,6 +34,8 @@ const PerformerHeaderCardInternal = ({header}: PerformerHeaderCardProps) => {
     title: {
       ...commonStyles.bold,
       ...commonStyles.paddingBottomSmall,
+      textAlign: 'center',
+      alignSelf: 'stretch',
     },
   });
 
