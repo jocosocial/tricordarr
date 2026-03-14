@@ -6,7 +6,7 @@ import {Card} from 'react-native-paper';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface AppImageProps {
   style?: StyleProp<FastImageStyle | RNImageStyle>;
@@ -57,13 +57,6 @@ export const AppImage = ({
 
   const imageUriSource = {uri: AppImageMetaData.getSourceURI(image)};
 
-  const isAssetScaledImage =
-    mode === 'scaledimage' &&
-    image.mode === AppImageMode.asset &&
-    !!image.assetSource &&
-    !!image.assetWidth &&
-    !!image.assetHeight;
-
   return (
     <View>
       <AppImageViewer
@@ -79,16 +72,16 @@ export const AppImage = ({
         {mode === 'image' && (
           <Image resizeMode={'cover'} style={[commonStyles.headerImage, style]} source={imageUriSource} />
         )}
-        {isAssetScaledImage && (
-          <FastImage
-            source={image.assetSource!}
-            style={[assetScaledImageStyles(image.assetWidth!, image.assetHeight!).image, style as FastImageStyle]}
-            resizeMode={FastImage.resizeMode.contain}
-          />
-        )}
-        {mode === 'scaledimage' && !isAssetScaledImage && (
-          <AppScaledImage image={imageUriSource} style={style as FastImageStyle} />
-        )}
+        {mode === 'scaledimage' &&
+          (image.assetSource && image.assetWidth && image.assetHeight ? (
+            <FastImage
+              source={image.assetSource}
+              style={[assetScaledImageStyles(image.assetWidth, image.assetHeight).image, style as FastImageStyle]}
+              resizeMode={FastImage.resizeMode.contain}
+            />
+          ) : (
+            <AppScaledImage image={imageUriSource} style={style as FastImageStyle} />
+          ))}
       </TouchableOpacity>
     </View>
   );
