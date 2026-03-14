@@ -19,6 +19,9 @@ export interface AppImageMetaData {
   dataURI?: string;
   identiconURI?: string;
   assetURI?: string;
+  assetSource?: ImageRequireSource;
+  assetWidth?: number;
+  assetHeight?: number;
 }
 export namespace AppImageMetaData {
   export const fromFileName = (fileName: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
@@ -60,23 +63,28 @@ export namespace AppImageMetaData {
   /**
    * Create an object from a directly imported image asset (ImageRequireSource).
    * This function converts a local asset import like `import DayImage from '#assets/mainview_day.jpg'`
-   * into an APIImageV2Data object with proper URI, mimeType, and fileName.
-   * Note: For bundled assets, we use the URI directly instead of base64 data since
-   * bundled assets can't be easily read as files.
+   * into an AppImageMetaData object with proper URI, mimeType, fileName, and dimensions.
    *
-   * @deprecated doesnt work
+   * Dimensions and the original ImageRequireSource are captured from resolveAssetSource
+   * so that consumers can render with RN Image (which handles all platform asset URI
+   * schemes) instead of FastImage, whose cache-based getSize fails for bundled assets
+   * on Android Release builds.
+   *
    * @param imageAsset The imported image asset
    * @param fileName The filename with extension (used to determine MIME type)
    */
   export const fromAsset = (imageAsset: ImageRequireSource, fileName: string): AppImageMetaData => {
-    // Determine mimeType based on file extension
     const mimeType = lookupMimeType(fileName) || 'application/octet-stream';
+    const resolvedSource = Image.resolveAssetSource(imageAsset);
 
     return {
       mode: AppImageMode.asset,
       fileName: fileName,
       mimeType: mimeType,
-      assetURI: Image.resolveAssetSource(imageAsset).uri,
+      assetURI: resolvedSource.uri,
+      assetSource: imageAsset,
+      assetWidth: resolvedSource.width,
+      assetHeight: resolvedSource.height,
     };
   };
 

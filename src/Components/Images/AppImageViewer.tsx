@@ -26,6 +26,9 @@ interface ImageViewerComponentProps {
 }
 
 /**
+ * @internal Do not use directly. Use {@link AppImage} or {@link APIImage} instead,
+ * which embed this viewer automatically.
+ *
  * Standard image viewer component to allow a user to view and download images.
  */
 export const AppImageViewer = ({
