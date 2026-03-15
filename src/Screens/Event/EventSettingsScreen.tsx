@@ -25,6 +25,7 @@ export const EventSettingsScreen = () => {
   const {hasNotificationPermission} = usePermissions();
   const navigation = useSettingsStack();
   const [enableLateDayFlip, setEnableLateDayFlip] = useState(appConfig.schedule.enableLateDayFlip);
+  const [compactThemeEvents, setCompactThemeEvents] = useState(appConfig.schedule.compactThemeEvents);
   const {commonStyles} = useStyles();
   const [joined, setJoined] = useState(appConfig.schedule.eventsShowJoinedLfgs);
   const [open, setOpen] = useState(appConfig.schedule.eventsShowOpenLfgs);
@@ -63,6 +64,17 @@ export const EventSettingsScreen = () => {
       },
     });
     setEnableLateDayFlip(!appConfig.schedule.enableLateDayFlip);
+  };
+
+  const handleCompactThemeEvents = () => {
+    updateAppConfig({
+      ...appConfig,
+      schedule: {
+        ...appConfig.schedule,
+        compactThemeEvents: !appConfig.schedule.compactThemeEvents,
+      },
+    });
+    setCompactThemeEvents(!appConfig.schedule.compactThemeEvents);
   };
 
   const toggleValue = (configKey: keyof PushNotificationConfig) => {
@@ -111,6 +123,16 @@ export const EventSettingsScreen = () => {
                   }
                   onPress={handleEnableLateDayFlip}
                   value={enableLateDayFlip}
+                  style={commonStyles.paddingHorizontalSmall}
+                />
+                <BooleanField
+                  name={'compactThemeEvents'}
+                  label={'Compact Theme Events'}
+                  helperText={
+                    'Show daily theme events as compact cards in the Day Planner instead of spanning their full duration (typically all day). The event itself is unchanged — only the card size is affected.'
+                  }
+                  onPress={handleCompactThemeEvents}
+                  value={compactThemeEvents}
                   style={commonStyles.paddingHorizontalSmall}
                 />
               </ListSection>

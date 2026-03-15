@@ -82,7 +82,14 @@ export const buildDayPlannerItems = (
  * Clip an item's display times to the day boundaries and calculate display properties.
  * Returns null if the item doesn't intersect the display window.
  */
-const adjustItemForDisplay = (item: DayPlannerItem, dayStart: Date, dayEnd: Date): DayPlannerItem | null => {
+const COMPACT_THEME_DURATION_MINUTES = 60;
+
+const adjustItemForDisplay = (
+  item: DayPlannerItem,
+  dayStart: Date,
+  dayEnd: Date,
+  compactThemeEvents?: boolean,
+): DayPlannerItem | null => {
   // Check if item intersects the day's display window
   if (item.endTime <= dayStart || item.startTime >= dayEnd) {
     return null;
@@ -91,11 +98,20 @@ const adjustItemForDisplay = (item: DayPlannerItem, dayStart: Date, dayEnd: Date
   // Clone the item with adjusted times
   const adjustedItem = {...item};
 
+  // Cap "Theme:" events to a short display duration so all-day themes don't dominate the timeline
+  if (compactThemeEvents && item.title.startsWith('Theme:')) {
+    const compactMs = COMPACT_THEME_DURATION_MINUTES * 60 * 1000;
+    const actualDurationMs = item.endTime.getTime() - item.startTime.getTime();
+    if (actualDurationMs > compactMs) {
+      adjustedItem.endTime = new Date(item.startTime.getTime() + compactMs);
+    }
+  }
+
   // Extend very short events for visibility
-  const durationMs = item.endTime.getTime() - item.startTime.getTime();
+  const durationMs = adjustedItem.endTime.getTime() - adjustedItem.startTime.getTime();
   const minDurationMs = DAY_PLANNER_CONFIG.MIN_EVENT_DURATION_MINUTES * 60 * 1000;
   if (durationMs < minDurationMs) {
-    adjustedItem.endTime = new Date(item.startTime.getTime() + minDurationMs);
+    adjustedItem.endTime = new Date(adjustedItem.startTime.getTime() + minDurationMs);
   }
 
   // Clip to day boundaries
@@ -118,10 +134,11 @@ export const calculateItemLayout = (
   items: DayPlannerItem[],
   dayStart: Date,
   dayEnd: Date,
+  compactThemeEvents?: boolean,
 ): DayPlannerItemWithLayout[] => {
   // Adjust items for display and filter out non-intersecting ones
   const adjustedItems = items
-    .map(item => adjustItemForDisplay(item, dayStart, dayEnd))
+    .map(item => adjustItemForDisplay(item, dayStart, dayEnd, compactThemeEvents))
     .filter((item): item is DayPlannerItem => item !== null);
 
   // Sort by start time
