@@ -1,6 +1,6 @@
 {
   "name": "tricordarr",
-  "version": "2026.0.17",
+  "version": "2026.0.18",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
