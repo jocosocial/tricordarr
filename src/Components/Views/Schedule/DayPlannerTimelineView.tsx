@@ -35,8 +35,8 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
 
     // Calculate layout for all items
     const layoutItems = useMemo(() => {
-      return calculateItemLayout(items, dayStart, dayEnd);
-    }, [items, dayStart, dayEnd]);
+      return calculateItemLayout(items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents);
+    }, [items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents]);
 
     // Generate time slot labels (in boat time when timeZoneID provided)
     const timeSlots = useMemo(() => {

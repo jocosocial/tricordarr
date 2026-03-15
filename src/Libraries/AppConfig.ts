@@ -31,6 +31,7 @@ export interface ScheduleConfig {
   enableLateDayFlip: boolean;
   defaultLfgList: FezListEndpoints;
   overlapExcludeDurationHours: number;
+  compactThemeEvents: boolean;
 }
 
 export interface AccessibilityConfig {
@@ -132,6 +133,7 @@ export const defaultAppConfig: AppConfig = {
     eventsShowOpenLfgs: false,
     defaultLfgList: 'open',
     overlapExcludeDurationHours: 4,
+    compactThemeEvents: true,
   },
   portTimeZoneID: 'America/New_York',
   apiClientConfig: {
@@ -208,6 +210,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.schedule.overlapExcludeDurationHours === undefined) {
     appConfig.schedule.overlapExcludeDurationHours = 4;
+  }
+  if (appConfig.schedule.compactThemeEvents === undefined) {
+    appConfig.schedule.compactThemeEvents = true;
   }
   if (appConfig.logLevel === undefined) {
     appConfig.logLevel = LogLevel.DEBUG;
