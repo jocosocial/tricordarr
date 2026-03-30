@@ -7,7 +7,6 @@ import URLParse from 'url-parse';
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {FezType} from '#src/Enums/FezType';
-import {LikeType} from '#src/Enums/LikeType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {createLogger} from '#src/Libraries/Logger';
@@ -268,6 +267,8 @@ export interface FezPostData {
   timestamp: string;
   /// The image content of the fez post.
   image?: string;
+  /// Emoji reactions grouped by emoji.
+  reactions: ReactionData[];
 }
 
 export interface MembersOnlyData {
@@ -740,6 +741,28 @@ export interface ForumData {
   isPinned?: boolean;
 }
 
+export interface ReactionData {
+  emoji: string;
+  users: UserHeader[];
+}
+
+export namespace ReactionData {
+  export const hasUserReacted = (reactions: ReactionData[], userID: string, emoji?: string): boolean => {
+    return reactions.some(reaction => {
+      if (emoji && reaction.emoji !== emoji) {
+        return false;
+      }
+      return reaction.users.some(user => user.userID === userID);
+    });
+  };
+
+  export const getUserEmojis = (reactions: ReactionData[], userID: string): string[] => {
+    return reactions
+      .filter(reaction => reaction.users.some(user => user.userID === userID))
+      .map(reaction => reaction.emoji);
+  };
+}
+
 export interface PostData {
   /// The ID of the post.
   postID: number;
@@ -753,10 +776,8 @@ export interface PostData {
   images?: string[];
   /// Whether the current user has bookmarked the post.
   isBookmarked: boolean;
-  /// The current user's `LikeType` reaction on the post.
-  userLike?: LikeType;
-  /// The total number of `LikeType` reactions on the post.
-  likeCount: number;
+  /// Emoji reactions grouped by emoji.
+  reactions: ReactionData[];
   /// Whether the post has been pinned to the forum.
   isPinned?: boolean;
 }
@@ -794,29 +815,13 @@ export interface PostDetailData {
   images?: string[];
   /// Whether the current user has bookmarked the post.
   isBookmarked: boolean;
-  /// The current user's `LikeType` reaction on the post.
-  userLike?: LikeType;
-  /// The users with "laugh" reactions on the post.
-  laughs: UserHeader[];
-  /// The users with "like" reactions on the post.
-  likes: UserHeader[];
-  /// The users with "love" reactions on the post.
-  loves: UserHeader[];
+  /// Emoji reactions grouped by emoji.
+  reactions: ReactionData[];
 }
 
 export namespace PostDetailData {
-  export const hasUserReacted = (postData: PostDetailData, userID: string, likeType?: LikeType) => {
-    if (!likeType) {
-      return !!postData.userLike;
-    }
-    switch (likeType) {
-      case LikeType.like:
-        return postData.likes.flatMap(uh => uh.userID).includes(userID);
-      case LikeType.laugh:
-        return postData.laughs.flatMap(uh => uh.userID).includes(userID);
-      case LikeType.love:
-        return postData.loves.flatMap(uh => uh.userID).includes(userID);
-    }
+  export const hasUserReacted = (postData: PostDetailData, userHeader: UserHeader, emoji?: string) => {
+    return ReactionData.hasUserReacted(postData.reactions, userHeader.userID, emoji);
   };
 }
 
