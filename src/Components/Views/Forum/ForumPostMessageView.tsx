@@ -3,14 +3,18 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {ForumPostActionsMenu} from '#src/Components/Menus/Forum/ForumPostActionsMenu';
+import {ReactionBadges} from '#src/Components/Reactions/ReactionBadges';
 import {ContentText} from '#src/Components/Text/ContentText';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
+import {ReactionsDetailModal} from '#src/Components/Views/Modals/ReactionsDetailModal';
+import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, PostData, UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -41,6 +45,8 @@ export const ForumPostMessageView = ({
   const {theme} = useAppTheme();
   const commonNavigation = useCommonStack();
   const {data: favorites} = useUserFavoritesQuery();
+  const {data: profilePublicData} = useUserProfileQuery();
+  const {setModalContent, setModalVisible} = useModal();
 
   const styles = StyleSheet.create({
     messageView: {
@@ -99,61 +105,72 @@ export const ForumPostMessageView = ({
   };
 
   return (
-    <View style={styles.messageView}>
-      <TouchableOpacity
-        style={styles.opacity}
-        activeOpacity={1}
-        /**
-         * The onLongPress used to be a onPress, and onLongPress would copy to clipboard.
-         * Touching items was too sensitive and lead to unexpected menu opens. So I am
-         * electing to make openMenu a long press instead since copy is an option in the menu.
-         *
-         * If enableShowInThread is true (aka we're in a PostList-style view) then
-         * keep the regular onPress action.
-         */
-        onPress={enableShowInThread ? onPress : undefined}
-        onLongPress={openMenu}>
-        <View style={styles.authorContainer}>
-          {showAuthor && (
-            <>
-              <View>
-                <UserBylineTag user={postData.author} style={styles.messageTextHeader} selectable={false} />
-              </View>
-              {UserHeader.contains(favorites, postData.author) && (
-                <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
-              )}
-            </>
-          )}
-        </View>
-        <ForumPostActionsMenu
-          visible={menuVisible}
-          closeMenu={closeMenu}
-          anchor={
-            <ContentText
-              textStyle={styles.messageText}
-              text={postData.text}
-              hashtagOnPress={hashtagOnPress}
-              mentionOnPress={mentionOnPress}
-              selectable={false}
-            />
-          }
-          forumPost={postData}
-          enableShowInThread={enableShowInThread}
-          enablePinnedPosts={enablePinnedPosts}
-          forumData={forumData}
-        />
-        <View style={styles.postFooterContainer}>
-          <View style={commonStyles.flex0}>
-            <RelativeTimeTag date={new Date(postData.createdAt)} variant={'labelSmall'} />
-          </View>
-          <View style={styles.postIconsContainer}>
-            {postData.isBookmarked && (
-              <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} style={commonStyles.flexEnd} />
+    <View>
+      <View style={styles.messageView}>
+        <TouchableOpacity
+          style={styles.opacity}
+          activeOpacity={1}
+          /**
+           * The onLongPress used to be a onPress, and onLongPress would copy to clipboard.
+           * Touching items was too sensitive and lead to unexpected menu opens. So I am
+           * electing to make openMenu a long press instead since copy is an option in the menu.
+           *
+           * If enableShowInThread is true (aka we're in a PostList-style view) then
+           * keep the regular onPress action.
+           */
+          onPress={enableShowInThread ? onPress : undefined}
+          onLongPress={openMenu}>
+          <View style={styles.authorContainer}>
+            {showAuthor && (
+              <>
+                <View>
+                  <UserBylineTag user={postData.author} style={styles.messageTextHeader} selectable={false} />
+                </View>
+                {UserHeader.contains(favorites, postData.author) && (
+                  <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
+                )}
+              </>
             )}
-            {postData.isPinned && <AppIcon icon={AppIcons.pin} style={commonStyles.flexEnd} />}
           </View>
-        </View>
-      </TouchableOpacity>
+          <ForumPostActionsMenu
+            visible={menuVisible}
+            closeMenu={closeMenu}
+            anchor={
+              <ContentText
+                textStyle={styles.messageText}
+                text={postData.text}
+                hashtagOnPress={hashtagOnPress}
+                mentionOnPress={mentionOnPress}
+                selectable={false}
+              />
+            }
+            forumPost={postData}
+            enableShowInThread={enableShowInThread}
+            enablePinnedPosts={enablePinnedPosts}
+            forumData={forumData}
+          />
+          <View style={styles.postFooterContainer}>
+            <View style={commonStyles.flex0}>
+              {postData.createdAt && <RelativeTimeTag date={new Date(postData.createdAt)} variant={'labelSmall'} />}
+            </View>
+            <View style={styles.postIconsContainer}>
+              {postData.isBookmarked && (
+                <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} style={commonStyles.flexEnd} />
+              )}
+              {postData.isPinned && <AppIcon icon={AppIcons.pin} style={commonStyles.flexEnd} />}
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <ReactionBadges
+        reactions={postData.reactions ?? []}
+        currentUserID={profilePublicData?.header.userID ?? ''}
+        onBadgePress={() => {
+          setModalContent(<ReactionsDetailModal reactions={postData.reactions ?? []} />);
+          setModalVisible(true);
+        }}
+        alignRight={!messageOnRight}
+      />
     </View>
   );
 };
