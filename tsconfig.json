@@ -9,7 +9,7 @@
     "**/Pods"
   ],
   "compilerOptions": {
-    "baseUrl": ".",
+    "types": ["jest"],
     // https://github.com/vonovak/react-navigation-header-buttons/blob/master/INSTALL.md
     "module": "ESNext",
     "moduleResolution": "Bundler",
