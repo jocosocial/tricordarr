@@ -1,7 +1,6 @@
-import React from 'react';
-import {Linking} from 'react-native';
+import React, {type ReactElement, type ReactNode} from 'react';
+import {Linking, type TextProps, type ViewProps} from 'react-native';
 import {Hyperlink} from 'react-native-hyperlink';
-import {ReactElementWithType} from 'react-native-hyperlink/dist/typescript/src/types';
 import URLParse from 'url-parse';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -12,6 +11,17 @@ import {useClipboard} from '#src/Hooks/useClipboard';
 import {createLogger} from '#src/Libraries/Logger';
 
 const logger = createLogger('HyperlinkText.tsx');
+
+type ReactElementWithType = ReactElement<TextProps | ViewProps> & {
+  type?: {
+    displayName?: string;
+  };
+  props: (TextProps | ViewProps) & {
+    children?: ReactNode;
+    style?: TextProps['style'] | ViewProps['style'];
+    [key: string]: unknown;
+  };
+};
 
 // https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift
 const urlPathLabelMappings = [
