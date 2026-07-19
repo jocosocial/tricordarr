@@ -190,7 +190,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/dayplanner/shutternauts`)}
                 />
               )}
-              {(hasShutternautManager || hasTwitarrTeam) && (
+              {hasShutternautManager && (
                 <PaperDrawer.Item
                   label={'Manage Shutternauts'}
                   icon={AppIcons.shutternautManager}
