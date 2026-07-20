@@ -65,7 +65,7 @@ index 5766a8e..a12a4f7 100644
 +                    .with(activity.getApplicationContext())
 +                    .asFile()
 +                    .load(glideUrl)
-+                    .apply(FastImageViewConverter.getOptions(activity, imageSource,  source).onlyRetrieveFromCache(true))
++                    .apply(FastImageViewConverter.getOptions(activity, imageSource, source, null).onlyRetrieveFromCache(true))
 +                    .listener(new RequestListener<File>() {
 +                        @Override
 +                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<File> target, boolean isFirstResource) {
