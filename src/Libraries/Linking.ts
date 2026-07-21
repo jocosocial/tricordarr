@@ -141,5 +141,6 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
  */
 export const navigationLinking: LinkingOptions<RootStackParamList> = {
   prefixes: ['tricordarr://'].filter(prefix => prefix !== undefined) as string[],
+  filter: url => !url.includes('expo-development-client'),
   config: deepLinksConf,
 };

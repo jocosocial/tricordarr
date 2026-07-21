@@ -6,18 +6,16 @@
 //
 
 import Foundation
-import React
 import UIKit
 import Vision
 import os
-import TricordarrKit
 
 // Class that handles image processing for features such as the Photostream.
 //
 // This is exposed to the TurboModule ObjC runtime which connects to the `NativeTricordarrModule` on the
 // JavaScript side (specs/NativeTricordarrModule.ts).
 //
-@objc class ImageBlur: NSObject {
+@objc public class ImageBlur: NSObject {
 	// Function to blur the text in an image.
 	//
 	// The typing of the callback here is a bit gross. Getting it happy in the JS side took some handwaving.
@@ -25,9 +23,9 @@ import TricordarrKit
 	// The logic of this function is a combination of the Android implementation here and the iOS implementation
 	// from The Kraken. https://github.com/challfry/TheKraken/blob/master/Kraken/Photostream/PhotostreamCamera.swift
 	//
-	@objc static public func blurTextInImage(
+	@objc public static func blurTextInImage(
 		_ inputFilePath: String,
-		callback: @escaping RCTResponseSenderBlock
+		callback: @escaping ([Any]) -> Void
 	) {
 		Logging.logger.info("[ImageBlur.swift] got inputFilePath: \"\(inputFilePath)\"")
 

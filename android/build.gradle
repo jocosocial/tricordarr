@@ -19,3 +19,15 @@ buildscript {
 }
 
 apply plugin: "com.facebook.react.rootproject"
+apply plugin: "expo-root-project"
+
+// This entire block might be able to remove if we move away from Notifee.
+allprojects {
+    repositories {
+        maven {
+            // Notifee bundles app.notifee:core here; needed because Expo's
+            // --configure-on-demand skips notifee's own repo injection.
+            url("${rootDir}/../node_modules/@notifee/react-native/android/libs")
+        }
+    }
+}

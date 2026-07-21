@@ -1,13 +1,15 @@
 import AVFoundation
-import React
 
-@objc protocol AudioEngineCoreDelegate: AnyObject {
+public typealias TricordarrPromiseResolveBlock = @convention(block) (Any?) -> Void
+public typealias TricordarrPromiseRejectBlock = @convention(block) (String, String, Error?) -> Void
+
+@objc public protocol AudioEngineCoreDelegate: AnyObject {
 	func audioEngineDidCaptureAudioData(_ samples: [NSNumber])
 }
 
 @objc(AudioEngineCore)
-class AudioEngine: NSObject {
-	@objc weak var delegate: AudioEngineCoreDelegate?
+public class AudioEngine: NSObject {
+	@objc public weak var delegate: AudioEngineCoreDelegate?
 
 	private var audioEngine: AVAudioEngine?
 	private var inputNode: AVAudioInputNode?
@@ -25,7 +27,7 @@ class AudioEngine: NSObject {
 	private let channelCount: AVAudioChannelCount = 1
 	private let amplificationFactor: Float = 4.0
 
-	override init() {
+	public override init() {
 		super.init()
 		// Intentionally do NOT activate AVAudioSession here.
 		// Doing so during module initialization can pause external audio on app launch.
@@ -212,7 +214,7 @@ class AudioEngine: NSObject {
 
 	// MARK: - Public Methods (called from ObjC++ TurboModule host)
 
-	@objc func start(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+	@objc public func start(_ resolve: @escaping TricordarrPromiseResolveBlock, rejecter reject: @escaping TricordarrPromiseRejectBlock) {
 		DispatchQueue.main.async { [weak self] in
 			guard let self = self else {
 				reject("ERROR", "AudioEngine instance deallocated", nil)
@@ -229,27 +231,27 @@ class AudioEngine: NSObject {
 		}
 	}
 
-	@objc func stop(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+	@objc public func stop(_ resolve: @escaping TricordarrPromiseResolveBlock, rejecter reject: @escaping TricordarrPromiseRejectBlock) {
 		DispatchQueue.main.async { [weak self] in
 			self?.stopAudioEngine()
 			resolve(true)
 		}
 	}
 
-	@objc func setMuted(
+	@objc public func setMuted(
 		_ muted: Bool,
-		resolver resolve: @escaping RCTPromiseResolveBlock,
-		rejecter reject: @escaping RCTPromiseRejectBlock
+		resolver resolve: @escaping TricordarrPromiseResolveBlock,
+		rejecter reject: @escaping TricordarrPromiseRejectBlock
 	) {
 		isMuted = muted
 		print("[AudioEngine] Microphone \(muted ? "muted" : "unmuted")")
 		resolve(true)
 	}
 
-	@objc func setSpeakerOn(
+	@objc public func setSpeakerOn(
 		_ speakerOn: Bool,
-		resolver resolve: @escaping RCTPromiseResolveBlock,
-		rejecter reject: @escaping RCTPromiseRejectBlock
+		resolver resolve: @escaping TricordarrPromiseResolveBlock,
+		rejecter reject: @escaping TricordarrPromiseRejectBlock
 	) {
 		DispatchQueue.main.async { [weak self] in
 			guard let self = self else {
@@ -307,7 +309,7 @@ class AudioEngine: NSObject {
 		}
 	}
 
-	@objc func playAudio(_ audioData: [NSNumber]) {
+	@objc public func playAudio(_ audioData: [NSNumber]) {
 		guard let playerNode = self.playerNode,
 			let audioFormat = self.audioFormat
 		else {

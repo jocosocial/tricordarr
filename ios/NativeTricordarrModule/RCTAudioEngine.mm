@@ -1,8 +1,9 @@
 #import "RCTAudioEngine.h"
-#import "Tricordarr-Swift.h"
+#import <UserNotifications/UserNotifications.h>
+#import <TricordarrKit/TricordarrKit-Swift.h>
 
 @interface RCTAudioEngine () <AudioEngineCoreDelegate>
-@property (nonatomic, strong) AudioEngineCore *engine;
+@property(nonatomic, strong) AudioEngineCore *engine;
 @end
 
 @implementation RCTAudioEngine
@@ -25,7 +26,7 @@
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-  return @[@"onAudioData"];
+  return @[ @"onAudioData" ];
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
@@ -35,19 +36,25 @@
 
 #pragma mark - NativeAudioEngineSpec
 
-- (void)start:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+- (void)start:(RCTPromiseResolveBlock)resolve
+       reject:(RCTPromiseRejectBlock)reject {
   [self.engine start:resolve rejecter:reject];
 }
 
-- (void)stop:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+- (void)stop:(RCTPromiseResolveBlock)resolve
+      reject:(RCTPromiseRejectBlock)reject {
   [self.engine stop:resolve rejecter:reject];
 }
 
-- (void)setMuted:(BOOL)muted resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+- (void)setMuted:(BOOL)muted
+         resolve:(RCTPromiseResolveBlock)resolve
+          reject:(RCTPromiseRejectBlock)reject {
   [self.engine setMuted:muted resolver:resolve rejecter:reject];
 }
 
-- (void)setSpeakerOn:(BOOL)speakerOn resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+- (void)setSpeakerOn:(BOOL)speakerOn
+             resolve:(RCTPromiseResolveBlock)resolve
+              reject:(RCTPromiseRejectBlock)reject {
   [self.engine setSpeakerOn:speakerOn resolver:resolve rejecter:reject];
 }
 
@@ -66,7 +73,7 @@
 #pragma mark - AudioEngineCoreDelegate
 
 - (void)audioEngineDidCaptureAudioData:(NSArray<NSNumber *> *)samples {
-  [self sendEventWithName:@"onAudioData" body:@{@"samples": samples}];
+  [self sendEventWithName:@"onAudioData" body:@{@"samples" : samples}];
 }
 
 @end
