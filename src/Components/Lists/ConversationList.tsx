@@ -1,4 +1,4 @@
-import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list';
+import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list/react-native';
 import React, {useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
