@@ -163,7 +163,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       });
 
       // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
-      if (!response.headers['content-type'].startsWith('application/json')) {
+      const contentType = response.headers['content-type'];
+      if (typeof contentType !== 'string' || !contentType.startsWith('application/json')) {
         throw new BadResponseFormatError(response);
       }
 

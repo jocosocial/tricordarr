@@ -219,8 +219,8 @@ export const BackgroundConnectionSettingsIOSView = () => {
             The background worker extension is necessary to enable push notifications in an off-grid environment.
           </Text>
           <Text>
-            Apple Law™ allows the worker to start only when joined to certain WiFi networks. You can manage that list
-            of networks below.
+            Apple Law™ allows the worker to start only when joined to certain WiFi networks. You can manage that list of
+            networks below.
           </Text>
         </PaddedContentView>
         <ListSection>

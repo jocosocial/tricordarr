@@ -247,8 +247,10 @@ const LfgListScreenInner = ({
   );
 };
 
-interface LfgListScreenWithEndpointProps
-  extends StackScreenProps<LfgStackParamList, LfgStackComponents.lfgListScreen> {}
+interface LfgListScreenWithEndpointProps extends StackScreenProps<
+  LfgStackParamList,
+  LfgStackComponents.lfgListScreen
+> {}
 
 /**
  * Middle component that handles route parameters and state management.

@@ -1,7 +1,7 @@
 import {useBackHandler} from '@react-native-community/hooks';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
-import {WebView, WebViewNavigation} from 'react-native-webview';
+import {WebView, WebViewNavigation, WebViewProps} from 'react-native-webview';
 import {Item} from 'react-navigation-header-buttons';
 
 import {HeaderBackButton} from '#src/Components/Buttons/HeaderButtons/HeaderBackButton';
@@ -25,7 +25,7 @@ interface Props {
 export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
   const {serverUrl} = useSwiftarrQueryClient();
   const [webviewUrl, setWebviewUrl] = React.useState(initialUrl);
-  const webViewRef = useRef<WebView>(null);
+  const webViewRef = useRef<WebView<WebViewProps>>(null);
   const currentUrlRef = useRef<string>(initialUrl);
   const [key, setKey] = useState(initialKey);
   const [handleGoBack, setHandleGoBack] = useState(false);
@@ -120,7 +120,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
 
   return (
     <AppView disablePreRegistrationWarning={true}>
-      <WebView
+      <WebView<WebViewProps>
         source={{uri: webviewUrl}}
         key={key}
         ref={webViewRef}
