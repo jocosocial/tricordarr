@@ -1,4 +1,4 @@
-import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list';
+import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list/react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Keyboard,
@@ -452,7 +452,6 @@ export const ConversationListV2 = <TItem,>({
         // Layout
         estimatedItemSize={estimatedItemSize}
         initialScrollIndex={initialScrollIndex}
-        waitForInitialLayout={true}
         // Components
         ListHeaderComponent={ListHeaderComponent}
         ItemSeparatorComponent={ItemSeparatorComponent}

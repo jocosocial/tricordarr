@@ -11,8 +11,7 @@ export enum FezPostsActions {
 }
 
 export type FezPostsActionsType =
-  | {type: FezPostsActions.set; fezPosts: FezPostData[]}
-  | {type: FezPostsActions.appendPost; fezPostData: FezPostData};
+  {type: FezPostsActions.set; fezPosts: FezPostData[]} | {type: FezPostsActions.appendPost; fezPostData: FezPostData};
 
 const fezPostsReducer = (fezPosts: FezPostData[] = [], action: FezPostsActionsType) => {
   logger.debug('Got action:', action.type);

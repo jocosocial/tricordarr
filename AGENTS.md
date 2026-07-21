@@ -98,3 +98,12 @@ Use `createLogger` rather than `console.log`
 
 - No conditional hooks
 - No new namespaces in `ControllerStructs.tsx`. New hooks named after the struct. `FezData` => `useFezData`
+
+## Patches
+
+- Regenerate with `npx patch-package <package>`
+- Before regenerating, remove build artifacts from the package in `node_modules` (e.g. `android/{.gradle,build}`) or the patch will include binaries
+
+## Building
+
+- Do not run builds in the agent. Instead tell the user to run a build in their terminal.

@@ -30,9 +30,12 @@
     -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <!--
-    Used to store images if the user wants to save them. Non-essential
+    Used to store images if the user wants to save them. Non-essential.
+    the maxSdkVersion is set to 32 to resolve conflicts between :react-native-image-crop-picker and expo-filesystem.
     -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:replace="android:maxSdkVersion" />
     <!--
     Used to extend the life of the background worker. Not-essential but certainly beneficial.
     -->

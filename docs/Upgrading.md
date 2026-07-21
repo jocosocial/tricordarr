@@ -1,13 +1,12 @@
-Upgrading
-=========
+# Upgrading
 
 Specifically related to React Native upgrades.
 
 The React Native upgrade process is miserable. Don't do it. Or if you do, at least do it on a clean dedicated branch. `npm install` doesn't honor `package-lock.json`, you need `npm clean-install` (aka `npm ci`) for that.
 
-Upgrade Helper
---------------
-https://react-native-community.github.io/
+## Upgrade Helper
+
+https://react-native-community.github.io/upgrade-helper/
 
 App Name: `Tricordarr`
 App Package: `com.tricordarr`

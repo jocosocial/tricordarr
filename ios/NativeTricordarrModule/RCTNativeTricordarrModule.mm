@@ -6,7 +6,6 @@
 //
 
 #import "RCTNativeTricordarrModule.h"
-#import "Tricordarr-Swift.h"
 #import <React/RCTBridge.h>
 #import <UserNotifications/UserNotifications.h>
 #import <TricordarrKit/TricordarrKit-Swift.h>
@@ -28,7 +27,10 @@
 
 - (void)blurTextInImage:(nonnull NSString *)inputFilePath
                callback:(nonnull RCTResponseSenderBlock)callback {
-  [ImageBlur blurTextInImage:inputFilePath callback:callback];
+  [ImageBlur blurTextInImage:inputFilePath
+                    callback:^(NSArray *_Nonnull results) {
+                      callback(results);
+                    }];
 }
 
 - (void)setAppConfig:(nonnull NSString *)appConfigJson {
@@ -48,13 +50,17 @@
                                          enable:enable];
 }
 
-- (void)getBackgroundPushManagerStatus:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-  NSDictionary *status = [Notifications getBackgroundPushManagerStatusDictionary];
+- (void)getBackgroundPushManagerStatus:(RCTPromiseResolveBlock)resolve
+                                reject:(RCTPromiseRejectBlock)reject {
+  NSDictionary *status =
+      [Notifications getBackgroundPushManagerStatusDictionary];
   resolve(status);
 }
 
-- (void)getForegroundPushProviderStatus:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-  NSDictionary *status = [Notifications getForegroundPushProviderStatusDictionary];
+- (void)getForegroundPushProviderStatus:(RCTPromiseResolveBlock)resolve
+                                 reject:(RCTPromiseRejectBlock)reject {
+  NSDictionary *status =
+      [Notifications getForegroundPushProviderStatusDictionary];
   resolve(status);
 }
 

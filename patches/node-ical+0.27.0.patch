@@ -1,0 +1,330 @@
+diff --git a/node_modules/node-ical/ical.js b/node_modules/node-ical/ical.js
+index d0c4669..e619dd1 100644
+--- a/node_modules/node-ical/ical.js
++++ b/node_modules/node-ical/ical.js
+@@ -1,6 +1,6 @@
+ /* eslint-disable max-params */
+ 
+-import {randomUUID} from 'node:crypto';
++import {v4 as randomUUID} from 'uuid';
+ import {RRuleTemporal} from 'rrule-temporal';
+ import {toText as toTextFunction} from 'rrule-temporal/totext';
+ import {getDateKey} from './lib/date-utils.js';
+@@ -246,7 +246,7 @@ const ical = {
+         let rule = curr.rrule.replace('RRULE:', '');
+         // Make sure the rrule starts with FREQ=
+         rule = rule.slice(rule.lastIndexOf('FREQ='));
+-        rule = ensureRruleHasDtstart(rule, curr, tzUtil).replace(/\.\d{3}/v, '');
++        rule = ensureRruleHasDtstart(rule, curr, tzUtil).replace(/\.\d{3}/, '');
+ 
+         // Create RRuleTemporal with separate DTSTART and RRULE parameters
+         if (curr.start) {
+@@ -324,7 +324,7 @@ const ical = {
+     }
+ 
+     // Handling custom properties
+-    if (/X-(?:\w|-)+/v.test(name) && stack.length > 0) {
++    if (/X-(?:\w|-)+/.test(name) && stack.length > 0) {
+       // Trimming the leading and perform storeParam
+       name = name.slice(2);
+       return storeParameter(name)(value, parameters, ctx, stack, line);
+@@ -367,7 +367,7 @@ const ical = {
+         let l = lines[i];
+         // Unfold : RFC#3.1
+         let nextLine = lines[i + 1];
+-        while (typeof nextLine === 'string' && /[\t ]/v.test(nextLine[0])) {
++        while (typeof nextLine === 'string' && /[\t ]/.test(nextLine[0])) {
+           l += nextLine.slice(1);
+           i++;
+           nextLine = lines[i + 1];
+@@ -378,7 +378,7 @@ const ical = {
+           l = l.replaceAll('"', '');
+         }
+ 
+-        const exp = /^((?:\w|-)+)((?:;(?:\w|-)+=(?:"[^"]*"|[^":;]+))*):(.*)$/v;
++        const exp = /^((?:\w|-)+)((?:;(?:\w|-)+=(?:"[^"]*"|[^":;]+))*):(.*)$/;
+         let kv = l.match(exp);
+ 
+         if (kv === null) {
+@@ -449,7 +449,7 @@ const ical = {
+    * makes the function behavior unpredictable and harder to type correctly in TypeScript.
+    */
+   parseICS(string, cb) {
+-    const lines = string.split(/\r?\n/v);
++    const lines = string.split(/\r?\n/);
+ 
+     if (cb) {
+       // Async mode: use batching to prevent event loop blocking
+diff --git a/node_modules/node-ical/lib/ical-parser-utils.js b/node_modules/node-ical/lib/ical-parser-utils.js
+index 1bdc3c2..8da33bd 100644
+--- a/node_modules/node-ical/lib/ical-parser-utils.js
++++ b/node_modules/node-ical/lib/ical-parser-utils.js
+@@ -3,9 +3,9 @@ function text(t = '') {
+   return t
+     .replaceAll(String.raw`\,`, ',') // Unescape escaped commas
+     .replaceAll(String.raw`\;`, ';') // Unescape escaped semicolons
+-    .replaceAll(/\\n/giv, '\n') // Replace escaped newlines with actual newlines
++    .replaceAll(/\\n/gi, '\n') // Replace escaped newlines with actual newlines
+     .replaceAll('\\\\', '\\') // Unescape backslashes
+-    .replace(/^"(.*)"$/v, '$1'); // Remove surrounding double quotes, if present
++    .replace(/^"(.*)"$/, '$1'); // Remove surrounding double quotes, if present
+ }
+ 
+ function parseValue(value) {
+@@ -26,7 +26,7 @@ function parseValue(value) {
+   }
+ 
+   // Remove quotes if found
+-  return value.replace(/^"(.*)"$/v, '$1');
++  return value.replace(/^"(.*)"$/, '$1');
+ }
+ 
+ function parseParameters(parameters) {
+@@ -292,7 +292,7 @@ const DURATION_UNITS = {
+ const TIME_ONLY_UNITS = new Set(['H', 'M', 'S']);
+ 
+ // A single "<digits><unit>" token, e.g. "1D" or "30M".
+-const DURATION_TOKEN_PATTERN = /^(\d{1,10})([dhmsw])/iv;
++const DURATION_TOKEN_PATTERN = /^(\d{1,10})([dhmsw])/i;
+ 
+ // Validates and parses an RFC 5545 §3.3.6 DURATION value token by token,
+ // consuming the optional sign and leading "P" and then walking the rest of
+@@ -306,7 +306,7 @@ const DURATION_TOKEN_PATTERN = /^(\d{1,10})([dhmsw])/iv;
+ // ("-PT1W1D2H3M4S"), since those are unambiguous even though non-standard.
+ function applyDurationToDate(start, durationString, utcAdd) {
+   const trimmed = durationString.trim();
+-  const prefixMatch = /^([+\-]?)p/iv.exec(trimmed);
++  const prefixMatch = /^([+\-]?)p/i.exec(trimmed);
+   if (!prefixMatch) {
+     return undefined;
+   }
+@@ -318,7 +318,7 @@ function applyDurationToDate(start, durationString, utcAdd) {
+   let endTime = start;
+ 
+   while (rest.length > 0) {
+-    if (/^t/iv.test(rest)) {
++    if (/^t/i.test(rest)) {
+       seenTimeDesignator = true;
+       rest = rest.slice(1);
+       continue;
+@@ -468,7 +468,7 @@ function normalizeRruleUntil(rruleOnly, startDate, tzUtil) {
+     return rruleOnly;
+   }
+ 
+-  const untilMatch = rruleOnly.match(/UNTIL=(\d{8})(T\d{6})?(Z)?/v);
++  const untilMatch = rruleOnly.match(/UNTIL=(\d{8})(T\d{6})?(Z)?/);
+   if (!untilMatch) {
+     return rruleOnly;
+   }
+@@ -503,7 +503,7 @@ function normalizeRruleUntil(rruleOnly, startDate, tzUtil) {
+       }
+ 
+       if (untilDateObject) {
+-        const untilUtc = untilDateObject.toISOString().replaceAll('-', '').replaceAll(':', '').replace(/\.\d{3}/v, '');
++        const untilUtc = untilDateObject.toISOString().replaceAll('-', '').replaceAll(':', '').replace(/\.\d{3}/, '');
+         rruleOnly = rruleOnly.slice(0, untilStart) + `UNTIL=${untilUtc}` + rruleOnly.slice(untilEnd);
+         converted = true;
+       }
+@@ -512,7 +512,7 @@ function normalizeRruleUntil(rruleOnly, startDate, tzUtil) {
+     }
+   }
+ 
+-  return converted ? rruleOnly : rruleOnly.replace(/UNTIL=(\d{8}T\d{6})(?!Z)/v, 'UNTIL=$1Z');
++  return converted ? rruleOnly : rruleOnly.replace(/UNTIL=(\d{8}T\d{6})(?!Z)/, 'UNTIL=$1Z');
+ }
+ 
+ function buildRruleStringForTemporal(rule, startDate, tzUtil) {
+@@ -612,7 +612,7 @@ function isDateOnly(value, parameters) {
+     }
+   }
+ 
+-  return /^\d{8}$/v.test(value) === true;
++  return /^\d{8}$/.test(value) === true;
+ }
+ 
+ function typeParameter(name) {
+@@ -633,7 +633,7 @@ function addTZFactory(attachTz) {
+       let tzid = p.TZID.toString();
+       // Remove surrounding quotes if found at the beginning and at the end of the string
+       // (Occurs when parsing Microsoft Exchange events containing TZID with Windows standard format instead IANA)
+-      tzid = tzid.replace(/^"(.*)"$/v, '$1');
++      tzid = tzid.replace(/^"(.*)"$/, '$1');
+       return attachTz(dt, tzid);
+     }
+ 
+@@ -657,7 +657,7 @@ function findVtimezoneInStack(stack, tzid) {
+         }
+ 
+         const ids = Array.isArray(v.tzid) ? v.tzid : [v.tzid];
+-        if (ids.some(id => String(id).replace(/^"(.*)"$/v, '$1') === tzid)) {
++        if (ids.some(id => String(id).replace(/^"(.*)"$/, '$1') === tzid)) {
+           return v;
+         }
+       }
+@@ -710,7 +710,7 @@ function createDateParameterFactory({addTZ, tzUtil}) {
+       if (isDateOnly(value, parameters)) {
+         // Just Date
+ 
+-        const comps = /^(\d{4})(\d{2})(\d{2}).*$/v.exec(value);
++        const comps = /^(\d{4})(\d{2})(\d{2}).*$/.exec(value);
+         if (comps !== null) {
+           // No TZ info - assume same timezone as this computer
+           newDate = new Date(comps[1], Number(comps[2]) - 1, comps[3]);
+@@ -723,7 +723,7 @@ function createDateParameterFactory({addTZ, tzUtil}) {
+       }
+ 
+       // Typical RFC date-time format
+-      const comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/v.exec(value);
++      const comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(value);
+       if (comps !== null) {
+         const year = Number(comps[1]);
+         const monthIndex = Number(comps[2]) - 1;
+@@ -763,7 +763,7 @@ function createDateParameterFactory({addTZ, tzUtil}) {
+               return new Date(year, monthIndex, day, hour, minute, second);
+             }
+ 
+-            let resolvedTzId = String(normalizedTzId).replace(/^"(.*)"$/v, '$1');
++            let resolvedTzId = String(normalizedTzId).replace(/^"(.*)"$/, '$1');
+ 
+             // When a VTIMEZONE block is present, prefer its STANDARD/DAYLIGHT offset data over
+             // a pure string-based TZID lookup. This handles both well-known IANA names (where
+@@ -821,7 +821,7 @@ function createDateParameterFactory({addTZ, tzUtil}) {
+             };
+ 
+             if (tz) {
+-              tz = tz.toString().replace(/^"(.*)"$/v, '$1');
++              tz = tz.toString().replace(/^"(.*)"$/, '$1');
+ 
+               if (tz === 'tzone://Microsoft/Custom' || tz === '(no TZ description)' || tz.startsWith('Customized Time Zone') || tz.startsWith('tzone://Microsoft/')) {
+                 // Outlook and Exchange often emit custom TZID values (e.g. "Customized Time Zone")
+@@ -918,7 +918,7 @@ function createComponentParameterHandlers({dateParameter, utcAdd}) {
+ 
+   const freebusyParameter = function (name) {
+     const storeFreebusyValue = storeParameter(name);
+-    const isDurationValue = value => /^[+\-]?p/iv.test(value);
++    const isDurationValue = value => /^[+\-]?p/i.test(value);
+ 
+     return function (value, parameters, curr) {
+       curr[name] ||= [];
+diff --git a/node_modules/node-ical/lib/tz-utils.js b/node_modules/node-ical/lib/tz-utils.js
+index f9c603f..f514c31 100644
+--- a/node_modules/node-ical/lib/tz-utils.js
++++ b/node_modules/node-ical/lib/tz-utils.js
+@@ -16,7 +16,7 @@ const aliasMap = new Map();
+  */
+ function normalizeWindowsLabel(label) {
+   return String(label)
+-    .replaceAll(/\s+/gv, ' ')
++    .replaceAll(/\s+/g, ' ')
+     .trim()
+     .toLowerCase();
+ }
+@@ -43,7 +43,7 @@ function buildWindowsLabelIndex(source) {
+   for (const [label, data] of Object.entries(source)) {
+     addVariant(label, data);
+ 
+-    const withoutOffset = label.replace(/^\(utc[^\)]*\)\s*/iv, '').replace(/^\(gmt[^\)]*\)\s*/iv, '');
++    const withoutOffset = label.replace(/^\(utc[^\)]*\)\s*/i, '').replace(/^\(gmt[^\)]*\)\s*/i, '');
+     if (withoutOffset !== label) {
+       addVariant(withoutOffset, data);
+ 
+@@ -111,10 +111,10 @@ function offsetLabelToMinutes(offset) {
+ 
+   const trimmed = String(offset)
+     .trim()
+-    .replace(/^\(?(?:utc|gmt)\)?\s*/iv, '')
+-    .replace(/\)$/v, '')
++    .replace(/^\(?(?:utc|gmt)\)?\s*/i, '')
++    .replace(/\)$/, '')
+     .trim();
+-  const match = /^([+\-])(\d{1,2})(?::?(\d{2}))?$/v.exec(trimmed);
++  const match = /^([+\-])(\d{1,2})(?::?(\d{2}))?$/.exec(trimmed);
+   if (!match) {
+     return undefined;
+   }
+@@ -191,7 +191,7 @@ function resolveTZID(value) {
+     tz = guessLocalZone();
+   }
+ 
+-  tz = tz.replace(/^"(.*)"$/v, '$1');
++  tz = tz.replace(/^"(.*)"$/, '$1');
+   const original = tz;
+ 
+   if (tz && (tz.includes(' ') || tz.includes(','))) {
+@@ -203,7 +203,7 @@ function resolveTZID(value) {
+ 
+   let offsetMinutes;
+   if (tz && tz.startsWith('(')) {
+-    const offsetMatch = tz.match(/([+\-]\d{1,2}:\d{2})/v);
++    const offsetMatch = tz.match(/([+\-]\d{1,2}:\d{2})/);
+     if (offsetMatch) {
+       offsetMinutes = offsetLabelToMinutes(offsetMatch[1]);
+     }
+@@ -360,7 +360,7 @@ function parseDateTimeInZone(yyyymmddThhmmss, zone) {
+   const s = String(yyyymmddThhmmss);
+   // Support basic and extended forms
+   // Try extended first: YYYY-MM-DDTHH:mm:ss
+-  let m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?$/v.exec(s);
++  let m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?$/.exec(s);
+   let fields;
+   if (m) {
+     fields = {
+@@ -373,7 +373,7 @@ function parseDateTimeInZone(yyyymmddThhmmss, zone) {
+     };
+   } else {
+     // Basic form: YYYYMMDDTHHmmss or YYYYMMDDTHHmm
+-    m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?$/v.exec(s);
++    m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?$/.exec(s);
+     if (m) {
+       fields = {
+         year: Number(m[1]),
+@@ -411,10 +411,10 @@ function parseDateTimeInZone(yyyymmddThhmmss, zone) {
+ function parseWithOffset(yyyymmddThhmmss, offset) {
+   // Offset like +hh:mm, -hh:mm, +hhmm, -hhmm, optionally prefixed by UTC/GMT
+   const s = String(yyyymmddThhmmss);
+-  let m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?$/v.exec(s);
++  let m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?$/.exec(s);
+   // Some feeds emit extended ISO `YYYY-MM-DD[T ]HH:mm[:ss]` strings alongside numeric offsets.
+   // Mirror parseDateTimeInZone by accepting that form too so we don't fall back to local Date semantics.
+-  m ||= /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?$/v.exec(s);
++  m ||= /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?$/.exec(s);
+ 
+   if (!m) {
+     return undefined;
+diff --git a/node_modules/node-ical/node-ical.cjs b/node_modules/node-ical/node-ical.cjs
+index 25efc90..665aa05 100644
+--- a/node_modules/node-ical/node-ical.cjs
++++ b/node_modules/node-ical/node-ical.cjs
+@@ -42,10 +42,10 @@ __export(node_ical_exports, {
+   sync: () => sync
+ });
+ module.exports = __toCommonJS(node_ical_exports);
+-var import_node_fs = __toESM(require("node:fs"), 1);
++var import_node_fs = __toESM(require("react-native-fs"), 1);
+ 
+ // ical.js
+-var import_node_crypto = require("node:crypto");
++var import_uuid = require("uuid");
+ var import_rrule_temporal = require("rrule-temporal");
+ var import_totext = require("rrule-temporal/totext");
+ 
+@@ -1570,7 +1570,7 @@ var ical = {
+       }
+       return finalizeEndedComponent(value, curr, stack, {
+         storeRecurrenceOverride,
+-        randomIdFactory: import_node_crypto.randomUUID,
++        randomIdFactory: import_uuid.v4,
+         utcAdd: tz_utils_default.utcAdd
+       });
+     },
+diff --git a/node_modules/node-ical/node-ical.js b/node_modules/node-ical/node-ical.js
+index 7d7fe61..10c4151 100644
+--- a/node_modules/node-ical/node-ical.js
++++ b/node_modules/node-ical/node-ical.js
+@@ -1,4 +1,5 @@
+-import fs from 'node:fs';
++// Patched by Tricordarr to support React-Native
++import fs from 'react-native-fs';
+ import ical from './ical.js';
+ import {createCoreApi} from './lib/core-api.js';
+ import expandRecurringEventImpl from './lib/expand-recurring-event.js';
