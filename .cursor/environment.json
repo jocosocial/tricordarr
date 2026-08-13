@@ -1,0 +1,17 @@
+{
+  "name": "Tricordarr",
+  "install": "npm ci && if [ ! -d node_modules/expo-modules-core ]; then ln -sfn expo/node_modules/expo-modules-core node_modules/expo-modules-core; fi",
+  "terminals": [
+    {
+      "name": "metro",
+      "command": "npm start",
+      "description": "React Native Metro dev server (JS bundler) on http://localhost:8081. Reachable from an Android emulator via 10.0.2.2 and iOS via 127.0.0.1."
+    }
+  ],
+  "ports": [
+    {
+      "name": "metro",
+      "port": 8081
+    }
+  ]
+}
