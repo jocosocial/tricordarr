@@ -139,7 +139,6 @@ export const NotificationDataListener = () => {
     } else {
       removeHandler();
     }
-    logger.debug('useEffect state is', enableUserNotifications, appStateVisible, isLoggedIn);
     return () => removeHandler();
   }, [addHandler, appStateVisible, enableUserNotifications, removeHandler, isLoggedIn]);
 
