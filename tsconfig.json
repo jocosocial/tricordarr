@@ -9,6 +9,7 @@
     "**/Pods"
   ],
   "compilerOptions": {
+    "jsx": "react-native",
     "types": ["jest"],
     // https://github.com/vonovak/react-navigation-header-buttons/blob/master/INSTALL.md
     "module": "ESNext",

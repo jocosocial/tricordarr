@@ -14,3 +14,7 @@ App Package: `com.tricordarr`
 ```shell
 npx @rnx-kit/align-deps --requirements react-native@0.72
 ```
+
+## Dependencies
+
+Check for updates with `npm outdated`.
