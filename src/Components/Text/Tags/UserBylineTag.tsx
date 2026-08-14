@@ -18,6 +18,7 @@ interface UserBylineTagProps {
   selectable?: boolean;
   variant?: keyof typeof MD3TypescaleKey;
   prefix?: string;
+  numberOfLines?: number;
 }
 
 export const getUserBylineString = (
@@ -49,6 +50,7 @@ export const UserBylineTag = ({
   selectable = true,
   variant,
   prefix,
+  numberOfLines,
 }: UserBylineTagProps) => {
   const {privilegedUsernames} = usePrivilege();
   const {theme} = useAppTheme();
@@ -65,12 +67,14 @@ export const UserBylineTag = ({
   });
 
   /**
-   * numberOfLines and ellipizeMode were needed because certain combinations of text would
-   * trigger an effectively invisible newline.
+   * numberOfLines is left undefined by default so the byline wraps naturally like normal text.
+   * Some layouts may desire a fixed single line and can pass
+   * numberOfLines={1}; certain text combinations were found to trigger an effectively invisible
+   * newline in that layout without it.
    */
   return (
     <Text
-      numberOfLines={1}
+      numberOfLines={numberOfLines}
       ellipsizeMode={'tail'}
       style={styles.user}
       onPress={onPress}

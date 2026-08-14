@@ -38,7 +38,7 @@ export const ContentPostMentionSuggestionsView: FC<SuggestionsProvidedProps> = (
             key={one.userID}
             onPress={() => onSelect({id: one.userID, name: one.username})}
             style={styles.pressable}>
-            <UserBylineTag user={one} />
+            <UserBylineTag user={one} numberOfLines={1} />
           </Pressable>
         ))}
     </View>
