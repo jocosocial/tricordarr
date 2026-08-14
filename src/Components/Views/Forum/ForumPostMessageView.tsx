@@ -67,6 +67,13 @@ export const ForumPostMessageView = ({
       ...commonStyles.alignItemsCenter,
       ...commonStyles.flex,
     },
+    authorNameContainer: {
+      flexShrink: 1,
+    },
+    favoriteUserIconContainer: {
+      ...commonStyles.flex0,
+      ...commonStyles.flexStart,
+    },
     postIconsContainer: {
       ...commonStyles.flex0,
       ...commonStyles.flexRow,
@@ -116,11 +123,13 @@ export const ForumPostMessageView = ({
         <View style={styles.authorContainer}>
           {showAuthor && (
             <>
-              <View>
+              <View style={styles.authorNameContainer}>
                 <UserBylineTag user={postData.author} style={styles.messageTextHeader} selectable={false} />
               </View>
               {UserHeader.contains(favorites, postData.author) && (
-                <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
+                <View style={styles.favoriteUserIconContainer}>
+                  <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
+                </View>
               )}
             </>
           )}
