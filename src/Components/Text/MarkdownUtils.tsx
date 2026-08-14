@@ -1,6 +1,6 @@
-import {ASTNode, RenderRules} from '@ronradtke/react-native-markdown-display';
+import {ASTNode, OnLinkPress, openUrl, RenderRules} from '@ronradtke/react-native-markdown-display';
 import {useCallback, useMemo} from 'react';
-import {StyleProp, StyleSheet, TextStyle} from 'react-native';
+import {Text as RNText, StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
@@ -59,6 +59,12 @@ export const useMarkdownStyles = (textStyle?: StyleProp<TextStyle>) => {
         },
         ordered_list_icon: {
           ...commonStyles.onBackground,
+        },
+        // The library's default link style sets marginBottom: -4 to compensate for
+        // wrapping links in a Pressable (see createLinkRule below for why that's no
+        // longer needed here). Reset it so it doesn't shift the link text.
+        link: {
+          marginBottom: 0,
         },
       }),
     [commonStyles.onBackground, commonStyles.background, textStyle, styleDefaults.fontSize],
@@ -131,6 +137,32 @@ export const createTextgroupRule = (
       <Text key={node.key} variant={variant} style={styles.text} selectable={selectable}>
         {children}
       </Text>
+    );
+  };
+};
+
+/**
+ * Creates a link render rule for markdown.
+ *
+ * The library's default "link" rule wraps the link in a Pressable (a View). Since a
+ * View nested inside the paragraph's Text is treated as an inline attachment and
+ * positioned via a different (baseline-anchoring) mechanism than normal nested Text
+ * runs, this caused the underlined link text to render a few pixels off from the
+ * rest of the line. Rendering the link as a plain nested <Text onPress={...}>
+ * instead avoids the View-in-Text nesting entirely, since Text supports onPress
+ * natively, keeping it aligned with its sibling text nodes.
+ */
+export const createLinkRule = (): RenderRules['link'] => {
+  return (node, children, _parent, styles, onLinkPress) => {
+    const linkPressHandler = typeof onLinkPress === 'function' ? (onLinkPress as OnLinkPress) : undefined;
+    return (
+      <RNText
+        key={node.key}
+        style={styles.link as StyleProp<TextStyle>}
+        accessibilityRole={'link'}
+        onPress={() => openUrl(node.attributes.href, linkPressHandler)}>
+        {children}
+      </RNText>
     );
   };
 };
