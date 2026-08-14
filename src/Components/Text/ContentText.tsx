@@ -73,8 +73,9 @@ export const ContentText = ({
   const renderEmojiText = useCallback(
     (
       line: string,
-      hashtagOnPressFunction?: (tag: string) => void,
-      mentionOnPressFunction?: (username: string) => void,
+      hashtagOnPressFunction: ((tag: string) => void) | undefined,
+      mentionOnPressFunction: ((username: string) => void) | undefined,
+      keyPrefix: number,
     ) => {
       // @TODO this is matching to much hashtag, but TBH that's not the end of the world.
       // This is some write-once-read-never nonsense
@@ -82,22 +83,23 @@ export const ContentText = ({
         /(:[\w-]+:)|((?<!\S)@[A-Za-z0-9]+(?:[-.+_][A-Za-z0-9]+)*)|((?<!\S)#[A-Za-z0-9]+(?!\\S))/g,
       );
       return tokens.map((token, tokenIndex) => {
+        const key = `${keyPrefix}-${tokenIndex}`;
         if (!token) {
           return;
         }
         if (CustomEmoji[token as keyof typeof CustomEmoji]) {
-          return <Emoji key={tokenIndex} emojiName={token as keyof typeof CustomEmoji} />;
+          return <Emoji key={key} emojiName={token as keyof typeof CustomEmoji} />;
         }
         if (hashtagOnPressFunction && token.startsWith('#')) {
           return (
-            <Text key={tokenIndex} style={commonStyles.linkText} onPress={() => hashtagOnPressFunction(token)}>
+            <Text key={key} style={commonStyles.linkText} onPress={() => hashtagOnPressFunction(token)}>
               {token}
             </Text>
           );
         }
         if (mentionOnPressFunction && token.startsWith('@')) {
           return (
-            <Text key={tokenIndex} style={commonStyles.linkText} onPress={() => mentionOnPressFunction(token)}>
+            <Text key={key} style={commonStyles.linkText} onPress={() => mentionOnPressFunction(token)}>
               {token}
             </Text>
           );
@@ -119,15 +121,20 @@ export const ContentText = ({
 
   const renderContentText = useCallback(
     (contentText: string) => {
+      // Intentionally avoid React.Fragment here: react-native-hyperlink's Hyperlink component
+      // recurses into any non-Text element (including Fragments) and reads `.props.key` on them,
+      // which React 19 flags with a "`key` is not a prop" warning and can throw
+      // "Cannot convert Symbol to string" when it tries to use the Fragment's type as a key.
+      // A flat array of primitives/elements sidesteps that recursion entirely.
       const lines = contentText.split(/\r?\n|\r|\n/g);
-      return lines.map((line, lineIndex) => {
-        return (
-          <React.Fragment key={lineIndex}>
-            {renderEmojiText(line, hashtagOnPress, mentionOnPress)}
-            {lineIndex < lines.length - 1 && '\n'}
-          </React.Fragment>
-        );
+      const nodes: React.ReactNode[] = [];
+      lines.forEach((line, lineIndex) => {
+        nodes.push(...renderEmojiText(line, hashtagOnPress, mentionOnPress, lineIndex));
+        if (lineIndex < lines.length - 1) {
+          nodes.push('\n');
+        }
       });
+      return nodes;
     },
     [hashtagOnPress, mentionOnPress, renderEmojiText],
   );
