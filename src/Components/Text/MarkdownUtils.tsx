@@ -39,6 +39,7 @@ export const useMarkdownStyles = (textStyle?: StyleProp<TextStyle>) => {
           ...(textStyle as TextStyle),
         },
         body: {
+          ...commonStyles.onBackground,
           fontSize: styleDefaults.fontSize,
         },
         code_inline: {
@@ -51,6 +52,12 @@ export const useMarkdownStyles = (textStyle?: StyleProp<TextStyle>) => {
         },
         fence: {
           ...commonStyles.background,
+          ...commonStyles.onBackground,
+        },
+        bullet_list_icon: {
+          ...commonStyles.onBackground,
+        },
+        ordered_list_icon: {
           ...commonStyles.onBackground,
         },
       }),
