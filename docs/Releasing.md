@@ -29,7 +29,7 @@ Then put the keystore there too.
 Edit `android/app/build.gradle` with appropriate version info.
 
 ```
-build-android-aab # To build AAB for Google Play Store.
+npm run build-android-aab # To build AAB for Google Play Store.
 npm run build-android-apk # For an APK to install directly.
 ```
 

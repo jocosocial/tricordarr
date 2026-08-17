@@ -3,16 +3,16 @@
   "version": "2026.0.18",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios --scheme Development",
+    "android": "expo run:android",
+    "ios": "expo run:ios --scheme Development",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "scripts/tsc-errors-by-src-dir.sh",
-    "start": "react-native start",
+    "start": "expo start",
     "test": "jest",
     "postinstall": "patch-package",
-    "build-android-apk": "npx react-native build-android --tasks assembleRelease",
-    "build-android-aab": "npx react-native build-android --mode release",
+    "build-android-apk": "export NODE_ENV=production && cd android && ./gradlew assembleRelease",
+    "build-android-aab": "export NODE_ENV=production && cd android && ./gradlew bundleRelease",
     "bump-version": "bash scripts/bump-version.sh | xargs -I{} git commit -am '{} [skip ci]'"
   },
   "dependencies": {
