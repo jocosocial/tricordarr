@@ -9,7 +9,7 @@ import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleV
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const ScheduleHelpScreen = () => {
   const {theme} = useAppTheme();

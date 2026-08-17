@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const TimezoneWarningCard = () => {
   const {commonStyles} = useStyles();

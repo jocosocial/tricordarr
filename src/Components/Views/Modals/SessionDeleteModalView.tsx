@@ -9,7 +9,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 const logger = createLogger('SessionDeleteModalView.tsx');
 

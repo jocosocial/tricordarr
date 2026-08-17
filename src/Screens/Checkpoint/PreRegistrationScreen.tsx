@@ -2,7 +2,7 @@ import React, {PropsWithChildren} from 'react';
 
 import {PreRegistrationView} from '#src/Components/Views/Static/PreRegistrationView';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
-import {HelpScreenComponents} from '#src/Navigation/CommonScreens';
+import {HelpScreenComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 interface PreRegistrationScreenProps extends PropsWithChildren {
   helpScreen?: HelpScreenComponents;

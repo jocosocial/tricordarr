@@ -5,8 +5,8 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {useChatStack} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const SeamailListScreenActionsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();

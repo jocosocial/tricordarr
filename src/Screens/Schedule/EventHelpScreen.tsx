@@ -13,7 +13,7 @@ import {ShareButtonHelpTopicView} from '#src/Components/Views/Help/Common/ShareB
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 type EventHelpScreenRouteProp = RouteProp<CommonStackParamList, 'EventHelpScreen'>;
 

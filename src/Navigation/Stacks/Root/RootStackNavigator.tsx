@@ -1,4 +1,4 @@
-import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React, {useEffect, useRef} from 'react';
 
@@ -9,24 +9,12 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {OobeStackNavigator, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {BottomTabNavigator, BottomTabParamList} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {OobeStackNavigator} from '#src/Navigation/Stacks/Oobe/OobeStackNavigator';
+import {RootStackComponents, RootStackParamList} from '#src/Navigation/Stacks/Root/RootStackComponents';
+import {BottomTabNavigator} from '#src/Navigation/Tabs/Bottom/BottomTabNavigator';
 import {LighterScreen} from '#src/Screens/Main/LighterScreen';
 
 const logger = createLogger('RootStackNavigator.tsx');
-
-export type RootStackParamList = {
-  OobeStackNavigator: NavigatorScreenParams<OobeStackParamList>;
-  RootContentScreen: NavigatorScreenParams<BottomTabParamList>;
-  // Lighter has to be here until I can figure out how to fullscreen a video
-  LighterScreen: undefined;
-};
-
-export enum RootStackComponents {
-  oobeNavigator = 'OobeStackNavigator',
-  rootContentScreen = 'RootContentScreen',
-  lighterScreen = 'LighterScreen',
-}
 
 export const RootStackNavigator = () => {
   const {screenOptions} = useStyles();
@@ -101,5 +89,3 @@ export const RootStackNavigator = () => {
     </Stack.Navigator>
   );
 };
-
-export const useRootStack = () => useNavigation<StackNavigationProp<RootStackParamList>>();

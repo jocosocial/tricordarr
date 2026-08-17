@@ -5,7 +5,7 @@ import {Avatar} from 'react-native-paper';
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {styleDefaults} from '#src/Styles';
 

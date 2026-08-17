@@ -6,9 +6,9 @@ import {PreRegistrationListItem} from '#src/Components/Lists/Items/PreRegistrati
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
-import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 
 export const TodayPreRegistrationCard = () => {
   const {commonStyles} = useStyles();

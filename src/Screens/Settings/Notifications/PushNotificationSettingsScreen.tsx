@@ -24,7 +24,10 @@ import {createLogger} from '#src/Libraries/Logger';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
-import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {SegmentedButtonType} from '#src/Types';
 
 const logger = createLogger('PushNotificationSettingsScreen.tsx');

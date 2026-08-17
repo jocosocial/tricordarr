@@ -6,7 +6,7 @@ import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useCommonStack} from '#src/Navigation/CommonScreens';
+import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
 interface PhotostreamImageActionsMenuProps {

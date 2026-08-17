@@ -2,8 +2,8 @@ import React from 'react';
 
 import {BaseWarningView} from '#src/Components/Views/Warnings/BaseWarningView';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
-import {OobeStackComponents} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
+import {OobeStackComponents} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
 
 export const PreRegistrationWarningView = () => {
   const navigation = useRootStack();

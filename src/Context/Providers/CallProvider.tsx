@@ -18,8 +18,8 @@ import {CallEndReason, CallKitService} from '#src/Libraries/Call/CallKitService'
 import {createLogger} from '#src/Libraries/Logger';
 import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
 import {buildPhoneCallWebSocket} from '#src/Libraries/Network/Websockets';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {usePhoneCallAnswerMutation, usePhoneCallDeclineMutation} from '#src/Queries/PhoneCall/PhoneCallMutations';
 import {CallActions, callReducer, initialCallState} from '#src/Reducers/Call/CallReducer';
 import {UserHeader} from '#src/Structs/ControllerStructs';

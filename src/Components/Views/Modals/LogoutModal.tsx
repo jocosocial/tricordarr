@@ -8,7 +8,7 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
 
 interface LogoutModalContentProps {

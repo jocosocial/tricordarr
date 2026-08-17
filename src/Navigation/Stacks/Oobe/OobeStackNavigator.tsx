@@ -1,9 +1,9 @@
-import {useNavigation} from '@react-navigation/native';
-import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonScreens} from '#src/Navigation/Stacks/Common/CommonScreens';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {OobeAccountScreen} from '#src/Screens/OOBE/OobeAccountScreen';
 import {OobeConductScreen} from '#src/Screens/OOBE/OobeConductScreen';
 import {OobeFinishScreen} from '#src/Screens/OOBE/OobeFinishScreen';
@@ -13,33 +13,6 @@ import {OobeServerScreen} from '#src/Screens/OOBE/OobeServerScreen';
 import {OobeWelcomeScreen} from '#src/Screens/OOBE/OobeWelcomeScreen';
 import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
 import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
-import {WithIntent} from '#src/Types/RouteParams';
-
-export type OobeStackParamList = CommonStackParamList & {
-  OobeWelcomeScreen: undefined;
-  OobeServerScreen: undefined;
-  OobeConductScreen: undefined;
-  OobeAccountScreen: undefined;
-  LoginScreen: undefined;
-  OobeFinishScreen: undefined;
-  RegisterScreen: undefined;
-  OobePermissionsScreen: undefined;
-  OobePreregistrationScreen: WithIntent<{}, 'onboarding'>;
-  OobeScheduleDayScreen: undefined;
-};
-
-export enum OobeStackComponents {
-  oobeWelcomeScreen = 'OobeWelcomeScreen',
-  oobeServerScreen = 'OobeServerScreen',
-  oobeConductScreen = 'OobeConductScreen',
-  oobeAccountScreen = 'OobeAccountScreen',
-  oobeRegisterScreen = 'RegisterScreen',
-  oobeFinishScreen = 'OobeFinishScreen',
-  oobeLoginScreen = 'LoginScreen',
-  oobePermissionsScreen = 'OobePermissionsScreen',
-  oobePreregistrationScreen = 'OobePreregistrationScreen',
-  oobeScheduleDayScreen = 'OobeScheduleDayScreen',
-}
 
 export const OobeStackNavigator = () => {
   const {screenOptions} = useStyles();
@@ -94,5 +67,3 @@ export const OobeStackNavigator = () => {
     </Stack.Navigator>
   );
 };
-
-export const useOobeStack = () => useNavigation<StackNavigationProp<OobeStackParamList>>();

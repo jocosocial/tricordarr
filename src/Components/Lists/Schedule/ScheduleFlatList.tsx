@@ -12,7 +12,7 @@ import {FezType} from '#src/Enums/FezType';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import useDateTime, {getTimeZoneOffset} from '#src/Libraries/DateTime';
 import {getScheduleItemMarker} from '#src/Libraries/Schedule';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 import {ScheduleFlatListSeparator} from '#src/Types';
 

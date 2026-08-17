@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {useChatStack} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 interface SeamailFABProps {
   showLabel?: boolean;

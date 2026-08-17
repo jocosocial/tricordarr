@@ -9,8 +9,8 @@ import {MessageView} from '#src/Components/Views/MessageView';
 import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {useChatStack} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167

@@ -13,7 +13,7 @@ import {
   generateTimeSlotLabels,
   getTimelineHeight,
 } from '#src/Libraries/DayPlanner';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
 
 interface DayPlannerTimelineViewProps {

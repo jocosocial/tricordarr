@@ -12,7 +12,7 @@ import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezData} from '#src/Hooks/useFezData';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 

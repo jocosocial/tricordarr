@@ -7,7 +7,7 @@ import {SwipeableButton} from '#src/Components/Buttons/SwipeableButton';
 import {BaseSwipeable} from '#src/Components/Swipeables/BaseSwipeable';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {useBoardgameFavoriteMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 

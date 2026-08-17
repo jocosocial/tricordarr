@@ -15,8 +15,8 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {AppIcons} from '#src/Enums/Icons';
 import {getEventTimeString} from '#src/Libraries/DateTime';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 import {Selectable} from '#src/Types/Selectable';
 

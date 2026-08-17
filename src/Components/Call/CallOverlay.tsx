@@ -11,8 +11,8 @@ import {CallState, useCall} from '#src/Context/Contexts/CallContext';
 import {useLayout} from '#src/Context/Contexts/LayoutContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {ChatStackParamList} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {ChatStackParamList} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 type NavigationProp = StackNavigationProp<ChatStackParamList>;
 

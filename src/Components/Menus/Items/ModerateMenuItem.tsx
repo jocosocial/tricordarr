@@ -3,7 +3,7 @@ import * as React from 'react';
 import {Menu} from 'react-native-paper';
 
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 interface ModerateMenuItemProps {
   closeMenu: () => void;

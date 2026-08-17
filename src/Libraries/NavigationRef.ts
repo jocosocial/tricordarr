@@ -1,7 +1,7 @@
 import {createNavigationContainerRef, StackActions} from '@react-navigation/native';
 
 import {createLogger} from '#src/Libraries/Logger';
-import {RootStackParamList} from '#src/Navigation/Stacks/RootStackNavigator';
+import {RootStackParamList} from '#src/Navigation/Stacks/Root/RootStackComponents';
 
 const logger = createLogger('NavigationRef.ts');
 

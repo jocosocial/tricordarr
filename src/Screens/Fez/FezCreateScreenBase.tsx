@@ -9,7 +9,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {AppIcons} from '#src/Enums/Icons';
 import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
-import {HelpScreenComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {HelpScreenComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {FezContentData, FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';

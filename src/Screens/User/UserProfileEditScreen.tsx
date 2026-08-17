@@ -13,7 +13,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserProfileMutation} from '#src/Queries/User/UserProfileMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {UserHeader, UserProfileUploadData} from '#src/Structs/ControllerStructs';

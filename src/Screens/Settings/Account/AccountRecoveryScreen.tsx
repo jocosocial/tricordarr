@@ -8,7 +8,7 @@ import {UserRecoveryForm} from '#src/Components/Forms/User/UserRecoveryForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserRecoveryMutation} from '#src/Queries/Auth/RecoveryMutations';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {UserRegistrationFormValues} from '#src/Types/FormValues';

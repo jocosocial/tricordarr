@@ -1,10 +1,10 @@
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonScreens} from '#src/Navigation/Stacks/Common/CommonScreens';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {ForumCategoriesScreen} from '#src/Screens/Forum/ForumCategoriesScreen';
 import {ForumCategoryScreen} from '#src/Screens/Forum/ForumCategoryScreen';
 import {ForumPostAlertwordScreen} from '#src/Screens/Forum/Post/ForumPostAlertwordScreen';
@@ -17,46 +17,6 @@ import {ForumThreadMutesScreen} from '#src/Screens/Forum/Thread/ForumThreadMutes
 import {ForumThreadOwnedScreen} from '#src/Screens/Forum/Thread/ForumThreadOwnedScreen';
 import {ForumThreadRecentScreen} from '#src/Screens/Forum/Thread/ForumThreadRecentScreen';
 import {ForumThreadSearchScreen} from '#src/Screens/Forum/Thread/ForumThreadSearchScreen';
-import {CategoryData} from '#src/Structs/ControllerStructs';
-import {Optional, WithScrollToTopIntent} from '#src/Types/RouteParams';
-
-export type ForumStackParamList = CommonStackParamList & {
-  ForumCategoriesScreen: undefined;
-  ForumCategoryScreen: WithScrollToTopIntent<{
-    category: CategoryData;
-  }>;
-  ForumPostMentionScreen: undefined;
-  ForumPostSelfScreen: Optional<WithScrollToTopIntent>;
-  ForumPostFavoriteScreen: undefined;
-  ForumFavoritesScreen: Optional<WithScrollToTopIntent>;
-  ForumMutesScreen: Optional<WithScrollToTopIntent>;
-  ForumOwnedScreen: Optional<WithScrollToTopIntent>;
-  ForumRecentScreen: Optional<WithScrollToTopIntent>;
-  ForumPostAlertwordScreen: {
-    alertWord: string;
-  };
-  ForumThreadSearchScreen: {
-    category?: CategoryData;
-  };
-  ForumThreadCreateScreen: {
-    categoryId: string;
-  };
-};
-
-export enum ForumStackComponents {
-  forumCategoriesScreen = 'ForumCategoriesScreen',
-  forumCategoryScreen = 'ForumCategoryScreen',
-  forumPostMentionScreen = 'ForumPostMentionScreen',
-  forumPostSelfScreen = 'ForumPostSelfScreen',
-  forumPostFavoriteScreen = 'ForumPostFavoriteScreen',
-  forumFavoritesScreen = 'ForumFavoritesScreen',
-  forumMutesScreen = 'ForumMutesScreen',
-  forumOwnedScreen = 'ForumOwnedScreen',
-  forumRecentScreen = 'ForumRecentScreen',
-  forumThreadSearchScreen = 'ForumThreadSearchScreen',
-  forumThreadCreateScreen = 'ForumThreadCreateScreen',
-  forumPostAlertwordScreen = 'ForumPostAlertwordScreen',
-}
 
 export const ForumStackNavigator = () => {
   const {screenOptions} = useStyles();
@@ -136,7 +96,3 @@ export const ForumStackNavigator = () => {
     </Stack.Navigator>
   );
 };
-
-export const useForumStackNavigation = () => useNavigation<StackNavigationProp<ForumStackParamList>>();
-
-export const useForumStackRoute = () => useRoute<RouteProp<ForumStackParamList>>();

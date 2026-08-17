@@ -11,7 +11,10 @@ import {SessionDeleteModalView} from '#src/Components/Views/Modals/SessionDelete
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.sessionDetails>;
 export const SessionDetailsScreen = ({route, navigation}: Props) => {

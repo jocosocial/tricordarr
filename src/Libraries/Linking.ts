@@ -2,15 +2,15 @@ import type {PathConfig, PathConfigMap} from '@react-navigation/core';
 import {LinkingOptions} from '@react-navigation/native';
 
 import {getPath} from '#src/Libraries/RouteDefinitions';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
-import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
-import {OobeStackComponents} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {RootStackComponents, RootStackParamList} from '#src/Navigation/Stacks/RootStackNavigator';
-import {ScheduleStackParamList} from '#src/Navigation/Stacks/ScheduleStackNavigator';
-import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
+import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {OobeStackComponents} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
+import {RootStackComponents, RootStackParamList} from '#src/Navigation/Stacks/Root/RootStackComponents';
+import {ScheduleStackParamList} from '#src/Navigation/Stacks/Schedule/ScheduleStackComponents';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;

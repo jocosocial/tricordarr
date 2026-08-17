@@ -1,11 +1,11 @@
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {ForumStackComponents} from '#src/Navigation/Stacks/ForumStackNavigator';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
-import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
-import {OobeStackComponents} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {RootStackComponents} from '#src/Navigation/Stacks/RootStackNavigator';
-import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
+import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
+import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {OobeStackComponents} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
+import {RootStackComponents} from '#src/Navigation/Stacks/Root/RootStackComponents';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 /**
  * Unified route definition used for both deep linking config and URL parsing.

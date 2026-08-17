@@ -9,7 +9,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {SettingsStackScreenComponents, useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {SettingsStackScreenComponents, useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 export const SessionSettingsScreen = () => {
   const settingsNavigation = useSettingsStack();

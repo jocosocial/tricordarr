@@ -3,7 +3,7 @@ import {Card, Text} from 'react-native-paper';
 
 import {APIImage} from '#src/Components/Images/APIImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {DailyThemeData} from '#src/Structs/ControllerStructs';
 
 interface DailyThemeCardProps {

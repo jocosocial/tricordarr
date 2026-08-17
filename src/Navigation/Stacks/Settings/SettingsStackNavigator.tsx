@@ -1,9 +1,11 @@
-import {useNavigation} from '@react-navigation/native';
-import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {AboutSettingsScreen} from '#src/Screens/Settings/AboutSettingsScreen';
 import {AccountManagementScreen} from '#src/Screens/Settings/Account/AccountManagementScreen';
 import {ChangePasswordScreen} from '#src/Screens/Settings/Account/ChangePasswordScreen';
@@ -29,68 +31,6 @@ import {NotificationPollerSettingsScreen} from '#src/Screens/Settings/Notificati
 import {PushNotificationSettingsScreen} from '#src/Screens/Settings/Notifications/PushNotificationSettingsScreen';
 import {SettingsScreen} from '#src/Screens/Settings/SettingsScreen';
 import {SocketSettingsScreen} from '#src/Screens/Settings/SocketSettingsScreen';
-
-export type SettingsStackParamList = CommonStackParamList & {
-  SettingsScreen: undefined;
-  BackgroundConnectionSettingsScreen: undefined;
-  TestNotificationScreen: undefined;
-  TestErrorScreen: undefined;
-  SocketSettingsScreen: undefined;
-  PushNotificationSettingsScreen: {
-    notificationType?: string;
-  };
-  OobeSettingsScreen: undefined;
-  ChangePasswordScreen: undefined;
-  ChangeUsernameScreen: undefined;
-  AccountManagementScreen: undefined;
-  LoginScreen: undefined;
-  FeatureSettingsScreen: undefined;
-  NotificationPollerSettingsScreen: undefined;
-  LoadingSettingScreen: undefined;
-  RegisterScreen: undefined;
-  CruiseSettingsScreen: undefined;
-  UserInfoSettingsScreen: undefined;
-  AboutSettingsScreen: undefined;
-  QuerySettingsScreen: undefined;
-  QueryKeysSettingsScreen: undefined;
-  QueryDataSettingsScreen: {
-    queryHash: string;
-  };
-  TimeSettingsScreen: undefined;
-  SessionSettingsScreen: undefined;
-  SessionDetailsScreen: {
-    sessionID: string;
-  };
-  LoggingSettingsScreen: undefined;
-};
-
-export enum SettingsStackScreenComponents {
-  settings = 'SettingsScreen',
-  backgroundConnectionSettings = 'BackgroundConnectionSettingsScreen',
-  testNotification = 'TestNotificationScreen',
-  testError = 'TestErrorScreen',
-  socketSettings = 'SocketSettingsScreen',
-  pushNotificationSettings = 'PushNotificationSettingsScreen',
-  oobeSettings = 'OobeSettingsScreen',
-  changePassword = 'ChangePasswordScreen',
-  changeUsername = 'ChangeUsernameScreen',
-  login = 'LoginScreen',
-  accountManagement = 'AccountManagementScreen',
-  featureSettingsScreen = 'FeatureSettingsScreen',
-  notificationPollerSettingsScreen = 'NotificationPollerSettingsScreen',
-  loadingSettingScreen = 'LoadingSettingScreen',
-  registerScreen = 'RegisterScreen',
-  cruiseSettingsScreen = 'CruiseSettingsScreen',
-  accountInfoSettingsScreen = 'UserInfoSettingsScreen',
-  aboutSettingsScreen = 'AboutSettingsScreen',
-  querySettingsScreen = 'QuerySettingsScreen',
-  queryKeysSettingsScreen = 'QueryKeysSettingsScreen',
-  queryDataSettingsScreen = 'QueryDataSettingsScreen',
-  timeSettingsScreen = 'TimeSettingsScreen',
-  sessionSettings = 'SessionSettingsScreen',
-  sessionDetails = 'SessionDetailsScreen',
-  loggingSettings = 'LoggingSettingsScreen',
-}
 
 export const SettingsStackNavigator = () => {
   const {screenOptions} = useStyles();
@@ -225,5 +165,3 @@ export const SettingsStackNavigator = () => {
     </Stack.Navigator>
   );
 };
-
-export const useSettingsStack = () => useNavigation<StackNavigationProp<SettingsStackParamList>>();

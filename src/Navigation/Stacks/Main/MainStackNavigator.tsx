@@ -1,11 +1,10 @@
-import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
-import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {SettingsStackNavigator, SettingsStackParamList} from '#src/Navigation/Stacks/SettingsStackNavigator';
-import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
+import {CommonScreens} from '#src/Navigation/Stacks/Common/CommonScreens';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {SettingsStackNavigator} from '#src/Navigation/Stacks/Settings/SettingsStackNavigator';
 import {BoardgameCreateLfgScreen} from '#src/Screens/Boardgames/BoardgameCreateLfgScreen';
 import {BoardgameExpansionsScreen} from '#src/Screens/Boardgames/BoardgameExpansionsScreen';
 import {BoardgameListScreen} from '#src/Screens/Boardgames/BoardgameListScreen';
@@ -27,76 +26,8 @@ import {PerformerListScreen} from '#src/Screens/Performer/PerformerListScreen';
 import {PhotostreamImageCreateScreen} from '#src/Screens/Photostream/PhotostreamImageCreateScreen';
 import {PhotostreamScreen} from '#src/Screens/Photostream/PhotostreamScreen';
 import {UserDirectoryScreen} from '#src/Screens/User/UserDirectoryScreen';
-import {BoardgameData, DailyThemeData} from '#src/Structs/ControllerStructs';
-import {Optional, WithScrollToTopIntent} from '#src/Types/RouteParams';
-
-export type MainStackParamList = CommonStackParamList & {
-  MainScreen: undefined;
-  MainSettingsScreen: NavigatorScreenParams<SettingsStackParamList>;
-  FaqScreen: undefined;
-  UserDirectoryScreen: undefined;
-  DailyThemeScreen: {
-    dailyTheme: DailyThemeData;
-  };
-  MainConductScreen: undefined;
-  DailyThemesScreen: undefined;
-  PhotostreamScreen: Optional<WithScrollToTopIntent>;
-  PhotostreamImageCreateScreen: undefined;
-  MicroKaraokeListScreen: undefined;
-  MicroKaraokeSongScreen: {
-    songID: number;
-  };
-  PerformerListScreen: {
-    performerType?: PerformerType;
-  };
-  BoardgameListScreen: undefined;
-  BoardgameScreen: {
-    boardgame: BoardgameData;
-  };
-  BoardgameRecommendScreen: undefined;
-  BoardgameSearchScreen: undefined;
-  BoardgameExpansionsScreen: {
-    boardgameID: string;
-  };
-  BoardgameCreateLfgScreen: {
-    boardgame: BoardgameData;
-  };
-  KaraokePerformanceListScreen: undefined;
-  KaraokeSearchScreen: undefined;
-  KaraokeFavoritesListScreen: undefined;
-  KaraokeLogPerformanceScreen: {
-    songID: string;
-    artist: string;
-    songName: string;
-  };
-};
 
 export const MainStack = createStackNavigator<MainStackParamList>();
-
-export enum MainStackComponents {
-  mainScreen = 'MainScreen',
-  mainSettingsScreen = 'MainSettingsScreen',
-  faqScreen = 'FaqScreen',
-  userDirectoryScreen = 'UserDirectoryScreen',
-  dailyThemeScreen = 'DailyThemeScreen',
-  conductScreen = 'MainConductScreen',
-  dailyThemesScreen = 'DailyThemesScreen',
-  photostreamScreen = 'PhotostreamScreen',
-  photostreamImageCreateScreen = 'PhotostreamImageCreateScreen',
-  microKaraokeListScreen = 'MicroKaraokeListScreen',
-  microKaraokeSongScreen = 'MicroKaraokeSongScreen',
-  performerListScreen = 'PerformerListScreen',
-  boardgameListScreen = 'BoardgameListScreen',
-  boardgameScreen = 'BoardgameScreen',
-  boardgameRecommendScreen = 'BoardgameRecommendScreen',
-  boardgameSearchScreen = 'BoardgameSearchScreen',
-  boardgameExpansionsScreen = 'BoardgameExpansionsScreen',
-  boardgameCreateLfgScreen = 'BoardgameCreateLfgScreen',
-  karaokePerformanceListScreen = 'KaraokePerformanceListScreen',
-  karaokeSearchScreen = 'KaraokeSearchScreen',
-  karaokeFavoritesListScreen = 'KaraokeFavoritesListScreen',
-  karaokeLogPerformanceScreen = 'KaraokeLogPerformanceScreen',
-}
 
 export const MainStackNavigator = () => {
   const {screenOptions} = useStyles();
@@ -209,5 +140,3 @@ export const MainStackNavigator = () => {
     </MainStack.Navigator>
   );
 };
-
-export const useMainStack = () => useNavigation<StackNavigationProp<MainStackParamList>>();

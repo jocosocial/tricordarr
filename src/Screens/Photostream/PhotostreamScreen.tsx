@@ -7,8 +7,8 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {PhotostreamActionsMenu} from '#src/Components/Menus/Photostream/PhotostreamActionsMenu';
 import {PhotostreamFilterMenu} from '#src/Components/Menus/Photostream/PhotostreamFilterMenu';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {usePhotostreamQuery} from '#src/Queries/Photostream/PhotostreamQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';

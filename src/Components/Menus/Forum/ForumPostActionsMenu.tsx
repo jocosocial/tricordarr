@@ -13,7 +13,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useClipboard} from '#src/Hooks/useClipboard';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostActionsMenuProps {

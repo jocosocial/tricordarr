@@ -17,7 +17,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {getCalFeedFromUrl, getEventUid} from '#src/Libraries/Schedule';
-import {useCommonStack} from '#src/Navigation/CommonScreens';
+import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';

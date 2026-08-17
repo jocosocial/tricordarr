@@ -12,8 +12,8 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useLFGStackNavigation} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {

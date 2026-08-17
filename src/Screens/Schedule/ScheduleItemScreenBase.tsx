@@ -24,7 +24,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {getParticipantLabel} from '#src/Hooks/useFezData';
 import {getDurationString} from '#src/Libraries/DateTime';
 import {guessDeckNumber} from '#src/Libraries/Ship';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 interface Props {

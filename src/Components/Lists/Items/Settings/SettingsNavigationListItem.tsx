@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {ListItem} from '#src/Components/Lists/ListItem';
-import {SettingsStackParamList, useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {SettingsStackParamList, useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 interface NavigationListItemProps {
   title: string;

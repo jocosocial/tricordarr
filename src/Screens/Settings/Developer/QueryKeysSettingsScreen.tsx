@@ -7,7 +7,10 @@ import {Divider} from 'react-native-paper';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {QueryCacheListItem} from '#src/Components/Lists/Items/Settings/QueryCacheListItem';
 import {AppView} from '#src/Components/Views/AppView';
-import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.queryKeysSettingsScreen>;
 

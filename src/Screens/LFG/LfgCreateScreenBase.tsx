@@ -5,8 +5,8 @@ import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/useFezForm';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {FezCreateScreenBase} from '#src/Screens/Fez/FezCreateScreenBase';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 

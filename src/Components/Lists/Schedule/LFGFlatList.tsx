@@ -5,8 +5,8 @@ import {RefreshControlProps} from 'react-native';
 import {FezCard} from '#src/Components/Cards/Schedule/FezCard';
 import {ScheduleFlatListBase} from '#src/Components/Lists/Schedule/ScheduleFlatListBase';
 import {FezType} from '#src/Enums/FezType';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useLFGStackNavigation} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {ScheduleFlatListSeparator} from '#src/Types';
 

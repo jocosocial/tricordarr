@@ -8,7 +8,7 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useUserCacheReducer} from '#src/Hooks/User/useUserCacheReducer';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';

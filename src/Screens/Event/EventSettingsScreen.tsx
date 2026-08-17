@@ -17,8 +17,8 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 export const EventSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();

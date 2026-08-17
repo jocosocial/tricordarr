@@ -12,12 +12,12 @@ import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {
   SettingsStackParamList,
   SettingsStackScreenComponents,
   useSettingsStack,
-} from '#src/Navigation/Stacks/SettingsStackNavigator';
+} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.accountManagement>;
 export const AccountManagementScreen = ({navigation}: Props) => {
   const settingsNavigation = useSettingsStack();

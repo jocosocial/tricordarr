@@ -40,7 +40,7 @@ import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
 import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
-import {RootStackNavigator} from '#src/Navigation/Stacks/RootStackNavigator';
+import {RootStackNavigator} from '#src/Navigation/Stacks/Root/RootStackNavigator';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193

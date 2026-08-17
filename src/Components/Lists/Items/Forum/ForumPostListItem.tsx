@@ -6,8 +6,8 @@ import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemCon
 import {ForumPostMessageView} from '#src/Components/Views/Forum/ForumPostMessageView';
 import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
 import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167

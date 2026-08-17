@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 
 interface PhotostreamFABProps {
   showLabel?: boolean;

@@ -3,7 +3,7 @@ import React from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 interface ForumThreadPinnedPostsItemProps {
   navigation: StackNavigationProp<CommonStackParamList>;

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ProfilePublicData} from '#src/Structs/ControllerStructs';
 
 interface UserProfileSelfFABProps {

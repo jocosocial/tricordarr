@@ -19,7 +19,7 @@ import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {AppIcons} from '#src/Enums/Icons';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const ForumSettingsScreen = () => {
   const {commonStyles} = useStyles();

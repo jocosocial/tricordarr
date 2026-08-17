@@ -4,7 +4,7 @@ import {Menu} from 'react-native-paper';
 
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostActionsModerateItemProps {

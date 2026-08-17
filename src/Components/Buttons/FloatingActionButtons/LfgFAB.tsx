@@ -5,7 +5,7 @@ import {FabGroupAction} from '#src/Components/Buttons/FloatingActionButtons/FABG
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {getBadgeDisplayValue} from '#src/Libraries/StringUtils';
-import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {FezListEndpoints} from '#src/Types';
 

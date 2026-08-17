@@ -5,7 +5,7 @@ import {Text} from 'react-native-paper';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useTime} from '#src/Context/Contexts/TimeContext';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const TimezoneWarningView = () => {
   const {commonStyles} = useStyles();

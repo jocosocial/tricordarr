@@ -7,7 +7,7 @@ import {BoardgameListItemSwipeable} from '#src/Components/Swipeables/BoardgameLi
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 
 interface BoardgameListItemProps {

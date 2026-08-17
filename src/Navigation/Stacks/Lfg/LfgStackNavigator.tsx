@@ -1,33 +1,14 @@
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
+import {RouteProp} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonScreens} from '#src/Navigation/Stacks/Common/CommonScreens';
+import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
 import {LfgSearchScreen} from '#src/Screens/LFG/LfgSearchScreen';
 import {FezListEndpoints} from '#src/Types';
-import {WithIntent, WithScrollToTopIntent} from '#src/Types/RouteParams';
-
-export type LfgStackParamList = CommonStackParamList & {
-  LfgListScreen: WithScrollToTopIntent<
-    WithIntent<{
-      endpoint: FezListEndpoints;
-      onlyNew?: boolean;
-      cruiseDay?: number;
-    }>
-  >;
-  LfgSearchScreen: {
-    endpoint: FezListEndpoints;
-  };
-};
-
-export enum LfgStackComponents {
-  lfgListScreen = 'LfgListScreen',
-  lfgCreateScreen = 'LfgCreateScreen',
-  lfgSearchScreen = 'LfgSearchScreen',
-}
 
 export const LfgStackNavigator = () => {
   const {screenOptions} = useStyles();
@@ -63,7 +44,3 @@ export const LfgStackNavigator = () => {
     </Stack.Navigator>
   );
 };
-
-export const useLFGStackNavigation = () => useNavigation<StackNavigationProp<LfgStackParamList>>();
-
-export const useLFGStackRoute = () => useRoute<RouteProp<LfgStackParamList>>();

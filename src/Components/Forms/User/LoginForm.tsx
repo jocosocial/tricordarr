@@ -11,7 +11,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PasswordValidation, UsernameValidation} from '#src/Libraries/ValidationSchema';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {LoginFormValues} from '#src/Types/FormValues';
 
 interface LoginFormProps {

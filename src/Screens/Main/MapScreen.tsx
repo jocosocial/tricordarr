@@ -13,7 +13,7 @@ import {MapIndicatorView} from '#src/Components/Views/MapIndicatorView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShipDecks} from '#src/Libraries/Ship';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.mapScreen>;

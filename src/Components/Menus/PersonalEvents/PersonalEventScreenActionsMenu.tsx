@@ -11,8 +11,8 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useScheduleStackNavigation} from '#src/Navigation/Stacks/Schedule/ScheduleStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface PersonalEventScreenActionsMenuProps {

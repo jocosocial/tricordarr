@@ -3,7 +3,7 @@ import * as React from 'react';
 import {BaseFABGroup} from '#src/Components/Buttons/FloatingActionButtons/BaseFABGroup';
 import {FabGroupAction} from '#src/Components/Buttons/FloatingActionButtons/FABGroupAction';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ProfilePublicData} from '#src/Structs/ControllerStructs';
 
 interface UserProfileFABGroupProps {

@@ -6,7 +6,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const UserProfileHelpScreen = () => {
   const commonNavigation = useCommonStack();

@@ -22,8 +22,8 @@ import {
   getScrollOffsetForFirstItem,
   getScrollOffsetForTimeOfDay,
 } from '#src/Libraries/DayPlanner';
-import {CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';

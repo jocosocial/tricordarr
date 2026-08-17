@@ -3,7 +3,7 @@ import React from 'react';
 import {Text} from 'react-native-paper';
 
 import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';
-import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {CategoryData} from '#src/Structs/ControllerStructs';
 
 interface ForumCategoryListItemProps {

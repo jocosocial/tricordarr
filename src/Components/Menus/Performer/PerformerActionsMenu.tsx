@@ -6,7 +6,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {PerformerData} from '#src/Structs/ControllerStructs';
 
 interface PerformerActionsMenuProps {

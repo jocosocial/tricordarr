@@ -1,37 +1,17 @@
-import {type BottomTabBarProps, BottomTabNavigationProp, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
+import {type BottomTabBarProps, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React, {useCallback} from 'react';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppBottomTabBar} from '#src/Components/Navigation/AppBottomTabBar';
 import {AppIcons} from '#src/Enums/Icons';
 import {getBadgeDisplayValue} from '#src/Libraries/StringUtils';
-import {ChatStackNavigator, ChatStackParamList} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {ForumStackNavigator, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
-import {LfgStackNavigator, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
-import {MainStackNavigator, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
-import {ScheduleStackNavigator, ScheduleStackParamList} from '#src/Navigation/Stacks/ScheduleStackNavigator';
+import {ChatStackNavigator} from '#src/Navigation/Stacks/Chat/ChatStackNavigator';
+import {ForumStackNavigator} from '#src/Navigation/Stacks/Forum/ForumStackNavigator';
+import {LfgStackNavigator} from '#src/Navigation/Stacks/Lfg/LfgStackNavigator';
+import {MainStackNavigator} from '#src/Navigation/Stacks/Main/MainStackNavigator';
+import {ScheduleStackNavigator} from '#src/Navigation/Stacks/Schedule/ScheduleStackNavigator';
+import {BottomTabComponents, BottomTabParamList} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-
-/**
- * This is where we define the root tabs and associate each one with its relevant
- * navigation param list.
- */
-export type BottomTabParamList = {
-  HomeTab: NavigatorScreenParams<MainStackParamList>;
-  SeamailTab: NavigatorScreenParams<ChatStackParamList>;
-  ScheduleTab: NavigatorScreenParams<ScheduleStackParamList>;
-  ForumsTab: NavigatorScreenParams<ForumStackParamList>;
-  LfgTab: NavigatorScreenParams<LfgStackParamList>;
-};
-
-export enum BottomTabComponents {
-  homeTab = 'HomeTab',
-  seamailTab = 'SeamailTab',
-  forumsTab = 'ForumsTab',
-  scheduleTab = 'ScheduleTab',
-  lfgTab = 'LfgTab',
-}
 
 export const BottomTabNavigator = () => {
   const {data: userNotificationData} = useUserNotificationDataQuery({enabled: false});
@@ -118,5 +98,3 @@ export const BottomTabNavigator = () => {
     </Tab.Navigator>
   );
 };
-
-export const useBottomTabNavigator = () => useNavigation<BottomTabNavigationProp<BottomTabParamList>>();

@@ -9,7 +9,11 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, HelpScreenComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {
+  CommonStackComponents,
+  HelpScreenComponents,
+  useCommonStack,
+} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
