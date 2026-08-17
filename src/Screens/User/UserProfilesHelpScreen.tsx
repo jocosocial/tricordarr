@@ -28,7 +28,7 @@ export const UserProfilesHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Floating Action Button'}>
-          <HelpFABView icon={AppIcons.user} label={'User Profile'} />
+          <HelpFABView icon={AppIcons.new} label={'Chat'} />
           <HelpTopicView>Access a menu of options to interact with this user.</HelpTopicView>
           <HelpTopicView title={'Seamail'} icon={AppIcons.seamailCreate}>
             Create a new Seamail conversation with that user.

@@ -49,5 +49,5 @@ export const UserProfileFABGroup = ({profile, showLabel}: UserProfileFABGroupPro
     }),
   ];
 
-  return <BaseFABGroup actions={actions} openLabel={'User Profile'} icon={AppIcons.user} showLabel={showLabel} />;
+  return <BaseFABGroup actions={actions} openLabel={'Chat'} icon={AppIcons.new} showLabel={showLabel} />;
 };
