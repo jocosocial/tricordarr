@@ -94,6 +94,11 @@ Use `createLogger` rather than `console.log`
 
 - Components must be pure
 
+## Styles
+
+- Prefer merging styles once via `StyleSheet.create({foo: {...commonStyles.a, ...commonStyles.b}})` over passing an array to `style` (e.g. `style={[commonStyles.a, commonStyles.b]}`)
+- Array styles allocate a new array every render and must be flattened each time; a merged `StyleSheet.create` object is a single stable reference
+
 ## Hooks
 
 - No conditional hooks

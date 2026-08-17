@@ -123,6 +123,19 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       ...commonStyles.marginRightSmall,
       ...commonStyles.marginBottomSmall,
     },
+    hyperlinkTag: {
+      // This was originally meant to be a Discord-style rounded "pill" background, but
+      // borderRadius (and padding) do not apply to a Text nested inside another Text on
+      // either platform, on old or new architecture, and there's no ETA on a fix:
+      // https://github.com/facebook/react-native/issues/45925
+      // https://github.com/facebook/react-native/issues/54826
+      // So instead this is just a colored, bold, icon-prefixed inline flair with no
+      // background/border-radius/padding to work around the bug.
+      textDecorationLine: 'none', // cancel the inherited underline from linkStyle
+    },
+    onHyperlinkTag: {
+      color: theme.colors.primary,
+    },
     imageViewerBackground: {
       backgroundColor: theme.colors.constantBlack,
       color: theme.colors.constantWhite,

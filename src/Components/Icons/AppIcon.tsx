@@ -30,7 +30,7 @@ export const AppIcon = ({icon, size, color, style, onPress, onLongPress, small}:
       onPress={onPress}
       style={style}
       name={icon as IconName}
-      size={size || small ? styleDefaults.iconSizeSmall : styleDefaults.iconSize}
+      size={size ?? (small ? styleDefaults.iconSizeSmall : styleDefaults.iconSize)}
       color={color || theme.colors.onBackground}
       onLongPress={onLongPress}
     />
