@@ -68,6 +68,9 @@ export const ForumThreadHelpScreen = () => {
           <HelpTopicView title={'Mute'} icon={AppIcons.mute}>
             Mute or unmute this thread. Muted threads appear at the end of thread lists.
           </HelpTopicView>
+          <HelpTopicView title={'Create LFG'} icon={AppIcons.lfgCreate}>
+            Create a Looking For Group with certain details pre-filled from this thread.
+          </HelpTopicView>
           <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
             Edit the thread title. Only available if you created the thread.
           </HelpTopicView>

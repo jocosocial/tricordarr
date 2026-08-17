@@ -15,6 +15,8 @@ import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
@@ -46,10 +48,25 @@ export const ForumThreadScreenActionsMenu = ({
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {data: profilePublicData} = useUserProfileQuery();
   const {currentUserID} = useSession();
+  const {serverUrl} = useSwiftarrQueryClient();
   const commonNavigation = useCommonStack();
   const relationMutation = useForumRelationMutation();
   const [refreshing, setRefreshing] = useState(false);
   const {updateFavorite, updateMute} = useForumCacheReducer();
+
+  const handleCreateLfg = useCallback(() => {
+    closeMenu();
+    const threadLink = `${serverUrl}/${ShareContentType.forum}/${forumData.forumID}`;
+    commonNavigation.push(CommonStackComponents.lfgCreateScreen, {
+      title: forumData.title,
+      fezType: FezType.meetup,
+      maxCapacity: 0,
+      info: `Created from Forum thread (${threadLink})`,
+      // I'm deciding against passing initialUserHeaders because adding a bunch of random people
+      // to an LFG is a bit surprising and could be annoying. The expected flow is for someone to create
+      // the LFG then share the link back to the thread.
+    });
+  }, [closeMenu, commonNavigation, forumData.title, forumData.forumID, serverUrl]);
 
   const handleModal = (content: ReactNode) => {
     closeMenu();
@@ -112,6 +129,7 @@ export const ForumThreadScreenActionsMenu = ({
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
+      <Divider bold={true} />
       <FavoriteMenuItem
         onPress={handleFavorite}
         disabled={forumData.isMuted}
@@ -126,6 +144,7 @@ export const ForumThreadScreenActionsMenu = ({
           refreshing={refreshing}
         />
       )}
+      <Menu.Item dense={false} title={'Create LFG'} leadingIcon={AppIcons.lfgCreate} onPress={handleCreateLfg} />
       {forumData.creator.userID === currentUserID && (
         <>
           <Menu.Item

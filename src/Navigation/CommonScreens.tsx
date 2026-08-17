@@ -46,6 +46,7 @@ import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateSc
 import {KrakenTalkHelpScreen} from '#src/Screens/KrakenTalk/KrakenTalkHelpScreen';
 import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen';
 import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
+import {LfgCreateScreen} from '#src/Screens/LFG/LfgCreateScreen';
 import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
 import {LfgHelpScreen} from '#src/Screens/LFG/LfgHelpScreen';
 import {LfgListHelpScreen} from '#src/Screens/LFG/LfgListHelpScreen';
@@ -134,6 +135,7 @@ import {
   Optional,
   ScheduleDayParams,
   WithElevation,
+  WithInitialUserHeaders,
   WithScrollToTopIntent,
 } from '#src/Types/RouteParams';
 
@@ -211,9 +213,7 @@ export type CommonStackParamList = {
     postData: PostData;
     forumData?: ForumData;
   };
-  SeamailCreateScreen?: WithElevation<{
-    initialUserHeaders?: UserHeader[];
-  }>;
+  SeamailCreateScreen?: WithElevation<WithInitialUserHeaders<{}>>;
   ForumPostPinnedScreen: {
     forumID: string;
   };
@@ -260,10 +260,16 @@ export type CommonStackParamList = {
   PersonalEventEditScreen: {
     personalEvent: FezData;
   };
-  PersonalEventCreateScreen: {
+  PersonalEventCreateScreen: WithInitialUserHeaders<{
     cruiseDay?: number;
-    initialUserHeaders?: UserHeader[];
-  };
+  }>;
+  LfgCreateScreen: WithInitialUserHeaders<{
+    cruiseDay?: number;
+    title?: string;
+    info?: string;
+    fezType?: FezType;
+    maxCapacity?: number;
+  }>;
   UserProfileHelpScreen: undefined;
   UserProfilesHelpScreen: undefined;
   UserProfileSelfHelpScreen: undefined;
@@ -397,6 +403,7 @@ export enum CommonStackComponents {
   fezChatDetailsScreen = 'FezChatDetailsScreen',
   seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
   seamailEditScreen = 'SeamailEditScreen',
+  lfgCreateScreen = 'LfgCreateScreen',
   lfgScreen = 'LfgScreen',
   lfgParticipationScreen = 'LfgParticipationScreen',
   lfgAddParticipantScreen = 'LfgAddParticipantScreen',
@@ -675,6 +682,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.seamailEditScreen}
         component={SeamailEditScreen}
         options={{title: 'Edit Seamail'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.lfgCreateScreen}
+        component={LfgCreateScreen}
+        options={{title: 'New LFG'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgScreen}

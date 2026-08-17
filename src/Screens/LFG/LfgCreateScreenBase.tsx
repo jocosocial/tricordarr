@@ -8,6 +8,7 @@ import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {FezCreateScreenBase} from '#src/Screens/Fez/FezCreateScreenBase';
+import {UserHeader} from '#src/Structs/ControllerStructs';
 
 interface Props {
   title?: string;
@@ -18,6 +19,7 @@ interface Props {
   minCapacity?: number;
   maxCapacity?: number;
   cruiseDay?: number;
+  initialUserHeaders?: UserHeader[];
 }
 
 export const LfgCreateScreenBase = ({
@@ -29,6 +31,7 @@ export const LfgCreateScreenBase = ({
   minCapacity = 2,
   maxCapacity = 2,
   cruiseDay,
+  initialUserHeaders = [],
 }: Props) => {
   const navigation = useCommonStack();
   const {getInitialValues} = useFezForm();
@@ -43,6 +46,7 @@ export const LfgCreateScreenBase = ({
     minCapacity,
     maxCapacity,
     cruiseDay,
+    initialUsers: initialUserHeaders,
   });
 
   return (
@@ -57,7 +61,7 @@ export const LfgCreateScreenBase = ({
         location: values.location,
         minCapacity: Number(values.minCapacity),
         maxCapacity: Number(values.maxCapacity),
-        initialUsers: [],
+        initialUsers: values.initialUsers.map(u => u.userID),
       })}
       onSuccess={response => {
         createFez(response);

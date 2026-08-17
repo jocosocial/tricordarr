@@ -5,7 +5,6 @@ import React from 'react';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {LfgCreateScreen} from '#src/Screens/LFG/LfgCreateScreen';
 import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
 import {LfgSearchScreen} from '#src/Screens/LFG/LfgSearchScreen';
 import {FezListEndpoints} from '#src/Types';
@@ -19,7 +18,6 @@ export type LfgStackParamList = CommonStackParamList & {
       cruiseDay?: number;
     }>
   >;
-  LfgCreateScreen: {cruiseDay?: number};
   LfgSearchScreen: {
     endpoint: FezListEndpoints;
   };
@@ -55,11 +53,6 @@ export const LfgStackNavigator = () => {
             title: titleMap[route.params.endpoint],
           };
         }}
-      />
-      <Stack.Screen
-        name={LfgStackComponents.lfgCreateScreen}
-        component={LfgCreateScreen}
-        options={{title: 'New LFG'}}
       />
       <Stack.Screen
         name={LfgStackComponents.lfgSearchScreen}

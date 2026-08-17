@@ -1,4 +1,5 @@
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
+import {UserHeader} from '#src/Structs/ControllerStructs';
 
 /**
  * Generic type for route params that support intent-based navigation.
@@ -39,6 +40,13 @@ export type NoDrawerParams = {
  */
 export type WithElevation<T = {}> = T & {
   asPrivilegedUser?: keyof typeof PrivilegedUserAccounts;
+};
+
+/**
+ * Generic type for route params that seed initial participants on create screens.
+ */
+export type WithInitialUserHeaders<T = {}> = T & {
+  initialUserHeaders?: UserHeader[];
 };
 
 /**
