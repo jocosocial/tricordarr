@@ -30,7 +30,7 @@
 
 - iOS localhost: `127.0.0.1`
 - Android emulator: `10.0.2.2`
-- `adb reverse` may be required offline
+- Tell users they may need `adb reverse tcp:7848 tcp:7848` to port forward
 
 ## Help Screens
 

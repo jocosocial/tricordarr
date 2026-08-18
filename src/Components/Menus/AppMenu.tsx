@@ -64,8 +64,12 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
 
   const styles = StyleSheet.create({
     menu: {
-      ...commonStyles.safeMarginTop,
-      ...commonStyles.safeMarginBottom,
+      // Paper positions this container absolutely at the anchor's own top, so the menu would
+      // otherwise cover the anchor entirely. Yoga adds margin on top of that computed offset,
+      // so a small marginTop nudges the menu down far enough to leave the anchor visible.
+      // Keep this a fixed value: using a safe area inset here is what pushed menus far below
+      // their anchors, and the maxHeight below is what keeps the menu clear of the system bars.
+      ...commonStyles.marginTop,
       ...(style as object),
     },
     scrollViewContainer: {
@@ -106,6 +110,9 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
     <Menu
       visible={visible}
       style={styles.menu}
+      // statusBarHeight became necessary after upgrade to Expo+RN86 due to menus
+      // showing up way too low.
+      statusBarHeight={0}
       keyboardShouldPersistTaps={menuProps.keyboardShouldPersistTaps || 'handled'}
       {...menuProps}>
       <View ref={containerRef} style={styles.scrollViewContainer}>
