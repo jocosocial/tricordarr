@@ -19,13 +19,13 @@
     "@d11/react-native-fast-image": "^8.12.0",
     "@legendapp/list": "^3.3.3",
     "@notifee/react-native": "^9.1.8",
+    "@preeternal/react-native-cookie-manager": "^6.4.0",
     "@react-native-async-storage/async-storage": "^3.1.1",
     "@react-native-camera-roll/camera-roll": "^7.10.2",
     "@react-native-clipboard/clipboard": "^1.16.0",
     "@react-native-community/hooks": "^100.1.0",
     "@react-native-community/netinfo": "^12.0.1",
     "@react-native-community/slider": "^5.0.1",
-    "@react-native-cookies/cookies": "^6.2.1",
     "@react-native-vector-icons/material-design-icons": "^13.1.2",
     "@react-native/new-app-screen": "0.86.2",
     "@react-navigation/bottom-tabs": "^7.4.7",
@@ -168,7 +168,6 @@
         "listUnknownPackages": false,
         "exclude": [
           "@notifee/react-native",
-          "@react-native-cookies/cookies",
           "react-native-callkeep",
           "react-native-encrypted-storage",
           "react-native-fs"
