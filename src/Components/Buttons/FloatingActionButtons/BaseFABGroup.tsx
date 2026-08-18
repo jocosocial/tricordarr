@@ -42,6 +42,9 @@ export const BaseFABGroup = ({
     },
     group: {
       // This is all fucking stupid.
+      // Paper's FAB.Group adds the bottom safe-area inset internally. When a tab
+      // bar already consumed that inset, this negative margin cancels Paper's
+      // extra offset so the FAB sits above the tab bar.
       marginBottom: -1 * insets.bottom,
       bottom: snackbarPayload ? styleDefaults.overScrollHeight * 0.75 : 0,
     },

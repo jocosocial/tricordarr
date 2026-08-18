@@ -2,6 +2,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
@@ -31,6 +32,7 @@ interface CriticalErrorViewProps {
 export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
+  const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const [showStack, setShowStack] = React.useState(false);
   const [showSessions, setShowSessions] = React.useState(false);
@@ -43,8 +45,8 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const styles = StyleSheet.create({
     screen: {
       ...commonStyles.flex,
-      ...commonStyles.safePaddingTop,
-      ...commonStyles.safePaddingBottom,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
     },
     outerContainer: {
       ...commonStyles.flex,

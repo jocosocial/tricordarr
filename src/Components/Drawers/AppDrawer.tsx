@@ -5,6 +5,7 @@ import {Linking, ScrollView, StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Drawer} from 'react-native-drawer-layout';
 import {Badge, Drawer as PaperDrawer} from 'react-native-paper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
@@ -27,12 +28,14 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   });
   const {data: profilePublicData} = useUserProfileQuery({enabled: oobeCompleted});
   const {commonStyles} = useStyles();
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
   const styles = StyleSheet.create({
     drawer: {
       ...commonStyles.background,
-      ...commonStyles.safePaddingVertical,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
     },
   });
 

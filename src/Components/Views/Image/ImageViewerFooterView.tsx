@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
@@ -17,6 +18,7 @@ interface ImageViewerFooterViewProps {
  */
 export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerFooterViewProps) => {
   const {commonStyles} = useStyles();
+  const insets = useSafeAreaInsets();
 
   const styles = StyleSheet.create({
     footerContainer: {
@@ -27,7 +29,7 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifyCenter,
       ...commonStyles.imageViewerBackgroundAlpha,
-      ...commonStyles.safePaddingBottom,
+      paddingBottom: insets.bottom,
     },
     verticalContainer: {
       ...commonStyles.flexColumn,

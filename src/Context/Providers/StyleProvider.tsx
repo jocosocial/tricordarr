@@ -1,6 +1,5 @@
 import React, {PropsWithChildren} from 'react';
 import {StyleSheet} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {StyleContext} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -9,7 +8,6 @@ import {commonStyles, styleDefaults} from '#src/Styles';
 
 export const StyleProvider = ({children}: PropsWithChildren) => {
   const {theme} = useAppTheme();
-  const inset = useSafeAreaInsets();
 
   const themedStyles = StyleSheet.create({
     ...commonStyles,
@@ -139,22 +137,6 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     imageViewerBackground: {
       backgroundColor: theme.colors.constantBlack,
       color: theme.colors.constantWhite,
-    },
-    safeMarginTop: {
-      marginTop: inset.top,
-    },
-    safePaddingVertical: {
-      paddingTop: inset.top,
-      paddingBottom: inset.bottom,
-    },
-    safeMarginBottom: {
-      marginBottom: inset.bottom,
-    },
-    safePaddingTop: {
-      paddingTop: inset.top,
-    },
-    safePaddingBottom: {
-      paddingBottom: inset.bottom,
     },
     onMenu: {
       backgroundColor: theme.colors.elevation.level2,

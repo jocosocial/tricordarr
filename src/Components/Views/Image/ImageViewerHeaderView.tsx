@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ImageMetadataView} from '#src/Components/Views/Image/ImageMetadataView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -25,6 +26,7 @@ export const ImageViewerHeaderView = ({
 }: ImageViewerHeaderViewProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
+  const insets = useSafeAreaInsets();
   const [showMetadata, setShowMetadata] = React.useState(false);
 
   const styles = StyleSheet.create({
@@ -32,7 +34,7 @@ export const ImageViewerHeaderView = ({
       ...commonStyles.flexRow,
       ...commonStyles.justifyContentEnd,
       ...commonStyles.imageViewerBackground,
-      ...commonStyles.safePaddingTop,
+      paddingTop: insets.top,
     },
   });
 

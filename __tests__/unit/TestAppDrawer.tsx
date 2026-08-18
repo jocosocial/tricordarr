@@ -44,7 +44,10 @@ jest.mock('#src/Context/Contexts/RoleContext', () => ({
   }),
 }));
 jest.mock('#src/Context/Contexts/StyleContext', () => ({
-  useStyles: () => ({commonStyles: {background: {}, safePaddingVertical: {}}}),
+  useStyles: () => ({commonStyles: {background: {}}}),
+}));
+jest.mock('react-native-safe-area-context', () => ({
+  useSafeAreaInsets: () => ({top: 0, bottom: 0, left: 0, right: 0}),
 }));
 jest.mock('#src/Enums/Icons', () => ({AppIcons: {}}));
 jest.mock('#src/Queries/Alert/NotificationQueries', () => ({
