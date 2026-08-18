@@ -1,4 +1,4 @@
-import notifee, {EventType, Notification, NotificationPressAction} from '@notifee/react-native';
+import notifee, {EventType, Notification, NotificationPressAction} from 'react-native-notify-kit';
 
 import {PressAction} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';

@@ -1,7 +1,7 @@
-import notifee from '@notifee/react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
+import notifee from 'react-native-notify-kit';
 import {Item} from 'react-navigation-header-buttons';
 
 import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEditButton';

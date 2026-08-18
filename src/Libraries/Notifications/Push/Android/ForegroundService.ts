@@ -1,5 +1,5 @@
-import notifee from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import notifee from 'react-native-notify-kit';
 import {checkNotifications, RESULTS} from 'react-native-permissions';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import tinycolor from 'tinycolor2';

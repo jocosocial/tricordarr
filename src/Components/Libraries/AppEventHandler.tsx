@@ -1,7 +1,7 @@
-import notifee, {Event, EventType} from '@notifee/react-native';
 import {useLinkTo} from '@react-navigation/native';
 import {useEffect} from 'react';
 import {Linking} from 'react-native';
+import notifee, {Event, EventType} from 'react-native-notify-kit';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {PressAction} from '#src/Enums/Notifications';

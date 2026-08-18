@@ -1,4 +1,4 @@
-import notifee, {AndroidAction, AndroidChannelGroup} from '@notifee/react-native';
+import notifee, {AndroidAction, AndroidChannelGroup} from 'react-native-notify-kit';
 import removeMd from 'remove-markdown';
 
 import {markAsReadPressAction, PressAction, settingsPressAction} from '#src/Enums/Notifications';

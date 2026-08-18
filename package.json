@@ -18,7 +18,6 @@
   "dependencies": {
     "@d11/react-native-fast-image": "^8.12.0",
     "@legendapp/list": "^3.3.3",
-    "@notifee/react-native": "^9.1.8",
     "@preeternal/react-native-cookie-manager": "^6.4.0",
     "@react-native-async-storage/async-storage": "^3.1.1",
     "@react-native-camera-roll/camera-roll": "^7.10.2",
@@ -75,6 +74,7 @@
     "react-native-linear-gradient": "^2.8.3",
     "react-native-logs": "^5.5.0",
     "react-native-mime-types": "^2.5.0",
+    "react-native-notify-kit": "^10.5.0",
     "react-native-paper": "^5.14.5",
     "react-native-paper-dates": "^0.23.9",
     "react-native-permissions": "^5.4.2",
@@ -167,7 +167,6 @@
       "reactNativeDirectoryCheck": {
         "listUnknownPackages": false,
         "exclude": [
-          "@notifee/react-native",
           "react-native-callkeep",
           "react-native-encrypted-storage",
           "react-native-fs"

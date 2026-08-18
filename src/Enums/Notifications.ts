@@ -1,4 +1,4 @@
-import {AndroidAction} from '@notifee/react-native';
+import {AndroidAction} from 'react-native-notify-kit';
 
 export enum fgsWorkerNotificationIDs {
   worker = 'fgsWorkerNotificationID',

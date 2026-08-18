@@ -1,4 +1,4 @@
-import notifee, {AndroidChannelGroup} from '@notifee/react-native';
+import notifee, {AndroidChannelGroup} from 'react-native-notify-kit';
 
 /**
  * System channel is for notifications for Tricordarr-specific events.

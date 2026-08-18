@@ -1,4 +1,4 @@
-import notifee, {AndroidCategory} from '@notifee/react-native';
+import notifee, {AndroidCategory} from 'react-native-notify-kit';
 import tinycolor from 'tinycolor2';
 
 import {PressAction} from '#src/Enums/Notifications';
