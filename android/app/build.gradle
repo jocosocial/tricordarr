@@ -55,8 +55,38 @@ react {
 
     // Added by install-expo-modules https://docs.expo.dev/bare/installing-expo-modules/
     entryFile = file(["node", "-e", "require('expo/scripts/resolveAppEntry')", rootDir.getAbsoluteFile().getParentFile().getAbsolutePath(), "android", "absolute"].execute(null, rootDir).text.trim())
-    cliFile = new File(["node", "--print", "require.resolve('@expo/cli')"].execute(null, rootDir).text.trim())
+    cliFile = new File(["node", "--print", "require.resolve('@expo/cli', { paths: [require.resolve('expo/package.json')] })"].execute(null, rootDir).text.trim())
     bundleCommand = "export:embed"
+}
+
+// Workaround for an unfixed bug in @react-native/gradle-plugin (still present as of RN 0.87.0):
+// TaskConfiguration.kt registers createBundle*JsAndAssets without dependsOn/mustRunAfter on the
+// tasks whose outputs it reads (entry point, autolinking, codegen, build config). This was only
+// a warning under Gradle 8, but Gradle 9+ treats undeclared implicit dependencies as a hard
+// build failure, which is what surfaced this after the Gradle upgrade.
+//
+// Claude put this in to deal with a build issue after swapping out some unmaintained dependencies.
+// Or a minor RN bump? idk, a lot happened.
+afterEvaluate {
+    def globalReactTasks = [
+        "generateReactNativeEntryPoint",
+        "generateAutolinkingPackageList",
+        "generateAutolinkingNewArchitectureFiles",
+        "generateCodegenArtifactsFromSchema"
+    ]
+    tasks.matching { it.name.startsWith("createBundle") && it.name.endsWith("JsAndAssets") }.configureEach { bundleTask ->
+        globalReactTasks.each { taskName ->
+            def t = tasks.findByName(taskName)
+            if (t != null) {
+                bundleTask.dependsOn(t)
+            }
+        }
+        def variantName = bundleTask.name - "createBundle" - "JsAndAssets"
+        def buildConfigTask = tasks.findByName("generate${variantName}BuildConfig")
+        if (buildConfigTask != null) {
+            bundleTask.dependsOn(buildConfigTask)
+        }
+    }
 }
 
 /**
