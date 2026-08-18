@@ -3,7 +3,6 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {isIOS} from '#src/Libraries/Platform/Detection';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ImageViewerFooterViewProps {
@@ -28,7 +27,7 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifyCenter,
       ...commonStyles.imageViewerBackgroundAlpha,
-      ...(isIOS && commonStyles.safePaddingBottom),
+      ...commonStyles.safePaddingBottom,
     },
     verticalContainer: {
       ...commonStyles.flexColumn,

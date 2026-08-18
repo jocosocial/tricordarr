@@ -6,7 +6,6 @@ import {ImageMetadataView} from '#src/Components/Views/Image/ImageMetadataView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {isIOS} from '#src/Libraries/Platform/Detection';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ImageViewerHeaderViewProps {
@@ -33,7 +32,7 @@ export const ImageViewerHeaderView = ({
       ...commonStyles.flexRow,
       ...commonStyles.justifyContentEnd,
       ...commonStyles.imageViewerBackground,
-      ...(isIOS && commonStyles.safePaddingTop),
+      ...commonStyles.safePaddingTop,
     },
   });
 
