@@ -1,4 +1,10 @@
 {
   "name": "Tricordarr",
-  "displayName": "Tricordarr"
+  "displayName": "Tricordarr",
+  "extra": {
+    "eas": {
+      "projectId": "3d31fd19-a887-41aa-b8d0-270c5c4c24d4"
+    }
+  },
+  "owner": "grantcohoe"
 }
