@@ -20,6 +20,11 @@ const fontConfig = {
   },
 };
 
+/**
+ * Type for the app theme. Used for better IDE support.
+ */
+export type AppTheme = typeof twitarrTheme;
+
 export const twitarrTheme = {
   ...DefaultTheme,
   fonts: configureFonts({config: fontConfig}),

@@ -11,7 +11,6 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
-import {styleDefaults} from '#src/Styles';
 
 const logger = createLogger('AvatarImageField.tsx');
 
@@ -24,7 +23,7 @@ interface AvatarImageFieldProps<TFormData> {
  * Shares lot with UserProfileAvatar but not in a Form context.
  */
 export const AvatarImageField = <TFormData,>({imageData, name}: AvatarImageFieldProps<TFormData>) => {
-  const {commonStyles} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
   const {setSnackbarPayload} = useSnackbar();
   const [field, _2, helpers] = useField<ImageUploadData>(name as string);
 

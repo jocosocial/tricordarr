@@ -16,7 +16,6 @@ import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '#src/Queries/User/UserAvatarMutations';
 import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
-import {styleDefaults} from '#src/Styles';
 
 const logger = createLogger('UserProfileAvatar.tsx');
 
@@ -56,7 +55,7 @@ const UserProfileAvatarImage = ({user}: {user: ProfilePublicData}) => {
 };
 
 export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps) => {
-  const {commonStyles} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
   const avatarDeleteMutation = useUserImageDeleteMutation();
   const avatarMutation = useUserAvatarMutation();
   const {setSnackbarPayload} = useSnackbar();

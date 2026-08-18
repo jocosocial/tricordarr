@@ -19,11 +19,11 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {buildWebsocketURL} from '#src/Libraries/Network/Websockets';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {commonStyles} from '#src/Styles';
 import {BackgroundConnectionSettingsFormValues} from '#src/Types/FormValues';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
@@ -44,6 +44,7 @@ interface ForegroundProviderStatus {
 }
 
 export const BackgroundConnectionSettingsIOSView = () => {
+  const {commonStyles} = useStyles();
   const {appConfig, updateAppConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);

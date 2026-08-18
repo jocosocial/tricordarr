@@ -3,7 +3,7 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Badge} from 'react-native-paper';
 
-import {commonStyles} from '#src/Styles';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface ForumNewBadgeProps {
   unreadCount?: number;
@@ -11,6 +11,7 @@ interface ForumNewBadgeProps {
 }
 
 export const ForumNewBadge = ({unreadCount, unit}: ForumNewBadgeProps) => {
+  const {commonStyles} = useStyles();
   const styles = StyleSheet.create({
     badge: {
       ...commonStyles.bold,

@@ -1,11 +1,11 @@
 import {DefaultTheme as NavigationDefaultTheme} from '@react-navigation/native';
 import {createContext, useContext} from 'react';
 
-import {twitarrTheme, twitarrThemeDark} from '#src/Styles/Theme';
+import {type AppTheme, twitarrTheme} from '#src/Styles/Theme';
 
 interface ThemeContextType {
   isDarkMode: boolean;
-  theme: typeof twitarrTheme | typeof twitarrThemeDark;
+  theme: AppTheme;
   navTheme: ReactNavigation.Theme;
 }
 

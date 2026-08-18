@@ -96,8 +96,10 @@ Use `createLogger` rather than `console.log`
 
 ## Styles
 
-- Prefer merging styles once via `StyleSheet.create({foo: {...commonStyles.a, ...commonStyles.b}})` over passing an array to `style` (e.g. `style={[commonStyles.a, commonStyles.b]}`)
-- Array styles allocate a new array every render and must be flattened each time; a merged `StyleSheet.create` object is a single stable reference
+- All styles come from `useStyles()` (`commonStyles`, `styleDefaults`, `screenOptions`); definitions live in `StyleProvider.tsx`. There is no separate static style library.
+- Never pass an array to `style`; merge once into a single object via `StyleSheet.create({foo: {...commonStyles.a, ...commonStyles.b}})`. Array styles allocate a new array every render and must be flattened each time; a merged `StyleSheet.create` object is a single stable reference.
+- Component-specific styles: fully static ones go in a module-scope `StyleSheet.create` outside the component; styles depending on `commonStyles`, theme, or props are built inside the component with `StyleSheet.create` wrapped in `useMemo` keyed on those inputs, so style references stay stable for memoized children.
+- Color values needed outside React (foreground services) come from `getTheme()` in `#src/Styles/Theme`.
 
 ## Hooks
 

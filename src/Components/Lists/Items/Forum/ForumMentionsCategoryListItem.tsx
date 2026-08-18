@@ -5,11 +5,12 @@ import {Text} from 'react-native-paper';
 
 import {ForumNewBadge} from '#src/Components/Badges/ForumNewBadge';
 import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {commonStyles} from '#src/Styles';
 
 export const ForumMentionsCategoryListItem = () => {
+  const {commonStyles} = useStyles();
   const {data: userNotificationData} = useUserNotificationDataQuery();
   const forumNavigation = useForumStackNavigation();
   const styles = StyleSheet.create({

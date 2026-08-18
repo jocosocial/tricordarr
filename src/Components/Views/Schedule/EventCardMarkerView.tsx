@@ -3,7 +3,6 @@ import {ColorValue, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {styleDefaults} from '#src/Styles';
 
 interface EventBannerViewProps {
   label: string;
@@ -21,7 +20,7 @@ interface EventBannerViewProps {
  * to a wrapper View (with explicit dimensions) instead of the Text.
  */
 export const EventCardMarkerView = ({label, color, backgroundColor, style}: EventBannerViewProps) => {
-  const {commonStyles} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
 
   const bannerWidth = styleDefaults.marginSize * 2;
   const styles = StyleSheet.create({

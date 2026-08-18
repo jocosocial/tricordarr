@@ -9,7 +9,6 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {getDayMarker, getTimeMarker} from '#src/Libraries/DateTime';
 import {getScheduleListTimeSeparatorID} from '#src/Libraries/Schedule';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
-import {styleDefaults} from '#src/Styles';
 import {MaintainVisibleContentPosition} from '#src/Types/Lists';
 
 interface ScheduleFlatListBaseProps<TItem> {
@@ -51,7 +50,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
   overScroll,
   maintainVisibleContentPosition,
 }: ScheduleFlatListBaseProps<TItem>) => {
-  const {commonStyles} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
 
   const contentStyle = {
     ...commonStyles.paddingHorizontalSmall,
@@ -92,7 +91,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
         {overScrollSpacer}
       </>
     );
-  }, [hasNextPage, items.length, separator, overScroll]);
+  }, [hasNextPage, items.length, separator, overScroll, styleDefaults.overScrollHeight]);
 
   const renderSeparatorTime = ({leadingItem}: {leadingItem: TItem}) => {
     const leadingIndex = items.indexOf(leadingItem);

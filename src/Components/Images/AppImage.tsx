@@ -70,7 +70,11 @@ export const AppImage = ({
       <TouchableOpacity activeOpacity={1} onPress={onPress || handlePress} disabled={disableTouch}>
         {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageUriSource} />}
         {mode === 'image' && (
-          <Image resizeMode={'cover'} style={[commonStyles.headerImage, style]} source={imageUriSource} />
+          <Image
+            resizeMode={'cover'}
+            style={StyleSheet.flatten([commonStyles.headerImage, style]) as RNImageStyle}
+            source={imageUriSource}
+          />
         )}
         {mode === 'scaledimage' &&
           (image.assetSource && image.assetWidth && image.assetHeight ? (

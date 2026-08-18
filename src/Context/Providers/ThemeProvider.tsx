@@ -43,8 +43,10 @@ export const ThemeProvider = ({children}: PropsWithChildren) => {
     return darkMode ? navDarkTheme : navLightTheme;
   }, [darkMode]);
 
+  const contextValue = useMemo(() => ({isDarkMode: darkMode, theme, navTheme}), [darkMode, theme, navTheme]);
+
   return (
-    <ThemeContext.Provider value={{isDarkMode: darkMode, theme, navTheme}}>
+    <ThemeContext.Provider value={contextValue}>
       <SystemBars style={darkMode ? 'light' : 'dark'} />
       {children}
     </ThemeContext.Provider>

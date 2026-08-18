@@ -374,7 +374,7 @@ export const APIImage = ({
           {mode === 'image' && (
             <FastImage
               resizeMode={'cover'}
-              style={styles.image}
+              style={styles.image as FastImageStyle}
               source={imageSource}
               onLoad={onLoad}
               onError={onError}

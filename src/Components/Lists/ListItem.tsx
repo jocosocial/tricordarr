@@ -1,5 +1,5 @@
 import {forwardRef} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, type ViewStyle} from 'react-native';
 import {List} from 'react-native-paper';
 import {type Props as RNPListItemProps} from 'react-native-paper/lib/typescript/components/List/ListItem';
 
@@ -22,11 +22,11 @@ export const ListItem = forwardRef<View, RNPListItemProps>((props, ref) => {
   const styles = StyleSheet.create({
     item: {
       ...commonStyles.paddingRightSmall,
-      ...props.style,
+      ...(props.style as ViewStyle | undefined),
     },
     content: {
       ...commonStyles.paddingLeftSmall,
-      ...props.contentStyle,
+      ...(props.contentStyle as ViewStyle | undefined),
     },
   });
 

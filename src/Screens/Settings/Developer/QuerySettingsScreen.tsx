@@ -13,6 +13,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
@@ -21,7 +22,6 @@ import {
   SettingsStackScreenComponents,
 } from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
-import {commonStyles} from '#src/Styles';
 import {QuerySettingsFormValues} from '#src/Types/FormValues';
 
 const logger = createLogger('QuerySettingsScreen.tsx');
@@ -31,6 +31,7 @@ export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreen
 const generateNewCacheBuster = () => new Date().toString();
 
 export const QuerySettingsScreen = ({navigation}: Props) => {
+  const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const queryClient = useQueryClient();
   const {appConfig, updateAppConfig} = useConfig();

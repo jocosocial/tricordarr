@@ -76,7 +76,6 @@ export const MarkdownScreenBase = ({
 
   const styles = StyleSheet.create({
     button: {
-      ...commonStyles.onSurfaceVariant,
       flexShrink: 0,
     },
     container: {

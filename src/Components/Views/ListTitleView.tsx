@@ -22,7 +22,6 @@ export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall'}: 
       ...commonStyles.paddingVerticalSmall,
       ...commonStyles.paddingHorizontal,
       ...commonStyles.surfaceVariant,
-      ...commonStyles.listTitleHeader,
     },
     innerContainer: {
       ...commonStyles.alignItemsCenter,

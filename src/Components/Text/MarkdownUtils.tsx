@@ -1,4 +1,10 @@
-import {ASTNode, OnLinkPress, openUrl, RenderRules} from '@ronradtke/react-native-markdown-display';
+import {
+  ASTNode,
+  type MarkdownStyleMap,
+  OnLinkPress,
+  openUrl,
+  RenderRules,
+} from '@ronradtke/react-native-markdown-display';
 import {useCallback, useMemo} from 'react';
 import {Text as RNText, StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -32,7 +38,7 @@ export const useMarkdownStyles = (textStyle?: StyleProp<TextStyle>) => {
   const {commonStyles, styleDefaults} = useStyles();
 
   return useMemo(
-    () =>
+    (): MarkdownStyleMap =>
       StyleSheet.create({
         text: {
           ...commonStyles.onBackground,
@@ -66,7 +72,7 @@ export const useMarkdownStyles = (textStyle?: StyleProp<TextStyle>) => {
         link: {
           marginBottom: 0,
         },
-      }),
+      }) as MarkdownStyleMap,
     [commonStyles.onBackground, commonStyles.background, textStyle, styleDefaults.fontSize],
   );
 };

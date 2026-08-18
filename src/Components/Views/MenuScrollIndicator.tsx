@@ -27,7 +27,7 @@ export const MenuScrollIndicator = ({visible, onPress}: MenuScrollIndicatorProps
       ...commonStyles.paddingTopSmall,
       ...commonStyles.paddingBottomSmall,
       ...commonStyles.alignItemsCenter,
-      ...commonStyles.justifyContentCenter,
+      ...commonStyles.justifyCenter,
       ...commonStyles.onMenu,
     },
   });

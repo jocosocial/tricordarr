@@ -4,16 +4,17 @@ import {Avatar} from 'react-native-paper';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {styleDefaults} from '#src/Styles';
 
 interface FezAvatarImageProps {
   fez: FezData;
 }
 
 export const FezAvatarImage = ({fez}: FezAvatarImageProps) => {
+  const {styleDefaults} = useStyles();
   const {currentUserID} = useSession();
   const commonNavigation = useCommonStack();
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== currentUserID) || [];

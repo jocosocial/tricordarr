@@ -3,10 +3,11 @@ import {Dimensions, KeyboardAvoidingView} from 'react-native';
 import {Modal} from 'react-native-paper';
 
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {commonStyles} from '#src/Styles';
 
 export const AppModal = () => {
+  const {commonStyles} = useStyles();
   const {modalVisible, modalContent, setModalVisible, modalOnDismiss, setModalOnDismiss} = useModal();
   const {theme} = useAppTheme();
 

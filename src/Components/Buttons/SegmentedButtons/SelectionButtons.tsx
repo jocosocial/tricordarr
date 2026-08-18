@@ -25,9 +25,6 @@ export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
   const {dispatchSelectedItems, setEnableSelection, selectedItems} = useSelection();
 
   const styles = StyleSheet.create({
-    button: {
-      ...commonStyles.onSurfaceVariant,
-    },
     container: {
       ...commonStyles.paddingHorizontal,
       ...commonStyles.surfaceVariant,
@@ -44,25 +41,21 @@ export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
       value: 'all',
       label: 'All',
       icon: AppIcons.selectAll,
-      style: styles.button,
     },
     {
       value: 'inverse',
       label: 'Inverse',
       icon: AppIcons.selectInverse,
-      style: styles.button,
     },
     {
       value: 'none',
       label: 'None',
       icon: AppIcons.selectNone,
-      style: styles.button,
     },
     {
       value: 'cancel',
       label: 'Cancel',
       icon: AppIcons.cancel,
-      style: styles.button,
     },
   ];
 

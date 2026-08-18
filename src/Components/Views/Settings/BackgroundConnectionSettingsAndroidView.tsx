@@ -18,15 +18,16 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
 import {fgsFailedCounter, getSharedWebSocket} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
-import {commonStyles} from '#src/Styles';
 
 export const BackgroundConnectionSettingsAndroidView = () => {
+  const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
