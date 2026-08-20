@@ -39,6 +39,7 @@ export async function showCallForegroundNotification(remoteUser: UserHeader, cal
       colorized: true,
       pressAction: {
         id: PressAction.krakentalk,
+        launchActivity: 'default',
       },
       ongoing: true,
       category: AndroidCategory.CALL,
@@ -68,6 +69,7 @@ export async function updateCallForegroundNotification(remoteUser: UserHeader, c
       colorized: true,
       pressAction: {
         id: PressAction.krakentalk,
+        launchActivity: 'default',
       },
       ongoing: true,
       category: AndroidCategory.CALL,

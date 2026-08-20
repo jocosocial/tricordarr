@@ -223,12 +223,14 @@ async function generateForegroundServiceNotification(
         colorized: true,
         pressAction: {
           id: PressAction.home,
+          launchActivity: 'default',
         },
         actions: [
           {
             title: 'Settings',
             pressAction: {
               id: PressAction.worker,
+              launchActivity: 'default',
             },
           },
         ],
@@ -251,6 +253,7 @@ async function generateFgsShutdownNotification() {
       colorized: true,
       pressAction: {
         id: PressAction.worker,
+        launchActivity: 'default',
       },
       smallIcon: 'ic_notification',
     },

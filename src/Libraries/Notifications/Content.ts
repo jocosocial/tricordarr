@@ -171,6 +171,7 @@ export async function generateContentNotification(
       // https://notifee.app/react-native/docs/android/interaction
       pressAction: {
         id: pressActionID,
+        launchActivity: 'default',
       },
       smallIcon: 'ic_notification',
       actions: actions,
