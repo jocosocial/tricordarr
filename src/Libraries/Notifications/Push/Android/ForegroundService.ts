@@ -218,6 +218,7 @@ async function generateForegroundServiceNotification(
       android: {
         channelId: serviceChannel.id,
         asForegroundService: true,
+        ongoing: false,
         color: color,
         colorized: true,
         pressAction: {
