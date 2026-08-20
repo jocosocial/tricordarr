@@ -15,6 +15,7 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
@@ -22,7 +23,8 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccoun
 
 export const OobeAccountScreen = ({navigation}: Props) => {
   const {theme} = useAppTheme();
-  const {isLoggedIn} = useSession();
+  const {isLoggedIn, currentSession} = useSession();
+  const accessLevel = currentSession?.tokenData?.accessLevel;
   const {data: profilePublicData} = useUserProfileQuery();
   const {setModalContent, setModalVisible} = useModal();
   const {preRegistrationMode} = usePreRegistration();
@@ -72,6 +74,13 @@ export const OobeAccountScreen = ({navigation}: Props) => {
           <PaddedContentView>
             <Text>Successfully logged in as user: {profilePublicData.header.username}</Text>
           </PaddedContentView>
+          {accessLevel && (
+            <PaddedContentView>
+              <Text>
+                Access level: {UserAccessLevel.getLabel(accessLevel)} ({UserAccessLevel.getDescription(accessLevel)})
+              </Text>
+            </PaddedContentView>
+          )}
           <PaddedContentView>
             <Text>
               If this is incorrect or you wish to change accounts, you can log out below. To proceed with your current
