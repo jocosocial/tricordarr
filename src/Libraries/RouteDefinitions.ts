@@ -52,6 +52,10 @@ export const allRoutes: RouteDefinition[] = [
   // ==================== Settings Routes ====================
   {screen: SettingsStackScreenComponents.settings, path: 'settings'},
   {screen: SettingsStackScreenComponents.pushNotificationSettings, path: 'settings/pushnotifications'},
+  {
+    screen: SettingsStackScreenComponents.backgroundConnectionSettings,
+    path: 'settings/backgroundconnection',
+  },
   {screen: SettingsStackScreenComponents.login, path: 'login'},
 
   // ==================== User Routes ====================

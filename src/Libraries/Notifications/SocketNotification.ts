@@ -14,6 +14,8 @@ import {
   serviceChannel,
 } from '#src/Libraries/Notifications/Channels';
 import {generateContentNotification} from '#src/Libraries/Notifications/Content';
+import {getPath} from '#src/Libraries/RouteDefinitions';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('SocketNotification.ts');
@@ -226,7 +228,7 @@ export const getUrlForNotificationEvent = (
         return;
       }
       case PressAction.worker: {
-        return '/settings/serverconnectionsettingsscreen';
+        return `/${getPath(SettingsStackScreenComponents.backgroundConnectionSettings)}`;
       }
       case PressAction.contentSettings: {
         const baseUrl = '/settings/pushnotifications';
