@@ -1,0 +1,53 @@
+diff --git a/node_modules/react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable/ReanimatedSwipeableProps.d.ts b/node_modules/react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable/ReanimatedSwipeableProps.d.ts
+index e97b6db..b164959 100644
+--- a/node_modules/react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable/ReanimatedSwipeableProps.d.ts
++++ b/node_modules/react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable/ReanimatedSwipeableProps.d.ts
+@@ -150,6 +150,11 @@ export type SwipeableProps = {
+      * The horizontal offset from the starting point required to trigger a left-swipe gesture. Defaults to -10.
+      */
+     dragOffsetFromRight?: number;
++    /**
++     * Vertical movement that causes the pan gesture to fail before activation, allowing parent scroll views
++     * to take over. Expressed as [negative, positive] range in points.
++     */
++    failOffsetY?: [number, number];
+ }>;
+ export interface SwipeableMethods {
+     close: () => void;
+diff --git a/node_modules/react-native-gesture-handler/src/components/ReanimatedSwipeable/ReanimatedSwipeable.tsx b/node_modules/react-native-gesture-handler/src/components/ReanimatedSwipeable/ReanimatedSwipeable.tsx
+index 4881db1..43432b1 100644
+--- a/node_modules/react-native-gesture-handler/src/components/ReanimatedSwipeable/ReanimatedSwipeable.tsx
++++ b/node_modules/react-native-gesture-handler/src/components/ReanimatedSwipeable/ReanimatedSwipeable.tsx
+@@ -61,6 +61,7 @@ const Swipeable = (props: SwipeableProps) => {
+     enableTrackpadTwoFingerGesture = DEFAULT_ENABLE_TRACKING_TWO_FINGER_GESTURE,
+     dragOffsetFromLeft = DEFAULT_DRAG_OFFSET,
+     dragOffsetFromRight = -DEFAULT_DRAG_OFFSET,
++    failOffsetY,
+     friction = DEFAULT_FRICTION,
+     overshootFriction = DEFAULT_OVERSHOOT_FRICTION,
+     onSwipeableOpenStartDrag,
+@@ -530,6 +531,7 @@ const Swipeable = (props: SwipeableProps) => {
+     enabled: enabled ?? true,
+     enableTrackpadTwoFingerGesture: enableTrackpadTwoFingerGesture,
+     activeOffsetX: [dragOffsetFromRight, dragOffsetFromLeft],
++    failOffsetY,
+     simultaneousWith,
+     requireToFail,
+     block,
+diff --git a/node_modules/react-native-gesture-handler/src/components/ReanimatedSwipeable/ReanimatedSwipeableProps.ts b/node_modules/react-native-gesture-handler/src/components/ReanimatedSwipeable/ReanimatedSwipeableProps.ts
+index 1e1246f..f36178b 100644
+--- a/node_modules/react-native-gesture-handler/src/components/ReanimatedSwipeable/ReanimatedSwipeableProps.ts
++++ b/node_modules/react-native-gesture-handler/src/components/ReanimatedSwipeable/ReanimatedSwipeableProps.ts
+@@ -196,6 +196,12 @@ export type SwipeableProps = {
+    * The horizontal offset from the starting point required to trigger a left-swipe gesture. Defaults to -10.
+    */
+   dragOffsetFromRight?: number;
++
++  /**
++   * Vertical movement that causes the pan gesture to fail before activation, allowing parent scroll views
++   * to take over. Expressed as [negative, positive] range in points.
++   */
++  failOffsetY?: [number, number];
+ }>;
+ 
+ export interface SwipeableMethods {
