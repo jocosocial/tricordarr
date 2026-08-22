@@ -55,25 +55,27 @@ export const AppImage = ({
     setIsViewerVisible(true);
   };
 
+  // Prefer the require() source for bundled assets. On Android Release,
+  // resolveAssetSource() returns a scheme-less drawable name that RN Image
+  // accepts as a resource, but require() is the supported API.
+  const imageSource = image.assetSource ?? {uri: AppImageMetaData.getSourceURI(image)};
   const imageUriSource = {uri: AppImageMetaData.getSourceURI(image)};
 
   return (
     <View>
       <AppImageViewer
-        // @TODO disable downloads because it's all busted
-        enableDownload={false}
         viewerImages={viewerImagesState}
         isVisible={isViewerVisible}
         setIsVisible={setIsViewerVisible}
         initialIndex={initialViewerIndex}
       />
       <TouchableOpacity activeOpacity={1} onPress={onPress || handlePress} disabled={disableTouch}>
-        {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageUriSource} />}
+        {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageSource} />}
         {mode === 'image' && (
           <Image
             resizeMode={'cover'}
             style={StyleSheet.flatten([commonStyles.headerImage, style]) as RNImageStyle}
-            source={imageUriSource}
+            source={imageSource}
           />
         )}
         {mode === 'scaledimage' &&

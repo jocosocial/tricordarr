@@ -12,12 +12,10 @@ The net result is that there should only ever be two image queries: thumbnail, t
 
 ## Sources
 
-Saving asset images is being disabled until we can sort out the pathing nonsense.
-
 Images come from a number of sources:
 
 API: `/api/v3/image/${size}/UUID.jpg`
 
-Asset: an `http://10.0.2.2` esque source for debug, and `asset_filename_without_extension` in release
+Asset: `require()` of a bundled file. `Image.resolveAssetSource().uri` is an `http://10.0.2.2` (or localhost) Metro URL in debug, a bundle `file://` on iOS, and a scheme-less drawable resource name (e.g. `asset_mainview_day`) on Android Release. RN `Image` can display that drawable name; `react-native-image-viewing` cannot size it via `getSizeWithHeaders`, so the viewer is given the original `assetSource` number instead. Saving unpacks the resource with `expo-asset` `downloadAsync()` into a real cache file, then copies it to the camera roll.
 
 Post: base64 data from the form values

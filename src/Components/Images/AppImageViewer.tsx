@@ -8,7 +8,11 @@ import {ImageViewerFooterView} from '#src/Components/Views/Image/ImageViewerFoot
 import {ImageViewerHeaderView} from '#src/Components/Views/Image/ImageViewerHeaderView';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {saveImageDataURIToCameraRoll, saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
+import {
+  saveAssetImageToLocal,
+  saveImageDataURIToCameraRoll,
+  saveImageURIToLocal,
+} from '#src/Libraries/Storage/ImageStorage';
 import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 
 const logger = createLogger('AppImageViewer.tsx');
@@ -61,25 +65,32 @@ export const AppImageViewer = ({
 
   /**
    * Function to save an image to the camera roll.
-   * @TODO still need to enable this for [assets, data]. Confirm against [identicon, api].
    */
   const saveImage = useCallback(
     async (index: number) => {
       try {
         const imageMeta = viewerImages[index];
-        if (imageMeta.dataURI) {
-          await saveImageDataURIToCameraRoll(imageMeta);
-        } else if (imageMeta.identiconURI) {
-          await saveImageURIToLocal(imageMeta.fileName, imageMeta.identiconURI);
-        } else {
-          const cacheURI = await getImageCacheURI(imageMeta);
-          if (cacheURI) {
-            await saveImageURIToLocal(imageMeta.fileName, cacheURI);
-          } else {
-            if (imageMeta.fullURI) {
-              await saveImageURIToLocal(imageMeta.fileName, imageMeta.fullURI);
+        switch (imageMeta.mode) {
+          case AppImageMode.data:
+            await saveImageDataURIToCameraRoll(imageMeta);
+            break;
+          case AppImageMode.asset:
+            await saveAssetImageToLocal(imageMeta);
+            break;
+          case AppImageMode.identicon:
+            if (!imageMeta.identiconURI) {
+              throw Error('No identicon URI to save');
             }
-            throw Error('No image URI to save');
+            await saveImageURIToLocal(imageMeta.fileName, imageMeta.identiconURI);
+            break;
+          case AppImageMode.api: {
+            const cacheURI = await getImageCacheURI(imageMeta);
+            const uriToSave = cacheURI ?? imageMeta.fullURI;
+            if (!uriToSave) {
+              throw Error('No image URI to save');
+            }
+            await saveImageURIToLocal(imageMeta.fileName, uriToSave);
+            break;
           }
         }
         setViewerMessage('Saved to camera roll.');
@@ -153,9 +164,13 @@ export const AppImageViewer = ({
               return {uri: cacheURI};
             }
             return {uri: image.fullURI};
-          } else {
-            return {uri: AppImageMetaData.getSourceURI(image)};
           }
+          // Android Release packs assets as scheme-less drawable names. Image.getSizeWithHeaders
+          // cannot size those URIs (blank viewer). The library does handle require() numbers.
+          if (image.mode === AppImageMode.asset && image.assetSource) {
+            return image.assetSource;
+          }
+          return {uri: AppImageMetaData.getSourceURI(image)};
         }),
       );
       setImageViewImages(images);

@@ -1,5 +1,7 @@
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import {Asset} from 'expo-asset';
 import {EncodingType, File, Paths} from 'expo-file-system';
+import {Image} from 'react-native';
 import * as mime from 'react-native-mime-types';
 
 import {createLogger} from '#src/Libraries/Logger';
@@ -38,6 +40,37 @@ export const saveImageToCameraRoll = async (localURI: string) => {
     album: 'Tricordarr',
   });
   return response;
+};
+
+/**
+ * Unpack a bundled asset into a real file:// URI CameraRoll can save.
+ *
+ * Do not use Asset.fromModule() here. On Android Release that API treats
+ * scheme-less drawable resource names as already downloaded so RN Image
+ * keeps working, but those names are not files. Constructing Asset with
+ * an explicit type and calling downloadAsync() copies raw/drawable (and
+ * file:///android_res/) into the cache via native ExpoAsset.
+ */
+export const saveAssetImageToLocal = async (image: AppImageMetaData) => {
+  if (!image.assetSource) {
+    throw new Error('Asset source is required to save an asset image');
+  }
+  const resolved = Image.resolveAssetSource(image.assetSource);
+  if (!resolved?.uri) {
+    throw new Error(`Could not resolve asset URI for ${image.fileName}`);
+  }
+  const type = mime.extension(image.mimeType) || 'jpg';
+  const asset = new Asset({
+    name: image.fileName.replace(/\.[^.]+$/, ''),
+    type,
+    uri: resolved.uri,
+  });
+  logger.debug('Materializing bundled asset', image.fileName, 'from', resolved.uri);
+  await asset.downloadAsync();
+  if (!asset.localUri || !asset.localUri.includes(':')) {
+    throw new Error(`Failed to materialize asset ${image.fileName}`);
+  }
+  await saveImageURIToLocal(image.fileName, asset.localUri);
 };
 
 export const saveImageURIToLocal = async (fileName: string, imageURI: string) => {
