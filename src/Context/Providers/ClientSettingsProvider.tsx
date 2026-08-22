@@ -4,6 +4,7 @@ import {
   ClientSettingsContext,
   DEFAULT_MAX_FORUM_POST_IMAGES,
   DEFAULT_MAX_IMAGE_SIZE,
+  DEFAULT_PHOTOSTREAM_UPLOAD_RATE_LIMIT,
   SHUTTERNAUT_MAX_FORUM_POST_IMAGES,
 } from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -20,6 +21,8 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
     ? SHUTTERNAUT_MAX_FORUM_POST_IMAGES
     : (clientSettings?.maxForumPostImages ?? DEFAULT_MAX_FORUM_POST_IMAGES);
   const maxImageSize = clientSettings?.maxImageSize ?? DEFAULT_MAX_IMAGE_SIZE;
+  const photostreamUploadRateLimit =
+    clientSettings?.photostreamUploadRateLimit ?? DEFAULT_PHOTOSTREAM_UPLOAD_RATE_LIMIT;
 
   const updateClientSettings = useCallback(async () => {
     const response = await refetch();
@@ -41,8 +44,9 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
       updateClientSettings,
       maxForumPostImages,
       maxImageSize,
+      photostreamUploadRateLimit,
     }),
-    [updateClientSettings, maxForumPostImages, maxImageSize],
+    [updateClientSettings, maxForumPostImages, maxImageSize, photostreamUploadRateLimit],
   );
 
   return <ClientSettingsContext.Provider value={value}>{children}</ClientSettingsContext.Provider>;

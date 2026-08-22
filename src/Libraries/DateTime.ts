@@ -367,6 +367,35 @@ export const formatMinutesToHumanReadable = (minutes: number) => {
 };
 
 /**
+ * Takes a number of seconds as input and returns a human-compatible string of that duration.
+ * For example: 30 -> 30 seconds, 90 -> 1 minute 30 seconds, 300 -> 5 minutes.
+ *
+ * @param seconds Number of seconds
+ */
+export const formatSecondsToHumanReadable = (seconds: number) => {
+  const duration = moment.duration(seconds, 'seconds');
+  const hours = duration.hours();
+  const minutes = duration.minutes();
+  const secondsRemainder = duration.seconds();
+
+  let formattedString = '';
+
+  if (hours > 0) {
+    formattedString += `${hours} ${pluralize('hour', hours)}`;
+  }
+
+  if (minutes > 0) {
+    formattedString += ` ${minutes} ${pluralize('minute', minutes)}`;
+  }
+
+  if (secondsRemainder > 0 || formattedString.length === 0) {
+    formattedString += ` ${secondsRemainder} ${pluralize('second', secondsRemainder)}`;
+  }
+
+  return formattedString.trim();
+};
+
+/**
  * Calculate the number of minutes of offset exist between the events scheduled time
  * and what the API reports the event to be at.
  * This is a convenience wrapper since startTime and timeZoneID are optional on a number

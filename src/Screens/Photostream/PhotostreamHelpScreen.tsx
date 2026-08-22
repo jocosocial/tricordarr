@@ -20,7 +20,7 @@ export const PhotostreamHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Restrictions'}>
           <HelpTopicView title={'Rate Limit'}>
-            You can only post one image every five minutes. Choose wisely!
+            Typically you can only post one image every five minutes. This limit may be adjusted by the TwitarrTeam.
           </HelpTopicView>
           <HelpTopicView title={'No Deletion'}>Posted images cannot be deleted other than by moderators.</HelpTopicView>
           <HelpTopicView title={'No Text'}>

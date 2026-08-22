@@ -1275,6 +1275,8 @@ export interface ClientSettingsData {
   maxForumPostImages: number;
   /// Maximum size of a single uploaded image, in bytes.
   maxImageSize: number;
+  /// Minimum seconds between photostream uploads. 0 disables the cooldown. Default 300.
+  photostreamUploadRateLimit?: number;
   /// Unique identifier for this Postgres database installation (from pg_control_system())
   installationID: string;
 }

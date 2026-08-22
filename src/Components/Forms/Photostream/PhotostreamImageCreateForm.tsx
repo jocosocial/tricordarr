@@ -8,7 +8,9 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 import {PhotostreamImageSelectionView} from '#src/Components/Views/Photostream/PhotostreamImageSelectionView';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {formatSecondsToHumanReadable} from '#src/Libraries/DateTime';
 import {EventData} from '#src/Structs/ControllerStructs';
 import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
 
@@ -38,6 +40,11 @@ export const PhotostreamImageCreateForm = ({
   initialValues = {locationName: undefined, eventData: undefined, savePhoto: savePhoto},
 }: PhotostreamImageCreateFormProps) => {
   const {commonStyles} = useStyles();
+  const {photostreamUploadRateLimit} = useClientSettings();
+  const rateLimitCopy =
+    photostreamUploadRateLimit > 0
+      ? `You can only post one image every ${formatSecondsToHumanReadable(photostreamUploadRateLimit)}.`
+      : 'There is currently no wait between photostream posts.';
 
   const styles = StyleSheet.create({
     fieldWrapper: commonStyles.paddingBottom,
@@ -66,8 +73,8 @@ export const PhotostreamImageCreateForm = ({
         <View>
           <View style={styles.textWrapper}>
             <Text variant={'labelMedium'}>
-              You can only post one image every five minutes. It cannot be removed except by moderators. Any text will
-              be automatically blurred. Choose wisely!
+              {rateLimitCopy} It cannot be removed except by moderators. Any text will be automatically blurred. Choose
+              wisely!
             </Text>
           </View>
           <View style={styles.fieldWrapper}>
