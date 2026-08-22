@@ -1,4 +1,4 @@
-import RNFS from 'react-native-fs';
+import {EncodingType, File} from 'expo-file-system';
 
 import {LogLevel} from '#src/Libraries/Logger/types';
 
@@ -11,11 +11,11 @@ export class LogBuffer {
   private flushTimer: ReturnType<typeof setTimeout> | null = null;
   private readonly FLUSH_DELAY_MS = 5000;
   private readonly MAX_BUFFER_SIZE = 100;
-  private getCurrentLogFilePath: () => string;
+  private getCurrentLogFile: () => File;
   private readonly onWriteError: WriteErrorLogger;
 
-  constructor(getCurrentLogFilePath: () => string, onWriteError: WriteErrorLogger = defaultWriteErrorLogger) {
-    this.getCurrentLogFilePath = getCurrentLogFilePath;
+  constructor(getCurrentLogFile: () => File, onWriteError: WriteErrorLogger = defaultWriteErrorLogger) {
+    this.getCurrentLogFile = getCurrentLogFile;
     this.onWriteError = onWriteError;
   }
 
@@ -62,8 +62,11 @@ export class LogBuffer {
 
     try {
       const logText = logsToWrite.join('\n') + '\n';
-      const logFilePath = this.getCurrentLogFilePath();
-      await RNFS.appendFile(logFilePath, logText, 'utf8');
+      const logFile = this.getCurrentLogFile();
+      if (!logFile.exists) {
+        logFile.create({intermediates: true});
+      }
+      logFile.write(logText, {encoding: EncodingType.UTF8, append: true});
     } catch (error) {
       // Logger/index injects a safe internal logger to avoid recursion here.
       this.onWriteError('[LogBuffer] Failed to write logs to file', error);

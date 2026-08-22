@@ -1,6 +1,6 @@
+import {File, Paths} from 'expo-file-system';
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import RNFS from 'react-native-fs';
 import {IconButton, List, ProgressBar, Text} from 'react-native-paper';
 
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
@@ -17,31 +17,26 @@ interface MicroKaraokeSongListItemProps {
   mkSong: MicroKaraokeCompletedSong;
 }
 
-const downloadFile = async (url: string) => {
-  // Remove query parameters before extracting filename
+const snippetFileForUrl = (url: string) => {
   const urlWithoutQuery = url.split('?')[0];
   const fileName = urlWithoutQuery.split('/').pop();
   if (!fileName) {
     throw Error(`Unable to determine fileName from url: ${url}`);
   }
-  const destinationPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+  return new File(Paths.document, fileName);
+};
 
-  const exists = await RNFS.exists(destinationPath);
-  if (exists) {
-    logger.debug(`File ${destinationPath} already exists`);
-    return destinationPath;
+const downloadFile = async (url: string) => {
+  const destinationFile = snippetFileForUrl(url);
+
+  if (destinationFile.exists) {
+    logger.debug(`File ${destinationFile.uri} already exists`);
+    return destinationFile.uri;
   }
 
-  const result = await RNFS.downloadFile({
-    fromUrl: url,
-    toFile: destinationPath,
-  }).promise;
-  logger.debug('Got status', result.statusCode);
-
-  if (result.statusCode === 200) {
-    logger.debug(`Successfully saved ${url} to ${destinationPath}`);
-  }
-  return destinationPath;
+  await File.downloadFileAsync(url, destinationFile);
+  logger.debug(`Successfully saved ${url} to ${destinationFile.uri}`);
+  return destinationFile.uri;
 };
 
 export const MicroKaraokeSongListItem = ({mkSong}: MicroKaraokeSongListItemProps) => {
@@ -96,15 +91,12 @@ export const MicroKaraokeSongListItem = ({mkSong}: MicroKaraokeSongListItemProps
   const onClear = async () => {
     if (data) {
       const results = data.snippetVideoURLs.map(async snippetVideoURL => {
-        // Remove query parameters before extracting filename
-        const urlWithoutQuery = snippetVideoURL.split('?')[0];
-        const fileName = urlWithoutQuery.split('/').pop();
-        if (!fileName) {
-          return;
-        }
-        logger.debug(`Clearing ${fileName}`);
         try {
-          await RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${fileName}`);
+          const snippetFile = snippetFileForUrl(snippetVideoURL);
+          logger.debug(`Clearing ${snippetFile.name}`);
+          if (snippetFile.exists) {
+            snippetFile.delete();
+          }
         } catch (error) {
           logger.error('Error clearing file:', error);
         }

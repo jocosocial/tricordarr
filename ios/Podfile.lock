@@ -228,7 +228,7 @@ PODS:
     - ExpoModulesCore
   - ExpoDomWebView (57.0.1):
     - ExpoModulesCore
-  - ExpoFileSystem (57.0.4):
+  - ExpoFileSystem (57.0.5):
     - ExpoModulesCore
   - ExpoFont (57.0.1):
     - ExpoModulesCore
@@ -271,6 +271,8 @@ PODS:
     - ExpoModulesJSI
     - ExpoModulesWorklets
     - RNWorklets
+  - ExpoSecureStore (57.0.1):
+    - ExpoModulesCore
   - EXUpdatesInterface (57.0.1):
     - ExpoModulesCore
   - FBLazyVector (0.86.2)
@@ -1739,8 +1741,6 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - react-native-encrypted-storage (4.0.3):
-    - React-Core
   - react-native-get-random-values (2.0.0):
     - hermes-engine
     - RCTRequired
@@ -2486,8 +2486,6 @@ PODS:
     - SDWebImageSVGCoder (~> 1.7.0)
     - SDWebImageWebPCoder (~> 0.14)
     - Yoga
-  - RNFS (2.20.0):
-    - React-Core
   - RNGestureHandler (3.2.1):
     - hermes-engine
     - RCTRequired
@@ -2627,7 +2625,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - RNReanimated (4.5.1):
+  - RNReanimated (4.5.3):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2649,36 +2647,12 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
-    - RNReanimated/apple (= 4.5.1)
-    - RNReanimated/common (= 4.5.1)
-    - RNReanimated/view (= 4.5.1)
+    - RNReanimated/apple (= 4.5.3)
+    - RNReanimated/common (= 4.5.3)
+    - RNReanimated/view (= 4.5.3)
     - RNWorklets
     - Yoga
-  - RNReanimated/apple (4.5.1):
-    - hermes-engine
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Core
-    - React-Core-prebuilt
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-hermes
-    - React-ImageManager
-    - React-jsi
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-renderercss
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - ReactNativeDependencies
-    - RNWorklets
-    - Yoga
-  - RNReanimated/common (4.5.1):
+  - RNReanimated/apple (4.5.3):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2702,7 +2676,31 @@ PODS:
     - ReactNativeDependencies
     - RNWorklets
     - Yoga
-  - RNReanimated/view (4.5.1):
+  - RNReanimated/common (4.5.3):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - RNWorklets
+    - Yoga
+  - RNReanimated/view (4.5.3):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2924,6 +2922,7 @@ DEPENDENCIES:
   - ExpoModulesJSI (from `../node_modules/expo-modules-jsi/apple`)
   - ExpoModulesWorklets (from `../node_modules/expo-modules-core`)
   - ExpoModulesWorkletsAdapter (from `../node_modules/expo-modules-core`)
+  - ExpoSecureStore (from `../node_modules/expo-secure-store/ios`)
   - EXUpdatesInterface (from `../node_modules/expo-updates-interface/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
@@ -2966,7 +2965,6 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - React-mutationobservernativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/mutationobserver`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
-  - react-native-encrypted-storage (from `../node_modules/react-native-encrypted-storage`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -3014,7 +3012,6 @@ DEPENDENCIES:
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFastImage (from `../node_modules/@d11/react-native-fast-image`)"
-  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNNotifee (from `../node_modules/react-native-notify-kit`)
@@ -3080,6 +3077,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-modules-core"
   ExpoModulesWorkletsAdapter:
     :path: "../node_modules/expo-modules-core"
+  ExpoSecureStore:
+    :path: "../node_modules/expo-secure-store/ios"
   EXUpdatesInterface:
     :path: "../node_modules/expo-updates-interface/ios"
   FBLazyVector:
@@ -3163,8 +3162,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/mutationobserver"
   react-native-cameraroll:
     :path: "../node_modules/@react-native-camera-roll/camera-roll"
-  react-native-encrypted-storage:
-    :path: "../node_modules/react-native-encrypted-storage"
   react-native-get-random-values:
     :path: "../node_modules/react-native-get-random-values"
   react-native-keyboard-controller:
@@ -3259,8 +3256,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
     :path: "../node_modules/@d11/react-native-fast-image"
-  RNFS:
-    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNImageCropPicker:
@@ -3296,7 +3291,7 @@ SPEC CHECKSUMS:
   expo-dev-menu-interface: 7a59e803916fbfd1b96c75ff91ea8dddac7e722f
   ExpoAsset: 1a913b91ccf6db8a5f68ba0c3ab75b8683766cf1
   ExpoDomWebView: beaec034e51bd028428b98bb1f2633ab79c6d095
-  ExpoFileSystem: b3fb2457e75eddc87dcadcd4cd0e237d12f79de7
+  ExpoFileSystem: 0e74ed1536e1643f4a352d84ed55d311d795828d
   ExpoFont: 59e1faf66ba9bcd232ae1e2ce58d202a48b6f65e
   ExpoKeepAwake: c26f14275017370cc8a4b7b43a0e23361f2053a5
   ExpoLogBox: 2c4225a62f1cfb943e6b2df4fa4fe2d136e06fb6
@@ -3304,6 +3299,7 @@ SPEC CHECKSUMS:
   ExpoModulesJSI: b20fefa4cdd9097e7e6b715466d1900b8c5d4711
   ExpoModulesWorklets: eaf2898a6621e3c9a09c0479c1a4cb5f1b368d53
   ExpoModulesWorkletsAdapter: b4765c3a7ea7f23bcddde04f981ff4b6d01c25d1
+  ExpoSecureStore: 94793113049a2d7478dfe1a13aa15081e9f61755
   EXUpdatesInterface: 92d2aa5194b6fb93ca8ab749db75665cb28b2e60
   FBLazyVector: 3c3be9a019176b5699455f7f66c5444b78a411c6
   hermes-engine: ded8bb1acae9ff20b2fe6abcf3366004e4a9cc38
@@ -3348,7 +3344,6 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: f413ee411341fb3c34d20e85e9f6f524921fab15
   React-mutationobservernativemodule: 58f6d2adf7d98e72b241608dfa2ddce414d2a4e7
   react-native-cameraroll: 4d4fcff8a057235ce7a9f57d4566409207216a86
-  react-native-encrypted-storage: 569d114e329b1c2c2d9f8c84bcdbe4478dda2258
   react-native-get-random-values: 68792987aef40e8aa72dc448d97e009d1f440c88
   react-native-keyboard-controller: d4796248609d4c03cd6b5f73a9fd083d7c5f33d6
   react-native-netinfo: 2f906d5d9a639090ed1c079135d6485a95f749f1
@@ -3396,12 +3391,11 @@ SPEC CHECKSUMS:
   RNCClipboard: 715fa7c6c8366f17d00f05a439ee7488f390fa5f
   RNDeviceInfo: 4c852998208b60dc192ae3529e5867817719ad1e
   RNFastImage: 5fafd2e70056cf7729b1bdcd558a7f0fea2aff0e
-  RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
   RNGestureHandler: af5f7e95d350ef38c0997b5627970769c2a7f354
   RNImageCropPicker: 6b9ac564593efdf86b886f93aab4356e80db12de
   RNNotifee: 95924725c81ab70831b06feb61ee652ff50dc2fb
   RNPermissions: 40a16a7df6d84729a59420ca5a3f04d45d3d4e72
-  RNReanimated: fcf6a8cdd698fb09a811a8d6c5bcfe36575d965d
+  RNReanimated: 5aa9e73d0f8d3c40d5c9bec396d6a61098db31f0
   RNScreens: 7118cd7715c226856125b5bece3c4d9abec90356
   RNShare: 7344a3a7d4e5df58c356ad0f79e4a3ef1325c635
   RNSound: 79fb9d0b4a20de49e65e657b563982443c1ed21b

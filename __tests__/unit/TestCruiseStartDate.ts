@@ -1,10 +1,7 @@
-jest.mock('react-native-encrypted-storage', () => ({
-  default: {
-    getItem: jest.fn(),
-    setItem: jest.fn(),
-    removeItem: jest.fn(),
-    clear: jest.fn(),
-  },
+jest.mock('expo-secure-store', () => ({
+  getItemAsync: jest.fn(),
+  setItemAsync: jest.fn(),
+  deleteItemAsync: jest.fn(),
 }));
 
 jest.mock('#src/Libraries/Logger', () => ({

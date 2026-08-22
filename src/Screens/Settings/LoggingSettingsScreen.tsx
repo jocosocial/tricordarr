@@ -1,6 +1,7 @@
+import {Directory, File, Paths} from 'expo-file-system';
+import {StorageAccessFramework} from 'expo-file-system/legacy';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Alert} from 'react-native';
-import RNFS from 'react-native-fs';
 import {SegmentedButtons} from 'react-native-paper';
 import Share from 'react-native-share';
 
@@ -15,16 +16,22 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {clearAllLogs, flushLogs, getCurrentLogFile, getLogFileInfo, setLogLevel} from '#src/Libraries/Logger';
 import {LogLevel} from '#src/Libraries/Logger/types';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
+
+const isPickerCancelled = (error: unknown) => error instanceof Error && /cancell?ed/i.test(error.message);
+
+const getExportFileName = () => `tricordarr-${Math.floor(Date.now() / 1000)}`;
 
 export const LoggingSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const {setSnackbarPayload} = useSnackbar();
   const [logFileInfo, setLogFileInfo] = useState<{path: string; size: string; lastModified: string} | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
   const {theme} = useAppTheme();
 
@@ -48,72 +55,101 @@ export const LoggingSettingsScreen = () => {
     });
   };
 
+  const prepareLogFile = async (): Promise<File | null> => {
+    await flushLogs();
+
+    const logFile = getCurrentLogFile();
+    if (!logFile.exists) {
+      setSnackbarPayload({message: 'No log files found to export.', messageType: 'info'});
+      return null;
+    }
+
+    const info = logFile.info();
+    if (!info.size) {
+      setSnackbarPayload({message: 'Log file is empty.', messageType: 'info'});
+      return null;
+    }
+
+    return logFile;
+  };
+
   const handleExport = async () => {
     try {
       setIsExporting(true);
-      // Flush any buffered logs first
-      await flushLogs();
-
-      const logFilePath = getCurrentLogFile();
-
-      // Check if file exists
-      const exists = await RNFS.exists(logFilePath);
-      if (!exists) {
-        setSnackbarPayload({message: 'No log files found to export.', messageType: 'info'});
+      const logFile = await prepareLogFile();
+      if (!logFile) {
         return;
       }
 
-      // Get file stats to check if empty
-      const stat = await RNFS.stat(logFilePath);
-      if (stat.size === 0) {
-        setSnackbarPayload({message: 'Log file is empty.', messageType: 'info'});
-        return;
-      }
+      const downloadFileName = `${getExportFileName()}.txt`;
 
-      // Create filename with epoch timestamp
-      const epochTime = Math.floor(Date.now() / 1000);
-      const downloadFileName = `tricordarr-${epochTime}.txt`;
+      // Copy into cache so Android FileProvider (react-native-share) can serve the file.
+      // Documents-directory URIs are not in that provider's paths and NPEs on getScheme().
+      const shareFile = new File(Paths.cache, downloadFileName);
+      await logFile.copy(shareFile, {overwrite: true});
 
-      if (isAndroid) {
-        // Android: Copy directly to Downloads folder
-        // Check if DownloadDirectoryPath exists
-        if (!RNFS.DownloadDirectoryPath) {
-          // Fallback to ExternalStorageDirectoryPath/Download
-          const downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Download/${downloadFileName}`;
-          await RNFS.copyFile(logFilePath, downloadPath);
-        } else {
-          const downloadPath = `${RNFS.DownloadDirectoryPath}/${downloadFileName}`;
-          await RNFS.copyFile(logFilePath, downloadPath);
-        }
+      const shareResult = await Share.open({
+        url: shareFile.uri,
+        type: 'text/plain',
+        filename: downloadFileName,
+        failOnCancel: false,
+      });
 
+      if (shareResult.success && !shareResult.dismissedAction) {
         setSnackbarPayload({
-          message: `Log file saved to Downloads as ${downloadFileName}`,
+          message: 'Log file shared successfully',
           messageType: 'success',
         });
-      } else {
-        // iOS: Use share sheet
-        const shareResult = await Share.open({
-          url: `file://${logFilePath}`,
-          type: 'text/plain',
-          filename: downloadFileName,
-          failOnCancel: false,
-        });
-
-        // Only show success message if user actually shared (not cancelled)
-        if (shareResult.success || shareResult.message) {
-          setSnackbarPayload({
-            message: 'Log file shared successfully',
-            messageType: 'success',
-          });
-        }
       }
     } catch (error) {
+      if (isPickerCancelled(error) || (error instanceof Error && /did not share/i.test(error.message))) {
+        return;
+      }
       setSnackbarPayload({
         message: `Could not export log file: ${error}`,
         messageType: 'error',
       });
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handleSaveToFolder = async () => {
+    try {
+      setIsSaving(true);
+      const logFile = await prepareLogFile();
+      if (!logFile) {
+        return;
+      }
+
+      const contents = await logFile.text();
+      const fileName = getExportFileName();
+
+      // Directory.createFile NPEs on Android SAF URIs from pickDirectoryAsync.
+      // The legacy Storage Access Framework APIs are reliable here.
+      if (isAndroid) {
+        const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
+        if (!permissions.granted) {
+          return;
+        }
+        const destUri = await StorageAccessFramework.createFileAsync(permissions.directoryUri, fileName, 'text/plain');
+        await StorageAccessFramework.writeAsStringAsync(destUri, contents);
+      } else {
+        const directory = await Directory.pickDirectoryAsync();
+        const destFile = directory.createFile(fileName, 'text/plain');
+        destFile.write(contents);
+      }
+      setSnackbarPayload({message: 'Log file saved.', messageType: 'success'});
+    } catch (error) {
+      if (isPickerCancelled(error)) {
+        return;
+      }
+      setSnackbarPayload({
+        message: `Could not save log file: ${error}`,
+        messageType: 'error',
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -189,17 +225,28 @@ export const LoggingSettingsScreen = () => {
           <ListSubheader>Actions</ListSubheader>
           <PaddedContentView padTop={true}>
             <PrimaryActionButton
-              buttonText={'Export Logs'}
+              icon={AppIcons.share}
+              buttonText={'Share Logs'}
               onPress={handleExport}
-              disabled={!logFileInfo || isExporting}
+              disabled={!logFileInfo || isExporting || isSaving}
               isLoading={isExporting}
             />
           </PaddedContentView>
           <PaddedContentView>
             <PrimaryActionButton
+              icon={AppIcons.download}
+              buttonText={'Save to Folder'}
+              onPress={handleSaveToFolder}
+              disabled={!logFileInfo || isExporting || isSaving}
+              isLoading={isSaving}
+            />
+          </PaddedContentView>
+          <PaddedContentView>
+            <PrimaryActionButton
+              icon={AppIcons.delete}
               buttonText={'Clear All Logs'}
               onPress={handleClear}
-              disabled={!logFileInfo || isClearing}
+              disabled={!logFileInfo || isClearing || isExporting || isSaving}
               isLoading={isClearing}
               buttonColor={theme.colors.twitarrNegativeButton}
             />

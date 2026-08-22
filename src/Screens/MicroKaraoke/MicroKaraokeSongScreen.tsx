@@ -1,7 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
+import {File, Paths} from 'expo-file-system';
 import React, {useState} from 'react';
 // import {RefreshControl} from 'react-native';
-import RNFS from 'react-native-fs';
 import Video from 'react-native-video';
 // import VideoPlayer from 'react-native-video-controls';
 
@@ -46,7 +46,7 @@ const MicroKaraokeSongScreenInner = ({route}: Props) => {
     // Remove query parameters before extracting filename
     const urlWithoutQuery = url.split('?')[0];
     const fileName = urlWithoutQuery.split('/').pop();
-    return `${RNFS.DocumentDirectoryPath}/${fileName}`;
+    return new File(Paths.document, fileName ?? '').uri;
   });
 
   const handleEnd = () => {

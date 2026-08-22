@@ -19,8 +19,9 @@ public struct Keychain {
 	 
 	 Checks whether or not this is the first time the app is run using UserDefaults.
 	 If it's the first run, sets a flag and deletes all Keychain items across all Keychain classes.
-   
-   https://github.com/emeraldsanto/react-native-encrypted-storage?tab=readme-ov-file#note-regarding-keychain-persistence
+
+   expo-secure-store persists Keychain items across uninstall/reinstall for the same bundle ID.
+   https://docs.expo.dev/versions/latest/sdk/securestore/
 	 */
 	public static func clearIfNecessary() {
     Keychain.logger.log("[Keychain.swift] clearIfNecessary")

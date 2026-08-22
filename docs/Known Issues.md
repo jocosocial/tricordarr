@@ -39,13 +39,13 @@ Unrecorded bug in https://github.com/obipawan/react-native-hyperlink. Patched in
 >>> WARNING: Found 1 permission(s) with conflicting 'android:maxSdkVersion' declarations.
     - android.permission.WRITE_EXTERNAL_STORAGE
       > Defined WITH `android:maxSdkVersion` in: android/app/src/main/AndroidManifest.xml
-      > Defined WITHOUT `android:maxSdkVersion` in: .../react-native-fs/..., .../react-native-image-crop-picker/..., .../expo.modules.filesystem-.../AndroidManifest.xml
+      > Defined WITHOUT `android:maxSdkVersion` in: .../react-native-image-crop-picker/..., .../expo.modules.filesystem-.../AndroidManifest.xml
 >>> Removing 'android:maxSdkVersion' from these permissions in the final manifest to prevent runtime issues.
 >>> Removed 'android:maxSdkVersion' from 1 instance(s) in the final manifest.
 --------------------------------------------------
 ```
 
-Expo SDK 55+ applies `expo-max-sdk-override-plugin` during Android builds. It notices that some manifests declare `WRITE_EXTERNAL_STORAGE` with `android:maxSdkVersion` and others (notably `react-native-fs`) declare it without a cap, then strips the cap from the final merged manifest. This is informational only and does not fail the build.
+Expo SDK 55+ applies `expo-max-sdk-override-plugin` during Android builds. It notices that some manifests declare `WRITE_EXTERNAL_STORAGE` with `android:maxSdkVersion` and others (notably `react-native-image-crop-picker`) declare it without a cap, then strips the cap from the final merged manifest. This is informational only and does not fail the build.
 
 Do not remove the app's `android:maxSdkVersion="32"` and `tools:replace="android:maxSdkVersion"` in `android/app/src/main/AndroidManifest.xml`. That override is still required to resolve a separate, hard AGP manifest-merger conflict between `react-native-image-crop-picker` (`maxSdkVersion="29"`) and `expo-file-system` (`maxSdkVersion="32"`). Removing it causes `processReleaseMainManifest` to fail.
 

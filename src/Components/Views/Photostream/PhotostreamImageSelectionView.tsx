@@ -1,7 +1,7 @@
+import {File} from 'expo-file-system';
 import {useFormikContext} from 'formik';
 import React from 'react';
 import {View} from 'react-native';
-import RNFS from 'react-native-fs';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {ActivityIndicator} from 'react-native-paper';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
@@ -38,7 +38,9 @@ export const PhotostreamImageSelectionView = () => {
 
   const onBlur = async (newPath: string) => {
     try {
-      const imageData = await RNFS.readFile(newPath, 'base64');
+      const fileUri = newPath.startsWith('file://') ? newPath : `file://${newPath}`;
+      logger.debug('Reading blurred image from', fileUri);
+      const imageData = await new File(fileUri).base64();
       assertBase64WithinSizeLimit(imageData, maxImageSize);
       await setFieldValue('image', imageData);
     } catch (err) {

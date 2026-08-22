@@ -1,5 +1,5 @@
+import {Directory, File, Paths} from 'expo-file-system';
 import {AppState} from 'react-native';
-import RNFS from 'react-native-fs';
 import {consoleTransport, logger as rnLogger} from 'react-native-logs';
 
 import {getAppConfig} from '#src/Libraries/AppConfig';
@@ -11,13 +11,26 @@ let currentLogLevel: LogLevel = LogLevel.DEBUG;
 let logBuffer: LogBuffer | null = null;
 
 // Log directory and file management
-const LOG_DIR = `${RNFS.DocumentDirectoryPath}/logs`;
+const LOG_DIR = new Directory(Paths.document, 'logs');
 const LOG_RETENTION_DAYS = 7;
 
-const getCurrentLogFilePath = (): string => {
+const getCurrentLogFile = (): File => {
   const today = new Date();
   const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
-  return `${LOG_DIR}/app-${dateStr}.log`;
+  return new File(LOG_DIR, `app-${dateStr}.log`);
+};
+
+const isLogFile = (item: Directory | File): item is File => {
+  return item instanceof File && item.name.startsWith('app-') && item.name.endsWith('.log');
+};
+
+const listLogFiles = (): File[] => {
+  if (!LOG_DIR.exists) {
+    return [];
+  }
+  return LOG_DIR.list()
+    .filter(isLogFile)
+    .sort((a, b) => b.name.localeCompare(a.name));
 };
 
 // Create base logger with console transport
@@ -96,9 +109,8 @@ const formatLogArgs = (args: unknown[]): string => {
 
 const ensureLogDirectory = async (): Promise<void> => {
   try {
-    const exists = await RNFS.exists(LOG_DIR);
-    if (!exists) {
-      await RNFS.mkdir(LOG_DIR);
+    if (!LOG_DIR.exists) {
+      LOG_DIR.create({intermediates: true, idempotent: true});
     }
   } catch (error) {
     logInternalError('Failed to create log directory', error);
@@ -107,17 +119,16 @@ const ensureLogDirectory = async (): Promise<void> => {
 
 const rotateLogFiles = async (): Promise<void> => {
   try {
-    const files = await RNFS.readDir(LOG_DIR);
     const now = Date.now();
     const maxAge = LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000; // milliseconds
 
-    for (const file of files) {
-      if (file.name.startsWith('app-') && file.name.endsWith('.log')) {
-        if (!file.mtime) continue;
-        const fileAge = now - new Date(file.mtime).getTime();
-        if (fileAge > maxAge) {
-          await RNFS.unlink(file.path);
-        }
+    for (const file of listLogFiles()) {
+      const info = file.info();
+      if (!info.modificationTime) {
+        continue;
+      }
+      if (now - info.modificationTime > maxAge) {
+        file.delete();
       }
     }
   } catch (error) {
@@ -136,7 +147,7 @@ const formatLogMessage = (level: string, tag: string, message: string, args: unk
 };
 
 // Initialize buffer
-logBuffer = new LogBuffer(getCurrentLogFilePath, logInternalError);
+logBuffer = new LogBuffer(getCurrentLogFile, logInternalError);
 
 // Initialize logging system
 const initializeLogger = async () => {
@@ -204,18 +215,13 @@ export const setLogLevel = (level: LogLevel) => {
 };
 
 // Export log management functions
-export const getLogDirectory = (): string => LOG_DIR;
+export const getLogDirectory = (): string => LOG_DIR.uri;
 
-export const getCurrentLogFile = (): string => getCurrentLogFilePath();
+export {getCurrentLogFile};
 
 export const getAllLogFiles = async (): Promise<string[]> => {
   try {
-    const files = await RNFS.readDir(LOG_DIR);
-    return files
-      .filter(file => file.name.startsWith('app-') && file.name.endsWith('.log'))
-      .map(file => file.path)
-      .sort()
-      .reverse(); // Most recent first
+    return listLogFiles().map(file => file.uri);
   } catch (error) {
     logInternalError('Failed to list log files', error);
     return [];
@@ -227,9 +233,8 @@ export const clearAllLogs = async (): Promise<void> => {
     // Flush buffer first
     await logBuffer?.flushNow();
 
-    const files = await getAllLogFiles();
-    for (const filePath of files) {
-      await RNFS.unlink(filePath);
+    for (const file of listLogFiles()) {
+      file.delete();
     }
   } catch (error) {
     logInternalError('Failed to clear logs', error);
@@ -243,20 +248,19 @@ export const getLogFileInfo = async (): Promise<{
   lastModified: string;
 } | null> => {
   try {
-    const logFilePath = getCurrentLogFilePath();
-    const exists = await RNFS.exists(logFilePath);
+    const logFile = getCurrentLogFile();
 
-    if (!exists) {
+    if (!logFile.exists) {
       return null;
     }
 
-    const stat = await RNFS.stat(logFilePath);
-    const sizeKB = (stat.size / 1024).toFixed(2);
+    const info = logFile.info();
+    const sizeKB = ((info.size ?? 0) / 1024).toFixed(2);
 
     return {
-      path: logFilePath,
+      path: logFile.uri,
       size: `${sizeKB} KB`,
-      lastModified: new Date(stat.mtime).toLocaleString(),
+      lastModified: info.modificationTime ? new Date(info.modificationTime).toLocaleString() : '',
     };
   } catch (error) {
     logInternalError('Failed to get log file info', error);

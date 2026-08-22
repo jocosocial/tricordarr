@@ -1,5 +1,5 @@
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import RNFS from 'react-native-fs';
+import {EncodingType, File, Paths} from 'expo-file-system';
 import * as mime from 'react-native-mime-types';
 
 import {createLogger} from '#src/Libraries/Logger';
@@ -10,12 +10,25 @@ const logger = createLogger('ImageStorage.ts');
 
 const extensionRegExp = new RegExp('\\.', 'i');
 
-const getImageDestinationPath = (fileName: string, mimeType: string) => {
-  let destPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+const getImageDestinationFile = (fileName: string, mimeType: string) => {
+  let destName = fileName;
   if (!extensionRegExp.test(fileName)) {
-    destPath = `${destPath}.${mime.extension(mimeType)}`;
+    destName = `${fileName}.${mime.extension(mimeType)}`;
   }
-  return destPath;
+  return new File(Paths.document, destName);
+};
+
+const writeBase64File = (file: File, base64Data: string) => {
+  if (!file.exists) {
+    file.create({intermediates: true, overwrite: true});
+  }
+  file.write(base64Data, {encoding: EncodingType.Base64});
+};
+
+const deleteIfExists = (file: File) => {
+  if (file.exists) {
+    file.delete();
+  }
 };
 
 export const saveImageToCameraRoll = async (localURI: string) => {
@@ -29,22 +42,16 @@ export const saveImageToCameraRoll = async (localURI: string) => {
 
 export const saveImageURIToLocal = async (fileName: string, imageURI: string) => {
   logger.debug(`Saving image to ${fileName} from ${imageURI}`);
-  const cachePath = `${RNFS.CachesDirectoryPath}/${fileName}`;
+  const cacheFile = new File(Paths.cache, fileName);
   if (imageURI.startsWith('http')) {
-    logger.debug('Downloading file from', imageURI, 'to', cachePath);
-    const result = await RNFS.downloadFile({
-      fromUrl: imageURI,
-      toFile: cachePath,
-    }).promise;
-    if (result.statusCode !== 200) {
-      throw new Error(`Failed to download file: HTTP ${result.statusCode}`);
-    }
+    logger.debug('Downloading file from', imageURI, 'to', cacheFile.uri);
+    await File.downloadFileAsync(imageURI, cacheFile, {idempotent: true});
   } else {
-    logger.debug('Copying file from', imageURI, 'to', cachePath);
-    await RNFS.copyFile(imageURI, cachePath);
+    logger.debug('Copying file from', imageURI, 'to', cacheFile.uri);
+    await new File(imageURI).copy(cacheFile, {overwrite: true});
   }
-  await saveImageToCameraRoll(cachePath);
-  await RNFS.unlink(cachePath);
+  await saveImageToCameraRoll(cacheFile.uri);
+  deleteIfExists(cacheFile);
   logger.debug('Saved to camera roll');
 };
 
@@ -52,18 +59,18 @@ export const saveImageURIToLocal = async (fileName: string, imageURI: string) =>
  * @deprecated this is brand new but deprecated because these functions are insane
  */
 export const saveImageDataURIToCameraRoll = async (imageData: AppImageMetaData) => {
-  let destPath = getImageDestinationPath(imageData.fileName, imageData.mimeType);
+  const destFile = getImageDestinationFile(imageData.fileName, imageData.mimeType);
   const dataURI = imageData.dataURI;
   if (!dataURI) {
-    throw Error(`No data to save to file ${destPath}`);
+    throw Error(`No data to save to file ${destFile.uri}`);
   }
-  logger.debug('Writing data to', destPath, imageData.mimeType);
-  await RNFS.writeFile(destPath, dataURI, 'base64');
-  const cameraRollSaveResult = await CameraRoll.save(destPath, {
+  logger.debug('Writing data to', destFile.uri, imageData.mimeType);
+  writeBase64File(destFile, dataURI);
+  const cameraRollSaveResult = await CameraRoll.save(destFile.uri, {
     type: 'photo',
     album: 'Tricordarr',
   });
-  await RNFS.unlink(destPath);
+  deleteIfExists(destFile);
   logger.debug('Saved to camera roll at', cameraRollSaveResult);
   return cameraRollSaveResult;
 };
@@ -72,17 +79,17 @@ export const saveImageDataURIToCameraRoll = async (imageData: AppImageMetaData) 
  * @deprecated use saveImageURIToLocal instead
  */
 export const saveImageQueryToLocal = async (imageData: ImageQueryData) => {
-  let destPath = getImageDestinationPath(imageData.fileName, imageData.mimeType);
+  const destFile = getImageDestinationFile(imageData.fileName, imageData.mimeType);
   if (!imageData.base64) {
-    throw Error(`No data to save to file ${destPath}`);
+    throw Error(`No data to save to file ${destFile.uri}`);
   }
-  logger.debug('Writing data to', destPath, imageData.mimeType);
-  await RNFS.writeFile(destPath, imageData.base64, 'base64');
-  const cameraRollSaveResult = await CameraRoll.save(destPath, {
+  logger.debug('Writing data to', destFile.uri, imageData.mimeType);
+  writeBase64File(destFile, imageData.base64);
+  const cameraRollSaveResult = await CameraRoll.save(destFile.uri, {
     type: 'photo',
     album: 'Tricordarr',
   });
-  await RNFS.unlink(destPath);
+  deleteIfExists(destFile);
   logger.debug('Saved to camera roll at', cameraRollSaveResult);
   return cameraRollSaveResult;
 };
@@ -101,8 +108,7 @@ export const saveImageQueryToLocal = async (imageData: ImageQueryData) => {
  * @throws Error if the dataURI is not provided or unsupported format
  */
 export const newSaveImage = async (image: AppImageMetaData) => {
-  // Always get the proper destination path for the file
-  let destPath = getImageDestinationPath(image.fileName, image.mimeType);
+  const destFile = getImageDestinationFile(image.fileName, image.mimeType);
 
   if (!image.dataURI) {
     throw new Error(`No dataURI provided for image ${image.fileName}`);
@@ -114,53 +120,42 @@ export const newSaveImage = async (image: AppImageMetaData) => {
     // Handle different types of dataURI
     if (dataURI.startsWith('file://')) {
       // Copy file from local file system to destination
-      logger.debug('Copying file from', dataURI, 'to', destPath);
-      await RNFS.copyFile(dataURI, destPath);
+      logger.debug('Copying file from', dataURI, 'to', destFile.uri);
+      await new File(dataURI).copy(destFile, {overwrite: true});
     } else if (dataURI.startsWith('http://') || dataURI.startsWith('https://')) {
       // Download file from URL to destination
-      logger.debug('Downloading file from', dataURI, 'to', destPath);
-      const result = await RNFS.downloadFile({
-        fromUrl: dataURI,
-        toFile: destPath,
-      }).promise;
-
-      if (result.statusCode !== 200) {
-        throw new Error(`Failed to download file: HTTP ${result.statusCode}`);
-      }
+      logger.debug('Downloading file from', dataURI, 'to', destFile.uri);
+      await File.downloadFileAsync(dataURI, destFile, {idempotent: true});
     } else if (dataURI.startsWith('asset://') || dataURI.includes('asset_')) {
       // Handle bundled assets - these are typically referenced by name like 'asset_mainview_day'
       // The fromAsset function in APIImageV2Data resolves these to actual file paths
       // so we can treat them like regular file:// URIs
       logger.debug('Handling bundled asset:', dataURI);
-      await RNFS.copyFile(dataURI, destPath);
+      await new File(dataURI).copy(destFile, {overwrite: true});
     } else if (dataURI.startsWith('data:')) {
       // Handle base64 data URI
-      logger.debug('Writing base64 data to', destPath);
+      logger.debug('Writing base64 data to', destFile.uri);
       const base64Data = dataURI.split(',')[1]; // Remove the data:image/jpeg;base64, prefix
-      await RNFS.writeFile(destPath, base64Data, 'base64');
+      writeBase64File(destFile, base64Data);
     } else {
       throw new Error(`Unsupported dataURI format: ${dataURI.substring(0, 50)}...`);
     }
 
     // Always save to camera roll and return the response
-    logger.debug('Saving to camera roll:', destPath);
-    const response = await CameraRoll.saveAsset(destPath, {
+    logger.debug('Saving to camera roll:', destFile.uri);
+    const response = await CameraRoll.saveAsset(destFile.uri, {
       type: 'photo',
       album: 'Tricordarr',
     });
 
     // Clean up the temporary file
-    await RNFS.unlink(destPath);
+    deleteIfExists(destFile);
 
     logger.debug('Successfully saved to camera roll:', response);
     return response;
   } catch (error) {
-    // Clean up the temporary file if it exists
     try {
-      const exists = await RNFS.exists(destPath);
-      if (exists) {
-        await RNFS.unlink(destPath);
-      }
+      deleteIfExists(destFile);
     } catch (cleanupError) {
       logger.warn('Failed to clean up temporary file:', cleanupError);
     }
