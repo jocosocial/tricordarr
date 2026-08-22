@@ -24,6 +24,23 @@ export const toSecureString = (originalText?: string): string => {
 };
 
 /**
+ * THO-style display form matching Swiftarr `#regCode` / `RegistrationCode.displayString`.
+ * Strips a spent `*` prefix, drops whitespace, uppercases, and inserts a space after
+ * three characters when the result is 6 long (`abcabc` → `ABC ABC`).
+ */
+export const formatRegCodeDisplay = (code: string): string => {
+  if (!code) {
+    return '';
+  }
+  const unspent = code.startsWith('*') ? code.slice(1) : code;
+  const display = unspent.replace(/\s/g, '').toUpperCase();
+  if (display.length !== 6) {
+    return display;
+  }
+  return `${display.slice(0, 3)} ${display.slice(3)}`;
+};
+
+/**
  * This is a helper function to get the badge display value for a given input.
  * The intention is that the badges should only be shown for new message count,
  * not for added to or other such things like that.

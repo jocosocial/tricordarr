@@ -27,6 +27,8 @@ export enum UserRoleType {
   karaokeambassador = 'karaokeambassador',
   /// Users that may create/edit their Performer profile outside of Pre-Registration, that is, on-board.
   performerselfeditor = 'performerselfeditor',
+  /// Account Managers can look up accounts by registration code and re-enable one-time password recovery.
+  accountmanager = 'accountmanager',
 }
 
 export namespace UserRoleType {
@@ -46,6 +48,8 @@ export namespace UserRoleType {
         return 'Micro Karaoke Ambassador';
       case UserRoleType.performerselfeditor:
         return 'Shadow Event Performer Editor';
+      case UserRoleType.accountmanager:
+        return 'Account Manager';
     }
   };
 

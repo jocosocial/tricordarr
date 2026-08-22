@@ -56,8 +56,9 @@ export const UserProfilesHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Privileged Actions'}>
           <ModerateButtonHelpTopicView />
-          <HelpTopicView title={'Registration'} icon={AppIcons.twitarteam}>
-            View the user registration information. This option is only available to users with TwitarrTeam privileges.
+          <HelpTopicView title={'Registration'} icon={AppIcons.registrationCode}>
+            View the user registration information. This option is only available to users with TwitarrTeam privileges
+            or the Account Manager role.
           </HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>

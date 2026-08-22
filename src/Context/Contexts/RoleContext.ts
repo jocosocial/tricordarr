@@ -9,6 +9,7 @@ export interface RoleContextType {
   hasShutternaut: boolean;
   hasKaraokeAmbassador: boolean;
   hasPerformerSelfEditor: boolean;
+  hasAccountManager: boolean;
   hasRole: (role: UserRoleType) => boolean;
   refetch: () => Promise<void>;
 }
@@ -20,6 +21,7 @@ export const RoleContext = createContext<RoleContextType>({
   hasShutternaut: false,
   hasKaraokeAmbassador: false,
   hasPerformerSelfEditor: false,
+  hasAccountManager: false,
   hasRole: () => false,
   refetch: async () => {},
 });

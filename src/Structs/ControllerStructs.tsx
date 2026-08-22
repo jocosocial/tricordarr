@@ -649,6 +649,19 @@ export interface RegistrationCodeUserData {
   users: UserHeader[];
   /// The registration code associated with this account. If this account doesn't have an associated regcode, will be the empty string.
   regCode: string;
+  /// TRUE if this account already used its registration code for password recovery.
+  hasUsedRegCodeForPasswordRecovery: boolean;
+  /// Account creation time of the primary user. Nil if the code has not been used to create an account.
+  accountCreatedAt?: string;
+}
+
+export namespace RegistrationCodeUserData {
+  export const getCacheKeys = (userID?: string): QueryKey[] => {
+    if (userID) {
+      return [[`/admin/regcodes/findbyuser/${userID}`]];
+    }
+    return [['/admin/regcodes/findbyuser']];
+  };
 }
 
 export interface ImageUploadData {

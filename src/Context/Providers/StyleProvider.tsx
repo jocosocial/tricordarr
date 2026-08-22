@@ -3,7 +3,7 @@ import {Platform, StyleSheet} from 'react-native';
 
 import {StyleContext} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {isAndroid} from '#src/Libraries/Platform/Detection';
+import {isAndroid, isIOS} from '#src/Libraries/Platform/Detection';
 import {type AppTheme} from '#src/Styles/Theme';
 
 export const styleDefaults = {
@@ -291,6 +291,9 @@ export const createCommonStyles = (theme: AppTheme) =>
     },
     fontFamilyNormal: {
       fontFamily: 'sans-serif',
+    },
+    monospace: {
+      fontFamily: isIOS ? 'Menlo' : 'monospace',
     },
     overflowHidden: {
       overflow: 'hidden',

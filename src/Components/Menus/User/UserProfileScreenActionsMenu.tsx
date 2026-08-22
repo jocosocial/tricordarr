@@ -11,6 +11,7 @@ import {MuteUserModalView} from '#src/Components/Views/Modals/MuteUserModalView'
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -31,6 +32,7 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
   const muteMutation = useUserMuteMutation();
   const blockMutation = useUserBlockMutation();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
+  const {hasAccountManager} = useRoles();
   const commonNavigation = useCommonStack();
   const queryClient = useQueryClient();
 
@@ -114,12 +116,12 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
         title={'Report'}
         onPress={() => handleModal(<ReportModalView profile={profile} />)}
       />
-      {(hasModerator || hasTwitarrTeam) && (
+      {(hasModerator || hasTwitarrTeam || hasAccountManager) && (
         <>
           <Divider bold={true} />
           {hasModerator && <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate'} onPress={handleModerate} />}
-          {hasTwitarrTeam && (
-            <Menu.Item leadingIcon={AppIcons.twitarteam} title={'Registration'} onPress={handleRegCode} />
+          {(hasTwitarrTeam || hasAccountManager) && (
+            <Menu.Item leadingIcon={AppIcons.registrationCode} title={'Registration'} onPress={handleRegCode} />
           )}
         </>
       )}
