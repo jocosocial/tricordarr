@@ -864,7 +864,7 @@ export interface PhotostreamImageData {
   /// The schedule event this image was tagged with, if any. Stream photos will be tagged with either an event or a location.
   event?: EventData;
   /// The boat location this image was tagged with, if any. Value will be a raw string from  `PhotoStreamBoatLocation` or nil.  Stream photos will be tagged with either an event or a location.
-  location: string;
+  location?: string;
 }
 
 export namespace PhotostreamImageData {
@@ -1273,6 +1273,8 @@ export interface ClientSettingsData {
   minAccessLevel: string;
   /// Maximum number of images allowed per forum post.
   maxForumPostImages: number;
+  /// Maximum size of a single uploaded image, in bytes.
+  maxImageSize: number;
   /// Unique identifier for this Postgres database installation (from pg_control_system())
   installationID: string;
 }

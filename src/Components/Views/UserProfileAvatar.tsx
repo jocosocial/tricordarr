@@ -6,12 +6,15 @@ import {PERMISSIONS, request as requestPermission} from 'react-native-permission
 
 import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
 import {APIImage} from '#src/Components/Images/APIImage';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {SetRefreshing} from '#src/Hooks/useRefresh';
+import {assertImageWithinSizeLimit, getImageCompressPickerOptions} from '#src/Libraries/ImageSize';
 import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '#src/Queries/User/UserAvatarMutations';
@@ -62,6 +65,10 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   const {currentUserID} = useSession();
   const {getIsDisabled} = useFeature();
   const queryClient = useQueryClient();
+  const {maxImageSize} = useClientSettings();
+  const {appConfig} = useConfig();
+  const autoCompress = appConfig.userPreferences.autoCompressOversizedImages;
+  const compressOptions = getImageCompressPickerOptions(autoCompress, styleDefaults.imageSquareCropDimension);
 
   const pickImage = async () => {
     try {
@@ -71,6 +78,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
         height: styleDefaults.imageSquareCropDimension,
         includeBase64: true,
         mediaType: 'photo',
+        ...compressOptions,
       });
       processImage(image);
     } catch (err: any) {
@@ -91,6 +99,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
         height: styleDefaults.imageSquareCropDimension,
         includeBase64: true,
         mediaType: 'photo',
+        ...compressOptions,
       });
       processImage(image);
     } catch (err: any) {
@@ -108,6 +117,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   };
 
   const processImage = (image: Image) => {
+    assertImageWithinSizeLimit(image, maxImageSize);
     if (image.data) {
       setRefreshing(true);
       avatarMutation.mutate(

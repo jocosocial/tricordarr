@@ -66,6 +66,9 @@ export type CommonStackParamList = {
   PhotostreamEventScreen: WithScrollToTopIntent<{
     eventID: string;
   }>;
+  PhotostreamUserScreen: WithScrollToTopIntent<{
+    user: UserHeader;
+  }>;
   PersonalEventScreen: {
     eventID: string;
   };
@@ -259,6 +262,7 @@ export enum CommonStackComponents {
   forumPostUserScreen = 'ForumPostUserScreen',
   eventScreen = 'EventScreen',
   photostreamEventScreen = 'PhotostreamEventScreen',
+  photostreamUserScreen = 'PhotostreamUserScreen',
   forumThreadScreen = 'ForumThreadScreen',
   alertKeywords = 'AlertKeywordsScreen',
   muteKeywords = 'MuteKeywordsScreen',

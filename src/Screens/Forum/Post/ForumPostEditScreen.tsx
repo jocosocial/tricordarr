@@ -6,9 +6,9 @@ import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
-import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumPostUpdateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -32,7 +32,7 @@ export const ForumPostEditScreen = (props: Props) => {
 const ForumPostEditScreenInner = ({route, navigation}: Props) => {
   const postUpdateMutation = useForumPostUpdateMutation();
   const {updatePost} = useForumCacheReducer();
-  const maxForumPostImages = useMaxForumPostImages();
+  const {maxForumPostImages} = useClientSettings();
 
   const onSubmit = (values: PostContentData, helpers: FormikHelpers<PostContentData>) => {
     values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);

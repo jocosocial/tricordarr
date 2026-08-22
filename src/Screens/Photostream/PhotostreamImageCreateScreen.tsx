@@ -71,14 +71,17 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
       {
         onSuccess: async () => {
           // Refetch only active photostream queries (more targeted than invalidation)
-          // @TODO https://github.com/jocosocial/swiftarr/issues/481
           await queryClient.refetchQueries({
             queryKey: ['/photostream'],
             type: 'active',
           });
 
           // Signal photostream screens to scroll to top when user navigates back
-          dispatchScrollToTop(MainStackComponents.photostreamScreen, CommonStackComponents.photostreamEventScreen);
+          dispatchScrollToTop(
+            MainStackComponents.photostreamScreen,
+            CommonStackComponents.photostreamEventScreen,
+            CommonStackComponents.photostreamUserScreen,
+          );
 
           navigation.goBack();
         },

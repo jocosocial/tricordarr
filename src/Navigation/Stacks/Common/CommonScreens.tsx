@@ -75,6 +75,7 @@ import {PersonalEventEditScreen} from '#src/Screens/PersonalEvent/PersonalEventE
 import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScreen';
 import {PhotostreamEventScreen} from '#src/Screens/Photostream/PhotostreamEventScreen';
 import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
+import {PhotostreamUserScreen} from '#src/Screens/Photostream/PhotostreamUserScreen';
 import {EventHelpScreen} from '#src/Screens/Schedule/EventHelpScreen';
 import {PersonalEventHelpScreen} from '#src/Screens/Schedule/PersonalEventHelpScreen';
 import {ScheduleDayHelpScreen} from '#src/Screens/Schedule/ScheduleDayHelpScreen';
@@ -198,6 +199,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.photostreamEventScreen}
         component={PhotostreamEventScreen}
         options={{title: 'Event Photos'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.photostreamUserScreen}
+        component={PhotostreamUserScreen}
+        options={{title: 'User Photos'}}
       />
       <Stack.Screen
         name={CommonStackComponents.forumThreadScreen}

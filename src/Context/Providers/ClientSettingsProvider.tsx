@@ -1,13 +1,25 @@
-import React, {PropsWithChildren, useCallback} from 'react';
+import React, {PropsWithChildren, useCallback, useMemo} from 'react';
 
-import {ClientSettingsContext} from '#src/Context/Contexts/ClientSettingsContext';
+import {
+  ClientSettingsContext,
+  DEFAULT_MAX_FORUM_POST_IMAGES,
+  DEFAULT_MAX_IMAGE_SIZE,
+  SHUTTERNAUT_MAX_FORUM_POST_IMAGES,
+} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useClientSettingsQuery} from '#src/Queries/Client/ClientQueries';
 import {ClientSettingsData} from '#src/Structs/ControllerStructs';
 
 export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
   const {appConfig, updateAppConfig} = useConfig();
-  const {refetch} = useClientSettingsQuery({enabled: false});
+  const {data: clientSettings, refetch} = useClientSettingsQuery();
+  const {hasShutternaut} = useRoles();
+
+  const maxForumPostImages = hasShutternaut
+    ? SHUTTERNAUT_MAX_FORUM_POST_IMAGES
+    : (clientSettings?.maxForumPostImages ?? DEFAULT_MAX_FORUM_POST_IMAGES);
+  const maxImageSize = clientSettings?.maxImageSize ?? DEFAULT_MAX_IMAGE_SIZE;
 
   const updateClientSettings = useCallback(async () => {
     const response = await refetch();
@@ -24,12 +36,14 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
     }
   }, [appConfig, refetch, updateAppConfig]);
 
-  return (
-    <ClientSettingsContext.Provider
-      value={{
-        updateClientSettings,
-      }}>
-      {children}
-    </ClientSettingsContext.Provider>
+  const value = useMemo(
+    () => ({
+      updateClientSettings,
+      maxForumPostImages,
+      maxImageSize,
+    }),
+    [updateClientSettings, maxForumPostImages, maxImageSize],
   );
+
+  return <ClientSettingsContext.Provider value={value}>{children}</ClientSettingsContext.Provider>;
 };

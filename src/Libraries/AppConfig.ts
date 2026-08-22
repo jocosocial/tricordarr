@@ -49,6 +49,7 @@ export interface UserPreferences {
   defaultForumSortDirection: ForumSortDirection | undefined;
   highlightForumAlertWords: boolean;
   autosavePhotos: boolean;
+  autoCompressOversizedImages: boolean;
 }
 
 export interface AppConfig {
@@ -162,6 +163,7 @@ export const defaultAppConfig: AppConfig = {
     defaultForumSortOrder: undefined,
     highlightForumAlertWords: true,
     autosavePhotos: true,
+    autoCompressOversizedImages: true,
   },
   markReadCancelPush: true,
   preRegistrationServerUrl: 'https://start.twitarr.com',
@@ -225,6 +227,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.userPreferences.showScrollButton === undefined) {
     appConfig.userPreferences.showScrollButton = true;
+  }
+  if (appConfig.userPreferences.autoCompressOversizedImages === undefined) {
+    appConfig.userPreferences.autoCompressOversizedImages = true;
   }
   if (appConfig.dismissWelcomeAboard === undefined) {
     appConfig.dismissWelcomeAboard = false;

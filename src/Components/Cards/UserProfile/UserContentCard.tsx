@@ -34,6 +34,11 @@ export const UserContentCard = ({user}: UserContentCardProps) => {
             left={() => getIcon(AppIcons.forum)}
             onPress={() => commonNavigation.push(CommonStackComponents.forumThreadUserScreen, {user: user.header})}
           />
+          <List.Item
+            title={'Photostream'}
+            left={() => getIcon(AppIcons.photostream)}
+            onPress={() => commonNavigation.push(CommonStackComponents.photostreamUserScreen, {user: user.header})}
+          />
           {hasModerator && (
             <List.Item
               title={'Forum Posts'}

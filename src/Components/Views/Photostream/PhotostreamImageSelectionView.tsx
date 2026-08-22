@@ -8,8 +8,15 @@ import {PERMISSIONS, request as requestPermission} from 'react-native-permission
 
 import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
 import {AppImage} from '#src/Components/Images/AppImage';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {
+  assertBase64WithinSizeLimit,
+  assertImageWithinSizeLimit,
+  getImageCompressPickerOptions,
+} from '#src/Libraries/ImageSize';
 import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
@@ -24,10 +31,15 @@ export const PhotostreamImageSelectionView = () => {
   const {setSnackbarPayload} = useSnackbar();
   const {values, setFieldValue} = useFormikContext<PhotostreamUploadData>();
   const [refreshing, setRefreshing] = React.useState(false);
+  const {maxImageSize} = useClientSettings();
+  const {appConfig} = useConfig();
+  const autoCompress = appConfig.userPreferences.autoCompressOversizedImages;
+  const compressOptions = getImageCompressPickerOptions(autoCompress, styleDefaults.imageSquareCropDimension);
 
   const onBlur = async (newPath: string) => {
     try {
       const imageData = await RNFS.readFile(newPath, 'base64');
+      assertBase64WithinSizeLimit(imageData, maxImageSize);
       await setFieldValue('image', imageData);
     } catch (err) {
       if (err instanceof Error && err.message !== 'User cancelled image selection') {
@@ -39,8 +51,9 @@ export const PhotostreamImageSelectionView = () => {
   };
 
   const processImage = (image: Image) => {
-    setRefreshing(true);
     try {
+      assertImageWithinSizeLimit(image, maxImageSize);
+      setRefreshing(true);
       NativeTricordarrModule.blurTextInImage(image.path, onBlur);
     } catch (err: any) {
       if (err instanceof Error) {
@@ -62,6 +75,7 @@ export const PhotostreamImageSelectionView = () => {
         cropping: true,
         width: styleDefaults.imageSquareCropDimension,
         height: styleDefaults.imageSquareCropDimension,
+        ...compressOptions,
       });
       processImage(image);
     } catch (err: any) {
@@ -82,6 +96,7 @@ export const PhotostreamImageSelectionView = () => {
         cropping: true,
         width: styleDefaults.imageSquareCropDimension,
         height: styleDefaults.imageSquareCropDimension,
+        ...compressOptions,
       });
       processImage(image);
     } catch (err: any) {

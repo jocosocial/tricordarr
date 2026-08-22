@@ -27,6 +27,14 @@ export const UserProfilesHelpScreen = () => {
             Tapping on the Email field, if present, opens your devices default Mail application.
           </HelpTopicView>
         </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Content'}>
+          <HelpTopicView title={'Forums'} icon={AppIcons.forum}>
+            View forum threads created by this user.
+          </HelpTopicView>
+          <HelpTopicView title={'Photostream'} icon={AppIcons.photostream}>
+            View Photostream photos posted by this user.
+          </HelpTopicView>
+        </HelpChapterTitleView>
         <HelpChapterTitleView title={'Floating Action Button'}>
           <HelpFABView icon={AppIcons.new} label={'Chat'} />
           <HelpTopicView>Access a menu of options to interact with this user.</HelpTopicView>

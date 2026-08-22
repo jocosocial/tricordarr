@@ -7,9 +7,13 @@ import {PERMISSIONS, request as requestPermission} from 'react-native-permission
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {assertImageWithinSizeLimit, getImageCompressPickerOptions} from '#src/Libraries/ImageSize';
 import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {PostContentData} from '#src/Structs/ControllerStructs';
@@ -36,6 +40,11 @@ export const ContentInsertMenuView = ({
   const {setSnackbarPayload} = useSnackbar();
   const {values, setFieldValue, isSubmitting} = useFormikContext<PostContentData>();
   const {hasShutternaut} = useRoles();
+  const {styleDefaults} = useStyles();
+  const {maxImageSize} = useClientSettings();
+  const {appConfig} = useConfig();
+  const autoCompress = appConfig.userPreferences.autoCompressOversizedImages;
+  const compressOptions = getImageCompressPickerOptions(autoCompress, styleDefaults.imageSquareCropDimension);
   const currentPhotoCount = values.images.length;
 
   const getIcon = useCallback(() => {
@@ -65,6 +74,7 @@ export const ContentInsertMenuView = ({
       const image = await ImagePicker.openCamera({
         includeBase64: true,
         mediaType: 'photo',
+        ...compressOptions,
       });
       processImage(image, true);
     } catch (err: any) {
@@ -79,6 +89,7 @@ export const ContentInsertMenuView = ({
       const image = await ImagePicker.openPicker({
         includeBase64: true,
         mediaType: 'photo',
+        ...compressOptions,
       });
       processImage(image, false);
     } catch (err: any) {
@@ -89,6 +100,7 @@ export const ContentInsertMenuView = ({
   };
 
   const processImage = (image: Image, fromCamera: boolean = false) => {
+    assertImageWithinSizeLimit(image, maxImageSize);
     if (image.data) {
       setFieldValue(fieldName, values.images.concat([{image: image.data, _shouldSaveToRoll: fromCamera}]));
       setVisible(false);
