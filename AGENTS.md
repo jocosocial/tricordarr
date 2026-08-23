@@ -113,4 +113,4 @@ Use `createLogger` rather than `console.log`
 
 ## Building
 
-- Do not run builds in the agent. Instead tell the user to run a build in their terminal.
+- Ask the user before running builds in the agent within a local IDE. Running builds in an autonomous/cloud agent unprompted is fine.
