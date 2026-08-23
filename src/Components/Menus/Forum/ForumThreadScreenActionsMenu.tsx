@@ -1,4 +1,4 @@
-import React, {ReactNode, useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -11,13 +11,12 @@ import {PostAsModeratorMenuItem} from '#src/Components/Menus/Items/PostAsModerat
 import {PostAsTwitarrTeamMenuItem} from '#src/Components/Menus/Items/PostAsTwitarrTeamMenuItem';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {ReportContentType} from '#src/Enums/ReportContentType';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -44,7 +43,6 @@ export const ForumThreadScreenActionsMenu = ({
   toggleTwitarrTeam,
 }: ForumThreadActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {data: profilePublicData} = useUserProfileQuery();
   const {currentUserID} = useSession();
@@ -67,12 +65,6 @@ export const ForumThreadScreenActionsMenu = ({
       // the LFG then share the link back to the thread.
     });
   }, [closeMenu, commonNavigation, forumData.title, forumData.forumID, serverUrl]);
-
-  const handleModal = (content: ReactNode) => {
-    closeMenu();
-    setModalContent(content);
-    setModalVisible(true);
-  };
 
   const handleFavorite = useCallback(() => {
     if (forumData) {
@@ -166,7 +158,13 @@ export const ForumThreadScreenActionsMenu = ({
             dense={false}
             leadingIcon={AppIcons.report}
             title={'Report'}
-            onPress={() => handleModal(<ReportModalView forum={forumData} />)}
+            onPress={() => {
+              closeMenu();
+              commonNavigation.push(CommonStackComponents.reportScreen, {
+                contentType: ReportContentType.forum,
+                contentID: forumData.forumID,
+              });
+            }}
           />
         </>
       )}

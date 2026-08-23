@@ -1,5 +1,5 @@
 import pluralize from 'pluralize';
-import React, {memo, ReactNode, useCallback} from 'react';
+import React, {memo, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import {Badge} from 'react-native-paper';
 
@@ -7,14 +7,14 @@ import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatus
 import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezCardActionsMenu} from '#src/Components/Menus/Fez/FezCardActionsMenu';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useFezData} from '#src/Hooks/useFezData';
 import {useMenu} from '#src/Hooks/useMenu';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
 
@@ -44,15 +44,8 @@ const FezCardInternal = ({
   const {theme} = useAppTheme();
   const unreadCount = fez.members ? fez.members.postCount - fez.members.readCount : 0;
   const {commonStyles} = useStyles();
-  const {setModalContent, setModalVisible} = useModal();
+  const commonNavigation = useCommonStack();
   const {visible: menuVisible, openMenu, closeMenu} = useMenu();
-  const handleModal = useCallback(
-    (content: ReactNode) => {
-      setModalContent(content);
-      setModalVisible(true);
-    },
-    [setModalContent, setModalVisible],
-  );
   const {participantLabel} = useFezData({fezID: fez.fezID});
 
   const styles = StyleSheet.create({
@@ -71,7 +64,12 @@ const FezCardInternal = ({
         <AppIcon
           color={theme.colors.constantWhite}
           icon={AppIcons.report}
-          onPress={() => handleModal(<ReportModalView fez={fez} />)}
+          onPress={() =>
+            commonNavigation.push(CommonStackComponents.reportScreen, {
+              contentType: ReportContentType.fez,
+              contentID: fez.fezID,
+            })
+          }
         />
       );
     }

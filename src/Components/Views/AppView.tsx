@@ -8,7 +8,6 @@ import {Portal} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ErrorBanner} from '#src/Components/Banners/ErrorBanner';
-import {AppModal} from '#src/Components/Modals/AppModal';
 import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {ConnectionDisruptedView} from '#src/Components/Views/Warnings/ConnectionDisruptedView';
 import {PreRegistrationWarningView} from '#src/Components/Views/Warnings/PreRegistrationWarningView';
@@ -105,7 +104,6 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
         keyboardVerticalOffset={keyboardVerticalOffset}>
         <Portal>
           <ErrorBanner />
-          <AppModal />
           <AppSnackbar />
         </Portal>
         {preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}

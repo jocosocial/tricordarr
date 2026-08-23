@@ -1,11 +1,11 @@
 import React, {ReactNode} from 'react';
 import {Menu} from 'react-native-paper';
 
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
 interface FezPostActionsMenuProps {
@@ -17,13 +17,15 @@ interface FezPostActionsMenuProps {
 }
 
 export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: FezPostActionsMenuProps) => {
-  const {setModalContent, setModalVisible} = useModal();
   const {setString} = useClipboard();
+  const commonNavigation = useCommonStack();
 
   const handleReport = () => {
     closeMenu();
-    setModalContent(<ReportModalView fezPost={fezPost} />);
-    setModalVisible(true);
+    commonNavigation.push(CommonStackComponents.reportScreen, {
+      contentType: ReportContentType.fezPost,
+      contentID: fezPost.postID,
+    });
   };
 
   return (

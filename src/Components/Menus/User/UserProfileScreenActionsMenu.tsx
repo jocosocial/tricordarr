@@ -1,16 +1,14 @@
 import {useQueryClient} from '@tanstack/react-query';
 import * as React from 'react';
-import {ReactNode} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {ReportContentType} from '#src/Enums/ReportContentType';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
 import {alertBlock, alertMute} from '#src/Libraries/Alerts/UserAlerts';
@@ -27,7 +25,6 @@ interface UserProfileActionsMenuProps {
 
 export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: UserProfileActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {setModalContent, setModalVisible} = useModal();
   const muteMutation = useUserMuteMutation();
   const blockMutation = useUserBlockMutation();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
@@ -43,10 +40,12 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
       moderate: true,
     });
   };
-  const handleModal = (content: ReactNode) => {
+  const handleReport = () => {
     closeMenu();
-    setModalContent(content);
-    setModalVisible(true);
+    commonNavigation.push(CommonStackComponents.reportScreen, {
+      contentType: ReportContentType.users,
+      contentID: profile.header.userID,
+    });
   };
   const handleRegCode = () => {
     closeMenu();
@@ -135,11 +134,7 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
         title={isMuted ? 'Unmute' : 'Mute'}
         onPress={handleMute}
       />
-      <Menu.Item
-        leadingIcon={AppIcons.report}
-        title={'Report'}
-        onPress={() => handleModal(<ReportModalView profile={profile} />)}
-      />
+      <Menu.Item leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
       {(hasModerator || hasTwitarrTeam || hasAccountManager) && (
         <>
           <Divider bold={true} />

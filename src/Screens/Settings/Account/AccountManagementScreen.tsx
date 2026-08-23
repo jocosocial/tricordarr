@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useState} from 'react';
 
 import {MinorActionListItem} from '#src/Components/Lists/Items/MinorActionListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -18,12 +18,30 @@ import {
   useSettingsStack,
 } from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.accountManagement>;
+
+/**
+ * Account settings and logout. Do not wrap in LoggedInScreen: that checkpoint
+ * would swap to NotLoggedInView the moment the session clears, which is the
+ * flash we freeze past.
+ *
+ * `isLoggingOut` is set in onLogoutStart (before performSignOut) and never
+ * cleared — this screen unmounts on onLoggedOut goBack. Until then we keep
+ * rendering the account list even after `isLoggedIn` / `currentUserID` go
+ * false. goBack must wait until after teardown so Today (under this Settings
+ * stack when opened from MainAccountMenu) is already logged-out when revealed.
+ */
 export const AccountManagementScreen = ({navigation}: Props) => {
   const settingsNavigation = useSettingsStack();
   const {isLoggedIn, currentUserID} = useSession();
   const {confirmLogout} = useSignOut();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  if (!isLoggedIn) {
+  const logoutOptions = {
+    onLogoutStart: () => setIsLoggingOut(true),
+    onLoggedOut: () => navigation.goBack(),
+  };
+
+  if (!isLoggedIn && !isLoggingOut) {
     return <NotLoggedInView />;
   }
 
@@ -31,7 +49,7 @@ export const AccountManagementScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padSides={false}>
-          {currentUserID != null && (
+          {(currentUserID != null || isLoggingOut) && (
             <>
               <ListSection>
                 <ListSubheader>Manage Your Account</ListSubheader>
@@ -70,13 +88,13 @@ export const AccountManagementScreen = ({navigation}: Props) => {
             <MinorActionListItem
               title={'Logout this device'}
               icon={AppIcons.logout}
-              onPress={() => confirmLogout({onLoggedOut: () => navigation.goBack()})}
+              onPress={() => confirmLogout(logoutOptions)}
             />
-            {currentUserID != null && (
+            {(currentUserID != null || isLoggingOut) && (
               <MinorActionListItem
                 title={'Logout all devices'}
                 icon={AppIcons.error}
-                onPress={() => confirmLogout({allDevices: true, onLoggedOut: () => navigation.goBack()})}
+                onPress={() => confirmLogout({...logoutOptions, allDevices: true})}
               />
             )}
           </ListSection>

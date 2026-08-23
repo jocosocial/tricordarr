@@ -1,10 +1,8 @@
 # Deprecation
 
-These modules are unspported and need to go:
+These modules are unsupported and need to go:
 
-- [react-native-hyperlink](https://github.com/obipawan/react-native-hyperlink)
-  ** https://github.com/joshswan/react-native-autolink was suggested as an alternative.
-  ** Patched around the `A props object containing a "key" prop is being spread into JSX` issue.
+None!
 
 ## Transitive dependency overrides (security)
 

@@ -11,15 +11,19 @@ import {alertLogout} from '#src/Libraries/Alerts/AuthAlerts';
 import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
 
 /**
- * SignOutProvider consolidates all sign-out logic into a single performSignOut function.
- * This ensures consistent sign-out behavior across the app and eliminates code duplication.
+ * SignOutProvider consolidates sign-out into `performSignOut` / `confirmLogout`.
  *
- * This provider must be placed after all the providers it depends on:
- * - ConfigProvider (for updateAppConfig)
- * - SessionProvider (for signOut)
- * - EnableUserNotificationProvider (for setEnableUserNotifications)
- * - SocketProvider (for closeNotificationSocket, dispatchFezSockets)
- * - SwiftarrQueryClientProvider (for queryClient via useQueryClient)
+ * Placement: after ConfigProvider, SessionProvider, EnableUserNotificationProvider,
+ * SocketProvider, and SwiftarrQueryClientProvider.
+ *
+ * Confirmed logout must run in this order (see ConfirmLogoutOptions):
+ *   1. onLogoutStart — freeze the visible screen's logged-in UI
+ *   2. performSignOut — clear token, sockets, query cache, cookies
+ *   3. onLoggedOut — navigate (usually goBack)
+ *
+ * Navigating in (1) reveals Today/Settings still logged-in. Teardown without (1)
+ * flashes NotLoggedInView on the current screen. Alert.alert (unlike the old
+ * Modal) is gone as soon as the user confirms, so nothing hides those swaps.
  */
 export const SignOutProvider = ({children}: PropsWithChildren) => {
   const {setEnableUserNotifications} = useEnableUserNotification();
@@ -28,6 +32,12 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
   const queryClient = useQueryClient();
   const {clearCookies} = useTwitarrWebview();
 
+  /**
+   * Local session teardown. Order inside matters: disable notifications before
+   * clearing the token so PushNotificationService does not restart FGS without
+   * credentials; clear the query cache after `signOut()` so logged-in widgets
+   * (Today appointments, avatar, etc.) drop before any later navigation.
+   */
   const performSignOut = useCallback(async () => {
     // Disable user notifications. Push provider teardown (stopPushProvider) is handled by
     // PushNotificationService when this state flips: its effect calls stopPushProvider() once.
@@ -53,8 +63,14 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
     await clearCookies();
   }, [setEnableUserNotifications, closeNotificationSocket, dispatchFezSockets, signOut, queryClient, clearCookies]);
 
+  /**
+   * Freeze current UI, tear down session+cache, then navigate. Must not reorder:
+   * goBack-before-teardown flashes leftover Today content; teardown-before-freeze
+   * flashes NotLoggedInView on the current screen. See ConfirmLogoutOptions.
+   */
   const finishLogout = useCallback(
-    async (onLoggedOut?: () => void) => {
+    async (onLogoutStart?: () => void, onLoggedOut?: () => void) => {
+      onLogoutStart?.();
       await performSignOut();
       onLoggedOut?.();
     },
@@ -63,18 +79,22 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
 
   const logoutMutation = useLogoutMutation();
 
-  // SignOutProvider is rendered above the root navigator (see docs/Navigation.md), so it
-  // cannot safely call useNavigation() itself. Callers pass their own screen-scoped
-  // onLoggedOut callback (e.g. () => navigation.goBack()) instead.
+  /**
+   * Alert confirm, then finishLogout. All-devices waits for POST /auth/logout
+   * success before teardown so a failed API leaves the user on this screen
+   * still logged in. This provider cannot call useNavigation() (it sits above
+   * the root navigator; see docs/Navigation.md).
+   */
   const confirmLogout = useCallback(
     (options?: ConfirmLogoutOptions) => {
       const allDevices = options?.allDevices ?? false;
+      const onLogoutStart = options?.onLogoutStart;
       const onLoggedOut = options?.onLoggedOut;
       alertLogout(allDevices, () => {
         if (allDevices) {
-          logoutMutation.mutate(undefined, {onSuccess: () => finishLogout(onLoggedOut)});
+          logoutMutation.mutate(undefined, {onSuccess: () => finishLogout(onLogoutStart, onLoggedOut)});
         } else {
-          finishLogout(onLoggedOut);
+          finishLogout(onLogoutStart, onLoggedOut);
         }
       });
     },

@@ -2,6 +2,7 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 import type {FezType} from '#src/Enums/FezType';
+import type {ReportContentType} from '#src/Enums/ReportContentType';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {type UserRelationMode} from '#src/Queries/Users/UserRelationConstants';
 import {
@@ -53,6 +54,15 @@ export type CommonStackParamList = {
     deckNumber?: number;
   };
   AccountRecoveryScreen: undefined;
+  RecoveryKeyScreen: {
+    recoveryKey: string;
+    username: string;
+  };
+  ReportScreen: {
+    contentType: ReportContentType;
+    contentID: string | number;
+  };
+  ReportHelpScreen: undefined;
   EasterEggScreen: undefined;
   ForumThreadUserScreen: {
     user: UserHeader;
@@ -257,6 +267,9 @@ export enum CommonStackComponents {
   siteUIScreen = 'SiteUIScreen',
   mapScreen = 'MapScreen',
   accountRecoveryScreen = 'AccountRecoveryScreen',
+  recoveryKeyScreen = 'RecoveryKeyScreen',
+  reportScreen = 'ReportScreen',
+  reportHelpScreen = 'ReportHelpScreen',
   easterEggScreen = 'EasterEggScreen',
   forumThreadUserScreen = 'ForumThreadUserScreen',
   forumPostUserScreen = 'ForumPostUserScreen',
@@ -416,7 +429,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.dailyThemeHelpScreen
   | CommonStackComponents.easterEggHelpScreen
   | CommonStackComponents.todayHelpScreen
-  | CommonStackComponents.krakenTalkHelpScreen;
+  | CommonStackComponents.krakenTalkHelpScreen
+  | CommonStackComponents.reportHelpScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 

@@ -26,6 +26,12 @@ export const HelpManualScreen = () => {
             icon={AppIcons.faq}
             onPress={() => commonNavigation.push(CommonStackComponents.cruiseHelpScreen)}
           />
+          <DataFieldListItem
+            title={'Report'}
+            description={'Report content or users to the Twitarr Moderation Team.'}
+            icon={AppIcons.report}
+            onPress={() => commonNavigation.push(CommonStackComponents.reportHelpScreen)}
+          />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Major Features'} noMargin={true}>
           <DataFieldListItem

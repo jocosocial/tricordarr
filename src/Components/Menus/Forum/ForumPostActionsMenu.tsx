@@ -87,7 +87,7 @@ export const ForumPostActionsMenu = ({
         <ForumPostActionsPinItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
       )}
       <Divider bold={true} />
-      <ForumPostActionsReportItem forumPost={forumPost} closeMenu={closeMenu} />
+      <ForumPostActionsReportItem forumPost={forumPost} closeMenu={closeMenu} navigation={commonNavigation} />
       <Divider bold={true} />
       <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} navigation={commonNavigation} />
       <Divider bold={true} />
