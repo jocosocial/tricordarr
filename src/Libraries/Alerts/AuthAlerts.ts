@@ -1,7 +1,10 @@
 import {Alert} from 'react-native';
 
 /**
- * Confirms logging out of this device or all devices.
+ * Native Alert confirm for logout. Unlike the previous Modal, this dismisses
+ * as soon as the user taps Log Out, so the screen behind is immediately
+ * visible. Callers must freeze UI (onLogoutStart) before teardown and delay
+ * navigation (onLoggedOut) until after performSignOut. See ConfirmLogoutOptions.
  */
 export const alertLogout = (allDevices: boolean, onConfirm: () => void, onCancel?: () => void): void => {
   Alert.alert('Log Out', allDevices ? 'Confirm log out all of your devices?' : 'Confirm log out this device?', [

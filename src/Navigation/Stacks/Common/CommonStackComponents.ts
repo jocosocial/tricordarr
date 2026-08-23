@@ -56,8 +56,8 @@ export type CommonStackParamList = {
   AccountRecoveryScreen: undefined;
   RecoveryKeyScreen: {
     recoveryKey: string;
+    username: string;
   };
-  RecoveryKeyHelpScreen: undefined;
   ReportScreen: {
     contentType: ReportContentType;
     contentID: string | number;
@@ -268,7 +268,6 @@ export enum CommonStackComponents {
   mapScreen = 'MapScreen',
   accountRecoveryScreen = 'AccountRecoveryScreen',
   recoveryKeyScreen = 'RecoveryKeyScreen',
-  recoveryKeyHelpScreen = 'RecoveryKeyHelpScreen',
   reportScreen = 'ReportScreen',
   reportHelpScreen = 'ReportHelpScreen',
   easterEggScreen = 'EasterEggScreen',
@@ -431,8 +430,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.easterEggHelpScreen
   | CommonStackComponents.todayHelpScreen
   | CommonStackComponents.krakenTalkHelpScreen
-  | CommonStackComponents.reportHelpScreen
-  | CommonStackComponents.recoveryKeyHelpScreen;
+  | CommonStackComponents.reportHelpScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 

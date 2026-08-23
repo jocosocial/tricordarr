@@ -23,7 +23,7 @@ export const RegisterScreen = () => {
   const createMutation = useUserCreateQuery();
   const loginMutation = useLoginMutation();
   const {signIn} = useSession();
-  const commonNavigation = useCommonStack();
+  const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
   const {currentSession, findOrCreateSession} = useSession();
   const {appConfig} = useConfig();
@@ -65,8 +65,9 @@ export const RegisterScreen = () => {
               setTimeout(async () => {
                 await Promise.all([updateClientSettings(), refetchRoles()]);
               }, 1000);
-              commonNavigation.replace(CommonStackComponents.recoveryKeyScreen, {
+              navigation.replace(CommonStackComponents.recoveryKeyScreen, {
                 recoveryKey: userCreateResponse.data.recoveryKey,
+                username: userCreateResponse.data.username,
               });
             },
             onSettled: () => {
@@ -85,7 +86,7 @@ export const RegisterScreen = () => {
       createMutation,
       loginMutation,
       oobeCompleted,
-      commonNavigation,
+      navigation,
       refetchRoles,
       signIn,
       signInWebview,

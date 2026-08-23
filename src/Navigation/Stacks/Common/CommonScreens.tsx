@@ -98,7 +98,6 @@ import {SeamailListHelpScreen} from '#src/Screens/Seamail/SeamailListHelpScreen'
 import {SeamailSearchHelpScreen} from '#src/Screens/Seamail/SeamailSearchHelpScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
-import {RecoveryKeyHelpScreen} from '#src/Screens/Settings/Account/RecoveryKeyHelpScreen';
 import {RecoveryKeyScreen} from '#src/Screens/Settings/Account/RecoveryKeyScreen';
 import {ChatSettingsScreen} from '#src/Screens/Settings/ChatSettingsScreen';
 import {ConfigServerUrlScreen} from '#src/Screens/Settings/Config/ConfigServerUrlScreen';
@@ -187,11 +186,6 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.recoveryKeyScreen}
         component={RecoveryKeyScreen}
         options={{title: 'Recovery Key', gestureEnabled: false, headerLeft: () => null}}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.recoveryKeyHelpScreen}
-        component={RecoveryKeyHelpScreen}
-        options={{title: 'Recovery Key Help'}}
       />
       <Stack.Screen name={CommonStackComponents.reportScreen} component={ReportScreen} options={{title: 'Report'}} />
       <Stack.Screen

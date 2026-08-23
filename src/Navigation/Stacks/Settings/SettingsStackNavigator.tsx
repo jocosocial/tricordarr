@@ -12,7 +12,6 @@ import {AccountManagementScreen} from '#src/Screens/Settings/Account/AccountMana
 import {ChangePasswordScreen} from '#src/Screens/Settings/Account/ChangePasswordScreen';
 import {ChangeUsernameScreen} from '#src/Screens/Settings/Account/ChangeUsernameScreen';
 import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
-import {RecoveryKeyHelpScreen} from '#src/Screens/Settings/Account/RecoveryKeyHelpScreen';
 import {RecoveryKeyScreen} from '#src/Screens/Settings/Account/RecoveryKeyScreen';
 import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
 import {SessionDetailsScreen} from '#src/Screens/Settings/Account/SessionDetailsScreen';
@@ -99,11 +98,6 @@ export const SettingsStackNavigator = () => {
         name={CommonStackComponents.recoveryKeyScreen}
         component={RecoveryKeyScreen}
         options={{title: 'Recovery Key', gestureEnabled: false, headerLeft: () => null}}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.recoveryKeyHelpScreen}
-        component={RecoveryKeyHelpScreen}
-        options={{title: 'Recovery Key Help'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.accountManagement}

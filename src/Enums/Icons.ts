@@ -90,6 +90,7 @@ export enum AppIcons {
   eventSearch = 'calendar-search',
   info = 'information-outline',
   save = 'content-save',
+  screenshot = 'cellphone-screenshot',
   close = 'close',
   download = 'download',
   imageDisabled = 'image-off',

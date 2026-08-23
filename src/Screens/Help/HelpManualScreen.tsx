@@ -73,12 +73,6 @@ export const HelpManualScreen = () => {
             onPress={() => commonNavigation.push(CommonStackComponents.userProfileHelpScreen)}
           />
           <DataFieldListItem
-            title={'Recovery Key'}
-            description={'The one-time account recovery key shown after you create an account.'}
-            icon={AppIcons.registrationCode}
-            onPress={() => commonNavigation.push(CommonStackComponents.recoveryKeyHelpScreen)}
-          />
-          <DataFieldListItem
             title={'User Directory'}
             description={'Directory of users on the cruise.'}
             icon={AppIcons.user}
