@@ -6,11 +6,9 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
-import {RegCodeText} from '#src/Components/Text/RegCodeText';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useClipboard} from '#src/Hooks/useClipboard';
@@ -37,17 +35,9 @@ export const UserRegCodeScreen = (props: Props) => {
 
 const UserRegCodeScreenInner = ({route, navigation}: Props) => {
   const {data} = useRegCodeForUserQuery({userID: route.params.userID});
-  const {setModalVisible} = useModal();
   const {setSnackbarPayload} = useSnackbar();
   const unlockMutation = useUnlockRegCodeMutation();
   const {setString} = useClipboard();
-
-  const handleUserPress = (pressedUserID: string) => {
-    setModalVisible(false);
-    navigation.push(CommonStackComponents.userProfileScreen, {
-      userID: pressedUserID,
-    });
-  };
 
   const handleUnlock = () => {
     unlockMutation.mutate(
@@ -70,7 +60,7 @@ const UserRegCodeScreenInner = ({route, navigation}: Props) => {
           {data && (
             <DataFieldListItem
               title={'Registration Code'}
-              description={<RegCodeText code={data.regCode} selectable={false} />}
+              description={formatRegCodeDisplay(data.regCode)}
               onLongPress={() => setString(formatRegCodeDisplay(data.regCode))}
             />
           )}
@@ -93,7 +83,15 @@ const UserRegCodeScreenInner = ({route, navigation}: Props) => {
         <View>
           <ListSubheader>Related Accounts</ListSubheader>
           {data?.users.map(user => (
-            <UserListItem key={user.userID} userHeader={user} onPress={() => handleUserPress(user.userID)} />
+            <UserListItem
+              key={user.userID}
+              userHeader={user}
+              onPress={() =>
+                navigation.push(CommonStackComponents.userProfileScreen, {
+                  userID: user.userID,
+                })
+              }
+            />
           ))}
         </View>
       </ScrollingContentView>

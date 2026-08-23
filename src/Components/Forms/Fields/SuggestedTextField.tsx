@@ -30,7 +30,6 @@ export const SuggestedTextField = ({
   secureTextEntry,
   label,
   left,
-  right: _right,
   viewStyle,
   inputMode,
   autoCapitalize,
