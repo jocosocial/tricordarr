@@ -7,10 +7,9 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {LogoutDeviceModalView} from '#src/Components/Views/Modals/LogoutModal';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {
@@ -22,12 +21,7 @@ type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenCompone
 export const AccountManagementScreen = ({navigation}: Props) => {
   const settingsNavigation = useSettingsStack();
   const {isLoggedIn, currentUserID} = useSession();
-  const {setModalContent, setModalVisible} = useModal();
-
-  const handleLogoutModal = (allDevices = false) => {
-    setModalContent(<LogoutDeviceModalView allDevices={allDevices} />);
-    setModalVisible(true);
-  };
+  const {confirmLogout} = useSignOut();
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
@@ -76,13 +70,13 @@ export const AccountManagementScreen = ({navigation}: Props) => {
             <MinorActionListItem
               title={'Logout this device'}
               icon={AppIcons.logout}
-              onPress={() => handleLogoutModal()}
+              onPress={() => confirmLogout({onLoggedOut: () => navigation.goBack()})}
             />
             {currentUserID != null && (
               <MinorActionListItem
                 title={'Logout all devices'}
                 icon={AppIcons.error}
-                onPress={() => handleLogoutModal(true)}
+                onPress={() => confirmLogout({allDevices: true, onLoggedOut: () => navigation.goBack()})}
               />
             )}
           </ListSection>

@@ -12,13 +12,12 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {LfgLeaveModal} from '#src/Components/Views/Modals/LfgLeaveModal';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezData} from '#src/Hooks/useFezData';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -61,7 +60,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   });
   const participantMutation = useFezParticipantMutation();
   const {currentUserID} = useSession();
-  const {setModalContent, setModalVisible} = useModal();
+  const {confirmLeave} = useFezAlert(lfg);
   const membershipMutation = useFezMembershipMutation();
   const {updateMembership} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
@@ -69,8 +68,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   const onParticipantRemove = (fezData: FezData, userID: string) => {
     // Call the join/unjoin if you are working on yourself.
     if (userID === currentUserID) {
-      setModalContent(<LfgLeaveModal fezData={fezData} />);
-      setModalVisible(true);
+      confirmLeave();
       return;
     }
     // Call the add/remove if you are working on others.
@@ -111,8 +109,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
       return;
     }
     if (isParticipant) {
-      setModalContent(<LfgLeaveModal fezData={lfg} />);
-      setModalVisible(true);
+      confirmLeave();
     } else {
       setRefreshing(true);
       membershipMutation.mutate(
@@ -134,8 +131,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
     membershipMutation,
     isParticipant,
     updateMembership,
-    setModalContent,
-    setModalVisible,
+    confirmLeave,
     dispatchScrollToTop,
     setRefreshing,
     currentUserID,

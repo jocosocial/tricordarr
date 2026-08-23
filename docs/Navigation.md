@@ -34,16 +34,32 @@ Hooks in a component that **mounts in the portal** (modal content, some menu ite
 
 React Native Paper menus have the same Host. Closures created in a parent that is still in the navigator tree are fine; calling `useNavigation()` inside a component that itself mounts in the portal is not. See `SetOrganizerMenuItem`.
 
-## What to use instead
+`Alert.alert` is not a portal. Destructive confirms that run from a screen or header-menu parent should use stack hooks (`useNavigation()`, `useCommonStack()`, …), not NavigationRef.
 
-[`src/Libraries/NavigationRef.ts`](../src/Libraries/NavigationRef.ts) holds `navigationRef` on `NavigationContainer`. `goBack()` and `pop()` on the container ref target the **focused** nested navigator. `popPastScreen()` walks the nested tree, finds the stack that actually contains a named screen, and pops that stack.
+To pop past a named screen in the **current** stack (for example leave a private event from participation, which sits on top of `personalEventScreen`):
 
-Use those helpers from modal (and other portal) code. Do not call `useCommonStack()` / `useNavigation()` there.
+```ts
+const state = navigation.getState();
+const routeIndex = state.routes.findIndex(
+  route => route.name === CommonStackComponents.personalEventScreen,
+);
+if (routeIndex > 0) {
+  navigation.pop(state.index - routeIndex + 1);
+} else {
+  navigation.goBack();
+}
+```
 
-Screens and headers that are still under a stack navigator should keep using the stack hooks.
+## What to use instead (portal / non-stack code)
+
+[`src/Libraries/NavigationRef.ts`](../src/Libraries/NavigationRef.ts) holds `navigationRef` on `NavigationContainer`. Use it from code that is **not** inside a nested stack: LinkingProvider, CallProvider, NotificationDataListener, and cross-tab `setParams`.
+
+Do not call `useCommonStack()` / `useNavigation()` from components that themselves mount in the portal.
+
+Screens, headers, and `Alert.alert` callbacks in those parents should keep using the stack hooks.
 
 Passing a `navigation` object **into** modal content as a prop also works: the hook runs on the screen, and the object stays valid after the element remounts in the portal.
 
 ## Scroll-to-top
 
-`useScrollToTopIntent` dispatches `setParams` via `navigationRef` so it can find `lfgListScreen` (and similar) in another tab even when the caller is a modal.
+`useScrollToTopIntent` dispatches `setParams` via `navigationRef` so it can find `lfgListScreen` (and similar) in another tab. The target route may not be in the caller's navigator, so stack hooks are not enough.

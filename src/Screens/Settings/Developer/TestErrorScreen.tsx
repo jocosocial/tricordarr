@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {Alert} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {BaseFABGroup} from '#src/Components/Buttons/FloatingActionButtons/BaseFABGroup';
@@ -7,9 +8,7 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -25,7 +24,6 @@ export const TestErrorScreen = () => {
   const {setErrorBanner, errorBanner} = useErrorHandler();
   const {snackbarPayload, setSnackbarPayload} = useSnackbar();
   const {commonStyles} = useStyles();
-  const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
   const {refetch: refetchErrorQuery, isFetching: isFetchingError} = useOpenQuery('/nonexistant', {
     enabled: false,
   });
@@ -35,11 +33,8 @@ export const TestErrorScreen = () => {
   });
   const [fault, setFault] = useState(false);
 
-  const onDismiss = () => logger.info('Modal dismissed.');
-  const onModal = () => {
-    setModalContent(<HelpModalView text={'This is a test'} />);
-    setModalVisible(true);
-    setModalOnDismiss(onDismiss);
+  const onAlert = () => {
+    Alert.alert('Help', 'This is a test', [{text: 'OK', onPress: () => logger.info('Alert dismissed.')}]);
   };
 
   const triggerCriticalFault = () => setFault(true);
@@ -67,11 +62,11 @@ export const TestErrorScreen = () => {
             onPress={() => setSnackbarPayload({message: 'This is a snackbar error.'})}
             style={[commonStyles.marginTopSmall]}
           />
-          <Text>Modal</Text>
+          <Text>Alert</Text>
           <PrimaryActionButton
-            buttonText={'Modal'}
+            buttonText={'Alert'}
             buttonColor={theme.colors.twitarrNegativeButton}
-            onPress={onModal}
+            onPress={onAlert}
             style={[commonStyles.marginTopSmall]}
           />
         </PaddedContentView>

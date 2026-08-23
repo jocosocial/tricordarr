@@ -12,8 +12,8 @@ interface ScrollToTopFilter {
  * to one or more named screens anywhere in the nested navigation tree.
  * Routes not found are silently skipped.
  *
- * Uses navigationRef so this works from Paper portals (modals/menus) that
- * remount outside nested navigators.
+ * Uses navigationRef so the target can live in another tab, not only in
+ * the caller's nested stack.
  *
  * An optional filter object can be passed as the last argument to only
  * dispatch when the target route's params match {key: value}.

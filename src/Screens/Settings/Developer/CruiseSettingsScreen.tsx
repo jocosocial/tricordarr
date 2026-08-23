@@ -1,6 +1,5 @@
 import {FormikHelpers} from 'formik';
 import React, {useState} from 'react';
-import {Alert} from 'react-native';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -13,6 +12,7 @@ import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {alertDisablePreRegistration} from '#src/Libraries/Alerts/SettingsAlerts';
 import {createLogger} from '#src/Libraries/Logger';
 import {CruiseSettingsFormValues} from '#src/Types/FormValues';
 
@@ -72,20 +72,10 @@ export const CruiseSettingsScreen = () => {
       return;
     }
     if (currentSession.preRegistrationMode) {
-      Alert.alert(
-        'Disable Pre-Registration',
-        'Disabling pre-registration mode may cause unexpected behavior and voids your nonexistent warranty. Continue?',
-        [
-          {text: 'Cancel', style: 'cancel'},
-          {
-            text: 'Disable',
-            onPress: async () => {
-              logger.debug('toggling pre-registration mode to', false);
-              await updateSession(currentSession.sessionID, {preRegistrationMode: false});
-            },
-          },
-        ],
-      );
+      alertDisablePreRegistration(async () => {
+        logger.debug('toggling pre-registration mode to', false);
+        await updateSession(currentSession.sessionID, {preRegistrationMode: false});
+      });
       return;
     }
     logger.debug('toggling pre-registration mode to', true);

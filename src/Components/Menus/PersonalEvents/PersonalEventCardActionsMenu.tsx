@@ -1,11 +1,11 @@
 import React, {Dispatch, ReactNode, SetStateAction} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
-import {PersonalEventDeleteModal} from '#src/Components/Views/Modals/PersonalEventDeleteModal';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -21,6 +21,7 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
   const {currentUserID} = useSession();
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useCommonStack();
+  const {confirmDelete} = useFezAlert(props.eventData);
 
   const anchorWithMenu = React.cloneElement(props.anchor, {
     onLongPress: openMenu,
@@ -52,9 +53,10 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
           <Menu.Item
             leadingIcon={AppIcons.delete}
             title={'Delete'}
-            onPress={() =>
-              handleModal(<PersonalEventDeleteModal personalEvent={props.eventData} handleNavigation={false} />)
-            }
+            onPress={() => {
+              closeMenu();
+              confirmDelete(false);
+            }}
           />
           <Divider bold={true} />
         </>

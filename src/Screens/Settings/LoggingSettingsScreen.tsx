@@ -1,7 +1,6 @@
 import {Directory, File, Paths} from 'expo-file-system';
 import {StorageAccessFramework} from 'expo-file-system/legacy';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Alert} from 'react-native';
 import {SegmentedButtons} from 'react-native-paper';
 import Share from 'react-native-share';
 
@@ -18,6 +17,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {alertClearLogs} from '#src/Libraries/Alerts/SettingsAlerts';
 import {clearAllLogs, flushLogs, getCurrentLogFile, getLogFileInfo, setLogLevel} from '#src/Libraries/Logger';
 import {LogLevel} from '#src/Libraries/Logger/types';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
@@ -154,31 +154,21 @@ export const LoggingSettingsScreen = () => {
   };
 
   const handleClear = () => {
-    Alert.alert('Clear All Logs', 'Are you sure you want to delete all log files? This cannot be undone.', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            setIsClearing(true);
-            await clearAllLogs();
-            await refreshLogFileInfo();
-            setSnackbarPayload({message: 'All log files have been deleted.', messageType: 'success'});
-          } catch (error) {
-            setSnackbarPayload({
-              message: 'Could not delete log files. Please try again.',
-              messageType: 'error',
-            });
-          } finally {
-            setIsClearing(false);
-          }
-        },
-      },
-    ]);
+    alertClearLogs(async () => {
+      try {
+        setIsClearing(true);
+        await clearAllLogs();
+        await refreshLogFileInfo();
+        setSnackbarPayload({message: 'All log files have been deleted.', messageType: 'success'});
+      } catch {
+        setSnackbarPayload({
+          message: 'Could not delete log files. Please try again.',
+          messageType: 'error',
+        });
+      } finally {
+        setIsClearing(false);
+      }
+    });
   };
 
   return (

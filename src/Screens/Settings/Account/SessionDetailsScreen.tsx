@@ -7,20 +7,21 @@ import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {SessionDeleteModalView} from '#src/Components/Views/Modals/SessionDeleteModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {alertDeleteSession} from '#src/Libraries/Alerts/AuthAlerts';
+import {createLogger} from '#src/Libraries/Logger';
 import {
   SettingsStackParamList,
   SettingsStackScreenComponents,
 } from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
+const logger = createLogger('SessionDetailsScreen.tsx');
+
 type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.sessionDetails>;
 export const SessionDetailsScreen = ({route, navigation}: Props) => {
   const {sessionID} = route.params;
-  const {sessions} = useSession();
-  const {setModalContent, setModalVisible} = useModal();
+  const {sessions, deleteSession} = useSession();
   const {theme} = useAppTheme();
 
   const session = useMemo(() => {
@@ -35,10 +36,17 @@ export const SessionDetailsScreen = ({route, navigation}: Props) => {
   }, [session, sessions.length, navigation]);
 
   const handleDelete = () => {
-    if (session) {
-      setModalContent(<SessionDeleteModalView sessionID={sessionID} />);
-      setModalVisible(true);
+    if (!session) {
+      return;
     }
+    alertDeleteSession(async () => {
+      try {
+        await deleteSession(sessionID);
+        navigation.goBack();
+      } catch (error) {
+        logger.error('Error deleting session:', error);
+      }
+    });
   };
 
   if (!session) {

@@ -3,10 +3,12 @@ import React, {PropsWithChildren, useCallback} from 'react';
 
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
-import {SignOutContext, SignOutContextType} from '#src/Context/Contexts/SignOutContext';
+import {ConfirmLogoutOptions, SignOutContext, SignOutContextType} from '#src/Context/Contexts/SignOutContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
+import {alertLogout} from '#src/Libraries/Alerts/AuthAlerts';
+import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
 
 /**
  * SignOutProvider consolidates all sign-out logic into a single performSignOut function.
@@ -51,11 +53,40 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
     await clearCookies();
   }, [setEnableUserNotifications, closeNotificationSocket, dispatchFezSockets, signOut, queryClient, clearCookies]);
 
+  const finishLogout = useCallback(
+    async (onLoggedOut?: () => void) => {
+      await performSignOut();
+      onLoggedOut?.();
+    },
+    [performSignOut],
+  );
+
+  const logoutMutation = useLogoutMutation();
+
+  // SignOutProvider is rendered above the root navigator (see docs/Navigation.md), so it
+  // cannot safely call useNavigation() itself. Callers pass their own screen-scoped
+  // onLoggedOut callback (e.g. () => navigation.goBack()) instead.
+  const confirmLogout = useCallback(
+    (options?: ConfirmLogoutOptions) => {
+      const allDevices = options?.allDevices ?? false;
+      const onLoggedOut = options?.onLoggedOut;
+      alertLogout(allDevices, () => {
+        if (allDevices) {
+          logoutMutation.mutate(undefined, {onSuccess: () => finishLogout(onLoggedOut)});
+        } else {
+          finishLogout(onLoggedOut);
+        }
+      });
+    },
+    [finishLogout, logoutMutation],
+  );
+
   const contextValue: SignOutContextType = React.useMemo(
     () => ({
       performSignOut,
+      confirmLogout,
     }),
-    [performSignOut],
+    [performSignOut, confirmLogout],
   );
 
   return <SignOutContext.Provider value={contextValue}>{children}</SignOutContext.Provider>;

@@ -15,17 +15,16 @@ import {Card} from 'react-native-paper';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
-import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {alertImagesDisabled} from '#src/Libraries/Alerts/ImageAlerts';
 import {createLogger} from '#src/Libraries/Logger';
 import {APIImageSizePaths} from '#src/Types/AppImageMetaData';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
@@ -69,7 +68,6 @@ export const APIImage = ({
   const avatarSize = size ?? styleDefaults.avatarSize;
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
-  const {setModalContent, setModalVisible} = useModal();
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
   const [imageSourceMetadata, setImageSourceMetadata] = useState<AppImageMetaData>(
@@ -160,20 +158,6 @@ export const APIImage = ({
   const onProgress = useCallback((event: OnProgressEvent) => {
     logger.debug('onProgress', event.nativeEvent.loaded, event.nativeEvent.total);
   }, []);
-
-  /**
-   * Callback to show the disabled modal if we need to do that. See below.
-   */
-  const handleDisableModal = useCallback(() => {
-    setModalContent(
-      <HelpModalView
-        text={[
-          'Images have been disabled by the server admins. This could be for all clients or just Tricordarr. Check the forums, announcements, or Info Desk for more details.',
-        ]}
-      />,
-    );
-    setModalVisible(true);
-  }, [setModalContent, setModalVisible]);
 
   /**
    * Preloads the full size image.
@@ -336,7 +320,7 @@ export const APIImage = ({
   if (isDisabled) {
     return (
       <Card.Content style={styles.disabledCard}>
-        <AppIcon icon={AppIcons.imageDisabled} onPress={handleDisableModal} />
+        <AppIcon icon={AppIcons.imageDisabled} onPress={alertImagesDisabled} />
       </Card.Content>
     );
   }

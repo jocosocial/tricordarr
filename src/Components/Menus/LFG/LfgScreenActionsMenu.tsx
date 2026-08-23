@@ -4,13 +4,13 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
-import {FezCancelModal} from '#src/Components/Views/Modals/FezCancelModal';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
+import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useLFGStackNavigation} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
@@ -23,6 +23,7 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   const {hasModerator} = usePrivilege();
   const {setModalContent, setModalVisible} = useModal();
   const {currentUserID} = useSession();
+  const {confirmCancel} = useFezAlert(fezData);
 
   const menuAnchor = <Item title={'LFG Menu'} iconName={AppIcons.menu} onPress={openMenu} />;
 
@@ -47,7 +48,10 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
         <Menu.Item
           leadingIcon={AppIcons.cancel}
           title={'Cancel'}
-          onPress={() => handleModal(<FezCancelModal fezData={fezData} />)}
+          onPress={() => {
+            closeMenu();
+            confirmCancel();
+          }}
           disabled={fezData.cancelled}
         />
       )}

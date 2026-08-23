@@ -6,8 +6,6 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
-import {BlockUserModalView} from '#src/Components/Views/Modals/BlockUserModalView';
-import {MuteUserModalView} from '#src/Components/Views/Modals/MuteUserModalView';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
@@ -15,6 +13,7 @@ import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
+import {alertBlock, alertMute} from '#src/Libraries/Alerts/UserAlerts';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';
@@ -60,6 +59,65 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
     commonNavigation.push(CommonStackComponents.userProfilesHelpScreen);
   };
 
+  const invalidateRelations = () => {
+    const invalidations = UserHeader.getRelationKeys().map(key => {
+      return queryClient.invalidateQueries({queryKey: key});
+    });
+    Promise.all(invalidations);
+  };
+
+  const handleBlock = () => {
+    if (isBlocked) {
+      blockMutation.mutate(
+        {userID: profile.header.userID, action: 'unblock'},
+        {
+          onSuccess: invalidateRelations,
+          onSettled: closeMenu,
+        },
+      );
+      return;
+    }
+    alertBlock(
+      hasModerator,
+      () => {
+        blockMutation.mutate(
+          {userID: profile.header.userID, action: 'block'},
+          {
+            onSuccess: invalidateRelations,
+            onSettled: closeMenu,
+          },
+        );
+      },
+      closeMenu,
+    );
+  };
+
+  const handleMute = () => {
+    if (isMuted) {
+      muteMutation.mutate(
+        {userID: profile.header.userID, action: 'unmute'},
+        {
+          onSuccess: invalidateRelations,
+          onSettled: closeMenu,
+        },
+      );
+      return;
+    }
+    alertMute(
+      hasModerator,
+      () => {
+        muteMutation.mutate(
+          {userID: profile.header.userID, action: 'mute'},
+          {
+            onSuccess: invalidateRelations,
+            onSettled: closeMenu,
+          },
+        );
+      },
+      closeMenu,
+    );
+  };
+
   return (
     <AppMenu
       visible={visible}
@@ -70,46 +128,12 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
       <Menu.Item
         leadingIcon={isBlocked ? AppIcons.unblock : AppIcons.block}
         title={isBlocked ? 'Unblock' : 'Block'}
-        onPress={() => {
-          if (isBlocked) {
-            blockMutation.mutate(
-              {userID: profile.header.userID, action: 'unblock'},
-              {
-                onSuccess: () => {
-                  const invalidations = UserHeader.getRelationKeys().map(key => {
-                    return queryClient.invalidateQueries({queryKey: key});
-                  });
-                  Promise.all(invalidations);
-                  closeMenu();
-                },
-              },
-            );
-          } else {
-            handleModal(<BlockUserModalView user={profile.header} />);
-          }
-        }}
+        onPress={handleBlock}
       />
       <Menu.Item
         leadingIcon={isMuted ? AppIcons.unmute : AppIcons.mute}
         title={isMuted ? 'Unmute' : 'Mute'}
-        onPress={() => {
-          if (isMuted) {
-            muteMutation.mutate(
-              {userID: profile.header.userID, action: 'unmute'},
-              {
-                onSuccess: () => {
-                  const invalidations = UserHeader.getRelationKeys().map(key => {
-                    return queryClient.invalidateQueries({queryKey: key});
-                  });
-                  Promise.all(invalidations);
-                  closeMenu();
-                },
-              },
-            );
-          } else {
-            handleModal(<MuteUserModalView user={profile.header} />);
-          }
-        }}
+        onPress={handleMute}
       />
       <Menu.Item
         leadingIcon={AppIcons.report}

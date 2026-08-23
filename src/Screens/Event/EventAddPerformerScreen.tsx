@@ -9,15 +9,15 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PerformerProfileDeleteModalView} from '#src/Components/Views/Modals/PerformerProfileDeleteModalView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {PerformerProfileWarningView} from '#src/Components/Views/Warnings/PerformerProfileWarningView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {alertDeleteProfile} from '#src/Libraries/Alerts/PerformerAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventQuery} from '#src/Queries/Events/EventQueries';
 import {
   usePerformerDeleteForEventMutation,
+  usePerformerDeleteMutation,
   usePerformerUpsertMutation,
 } from '#src/Queries/Performer/PerformerMutations';
 import {usePerformerSelfQuery} from '#src/Queries/Performer/PerformerQueries';
@@ -41,8 +41,8 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
 
   const performerCreateMutation = usePerformerUpsertMutation();
   const performerRemoveMutation = usePerformerDeleteForEventMutation();
+  const performerDeleteMutation = usePerformerDeleteMutation();
   const {theme} = useAppTheme();
-  const {setModalVisible, setModalContent} = useModal();
   const queryClient = useQueryClient();
 
   const onRefresh = async () => {
@@ -69,6 +69,28 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
   //     },
   //   );
   // };
+
+  const onDeleteProfile = () => {
+    alertDeleteProfile(() => {
+      performerDeleteMutation.mutate(
+        {},
+        {
+          onSuccess: async () => {
+            const invalidations = PerformerData.getCacheKeys()
+              .map(key => {
+                return queryClient.invalidateQueries({queryKey: key});
+              })
+              .concat(
+                EventData.getCacheKeys().map(key => {
+                  return queryClient.invalidateQueries({queryKey: key});
+                }),
+              );
+            await Promise.all(invalidations);
+          },
+        },
+      );
+    });
+  };
 
   const onAttach = () => {
     if (!performerData) {
@@ -105,7 +127,8 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
   }
 
   const alreadyAttached = eventData?.performers.some(p => p.id === performerData?.header.id);
-  const isMutating = performerCreateMutation.isPending || performerRemoveMutation.isPending;
+  const isMutating =
+    performerCreateMutation.isPending || performerRemoveMutation.isPending || performerDeleteMutation.isPending;
   const isRefreshing = isFetchingSelf || isFetchingEvent || isMutating;
 
   // Makes JSX+TypeScript happy
@@ -143,10 +166,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
               <PrimaryActionButton
                 buttonText={'Delete Performer Profile'}
                 buttonColor={theme.colors.twitarrNegativeButton}
-                onPress={() => {
-                  setModalContent(<PerformerProfileDeleteModalView />);
-                  setModalVisible(true);
-                }}
+                onPress={onDeleteProfile}
                 disabled={isMutating}
               />
             </PaddedContentView>

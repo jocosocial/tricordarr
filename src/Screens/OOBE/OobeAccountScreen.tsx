@@ -8,11 +8,10 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {LogoutDeviceModalView} from '#src/Components/Views/Modals/LogoutModal';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
@@ -26,13 +25,8 @@ export const OobeAccountScreen = ({navigation}: Props) => {
   const {isLoggedIn, currentSession} = useSession();
   const accessLevel = currentSession?.tokenData?.accessLevel;
   const {data: profilePublicData} = useUserProfileQuery();
-  const {setModalContent, setModalVisible} = useModal();
+  const {confirmLogout} = useSignOut();
   const {preRegistrationMode} = usePreRegistration();
-
-  const handleLogoutModal = (allDevices = false) => {
-    setModalContent(<LogoutDeviceModalView allDevices={allDevices} />);
-    setModalVisible(true);
-  };
 
   return (
     <AppView>
@@ -92,12 +86,12 @@ export const OobeAccountScreen = ({navigation}: Props) => {
               <MinorActionListItem
                 title={'Logout this device'}
                 icon={AppIcons.logout}
-                onPress={() => handleLogoutModal()}
+                onPress={() => confirmLogout({onLoggedOut: () => navigation.goBack()})}
               />
               <MinorActionListItem
                 title={'Logout all devices'}
                 icon={AppIcons.error}
-                onPress={() => handleLogoutModal(true)}
+                onPress={() => confirmLogout({allDevices: true, onLoggedOut: () => navigation.goBack()})}
               />
             </ListSection>
           </PaddedContentView>
@@ -113,7 +107,7 @@ export const OobeAccountScreen = ({navigation}: Props) => {
               <MinorActionListItem
                 title={'Logout this device'}
                 icon={AppIcons.logout}
-                onPress={() => handleLogoutModal()}
+                onPress={() => confirmLogout({onLoggedOut: () => navigation.goBack()})}
               />
             </ListSection>
           </PaddedContentView>
