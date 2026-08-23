@@ -1,5 +1,6 @@
-import {CommonActions, useNavigation} from '@react-navigation/native';
 import {useCallback} from 'react';
+
+import {findRoute, setParamsOnRoute} from '#src/Libraries/NavigationRef';
 
 interface ScrollToTopFilter {
   key: string;
@@ -8,39 +9,39 @@ interface ScrollToTopFilter {
 
 /**
  * Returns a function that dispatches a scrollToTopIntent param update
- * to one or more named screens in the current navigator's stack.
- * Routes not found in the stack are silently skipped.
+ * to one or more named screens anywhere in the nested navigation tree.
+ * Routes not found are silently skipped.
+ *
+ * Uses navigationRef so this works from Paper portals (modals/menus) that
+ * remount outside nested navigators.
  *
  * An optional filter object can be passed as the last argument to only
  * dispatch when the target route's params match {key: value}.
  */
 export const useScrollToTopIntent = () => {
-  const navigation = useNavigation();
+  return useCallback((...args: (string | ScrollToTopFilter)[]) => {
+    const timestamp = Date.now();
 
-  return useCallback(
-    (...args: (string | ScrollToTopFilter)[]) => {
-      const state = navigation.getState();
-      const timestamp = Date.now();
+    const lastArg = args[args.length - 1];
+    const filter = typeof lastArg === 'object' ? (lastArg as ScrollToTopFilter) : undefined;
+    const screenNames = args.filter((a): a is string => typeof a === 'string');
 
-      const lastArg = args[args.length - 1];
-      const filter = typeof lastArg === 'object' ? (lastArg as ScrollToTopFilter) : undefined;
-      const screenNames = args.filter((a): a is string => typeof a === 'string');
-
-      for (const screenName of screenNames) {
-        const route = state?.routes.find(r => r.name === screenName);
-        if (!route) continue;
-
-        if (filter) {
-          const params = (route.params ?? {}) as Record<string, unknown>;
-          if (params[filter.key] !== filter.value) continue;
+    for (const screenName of screenNames) {
+      const route = findRoute(r => {
+        if (r.name !== screenName || !r.key) {
+          return false;
         }
-
-        navigation.dispatch({
-          ...CommonActions.setParams({scrollToTopIntent: timestamp}),
-          source: route.key,
-        });
+        if (!filter) {
+          return true;
+        }
+        const params = (r.params ?? {}) as Record<string, unknown>;
+        return params[filter.key] === filter.value;
+      });
+      if (!route?.key) {
+        continue;
       }
-    },
-    [navigation],
-  );
+
+      setParamsOnRoute(route.key, {scrollToTopIntent: timestamp});
+    }
+  }, []);
 };

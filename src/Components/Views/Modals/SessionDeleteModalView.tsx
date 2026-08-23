@@ -9,7 +9,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
+import {goBack} from '#src/Libraries/NavigationRef';
 
 const logger = createLogger('SessionDeleteModalView.tsx');
 
@@ -30,7 +30,6 @@ export const SessionDeleteModalView = ({sessionID}: SessionDeleteModalViewProps)
   const {setModalVisible} = useModal();
   const {theme} = useAppTheme();
   const {deleteSession} = useSession();
-  const settingsNavigation = useSettingsStack();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const onSubmit = async () => {
@@ -39,7 +38,7 @@ export const SessionDeleteModalView = ({sessionID}: SessionDeleteModalViewProps)
       await deleteSession(sessionID);
       setModalVisible(false);
       // Navigate back to session list
-      settingsNavigation.goBack();
+      goBack();
     } catch (error) {
       logger.error('Error deleting session:', error);
     } finally {

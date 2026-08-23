@@ -37,6 +37,10 @@ export const PersonalEventHelpScreen = () => {
           Cancel this private event. This option only appears if you are the owner of the event and it is a private
           event (not a personal event).
         </HelpTopicView>
+        <HelpTopicView title={'Leave'} icon={AppIcons.leave}>
+          Leave this private event. This option only appears if you were invited and are not the owner, and appears on
+          the event screen rather than the actions menu. After leaving, you return to the previous screen.
+        </HelpTopicView>
         <HelpTopicView title={'Report'} icon={AppIcons.report}>
           Report this personal event to the moderation team if it violates the Code of Conduct.
         </HelpTopicView>

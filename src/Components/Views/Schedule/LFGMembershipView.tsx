@@ -91,7 +91,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
               isLoading={refreshing}
             />
           )}
-          {!isParticipant && !isWaitlist && (
+          {!isParticipant && !isWaitlist && FezType.isLFGType(lfg.fezType) && (
             <PrimaryActionButton
               buttonText={isFull ? 'Join the waitlist' : 'Join this LFG'}
               onPress={handleMembershipPress}

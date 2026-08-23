@@ -1,4 +1,3 @@
-import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -10,6 +9,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {goBack} from '#src/Libraries/NavigationRef';
 import {useFezDeleteMutation} from '#src/Queries/Fez/FezMutations';
 import {FezData} from '#src/Structs/ControllerStructs';
 
@@ -29,7 +29,6 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
   const {theme} = useAppTheme();
   const deleteMutation = useFezDeleteMutation();
   const {deleteFez} = useFezCacheReducer();
-  const navigation = useNavigation();
 
   const onSubmit = () => {
     deleteMutation.mutate(
@@ -39,7 +38,7 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
       {
         onSuccess: () => {
           if (handleNavigation) {
-            navigation.goBack();
+            goBack();
           }
           setModalVisible(false);
           setSnackbarPayload({message: 'Successfully deleted this event.', messageType: 'info'});

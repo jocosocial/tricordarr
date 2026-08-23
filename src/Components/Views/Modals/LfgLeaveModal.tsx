@@ -10,6 +10,8 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {popPastScreen} from '#src/Libraries/NavigationRef';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -46,7 +48,11 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
         onSuccess: response => {
           setModalVisible(false);
           updateMembership(fezData.fezID, response.data, 'unjoin');
-          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+          if (FezType.isPrivateEventType(fezData.fezType)) {
+            popPastScreen(CommonStackComponents.personalEventScreen, {eventID: fezData.fezID});
+          } else {
+            dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+          }
         },
       },
     );

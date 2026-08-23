@@ -192,7 +192,9 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
                 }
               />
             )}
-            {!isMember && !isFull && <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />}
+            {!isMember && !isFull && FezType.isLFGType(lfg.fezType) && (
+              <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />
+            )}
             {lfg.members.participants.map(u => (
               <FezParticipantListItem
                 onRemove={() => onParticipantRemove(lfg, u.userID)}
@@ -219,7 +221,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
                     }
                   />
                 )}
-                {!isMember && !isWaitlist && isFull && (
+                {!isMember && !isWaitlist && isFull && FezType.isLFGType(lfg.fezType) && (
                   <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />
                 )}
                 {lfg.members.waitingList.map(u => (

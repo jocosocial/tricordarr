@@ -8,7 +8,7 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
+import {goBack} from '#src/Libraries/NavigationRef';
 import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
 
 interface LogoutModalContentProps {
@@ -28,7 +28,6 @@ const LogoutModalContent = ({allDevices = false}: LogoutModalContentProps) => {
 export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentProps) => {
   const {setModalVisible} = useModal();
   const {theme} = useAppTheme();
-  const settingsNavigation = useSettingsStack();
   const {performSignOut} = useSignOut();
   const [loading, setLoading] = useState(false);
 
@@ -42,7 +41,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
     await performSignOut();
     setModalVisible(false);
     setLoading(false);
-    settingsNavigation.goBack();
+    goBack();
   };
 
   const logoutDevice = () => {
