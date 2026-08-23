@@ -50,7 +50,11 @@ const SeamailAddParticipantScreenInner = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView>
         <PaddedContentView>
-          <UserMatchSearchBar excludeHeaders={route.params.fez.members?.participants || []} onPress={onPress} />
+          <UserMatchSearchBar
+            testID={'seamailAddParticipant-input'}
+            excludeHeaders={route.params.fez.members?.participants || []}
+            onPress={onPress}
+          />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

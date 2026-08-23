@@ -74,6 +74,7 @@ const UserRegCodeScreenInner = ({route, navigation}: Props) => {
         </View>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'unlock-button'}
             buttonText={'Unlock'}
             onPress={handleUnlock}
             disabled={!data?.hasUsedRegCodeForPasswordRecovery || unlockMutation.isPending}

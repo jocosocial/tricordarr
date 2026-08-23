@@ -53,10 +53,16 @@ const InnerSeamailCreateForm = ({onValidationChange}: InnerSeamailCreateFormProp
   return (
     <PaddedContentView>
       <DirtyDetectionField />
-      <UserChipsField name={'initialUsers'} label={'Participants'} minCount={1} />
-      <TextField name={'title'} label={'Subject'} />
+      <UserChipsField
+        name={'initialUsers'}
+        testID={'seamailCreateParticipants-input'}
+        label={'Participants'}
+        minCount={1}
+      />
+      <TextField name={'title'} testID={'seamailCreateTitle-input'} label={'Subject'} />
       <BooleanField
         name={'fezType'}
+        testID={'seamailCreateOpen-switch'}
         label={'Open Chat'}
         helperText={'Allows you to add or remove users later.'}
         onPress={() => setFieldValue('fezType', values.fezType === FezType.open ? FezType.closed : FezType.open)}
@@ -65,6 +71,7 @@ const InnerSeamailCreateForm = ({onValidationChange}: InnerSeamailCreateFormProp
       {hasModerator && (
         <BooleanField
           name={'createdByModerator'}
+          testID={'seamailCreateAsModerator-switch'}
           label={'Post as Moderator'}
           icon={AppIcons.moderator}
           helperText={'This will also create the seamail as the Moderator user.'}
@@ -73,6 +80,7 @@ const InnerSeamailCreateForm = ({onValidationChange}: InnerSeamailCreateFormProp
       {hasTwitarrTeam && (
         <BooleanField
           name={'createdByTwitarrTeam'}
+          testID={'seamailCreateAsTwitarrTeam-switch'}
           label={'Post as TwitarrTeam'}
           icon={AppIcons.twitarteam}
           helperText={'This will also create the seamail as the TwitarrTeam user.'}

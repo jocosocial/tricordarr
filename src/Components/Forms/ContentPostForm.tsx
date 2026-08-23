@@ -168,12 +168,13 @@ export const ContentPostForm = ({
               <View style={styles.formView}>
                 <View style={styles.inputWrapperViewSide}>
                   <IconButton
+                    testID={'contentPostInsert-button'}
                     icon={emojiPickerVisible || insertMenuVisible ? AppIcons.insertClose : AppIcons.insert}
                     onPress={handleInsertPress}
                   />
                 </View>
                 <View style={styles.inputWrapperView}>
-                  <MentionTextField name={'text'} style={styles.input} />
+                  <MentionTextField name={'text'} testID={'contentPostText-input'} style={styles.input} />
                   <ContentInsertPhotosView />
                 </View>
                 <View style={styles.inputWrapperViewSide}>
@@ -182,6 +183,7 @@ export const ContentPostForm = ({
                     submitting={overrideSubmitting || isSubmitting}
                     onPress={onPress || handleSubmit}
                     withPrivilegeColors={true}
+                    testID={'contentPostSubmit-button'}
                   />
                 </View>
               </View>

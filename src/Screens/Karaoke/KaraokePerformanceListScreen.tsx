@@ -146,6 +146,7 @@ const KaraokePerformanceListScreenInner = ({navigation}: Props) => {
         handleLoadNext={handleLoadNext}
       />
       <BaseFAB
+        testID={'karaokeSearch-fab'}
         icon={AppIcons.search}
         label={'Search Library'}
         onPress={() => navigation.push(MainStackComponents.karaokeSearchScreen)}

@@ -16,6 +16,7 @@ interface PrimaryActionButtonProps {
   isLoading?: boolean;
   viewStyle?: StyleProp<ViewStyle>;
   icon?: IconSource;
+  testID: string;
 }
 
 /**
@@ -32,6 +33,7 @@ export const PrimaryActionButton = ({
   isLoading = false,
   viewStyle,
   icon,
+  testID,
 }: PrimaryActionButtonProps) => {
   const {theme} = useAppTheme();
 
@@ -44,6 +46,7 @@ export const PrimaryActionButton = ({
   return (
     <View style={viewStyle}>
       <Button
+        testID={testID}
         buttonColor={mode === 'contained' ? buttonColor || theme.colors.twitarrPositiveButton : buttonColor}
         textColor={textColor || theme.colors.constantWhite}
         style={[buttonStyle, style]}

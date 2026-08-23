@@ -45,6 +45,7 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
           <TextField
             viewStyle={styles.inputContainer}
             name={'username'}
+            testID={'loginUsername-input'}
             label={'Username'}
             left={<TextInput.Icon icon={AppIcons.user} />}
             autoCapitalize={'none'}
@@ -54,6 +55,7 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
           />
           <SecureTextField
             name={'password'}
+            testID={'loginPassword-input'}
             label={'Password'}
             textContentType={'password'}
             autoComplete={'password'}
@@ -65,8 +67,10 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={'Login'}
+            testID={'loginSubmit-button'}
           />
           <PrimaryActionButton
+            testID={'loginForgotPassword-button'}
             buttonText={'Forgot Password'}
             onPress={() => commonNavigation.push(CommonStackComponents.accountRecoveryScreen)}
             viewStyle={styles.buttonContainer}

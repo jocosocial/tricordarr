@@ -91,18 +91,21 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
         {mode === 'favorite' && !preRegistrationMode && (
           <>
             <SwipeableButton
+              testID={'userListSeamail-button'}
               text={'Seamail'}
               iconName={AppIcons.seamail}
               style={{backgroundColor: theme.colors.elevation.level1}}
               onPress={() => handleSeamail(swipeable)}
             />
             <SwipeableButton
+              testID={'userListCall-button'}
               text={'Call'}
               iconName={AppIcons.krakentalkCreate}
               style={{backgroundColor: theme.colors.elevation.level3}}
               onPress={() => handleCall(swipeable)}
             />
             <SwipeableButton
+              testID={'userListEvent-button'}
               text={'Event'}
               iconName={AppIcons.eventCreate}
               style={{backgroundColor: theme.colors.elevation.level4}}
@@ -111,6 +114,7 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
           </>
         )}
         <SwipeableButton
+          testID={'userListRemove-button'}
           text={'Remove'}
           iconName={AppIcons.delete}
           style={{backgroundColor: theme.colors.elevation.level2}}

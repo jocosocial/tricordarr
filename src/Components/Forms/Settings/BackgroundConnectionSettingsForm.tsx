@@ -32,6 +32,7 @@ export const BackgroundConnectionSettingsForm = ({
         <View>
           <StringChipsField
             name={'wifiNetworkNames'}
+            testID={'backgroundWifiNetworks-input'}
             label={'WiFi Networks'}
             helperText={
               'Names of the WiFi networks that the app must be connected to in order to enable the background worker.'

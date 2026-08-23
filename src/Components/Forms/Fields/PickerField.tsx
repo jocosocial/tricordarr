@@ -12,6 +12,7 @@ const logger = createLogger('PickerField.tsx');
 
 interface PickerFieldProps<TData> {
   name: string;
+  testID: string;
   label: string;
   value: TData | undefined;
   choices: TData[];
@@ -27,6 +28,7 @@ interface PickerFieldProps<TData> {
 // https://www.freecodecamp.org/news/typescript-generics-with-functional-react-components/
 export const PickerField = <TData,>({
   name,
+  testID,
   label,
   value,
   choices,
@@ -88,6 +90,7 @@ export const PickerField = <TData,>({
       anchor={
         <View style={viewStyle}>
           <Button
+            testID={testID}
             buttonColor={theme.colors.background}
             textColor={theme.colors.onBackground}
             labelStyle={styles.text}

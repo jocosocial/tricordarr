@@ -42,7 +42,11 @@ export const AccountRecoveryScreen = ({navigation}: Props) => {
             <Text>Successfully recovered your account! Please go back and log in with your new password.</Text>
           </PaddedContentView>
           <PaddedContentView>
-            <PrimaryActionButton buttonText={'Back to Login'} onPress={() => navigation.goBack()} />
+            <PrimaryActionButton
+              testID={'backToLogin-button'}
+              buttonText={'Back to Login'}
+              onPress={() => navigation.goBack()}
+            />
           </PaddedContentView>
         </ScrollingContentView>
       </AppView>

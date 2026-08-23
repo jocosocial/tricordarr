@@ -72,7 +72,12 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
 
   return (
     <>
-      <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} />
+      <SearchBarBase
+        testID={'lfgSearch-input'}
+        searchQuery={searchQuery}
+        onSearch={onSearch}
+        onChangeSearch={onChangeSearch}
+      />
       <ScheduleFlatList
         listRef={listRef}
         items={lfgList}

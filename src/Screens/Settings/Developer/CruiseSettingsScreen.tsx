@@ -90,6 +90,7 @@ export const CruiseSettingsScreen = () => {
         <ListSubheader>General</ListSubheader>
         <PaddedContentView padTop={true} padBottom={false}>
           <PrimaryActionButton
+            testID={'reloadFromServer-button'}
             buttonText={'Reload From Server'}
             onPress={reloadClientConfig}
             buttonColor={theme.colors.twitarrNeutralButton}
@@ -105,6 +106,7 @@ export const CruiseSettingsScreen = () => {
         <ListSubheader>Pre-Registration</ListSubheader>
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
+            testID={'cruisePreRegistration-button'}
             buttonText={currentSession?.preRegistrationMode ? 'Disable' : 'Enable'}
             onPress={togglePreRegistrationMode}
             buttonColor={theme.colors.twitarrNeutralButton}

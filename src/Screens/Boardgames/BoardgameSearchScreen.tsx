@@ -69,6 +69,7 @@ const BoardgameSearchScreenInner = () => {
   return (
     <AppView>
       <SearchBarBase
+        testID={'boardgameSearch-input'}
         searchQuery={searchQuery}
         onClear={onClear}
         onSearch={onSearch}

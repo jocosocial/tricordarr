@@ -237,6 +237,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
               )}
               {notificationPermissionStatus !== RESULTS.BLOCKED && (
                 <PrimaryActionButton
+                  testID={'pushAllowNotifications-button'}
                   buttonText={hasNotificationPermission ? 'Already Allowed' : 'Allow Push Notifications'}
                   onPress={handleEnable}
                   disabled={hasNotificationPermission}
@@ -255,6 +256,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
           </PaddedContentView>
           <PaddedContentView padTop={true}>
             <PrimaryActionButton
+              testID={'enableAllCategories-button'}
               buttonColor={theme.colors.twitarrPositiveButton}
               buttonText={'Enable All Categories'}
               onPress={() => setAllValue(true)}
@@ -263,6 +265,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
           </PaddedContentView>
           <PaddedContentView>
             <PrimaryActionButton
+              testID={'disableAllCategories-button'}
               buttonColor={theme.colors.twitarrNegativeButton}
               buttonText={'Disable All Categories'}
               onPress={() => setAllValue(false)}
@@ -302,6 +305,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
                             ]}>
                             <BooleanField
                               name={category.configKey}
+                              testID={`${category.configKey}-switch`}
                               label={category.title}
                               value={appConfig.pushNotifications[category.configKey]}
                               onPress={() => toggleValue(category.configKey)}
@@ -341,7 +345,12 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
             />
           </PaddedContentView>
           <PaddedContentView>
-            <PrimaryActionButton buttonText={'Resume'} onPress={resumeNotifications} disabled={!muteNotifications} />
+            <PrimaryActionButton
+              testID={'resume-button'}
+              buttonText={'Resume'}
+              onPress={resumeNotifications}
+              disabled={!muteNotifications}
+            />
           </PaddedContentView>
         </ListSection>
         {isAndroid && (
@@ -357,6 +366,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
                 <View>
                   <BooleanField
                     name={'markReadCancelPush'}
+                    testID={'markReadCancelPush-switch'}
                     label={'Dismiss Notifications on Read'}
                     value={markReadCancelPush}
                     onPress={toggleMarkReadCancelPush}

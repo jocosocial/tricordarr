@@ -49,10 +49,16 @@ export const PersonalEventForm = ({
       {({handleSubmit, values, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
-          <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} />
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'title'}
+            testID={'personalEventTitle-input'}
+            label={'Title'}
+          />
           <TextField
             viewStyle={styles.inputContainer}
             name={'info'}
+            testID={'personalEventInfo-input'}
             label={'Info'}
             multiline={true}
             numberOfLines={3}
@@ -60,22 +66,32 @@ export const PersonalEventForm = ({
           <SuggestedTextField
             viewStyle={styles.inputContainer}
             name={'location'}
+            testID={'personalEventLocation-input'}
             label={'Location'}
             autoCapitalize={'words'}
             suggestions={getUserSuggestedLocations(profilePublicData)}
           />
           <View style={[commonStyles.paddingBottom]}>
-            <DatePickerField name={'startDate'} />
+            <DatePickerField name={'startDate'} testID={'personalEventStartDate-button'} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
-            <TimePickerField name={'startTime'} />
+            <TimePickerField name={'startTime'} testID={'personalEventStartTime-button'} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
-            <DurationPickerField name={'duration'} label={'Duration'} value={values.duration} />
+            <DurationPickerField
+              name={'duration'}
+              testID={'personalEventDuration-button'}
+              label={'Duration'}
+              value={values.duration}
+            />
           </View>
           {create && (
             <View style={[commonStyles.paddingBottom]}>
-              <UserChipsField name={'initialUsers'} label={'Participants (Optional)'} />
+              <UserChipsField
+                name={'initialUsers'}
+                testID={'personalEventParticipants-input'}
+                label={'Participants (Optional)'}
+              />
             </View>
           )}
           <PrimaryActionButton
@@ -84,6 +100,7 @@ export const PersonalEventForm = ({
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={buttonText}
+            testID={'personalEventSubmit-button'}
           />
         </View>
       )}

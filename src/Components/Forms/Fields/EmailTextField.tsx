@@ -6,6 +6,7 @@ import {isIOS} from '#src/Libraries/Platform/Detection';
 
 interface EmailTextFieldProps {
   name: string;
+  testID: string;
   label: string;
   viewStyle?: StyleProp<ViewStyle>;
 }
@@ -18,6 +19,7 @@ export const EmailTextField = (props: EmailTextFieldProps) => {
   return (
     <TextField
       name={props.name}
+      testID={props.testID}
       label={props.label}
       viewStyle={props.viewStyle}
       autoCapitalize={'none'}

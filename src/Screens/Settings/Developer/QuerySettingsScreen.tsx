@@ -126,6 +126,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         />
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
+            testID={'clearQueryCache-button'}
             buttonText={'Clear Query Cache'}
             onPress={bustQueryCache}
             buttonColor={theme.colors.twitarrNegativeButton}
@@ -133,6 +134,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
           />
           {appConfig.enableDeveloperOptions && (
             <PrimaryActionButton
+              testID={'queryKeys-button'}
               buttonText={'Query Keys'}
               onPress={() => navigation.push(SettingsStackScreenComponents.queryKeysSettingsScreen)}
               buttonColor={theme.colors.twitarrNeutralButton}
@@ -146,12 +148,14 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
               <DataFieldListItem title={'Error Count'} description={errorCount.toString()} />
               <PaddedContentView padTop={true}>
                 <PrimaryActionButton
+                  testID={'triggerDisruption-button'}
                   buttonText={'Trigger Disruption'}
                   onPress={triggerDisruption}
                   buttonColor={theme.colors.twitarrNegativeButton}
                   style={commonStyles.marginBottom}
                 />
                 <PrimaryActionButton
+                  testID={'serverHealthCheck-button'}
                   buttonText={'Server Health Check'}
                   onPress={refetchHealth}
                   buttonColor={theme.colors.twitarrNeutralButton}

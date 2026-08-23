@@ -142,6 +142,7 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'copytoClipboard-button'}
             buttonColor={theme.colors.twitarrNeutralButton}
             buttonText={'Copy to Clipboard'}
             icon={AppIcons.copy}
@@ -150,6 +151,7 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'screenshottoCameraRoll-button'}
             buttonColor={theme.colors.twitarrNeutralButton}
             buttonText={'Screenshot to Camera Roll'}
             icon={AppIcons.screenshot}
@@ -164,6 +166,7 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
       <View style={styles.bottomContainer}>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'acknowledged-button'}
             buttonColor={theme.colors.twitarrPositiveButton}
             buttonText={'Acknowledged'}
             disabled={capturing}

@@ -30,13 +30,14 @@ export const SeamailEditForm = ({fez, onSubmit}: SeamailEditFormProps) => {
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
-          <TextField name={'title'} label={'Title'} />
+          <TextField name={'title'} testID={'seamailEditTitle-input'} label={'Title'} />
           <PrimaryActionButton
             disabled={isSubmitting || !isValid || !dirty}
             isLoading={isSubmitting}
             viewStyle={[commonStyles.marginTopSmall]}
             onPress={handleSubmit}
             buttonText={'Save'}
+            testID={'seamailEditSave-button'}
           />
         </View>
       )}

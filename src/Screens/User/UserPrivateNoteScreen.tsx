@@ -85,6 +85,7 @@ const UserPrivateNoteScreenInner = ({route, navigation}: Props) => {
           <UserNoteForm initialValues={initialValues} onSubmit={onSubmit} />
           {route.params.user.note && (
             <PrimaryActionButton
+              testID={'delete-button'}
               buttonColor={theme.colors.twitarrNegativeButton}
               disabled={deleteMutation.isPending}
               isLoading={deleteMutation.isPending}

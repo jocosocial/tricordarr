@@ -25,6 +25,7 @@ export const BoardgameDurationPickerField = ({value}: {value: number}) => {
   return (
     <PickerField<number | undefined>
       name={'timeToPlay'}
+      testID={'boardgameTimeToPlay-button'}
       label={'Time To Play'}
       value={value}
       choices={[30, 60, 90, 120, 150, 180, 1000]}

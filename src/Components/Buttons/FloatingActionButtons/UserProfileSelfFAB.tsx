@@ -19,6 +19,7 @@ export const UserProfileSelfFAB = ({profile, showLabel}: UserProfileSelfFABProps
       label={'Edit Profile'}
       showLabel={showLabel}
       onPress={() => commonNavigation.push(CommonStackComponents.userProfileEditScreen, {user: profile})}
+      testID={'userProfileEdit-fab'}
     />
   );
 };

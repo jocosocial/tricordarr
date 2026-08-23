@@ -24,14 +24,20 @@ export const SchedImportForm = (props: SchedImportFormProps) => {
     <Formik initialValues={props.initialValues} onSubmit={props.onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
-          <UrlTextField name={'schedUrl'} label={'Sched URL'} />
-          <TextField name={'username'} label={'Sched.com Username'} autoCapitalize={'none'} />
+          <UrlTextField name={'schedUrl'} testID={'schedImportUrl-input'} label={'Sched URL'} />
+          <TextField
+            name={'username'}
+            testID={'schedImportUsername-input'}
+            label={'Sched.com Username'}
+            autoCapitalize={'none'}
+          />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
             isLoading={isSubmitting}
             viewStyle={commonStyles.marginTopSmall}
             onPress={handleSubmit}
             buttonText={'Import'}
+            testID={'schedImportSubmit-button'}
           />
         </View>
       )}

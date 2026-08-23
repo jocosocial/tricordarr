@@ -55,6 +55,7 @@ export const ChatSettingsScreen = () => {
               )}
               {microphonePermissionStatus !== RESULTS.BLOCKED && (
                 <PrimaryActionButton
+                  testID={'chatAllowMicrophone-button'}
                   buttonText={microphonePermissionStatus === RESULTS.GRANTED ? 'Already Allowed' : 'Allow Microphone'}
                   onPress={requestMicrophonePermission}
                   disabled={microphonePermissionStatus === RESULTS.GRANTED}
@@ -72,6 +73,7 @@ export const ChatSettingsScreen = () => {
                   <BooleanField
                     key={category.configKey}
                     name={category.configKey}
+                    testID={`${category.configKey}-switch`}
                     label={category.title}
                     value={appConfig.pushNotifications[category.configKey]}
                     onPress={() => toggleValue(category.configKey)}

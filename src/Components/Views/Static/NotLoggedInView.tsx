@@ -22,7 +22,7 @@ export const NotLoggedInView = () => {
             <Text>You are not logged in.</Text>
           </View>
           <View style={styles.contentContainer}>
-            <PrimaryActionButton buttonText={'Login'} onPress={onPress} />
+            <PrimaryActionButton testID={'login-button'} buttonText={'Login'} onPress={onPress} />
           </View>
         </View>
       </View>

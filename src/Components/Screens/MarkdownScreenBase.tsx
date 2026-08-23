@@ -202,6 +202,7 @@ export const MarkdownScreenBase = ({
       {isSearchActive && enableSearch && (
         <>
           <SearchBarBase
+            testID={'markdownSearch-input'}
             searchQuery={searchQuery}
             onClear={handleClear}
             onSearch={handleSearch}

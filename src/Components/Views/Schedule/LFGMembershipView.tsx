@@ -82,6 +82,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
         <PaddedContentView>
           {(isParticipant || isWaitlist) && (
             <PrimaryActionButton
+              testID={'lfgLeave-button'}
               buttonText={isWaitlist ? 'Leave the waitlist' : `Leave this ${lfgNoun}`}
               onPress={handleMembershipPress}
               buttonColor={theme.colors.twitarrNegativeButton}
@@ -90,6 +91,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
           )}
           {!isParticipant && !isWaitlist && FezType.isLFGType(lfg.fezType) && (
             <PrimaryActionButton
+              testID={'lfgJoin-button'}
               buttonText={isFull ? 'Join the waitlist' : 'Join this LFG'}
               onPress={handleMembershipPress}
               buttonColor={theme.colors.twitarrPositiveButton}

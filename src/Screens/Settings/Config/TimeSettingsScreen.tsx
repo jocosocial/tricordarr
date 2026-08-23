@@ -106,6 +106,7 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
           <View>
             <BooleanField
               name={'silenceTimezoneWarnings'}
+              testID={'silenceTimezoneWarnings-switch'}
               label={'Silence Timezone Warnings'}
               onPress={toggleSilenceTimezoneWarnings}
               value={silenceTimezoneWarnings}
@@ -128,6 +129,7 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
               <View>
                 <BooleanField
                   name={'forceShowTimezoneWarning'}
+                  testID={'forceShowTimezoneWarning-switch'}
                   label={'Force Show Timezone Warning'}
                   onPress={toggleForceShowTimezoneWarning}
                   value={forceShowTimezoneWarning}

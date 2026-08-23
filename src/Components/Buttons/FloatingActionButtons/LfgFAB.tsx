@@ -40,25 +40,35 @@ export const LfgFAB = (props: LfgFABProps) => {
       icon: AppIcons.new,
       label: 'New LFG',
       onPress: () => navigation.push(LfgStackComponents.lfgCreateScreen, {cruiseDay: effectiveCruiseDay}),
+      testID: 'lfgCreate-fab',
     }),
     FabGroupAction({
       icon: AppIcons.lfgFind,
       label: 'Find',
       onPress: () => handleEndpointChange('open'),
+      testID: 'lfgFind-fab',
     }),
     FabGroupAction({
       icon: AppIcons.lfgJoined,
       label: joinedLabel,
       onPress: () => handleEndpointChange('joined'),
+      testID: 'lfgJoined-fab',
     }),
     FabGroupAction({
       icon: AppIcons.lfgOwned,
       label: 'Owned',
       onPress: () => handleEndpointChange('owner'),
+      testID: 'lfgOwned-fab',
     }),
   ];
 
   return (
-    <BaseFABGroup actions={actions} openLabel={'Looking For Group'} icon={AppIcons.lfg} showLabel={props.showLabel} />
+    <BaseFABGroup
+      actions={actions}
+      openLabel={'Looking For Group'}
+      icon={AppIcons.lfg}
+      showLabel={props.showLabel}
+      testID={'lfg-fab'}
+    />
   );
 };

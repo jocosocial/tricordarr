@@ -88,6 +88,7 @@ const TimeZoneScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'checkDeviceTime-button'}
             buttonText={'Check Device Time'}
             onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/time`)}
           />

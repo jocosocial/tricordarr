@@ -69,7 +69,12 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
-          <PrimaryActionButton buttonText={buttonLabel()} onPress={enablePermissions} disabled={disableButton} />
+          <PrimaryActionButton
+            testID={'oobeEnablePermissions-button'}
+            buttonText={buttonLabel()}
+            onPress={enablePermissions}
+            disabled={disableButton}
+          />
         </PaddedContentView>
         <PaddedContentView>
           {notificationPermissionStatus === RESULTS.GRANTED && (
@@ -102,6 +107,7 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
             </Text>
           ) : (
             <PrimaryActionButton
+              testID={'oobeAllowMicrophone-button'}
               buttonText={microphonePermissionStatus === RESULTS.GRANTED ? 'Already Allowed' : 'Allow Microphone'}
               onPress={requestMicrophonePermission}
               disabled={microphonePermissionStatus === RESULTS.GRANTED}

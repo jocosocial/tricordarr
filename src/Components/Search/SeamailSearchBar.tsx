@@ -66,6 +66,7 @@ export const SeamailSearchBar = () => {
   return (
     <>
       <SearchBarBase
+        testID={'seamailSearch-input'}
         placeholder={'Search seamail messages'}
         onSearch={onSearch}
         onChangeSearch={onChangeSearch}

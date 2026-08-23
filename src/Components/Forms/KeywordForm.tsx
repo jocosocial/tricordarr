@@ -29,13 +29,14 @@ export const KeywordForm = ({onSave}: KeywordFormProps) => {
       {({handleSubmit, isSubmitting}) => (
         <View>
           <DirtyDetectionField />
-          <TextField autoCapitalize={'none'} name={'keyword'} />
+          <TextField autoCapitalize={'none'} name={'keyword'} testID={'keyword-input'} />
           <PrimaryActionButton
             onPress={handleSubmit}
             buttonText={'Save'}
             style={[commonStyles.marginTopSmall]}
             disabled={isSubmitting}
             isLoading={isSubmitting}
+            testID={'keywordSave-button'}
           />
         </View>
       )}

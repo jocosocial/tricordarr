@@ -61,6 +61,7 @@ export const ImageSettingsScreen = () => {
             <View>
               <BooleanField
                 name={'skipThumbnails'}
+                testID={'skipThumbnails-switch'}
                 label={'Load Full-Size Images First'}
                 onPress={handleLoadFullFirst}
                 style={commonStyles.paddingHorizontalSmall}
@@ -69,6 +70,7 @@ export const ImageSettingsScreen = () => {
               />
               <SliderField
                 name={'imagePreloadDelaySeconds'}
+                testID={'imagePreloadDelaySeconds-slider'}
                 label={'Full-Size Image Preload Delay'}
                 value={imagePreloadDelaySeconds}
                 minimumValue={0}
@@ -91,6 +93,7 @@ export const ImageSettingsScreen = () => {
               />
               <BooleanField
                 name={'autosavePhotos'}
+                testID={'autosavePhotos-switch'}
                 label={'Auto-Save Taken Photos'}
                 onPress={handleAutosavePhotos}
                 style={commonStyles.paddingHorizontalSmall}
@@ -101,6 +104,7 @@ export const ImageSettingsScreen = () => {
               />
               <BooleanField
                 name={'autoCompressOversizedImages'}
+                testID={'autoCompressOversizedImages-switch'}
                 label={'Auto-Compress Oversized Images'}
                 onPress={handleAutoCompressOversizedImages}
                 style={commonStyles.paddingHorizontalSmall}

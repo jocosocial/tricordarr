@@ -89,6 +89,7 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
         onPress={markAsRead}
         disabled={disableButtons}
         style={disableButtons ? commonStyles.disabled : undefined}
+        testID={'forumSelectionMarkRead-headerButton'}
       />
       <Item
         iconName={AppIcons.favorite}
@@ -96,6 +97,7 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
         onPress={() => onPress('favorite')}
         disabled={disableButtons}
         style={disableButtons ? commonStyles.disabled : undefined}
+        testID={'forumSelectionFavorite-headerButton'}
       />
       <Item
         iconName={AppIcons.mute}
@@ -103,6 +105,7 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
         onPress={() => onPress('mute')}
         disabled={disableButtons}
         style={disableButtons ? commonStyles.disabled : undefined}
+        testID={'forumSelectionMute-headerButton'}
       />
     </MaterialHeaderButtons>
   );
