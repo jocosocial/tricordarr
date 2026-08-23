@@ -2,6 +2,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {
   SettingsStackParamList,
   SettingsStackScreenComponents,
@@ -11,6 +12,8 @@ import {AccountManagementScreen} from '#src/Screens/Settings/Account/AccountMana
 import {ChangePasswordScreen} from '#src/Screens/Settings/Account/ChangePasswordScreen';
 import {ChangeUsernameScreen} from '#src/Screens/Settings/Account/ChangeUsernameScreen';
 import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
+import {RecoveryKeyHelpScreen} from '#src/Screens/Settings/Account/RecoveryKeyHelpScreen';
+import {RecoveryKeyScreen} from '#src/Screens/Settings/Account/RecoveryKeyScreen';
 import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
 import {SessionDetailsScreen} from '#src/Screens/Settings/Account/SessionDetailsScreen';
 import {SessionSettingsScreen} from '#src/Screens/Settings/Account/SessionSettingsScreen';
@@ -91,6 +94,16 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.registerScreen}
         component={RegisterScreen}
         options={{title: 'New Account'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.recoveryKeyScreen}
+        component={RecoveryKeyScreen}
+        options={{title: 'Recovery Key', gestureEnabled: false, headerLeft: () => null}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.recoveryKeyHelpScreen}
+        component={RecoveryKeyHelpScreen}
+        options={{title: 'Recovery Key Help'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.accountManagement}

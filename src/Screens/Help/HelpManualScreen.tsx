@@ -26,6 +26,12 @@ export const HelpManualScreen = () => {
             icon={AppIcons.faq}
             onPress={() => commonNavigation.push(CommonStackComponents.cruiseHelpScreen)}
           />
+          <DataFieldListItem
+            title={'Report'}
+            description={'Report content or users to the Twitarr Moderation Team.'}
+            icon={AppIcons.report}
+            onPress={() => commonNavigation.push(CommonStackComponents.reportHelpScreen)}
+          />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Major Features'} noMargin={true}>
           <DataFieldListItem
@@ -65,6 +71,12 @@ export const HelpManualScreen = () => {
             description={'Your bio and what information is visible to others.'}
             icon={AppIcons.profile}
             onPress={() => commonNavigation.push(CommonStackComponents.userProfileHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Recovery Key'}
+            description={'The one-time account recovery key shown after you create an account.'}
+            icon={AppIcons.registrationCode}
+            onPress={() => commonNavigation.push(CommonStackComponents.recoveryKeyHelpScreen)}
           />
           <DataFieldListItem
             title={'User Directory'}

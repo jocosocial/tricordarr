@@ -66,6 +66,8 @@ import {PrivacyScreen} from '#src/Screens/Main/PrivacyScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
 import {TodayHelpScreen} from '#src/Screens/Main/TodayHelpScreen';
 import {MicroKaraokeHelpScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeHelpScreen';
+import {ReportHelpScreen} from '#src/Screens/Moderation/ReportHelpScreen';
+import {ReportScreen} from '#src/Screens/Moderation/ReportScreen';
 import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScreen';
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {PerformerHelpScreen} from '#src/Screens/Performer/PerformerHelpScreen';
@@ -96,6 +98,8 @@ import {SeamailListHelpScreen} from '#src/Screens/Seamail/SeamailListHelpScreen'
 import {SeamailSearchHelpScreen} from '#src/Screens/Seamail/SeamailSearchHelpScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
+import {RecoveryKeyHelpScreen} from '#src/Screens/Settings/Account/RecoveryKeyHelpScreen';
+import {RecoveryKeyScreen} from '#src/Screens/Settings/Account/RecoveryKeyScreen';
 import {ChatSettingsScreen} from '#src/Screens/Settings/ChatSettingsScreen';
 import {ConfigServerUrlScreen} from '#src/Screens/Settings/Config/ConfigServerUrlScreen';
 import {AlertKeywordsScreen} from '#src/Screens/Settings/Content/AlertKeywordsSettingsScreen';
@@ -178,6 +182,22 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.accountRecoveryScreen}
         component={AccountRecoveryScreen}
         options={{title: 'Recovery'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.recoveryKeyScreen}
+        component={RecoveryKeyScreen}
+        options={{title: 'Recovery Key', gestureEnabled: false, headerLeft: () => null}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.recoveryKeyHelpScreen}
+        component={RecoveryKeyHelpScreen}
+        options={{title: 'Recovery Key Help'}}
+      />
+      <Stack.Screen name={CommonStackComponents.reportScreen} component={ReportScreen} options={{title: 'Report'}} />
+      <Stack.Screen
+        name={CommonStackComponents.reportHelpScreen}
+        component={ReportHelpScreen}
+        options={{title: 'Report Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.easterEggScreen}

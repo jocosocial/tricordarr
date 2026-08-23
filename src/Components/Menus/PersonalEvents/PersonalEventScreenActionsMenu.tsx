@@ -1,13 +1,12 @@
-import React, {ReactNode} from 'react';
+import React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -21,15 +20,8 @@ interface PersonalEventScreenActionsMenuProps {
 export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {currentUserID} = useSession();
-  const {setModalContent, setModalVisible} = useModal();
   const navigation = useScheduleStackNavigation();
   const {confirmCancel, confirmDelete} = useFezAlert(props.event);
-
-  const handleModal = (content: ReactNode) => {
-    closeMenu();
-    setModalContent(content);
-    setModalVisible(true);
-  };
 
   return (
     <AppMenu
@@ -72,7 +64,13 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}
-        onPress={() => handleModal(<ReportModalView fez={props.event} />)}
+        onPress={() => {
+          closeMenu();
+          navigation.push(CommonStackComponents.reportScreen, {
+            contentType: ReportContentType.fez,
+            contentID: props.event.fezID,
+          });
+        }}
       />
       <Menu.Item
         leadingIcon={AppIcons.help}

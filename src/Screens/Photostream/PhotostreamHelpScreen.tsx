@@ -4,6 +4,7 @@ import {HelpFABView} from '#src/Components/Buttons/FloatingActionButtons/HelpFAB
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
+import {ReportButtonHelpTopicView} from '#src/Components/Views/Help/Common/ReportButtonHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -46,6 +47,7 @@ export const PhotostreamHelpScreen = () => {
           <HelpTopicView title={'Image Settings'} icon={AppIcons.settings}>
             Access image settings to configure how images are processed and displayed in the photostream.
           </HelpTopicView>
+          <ReportButtonHelpTopicView />
           <HelpButtonHelpTopicView />
         </HelpChapterTitleView>
       </ScrollingContentView>

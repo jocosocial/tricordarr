@@ -2,11 +2,10 @@ import React, {ReactNode} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
 import {ModerateMenuItem} from '#src/Components/Menus/Items/ModerateMenuItem';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {ReportContentType} from '#src/Enums/ReportContentType';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
 interface PhotostreamImageActionsMenuProps {
@@ -17,14 +16,15 @@ interface PhotostreamImageActionsMenuProps {
 }
 
 export const PhotostreamImageActionsMenu = ({visible, closeMenu, anchor, image}: PhotostreamImageActionsMenuProps) => {
-  const {setModalContent, setModalVisible} = useModal();
   const {hasModerator} = usePrivilege();
   const commonNavigation = useCommonStack();
 
   const handleReport = () => {
     closeMenu();
-    setModalContent(<ReportModalView photostreamImage={image} />);
-    setModalVisible(true);
+    commonNavigation.push(CommonStackComponents.reportScreen, {
+      contentType: ReportContentType.photostreamImage,
+      contentID: image.postID,
+    });
   };
 
   return (

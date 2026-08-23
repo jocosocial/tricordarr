@@ -1,14 +1,13 @@
-import React, {ReactNode} from 'react';
+import React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {ReportContentType} from '#src/Enums/ReportContentType';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -21,17 +20,10 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   const navigation = useLFGStackNavigation();
   const commonNavigation = useCommonStack();
   const {hasModerator} = usePrivilege();
-  const {setModalContent, setModalVisible} = useModal();
   const {currentUserID} = useSession();
   const {confirmCancel} = useFezAlert(fezData);
 
   const menuAnchor = <Item title={'LFG Menu'} iconName={AppIcons.menu} onPress={openMenu} />;
-
-  const handleModal = (content: ReactNode) => {
-    closeMenu();
-    setModalContent(content);
-    setModalVisible(true);
-  };
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
@@ -59,7 +51,13 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}
-        onPress={() => handleModal(<ReportModalView fez={fezData} />)}
+        onPress={() => {
+          closeMenu();
+          commonNavigation.push(CommonStackComponents.reportScreen, {
+            contentType: ReportContentType.fez,
+            contentID: fezData.fezID,
+          });
+        }}
       />
       {hasModerator && (
         <Menu.Item

@@ -14,20 +14,20 @@ It does not search for a “common” navigator. It returns whatever `Navigation
 
 ## Paper portals remount outside those stacks
 
-`AppView` renders `AppModal` (and snackbars/banners) inside react-native-paper `<Portal>`. Portal content is remounted at `Portal.Host` in `ShellProvider`, which wraps `RootStackNavigator` but is **not** inside a tab or stack navigator:
+`AppView` renders snackbars and banners inside react-native-paper `<Portal>`. Portal content is remounted at `Portal.Host` in `ShellProvider`, which wraps `RootStackNavigator` but is **not** inside a tab or stack navigator:
 
 ```
 NavigationContainer          ← root NavigationContext
   PaperProvider
     ShellProvider
-      Portal.Host            ← AppModal, menus, snackbars remount here
+      Portal.Host            ← menus, snackbars remount here
         RootStackNavigator
           Bottom tabs
             Schedule / LFG / … stacks
               PersonalEventScreen, LfgScreen, …
 ```
 
-Hooks in a component that **mounts in the portal** (modal content, some menu items) see the root container, not the nested stack. TypeScript still types `useCommonStack()` as the common stack, so this compiles and then does the wrong thing:
+Hooks in a component that **mounts in the portal** (some menu items) see the root container, not the nested stack. TypeScript still types `useCommonStack()` as the common stack, so this compiles and then does the wrong thing:
 
 - `getState().routes` is OOBE / main tabs / lighter — not `PersonalEventScreen`
 - `goBack()` / `pop()` run on the **root** stack
@@ -58,7 +58,7 @@ Do not call `useCommonStack()` / `useNavigation()` from components that themselv
 
 Screens, headers, and `Alert.alert` callbacks in those parents should keep using the stack hooks.
 
-Passing a `navigation` object **into** modal content as a prop also works: the hook runs on the screen, and the object stays valid after the element remounts in the portal.
+Passing a `navigation` object **into** a portaled menu item as a prop also works: the hook runs on the screen, and the object stays valid after the element remounts in the portal.
 
 ## Scroll-to-top
 
