@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {UsernameTextField} from '#src/Components/Forms/Fields/UsernameTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {UsernameValidation} from '#src/Libraries/ValidationSchema';
@@ -32,11 +32,13 @@ export const ChangeUsernameForm = ({onSubmit}: ChangeUsernameFormProps) => {
       {({handleSubmit, values, isSubmitting}) => (
         <View>
           <DirtyDetectionField />
-          <TextField
+          <UsernameTextField
             name={'username'}
             testID={'changeUsername-input'}
             label={'Username'}
             left={<TextInput.Icon icon={AppIcons.user} />}
+            textContentType={'username'}
+            autoComplete={'username-new'}
           />
           <PrimaryActionButton
             disabled={!values.username || isSubmitting}

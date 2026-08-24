@@ -14,6 +14,7 @@ import {HelperText, TextInput} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {resolveTextInputAutoCorrect} from '#src/Libraries/Forms/TextInputAutoCorrect';
 import {RNInputModeOptions} from '#src/Types';
 
 export interface TextFieldProps {
@@ -29,6 +30,15 @@ export interface TextFieldProps {
   viewStyle?: StyleProp<ViewStyle>;
   inputMode?: RNInputModeOptions;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  /**
+   * When omitted, identifier-style fields (`autoCapitalize="none"`) disable
+   * autocorrect. Other fields keep the platform default (typically on).
+   */
+  autoCorrect?: boolean;
+  /**
+   * When omitted, follows `autoCorrect`. iOS-only; ignored on Android.
+   */
+  spellCheck?: boolean;
   maxLength?: number;
   onFocus?: () => void;
   keyboardType?: KeyboardTypeOptions;
@@ -123,6 +133,8 @@ export const TextField = ({
   viewStyle,
   inputMode,
   autoCapitalize,
+  autoCorrect,
+  spellCheck,
   maxLength,
   onFocus,
   keyboardType,
@@ -154,6 +166,8 @@ export const TextField = ({
   //   - Autofill can trigger blur before value syncs, causing false "field is empty" errors.
   //   - By requiring 'touched', we avoid showing stale errors during autofill.
   const shouldShowError = showErrorWithoutTouch ? !!meta.error : !!meta.error && meta.touched;
+  const resolvedAutoCorrect = resolveTextInputAutoCorrect(autoCapitalize, autoCorrect);
+  const resolvedSpellCheck = spellCheck ?? resolvedAutoCorrect;
 
   const styles = StyleSheet.create({
     outline: {
@@ -223,6 +237,8 @@ export const TextField = ({
         secureTextEntry={secureTextEntry}
         inputMode={inputMode}
         autoCapitalize={autoCapitalize}
+        autoCorrect={resolvedAutoCorrect}
+        spellCheck={resolvedSpellCheck}
         maxLength={maxLength}
         onFocus={onFocus}
         style={[styles.textInput, innerTextStyle]}

@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {SecureTextField} from '#src/Components/Forms/Fields/SecureTextField';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {UsernameTextField} from '#src/Components/Forms/Fields/UsernameTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -42,13 +42,12 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting}) => (
         <View>
-          <TextField
+          <UsernameTextField
             viewStyle={styles.inputContainer}
             name={'username'}
             testID={'loginUsername-input'}
             label={'Username'}
             left={<TextInput.Icon icon={AppIcons.user} />}
-            autoCapitalize={'none'}
             textContentType={'username'}
             autoComplete={'username'}
             showErrorWithoutTouch={false}

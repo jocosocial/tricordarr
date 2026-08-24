@@ -10,6 +10,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
+import {resolveTextInputAutoCorrect} from '#src/Libraries/Forms/TextInputAutoCorrect';
 
 interface SuggestedTextFieldProps extends TextFieldProps {
   suggestions?: string[];
@@ -34,6 +35,8 @@ export const SuggestedTextField = ({
   viewStyle,
   inputMode,
   autoCapitalize,
+  autoCorrect,
+  spellCheck,
   maxLength,
   suggestions = [],
   disabled,
@@ -59,6 +62,9 @@ export const SuggestedTextField = ({
     closeMenu();
     await helpers.setValue(newValue);
   };
+
+  const resolvedAutoCorrect = resolveTextInputAutoCorrect(autoCapitalize, autoCorrect);
+  const resolvedSpellCheck = spellCheck ?? resolvedAutoCorrect;
 
   const toggleMenu = () => {
     // Dismiss keyboard when toggling menu
@@ -100,6 +106,8 @@ export const SuggestedTextField = ({
             right={suggestionsIcon}
             inputMode={inputMode}
             autoCapitalize={autoCapitalize}
+            autoCorrect={resolvedAutoCorrect}
+            spellCheck={resolvedSpellCheck}
             maxLength={maxLength}
             onChangeText={onValueChange}
             value={field.value}
