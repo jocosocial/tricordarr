@@ -322,6 +322,8 @@ export interface FezData {
   lastModificationTime: string;
   /// Will be nil if user is not a member of the fez (in the participant or waiting lists).
   members?: MembersOnlyData;
+  /// The filenames of optional images attached to a private/personal event. Same limits as forum posts (up to 8 for Shutternauts, otherwise `maxForumPostImages`).
+  images?: string[];
 }
 
 export interface FezListData {
@@ -381,6 +383,10 @@ export interface FezContentData {
   createdByModerator?: boolean;
   /// If TRUE, the Fez will be created by user @TwitarrTeam instead of the current user. Current user must be a TT member.
   createdByTwitarrTeam?: boolean;
+  /// An array of images (up to 8 for Shutternauts, otherwise up to `maxForumPostImages` from server settings). Each image can specify either new image data or an existing image filename.
+  /// Used by private/personal events, matching forum posts. For new events, images will generally contain all new image data. When editing, images may contain a mix of new and existing images.
+  /// Reorder ImageUploadDatas to change presentation order. Set images to [] to remove images attached to the event when editing.
+  images?: ImageUploadData[];
 }
 
 export interface ReportData {

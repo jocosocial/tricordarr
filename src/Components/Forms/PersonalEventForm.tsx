@@ -1,16 +1,18 @@
 import {Formik, FormikHelpers} from 'formik';
-import React from 'react';
-import {View} from 'react-native';
+import React, {useMemo} from 'react';
+import {StyleSheet, View} from 'react-native';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {DurationPickerField} from '#src/Components/Forms/Fields/DurationPickerField';
+import {ImagesField} from '#src/Components/Forms/Fields/ImagesField';
 import {SuggestedTextField} from '#src/Components/Forms/Fields/SuggestedTextField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
 import {UserChipsField} from '#src/Components/Forms/Fields/UserChipsField';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {getUserSuggestedLocations} from '#src/Libraries/Ship';
 import {DateValidation, InfoStringValidation} from '#src/Libraries/ValidationSchema';
@@ -24,13 +26,6 @@ interface PersonalEventFormProps {
   create?: boolean;
 }
 
-const validationSchema = Yup.object().shape({
-  title: InfoStringValidation,
-  startDate: DateValidation,
-  info: InfoStringValidation,
-  location: InfoStringValidation,
-});
-
 export const PersonalEventForm = ({
   onSubmit,
   initialValues,
@@ -38,46 +33,62 @@ export const PersonalEventForm = ({
   create = true,
 }: PersonalEventFormProps) => {
   const {commonStyles} = useStyles();
-  const styles = {
-    inputContainer: [],
-    buttonContainer: [commonStyles.marginTopSmall],
-  };
+  const {maxForumPostImages} = useClientSettings();
   const {data: profilePublicData} = useUserProfileQuery();
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        buttonContainer: {
+          ...commonStyles.marginTopSmall,
+        },
+        fieldSpacing: {
+          ...commonStyles.paddingBottom,
+        },
+      }),
+    [commonStyles],
+  );
+
+  const validationSchema = useMemo(
+    () =>
+      Yup.object().shape({
+        title: InfoStringValidation,
+        startDate: DateValidation,
+        info: InfoStringValidation,
+        location: InfoStringValidation,
+        images: Yup.array().max(maxForumPostImages, `You can attach at most ${maxForumPostImages} photos.`),
+      }),
+    [maxForumPostImages],
+  );
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
-          <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} />
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'info'}
-            label={'Info'}
-            multiline={true}
-            numberOfLines={3}
-          />
+          <TextField name={'title'} label={'Title'} />
+          <TextField name={'info'} label={'Info'} multiline={true} numberOfLines={3} />
           <SuggestedTextField
-            viewStyle={styles.inputContainer}
             name={'location'}
             label={'Location'}
             autoCapitalize={'words'}
             suggestions={getUserSuggestedLocations(profilePublicData)}
           />
-          <View style={[commonStyles.paddingBottom]}>
+          <View style={styles.fieldSpacing}>
             <DatePickerField name={'startDate'} />
           </View>
-          <View style={[commonStyles.paddingBottom]}>
+          <View style={styles.fieldSpacing}>
             <TimePickerField name={'startTime'} />
           </View>
-          <View style={[commonStyles.paddingBottom]}>
+          <View style={styles.fieldSpacing}>
             <DurationPickerField name={'duration'} label={'Duration'} value={values.duration} />
           </View>
           {create && (
-            <View style={[commonStyles.paddingBottom]}>
+            <View style={styles.fieldSpacing}>
               <UserChipsField name={'initialUsers'} label={'Participants (Optional)'} />
             </View>
           )}
+          <ImagesField name={'images'} maxPhotos={maxForumPostImages} />
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid || !dirty}
             isLoading={isSubmitting}

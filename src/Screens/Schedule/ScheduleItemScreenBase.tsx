@@ -5,6 +5,7 @@ import {Text} from 'react-native-paper';
 
 import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
+import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPerformerListItem';
 import {EventPhotographerListItem} from '#src/Components/Lists/Items/Event/EventPhotographerListItem';
@@ -105,6 +106,19 @@ export const ScheduleItemScreenBase = ({
     return null;
   };
 
+  const getPhotosContent = () => {
+    if (!('fezID' in eventData) || !eventData.images) {
+      return null;
+    }
+    return (
+      <View>
+        {eventData.images.map(image => {
+          return <ContentPostImage key={image} image={image} />;
+        })}
+      </View>
+    );
+  };
+
   return (
     <AppView>
       {'fezID' in eventData && eventData.cancelled && (
@@ -171,6 +185,9 @@ export const ScheduleItemScreenBase = ({
                     />
                   )}
                   <DataFieldListItem icon={AppIcons.description} description={getInfoContent} title={'Description'} />
+                  {eventData.images && eventData.images.length > 0 && (
+                    <DataFieldListItem icon={AppIcons.photostream} title={'Photos'} description={getPhotosContent} />
+                  )}
                   {eventData.fezType === FezType.privateEvent && (
                     <UserChipsListItem
                       users={eventData.members?.participants}

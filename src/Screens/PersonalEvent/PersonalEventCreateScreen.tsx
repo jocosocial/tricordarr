@@ -6,6 +6,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/useFezForm';
+import {toImageUploadPayload} from '#src/Libraries/ImageUpload';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -53,6 +54,7 @@ const PersonalEventCreateScreenInner = ({route}: Props) => {
         maxCapacity: 0,
         initialUsers: values.initialUsers.map(u => u.userID),
         fezType: values.initialUsers.length > 0 ? FezType.privateEvent : FezType.personalEvent,
+        images: toImageUploadPayload(values.images ?? []),
       })}
       onSuccess={response => {
         createFez(response);

@@ -1,6 +1,6 @@
 import {FezType} from '#src/Enums/FezType';
 import {ServerUrlChoice} from '#src/Libraries/Network/ServerChoices';
-import {EventData, UserHeader} from '#src/Structs/ControllerStructs';
+import {EventData, ImageUploadData, UserHeader} from '#src/Structs/ControllerStructs';
 
 export interface SettingFormValues {
   settingValue: string;
@@ -65,6 +65,8 @@ export interface FezFormValues {
   };
   // Only used for private events
   initialUsers: UserHeader[];
+  // Private/personal event photos. Same ImageUploadData array as forum posts.
+  images: ImageUploadData[];
 }
 
 export interface SeamailFormValues {

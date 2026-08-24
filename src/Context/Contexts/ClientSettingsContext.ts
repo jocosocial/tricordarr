@@ -7,7 +7,7 @@ export const DEFAULT_PHOTOSTREAM_UPLOAD_RATE_LIMIT = 300;
 
 interface ClientSettingsContextType {
   updateClientSettings: () => Promise<void>;
-  /** Maximum number of images allowed on a forum post. Shutternauts get 8; everyone else uses server settings (default 4). */
+  /** Maximum number of images allowed on a forum post or private/personal event. Shutternauts get 8; everyone else uses server settings (default 4). */
   maxForumPostImages: number;
   /** Maximum size of a single uploaded image, in bytes. Falls back to 20 MiB. */
   maxImageSize: number;

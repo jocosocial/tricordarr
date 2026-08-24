@@ -7,11 +7,14 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
+import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {HelpScreenComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {FezContentData, FezData} from '#src/Structs/ControllerStructs';
+import {ImageQueryData} from '#src/Types';
 import {FezFormValues} from '#src/Types/FormValues';
 
 export interface FezCreateScreenBaseFormProps {
@@ -38,6 +41,7 @@ export const FezCreateScreenBase = ({
 }: FezCreateScreenBaseProps) => {
   const navigation = useCommonStack();
   const createMutation = useFezCreateMutation();
+  const {appConfig} = useConfig();
 
   const getNavButtons = useCallback(() => {
     if (helpScreen === undefined) return undefined;
@@ -61,10 +65,18 @@ export const FezCreateScreenBase = ({
     navigation.setOptions(options);
   }, [navigation, screenTitle, helpScreen, getNavButtons]);
 
-  const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
+  const onSubmit = async (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     helpers.setSubmitting(true);
     const {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);
     const fezContentData = buildFezContentData(values, startTime, endTime);
+
+    if (appConfig.userPreferences.autosavePhotos) {
+      for (const imageData of values.images ?? []) {
+        if (imageData.image && imageData._shouldSaveToRoll) {
+          await saveImageQueryToLocal(ImageQueryData.fromData(imageData.image));
+        }
+      }
+    }
 
     createMutation.mutate(
       {fezContentData},
