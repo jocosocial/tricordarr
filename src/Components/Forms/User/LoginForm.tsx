@@ -1,7 +1,6 @@
 import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {View} from 'react-native';
-import {TextInput} from 'react-native-paper';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
@@ -9,7 +8,6 @@ import {SecureTextField} from '#src/Components/Forms/Fields/SecureTextField';
 import {UsernameTextField} from '#src/Components/Forms/Fields/UsernameTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {AppIcons} from '#src/Enums/Icons';
 import {PasswordValidation, UsernameValidation} from '#src/Libraries/ValidationSchema';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {LoginFormValues} from '#src/Types/FormValues';
@@ -44,12 +42,7 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
         <View>
           <UsernameTextField
             viewStyle={styles.inputContainer}
-            name={'username'}
             testID={'loginUsername-input'}
-            label={'Username'}
-            left={<TextInput.Icon icon={AppIcons.user} />}
-            textContentType={'username'}
-            autoComplete={'username'}
             showErrorWithoutTouch={false}
           />
           <SecureTextField

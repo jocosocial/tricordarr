@@ -25,7 +25,7 @@ export const SchedImportForm = (props: SchedImportFormProps) => {
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <UrlTextField name={'schedUrl'} testID={'schedImportUrl-input'} label={'Sched URL'} />
-          <UsernameTextField name={'username'} testID={'schedImportUsername-input'} label={'Sched.com Username'} />
+          <UsernameTextField testID={'schedImportUsername-input'} label={'Sched.com Username'} />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
             isLoading={isSubmitting}

@@ -55,15 +55,7 @@ export const UserRecoveryForm = ({onSubmit}: UserCreateFormProps) => {
               'Can be one of: Registration Code (mailed to you before the cruise), Recovery Key (displayed when you created your account), Current Password.'
             }
           />
-          <UsernameTextField
-            viewStyle={styles.inputContainer}
-            name={'username'}
-            testID={'recoveryUsername-input'}
-            label={'Username'}
-            left={<TextInput.Icon icon={AppIcons.user} />}
-            textContentType={'username'}
-            autoComplete={'username'}
-          />
+          <UsernameTextField viewStyle={styles.inputContainer} testID={'recoveryUsername-input'} />
           <SecureTextField name={'password'} testID={'recoveryPassword-input'} label={'New Password'} />
           <SecureTextField name={'passwordVerify'} testID={'recoveryPasswordVerify-input'} label={'Verify Password'} />
           <PrimaryActionButton

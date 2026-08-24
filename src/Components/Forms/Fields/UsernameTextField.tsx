@@ -1,16 +1,15 @@
-import React, {ReactNode} from 'react';
+import React from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
+import {TextInput} from 'react-native-paper';
 
-import {TextField, TextFieldProps} from '#src/Components/Forms/Fields/TextField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {AppIcons} from '#src/Enums/Icons';
 
 interface UsernameTextFieldProps {
-  name: string;
   testID: string;
-  label: string;
+  name?: string;
+  label?: string;
   viewStyle?: StyleProp<ViewStyle>;
-  left?: ReactNode;
-  textContentType?: TextFieldProps['textContentType'];
-  autoComplete?: TextFieldProps['autoComplete'];
   showErrorWithoutTouch?: boolean;
 }
 
@@ -19,21 +18,26 @@ interface UsernameTextFieldProps {
  * Disables capitalization, autocorrect, and spell check so the OS does not
  * rewrite handles (https://github.com/jocosocial/tricordarr/issues/497).
  */
-export const UsernameTextField = (props: UsernameTextFieldProps) => {
+export const UsernameTextField = ({
+  testID,
+  name = 'username',
+  label = 'Username',
+  viewStyle,
+  showErrorWithoutTouch,
+}: UsernameTextFieldProps) => {
   return (
     <TextField
-      name={props.name}
-      testID={props.testID}
-      label={props.label}
-      viewStyle={props.viewStyle}
-      left={props.left}
+      name={name}
+      testID={testID}
+      label={label}
+      viewStyle={viewStyle}
+      left={<TextInput.Icon icon={AppIcons.user} />}
       autoCapitalize={'none'}
       autoCorrect={false}
       spellCheck={false}
-      // Default to none so iOS does not treat untitled username fields as a person's name.
-      textContentType={props.textContentType ?? 'none'}
-      autoComplete={props.autoComplete ?? 'off'}
-      showErrorWithoutTouch={props.showErrorWithoutTouch}
+      textContentType={'username'}
+      autoComplete={'username'}
+      showErrorWithoutTouch={showErrorWithoutTouch}
     />
   );
 };

@@ -61,12 +61,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
           />
           <UsernameTextField
             viewStyle={styles.inputContainer}
-            name={'username'}
             testID={'registerUsername-input'}
-            label={'Username'}
-            left={<TextInput.Icon icon={AppIcons.user} />}
-            textContentType={'username'}
-            autoComplete={'username-new'}
             showErrorWithoutTouch={false}
           />
           <SecureTextField
