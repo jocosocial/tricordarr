@@ -25,7 +25,12 @@ export const FezChatHelpScreen = () => {
             chronological order, and you can scroll up to load older messages.
           </HelpTopicView>
           <HelpTopicView>
-            You can send text, unicode emojis, and our custom emojis. You cannot send pictures. This is intentional.
+            You can send text, unicode emojis, and our custom emojis. LFG and private event chats can attach one photo
+            per message. Seamail chats cannot include pictures.
+          </HelpTopicView>
+          <HelpTopicView title={'Insert'} icon={AppIcons.insert}>
+            Open the insert menu to add emoji to your post. In LFG and private event chats you can also attach one
+            photo. Press again to close the menu.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Post Actions'}>

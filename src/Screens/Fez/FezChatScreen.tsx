@@ -418,7 +418,7 @@ const FezChatScreenInner = ({route}: Props) => {
           </View>
         )}
       </View>
-      <ContentPostForm onSubmit={onSubmit} enablePhotos={false} />
+      <ContentPostForm onSubmit={onSubmit} enablePhotos={!FezType.isSeamailType(fez.fezType)} maxPhotos={1} />
     </AppView>
   );
 };
