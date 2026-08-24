@@ -64,6 +64,8 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             testID={'userProfilePronouns-input'}
             label={'Pronouns'}
             autoCapitalize={'none'}
+            autoCorrect={false}
+            spellCheck={false}
           />
           <TextField
             viewStyle={styles.inputContainer}

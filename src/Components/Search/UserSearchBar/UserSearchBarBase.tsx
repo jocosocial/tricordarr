@@ -77,6 +77,9 @@ export const UserSearchBarBaseComponent = ({
         onClear={onClear}
         minLength={2}
         autoSearch={autoSearch}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        spellCheck={false}
         onSearch={autoSearch ? undefined : refetch}
       />
       <UserSearchBarResults

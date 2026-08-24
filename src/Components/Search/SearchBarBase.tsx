@@ -37,8 +37,8 @@ export const SearchBarBase = ({
   style,
   autoSearch = false,
   autoCapitalize = 'none',
-  autoCorrect = false,
-  spellCheck = false,
+  autoCorrect,
+  spellCheck,
   testID,
 }: SearchBarBaseProps) => {
   const {commonStyles} = useStyles();
