@@ -15,7 +15,7 @@ import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/useFezForm';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
-import {toImageUploadPayload} from '#src/Libraries/ImageUpload';
+import {toSingleImageUploadPayload} from '#src/Libraries/ImageUpload';
 import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {HelpScreenComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
@@ -90,7 +90,9 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
           minCapacity: Number(values.minCapacity),
           maxCapacity: Number(values.maxCapacity),
           initialUsers: [],
-          ...(FezType.isPrivateEventType(values.fezType) ? {images: toImageUploadPayload(values.images ?? [])} : {}),
+          ...(FezType.isPrivateEventType(values.fezType)
+            ? {image: toSingleImageUploadPayload(values.images ?? [])}
+            : {}),
         },
       },
       {

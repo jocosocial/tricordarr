@@ -65,7 +65,8 @@ export interface FezFormValues {
   };
   // Only used for private events
   initialUsers: UserHeader[];
-  // Private/personal event photos. Same ImageUploadData array as forum posts.
+  // Private/personal event photos. Currently one ImageUploadData; may become an array in
+  // https://github.com/jocosocial/swiftarr/issues/521
   images: ImageUploadData[];
 }
 

@@ -48,8 +48,7 @@ export const ShutternautHelpScreen = () => {
             semi-private discussion with other Shutternauts. TwitarrTeam and THO can also view that category.
           </HelpTopicView>
           <HelpTopicView>
-            You can post up to eight (8) images in a single forum post, and attach the same number of photos to a
-            private or personal event. There is a file size limit of 20MB per photo.
+            You can post up to eight (8) images in a single forum post. There is a file size limit of 20MB per photo.
           </HelpTopicView>
           <HelpTopicView />
         </HelpChapterTitleView>

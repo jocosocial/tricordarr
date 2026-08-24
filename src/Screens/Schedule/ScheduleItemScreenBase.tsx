@@ -106,17 +106,11 @@ export const ScheduleItemScreenBase = ({
     return null;
   };
 
-  const getPhotosContent = () => {
-    if (!('fezID' in eventData) || !eventData.images) {
+  const getPhotoContent = () => {
+    if (!('fezID' in eventData) || !eventData.image) {
       return null;
     }
-    return (
-      <View>
-        {eventData.images.map(image => {
-          return <ContentPostImage key={image} image={image} />;
-        })}
-      </View>
-    );
+    return <ContentPostImage image={eventData.image} />;
   };
 
   return (
@@ -185,8 +179,8 @@ export const ScheduleItemScreenBase = ({
                     />
                   )}
                   <DataFieldListItem icon={AppIcons.description} description={getInfoContent} title={'Description'} />
-                  {eventData.images && eventData.images.length > 0 && (
-                    <DataFieldListItem icon={AppIcons.photostream} title={'Photos'} description={getPhotosContent} />
+                  {eventData.image && (
+                    <DataFieldListItem icon={AppIcons.photostream} title={'Photo'} description={getPhotoContent} />
                   )}
                   {eventData.fezType === FezType.privateEvent && (
                     <UserChipsListItem

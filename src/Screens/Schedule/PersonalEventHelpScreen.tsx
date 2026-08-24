@@ -23,10 +23,9 @@ export const PersonalEventHelpScreen = () => {
           or remove users later on. If you have already created your personal event you cannot add users later. You'll
           need to create a new personal event and add them at the time of creation.
         </HelpTopicView>
-        <HelpTopicView title={'Photos'} icon={AppIcons.newImage}>
-          Attach photos to a personal or private event when creating or editing it. You can take a new photo with your
-          camera or select an existing photo from your gallery. The maximum number of photos matches forum posts.
-          Shutternauts can attach more.
+        <HelpTopicView title={'Photo'} icon={AppIcons.newImage}>
+          Attach a photo to a personal or private event when creating or editing it. You can take a new photo with your
+          camera or select an existing photo from your gallery. Currently one photo is allowed.
         </HelpTopicView>
         <EventLocationHelpChapterView />
         <HelpChapterTitleView title={'Actions'} />

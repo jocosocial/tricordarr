@@ -147,10 +147,10 @@ export const ImagesField = ({name, label = 'Photos', maxPhotos}: ImagesFieldProp
     <View style={styles.container}>
       <View style={styles.labelRow}>
         <Text>{label}</Text>
-        {hasShutternaut && <AppIcon icon={AppIcons.shutternaut} />}
+        {hasShutternaut && maxPhotos > 1 && <AppIcon icon={AppIcons.shutternaut} />}
       </View>
       <HelperText type={meta.error ? 'error' : 'info'}>
-        {meta.error ?? `You can attach up to ${maxPhotos} photos.`}
+        {meta.error ?? `You can attach up to ${maxPhotos} photo${maxPhotos === 1 ? '' : 's'}.`}
       </HelperText>
       <AppImageViewer
         viewerImages={viewerImages}

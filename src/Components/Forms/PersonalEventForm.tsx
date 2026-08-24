@@ -12,8 +12,8 @@ import {SuggestedTextField} from '#src/Components/Forms/Fields/SuggestedTextFiel
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
 import {UserChipsField} from '#src/Components/Forms/Fields/UserChipsField';
-import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {PRIVATE_EVENT_MAX_IMAGES} from '#src/Libraries/ImageUpload';
 import {getUserSuggestedLocations} from '#src/Libraries/Ship';
 import {DateValidation, InfoStringValidation} from '#src/Libraries/ValidationSchema';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
@@ -26,6 +26,14 @@ interface PersonalEventFormProps {
   create?: boolean;
 }
 
+const validationSchema = Yup.object().shape({
+  title: InfoStringValidation,
+  startDate: DateValidation,
+  info: InfoStringValidation,
+  location: InfoStringValidation,
+  images: Yup.array().max(PRIVATE_EVENT_MAX_IMAGES, 'You can attach at most 1 photo.'),
+});
+
 export const PersonalEventForm = ({
   onSubmit,
   initialValues,
@@ -33,7 +41,6 @@ export const PersonalEventForm = ({
   create = true,
 }: PersonalEventFormProps) => {
   const {commonStyles} = useStyles();
-  const {maxForumPostImages} = useClientSettings();
   const {data: profilePublicData} = useUserProfileQuery();
 
   const styles = useMemo(
@@ -47,18 +54,6 @@ export const PersonalEventForm = ({
         },
       }),
     [commonStyles],
-  );
-
-  const validationSchema = useMemo(
-    () =>
-      Yup.object().shape({
-        title: InfoStringValidation,
-        startDate: DateValidation,
-        info: InfoStringValidation,
-        location: InfoStringValidation,
-        images: Yup.array().max(maxForumPostImages, `You can attach at most ${maxForumPostImages} photos.`),
-      }),
-    [maxForumPostImages],
   );
 
   return (
@@ -88,7 +83,7 @@ export const PersonalEventForm = ({
               <UserChipsField name={'initialUsers'} label={'Participants (Optional)'} />
             </View>
           )}
-          <ImagesField name={'images'} maxPhotos={maxForumPostImages} />
+          <ImagesField name={'images'} maxPhotos={PRIVATE_EVENT_MAX_IMAGES} />
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid || !dirty}
             isLoading={isSubmitting}
