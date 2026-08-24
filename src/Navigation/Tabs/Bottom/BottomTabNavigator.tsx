@@ -12,6 +12,7 @@ import {MainStackNavigator} from '#src/Navigation/Stacks/Main/MainStackNavigator
 import {ScheduleStackNavigator} from '#src/Navigation/Stacks/Schedule/ScheduleStackNavigator';
 import {BottomTabComponents, BottomTabParamList} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {UserNotificationData} from '#src/Structs/ControllerStructs';
 
 export const BottomTabNavigator = () => {
   const {data: userNotificationData} = useUserNotificationDataQuery({enabled: false});
@@ -22,7 +23,7 @@ export const BottomTabNavigator = () => {
   }, []);
 
   const getChatBadgeCount = useCallback(() => {
-    let count = userNotificationData?.newSeamailMessageCount || 0;
+    let count = UserNotificationData.totalNewSeamail(userNotificationData);
     if (userNotificationData?.moderatorData?.newModeratorSeamailMessageCount) {
       count += userNotificationData.moderatorData.newModeratorSeamailMessageCount;
     }
