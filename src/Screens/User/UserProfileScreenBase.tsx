@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {Item} from 'react-navigation-header-buttons';
 
 import {BlockedOrMutedBanner} from '#src/Components/Banners/BlockedOrMutedBanner';
 import {UserProfileFABGroup} from '#src/Components/Buttons/FloatingActionButtons/UserProfileFABGroup';
@@ -26,7 +25,6 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -68,12 +66,6 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const {preRegistrationMode} = usePreRegistration();
   const {oobeCompleted} = useOobe();
   const isSelf = data?.header.userID === currentUserID;
-  const onEditProfilePress = useCallback(() => {
-    if (!data) {
-      return;
-    }
-    commonNavigation.push(CommonStackComponents.userProfileEditScreen, {user: data});
-  }, [commonNavigation, data]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
       const refreshes = [
@@ -89,7 +81,6 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
       return (
         <View>
           <MaterialHeaderButtons left>
-            <Item title={'Edit'} iconName={AppIcons.edituser} onPress={onEditProfilePress} />
             <UserProfileSelfActionsMenu userID={data.header.userID} />
           </MaterialHeaderButtons>
         </View>
@@ -107,7 +98,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [data, isSelf, isMuted, isBlocked, onEditProfilePress]);
+  }, [data, isSelf, isMuted, isBlocked]);
 
   useEffect(() => {
     commonNavigation.setOptions({
