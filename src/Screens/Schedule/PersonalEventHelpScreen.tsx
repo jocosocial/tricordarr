@@ -23,10 +23,6 @@ export const PersonalEventHelpScreen = () => {
           or remove users later on. If you have already created your personal event you cannot add users later. You'll
           need to create a new personal event and add them at the time of creation.
         </HelpTopicView>
-        <HelpTopicView title={'Photo'} icon={AppIcons.newImage}>
-          Attach a photo to a personal or private event when creating or editing it. You can take a new photo with your
-          camera or select an existing photo from your gallery. Currently one photo is allowed.
-        </HelpTopicView>
         <EventLocationHelpChapterView />
         <HelpChapterTitleView title={'Actions'} />
         <OverlappingHelpTopicView />
@@ -49,8 +45,8 @@ export const PersonalEventHelpScreen = () => {
           Report this personal event to the moderation team if it violates the Code of Conduct.
         </HelpTopicView>
         <HelpTopicView title={'Chat'} icon={AppIcons.chat}>
-          Open the Seamail chat for this private event. This option only appears for private events where you are a
-          participant, and appears in the header rather than the actions menu.
+          Open the chat for this private event. You can attach one photo per message. This option only appears for
+          private events where you are a participant, and appears in the header rather than the actions menu.
         </HelpTopicView>
         <HelpButtonHelpTopicView />
       </ScrollingContentView>

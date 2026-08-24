@@ -1,6 +1,6 @@
 import {FezType} from '#src/Enums/FezType';
 import {ServerUrlChoice} from '#src/Libraries/Network/ServerChoices';
-import {EventData, ImageUploadData, UserHeader} from '#src/Structs/ControllerStructs';
+import {EventData, UserHeader} from '#src/Structs/ControllerStructs';
 
 export interface SettingFormValues {
   settingValue: string;
@@ -65,9 +65,6 @@ export interface FezFormValues {
   };
   // Only used for private events
   initialUsers: UserHeader[];
-  // Private/personal event photos. Currently one ImageUploadData; may become an array in
-  // https://github.com/jocosocial/swiftarr/issues/521
-  images: ImageUploadData[];
 }
 
 export interface SeamailFormValues {

@@ -326,10 +326,6 @@ export interface FezData {
   lastModificationTime: string;
   /// Will be nil if user is not a member of the fez (in the participant or waiting lists).
   members?: MembersOnlyData;
-  /// Optional image attached to a private/personal event.
-  /// Currently a single filename. This may change to a forum-post-style `images` array in
-  /// https://github.com/jocosocial/swiftarr/issues/521
-  image?: string;
 }
 
 export interface FezListData {
@@ -389,10 +385,6 @@ export interface FezContentData {
   createdByModerator?: boolean;
   /// If TRUE, the Fez will be created by user @TwitarrTeam instead of the current user. Current user must be a TT member.
   createdByTwitarrTeam?: boolean;
-  /// Optional image attached to a private/personal event. Either new image data or an existing image filename.
-  /// Currently a single ImageUploadData. This may change to a forum-post-style `images` array in
-  /// https://github.com/jocosocial/swiftarr/issues/521
-  image?: ImageUploadData;
 }
 
 export interface ReportData {

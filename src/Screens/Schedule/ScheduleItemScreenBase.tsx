@@ -5,7 +5,6 @@ import {Text} from 'react-native-paper';
 
 import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPerformerListItem';
 import {EventPhotographerListItem} from '#src/Components/Lists/Items/Event/EventPhotographerListItem';
@@ -106,13 +105,6 @@ export const ScheduleItemScreenBase = ({
     return null;
   };
 
-  const getPhotoContent = () => {
-    if (!('fezID' in eventData) || !eventData.image) {
-      return null;
-    }
-    return <ContentPostImage image={eventData.image} />;
-  };
-
   return (
     <AppView>
       {'fezID' in eventData && eventData.cancelled && (
@@ -179,9 +171,6 @@ export const ScheduleItemScreenBase = ({
                     />
                   )}
                   <DataFieldListItem icon={AppIcons.description} description={getInfoContent} title={'Description'} />
-                  {eventData.image && (
-                    <DataFieldListItem icon={AppIcons.photostream} title={'Photo'} description={getPhotoContent} />
-                  )}
                   {eventData.fezType === FezType.privateEvent && (
                     <UserChipsListItem
                       users={eventData.members?.participants}

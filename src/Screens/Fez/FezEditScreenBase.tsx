@@ -8,20 +8,15 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/useFezForm';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
-import {toSingleImageUploadPayload} from '#src/Libraries/ImageUpload';
-import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {HelpScreenComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {ImageQueryData} from '#src/Types';
 import {FezFormValues} from '#src/Types/FormValues';
 
 export interface FezEditScreenBaseFormProps {
@@ -42,7 +37,6 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
   const {updateFez} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
   const {getInitialValuesFromFez} = useFezForm();
-  const {appConfig} = useConfig();
 
   const getNavButtons = useCallback(() => {
     if (helpScreen === undefined) return undefined;
@@ -66,16 +60,8 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
     navigation.setOptions(options);
   }, [navigation, screenTitle, helpScreen, getNavButtons]);
 
-  const onSubmit = async (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
+  const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     const {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);
-
-    if (appConfig.userPreferences.autosavePhotos) {
-      for (const imageData of values.images ?? []) {
-        if (imageData.image && imageData._shouldSaveToRoll) {
-          await saveImageQueryToLocal(ImageQueryData.fromData(imageData.image));
-        }
-      }
-    }
 
     updateMutation.mutate(
       {
@@ -90,9 +76,6 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
           minCapacity: Number(values.minCapacity),
           maxCapacity: Number(values.maxCapacity),
           initialUsers: [],
-          ...(FezType.isPrivateEventType(values.fezType)
-            ? {image: toSingleImageUploadPayload(values.images ?? [])}
-            : {}),
         },
       },
       {

@@ -4,7 +4,6 @@ import {useCallback} from 'react';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {FezType} from '#src/Enums/FezType';
 import {getApparentCruiseDate} from '#src/Libraries/DateTime';
-import {imageUploadDataFromFilename} from '#src/Libraries/ImageUpload';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
@@ -64,7 +63,6 @@ export const useFezForm = (): UseFezFormReturn => {
         info,
         startTime: defaultStartTime(),
         initialUsers,
-        images: [],
       };
     },
     [startDate, adjustedCruiseDayToday],
@@ -85,7 +83,6 @@ export const useFezForm = (): UseFezFormReturn => {
       info: fez.info,
       startTime: {hours: fezStartDate.getHours(), minutes: fezStartDate.getMinutes()},
       initialUsers: [],
-      images: imageUploadDataFromFilename(fez.image),
     };
   }, []);
 
