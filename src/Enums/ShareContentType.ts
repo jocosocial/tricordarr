@@ -8,5 +8,6 @@ export enum ShareContentType {
   lfg = 'lfg',
   user = 'user',
   event = 'events',
+  performer = 'performer',
   siteUI = 'siteui',
 }

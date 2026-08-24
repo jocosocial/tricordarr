@@ -46,7 +46,7 @@ const PerformerScreenInner = ({route, navigation}: Props) => {
               }
             />
           )}
-          <PerformerActionsMenu performerData={data} />
+          <PerformerActionsMenu performerData={data} performerID={route.params.id} />
         </MaterialHeaderButtons>
       </View>
     );
