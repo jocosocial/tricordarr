@@ -32,6 +32,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={5}
             label={'Page Size'}
             name={'defaultPageSize'}
+            testID={'queryPageSize-slider'}
             helperText={'Number of results in each page of paginated responses.'}
             onSlidingComplete={() => props.onSubmit(values)}
           />
@@ -42,6 +43,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={1}
             label={'Retries'}
             name={'retry'}
+            testID={'queryRetry-slider'}
             helperText={'Number of retry attempts to make if a query fails.'}
             onSlidingComplete={() => props.onSubmit(values)}
           />
@@ -52,6 +54,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={1}
             label={'Disruption Threshold'}
             name={'disruptionThreshold'}
+            testID={'queryDisruptionThreshold-slider'}
             helperText={
               'Number of failed query attempts before the server is considered disrupted, disabling future automatic queries.'
             }
@@ -64,6 +67,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={1}
             label={'Stale Time'}
             name={'staleTimeMinutes'}
+            testID={'queryStaleTime-slider'}
             helperText={'Amount of time for query response data to be considered fresh before automatically refreshed.'}
             unit={'minute'}
             onSlidingComplete={() => props.onSubmit(values)}
@@ -75,6 +79,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={1}
             label={'Cache Time'}
             name={'cacheTimeDays'}
+            testID={'queryCacheTime-slider'}
             helperText={'Amount of time for query response data to be cached.'}
             unit={'day'}
             onSlidingComplete={() => props.onSubmit(values)}
@@ -86,6 +91,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={1}
             label={'Image Stale Time'}
             name={'imageStaleTimeDays'}
+            testID={'queryImageStaleTime-slider'}
             helperText={'Amount of time for image response data to be considered fresh before automatically refreshed.'}
             unit={'day'}
             onSlidingComplete={() => props.onSubmit(values)}

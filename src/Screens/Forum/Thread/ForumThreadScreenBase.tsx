@@ -10,6 +10,7 @@ import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {type TConversationListV2Ref} from '#src/Components/Lists/ConversationListV2';
 import {ForumConversationListV2} from '#src/Components/Lists/Forums/ForumConversationListV2';
 import {ForumThreadScreenActionsMenu} from '#src/Components/Menus/Forum/ForumThreadScreenActionsMenu';
@@ -269,7 +270,10 @@ const ForumThreadScreenBaseInner = ({
   return (
     <AppView>
       <PostAsUserBanner />
-      <ListTitleView title={forumData?.title ?? ''} />
+      <ListTitleView
+        title={forumData?.title ?? ''}
+        icon={forumData?.isFavorite ? <AppIcon icon={AppIcons.favorite} small={true} /> : undefined}
+      />
       {forumData?.isLocked && <ForumLockedView />}
       <View style={commonStyles.flex}>
         <ForumConversationListV2

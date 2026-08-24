@@ -3,7 +3,6 @@ import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
-import notifee from 'react-native-notify-kit';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 import ReconnectingWebSocket from 'reconnecting-websocket';
@@ -20,7 +19,6 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {FezMutedView} from '#src/Components/Views/Static/FezMutedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
@@ -144,7 +142,6 @@ const FezChatScreenInner = ({route}: Props) => {
   const navigation = useCommonStack();
   const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
-  const {appConfig} = useConfig();
   const flatListRef = useRef<TConversationListV2Ref>(null);
   const fezSocketWithHandlerRef = useRef<{
     ws: ReconnectingWebSocket;
@@ -337,13 +334,9 @@ const FezChatScreenInner = ({route}: Props) => {
         // The UND drives the tab bar and seamail account buttons badge count
         // and we don't have a cache reducer for it yet.
         refetchUserNotificationData();
-        if (appConfig.markReadCancelPush) {
-          logger.debug('auto canceling notifications.');
-          notifee.cancelDisplayedNotification(fez.fezID);
-        }
       }
     }
-  }, [fez, markRead, initialReadCount, appConfig.markReadCancelPush, refetchUserNotificationData]);
+  }, [fez, markRead, initialReadCount, refetchUserNotificationData]);
 
   // Visible useEffect
   // 20260308 The query now refetches on mount by default so this is no longer needed.

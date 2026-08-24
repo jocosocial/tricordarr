@@ -16,5 +16,12 @@ const LABELS: Record<UserRelationMode, string> = {
 };
 
 export const UserListFAB = ({mode, onPress, showLabel = true}: UserListFABProps) => {
-  return <BaseFAB onPress={onPress} label={LABELS[mode]} showLabel={showLabel} />;
+  return (
+    <BaseFAB
+      onPress={onPress}
+      label={LABELS[mode]}
+      showLabel={showLabel}
+      testID={`userList${mode.charAt(0).toUpperCase()}${mode.slice(1)}-fab`}
+    />
+  );
 };

@@ -49,41 +49,56 @@ export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFor
       {({handleSubmit, values, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
-          <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} autoCapitalize={'words'} />
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'title'}
+            testID={'lfgTitle-input'}
+            label={'Title'}
+            autoCapitalize={'words'}
+          />
           <SuggestedTextField
             viewStyle={styles.inputContainer}
             name={'location'}
+            testID={'lfgLocation-input'}
             label={'Location'}
             autoCapitalize={'words'}
             suggestions={publicLocationSuggestions}
           />
           <View style={[commonStyles.paddingBottom]}>
-            <FezTypePickerField name={'fezType'} label={'Type'} value={values.fezType} />
+            <FezTypePickerField name={'fezType'} testID={'lfgType-button'} label={'Type'} value={values.fezType} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
-            <DatePickerField name={'startDate'} />
+            <DatePickerField name={'startDate'} testID={'lfgStartDate-button'} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
-            <TimePickerField name={'startTime'} />
+            <TimePickerField name={'startTime'} testID={'lfgStartTime-button'} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
-            <DurationPickerField name={'duration'} label={'Duration'} value={values.duration} />
+            <DurationPickerField
+              name={'duration'}
+              testID={'lfgDuration-button'}
+              label={'Duration'}
+              value={values.duration}
+            />
           </View>
           <TextField
             viewStyle={styles.inputContainer}
             name={'minCapacity'}
+            testID={'lfgMinCapacity-input'}
             label={'Minimum Attendees Needed'}
             keyboardType={'numeric'}
           />
           <TextField
             viewStyle={styles.inputContainer}
             name={'maxCapacity'}
+            testID={'lfgMaxCapacity-input'}
             label={'Maximum Attendees Desired'}
             keyboardType={'numeric'}
           />
           <TextField
             viewStyle={styles.inputContainer}
             name={'info'}
+            testID={'lfgInfo-input'}
             label={'Event Info'}
             multiline={true}
             numberOfLines={3}
@@ -94,6 +109,7 @@ export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFor
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={buttonText}
+            testID={'lfgSubmit-button'}
           />
         </View>
       )}

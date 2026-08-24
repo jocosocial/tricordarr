@@ -130,6 +130,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
       <>
         {eventID && (
           <SwipeableButton
+            testID={'forumThreadEvent-button'}
             text={'Event'}
             iconName={AppIcons.events}
             onPress={() => {
@@ -145,6 +146,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
         )}
         {hasModerator && props.categoryID && (
           <SwipeableButton
+            testID={'forumThreadPin-button'}
             text={props.forumListData.isPinned ? 'Unpin' : 'Pin'}
             refreshing={pinRefreshing}
             onPress={() => handlePin(swipeable)}
@@ -164,6 +166,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
     return (
       <>
         <SwipeableButton
+          testID={'forumThreadMute-button'}
           text={props.forumListData.isMuted ? 'Unmute' : 'Mute'}
           iconName={props.forumListData.isMuted ? AppIcons.unmute : AppIcons.mute}
           style={{backgroundColor: theme.colors.elevation.level2}}
@@ -172,6 +175,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           disabled={props.forumListData.isFavorite}
         />
         <SwipeableButton
+          testID={'forumThreadFavorite-button'}
           text={props.forumListData.isFavorite ? 'Unfavorite' : 'Favorite'}
           iconName={props.forumListData.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
           onPress={() => handleFavorite(swipeable)}
@@ -180,6 +184,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           disabled={props.forumListData.isMuted}
         />
         <SwipeableButton
+          testID={'forumThreadRead-button'}
           text={'Read'}
           iconName={AppIcons.markAsRead}
           onPress={() => handleMarkAsRead(swipeable)}

@@ -18,6 +18,7 @@ interface BaseFABProps {
   openLabel?: string;
   icon?: IconSource;
   showLabel?: boolean;
+  testID: string;
 }
 
 export const BaseFABGroup = ({
@@ -27,6 +28,7 @@ export const BaseFABGroup = ({
   icon,
   actions = [],
   showLabel = true,
+  testID,
 }: BaseFABProps) => {
   const [state, setState] = useState({open: false});
   const {theme} = useAppTheme();
@@ -52,6 +54,7 @@ export const BaseFABGroup = ({
 
   return (
     <FAB.Group
+      testID={testID}
       open={state.open}
       visible={true}
       icon={icon ? icon : AppIcons.menu}

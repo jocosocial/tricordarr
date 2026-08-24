@@ -84,8 +84,8 @@ const MicroKaraokeSongScreenInner = ({route}: Props) => {
       {/*  <SnippetListItem key={i} url={url} />*/}
       {/*))}*/}
       {/*</ScrollingContentView>*/}
-      <PrimaryActionButton buttonText={'Previous'} onPress={handlePrevious} />
-      <PrimaryActionButton buttonText={'Next'} onPress={handleEnd} />
+      <PrimaryActionButton testID={'previous-button'} buttonText={'Previous'} onPress={handlePrevious} />
+      <PrimaryActionButton testID={'next-button'} buttonText={'Next'} onPress={handleEnd} />
     </AppView>
   );
 };

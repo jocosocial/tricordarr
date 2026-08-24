@@ -11,9 +11,10 @@ interface Props {
   onPress: (e: GestureResponderEvent) => void;
   color?: string;
   backgroundColor?: string;
+  testID: string;
 }
 
-export const FabGroupAction = ({icon, label, onPress, backgroundColor, color}: Props): FabGroupActionType => {
+export const FabGroupAction = ({icon, label, onPress, backgroundColor, color, testID}: Props): FabGroupActionType => {
   const {theme} = useAppTheme();
   const {asPrivilegedUser} = useElevation();
 
@@ -32,5 +33,6 @@ export const FabGroupAction = ({icon, label, onPress, backgroundColor, color}: P
       backgroundColor: actionBackgroundColor,
     },
     onPress: onPress,
+    testID: testID,
   };
 };

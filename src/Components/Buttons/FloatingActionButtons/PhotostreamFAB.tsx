@@ -14,6 +14,7 @@ export const PhotostreamFAB = (props: PhotostreamFABProps) => {
       onPress={() => mainStack.push(MainStackComponents.photostreamImageCreateScreen)}
       label={'New Post'}
       showLabel={props.showLabel}
+      testID={'photostreamCreate-fab'}
     />
   );
 };

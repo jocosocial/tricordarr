@@ -18,6 +18,7 @@ import {RNInputModeOptions} from '#src/Types';
 
 export interface TextFieldProps {
   name: string;
+  testID: string;
   mode?: 'flat' | 'outlined' | undefined;
   multiline?: boolean;
   numberOfLines?: number;
@@ -28,6 +29,8 @@ export interface TextFieldProps {
   viewStyle?: StyleProp<ViewStyle>;
   inputMode?: RNInputModeOptions;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  autoCorrect?: boolean;
+  spellCheck?: boolean;
   maxLength?: number;
   onFocus?: () => void;
   keyboardType?: KeyboardTypeOptions;
@@ -111,6 +114,7 @@ export interface TextFieldProps {
 // @TODO make this type-generic
 export const TextField = ({
   name,
+  testID,
   mode = 'outlined',
   multiline = false,
   numberOfLines = 1,
@@ -121,6 +125,8 @@ export const TextField = ({
   viewStyle,
   inputMode,
   autoCapitalize,
+  autoCorrect,
+  spellCheck,
   maxLength,
   onFocus,
   keyboardType,
@@ -204,6 +210,7 @@ export const TextField = ({
   return (
     <View style={viewStyle}>
       <TextInput
+        testID={testID}
         keyboardType={keyboardType}
         textColor={disabled || isSubmitting ? theme.colors.onSurfaceDisabled : theme.colors.onBackground} // @TODO this isnt working
         label={label}
@@ -220,6 +227,8 @@ export const TextField = ({
         secureTextEntry={secureTextEntry}
         inputMode={inputMode}
         autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        spellCheck={spellCheck}
         maxLength={maxLength}
         onFocus={onFocus}
         style={[styles.textInput, innerTextStyle]}

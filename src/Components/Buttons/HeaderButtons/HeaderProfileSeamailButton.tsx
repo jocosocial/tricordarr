@@ -16,5 +16,12 @@ export const HeaderProfileSeamailButton = (props: HeaderProfileSeamailButtonProp
       initialUserHeaders: [props.profile.header],
     });
   };
-  return <Item title={'Create Seamail'} iconName={AppIcons.seamailCreate} onPress={seamailCreateHandler} />;
+  return (
+    <Item
+      title={'Create Seamail'}
+      iconName={AppIcons.seamailCreate}
+      onPress={seamailCreateHandler}
+      testID={'headerSeamail-headerButton'}
+    />
+  );
 };

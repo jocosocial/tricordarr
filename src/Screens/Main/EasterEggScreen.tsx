@@ -55,7 +55,7 @@ export const EasterEggScreen = ({navigation}: Props) => {
   return (
     <AppView>
       <View style={styles.container}>
-        <ArcadeButton color={theme.colors.twitarrYellow} onPressIn={playSound}>
+        <ArcadeButton testID={'easterEggYeah-button'} color={theme.colors.twitarrYellow} onPressIn={playSound}>
           <Text style={styles.text} variant={'displayMedium'}>
             YEAH
           </Text>

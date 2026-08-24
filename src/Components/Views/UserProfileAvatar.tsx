@@ -148,6 +148,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
       <UserProfileAvatarImage user={user} />
       {isSelf && !getIsDisabled(SwiftarrFeature.images) && (
         <ImageButtons
+          testIDPrefix={'userProfileAvatar'}
           takeImage={takeImage}
           clearImage={clearImage}
           pickImage={pickImage}

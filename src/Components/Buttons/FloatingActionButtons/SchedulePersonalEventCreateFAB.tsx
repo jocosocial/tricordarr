@@ -12,6 +12,7 @@ export const SchedulePersonalEventCreateFAB = () => {
       onPress={() => navigation.push(CommonStackComponents.personalEventCreateScreen, {})}
       icon={AppIcons.eventCreate}
       label={'New Event'}
+      testID={'personalEventCreate-fab'}
     />
   );
 };

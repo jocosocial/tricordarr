@@ -61,26 +61,42 @@ export const PersonalEventForm = ({
       {({handleSubmit, values, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
-          <TextField name={'title'} label={'Title'} />
-          <TextField name={'info'} label={'Info'} multiline={true} numberOfLines={3} />
+          <TextField name={'title'} testID={'personalEventTitle-input'} label={'Title'} />
+          <TextField
+            name={'info'}
+            testID={'personalEventInfo-input'}
+            label={'Info'}
+            multiline={true}
+            numberOfLines={3}
+          />
           <SuggestedTextField
             name={'location'}
+            testID={'personalEventLocation-input'}
             label={'Location'}
             autoCapitalize={'words'}
             suggestions={getUserSuggestedLocations(profilePublicData)}
           />
           <View style={styles.fieldSpacing}>
-            <DatePickerField name={'startDate'} />
+            <DatePickerField name={'startDate'} testID={'personalEventStartDate-button'} />
           </View>
           <View style={styles.fieldSpacing}>
-            <TimePickerField name={'startTime'} />
+            <TimePickerField name={'startTime'} testID={'personalEventStartTime-button'} />
           </View>
           <View style={styles.fieldSpacing}>
-            <DurationPickerField name={'duration'} label={'Duration'} value={values.duration} />
+            <DurationPickerField
+              name={'duration'}
+              testID={'personalEventDuration-button'}
+              label={'Duration'}
+              value={values.duration}
+            />
           </View>
           {create && (
             <View style={styles.fieldSpacing}>
-              <UserChipsField name={'initialUsers'} label={'Participants (Optional)'} />
+              <UserChipsField
+                name={'initialUsers'}
+                testID={'personalEventParticipants-input'}
+                label={'Participants (Optional)'}
+              />
             </View>
           )}
           <ImagesField name={'images'} maxPhotos={PRIVATE_EVENT_MAX_IMAGES} />
@@ -90,6 +106,7 @@ export const PersonalEventForm = ({
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={buttonText}
+            testID={'personalEventSubmit-button'}
           />
         </View>
       )}

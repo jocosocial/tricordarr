@@ -47,7 +47,10 @@ export const ScrollingContentView = forwardRef<ScrollView, PropsWithChildren<Scr
         refreshControl={refreshControl}
         onScroll={onScroll}
         // 202561116 I don't remember what this was for or why it was disabled.
-        // keyboardShouldPersistTaps="handled"
+        // 20260823 Login: finishing the password and tapping Login dismissed the
+        // keyboard without firing the button (ScrollView default is "never").
+        // Forgot Password and other form screens in this view have the same miss.
+        keyboardShouldPersistTaps={'handled'}
         // contentInsetAdjustmentBehavior="automatic"
         // automaticallyAdjustKeyboardInsets={isIOS}>
         automaticallyAdjustKeyboardInsets={true}>

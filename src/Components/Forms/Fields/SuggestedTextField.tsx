@@ -24,6 +24,7 @@ interface SuggestedTextFieldProps extends TextFieldProps {
  */
 export const SuggestedTextField = ({
   name,
+  testID,
   mode = 'outlined',
   multiline,
   numberOfLines,
@@ -33,6 +34,8 @@ export const SuggestedTextField = ({
   viewStyle,
   inputMode,
   autoCapitalize,
+  autoCorrect,
+  spellCheck,
   maxLength,
   suggestions = [],
   disabled,
@@ -88,6 +91,7 @@ export const SuggestedTextField = ({
       anchor={
         <View style={viewStyle}>
           <TextInput
+            testID={testID}
             mode={mode}
             multiline={multiline}
             numberOfLines={numberOfLines}
@@ -98,6 +102,8 @@ export const SuggestedTextField = ({
             right={suggestionsIcon}
             inputMode={inputMode}
             autoCapitalize={autoCapitalize}
+            autoCorrect={autoCorrect}
+            spellCheck={spellCheck}
             maxLength={maxLength}
             onChangeText={onValueChange}
             value={field.value}

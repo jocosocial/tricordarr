@@ -6,6 +6,7 @@ import {AppIcons} from '#src/Enums/Icons';
 
 interface SecureTextFieldProps {
   name: string;
+  testID: string;
   label: string;
   textContentType?: 'password' | 'newPassword';
   autoComplete?: 'password' | 'password-new';
@@ -20,6 +21,7 @@ export const SecureTextField = (props: SecureTextFieldProps) => {
   return (
     <TextField
       name={props.name}
+      testID={props.testID}
       label={props.label}
       left={<TextInput.Icon icon={AppIcons.password} />}
       right={<TextInput.Icon onPress={() => setSecure(!secure)} icon={secure ? AppIcons.show : AppIcons.hide} />}

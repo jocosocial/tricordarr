@@ -59,6 +59,7 @@ export const SeamailSelectionHeaderButtons = (props: SeamailSelectionHeaderButto
         onPress={markAsRead}
         disabled={disableButtons}
         style={disableButtons ? commonStyles.disabled : undefined}
+        testID={'seamailSelectionMarkRead-headerButton'}
       />
       <Item
         iconName={AppIcons.mute}
@@ -66,6 +67,7 @@ export const SeamailSelectionHeaderButtons = (props: SeamailSelectionHeaderButto
         onPress={handleMute}
         disabled={disableButtons}
         style={disableButtons ? commonStyles.disabled : undefined}
+        testID={'seamailSelectionMute-headerButton'}
       />
     </MaterialHeaderButtons>
   );

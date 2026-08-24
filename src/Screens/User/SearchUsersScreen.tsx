@@ -156,9 +156,19 @@ const SearchUsersScreenInner = ({navigation, route}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           {mode === 'favorite' && preRegistrationMode ? (
-            <UserFindSearchBar excludeHeaders={activeQuery.data} onPress={handleAddRelation} clearOnPress={true} />
+            <UserFindSearchBar
+              testID={'userSearchFind-input'}
+              excludeHeaders={activeQuery.data}
+              onPress={handleAddRelation}
+              clearOnPress={true}
+            />
           ) : (
-            <UserMatchSearchBar excludeHeaders={activeQuery.data} onPress={handleAddRelation} clearOnPress={true} />
+            <UserMatchSearchBar
+              testID={'userSearchMatch-input'}
+              excludeHeaders={activeQuery.data}
+              onPress={handleAddRelation}
+              clearOnPress={true}
+            />
           )}
         </PaddedContentView>
       </ScrollingContentView>

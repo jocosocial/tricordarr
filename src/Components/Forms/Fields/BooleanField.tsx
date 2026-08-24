@@ -11,6 +11,7 @@ interface BooleanFieldProps {
   onPress?: () => void;
   value?: boolean;
   name: string;
+  testID: string;
   label: string;
   helperText?: string;
   icon?: string;
@@ -20,6 +21,7 @@ interface BooleanFieldProps {
 
 export const BooleanField = ({
   name,
+  testID,
   label,
   helperText,
   icon,
@@ -51,7 +53,11 @@ export const BooleanField = ({
   });
 
   return (
-    <TouchableRipple style={[styles.ripple, style]} onPress={onPress || onPressDefault} disabled={disabled}>
+    <TouchableRipple
+      testID={testID}
+      style={[styles.ripple, style]}
+      onPress={onPress || onPressDefault}
+      disabled={disabled}>
       <View>
         <View style={styles.wrapper}>
           <Text>

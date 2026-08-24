@@ -4,8 +4,8 @@ import {View} from 'react-native';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {UrlTextField} from '#src/Components/Forms/Fields/UrlTextField';
+import {UsernameTextField} from '#src/Components/Forms/Fields/UsernameTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SchedImportFormValues} from '#src/Types/FormValues';
 
@@ -24,14 +24,15 @@ export const SchedImportForm = (props: SchedImportFormProps) => {
     <Formik initialValues={props.initialValues} onSubmit={props.onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
-          <UrlTextField name={'schedUrl'} label={'Sched URL'} />
-          <TextField name={'username'} label={'Sched.com Username'} autoCapitalize={'none'} />
+          <UrlTextField name={'schedUrl'} testID={'schedImportUrl-input'} label={'Sched URL'} />
+          <UsernameTextField testID={'schedImportUsername-input'} label={'Sched.com Username'} />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
             isLoading={isSubmitting}
             viewStyle={commonStyles.marginTopSmall}
             onPress={handleSubmit}
             buttonText={'Import'}
+            testID={'schedImportSubmit-button'}
           />
         </View>
       )}

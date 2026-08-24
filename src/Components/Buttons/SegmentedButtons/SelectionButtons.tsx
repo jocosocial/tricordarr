@@ -103,6 +103,7 @@ export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
       {buttons.map((button, index) => (
         <Button
           key={index}
+          testID={`selection${button.label}-button`}
           icon={button.icon}
           mode={'text'}
           style={button.style}

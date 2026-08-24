@@ -25,6 +25,7 @@ export const BoardgameNumPlayersPickerField = ({value}: {value: number}) => {
   return (
     <PickerField<number | undefined>
       name={'numPlayers'}
+      testID={'boardgameNumPlayers-button'}
       label={'Number of Players'}
       value={value}
       choices={[1, 2, 3, 4, 5, 6, 10]}

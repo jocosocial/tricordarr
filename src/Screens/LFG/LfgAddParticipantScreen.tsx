@@ -65,7 +65,11 @@ const LfgAddParticipantScreenInner = ({route, navigation}: Props) => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
-          <UserMatchSearchBar excludeHeaders={lfg.members.participants || []} onPress={onPress} />
+          <UserMatchSearchBar
+            testID={'lfgAddParticipant-input'}
+            excludeHeaders={lfg.members.participants || []}
+            onPress={onPress}
+          />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

@@ -101,7 +101,13 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
 
   return (
     <>
-      <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} onClear={onClear} />
+      <SearchBarBase
+        testID={'forumPostSearch-input'}
+        searchQuery={searchQuery}
+        onSearch={onSearch}
+        onChangeSearch={onChangeSearch}
+        onClear={onClear}
+      />
       <View style={[commonStyles.flex]}>
         <ForumPostList
           listRef={flatListRef}

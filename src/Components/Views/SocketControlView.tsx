@@ -29,6 +29,7 @@ export const SocketControlView = ({title, onReset, disabled}: SocketControlViewP
           ...commonStyles.gapSmall,
         }}>
         <PrimaryActionButton
+          testID={'socketReset-button'}
           disabled={disabled}
           buttonColor={theme.colors.twitarrNegativeButton}
           buttonText={'Reset'}

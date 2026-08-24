@@ -16,6 +16,7 @@ export const BoardgameGuideFAB = (props: BoardgameGuideFABProps) => {
       label={'Game Guide'}
       showLabel={props.showLabel}
       icon={AppIcons.games}
+      testID={'boardgameGuide-fab'}
     />
   );
 };

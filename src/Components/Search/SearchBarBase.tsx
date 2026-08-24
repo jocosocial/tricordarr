@@ -22,6 +22,9 @@ interface SearchBarBaseProps {
    */
   autoSearch?: boolean;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  autoCorrect?: boolean;
+  spellCheck?: boolean;
+  testID: string;
 }
 
 export const SearchBarBase = ({
@@ -34,6 +37,9 @@ export const SearchBarBase = ({
   style,
   autoSearch = false,
   autoCapitalize = 'none',
+  autoCorrect,
+  spellCheck,
+  testID,
 }: SearchBarBaseProps) => {
   const {commonStyles} = useStyles();
   const queryClient = useQueryClient();
@@ -151,6 +157,7 @@ export const SearchBarBase = ({
   return (
     <>
       <Searchbar
+        testID={testID}
         placeholder={placeholder}
         onIconPress={autoSearch ? undefined : onIconPress}
         onChangeText={onChangeSearch}
@@ -161,6 +168,8 @@ export const SearchBarBase = ({
         onClearIconPress={handleClear}
         style={styles.searchBar}
         autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        spellCheck={spellCheck}
       />
       {showHelp && <HelperText type={'error'}>{`Must enter >${minLength - 1} characters to search`}</HelperText>}
     </>

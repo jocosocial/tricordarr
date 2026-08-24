@@ -6,6 +6,7 @@ import {isIOS} from '#src/Libraries/Platform/Detection';
 
 interface UrlTextFieldProps {
   name: string;
+  testID: string;
   label: string;
   disabled?: boolean;
   onChangeText?: (value: string) => void;
@@ -20,11 +21,14 @@ export const UrlTextField = (props: UrlTextFieldProps) => {
   return (
     <TextField
       name={props.name}
+      testID={props.testID}
       label={props.label}
       disabled={props.disabled}
       onChangeText={props.onChangeText}
       viewStyle={props.viewStyle}
       autoCapitalize={'none'}
+      autoCorrect={false}
+      spellCheck={false}
       textContentType={'URL'}
       keyboardType={isIOS ? 'url' : 'default'}
     />

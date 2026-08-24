@@ -75,6 +75,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
   return (
     <View style={styles.view}>
       <SubmitIconButton
+        testID={'forumPostLike-button'}
         icon={LikeReaction}
         onPress={() => handleReaction(LikeType.like)}
         submitting={reactionMutation.isPending}
@@ -87,6 +88,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
       />
       <Text style={styles.text}>{data.likes.length}</Text>
       <SubmitIconButton
+        testID={'forumPostLaugh-button'}
         icon={LaughReaction}
         onPress={() => handleReaction(LikeType.laugh)}
         submitting={reactionMutation.isPending}
@@ -99,6 +101,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
       />
       <Text style={styles.text}>{data.laughs.length}</Text>
       <SubmitIconButton
+        testID={'forumPostLove-button'}
         icon={LoveReaction}
         onPress={() => handleReaction(LikeType.love)}
         submitting={reactionMutation.isPending}

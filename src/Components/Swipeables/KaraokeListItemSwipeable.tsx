@@ -49,6 +49,7 @@ export const KaraokeListItemSwipeable = ({
     if (!showLogButton) return null;
     return (
       <SwipeableButton
+        testID={'karaokeLog-button'}
         text={'Log'}
         iconName={AppIcons.karaokeLog}
         onPress={() => handleLog(swipeable)}

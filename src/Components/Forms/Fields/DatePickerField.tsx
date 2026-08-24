@@ -12,6 +12,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface DatePickerFieldProps {
   name: string;
+  testID: string;
   limitRange?: boolean;
   startYear?: number;
   endYear?: number;
@@ -22,6 +23,7 @@ interface DatePickerFieldProps {
 
 export const DatePickerField = ({
   name,
+  testID,
   limitRange = true,
   startYear,
   endYear,
@@ -76,6 +78,7 @@ export const DatePickerField = ({
   return (
     <View>
       <Button
+        testID={testID}
         disabled={disabled}
         buttonColor={theme.colors.background}
         textColor={theme.colors.onBackground}

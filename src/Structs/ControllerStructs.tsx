@@ -222,6 +222,10 @@ export namespace UserNotificationData {
     );
   };
 
+  /**
+   * Unread seamail threads plus chats the user was added to but has not yet viewed.
+   * Used by the Seamail bottom-tab badge (along with privileged-account counts).
+   */
   export const totalNewSeamail = (data?: UserNotificationData) => {
     if (!data) {
       return 0;

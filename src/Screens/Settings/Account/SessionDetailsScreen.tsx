@@ -102,6 +102,7 @@ export const SessionDetailsScreen = ({route, navigation}: Props) => {
         )}
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'delete-button'}
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Delete'}
             onPress={handleDelete}

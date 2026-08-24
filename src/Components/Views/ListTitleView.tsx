@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {MD3TypescaleKey} from 'react-native-paper/src/types';
@@ -10,27 +10,42 @@ interface ListTitleViewProps {
   title?: string;
   subtitle?: string;
   subtitleVariant?: keyof typeof MD3TypescaleKey;
+  icon?: React.ReactNode;
 }
 
 // @TODO dedupe with BaseWarningView
-export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall'}: ListTitleViewProps) => {
+export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall', icon}: ListTitleViewProps) => {
   const {commonStyles} = useStyles();
 
-  const styles = StyleSheet.create({
-    container: {
-      ...commonStyles.flexRow,
-      ...commonStyles.paddingVerticalSmall,
-      ...commonStyles.paddingHorizontal,
-      ...commonStyles.surfaceVariant,
-    },
-    innerContainer: {
-      ...commonStyles.alignItemsCenter,
-      ...commonStyles.flex,
-    },
-    text: {
-      ...commonStyles.onBackground,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          ...commonStyles.flexRow,
+          ...commonStyles.paddingVerticalSmall,
+          ...commonStyles.paddingHorizontal,
+          ...commonStyles.surfaceVariant,
+        },
+        innerContainer: {
+          ...commonStyles.alignItemsCenter,
+          ...commonStyles.flex,
+        },
+        titleRow: {
+          ...commonStyles.flexRow,
+          ...commonStyles.alignItemsCenter,
+          ...commonStyles.justifyCenter,
+          ...commonStyles.fullWidth,
+          ...commonStyles.gapSmall,
+        },
+        title: {
+          flexShrink: 1,
+        },
+        text: {
+          ...commonStyles.onBackground,
+        },
+      }),
+    [commonStyles],
+  );
 
   if (!title) {
     return null;
@@ -39,7 +54,16 @@ export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall'}: 
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <BoldText>{title}</BoldText>
+        {icon ? (
+          <View style={styles.titleRow}>
+            <View style={styles.title}>
+              <BoldText>{title}</BoldText>
+            </View>
+            {icon}
+          </View>
+        ) : (
+          <BoldText>{title}</BoldText>
+        )}
         {subtitle && (
           <Text style={styles.text} variant={subtitleVariant}>
             {subtitle}

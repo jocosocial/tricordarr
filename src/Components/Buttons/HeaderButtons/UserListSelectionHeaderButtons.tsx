@@ -85,6 +85,7 @@ export const UserListSelectionHeaderButtons = (props: UserListSelectionHeaderBut
             onPress={handleSeamail}
             disabled={disableButtons}
             style={disableButtons ? commonStyles.disabled : undefined}
+            testID={'userListSelectionSeamail-headerButton'}
           />
           <Item
             iconName={AppIcons.eventCreate}
@@ -92,6 +93,7 @@ export const UserListSelectionHeaderButtons = (props: UserListSelectionHeaderBut
             onPress={handleEvent}
             disabled={disableButtons}
             style={disableButtons ? commonStyles.disabled : undefined}
+            testID={'userListSelectionEvent-headerButton'}
           />
         </>
       )}
@@ -101,6 +103,7 @@ export const UserListSelectionHeaderButtons = (props: UserListSelectionHeaderBut
         onPress={handleRemove}
         disabled={disableButtons}
         style={disableButtons ? commonStyles.disabled : undefined}
+        testID={'userListSelectionRemove-headerButton'}
       />
     </MaterialHeaderButtons>
   );

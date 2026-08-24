@@ -1,15 +1,13 @@
 import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {View} from 'react-native';
-import {TextInput} from 'react-native-paper';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {SecureTextField} from '#src/Components/Forms/Fields/SecureTextField';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {UsernameTextField} from '#src/Components/Forms/Fields/UsernameTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {AppIcons} from '#src/Enums/Icons';
 import {PasswordValidation, UsernameValidation} from '#src/Libraries/ValidationSchema';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {LoginFormValues} from '#src/Types/FormValues';
@@ -42,18 +40,14 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting}) => (
         <View>
-          <TextField
+          <UsernameTextField
             viewStyle={styles.inputContainer}
-            name={'username'}
-            label={'Username'}
-            left={<TextInput.Icon icon={AppIcons.user} />}
-            autoCapitalize={'none'}
-            textContentType={'username'}
-            autoComplete={'username'}
+            testID={'loginUsername-input'}
             showErrorWithoutTouch={false}
           />
           <SecureTextField
             name={'password'}
+            testID={'loginPassword-input'}
             label={'Password'}
             textContentType={'password'}
             autoComplete={'password'}
@@ -65,8 +59,10 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={'Login'}
+            testID={'loginSubmit-button'}
           />
           <PrimaryActionButton
+            testID={'loginForgotPassword-button'}
             buttonText={'Forgot Password'}
             onPress={() => commonNavigation.push(CommonStackComponents.accountRecoveryScreen)}
             viewStyle={styles.buttonContainer}

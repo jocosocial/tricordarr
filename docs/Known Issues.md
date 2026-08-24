@@ -87,3 +87,11 @@ React keys must be passed directly to JSX without using spread:
 ```
 
 Unrecorded bug in https://github.com/obipawan/react-native-hyperlink. Patched in this repo.
+
+### Xcode build errors involving rsync
+
+```
+tricordarr/ios/rsync(96533):1:1 QBImagePicker.bundle/QBImagePicker.storyboardc/QBAlbumsNavigationController.nib: unlinkat: Directory not empty
+```
+
+Stale Xcode derived data. Delete everything in `~/Library/Developer/Xcode/DerivedData/` and rebuild in Xcode.
