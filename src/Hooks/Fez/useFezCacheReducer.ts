@@ -1,6 +1,8 @@
 import {InfiniteData, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
+import notifee from 'react-native-notify-kit';
 
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {FezType} from '#src/Enums/FezType';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
@@ -73,6 +75,7 @@ function listParamsIncludeFezType(params: Record<string, unknown> | undefined, f
  */
 export const useFezCacheReducer = () => {
   const queryClient = useQueryClient();
+  const {appConfig} = useConfig();
   const {startDate, endDate} = useCruise();
   const {tzAtTime} = useTimeZone();
 
@@ -552,6 +555,8 @@ export const useFezCacheReducer = () => {
   /**
    * Update readCount in all caches after viewing a fez. Local-only, no server call.
    * Sets readCount = postCount (fully read).
+   * When markReadCancelPush is enabled, also dismisses any displayed notification
+   * whose ID is this fez (Seamail, LFG, and Private Event notifications all use fezID).
    */
   const markRead = useCallback(
     (fezID: string) => {
@@ -561,8 +566,11 @@ export const useFezCacheReducer = () => {
       });
       updateFezInAllListCaches(fezID, readUpdater);
       updateFezDetailCache(fezID, readUpdater);
+      if (appConfig.markReadCancelPush) {
+        notifee.cancelDisplayedNotification(fezID);
+      }
     },
-    [updateFezInAllListCaches, updateFezDetailCache],
+    [appConfig.markReadCancelPush, updateFezInAllListCaches, updateFezDetailCache],
   );
 
   /**
