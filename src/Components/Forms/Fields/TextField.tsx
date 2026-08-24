@@ -29,6 +29,8 @@ export interface TextFieldProps {
   viewStyle?: StyleProp<ViewStyle>;
   inputMode?: RNInputModeOptions;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  autoCorrect?: boolean;
+  spellCheck?: boolean;
   maxLength?: number;
   onFocus?: () => void;
   keyboardType?: KeyboardTypeOptions;
@@ -123,6 +125,8 @@ export const TextField = ({
   viewStyle,
   inputMode,
   autoCapitalize,
+  autoCorrect,
+  spellCheck,
   maxLength,
   onFocus,
   keyboardType,
@@ -223,6 +227,8 @@ export const TextField = ({
         secureTextEntry={secureTextEntry}
         inputMode={inputMode}
         autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        spellCheck={spellCheck}
         maxLength={maxLength}
         onFocus={onFocus}
         style={[styles.textInput, innerTextStyle]}

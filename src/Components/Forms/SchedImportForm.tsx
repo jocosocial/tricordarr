@@ -4,8 +4,8 @@ import {View} from 'react-native';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {UrlTextField} from '#src/Components/Forms/Fields/UrlTextField';
+import {UsernameTextField} from '#src/Components/Forms/Fields/UsernameTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SchedImportFormValues} from '#src/Types/FormValues';
 
@@ -25,12 +25,7 @@ export const SchedImportForm = (props: SchedImportFormProps) => {
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <UrlTextField name={'schedUrl'} testID={'schedImportUrl-input'} label={'Sched URL'} />
-          <TextField
-            name={'username'}
-            testID={'schedImportUsername-input'}
-            label={'Sched.com Username'}
-            autoCapitalize={'none'}
-          />
+          <UsernameTextField testID={'schedImportUsername-input'} label={'Sched.com Username'} />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
             isLoading={isSubmitting}

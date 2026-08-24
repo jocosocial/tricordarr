@@ -8,6 +8,7 @@ import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionFi
 import {EmailTextField} from '#src/Components/Forms/Fields/EmailTextField';
 import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {UsernameTextField} from '#src/Components/Forms/Fields/UsernameTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {EmailValidation, RoomNumberValidation} from '#src/Libraries/ValidationSchema';
@@ -63,6 +64,8 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             testID={'userProfilePronouns-input'}
             label={'Pronouns'}
             autoCapitalize={'none'}
+            autoCorrect={false}
+            spellCheck={false}
           />
           <TextField
             viewStyle={styles.inputContainer}
@@ -79,12 +82,11 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             autoCapitalize={'words'}
             keyboardType={'numeric'}
           />
-          <TextField
+          <UsernameTextField
             viewStyle={styles.inputContainer}
             name={'discordUsername'}
             testID={'userProfileDiscord-input'}
             label={'Discord Username'}
-            autoCapitalize={'none'}
           />
           <PickerField
             viewStyle={styles.pickerContainer}

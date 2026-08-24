@@ -23,6 +23,8 @@ export const EmailTextField = (props: EmailTextFieldProps) => {
       label={props.label}
       viewStyle={props.viewStyle}
       autoCapitalize={'none'}
+      autoCorrect={false}
+      spellCheck={false}
       textContentType={'emailAddress'}
       autoComplete={'email'}
       keyboardType={isIOS ? 'email-address' : 'default'}

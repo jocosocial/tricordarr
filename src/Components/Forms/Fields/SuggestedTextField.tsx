@@ -34,6 +34,8 @@ export const SuggestedTextField = ({
   viewStyle,
   inputMode,
   autoCapitalize,
+  autoCorrect,
+  spellCheck,
   maxLength,
   suggestions = [],
   disabled,
@@ -100,6 +102,8 @@ export const SuggestedTextField = ({
             right={suggestionsIcon}
             inputMode={inputMode}
             autoCapitalize={autoCapitalize}
+            autoCorrect={autoCorrect}
+            spellCheck={spellCheck}
             maxLength={maxLength}
             onChangeText={onValueChange}
             value={field.value}

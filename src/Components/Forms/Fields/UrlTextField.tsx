@@ -27,6 +27,8 @@ export const UrlTextField = (props: UrlTextFieldProps) => {
       onChangeText={props.onChangeText}
       viewStyle={props.viewStyle}
       autoCapitalize={'none'}
+      autoCorrect={false}
+      spellCheck={false}
       textContentType={'URL'}
       keyboardType={isIOS ? 'url' : 'default'}
     />

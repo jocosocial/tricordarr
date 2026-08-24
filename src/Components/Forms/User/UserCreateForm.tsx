@@ -8,6 +8,7 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {SecureTextField} from '#src/Components/Forms/Fields/SecureTextField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {UsernameTextField} from '#src/Components/Forms/Fields/UsernameTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PasswordValidation, RecoveryKeyValidation, UsernameValidation} from '#src/Libraries/ValidationSchema';
@@ -51,20 +52,16 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
             label={'Registration Code'}
             left={<TextInput.Icon icon={AppIcons.registrationCode} />}
             autoCapitalize={'characters'}
+            autoCorrect={false}
+            spellCheck={false}
             maxLength={7}
             textContentType={'oneTimeCode'}
             autoComplete={'off'}
             showErrorWithoutTouch={false}
           />
-          <TextField
+          <UsernameTextField
             viewStyle={styles.inputContainer}
-            name={'username'}
             testID={'registerUsername-input'}
-            label={'Username'}
-            left={<TextInput.Icon icon={AppIcons.user} />}
-            autoCapitalize={'none'}
-            textContentType={'username'}
-            autoComplete={'username-new'}
             showErrorWithoutTouch={false}
           />
           <SecureTextField

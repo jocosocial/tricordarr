@@ -22,6 +22,8 @@ interface SearchBarBaseProps {
    */
   autoSearch?: boolean;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  autoCorrect?: boolean;
+  spellCheck?: boolean;
   testID: string;
 }
 
@@ -35,6 +37,8 @@ export const SearchBarBase = ({
   style,
   autoSearch = false,
   autoCapitalize = 'none',
+  autoCorrect,
+  spellCheck,
   testID,
 }: SearchBarBaseProps) => {
   const {commonStyles} = useStyles();
@@ -164,6 +168,8 @@ export const SearchBarBase = ({
         onClearIconPress={handleClear}
         style={styles.searchBar}
         autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        spellCheck={spellCheck}
       />
       {showHelp && <HelperText type={'error'}>{`Must enter >${minLength - 1} characters to search`}</HelperText>}
     </>

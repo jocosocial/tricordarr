@@ -50,7 +50,14 @@ export const ShadowPerformerForm = ({initialValues, onSubmit, buttonText = 'Crea
             imageData={initialValues.photo}
           />
           <TextField name={'name'} testID={'performerName-input'} label={'Name'} autoCapitalize={'words'} />
-          <TextField name={'pronouns'} testID={'performerPronouns-input'} label={'Pronouns'} autoCapitalize={'none'} />
+          <TextField
+            name={'pronouns'}
+            testID={'performerPronouns-input'}
+            label={'Pronouns'}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            spellCheck={false}
+          />
           <TextField
             name={'organization'}
             testID={'performerOrganization-input'}
