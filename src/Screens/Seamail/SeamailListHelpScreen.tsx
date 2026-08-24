@@ -15,8 +15,10 @@ export const SeamailListHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
-            The seamail list screen shows all your seamail conversations. You can browse, search, and filter your
-            conversations from here.
+            The seamail list screen shows all chats you have joined: Seamail conversations, private event chats, and
+            joined LFGs. You can browse, search, and filter your conversations from here. Creating a new Seamail still
+            uses the button on this screen. Browse and create LFGs in the LFG tab, and create private events from the
+            Schedule.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Floating Action Button'}>
@@ -27,14 +29,21 @@ export const SeamailListHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'List Item Actions'}>
           <SelectionHelpTopicView />
+          <HelpTopicView>
+            Swipe a conversation left to mute it or mark it as read. This works for Seamail, private event, and LFG
+            chats in the list.
+          </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
-          <HelpTopicView title={'Filter Unread'} icon={AppIcons.seamailUnread}>
-            Toggle to show only unread seamail conversations. Press the button again to show all conversations.
-          </HelpTopicView>
           <HelpTopicView title={'Search'} icon={AppIcons.search}>
-            Search for seamail conversations by keyword. This will search the subject line and the content of the
-            messages.
+            Search your joined chats by keyword. This will search the subject line and the content of the messages.
+            Search uses the same type filter as the list.
+          </HelpTopicView>
+          <HelpTopicView title={'Filter'} icon={AppIcons.filter}>
+            Filter chats by unread messages or by type (Seamail, Private Event, LFG). Nothing is selected by default,
+            which shows all joined chats. Unread is separated from the type options in the menu. Selecting a type
+            restricts the list to that type; you can select more than one. The filter icon is highlighted when a filter
+            is active. Long press the filter button to clear all filters.
           </HelpTopicView>
           <HelpTopicView title={'Settings'} icon={AppIcons.settings}>
             Access seamail settings to configure notification preferences and other options.

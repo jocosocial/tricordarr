@@ -224,7 +224,8 @@ export namespace UserNotificationData {
 
   /**
    * Unread seamail threads plus chats the user was added to but has not yet viewed.
-   * Used by the Seamail bottom-tab badge (along with privileged-account counts).
+   * Combined with LFG and private-event chat unreads for the Seamail bottom-tab badge
+   * (along with privileged-account counts).
    */
   export const totalNewSeamail = (data?: UserNotificationData) => {
     if (!data) {

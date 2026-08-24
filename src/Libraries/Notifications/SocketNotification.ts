@@ -139,7 +139,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
       title = 'Added to Private Event';
-      url = `/privateevent/${notificationData.contentID}`;
+      url = `/privateevent/${notificationData.contentID}/chat`;
       break;
     case NotificationTypeData.addedToLFG:
       channel = lfgChannel;
@@ -169,7 +169,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
       title = 'New Private Event Message';
-      url = `/privateevent/${notificationData.contentID}`;
+      url = `/privateevent/${notificationData.contentID}/chat`;
       break;
     default:
       logger.warn(`Ignoring event of type ${notificationType}`);

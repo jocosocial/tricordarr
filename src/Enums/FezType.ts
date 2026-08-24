@@ -31,6 +31,12 @@ export enum FezType {
   privateEvent = 'privateEvent',
 }
 
+export enum FezChatCategory {
+  seamail = 'seamail',
+  privateEvent = 'privateEvent',
+  lfg = 'lfg',
+}
+
 export namespace FezType {
   export const getLabel = (fezType?: FezType) => {
     switch (fezType) {
@@ -106,5 +112,48 @@ export namespace FezType {
     // Default is gonna be Seamail. MainHelp isn't part of Common and I'm not sure
     // yet if I want to do that just for this.
     return CommonStackComponents.seamailHelpScreen;
+  };
+
+  export const getChatScreen = (fezType: FezType) => {
+    if (FezType.isLFGType(fezType)) {
+      return CommonStackComponents.lfgChatScreen;
+    } else if (fezType === FezType.privateEvent) {
+      return CommonStackComponents.privateEventChatScreen;
+    }
+    return CommonStackComponents.seamailChatScreen;
+  };
+
+  /// Joined-chat types shown in the Seamail inbox. Personal Events have no chat.
+  export const chatTypes: FezType[] = [...seamailTypes, FezType.privateEvent, ...lfgTypes];
+
+  export const chatCategories: FezChatCategory[] = [
+    FezChatCategory.seamail,
+    FezChatCategory.privateEvent,
+    FezChatCategory.lfg,
+  ];
+
+  export const getChatCategoryLabel = (category: FezChatCategory) => {
+    switch (category) {
+      case FezChatCategory.seamail:
+        return 'Seamail';
+      case FezChatCategory.privateEvent:
+        return 'Private Event';
+      case FezChatCategory.lfg:
+        return 'LFG';
+    }
+  };
+
+  export const fezTypesForChatCategories = (categories: FezChatCategory[]): FezType[] => {
+    const types: FezType[] = [];
+    if (categories.includes(FezChatCategory.seamail)) {
+      types.push(...seamailTypes);
+    }
+    if (categories.includes(FezChatCategory.privateEvent)) {
+      types.push(FezType.privateEvent);
+    }
+    if (categories.includes(FezChatCategory.lfg)) {
+      types.push(...lfgTypes);
+    }
+    return types.length > 0 ? types : chatTypes;
   };
 }

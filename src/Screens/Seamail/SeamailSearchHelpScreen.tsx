@@ -14,8 +14,9 @@ export const SeamailSearchHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
-            The seamail search screen allows you to search through all your seamail conversations by keyword. Search
-            results will include conversations where the search term appears in the subject line or message content.
+            The search screen allows you to search through all your joined chats by keyword: Seamail, private event, and
+            LFG conversations. Search results will include conversations where the search term appears in the subject
+            line or message content. Results use the same type filter as the Seamail list.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Search'}>

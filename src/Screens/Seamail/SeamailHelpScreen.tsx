@@ -16,13 +16,14 @@ export const SeamailHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
-            Seamail: It's like email, but at sea. Use them to send private messages to other users.
+            Seamail: It's like email, but at sea. Use them to send private messages to other users. The Seamail tab
+            also lists chats for private events you are invited to and LFGs you have joined.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Screens'} noMargin={true}>
           <DataFieldListItem
             title={'List (Default)'}
-            description={'Browse and manage your seamail conversations.'}
+            description={'Browse and manage your joined chats, including Seamail, private events, and LFGs.'}
             icon={AppIcons.seamail}
             onPress={() => commonNavigation.push(CommonStackComponents.seamailListHelpScreen)}
           />
@@ -34,7 +35,7 @@ export const SeamailHelpScreen = () => {
           />
           <DataFieldListItem
             title={'Search'}
-            description={'Search your seamail conversations by keyword.'}
+            description={'Search your joined chats by keyword.'}
             icon={AppIcons.search}
             onPress={() => commonNavigation.push(CommonStackComponents.seamailSearchHelpScreen)}
           />

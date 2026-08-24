@@ -82,6 +82,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           screens: {
             SeamailListScreen: getPath(ChatStackScreenComponents.seamailListScreen),
             SeamailChatScreen: getPath(CommonStackComponents.seamailChatScreen),
+            PrivateEventChatScreen: getPath(CommonStackComponents.privateEventChatScreen),
             KrakenTalkReceiveScreen: getPath(ChatStackScreenComponents.krakenTalkReceiveScreen),
           },
         }),

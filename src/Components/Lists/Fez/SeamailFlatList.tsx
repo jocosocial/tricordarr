@@ -6,7 +6,7 @@ import {Divider} from 'react-native-paper';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
-import {SeamailListItem} from '#src/Components/Lists/Items/SeamailListItem';
+import {FezChatListItem} from '#src/Components/Lists/Items/FezChatListItem';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {FezData} from '#src/Structs/ControllerStructs';
 
@@ -21,7 +21,7 @@ interface SeamailFlatListProps {
 }
 
 /**
- * A list of Seamail conversations. There are no previous pages.
+ * A list of joined Fez chats (Seamail, private events, and LFGs). There are no previous pages.
  */
 export const SeamailFlatList = (props: SeamailFlatListProps) => {
   const flatListRef = useRef<FlashListRef<FezData>>(null);
@@ -42,7 +42,7 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
 
   const renderItem = useCallback(
     ({item}: {item: FezData}) => (
-      <SeamailListItem
+      <FezChatListItem
         // I don't remember why we needed the mute state in the key.
         // I have a suspicion it was with all the panel background crap
         // that boiled down to having the wrong backgroundColor set.

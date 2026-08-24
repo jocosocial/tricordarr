@@ -20,6 +20,10 @@ import {contentNotificationCategories} from '#src/Libraries/Notifications/Conten
 const chatNotificationCategories = [
   contentNotificationCategories.seamailUnreadMsg,
   contentNotificationCategories.addedToSeamail,
+  contentNotificationCategories.fezUnreadMsg,
+  contentNotificationCategories.addedToLFG,
+  contentNotificationCategories.privateEventUnreadMsg,
+  contentNotificationCategories.addedToPrivateEvent,
   contentNotificationCategories.incomingPhoneCall,
   contentNotificationCategories.phoneCallAnswered,
   contentNotificationCategories.phoneCallEnded,

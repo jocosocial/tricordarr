@@ -24,6 +24,8 @@ export const BottomTabNavigator = () => {
 
   const getChatBadgeCount = useCallback(() => {
     let count = UserNotificationData.totalNewSeamail(userNotificationData);
+    count += UserNotificationData.totalNewLFG(userNotificationData);
+    count += UserNotificationData.totalNewPrivateEvent(userNotificationData);
     if (userNotificationData?.moderatorData?.newModeratorSeamailMessageCount) {
       count += userNotificationData.moderatorData.newModeratorSeamailMessageCount;
     }
@@ -93,7 +95,6 @@ export const BottomTabNavigator = () => {
         options={{
           title: 'Schedule',
           tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.eventsActive : AppIcons.events),
-          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newPrivateEventMessageCount),
         }}
       />
     </Tab.Navigator>

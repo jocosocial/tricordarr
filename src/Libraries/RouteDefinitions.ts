@@ -67,6 +67,7 @@ export const allRoutes: RouteDefinition[] = [
   // ==================== Seamail Tab Routes ====================
   {screen: ChatStackScreenComponents.seamailListScreen, path: 'seamail'},
   {screen: CommonStackComponents.seamailChatScreen, path: 'seamail/:fezID'},
+  {screen: CommonStackComponents.privateEventChatScreen, path: 'privateevent/:fezID/chat'},
   {
     screen: ChatStackScreenComponents.krakenTalkReceiveScreen,
     path: 'phonecall/:callID/from/:callerUserID/:callerUsername',
@@ -109,6 +110,7 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.lfgScreen,
     // Seamail routes
     CommonStackComponents.seamailChatScreen,
+    CommonStackComponents.privateEventChatScreen,
     // User routes
     CommonStackComponents.userProfileScreen,
     CommonStackComponents.usernameProfileScreen,

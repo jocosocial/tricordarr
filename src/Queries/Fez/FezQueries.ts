@@ -91,29 +91,6 @@ export const useLfgListQuery = ({
   });
 };
 
-export const useSeamailListQuery = ({
-  cruiseDay,
-  hidePast,
-  endpoint = 'joined',
-  options,
-  onlyNew,
-  search,
-  matchID,
-  forUser,
-}: FezListQueryOptions) => {
-  return useFezListQuery({
-    cruiseDay,
-    fezType: FezType.seamailTypes,
-    hidePast,
-    endpoint,
-    options,
-    onlyNew,
-    search,
-    matchID,
-    forUser,
-  });
-};
-
 export const usePersonalEventsQuery = ({
   cruiseDay,
   excludeFezType,

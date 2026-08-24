@@ -67,6 +67,7 @@ LoggedInScreen
 - Mutating items: call `onClose` in mutation `onSettled`
 - Toggle / Navigation items: NO `onClose`
 - Action items (e.g. Share): MUST provide `onClose`
+- Order (from right): three-dots menu, filter, search, any other special actions
 
 ## Queries / Mutations
 
@@ -77,6 +78,7 @@ LoggedInScreen
 
 - NEVER disable ESLint validation such as `eslint-disable-next-line react-hooks/exhaustive-deps`
 - Do not remove comments unless they are no longer relevant or are being updated
+- New or altered functions must have docstrings. Omitting props is OK.
 
 ## Lists
 

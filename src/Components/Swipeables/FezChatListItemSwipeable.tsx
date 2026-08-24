@@ -11,12 +11,12 @@ import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
-interface SeamailListItemSwipeableProps extends PropsWithChildren {
+interface FezChatListItemSwipeableProps extends PropsWithChildren {
   fez: FezData;
   enabled?: boolean;
 }
 
-export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) => {
+export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) => {
   const {theme} = useAppTheme();
   const muteMutation = useFezMuteMutation();
   const {refetch} = useFezQuery({fezID: props.fez.fezID, options: {enabled: false}});
