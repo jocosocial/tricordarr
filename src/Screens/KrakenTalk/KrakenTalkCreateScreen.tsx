@@ -138,6 +138,7 @@ const KrakenTalkCreateScreenInner = ({route, navigation}: Props) => {
       <ScrollingContentView>
         <PaddedContentView>
           <UserMatchSearchBar
+            testID={'krakenTalkCreateUser-input'}
             excludeHeaders={excludeHeaders}
             label={'Search for a user to call'}
             onPress={handleInitiateCall}

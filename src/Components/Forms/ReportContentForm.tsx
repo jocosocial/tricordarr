@@ -34,6 +34,7 @@ export const ReportContentForm = ({onSubmit}: ReportContentFormProps) => {
           <TextField
             viewStyle={styles.inputContainer}
             name={'message'}
+            testID={'reportMessage-input'}
             label={'Additional Information'}
             multiline={true}
             numberOfLines={3}
@@ -46,6 +47,7 @@ export const ReportContentForm = ({onSubmit}: ReportContentFormProps) => {
             isLoading={isSubmitting}
             disabled={isSubmitting}
             viewStyle={styles.buttonContainer}
+            testID={'reportSubmit-button'}
           />
         </View>
       )}

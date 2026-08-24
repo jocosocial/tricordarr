@@ -232,6 +232,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
             <View>
               <BooleanField
                 name={'enableBackgroundWorker'}
+                testID={'enableBackgroundWorker-switch'}
                 label={'Enable Background Worker'}
                 onPress={handleEnable}
                 style={commonStyles.paddingHorizontalSmall}
@@ -241,6 +242,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
               />
               <SliderField
                 name={'fgsWorkerHealthTimer'}
+                testID={'fgsWorkerHealthTimer-slider'}
                 label={'Healthcheck Interval'}
                 value={fgsHealthTime}
                 minimumValue={10}
@@ -265,6 +267,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
             disabled={preRegistrationMode}
           />
           <PrimaryActionButton
+            testID={'resetToDefaultNetworks-button'}
             disabled={
               (appConfig.wifiNetworkNames?.length === 1 && appConfig.wifiNetworkNames[0] === data?.shipWifiSSID) ||
               preRegistrationMode
@@ -324,6 +327,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
         })()}
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
+            testID={'reconfigureProvider-button'}
             buttonText={'Reconfigure Provider'}
             onPress={handleSetupManager}
             disabled={!tokenData || preRegistrationMode}

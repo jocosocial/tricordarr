@@ -18,6 +18,7 @@ export const DayPlannerFAB = ({selectedDay}: DayPlannerFABProps) => {
       label={'Day Planner'}
       showLabel={true}
       onPress={() => navigation.push(CommonStackComponents.scheduleDayPlannerScreen, {cruiseDay: selectedDay})}
+      testID={'dayPlanner-fab'}
     />
   );
 };

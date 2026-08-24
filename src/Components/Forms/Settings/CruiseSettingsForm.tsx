@@ -35,16 +35,32 @@ export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
         <View>
           <DirtyDetectionField />
           <View style={[commonStyles.paddingVertical]}>
-            <DatePickerField name={'startDate'} limitRange={false} disabled={props.disabled} />
+            <DatePickerField
+              name={'startDate'}
+              testID={'cruiseStartDate-button'}
+              limitRange={false}
+              disabled={props.disabled}
+            />
           </View>
           <TextField
             name={'cruiseLength'}
+            testID={'cruiseLength-input'}
             label={'Cruise Length (in days)'}
             keyboardType={'number-pad'}
             disabled={props.disabled}
           />
-          <TextField name={'portTimeZoneID'} label={'Port Time Zone ID'} disabled={props.disabled} />
-          <TextField name={'schedBaseUrl'} label={'Sched Base Url'} disabled={props.disabled} />
+          <TextField
+            name={'portTimeZoneID'}
+            testID={'cruisePortTimeZone-input'}
+            label={'Port Time Zone ID'}
+            disabled={props.disabled}
+          />
+          <TextField
+            name={'schedBaseUrl'}
+            testID={'cruiseSchedUrl-input'}
+            label={'Sched Base Url'}
+            disabled={props.disabled}
+          />
           {!props.disabled && (
             <PrimaryActionButton
               disabled={!isValid || isSubmitting || !dirty || props.disabled}
@@ -52,6 +68,7 @@ export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
               viewStyle={commonStyles.marginTopSmall}
               onPress={handleSubmit}
               buttonText={'Save'}
+              testID={'cruiseSettingsSave-button'}
             />
           )}
         </View>

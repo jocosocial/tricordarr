@@ -18,6 +18,7 @@ import {RNInputModeOptions} from '#src/Types';
 
 export interface TextFieldProps {
   name: string;
+  testID: string;
   mode?: 'flat' | 'outlined' | undefined;
   multiline?: boolean;
   numberOfLines?: number;
@@ -111,6 +112,7 @@ export interface TextFieldProps {
 // @TODO make this type-generic
 export const TextField = ({
   name,
+  testID,
   mode = 'outlined',
   multiline = false,
   numberOfLines = 1,
@@ -204,6 +206,7 @@ export const TextField = ({
   return (
     <View style={viewStyle}>
       <TextInput
+        testID={testID}
         keyboardType={keyboardType}
         textColor={disabled || isSubmitting ? theme.colors.onSurfaceDisabled : theme.colors.onBackground} // @TODO this isnt working
         label={label}

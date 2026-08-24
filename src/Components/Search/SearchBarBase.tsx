@@ -22,6 +22,7 @@ interface SearchBarBaseProps {
    */
   autoSearch?: boolean;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  testID: string;
 }
 
 export const SearchBarBase = ({
@@ -34,6 +35,7 @@ export const SearchBarBase = ({
   style,
   autoSearch = false,
   autoCapitalize = 'none',
+  testID,
 }: SearchBarBaseProps) => {
   const {commonStyles} = useStyles();
   const queryClient = useQueryClient();
@@ -151,6 +153,7 @@ export const SearchBarBase = ({
   return (
     <>
       <Searchbar
+        testID={testID}
         placeholder={placeholder}
         onIconPress={autoSearch ? undefined : onIconPress}
         onChangeText={onChangeSearch}

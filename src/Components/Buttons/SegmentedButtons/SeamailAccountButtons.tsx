@@ -31,6 +31,7 @@ export const SeamailAccountButtons = () => {
         label: 'Moderator',
         icon: moderatorIcon,
         onPress: () => becomeUser(PrivilegedUserAccounts.moderator),
+        testID: 'seamailAccountModerator-button',
       });
     }
 
@@ -43,6 +44,7 @@ export const SeamailAccountButtons = () => {
         label: 'TwitarrTeam',
         icon: twitarrTeamIcon,
         onPress: () => becomeUser(PrivilegedUserAccounts.TwitarrTeam),
+        testID: 'seamailAccountTwitarrTeam-button',
       });
     }
 
@@ -55,6 +57,7 @@ export const SeamailAccountButtons = () => {
         label: profilePublicData.header.username,
         icon: userNotificationData?.newSeamailMessageCount ? AppIcons.notificationShow : AppIcons.user,
         onPress: () => clearElevation(),
+        testID: 'seamailAccountSelf-button',
       });
     }
 

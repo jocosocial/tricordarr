@@ -49,16 +49,19 @@ export const LfgSettingsScreen = () => {
       value: 'open',
       label: 'Find',
       icon: AppIcons.lfgFind,
+      testID: 'lfgSettingsDefaultFind-button',
     },
     {
       value: 'joined',
       label: 'Joined',
       icon: AppIcons.lfgJoined,
+      testID: 'lfgSettingsDefaultJoined-button',
     },
     {
       value: 'owner',
       label: 'Owned',
       icon: AppIcons.lfgOwned,
+      testID: 'lfgSettingsDefaultOwned-button',
     },
   ];
 
@@ -113,6 +116,7 @@ export const LfgSettingsScreen = () => {
                 <ListSubheader>General</ListSubheader>
                 <BooleanField
                   name={'hidePastLfgs'}
+                  testID={'hidePastLfgs-switch'}
                   label={'Hide Past LFGs by Default'}
                   onPress={handleHidePastLfgs}
                   style={commonStyles.paddingHorizontalSmall}
@@ -137,6 +141,7 @@ export const LfgSettingsScreen = () => {
                 <BooleanField
                   key={contentNotificationCategories.fezUnreadMsg.configKey}
                   name={contentNotificationCategories.fezUnreadMsg.configKey}
+                  testID={`${contentNotificationCategories.fezUnreadMsg.configKey}-switch`}
                   label={contentNotificationCategories.fezUnreadMsg.title}
                   value={appConfig.pushNotifications.fezUnreadMsg}
                   onPress={() => toggleValue(contentNotificationCategories.fezUnreadMsg.configKey)}
@@ -147,6 +152,7 @@ export const LfgSettingsScreen = () => {
                 <BooleanField
                   key={contentNotificationCategories.joinedLFGStarting.configKey}
                   name={contentNotificationCategories.joinedLFGStarting.configKey}
+                  testID={`${contentNotificationCategories.joinedLFGStarting.configKey}-switch`}
                   label={contentNotificationCategories.joinedLFGStarting.title}
                   value={appConfig.pushNotifications.joinedLFGStarting}
                   onPress={() => toggleValue(contentNotificationCategories.joinedLFGStarting.configKey)}
@@ -157,6 +163,7 @@ export const LfgSettingsScreen = () => {
                 <BooleanField
                   key={contentNotificationCategories.addedToLFG.configKey}
                   name={contentNotificationCategories.addedToLFG.configKey}
+                  testID={`${contentNotificationCategories.addedToLFG.configKey}-switch`}
                   label={contentNotificationCategories.addedToLFG.title}
                   value={appConfig.pushNotifications.addedToLFG}
                   onPress={() => toggleValue(contentNotificationCategories.addedToLFG.configKey)}
@@ -167,6 +174,7 @@ export const LfgSettingsScreen = () => {
                 <BooleanField
                   key={contentNotificationCategories.lfgCanceled.configKey}
                   name={contentNotificationCategories.lfgCanceled.configKey}
+                  testID={`${contentNotificationCategories.lfgCanceled.configKey}-switch`}
                   label={contentNotificationCategories.lfgCanceled.title}
                   value={appConfig.pushNotifications.lfgCanceled}
                   onPress={() => toggleValue(contentNotificationCategories.lfgCanceled.configKey)}

@@ -47,6 +47,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
           <TextField
             viewStyle={styles.inputContainer}
             name={'verification'}
+            testID={'registerVerification-input'}
             label={'Registration Code'}
             left={<TextInput.Icon icon={AppIcons.registrationCode} />}
             autoCapitalize={'characters'}
@@ -58,6 +59,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
           <TextField
             viewStyle={styles.inputContainer}
             name={'username'}
+            testID={'registerUsername-input'}
             label={'Username'}
             left={<TextInput.Icon icon={AppIcons.user} />}
             autoCapitalize={'none'}
@@ -67,6 +69,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
           />
           <SecureTextField
             name={'password'}
+            testID={'registerPassword-input'}
             label={'Password'}
             textContentType={'newPassword'}
             autoComplete={'password-new'}
@@ -74,6 +77,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
           />
           <SecureTextField
             name={'passwordVerify'}
+            testID={'registerPasswordVerify-input'}
             label={'Verify Password'}
             textContentType={'newPassword'}
             autoComplete={'password-new'}
@@ -92,6 +96,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={'Create'}
+            testID={'registerSubmit-button'}
           />
         </View>
       )}

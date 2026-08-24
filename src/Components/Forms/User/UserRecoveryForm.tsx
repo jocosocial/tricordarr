@@ -44,6 +44,7 @@ export const UserRecoveryForm = ({onSubmit}: UserCreateFormProps) => {
           <TextField
             viewStyle={styles.inputContainer}
             name={'verification'}
+            testID={'recoveryVerification-input'}
             label={'Verification'}
             left={<TextInput.Icon icon={AppIcons.registrationCode} />}
             autoCapitalize={'none'}
@@ -54,12 +55,13 @@ export const UserRecoveryForm = ({onSubmit}: UserCreateFormProps) => {
           <TextField
             viewStyle={styles.inputContainer}
             name={'username'}
+            testID={'recoveryUsername-input'}
             label={'Username'}
             left={<TextInput.Icon icon={AppIcons.user} />}
             autoCapitalize={'none'}
           />
-          <SecureTextField name={'password'} label={'New Password'} />
-          <SecureTextField name={'passwordVerify'} label={'Verify Password'} />
+          <SecureTextField name={'password'} testID={'recoveryPassword-input'} label={'New Password'} />
+          <SecureTextField name={'passwordVerify'} testID={'recoveryPasswordVerify-input'} label={'Verify Password'} />
           <PrimaryActionButton
             disabled={
               !values.username ||
@@ -73,6 +75,7 @@ export const UserRecoveryForm = ({onSubmit}: UserCreateFormProps) => {
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={'Reset'}
+            testID={'recoverySubmit-button'}
           />
         </View>
       )}

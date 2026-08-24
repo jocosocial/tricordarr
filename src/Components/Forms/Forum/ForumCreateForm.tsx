@@ -50,10 +50,11 @@ const InnerForm = ({onValidationChange}: InnerFormProps) => {
   return (
     <PaddedContentView>
       <DirtyDetectionField />
-      <TextField name={'title'} label={'Title'} />
+      <TextField name={'title'} testID={'forumCreateTitle-input'} label={'Title'} />
       {hasModerator && (
         <BooleanField
           name={'postAsModerator'}
+          testID={'forumCreateAsModerator-switch'}
           label={'Post as Moderator'}
           icon={AppIcons.moderator}
           helperText={'This will also create the forum as the Moderator user.'}
@@ -62,6 +63,7 @@ const InnerForm = ({onValidationChange}: InnerFormProps) => {
       {hasTwitarrTeam && (
         <BooleanField
           name={'postAsTwitarrTeam'}
+          testID={'forumCreateAsTwitarrTeam-switch'}
           label={'Post as TwitarrTeam'}
           icon={AppIcons.twitarteam}
           helperText={'This will also create the forum as the TwitarrTeam user.'}

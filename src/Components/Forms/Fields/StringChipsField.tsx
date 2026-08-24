@@ -9,6 +9,7 @@ import {AppIcons} from '#src/Enums/Icons';
 
 interface StringChipsFieldProps {
   name: string;
+  testID: string;
   label?: string;
   helperText?: string;
   onAddValue?: () => void;
@@ -18,6 +19,7 @@ interface StringChipsFieldProps {
 }
 export const StringChipsField = ({
   name,
+  testID,
   label,
   helperText,
   onAddValue,
@@ -85,6 +87,7 @@ export const StringChipsField = ({
       <View style={styles.inputContainer}>
         <View style={styles.fieldContainer}>
           <TextInput
+            testID={testID}
             mode={'outlined'}
             inputMode={'text'}
             keyboardType={'default'}
@@ -98,6 +101,7 @@ export const StringChipsField = ({
         </View>
         <View style={styles.buttonContainer}>
           <IconButton
+            testID={testID.replace(/-input$/, 'Add-button')}
             mode={'contained'}
             iconColor={theme.colors.onBackground}
             disabled={!inputValue || disabled}

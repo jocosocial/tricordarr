@@ -29,6 +29,7 @@ export const NotificationPollingSettingsForm = (props: NotificationPollingSettin
         <View>
           <BooleanField
             name={'enableNotificationPolling'}
+            testID={'notificationPollingEnable-switch'}
             label={'Enable Notification Polling'}
             helperText={
               'Enable periodic notification data polling. This functionality is redundant with the WebSockets and Background Worker, but exists in the event those perform poorly.'
@@ -43,6 +44,7 @@ export const NotificationPollingSettingsForm = (props: NotificationPollingSettin
             unit={'minute'}
             label={'Poll Interval'}
             name={'notificationPollIntervalMinutes'}
+            testID={'notificationPollingInterval-slider'}
             helperText={'Minutes between automatic refreshing of notification information from the server.'}
           />
           <PrimaryActionButton
@@ -51,6 +53,7 @@ export const NotificationPollingSettingsForm = (props: NotificationPollingSettin
             viewStyle={commonStyles.marginTopSmall}
             onPress={handleSubmit}
             buttonText={'Save'}
+            testID={'notificationPollingSave-button'}
           />
         </View>
       )}

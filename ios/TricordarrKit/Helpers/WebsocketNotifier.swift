@@ -374,7 +374,7 @@ public class WebsocketNotifier: NSObject {
 
 		if sendNotification {
 			Notifications.generateContentNotification(
-				UUID(),
+				socketNotification.contentID,
 				title: title,
 				body: socketNotification.info,
 				type: socketNotification.type,

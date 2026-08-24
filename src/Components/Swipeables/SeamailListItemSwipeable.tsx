@@ -73,6 +73,7 @@ export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) =
     return (
       <>
         <SwipeableButton
+          testID={'seamailMute-button'}
           text={props.fez.members?.isMuted ? 'Unmute' : 'Mute'}
           iconName={props.fez.members?.isMuted ? AppIcons.unmute : AppIcons.mute}
           style={{backgroundColor: theme.colors.elevation.level2}}
@@ -80,6 +81,7 @@ export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) =
           refreshing={muteRefreshing}
         />
         <SwipeableButton
+          testID={'seamailRead-button'}
           text={'Read'}
           iconName={AppIcons.markAsRead}
           onPress={() => handleMarkAsRead(swipeable)}

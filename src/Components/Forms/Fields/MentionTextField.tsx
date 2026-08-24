@@ -9,6 +9,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface MentionTextFieldProps {
   name: string;
+  testID: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -106,6 +107,7 @@ export const MentionTextField = (props: MentionTextFieldProps) => {
     <>
       {mentionTriggerProps && <ContentPostMentionSuggestionsView {...mentionTriggerProps} />}
       <TextInput
+        testID={props.testID}
         ref={textInputRef}
         // The textInputProps provides onChangeText and onSelectionChange.
         {...textInputProps}

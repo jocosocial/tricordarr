@@ -151,6 +151,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
           <>
             <PaddedContentView>
               <PrimaryActionButton
+                testID={'viewEditPerformerProfile-button'}
                 buttonText={'View/Edit Performer Profile'}
                 buttonColor={theme.colors.twitarrPositiveButton}
                 onPress={() => {
@@ -164,6 +165,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
             </PaddedContentView>
             <PaddedContentView>
               <PrimaryActionButton
+                testID={'deletePerformerProfile-button'}
                 buttonText={'Delete Performer Profile'}
                 buttonColor={theme.colors.twitarrNegativeButton}
                 onPress={onDeleteProfile}
@@ -184,6 +186,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
             <PaddedContentView>
               {!alreadyAttached && (
                 <PrimaryActionButton
+                  testID={'attachtoEvent-button'}
                   buttonText={'Attach to Event'}
                   buttonColor={theme.colors.twitarrNeutralButton}
                   onPress={onAttach}
@@ -199,6 +202,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
             </PaddedContentView>
             <PaddedContentView>
               <PrimaryActionButton
+                testID={'createProfile-button'}
                 buttonText={'Create Profile'}
                 buttonColor={theme.colors.twitarrPositiveButton}
                 onPress={() =>

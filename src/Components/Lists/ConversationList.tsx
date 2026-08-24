@@ -153,7 +153,9 @@ export const ConversationList = <TItem,>({
         initialScrollIndex={initialScrollIndex}
         style={style}
       />
-      {effectiveScrollButton && showScrollButton && <FloatingScrollButton onPress={handleScrollButtonPress} />}
+      {effectiveScrollButton && showScrollButton && (
+        <FloatingScrollButton testID={'conversationScroll-button'} onPress={handleScrollButtonPress} />
+      )}
     </View>
   );
 };

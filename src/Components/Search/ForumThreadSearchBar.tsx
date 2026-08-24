@@ -119,7 +119,13 @@ export const ForumThreadSearchBar = (props: Props) => {
 
   return (
     <>
-      <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} onClear={onClear} />
+      <SearchBarBase
+        testID={'forumThreadSearch-input'}
+        searchQuery={searchQuery}
+        onSearch={onSearch}
+        onChangeSearch={onChangeSearch}
+        onClear={onClear}
+      />
       <View style={[commonStyles.flex]}>
         <ForumThreadList
           refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />}

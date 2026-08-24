@@ -86,6 +86,7 @@ export const PhotostreamImageCreateForm = ({
           <View style={styles.fieldWrapper}>
             <PickerField<string>
               name={'locationName'}
+              testID={'photostreamLocation-button'}
               label={'Location'}
               choices={locations}
               value={values.locationName}
@@ -96,6 +97,7 @@ export const PhotostreamImageCreateForm = ({
           <View style={styles.fieldWrapper}>
             <PickerField<EventData>
               name={'eventData'}
+              testID={'photostreamEvent-button'}
               label={'Event'}
               choices={events}
               value={values.eventData}
@@ -103,13 +105,19 @@ export const PhotostreamImageCreateForm = ({
               addUndefinedOption={true}
             />
           </View>
-          <BooleanField name={'savePhoto'} label={'Save Photo to Device'} value={values.savePhoto} />
+          <BooleanField
+            name={'savePhoto'}
+            testID={'photostreamSavePhoto-switch'}
+            label={'Save Photo to Device'}
+            value={values.savePhoto}
+          />
           <PrimaryActionButton
             disabled={!(values.eventData || values.locationName) || isSubmitting || !isValid}
             isLoading={isSubmitting}
             viewStyle={styles.submitButton}
             onPress={handleSubmit}
             buttonText={'Post'}
+            testID={'photostreamPost-button'}
           />
         </View>
       )}

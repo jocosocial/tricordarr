@@ -137,6 +137,7 @@ const BoardgameScreenInner = ({navigation, route}: Props) => {
         {(data.isExpansion || data.hasExpansions) && (
           <PaddedContentView padTop={true}>
             <PrimaryActionButton
+              testID={'expansions-button'}
               buttonText={'Expansions'}
               onPress={() =>
                 navigation.push(MainStackComponents.boardgameExpansionsScreen, {

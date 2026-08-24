@@ -22,6 +22,7 @@ export const SeamailFAB = (props: SeamailFABProps) => {
       }
       label={'New Seamail'}
       showLabel={props.showLabel}
+      testID={'seamailCreate-fab'}
     />
   );
 };

@@ -42,6 +42,9 @@ export const AppEventHandler = () => {
       // so that we can pick up the appropriate state.
       if (pressAction?.id === PressAction.markAsRead) {
         logger.info('handleForegroundEvent is marking as read.');
+        if (notification?.id) {
+          await notifee.cancelDisplayedNotification(notification.id);
+        }
         if (notification?.data) {
           await apiGet(notification.data.markAsReadUrl.toString());
           await refetchUserNotificationData();
@@ -88,6 +91,9 @@ export const AppEventHandler = () => {
     // so that we can pick up the appropriate state.
     if (pressAction?.id === PressAction.markAsRead) {
       logger.info('handleForegroundEvent is marking as read.');
+      if (notification?.id) {
+        await notifee.cancelDisplayedNotification(notification.id);
+      }
       if (notification?.data) {
         await apiGet(notification.data.markAsReadUrl.toString());
         await refetchUserNotificationData();

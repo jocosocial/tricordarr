@@ -194,7 +194,7 @@ import UserNotifications
 	 app event handlers to trigger certain behavior.
 	
 	 - Parameters:
-	   - id: A unique identifier for the notification. Defaults to a new `UUID()` if not provided.
+	   - id: A unique identifier for the notification. Defaults to a new UUID string if not provided.
 	   - title: The title text displayed in the notification banner.
 	   - body: The body text displayed below the title in the notification.
 	   - type: String value of `src/Structs/SocketStructs.ts`.
@@ -202,7 +202,7 @@ import UserNotifications
 	   - markAsReadUrl: An optional URL string used to mark the content as read when acted upon.
 	 */
 	static func generateContentNotification(
-		_ id: UUID = UUID(),
+		_ id: String = UUID().uuidString,
 		title: String,
 		body: String,
 		type: NotificationTypeData,
@@ -220,7 +220,7 @@ import UserNotifications
 		content.userInfo = userInfo.asDictionary
 
 		// Send it
-		let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: nil)
+		let request = UNNotificationRequest(identifier: id, content: content, trigger: nil)
 		UNUserNotificationCenter.current()
 			.add(request) { error in
 				if let error = error {

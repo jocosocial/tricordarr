@@ -8,6 +8,7 @@ import {useClipboard} from '#src/Hooks/useClipboard';
 interface LinkIconButtonProps {
   icon: IconSource;
   link?: string;
+  testID: string;
 }
 
 export const LinkIconButton = (props: LinkIconButtonProps) => {
@@ -19,6 +20,7 @@ export const LinkIconButton = (props: LinkIconButtonProps) => {
 
   return (
     <IconButton
+      testID={props.testID}
       icon={props.icon}
       onPress={() => Linking.openURL(props.link as string)}
       onLongPress={() => setString(props.link as string)}

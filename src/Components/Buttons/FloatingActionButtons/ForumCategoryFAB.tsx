@@ -20,6 +20,7 @@ export const ForumCategoryFAB = ({category, showLabel}: ForumFABProps) => {
       }
       label={'New Forum'}
       showLabel={showLabel}
+      testID={'forumCreate-fab'}
     />
   );
 };

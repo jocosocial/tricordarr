@@ -44,6 +44,7 @@ export const OobeAccountScreen = ({navigation}: Props) => {
           )}
           <PaddedContentView>
             <PrimaryActionButton
+              testID={'oobeCreateAccount-button'}
               buttonText={'Create Account'}
               onPress={() => navigation.push(OobeStackComponents.oobeRegisterScreen)}
             />
@@ -56,6 +57,7 @@ export const OobeAccountScreen = ({navigation}: Props) => {
           </PaddedContentView>
           <PaddedContentView>
             <PrimaryActionButton
+              testID={'oobeLogIn-button'}
               buttonColor={theme.colors.twitarrNeutralButton}
               buttonText={'Log In'}
               onPress={() => navigation.push(OobeStackComponents.oobeLoginScreen)}

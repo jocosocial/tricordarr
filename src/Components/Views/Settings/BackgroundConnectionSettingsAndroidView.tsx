@@ -125,6 +125,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
             <View>
               <BooleanField
                 name={'enableBackgroundWorker'}
+                testID={'enableBackgroundWorker-switch'}
                 label={'Enable Background Worker'}
                 onPress={handleEnable}
                 style={commonStyles.paddingHorizontalSmall}
@@ -133,6 +134,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
               />
               <SliderField
                 name={'fgsWorkerHealthTimer'}
+                testID={'fgsWorkerHealthTimer-slider'}
                 label={'Healthcheck Interval'}
                 value={fgsHealthTime}
                 minimumValue={10}
@@ -173,12 +175,14 @@ export const BackgroundConnectionSettingsAndroidView = () => {
         <DataFieldListItem title={'Enabled'} description={String(enableUserNotifications)} />
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'start-button'}
             buttonText={'Start'}
             buttonColor={theme.colors.twitarrPositiveButton}
             onPress={() => startPushProvider().then(() => onRefresh())}
             style={[commonStyles.marginTopSmall]}
           />
           <PrimaryActionButton
+            testID={'stop-button'}
             buttonText={'Stop'}
             buttonColor={theme.colors.twitarrNegativeButton}
             onPress={() => stopPushProvider().then(() => onRefresh())}

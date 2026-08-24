@@ -47,6 +47,7 @@ const BatteryOptimizationSettingsViewInternal = () => {
           below, then select "Allow" in the dialog that appears.
         </Text>
         <PrimaryActionButton
+          testID={'batteryOptimization-button'}
           buttonText={optEnabled ? 'Disable Optimization' : 'Already disabled'}
           buttonColor={theme.colors.twitarrNeutralButton}
           onPress={() => {

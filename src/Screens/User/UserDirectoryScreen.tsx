@@ -55,6 +55,7 @@ const UserDirectoryScreenInner = ({navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <UserMatchSearchBar
+            testID={'userDirectorySearch-input'}
             excludeHeaders={[]}
             onPress={user =>
               navigation.push(CommonStackComponents.userProfileScreen, {

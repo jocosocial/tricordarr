@@ -24,6 +24,7 @@ interface SuggestedTextFieldProps extends TextFieldProps {
  */
 export const SuggestedTextField = ({
   name,
+  testID,
   mode = 'outlined',
   multiline,
   numberOfLines,
@@ -88,6 +89,7 @@ export const SuggestedTextField = ({
       anchor={
         <View style={viewStyle}>
           <TextInput
+            testID={testID}
             mode={mode}
             multiline={multiline}
             numberOfLines={numberOfLines}

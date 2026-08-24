@@ -467,6 +467,7 @@ export const ConversationListV2 = <TItem,>({
       />
       {effectiveScrollButton && scrollButtonDirection !== null && (
         <FloatingScrollButton
+          testID={'conversationListScroll-button'}
           onPress={handleScrollButtonPress}
           icon={scrollButtonDirection === 'up' ? AppIcons.scrollUp : AppIcons.scrollDown}
         />

@@ -115,6 +115,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         <HelpTopicView>You can try to recover using the buttons below.</HelpTopicView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'reload-button'}
             buttonColor={theme.colors.twitarrNeutralButton}
             buttonText={'Reload'}
             onPress={() => props.resetError()}
@@ -122,6 +123,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'clearQueryCache-button'}
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Clear Query Cache'}
             onPress={() => queryClient.clear()}
@@ -129,6 +131,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'signOut-button'}
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Sign Out'}
             onPress={async () => await signOut()}
@@ -136,6 +139,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'clearSessions-button'}
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Clear Sessions'}
             onPress={async () => await clearAllSessions()}
@@ -143,6 +147,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'resetConfig-button'}
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Reset Config'}
             onPress={resetAppConfig}
@@ -150,6 +155,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'showSessions-button'}
             buttonColor={theme.colors.twitarrNeutralButton}
             buttonText={'Show Sessions'}
             onPress={toggleShowSessions}

@@ -106,6 +106,7 @@ export const ForumSettingsScreen = () => {
                 <ListSubheader>General</ListSubheader>
                 <PickerField<ForumSort | undefined>
                   name={'defaultForumSortOrder'}
+                  testID={'defaultForumSortOrder-button'}
                   label={'Default Sort Order'}
                   value={defaultSortOrder}
                   choices={[ForumSort.create, ForumSort.title, ForumSort.update, ForumSort.event, undefined]}
@@ -118,6 +119,7 @@ export const ForumSettingsScreen = () => {
                 />
                 <PickerField<ForumSortDirection | undefined>
                   name={'defaultForumSortDirection'}
+                  testID={'defaultForumSortDirection-button'}
                   label={'Default Sort Direction'}
                   value={defaultSortDirection}
                   choices={[ForumSortDirection.ascending, ForumSortDirection.descending, undefined]}
@@ -131,6 +133,7 @@ export const ForumSettingsScreen = () => {
                 />
                 <BooleanField
                   name={'highlightForumAlertWords'}
+                  testID={'highlightForumAlertWords-switch'}
                   label={'Highlight Forum Alert Words'}
                   value={highlightAlertWords}
                   helperText={
@@ -146,6 +149,7 @@ export const ForumSettingsScreen = () => {
               <BooleanField
                 key={contentNotificationCategories.forumMention.configKey}
                 name={contentNotificationCategories.forumMention.configKey}
+                testID={`${contentNotificationCategories.forumMention.configKey}-switch`}
                 label={contentNotificationCategories.forumMention.title}
                 value={appConfig.pushNotifications.forumMention}
                 onPress={() => toggleValue(contentNotificationCategories.forumMention.configKey)}
@@ -156,6 +160,7 @@ export const ForumSettingsScreen = () => {
               <BooleanField
                 key={contentNotificationCategories.alertwordPost.configKey}
                 name={contentNotificationCategories.alertwordPost.configKey}
+                testID={`${contentNotificationCategories.alertwordPost.configKey}-switch`}
                 label={contentNotificationCategories.alertwordPost.title}
                 value={appConfig.pushNotifications.alertwordPost}
                 onPress={() => toggleValue(contentNotificationCategories.alertwordPost.configKey)}
@@ -166,6 +171,7 @@ export const ForumSettingsScreen = () => {
               <BooleanField
                 key={contentNotificationCategories.twitarrTeamForumMention.configKey}
                 name={contentNotificationCategories.twitarrTeamForumMention.configKey}
+                testID={`${contentNotificationCategories.twitarrTeamForumMention.configKey}-switch`}
                 label={contentNotificationCategories.twitarrTeamForumMention.title}
                 value={appConfig.pushNotifications.twitarrTeamForumMention}
                 onPress={() => toggleValue(contentNotificationCategories.twitarrTeamForumMention.configKey)}
@@ -176,6 +182,7 @@ export const ForumSettingsScreen = () => {
               <BooleanField
                 key={contentNotificationCategories.moderatorForumMention.configKey}
                 name={contentNotificationCategories.moderatorForumMention.configKey}
+                testID={`${contentNotificationCategories.moderatorForumMention.configKey}-switch`}
                 label={contentNotificationCategories.moderatorForumMention.title}
                 value={appConfig.pushNotifications.moderatorForumMention}
                 onPress={() => toggleValue(contentNotificationCategories.moderatorForumMention.configKey)}

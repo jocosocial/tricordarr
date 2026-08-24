@@ -117,6 +117,7 @@ export const EventSettingsScreen = () => {
                 <ListSubheader>General</ListSubheader>
                 <BooleanField
                   name={'enableLateDayFlip'}
+                  testID={'enableLateDayFlip-switch'}
                   label={'Enable Late-Night Day Flip'}
                   helperText={
                     'Start and end your days at 3:00AM rather than 12:00AM midnight. Affects schedule viewing, the day planner, and daily themes.'
@@ -127,6 +128,7 @@ export const EventSettingsScreen = () => {
                 />
                 <BooleanField
                   name={'compactThemeEvents'}
+                  testID={'compactThemeEvents-switch'}
                   label={'Compact Theme Events'}
                   helperText={
                     'Show daily theme events as compact cards in the Day Planner instead of spanning their full duration (typically all day). The event itself is unchanged — only the card size is affected.'
@@ -140,6 +142,7 @@ export const EventSettingsScreen = () => {
                 <ListSubheader>LFG Integration</ListSubheader>
                 <BooleanField
                   name={'eventsShowJoinedLfgs'}
+                  testID={'eventsShowJoinedLfgs-switch'}
                   label={'Show Joined LFGs'}
                   helperText={
                     'Display community-created Looking For Group events that you have joined in the Schedule screen along with Official and Shadow Cruise events. These can always be viewed under the LFG tab of this app.'
@@ -150,6 +153,7 @@ export const EventSettingsScreen = () => {
                 />
                 <BooleanField
                   name={'eventsShowOpenLfgs'}
+                  testID={'eventsShowOpenLfgs-switch'}
                   label={'Show Open LFGs'}
                   helperText={
                     'Display community-created Looking For Group events that are open to you in the Schedule screen along with Official and Shadow Cruise events. These can always be viewed under the LFG tab of this app.'
@@ -163,6 +167,7 @@ export const EventSettingsScreen = () => {
                 <ListSubheader>Overlapping Events</ListSubheader>
                 <SliderField
                   name={'overlapExcludeDurationHours'}
+                  testID={'overlapExcludeDurationHours-slider'}
                   label={'Exclude Long Events from Overlap'}
                   value={overlapExcludeDurationHours}
                   minimumValue={0}
@@ -192,6 +197,7 @@ export const EventSettingsScreen = () => {
                 <BooleanField
                   key={contentNotificationCategories.followedEventStarting.configKey}
                   name={contentNotificationCategories.followedEventStarting.configKey}
+                  testID={`${contentNotificationCategories.followedEventStarting.configKey}-switch`}
                   label={contentNotificationCategories.followedEventStarting.title}
                   value={appConfig.pushNotifications.followedEventStarting}
                   onPress={() => toggleValue(contentNotificationCategories.followedEventStarting.configKey)}
@@ -202,6 +208,7 @@ export const EventSettingsScreen = () => {
                 <BooleanField
                   key={contentNotificationCategories.personalEventStarting.configKey}
                   name={contentNotificationCategories.personalEventStarting.configKey}
+                  testID={`${contentNotificationCategories.personalEventStarting.configKey}-switch`}
                   label={contentNotificationCategories.personalEventStarting.title}
                   value={appConfig.pushNotifications.personalEventStarting}
                   onPress={() => toggleValue(contentNotificationCategories.personalEventStarting.configKey)}
@@ -212,6 +219,7 @@ export const EventSettingsScreen = () => {
                 <BooleanField
                   key={contentNotificationCategories.addedToPrivateEvent.configKey}
                   name={contentNotificationCategories.addedToPrivateEvent.configKey}
+                  testID={`${contentNotificationCategories.addedToPrivateEvent.configKey}-switch`}
                   label={contentNotificationCategories.addedToPrivateEvent.title}
                   value={appConfig.pushNotifications.addedToPrivateEvent}
                   onPress={() => toggleValue(contentNotificationCategories.addedToPrivateEvent.configKey)}
@@ -222,6 +230,7 @@ export const EventSettingsScreen = () => {
                 <BooleanField
                   key={contentNotificationCategories.privateEventCanceled.configKey}
                   name={contentNotificationCategories.privateEventCanceled.configKey}
+                  testID={`${contentNotificationCategories.privateEventCanceled.configKey}-switch`}
                   label={contentNotificationCategories.privateEventCanceled.title}
                   value={appConfig.pushNotifications.privateEventCanceled}
                   onPress={() => toggleValue(contentNotificationCategories.privateEventCanceled.configKey)}
@@ -232,6 +241,7 @@ export const EventSettingsScreen = () => {
                 <BooleanField
                   key={contentNotificationCategories.privateEventUnreadMsg.configKey}
                   name={contentNotificationCategories.privateEventUnreadMsg.configKey}
+                  testID={`${contentNotificationCategories.privateEventUnreadMsg.configKey}-switch`}
                   label={contentNotificationCategories.privateEventUnreadMsg.title}
                   value={appConfig.pushNotifications.privateEventUnreadMsg}
                   onPress={() => toggleValue(contentNotificationCategories.privateEventUnreadMsg.configKey)}

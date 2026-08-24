@@ -215,6 +215,7 @@ export const LoggingSettingsScreen = () => {
           <ListSubheader>Actions</ListSubheader>
           <PaddedContentView padTop={true}>
             <PrimaryActionButton
+              testID={'shareLogs-button'}
               icon={AppIcons.share}
               buttonText={'Share Logs'}
               onPress={handleExport}
@@ -224,6 +225,7 @@ export const LoggingSettingsScreen = () => {
           </PaddedContentView>
           <PaddedContentView>
             <PrimaryActionButton
+              testID={'savetoFolder-button'}
               icon={AppIcons.download}
               buttonText={'Save to Folder'}
               onPress={handleSaveToFolder}
@@ -233,6 +235,7 @@ export const LoggingSettingsScreen = () => {
           </PaddedContentView>
           <PaddedContentView>
             <PrimaryActionButton
+              testID={'clearAllLogs-button'}
               icon={AppIcons.delete}
               buttonText={'Clear All Logs'}
               onPress={handleClear}

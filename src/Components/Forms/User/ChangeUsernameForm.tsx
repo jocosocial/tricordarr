@@ -32,13 +32,19 @@ export const ChangeUsernameForm = ({onSubmit}: ChangeUsernameFormProps) => {
       {({handleSubmit, values, isSubmitting}) => (
         <View>
           <DirtyDetectionField />
-          <TextField name={'username'} label={'Username'} left={<TextInput.Icon icon={AppIcons.user} />} />
+          <TextField
+            name={'username'}
+            testID={'changeUsername-input'}
+            label={'Username'}
+            left={<TextInput.Icon icon={AppIcons.user} />}
+          />
           <PrimaryActionButton
             disabled={!values.username || isSubmitting}
             isLoading={isSubmitting}
             viewStyle={[commonStyles.marginTopSmall]}
             onPress={handleSubmit}
             buttonText={'Save'}
+            testID={'changeUsernameSave-button'}
           />
         </View>
       )}
