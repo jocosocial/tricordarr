@@ -1,5 +1,6 @@
 import {InfiniteData, QueryObserverResult} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
+import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
@@ -38,6 +39,7 @@ import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Comm
 import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
+import {useForumThreadPinnedPostsQuery} from '#src/Queries/Forum/ForumThreadQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
 
@@ -102,6 +104,10 @@ const ForumThreadScreenBaseInner = ({
   // Derive unified ForumData from the React Query cache (no local state).
   const forumData = useForumData(data);
   const forumPosts = forumData?.posts ?? [];
+  const {data: pinnedPosts, refetch: refetchPinnedPosts} = useForumThreadPinnedPostsQuery(forumData?.forumID);
+  const pinnedPostCount = pinnedPosts?.length ?? 0;
+  const pinnedPostsSubtitle =
+    pinnedPostCount > 0 ? `${pinnedPostCount} pinned ${pluralize('post', pinnedPostCount)}` : undefined;
 
   // Cache reducer -- operates directly on queryClient.
   const {appendPost, markRead} = useForumCacheReducer();
@@ -124,12 +130,12 @@ const ForumThreadScreenBaseInner = ({
   }, [forumData, forumListData, markRead, data]);
 
   const fullRefresh = useCallback(async () => {
-    await refetch();
+    await Promise.all([refetch(), refetchPinnedPosts()]);
     // After refetch, the server may report more posts than we have pages for
     // (e.g. optimistically-added posts that crossed a page boundary).
     // fetchNextPage is a no-op when getNextPageParam returns undefined.
     await fetchNextPage();
-  }, [refetch, fetchNextPage]);
+  }, [refetch, refetchPinnedPosts, fetchNextPage]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: fullRefresh,
   });
@@ -272,6 +278,7 @@ const ForumThreadScreenBaseInner = ({
       <PostAsUserBanner />
       <ListTitleView
         title={forumData?.title ?? ''}
+        subtitle={pinnedPostsSubtitle}
         icon={forumData?.isFavorite ? <AppIcon icon={AppIcons.favorite} small={true} /> : undefined}
       />
       {forumData?.isLocked && <ForumLockedView />}
