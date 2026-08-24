@@ -27,13 +27,14 @@ interface ImagesFieldProps {
   name: string;
   label?: string;
   maxPhotos: number;
+  testIDPrefix: string;
 }
 
 /**
  * Multi-image picker for Formik forms. Attach camera or gallery photos up to `maxPhotos`,
  * matching forum-post limits (including the Shutternaut bonus).
  */
-export const ImagesField = ({name, label = 'Photos', maxPhotos}: ImagesFieldProps) => {
+export const ImagesField = ({name, label = 'Photos', maxPhotos, testIDPrefix}: ImagesFieldProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const {setSnackbarPayload} = useSnackbar();
   const {hasShutternaut} = useRoles();
@@ -181,6 +182,7 @@ export const ImagesField = ({name, label = 'Photos', maxPhotos}: ImagesFieldProp
         disableTake={atMax}
         disableDelete={currentPhotoCount === 0}
         style={styles.buttons}
+        testIDPrefix={testIDPrefix}
       />
     </View>
   );

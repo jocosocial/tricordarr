@@ -99,7 +99,7 @@ export const PersonalEventForm = ({
               />
             </View>
           )}
-          <ImagesField name={'images'} maxPhotos={PRIVATE_EVENT_MAX_IMAGES} />
+          <ImagesField name={'images'} maxPhotos={PRIVATE_EVENT_MAX_IMAGES} testIDPrefix={'personalEvent'} />
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid || !dirty}
             isLoading={isSubmitting}
