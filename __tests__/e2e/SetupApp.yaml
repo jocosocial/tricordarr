@@ -1,0 +1,35 @@
+appId: ${APP_ID}
+---
+- launchApp:
+    clearState: true
+    arguments:
+      "-EXDevMenuIsOnboardingFinished": true
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+    - openLink: "tricordarr://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081"
+    - tapOn: "Close"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+    - extendedWaitUntil:
+        visible: "npx expo start"
+        timeout: 30000
+    - openLink: "tricordarr://expo-development-client/?url=http%3A%2F%2F10.0.2.2%3A8081%2Findex.bundle%3Fplatform%3Dandroid%26dev%3Dtrue%26minify%3Dfalse%26disableOnboarding%3D1"
+    - tapOn: "Close"
+
+
+    #   - extendedWaitUntil:
+    #       visible: "http://10.0.2.2:8081"
+    #       timeout: 60000
+    #   - tapOn: "http://10.0.2.2:8081"
+    #   - extendedWaitUntil:
+    #       visible: "Continue"
+    #       timeout: 180000
+    #   - tapOn: "Continue"
+    #   - back
+- extendedWaitUntil:
+    visible: "Welcome to Twitarr!"
+    timeout: 60000

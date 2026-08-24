@@ -1,0 +1,50 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    file: ../SetupApp.yaml
+- tapOn:
+    id: "oobeNext-button"
+- tapOn:
+    id: "serverChoice-button"
+    retryTapIfNoChange: true
+- tapOn: "Emulator"
+- tapOn:
+    id: "serverUrlSave-button"
+- tapOn:
+    id: "oobeNext-button"
+- repeat:
+    times: 7
+    commands: 
+      - scroll
+- tapOn:
+    id: "oobeIAgree-button"
+- tapOn:
+    id: "oobeCreateAccount-button"
+- tapOn:
+    id: "registerVerification-input"
+- inputText: ${TWITARR_REG_CODE}
+- tapOn:
+    id: "registerUsername-input"
+- inputText: ${TWITARR_CREATE_USER}
+- tapOn:
+    id: "registerPassword-input"
+- inputText: ${TWITARR_PASSWORD}
+- tapOn:
+    id: "registerPasswordVerify-input"
+- inputText: ${TWITARR_PASSWORD}
+- scroll
+- tapOn:
+    id: "registerSubmit-button"
+- tapOn:
+    id: "screenshottoCameraRoll-button"
+- tapOn:
+    id: "acknowledged-button"
+- tapOn:
+    id: "oobeNext-button"
+# Begin Permissions
+# lol
+# End Permissions
+- tapOn:
+    id: "oobeNext-button"
+- tapOn:
+    id: "oobeFinish-button"
