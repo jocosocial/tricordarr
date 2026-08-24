@@ -45,8 +45,8 @@ export const PersonalEventHelpScreen = () => {
           Report this personal event to the moderation team if it violates the Code of Conduct.
         </HelpTopicView>
         <HelpTopicView title={'Chat'} icon={AppIcons.chat}>
-          Open the chat for this private event. You can attach one photo per message. This option only appears for
-          private events where you are a participant, and appears in the header rather than the actions menu.
+          Open the Seamail chat for this private event. This option only appears for private events where you are a
+          participant, and appears in the header rather than the actions menu.
         </HelpTopicView>
         <HelpButtonHelpTopicView />
       </ScrollingContentView>

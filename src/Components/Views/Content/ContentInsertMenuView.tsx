@@ -48,11 +48,11 @@ export const ContentInsertMenuView = ({
   const currentPhotoCount = values.images.length;
 
   const getIcon = useCallback(() => {
-    if (hasShutternaut && maxPhotos > 1) {
+    if (hasShutternaut) {
       return <AppIcon icon={AppIcons.shutternaut} />;
     }
     return undefined;
-  }, [hasShutternaut, maxPhotos]);
+  }, [hasShutternaut]);
 
   const handleInsertEmoji = () => {
     setVisible(false);
