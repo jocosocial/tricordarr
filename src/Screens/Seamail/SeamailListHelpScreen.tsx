@@ -31,7 +31,14 @@ export const SeamailListHelpScreen = () => {
           <SelectionHelpTopicView />
           <HelpTopicView>
             Swipe a conversation left to mute it or mark it as read. This works for Seamail, private event, and LFG
-            chats in the list.
+            chats in the list. For private events and LFGs, swipe the other direction to open the corresponding event or
+            LFG screen.
+          </HelpTopicView>
+          <HelpTopicView title={'LFG'} icon={AppIcons.lfg}>
+            Open the LFG details screen for this chat.
+          </HelpTopicView>
+          <HelpTopicView title={'Event'} icon={AppIcons.personalEvent}>
+            Open the private event details screen for this chat.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>

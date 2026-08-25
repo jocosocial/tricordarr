@@ -40,6 +40,14 @@ export const FezChatHelpScreen = () => {
           <HelpTopicView>Messages made in Open seamails can be reported to the moderation team.</HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
+          <HelpTopicView title={'LFG'} icon={AppIcons.lfg}>
+            Open the LFG details screen for this chat. If you opened the chat from that LFG, this takes you back there
+            instead of opening a new copy. This button only appears for LFG chats.
+          </HelpTopicView>
+          <HelpTopicView title={'Event'} icon={AppIcons.personalEvent}>
+            Open the private event details screen for this chat. If you opened the chat from that event, this takes you
+            back there instead of opening a new copy. This button only appears for private event chats.
+          </HelpTopicView>
           <HelpTopicView title={'Create Event'} icon={AppIcons.eventCreate}>
             Schedule a personal event with the users in this seamail conversation. This button only appears for seamail
             conversations that have participants.

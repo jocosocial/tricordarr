@@ -50,6 +50,16 @@ if (routeIndex > 0) {
 }
 ```
 
+To open a screen that may already be below the current one (for example LFG details from chat, or chat from LFG details), use `popToOrPush` in [`src/Libraries/Navigation.ts`](../src/Libraries/Navigation.ts). It walks the **current** stack backward and pops to a matching name+ID, or pushes if that screen is not already there. Same-stack only; it does not jump tabs.
+
+Do not use React Navigation 7 `navigation.popTo()` for this. When the target is missing, `POP_TO` **replaces** the current screen instead of pushing on top of it.
+
+```ts
+popToOrPush(navigation, CommonStackComponents.lfgScreen, {fezID}, 'fezID');
+```
+
+`openFezParentScreen` / `openFezChatScreen` wrap that helper for LFG and private event chats.
+
 ## What to use instead (portal / non-stack code)
 
 [`src/Libraries/NavigationRef.ts`](../src/Libraries/NavigationRef.ts) holds `navigationRef` on `NavigationContainer`. Use it from code that is **not** inside a nested stack: LinkingProvider, CallProvider, NotificationDataListener, and cross-tab `setParams`.

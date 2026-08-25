@@ -37,6 +37,7 @@ import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {createLogger} from '#src/Libraries/Logger';
+import {openFezParentScreen} from '#src/Libraries/Navigation';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -163,10 +164,19 @@ const FezChatScreenInner = ({route}: Props) => {
     }
     const participants = fez.members?.participants;
     const canCreateEvent = FezType.isSeamailType(fez.fezType) && participants && participants.length > 0;
+    const isLfg = FezType.isLFGType(fez.fezType);
+    const isPrivateEvent = fez.fezType === FezType.privateEvent;
 
     return (
       <View>
         <MaterialHeaderButtons>
+          {(isLfg || isPrivateEvent) && (
+            <Item
+              title={isLfg ? 'LFG' : 'Event'}
+              iconName={isLfg ? AppIcons.lfg : AppIcons.personalEvent}
+              onPress={() => openFezParentScreen(navigation, fez)}
+            />
+          )}
           {canCreateEvent && (
             <Item
               title={'Create Event'}

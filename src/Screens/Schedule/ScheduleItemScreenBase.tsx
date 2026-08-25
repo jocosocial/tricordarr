@@ -23,6 +23,7 @@ import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {getParticipantLabel} from '#src/Hooks/useFezData';
 import {getDurationString} from '#src/Libraries/DateTime';
+import {openFezChatScreen} from '#src/Libraries/Navigation';
 import {guessDeckNumber} from '#src/Libraries/Ship';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
@@ -161,12 +162,7 @@ export const ScheduleItemScreenBase = ({
                       description={getChatDescription}
                       title={'Chat'}
                       onPress={() =>
-                        navigation.push(
-                          FezType.isPrivateEventType(eventData.fezType)
-                            ? CommonStackComponents.privateEventChatScreen
-                            : CommonStackComponents.lfgChatScreen,
-                          {fezID: eventData.fezID, initialReadCount},
-                        )
+                        openFezChatScreen(navigation, eventData.fezID, eventData.fezType, initialReadCount)
                       }
                     />
                   )}

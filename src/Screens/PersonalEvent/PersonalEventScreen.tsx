@@ -11,6 +11,7 @@ import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezData} from '#src/Hooks/useFezData';
+import {openFezChatScreen} from '#src/Libraries/Navigation';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -53,12 +54,7 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
                 <Item
                   title={'Chat'}
                   iconName={AppIcons.chat}
-                  onPress={() =>
-                    navigation.push(CommonStackComponents.lfgChatScreen, {
-                      fezID: eventData.fezID,
-                      initialReadCount,
-                    })
-                  }
+                  onPress={() => openFezChatScreen(navigation, eventData.fezID, eventData.fezType, initialReadCount)}
                 />
               )}
               {isOwner && (
