@@ -12,9 +12,6 @@ export const styleDefaults = {
   // iconSizeSmall used to be 20 but I feel that most of the time I use that it's when it's in-line
   // with text so I'm making this be the same as the fontSize eblow.
   iconSizeSmall: 16,
-  // Minimum tappable control size (Apple HIG 44pt). Use as layout bounds, not hitSlop,
-  // when the control is nested inside another pressable.
-  minTouchTarget: 44,
   avatarSize: 36,
   avatarSizeSmall: 24, // 2/3rds.
   headerImageSize: 216,
@@ -309,10 +306,6 @@ export const createCommonStyles = (theme: AppTheme) =>
     },
     minHeightLarge: {
       minHeight: styleDefaults.marginSize * 2,
-    },
-    minTouchTarget: {
-      minWidth: styleDefaults.minTouchTarget,
-      minHeight: styleDefaults.minTouchTarget,
     },
     fabBase: {
       position: 'absolute',

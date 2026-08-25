@@ -33,9 +33,14 @@ interface EventCardRightIconsProps {
   contentColor?: string;
 }
 
+// Layout stays icon-sized; the tap target is grown with hitSlop only. Up/right lean into the
+// card's own padding, so the target clears 44pt without overlapping the title or duration text.
+const favoriteHitSlop = {top: 16, right: 16, bottom: 12, left: 12};
+
 /**
  * Right-side icons for an event card (photographer markers and favorite toggle).
- * The favorite control uses a min layout hit target so taps are not stolen by the parent card press.
+ * The favorite control expands its tap target with hitSlop so taps are not stolen by the parent
+ * card press, without changing the icon's layout size.
  */
 const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentColor}: EventCardRightIconsProps) => {
   const {theme} = useAppTheme();
@@ -49,11 +54,6 @@ const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentCol
           ...commonStyles.flexRow,
           ...commonStyles.alignItemsCenter,
           gap: 4,
-        },
-        favoritePressable: {
-          ...commonStyles.minTouchTarget,
-          ...commonStyles.justifyCenter,
-          ...commonStyles.alignItemsCenter,
         },
       }),
     [commonStyles],
@@ -83,8 +83,7 @@ const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentCol
     return (
       <Pressable
         onPress={onFavoritePress}
-        style={styles.favoritePressable}
-        hitSlop={8}
+        hitSlop={favoriteHitSlop}
         accessibilityRole={'button'}
         accessibilityLabel={eventData.isFavorite ? 'Unfavorite event' : 'Favorite event'}
         accessibilityState={{selected: eventData.isFavorite}}
@@ -92,7 +91,7 @@ const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentCol
         <AppIcon icon={eventData.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite} color={favoriteIconColor} />
       </Pressable>
     );
-  }, [onFavoritePress, eventData.isFavorite, favoriteIconColor, styles.favoritePressable]);
+  }, [onFavoritePress, eventData.isFavorite, favoriteIconColor]);
 
   return (
     <View style={styles.iconContainer}>
