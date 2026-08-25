@@ -37,7 +37,7 @@ export const useUserFindQuery = (username: string, options?: TokenAuthQueryOptio
   return useTokenAuthQuery<UserHeader | null>(`/users/find/${username}`, {
     queryFn: async () => {
       try {
-        const response = await apiGet<UserHeader>(`/users/find/${username}`);
+        const response = await apiGet<UserHeader, undefined>(`/users/find/${username}`);
         return response.data;
       } catch (error) {
         if (isNotFoundError(error)) {
