@@ -40,7 +40,6 @@ function isNotFoundError(error: unknown): boolean {
  * This endpoint returns 404 when no user matches; that is treated as not-found
  * (`null`) rather than a failed query, so React Query will not retry it.
  * Other queries keep the default client retry/error behavior for 404s.
- * Callers may still override query options (retry, enabled, queryFn, etc.).
  */
 export const useUserFindQuery = (username: string, options?: TokenAuthQueryOptionsType<UserHeader | null>) => {
   const {apiGet} = useSwiftarrQueryClient();

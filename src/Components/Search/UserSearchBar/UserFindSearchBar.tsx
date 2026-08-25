@@ -3,17 +3,7 @@ import React from 'react';
 import {UserSearchBarBaseComponent} from '#src/Components/Search/UserSearchBar/UserSearchBarBase';
 import {UserSearchBarProps} from '#src/Components/Search/UserSearchBar/UserSearchBarTypes';
 import {useUserSearchBar} from '#src/Components/Search/UserSearchBar/useUserSearchBar';
-import {TokenAuthQueryOptionsType} from '#src/Queries/TokenAuthQuery';
 import {useUserFindQuery} from '#src/Queries/Users/UsersQueries';
-import {UserHeader} from '#src/Structs/ControllerStructs';
-
-interface UserFindSearchBarProps extends UserSearchBarProps {
-  /**
-   * Optional React Query options for the exact-name lookup.
-   * Merged after `{enabled: false}` so callers can override retry, etc.
-   */
-  queryOptions?: TokenAuthQueryOptionsType<UserHeader | null>;
-}
 
 /**
  * Search widget to find a user by exact username. Used during preregistration
@@ -27,19 +17,14 @@ export const UserFindSearchBar = ({
   label = 'Enter exact username',
   excludeSelf = true,
   testID,
-  queryOptions,
-}: UserFindSearchBarProps) => {
+}: UserSearchBarProps) => {
   const {searchQuery, onChangeSearch, handlePress, onClear} = useUserSearchBar({
     onPress,
     clearOnPress,
   });
 
   // Manual search only. 404-as-not-found is handled in useUserFindQuery.
-  // Screen/callers can override query behavior via queryOptions.
-  const {data, refetch} = useUserFindQuery(searchQuery, {
-    enabled: false,
-    ...queryOptions,
-  });
+  const {data, refetch} = useUserFindQuery(searchQuery, {enabled: false});
 
   return (
     <UserSearchBarBaseComponent
