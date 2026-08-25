@@ -310,6 +310,10 @@ export const createCommonStyles = (theme: AppTheme) =>
     minHeightLarge: {
       minHeight: styleDefaults.marginSize * 2,
     },
+    minTouchTarget: {
+      minWidth: styleDefaults.minTouchTarget,
+      minHeight: styleDefaults.minTouchTarget,
+    },
     fabBase: {
       position: 'absolute',
       margin: 16,

@@ -14,14 +14,6 @@ import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
 import {DayPlannerItem} from '#src/Types/DayPlanner';
 
-const iconRowStyles = StyleSheet.create({
-  iconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-});
-
 interface EventCardProps {
   eventData: EventData;
   onPress?: () => void;
@@ -47,20 +39,24 @@ interface EventCardRightIconsProps {
  */
 const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentColor}: EventCardRightIconsProps) => {
   const {theme} = useAppTheme();
-  const {styleDefaults} = useStyles();
+  const {commonStyles} = useStyles();
   const {hasShutternaut, hasShutternautManager} = useRoles();
 
   const styles = useMemo(
     () =>
       StyleSheet.create({
+        iconContainer: {
+          ...commonStyles.flexRow,
+          ...commonStyles.alignItemsCenter,
+          gap: 4,
+        },
         favoritePressable: {
-          minWidth: styleDefaults.minTouchTarget,
-          minHeight: styleDefaults.minTouchTarget,
-          justifyContent: 'center',
-          alignItems: 'center',
+          ...commonStyles.minTouchTarget,
+          ...commonStyles.justifyCenter,
+          ...commonStyles.alignItemsCenter,
         },
       }),
-    [styleDefaults],
+    [commonStyles],
   );
 
   const needsPhotographerIcon = useMemo(() => {
@@ -99,7 +95,7 @@ const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentCol
   }, [onFavoritePress, eventData.isFavorite, favoriteIconColor, styles.favoritePressable]);
 
   return (
-    <View style={iconRowStyles.iconContainer}>
+    <View style={styles.iconContainer}>
       {refreshing && <ActivityIndicator />}
       {!refreshing && (
         <>
