@@ -1,5 +1,6 @@
+import {isAxiosError} from 'axios';
+
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {isNotFoundError} from '#src/Libraries/Network/QueryRetry';
 import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -28,8 +29,17 @@ export const useUserMatchQuery = ({searchQuery, favorers, autoSearchLength = 2, 
 };
 
 /**
- * Lookup a user by exact username. A 404 is an acceptable not-found and resolves
- * to `null` instead of throwing, so React Query will not retry it.
+ * Returns true when the error is an HTTP 404 from Axios.
+ */
+function isNotFoundError(error: unknown): boolean {
+  return isAxiosError(error) && error.response?.status === 404;
+}
+
+/**
+ * Lookup a user by exact username.
+ * This endpoint returns 404 when no user matches; that is treated as not-found
+ * (`null`) rather than a failed query, so React Query will not retry it.
+ * Other queries keep the default client retry/error behavior for 404s.
  * Callers may still override query options (retry, enabled, queryFn, etc.).
  */
 export const useUserFindQuery = (username: string, options?: TokenAuthQueryOptionsType<UserHeader | null>) => {
