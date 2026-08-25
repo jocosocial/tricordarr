@@ -1,17 +1,26 @@
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useMemo, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Pressable, StyleSheet, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
 import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
 import {DayPlannerItem} from '#src/Types/DayPlanner';
+
+const iconRowStyles = StyleSheet.create({
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+});
 
 interface EventCardProps {
   eventData: EventData;
@@ -32,17 +41,27 @@ interface EventCardRightIconsProps {
   contentColor?: string;
 }
 
+/**
+ * Right-side icons for an event card (photographer markers and favorite toggle).
+ * The favorite control uses a min layout hit target so taps are not stolen by the parent card press.
+ */
 const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentColor}: EventCardRightIconsProps) => {
   const {theme} = useAppTheme();
+  const {styleDefaults} = useStyles();
   const {hasShutternaut, hasShutternautManager} = useRoles();
 
-  const styles = StyleSheet.create({
-    iconContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 4,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        favoritePressable: {
+          minWidth: styleDefaults.minTouchTarget,
+          minHeight: styleDefaults.minTouchTarget,
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+      }),
+    [styleDefaults],
+  );
 
   const needsPhotographerIcon = useMemo(() => {
     if (!(hasShutternaut || hasShutternautManager) || !eventData.shutternautData?.needsPhotographer) {
@@ -66,18 +85,21 @@ const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentCol
   const favoriteIconColor = contentColor ?? theme.colors.twitarrYellow;
   const favoriteIcon = useMemo(() => {
     return (
-      <TouchableOpacity onPress={onFavoritePress}>
-        {eventData.isFavorite ? (
-          <AppIcon icon={AppIcons.favorite} color={favoriteIconColor} />
-        ) : (
-          <AppIcon icon={AppIcons.toggleFavorite} color={favoriteIconColor} />
-        )}
-      </TouchableOpacity>
+      <Pressable
+        onPress={onFavoritePress}
+        style={styles.favoritePressable}
+        hitSlop={8}
+        accessibilityRole={'button'}
+        accessibilityLabel={eventData.isFavorite ? 'Unfavorite event' : 'Favorite event'}
+        accessibilityState={{selected: eventData.isFavorite}}
+        testID={'eventCardFavorite-button'}>
+        <AppIcon icon={eventData.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite} color={favoriteIconColor} />
+      </Pressable>
     );
-  }, [onFavoritePress, eventData.isFavorite, favoriteIconColor]);
+  }, [onFavoritePress, eventData.isFavorite, favoriteIconColor, styles.favoritePressable]);
 
   return (
-    <View style={styles.iconContainer}>
+    <View style={iconRowStyles.iconContainer}>
       {refreshing && <ActivityIndicator />}
       {!refreshing && (
         <>
