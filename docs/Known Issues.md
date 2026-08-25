@@ -95,3 +95,13 @@ tricordarr/ios/rsync(96533):1:1 QBImagePicker.bundle/QBImagePicker.storyboardc/Q
 ```
 
 Stale Xcode derived data. Delete everything in `~/Library/Developer/Xcode/DerivedData/` and rebuild in Xcode.
+
+### Cursor agent doesn't show up
+
+```
+Specified worker not found or you do not have access to it.
+```
+
+After running `cursor agent worker start`.
+
+You MUST have the `git` user in the repo URL in `.git/config` (`url = git@github.com:jocosocial/tricordarr`). This is absolutely stupid.
