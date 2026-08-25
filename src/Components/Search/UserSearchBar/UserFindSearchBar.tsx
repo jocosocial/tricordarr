@@ -6,9 +6,9 @@ import {useUserSearchBar} from '#src/Components/Search/UserSearchBar/useUserSear
 import {useUserFindQuery} from '#src/Queries/Users/UsersQueries';
 
 /**
- * Search widget to find a user and do something with them. Works on a partial search string. Displays
- * users as List.Items below the search bar.
- * @param userHeaders Array of the UserHeaders that should be excluded from the search results.
+ * Search widget to find a user by exact username. Used during preregistration
+ * favoriting, where a miss is an HTTP 404 handled by `useUserFindQuery`.
+ * Displays matching users as List.Items below the search bar.
  */
 export const UserFindSearchBar = ({
   excludeHeaders = [],
@@ -23,8 +23,7 @@ export const UserFindSearchBar = ({
     clearOnPress,
   });
 
-  // autoSearchLength should be undefined, but the important part is setting
-  // enabled: false when we disable autoSearch (autoSearch: false).
+  // Manual search only. 404-as-not-found is handled in useUserFindQuery.
   const {data, refetch} = useUserFindQuery(searchQuery, {enabled: false});
 
   return (
