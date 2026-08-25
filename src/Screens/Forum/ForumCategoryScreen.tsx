@@ -33,13 +33,15 @@ import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScre
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 
+/**
+ * Forum category thread list. Takes `categoryID` only so in-app navigation and
+ * `/forums/:categoryID` deep links share the same param shape; CategoryData comes from the query.
+ */
 export const ForumCategoryScreen = (props: Props) => {
   return (
     <LoggedInScreen>
       <PreRegistrationScreen helpScreen={CommonStackComponents.forumCategoryHelpScreen}>
-        <DisabledFeatureScreen
-          feature={SwiftarrFeature.forums}
-          urlPath={`/forums/${props.route.params.category.categoryID}`}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={`/forums/${props.route.params.categoryID}`}>
           <SelectionProvider>
             <ForumCategoryScreenInner {...props} />
           </SelectionProvider>
@@ -49,6 +51,9 @@ export const ForumCategoryScreen = (props: Props) => {
   );
 };
 
+/**
+ * Loads threads for `route.params.categoryID` and renders the category list, filters, and FAB.
+ */
 const ForumCategoryScreenInner = ({route, navigation}: Props) => {
   const {forumFilter, forumSortOrder, forumSortDirection} = useForumFilter();
   const isFocused = useIsFocused();
@@ -63,7 +68,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
     fetchNextPage,
     isLoading,
     isFetching,
-  } = useForumCategoryQuery(route.params.category.categoryID, {
+  } = useForumCategoryQuery(route.params.categoryID, {
     ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
     ...(forumSortDirection ? {order: forumSortDirection} : undefined),
   });
@@ -73,6 +78,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
     refresh: refetch,
     isRefreshing: isFetching,
   });
+  const category = data?.pages[0];
 
   const getNavButtons = useCallback(() => {
     if (enableSelection) {
@@ -80,7 +86,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
         <View>
           <ForumSelectionHeaderButtons
             setRefreshing={setRefreshing}
-            categoryID={route.params.category.categoryID}
+            categoryID={route.params.categoryID}
             items={forumListData}
             selectedItems={selectedItems}
           />
@@ -90,14 +96,14 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
     return (
       <View>
         <MaterialHeaderButtons>
-          <ForumCategoryScreenSearchMenu category={route.params.category} />
-          <ForumThreadScreenSortMenu category={route.params.category} />
+          {category && <ForumCategoryScreenSearchMenu category={category} />}
+          <ForumThreadScreenSortMenu category={category} />
           <ForumThreadScreenFilterMenu />
           <ForumCategoryScreenActionsMenu />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableSelection, route.params.category, forumListData, selectedItems, setRefreshing]);
+  }, [enableSelection, route.params.categoryID, category, forumListData, selectedItems, setRefreshing]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -110,16 +116,16 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
     }
   }, [isFocused, getNavButtons, navigation, enableSelection, selectedItems.length]);
 
-  if (isLoading || !data) {
+  if (isLoading || !data || !category) {
     return <LoadingView />;
   }
 
-  if (data?.pages[0].paginator.total === 0 && forumListData.length === 0) {
+  if (category.paginator.total === 0 && forumListData.length === 0) {
     return (
       <AppView>
-        <ListTitleView title={route.params.category.title} />
+        <ListTitleView title={category.title} />
         <ForumEmptyListView onRefresh={onRefresh} refreshing={refreshing} />
-        {!isUserRestricted && <ForumCategoryFAB category={route.params.category} />}
+        {!isUserRestricted && <ForumCategoryFAB category={category} />}
       </AppView>
     );
   }
@@ -129,10 +135,10 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
       <AppView>
         <ForumThreadsRelationsView
           relationType={ForumFilter.toRelation(forumFilter)}
-          category={route.params.category}
-          title={route.params.category.title}
+          category={category}
+          title={category.title}
         />
-        {!isUserRestricted && <ForumCategoryFAB category={route.params.category} />}
+        {!isUserRestricted && <ForumCategoryFAB category={category} />}
       </AppView>
     );
   }
@@ -145,15 +151,15 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
         hasPreviousPage={hasPreviousPage}
         hasNextPage={hasNextPage}
         forumListData={forumListData}
-        category={route.params.category}
+        category={category}
         isFetchingPreviousPage={isFetchingPreviousPage}
         isFetchingNextPage={isFetchingNextPage}
         refreshing={refreshing}
         onRefresh={onRefresh}
         setRefreshing={setRefreshing}
         enableFAB={!isUserRestricted}
-        title={route.params.category.title}
-        subtitle={`${data.pages[0].paginator.total} ${pluralize('forum', data.pages[0].paginator.total)}`}
+        title={category.title}
+        subtitle={`${category.paginator.total} ${pluralize('forum', category.paginator.total)}`}
         scrollToTopIntent={route.params.scrollToTopIntent}
       />
     </AppView>

@@ -8,7 +8,7 @@ import {Optional, WithScrollToTopIntent} from '#src/Types/RouteParams';
 export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
   ForumCategoryScreen: WithScrollToTopIntent<{
-    category: CategoryData;
+    categoryID: string;
   }>;
   ForumPostMentionScreen: undefined;
   ForumPostSelfScreen: Optional<WithScrollToTopIntent>;
