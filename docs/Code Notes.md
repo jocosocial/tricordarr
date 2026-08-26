@@ -23,7 +23,6 @@ allJoinedQueries.forEach((q, i) => {
 
 https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
 
-
 ## Native Code
 
 ### Codegen
@@ -46,3 +45,7 @@ https://stackoverflow.com/questions/70816347/i-cant-find-the-image-asset-option-
 ### Xcode
 
 Open the `ios` directory in Xcode or `open` the `Tricordarr.xcworkspace` file.
+
+### Expo Prebuild / app.json Plugins
+
+Do not include plugins in `app.json` since we have a custom native code structure. I'm open to changing this some day.

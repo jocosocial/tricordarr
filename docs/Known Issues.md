@@ -105,3 +105,29 @@ Specified worker not found or you do not have access to it.
 After running `cursor agent worker start`.
 
 You MUST have the `git` user in the repo URL in `.git/config` (`url = git@github.com:jocosocial/tricordarr`). This is absolutely stupid.
+
+### Local EAS iOS production: provisioning profile doesn't include signing certificate
+
+```
+Provisioning profile "*[expo] com.grantcohoe.tricordarr AppStore …" doesn't include signing certificate "Apple Distribution: Grant Cohoe (67V85M2YSV)".
+Provisioning profile "*[expo] com.grantcohoe.tricordarr.LocalPushExtension AppStore …" doesn't include signing certificate "Apple Distribution: Grant Cohoe (67V85M2YSV)".
+```
+
+Local `eas build --local --platform ios --profile production` only. Same display name, different cert serials: the login keychain still has an older Apple Distribution identity, while Expo's App Store profiles are bound to the EAS-stored cert. `security find-identity -v -p codesigning` prints SHA-1, not serial — compare serials with `eas credentials` (production, both `Tricordarr` and `LocalPushExtension`) and `security find-certificate -c "Apple Distribution: Grant Cohoe" -p | openssl x509 -noout -serial`.
+
+Delete the leftover `Apple Distribution` cert from the login keychain. Leave `Apple Development` identities. Do not regenerate the distribution certificate; regenerate profiles only if they are not already bound to the current EAS cert.
+
+https://github.com/expo/eas-cli/issues/1201
+
+### Flashlist Version Expo Doctor
+
+```
+npx expo-doctor
+...
+...
+⚠️ Minor version mismatches
+package                  expected  found
+@shopify/flash-list      2.0.2     2.3.2
+```
+
+Do not downgrade. The doc is dumb.
