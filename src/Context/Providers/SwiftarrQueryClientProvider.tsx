@@ -25,7 +25,9 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
 
   const serverUrl = useMemo(() => {
     if (!currentSession) {
-      return appConfig.serverUrl; // Fallback to default
+      // First-launch / no session only. Not a substitute while Session is hydrating;
+      // SessionProvider withholds children until load completes.
+      return appConfig.serverUrl;
     }
     return currentSession.serverUrl;
   }, [currentSession, appConfig.serverUrl]);

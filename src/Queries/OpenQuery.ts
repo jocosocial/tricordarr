@@ -1,12 +1,14 @@
 import {useQuery, UseQueryOptions, UseQueryResult} from '@tanstack/react-query';
 import {AxiosError} from 'axios';
 
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
 /**
- * Clone of useQuery but dedicated for queries that can be performed without the user needing
- * to be logged in. Also does our error processing.
+ * Clone of useQuery for endpoints that do not require a logged-in user.
+ * Disabled while Session is hydrating so the request uses the session server URL
+ * (or the first-launch AppConfig default) rather than a stale fallback.
  */
 export function useOpenQuery<TData, TQueryParams = Object, TError extends Error = AxiosError<ErrorResponse>>(
   endpoint: string,
@@ -16,24 +18,30 @@ export function useOpenQuery<TData, TQueryParams = Object, TError extends Error 
   },
   queryParams?: TQueryParams,
 ): UseQueryResult<TData, TError> {
+  const {isLoading} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
-  const enabled = !disruptionDetected;
   const queryKey = [endpoint, queryParams, ...queryKeyExtraData];
+  const enabled = !isLoading && !disruptionDetected && (options?.enabled ?? true);
 
   const result = useQuery<TData, TError, TData>({
-    enabled,
     queryKey,
+    ...options,
     queryFn: options?.queryFn
       ? options.queryFn
       : async () => {
           const response = await apiGet<TData, TQueryParams>(endpoint, queryParams);
           return response.data;
         },
-    ...options,
+    enabled,
   });
   return result;
 }
 
+/**
+ * Clone of useQuery for unauthenticated public (non-API-prefix) endpoints.
+ * Disabled while Session is hydrating so the request uses the session server URL
+ * (or the first-launch AppConfig default) rather than a stale fallback.
+ */
 export function usePublicQuery<TData, TQueryParams = Object, TError extends Error = AxiosError<ErrorResponse>>(
   endpoint: string,
   // Reminder: onError is deprecated. It's in SwiftarrQueryClientProvider.tsx instead.
@@ -42,20 +50,21 @@ export function usePublicQuery<TData, TQueryParams = Object, TError extends Erro
   },
   queryParams?: TQueryParams,
 ): UseQueryResult<TData, TError> {
+  const {isLoading} = useSession();
   const {disruptionDetected, publicGet, queryKeyExtraData} = useSwiftarrQueryClient();
-  const enabled = !disruptionDetected;
   const queryKey = [endpoint, queryParams, ...queryKeyExtraData];
+  const enabled = !isLoading && !disruptionDetected && (options?.enabled ?? true);
 
   const result = useQuery<TData, TError, TData>({
-    enabled,
     queryKey,
+    ...options,
     queryFn: options?.queryFn
       ? options.queryFn
       : async () => {
           const response = await publicGet<TData, TQueryParams>(endpoint, queryParams);
           return response.data;
         },
-    ...options,
+    enabled,
   });
   return result;
 }
