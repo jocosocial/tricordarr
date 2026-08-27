@@ -9,6 +9,7 @@ import {ListItem} from '#src/Components/Lists/ListItem';
 import {ForumThreadListItemSwipeable} from '#src/Components/Swipeables/ForumThreadListItemSwipeable';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -40,6 +41,7 @@ const ForumThreadListInternal = ({
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const {dispatchSelectedItems} = useSelection();
+  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     item: {
@@ -89,7 +91,9 @@ const ForumThreadListInternal = ({
   const getDescription = () => (
     <View>
       {forumListData.eventTime && (
-        <Text variant={'bodyMedium'}>{getEventTimeString(forumListData.eventTime, forumListData.timeZoneID)}</Text>
+        <Text variant={'bodyMedium'}>
+          {getEventTimeString(forumListData.eventTime, forumListData.timeZoneID, appConfig.schedule.timeZoneLabelMode)}
+        </Text>
       )}
       <Text variant={'bodyMedium'}>
         {forumListData.postCount} {pluralize('post', forumListData.postCount)}

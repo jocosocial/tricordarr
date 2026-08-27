@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment-timezone';
 
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
+import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {LogLevel} from '#src/Libraries/Logger/types';
 import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from '#src/Libraries/Network/APIClient';
 import {StorageKeys} from '#src/Libraries/Storage';
@@ -32,6 +33,7 @@ export interface ScheduleConfig {
   defaultLfgList: FezListEndpoints;
   overlapExcludeDurationHours: number;
   compactThemeEvents: boolean;
+  timeZoneLabelMode: TimeZoneLabelMode;
 }
 
 export interface AccessibilityConfig {
@@ -135,6 +137,7 @@ export const defaultAppConfig: AppConfig = {
     defaultLfgList: 'open',
     overlapExcludeDurationHours: 4,
     compactThemeEvents: true,
+    timeZoneLabelMode: TimeZoneLabelMode.offset,
   },
   portTimeZoneID: 'America/New_York',
   apiClientConfig: {
@@ -215,6 +218,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.schedule.compactThemeEvents === undefined) {
     appConfig.schedule.compactThemeEvents = true;
+  }
+  if (appConfig.schedule.timeZoneLabelMode === undefined) {
+    appConfig.schedule.timeZoneLabelMode = TimeZoneLabelMode.offset;
   }
   if (appConfig.logLevel === undefined) {
     appConfig.logLevel = LogLevel.DEBUG;

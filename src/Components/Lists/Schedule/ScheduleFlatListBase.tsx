@@ -5,6 +5,7 @@ import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, View} from
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
 import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {getDayMarker, getTimeMarker} from '#src/Libraries/DateTime';
 import {getScheduleListTimeSeparatorID} from '#src/Libraries/Schedule';
@@ -51,6 +52,8 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
   maintainVisibleContentPosition,
 }: ScheduleFlatListBaseProps<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
+  const {appConfig} = useConfig();
+  const timeZoneLabelMode = appConfig.schedule.timeZoneLabelMode;
 
   const contentStyle = {
     ...commonStyles.paddingHorizontalSmall,
@@ -68,12 +71,17 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
       return <SpaceDivider />;
     }
 
-    let label: string | undefined = getTimeMarker(firstItem.startTime, firstItem.timeZoneID, showDayInDividers);
+    let label: string | undefined = getTimeMarker(
+      firstItem.startTime,
+      firstItem.timeZoneID,
+      showDayInDividers,
+      timeZoneLabelMode,
+    );
     if (separator === 'day') {
       label = getDayMarker(firstItem.startTime, firstItem.timeZoneID, showDayInDividers);
     }
     return <TimeDivider label={label} />;
-  }, [items, separator, showDayInDividers]);
+  }, [items, separator, showDayInDividers, timeZoneLabelMode]);
 
   const renderListFooter = useCallback(() => {
     let footer: ReactElement = <></>;
@@ -110,7 +118,11 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
     if (leadingTimeMarker === trailingTimeMarker) {
       return <SpaceDivider />;
     }
-    return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZoneID, showDayInDividers)} />;
+    return (
+      <TimeDivider
+        label={getTimeMarker(trailingItem.startTime, trailingItem.timeZoneID, showDayInDividers, timeZoneLabelMode)}
+      />
+    );
   };
 
   // FlashList skips separator when paginating.

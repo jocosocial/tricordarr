@@ -116,7 +116,7 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
       onScrollThreshold={onScrollThreshold}
       handleLoadNext={handleLoadNext}
       hasNextPage={hasNextPage}
-      extraData={[minutelyUpdatingDate, appConfig.manualTimeOffset]}
+      extraData={[minutelyUpdatingDate, appConfig.manualTimeOffset, appConfig.schedule.timeZoneLabelMode]}
     />
   );
 };

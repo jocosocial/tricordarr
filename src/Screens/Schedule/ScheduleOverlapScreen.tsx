@@ -292,7 +292,13 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  const durationString = getDurationString(eventData.startTime, eventData.endTime, eventData.timeZoneID, true);
+  const durationString = getDurationString(
+    eventData.startTime,
+    eventData.endTime,
+    eventData.timeZoneID,
+    true,
+    appConfig.schedule.timeZoneLabelMode,
+  );
 
   return (
     <AppView>

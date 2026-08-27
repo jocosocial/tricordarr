@@ -5,13 +5,16 @@ import {Card, Text} from 'react-native-paper';
 
 import {ContentText} from '#src/Components/Text/ContentText';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
+import {getTimeZoneLabel} from '#src/Libraries/DateTime';
 import {AnnouncementData} from '#src/Structs/ControllerStructs';
 
 export const AnnouncementCard = ({announcement}: {announcement: AnnouncementData}) => {
   const {commonStyles} = useStyles();
-  const {tzAtTime, abbrevAtTime} = useTimeZone();
+  const {tzAtTime} = useTimeZone();
+  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     contentText: {
@@ -25,9 +28,9 @@ export const AnnouncementCard = ({announcement}: {announcement: AnnouncementData
 
   const untilDate = new Date(announcement.displayUntil);
   const shipTz = tzAtTime(untilDate);
-  const shipAbbr = abbrevAtTime(untilDate);
+  const tzLabel = getTimeZoneLabel(shipTz, untilDate, appConfig.schedule.timeZoneLabelMode);
   const displayUntilLabel =
-    moment(announcement.displayUntil).tz(shipTz).format('ddd MMM D hh:mm A') + (shipAbbr ? ` ${shipAbbr}` : '');
+    moment(announcement.displayUntil).tz(shipTz).format('ddd MMM D hh:mm A') + (tzLabel ? ` ${tzLabel}` : '');
 
   /**
    * Card.Title got weird with multiple lines. So I just made it real Text instead.

@@ -1,6 +1,7 @@
 import {Formik} from 'formik';
-import React, {useCallback, useEffect, useState} from 'react';
-import {View} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {SegmentedButtons, Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -15,10 +16,30 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
+import {SegmentedButtonType} from '#src/Types';
+
+const timeZoneLabelButtons: SegmentedButtonType[] = [
+  {
+    value: TimeZoneLabelMode.offset,
+    label: TimeZoneLabelMode.getLabel(TimeZoneLabelMode.offset),
+    testID: 'timeZoneLabelOffset-button',
+  },
+  {
+    value: TimeZoneLabelMode.abbreviation,
+    label: TimeZoneLabelMode.getLabel(TimeZoneLabelMode.abbreviation),
+    testID: 'timeZoneLabelAbbreviation-button',
+  },
+  {
+    value: TimeZoneLabelMode.hidden,
+    label: TimeZoneLabelMode.getLabel(TimeZoneLabelMode.hidden),
+    testID: 'timeZoneLabelHidden-button',
+  },
+];
 
 export const EventSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -31,6 +52,16 @@ export const EventSettingsScreen = () => {
   const [open, setOpen] = useState(appConfig.schedule.eventsShowOpenLfgs);
   const [overlapExcludeDurationHours, setOverlapExcludeDurationHours] = useState(
     appConfig.schedule.overlapExcludeDurationHours,
+  );
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        helperText: {
+          ...commonStyles.marginTopSmall,
+        },
+      }),
+    [commonStyles],
   );
 
   const handleOpenLfgs = () => {
@@ -75,6 +106,19 @@ export const EventSettingsScreen = () => {
       },
     });
     setCompactThemeEvents(!appConfig.schedule.compactThemeEvents);
+  };
+
+  /**
+   * Persist the user's timezone label preference for schedule and event times.
+   */
+  const handleTimeZoneLabelMode = (value: string) => {
+    updateAppConfig({
+      ...appConfig,
+      schedule: {
+        ...appConfig.schedule,
+        timeZoneLabelMode: value as TimeZoneLabelMode,
+      },
+    });
   };
 
   const toggleValue = (configKey: keyof PushNotificationConfig) => {
@@ -138,6 +182,26 @@ export const EventSettingsScreen = () => {
                   style={commonStyles.paddingHorizontalSmall}
                 />
               </ListSection>
+              <ListSection>
+                <ListSubheader>Timezone Labels</ListSubheader>
+              </ListSection>
+            </View>
+          </Formik>
+        </PaddedContentView>
+        <PaddedContentView>
+          <SegmentedButtons
+            buttons={timeZoneLabelButtons}
+            value={appConfig.schedule.timeZoneLabelMode}
+            onValueChange={handleTimeZoneLabelMode}
+          />
+          <Text variant={'bodySmall'} style={styles.helperText}>
+            Abbreviations like MST can mean different regions. Offsets (GMT-7) are unambiguous. Hidden omits the
+            timezone from event times.
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView padSides={false}>
+          <Formik initialValues={{}} onSubmit={() => {}}>
+            <View>
               <ListSection>
                 <ListSubheader>LFG Integration</ListSubheader>
                 <BooleanField

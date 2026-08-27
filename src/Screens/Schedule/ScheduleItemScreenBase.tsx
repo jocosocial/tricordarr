@@ -18,6 +18,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LFGMembershipView} from '#src/Components/Views/Schedule/LFGMembershipView';
 import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
@@ -45,6 +46,7 @@ export const ScheduleItemScreenBase = ({
 }: Props) => {
   const navigation = useCommonStack();
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     cancelContainer: {
@@ -122,7 +124,13 @@ export const ScheduleItemScreenBase = ({
               <DataFieldListItem icon={AppIcons.events} description={eventData.title} title={'Title'} />
               <DataFieldListItem
                 icon={AppIcons.time}
-                description={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZoneID, true)}
+                description={getDurationString(
+                  eventData.startTime,
+                  eventData.endTime,
+                  eventData.timeZoneID,
+                  true,
+                  appConfig.schedule.timeZoneLabelMode,
+                )}
                 title={'Date'}
               />
               <DataFieldListItem

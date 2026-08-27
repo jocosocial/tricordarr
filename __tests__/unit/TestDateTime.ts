@@ -1,4 +1,5 @@
-import {calcCruiseDayTime} from '#src/Libraries/DateTime';
+import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
+import {calcCruiseDayTime, getDurationString, getTimeZoneLabel} from '#src/Libraries/DateTime';
 
 describe('calcCruiseDayTime', () => {
   const cruiseStartDate = new Date('2025-03-02T05:00:00.000Z');
@@ -59,5 +60,55 @@ describe('calcCruiseDayTime', () => {
       adjustedDate: adjustedDate,
       mins: adjustedDate.getHours(),
     });
+  });
+});
+
+describe('getTimeZoneLabel', () => {
+  const winterNy = '2025-01-15T17:00:00.000Z';
+  const summerNy = '2025-07-15T16:00:00.000Z';
+  const kolkataNoon = '2025-06-15T06:30:00.000Z';
+  const utcNoon = '2025-06-15T12:00:00.000Z';
+
+  it('formats whole-hour offsets without minutes', () => {
+    expect(getTimeZoneLabel('America/New_York', winterNy, TimeZoneLabelMode.offset)).toEqual('GMT-5');
+    expect(getTimeZoneLabel('UTC', utcNoon, TimeZoneLabelMode.offset)).toEqual('GMT+0');
+  });
+
+  it('includes minutes for fractional offsets', () => {
+    expect(getTimeZoneLabel('Asia/Kolkata', kolkataNoon, TimeZoneLabelMode.offset)).toEqual('GMT+5:30');
+  });
+
+  it('returns localized abbreviations at the event instant', () => {
+    expect(getTimeZoneLabel('America/New_York', winterNy, TimeZoneLabelMode.abbreviation)).toEqual('EST');
+    expect(getTimeZoneLabel('America/New_York', summerNy, TimeZoneLabelMode.abbreviation)).toEqual('EDT');
+  });
+
+  it('returns an empty string when hidden', () => {
+    expect(getTimeZoneLabel('America/New_York', winterNy, TimeZoneLabelMode.hidden)).toEqual('');
+  });
+
+  it('uses the event instant for DST, not the current time', () => {
+    expect(getTimeZoneLabel('America/New_York', winterNy, TimeZoneLabelMode.offset)).toEqual('GMT-5');
+    expect(getTimeZoneLabel('America/New_York', summerNy, TimeZoneLabelMode.offset)).toEqual('GMT-4');
+  });
+});
+
+describe('getDurationString', () => {
+  const start = '2025-01-15T17:00:00.000Z';
+  const end = '2025-01-15T18:00:00.000Z';
+  const timeZoneID = 'America/New_York';
+
+  it('appends a GMT offset by default', () => {
+    expect(getDurationString(start, end, timeZoneID)).toEqual('12:00 PM - 01:00 PM GMT-5');
+  });
+
+  it('appends an abbreviation when requested', () => {
+    expect(getDurationString(start, end, timeZoneID, false, TimeZoneLabelMode.abbreviation)).toEqual(
+      '12:00 PM - 01:00 PM EST',
+    );
+  });
+
+  it('omits the timezone label when hidden', () => {
+    expect(getDurationString(start, end, timeZoneID, false, TimeZoneLabelMode.hidden)).toEqual('12:00 PM - 01:00 PM');
   });
 });

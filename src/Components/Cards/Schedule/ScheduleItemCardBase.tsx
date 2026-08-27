@@ -5,6 +5,7 @@ import {Card, Text, TouchableRipple} from 'react-native-paper';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {EventCardNowView} from '#src/Components/Views/Schedule/EventCardNowView';
 import {EventCardSoonView} from '#src/Components/Views/Schedule/EventCardSoonView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {getDurationString} from '#src/Libraries/DateTime';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
@@ -53,6 +54,7 @@ export const ScheduleItemCardBase = ({
   showMarkerBorder = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     cardContent: {
@@ -110,7 +112,7 @@ export const ScheduleItemCardBase = ({
     },
   });
 
-  const duration = getDurationString(startTime, endTime, timeZoneID, showDay);
+  const duration = getDurationString(startTime, endTime, timeZoneID, showDay, appConfig.schedule.timeZoneLabelMode);
 
   return (
     <Card mode={'contained'} style={cardStyle}>
