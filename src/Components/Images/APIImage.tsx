@@ -178,39 +178,6 @@ export const APIImage = ({
   }, [imageSourceMetadata]);
 
   /**
-   * Checks if the full size image is cached and sets the image source accordingly.
-   */
-  const checkCacheAndSetThumbSource = useCallback(async () => {
-    if (!imageSourceMetadata.fullURI) {
-      if (!imageSourceMetadata.thumbURI) {
-        return;
-      }
-      const thumbSource = {uri: imageSourceMetadata.thumbURI};
-      setImageSource(thumbSource);
-      return;
-    }
-
-    let cachePath: string | null = null;
-    try {
-      cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI});
-    } catch (error) {
-      logger.warn('Failed to get full image cache path', error);
-    }
-    if (cachePath) {
-      const fullSource = getCachedFileSource(cachePath);
-      setImageSource(fullSource);
-      return;
-    }
-
-    if (!imageSourceMetadata.thumbURI) {
-      return;
-    }
-
-    const thumbSource = {uri: imageSourceMetadata.thumbURI};
-    setImageSource(thumbSource);
-  }, [getCachedFileSource, imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI]);
-
-  /**
    * Effect to set the image source metadata on mount. This is used to display the image in
    * the image viewer and what to show in the underlying image component.
    */
@@ -269,11 +236,16 @@ export const APIImage = ({
 
   /**
    * Sets the image source to the appropriate URI based on the initial size.
-   * Soon to also include if we have a cache path for the full size!
+   * staticSize="thumb" always displays the thumbnail even if the full image is
+   * already cached; skipThumbnails only applies to unlocked (non-staticSize) images.
    */
   React.useEffect(() => {
     if (staticSize === 'thumb') {
-      checkCacheAndSetThumbSource();
+      if (!imageSourceMetadata.thumbURI) {
+        return;
+      }
+      const thumbSource = {uri: imageSourceMetadata.thumbURI};
+      setImageSource(thumbSource);
       return;
     }
     if (staticSize === 'identicon') {
@@ -317,7 +289,6 @@ export const APIImage = ({
     imageSourceMetadata.fullURI,
     imageSourceMetadata.thumbURI,
     imageSourceMetadata.identiconURI,
-    checkCacheAndSetThumbSource,
   ]);
 
   /**
