@@ -15,6 +15,7 @@ import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useFollowCruiseDayToday} from '#src/Hooks/useFollowCruiseDayToday';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {
   buildDayPlannerItems,
@@ -48,6 +49,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(
     cruiseDayParam === 0 || cruiseDayParam === undefined ? adjustedCruiseDayToday : cruiseDayParam,
   );
+  useFollowCruiseDayToday(selectedCruiseDay, setSelectedCruiseDay);
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const scrollViewRef = useRef<ScrollView>(null);

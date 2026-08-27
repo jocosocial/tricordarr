@@ -2,6 +2,7 @@ import {type FlashListRef} from '@shopify/flash-list';
 import {SetStateAction, useCallback, useState} from 'react';
 
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useFollowCruiseDayToday} from '#src/Hooks/useFollowCruiseDayToday';
 
 interface UseCruiseDayPickerOptions<T> {
   /**
@@ -53,6 +54,7 @@ interface UseCruiseDayPickerResult {
  * - Selected cruise day
  * - Day switching loading state
  * - Scroll position reset on day change
+ * - Following cruise "today" across overnight / late-day rollover when the user is still on the previous today
  *
  * @example
  * ```tsx
@@ -111,6 +113,8 @@ export function useCruiseDayPicker<T>({
     },
     [clearList, listRef, selectedCruiseDay],
   );
+
+  useFollowCruiseDayToday(selectedCruiseDay, handleSetCruiseDay);
 
   const onDataLoaded = useCallback(() => {
     setIsSwitchingDays(false);
