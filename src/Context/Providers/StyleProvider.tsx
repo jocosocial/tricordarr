@@ -343,14 +343,14 @@ export const createCommonStyles = (theme: AppTheme) =>
     },
     primaryContainer: {
       backgroundColor: theme.colors.primaryContainer,
-      // Disabling this from the ForumPostMessageView because it's not playing
+      // Disabling this from MessageView because it's not playing
       // nice with the UserBylineTag privilege distinction. Since unifying all
       // colors to higher contrast it shouldn't be a problem.
       // color: theme.colors.onPrimaryContainer,
     },
     secondaryContainer: {
       backgroundColor: theme.colors.secondaryContainer,
-      // Disabling this from the ForumPostMessageView because it's not playing
+      // Disabling this from MessageView because it's not playing
       // nice with the UserBylineTag privilege distinction. Since unifying all
       // colors to higher contrast it shouldn't be a problem.
       // color: theme.colors.onSecondaryContainer,

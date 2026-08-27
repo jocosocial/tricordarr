@@ -2,6 +2,7 @@ import React, {memo} from 'react';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
+import {FezPostActionsMenu} from '#src/Components/Menus/Fez/FezPostActionsMenu';
 import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
 import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView';
@@ -54,7 +55,16 @@ const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
       )}
       {messageOnRight && <MessageSpacerView />}
       <MessageViewContainer>
-        <MessageView fez={fez} fezPost={fezPost} messageOnRight={messageOnRight} showAuthor={showAuthor} />
+        <MessageView
+          author={fezPost.author}
+          text={fezPost.text}
+          timestamp={new Date(fezPost.timestamp)}
+          messageOnRight={messageOnRight}
+          showAuthor={showAuthor}
+          renderActionsMenu={({visible, closeMenu, anchor}) => (
+            <FezPostActionsMenu visible={visible} closeMenu={closeMenu} anchor={anchor} fezPost={fezPost} fez={fez} />
+          )}
+        />
         {fezPost.image && <ContentPostImage image={fezPost.image} messageOnRight={messageOnRight} />}
       </MessageViewContainer>
       {!messageOnRight && <MessageSpacerView />}

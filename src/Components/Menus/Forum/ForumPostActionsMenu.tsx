@@ -42,7 +42,7 @@ export const ForumPostActionsMenu = ({
   const {setString} = useClipboard();
 
   /**
-   * closeMenu comes from the instance established in ForumPostMessageView so we need to drill
+   * closeMenu comes from the instance established in MessageView so we need to drill
    * that through.
    */
   return (
