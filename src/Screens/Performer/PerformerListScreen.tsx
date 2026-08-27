@@ -79,7 +79,12 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
     );
   }, [performerType]);
 
-  const renderListFooter = useCallback(() => <PaddedContentView />, []);
+  /**
+   * Bottom spacer so the last row of cards can scroll fully into view.
+   */
+  const renderListFooter = useCallback(() => {
+    return <View style={commonStyles.overscroll} />;
+  }, [commonStyles.overscroll]);
 
   const keyExtractor = useCallback((item: PerformerHeaderData, index: number) => {
     return item.id || `performer-${item.name}-${index}`;
