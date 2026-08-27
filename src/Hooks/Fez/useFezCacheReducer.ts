@@ -450,6 +450,8 @@ export const useFezCacheReducer = () => {
    * The post mutation returns FezPostData (not the full FezData).
    * Socket payloads may send timestamp as a number: Swiftarr uses seconds since
    * 2001-01-01 (Swift Date reference). Normalize to ISO8601 string.
+   * Idempotent: if the postID is already in the detail cache (mutation and socket
+   * both delivering the same post), skip detail and list updates.
    */
   const appendPost = useCallback(
     (fezID: string, newPost: FezPostData) => {
@@ -457,6 +459,12 @@ export const useFezCacheReducer = () => {
       const rawTs = (newPost as {timestamp: string | number}).timestamp;
       const timestamp = swiftTimestampToISO(rawTs);
       const post: FezPostData = {...newPost, timestamp};
+      const alreadyInCache = queryClient
+        .getQueriesData<InfiniteData<FezData>>({queryKey: [`/fez/${fezID}`]})
+        .some(([, data]) => data?.pages.some(page => page.members?.posts?.some(p => p.postID === post.postID)));
+      if (alreadyInCache) {
+        return;
+      }
 
       // Add the new post only to the last page. updateFezDetailCache runs the updater on
       // every page, which would duplicate the post when fezPostsData is built from
@@ -473,8 +481,7 @@ export const useFezCacheReducer = () => {
               return page;
             }
             const isLastPage = index === lastIndex;
-            const alreadyExists = page.members.posts?.some(p => p.postID === post.postID);
-            const posts = isLastPage && !alreadyExists ? [...(page.members.posts ?? []), post] : page.members.posts;
+            const posts = isLastPage ? [...(page.members.posts ?? []), post] : page.members.posts;
             return {
               ...page,
               lastModificationTime: now,

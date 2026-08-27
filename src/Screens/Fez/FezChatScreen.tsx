@@ -20,7 +20,6 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {FezMutedView} from '#src/Components/Views/Static/FezMutedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -138,7 +137,6 @@ const FezChatScreenInner = ({route}: Props) => {
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const fezPostMutation = useFezPostMutation();
   const {setSnackbarPayload} = useSnackbar();
-  const {currentUserID} = useSession();
   const {openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
   const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
@@ -216,12 +214,12 @@ const FezChatScreenInner = ({route}: Props) => {
           return;
         }
         lastProcessedPostIDRef.current = socketFezPostData.postID;
-        if (currentUserID != null && socketFezPostData.author.userID !== currentUserID) {
-          appendPostToCache(route.params.fezID, socketFezPostData);
-        }
+        // Include self-authored posts so other devices of the same user stay in
+        // sync. appendPost is idempotent, so the posting device does not double-apply.
+        appendPostToCache(route.params.fezID, socketFezPostData);
       }
     },
-    [appendPostToCache, currentUserID, route.params.fezID, setSnackbarPayload],
+    [appendPostToCache, route.params.fezID, setSnackbarPayload],
   );
   fezSocketMessageHandlerRef.current = fezSocketMessageHandler;
 
