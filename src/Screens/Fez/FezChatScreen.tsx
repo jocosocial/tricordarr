@@ -244,6 +244,9 @@ const FezChatScreenInner = ({route}: Props) => {
     }
   }, [hasNextPage, handleLoadNext]);
 
+  /**
+   * Posts to the fez and resets the composer, keeping the current elevation flags.
+   */
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
       values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
@@ -255,7 +258,14 @@ const FezChatScreenInner = ({route}: Props) => {
         {fezID: route.params.fezID, postContentData: values},
         {
           onSuccess: response => {
-            formikHelpers.resetForm();
+            formikHelpers.resetForm({
+              values: {
+                text: '',
+                images: [],
+                postAsModerator: asModerator,
+                postAsTwitarrTeam: asTwitarrTeam,
+              },
+            });
             appendPostToCache(route.params.fezID, response.data);
             resetInitialReadCount();
             dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
@@ -264,7 +274,17 @@ const FezChatScreenInner = ({route}: Props) => {
         },
       );
     },
-    [fez, markRead, fezPostMutation, route.params.fezID, appendPostToCache, resetInitialReadCount, dispatchScrollToTop],
+    [
+      fez,
+      markRead,
+      fezPostMutation,
+      route.params.fezID,
+      appendPostToCache,
+      resetInitialReadCount,
+      dispatchScrollToTop,
+      asModerator,
+      asTwitarrTeam,
+    ],
   );
 
   // Initial set useEffect

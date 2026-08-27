@@ -186,6 +186,9 @@ const ForumThreadScreenBaseInner = ({
     });
   }, [getNavButtons, navigation]);
 
+  /**
+   * Creates a forum post and resets the composer, keeping the current elevation flags.
+   */
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     formikHelpers.setSubmitting(true);
     if (!forumData) {
@@ -200,7 +203,14 @@ const ForumThreadScreenBaseInner = ({
       },
       {
         onSuccess: response => {
-          formikHelpers.resetForm();
+          formikHelpers.resetForm({
+            values: {
+              text: '',
+              images: [],
+              postAsModerator: asModerator,
+              postAsTwitarrTeam: asTwitarrTeam,
+            },
+          });
 
           // Update React Query caches (instant, no network).
           // This triggers a re-render via the derived useForumData.
