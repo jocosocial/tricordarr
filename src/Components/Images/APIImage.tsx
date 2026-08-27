@@ -49,7 +49,7 @@ interface APIImageV2Props {
  * feature is disabled. It will also include an image viewer that allows the user to see
  * the image in more detail.
  *
- * Setting your own onPress effectively disables the image viewer.
+ * Setting your own onPress disables the embedded image viewer (it is not mounted).
  */
 export const APIImage = ({
   path,
@@ -312,12 +312,12 @@ export const APIImage = ({
 
   const isThumbnail = imageSource.uri === imageSourceMetadata.thumbURI;
 
-  // disableTouch should also prevent even loading the AppImageViewer. Even if its never used
-  // just having it can trigger extra background processing that we do not need.
+  // disableTouch and a custom onPress should both skip mounting AppImageViewer.
+  // Even if unused, having it can trigger extra background processing that we do not need.
   // AvatarImage always disables touch which is where I saw this.
   return (
     <View>
-      {!disableTouch && (
+      {!disableTouch && !onPress && (
         <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
       )}
       <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>

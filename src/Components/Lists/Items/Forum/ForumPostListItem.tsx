@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
-import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
+import {ContentPostImages} from '#src/Components/Images/ContentPostImages';
 import {ForumPostActionsMenu} from '#src/Components/Menus/Forum/ForumPostActionsMenu';
 import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
@@ -99,10 +99,7 @@ const ForumPostListItemInternal = ({
             />
           )}
         />
-        {postData.images &&
-          postData.images.map((image, index) => {
-            return <ContentPostImage key={index} image={image} messageOnRight={false} />;
-          })}
+        <ContentPostImages images={postData.images ?? []} />
       </MessageViewContainer>
     </FlatListItemContent>
   );

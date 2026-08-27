@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
-import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
+import {ContentPostImages} from '#src/Components/Images/ContentPostImages';
 import {FezPostActionsMenu} from '#src/Components/Menus/Fez/FezPostActionsMenu';
 import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
@@ -65,7 +65,7 @@ const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
             <FezPostActionsMenu visible={visible} closeMenu={closeMenu} anchor={anchor} fezPost={fezPost} fez={fez} />
           )}
         />
-        {fezPost.image && <ContentPostImage image={fezPost.image} messageOnRight={messageOnRight} />}
+        <ContentPostImages images={fezPost.image ? [fezPost.image] : []} messageOnRight={messageOnRight} />
       </MessageViewContainer>
       {!messageOnRight && <MessageSpacerView />}
     </FlatListItemContent>
