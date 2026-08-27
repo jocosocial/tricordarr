@@ -16,7 +16,7 @@ export const PersonalEventHelpScreen = () => {
         <HelpChapterTitleView title={'General'} />
         <HelpTopicView>
           Personal/Private Events are private calendar entries created by you within the Twitarr system for you and your
-          friends. Useful for a single-app schedule for your day.
+          friends. Useful for a single-app schedule for your day or making reminders for yourself.
         </HelpTopicView>
         <HelpTopicView>
           You can add guests to your personal events. This will automatically create a Seamail chat for it. You can add
