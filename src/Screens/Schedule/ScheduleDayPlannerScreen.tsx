@@ -3,7 +3,7 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollView, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
-import {SchedulePersonalEventCreateFAB} from '#src/Components/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB';
+import {ScheduleDayPlannerFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleDayPlannerFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
@@ -233,7 +233,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
           />
         )}
       </View>
-      {!preRegistrationMode && <SchedulePersonalEventCreateFAB />}
+      {!preRegistrationMode && <ScheduleDayPlannerFAB cruiseDay={selectedCruiseDay} />}
     </AppView>
   );
 };

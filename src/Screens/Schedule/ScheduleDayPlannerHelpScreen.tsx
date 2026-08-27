@@ -27,10 +27,16 @@ export const ScheduleDayPlannerHelpScreen = () => {
           <ScheduleDayButtonHelpTopicView />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Floating Action Button'}>
-          <HelpFABView icon={AppIcons.eventCreate} label={'New Event'} />
+          <HelpFABView icon={AppIcons.new} label={'New'} />
           <HelpTopicView>
-            Press the "New Event" button in the lower right to create a new personal event for the current day. This
+            Press the "New" button in the lower right to choose what to create for the currently selected day. This
             button only appears when not in pre-registration mode.
+          </HelpTopicView>
+          <HelpTopicView title={'Private'} icon={AppIcons.eventCreate}>
+            Create a new personal or private event on the selected day.
+          </HelpTopicView>
+          <HelpTopicView title={'LFG'} icon={AppIcons.lfgCreate}>
+            Create a new Looking For Group event on the selected day.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
