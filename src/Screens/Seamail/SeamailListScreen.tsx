@@ -61,10 +61,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   const {asPrivilegedUser} = useElevation();
   const {seamailChatCategories, seamailOnlyNew, setSeamailOnlyNew} = useSeamailFilter();
-  const fezType = useMemo(
-    () => FezType.fezTypesForChatCategories(seamailChatCategories),
-    [seamailChatCategories],
-  );
+  const fezType = useMemo(() => FezType.fezTypesForChatCategories(seamailChatCategories), [seamailChatCategories]);
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isFetching} = useFezListQuery({
     endpoint: 'joined',
     fezType,
@@ -139,7 +136,16 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableSelection, asPrivilegedUser, navigation, setRefreshing, fezList, selectedItems, seamailChatCategories, seamailOnlyNew]);
+  }, [
+    enableSelection,
+    asPrivilegedUser,
+    navigation,
+    setRefreshing,
+    fezList,
+    selectedItems,
+    seamailChatCategories,
+    seamailOnlyNew,
+  ]);
 
   useEffect(() => {
     navigation.setOptions({
