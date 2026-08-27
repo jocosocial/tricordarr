@@ -230,9 +230,15 @@ export const APIImage = ({
     }
   }, [imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI]);
 
+  /**
+   * Background-fetch the full image whenever a thumbnail is on screen.
+   * staticSize="thumb" still displays the thumb, but callers like PerformerHeaderCard
+   * need the full size cached before the detail screen opens. Avatars skip this so
+   * forum/chat lists do not pull full-size user photos.
+   */
   React.useEffect(() => {
     const shouldScheduleFullPreload =
-      !appConfig.skipThumbnails &&
+      mode !== 'avatar' &&
       !!imageSourceMetadata.thumbURI &&
       imageSource?.uri === imageSourceMetadata.thumbURI &&
       !hasRequestedFullPreload.current;
@@ -255,9 +261,9 @@ export const APIImage = ({
     };
   }, [
     appConfig.imagePreloadDelaySeconds,
-    appConfig.skipThumbnails,
     imageSource?.uri,
     imageSourceMetadata.thumbURI,
+    mode,
     requestFullPreload,
   ]);
 
