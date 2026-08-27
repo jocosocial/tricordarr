@@ -78,12 +78,15 @@ export const buildDayPlannerItems = (
   return dedupedItems.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 };
 
+/** Display duration for compacted "Theme:" events on the Day Planner timeline. */
+export const COMPACT_THEME_DURATION_MINUTES = 90;
+/** Minutes at the bottom of a compacted theme card that fade from opaque to transparent. */
+export const COMPACT_THEME_FADE_MINUTES = 30;
+
 /**
  * Clip an item's display times to the day boundaries and calculate display properties.
  * Returns null if the item doesn't intersect the display window.
  */
-const COMPACT_THEME_DURATION_MINUTES = 60;
-
 const adjustItemForDisplay = (
   item: DayPlannerItem,
   dayStart: Date,
@@ -104,6 +107,7 @@ const adjustItemForDisplay = (
     const actualDurationMs = item.endTime.getTime() - item.startTime.getTime();
     if (actualDurationMs > compactMs) {
       adjustedItem.endTime = new Date(item.startTime.getTime() + compactMs);
+      adjustedItem.compactedTheme = true;
     }
   }
 

@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import {Text, TouchableRipple} from 'react-native-paper';
 
 import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
@@ -7,7 +8,22 @@ import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {COMPACT_THEME_DURATION_MINUTES, COMPACT_THEME_FADE_MINUTES} from '#src/Libraries/DayPlanner';
 import {DayPlannerItem, DayPlannerItemWithLayout} from '#src/Types/DayPlanner';
+
+const COMPACT_THEME_FADE_START = 1 - COMPACT_THEME_FADE_MINUTES / COMPACT_THEME_DURATION_MINUTES;
+
+/**
+ * Convert an `rgb(r, g, b)` color to `rgba(r, g, b, 0)` so a LinearGradient
+ * can fade to transparent without mixing toward black.
+ */
+const rgbToTransparent = (color: string): string => {
+  const match = color.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+  if (!match) {
+    return color;
+  }
+  return `rgba(${match[1]}, ${match[2]}, ${match[3]}, 0)`;
+};
 
 type DayPlannerCardContentLevel = 'titleOnly' | 'titleAndLocation';
 
@@ -37,9 +53,13 @@ const LAYOUT = {
 
 // Static styles that don't change per-card
 const staticStyles = StyleSheet.create({
+  fill: {
+    flex: 1,
+  },
   content: {
     flex: 1,
     overflow: 'hidden',
+    padding: 4,
   },
 });
 
@@ -122,11 +142,10 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
         },
         card: {
           flex: 1,
-          backgroundColor,
+          backgroundColor: item.compactedTheme ? undefined : backgroundColor,
           borderRadius: 4,
           borderWidth: 1,
           borderColor: theme.colors.background,
-          padding: 4,
           overflow: 'hidden',
         },
         text: {
@@ -137,7 +156,16 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
           color: textColor,
         },
       }),
-    [item.topOffset, item.height, leftPosition, columnWidth, backgroundColor, textColor, theme.colors.background],
+    [
+      item.topOffset,
+      item.height,
+      item.compactedTheme,
+      leftPosition,
+      columnWidth,
+      backgroundColor,
+      textColor,
+      theme.colors.background,
+    ],
   );
 
   const showLocation = contentLevel === 'titleAndLocation' && item.location;
@@ -149,28 +177,40 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
   return (
     <View style={dynamicStyles.container}>
       <TouchableRipple style={dynamicStyles.card} onPress={onPress} borderless>
-        <View style={staticStyles.content}>
-          {item.cancelled && <ScheduleItemStatusBadge status={'Cancelled'} align={'left'} />}
-          <Text style={dynamicStyles.text} numberOfLines={titleLines} ellipsizeMode={'tail'}>
-            {showNeedsPhotographerIcon && (
-              <AppIcon icon={AppIcons.needsPhotographer} color={theme.colors.onTwitarrNegativeButton} small />
-            )}
-            {showNeedsPhotographerIcon && ' '}
-            {showPhotographerIcon && (
-              <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} small />
-            )}
-            {showPhotographerIcon && ' '}
-            {item.title}
-          </Text>
-          {showLocation && (
-            <Text
-              style={dynamicStyles.location}
-              variant={'bodySmall'}
-              numberOfLines={locationLines}
-              ellipsizeMode={'tail'}>
-              {item.location}
-            </Text>
+        <View style={staticStyles.fill}>
+          {item.compactedTheme && (
+            <LinearGradient
+              colors={[backgroundColor, backgroundColor, rgbToTransparent(backgroundColor)]}
+              locations={[0, COMPACT_THEME_FADE_START, 1]}
+              start={{x: 0, y: 0}}
+              end={{x: 0, y: 1}}
+              pointerEvents={'none'}
+              style={StyleSheet.absoluteFill}
+            />
           )}
+          <View style={staticStyles.content}>
+            {item.cancelled && <ScheduleItemStatusBadge status={'Cancelled'} align={'left'} />}
+            <Text style={dynamicStyles.text} numberOfLines={titleLines} ellipsizeMode={'tail'}>
+              {showNeedsPhotographerIcon && (
+                <AppIcon icon={AppIcons.needsPhotographer} color={theme.colors.onTwitarrNegativeButton} small />
+              )}
+              {showNeedsPhotographerIcon && ' '}
+              {showPhotographerIcon && (
+                <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} small />
+              )}
+              {showPhotographerIcon && ' '}
+              {item.title}
+            </Text>
+            {showLocation && (
+              <Text
+                style={dynamicStyles.location}
+                variant={'bodySmall'}
+                numberOfLines={locationLines}
+                ellipsizeMode={'tail'}>
+                {item.location}
+              </Text>
+            )}
+          </View>
         </View>
       </TouchableRipple>
     </View>

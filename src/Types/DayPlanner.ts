@@ -23,6 +23,8 @@ export interface DayPlannerItem {
   color: DayPlannerColor;
   cancelled?: boolean;
   location?: string;
+  /** True when this item was capped to COMPACT_THEME_DURATION_MINUTES for display. */
+  compactedTheme?: boolean;
   // Original data for navigation
   eventData?: EventData;
   fezData?: FezData;

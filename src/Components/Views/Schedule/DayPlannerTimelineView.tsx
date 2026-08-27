@@ -148,7 +148,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     }
 
     return (
-      <ScrollView ref={ref} style={styles.container} contentContainerStyle={styles.scrollContent}>
+      <ScrollView ref={ref} style={styles.container} contentContainerStyle={styles.scrollContent} scrollsToTop={false}>
         <View style={[styles.timelineRow, {height: timelineHeight}]}>
           <DayPlannerNowDivider
             dayStart={dayStart}
