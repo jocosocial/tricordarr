@@ -45,6 +45,7 @@ const ForumThreadScreenInner = ({route}: Props) => {
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
       forumListData={route.params.forumListData}
+      initialElevation={route.params.asPrivilegedUser}
     />
   );
 };

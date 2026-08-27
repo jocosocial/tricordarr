@@ -21,7 +21,6 @@ import {
   PostData,
   PostDetailData,
   PostSearchData,
-  UserHeader,
 } from '#src/Structs/ControllerStructs';
 
 /**
@@ -816,18 +815,19 @@ export const useForumCacheReducer = () => {
   /**
    * Prepend a newly created forum thread to the category, recent, and owner
    * list caches. Also prepends the first post to the "your posts" cache.
+   * Uses the server-authored creator/lastPoster so privileged creates (TT/mod) stay correct.
    */
   const createThread = useCallback(
-    (createdForum: ForumData, authorHeader: UserHeader) => {
+    (createdForum: ForumData) => {
       const firstPost = createdForum.posts[0];
       const forumListData: ForumListData = {
         forumID: createdForum.forumID,
-        creator: authorHeader,
+        creator: createdForum.creator,
         title: createdForum.title,
         postCount: createdForum.posts.length,
         readCount: createdForum.posts.length,
         createdAt: firstPost?.createdAt ?? new Date().toISOString(),
-        lastPoster: authorHeader,
+        lastPoster: firstPost?.author ?? createdForum.creator,
         lastPostAt: firstPost?.createdAt,
         isLocked: createdForum.isLocked,
         isFavorite: createdForum.isFavorite,

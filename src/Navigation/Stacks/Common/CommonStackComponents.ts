@@ -82,10 +82,10 @@ export type CommonStackParamList = {
   PersonalEventScreen: {
     eventID: string;
   };
-  ForumThreadScreen: {
+  ForumThreadScreen: WithElevation<{
     forumID: string;
     forumListData?: ForumListData;
-  };
+  }>;
   AlertKeywordsScreen: undefined;
   MuteKeywordsScreen: undefined;
   ForumThreadPostScreen: {

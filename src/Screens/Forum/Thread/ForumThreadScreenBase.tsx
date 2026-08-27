@@ -28,6 +28,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {AppIcons} from '#src/Enums/Icons';
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useForumData} from '#src/Hooks/Forum/useForumData';
 import {usePagination} from '#src/Hooks/usePagination';
@@ -57,6 +58,7 @@ interface Props {
   hasPreviousPage?: boolean;
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
+  initialElevation?: keyof typeof PrivilegedUserAccounts;
 }
 
 /**
@@ -65,9 +67,9 @@ interface Props {
  *
  * @TODO test that this doesn't jump around, especially with the "thread from post".
  */
-export const ForumThreadScreenBase = (props: Props) => {
+export const ForumThreadScreenBase = ({initialElevation, ...props}: Props) => {
   return (
-    <ElevationProvider>
+    <ElevationProvider initialElevation={initialElevation}>
       <ForumThreadScreenBaseInner {...props} />
     </ElevationProvider>
   );

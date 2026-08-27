@@ -12,6 +12,7 @@ import {ForumCreateForm} from '#src/Components/Forms/Forum/ForumCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
@@ -21,7 +22,6 @@ import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ForumCreateData, ForumData, PostContentData} from '#src/Structs/ControllerStructs';
@@ -53,7 +53,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   const forumCreateMutation = useForumCreateMutation();
   const {maxForumPostImages} = useClientSettings();
   const {createThread} = useForumCacheReducer();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {asPrivilegedUser} = useElevation();
   const dispatchScrollToTop = useScrollToTopIntent();
   // Use a ref to store the created forum data immediately (synchronously) to avoid race condition
   const createdForumRef = useRef<ForumData | null>(null);
@@ -89,12 +89,11 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
             dispatchScrollToTop(ForumStackComponents.forumCategoryScreen);
             navigation.replace(CommonStackComponents.forumThreadScreen, {
               forumID: createdForum.forumID,
+              asPrivilegedUser,
             });
           }
           // Update list caches asynchronously so navigation is not held up.
-          if (profilePublicData) {
-            createThread(response.data, profilePublicData.header);
-          }
+          createThread(response.data);
         },
         onSettled: () => formikHelpers.setSubmitting(false),
       },
