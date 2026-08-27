@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import * as React from 'react';
-import {PropsWithChildren, useEffect} from 'react';
+import {PropsWithChildren, useCallback, useEffect, useMemo} from 'react';
 import {Linking, ScrollView, StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Drawer} from 'react-native-drawer-layout';
@@ -31,13 +31,17 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
-  const styles = StyleSheet.create({
-    drawer: {
-      ...commonStyles.background,
-      paddingTop: insets.top,
-      paddingBottom: insets.bottom,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        drawer: {
+          ...commonStyles.background,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+        },
+      }),
+    [commonStyles.background, insets.bottom, insets.top],
+  );
 
   /**
    * Close drawer when navigation events occur. Previously this was a function
@@ -54,6 +58,18 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
     });
     return unsubscribe;
   }, [navigation, drawerOpen, setDrawerOpen]);
+
+  /**
+   * Stable open/close handlers. react-native-drawer-layout restarts its
+   * spring whenever these identities change.
+   */
+  const onDrawerOpen = useCallback(() => {
+    setDrawerOpen(true);
+  }, [setDrawerOpen]);
+
+  const onDrawerClose = useCallback(() => {
+    setDrawerOpen(false);
+  }, [setDrawerOpen]);
 
   const getModBadge = () => {
     let count = 0;
@@ -80,12 +96,13 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
     <Drawer
       drawerStyle={styles.drawer}
       open={drawerOpen}
-      onOpen={() => setDrawerOpen(true)}
-      onClose={() => setDrawerOpen(false)}
+      onOpen={onDrawerOpen}
+      onClose={onDrawerClose}
       swipeEnabled={false}
       renderDrawerContent={() => {
+        // iPad header taps are treated as status-bar taps and would scroll this to top.
         return (
-          <ScrollView>
+          <ScrollView scrollsToTop={false}>
             <PaperDrawer.Section title={'Community'} showDivider={false}>
               {hasVerified && (
                 <>

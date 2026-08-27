@@ -7,7 +7,9 @@ let mockHasShutternautManager = false;
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
+  useCallback: (fn: unknown) => fn,
   useEffect: jest.fn(),
+  useMemo: (fn: () => unknown) => fn(),
 }));
 
 jest.mock('@react-navigation/native', () => ({
