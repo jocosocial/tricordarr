@@ -51,6 +51,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const scrollViewRef = useRef<ScrollView>(null);
+  const lastAutoScrolledCruiseDay = useRef<number | null>(null);
   const {preRegistrationMode} = usePreRegistration();
 
   // Fetch events with dayplanner=true (only favorited/following events)
@@ -90,6 +91,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     refetch: refetchPersonalEvents,
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
+    hidePast: false,
     options: {
       enabled: !preRegistrationMode,
     },
@@ -196,18 +198,23 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   /**
-   * Auto-scroll on initial load. This used to scroll to current time for the current day,
-   * and the start of the list for other days. But that is somewhat inconsistent with
-   * other list behaviors.
+   * Auto-scroll to the first item on initial load and when switching cruise days.
+   * Gated by lastAutoScrolledCruiseDay so socket/refetch updates that rebuild
+   * dayPlannerItems (and thus scrollToFirstItem) do not jump the timeline.
    */
   useEffect(() => {
-    if (scrollViewRef.current && !showLoading) {
-      const rafId = requestAnimationFrame(() => {
-        scrollToFirstItem();
-      });
-      return () => cancelAnimationFrame(rafId);
+    if (showLoading || !scrollViewRef.current) {
+      return;
     }
-  }, [showLoading, scrollToFirstItem]);
+    if (lastAutoScrolledCruiseDay.current === selectedCruiseDay) {
+      return;
+    }
+    const rafId = requestAnimationFrame(() => {
+      scrollToFirstItem();
+      lastAutoScrolledCruiseDay.current = selectedCruiseDay;
+    });
+    return () => cancelAnimationFrame(rafId);
+  }, [showLoading, selectedCruiseDay, scrollToFirstItem]);
 
   return (
     <AppView>

@@ -155,7 +155,10 @@ export const useFezCacheReducer = () => {
 
   /**
    * Handles membership transitions that require moving a fez between list endpoints
-   * rather than only updating in-place.
+   * rather than only updating in-place. LFG join/leave moves between /fez/open and
+   * /fez/joined. Private-event leave removes the fez from all lists. Private-event
+   * and seamail join insert into matching /fez/joined caches when the fez is new
+   * to this user (e.g. addedTo socket events).
    */
   const updateMembershipInListCaches = useCallback(
     (fezID: string, updatedFez: FezData, action?: 'join' | 'unjoin'): {removeDetail: boolean} => {
@@ -232,7 +235,37 @@ export const useFezCacheReducer = () => {
         return {removeDetail: true};
       }
 
-      // No transition required (e.g. participant edits, seamail membership updates).
+      // Private event / seamail join (or in-place participant edits while still a member):
+      // insert into matching /fez/joined caches when the fez is new to this user.
+      if (isMember) {
+        const matchesFez = (f: FezData) => f.fezID === fezID;
+        queryClient.setQueriesData<InfiniteData<FezListData>>(
+          {queryKey: ['/fez/joined'], predicate: shouldInsertIntoQuery},
+          oldData => {
+            if (!oldData) return oldData;
+            if (findInPages(oldData, fezListAccessor, matchesFez)) {
+              const idUpdater = (entry: FezData) => (entry.fezID === fezID ? updatedFez : entry);
+              return sortItemsInPages(
+                updateItemsInPages(oldData, fezListAccessor, idUpdater),
+                fezListAccessor,
+                joinedSortComparator,
+              );
+            }
+            const inserted = insertAtEdge(oldData, fezListAccessor, updatedFez, 'start');
+            return sortItemsInPages(inserted, fezListAccessor, joinedSortComparator);
+          },
+        );
+
+        const idUpdater = (entry: FezData) => (entry.fezID === fezID ? updatedFez : entry);
+        for (const keyPrefix of ['/fez/owner', '/fez/former', '/fez/open'] as const) {
+          queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]}, oldData =>
+            oldData ? updateItemsInPages(oldData, fezListAccessor, idUpdater) : oldData,
+          );
+        }
+        return {removeDetail: false};
+      }
+
+      // No transition required (e.g. participant edits without membership data).
       updateFezInListCachesWithReorder(fezID, () => updatedFez);
       return {removeDetail: false};
     },
@@ -514,6 +547,8 @@ export const useFezCacheReducer = () => {
   /**
    * Replace FezData across all caches after a membership change (join, unjoin,
    * add participant, remove participant). These mutations return updated FezData.
+   * Seeds the detail cache when this user was just added and has no `/fez/{id}`
+   * query yet, matching createFez.
    */
   const updateMembership = useCallback(
     (fezID: string, updatedFez: FezData, action?: 'join' | 'unjoin') => {
@@ -523,6 +558,15 @@ export const useFezCacheReducer = () => {
         return;
       }
       updateFezDetailCache(fezID, () => updatedFez);
+      queryClient.setQueryData<InfiniteData<FezData>>([`/fez/${fezID}`], oldData => {
+        if (oldData) {
+          return oldData;
+        }
+        return {
+          pages: [updatedFez],
+          pageParams: [undefined],
+        };
+      });
     },
     [queryClient, updateMembershipInListCaches, updateFezDetailCache],
   );
@@ -584,13 +628,18 @@ export const useFezCacheReducer = () => {
    * Invalidate a specific fez's detail cache and all list caches.
    * Use when a server-driven event (e.g. socket notification) tells us data
    * may be stale but we don't have the updated data locally.
+   * refetchType 'all' also refetches inactive observers so already-fetched
+   * screens (Day Planner, seamail/LFG lists) pick up addedTo/canceled events
+   * without a manual refresh.
    * TODO: derive the intended data from the socket payload.
    */
   const invalidateFez = useCallback(
     (fezID?: string) => {
-      const invalidations = fezListKeyPrefixes.map(key => queryClient.invalidateQueries({queryKey: [key]}));
+      const invalidations = fezListKeyPrefixes.map(key =>
+        queryClient.invalidateQueries({queryKey: [key], refetchType: 'all'}),
+      );
       if (fezID) {
-        invalidations.push(queryClient.invalidateQueries({queryKey: [`/fez/${fezID}`]}));
+        invalidations.push(queryClient.invalidateQueries({queryKey: [`/fez/${fezID}`], refetchType: 'all'}));
       }
       return Promise.all(invalidations);
     },
