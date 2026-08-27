@@ -19,6 +19,16 @@ allJoinedQueries.forEach((q, i) => {
 });
 ```
 
+## iPad `scrollsToTop`
+
+On iPad, tapping the navigation header is treated as a status-bar tap. That fires `scrollToTop` on every `UIScrollView` still in the native hierarchy with the default `scrollsToTop={true}` — including off-screen overlays and inactive tabs. Set `scrollsToTop={false}` on:
+
+- Overlay / nested scrollers: `AppDrawer`, `AppMenu`, `ContentPostForm`
+- Custom-position lists: `DayPlannerTimelineView`, `ScheduleFlatListBase`, `ConversationList`, `ConversationListV2`
+- Shared content wrapper: `ScrollingContentView` (covers Settings and the other screens that use it)
+
+Android ignores the prop. `AppFlashList` and a few raw settings `ScrollView`s still use the default.
+
 ## Websocket Keepalive
 
 https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104

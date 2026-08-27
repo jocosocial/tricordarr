@@ -179,7 +179,7 @@ export const ContentPostForm = ({
       {({handleSubmit, values, isSubmitting, dirty, isValid}) => (
         <View style={styles.formOuterContainer}>
           <ElevationPrivilegeSync />
-          <ScrollView keyboardShouldPersistTaps={'always'} bounces={false}>
+          <ScrollView keyboardShouldPersistTaps={'always'} bounces={false} scrollsToTop={false}>
             <View style={styles.formContainer}>
               {emojiPickerVisible && <EmojiPickerField />}
               <ContentInsertMenuView

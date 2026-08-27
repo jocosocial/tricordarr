@@ -124,7 +124,8 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
           scrollEnabled={isScrollable}
           onContentSizeChange={(_, height) => setContentHeight(height)}
           onScroll={handleScroll}
-          scrollEventThrottle={16}>
+          scrollEventThrottle={16}
+          scrollsToTop={false}>
           {children}
         </ScrollView>
         <MenuScrollIndicator visible={showIndicator} onPress={scrollToBottom} />

@@ -100,7 +100,6 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
       onClose={onDrawerClose}
       swipeEnabled={false}
       renderDrawerContent={() => {
-        // iPad header taps are treated as status-bar taps and would scroll this to top.
         return (
           <ScrollView scrollsToTop={false}>
             <PaperDrawer.Section title={'Community'} showDivider={false}>

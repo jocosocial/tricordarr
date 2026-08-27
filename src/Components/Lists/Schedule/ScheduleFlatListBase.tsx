@@ -170,6 +170,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
       onEndReached={handleLoadNext}
       extraData={extraData}
       maintainVisibleContentPosition={maintainVisibleContentPosition}
+      scrollsToTop={false}
     />
   );
 };

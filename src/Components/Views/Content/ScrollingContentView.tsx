@@ -53,7 +53,8 @@ export const ScrollingContentView = forwardRef<ScrollView, PropsWithChildren<Scr
         keyboardShouldPersistTaps={'handled'}
         // contentInsetAdjustmentBehavior="automatic"
         // automaticallyAdjustKeyboardInsets={isIOS}>
-        automaticallyAdjustKeyboardInsets={true}>
+        automaticallyAdjustKeyboardInsets={true}
+        scrollsToTop={false}>
         <View style={styles.scrollView} onLayout={onLayout}>
           {children}
         </View>

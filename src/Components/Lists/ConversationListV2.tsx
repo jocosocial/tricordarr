@@ -464,6 +464,7 @@ export const ConversationListV2 = <TItem,>({
         onScroll={onScroll}
         onLoad={onLoad}
         style={style}
+        scrollsToTop={false}
       />
       {effectiveScrollButton && scrollButtonDirection !== null && (
         <FloatingScrollButton
