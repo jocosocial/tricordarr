@@ -31,7 +31,7 @@ export const KrakenTalkActiveCallScreen = (props: Props) => {
   return (
     <LoggedInScreen>
       <PreRegistrationScreen helpScreen={CommonStackComponents.krakenTalkHelpScreen}>
-        <DisabledFeatureScreen feature={SwiftarrFeature.phone} urlPath={'/kraken/call'}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.phone}>
           <KrakenTalkActiveCallScreenInner {...props} />
         </DisabledFeatureScreen>
       </PreRegistrationScreen>

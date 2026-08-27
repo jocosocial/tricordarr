@@ -22,7 +22,7 @@ export const KrakenTalkReceiveScreen = (props: Props) => {
   return (
     <LoggedInScreen>
       <PreRegistrationScreen helpScreen={CommonStackComponents.krakenTalkHelpScreen}>
-        <DisabledFeatureScreen feature={SwiftarrFeature.phone} urlPath={'/kraken/receive'}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.phone}>
           <KrakenTalkReceiveScreenInner {...props} />
         </DisabledFeatureScreen>
       </PreRegistrationScreen>
