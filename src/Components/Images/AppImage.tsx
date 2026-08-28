@@ -1,10 +1,12 @@
 import FastImage, {ImageStyle as FastImageStyle} from '@d11/react-native-fast-image';
-import React, {useState} from 'react';
+import React from 'react';
 import {Image, ImageStyle as RNImageStyle, StyleProp, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Card} from 'react-native-paper';
+import {useAnimatedRef} from 'react-native-reanimated';
 
-import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
+import {useLightboxControls} from '#src/Components/Lightbox/state';
+import {toLightboxImage} from '#src/Components/Lightbox/toLightboxImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
@@ -22,9 +24,8 @@ interface AppImageProps {
  * AppImage is for displaying an image. Very similar to APIImage, but without the API integration.
  * Used for displaying app assets and locally taken image data.
  *
- * This also includes the AppImageViewer which is the "modal" component that appears when
- * you tap on an image that lets you zoom, download, and other stuff. Setting your own onPress
- * effectively disables the image viewer.
+ * Tapping the image opens the global Lightbox unless `onPress` is provided, which
+ * takes over the press handler and skips the viewer.
  *
  * "Locally taken image data" means image data that came from the camera via a proper dataURI.
  * Examples include PhotostreamImageSelectionView or ContentPostAttachedImage.
@@ -45,14 +46,17 @@ export const AppImage = ({
   onPress,
 }: AppImageProps) => {
   const {commonStyles} = useStyles();
-  const [viewerImagesState, setViewerImagesState] = useState<AppImageMetaData[]>(viewerImages);
-  const [isViewerVisible, setIsViewerVisible] = useState(false);
+  const {openLightbox} = useLightboxControls();
+  const thumbRef = useAnimatedRef<View>();
 
   const handlePress = () => {
-    if (viewerImagesState.length === 0) {
-      setViewerImagesState([image]);
-    }
-    setIsViewerVisible(true);
+    const images = (viewerImages.length === 0 ? [image] : viewerImages).map((metadata, i) =>
+      toLightboxImage(metadata, i === (initialViewerIndex ?? 0) ? {thumbRef} : {}),
+    );
+    openLightbox({
+      images,
+      index: initialViewerIndex ?? 0,
+    });
   };
 
   // Prefer the require() source for bundled assets. On Android Release,
@@ -62,14 +66,8 @@ export const AppImage = ({
   const imageUriSource = {uri: AppImageMetaData.getSourceURI(image)};
 
   return (
-    <View>
-      <AppImageViewer
-        viewerImages={viewerImagesState}
-        isVisible={isViewerVisible}
-        setIsVisible={setIsViewerVisible}
-        initialIndex={initialViewerIndex}
-      />
-      <TouchableOpacity activeOpacity={1} onPress={onPress || handlePress} disabled={disableTouch}>
+    <TouchableOpacity activeOpacity={1} onPress={onPress || handlePress} disabled={disableTouch}>
+      <View ref={thumbRef} collapsable={false}>
         {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageSource} />}
         {mode === 'image' && (
           <Image
@@ -88,8 +86,8 @@ export const AppImage = ({
           ) : (
             <AppScaledImage image={imageUriSource} style={style as FastImageStyle} />
           ))}
-      </TouchableOpacity>
-    </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 

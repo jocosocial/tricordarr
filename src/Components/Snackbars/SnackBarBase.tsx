@@ -12,12 +12,14 @@ export interface SnackBarBaseProps {
   duration?: number;
   messagePrefix?: string;
   style?: StyleProp<ViewStyle>;
+  wrapperStyle?: StyleProp<ViewStyle>;
   elevation?: 0 | 1 | 2 | 3 | 4 | 5 | Animated.Value;
 }
 
 export const SnackBarBase = ({
   setMessage,
   style,
+  wrapperStyle,
   message = '',
   actionLabel = 'Close',
   duration = 5000,
@@ -38,6 +40,7 @@ export const SnackBarBase = ({
   return (
     <Snackbar
       style={style}
+      wrapperStyle={wrapperStyle}
       duration={duration}
       visible={!!message}
       action={{label: actionLabel}}

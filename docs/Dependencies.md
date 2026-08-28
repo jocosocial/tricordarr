@@ -1,4 +1,10 @@
-# Deprecation
+# Dependencies
+
+## References
+
+- https://reactnative.directory/
+
+## Deprecation
 
 These modules are unsupported and need to go:
 

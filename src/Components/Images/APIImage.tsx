@@ -11,10 +11,12 @@ import {
   View,
 } from 'react-native';
 import {Card} from 'react-native-paper';
+import {useAnimatedRef} from 'react-native-reanimated';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
+import {useLightboxControls} from '#src/Components/Lightbox/state';
+import {toLightboxImage} from '#src/Components/Lightbox/toLightboxImage';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
@@ -49,7 +51,7 @@ interface APIImageV2Props {
  * feature is disabled. It will also include an image viewer that allows the user to see
  * the image in more detail.
  *
- * Setting your own onPress disables the embedded image viewer (it is not mounted).
+ * Setting your own onPress disables the embedded image viewer.
  */
 export const APIImage = ({
   path,
@@ -61,7 +63,6 @@ export const APIImage = ({
   size,
 }: APIImageV2Props) => {
   const [viewerImages, setViewerImages] = useState<AppImageMetaData[]>([]);
-  const [isViewerVisible, setIsViewerVisible] = useState(false);
   const hasRequestedFullPreload = React.useRef(false);
   const fullPreloadTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const {commonStyles, styleDefaults} = useStyles();
@@ -79,6 +80,8 @@ export const APIImage = ({
   const {setSnackbarPayload} = useSnackbar();
   const [imageSource, setImageSource] = useState<FastImageSource | undefined>(undefined);
   const {theme} = useAppTheme();
+  const {openLightbox} = useLightboxControls();
+  const thumbRef = useAnimatedRef<View>();
 
   const styles = StyleSheet.create({
     disabledCard: {
@@ -125,15 +128,24 @@ export const APIImage = ({
   }, []);
 
   /**
-   * Callback that fires when the image is pressed. In our case this opens the image viewer.
+   * Callback that fires when the image is pressed. Opens the global lightbox.
    */
   const onPressDefault = useCallback(() => {
-    if (viewerImages.length !== 0) {
-      setIsViewerVisible(true);
+    if (viewerImages.length === 0) {
+      setErrorBanner('Error loading image');
       return;
     }
-    setErrorBanner('Error loading image');
-  }, [setIsViewerVisible, setErrorBanner, viewerImages]);
+    openLightbox({
+      images: viewerImages.map(metadata =>
+        toLightboxImage(metadata, {
+          thumbRef,
+          type: mode === 'avatar' ? 'circle-avi' : 'image',
+          thumbBorderRadius: mode === 'avatar' ? avatarSize / 2 : undefined,
+        }),
+      ),
+      index: 0,
+    });
+  }, [openLightbox, setErrorBanner, viewerImages, thumbRef, mode, avatarSize]);
 
   /**
    * Callback that fires when the image fails to load. This will display an error message
@@ -226,13 +238,7 @@ export const APIImage = ({
         fullPreloadTimer.current = null;
       }
     };
-  }, [
-    appConfig.imagePreloadDelaySeconds,
-    imageSource?.uri,
-    imageSourceMetadata.thumbURI,
-    mode,
-    requestFullPreload,
-  ]);
+  }, [appConfig.imagePreloadDelaySeconds, imageSource?.uri, imageSourceMetadata.thumbURI, mode, requestFullPreload]);
 
   /**
    * Sets the image source to the appropriate URI based on the initial size.
@@ -312,16 +318,12 @@ export const APIImage = ({
 
   const isThumbnail = imageSource.uri === imageSourceMetadata.thumbURI;
 
-  // disableTouch and a custom onPress should both skip mounting AppImageViewer.
-  // Even if unused, having it can trigger extra background processing that we do not need.
-  // AvatarImage always disables touch which is where I saw this.
+  // A custom onPress skips opening the lightbox so callers can own the gallery
+  // (ContentPostImages) or disable it. disableTouch is how AvatarImage opts out.
   return (
     <View>
-      {!disableTouch && !onPress && (
-        <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
-      )}
       <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
-        <View style={styles.imageContainer}>
+        <View ref={thumbRef} collapsable={false} style={styles.imageContainer}>
           {mode === 'cardcover' && (
             <FastImage
               resizeMode={'cover'}

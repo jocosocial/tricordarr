@@ -48,7 +48,7 @@ export namespace AppImageMetaData {
   /**
    * Create an object from a base64 data string. This is used when the user takes a photo
    * and we insert its base64 data into a form field. We do this so that the preview can
-   * support the AppImageViewer component for inspection.
+   * support the Lightbox for inspection.
    */
   export const fromData = (base64Data: string, mimeType: string = 'image/jpeg'): AppImageMetaData => {
     const fileName = `tricordarr-${new Date().getTime()}.${mimeType.split('/')[1] || 'jpg'}`;
