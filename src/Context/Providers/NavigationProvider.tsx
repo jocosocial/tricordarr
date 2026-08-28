@@ -1,3 +1,4 @@
+import {useBackHandler} from '@react-native-community/hooks';
 import {NavigationContainer} from '@react-navigation/native';
 import React, {PropsWithChildren, ReactElement, useCallback} from 'react';
 import {PaperProvider} from 'react-native-paper';
@@ -16,6 +17,24 @@ export const NavigationProvider = ({children}: PropsWithChildren) => {
    * This catches deep linking navigation that might not trigger nested navigator listeners.
    */
   const handleStateChange = useCallback(() => closeAllMenus(), []);
+
+  /**
+   * Consume Android Back at the true root so React Native does not finish the activity.
+   * Nested screens still pop via React Navigation when canGoBack() is true.
+   *
+   * 20260827: I am worried this may be bit overzealous.
+   */
+  const handleRootBackPress = useCallback(() => {
+    if (!navigationRef.isReady()) {
+      return true;
+    }
+    if (navigationRef.canGoBack()) {
+      return false;
+    }
+    return true;
+  }, []);
+
+  useBackHandler(handleRootBackPress);
 
   return (
     <NavigationContainer

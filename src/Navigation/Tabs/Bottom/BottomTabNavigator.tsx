@@ -50,7 +50,8 @@ export const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
       initialRouteName={BottomTabComponents.homeTab}
-      backBehavior={'history'}
+      // firstRoute: Back from a non-Today tab root goes to Today instead of exiting.
+      backBehavior={'firstRoute'}
       tabBar={tabBar}
       screenOptions={{headerShown: false}}>
       <Tab.Screen

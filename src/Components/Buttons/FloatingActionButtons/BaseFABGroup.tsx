@@ -1,5 +1,6 @@
+import {useBackHandler} from '@react-native-community/hooks';
 import * as React from 'react';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {FAB} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
@@ -37,6 +38,20 @@ export const BaseFABGroup = ({
   const {snackbarPayload} = useSnackbar();
 
   const onStateChange = ({open}: {open: boolean}) => setState({open});
+
+  /**
+   * Close an open speed dial on Android Back. Paper's FAB.Group does not
+   * register a BackHandler of its own.
+   */
+  const handleFabGroupBackPress = useCallback(() => {
+    if (state.open) {
+      setState({open: false});
+      return true;
+    }
+    return false;
+  }, [state.open]);
+
+  useBackHandler(handleFabGroupBackPress);
 
   const styles = StyleSheet.create({
     button: {

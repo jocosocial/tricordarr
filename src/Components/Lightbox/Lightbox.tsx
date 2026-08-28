@@ -1,3 +1,4 @@
+import {useBackHandler} from '@react-native-community/hooks';
 import React, {useCallback, useState} from 'react';
 
 import ImageView from '#src/Components/Lightbox/pager/ImagePager';
@@ -25,6 +26,20 @@ export const Lightbox = () => {
     closeLightbox();
     setViewerMessage(undefined);
   }, [closeLightbox]);
+
+  /**
+   * Close the lightbox on Android Back. The pager is a View overlay, not a Modal,
+   * so the system does not deliver onRequestClose for hardware Back.
+   */
+  const handleLightboxBackPress = useCallback(() => {
+    if (activeLightbox) {
+      onClose();
+      return true;
+    }
+    return false;
+  }, [activeLightbox, onClose]);
+
+  useBackHandler(handleLightboxBackPress);
 
   const onPressSave = useCallback(
     async (image: LightboxImage) => {

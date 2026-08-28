@@ -1,3 +1,4 @@
+import {useBackHandler} from '@react-native-community/hooks';
 import {useNavigation} from '@react-navigation/native';
 import * as React from 'react';
 import {PropsWithChildren, useCallback, useEffect, useMemo} from 'react';
@@ -70,6 +71,19 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const onDrawerClose = useCallback(() => {
     setDrawerOpen(false);
   }, [setDrawerOpen]);
+
+  /**
+   * Close the drawer on Android Back before navigation or the root exit guard.
+   */
+  const handleDrawerBackPress = useCallback(() => {
+    if (drawerOpen) {
+      setDrawerOpen(false);
+      return true;
+    }
+    return false;
+  }, [drawerOpen, setDrawerOpen]);
+
+  useBackHandler(handleDrawerBackPress);
 
   const getModBadge = () => {
     let count = 0;
