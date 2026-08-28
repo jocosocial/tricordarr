@@ -8,6 +8,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
+import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/useFezForm';
@@ -93,6 +94,7 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
 
   return (
     <AppView>
+      <TimezoneWarningView />
       <ScrollingContentView isStack={true}>
         {fez.cancelled && <FezCanceledView update={true} fezType={fez.fezType} />}
         <PaddedContentView padTop={true}>{renderForm({onSubmit, initialValues})}</PaddedContentView>

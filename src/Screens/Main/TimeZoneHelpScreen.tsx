@@ -32,6 +32,11 @@ export const TimeZoneHelpScreen = () => {
           timezone change.
         </HelpTopicView>
         <HelpTopicView>In a pinch you can manually specify a time offset in the app settings.</HelpTopicView>
+        <HelpTopicView>
+          If the Boat Time and Device Time are different, a Time Zone Warning banner appears on Event, LFG, and Personal
+          Event view, create, and edit screens. Tap it for more details. It does not appear on Help, Settings, search,
+          or participation screens.
+        </HelpTopicView>
         <HelpTopicView>You can also disable all timezone warnings in the Time settings.</HelpTopicView>
       </ScrollingContentView>
     </AppView>

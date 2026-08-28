@@ -12,6 +12,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
@@ -302,6 +303,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
+      <TimezoneWarningView />
       <ListTitleView title={eventData.title} subtitle={durationString} />
       <View style={[commonStyles.flex]}>
         {isFetching && filteredItems.length === 0 ? (

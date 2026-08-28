@@ -7,6 +7,7 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {AppIcons} from '#src/Enums/Icons';
 import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {HelpScreenComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -81,6 +82,7 @@ export const FezCreateScreenBase = ({
 
   return (
     <AppView>
+      <TimezoneWarningView />
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>{renderForm({onSubmit, initialValues})}</PaddedContentView>
       </ScrollingContentView>

@@ -18,6 +18,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LFGMembershipView} from '#src/Components/Views/Schedule/LFGMembershipView';
 import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
@@ -110,6 +111,7 @@ export const ScheduleItemScreenBase = ({
 
   return (
     <AppView>
+      <TimezoneWarningView />
       {'fezID' in eventData && eventData.cancelled && (
         <View style={styles.cancelContainer}>
           <FezCanceledView fezType={eventData.fezType} />
