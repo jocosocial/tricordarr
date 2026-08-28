@@ -60,26 +60,44 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
     [mode, userHeader, removeRelation, favoriteMutation, muteMutation, blockMutation],
   );
 
-  const handleSeamail = (swipeable: SwipeableMethods) => {
-    swipeable.reset();
-    commonNavigation.push(CommonStackComponents.seamailCreateScreen, {
-      initialUserHeaders: [userHeader],
-    });
-  };
+  /**
+   * Close the swipeable and start a Seamail with this user.
+   */
+  const handleSeamail = useCallback(
+    (swipeable: SwipeableMethods) => {
+      swipeable.reset();
+      commonNavigation.push(CommonStackComponents.seamailCreateScreen, {
+        initialUserHeaders: [userHeader],
+      });
+    },
+    [commonNavigation, userHeader],
+  );
 
-  const handleCall = (swipeable: SwipeableMethods) => {
-    swipeable.reset();
-    commonNavigation.push(CommonStackComponents.krakenTalkCreateScreen, {
-      initialUserHeader: userHeader,
-    });
-  };
+  /**
+   * Close the swipeable and start a KrakenTalk call with this user.
+   */
+  const handleCall = useCallback(
+    (swipeable: SwipeableMethods) => {
+      swipeable.reset();
+      commonNavigation.push(CommonStackComponents.krakenTalkCreateScreen, {
+        initialUserHeader: userHeader,
+      });
+    },
+    [commonNavigation, userHeader],
+  );
 
-  const handleScheduleEvent = (swipeable: SwipeableMethods) => {
-    swipeable.reset();
-    commonNavigation.push(CommonStackComponents.personalEventCreateScreen, {
-      initialUserHeaders: [userHeader],
-    });
-  };
+  /**
+   * Close the swipeable and create a personal event inviting this user.
+   */
+  const handleScheduleEvent = useCallback(
+    (swipeable: SwipeableMethods) => {
+      swipeable.reset();
+      commonNavigation.push(CommonStackComponents.personalEventCreateScreen, {
+        initialUserHeaders: [userHeader],
+      });
+    },
+    [commonNavigation, userHeader],
+  );
 
   const renderRightPanel = (
     progressAnimatedValue: SharedValue<number>,

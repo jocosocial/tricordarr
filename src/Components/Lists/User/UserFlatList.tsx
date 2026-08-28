@@ -5,8 +5,7 @@ import {Divider} from 'react-native-paper';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
-import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
-import {UserListItemSwipeable} from '#src/Components/Swipeables/UserListItemSwipeable';
+import {UserFlatListItem} from '#src/Components/Lists/Items/UserFlatListItem';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {type UserRelationMode} from '#src/Queries/Users/UserRelationConstants';
 import {UserHeader} from '#src/Structs/ControllerStructs';
@@ -40,26 +39,16 @@ export const UserFlatList = ({
   }, [userHeaders.length]);
 
   const renderItem = useCallback(
-    ({item}: {item: UserHeader}) => {
-      const selected = selectedItems.some(s => s.id === item.userID);
-      const listItem = (
-        <UserListItem
-          userHeader={item}
-          onPress={() => onUserPress(item)}
-          enableSelection={enableSelection}
-          setEnableSelection={setEnableSelection}
-          selected={selected}
-        />
-      );
-      if (swipeableMode) {
-        return (
-          <UserListItemSwipeable userHeader={item} mode={swipeableMode} enabled={!enableSelection}>
-            {listItem}
-          </UserListItemSwipeable>
-        );
-      }
-      return listItem;
-    },
+    ({item}: {item: UserHeader}) => (
+      <UserFlatListItem
+        userHeader={item}
+        onPress={onUserPress}
+        swipeableMode={swipeableMode}
+        enableSelection={enableSelection}
+        setEnableSelection={setEnableSelection}
+        selected={selectedItems.some(s => s.id === item.userID)}
+      />
+    ),
     [onUserPress, swipeableMode, enableSelection, setEnableSelection, selectedItems],
   );
 

@@ -9,7 +9,6 @@ import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter
 import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
 import {KaraokeSongListItem} from '#src/Components/Lists/Items/KaraokeSongListItem';
 import type {KaraokeSongListItemData} from '#src/Components/Lists/Items/KaraokeSongListItem';
-import {KaraokeListItemSwipeable} from '#src/Components/Swipeables/KaraokeListItemSwipeable';
 import {KaraokePerformedSongsData, KaraokeSongData} from '#src/Structs/ControllerStructs';
 
 export type KaraokeSongListItem = KaraokeSongListItemData;
@@ -45,17 +44,7 @@ const KaraokeSongListInner = (
   const getListSeparator = useCallback(() => <Divider bold={true} />, []);
 
   const renderItem = useCallback(
-    ({item}: {item: KaraokeSongListItem}) => {
-      const listItem = <KaraokeSongListItem item={item} />;
-      if (swipeableEnabled) {
-        return (
-          <KaraokeListItemSwipeable song={item} showLogButton={true}>
-            {listItem}
-          </KaraokeListItemSwipeable>
-        );
-      }
-      return listItem;
-    },
+    ({item}: {item: KaraokeSongListItem}) => <KaraokeSongListItem item={item} swipeableEnabled={swipeableEnabled} />,
     [swipeableEnabled],
   );
 

@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React, {Dispatch, memo, SetStateAction, useCallback, useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Checkbox, IconButton, List} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
@@ -23,7 +23,11 @@ interface UserListItemProps {
   selected?: boolean;
 }
 
-export const UserListItem = ({
+/**
+ * Presentational user row used by relation lists, search, and participant pickers.
+ * Stays swipe-free; FlashList screens wrap it via UserFlatListItem.
+ */
+const UserListItemInternal = ({
   userHeader,
   onPress,
   buttonOnPress,
@@ -38,27 +42,31 @@ export const UserListItem = ({
   const {theme} = useAppTheme();
   const {dispatchSelectedItems} = useSelection();
 
-  const styles = StyleSheet.create({
-    item: {
-      ...commonStyles.paddingHorizontalSmall,
-      paddingVertical: 2,
-      backgroundColor: theme.colors.background,
-    },
-    avatar: {
-      ...commonStyles.justifyCenter,
-      ...(disabled ? commonStyles.disabled : {}),
-    },
-    titleStyle: {
-      ...(disabled ? commonStyles.disabled : {}),
-    },
-    descriptionStyle: {
-      ...(disabled ? commonStyles.disabled : {}),
-    },
-    checkboxContainer: {
-      ...commonStyles.flexColumn,
-      ...commonStyles.justifyCenter,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        item: {
+          ...commonStyles.paddingHorizontalSmall,
+          paddingVertical: 2,
+          backgroundColor: theme.colors.background,
+        },
+        avatar: {
+          ...commonStyles.justifyCenter,
+          ...(disabled ? commonStyles.disabled : {}),
+        },
+        titleStyle: {
+          ...(disabled ? commonStyles.disabled : {}),
+        },
+        descriptionStyle: {
+          ...(disabled ? commonStyles.disabled : {}),
+        },
+        checkboxContainer: {
+          ...commonStyles.flexColumn,
+          ...commonStyles.justifyCenter,
+        },
+      }),
+    [commonStyles, disabled, theme],
+  );
 
   const handleSelection = () => {
     dispatchSelectedItems({
@@ -67,7 +75,7 @@ export const UserListItem = ({
     });
   };
 
-  const getAvatar = React.useCallback(
+  const getAvatar = useCallback(
     () => (
       <View style={styles.avatar}>
         <AvatarImage userHeader={userHeader} forceIdenticon={preRegistrationMode} />
@@ -82,7 +90,7 @@ export const UserListItem = ({
     </View>
   );
 
-  const getActionButton = React.useCallback(() => {
+  const getActionButton = useCallback(() => {
     if (buttonOnPress && buttonIcon) {
       return (
         <IconButton
@@ -117,3 +125,5 @@ export const UserListItem = ({
     />
   );
 };
+
+export const UserListItem = memo(UserListItemInternal);
