@@ -37,8 +37,7 @@ type Props = {
   onTap: () => void;
   onZoom: (scaled: boolean) => void;
   onLoad: (dims: ImageDimensions) => void;
-  isScrollViewBeingDragged: boolean;
-  showControls: boolean;
+  isPagerDragging: SharedValue<boolean>;
   measureSafeArea: () => {
     x: number;
     y: number;
@@ -56,7 +55,6 @@ const ImageItem = ({
   onTap,
   onZoom,
   onLoad,
-  showControls: _showControls,
   measureSafeArea,
   imageAspect,
   imageDimensions,

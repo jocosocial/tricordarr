@@ -40,8 +40,7 @@ type Props = {
   onTap: () => void;
   onZoom: (isZoomed: boolean) => void;
   onLoad: (dims: ImageDimensions) => void;
-  isScrollViewBeingDragged: boolean;
-  showControls: boolean;
+  isPagerDragging: SharedValue<boolean>;
   measureSafeArea: () => {
     x: number;
     y: number;
@@ -58,7 +57,7 @@ const ImageItem = ({
   onTap,
   onZoom,
   onLoad,
-  isScrollViewBeingDragged,
+  isPagerDragging,
   measureSafeArea,
   imageAspect,
   imageDimensions,
@@ -121,6 +120,12 @@ const ImageItem = ({
   }
 
   const pinch = Gesture.Pinch()
+    .onTouchesDown((_e, state) => {
+      'worklet';
+      if (isPagerDragging.get()) {
+        state.fail();
+      }
+    })
     .onStart(e => {
       'worklet';
       const screenSize = measureSafeArea();
@@ -181,6 +186,12 @@ const ImageItem = ({
     .averageTouches(true)
     // Unlike .enabled(isScaled), this ensures that an initial pinch can turn into a pan midway:
     .minPointers(isScaled ? 1 : 2)
+    .onTouchesDown((_e, state) => {
+      'worklet';
+      if (isPagerDragging.get()) {
+        state.fail();
+      }
+    })
     .onChange(e => {
       'worklet';
       const screenSize = measureSafeArea();
@@ -213,13 +224,26 @@ const ImageItem = ({
       panTranslation.set({x: 0, y: 0});
     });
 
-  const singleTap = Gesture.Tap().onEnd(() => {
-    'worklet';
-    scheduleOnRN(onTap);
-  });
+  const singleTap = Gesture.Tap()
+    .onTouchesDown((_e, state) => {
+      'worklet';
+      if (isPagerDragging.get()) {
+        state.fail();
+      }
+    })
+    .onEnd(() => {
+      'worklet';
+      scheduleOnRN(onTap);
+    });
 
   const doubleTap = Gesture.Tap()
     .numberOfTaps(2)
+    .onTouchesDown((_e, state) => {
+      'worklet';
+      if (isPagerDragging.get()) {
+        state.fail();
+      }
+    })
     .onEnd(e => {
       'worklet';
       const screenSize = measureSafeArea();
@@ -257,10 +281,7 @@ const ImageItem = ({
       committedTransform.set(withClampedSpring(finalTransform));
     });
 
-  const composedGesture = isScrollViewBeingDragged
-    ? // If the parent is not at rest, provide a no-op gesture.
-      Gesture.Manual()
-    : Gesture.Exclusive(dismissSwipePan, Gesture.Simultaneous(pinch, pan), doubleTap, singleTap);
+  const composedGesture = Gesture.Exclusive(dismissSwipePan, Gesture.Simultaneous(pinch, pan), doubleTap, singleTap);
 
   const containerStyle = useAnimatedStyle(() => {
     const {scaleAndMoveTransform, isHidden} = transforms.get();

@@ -8,7 +8,7 @@
 // Original code copied and simplified from the link below as the codebase is currently not maintained:
 // https://github.com/jobtoday/react-native-image-viewing
 import FastImage from '@d11/react-native-fast-image';
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {PixelRatio, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {SystemBars} from 'react-native-edge-to-edge';
 import {Gesture} from 'react-native-gesture-handler';
@@ -232,12 +232,16 @@ function ImageView({
   const reduceMotion = useReducedMotion();
   const isAnimated = useMemo(() => canAnimate(lightbox, reduceMotion), [lightbox, reduceMotion]);
   const [isScaled, setIsScaled] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [isInfoVisible, setIsInfoVisible] = useState(false);
   const [footerHeight, setFooterHeight] = useState(0);
   const dismissSwipeTranslateY = useSharedValue(0);
   const isFlyingAway = useSharedValue(false);
+  const isPagerDragging = useSharedValue(false);
+  const activeIndexSV = useSharedValue(initialImageIndex);
+  const isScaledSV = useSharedValue(false);
+  const imageIndexRef = useRef(imageIndex);
+  imageIndexRef.current = imageIndex;
 
   const containerStyle = useAnimatedStyle(() => {
     if (openProgress.get() < 1) {
@@ -298,14 +302,15 @@ function ImageView({
   });
 
   const handleRequestClose = useCallback(() => {
-    const activeRef = images[imageIndex]?.thumbRef;
+    const idx = imageIndexRef.current;
+    const activeRef = images[idx]?.thumbRef;
     if (isAnimated && activeRef) {
       scheduleOnUI(() => {
         'worklet';
         const rect = measure(activeRef);
         thumbRects.modify(rects => {
           'worklet';
-          rects[imageIndex] = rect;
+          rects[idx] = rect;
           return rects;
         });
         scheduleOnRN(onRequestClose);
@@ -313,18 +318,22 @@ function ImageView({
     } else {
       onRequestClose();
     }
-  }, [isAnimated, images, imageIndex, thumbRects, onRequestClose]);
+  }, [isAnimated, images, thumbRects, onRequestClose]);
 
   const onTap = useCallback(() => {
     setShowControls(show => !show);
   }, []);
 
-  const onZoom = useCallback((nextIsScaled: boolean) => {
-    setIsScaled(nextIsScaled);
-    if (nextIsScaled) {
-      setShowControls(false);
-    }
-  }, []);
+  const onZoom = useCallback(
+    (nextIsScaled: boolean) => {
+      isScaledSV.set(nextIsScaled);
+      setIsScaled(nextIsScaled);
+      if (nextIsScaled) {
+        setShowControls(false);
+      }
+    },
+    [isScaledSV],
+  );
 
   useAnimatedReaction(
     () => {
@@ -354,11 +363,14 @@ function ImageView({
         scrollEnabled={!isScaled}
         initialPage={initialImageIndex}
         onPageSelected={(e: PagerViewOnPageSelectedEvent) => {
-          setImageIndex(e.nativeEvent.position);
-          setIsScaled(false);
+          const position = e.nativeEvent.position;
+          activeIndexSV.set(position);
+          isScaledSV.set(false);
+          setImageIndex(prev => (prev === position ? prev : position));
+          setIsScaled(prev => (prev ? false : prev));
         }}
         onPageScrollStateChanged={(e: PageScrollStateChangedNativeEvent) => {
-          setIsDragging(e.nativeEvent.pageScrollState !== 'idle');
+          isPagerDragging.set(e.nativeEvent.pageScrollState !== 'idle');
         }}
         overdrag={true}
         style={styles.pager}>
@@ -369,12 +381,11 @@ function ImageView({
               onZoom={onZoom}
               imageSrc={imageSrc}
               onRequestClose={handleRequestClose}
-              isScrollViewBeingDragged={isDragging}
-              showControls={showControls}
+              isPagerDragging={isPagerDragging}
+              activeIndexSV={activeIndexSV}
+              isScaledSV={isScaledSV}
               safeAreaRef={safeAreaRef}
-              isScaled={isScaled}
               isFlyingAway={isFlyingAway}
-              isActive={i === imageIndex}
               dismissSwipeTranslateY={dismissSwipeTranslateY}
               openProgress={openProgress}
               thumbRects={thumbRects}
@@ -410,16 +421,20 @@ function ImageView({
   );
 }
 
-function LightboxImage({
+/**
+ * One pager page: open/close transforms plus the platform ImageItem.
+ * Memoized so pager index/drag updates do not re-render offscreen pages.
+ * Active page and zoom are SharedValues so the worklets can read them without a React render.
+ */
+const LightboxImage = memo(function LightboxImage({
   imageSrc,
   onTap,
   onZoom,
   onRequestClose,
-  isScrollViewBeingDragged,
-  isScaled,
+  isPagerDragging,
+  activeIndexSV,
+  isScaledSV,
   isFlyingAway,
-  isActive,
-  showControls,
   safeAreaRef,
   openProgress,
   dismissSwipeTranslateY,
@@ -430,11 +445,10 @@ function LightboxImage({
   onRequestClose: () => void;
   onTap: () => void;
   onZoom: (scaled: boolean) => void;
-  isScrollViewBeingDragged: boolean;
-  isScaled: boolean;
-  isActive: boolean;
+  isPagerDragging: SharedValue<boolean>;
+  activeIndexSV: SharedValue<number>;
+  isScaledSV: SharedValue<boolean>;
   isFlyingAway: SharedValue<boolean>;
-  showControls: boolean;
   safeAreaRef: AnimatedRef<View>;
   openProgress: SharedValue<number>;
   dismissSwipeTranslateY: SharedValue<number>;
@@ -472,9 +486,8 @@ function LightboxImage({
   const {thumbRect: thumbRectJS, thumbBorderRadius} = imageSrc;
   const transforms = useDerivedValue<LightboxTransforms>(() => {
     'worklet';
-    const safeArea = measureSafeArea();
     const openProgressValue = openProgress.get();
-    const dismissTranslateY = isActive && openProgressValue === 1 ? dismissSwipeTranslateY.get() : 0;
+    const isActiveNow = activeIndexSV.get() === imageIndex;
 
     if (openProgressValue === 0) {
       return {
@@ -487,7 +500,23 @@ function LightboxImage({
       };
     }
 
-    if (isActive && imageAspect && openProgressValue < 1) {
+    // Inactive pages at rest skip measure() so a gallery does not hit the UI
+    // thread once per image on every frame.
+    if (!isActiveNow && openProgressValue === 1) {
+      return {
+        isHidden: false,
+        isResting: true,
+        borderRadius: 0,
+        scaleAndMoveTransform: [],
+        cropFrameTransform: [],
+        cropContentTransform: [],
+      };
+    }
+
+    const safeArea = measureSafeArea();
+    const dismissTranslateY = isActiveNow && openProgressValue === 1 ? dismissSwipeTranslateY.get() : 0;
+
+    if (isActiveNow && imageAspect && openProgressValue < 1) {
       let thumbRect;
       if (_WORKLET) {
         thumbRect = thumbRects.get()[imageIndex];
@@ -508,49 +537,70 @@ function LightboxImage({
     };
   });
 
-  const dismissSwipePan = Gesture.Pan()
-    .enabled(isActive && !isScaled)
-    .activeOffsetY([-10, 10])
-    .failOffsetX([-10, 10])
-    .maxPointers(1)
-    .onUpdate(e => {
-      'worklet';
-      if (openProgress.get() !== 1 || isFlyingAway.get()) {
-        return;
-      }
-      dismissSwipeTranslateY.set(e.translationY);
-    })
-    .onEnd(e => {
-      'worklet';
-      if (openProgress.get() !== 1 || isFlyingAway.get()) {
-        return;
-      }
-      if (Math.abs(e.velocityY) > 200) {
-        isFlyingAway.set(true);
-        if (dismissSwipeTranslateY.get() === 0) {
-          // HACK: If the initial value is 0, withDecay() animation doesn't start.
-          // This is a bug in Reanimated, but for now we'll work around it like this.
-          dismissSwipeTranslateY.set(1);
-        }
-        dismissSwipeTranslateY.set(
-          withDecay({
-            velocity: e.velocityY,
-            velocityFactor: Math.max(3500 / Math.abs(e.velocityY), 1), // Speed up if it's too slow.
-            deceleration: 1, // Danger! This relies on the reaction below stopping it.
-            reduceMotion: ReduceMotion.Never, // If this animation doesn't run, the image gets stuck - therefore override Reduce Motion
-          }),
-        );
-      } else {
-        dismissSwipeTranslateY.set(
-          withSpring(0, {
-            stiffness: 700,
-            damping: 50,
-            mass: 1,
-            reduceMotion: ReduceMotion.Never,
-          }),
-        );
-      }
-    });
+  const dismissSwipePan = useMemo(
+    () =>
+      Gesture.Pan()
+        .activeOffsetY([-10, 10])
+        .failOffsetX([-10, 10])
+        .maxPointers(1)
+        .onTouchesDown((_e, state) => {
+          'worklet';
+          if (isPagerDragging.get() || activeIndexSV.get() !== imageIndex || isScaledSV.get()) {
+            state.fail();
+          }
+        })
+        .onUpdate(e => {
+          'worklet';
+          if (
+            openProgress.get() !== 1 ||
+            isFlyingAway.get() ||
+            isPagerDragging.get() ||
+            activeIndexSV.get() !== imageIndex ||
+            isScaledSV.get()
+          ) {
+            return;
+          }
+          dismissSwipeTranslateY.set(e.translationY);
+        })
+        .onEnd(e => {
+          'worklet';
+          if (
+            openProgress.get() !== 1 ||
+            isFlyingAway.get() ||
+            isPagerDragging.get() ||
+            activeIndexSV.get() !== imageIndex ||
+            isScaledSV.get()
+          ) {
+            return;
+          }
+          if (Math.abs(e.velocityY) > 200) {
+            isFlyingAway.set(true);
+            if (dismissSwipeTranslateY.get() === 0) {
+              // HACK: If the initial value is 0, withDecay() animation doesn't start.
+              // This is a bug in Reanimated, but for now we'll work around it like this.
+              dismissSwipeTranslateY.set(1);
+            }
+            dismissSwipeTranslateY.set(
+              withDecay({
+                velocity: e.velocityY,
+                velocityFactor: Math.max(3500 / Math.abs(e.velocityY), 1), // Speed up if it's too slow.
+                deceleration: 1, // Danger! This relies on the reaction below stopping it.
+                reduceMotion: ReduceMotion.Never, // If this animation doesn't run, the image gets stuck - therefore override Reduce Motion
+              }),
+            );
+          } else {
+            dismissSwipeTranslateY.set(
+              withSpring(0, {
+                stiffness: 700,
+                damping: 50,
+                mass: 1,
+                reduceMotion: ReduceMotion.Never,
+              }),
+            );
+          }
+        }),
+    [activeIndexSV, dismissSwipeTranslateY, imageIndex, isFlyingAway, isPagerDragging, isScaledSV, openProgress],
+  );
 
   return (
     <ImageItem
@@ -559,8 +609,7 @@ function LightboxImage({
       onZoom={onZoom}
       onRequestClose={onRequestClose}
       onLoad={setFetchedDims}
-      isScrollViewBeingDragged={isScrollViewBeingDragged}
-      showControls={showControls}
+      isPagerDragging={isPagerDragging}
       measureSafeArea={measureSafeArea}
       imageAspect={imageAspect}
       imageDimensions={dims ?? undefined}
@@ -568,7 +617,7 @@ function LightboxImage({
       transforms={transforms}
     />
   );
-}
+});
 
 const styles = StyleSheet.create({
   screen: {
