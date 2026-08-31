@@ -79,6 +79,8 @@ yarn-error.log
 .claude/settings.local.json
 .cursor/debug*.log
 .cursor/plans
+# Put skills in docs/Skills/ and symlink to .cursor/skills
+.cursor/skills
 
 # Custom Things They Forgot or I added.
 .watchman-cookie*
