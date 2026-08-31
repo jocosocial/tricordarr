@@ -20,6 +20,9 @@ Kinds:
 - `slider` — `SliderField`
 - `fab` — FABs and FAB group actions
 - `headerButton` — header `Item`s
+- `message` — long-pressable message bubbles (`MessageView`). Unlike the others this is
+  not unique on screen; every message in a list shares the value, so flows pick one with
+  Maestro's `index`.
 
 Examples: `loginUsername-input`, `loginSubmit-button`, `serverChoice-button`, `oobeNext-button`, `seamailCreate-fab`, `headerEdit-headerButton`, `forumThreadFavorite-button`.
 

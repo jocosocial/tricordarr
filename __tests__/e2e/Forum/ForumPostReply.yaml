@@ -1,0 +1,30 @@
+# Reply appends an @mention of the post's author to the thread composer.
+#
+# Swiftarr has no structural reply relation for forum posts; the @mention is what notifies
+# the author. It only counts the mention when the @ follows whitespace or the start of the
+# string (`(?<!\S)@` in ContentFilterable.getMentionsSet), so the separator space between
+# text already typed and the inserted mention is the thing actually under test.
+#
+# Precondition: signed in and viewing a forum thread whose first post is by another user.
+# Run ../OOBE/Login.yaml first, then navigate to such a thread. Reply is deliberately
+# absent on your own posts, so index 0 must not be yours.
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'contentPostText-input'
+- eraseText
+- inputText: 'hello'
+- assertVisible: '(?s).*hello.*'
+# The keyboard must be down before the long-press. With it up, the post's centre sits
+# behind it and the press lands on the keyboard, which silently dismisses it instead of
+# opening the menu.
+- hideKeyboard
+# Long-press by id rather than by text: the post's text selector resolves to an oversized
+# container whose centre is empty space.
+- longPressOn:
+    id: 'forumPost-message'
+    index: 0
+- assertVisible: 'Reply'
+- tapOn: 'Reply'
+# Separator space preserved, existing text untouched, mention appended after it.
+- assertVisible: '(?s).*hello @.*'
