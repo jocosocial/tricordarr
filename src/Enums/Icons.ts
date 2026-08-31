@@ -38,6 +38,7 @@ export enum AppIcons {
   report = 'alert-octagon',
   help = 'help-circle-outline',
   copy = 'content-copy',
+  reply = 'reply',
   // Users
   profile = 'account-details-outline',
   user = 'account',

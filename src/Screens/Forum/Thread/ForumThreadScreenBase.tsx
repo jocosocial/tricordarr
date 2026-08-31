@@ -27,6 +27,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
+import {ForumComposerProvider} from '#src/Context/Providers/ForumComposerProvider';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
@@ -295,44 +296,46 @@ const ForumThreadScreenBaseInner = ({
   });
 
   return (
-    <AppView>
-      <PostAsUserBanner />
-      <ListTitleView
-        title={forumData?.title ?? ''}
-        subtitle={pinnedPostsSubtitle}
-        icon={forumData?.isFavorite ? <AppIcon icon={AppIcons.favorite} small={true} /> : undefined}
-      />
-      {forumData?.isLocked && <ForumLockedView />}
-      <View style={commonStyles.flex}>
-        <ForumConversationListV2
-          postList={forumPosts}
-          handleLoadNext={handleLoadNext}
-          handleLoadPrevious={handleLoadPrevious}
-          refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
-          forumData={forumData}
-          hasPreviousPage={hasPreviousPage}
-          getListHeader={getListHeader}
-          listRef={flatListRef}
-          hasNextPage={hasNextPage}
-          forumListData={forumListData}
-          initialScrollIndex={getInitialScrollIndex()}
-          onReadyToShow={onReadyToShow}
+    <ForumComposerProvider formRef={postFormRef} enabled={showForm}>
+      <AppView>
+        <PostAsUserBanner />
+        <ListTitleView
+          title={forumData?.title ?? ''}
+          subtitle={pinnedPostsSubtitle}
+          icon={forumData?.isFavorite ? <AppIcon icon={AppIcons.favorite} small={true} /> : undefined}
         />
-        {!readyToShow && (
-          <View style={overlayStyles.overlay}>
-            <ActivityIndicator size={'large'} />
-          </View>
+        {forumData?.isLocked && <ForumLockedView />}
+        <View style={commonStyles.flex}>
+          <ForumConversationListV2
+            postList={forumPosts}
+            handleLoadNext={handleLoadNext}
+            handleLoadPrevious={handleLoadPrevious}
+            refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
+            forumData={forumData}
+            hasPreviousPage={hasPreviousPage}
+            getListHeader={getListHeader}
+            listRef={flatListRef}
+            hasNextPage={hasNextPage}
+            forumListData={forumListData}
+            initialScrollIndex={getInitialScrollIndex()}
+            onReadyToShow={onReadyToShow}
+          />
+          {!readyToShow && (
+            <View style={overlayStyles.overlay}>
+              <ActivityIndicator size={'large'} />
+            </View>
+          )}
+        </View>
+        {showForm && (
+          <ContentPostForm
+            onSubmit={onPostSubmit}
+            formRef={postFormRef}
+            enablePhotos={true}
+            maxLength={2000}
+            maxPhotos={maxForumPostImages}
+          />
         )}
-      </View>
-      {showForm && (
-        <ContentPostForm
-          onSubmit={onPostSubmit}
-          formRef={postFormRef}
-          enablePhotos={true}
-          maxLength={2000}
-          maxPhotos={maxForumPostImages}
-        />
-      )}
-    </AppView>
+      </AppView>
+    </ForumComposerProvider>
   );
 };
