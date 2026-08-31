@@ -54,18 +54,25 @@ const HuntScreenInner = ({navigation, route}: Props) => {
   const {data, isLoading, isError, error, refetch} = useHuntQuery({
     huntID: route.params.huntID,
     options: {
+      // Schedule the next fetch so newly unlocked puzzles appear without pull-to-refresh.
       refetchInterval: query => {
+        // Background screens should not keep hitting the API.
         if (!isFocused) {
           return false;
         }
         const nextUnlockTime = query.state.data?.nextUnlockTime;
+        // No pending unlock: either everything is out or nothing is scheduled.
         if (!nextUnlockTime) {
           return false;
         }
         const msUntilUnlock = new Date(nextUnlockTime).getTime() - Date.now();
+        // Unlock is due (or our clock is ahead of the server). Poll at the floor until
+        // the response includes the new puzzle; a shorter interval would tight-loop on skew.
         if (msUntilUnlock <= 0) {
           return MIN_UNLOCK_REFETCH_MS;
         }
+        // Wait until the advertised unlock, but never faster than the floor — a device
+        // a few seconds ahead would otherwise collapse this into a 2s poll.
         return Math.max(msUntilUnlock, MIN_UNLOCK_REFETCH_MS);
       },
     },
