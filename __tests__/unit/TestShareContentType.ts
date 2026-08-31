@@ -1,4 +1,4 @@
-import {getShareLink, ShareContentType, ShareLinkMode} from '#src/Libraries/Sharing';
+import {getShareLink, getShareSheetTitle, ShareContentType, ShareLinkMode} from '#src/Libraries/Sharing';
 import {appLinkPrefix} from '#src/Libraries/UrlParser';
 
 describe('ShareContentType.performer', () => {
@@ -19,6 +19,24 @@ describe('ShareContentType.puzzle', () => {
   it('uses the singular puzzle path', () => {
     expect(ShareContentType.puzzle).toBe('puzzle');
     expect(ShareContentType.puzzle).not.toBe('puzzles');
+  });
+});
+
+describe('getShareSheetTitle', () => {
+  it('names the content type in the title', () => {
+    expect(getShareSheetTitle(ShareContentType.hunt)).toBe('Share Puzzle Hunt');
+    expect(getShareSheetTitle(ShareContentType.puzzle)).toBe('Share Puzzle');
+    expect(getShareSheetTitle(ShareContentType.forum)).toBe('Share Forum');
+    expect(getShareSheetTitle(ShareContentType.forumPost)).toBe('Share Forum Post');
+    expect(getShareSheetTitle(ShareContentType.lfg)).toBe('Share LFG');
+    expect(getShareSheetTitle(ShareContentType.user)).toBe('Share User Profile');
+    expect(getShareSheetTitle(ShareContentType.event)).toBe('Share Event');
+    expect(getShareSheetTitle(ShareContentType.performer)).toBe('Share Performer');
+    expect(getShareSheetTitle(ShareContentType.siteUI)).toBe('Share Page');
+  });
+
+  it('falls back to Share when the type is missing', () => {
+    expect(getShareSheetTitle()).toBe('Share');
   });
 });
 
