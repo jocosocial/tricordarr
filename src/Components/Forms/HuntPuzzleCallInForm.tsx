@@ -4,7 +4,6 @@ import {StyleSheet, View} from 'react-native';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {PuzzleAnswerValidation} from '#src/Libraries/ValidationSchema';
@@ -46,7 +45,6 @@ export const HuntPuzzleCallInForm = ({onSubmit}: HuntPuzzleCallInFormProps) => {
       validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting, values}) => (
         <View>
-          <DirtyDetectionField />
           <TextField
             autoCapitalize={'none'}
             autoCorrect={false}

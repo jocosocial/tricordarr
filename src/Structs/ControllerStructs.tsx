@@ -1236,7 +1236,6 @@ export interface HuntListItemData {
 /// only have their answer field set if the user is logged in and has solved them.
 /// Returned by:
 /// * `GET /api/v3/hunts/:huntID`
-/// * `GET /api/v3/hunts/:huntID/admin` (TwitarrTeam+)
 export interface HuntData {
   huntID: string;
   title: string;
@@ -1253,9 +1252,6 @@ export interface HuntPuzzleData {
   body: string;
   /// The answer to this puzzle, if you have solved it or are using the admin interface.
   answer?: string;
-  /// Consumer GET omits locked puzzles; admin GET includes every puzzle.
-  /// Admin PATCH treats this as tri-state (absent / null / Date) — a naive
-  /// `unlockTime?: string` upload will not survive "clear vs leave alone".
   unlockTime?: string;
   /// Only set if fetched via the admin interface
   hints?: Record<string, string>;

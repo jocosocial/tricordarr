@@ -14,7 +14,9 @@ interface ListTitleViewProps {
   onSubtitlePress?: () => void;
 }
 
-// @TODO dedupe with BaseWarningView
+/**
+ * Banner title for list-style screens. Optional subtitle can be a tappable link.
+ */
 export const ListTitleView = ({
   title,
   subtitle,
@@ -79,7 +81,8 @@ export const ListTitleView = ({
           <Text
             style={onSubtitlePress ? styles.subtitleLink : styles.text}
             variant={subtitleVariant}
-            onPress={onSubtitlePress}>
+            onPress={onSubtitlePress}
+            accessibilityRole={onSubtitlePress ? 'link' : undefined}>
             {subtitle}
           </Text>
         )}

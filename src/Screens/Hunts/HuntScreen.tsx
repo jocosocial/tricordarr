@@ -1,3 +1,4 @@
+import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {AxiosError} from 'axios';
 import React, {useCallback, useEffect} from 'react';
@@ -28,6 +29,9 @@ import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.huntScreen>;
 
+/** Floor so a device clock ahead of the server cannot pin this to a 2s poll. */
+const MIN_UNLOCK_REFETCH_MS = 30_000;
+
 /**
  * Hunt detail: markdown description, unlocked puzzles, and next unlock time.
  */
@@ -45,15 +49,23 @@ export const HuntScreen = (props: Props) => {
  * Hunt detail body: description, unlocked puzzles, next unlock time.
  */
 const HuntScreenInner = ({navigation, route}: Props) => {
+  const isFocused = useIsFocused();
   const {data, isLoading, isError, error, refetch} = useHuntQuery({
     huntID: route.params.huntID,
     options: {
       refetchInterval: query => {
+        if (!isFocused) {
+          return false;
+        }
         const nextUnlockTime = query.state.data?.nextUnlockTime;
         if (!nextUnlockTime) {
           return false;
         }
-        return Math.max(new Date(nextUnlockTime).getTime() - Date.now(), 2000);
+        const msUntilUnlock = new Date(nextUnlockTime).getTime() - Date.now();
+        if (msUntilUnlock <= 0) {
+          return MIN_UNLOCK_REFETCH_MS;
+        }
+        return Math.max(msUntilUnlock, MIN_UNLOCK_REFETCH_MS);
       },
     },
   });

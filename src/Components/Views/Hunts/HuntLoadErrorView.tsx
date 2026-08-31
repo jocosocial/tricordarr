@@ -16,6 +16,9 @@ interface HuntLoadErrorViewProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
 }
 
+/**
+ * Copy for a 404 from the hunts API. Locked puzzles 404 the same as missing ones.
+ */
 const notFoundMessage = (resource: HuntLoadResource): string => {
   if (resource === 'puzzle') {
     return "This puzzle hasn't unlocked yet, or it could not be found.";
@@ -26,6 +29,9 @@ const notFoundMessage = (resource: HuntLoadResource): string => {
   return 'Puzzle hunts could not be found. Pull to retry.';
 };
 
+/**
+ * Copy for a non-404 hunt load failure.
+ */
 const genericMessage = (resource: HuntLoadResource): string => {
   if (resource === 'puzzle') {
     return 'Unable to load this puzzle. Pull to retry.';

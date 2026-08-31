@@ -70,7 +70,11 @@ const HuntListScreenInner = ({navigation}: Props) => {
     );
   }
 
-  const hunts = data?.hunts ?? [];
+  if (!data) {
+    return <LoadingView />;
+  }
+
+  const hunts = data.hunts;
 
   return (
     <AppView>
