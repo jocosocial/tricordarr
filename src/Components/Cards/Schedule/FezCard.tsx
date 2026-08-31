@@ -14,6 +14,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useFezData} from '#src/Hooks/useFezData';
 import {useMenu} from '#src/Hooks/useMenu';
+import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
@@ -42,7 +43,7 @@ const FezCardInternal = ({
   icon,
 }: FezCardProps) => {
   const {theme} = useAppTheme();
-  const unreadCount = fez.members ? fez.members.postCount - fez.members.readCount : 0;
+  const unreadCount = fez.members ? unreadPostCount(fez.members.postCount, fez.members.readCount) : 0;
   const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
   const {visible: menuVisible, openMenu, closeMenu} = useMenu();
