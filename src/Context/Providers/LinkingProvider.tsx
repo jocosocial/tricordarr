@@ -5,12 +5,11 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {LinkingContext} from '#src/Context/Contexts/LinkingContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {isTwitarrUrl} from '#src/Libraries/Linking';
 import {createLogger} from '#src/Libraries/Logger';
 import {isNavigationReady, push} from '#src/Libraries/NavigationRef';
 import {isEmulator, isIOS} from '#src/Libraries/Platform/Detection';
 import {findRouteByScreen, parseDeepLinkUrl, pushableRoutes} from '#src/Libraries/RouteDefinitions';
-import {appUrl, extractPathFromTricordarrUrl, extractPathFromWebUrl} from '#src/Libraries/UrlParser';
+import {appUrl, extractPathFromTricordarrUrl, extractPathFromWebUrl, isTwitarrUrl} from '#src/Libraries/UrlParser';
 
 const logger = createLogger('LinkingProvider.tsx');
 
@@ -84,6 +83,7 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
 
   /**
    * Open a Twitarr URL. This handles:
+   * - App-scheme URLs (`tricordarr://puzzle/...`) already in deep-link form
    * - Relative URLs (starting with /) by converting to tricordarr:// deep links
    * - URLs matching the current server or canonical hostnames
    * - External URLs (opened directly)
@@ -97,6 +97,12 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
    */
   const openWebUrl = useCallback(
     (url: string) => {
+      const appPath = extractPathFromTricordarrUrl(url);
+      if (appPath !== undefined) {
+        openAppUrl(appUrl(appPath));
+        return;
+      }
+
       if (isTwitarrUrl(url, serverUrl, appConfig.apiClientConfig.canonicalHostnames)) {
         openAppUrl(appUrl(extractPathFromWebUrl(url)));
         return;

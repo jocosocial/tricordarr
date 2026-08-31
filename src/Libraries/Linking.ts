@@ -1,6 +1,5 @@
 import type {PathConfig, PathConfigMap} from '@react-navigation/core';
 import {LinkingOptions} from '@react-navigation/native';
-import URLParse from 'url-parse';
 
 import {getPath} from '#src/Libraries/RouteDefinitions';
 import {appLinkPrefix} from '#src/Libraries/UrlParser';
@@ -23,26 +22,6 @@ type DeepLinksConfig<ParamList extends {}> = {
 // TypeScript cannot reverse-infer nested ParamList from NavigatorScreenParams,
 // so we explicitly provide it via the generic parameter.
 const tabLinkConfig = <T extends {}>(config: PathConfig<T>): any => config;
-
-/**
- * True when the URL should be opened as an in-app Twitarr deep link rather than externally.
- *
- * - Relative path: `/events/123` from markdown or the site UI — always a Twitarr route.
- * - Configured server: absolute URL that starts with `serverUrl`.
- * - Canonical host: hostname listed in `canonicalHostnames` (e.g. twitarr.com).
- */
-export const isTwitarrUrl = (url: string, serverUrl: string, canonicalHostnames: string[]): boolean => {
-  // Relative path from markdown or the site UI.
-  if (url.startsWith('/')) {
-    return true;
-  }
-  // Absolute URL on the server this app is currently using.
-  if (url.startsWith(serverUrl)) {
-    return true;
-  }
-  // Public Twitarr hostname from the canonical list.
-  return canonicalHostnames.includes(new URLParse(url).hostname);
-};
 
 /**
  * Route map of all routes necessary for deep linking. initialRouteName's should probably
