@@ -1,7 +1,7 @@
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
-import {StateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
+import {getStateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
 import {AppIcons} from '#src/Enums/Icons';
 
 interface FavoriteMenuItemProps {
@@ -11,20 +11,19 @@ interface FavoriteMenuItemProps {
   refreshing?: boolean;
 }
 
+/**
+ * Menu item that toggles a favorite relation, with a spinner while the mutation is in flight.
+ */
 export const FavoriteMenuItem = (props: FavoriteMenuItemProps) => {
-  const getLeadingIcon = () => (
-    <StateLoadingIcon
-      isLoading={props.refreshing}
-      state={props.isFavorite}
-      iconTrue={AppIcons.unfavorite}
-      iconFalse={AppIcons.favorite}
-    />
-  );
-
   return (
     <Menu.Item
       title={props.isFavorite ? 'Unfavorite' : 'Favorite'}
-      leadingIcon={getLeadingIcon}
+      leadingIcon={getStateLoadingIcon({
+        isLoading: props.refreshing,
+        state: props.isFavorite,
+        iconTrue: AppIcons.unfavorite,
+        iconFalse: AppIcons.favorite,
+      })}
       onPress={props.onPress}
       disabled={props.disabled}
     />
