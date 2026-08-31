@@ -256,6 +256,13 @@ export type CommonStackParamList = {
     callID: string;
   };
   KrakenTalkHelpScreen: undefined;
+  HuntScreen: {
+    huntID: string;
+  };
+  HuntPuzzleScreen: {
+    puzzleID: string;
+  };
+  HuntHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -376,6 +383,9 @@ export enum CommonStackComponents {
   krakenTalkCreateScreen = 'KrakenTalkCreateScreen',
   krakenTalkActiveCallScreen = 'KrakenTalkActiveCallScreen',
   krakenTalkHelpScreen = 'KrakenTalkHelpScreen',
+  huntScreen = 'HuntScreen',
+  huntPuzzleScreen = 'HuntPuzzleScreen',
+  huntHelpScreen = 'HuntHelpScreen',
 }
 
 /**
@@ -432,7 +442,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.easterEggHelpScreen
   | CommonStackComponents.todayHelpScreen
   | CommonStackComponents.krakenTalkHelpScreen
-  | CommonStackComponents.reportHelpScreen;
+  | CommonStackComponents.reportHelpScreen
+  | CommonStackComponents.huntHelpScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 

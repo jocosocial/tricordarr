@@ -126,7 +126,7 @@ export const HelpManualScreen = () => {
             title={'Puzzle Hunts'}
             description={'Challenge your brain with puzzle hunts.'}
             icon={AppIcons.hunts}
-            onPress={() => commonNavigation.push(CommonStackComponents.siteUIHelpScreen)}
+            onPress={() => commonNavigation.push(CommonStackComponents.huntHelpScreen)}
           />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Documentation'} noMargin={true}>

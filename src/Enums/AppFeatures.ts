@@ -32,6 +32,7 @@ export enum SwiftarrFeature {
   photostream = 'photostream',
   performers = 'performers',
   personalevents = 'personalevents',
+  hunts = 'hunts',
   all = 'all',
   /// For clients use. Clients need to be prepared for additional values to be added serverside. Those new values get decoded as 'unknown'.
   unknown = 'unknown',

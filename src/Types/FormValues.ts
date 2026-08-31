@@ -138,3 +138,7 @@ export interface SchedImportFormValues {
 export interface BackgroundConnectionSettingsFormValues {
   wifiNetworkNames: string[];
 }
+
+export interface HuntPuzzleCallInFormValues {
+  puzzleAnswer: string;
+}

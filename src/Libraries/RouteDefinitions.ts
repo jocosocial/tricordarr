@@ -47,6 +47,9 @@ export const allRoutes: RouteDefinition[] = [
   {screen: CommonStackComponents.performerScreen, path: 'performer/:id'},
   {screen: CommonStackComponents.mainTimeZoneScreen, path: 'time'},
   {screen: MainStackComponents.boardgameListScreen, path: 'boardgames'},
+  {screen: MainStackComponents.huntListScreen, path: 'hunts'},
+  {screen: CommonStackComponents.huntScreen, path: 'hunt/:huntID'},
+  {screen: CommonStackComponents.huntPuzzleScreen, path: 'puzzle/:puzzleID'},
   {screen: CommonStackComponents.userSelfProfileScreen, path: 'profile'},
 
   // ==================== Settings Routes ====================
@@ -117,6 +120,9 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.mapScreen,
     // Performer routes
     CommonStackComponents.performerScreen,
+    // Hunt routes
+    CommonStackComponents.huntScreen,
+    CommonStackComponents.huntPuzzleScreen,
     // Info routes
     CommonStackComponents.privacyScreen,
   ].includes(route.screen as CommonStackComponents),
