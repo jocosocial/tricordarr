@@ -90,6 +90,25 @@ export const allRoutes: RouteDefinition[] = [
   {screen: ForumStackComponents.forumPostMentionScreen, path: 'forumpost/mentions'},
   {screen: CommonStackComponents.forumThreadPostScreen, path: 'forum/containingpost/:postID'},
   {screen: CommonStackComponents.forumThreadScreen, path: 'forum/:forumID'},
+
+  // ==================== Moderator Routes ====================
+  {screen: CommonStackComponents.microKaraokeSongModerateScreen, path: 'moderate/microkaraoke/song/:id'},
+  {screen: CommonStackComponents.microKaraokeSongsModerateScreen, path: 'moderate/microkaraoke'},
+  {screen: CommonStackComponents.forumPostModerateScreen, path: 'moderate/forumpost/:id'},
+  {screen: CommonStackComponents.forumModerateScreen, path: 'moderate/forum/:id'},
+  {screen: CommonStackComponents.fezPostModerateScreen, path: 'moderate/fezpost/:id'},
+  {screen: CommonStackComponents.fezModerateScreen, path: 'moderate/lfg/:id'},
+  {screen: CommonStackComponents.profileModerateScreen, path: 'moderate/userprofile/:id'},
+  {screen: CommonStackComponents.userModerateScreen, path: 'moderate/user/:id'},
+  {screen: CommonStackComponents.photostreamModerateScreen, path: 'moderate/photostream/:id'},
+  {screen: CommonStackComponents.personalEventModerateScreen, path: 'moderate/personalevent/:id'},
+  {screen: CommonStackComponents.twarrtModerateScreen, path: 'moderate/twarrt/:id'},
+  {screen: CommonStackComponents.moderatorLogScreen, path: 'moderator/log'},
+  {screen: CommonStackComponents.moderatorSeamailScreen, path: 'moderator/seamail'},
+  {screen: CommonStackComponents.moderatorGuideScreen, path: 'moderator/guide'},
+  {screen: CommonStackComponents.moderatorForumMentionsScreen, path: 'moderator/mentions'},
+  {screen: CommonStackComponents.moderatorReportsScreen, path: 'reports/:closed?'},
+  {screen: CommonStackComponents.moderatorRootScreen, path: 'moderator'},
 ];
 
 /**
@@ -119,6 +138,24 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.performerScreen,
     // Info routes
     CommonStackComponents.privacyScreen,
+    // Moderator routes
+    CommonStackComponents.moderatorRootScreen,
+    CommonStackComponents.moderatorReportsScreen,
+    CommonStackComponents.moderatorLogScreen,
+    CommonStackComponents.moderatorGuideScreen,
+    CommonStackComponents.moderatorSeamailScreen,
+    CommonStackComponents.moderatorForumMentionsScreen,
+    CommonStackComponents.twarrtModerateScreen,
+    CommonStackComponents.forumPostModerateScreen,
+    CommonStackComponents.forumModerateScreen,
+    CommonStackComponents.fezModerateScreen,
+    CommonStackComponents.fezPostModerateScreen,
+    CommonStackComponents.profileModerateScreen,
+    CommonStackComponents.userModerateScreen,
+    CommonStackComponents.photostreamModerateScreen,
+    CommonStackComponents.personalEventModerateScreen,
+    CommonStackComponents.microKaraokeSongsModerateScreen,
+    CommonStackComponents.microKaraokeSongModerateScreen,
   ].includes(route.screen as CommonStackComponents),
 );
 
@@ -153,9 +190,9 @@ export const extractParamNames = (path: string): string[] => {
 export const pathToRegex = (path: string): RegExp => {
   let regexStr = path;
 
-  // Handle optional parameters (e.g., :deckNumber?)
-  // Replace :param? with an optional group that captures the value
-  regexStr = regexStr.replace(/:([^/?]+)\?/g, '(?:/([^/]+))?');
+  // Handle optional parameters (e.g., :deckNumber?). Consume the slash before the
+  // param so `map/:deckNumber?` matches both `map` and `map/3`.
+  regexStr = regexStr.replace(/\/:([^/?]+)\?/g, '(?:/([^/]+))?');
 
   // Handle required parameters (e.g., :forumID)
   regexStr = regexStr.replace(/:([^/]+)/g, '([^/]+)');

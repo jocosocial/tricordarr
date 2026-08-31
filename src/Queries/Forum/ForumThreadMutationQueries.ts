@@ -41,3 +41,17 @@ export const useForumMarkReadMutation = () => {
 
   return useTokenAuthMutation(forumMarkReadQueryHandler);
 };
+
+/**
+ * Soft-deletes a forum and its posts. Moderators can delete forums they do not own.
+ * POST /api/v3/forum/:id/delete
+ */
+export const useForumDeleteMutation = () => {
+  const {apiPost} = useSwiftarrQueryClient();
+
+  const forumDeleteQueryHandler = async ({forumID}: {forumID: string}) => {
+    return await apiPost(`/forum/${forumID}/delete`);
+  };
+
+  return useTokenAuthMutation(forumDeleteQueryHandler);
+};

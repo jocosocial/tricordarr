@@ -63,6 +63,45 @@ export type CommonStackParamList = {
     contentID: string | number;
   };
   ReportHelpScreen: undefined;
+  ModeratorRootScreen: undefined;
+  ModeratorReportsScreen: {
+    closed?: boolean;
+  };
+  ModeratorLogScreen: undefined;
+  ModeratorGuideScreen: undefined;
+  ModeratorSeamailScreen: undefined;
+  ModeratorForumMentionsScreen: undefined;
+  TwarrtModerateScreen: {
+    id: string;
+  };
+  ForumPostModerateScreen: {
+    id: string;
+  };
+  ForumModerateScreen: {
+    id: string;
+  };
+  FezModerateScreen: {
+    id: string;
+  };
+  FezPostModerateScreen: {
+    id: string;
+  };
+  ProfileModerateScreen: {
+    id: string;
+  };
+  UserModerateScreen: {
+    id: string;
+  };
+  PhotostreamModerateScreen: {
+    id: string;
+  };
+  PersonalEventModerateScreen: {
+    id: string;
+  };
+  MicroKaraokeSongsModerateScreen: undefined;
+  MicroKaraokeSongModerateScreen: {
+    id: string;
+  };
   EasterEggScreen: undefined;
   ForumThreadUserScreen: {
     user: UserHeader;
@@ -271,6 +310,23 @@ export enum CommonStackComponents {
   recoveryKeyScreen = 'RecoveryKeyScreen',
   reportScreen = 'ReportScreen',
   reportHelpScreen = 'ReportHelpScreen',
+  moderatorRootScreen = 'ModeratorRootScreen',
+  moderatorReportsScreen = 'ModeratorReportsScreen',
+  moderatorLogScreen = 'ModeratorLogScreen',
+  moderatorGuideScreen = 'ModeratorGuideScreen',
+  moderatorSeamailScreen = 'ModeratorSeamailScreen',
+  moderatorForumMentionsScreen = 'ModeratorForumMentionsScreen',
+  twarrtModerateScreen = 'TwarrtModerateScreen',
+  forumPostModerateScreen = 'ForumPostModerateScreen',
+  forumModerateScreen = 'ForumModerateScreen',
+  fezModerateScreen = 'FezModerateScreen',
+  fezPostModerateScreen = 'FezPostModerateScreen',
+  profileModerateScreen = 'ProfileModerateScreen',
+  userModerateScreen = 'UserModerateScreen',
+  photostreamModerateScreen = 'PhotostreamModerateScreen',
+  personalEventModerateScreen = 'PersonalEventModerateScreen',
+  microKaraokeSongsModerateScreen = 'MicroKaraokeSongsModerateScreen',
+  microKaraokeSongModerateScreen = 'MicroKaraokeSongModerateScreen',
   easterEggScreen = 'EasterEggScreen',
   forumThreadUserScreen = 'ForumThreadUserScreen',
   forumPostUserScreen = 'ForumPostUserScreen',
@@ -432,7 +488,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.easterEggHelpScreen
   | CommonStackComponents.todayHelpScreen
   | CommonStackComponents.krakenTalkHelpScreen
-  | CommonStackComponents.reportHelpScreen;
+  | CommonStackComponents.reportHelpScreen
+  | CommonStackComponents.moderatorGuideScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 

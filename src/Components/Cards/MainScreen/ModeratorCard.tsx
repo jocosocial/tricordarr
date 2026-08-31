@@ -14,10 +14,7 @@ export const ModeratorCard = () => {
   const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
 
-  const onPress = () =>
-    commonNavigation.push(CommonStackComponents.siteUIScreen, {
-      resource: 'moderator',
-    });
+  const onPress = () => commonNavigation.push(CommonStackComponents.moderatorRootScreen);
 
   if (!userNotificationData?.moderatorData) {
     return <></>;

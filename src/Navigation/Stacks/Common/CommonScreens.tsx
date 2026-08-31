@@ -66,8 +66,25 @@ import {PrivacyScreen} from '#src/Screens/Main/PrivacyScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
 import {TodayHelpScreen} from '#src/Screens/Main/TodayHelpScreen';
 import {MicroKaraokeHelpScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeHelpScreen';
+import {FezModerateScreen} from '#src/Screens/Moderation/FezModerateScreen';
+import {FezPostModerateScreen} from '#src/Screens/Moderation/FezPostModerateScreen';
+import {ForumModerateScreen} from '#src/Screens/Moderation/ForumModerateScreen';
+import {ForumPostModerateScreen} from '#src/Screens/Moderation/ForumPostModerateScreen';
+import {MicroKaraokeSongModerateScreen} from '#src/Screens/Moderation/MicroKaraokeSongModerateScreen';
+import {MicroKaraokeSongsModerateScreen} from '#src/Screens/Moderation/MicroKaraokeSongsModerateScreen';
+import {ModeratorForumMentionsScreen} from '#src/Screens/Moderation/ModeratorForumMentionsScreen';
+import {ModeratorGuideScreen} from '#src/Screens/Moderation/ModeratorGuideScreen';
+import {ModeratorLogScreen} from '#src/Screens/Moderation/ModeratorLogScreen';
+import {ModeratorReportsScreen} from '#src/Screens/Moderation/ModeratorReportsScreen';
+import {ModeratorRootScreen} from '#src/Screens/Moderation/ModeratorRootScreen';
+import {ModeratorSeamailScreen} from '#src/Screens/Moderation/ModeratorSeamailScreen';
+import {PersonalEventModerateScreen} from '#src/Screens/Moderation/PersonalEventModerateScreen';
+import {PhotostreamModerateScreen} from '#src/Screens/Moderation/PhotostreamModerateScreen';
+import {ProfileModerateScreen} from '#src/Screens/Moderation/ProfileModerateScreen';
 import {ReportHelpScreen} from '#src/Screens/Moderation/ReportHelpScreen';
 import {ReportScreen} from '#src/Screens/Moderation/ReportScreen';
+import {TwarrtModerateScreen} from '#src/Screens/Moderation/TwarrtModerateScreen';
+import {UserModerateScreen} from '#src/Screens/Moderation/UserModerateScreen';
 import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScreen';
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {PerformerHelpScreen} from '#src/Screens/Performer/PerformerHelpScreen';
@@ -193,6 +210,93 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.reportHelpScreen}
         component={ReportHelpScreen}
         options={{title: 'Report Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorRootScreen}
+        component={ModeratorRootScreen}
+        options={{title: 'Moderator'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorReportsScreen}
+        component={ModeratorReportsScreen}
+        options={({route}: {route: RouteProp<CommonStackParamList, CommonStackComponents.moderatorReportsScreen>}) => ({
+          title: route.params.closed ? 'Closed Reports' : 'Open Reports',
+        })}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorLogScreen}
+        component={ModeratorLogScreen}
+        options={{title: 'Moderator Log'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorGuideScreen}
+        component={ModeratorGuideScreen}
+        options={{title: 'Moderator Guide'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorSeamailScreen}
+        component={ModeratorSeamailScreen}
+        options={{title: 'Seamail to @moderator'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorForumMentionsScreen}
+        component={ModeratorForumMentionsScreen}
+        options={{title: '@moderator Mentions'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.twarrtModerateScreen}
+        component={TwarrtModerateScreen}
+        options={{title: 'Moderate Twarrt'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumPostModerateScreen}
+        component={ForumPostModerateScreen}
+        options={{title: 'Moderate Forum Post'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumModerateScreen}
+        component={ForumModerateScreen}
+        options={{title: 'Moderate Forum'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.fezModerateScreen}
+        component={FezModerateScreen}
+        options={{title: 'Moderate LFG'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.fezPostModerateScreen}
+        component={FezPostModerateScreen}
+        options={{title: 'Moderate Post'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.profileModerateScreen}
+        component={ProfileModerateScreen}
+        options={{title: 'Moderate Profile'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.userModerateScreen}
+        component={UserModerateScreen}
+        options={{title: 'Moderate User'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.photostreamModerateScreen}
+        component={PhotostreamModerateScreen}
+        options={{title: 'Moderate Photo'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.personalEventModerateScreen}
+        component={PersonalEventModerateScreen}
+        options={{title: 'Moderate Personal Event'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.microKaraokeSongsModerateScreen}
+        component={MicroKaraokeSongsModerateScreen}
+        options={{title: 'Micro Karaoke'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.microKaraokeSongModerateScreen}
+        component={MicroKaraokeSongModerateScreen}
+        options={{title: 'Moderate Song'}}
       />
       <Stack.Screen
         name={CommonStackComponents.easterEggScreen}

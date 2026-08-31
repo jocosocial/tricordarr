@@ -18,3 +18,17 @@ export const useFezPostMutation = () => {
 
   return useTokenAuthMutation(queryHandler);
 };
+
+/**
+ * Deletes a fez post. Moderators can delete posts they did not author.
+ * POST /api/v3/fez/post/:id/delete
+ */
+export const useFezPostDeleteMutation = () => {
+  const {apiPost} = useSwiftarrQueryClient();
+
+  const queryHandler = async ({postID}: {postID: string}) => {
+    return await apiPost(`/fez/post/${postID}/delete`);
+  };
+
+  return useTokenAuthMutation(queryHandler);
+};
