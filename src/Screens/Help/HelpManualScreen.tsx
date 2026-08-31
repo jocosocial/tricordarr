@@ -156,6 +156,12 @@ export const HelpManualScreen = () => {
             icon={AppIcons.moderator}
             onPress={() => commonNavigation.push(CommonStackComponents.moderatorHelpScreen)}
           />
+          <DataFieldListItem
+            title={'Server Admin'}
+            description={'TwitarrTeam, THO, and admin tools in the app.'}
+            icon={AppIcons.admin}
+            onPress={() => commonNavigation.push(CommonStackComponents.adminHelpScreen)}
+          />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Advanced'} noMargin={true}>
           <DataFieldListItem

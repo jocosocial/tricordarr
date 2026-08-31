@@ -29,6 +29,7 @@ export const allRoutes: RouteDefinition[] = [
   // ==================== Home Tab Routes ====================
   {screen: MainStackComponents.mainScreen, path: 'home'},
   {screen: CommonStackComponents.helpIndexScreen, path: 'help'},
+  {screen: CommonStackComponents.adminScreen, path: 'admin'},
   {screen: CommonStackComponents.aboutTricordarrScreen, path: 'about-app'},
   {screen: CommonStackComponents.aboutTwitarrScreen, path: 'about'},
   {screen: CommonStackComponents.privacyScreen, path: 'privacy'},
@@ -119,6 +120,7 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.performerScreen,
     // Info routes
     CommonStackComponents.privacyScreen,
+    CommonStackComponents.adminScreen,
   ].includes(route.screen as CommonStackComponents),
 );
 

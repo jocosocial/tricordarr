@@ -66,6 +66,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           screens: {
             MainScreen: getPath(MainStackComponents.mainScreen),
             HelpIndexScreen: getPath(CommonStackComponents.helpIndexScreen),
+            AdminScreen: getPath(CommonStackComponents.adminScreen),
             AboutTricordarrScreen: getPath(CommonStackComponents.aboutTricordarrScreen),
             AboutTwitarrScreen: getPath(CommonStackComponents.aboutTwitarrScreen),
             PrivacyScreen: getPath(CommonStackComponents.privacyScreen),

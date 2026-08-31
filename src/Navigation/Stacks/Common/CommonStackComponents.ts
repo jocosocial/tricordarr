@@ -3,10 +3,13 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 import type {FezType} from '#src/Enums/FezType';
 import type {ReportContentType} from '#src/Enums/ReportContentType';
+import {UserRoleType} from '#src/Enums/UserRoleType';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {type UserRelationMode} from '#src/Queries/Users/UserRelationConstants';
 import {
+  AnnouncementData,
   CategoryData,
+  DailyThemeData,
   EventData,
   FezData,
   ForumData,
@@ -256,6 +259,44 @@ export type CommonStackParamList = {
     callID: string;
   };
   KrakenTalkHelpScreen: undefined;
+  AdminScreen: undefined;
+  AdminHelpScreen: undefined;
+  AdminAnnouncementsScreen: undefined;
+  AdminAnnouncementEditScreen: {
+    announcement?: AnnouncementData;
+  };
+  AdminDailyThemesScreen: undefined;
+  AdminDailyThemeEditScreen: {
+    dailyTheme?: DailyThemeData;
+  };
+  AdminServerSettingsScreen: undefined;
+  AdminFeaturesScreen: undefined;
+  AdminRollupScreen: undefined;
+  AdminTimeZonesScreen: undefined;
+  AdminScheduleScreen: undefined;
+  AdminScheduleVerifyScreen: undefined;
+  AdminScheduleLogScreen: {
+    logID: number;
+  };
+  AdminRegCodesScreen: undefined;
+  AdminDiscordRegCodeScreen: undefined;
+  AdminUserRolesScreen: {
+    role?: UserRoleType;
+  };
+  AdminAccessLevelsScreen: {
+    level?: 'moderator' | 'twitarrteam' | 'tho';
+  };
+  AdminBulkUserScreen: undefined;
+  AdminKaraokeScreen: undefined;
+  AdminBoardgamesScreen: undefined;
+  AdminHuntsScreen: undefined;
+  AdminHuntEditScreen: {
+    huntID?: string;
+  };
+  AdminPuzzleEditScreen: {
+    huntID: string;
+    puzzleID: string;
+  };
 };
 
 export enum CommonStackComponents {
@@ -376,6 +417,29 @@ export enum CommonStackComponents {
   krakenTalkCreateScreen = 'KrakenTalkCreateScreen',
   krakenTalkActiveCallScreen = 'KrakenTalkActiveCallScreen',
   krakenTalkHelpScreen = 'KrakenTalkHelpScreen',
+  adminScreen = 'AdminScreen',
+  adminHelpScreen = 'AdminHelpScreen',
+  adminAnnouncementsScreen = 'AdminAnnouncementsScreen',
+  adminAnnouncementEditScreen = 'AdminAnnouncementEditScreen',
+  adminDailyThemesScreen = 'AdminDailyThemesScreen',
+  adminDailyThemeEditScreen = 'AdminDailyThemeEditScreen',
+  adminServerSettingsScreen = 'AdminServerSettingsScreen',
+  adminFeaturesScreen = 'AdminFeaturesScreen',
+  adminRollupScreen = 'AdminRollupScreen',
+  adminTimeZonesScreen = 'AdminTimeZonesScreen',
+  adminScheduleScreen = 'AdminScheduleScreen',
+  adminScheduleVerifyScreen = 'AdminScheduleVerifyScreen',
+  adminScheduleLogScreen = 'AdminScheduleLogScreen',
+  adminRegCodesScreen = 'AdminRegCodesScreen',
+  adminDiscordRegCodeScreen = 'AdminDiscordRegCodeScreen',
+  adminUserRolesScreen = 'AdminUserRolesScreen',
+  adminAccessLevelsScreen = 'AdminAccessLevelsScreen',
+  adminBulkUserScreen = 'AdminBulkUserScreen',
+  adminKaraokeScreen = 'AdminKaraokeScreen',
+  adminBoardgamesScreen = 'AdminBoardgamesScreen',
+  adminHuntsScreen = 'AdminHuntsScreen',
+  adminHuntEditScreen = 'AdminHuntEditScreen',
+  adminPuzzleEditScreen = 'AdminPuzzleEditScreen',
 }
 
 /**
@@ -432,7 +496,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.easterEggHelpScreen
   | CommonStackComponents.todayHelpScreen
   | CommonStackComponents.krakenTalkHelpScreen
-  | CommonStackComponents.reportHelpScreen;
+  | CommonStackComponents.reportHelpScreen
+  | CommonStackComponents.adminHelpScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 

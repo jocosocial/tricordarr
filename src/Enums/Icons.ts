@@ -153,4 +153,12 @@ export enum AppIcons {
   disabled = 'minus-circle-outline',
   preregistration = 'plane-train',
   karaokeLog = 'microphone-plus',
+  announcement = 'bullhorn',
+  admin = 'shield-account',
+  features = 'toggle-switch',
+  rollup = 'chart-bar',
+  bulkUser = 'database-import',
+  accessLevel = 'account-key',
+  userRole = 'badge-account',
+  seedReload = 'database-refresh',
 }

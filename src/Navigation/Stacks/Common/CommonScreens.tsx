@@ -7,6 +7,29 @@ import {
   USER_RELATION_SCREEN_TITLES,
   USER_RELATION_SEARCH_SCREEN_TITLES,
 } from '#src/Queries/Users/UserRelationConstants';
+import {AdminAccessLevelsScreen} from '#src/Screens/Admin/AdminAccessLevelsScreen';
+import {AdminAnnouncementEditScreen} from '#src/Screens/Admin/AdminAnnouncementEditScreen';
+import {AdminAnnouncementsScreen} from '#src/Screens/Admin/AdminAnnouncementsScreen';
+import {AdminBoardgamesScreen} from '#src/Screens/Admin/AdminBoardgamesScreen';
+import {AdminBulkUserScreen} from '#src/Screens/Admin/AdminBulkUserScreen';
+import {AdminDailyThemeEditScreen} from '#src/Screens/Admin/AdminDailyThemeEditScreen';
+import {AdminDailyThemesScreen} from '#src/Screens/Admin/AdminDailyThemesScreen';
+import {AdminDiscordRegCodeScreen} from '#src/Screens/Admin/AdminDiscordRegCodeScreen';
+import {AdminFeaturesScreen} from '#src/Screens/Admin/AdminFeaturesScreen';
+import {AdminHelpScreen} from '#src/Screens/Admin/AdminHelpScreen';
+import {AdminHuntEditScreen} from '#src/Screens/Admin/AdminHuntEditScreen';
+import {AdminHuntsScreen} from '#src/Screens/Admin/AdminHuntsScreen';
+import {AdminKaraokeScreen} from '#src/Screens/Admin/AdminKaraokeScreen';
+import {AdminPuzzleEditScreen} from '#src/Screens/Admin/AdminPuzzleEditScreen';
+import {AdminRegCodesScreen} from '#src/Screens/Admin/AdminRegCodesScreen';
+import {AdminRollupScreen} from '#src/Screens/Admin/AdminRollupScreen';
+import {AdminScheduleLogScreen} from '#src/Screens/Admin/AdminScheduleLogScreen';
+import {AdminScheduleScreen} from '#src/Screens/Admin/AdminScheduleScreen';
+import {AdminScheduleVerifyScreen} from '#src/Screens/Admin/AdminScheduleVerifyScreen';
+import {AdminScreen} from '#src/Screens/Admin/AdminScreen';
+import {AdminServerSettingsScreen} from '#src/Screens/Admin/AdminServerSettingsScreen';
+import {AdminTimeZonesScreen} from '#src/Screens/Admin/AdminTimeZonesScreen';
+import {AdminUserRolesScreen} from '#src/Screens/Admin/AdminUserRolesScreen';
 import {BoardgameHelpScreen} from '#src/Screens/Boardgames/BoardgameHelpScreen';
 import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
 import {PreRegistrationHelpScreen} from '#src/Screens/Disabled/PreRegistrationHelpScreen';
@@ -728,6 +751,121 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.krakenTalkHelpScreen}
         component={KrakenTalkHelpScreen}
         options={{title: 'KrakenTalk Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminScreen}
+        component={AdminScreen}
+        options={{title: 'Server Admin'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminHelpScreen}
+        component={AdminHelpScreen}
+        options={{title: 'Server Admin Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminAnnouncementsScreen}
+        component={AdminAnnouncementsScreen}
+        options={{title: 'Announcements'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminAnnouncementEditScreen}
+        component={AdminAnnouncementEditScreen}
+        options={{title: 'Announcement'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminDailyThemesScreen}
+        component={AdminDailyThemesScreen}
+        options={{title: 'Daily Themes'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminDailyThemeEditScreen}
+        component={AdminDailyThemeEditScreen}
+        options={{title: 'Daily Theme'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminServerSettingsScreen}
+        component={AdminServerSettingsScreen}
+        options={{title: 'Server Settings'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminFeaturesScreen}
+        component={AdminFeaturesScreen}
+        options={{title: 'Disabled Features'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminRollupScreen}
+        component={AdminRollupScreen}
+        options={{title: 'Server Counts'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminTimeZonesScreen}
+        component={AdminTimeZonesScreen}
+        options={{title: 'Time Zones'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminScheduleScreen}
+        component={AdminScheduleScreen}
+        options={{title: 'Schedule Update'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminScheduleVerifyScreen}
+        component={AdminScheduleVerifyScreen}
+        options={{title: 'Verify Schedule'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminScheduleLogScreen}
+        component={AdminScheduleLogScreen}
+        options={{title: 'Schedule Log'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminRegCodesScreen}
+        component={AdminRegCodesScreen}
+        options={{title: 'Registration Codes'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminDiscordRegCodeScreen}
+        component={AdminDiscordRegCodeScreen}
+        options={{title: 'Discord Codes'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminUserRolesScreen}
+        component={AdminUserRolesScreen}
+        options={{title: 'User Roles'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminAccessLevelsScreen}
+        component={AdminAccessLevelsScreen}
+        options={{title: 'Access Levels'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminBulkUserScreen}
+        component={AdminBulkUserScreen}
+        options={{title: 'Bulk User Import'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminKaraokeScreen}
+        component={AdminKaraokeScreen}
+        options={{title: 'Karaoke Catalog'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminBoardgamesScreen}
+        component={AdminBoardgamesScreen}
+        options={{title: 'Board Game Catalog'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminHuntsScreen}
+        component={AdminHuntsScreen}
+        options={{title: 'Puzzle Hunts'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminHuntEditScreen}
+        component={AdminHuntEditScreen}
+        options={{title: 'Hunt'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminPuzzleEditScreen}
+        component={AdminPuzzleEditScreen}
+        options={{title: 'Puzzle'}}
       />
     </>
   );

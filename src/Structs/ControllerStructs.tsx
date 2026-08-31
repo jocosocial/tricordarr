@@ -415,6 +415,12 @@ export interface AnnouncementData {
   isDeleted: boolean;
 }
 
+export namespace AnnouncementData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/notification/announcements']];
+  };
+}
+
 export interface DailyThemeData {
   /// The theme's ID Probably only useful for admins in order to edit or delete themes.
   themeID: string;
@@ -429,6 +435,10 @@ export interface DailyThemeData {
 }
 
 export namespace DailyThemeData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/notification/dailythemes']];
+  };
+
   export const getThemeForDay = (cruiseDayIndex: number, cruiseLength: number, dailyThemeData?: DailyThemeData[]) => {
     if (dailyThemeData) {
       let todaysTheme: DailyThemeData | undefined;
@@ -654,6 +664,10 @@ export interface RegistrationCodeUserData {
   users: UserHeader[];
   /// The registration code associated with this account. If this account doesn't have an associated regcode, will be the empty string.
   regCode: string;
+  /// TRUE if this reg code was created to get allocated to a Discord user for the purpose of creating an account on the pre-prod server.
+  isForDiscordUser: boolean;
+  /// If this reg code has been allocated to a Discord user, the name of the user. Nil if not a Discord regcode or if not yet allocated.
+  discordUsername?: string;
   /// TRUE if this account already used its registration code for password recovery.
   hasUsedRegCodeForPasswordRecovery: boolean;
   /// Account creation time of the primary user. Nil if the code has not been used to create an account.
@@ -1086,6 +1100,12 @@ export interface TimeZoneChangeData {
   currentOffsetSeconds: number;
 }
 
+export namespace TimeZoneChangeData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/admin/timezonechanges']];
+  };
+}
+
 /// Parameters for the game recommender engine. Pass these values in, get back a `BoardgameResponseData` with a
 /// list of games filtered to match the criteria, and sorted based on how well they match the criteria. The sort takes into account each games'
 /// overall rating from BGG, the recommended number of players (not just min and max allowed players), the average playtime,
@@ -1348,4 +1368,60 @@ export interface CurrentUserData {
   accessLevel: UserAccessLevel;
   /// A list of the user's roles
   roles: UserRoleType[];
+}
+
+/**
+ * Used to return a list of hunts.
+ * Returned by `GET /api/v3/hunts`.
+ */
+export interface HuntListData {
+  hunts: HuntListItemData[];
+}
+
+export namespace HuntListData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/hunts']];
+  };
+}
+
+export interface HuntListItemData {
+  huntID: string;
+  title: string;
+  description: string;
+}
+
+/**
+ * Used to return a single hunt in as much detail as the caller can see.
+ * Returned by `GET /api/v3/hunts/:huntID` and `GET /api/v3/hunts/:huntID/admin`.
+ */
+export interface HuntData {
+  huntID: string;
+  title: string;
+  description: string;
+  puzzles: HuntPuzzleData[];
+  /// ISO8601. If any puzzles are locked, the time of the next one to unlock.
+  nextUnlockTime?: string;
+}
+
+export namespace HuntData {
+  export const getCacheKeys = (huntID?: string): QueryKey[] => {
+    const keys = HuntListData.getCacheKeys();
+    if (huntID) {
+      keys.push([`/hunts/${huntID}`]);
+      keys.push([`/hunts/${huntID}/admin`]);
+    }
+    return keys;
+  };
+}
+
+export interface HuntPuzzleData {
+  puzzleID: string;
+  title: string;
+  body: string;
+  /// The answer to this puzzle, if you have solved it or are using the admin interface.
+  answer?: string;
+  /// ISO8601.
+  unlockTime?: string;
+  /// Only set if fetched via the admin interface.
+  hints?: Record<string, string>;
 }
