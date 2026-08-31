@@ -46,7 +46,7 @@ export const ShareSettingsScreen = () => {
                 onPress={handleShareWebURLs}
                 style={commonStyles.paddingHorizontalSmall}
                 helperText={
-                  'Share content using web URLs by default. When disabled (the default), sharing uses a custom URI link that opens this app.'
+                  'By default, share content using web URLs which can be opened in any browser. When disabled (the default), by default the sharing action uses a URI that opens to this app. A switch in the share sheet allows you to override this default on a case-by-case basis.'
                 }
                 value={shareWebURLs}
               />

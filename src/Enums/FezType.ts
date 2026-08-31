@@ -143,17 +143,42 @@ export namespace FezType {
     }
   };
 
-  export const fezTypesForChatCategories = (categories: FezChatCategory[]): FezType[] => {
+  /**
+   * Chat categories that may appear in the Seamail list for the given include preferences.
+   */
+  export const allowedChatCategories = (includeLfgs: boolean, includePrivateEvents: boolean): FezChatCategory[] => {
+    return chatCategories.filter(category => {
+      switch (category) {
+        case FezChatCategory.lfg:
+          return includeLfgs;
+        case FezChatCategory.privateEvent:
+          return includePrivateEvents;
+        default:
+          return true;
+      }
+    });
+  };
+
+  /**
+   * Resolves Fez types to query for the Seamail list.
+   * An empty selection means all allowed categories. Categories not in `allowedCategories` are ignored.
+   */
+  export const fezTypesForChatCategories = (
+    categories: FezChatCategory[],
+    allowedCategories: FezChatCategory[] = chatCategories,
+  ): FezType[] => {
+    const selected = categories.length > 0 ? categories : allowedCategories;
+    const effective = selected.filter(c => allowedCategories.includes(c));
     const types: FezType[] = [];
-    if (categories.includes(FezChatCategory.seamail)) {
+    if (effective.includes(FezChatCategory.seamail)) {
       types.push(...seamailTypes);
     }
-    if (categories.includes(FezChatCategory.privateEvent)) {
+    if (effective.includes(FezChatCategory.privateEvent)) {
       types.push(FezType.privateEvent);
     }
-    if (categories.includes(FezChatCategory.lfg)) {
+    if (effective.includes(FezChatCategory.lfg)) {
       types.push(...lfgTypes);
     }
-    return types.length > 0 ? types : chatTypes;
+    return types.length > 0 ? types : [...seamailTypes];
   };
 }

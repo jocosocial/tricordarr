@@ -70,7 +70,7 @@ function startOfThreshold(threshold: keyof typeof thresholdMap) {
  */
 export default function useDateTime(threshold: keyof typeof thresholdMap) {
   const [date, setDate] = useState(startOfThreshold(threshold));
-  const timer = useRef(0);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     if (threshold) {

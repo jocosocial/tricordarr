@@ -1,8 +1,10 @@
 import {type FlashListRef} from '@shopify/flash-list';
-import {SetStateAction, useCallback, useState} from 'react';
+import {Dispatch, SetStateAction, useCallback, useLayoutEffect, useRef, useState} from 'react';
 
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFollowCruiseDayToday} from '#src/Hooks/useFollowCruiseDayToday';
+
+const noopFollowToday = (_day: number) => {};
 
 interface UseCruiseDayPickerOptions<T> {
   /**
@@ -17,8 +19,18 @@ interface UseCruiseDayPickerOptions<T> {
   /**
    * Optional default cruise day to use instead of adjustedCruiseDayToday.
    * Useful for navigation where a specific day should be shown initially.
+   * When controlled, applied via layout effect keyed on this value only (deep links / intent remounts).
    */
   defaultCruiseDay?: number;
+  /**
+   * Controlled selected day. When passed with setSelectedCruiseDay, internal state is unused
+   * (e.g. shared ScheduleCruiseDayContext).
+   */
+  selectedCruiseDay?: number;
+  /**
+   * Controlled setter. When passed with selectedCruiseDay, follow-today is owned by the provider.
+   */
+  setSelectedCruiseDay?: Dispatch<SetStateAction<number>>;
 }
 
 interface UseCruiseDayPickerResult {
@@ -56,6 +68,9 @@ interface UseCruiseDayPickerResult {
  * - Scroll position reset on day change
  * - Following cruise "today" across overnight / late-day rollover when the user is still on the previous today
  *
+ * Pass both selectedCruiseDay and setSelectedCruiseDay to control the day from outside
+ * (shared context). Follow-today is skipped in that mode so the owner can listen once.
+ *
  * @example
  * ```tsx
  * const [items, setItems] = useState<FezData[]>([]);
@@ -85,15 +100,31 @@ export function useCruiseDayPicker<T>({
   listRef,
   clearList,
   defaultCruiseDay,
+  selectedCruiseDay: selectedCruiseDayProp,
+  setSelectedCruiseDay: setSelectedCruiseDayProp,
 }: UseCruiseDayPickerOptions<T>): UseCruiseDayPickerResult {
   const {adjustedCruiseDayToday} = useCruise();
+  const isControlled = selectedCruiseDayProp !== undefined && setSelectedCruiseDayProp !== undefined;
 
   // Default to defaultCruiseDay if provided, otherwise current day if cruise context is ready, otherwise day 1
   // Note: selectedCruiseDay can be 0 (meaning "All Days"), which is different from cruiseDay: 0 in the API
-  const [selectedCruiseDay, setSelectedCruiseDay] = useState(
+  const [internalCruiseDay, setInternalCruiseDay] = useState(
     defaultCruiseDay !== undefined ? defaultCruiseDay : adjustedCruiseDayToday || 1,
   );
   const [isSwitchingDays, setIsSwitchingDays] = useState(false);
+
+  const selectedCruiseDay = isControlled ? selectedCruiseDayProp : internalCruiseDay;
+  const setSelectedCruiseDay = isControlled ? setSelectedCruiseDayProp : setInternalCruiseDay;
+  const previousCruiseDayRef = useRef(selectedCruiseDay);
+
+  /**
+   * Apply day-switch UX: clear list, show spinner, reset scroll.
+   */
+  const applyDaySwitchUx = useCallback(() => {
+    clearList();
+    setIsSwitchingDays(true);
+    listRef.current?.scrollToOffset({offset: 0, animated: false});
+  }, [clearList, listRef]);
 
   const handleSetCruiseDay = useCallback(
     (day: SetStateAction<number>) => {
@@ -106,15 +137,37 @@ export function useCruiseDayPicker<T>({
         return;
       }
 
-      clearList(); // Clear list immediately for instant feedback
-      setIsSwitchingDays(true); // Show loading indicator
+      previousCruiseDayRef.current = newDay;
+      applyDaySwitchUx();
       setSelectedCruiseDay(newDay);
-      listRef.current?.scrollToOffset({offset: 0, animated: false}); // Reset scroll position
     },
-    [clearList, listRef, selectedCruiseDay],
+    [applyDaySwitchUx, selectedCruiseDay, setSelectedCruiseDay],
   );
 
-  useFollowCruiseDayToday(selectedCruiseDay, handleSetCruiseDay);
+  useFollowCruiseDayToday(selectedCruiseDay, isControlled ? noopFollowToday : handleSetCruiseDay);
+
+  /**
+   * Seed/override from a route param without fighting later header or planner changes.
+   * Route params stay stale across goBack, so this is keyed on defaultCruiseDay only.
+   */
+  useLayoutEffect(() => {
+    if (!isControlled || defaultCruiseDay === undefined) {
+      return;
+    }
+    setSelectedCruiseDay(defaultCruiseDay);
+  }, [defaultCruiseDay, isControlled, setSelectedCruiseDay]);
+
+  /**
+   * When the day changes from outside (shared context), run the same switching UX
+   * so a hidden Schedule Day list does not flash stale items on Back.
+   */
+  useLayoutEffect(() => {
+    if (previousCruiseDayRef.current === selectedCruiseDay) {
+      return;
+    }
+    previousCruiseDayRef.current = selectedCruiseDay;
+    applyDaySwitchUx();
+  }, [applyDaySwitchUx, selectedCruiseDay]);
 
   const onDataLoaded = useCallback(() => {
     setIsSwitchingDays(false);

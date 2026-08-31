@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef} from 'react';
 import {ScrollView, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
@@ -13,9 +13,9 @@ import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarnin
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {useFollowCruiseDayToday} from '#src/Hooks/useFollowCruiseDayToday';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {
   buildDayPlannerItems,
@@ -42,14 +42,12 @@ export const ScheduleDayPlannerScreen = (props: Props) => {
   );
 };
 
-const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
+const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
   const {adjustedCruiseDayToday, startDate} = useCruise();
-  const cruiseDayParam = route.params?.cruiseDay;
-  // Day Planner doesn't support cruiseDay 0 (all days).
-  const [selectedCruiseDay, setSelectedCruiseDay] = useState(
-    cruiseDayParam === 0 || cruiseDayParam === undefined ? adjustedCruiseDayToday : cruiseDayParam,
-  );
-  useFollowCruiseDayToday(selectedCruiseDay, setSelectedCruiseDay);
+  const {selectedCruiseDay: contextCruiseDay, setSelectedCruiseDay} = useScheduleCruiseDay();
+  // Day Planner doesn't support cruiseDay 0 (All Days). Display today without writing
+  // back until the user picks a day, so All Days → Planner → Back stays on All Days.
+  const selectedCruiseDay = contextCruiseDay === 0 ? adjustedCruiseDayToday : contextCruiseDay;
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const scrollViewRef = useRef<ScrollView>(null);

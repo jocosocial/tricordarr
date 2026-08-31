@@ -62,7 +62,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
     try {
       webViewRef.current?.goBack();
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
   }, [navigation, handleGoBack, serverUrl]);

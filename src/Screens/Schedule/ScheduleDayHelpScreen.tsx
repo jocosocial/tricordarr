@@ -30,7 +30,8 @@ export const ScheduleDayHelpScreen = () => {
         <HelpChapterTitleView title={'Floating Action Button'}>
           <HelpFABView icon={AppIcons.dayPlanner} label={'Day Planner'} />
           <HelpTopicView>
-            Press the "Day Planner" button in the lower right to view your events in a calendar-style timeline view.
+            Press the "Day Planner" button in the lower right to view your events in a calendar-style timeline view. The
+            day you have selected is shared with the Day Planner, including when you go back.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>

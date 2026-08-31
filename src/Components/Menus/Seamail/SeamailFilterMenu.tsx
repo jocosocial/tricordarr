@@ -10,13 +10,17 @@ import {useMenu} from '#src/Hooks/useMenu';
 
 export const SeamailFilterMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {seamailChatCategories, setSeamailChatCategories, seamailOnlyNew, setSeamailOnlyNew} = useSeamailFilter();
+  const {seamailChatCategories, setSeamailChatCategories, seamailOnlyNew, setSeamailOnlyNew, allowedChatCategories} =
+    useSeamailFilter();
 
   const handleUnreadOnly = () => {
     setSeamailOnlyNew(prev => (prev === true ? undefined : true));
   };
 
   const handleCategoryToggle = (category: FezChatCategory) => {
+    if (!allowedChatCategories.includes(category)) {
+      return;
+    }
     setSeamailChatCategories(prev => {
       if (prev.includes(category)) {
         return prev.filter(c => c !== category);
@@ -44,6 +48,7 @@ export const SeamailFilterMenu = () => {
           title={FezType.getChatCategoryLabel(category)}
           selected={seamailChatCategories.includes(category)}
           onPress={() => handleCategoryToggle(category)}
+          disabled={!allowedChatCategories.includes(category)}
         />
       ))}
     </AppMenu>

@@ -7,13 +7,14 @@ import {FeatureProvider} from '#src/Context/Providers/FeatureProvider';
 import {LinkingProvider} from '#src/Context/Providers/LinkingProvider';
 import {PrivilegeProvider} from '#src/Context/Providers/PrivilegeProvider';
 import {RoleProvider} from '#src/Context/Providers/RoleProvider';
+import {ScheduleCruiseDayProvider} from '#src/Context/Providers/ScheduleCruiseDayProvider';
 import {SocketProvider} from '#src/Context/Providers/SocketProvider';
 import {TimeProvider} from '#src/Context/Providers/TimeProvider';
 import {TimeZoneChangesProvider} from '#src/Context/Providers/TimeZoneChangesProvider';
 
 /**
  * Groups Twitarr/app-feature providers (privileges, roles, socket, linking,
- * features, client settings, cruise, timezone) in one place.
+ * features, client settings, cruise, timezone, schedule cruise day) in one place.
  */
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   return (
@@ -26,7 +27,9 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
                 <CallProvider>
                   <TimeProvider>
                     <CruiseProvider>
-                      <TimeZoneChangesProvider>{children}</TimeZoneChangesProvider>
+                      <TimeZoneChangesProvider>
+                        <ScheduleCruiseDayProvider>{children}</ScheduleCruiseDayProvider>
+                      </TimeZoneChangesProvider>
                     </CruiseProvider>
                   </TimeProvider>
                 </CallProvider>

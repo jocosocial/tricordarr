@@ -12,6 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
+
 const ts = require('typescript');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -315,7 +316,7 @@ function parseEnumCases(trimmed) {
       if (!nameMatch) {
         return null;
       }
-      const rawMatch = part.match(/=\s*"([^"]*)"/);
+      const rawMatch = part.match(/[=]\s*"([^"]*)"/);
       return {name: nameMatch[1], raw: rawMatch ? rawMatch[1] : nameMatch[1]};
     })
     .filter(Boolean);
@@ -371,8 +372,7 @@ function parseSwiftBody(body, kind) {
 function parseSwiftSource(source) {
   const stripped = stripSwiftComments(source);
   const types = {};
-  const declRe =
-    /(?:^|\n)[ \t]*(?:(?:public|private|internal|fileprivate|open)\s+)*(struct|enum|extension)\s+(\w+)/g;
+  const declRe = /(?:^|\n)[ \t]*(?:(?:public|private|internal|fileprivate|open)\s+)*(struct|enum|extension)\s+(\w+)/g;
   let match;
   while ((match = declRe.exec(stripped))) {
     const kind = match[1];
@@ -578,7 +578,10 @@ function classifyTranslation(swiftType) {
   if (core.startsWith('[') && core.includes(':')) {
     return 'dict';
   }
-  const base = core.replace(/\[|\]|\?|<.*>/g, '').trim().split(/\s/)[0];
+  const base = core
+    .replace(/\[|\]|\?|<.*>/g, '')
+    .trim()
+    .split(/\s/)[0];
   if (ENUM_TYPE_NAMES.has(base) || ENUM_TYPE_NAMES.has(core)) {
     return 'enum';
   }
@@ -761,9 +764,7 @@ function diffIosKit(upstream, ios) {
         continue;
       }
       if (!swiftTypesEqual(f.swiftType, kitField.swiftType)) {
-        lines.push(
-          `${name}.${f.name}: upstream \`${f.swiftType}\` vs kit \`${kitField.swiftType}\``,
-        );
+        lines.push(`${name}.${f.name}: upstream \`${f.swiftType}\` vs kit \`${kitField.swiftType}\``);
       }
     }
     for (const f of kitType.fields || []) {

@@ -1,6 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -25,7 +25,6 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -60,8 +59,7 @@ export const SeamailListScreen = (props: Props) => {
 const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   const {asPrivilegedUser} = useElevation();
-  const {seamailChatCategories, seamailOnlyNew, setSeamailOnlyNew} = useSeamailFilter();
-  const fezType = useMemo(() => FezType.fezTypesForChatCategories(seamailChatCategories), [seamailChatCategories]);
+  const {seamailOnlyNew, setSeamailOnlyNew, fezType} = useSeamailFilter();
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isFetching} = useFezListQuery({
     endpoint: 'joined',
     fezType,
@@ -136,16 +134,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [
-    enableSelection,
-    asPrivilegedUser,
-    navigation,
-    setRefreshing,
-    fezList,
-    selectedItems,
-    seamailChatCategories,
-    seamailOnlyNew,
-  ]);
+  }, [enableSelection, asPrivilegedUser, navigation, setRefreshing, fezList, selectedItems]);
 
   useEffect(() => {
     navigation.setOptions({

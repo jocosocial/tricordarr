@@ -17,6 +17,7 @@ import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarnin
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
 import {useScheduleFilter} from '#src/Context/Contexts/ScheduleFilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -58,10 +59,13 @@ const ScheduleDayScreenActual = ({
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
 
+  const {selectedCruiseDay: contextCruiseDay, setSelectedCruiseDay: setContextCruiseDay} = useScheduleCruiseDay();
   const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
     listRef,
     clearList: useCallback(() => setScheduleList([]), []),
     defaultCruiseDay: cruiseDayInitial,
+    selectedCruiseDay: contextCruiseDay,
+    setSelectedCruiseDay: setContextCruiseDay,
   });
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();

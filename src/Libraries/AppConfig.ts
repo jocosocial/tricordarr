@@ -53,6 +53,8 @@ export interface UserPreferences {
   autosavePhotos: boolean;
   autoCompressOversizedImages: boolean;
   shareAppURI: boolean;
+  seamailIncludeLfgs: boolean;
+  seamailIncludePrivateEvents: boolean;
 }
 
 export interface AppConfig {
@@ -169,6 +171,8 @@ export const defaultAppConfig: AppConfig = {
     autosavePhotos: true,
     autoCompressOversizedImages: true,
     shareAppURI: true,
+    seamailIncludeLfgs: true,
+    seamailIncludePrivateEvents: true,
   },
   markReadCancelPush: true,
   preRegistrationServerUrl: 'https://start.twitarr.com',
@@ -241,6 +245,12 @@ export const getAppConfig = async () => {
   }
   if (appConfig.userPreferences.shareAppURI === undefined) {
     appConfig.userPreferences.shareAppURI = true;
+  }
+  if (appConfig.userPreferences.seamailIncludeLfgs === undefined) {
+    appConfig.userPreferences.seamailIncludeLfgs = true;
+  }
+  if (appConfig.userPreferences.seamailIncludePrivateEvents === undefined) {
+    appConfig.userPreferences.seamailIncludePrivateEvents = true;
   }
   if (appConfig.dismissWelcomeAboard === undefined) {
     appConfig.dismissWelcomeAboard = false;

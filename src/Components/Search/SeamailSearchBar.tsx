@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Keyboard} from 'react-native';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -6,7 +6,6 @@ import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useSeamailFilter} from '#src/Context/Contexts/SeamailFilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {FezType} from '#src/Enums/FezType';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {useFezListQuery} from '#src/Queries/Fez/FezQueries';
@@ -15,11 +14,7 @@ import {FezData} from '#src/Structs/ControllerStructs';
 export const SeamailSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [queryEnable, setQueryEnable] = useState(false);
-  const {seamailChatCategories} = useSeamailFilter();
-  const fezType = useMemo(
-    () => FezType.fezTypesForChatCategories(seamailChatCategories),
-    [seamailChatCategories],
-  );
+  const {fezType} = useSeamailFilter();
   const {data, refetch, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage} = useFezListQuery({
     endpoint: 'joined',
     fezType,

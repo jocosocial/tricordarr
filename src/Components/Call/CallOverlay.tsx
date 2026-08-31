@@ -71,7 +71,7 @@ const CallOverlayInner = () => {
           const activeRoute = findActiveRoute(state);
           setIsOnActiveCallScreen(activeRoute?.name === CommonStackComponents.krakenTalkActiveCallScreen);
         }
-      } catch (error) {
+      } catch {
         // Navigation state not available - assume we're not on ActiveCallScreen
         setIsOnActiveCallScreen(false);
       }

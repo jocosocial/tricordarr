@@ -15,10 +15,10 @@ export const SeamailListHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
-            The seamail list screen shows all chats you have joined: Seamail conversations, private event chats, and
-            joined LFGs. You can browse, search, and filter your conversations from here. Creating a new Seamail still
-            uses the button on this screen. Browse and create LFGs in the LFG tab, and create private events from the
-            Schedule.
+            The seamail list screen shows all chats you have joined: Seamail conversations, and optionally private event
+            chats and joined LFGs depending on Chat Settings. You can browse, search, and filter your conversations from
+            here. Creating a new Seamail still uses the button on this screen. Browse and create LFGs in the LFG tab,
+            and create private events from the Schedule.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Floating Action Button'}>
@@ -48,12 +48,14 @@ export const SeamailListHelpScreen = () => {
           </HelpTopicView>
           <HelpTopicView title={'Filter'} icon={AppIcons.filter}>
             Filter chats by unread messages or by type (Seamail, Private Event, LFG). Nothing is selected by default,
-            which shows all joined chats. Unread is separated from the type options in the menu. Selecting a type
-            restricts the list to that type; you can select more than one. The filter icon is highlighted when a filter
-            is active. Long press the filter button to clear all filters.
+            which shows all joined chats of the types enabled in Chat Settings. Unread is separated from the type
+            options in the menu. Selecting a type restricts the list to that type; you can select more than one. Type
+            filters for LFGs and private events are disabled if those types are turned off in Chat Settings. The filter
+            icon is highlighted when a filter is active. Long press the filter button to clear all filters.
           </HelpTopicView>
           <HelpTopicView title={'Settings'} icon={AppIcons.settings}>
-            Access seamail settings to configure notification preferences and other options.
+            Access seamail settings to configure notification preferences, which chat types appear in the list, and
+            other options.
           </HelpTopicView>
           <HelpButtonHelpTopicView />
         </HelpChapterTitleView>

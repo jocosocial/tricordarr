@@ -16,8 +16,8 @@ export const SeamailHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
-            Seamail: It's like email, but at sea. Use them to send private messages to other users. The Seamail tab
-            also lists chats for private events you are invited to and LFGs you have joined.
+            Seamail: It's like email, but at sea. Use them to send private messages to other users. The Seamail tab also
+            lists chats for private events you are invited to and LFGs you have joined.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Screens'} noMargin={true}>
