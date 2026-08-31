@@ -16,6 +16,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {AppIcons} from '#src/Enums/Icons';
 import {getEventTimeString} from '#src/Libraries/DateTime';
+import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {ForumListData} from '#src/Structs/ControllerStructs';
@@ -66,7 +67,7 @@ const ForumThreadListInternal = ({
   });
 
   const getRight = () => {
-    const unreadCount = forumListData.postCount - forumListData.readCount;
+    const unreadCount = unreadPostCount(forumListData.postCount, forumListData.readCount);
     if (
       unreadCount ||
       forumListData.isFavorite ||
