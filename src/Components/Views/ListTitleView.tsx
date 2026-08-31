@@ -11,19 +11,10 @@ interface ListTitleViewProps {
   subtitle?: string;
   subtitleVariant?: keyof typeof MD3TypescaleKey;
   icon?: React.ReactNode;
-  onSubtitlePress?: () => void;
 }
 
-/**
- * Banner title for list-style screens. Optional subtitle can be a tappable link.
- */
-export const ListTitleView = ({
-  title,
-  subtitle,
-  subtitleVariant = 'bodySmall',
-  icon,
-  onSubtitlePress,
-}: ListTitleViewProps) => {
+// @TODO dedupe with BaseWarningView
+export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall', icon}: ListTitleViewProps) => {
   const {commonStyles} = useStyles();
 
   const styles = useMemo(
@@ -52,10 +43,6 @@ export const ListTitleView = ({
         text: {
           ...commonStyles.onBackground,
         },
-        subtitleLink: {
-          ...commonStyles.onBackground,
-          ...commonStyles.linkText,
-        },
       }),
     [commonStyles],
   );
@@ -78,11 +65,7 @@ export const ListTitleView = ({
           <BoldText>{title}</BoldText>
         )}
         {subtitle && (
-          <Text
-            style={onSubtitlePress ? styles.subtitleLink : styles.text}
-            variant={subtitleVariant}
-            onPress={onSubtitlePress}
-            accessibilityRole={onSubtitlePress ? 'link' : undefined}>
+          <Text style={styles.text} variant={subtitleVariant}>
             {subtitle}
           </Text>
         )}
