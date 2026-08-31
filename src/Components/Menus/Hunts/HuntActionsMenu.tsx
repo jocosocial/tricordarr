@@ -22,10 +22,7 @@ export const HuntActionsMenu = ({contentType, contentID}: HuntActionsMenuProps) 
   const navigation = useCommonStack();
 
   return (
-    <AppMenu
-      visible={visible}
-      onDismiss={closeMenu}
-      anchor={<MenuAnchor title={'Actions'} onPress={openMenu} />}>
+    <AppMenu visible={visible} onDismiss={closeMenu} anchor={<MenuAnchor title={'Actions'} onPress={openMenu} />}>
       <ShareMenuItem contentType={contentType} contentID={contentID} closeMenu={closeMenu} />
       <Menu.Item
         title={'Help'}
