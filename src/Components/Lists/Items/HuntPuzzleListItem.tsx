@@ -35,9 +35,15 @@ const HuntPuzzleListItemInternal = ({puzzle}: HuntPuzzleListItemProps) => {
         },
         icon: {
           ...commonStyles.paddingTopSmall,
+          ...commonStyles.paddingLeftSmall,
         },
       }),
-    [commonStyles.bold, commonStyles.paddingTopSmall, theme.colors.twitarrPositiveButton],
+    [
+      commonStyles.bold,
+      commonStyles.paddingLeftSmall,
+      commonStyles.paddingTopSmall,
+      theme.colors.twitarrPositiveButton,
+    ],
   );
 
   const onPress = useCallback(() => {

@@ -732,7 +732,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         component={KrakenTalkHelpScreen}
         options={{title: 'KrakenTalk Help'}}
       />
-      <Stack.Screen name={CommonStackComponents.huntScreen} component={HuntScreen} options={{title: 'Hunt'}} />
+      <Stack.Screen name={CommonStackComponents.huntScreen} component={HuntScreen} options={{title: 'Puzzle Hunt'}} />
       <Stack.Screen
         name={CommonStackComponents.huntPuzzleScreen}
         component={HuntPuzzleScreen}

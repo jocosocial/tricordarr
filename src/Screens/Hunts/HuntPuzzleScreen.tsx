@@ -3,7 +3,7 @@ import {AxiosError} from 'axios';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect} from 'react';
 import {Linking} from 'react-native';
-import {Text} from 'react-native-paper';
+import {Divider, Text} from 'react-native-paper';
 
 import {HuntHeaderButtons} from '#src/Components/Buttons/HeaderButtons/HuntHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
@@ -23,6 +23,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useHuntPuzzleData} from '#src/Hooks/useHuntPuzzleData';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {appUrl} from '#src/Libraries/UrlParser';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useHuntPuzzleCallInMutation} from '#src/Queries/Hunts/HuntMutations';
@@ -58,24 +59,31 @@ const HuntPuzzleScreenInner = ({navigation, route}: Props) => {
   const {isLoggedIn} = useSession();
   const {commonStyles} = useStyles();
 
-  const getNavButtons = useCallback(
-    () => (
+  const getNavButtons = useCallback(() => {
+    const state = navigation.getState();
+    const previous = state.routes[state.index - 1];
+    // Back already returns to the hunt; the Hunt action is for deep links and other entry points.
+    const cameFromHuntScreen = previous?.name === CommonStackComponents.huntScreen;
+
+    return (
       <HuntHeaderButtons
         onHelp={() => navigation.push(CommonStackComponents.huntHelpScreen)}
         onHuntPress={
-          puzzle ? () => navigation.push(CommonStackComponents.huntScreen, {huntID: puzzle.huntID}) : undefined
+          puzzle && !cameFromHuntScreen
+            ? () => navigation.push(CommonStackComponents.huntScreen, {huntID: puzzle.huntID})
+            : undefined
         }
+        shareContentType={ShareContentType.puzzle}
+        shareContentID={route.params.puzzleID}
       />
-    ),
-    [navigation, puzzle],
-  );
+    );
+  }, [navigation, puzzle, route.params.puzzleID]);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
-      title: puzzle?.title ?? 'Puzzle',
     });
-  }, [getNavButtons, navigation, puzzle?.title]);
+  }, [getNavButtons, navigation]);
 
   const onSubmit = useCallback(
     (values: HuntPuzzleCallInFormValues, helpers: FormikHelpers<HuntPuzzleCallInFormValues>) => {
@@ -124,11 +132,7 @@ const HuntPuzzleScreenInner = ({navigation, route}: Props) => {
       <ScrollingContentView
         isStack={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ListTitleView
-          title={puzzle.title}
-          subtitle={puzzle.huntTitle}
-          onSubtitlePress={() => navigation.push(CommonStackComponents.huntScreen, {huntID: puzzle.huntID})}
-        />
+        <ListTitleView title={puzzle.title} subtitle={puzzle.huntTitle} />
         {!!puzzle.body && (
           <PaddedContentView padTop={true}>
             <ContentText text={puzzle.body} forceMarkdown={true} />
@@ -153,10 +157,11 @@ const HuntPuzzleScreenInner = ({navigation, route}: Props) => {
         {callInsNewestFirst.length > 0 && (
           <ListSection>
             {callInsNewestFirst.map((callIn, index) => (
-              <HuntPuzzleCallInListItem
-                key={`${callIn.creationTime}-${callIn.rawSubmission}-${index}`}
-                callIn={callIn}
-              />
+              <React.Fragment key={`${callIn.creationTime}-${callIn.rawSubmission}-${index}`}>
+                {index === 0 && <Divider bold={true} />}
+                <HuntPuzzleCallInListItem callIn={callIn} />
+                <Divider bold={true} />
+              </React.Fragment>
             ))}
           </ListSection>
         )}

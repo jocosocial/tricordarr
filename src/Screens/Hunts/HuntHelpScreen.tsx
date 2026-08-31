@@ -3,6 +3,7 @@ import React from 'react';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
+import {ShareButtonHelpTopicView} from '#src/Components/Views/Help/Common/ShareButtonHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -17,10 +18,10 @@ export const HuntHelpScreen = () => {
         <HelpChapterTitleView title={'General'} />
         <HelpTopicView>
           Puzzle hunts are collections of puzzles that unlock over the cruise. Open a hunt to see currently available
-          puzzles. You can read puzzles without logging in; log in to call in answers and track your progress.
+          puzzles.
         </HelpTopicView>
         <HelpTopicView title={'Unlocks'}>
-          Puzzles may unlock at a scheduled time. Locked puzzles stay hidden until then; the hunt screen notes when the
+          Puzzles may unlock at a scheduled time. Locked puzzles stay hidden until then. The hunt screen notes when the
           next one opens.
         </HelpTopicView>
         <HelpTopicView title={'Answers'}>
@@ -34,8 +35,10 @@ export const HuntHelpScreen = () => {
           adding a new row.
         </HelpTopicView>
         <HelpTopicView icon={AppIcons.hunts} title={'Hunt'}>
-          On a puzzle, opens the parent hunt. The hunt title under the puzzle name does the same.
+          Opens the parent hunt. Shown when a puzzle was opened directly, such as from a link. If you already came from
+          that hunt, use Back instead.
         </HelpTopicView>
+        <ShareButtonHelpTopicView />
         <HelpButtonHelpTopicView />
       </ScrollingContentView>
     </AppView>

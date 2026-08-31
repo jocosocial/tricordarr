@@ -2,7 +2,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {AxiosError} from 'axios';
 import React, {useCallback, useEffect} from 'react';
-import {Text} from 'react-native-paper';
+import {Divider, Text} from 'react-native-paper';
 
 import {HuntHeaderButtons} from '#src/Components/Buttons/HeaderButtons/HuntHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -21,6 +21,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {getEventTimeString} from '#src/Libraries/DateTime';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useHuntQuery} from '#src/Queries/Hunts/HuntQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -75,16 +76,21 @@ const HuntScreenInner = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
 
   const getNavButtons = useCallback(
-    () => <HuntHeaderButtons onHelp={() => navigation.push(CommonStackComponents.huntHelpScreen)} />,
-    [navigation],
+    () => (
+      <HuntHeaderButtons
+        onHelp={() => navigation.push(CommonStackComponents.huntHelpScreen)}
+        shareContentType={ShareContentType.hunt}
+        shareContentID={route.params.huntID}
+      />
+    ),
+    [navigation, route.params.huntID],
   );
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
-      title: data?.title ?? 'Hunt',
     });
-  }, [data?.title, getNavButtons, navigation]);
+  }, [getNavButtons, navigation]);
 
   if (isLoading) {
     return <LoadingView />;
@@ -125,8 +131,12 @@ const HuntScreenInner = ({navigation, route}: Props) => {
         )}
         {data.puzzles.length > 0 && (
           <ListSection>
-            {data.puzzles.map(puzzle => (
-              <HuntPuzzleListItem key={puzzle.puzzleID} puzzle={puzzle} />
+            {data.puzzles.map((puzzle, index) => (
+              <React.Fragment key={puzzle.puzzleID}>
+                {index === 0 && <Divider bold={true} />}
+                <HuntPuzzleListItem puzzle={puzzle} />
+                <Divider bold={true} />
+              </React.Fragment>
             ))}
           </ListSection>
         )}

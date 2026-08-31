@@ -11,6 +11,8 @@ export enum ShareContentType {
   user = 'user',
   event = 'events',
   performer = 'performer',
+  hunt = 'hunt',
+  puzzle = 'puzzle',
   siteUI = 'siteui',
 }
 

@@ -8,6 +8,20 @@ describe('ShareContentType.performer', () => {
   });
 });
 
+describe('ShareContentType.hunt', () => {
+  it('uses the singular hunt path, not the catalog path', () => {
+    expect(ShareContentType.hunt).toBe('hunt');
+    expect(ShareContentType.hunt).not.toBe('hunts');
+  });
+});
+
+describe('ShareContentType.puzzle', () => {
+  it('uses the singular puzzle path', () => {
+    expect(ShareContentType.puzzle).toBe('puzzle');
+    expect(ShareContentType.puzzle).not.toBe('puzzles');
+  });
+});
+
 describe('getShareLink', () => {
   const serverUrl = 'https://twitarr.com';
 
@@ -53,6 +67,44 @@ describe('getShareLink', () => {
         contentID: 'abc-123',
       }),
     ).toBe(`${appLinkPrefix}performer/abc-123`);
+  });
+
+  it('builds a hunt web URL and deep link', () => {
+    expect(
+      getShareLink({
+        mode: ShareLinkMode.web,
+        serverUrl,
+        contentType: ShareContentType.hunt,
+        contentID: 'hunt-1',
+      }),
+    ).toBe('https://twitarr.com/hunt/hunt-1');
+    expect(
+      getShareLink({
+        mode: ShareLinkMode.app,
+        serverUrl,
+        contentType: ShareContentType.hunt,
+        contentID: 'hunt-1',
+      }),
+    ).toBe(`${appLinkPrefix}hunt/hunt-1`);
+  });
+
+  it('builds a puzzle web URL and deep link', () => {
+    expect(
+      getShareLink({
+        mode: ShareLinkMode.web,
+        serverUrl,
+        contentType: ShareContentType.puzzle,
+        contentID: 'puzzle-1',
+      }),
+    ).toBe('https://twitarr.com/puzzle/puzzle-1');
+    expect(
+      getShareLink({
+        mode: ShareLinkMode.app,
+        serverUrl,
+        contentType: ShareContentType.puzzle,
+        contentID: 'puzzle-1',
+      }),
+    ).toBe(`${appLinkPrefix}puzzle/puzzle-1`);
   });
 
   it('extracts the path from a siteUI web URL', () => {

@@ -1,7 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {AxiosError} from 'axios';
 import React, {useCallback, useEffect} from 'react';
-import {Text} from 'react-native-paper';
+import {Divider, Text} from 'react-native-paper';
 
 import {HuntHeaderButtons} from '#src/Components/Buttons/HeaderButtons/HuntHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -87,8 +87,12 @@ const HuntListScreenInner = ({navigation}: Props) => {
           </PaddedContentView>
         ) : (
           <ListSection>
-            {hunts.map(hunt => (
-              <HuntListItem key={hunt.huntID} hunt={hunt} />
+            {hunts.map((hunt, index) => (
+              <React.Fragment key={hunt.huntID}>
+                {index === 0 && <Divider bold={true} />}
+                <HuntListItem hunt={hunt} />
+                <Divider bold={true} />
+              </React.Fragment>
             ))}
           </ListSection>
         )}
