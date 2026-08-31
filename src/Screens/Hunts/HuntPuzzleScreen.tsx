@@ -1,10 +1,12 @@
 import {StackScreenProps} from '@react-navigation/stack';
+import {AxiosError} from 'axios';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect} from 'react';
-import {View} from 'react-native';
-import {Item} from 'react-navigation-header-buttons';
+import {Linking} from 'react-native';
+import {Text} from 'react-native-paper';
 
-import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {HuntHeaderButtons} from '#src/Components/Buttons/HeaderButtons/HuntHeaderButtons';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {HuntPuzzleCallInForm} from '#src/Components/Forms/HuntPuzzleCallInForm';
 import {HuntPuzzleCallInListItem} from '#src/Components/Lists/Items/HuntPuzzleCallInListItem';
@@ -13,18 +15,20 @@ import {ContentText} from '#src/Components/Text/ContentText';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {HuntLoadErrorView} from '#src/Components/Views/Hunts/HuntLoadErrorView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {AppIcons} from '#src/Enums/Icons';
+import {useHuntPuzzleData} from '#src/Hooks/useHuntPuzzleData';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {appUrl} from '#src/Libraries/UrlParser';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useHuntPuzzleCallInMutation} from '#src/Queries/Hunts/HuntMutations';
-import {useHuntPuzzleQuery} from '#src/Queries/Hunts/HuntQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
-import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {HuntPuzzleDetailData} from '#src/Structs/ControllerStructs';
+import {ErrorResponse} from '#src/Structs/ControllerStructs';
 import {HuntPuzzleCallInFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.huntPuzzleScreen>;
@@ -34,13 +38,11 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.huntPu
  */
 export const HuntPuzzleScreen = (props: Props) => {
   return (
-    <LoggedInScreen>
-      <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
-        <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={`/puzzle/${props.route.params.puzzleID}`}>
-          <HuntPuzzleScreenInner {...props} />
-        </DisabledFeatureScreen>
-      </PreRegistrationScreen>
-    </LoggedInScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
+      <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={`/puzzle/${props.route.params.puzzleID}`}>
+        <HuntPuzzleScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 
@@ -48,43 +50,43 @@ export const HuntPuzzleScreen = (props: Props) => {
  * Puzzle body, call-in form, and prior submissions for one puzzle.
  */
 const HuntPuzzleScreenInner = ({navigation, route}: Props) => {
-  const {data, isLoading, refetch} = useHuntPuzzleQuery({puzzleID: route.params.puzzleID});
+  const {puzzle, isLoading, isError, error, isSolved, callInsNewestFirst, refetch} = useHuntPuzzleData({
+    puzzleID: route.params.puzzleID,
+  });
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const callInMutation = useHuntPuzzleCallInMutation();
+  const {isLoggedIn} = useSession();
+  const {commonStyles} = useStyles();
 
   const getNavButtons = useCallback(
     () => (
-      <View>
-        <MaterialHeaderButtons>
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.huntHelpScreen)}
-            testID={'headerHelp-headerButton'}
-          />
-        </MaterialHeaderButtons>
-      </View>
+      <HuntHeaderButtons
+        onHelp={() => navigation.push(CommonStackComponents.huntHelpScreen)}
+        onHuntPress={
+          puzzle ? () => navigation.push(CommonStackComponents.huntScreen, {huntID: puzzle.huntID}) : undefined
+        }
+      />
     ),
-    [navigation],
+    [navigation, puzzle],
   );
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
-      title: data?.title ?? 'Puzzle',
+      title: puzzle?.title ?? 'Puzzle',
     });
-  }, [data?.title, getNavButtons, navigation]);
+  }, [getNavButtons, navigation, puzzle?.title]);
 
   const onSubmit = useCallback(
     (values: HuntPuzzleCallInFormValues, helpers: FormikHelpers<HuntPuzzleCallInFormValues>) => {
-      if (!data) {
+      if (!puzzle) {
         helpers.setSubmitting(false);
         return;
       }
       callInMutation.mutate(
         {
-          puzzleID: data.puzzleID,
-          huntID: data.huntID,
+          puzzleID: puzzle.puzzleID,
+          huntID: puzzle.huntID,
           answer: values.puzzleAnswer.trim(),
         },
         {
@@ -95,34 +97,62 @@ const HuntPuzzleScreenInner = ({navigation, route}: Props) => {
         },
       );
     },
-    [callInMutation, data],
+    [callInMutation, puzzle],
   );
 
-  if (isLoading || !data) {
+  if (isLoading) {
     return <LoadingView />;
   }
 
-  const solved = HuntPuzzleDetailData.isSolved(data);
+  if (isError && !puzzle) {
+    const status = (error as AxiosError<ErrorResponse>)?.response?.status;
+    return (
+      <HuntLoadErrorView
+        resource={'puzzle'}
+        status={status}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      />
+    );
+  }
+
+  if (!puzzle) {
+    return <LoadingView />;
+  }
 
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ListTitleView title={data.title} subtitle={data.huntTitle} />
-        {!!data.body && (
+        <ListTitleView
+          title={puzzle.title}
+          subtitle={puzzle.huntTitle}
+          onSubtitlePress={() => navigation.push(CommonStackComponents.huntScreen, {huntID: puzzle.huntID})}
+        />
+        {!!puzzle.body && (
           <PaddedContentView padTop={true}>
-            <ContentText text={data.body} forceMarkdown={true} />
+            <ContentText text={puzzle.body} forceMarkdown={true} />
           </PaddedContentView>
         )}
-        {!solved && (
-          <PaddedContentView padTop={!data.body}>
+        {isLoggedIn && !isSolved && (
+          <PaddedContentView padTop={!puzzle.body}>
             <HuntPuzzleCallInForm onSubmit={onSubmit} />
           </PaddedContentView>
         )}
-        {data.callIns.length > 0 && (
+        {!isLoggedIn && (
+          <PaddedContentView padTop={!puzzle.body}>
+            <Text style={commonStyles.onBackground}>Log in to check your answers and track your progress.</Text>
+            <PrimaryActionButton
+              testID={'puzzleLogin-button'}
+              buttonText={'Login'}
+              onPress={() => Linking.openURL(appUrl('login'))}
+              style={commonStyles.marginTopSmall}
+            />
+          </PaddedContentView>
+        )}
+        {callInsNewestFirst.length > 0 && (
           <ListSection>
-            {data.callIns.map((callIn, index) => (
+            {callInsNewestFirst.map((callIn, index) => (
               <HuntPuzzleCallInListItem
                 key={`${callIn.creationTime}-${callIn.rawSubmission}-${index}`}
                 callIn={callIn}

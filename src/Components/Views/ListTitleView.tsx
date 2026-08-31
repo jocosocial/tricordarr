@@ -11,10 +11,17 @@ interface ListTitleViewProps {
   subtitle?: string;
   subtitleVariant?: keyof typeof MD3TypescaleKey;
   icon?: React.ReactNode;
+  onSubtitlePress?: () => void;
 }
 
 // @TODO dedupe with BaseWarningView
-export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall', icon}: ListTitleViewProps) => {
+export const ListTitleView = ({
+  title,
+  subtitle,
+  subtitleVariant = 'bodySmall',
+  icon,
+  onSubtitlePress,
+}: ListTitleViewProps) => {
   const {commonStyles} = useStyles();
 
   const styles = useMemo(
@@ -43,6 +50,10 @@ export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall', i
         text: {
           ...commonStyles.onBackground,
         },
+        subtitleLink: {
+          ...commonStyles.onBackground,
+          ...commonStyles.linkText,
+        },
       }),
     [commonStyles],
   );
@@ -65,7 +76,10 @@ export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall', i
           <BoldText>{title}</BoldText>
         )}
         {subtitle && (
-          <Text style={styles.text} variant={subtitleVariant}>
+          <Text
+            style={onSubtitlePress ? styles.subtitleLink : styles.text}
+            variant={subtitleVariant}
+            onPress={onSubtitlePress}>
             {subtitle}
           </Text>
         )}

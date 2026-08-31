@@ -1,7 +1,8 @@
 import {useQueryClient} from '@tanstack/react-query';
-import {AxiosRequestConfig} from 'axios';
+import {HttpStatusCode} from 'axios';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {getHuntCacheKeys, getHuntPuzzleCacheKeys, getHuntPuzzleQueryKey} from '#src/Queries/Hunts/HuntCacheKeys';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
 import {HuntPuzzleCallInResultData, HuntPuzzleDetailData} from '#src/Structs/ControllerStructs';
 
@@ -11,30 +12,60 @@ interface HuntPuzzleCallInMutationProps {
   answer: string;
 }
 
+const plaintextPostConfig = {
+  headers: {'Content-Type': 'text/plain; charset=utf-8'},
+};
+
+const isCallInResult = (value: unknown): value is HuntPuzzleCallInResultData => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as HuntPuzzleCallInResultData).creationTime === 'string'
+  );
+};
+
 /**
- * Submit a puzzle answer. Unlike typical JSON mutations this posts `text/plain`
- * (Swiftarr decodes the body with `PlaintextDecoder`) and the response is the
- * call-in result rather than an empty status. Cache invalidation lives on the
- * mutation so callers do not have to remember hunt/puzzle key prefixes.
+ * Submit a puzzle answer as `text/plain` (Swiftarr `PlaintextDecoder`).
+ *
+ * 201: new row — append to the puzzle cache, then invalidate the parent hunt only if correct.
+ * 200: duplicate normalized guess — the existing row is already in callIns; do not append.
+ * 409: already solved — invalidate puzzle + hunt so a stale form hides.
  */
 export const useHuntPuzzleCallInMutation = () => {
-  const {apiPost} = useSwiftarrQueryClient();
+  const {apiPost, queryKeyExtraData} = useSwiftarrQueryClient();
   const queryClient = useQueryClient();
 
   const mutationFn = async ({puzzleID, answer}: HuntPuzzleCallInMutationProps) => {
-    const config: AxiosRequestConfig = {
-      headers: {'Content-Type': 'text/plain'},
-      // Axios will JSON-encode strings when it thinks the body is JSON.
-      transformRequest: [(data: string) => data],
-    };
-    return await apiPost<HuntPuzzleCallInResultData, string>(`/hunts/puzzles/${puzzleID}/callin`, answer, config);
+    return await apiPost<HuntPuzzleCallInResultData, string>(
+      `/hunts/puzzles/${puzzleID}/callin`,
+      answer,
+      plaintextPostConfig,
+    );
   };
 
   return useTokenAuthMutation(mutationFn, {
-    onSuccess: (_data, variables) => {
-      HuntPuzzleDetailData.getCacheKeys(variables.puzzleID, variables.huntID).forEach(key => {
-        queryClient.invalidateQueries({queryKey: key});
-      });
+    onSuccess: (response, variables) => {
+      if (response.status === HttpStatusCode.Created && isCallInResult(response.data)) {
+        queryClient.setQueryData<HuntPuzzleDetailData>(
+          getHuntPuzzleQueryKey(variables.puzzleID, queryKeyExtraData),
+          old => (old ? {...old, callIns: [...old.callIns, response.data]} : old),
+        );
+      }
+      if (isCallInResult(response.data) && response.data.correct) {
+        getHuntCacheKeys({huntID: variables.huntID}).forEach(key => {
+          queryClient.invalidateQueries({queryKey: key});
+        });
+      }
+    },
+    onSettled: (_data, error, variables) => {
+      if (error?.response?.status === HttpStatusCode.Conflict) {
+        getHuntPuzzleCacheKeys({puzzleID: variables.puzzleID}).forEach(key => {
+          queryClient.invalidateQueries({queryKey: key});
+        });
+        getHuntCacheKeys({huntID: variables.huntID}).forEach(key => {
+          queryClient.invalidateQueries({queryKey: key});
+        });
+      }
     },
   });
 };

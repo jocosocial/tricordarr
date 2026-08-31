@@ -17,7 +17,7 @@ export const HuntHelpScreen = () => {
         <HelpChapterTitleView title={'General'} />
         <HelpTopicView>
           Puzzle hunts are collections of puzzles that unlock over the cruise. Open a hunt to see currently available
-          puzzles, then call in answers to track your progress.
+          puzzles. You can read puzzles without logging in; log in to call in answers and track your progress.
         </HelpTopicView>
         <HelpTopicView title={'Unlocks'}>
           Puzzles may unlock at a scheduled time. Locked puzzles stay hidden until then; the hunt screen notes when the
@@ -29,8 +29,12 @@ export const HuntHelpScreen = () => {
           list shows the canonical answer.
         </HelpTopicView>
         <HelpChapterTitleView title={'Actions'} />
-        <HelpTopicView icon={AppIcons.hunts} title={'Submit'}>
-          Enter an answer on an unsolved puzzle and press Submit. Duplicate guesses return your earlier result.
+        <HelpTopicView icon={AppIcons.submit} title={'Submit'}>
+          Enter an answer on an unsolved puzzle and press Submit. Duplicate guesses return your earlier result without
+          adding a new row.
+        </HelpTopicView>
+        <HelpTopicView icon={AppIcons.hunts} title={'Hunt'}>
+          On a puzzle, opens the parent hunt. The hunt title under the puzzle name does the same.
         </HelpTopicView>
         <HelpButtonHelpTopicView />
       </ScrollingContentView>

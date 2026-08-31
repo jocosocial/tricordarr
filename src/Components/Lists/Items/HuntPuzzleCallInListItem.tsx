@@ -5,6 +5,7 @@ import {ListItem} from '#src/Components/Lists/ListItem';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {getHuntCallInResultLabel} from '#src/Libraries/Hunts';
 import {HuntPuzzleCallInResultData} from '#src/Structs/ControllerStructs';
 
 interface HuntPuzzleCallInListItemProps {
@@ -42,7 +43,7 @@ const HuntPuzzleCallInListItemInternal = ({callIn}: HuntPuzzleCallInListItemProp
   );
 
   const displaySubmission = callIn.correct ?? callIn.rawSubmission;
-  const resultLabel = HuntPuzzleCallInResultData.getResultLabel(callIn);
+  const resultLabel = getHuntCallInResultLabel(callIn);
 
   const getRight = () => (
     <View style={styles.time}>
