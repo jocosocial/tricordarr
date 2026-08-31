@@ -172,3 +172,7 @@ export interface AdminScheduleApplyFormValues {
   addForumPosts: boolean;
   processDeletes: boolean;
 }
+
+export interface HuntPuzzleCallInFormValues {
+  puzzleAnswer: string;
+}

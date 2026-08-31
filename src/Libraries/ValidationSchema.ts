@@ -82,3 +82,8 @@ const developmentUrlValidation = Yup.string()
 export const ServerURLValidation = __DEV__ ? developmentUrlValidation : productionUrlValidation;
 
 export const SSIDValidation = Yup.string().required('SSID is required.').min(2).max(32);
+
+export const PuzzleAnswerValidation = Yup.string()
+  .trim()
+  .required('Enter an answer to submit.')
+  .max(100, 'Answer must be 100 characters or fewer.');

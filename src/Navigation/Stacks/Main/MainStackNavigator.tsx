@@ -11,6 +11,7 @@ import {BoardgameListScreen} from '#src/Screens/Boardgames/BoardgameListScreen';
 import {BoardgameRecommendScreen} from '#src/Screens/Boardgames/BoardgameRecommendScreen';
 import {BoardgameScreen} from '#src/Screens/Boardgames/BoardgameScreen';
 import {BoardgameSearchScreen} from '#src/Screens/Boardgames/BoardgameSearchScreen';
+import {HuntListScreen} from '#src/Screens/Hunts/HuntListScreen';
 import {KaraokeFavoritesListScreen} from '#src/Screens/Karaoke/KaraokeFavoritesListScreen';
 import {KaraokeLogPerformanceScreen} from '#src/Screens/Karaoke/KaraokeLogPerformanceScreen';
 import {KaraokePerformanceListScreen} from '#src/Screens/Karaoke/KaraokePerformanceListScreen';
@@ -135,6 +136,11 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.karaokeLogPerformanceScreen}
         component={KaraokeLogPerformanceScreen}
         options={{title: 'Log Performance'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.huntListScreen}
+        component={HuntListScreen}
+        options={{title: 'Puzzle Hunts'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>

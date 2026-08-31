@@ -18,6 +18,7 @@ import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {getParticipantLabel} from '#src/Hooks/useFezData';
+import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
 import {useChatStack} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -40,7 +41,7 @@ const FezChatListItemInternal = ({fez, enableSelection, setEnableSelection, sele
 
   let badgeCount = 0;
   if (fez.members) {
-    badgeCount = fez.members.postCount - fez.members.readCount;
+    badgeCount = unreadPostCount(fez.members.postCount, fez.members.readCount);
   }
 
   const showParticipation = FezType.isLFGType(fez.fezType) || fez.fezType === FezType.privateEvent;

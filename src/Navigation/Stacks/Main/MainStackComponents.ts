@@ -46,6 +46,7 @@ export type MainStackParamList = CommonStackParamList & {
     artist: string;
     songName: string;
   };
+  HuntListScreen: undefined;
 };
 
 export enum MainStackComponents {
@@ -71,6 +72,7 @@ export enum MainStackComponents {
   karaokeSearchScreen = 'KaraokeSearchScreen',
   karaokeFavoritesListScreen = 'KaraokeFavoritesListScreen',
   karaokeLogPerformanceScreen = 'KaraokeLogPerformanceScreen',
+  huntListScreen = 'HuntListScreen',
 }
 
 export const useMainStack = () => useNavigation<StackNavigationProp<MainStackParamList>>();

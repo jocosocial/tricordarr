@@ -61,6 +61,9 @@ import {ForumThreadUserScreen} from '#src/Screens/Forum/Thread/ForumThreadUserSc
 import {HelpManualScreen} from '#src/Screens/Help/HelpManualScreen';
 import {ModeratorHelpScreen} from '#src/Screens/Help/ModeratorHelpScreen';
 import {ShutternautHelpScreen} from '#src/Screens/Help/ShutternautHelpScreen';
+import {HuntHelpScreen} from '#src/Screens/Hunts/HuntHelpScreen';
+import {HuntPuzzleScreen} from '#src/Screens/Hunts/HuntPuzzleScreen';
+import {HuntScreen} from '#src/Screens/Hunts/HuntScreen';
 import {KaraokeHelpScreen} from '#src/Screens/Karaoke/KaraokeHelpScreen';
 import {KrakenTalkActiveCallScreen} from '#src/Screens/KrakenTalk/KrakenTalkActiveCallScreen';
 import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateScreen';
@@ -866,6 +869,17 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.adminPuzzleEditScreen}
         component={AdminPuzzleEditScreen}
         options={{title: 'Puzzle'}}
+      />
+      <Stack.Screen name={CommonStackComponents.huntScreen} component={HuntScreen} options={{title: 'Puzzle Hunt'}} />
+      <Stack.Screen
+        name={CommonStackComponents.huntPuzzleScreen}
+        component={HuntPuzzleScreen}
+        options={{title: 'Puzzle'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.huntHelpScreen}
+        component={HuntHelpScreen}
+        options={{title: 'Puzzle Hunt Help'}}
       />
     </>
   );

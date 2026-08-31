@@ -22,7 +22,7 @@ import {styleDefaults} from '#src/Context/Providers/StyleProvider';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
-import {getShareLink, ShareContentType, ShareLinkMode} from '#src/Libraries/Sharing';
+import {getShareLink, getShareSheetTitle, ShareContentType, ShareLinkMode} from '#src/Libraries/Sharing';
 
 const handleHeight = 24;
 const titleHeight = 24;
@@ -231,7 +231,7 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
       handleIndicatorStyle={styles.handleIndicator}>
       <BottomSheetView>
         <View style={styles.content}>
-          <Text style={styles.title}>Share</Text>
+          <Text style={styles.title}>{getShareSheetTitle(contentType)}</Text>
           <PrimaryActionButton
             buttonText={'Share to Apps'}
             onPress={handleShare}

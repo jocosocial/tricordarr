@@ -297,6 +297,13 @@ export type CommonStackParamList = {
     huntID: string;
     puzzleID: string;
   };
+  HuntScreen: {
+    huntID: string;
+  };
+  HuntPuzzleScreen: {
+    puzzleID: string;
+  };
+  HuntHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -440,6 +447,9 @@ export enum CommonStackComponents {
   adminHuntsScreen = 'AdminHuntsScreen',
   adminHuntEditScreen = 'AdminHuntEditScreen',
   adminPuzzleEditScreen = 'AdminPuzzleEditScreen',
+  huntScreen = 'HuntScreen',
+  huntPuzzleScreen = 'HuntPuzzleScreen',
+  huntHelpScreen = 'HuntHelpScreen',
 }
 
 /**
@@ -497,7 +507,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.todayHelpScreen
   | CommonStackComponents.krakenTalkHelpScreen
   | CommonStackComponents.reportHelpScreen
-  | CommonStackComponents.adminHelpScreen;
+  | CommonStackComponents.adminHelpScreen
+  | CommonStackComponents.huntHelpScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 

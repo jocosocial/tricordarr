@@ -10,6 +10,10 @@ interface ForumNewBadgeProps {
   unit?: string;
 }
 
+/**
+ * Badge shown on forum list rows when a thread has unread posts.
+ * Hides when the count is missing, zero, or negative (stale cache).
+ */
 export const ForumNewBadge = ({unreadCount, unit}: ForumNewBadgeProps) => {
   const {commonStyles} = useStyles();
   const styles = StyleSheet.create({
@@ -22,7 +26,8 @@ export const ForumNewBadge = ({unreadCount, unit}: ForumNewBadgeProps) => {
     },
   });
 
-  if (!unreadCount) {
+  // Negative unread is a cache invariant violation; hide rather than show "-N new".
+  if (!unreadCount || unreadCount < 0) {
     return <></>;
   }
 
