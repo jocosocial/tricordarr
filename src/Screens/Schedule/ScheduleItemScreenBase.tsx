@@ -27,6 +27,7 @@ import {getParticipantLabel} from '#src/Hooks/useFezData';
 import {getDurationString} from '#src/Libraries/DateTime';
 import {openFezChatScreen} from '#src/Libraries/Navigation';
 import {guessDeckNumber} from '#src/Libraries/Ship';
+import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
@@ -77,7 +78,7 @@ export const ScheduleItemScreenBase = ({
       return;
     }
     const readCountForBadge = initialReadCount ?? eventData.members.readCount;
-    const unreadCount = eventData.members.postCount - readCountForBadge;
+    const unreadCount = unreadPostCount(eventData.members.postCount, readCountForBadge);
     return (
       <View style={styles.chatCountContainer}>
         <Text>

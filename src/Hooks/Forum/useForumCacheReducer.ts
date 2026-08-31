@@ -14,6 +14,12 @@ import {
   updateItemsInPages,
 } from '#src/Libraries/CacheReduction';
 import {
+  applyAppendedPostCounts,
+  applyDeletedPostCounts,
+  applyMarkReadCounts,
+  postReadCountsUnchanged,
+} from '#src/Libraries/UnreadCounts';
+import {
   CategoryData,
   ForumData,
   ForumListData,
@@ -70,8 +76,7 @@ const updateForumListEntry = (entry: ForumListData, forumID: string, newPost: Po
   }
   return {
     ...entry,
-    postCount: entry.postCount + 1,
-    readCount: entry.readCount + 1,
+    ...applyAppendedPostCounts(entry.postCount, entry.readCount),
     lastPoster: newPost.author,
     lastPostAt: newPost.createdAt,
   };
@@ -573,15 +578,30 @@ export const useForumCacheReducer = () => {
    * When readCount is provided, sets readCount to the higher of the existing
    * value and the given count (partial read from fetched pages). When omitted,
    * marks the thread fully read (readCount = postCount).
+   * `serverPostCount` (typically ForumData.paginator.total) raises a stale list
+   * postCount so readCount cannot exceed it and produce a negative unread badge.
    * When the update was not a no-op, the thread is moved to the top of the
    * recent list.
    */
   const markRead = useCallback(
-    (forumID: string, categoryID?: string, readCount?: number) => {
-      const resolveReadCount = (entry: ForumListData) =>
-        readCount !== undefined ? Math.max(entry.readCount, readCount) : entry.postCount;
+    (forumID: string, categoryID?: string, readCount?: number, serverPostCount?: number) => {
+      /**
+       * Next post/read counts for a list entry after this mark-read.
+       */
+      const nextCounts = (entry: ForumListData) =>
+        applyMarkReadCounts(entry.postCount, entry.readCount, readCount, serverPostCount);
 
-      const updater = (entry: ForumListData): ForumListData => ({...entry, readCount: resolveReadCount(entry)});
+      /**
+       * Apply mark-read counts to a matching ForumListData, returning the same
+       * reference when the counts would not change.
+       */
+      const updater = (entry: ForumListData): ForumListData => {
+        const next = nextCounts(entry);
+        if (postReadCountsUnchanged(entry, next)) {
+          return entry;
+        }
+        return {...entry, ...next};
+      };
       updateForumListInAllCaches(forumID, categoryID, updater, ['/forum/recent']);
 
       const matchesForum = (t: ForumListData) => t.forumID === forumID;
@@ -594,18 +614,13 @@ export const useForumCacheReducer = () => {
           const firstPage = threadCacheEntries[0]?.[1]?.pages?.[0];
           if (firstPage) {
             const fallbackEntry = forumListDataFromForumData(firstPage);
-            return insertAtEdge(
-              oldData,
-              forumSearchAccessor,
-              {...fallbackEntry, readCount: resolveReadCount(fallbackEntry)},
-              edge,
-            );
+            return insertAtEdge(oldData, forumSearchAccessor, updater(fallbackEntry), edge);
           }
           return undefined;
         },
         onFound: (oldData, foundEntry, edge) => {
           const updatedEntry = updater(foundEntry);
-          if (foundEntry.readCount >= updatedEntry.readCount) {
+          if (foundEntry.readCount >= updatedEntry.readCount && foundEntry.postCount >= updatedEntry.postCount) {
             return updateItemsInPages(oldData, forumSearchAccessor, t => (matchesForum(t) ? updatedEntry : t));
           }
           return moveItemToEdge(oldData, forumSearchAccessor, matchesForum, updatedEntry, edge);
@@ -800,8 +815,7 @@ export const useForumCacheReducer = () => {
         );
         updateForumListInAllCaches(forumID, categoryID, entry => ({
           ...entry,
-          postCount: Math.max(0, entry.postCount - 1),
-          readCount: Math.min(entry.readCount, Math.max(0, entry.postCount - 1)),
+          ...applyDeletedPostCounts(entry.postCount, entry.readCount),
         }));
       }
       queryClient.setQueriesData<InfiniteData<PostSearchData>>({queryKey: ['/forum/post/search']}, oldData =>

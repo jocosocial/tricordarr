@@ -117,17 +117,26 @@ const ForumThreadScreenBaseInner = ({
 
   // Mark forum as read in local caches when thread data loads.
   // Only mark as many posts read as have actually been fetched.
+  // Pass paginator.total so a stale list postCount is raised to the server
+  // value; otherwise readCount can exceed postCount and the unread badge
+  // goes negative (issue #515).
   useEffect(() => {
     if (forumData && data) {
-      if (forumListData && forumListData.readCount === forumListData.postCount) {
-        return;
-      }
       const fetchedUpTo = paginatedHighWaterMark(
         data,
         page => page.paginator.start,
         page => page.posts.length,
       );
-      markRead(forumData.forumID, forumData.categoryID, fetchedUpTo);
+      const serverPostCount = forumData.paginator.total;
+      if (
+        forumListData &&
+        forumListData.readCount === forumListData.postCount &&
+        forumListData.postCount >= serverPostCount &&
+        forumListData.readCount >= fetchedUpTo
+      ) {
+        return;
+      }
+      markRead(forumData.forumID, forumData.categoryID, fetchedUpTo, serverPostCount);
     }
   }, [forumData, forumListData, markRead, data]);
 
