@@ -60,7 +60,10 @@ const ForumThreadPostScreenInner = ({route, navigation}: Props) => {
               mode={'outlined'}
               style={styles.button}
               onPress={() =>
-                navigation.push(CommonStackComponents.forumThreadScreen, {forumID: data.pages[0].forumID})
+                navigation.push(CommonStackComponents.forumThreadScreen, {
+                  forumID: data.pages[0].forumID,
+                  asPrivilegedUser: route.params.asPrivilegedUser,
+                })
               }>
               View Full Forum
             </Button>
@@ -81,6 +84,7 @@ const ForumThreadPostScreenInner = ({route, navigation}: Props) => {
       isFetchingPreviousPage={isFetchingPreviousPage}
       hasNextPage={hasNextPage}
       getListHeader={route.params.postID ? getListHeader : undefined}
+      initialElevation={route.params.asPrivilegedUser}
     />
   );
 };

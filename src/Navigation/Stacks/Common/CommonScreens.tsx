@@ -44,6 +44,7 @@ import {FezChatScreen} from '#src/Screens/Fez/FezChatScreen';
 import {ForumCategoriesHelpScreen} from '#src/Screens/Forum/ForumCategoriesHelpScreen';
 import {ForumCategoryHelpScreen} from '#src/Screens/Forum/ForumCategoryHelpScreen';
 import {ForumHelpScreen} from '#src/Screens/Forum/ForumHelpScreen';
+import {ForumPostMentionHelpScreen} from '#src/Screens/Forum/ForumPostMentionHelpScreen';
 import {ForumPostSearchHelpScreen} from '#src/Screens/Forum/ForumPostSearchHelpScreen';
 import {ForumThreadCreateHelpScreen} from '#src/Screens/Forum/ForumThreadCreateHelpScreen';
 import {ForumThreadHelpScreen} from '#src/Screens/Forum/ForumThreadHelpScreen';
@@ -462,6 +463,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.forumPostSearchHelpScreen}
         component={ForumPostSearchHelpScreen}
         options={{title: 'Post Search Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumPostMentionHelpScreen}
+        component={ForumPostMentionHelpScreen}
+        options={{title: 'Mentions Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.keywordsHelpScreen}

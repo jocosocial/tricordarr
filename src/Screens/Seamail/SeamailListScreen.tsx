@@ -45,7 +45,9 @@ export const SeamailListScreen = (props: Props) => {
     <LoggedInScreen>
       <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
-          <ElevationProvider>
+          <ElevationProvider
+            key={props.route.params?.asPrivilegedUser ?? 'self'}
+            initialElevation={props.route.params?.asPrivilegedUser}>
             <SelectionProvider>
               <SeamailListScreenInner {...props} />
             </SelectionProvider>

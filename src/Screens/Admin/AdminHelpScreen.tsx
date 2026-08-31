@@ -16,7 +16,7 @@ export const AdminHelpScreen = () => {
           <HelpTopicView icon={AppIcons.admin}>
             Server Admin is for TwitarrTeam and above. Account Managers can look up registration codes. Some actions are
             limited to THO or the admin account. This hub is available during pre-registration; bulk user import is used
-            at embark.
+            at embark. Sections match the website: Communication, Configuration, and Data Loading.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Floating Action Button'} />
@@ -62,10 +62,17 @@ export const AdminHelpScreen = () => {
             admin-only mode before applying an import.
           </HelpTopicView>
         </HelpChapterTitleView>
-        <HelpChapterTitleView title={'Web UI'}>
-          <HelpTopicView icon={AppIcons.webview}>
-            Performer bulk import and event feedback remain in the website. Open Server Admin in Web UI from the hub.
+        <HelpChapterTitleView title={'TwitarrTeam Inboxes'}>
+          <HelpTopicView icon={AppIcons.seamail}>
+            TwitarrTeam Seamail opens the Seamail tab already switched to the TwitarrTeam account.
           </HelpTopicView>
+          <HelpTopicView icon={AppIcons.forum}>
+            TwitarrTeam Forum Mentions opens the native mention list as TwitarrTeam. Use the account switcher to view
+            your own mentions or Moderator mentions if you have that access.
+          </HelpTopicView>
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Web UI'}>
+          <HelpTopicView icon={AppIcons.webview}>Event Feedback and Performers open the website.</HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>

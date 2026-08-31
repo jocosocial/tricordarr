@@ -65,7 +65,7 @@ const InnerForm = ({onValidationChange}: InnerFormProps) => {
           name={'postAsTwitarrTeam'}
           testID={'forumCreateAsTwitarrTeam-switch'}
           label={'Post as TwitarrTeam'}
-          icon={AppIcons.twitarteam}
+          icon={AppIcons.twitarrteam}
           helperText={'This will also create the forum as the TwitarrTeam user.'}
         />
       )}

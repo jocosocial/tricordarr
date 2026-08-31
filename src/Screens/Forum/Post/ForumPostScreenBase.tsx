@@ -1,6 +1,6 @@
 import {FlashListRef} from '@shopify/flash-list';
 import pluralize from 'pluralize';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -10,10 +10,16 @@ import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {
+  CommonStackComponents,
+  HelpScreenComponents,
+  useCommonStack,
+} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
@@ -24,15 +30,35 @@ interface Props {
   refreshOnUserNotification?: boolean;
   title?: string;
   scrollToTopIntent?: number;
+  header?: ReactNode;
+  helpScreen?: HelpScreenComponents;
 }
 
 /**
  * Used for screens listing posts such as Favorites, Hashtags, Mentions, By User, By Self.
  * Not used for Post Search
  */
-export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title, scrollToTopIntent}: Props) => {
+export const ForumPostScreenBase = ({
+  queryParams,
+  refreshOnUserNotification,
+  title,
+  scrollToTopIntent,
+  header,
+  helpScreen = CommonStackComponents.forumHelpScreen,
+}: Props) => {
+  const {asPrivilegedUser} = useElevation();
+  const queryOptions = useMemo(
+    () =>
+      asPrivilegedUser
+        ? {
+            refetchOnWindowFocus: 'always' as const,
+            refetchOnMount: true,
+          }
+        : {},
+    [asPrivilegedUser],
+  );
   const {data, refetch, isFetchingNextPage, hasNextPage, hasPreviousPage, fetchNextPage, isLoading, isFetching} =
-    useForumPostSearchQuery(queryParams);
+    useForumPostSearchQuery(queryParams, queryOptions);
   const commonNavigation = useCommonStack();
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
@@ -45,6 +71,21 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     isRefreshing: isFetching,
   });
 
+  const notificationCount = useMemo(() => {
+    if (asPrivilegedUser === PrivilegedUserAccounts.moderator) {
+      return userNotificationData?.moderatorData?.newModeratorForumMentionCount;
+    }
+    if (asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam) {
+      return userNotificationData?.moderatorData?.newTTForumMentionCount;
+    }
+    return userNotificationData?.newForumMentionCount;
+  }, [
+    asPrivilegedUser,
+    userNotificationData?.moderatorData?.newModeratorForumMentionCount,
+    userNotificationData?.moderatorData?.newTTForumMentionCount,
+    userNotificationData?.newForumMentionCount,
+  ]);
+
   const getNavButtons = useCallback(() => {
     return (
       <View>
@@ -53,13 +94,13 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => {
-              commonNavigation.push(CommonStackComponents.forumHelpScreen);
+              commonNavigation.push(helpScreen);
             }}
           />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [commonNavigation]);
+  }, [commonNavigation, helpScreen]);
 
   const {handleLoadNext} = usePagination({
     fetchNextPage,
@@ -69,10 +110,10 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
   });
 
   useEffect(() => {
-    if (refreshOnUserNotification && userNotificationData?.newForumMentionCount) {
+    if (refreshOnUserNotification && notificationCount) {
       onRefresh();
     }
-  }, [onRefresh, refreshOnUserNotification, userNotificationData?.newForumMentionCount]);
+  }, [notificationCount, onRefresh, refreshOnUserNotification]);
 
   useEffect(() => {
     commonNavigation.setOptions({
@@ -84,10 +125,10 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     if (data) {
       setForumPosts(data.pages.flatMap(p => p.posts));
     }
-    if (userNotificationData?.newForumMentionCount) {
+    if (notificationCount) {
       refetchUserNotificationData();
     }
-  }, [data, setForumPosts, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
+  }, [data, notificationCount, refetchUserNotificationData]);
 
   useEffect(() => {
     if (scrollToTopIntent) {
@@ -101,6 +142,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
 
   return (
     <AppView>
+      {header}
       {title && (
         <ListTitleView
           title={title}

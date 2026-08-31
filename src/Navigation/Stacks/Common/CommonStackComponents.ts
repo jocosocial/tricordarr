@@ -91,9 +91,9 @@ export type CommonStackParamList = {
   }>;
   AlertKeywordsScreen: undefined;
   MuteKeywordsScreen: undefined;
-  ForumThreadPostScreen: {
+  ForumThreadPostScreen: WithElevation<{
     postID: string;
-  };
+  }>;
   ForumPostEditScreen: {
     postData: PostData;
     forumData?: ForumData;
@@ -174,6 +174,7 @@ export type CommonStackParamList = {
   ForumThreadCreateHelpScreen: undefined;
   ForumThreadSearchHelpScreen: undefined;
   ForumPostSearchHelpScreen: undefined;
+  ForumPostMentionHelpScreen: undefined;
   KeywordsHelpScreen: undefined;
   ScheduleHelpScreen: undefined;
   ScheduleDayHelpScreen: undefined;
@@ -366,6 +367,7 @@ export enum CommonStackComponents {
   forumThreadCreateHelpScreen = 'ForumThreadCreateHelpScreen',
   forumThreadSearchHelpScreen = 'ForumThreadSearchHelpScreen',
   forumPostSearchHelpScreen = 'ForumPostSearchHelpScreen',
+  forumPostMentionHelpScreen = 'ForumPostMentionHelpScreen',
   keywordsHelpScreen = 'KeywordsHelpScreen',
   scheduleHelpScreen = 'ScheduleHelpScreen',
   scheduleDayHelpScreen = 'ScheduleDayHelpScreen',
@@ -471,6 +473,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.forumThreadCreateHelpScreen
   | CommonStackComponents.forumThreadSearchHelpScreen
   | CommonStackComponents.forumPostSearchHelpScreen
+  | CommonStackComponents.forumPostMentionHelpScreen
   | CommonStackComponents.keywordsHelpScreen
   | CommonStackComponents.seamailHelpScreen
   | CommonStackComponents.seamailListHelpScreen
