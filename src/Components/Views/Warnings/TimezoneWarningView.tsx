@@ -5,6 +5,7 @@ import {Text} from 'react-native-paper';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useTime} from '#src/Context/Contexts/TimeContext';
+import {joinUrl} from '#src/Libraries/UrlParser';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const TimezoneWarningView = () => {
@@ -17,7 +18,7 @@ export const TimezoneWarningView = () => {
   // The WebView seems to be reporting the wrong time. It sticks with a device default
   // and not what its currently set to.
   // This here for debugging.
-  const onLongPress = () => Linking.openURL(`${serverUrl}/time`);
+  const onLongPress = () => Linking.openURL(joinUrl(serverUrl, 'time'));
 
   const styles = StyleSheet.create({
     headerView: {

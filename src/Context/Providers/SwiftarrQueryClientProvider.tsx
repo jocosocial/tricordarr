@@ -11,6 +11,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrQueryClientContext} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {BadResponseFormatError, createQueryClient, createSessionPersister} from '#src/Libraries/Network/APIClient';
+import {joinUrl} from '#src/Libraries/UrlParser';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
 const logger = createLogger('SwiftarrQueryClientProvider.tsx');
@@ -37,7 +38,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
    */
   const ServerQueryClient = useMemo(() => {
     const client = axios.create({
-      baseURL: `${serverUrl}${appConfig.urlPrefix}`,
+      baseURL: joinUrl(serverUrl, appConfig.urlPrefix),
       headers: {
         ...(isLoggedIn && tokenData ? {Authorization: `Bearer ${tokenData.token}`} : undefined),
         ...(isLoggedIn && tokenData ? {'X-Swiftarr-User': tokenData.userID} : undefined),

@@ -92,6 +92,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={CommonStackComponents.imageSettingsScreen}
             />
             <SettingsNavigationListItem
+              title={'Share Settings'}
+              description={'Setings for sharing content with other users and apps.'}
+              navComponent={CommonStackComponents.shareSettingsScreen}
+            />
+            <SettingsNavigationListItem
               title={'LFG Settings'}
               description={'Settings for community organized events.'}
               navComponent={CommonStackComponents.lfgSettingsScreen}

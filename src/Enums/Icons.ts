@@ -141,6 +141,7 @@ export enum AppIcons {
   thumbnail = 'image-size-select-small',
   full = 'image-size-select-actual',
   share = 'share-variant',
+  qrcode = 'qrcode',
   shutternaut = 'camera-iris',
   shutternautManager = 'bat',
   needsPhotographer = 'flash-alert-outline',

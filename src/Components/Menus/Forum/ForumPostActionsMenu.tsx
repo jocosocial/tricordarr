@@ -11,8 +11,8 @@ import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 

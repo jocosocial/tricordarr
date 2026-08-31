@@ -15,6 +15,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {appSiteUrl, appUrl} from '#src/Libraries/UrlParser';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
@@ -122,24 +123,24 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   <PaperDrawer.Item
                     label={`Your Profile (${profilePublicData?.header.username})`}
                     icon={AppIcons.profile}
-                    onPress={() => Linking.openURL('tricordarr://profile')}
+                    onPress={() => Linking.openURL(appUrl('profile'))}
                   />
                   <PaperDrawer.Item
                     label={'Directory'}
                     icon={AppIcons.group}
-                    onPress={() => Linking.openURL('tricordarr://users')}
+                    onPress={() => Linking.openURL(appUrl('users'))}
                   />
                   <PaperDrawer.Item
                     label={'Favorite Users'}
                     icon={AppIcons.userFavorite}
-                    onPress={() => Linking.openURL('tricordarr://favorites')}
+                    onPress={() => Linking.openURL(appUrl('favorites'))}
                   />
                 </>
               )}
               <PaperDrawer.Item
                 label={'Performers'}
                 icon={AppIcons.performer}
-                onPress={() => Linking.openURL('tricordarr://performers')}
+                onPress={() => Linking.openURL(appUrl('performers'))}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
@@ -147,94 +148,90 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 <PaperDrawer.Item
                   label={'Photo Stream'}
                   icon={AppIcons.photostream}
-                  onPress={() => Linking.openURL('tricordarr://photostream')}
+                  onPress={() => Linking.openURL(appUrl('photostream'))}
                 />
               )}
               {hasVerified && (
                 <PaperDrawer.Item
                   label={'Micro Karaoke'}
                   icon={AppIcons.microKaraoke}
-                  onPress={() => Linking.openURL('tricordarr://microkaraoke')}
+                  onPress={() => Linking.openURL(appUrl('microkaraoke'))}
                 />
               )}
               <PaperDrawer.Item
                 label={'Board Games'}
                 icon={AppIcons.games}
-                onPress={() => Linking.openURL('tricordarr://boardgames')}
+                onPress={() => Linking.openURL(appUrl('boardgames'))}
               />
               <PaperDrawer.Item
                 label={'Karaoke'}
                 icon={AppIcons.karaoke}
-                onPress={() => Linking.openURL('tricordarr://karaoke')}
+                onPress={() => Linking.openURL(appUrl('karaoke'))}
               />
               <PaperDrawer.Item
                 label={'Lighter'}
                 icon={AppIcons.lighter}
-                onPress={() => Linking.openURL('tricordarr://lighter')}
+                onPress={() => Linking.openURL(appUrl('lighter'))}
               />
               <PaperDrawer.Item
                 label={'Daily Themes'}
                 icon={AppIcons.dailyTheme}
-                onPress={() => Linking.openURL('tricordarr://dailyThemes')}
+                onPress={() => Linking.openURL(appUrl('dailyThemes'))}
               />
               <PaperDrawer.Item
                 label={'Puzzle Hunts'}
                 icon={AppIcons.hunts}
-                onPress={() => Linking.openURL('tricordarr://hunts')}
+                onPress={() => Linking.openURL(appUrl('hunts'))}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Documentation'} showDivider={false}>
-              <PaperDrawer.Item
-                label={'Deck Map'}
-                icon={AppIcons.map}
-                onPress={() => Linking.openURL('tricordarr://map')}
-              />
+              <PaperDrawer.Item label={'Deck Map'} icon={AppIcons.map} onPress={() => Linking.openURL(appUrl('map'))} />
               <PaperDrawer.Item
                 label={'Time Zones'}
                 icon={AppIcons.time}
-                onPress={() => Linking.openURL('tricordarr://time')}
+                onPress={() => Linking.openURL(appUrl('time'))}
               />
               <PaperDrawer.Item
                 label={'JoCo Cruise FAQ'}
                 icon={AppIcons.faq}
-                onPress={() => Linking.openURL('tricordarr://faq')}
+                onPress={() => Linking.openURL(appUrl('faq'))}
               />
               <PaperDrawer.Item
                 label={'Code of Conduct'}
                 icon={AppIcons.codeofconduct}
-                onPress={() => Linking.openURL('tricordarr://codeOfConduct')}
+                onPress={() => Linking.openURL(appUrl('codeOfConduct'))}
               />
               <PaperDrawer.Item
                 label={'Help Manual'}
                 icon={AppIcons.help}
-                onPress={() => Linking.openURL('tricordarr://help')}
+                onPress={() => Linking.openURL(appUrl('help'))}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Special Roles'} showDivider={false}>
               <PaperDrawer.Item
                 label={'Shadow Event Host Form'}
                 icon={AppIcons.feedback}
-                onPress={() => Linking.openURL('tricordarr://eventfeedback')}
+                onPress={() => Linking.openURL(appUrl('eventfeedback'))}
               />
               {(hasShutternaut || hasShutternautManager || hasTwitarrTeam) && (
                 <PaperDrawer.Item
                   label={'Shutternaut Calendar'}
                   icon={AppIcons.shutternaut}
-                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/dayplanner/shutternauts`)}
+                  onPress={() => Linking.openURL(appSiteUrl('dayplanner', 'shutternauts'))}
                 />
               )}
               {hasShutternautManager && (
                 <PaperDrawer.Item
                   label={'Manage Shutternauts'}
                   icon={AppIcons.shutternautManager}
-                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/userrole/shutternaut/manage`)}
+                  onPress={() => Linking.openURL(appSiteUrl('userrole', 'shutternaut', 'manage'))}
                 />
               )}
               {hasModerator && (
                 <PaperDrawer.Item
                   label={'Moderator Actions'}
                   icon={AppIcons.moderator}
-                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/moderator`)}
+                  onPress={() => Linking.openURL(appSiteUrl('moderator'))}
                   right={getModBadge}
                 />
               )}
@@ -242,7 +239,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 <PaperDrawer.Item
                   label={'Server Admin'}
                   icon={AppIcons.twitarteam}
-                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/admin`)}
+                  onPress={() => Linking.openURL(appSiteUrl('admin'))}
                   right={getTTBadge}
                 />
               )}
@@ -251,12 +248,12 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'Settings'}
                 icon={AppIcons.settings}
-                onPress={() => Linking.openURL('tricordarr://settings')}
+                onPress={() => Linking.openURL(appUrl('settings'))}
               />
               <PaperDrawer.Item
                 label={'Twitarr Web UI'}
                 icon={AppIcons.webview}
-                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}`)}
+                onPress={() => Linking.openURL(appSiteUrl())}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={`Version ${DeviceInfo.getVersion()}`} showDivider={false}>

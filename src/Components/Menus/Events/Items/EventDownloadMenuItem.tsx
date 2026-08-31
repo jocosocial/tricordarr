@@ -4,6 +4,7 @@ import {Menu} from 'react-native-paper';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {joinUrl} from '#src/Libraries/UrlParser';
 import {EventData} from '#src/Structs/ControllerStructs';
 
 interface EventDownloadMenuItemProps {
@@ -16,7 +17,7 @@ export const EventDownloadMenuItem = (props: EventDownloadMenuItemProps) => {
   const handleDownload = () => {
     props.closeMenu();
     // The WebView downloads this as a txt file, not honoring its ICS. So we farm it out to Chrome instead.
-    Linking.openURL(`${serverUrl}/events/${props.event.eventID}/calendarevent.ics`);
+    Linking.openURL(joinUrl(serverUrl, 'events', props.event.eventID, 'calendarevent.ics'));
   };
 
   return <Menu.Item title={'Download'} leadingIcon={AppIcons.download} onPress={handleDownload} />;

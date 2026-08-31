@@ -52,6 +52,7 @@ export interface UserPreferences {
   highlightForumAlertWords: boolean;
   autosavePhotos: boolean;
   autoCompressOversizedImages: boolean;
+  shareAppURI: boolean;
 }
 
 export interface AppConfig {
@@ -167,6 +168,7 @@ export const defaultAppConfig: AppConfig = {
     highlightForumAlertWords: true,
     autosavePhotos: true,
     autoCompressOversizedImages: true,
+    shareAppURI: true,
   },
   markReadCancelPush: true,
   preRegistrationServerUrl: 'https://start.twitarr.com',
@@ -236,6 +238,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.userPreferences.autoCompressOversizedImages === undefined) {
     appConfig.userPreferences.autoCompressOversizedImages = true;
+  }
+  if (appConfig.userPreferences.shareAppURI === undefined) {
+    appConfig.userPreferences.shareAppURI = true;
   }
   if (appConfig.dismissWelcomeAboard === undefined) {
     appConfig.dismissWelcomeAboard = false;

@@ -4,7 +4,7 @@
  */
 
 import React, {useEffect} from 'react';
-import {LogBox} from 'react-native';
+import {LogBox, StyleSheet} from 'react-native';
 // import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 // https://reactnavigation.org/docs/drawer-layout/
 import 'react-native-gesture-handler';
@@ -95,7 +95,7 @@ function App(): React.JSX.Element {
    */
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-      <GestureHandlerRootView>
+      <GestureHandlerRootView style={styles.root}>
         <ConfigProvider>
           <SessionProvider>
             <OobeProvider>
@@ -145,5 +145,15 @@ function App(): React.JSX.Element {
     </SafeAreaProvider>
   );
 }
+
+/**
+ * GestureHandlerRootView must fill the window (`flex: 1`). useStyles / commonStyles.flex
+ * are unavailable here because StyleProvider sits inside this view.
+ */
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+});
 
 export default App;

@@ -6,6 +6,7 @@ import {LightboxProvider} from '#src/Components/Lightbox/state';
 import {DrawerProvider} from '#src/Context/Providers/DrawerProvider';
 import {LayoutProvider} from '#src/Context/Providers/LayoutProvider';
 import {MenuProvider} from '#src/Context/Providers/MenuProvider';
+import {ShareSheetProvider} from '#src/Context/Providers/ShareSheetProvider';
 
 /**
  * "Shell" is all of the major UI components such as Drawer, Layout, Menus, etc.
@@ -23,8 +24,10 @@ export const ShellProvider = ({children}: PropsWithChildren) => {
       <DrawerProvider>
         <MenuProvider>
           <LightboxProvider>
-            <Portal.Host>{children}</Portal.Host>
-            <Lightbox />
+            <ShareSheetProvider>
+              <Portal.Host>{children}</Portal.Host>
+              <Lightbox />
+            </ShareSheetProvider>
           </LightboxProvider>
         </MenuProvider>
       </DrawerProvider>

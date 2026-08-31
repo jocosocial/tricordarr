@@ -2,6 +2,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {joinUrl} from '#src/Libraries/UrlParser';
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {SiteUIScreenBase} from '#src/Screens/SiteUI/SiteUIScreenBase';
 
@@ -9,5 +10,5 @@ type Props = StackScreenProps<CommonStackParamList>;
 
 export const SiteUILinkScreen = ({route}: Props) => {
   const {serverUrl} = useSwiftarrQueryClient();
-  return <SiteUIScreenBase initialUrl={`${serverUrl}/${route.path}`} />;
+  return <SiteUIScreenBase initialUrl={joinUrl(serverUrl, route.path)} />;
 };

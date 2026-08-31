@@ -1,140 +1,48 @@
-import {allRoutes, extractParamNames, pathToRegex, pushableRoutes} from '#src/Libraries/RouteDefinitions';
-
-interface ParsedRoute {
-  screen: string;
-  params?: Record<string, string | number | boolean>;
-}
+import urlJoin from 'url-join';
 
 /**
- * Check if a path pattern contains any path parameters (e.g., :param).
+ * Scheme prefix registered with React Navigation for in-app deep links.
+ * Used as `navigationLinking.prefixes` in Linking.ts.
  */
-const hasPathParams = (path: string): boolean => {
-  return /:[^/?]+/.test(path);
-};
+export const appLinkPrefix = 'tricordarr://';
 
 /**
- * Pre-computed route matchers for literal routes (no path parameters).
- * These are checked first to ensure literal paths like 'lfg/joined' match before
- * parameterized patterns like 'lfg/:fezID'.
- * Generated from allRoutes to include all literal routes, not just pushable ones.
+ * Join URL parts, normalizing leading and trailing slashes.
+ * Coerces numbers so callers can pass values like Date.now().
+ * Omits undefined and empty parts so optional segments do not become `"undefined"` or a trailing slash.
  */
-const literalRouteMatchers = allRoutes
-  .filter(route => !hasPathParams(route.path))
-  .map(route => ({
-    screen: route.screen,
-    pattern: pathToRegex(route.path),
-    paramNames: extractParamNames(route.path),
-  }));
+export const joinUrl = (...parts: Array<string | number | undefined>): string =>
+  urlJoin(...parts.filter((part): part is string | number => part !== undefined && part !== '').map(String));
 
 /**
- * Pre-computed route matchers for parameterized routes.
- * Generated from the pushable route definitions (routes that support push navigation).
+ * Build a tricordarr:// deep link from path segments.
+ * Bakes in appLinkPrefix so callers do not import the scheme or remember slash conventions.
  */
-const routeMatchers = pushableRoutes.map(route => ({
-  screen: route.screen,
-  pattern: pathToRegex(route.path),
-  paramNames: extractParamNames(route.path),
-}));
+export const appUrl = (...pathParts: Array<string | number | undefined>): string =>
+  joinUrl(appLinkPrefix, ...pathParts);
 
 /**
- * Parse a deep link URL path into a screen name and params.
- * Returns undefined if no matching route is found.
- *
- * @param urlPath - The path portion of the URL (without the scheme), e.g., "forum/abc123" or "seamail?onlyNew=true"
+ * Build a deep link into the Twitarr Site UI (WebView).
+ * Prefixes `twitarrtab` and a cache-busting timestamp so the WebView reloads, then joins any extra path like appUrl.
  */
-export const parseDeepLinkUrl = (urlPath: string): ParsedRoute | undefined => {
-  // Remove leading slash if present
-  const pathWithQuery = urlPath.startsWith('/') ? urlPath.substring(1) : urlPath;
-
-  // Split path and query string
-  const [path, queryString] = pathWithQuery.split('?');
-  const cleanPath = path;
-
-  // Parse query parameters
-  const queryParams = queryString ? parseQueryParams(queryString) : {};
-
-  // Helper function to match a route and return parsed result
-  const tryMatch = (matcher: {screen: string; pattern: RegExp; paramNames: string[]}): ParsedRoute | undefined => {
-    const match = cleanPath.match(matcher.pattern);
-    if (match) {
-      const params: Record<string, string | number | boolean> = {};
-      // Extract path parameters
-      matcher.paramNames.forEach((paramName, index) => {
-        const value = match[index + 1];
-        if (value !== undefined) {
-          params[paramName] = value;
-        }
-      });
-
-      // Merge query parameters (query params override path params if there's a conflict)
-      Object.assign(params, queryParams);
-
-      return {
-        screen: matcher.screen,
-        params: Object.keys(params).length > 0 ? params : undefined,
-      };
-    }
-    return undefined;
-  };
-
-  // Check literal routes first (e.g., 'lfg/joined', 'lfg/faq')
-  // This ensures literal paths match before parameterized patterns
-  for (const matcher of literalRouteMatchers) {
-    const result = tryMatch(matcher);
-    if (result) {
-      return result;
-    }
-  }
-
-  // Fall back to parameterized routes from pushableRoutes
-  for (const matcher of routeMatchers) {
-    const result = tryMatch(matcher);
-    if (result) {
-      return result;
-    }
-  }
-
-  return undefined;
-};
+export const appSiteUrl = (...pathParts: Array<string | number | undefined>): string =>
+  appUrl('twitarrtab', Date.now(), ...pathParts);
 
 /**
- * Convert a query string value to appropriate type (boolean, number, or string).
+ * Path, query, and hash from a web URL or relative path, without a leading slash.
+ * `https://twitarr.com/forum/abc?foo=1#bar` becomes `forum/abc?foo=1#bar`.
+ * `/events/123` becomes `events/123`.
  */
-const convertQueryValue = (value: string): string | number | boolean => {
-  // Convert "true" or "false" to boolean
-  if (value === 'true') {
-    return true;
+export const extractPathFromWebUrl = (url: string): string => {
+  if (url.startsWith('/')) {
+    return url.replace(/^\//, '');
   }
-  if (value === 'false') {
-    return false;
+  try {
+    const parsed = new URL(url);
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`.replace(/^\//, '');
+  } catch {
+    return url.replace(/^\//, '');
   }
-  // Try to convert to number if it's a valid number string
-  const numValue = Number(value);
-  if (!isNaN(numValue) && isFinite(numValue) && value.trim() !== '') {
-    return numValue;
-  }
-  // Return as string
-  return value;
-};
-
-/**
- * Parse query string parameters from a URL path.
- * Returns an object with parsed and type-converted values.
- */
-const parseQueryParams = (queryString: string): Record<string, string | number | boolean> => {
-  const params: Record<string, string | number | boolean> = {};
-  if (!queryString) {
-    return params;
-  }
-
-  const pairs = queryString.split('&');
-  for (const pair of pairs) {
-    const [key, value] = pair.split('=').map(decodeURIComponent);
-    if (key) {
-      params[key] = convertQueryValue(value || '');
-    }
-  }
-  return params;
 };
 
 /**
@@ -145,7 +53,13 @@ const parseQueryParams = (queryString: string): Record<string, string | number |
  * @returns The path portion with query string, e.g., "forum/abc123?param=value"
  */
 export const extractPathFromTricordarrUrl = (url: string): string | undefined => {
-  // Handle both tricordarr:// and tricordarr:/ formats
-  const match = url.match(/^tricordarr:\/\/?(.*)$/);
-  return match ? match[1] : undefined;
+  if (url.startsWith(appLinkPrefix)) {
+    return url.slice(appLinkPrefix.length);
+  }
+  // Older conversions used tricordarr:/ plus the remaining path slash.
+  // @TODO do we still need this?
+  if (url.startsWith('tricordarr:/')) {
+    return url.slice('tricordarr:/'.length);
+  }
+  return undefined;
 };

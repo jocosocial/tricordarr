@@ -105,6 +105,7 @@ import {AlertKeywordsScreen} from '#src/Screens/Settings/Content/AlertKeywordsSe
 import {ForumSettingsScreen} from '#src/Screens/Settings/Content/ForumSettingsScreen';
 import {ImageSettingsScreen} from '#src/Screens/Settings/Content/ImageSettingsScreen';
 import {MuteKeywordsScreen} from '#src/Screens/Settings/Content/MuteKeywordsSettingsScreen';
+import {ShareSettingsScreen} from '#src/Screens/Settings/Content/ShareSettingsScreen';
 import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
 import {SiteUIHelpScreen} from '#src/Screens/SiteUI/SiteUIHelpScreen';
 import {SiteUILinkScreen} from '#src/Screens/SiteUI/SiteUILinkScreen';
@@ -341,6 +342,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.imageSettingsScreen}
         component={ImageSettingsScreen}
         options={{title: 'Image Settings'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.shareSettingsScreen}
+        component={ShareSettingsScreen}
+        options={{title: 'Share Settings'}}
       />
       <Stack.Screen
         name={CommonStackComponents.personalEventScreen}

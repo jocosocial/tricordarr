@@ -7,6 +7,7 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {PressAction} from '#src/Enums/Notifications';
 import {createLogger} from '#src/Libraries/Logger';
 import {getUrlForNotificationEvent} from '#src/Libraries/Notifications/SocketNotification';
+import {appUrl} from '#src/Libraries/UrlParser';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 const logger = createLogger('AppEventHandler.tsx');
@@ -104,12 +105,12 @@ export const AppEventHandler = () => {
     // The default response is to then navigate the user somewhere.
     const url = getUrlForNotificationEvent(event.type, notification, pressAction);
     if (url) {
-      const linkingUrl = `tricordarr:/${url}`;
+      const linkingUrl = appUrl(url);
       logger.debug('onBackgroundEvent launching url', linkingUrl);
-      await Linking.openURL(linkingUrl); // url starts with a /, so only add one.
+      await Linking.openURL(linkingUrl);
     } else {
       logger.warn('onBackgroundEvent event was not a respondable action. Skipping...');
-      await Linking.openURL('tricordarr://home');
+      await Linking.openURL(appUrl('home'));
     }
   });
 

@@ -6,11 +6,11 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
-import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {alertClearCookies} from '#src/Libraries/Alerts/SiteUIAlerts';
 import {createLogger} from '#src/Libraries/Logger';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 const logger = createLogger('SiteUIScreenActionsMenu.tsx');

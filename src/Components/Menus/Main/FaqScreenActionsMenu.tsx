@@ -6,8 +6,9 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
+import {ShareContentType} from '#src/Libraries/Sharing';
+import {joinUrl} from '#src/Libraries/UrlParser';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const FaqScreenActionsMenu = () => {
@@ -16,7 +17,7 @@ export const FaqScreenActionsMenu = () => {
   const commonNavigation = useCommonStack();
 
   const menuAnchor = <Item title={'FAQ Menu'} iconName={AppIcons.menu} onPress={openMenu} />;
-  const faqUrl = `${serverUrl}/public/faq.md`;
+  const faqUrl = joinUrl(serverUrl, 'public/faq.md');
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>

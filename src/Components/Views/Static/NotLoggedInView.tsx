@@ -5,10 +5,11 @@ import {Text} from 'react-native-paper';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {appUrl} from '#src/Libraries/UrlParser';
 
 export const NotLoggedInView = () => {
   const {commonStyles} = useStyles();
-  const onPress = () => Linking.openURL('tricordarr://login');
+  const onPress = () => Linking.openURL(appUrl('login'));
   const styles = {
     outerContainer: [commonStyles.flex, commonStyles.justifyCenter, commonStyles.alignItemsCenter],
     innerContainer: [commonStyles.justifyCenter, commonStyles.alignItemsCenter],

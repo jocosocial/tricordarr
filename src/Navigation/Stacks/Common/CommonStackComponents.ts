@@ -139,6 +139,7 @@ export type CommonStackParamList = {
   };
   AccessibilitySettingsScreen: undefined;
   ImageSettingsScreen: undefined;
+  ShareSettingsScreen: undefined;
   PersonalEventEditScreen: {
     personalEvent: FezData;
   };
@@ -299,6 +300,7 @@ export enum CommonStackComponents {
   forumThreadEditScreen = 'ForumThreadEditScreen',
   accessibilitySettingsScreen = 'AccessibilitySettingsScreen',
   imageSettingsScreen = 'ImageSettingsScreen',
+  shareSettingsScreen = 'ShareSettingsScreen',
   personalEventScreen = 'PersonalEventScreen',
   personalEventEditScreen = 'PersonalEventEditScreen',
   personalEventCreateScreen = 'PersonalEventCreateScreen',

@@ -1,12 +1,11 @@
 import React from 'react';
-import {Linking} from 'react-native';
 import {Menu} from 'react-native-paper';
 
 import {useOobe} from '#src/Context/Contexts/OobeContext';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useShareSheet} from '#src/Context/Contexts/ShareSheetContext';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {ShareContentType} from '#src/Enums/ShareContentType';
-import {useClipboard} from '#src/Hooks/useClipboard';
+import {ShareContentType} from '#src/Libraries/Sharing';
 
 interface ShareMenuItemProps {
   contentType: ShareContentType;
@@ -14,32 +13,21 @@ interface ShareMenuItemProps {
   closeMenu?: () => void;
 }
 
+/**
+ * Actions-menu item that presents the share bottom sheet for this content.
+ */
 export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItemProps) => {
   const {oobeCompleted} = useOobe();
-  const {serverUrl} = useSwiftarrQueryClient();
-  const {setString} = useClipboard();
+  const {openShareSheet} = useShareSheet();
+  const {snackbarTry} = useSnackbar();
 
-  const getFullURL = React.useCallback(() => {
-    let fullURL = '';
-    if (contentType === ShareContentType.siteUI) {
-      fullURL = contentID as string;
-    } else {
-      fullURL = `${serverUrl}/${contentType}/${contentID}`;
-    }
-    return fullURL;
-  }, [contentType, contentID, serverUrl]);
-
+  /**
+   * Closes the parent actions menu, then presents the share sheet for this content.
+   */
   const handlePress = React.useCallback(() => {
-    setString(getFullURL());
-
-    if (closeMenu) {
-      closeMenu();
-    }
-  }, [getFullURL, closeMenu, setString]);
-
-  const handleLongPress = React.useCallback(() => {
-    Linking.openURL(getFullURL());
-  }, [getFullURL]);
+    closeMenu?.();
+    openShareSheet(contentType, contentID);
+  }, [closeMenu, contentID, contentType, openShareSheet]);
 
   /**
    * If the user hasn't finished setup don't let them share content.
@@ -51,8 +39,7 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
       disabled={!oobeCompleted}
       title={'Share'}
       leadingIcon={AppIcons.share}
-      onPress={handlePress}
-      onLongPress={handleLongPress}
+      onPress={snackbarTry(handlePress)}
     />
   );
 };

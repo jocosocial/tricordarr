@@ -17,9 +17,9 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
-import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useMenu} from '#src/Hooks/useMenu';
+import {getShareLink, ShareContentType, ShareLinkMode} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
@@ -54,7 +54,12 @@ export const ForumThreadScreenActionsMenu = ({
 
   const handleCreateLfg = useCallback(() => {
     closeMenu();
-    const threadLink = `${serverUrl}/${ShareContentType.forum}/${forumData.forumID}`;
+    const threadLink = getShareLink({
+      mode: ShareLinkMode.web,
+      serverUrl,
+      contentType: ShareContentType.forum,
+      contentID: forumData.forumID,
+    });
     commonNavigation.push(CommonStackComponents.lfgCreateScreen, {
       title: forumData.title,
       fezType: FezType.meetup,
