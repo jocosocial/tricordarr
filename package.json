@@ -1,6 +1,6 @@
 {
   "name": "tricordarr",
-  "version": "2026.0.18",
+  "version": "2027.0.0",
   "private": true,
   "scripts": {
     "android": "expo run:android",
