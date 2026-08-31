@@ -1217,6 +1217,128 @@ export namespace BoardgameData {
   };
 }
 
+/// Used to return a list of hunts.
+/// We probably don't have enough of them to require a paginator for now.
+/// Returned by:
+/// * `GET /api/v3/hunts`
+export interface HuntListData {
+  hunts: HuntListItemData[];
+}
+
+export namespace HuntListData {
+  /**
+   * Cache keys for the hunt catalog. Prefix-matches the list endpoint only.
+   */
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/hunts']];
+  };
+}
+
+export interface HuntListItemData {
+  huntID: string;
+  title: string;
+  description: string;
+}
+
+/// Used to return a single hunt in as much detail as the caller can see.
+/// For example, it only includes the currently unlocked puzzles, and puzzles
+/// only have their answer field set if the user is logged in and has solved them.
+/// Returned by:
+/// * `GET /api/v3/hunts/:huntID`
+export interface HuntData {
+  huntID: string;
+  title: string;
+  description: string;
+  /// For solvers, only contains puzzles which are unlocked
+  puzzles: HuntPuzzleData[];
+  /// If any puzzles are locked, the time of the next one to unlock.
+  nextUnlockTime?: string;
+}
+
+export namespace HuntData {
+  /**
+   * Cache keys for a hunt and the hunt list it appears in.
+   */
+  export const getCacheKeys = (huntID?: string): QueryKey[] => {
+    const keys: QueryKey[] = HuntListData.getCacheKeys();
+    if (huntID) {
+      keys.push([`/hunts/${huntID}`]);
+    }
+    return keys;
+  };
+}
+
+export interface HuntPuzzleData {
+  puzzleID: string;
+  title: string;
+  body: string;
+  /// The answer to this puzzle, if you have solved it or are using the admin interface.
+  answer?: string;
+  unlockTime?: string;
+  /// Only set if fetched via the admin interface
+  hints?: Record<string, string>;
+}
+
+/// A single puzzle, including (if you're logged in) all of your callin attempts on it.
+/// Returned by:
+/// * `GET /api/v3/hunts/puzzles/:puzzleID`
+export interface HuntPuzzleDetailData {
+  huntID: string;
+  huntTitle: string;
+  puzzleID: string;
+  title: string;
+  body: string;
+  /// Will be sorted in ascending order by creationTime.
+  /// The puzzle is solved if any of these have "correct" set.
+  callIns: HuntPuzzleCallInResultData[];
+}
+
+export namespace HuntPuzzleDetailData {
+  /**
+   * True when the current user has a correct call-in on this puzzle.
+   */
+  export const isSolved = (puzzle: HuntPuzzleDetailData): boolean => {
+    return puzzle.callIns.some(callIn => !!callIn.correct);
+  };
+
+  /**
+   * Cache keys for a puzzle, its parent hunt, and the hunt list.
+   */
+  export const getCacheKeys = (puzzleID?: string, huntID?: string): QueryKey[] => {
+    const keys: QueryKey[] = HuntData.getCacheKeys(huntID);
+    if (puzzleID) {
+      keys.push([`/hunts/puzzles/${puzzleID}`]);
+    }
+    return keys;
+  };
+}
+
+export interface HuntPuzzleCallInResultData {
+  /// ISO 8601 date string.
+  creationTime: string;
+  /// What the user called in, without normalization
+  rawSubmission: string;
+  /// If the callin was correct, this will be the canonical form of the answer.
+  correct?: string;
+  /// If the answer wasn't correct but matched a configured hint, this is the nudge.
+  hint?: string;
+}
+
+export namespace HuntPuzzleCallInResultData {
+  /**
+   * User-facing result label for a call-in attempt.
+   */
+  export const getResultLabel = (callIn: HuntPuzzleCallInResultData): string => {
+    if (callIn.correct) {
+      return 'Correct!';
+    }
+    if (callIn.hint) {
+      return callIn.hint;
+    }
+    return 'Incorrect';
+  };
+}
+
 /// Used to create and update Performer models.
 ///
 /// Used by: `POST /api/v3/performer/forEvent/:event_id`
