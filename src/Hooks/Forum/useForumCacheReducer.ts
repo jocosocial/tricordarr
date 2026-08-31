@@ -585,9 +585,16 @@ export const useForumCacheReducer = () => {
    */
   const markRead = useCallback(
     (forumID: string, categoryID?: string, readCount?: number, serverPostCount?: number) => {
+      /**
+       * Next post/read counts for a list entry after this mark-read.
+       */
       const nextCounts = (entry: ForumListData) =>
         applyMarkReadCounts(entry.postCount, entry.readCount, readCount, serverPostCount);
 
+      /**
+       * Apply mark-read counts to a matching ForumListData, returning the same
+       * reference when the counts would not change.
+       */
       const updater = (entry: ForumListData): ForumListData => {
         const next = nextCounts(entry);
         if (postReadCountsUnchanged(entry, next)) {

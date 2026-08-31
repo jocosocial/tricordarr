@@ -614,6 +614,10 @@ export const useFezCacheReducer = () => {
    */
   const markRead = useCallback(
     (fezID: string) => {
+      /**
+       * Set members.readCount to postCount (fully read). Returns the same
+       * reference when the fez has no members or counts are already equal.
+       */
       const readUpdater = (fez: FezData): FezData => {
         if (!fez.members) {
           return fez;
