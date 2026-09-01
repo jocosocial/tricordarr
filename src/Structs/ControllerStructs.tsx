@@ -571,6 +571,81 @@ export namespace EventData {
   };
 }
 
+/**
+ * Admin-only fields on an event feedback report. NULL for normal users.
+ * Nested in EventFeedbackReport from Swiftarr ControllerStructs.
+ */
+export interface EventFeedbackAdminFields {
+  /// TRUE if an admin has marked this feedback as containing something actionable.
+  actionable: boolean;
+  /// Number of users that have followed the event.
+  followCount: number;
+  /// Forum ID of the event's forum thread.
+  forumID?: string;
+  /// Number of forum posts about this event.
+  forumPostCount: number;
+}
+
+/**
+ * A shadow-event host feedback report.
+ * Returned by `GET /api/v3/admin/feedback/reports` and `GET /api/v3/admin/feedback/report/:report_id`.
+ */
+export interface EventFeedbackReport {
+  /// Database ID for this report. Nil when no report has been filed yet.
+  id?: string;
+  /// Twitarr user that wrote the report.
+  reportingUser: UserHeader;
+  /// Time of the most recent update to this report. ISO8601.
+  reportModDate?: string;
+  /// The event being reported on, when attached to the official schedule.
+  event?: EventData;
+  eventTitle: string;
+  eventLocation: string;
+  /// Start time of the event. ISO8601.
+  eventTime: string;
+  /// Self-reported name of the host from the form.
+  hostName: string;
+  /// Host's estimate of attendance. Free text; do not treat as a number.
+  attendance: string;
+  /// Host's notes on how the event went.
+  recapString: string;
+  /// Any issues the host chose to share.
+  issuesString: string;
+  /// Populated for TwitarrTeam and above.
+  adminFields?: EventFeedbackAdminFields;
+}
+
+export namespace EventFeedbackReport {
+  export const getCacheKeys = (feedbackID?: string): QueryKey[] => {
+    const keys: QueryKey[] = [['/admin/feedback/reports']];
+    if (feedbackID) {
+      keys.push([`/admin/feedback/report/${feedbackID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Statistics on shadow events and feedback reports.
+ * Returned by `GET /api/v3/admin/feedback/stats`.
+ */
+export interface EventFeedbackStats {
+  /// How many events of type shadow or workshop are on the schedule.
+  totalShadowEvents: number;
+  /// How many shadow events have completed.
+  completedShadowEvents: number;
+  /// How many feedback reports have been received. The same event may have multiple reports.
+  totalFeedbackReports: number;
+  /// How many shadow events have at least one report.
+  uniqueEventsWithFeedback: number;
+}
+
+export namespace EventFeedbackStats {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/admin/feedback/stats']];
+  };
+}
+
 export interface UserProfileUploadData {
   /// Basic info about the user--their ID, username, displayname, and avatar image. May be nil on POST.
   header?: UserHeader;

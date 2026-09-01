@@ -72,9 +72,8 @@ const AdminScreenInner = () => {
               />
               <AdminNavigationListItem
                 title={'Event Feedback'}
-                description={'View Shadow Event Feedback responses.'}
-                navComponent={CommonStackComponents.siteUIScreen}
-                params={{resource: 'eventfeedback', admin: true}}
+                description={'Print room signs, view host reports, and download CSV.'}
+                navComponent={CommonStackComponents.adminEventFeedbackScreen}
               />
             </ListSection>
           </>

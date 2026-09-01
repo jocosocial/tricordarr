@@ -28,6 +28,12 @@ export const AdminHelpScreen = () => {
             icon={AppIcons.announcement}
             onPress={() => commonNavigation.push(CommonStackComponents.announcementHelpScreen)}
           />
+          <DataFieldListItem
+            title={'Event Feedback'}
+            description={'Print room signs, review host reports, and download CSV.'}
+            icon={AppIcons.feedback}
+            onPress={() => commonNavigation.push(CommonStackComponents.eventFeedbackHelpScreen)}
+          />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
           <HelpButtonHelpTopicView />
@@ -80,7 +86,7 @@ export const AdminHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Web UI'}>
-          <HelpTopicView icon={AppIcons.webview}>Event Feedback and Performers open the website.</HelpTopicView>
+          <HelpTopicView icon={AppIcons.webview}>Performers open the website.</HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>

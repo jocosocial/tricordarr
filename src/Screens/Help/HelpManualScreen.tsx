@@ -168,6 +168,12 @@ export const HelpManualScreen = () => {
             icon={AppIcons.announcement}
             onPress={() => commonNavigation.push(CommonStackComponents.announcementHelpScreen)}
           />
+          <DataFieldListItem
+            title={'Event Feedback'}
+            description={'Print room signs, review host reports, and download CSV.'}
+            icon={AppIcons.feedback}
+            onPress={() => commonNavigation.push(CommonStackComponents.eventFeedbackHelpScreen)}
+          />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Advanced'} noMargin={true}>
           <DataFieldListItem

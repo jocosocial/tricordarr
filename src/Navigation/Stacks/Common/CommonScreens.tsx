@@ -10,12 +10,14 @@ import {
 import {AdminAccessLevelsScreen} from '#src/Screens/Admin/AdminAccessLevelsScreen';
 import {AdminAnnouncementEditScreen} from '#src/Screens/Admin/AdminAnnouncementEditScreen';
 import {AdminAnnouncementsScreen} from '#src/Screens/Admin/AdminAnnouncementsScreen';
-import {AnnouncementHelpScreen} from '#src/Screens/Admin/AnnouncementHelpScreen';
 import {AdminBoardgamesScreen} from '#src/Screens/Admin/AdminBoardgamesScreen';
 import {AdminBulkUserScreen} from '#src/Screens/Admin/AdminBulkUserScreen';
 import {AdminDailyThemeEditScreen} from '#src/Screens/Admin/AdminDailyThemeEditScreen';
 import {AdminDailyThemesScreen} from '#src/Screens/Admin/AdminDailyThemesScreen';
 import {AdminDiscordRegCodeScreen} from '#src/Screens/Admin/AdminDiscordRegCodeScreen';
+import {AdminEventFeedbackReportScreen} from '#src/Screens/Admin/AdminEventFeedbackReportScreen';
+import {AdminEventFeedbackReportsScreen} from '#src/Screens/Admin/AdminEventFeedbackReportsScreen';
+import {AdminEventFeedbackScreen} from '#src/Screens/Admin/AdminEventFeedbackScreen';
 import {AdminFeaturesScreen} from '#src/Screens/Admin/AdminFeaturesScreen';
 import {AdminHelpScreen} from '#src/Screens/Admin/AdminHelpScreen';
 import {AdminHuntEditScreen} from '#src/Screens/Admin/AdminHuntEditScreen';
@@ -31,6 +33,8 @@ import {AdminScreen} from '#src/Screens/Admin/AdminScreen';
 import {AdminServerSettingsScreen} from '#src/Screens/Admin/AdminServerSettingsScreen';
 import {AdminTimeZonesScreen} from '#src/Screens/Admin/AdminTimeZonesScreen';
 import {AdminUserRolesScreen} from '#src/Screens/Admin/AdminUserRolesScreen';
+import {AnnouncementHelpScreen} from '#src/Screens/Admin/AnnouncementHelpScreen';
+import {EventFeedbackHelpScreen} from '#src/Screens/Admin/EventFeedbackHelpScreen';
 import {BoardgameHelpScreen} from '#src/Screens/Boardgames/BoardgameHelpScreen';
 import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
 import {PreRegistrationHelpScreen} from '#src/Screens/Disabled/PreRegistrationHelpScreen';
@@ -910,6 +914,26 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.huntHelpScreen}
         component={HuntHelpScreen}
         options={{title: 'Puzzle Hunt Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminEventFeedbackScreen}
+        component={AdminEventFeedbackScreen}
+        options={{title: 'Shadow Event Feedback'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminEventFeedbackReportsScreen}
+        component={AdminEventFeedbackReportsScreen}
+        options={{title: 'Feedback Responses'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminEventFeedbackReportScreen}
+        component={AdminEventFeedbackReportScreen}
+        options={{title: 'Feedback Report'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventFeedbackHelpScreen}
+        component={EventFeedbackHelpScreen}
+        options={{title: 'Event Feedback Help'}}
       />
     </>
   );
