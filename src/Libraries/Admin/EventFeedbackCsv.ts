@@ -2,7 +2,10 @@ import moment from 'moment-timezone';
 
 import {EventFeedbackReport, EventFeedbackStats} from '#src/Structs/ControllerStructs';
 
-export const EVENT_FEEDBACK_CSV_FILENAME = 'event_feedback_reports.csv';
+/** Basename without extension; SAF/createFile add .csv from the mime type. */
+export const EVENT_FEEDBACK_CSV_BASENAME = 'event_feedback_reports';
+export const EVENT_FEEDBACK_CSV_FILENAME = `${EVENT_FEEDBACK_CSV_BASENAME}.csv`;
+export const EVENT_FEEDBACK_CSV_MIME = 'text/csv';
 
 const CSV_HEADERS = [
   'Twitarr Username',

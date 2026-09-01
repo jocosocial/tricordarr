@@ -1,9 +1,4 @@
-import {
-  BottomSheetBackdrop,
-  type BottomSheetBackdropProps,
-  BottomSheetModal,
-  BottomSheetView,
-} from '@gorhom/bottom-sheet';
+import {BottomSheetBackdrop, type BottomSheetBackdropProps, BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useBackHandler} from '@react-native-community/hooks';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Linking, StyleSheet, Switch, View} from 'react-native';
@@ -13,6 +8,10 @@ import Share from 'react-native-share';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ShareQRCode, shareQrSize} from '#src/Components/QRCodes/ShareQRCode';
+import {
+  BottomSheetSnackbarContainer,
+  MeasuredBottomSheetView,
+} from '#src/Components/Sheets/BottomSheetSnackbarContainer';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -226,10 +225,11 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
       enablePanDownToClose={true}
       onChange={handleSheetChange}
       onDismiss={onDismiss}
+      containerComponent={BottomSheetSnackbarContainer}
       backdropComponent={renderBackdrop}
       backgroundStyle={styles.background}
       handleIndicatorStyle={styles.handleIndicator}>
-      <BottomSheetView>
+      <MeasuredBottomSheetView>
         <View style={styles.content}>
           <Text style={styles.title}>{getShareSheetTitle(contentType)}</Text>
           <PrimaryActionButton
@@ -274,7 +274,7 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
           </View>
           {showQr && webUrl.length > 0 && <ShareQRCode url={shareTarget} />}
         </View>
-      </BottomSheetView>
+      </MeasuredBottomSheetView>
     </BottomSheetModal>
   );
 };

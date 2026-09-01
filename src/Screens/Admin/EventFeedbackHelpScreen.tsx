@@ -32,8 +32,7 @@ export const EventFeedbackHelpScreen = () => {
             Opens the website spreadsheet-style table of every report field on one page.
           </HelpTopicView>
           <HelpTopicView title={'Download'} icon={AppIcons.download}>
-            Builds a CSV of all reports on the device and opens the system share sheet so you can save or send the file.
-            The filename is event_feedback_reports.csv.
+            Builds a CSV of all reports. Save it to a folder on the device or share it with another app.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Report Details'}>

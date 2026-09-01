@@ -3,6 +3,7 @@ import React from 'react';
 
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {DownloadButtonHelpTopicView} from '#src/Components/Views/Help/Common/DownloadButtonHelpTopicView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {NeedsPhotographerHelpTopicView} from '#src/Components/Views/Help/Common/NeedsPhotographerHelpTopicView';
 import {OfficialPerformersHelpTopicView} from '#src/Components/Views/Help/Common/OfficialPerformersHelpTopicView';
@@ -63,9 +64,10 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
           View photos from the Photostream associated with this event.
         </HelpTopicView>
         <ShareButtonHelpTopicView />
-        <HelpTopicView title={'Download'} icon={AppIcons.download}>
-          Download this event as an ICS calendar file that you can import into your calendar app.
-        </HelpTopicView>
+        <DownloadButtonHelpTopicView>
+          Download this event as an ICS calendar file that you can import into your calendar app. Save it to a folder on
+          your device, or share it with another app.
+        </DownloadButtonHelpTopicView>
         <HelpTopicView title={'Open in Sched'} icon={AppIcons.schedOpen}>
           Tap to open this event in Sched.com in your browser. Long press to copy the Sched.com link to your clipboard.
         </HelpTopicView>
