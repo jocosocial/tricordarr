@@ -1,32 +1,71 @@
-import React from 'react';
+import React, {memo, useCallback, useMemo} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
+import {ListItem} from '#src/Components/Lists/ListItem';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {EventFeedbackReport} from '#src/Structs/ControllerStructs';
 
 interface EventFeedbackReportListItemProps {
-  report: EventFeedbackReport;
-  onPress: () => void;
+  report: EventFeedbackReport & {id: string};
 }
 
 /**
- * List row for a feedback report: event title, host name, and filed date.
+ * FlashList row for a feedback report: large event title, smaller host name and filed date.
  */
-export const EventFeedbackReportListItem = ({report, onPress}: EventFeedbackReportListItemProps) => {
-  const filedDate = report.reportModDate ? new Date(report.reportModDate) : undefined;
+const EventFeedbackReportListItemInternal = ({report}: EventFeedbackReportListItemProps) => {
+  const navigation = useCommonStack();
+  const {commonStyles} = useStyles();
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        item: {
+          ...commonStyles.background,
+          ...commonStyles.paddingRightSmall,
+        },
+        title: {
+          ...commonStyles.onBackground,
+        },
+        description: {
+          ...commonStyles.onBackground,
+        },
+      }),
+    [commonStyles],
+  );
+
+  const onPress = useCallback(() => {
+    navigation.push(CommonStackComponents.adminEventFeedbackReportScreen, {feedbackID: report.id});
+  }, [navigation, report.id]);
+
+  const getDescription = useCallback(() => {
+    const filedDate = report.reportModDate ? new Date(report.reportModDate) : undefined;
+    return (
+      <View>
+        <Text variant={'bodyMedium'} style={styles.description} selectable={false}>
+          By {report.hostName}
+        </Text>
+        <Text variant={'bodyMedium'} style={styles.description} selectable={false}>
+          Filed {filedDate ? <RelativeTimeTag date={filedDate} variant={'bodyMedium'} /> : 'unknown'}
+        </Text>
+      </View>
+    );
+  }, [report.hostName, report.reportModDate, styles.description]);
 
   return (
-    <DataFieldListItem
+    <ListItem
+      style={styles.item}
       title={report.eventTitle}
+      titleStyle={styles.title}
+      titleNumberOfLines={0}
+      description={getDescription}
+      descriptionStyle={styles.description}
+      descriptionNumberOfLines={2}
       onPress={onPress}
-      description={
-        <Text>
-          By {report.hostName}
-          {'\n'}
-          Filed {filedDate ? <RelativeTimeTag date={filedDate} /> : 'unknown'}
-        </Text>
-      }
     />
   );
 };
+
+export const EventFeedbackReportListItem = memo(EventFeedbackReportListItemInternal);

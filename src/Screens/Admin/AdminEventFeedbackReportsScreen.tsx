@@ -1,13 +1,15 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback} from 'react';
-import {Text} from 'react-native-paper';
+import {type FlashListRef} from '@shopify/flash-list';
+import React, {useCallback, useMemo, useRef} from 'react';
+import {Divider} from 'react-native-paper';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
+import {AppFlashList} from '#src/Components/Lists/AppFlashList';
+import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
+import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
 import {EventFeedbackReportListItem} from '#src/Components/Lists/Items/Admin/EventFeedbackReportListItem';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {AppView} from '#src/Components/Views/AppView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
@@ -20,6 +22,8 @@ import {EventFeedbackReport} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminEventFeedbackReportsScreen>;
 
+type EventFeedbackReportWithId = EventFeedbackReport & {id: string};
+
 /**
  * Admin list of shadow event feedback reports with summary stats.
  */
@@ -31,7 +35,8 @@ export const AdminEventFeedbackReportsScreen = (props: Props) => {
   );
 };
 
-const AdminEventFeedbackReportsScreenInner = ({navigation}: Props) => {
+const AdminEventFeedbackReportsScreenInner = (_props: Props) => {
+  const listRef = useRef<FlashListRef<EventFeedbackReportWithId>>(null);
   const {data: reports, refetch: refetchReports, isLoading: isLoadingReports} = useEventFeedbackReportsQuery();
   const {data: stats, refetch: refetchStats, isLoading: isLoadingStats} = useEventFeedbackStatsQuery();
   const refreshBoth = useCallback(async () => {
@@ -40,18 +45,18 @@ const AdminEventFeedbackReportsScreenInner = ({navigation}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refreshBoth});
   useAdminHelpButton(CommonStackComponents.eventFeedbackHelpScreen);
 
-  if ((isLoadingReports && !reports) || (isLoadingStats && !stats)) {
-    return <LoadingView />;
-  }
+  const reportsWithIds = useMemo(
+    () => (reports ?? []).filter((report): report is EventFeedbackReportWithId => !!report.id),
+    [reports],
+  );
 
-  const reportsWithIds = (reports ?? []).filter((report): report is EventFeedbackReport & {id: string} => !!report.id);
+  const renderItem = useCallback(({item}: {item: EventFeedbackReportWithId}) => {
+    return <EventFeedbackReportListItem report={item} />;
+  }, []);
 
-  return (
-    <AppView>
-      <ScrollingContentView
-        isStack={true}
-        overScroll={true}
-        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+  const renderListHeader = useCallback(() => {
+    return (
+      <>
         <ListTitleView title={'Stats'} />
         {stats && (
           <>
@@ -63,21 +68,40 @@ const AdminEventFeedbackReportsScreenInner = ({navigation}: Props) => {
           </>
         )}
         <ListTitleView title={'Reports'} />
-        {!reportsWithIds.length && (
-          <PaddedContentView padTop={true}>
-            <Text>No feedback reports.</Text>
-          </PaddedContentView>
-        )}
-        {reportsWithIds.map(report => (
-          <EventFeedbackReportListItem
-            key={report.id}
-            report={report}
-            onPress={() =>
-              navigation.push(CommonStackComponents.adminEventFeedbackReportScreen, {feedbackID: report.id})
-            }
-          />
-        ))}
-      </ScrollingContentView>
+        {reportsWithIds.length > 0 && <Divider bold={true} />}
+      </>
+    );
+  }, [reportsWithIds.length, stats]);
+
+  const renderListFooter = useCallback(() => {
+    if (reportsWithIds.length > 0) {
+      return <EndResultsFooter />;
+    }
+    return <NoResultsFooter />;
+  }, [reportsWithIds.length]);
+
+  const renderItemSeparator = useCallback(() => {
+    return <Divider bold={true} />;
+  }, []);
+
+  const keyExtractor = useCallback((item: EventFeedbackReportWithId) => item.id, []);
+
+  if ((isLoadingReports && !reports) || (isLoadingStats && !stats)) {
+    return <LoadingView />;
+  }
+
+  return (
+    <AppView>
+      <AppFlashList<EventFeedbackReportWithId>
+        ref={listRef}
+        data={reportsWithIds}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        renderListHeader={renderListHeader}
+        renderListFooter={renderListFooter}
+        renderItemSeparator={renderItemSeparator}
+      />
     </AppView>
   );
 };
