@@ -1,5 +1,5 @@
 import {Query, QueryKey} from '@tanstack/react-query';
-import {PersistQueryClientProvider, persistQueryClientRestore} from '@tanstack/react-query-persist-client';
+import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import DeviceInfo from 'react-native-device-info';
@@ -118,34 +118,6 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   // Use sessionID (or placeholder) as key to force PersistQueryClientProvider to remount
   // when session loads, ensuring it re-hydrates with the correct persister
   const persistKey = currentSession?.sessionID || '__pending_session__';
-
-  // Track if we've manually restored to avoid double-restoration
-  const hasManuallyRestoredRef = useRef(false);
-
-  // Manually restore cache when session loads (in addition to key-based remount)
-  useEffect(() => {
-    if (!currentSession || !queryClientRef.current || hasManuallyRestoredRef.current) {
-      return;
-    }
-
-    const restoreCache = async () => {
-      try {
-        const persister = createSessionPersister(currentSession.sessionID);
-        await persistQueryClientRestore({
-          queryClient: queryClientRef.current!,
-          persister,
-          maxAge: appConfig.apiClientConfig.cacheTime,
-          buster: appConfig.apiClientConfig.cacheBuster,
-        });
-
-        hasManuallyRestoredRef.current = true;
-      } catch (error) {
-        logger.error('Error manually restoring cache:', error);
-      }
-    };
-
-    restoreCache();
-  }, [currentSession, appConfig.apiClientConfig.cacheTime, appConfig.apiClientConfig.cacheBuster]);
 
   /**
    * Bonus data to inject into the clients query keys.

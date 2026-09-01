@@ -4,7 +4,6 @@ import moment from 'moment-timezone';
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {LogLevel} from '#src/Libraries/Logger/types';
-import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from '#src/Libraries/Network/APIClient';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
 import {FezListEndpoints} from '#src/Types';
@@ -92,6 +91,12 @@ export interface AppConfig {
   dismissWelcomeAboard: boolean;
   logLevel: LogLevel;
 }
+
+// Live here (rather than APIClient.ts) so AppConfig.ts doesn't import APIClient.ts, which
+// would create a require cycle: Logger -> AppConfig -> APIClient -> QueryCacheStorage -> Logger.
+export const defaultCacheTime = 1000 * 60 * 60 * 24 * 30; // 30 days
+export const defaultStaleTime = 1000 * 60; // 60 seconds
+export const defaultImageStaleTime = 1000 * 60 * 60 * 24 * 30; // 30 days
 
 export const defaultAppConfig: AppConfig = {
   serverUrl: __DEV__ ? 'https://beta.twitarr.com' : 'https://twitarr.com',
