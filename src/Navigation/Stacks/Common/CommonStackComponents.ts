@@ -317,6 +317,12 @@ export type CommonStackParamList = {
     puzzleID: string;
   };
   HuntHelpScreen: undefined;
+  EventFeedbackSelectScreen: {
+    room?: string;
+  };
+  EventFeedbackFormScreen: {
+    eventUID: string;
+  };
   AdminEventFeedbackScreen: undefined;
   AdminEventFeedbackReportsScreen: undefined;
   AdminEventFeedbackReportScreen: {
@@ -474,6 +480,8 @@ export enum CommonStackComponents {
   huntScreen = 'HuntScreen',
   huntPuzzleScreen = 'HuntPuzzleScreen',
   huntHelpScreen = 'HuntHelpScreen',
+  eventFeedbackSelectScreen = 'EventFeedbackSelectScreen',
+  eventFeedbackFormScreen = 'EventFeedbackFormScreen',
   adminEventFeedbackScreen = 'AdminEventFeedbackScreen',
   adminEventFeedbackReportsScreen = 'AdminEventFeedbackReportsScreen',
   adminEventFeedbackReportScreen = 'AdminEventFeedbackReportScreen',

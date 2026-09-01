@@ -87,6 +87,8 @@ export const allRoutes: RouteDefinition[] = [
   {screen: CommonStackComponents.scheduleDayScreen, path: 'events'},
   {screen: CommonStackComponents.eventScreen, path: 'events/:eventID'},
   {screen: CommonStackComponents.personalEventScreen, path: 'privateevent/:eventID'},
+  {screen: CommonStackComponents.eventFeedbackFormScreen, path: 'eventfeedback/form/:eventUID'},
+  {screen: CommonStackComponents.eventFeedbackSelectScreen, path: 'eventfeedback'},
 
   // ==================== Forum Tab Routes ====================
   {screen: ForumStackComponents.forumCategoriesScreen, path: 'forums'},
@@ -109,6 +111,8 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     // Event routes
     CommonStackComponents.eventScreen,
     CommonStackComponents.personalEventScreen,
+    CommonStackComponents.eventFeedbackSelectScreen,
+    CommonStackComponents.eventFeedbackFormScreen,
     // LFG routes
     CommonStackComponents.lfgChatScreen,
     CommonStackComponents.lfgScreen,

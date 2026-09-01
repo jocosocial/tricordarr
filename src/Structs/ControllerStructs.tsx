@@ -572,6 +572,62 @@ export namespace EventData {
 }
 
 /**
+ * Body for `POST /api/v3/feedback`. Creates or updates the current user's report for an event.
+ */
+export interface EventFeedbackData {
+  /// Sched ICS UID of the event, not the Twitarr eventID. Required by the server today.
+  eventUID?: string;
+  /// Title of the event being reported on. Copied from the schedule Event.
+  eventTitle: string;
+  /// Where the event took place. Copied from Event.location; the native form lets the host edit it.
+  eventLocation: string;
+  /// Start time of the event. ISO8601.
+  eventTime: string;
+  /// Name of the shadow event host submitting this report.
+  hostName: string;
+  /// Host's estimate of attendance. Free text; do not treat as a number.
+  attendance: string;
+  /// The "How did everything go?" field.
+  recapString: string;
+  /// The "Any issues?" field.
+  issuesString: string;
+}
+
+export namespace EventFeedbackData {
+  export const getCacheKeys = (eventUID?: string, eventID?: string): QueryKey[] => {
+    const keys: QueryKey[] = [['/feedback/eventlist']];
+    if (eventUID) {
+      keys.push([`/feedback/uid/${encodeURIComponent(eventUID)}`]);
+    }
+    if (eventID) {
+      keys.push([`/feedback/id/${eventID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Event lists for the host feedback picker.
+ * Returned by `GET /api/v3/feedback/eventlist`.
+ */
+export interface EventFeedbackSelectionData {
+  /// Events the user has already given feedback on.
+  existingFeedback: EventData[];
+  /// If the user has a Performer record, events for that performer.
+  performerAttached: EventData[];
+  /// If the request included a room filter, events in that room.
+  matchingRoom: EventData[];
+  /// All events eligible for feedback (shadow/workshop that have started).
+  events: EventData[];
+}
+
+export namespace EventFeedbackSelectionData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/feedback/eventlist']];
+  };
+}
+
+/**
  * Admin-only fields on an event feedback report. NULL for normal users.
  * Nested in EventFeedbackReport from Swiftarr ControllerStructs.
  */

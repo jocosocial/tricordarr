@@ -170,7 +170,7 @@ export const HelpManualScreen = () => {
           />
           <DataFieldListItem
             title={'Event Feedback'}
-            description={'Print room signs, review host reports, and download CSV.'}
+            description={'Submit a host report, print room signs, review responses, and download data.'}
             icon={AppIcons.feedback}
             onPress={() => commonNavigation.push(CommonStackComponents.eventFeedbackHelpScreen)}
           />

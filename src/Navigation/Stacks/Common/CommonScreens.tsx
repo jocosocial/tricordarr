@@ -42,6 +42,8 @@ import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScree
 import {EventScreen} from '#src/Screens/Event/EventScreen';
 import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
+import {EventFeedbackFormScreen} from '#src/Screens/EventFeedback/EventFeedbackFormScreen';
+import {EventFeedbackSelectScreen} from '#src/Screens/EventFeedback/EventFeedbackSelectScreen';
 import {FezChatDetailsHelpScreen} from '#src/Screens/Fez/FezChatDetailsHelpScreen';
 import {FezChatDetailsScreen} from '#src/Screens/Fez/FezChatDetailsScreen';
 import {FezChatHelpScreen} from '#src/Screens/Fez/FezChatHelpScreen';
@@ -929,6 +931,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.adminEventFeedbackReportScreen}
         component={AdminEventFeedbackReportScreen}
         options={{title: 'Feedback Report'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventFeedbackSelectScreen}
+        component={EventFeedbackSelectScreen}
+        options={{title: 'Event Feedback'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventFeedbackFormScreen}
+        component={EventFeedbackFormScreen}
+        options={{title: 'Event Feedback'}}
       />
       <Stack.Screen
         name={CommonStackComponents.eventFeedbackHelpScreen}
