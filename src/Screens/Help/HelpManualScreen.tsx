@@ -162,6 +162,12 @@ export const HelpManualScreen = () => {
             icon={AppIcons.admin}
             onPress={() => commonNavigation.push(CommonStackComponents.adminHelpScreen)}
           />
+          <DataFieldListItem
+            title={'Announcements'}
+            description={'Create, edit, and delete system-wide announcements.'}
+            icon={AppIcons.announcement}
+            onPress={() => commonNavigation.push(CommonStackComponents.announcementHelpScreen)}
+          />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Advanced'} noMargin={true}>
           <DataFieldListItem

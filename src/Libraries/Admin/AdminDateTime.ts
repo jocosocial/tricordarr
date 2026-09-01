@@ -1,10 +1,17 @@
 /**
+ * Combine a calendar date with hours/minutes into a local Date.
+ */
+export const toLocalDateTime = (date: Date, time: {hours: number; minutes: number}): Date => {
+  const combined = new Date(date);
+  combined.setHours(time.hours, time.minutes, 0, 0);
+  return combined;
+};
+
+/**
  * Combine a calendar date with hours/minutes into an ISO8601 string for Swiftarr Date fields.
  */
 export const combineDateAndTime = (date: Date, time: {hours: number; minutes: number}): string => {
-  const combined = new Date(date);
-  combined.setHours(time.hours, time.minutes, 0, 0);
-  return combined.toISOString();
+  return toLocalDateTime(date, time).toISOString();
 };
 
 /**

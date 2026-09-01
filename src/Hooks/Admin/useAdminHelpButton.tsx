@@ -4,27 +4,27 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {
+  CommonStackComponents,
+  HelpScreenComponents,
+  useCommonStack,
+} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 /**
- * Installs a Help header button that opens the Admin help screen.
+ * Installs a Help header button that opens a help screen. Defaults to Server Admin help.
  */
-export const useAdminHelpButton = () => {
+export const useAdminHelpButton = (helpScreen: HelpScreenComponents = CommonStackComponents.adminHelpScreen) => {
   const navigation = useCommonStack();
 
   const getNavButtons = useCallback(
     () => (
       <View>
         <MaterialHeaderButtons>
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.adminHelpScreen)}
-          />
+          <Item title={'Help'} iconName={AppIcons.help} onPress={() => navigation.push(helpScreen)} />
         </MaterialHeaderButtons>
       </View>
     ),
-    [navigation],
+    [helpScreen, navigation],
   );
 
   useEffect(() => {

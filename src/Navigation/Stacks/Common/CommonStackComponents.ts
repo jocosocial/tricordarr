@@ -98,7 +98,18 @@ export type CommonStackParamList = {
     postData: PostData;
     forumData?: ForumData;
   };
+  SeamailListScreen: WithElevation<
+    WithScrollToTopIntent<
+      NoDrawerParams & {
+        onlyNew?: boolean;
+      }
+    >
+  >;
+  SeamailSearchScreen: {
+    forUser?: string;
+  };
   SeamailCreateScreen?: WithElevation<WithInitialUserHeaders<{}>>;
+  ForumPostMentionScreen: Optional<WithElevation>;
   ForumPostPinnedScreen: {
     forumID: string;
   };
@@ -262,6 +273,7 @@ export type CommonStackParamList = {
   KrakenTalkHelpScreen: undefined;
   AdminScreen: undefined;
   AdminHelpScreen: undefined;
+  AnnouncementHelpScreen: undefined;
   AdminAnnouncementsScreen: undefined;
   AdminAnnouncementEditScreen: {
     announcement?: AnnouncementData;
@@ -331,7 +343,10 @@ export enum CommonStackComponents {
   muteKeywords = 'MuteKeywordsScreen',
   forumThreadPostScreen = 'ForumThreadPostScreen',
   forumPostEditScreen = 'ForumPostEditScreen',
+  seamailListScreen = 'SeamailListScreen',
+  seamailSearchScreen = 'SeamailSearchScreen',
   seamailCreateScreen = 'SeamailCreateScreen',
+  forumPostMentionScreen = 'ForumPostMentionScreen',
   forumPostPinnedScreen = 'ForumPostPinnedScreen',
   configServerUrl = 'ConfigServerUrlScreen',
   forumPostHashtagScreen = 'ForumPostHashtagScreen',
@@ -428,6 +443,7 @@ export enum CommonStackComponents {
   krakenTalkHelpScreen = 'KrakenTalkHelpScreen',
   adminScreen = 'AdminScreen',
   adminHelpScreen = 'AdminHelpScreen',
+  announcementHelpScreen = 'AnnouncementHelpScreen',
   adminAnnouncementsScreen = 'AdminAnnouncementsScreen',
   adminAnnouncementEditScreen = 'AdminAnnouncementEditScreen',
   adminDailyThemesScreen = 'AdminDailyThemesScreen',
@@ -511,6 +527,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.krakenTalkHelpScreen
   | CommonStackComponents.reportHelpScreen
   | CommonStackComponents.adminHelpScreen
+  | CommonStackComponents.announcementHelpScreen
   | CommonStackComponents.huntHelpScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();

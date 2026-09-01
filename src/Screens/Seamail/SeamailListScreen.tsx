@@ -15,6 +15,7 @@ import {SeamailFilterMenu} from '#src/Components/Menus/Seamail/SeamailFilterMenu
 import {SeamailListScreenActionsMenu} from '#src/Components/Menus/Seamail/SeamailListScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSeamailFilter} from '#src/Context/Contexts/SeamailFilterContext';
@@ -61,6 +62,7 @@ export const SeamailListScreen = (props: Props) => {
 const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   const {asPrivilegedUser} = useElevation();
+  const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
   const {seamailOnlyNew, setSeamailOnlyNew, fezType} = useSeamailFilter();
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isFetching} = useFezListQuery({
     endpoint: 'joined',
@@ -140,6 +142,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
 
   useEffect(() => {
     navigation.setOptions({
+      headerLeft: route.params?.noDrawer ? getLeftBackHeaderButtons : getLeftMainHeaderButtons,
       headerRight: getNavButtons,
     });
     if (enableSelection) {
@@ -147,7 +150,17 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
     } else {
       navigation.setOptions({title: 'Seamail'});
     }
-  }, [isFocused, closeFezSocket, navigation, getNavButtons, enableSelection, selectedItems.length]);
+  }, [
+    isFocused,
+    closeFezSocket,
+    navigation,
+    getNavButtons,
+    enableSelection,
+    selectedItems.length,
+    route.params?.noDrawer,
+    getLeftBackHeaderButtons,
+    getLeftMainHeaderButtons,
+  ]);
 
   /**
    * This operates more like an intent than a state.

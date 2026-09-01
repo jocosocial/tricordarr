@@ -10,6 +10,7 @@ import {
 import {AdminAccessLevelsScreen} from '#src/Screens/Admin/AdminAccessLevelsScreen';
 import {AdminAnnouncementEditScreen} from '#src/Screens/Admin/AdminAnnouncementEditScreen';
 import {AdminAnnouncementsScreen} from '#src/Screens/Admin/AdminAnnouncementsScreen';
+import {AnnouncementHelpScreen} from '#src/Screens/Admin/AnnouncementHelpScreen';
 import {AdminBoardgamesScreen} from '#src/Screens/Admin/AdminBoardgamesScreen';
 import {AdminBulkUserScreen} from '#src/Screens/Admin/AdminBulkUserScreen';
 import {AdminDailyThemeEditScreen} from '#src/Screens/Admin/AdminDailyThemeEditScreen';
@@ -52,6 +53,7 @@ import {ForumThreadSearchHelpScreen} from '#src/Screens/Forum/ForumThreadSearchH
 import {KeywordsHelpScreen} from '#src/Screens/Forum/KeywordsHelpScreen';
 import {ForumPostEditScreen} from '#src/Screens/Forum/Post/ForumPostEditScreen';
 import {ForumPostHashtagScreen} from '#src/Screens/Forum/Post/ForumPostHashtagScreen';
+import {ForumPostMentionScreen} from '#src/Screens/Forum/Post/ForumPostMentionScreen';
 import {ForumPostPinnedScreen} from '#src/Screens/Forum/Post/ForumPostPinnedScreen';
 import {ForumPostSearchScreen} from '#src/Screens/Forum/Post/ForumPostSearchScreen';
 import {ForumPostUserScreen} from '#src/Screens/Forum/Post/ForumPostUserScreen';
@@ -122,7 +124,9 @@ import {SeamailCreateScreen} from '#src/Screens/Seamail/SeamailCreateScreen';
 import {SeamailEditScreen} from '#src/Screens/Seamail/SeamailEditScreen';
 import {SeamailHelpScreen} from '#src/Screens/Seamail/SeamailHelpScreen';
 import {SeamailListHelpScreen} from '#src/Screens/Seamail/SeamailListHelpScreen';
+import {SeamailListScreen} from '#src/Screens/Seamail/SeamailListScreen';
 import {SeamailSearchHelpScreen} from '#src/Screens/Seamail/SeamailSearchHelpScreen';
+import {SeamailSearchScreen} from '#src/Screens/Seamail/SeamailSearchScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
 import {RecoveryKeyScreen} from '#src/Screens/Settings/Account/RecoveryKeyScreen';
@@ -277,9 +281,24 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Edit Post'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.seamailListScreen}
+        component={SeamailListScreen}
+        options={{title: 'Seamail'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailSearchScreen}
+        component={SeamailSearchScreen}
+        options={{title: 'Search Seamail'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.seamailCreateScreen}
         component={SeamailCreateScreen}
         options={{title: 'New Seamail'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumPostMentionScreen}
+        component={ForumPostMentionScreen}
+        options={{title: 'Posts Mentioning You'}}
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostPinnedScreen}
@@ -780,6 +799,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.adminAnnouncementEditScreen}
         component={AdminAnnouncementEditScreen}
         options={{title: 'Announcement'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.announcementHelpScreen}
+        component={AnnouncementHelpScreen}
+        options={{title: 'Announcement Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.adminDailyThemesScreen}

@@ -2,7 +2,7 @@ import {format} from 'date-fns';
 import {useField, useFormikContext} from 'formik';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button} from 'react-native-paper';
+import {Button, HelperText} from 'react-native-paper';
 import {DatePickerModal} from 'react-native-paper-dates';
 import {CalendarDate, ValidRangeType} from 'react-native-paper-dates/src/Date/Calendar';
 
@@ -89,6 +89,7 @@ export const DatePickerField = ({
         mode={'outlined'}>
         {label} ({getDateFormat()})
       </Button>
+      {meta.error && <HelperText type={'error'}>{meta.error}</HelperText>}
       <DatePickerModal
         visible={visible}
         onDismiss={onDismiss}

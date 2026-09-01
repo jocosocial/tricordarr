@@ -9,6 +9,7 @@ import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionFi
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {toLocalDateTime} from '#src/Libraries/Admin/AdminDateTime';
 import {DateValidation} from '#src/Libraries/ValidationSchema';
 import {AdminAnnouncementFormValues} from '#src/Types/FormValues';
 
@@ -18,9 +19,27 @@ interface AdminAnnouncementFormProps {
   buttonText: string;
 }
 
+/**
+ * True when the combined display-until date and time is after now.
+ */
+const isDisplayUntilInTheFuture = (date?: Date, time?: {hours: number; minutes: number}): boolean => {
+  if (!date || !time) {
+    return true;
+  }
+  return toLocalDateTime(date, time).getTime() > Date.now();
+};
+
 const validationSchema = Yup.object().shape({
   text: Yup.string().required('Text cannot be empty').max(2000, 'Announcement text has a 2000 char limit'),
-  displayUntilDate: DateValidation,
+  displayUntilDate: DateValidation.test('future-displayUntil', 'Display until must be in the future.', function (date) {
+    return isDisplayUntilInTheFuture(date, (this.parent as AdminAnnouncementFormValues).displayUntilTime);
+  }),
+  displayUntilTime: Yup.object({
+    hours: Yup.number().required(),
+    minutes: Yup.number().required(),
+  }).test('future-displayUntil', 'Display until must be in the future.', function (time) {
+    return isDisplayUntilInTheFuture((this.parent as AdminAnnouncementFormValues).displayUntilDate, time);
+  }),
 });
 
 export const AdminAnnouncementForm = ({initialValues, onSubmit, buttonText}: AdminAnnouncementFormProps) => {

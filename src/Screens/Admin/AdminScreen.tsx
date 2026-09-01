@@ -2,7 +2,6 @@ import React from 'react';
 import {Divider} from 'react-native-paper';
 
 import {AdminNavigationListItem} from '#src/Components/Lists/Items/Admin/AdminNavigationListItem';
-import {ListItem} from '#src/Components/Lists/ListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
@@ -10,10 +9,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
-import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
-import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
 
@@ -30,32 +26,11 @@ export const AdminScreen = () => {
  */
 const AdminScreenInner = () => {
   const access = useAdminAccess();
-  const bottomTabNavigator = useBottomTabNavigator();
   const {data: userNotificationData} = useUserNotificationDataQuery();
   useAdminHelpButton();
 
   const ttSeamailCount = userNotificationData?.moderatorData?.newTTSeamailMessageCount ?? 0;
   const ttMentionCount = userNotificationData?.moderatorData?.newTTForumMentionCount ?? 0;
-
-  /**
-   * Opens Seamail already switched to the TwitarrTeam inbox.
-   */
-  const openTwitarrTeamSeamail = () => {
-    bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-      screen: ChatStackScreenComponents.seamailListScreen,
-      params: {asPrivilegedUser: PrivilegedUserAccounts.TwitarrTeam},
-    });
-  };
-
-  /**
-   * Opens forum mentions already switched to the TwitarrTeam inbox.
-   */
-  const openTwitarrTeamMentions = () => {
-    bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
-      screen: ForumStackComponents.forumPostMentionScreen,
-      params: {asPrivilegedUser: PrivilegedUserAccounts.TwitarrTeam},
-    });
-  };
 
   return (
     <AppView>
@@ -77,21 +52,23 @@ const AdminScreenInner = () => {
                   navComponent={CommonStackComponents.adminDailyThemesScreen}
                 />
               )}
-              <ListItem
+              <AdminNavigationListItem
                 title={'TwitarrTeam Seamail'}
                 description={
                   ttSeamailCount ? `Seamail to @twitarrteam. ${ttSeamailCount} new.` : 'Seamail to @twitarrteam.'
                 }
-                onPress={openTwitarrTeamSeamail}
+                navComponent={CommonStackComponents.seamailListScreen}
+                params={{asPrivilegedUser: PrivilegedUserAccounts.TwitarrTeam, noDrawer: true}}
               />
-              <ListItem
+              <AdminNavigationListItem
                 title={'TwitarrTeam Forum Mentions'}
                 description={
                   ttMentionCount
                     ? `Mentions of @twitarrteam in forum posts. ${ttMentionCount} new.`
                     : 'Mentions of @twitarrteam in forum posts.'
                 }
-                onPress={openTwitarrTeamMentions}
+                navComponent={CommonStackComponents.forumPostMentionScreen}
+                params={{asPrivilegedUser: PrivilegedUserAccounts.TwitarrTeam}}
               />
               <AdminNavigationListItem
                 title={'Event Feedback'}

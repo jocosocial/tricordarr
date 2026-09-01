@@ -1,5 +1,5 @@
 import moment from 'moment-timezone';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {StyleSheet} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 
@@ -11,42 +11,58 @@ import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {getTimeZoneLabel} from '#src/Libraries/DateTime';
 import {AnnouncementData} from '#src/Structs/ControllerStructs';
 
-export const AnnouncementCard = ({announcement}: {announcement: AnnouncementData}) => {
+interface AnnouncementCardProps {
+  announcement: AnnouncementData;
+  onPress?: () => void;
+}
+
+/**
+ * Card displaying a server announcement, including author, body, and display-until time.
+ * Deleted announcements use a distinct title and color so admins can tell them apart from active ones.
+ */
+export const AnnouncementCard = ({announcement, onPress}: AnnouncementCardProps) => {
   const {commonStyles} = useStyles();
   const {tzAtTime} = useTimeZone();
   const {appConfig} = useConfig();
 
-  const styles = StyleSheet.create({
-    contentText: {
-      ...commonStyles.onTwitarrButton,
-    },
-    title: {
-      ...commonStyles.onTwitarrButton,
-      ...commonStyles.bold,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        contentText: {
+          ...commonStyles.onTwitarrButton,
+        },
+        title: {
+          ...commonStyles.onTwitarrButton,
+          ...commonStyles.bold,
+        },
+        untilTitle: {
+          ...commonStyles.onTwitarrButton,
+          ...commonStyles.italics,
+        },
+      }),
+    [commonStyles],
+  );
+  const cardStyle = announcement.isDeleted ? commonStyles.twitarrNeutral : commonStyles.twitarrPositive;
 
   const untilDate = new Date(announcement.displayUntil);
   const shipTz = tzAtTime(untilDate);
   const tzLabel = getTimeZoneLabel(shipTz, untilDate, appConfig.schedule.timeZoneLabelMode);
   const displayUntilLabel =
     moment(announcement.displayUntil).tz(shipTz).format('ddd MMM D hh:mm A') + (tzLabel ? ` ${tzLabel}` : '');
+  const headingPrefix = announcement.isDeleted ? 'Deleted announcement from' : 'Announcement from';
 
   /**
    * Card.Title got weird with multiple lines. So I just made it real Text instead.
    */
   return (
-    <Card style={commonStyles.twitarrPositive}>
+    <Card style={cardStyle} onPress={onPress}>
       <Card.Content>
         <Text variant={'bodyLarge'} style={styles.title}>
-          Announcement from {getUserBylineString(announcement.author, false, true)}:
+          {headingPrefix} {getUserBylineString(announcement.author, false, true)}:
         </Text>
         <ContentText textStyle={styles.contentText} text={announcement.text} />
       </Card.Content>
-      <Card.Title
-        title={`Display Until: ${displayUntilLabel}`}
-        titleStyle={[commonStyles.onTwitarrButton, commonStyles.italics]}
-      />
+      <Card.Title title={`Display Until: ${displayUntilLabel}`} titleStyle={styles.untilTitle} />
     </Card>
   );
 };

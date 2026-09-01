@@ -2,13 +2,15 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {WithElevation, WithScrollToTopIntent} from '#src/Types/RouteParams';
+import {NoDrawerParams, WithElevation, WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 export type ChatStackParamList = CommonStackParamList & {
   SeamailListScreen: WithElevation<
-    WithScrollToTopIntent<{
-      onlyNew?: boolean;
-    }>
+    WithScrollToTopIntent<
+      NoDrawerParams & {
+        onlyNew?: boolean;
+      }
+    >
   >;
   SeamailSearchScreen: {
     forUser?: string;

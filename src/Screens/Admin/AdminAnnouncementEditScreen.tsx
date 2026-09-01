@@ -8,6 +8,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {combineDateAndTime, splitIsoDateTime} from '#src/Libraries/Admin/AdminDateTime';
 import {alertDeleteAnnouncement} from '#src/Libraries/Alerts/AdminAlerts';
@@ -36,7 +37,8 @@ const AdminAnnouncementEditScreenInner = ({route, navigation}: Props) => {
   const editMutation = useEditAnnouncementMutation();
   const deleteMutation = useDeleteAnnouncementMutation();
   const {setSnackbarPayload} = useSnackbar();
-  useAdminHelpButton();
+  useAdminHelpButton(CommonStackComponents.announcementHelpScreen);
+  const {theme} = useAppTheme();
 
   const existing = announcement ? splitIsoDateTime(announcement.displayUntil) : undefined;
   const initialValues: AdminAnnouncementFormValues = {
@@ -87,6 +89,7 @@ const AdminAnnouncementEditScreenInner = ({route, navigation}: Props) => {
             <PrimaryActionButton
               testID={'announcementDelete-button'}
               buttonText={'Delete'}
+              buttonColor={theme.colors.twitarrNegativeButton}
               onPress={() =>
                 alertDeleteAnnouncement(() =>
                   deleteMutation.mutate(announcement.id, {

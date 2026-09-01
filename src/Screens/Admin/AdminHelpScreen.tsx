@@ -1,27 +1,34 @@
 import React from 'react';
 
-import {HelpFABView} from '#src/Components/Buttons/FloatingActionButtons/HelpFABView';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const AdminHelpScreen = () => {
+  const commonNavigation = useCommonStack();
+
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
-          <HelpTopicView icon={AppIcons.admin}>
-            Server Admin is for TwitarrTeam and above. Account Managers can look up registration codes. Some actions are
-            limited to THO or the admin account. This hub is available during pre-registration; bulk user import is used
-            at embark. Sections match the website: Communication, Configuration, and Data Loading.
+          <HelpTopicView>
+            Server Admin is generally for TwitarrTeam and above. Certain roles have limited access to certain screens in
+            this area.
           </HelpTopicView>
         </HelpChapterTitleView>
-        <HelpChapterTitleView title={'Floating Action Button'} />
-        <HelpFABView icon={AppIcons.new} label={'Create'} />
-        <HelpTopicView>Announcements, daily themes, and hunts use a create button on those screens.</HelpTopicView>
+        <HelpChapterTitleView title={'Screens'} noMargin={true}>
+          <DataFieldListItem
+            title={'Announcements'}
+            description={'Create, edit, and delete system-wide announcements.'}
+            icon={AppIcons.announcement}
+            onPress={() => commonNavigation.push(CommonStackComponents.announcementHelpScreen)}
+          />
+        </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
           <HelpButtonHelpTopicView />
         </HelpChapterTitleView>
@@ -64,11 +71,12 @@ export const AdminHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'TwitarrTeam Inboxes'}>
           <HelpTopicView icon={AppIcons.seamail}>
-            TwitarrTeam Seamail opens the Seamail tab already switched to the TwitarrTeam account.
+            TwitarrTeam Seamail opens the Seamail list already switched to the TwitarrTeam account. Back returns to
+            Server Admin.
           </HelpTopicView>
           <HelpTopicView icon={AppIcons.forum}>
-            TwitarrTeam Forum Mentions opens the native mention list as TwitarrTeam. Use the account switcher to view
-            your own mentions or Moderator mentions if you have that access.
+            TwitarrTeam Forum Mentions opens the native mention list as TwitarrTeam. Back returns to Server Admin. Use
+            the account switcher to view your own mentions or Moderator mentions if you have that access.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Web UI'}>
