@@ -35,12 +35,7 @@ export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
         <View>
           <DirtyDetectionField />
           <View style={[commonStyles.paddingVertical]}>
-            <DatePickerField
-              name={'startDate'}
-              testID={'cruiseStartDate-button'}
-              limitRange={false}
-              disabled={props.disabled}
-            />
+            <DatePickerField name={'startDate'} testID={'cruiseStartDate-button'} disabled={props.disabled} />
           </View>
           <TextField
             name={'cruiseLength'}

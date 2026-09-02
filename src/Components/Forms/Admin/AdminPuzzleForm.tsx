@@ -52,12 +52,7 @@ export const AdminPuzzleForm = ({initialValues, onSubmit}: AdminPuzzleFormProps)
           {!values.clearUnlockTime && (
             <>
               <View style={styles.field}>
-                <DatePickerField
-                  name={'unlockTimeDate'}
-                  testID={'puzzleUnlockDate-button'}
-                  label={'Unlock Date'}
-                  limitRange={false}
-                />
+                <DatePickerField name={'unlockTimeDate'} testID={'puzzleUnlockDate-button'} label={'Unlock Date'} />
               </View>
               <View style={styles.field}>
                 <TimePickerField name={'unlockTimeTime'} testID={'puzzleUnlockTime-button'} />

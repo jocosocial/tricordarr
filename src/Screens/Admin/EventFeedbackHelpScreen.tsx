@@ -27,8 +27,8 @@ export const EventFeedbackHelpScreen = ({route}: EventFeedbackHelpScreenProps) =
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
             Shadow Event Feedback is for people who hosted a shadow event or workshop to give feedback to THO about
-            their event. Event hosts should pick the event that they hosted, fill in the report, and submit. You can
-            return later to edit what you sent.
+            their event. Event hosts should pick the event that they hosted, fill in the report, and submit. Switch to
+            Yours to view or edit what you sent.
           </HelpTopicView>
           {isAdmin && <HelpTopicView>THO can review the reports, print room signs, and export the data.</HelpTopicView>}
         </HelpChapterTitleView>
@@ -41,11 +41,6 @@ export const EventFeedbackHelpScreen = ({route}: EventFeedbackHelpScreenProps) =
           </HelpChapterTitleView>
         )}
         <HelpChapterTitleView title={'Actions'}>
-          {!isAdmin && (
-            <HelpTopicView title={'Filter'} icon={AppIcons.filter}>
-              Filter the events in the list. Long press the filter button to clear the filter.
-            </HelpTopicView>
-          )}
           {isAdmin && (
             <>
               <HelpTopicView title={'Print Room Signs'} icon={AppIcons.webview}>

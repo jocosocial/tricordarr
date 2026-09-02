@@ -68,7 +68,7 @@ export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFor
             <FezTypePickerField name={'fezType'} testID={'lfgType-button'} label={'Type'} value={values.fezType} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
-            <DatePickerField name={'startDate'} testID={'lfgStartDate-button'} />
+            <DatePickerField name={'startDate'} testID={'lfgStartDate-button'} limitRange={true} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
             <TimePickerField name={'startTime'} testID={'lfgStartTime-button'} />

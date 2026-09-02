@@ -18,31 +18,30 @@ interface AnnouncementCardProps {
 
 /**
  * Card displaying a server announcement, including author, body, and display-until time.
- * Deleted announcements use a distinct title and color so admins can tell them apart from active ones.
+ * Deleted announcements keep the default card surface so they read as inactive next to green active cards.
  */
 export const AnnouncementCard = ({announcement, onPress}: AnnouncementCardProps) => {
   const {commonStyles} = useStyles();
   const {tzAtTime} = useTimeZone();
   const {appConfig} = useConfig();
 
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        contentText: {
-          ...commonStyles.onTwitarrButton,
-        },
-        title: {
-          ...commonStyles.onTwitarrButton,
-          ...commonStyles.bold,
-        },
-        untilTitle: {
-          ...commonStyles.onTwitarrButton,
-          ...commonStyles.italics,
-        },
-      }),
-    [commonStyles],
-  );
-  const cardStyle = announcement.isDeleted ? commonStyles.twitarrNeutral : commonStyles.twitarrPositive;
+  const styles = useMemo(() => {
+    const onCardText = announcement.isDeleted ? {} : commonStyles.onTwitarrButton;
+    return StyleSheet.create({
+      card: announcement.isDeleted ? {} : commonStyles.twitarrPositive,
+      contentText: {
+        ...onCardText,
+      },
+      title: {
+        ...onCardText,
+        ...commonStyles.bold,
+      },
+      untilTitle: {
+        ...onCardText,
+        ...commonStyles.italics,
+      },
+    });
+  }, [announcement.isDeleted, commonStyles]);
 
   const untilDate = new Date(announcement.displayUntil);
   const shipTz = tzAtTime(untilDate);
@@ -55,7 +54,7 @@ export const AnnouncementCard = ({announcement, onPress}: AnnouncementCardProps)
    * Card.Title got weird with multiple lines. So I just made it real Text instead.
    */
   return (
-    <Card style={cardStyle} onPress={onPress}>
+    <Card style={styles.card} onPress={onPress}>
       <Card.Content>
         <Text variant={'bodyLarge'} style={styles.title}>
           {headingPrefix} {getUserBylineString(announcement.author, false, true)}:

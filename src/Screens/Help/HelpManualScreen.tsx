@@ -170,7 +170,7 @@ export const HelpManualScreen = () => {
           />
           <DataFieldListItem
             title={'Event Feedback'}
-            description={'Submit a report after hosting a shadow event or workshop.'}
+            description={'View and submit reports after hosting a shadow event or workshop.'}
             icon={AppIcons.feedback}
             onPress={() => commonNavigation.push(CommonStackComponents.eventFeedbackHelpScreen, {})}
           />

@@ -14,7 +14,6 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
-import {EventFeedbackFilterMenu} from '#src/Components/Menus/EventFeedback/EventFeedbackFilterMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -50,18 +49,16 @@ export const EventFeedbackSelectScreen = (props: Props) => {
   );
 };
 
+/**
+ * Lists eligible events (All) or the current user's submitted reports (Yours).
+ */
 const EventFeedbackSelectScreenInner = ({navigation, route}: Props) => {
   const room = route.params?.room ? String(route.params.room).replace(/\+/g, ' ') : undefined;
   const {data, refetch, isLoading, isFetching} = useEventFeedbackEventListQuery(room);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const [tab, setTab] = useState<EventFeedbackSelectTab>('all');
-  const [tabInitialized, setTabInitialized] = useState(false);
-  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
   const listRef = useRef<FlashListRef<EventData>>(null);
   const {commonStyles} = useStyles();
-
-  const showPerformer = (data?.performerAttached.length ?? 0) > 0;
-  const showRoom = (data?.matchingRoom.length ?? 0) > 0;
 
   const styles = useMemo(
     () =>
@@ -71,50 +68,20 @@ const EventFeedbackSelectScreenInner = ({navigation, route}: Props) => {
     [commonStyles.paddingSmall],
   );
 
-  useEffect(() => {
-    if (!data || tabInitialized) {
-      return;
-    }
-    if (data.performerAttached.length > 0) {
-      setTab('performer');
-    } else if (data.matchingRoom.length > 0) {
-      setTab('room');
-    } else {
-      setTab('all');
-    }
-    setTabInitialized(true);
-  }, [data, tabInitialized]);
-
-  useEffect(() => {
-    if (tab === 'performer' && !showPerformer) {
-      setTab('all');
-    } else if (tab === 'room' && !showRoom) {
-      setTab('all');
-    }
-  }, [showPerformer, showRoom, tab]);
-
   const events = useMemo(() => {
     if (!data) {
       return [];
     }
-    if (alreadySubmitted) {
+    if (tab === 'yours') {
       return data.existingFeedback;
     }
-    switch (tab) {
-      case 'performer':
-        return data.performerAttached;
-      case 'room':
-        return data.matchingRoom;
-      default:
-        return data.events;
-    }
-  }, [alreadySubmitted, data, tab]);
+    return data.events;
+  }, [data, tab]);
 
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <MaterialHeaderButtons>
-          <EventFeedbackFilterMenu alreadySubmitted={alreadySubmitted} onAlreadySubmittedChange={setAlreadySubmitted} />
           <Item
             title={'Help'}
             iconName={AppIcons.help}
@@ -123,7 +90,7 @@ const EventFeedbackSelectScreenInner = ({navigation, route}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [alreadySubmitted, navigation]);
+  }, [navigation]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -151,15 +118,12 @@ const EventFeedbackSelectScreenInner = ({navigation, route}: Props) => {
   );
 
   const renderListHeader = useCallback(() => {
-    if (alreadySubmitted || (!showPerformer && !showRoom)) {
-      return null;
-    }
     return (
       <PaddedContentView padTop={true}>
-        <EventFeedbackSelectButtons tab={tab} setTab={setTab} showPerformer={showPerformer} showRoom={showRoom} />
+        <EventFeedbackSelectButtons tab={tab} setTab={setTab} />
       </PaddedContentView>
     );
-  }, [alreadySubmitted, showPerformer, showRoom, tab]);
+  }, [tab]);
 
   const renderListFooter = useCallback(() => {
     if (events.length > 0) {
@@ -182,7 +146,7 @@ const EventFeedbackSelectScreenInner = ({navigation, route}: Props) => {
         data={events}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
-        extraData={{alreadySubmitted, tab}}
+        extraData={{tab}}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderListHeader={renderListHeader}
         renderListFooter={renderListFooter}

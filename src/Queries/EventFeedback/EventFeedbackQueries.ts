@@ -9,7 +9,10 @@ interface EventListQueryParams {
  * Eligible shadow/workshop events the current user can report on.
  * Optional `room` fills `matchingRoom` via a location prefix filter.
  */
-export const useEventFeedbackEventListQuery = (room?: string, options = {}) => {
+export const useEventFeedbackEventListQuery = (
+  room?: string,
+  options: TokenAuthQueryOptionsType<EventFeedbackSelectionData> = {},
+) => {
   const queryParams: EventListQueryParams | undefined = room ? {room} : undefined;
   return useTokenAuthQuery<EventFeedbackSelectionData>('/feedback/eventlist', options, queryParams);
 };
