@@ -2,9 +2,11 @@ import React, {memo, useCallback, useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {ListItem} from '#src/Components/Lists/ListItem';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {EventFeedbackReport} from '#src/Structs/ControllerStructs';
 
@@ -14,10 +16,12 @@ interface EventFeedbackReportListItemProps {
 
 /**
  * FlashList row for a feedback report: large event title, smaller host name and filed date.
+ * Shows the actionable icon on the right when the report is marked.
  */
 const EventFeedbackReportListItemInternal = ({report}: EventFeedbackReportListItemProps) => {
   const navigation = useCommonStack();
   const {commonStyles} = useStyles();
+  const isActionable = report.adminFields?.actionable ?? false;
 
   const styles = useMemo(
     () =>
@@ -31,6 +35,10 @@ const EventFeedbackReportListItemInternal = ({report}: EventFeedbackReportListIt
         },
         description: {
           ...commonStyles.onBackground,
+        },
+        rightContainer: {
+          ...commonStyles.marginLeftSmall,
+          ...commonStyles.justifyCenter,
         },
       }),
     [commonStyles],
@@ -54,6 +62,17 @@ const EventFeedbackReportListItemInternal = ({report}: EventFeedbackReportListIt
     );
   }, [report.hostName, report.reportModDate, styles.description]);
 
+  const getRight = useCallback(() => {
+    if (!isActionable) {
+      return undefined;
+    }
+    return (
+      <View style={styles.rightContainer}>
+        <AppIcon icon={AppIcons.actionable} />
+      </View>
+    );
+  }, [isActionable, styles.rightContainer]);
+
   return (
     <ListItem
       style={styles.item}
@@ -64,6 +83,7 @@ const EventFeedbackReportListItemInternal = ({report}: EventFeedbackReportListIt
       descriptionStyle={styles.description}
       descriptionNumberOfLines={2}
       onPress={onPress}
+      right={getRight}
     />
   );
 };

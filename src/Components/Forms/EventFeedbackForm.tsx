@@ -5,11 +5,8 @@ import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
-import {SuggestedTextField} from '#src/Components/Forms/Fields/SuggestedTextField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {publicLocationSuggestions} from '#src/Libraries/Ship';
-import {InfoStringValidation} from '#src/Libraries/ValidationSchema';
 import {EventFeedbackData} from '#src/Structs/ControllerStructs';
 
 interface EventFeedbackFormProps {
@@ -29,7 +26,6 @@ const optionalFeedbackText = Yup.string()
   });
 
 const validationSchema = Yup.object().shape({
-  eventLocation: InfoStringValidation,
   hostName: Yup.string().required('Cannot be empty.').max(80),
   attendance: Yup.string().max(40),
   recapString: optionalFeedbackText,
@@ -37,7 +33,7 @@ const validationSchema = Yup.object().shape({
 });
 
 /**
- * Host-side shadow event feedback fields. Title is read-only; location is editable; time stays on the selected event.
+ * Host-side shadow event feedback fields. Title is read-only; location and time stay on the selected event.
  */
 export const EventFeedbackForm = ({
   onSubmit,
@@ -65,13 +61,6 @@ export const EventFeedbackForm = ({
         <View>
           <DirtyDetectionField />
           <TextField name={'eventTitle'} testID={'eventFeedbackTitle-input'} label={'Event'} disabled={true} />
-          <SuggestedTextField
-            name={'eventLocation'}
-            testID={'eventFeedbackLocation-input'}
-            label={'Location'}
-            autoCapitalize={'words'}
-            suggestions={publicLocationSuggestions}
-          />
           <TextField
             name={'hostName'}
             testID={'eventFeedbackHostName-input'}

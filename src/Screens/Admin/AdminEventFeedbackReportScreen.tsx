@@ -1,23 +1,28 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import moment from 'moment-timezone';
-import React, {useMemo} from 'react';
-import {StyleSheet, Switch, View} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {EventLocationActionsMenu} from '#src/Components/Menus/Events/EventLocationActionsMenu';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {getEventTimeString} from '#src/Libraries/DateTime';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
+import {calcCruiseDayTime, getEventTimeString} from '#src/Libraries/DateTime';
+import {guessDeckNumber} from '#src/Libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventFeedbackMarkMutation} from '#src/Queries/Admin/EventFeedbackMutations';
 import {useEventFeedbackReportQuery} from '#src/Queries/Admin/EventFeedbackQueries';
@@ -42,25 +47,46 @@ const AdminEventFeedbackReportScreenInner = ({navigation, route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const markMutation = useEventFeedbackMarkMutation();
   const {appConfig} = useConfig();
-  const {commonStyles} = useStyles();
-  useAdminHelpButton(CommonStackComponents.eventFeedbackHelpScreen);
+  const {theme} = useAppTheme();
+  const {startDate, endDate} = useCruise();
+  const {tzAtTime} = useTimeZone();
+  const isActionable = report?.adminFields?.actionable ?? false;
 
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        actionableRow: {
-          ...commonStyles.flexRow,
-          ...commonStyles.alignItemsCenter,
-          ...commonStyles.justifySpaceBetween,
-          ...commonStyles.paddingHorizontalSmall,
-          ...commonStyles.paddingVerticalSmall,
-        },
-        actionableLabel: {
-          ...commonStyles.onBackground,
-        },
-      }),
-    [commonStyles],
-  );
+  const handleActionableToggle = useCallback(() => {
+    if (!report?.id || markMutation.isPending) {
+      return;
+    }
+    markMutation.mutate({feedbackID: report.id, actionable: !isActionable});
+  }, [isActionable, markMutation, report?.id]);
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          {report && (
+            <Item
+              title={'Actionable'}
+              iconName={AppIcons.actionable}
+              color={isActionable ? theme.colors.twitarrNeutralButton : undefined}
+              onPress={handleActionableToggle}
+              testID={'headerActionable-headerButton'}
+            />
+          )}
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.eventFeedbackHelpScreen, {mode: 'admin'})}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [handleActionableToggle, isActionable, navigation, report, theme.colors.twitarrNeutralButton]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (isLoading && !report) {
     return <LoadingView />;
@@ -89,11 +115,22 @@ const AdminEventFeedbackReportScreenInner = ({navigation, route}: Props) => {
   const forumID = report.adminFields?.forumID;
   const eventID = report.event?.eventID;
 
-  const handleActionableChange = (value: boolean) => {
-    if (!report.id) {
-      return;
-    }
-    markMutation.mutate({feedbackID: report.id, actionable: value});
+  /**
+   * Opens the deck map for this report's location.
+   */
+  const handleMap = () => {
+    navigation.push(CommonStackComponents.mapScreen, {
+      deckNumber: guessDeckNumber(report.eventLocation),
+    });
+  };
+
+  /**
+   * Opens the reports list limited to this reporting user.
+   */
+  const handleReportingUser = () => {
+    navigation.push(CommonStackComponents.adminEventFeedbackReportsScreen, {
+      userID: report.reportingUser.userID,
+    });
   };
 
   return (
@@ -109,20 +146,27 @@ const AdminEventFeedbackReportScreenInner = ({navigation, route}: Props) => {
             description={report.eventTitle}
             onPress={eventID ? () => navigation.push(CommonStackComponents.eventScreen, {eventID}) : undefined}
           />
-          <DataFieldListItem icon={AppIcons.map} title={'Location'} description={report.eventLocation} />
+          <EventLocationActionsMenu
+            location={report.eventLocation}
+            cruiseDay={calcCruiseDayTime(new Date(report.eventTime), startDate, endDate, tzAtTime).cruiseDay}
+            onPress={handleMap}
+            enableReports={true}
+          />
           <DataFieldListItem icon={AppIcons.time} title={'Event Time'} description={eventTimeLabel} />
           <DataFieldListItem
             icon={AppIcons.user}
             title={'Reporting User'}
             description={getUserBylineString(report.reportingUser, true, true)}
-            onPress={() =>
-              navigation.push(CommonStackComponents.userProfileScreen, {userID: report.reportingUser.userID})
-            }
+            onPress={handleReportingUser}
           />
           <DataFieldListItem icon={AppIcons.user} title={'Host Name'} description={report.hostName} />
           <DataFieldListItem icon={AppIcons.description} title={'Attendance'} description={report.attendance} />
-          <DataFieldListItem icon={AppIcons.description} title={'Recap'} description={report.recapString} />
-          <DataFieldListItem icon={AppIcons.description} title={'Issues'} description={report.issuesString} />
+          {!!report.recapString.trim() && (
+            <DataFieldListItem icon={AppIcons.description} title={'Recap'} description={report.recapString} />
+          )}
+          {!!report.issuesString.trim() && (
+            <DataFieldListItem icon={AppIcons.description} title={'Issues'} description={report.issuesString} />
+          )}
           <DataFieldListItem
             icon={AppIcons.favorite}
             title={'Follow Count'}
@@ -136,14 +180,6 @@ const AdminEventFeedbackReportScreenInner = ({navigation, route}: Props) => {
           />
           {filedAtLabel && <DataFieldListItem icon={AppIcons.time} title={'Filed At'} description={filedAtLabel} />}
         </ListSection>
-        <View style={styles.actionableRow}>
-          <Text style={styles.actionableLabel}>Actionable</Text>
-          <Switch
-            value={report.adminFields?.actionable ?? false}
-            onValueChange={handleActionableChange}
-            disabled={markMutation.isPending}
-          />
-        </View>
       </ScrollingContentView>
     </AppView>
   );

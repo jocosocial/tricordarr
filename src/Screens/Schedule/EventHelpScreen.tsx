@@ -51,6 +51,9 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
           </HelpChapterTitleView>
         )}
         <HelpChapterTitleView title={'Actions'} />
+        <HelpTopicView title={'Location'} icon={AppIcons.map}>
+          Tap Location to open the deck map. Long press Location for additional actions.
+        </HelpTopicView>
         <HelpTopicView title={'Favorite/Follow'} icon={AppIcons.favorite}>
           Favoriting an event adds it to a list of all of your favorites. You can see all of your favorite events with a
           filter. You will receive a push notification reminder before any favorite event starts.

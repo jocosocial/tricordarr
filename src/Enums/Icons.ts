@@ -148,6 +148,8 @@ export enum AppIcons {
   photographer = 'flash-outline',
   userFavorite = 'account-star',
   feedback = 'comment-quote',
+  actionable = 'gesture-tap-button',
+  statistics = 'finance',
   session = 'cloud-outline',
   privacy = 'incognito',
   disabled = 'minus-circle-outline',

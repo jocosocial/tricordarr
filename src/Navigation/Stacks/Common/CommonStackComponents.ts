@@ -215,9 +215,11 @@ export type CommonStackParamList = {
   LfgListHelpScreen: undefined;
   LfgCreateHelpScreen: undefined;
   LfgParticipationHelpScreen: undefined;
-  EventHelpScreen: {
-    mode?: 'official' | 'shadow';
-  };
+  EventHelpScreen:
+    | {
+        mode?: 'official' | 'shadow';
+      }
+    | undefined;
   PersonalEventHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
   TimeZoneHelpScreen: undefined;
@@ -228,6 +230,10 @@ export type CommonStackParamList = {
   ScheduleImportScreen: undefined;
   CruiseSettingsScreen: undefined;
   EventSearchScreen: undefined;
+  EventLocationScreen: {
+    location: string;
+    cruiseDay?: number;
+  };
   EventAddPerformerScreen: {
     eventID: string;
   };
@@ -324,11 +330,19 @@ export type CommonStackParamList = {
     eventUID: string;
   };
   AdminEventFeedbackScreen: undefined;
-  AdminEventFeedbackReportsScreen: undefined;
+  AdminEventFeedbackReportsScreen: {
+    location?: string;
+    userID?: string;
+  };
+  AdminEventFeedbackStatsScreen: undefined;
   AdminEventFeedbackReportScreen: {
     feedbackID: string;
   };
-  EventFeedbackHelpScreen: undefined;
+  EventFeedbackHelpScreen:
+    | {
+        mode?: 'admin';
+      }
+    | undefined;
 };
 
 export enum CommonStackComponents {
@@ -426,6 +440,7 @@ export enum CommonStackComponents {
   scheduleImportScreen = 'ScheduleImportScreen',
   cruiseSettingsScreen = 'CruiseSettingsScreen',
   eventSearchScreen = 'EventSearchScreen',
+  eventLocationScreen = 'EventLocationScreen',
   eventAddPerformerScreen = 'EventAddPerformerScreen',
   performerCreateScreen = 'PerformerCreateScreen',
   performerEditScreen = 'PerformerEditScreen',
@@ -484,6 +499,7 @@ export enum CommonStackComponents {
   eventFeedbackFormScreen = 'EventFeedbackFormScreen',
   adminEventFeedbackScreen = 'AdminEventFeedbackScreen',
   adminEventFeedbackReportsScreen = 'AdminEventFeedbackReportsScreen',
+  adminEventFeedbackStatsScreen = 'AdminEventFeedbackStatsScreen',
   adminEventFeedbackReportScreen = 'AdminEventFeedbackReportScreen',
   eventFeedbackHelpScreen = 'EventFeedbackHelpScreen',
 }

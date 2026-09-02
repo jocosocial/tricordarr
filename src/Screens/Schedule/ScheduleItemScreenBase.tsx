@@ -10,6 +10,7 @@ import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPer
 import {EventPhotographerListItem} from '#src/Components/Lists/Items/Event/EventPhotographerListItem';
 import {UserChipsListItem} from '#src/Components/Lists/Items/UserChipsListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {EventLocationActionsMenu} from '#src/Components/Menus/Events/EventLocationActionsMenu';
 import {ContentText} from '#src/Components/Text/ContentText';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
 import {AppView} from '#src/Components/Views/AppView';
@@ -20,11 +21,13 @@ import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {getParticipantLabel} from '#src/Hooks/useFezData';
-import {getDurationString} from '#src/Libraries/DateTime';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
+import {calcCruiseDayTime, getDurationString} from '#src/Libraries/DateTime';
 import {openFezChatScreen} from '#src/Libraries/Navigation';
 import {guessDeckNumber} from '#src/Libraries/Ship';
 import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
@@ -37,6 +40,10 @@ interface Props {
   eventData?: FezData | EventData;
   showLfgChat?: boolean;
   initialReadCount?: number;
+  /**
+   * When true, Location uses the long-press room menu (Events In This Room).
+   */
+  showLocationActions?: boolean;
 }
 
 export const ScheduleItemScreenBase = ({
@@ -45,10 +52,13 @@ export const ScheduleItemScreenBase = ({
   eventData,
   showLfgChat = false,
   initialReadCount,
+  showLocationActions = false,
 }: Props) => {
   const navigation = useCommonStack();
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
+  const {startDate, endDate} = useCruise();
+  const {tzAtTime} = useTimeZone();
 
   const styles = StyleSheet.create({
     cancelContainer: {
@@ -136,12 +146,20 @@ export const ScheduleItemScreenBase = ({
                 )}
                 title={'Date'}
               />
-              <DataFieldListItem
-                icon={AppIcons.map}
-                description={eventData.location}
-                title={'Location'}
-                onPress={handleLocation}
-              />
+              {showLocationActions && 'eventID' in eventData ? (
+                <EventLocationActionsMenu
+                  location={eventData.location}
+                  cruiseDay={calcCruiseDayTime(new Date(eventData.startTime), startDate, endDate, tzAtTime).cruiseDay}
+                  onPress={handleLocation}
+                />
+              ) : (
+                <DataFieldListItem
+                  icon={AppIcons.map}
+                  description={eventData.location}
+                  title={'Location'}
+                  onPress={handleLocation}
+                />
+              )}
               {'eventID' in eventData && (
                 <>
                   <DataFieldListItem icon={AppIcons.type} description={eventData.eventType} title={'Type'} />

@@ -579,7 +579,7 @@ export interface EventFeedbackData {
   eventUID?: string;
   /// Title of the event being reported on. Copied from the schedule Event.
   eventTitle: string;
-  /// Where the event took place. Copied from Event.location; the native form lets the host edit it.
+  /// Where the event took place. Copied from Event.location; not a host-editable form field.
   eventLocation: string;
   /// Start time of the event. ISO8601.
   eventTime: string;

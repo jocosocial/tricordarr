@@ -34,6 +34,9 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.eventF
 
 /**
  * Native replacement for `/eventfeedback`: pick a completed shadow/workshop event, then open the host form.
+ *
+ * We intentionally omit ScheduleHeaderView. Hosts typically fill this out right after their event,
+ * and the API returns most recent events first, so filtering by cruise day is not useful here.
  */
 export const EventFeedbackSelectScreen = (props: Props) => {
   return (

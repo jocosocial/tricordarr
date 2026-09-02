@@ -94,7 +94,7 @@ export const ForumPostScreenBase = ({
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => {
-              commonNavigation.push(helpScreen);
+              (commonNavigation.push as (name: HelpScreenComponents) => void)(helpScreen);
             }}
           />
         </MaterialHeaderButtons>

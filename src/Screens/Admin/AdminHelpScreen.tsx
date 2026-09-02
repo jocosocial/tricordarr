@@ -32,7 +32,7 @@ export const AdminHelpScreen = () => {
             title={'Event Feedback'}
             description={'Print room signs, review host reports, and download CSV.'}
             icon={AppIcons.feedback}
-            onPress={() => commonNavigation.push(CommonStackComponents.eventFeedbackHelpScreen)}
+            onPress={() => commonNavigation.push(CommonStackComponents.eventFeedbackHelpScreen, {mode: 'admin'})}
           />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>

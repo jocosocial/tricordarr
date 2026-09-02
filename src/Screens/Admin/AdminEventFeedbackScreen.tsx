@@ -31,7 +31,7 @@ export const AdminEventFeedbackScreen = () => {
 const AdminEventFeedbackScreenInner = () => {
   const downloadMutation = useEventFeedbackDownloadMutation();
   const {openDownloadSheet} = useDownloadSheet();
-  useAdminHelpButton(CommonStackComponents.eventFeedbackHelpScreen);
+  useAdminHelpButton(CommonStackComponents.eventFeedbackHelpScreen, {mode: 'admin'});
 
   /**
    * Fetches all reports, builds a CSV, and presents the download sheet.

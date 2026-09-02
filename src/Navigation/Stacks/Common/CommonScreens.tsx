@@ -18,6 +18,7 @@ import {AdminDiscordRegCodeScreen} from '#src/Screens/Admin/AdminDiscordRegCodeS
 import {AdminEventFeedbackReportScreen} from '#src/Screens/Admin/AdminEventFeedbackReportScreen';
 import {AdminEventFeedbackReportsScreen} from '#src/Screens/Admin/AdminEventFeedbackReportsScreen';
 import {AdminEventFeedbackScreen} from '#src/Screens/Admin/AdminEventFeedbackScreen';
+import {AdminEventFeedbackStatsScreen} from '#src/Screens/Admin/AdminEventFeedbackStatsScreen';
 import {AdminFeaturesScreen} from '#src/Screens/Admin/AdminFeaturesScreen';
 import {AdminHelpScreen} from '#src/Screens/Admin/AdminHelpScreen';
 import {AdminHuntEditScreen} from '#src/Screens/Admin/AdminHuntEditScreen';
@@ -39,6 +40,7 @@ import {BoardgameHelpScreen} from '#src/Screens/Boardgames/BoardgameHelpScreen';
 import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
 import {PreRegistrationHelpScreen} from '#src/Screens/Disabled/PreRegistrationHelpScreen';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
+import {EventLocationScreen} from '#src/Screens/Event/EventLocationScreen';
 import {EventScreen} from '#src/Screens/Event/EventScreen';
 import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
@@ -652,6 +654,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Search Events'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.eventLocationScreen}
+        component={EventLocationScreen}
+        options={{title: 'Events by Location'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.eventAddPerformerScreen}
         component={EventAddPerformerScreen}
         options={{title: 'Add Performer'}}
@@ -928,6 +935,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Feedback Responses'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.adminEventFeedbackStatsScreen}
+        component={AdminEventFeedbackStatsScreen}
+        options={{title: 'Feedback Stats'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.adminEventFeedbackReportScreen}
         component={AdminEventFeedbackReportScreen}
         options={{title: 'Feedback Report'}}
@@ -945,7 +957,9 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.eventFeedbackHelpScreen}
         component={EventFeedbackHelpScreen}
-        options={{title: 'Event Feedback Help'}}
+        options={({route}: {route: RouteProp<CommonStackParamList, 'EventFeedbackHelpScreen'>}) => ({
+          title: route.params?.mode === 'admin' ? 'Admin Event Feedback Help' : 'Event Feedback Help',
+        })}
       />
     </>
   );

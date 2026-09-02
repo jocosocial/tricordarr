@@ -40,7 +40,7 @@ export const useEventFeedbackDownloadMutation = () => {
   const {apiGet} = useSwiftarrQueryClient();
 
   const mutationFn = async () => {
-    const response = await apiGet<EventFeedbackReport[]>('/admin/feedback/reports');
+    const response = await apiGet<EventFeedbackReport[], undefined>('/admin/feedback/reports');
     return response.data;
   };
 
