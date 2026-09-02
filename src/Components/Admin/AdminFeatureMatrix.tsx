@@ -20,8 +20,9 @@ interface AdminFeatureMatrixProps {
 
 /**
  * Per-feature, per-client toggle grid for server feature flags.
- * A filled/error chip means that app:feature pair is currently disabled.
+ * A filled chip (twitarrNegativeButton) means that app:feature pair is currently disabled.
  * Disabling `all` for a feature turns the feature off at the API for every client.
+ * When the matrix is not editable, chips stay visible but are dimmed and un-pressable.
  */
 export const AdminFeatureMatrix = ({disabledFeatures, onToggle, editable}: AdminFeatureMatrixProps) => {
   const {commonStyles} = useStyles();
@@ -49,10 +50,13 @@ export const AdminFeatureMatrix = ({disabledFeatures, onToggle, editable}: Admin
         },
         chipOff: {
           marginBottom: 4,
-          backgroundColor: theme.colors.errorContainer,
+          backgroundColor: theme.colors.twitarrNegativeButton,
         },
         chipOffText: {
-          color: theme.colors.onErrorContainer,
+          color: theme.colors.onTwitarrNegativeButton,
+        },
+        chipTextDim: {
+          color: theme.colors.onSurfaceDisabled,
         },
         legend: {
           ...commonStyles.paddingBottomSmall,
@@ -77,15 +81,17 @@ export const AdminFeatureMatrix = ({disabledFeatures, onToggle, editable}: Admin
           </Text>
           <View style={styles.chipRow}>
             {FEATURE_DISABLE_APPS.map(app => {
-              const disabled = isFeaturePairDisabled(disabledFeatures, app, feature);
+              const isFeatureDisabled = isFeaturePairDisabled(disabledFeatures, app, feature);
+              const chipTextStyle = !editable ? styles.chipTextDim : isFeatureDisabled ? styles.chipOffText : undefined;
               return (
                 <Chip
                   key={`${app}:${feature}`}
-                  style={disabled ? styles.chipOff : styles.chip}
-                  textStyle={disabled ? styles.chipOffText : undefined}
-                  mode={disabled ? 'flat' : 'outlined'}
+                  style={isFeatureDisabled ? styles.chipOff : styles.chip}
+                  textStyle={chipTextStyle}
+                  mode={isFeatureDisabled ? 'flat' : 'outlined'}
                   compact={true}
-                  onPress={editable ? () => onToggle(app, feature) : undefined}
+                  disabled={!editable}
+                  onPress={() => onToggle(app, feature)}
                   testID={`feature-chip-${app}-${feature}`}>
                   {SwiftarrClientApp.getLabel(app)}
                 </Chip>

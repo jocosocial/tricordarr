@@ -6,7 +6,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 
 /**
- * Banner on the server settings form when the current account cannot edit them.
+ * Banner on admin settings screens when the current account cannot edit them.
  */
 export const ServerSettingsReadOnlyWarningView = () => {
   const {commonStyles} = useStyles();

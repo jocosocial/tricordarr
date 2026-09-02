@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {Text} from 'react-native-paper';
 
 import {AdminFeatureMatrix} from '#src/Components/Admin/AdminFeatureMatrix';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
@@ -8,6 +7,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {ServerSettingsReadOnlyWarningView} from '#src/Components/Views/Warnings/ServerSettingsReadOnlyWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
@@ -72,24 +72,22 @@ const AdminFeaturesScreenInner = () => {
 
   return (
     <AppView>
+      <ServerSettingsReadOnlyWarningView />
       <ScrollingContentView
         isStack={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
-          {!canEditSettings && <Text>Feature flags are read-only. Only the admin account can change them.</Text>}
           <AdminFeatureMatrix disabledFeatures={current} onToggle={handleToggle} editable={canEditSettings} />
         </PaddedContentView>
-        {canEditSettings && (
-          <PaddedContentView>
-            <PrimaryActionButton
-              testID={'featuresSave-button'}
-              buttonText={'Save Changes'}
-              onPress={handleSave}
-              disabled={!hasChanges || mutation.isPending}
-              isLoading={mutation.isPending}
-            />
-          </PaddedContentView>
-        )}
+        <PaddedContentView>
+          <PrimaryActionButton
+            testID={'featuresSave-button'}
+            buttonText={'Save Changes'}
+            onPress={handleSave}
+            disabled={!canEditSettings || !hasChanges || mutation.isPending}
+            isLoading={mutation.isPending}
+          />
+        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );
