@@ -1,6 +1,5 @@
 import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
-import {Text} from 'react-native-paper';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
@@ -13,7 +12,9 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {ServerSettingsReadOnlyWarningView} from '#src/Components/Views/Warnings/ServerSettingsReadOnlyWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {EventNotificationSetting} from '#src/Enums/EventNotificationSetting';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
@@ -105,6 +106,7 @@ const AdminServerSettingsScreenInner = () => {
   const mutation = useAdminSettingsUpdateMutation();
   const {canEditSettings} = useAdminAccess();
   const {setSnackbarPayload} = useSnackbar();
+  const {commonStyles} = useStyles();
   useAdminHelpButton();
 
   const onSubmit = (values: SettingsFormValues, helpers: FormikHelpers<SettingsFormValues>) => {
@@ -149,9 +151,9 @@ const AdminServerSettingsScreenInner = () => {
 
   return (
     <AppView>
+      <ServerSettingsReadOnlyWarningView />
       <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
-          {!canEditSettings && <Text>These settings are read-only. Only the admin account can change them.</Text>}
           <Formik
             initialValues={toFormValues(data)}
             onSubmit={onSubmit}
@@ -285,6 +287,7 @@ const AdminServerSettingsScreenInner = () => {
                   choices={EventNotificationSetting.all}
                   getTitle={value => EventNotificationSetting.getLabel(value as EventNotificationSetting)}
                   disabled={!canEditSettings}
+                  viewStyle={commonStyles.marginBottom}
                 />
                 <PickerField
                   name={'upcomingLFGNotificationSetting'}
