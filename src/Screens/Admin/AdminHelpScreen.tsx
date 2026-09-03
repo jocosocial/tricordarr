@@ -74,19 +74,6 @@ export const AdminHelpScreen = () => {
             still calls those endpoints. Only changed chips are sent to the server.
           </HelpTopicView>
         </HelpChapterTitleView>
-        <HelpChapterTitleView title={'Schedule Updates'}>
-          <HelpTopicView icon={AppIcons.schedImport}>
-            Paste an ICS file, upload it, then verify the diff before applying. Process Deletes treats the file as the
-            complete schedule. Leave it off if you are applying a partial update. Reload Schedule From URL uses the
-            schedule URL in Server Settings.
-          </HelpTopicView>
-        </HelpChapterTitleView>
-        <HelpChapterTitleView title={'Puzzle Hunts'}>
-          <HelpTopicView icon={AppIcons.hunts}>
-            Create a hunt with all of its puzzles at once. After creation you can edit hunt details and individual
-            puzzles, but you cannot add new puzzles to an existing hunt.
-          </HelpTopicView>
-        </HelpChapterTitleView>
         <HelpChapterTitleView title={'Bulk User Import'}>
           <HelpTopicView icon={AppIcons.bulkUser}>
             Download a zip of user records or pick a zip to upload. Verify the preview, then apply. Put the server in
@@ -104,7 +91,15 @@ export const AdminHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Web UI'}>
-          <HelpTopicView icon={AppIcons.webview}>Performers open the website.</HelpTopicView>
+          <HelpTopicView title={'Schedule Manager'} icon={AppIcons.webview}>
+            Opens the website to upload an ICS file, verify the diff, and apply it.
+          </HelpTopicView>
+          <HelpTopicView title={'Performers'} icon={AppIcons.webview}>
+            Opens the website to manage performers and link them to their events.
+          </HelpTopicView>
+          <HelpTopicView title={'Puzzle Hunts'} icon={AppIcons.webview}>
+            Opens the website to create and edit puzzle hunts.
+          </HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>

@@ -147,7 +147,8 @@ const AdminScreenInner = () => {
               <AdminNavigationListItem
                 title={'Schedule Manager'}
                 description={'Upload an ICS file, verify the diff, and apply it.'}
-                navComponent={CommonStackComponents.adminScheduleScreen}
+                navComponent={CommonStackComponents.siteUIScreen}
+                params={{resource: 'schedule', admin: true}}
               />
               <AdminNavigationListItem
                 title={'Performers'}
@@ -159,7 +160,8 @@ const AdminScreenInner = () => {
                 <AdminNavigationListItem
                   title={'Puzzle Hunts'}
                   description={'Create and edit puzzle hunts.'}
-                  navComponent={CommonStackComponents.adminHuntsScreen}
+                  navComponent={CommonStackComponents.siteUIScreen}
+                  params={{resource: 'hunts', admin: true}}
                 />
               )}
               {access.canBulkUser && (
