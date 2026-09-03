@@ -7,13 +7,48 @@ import {
   USER_RELATION_SCREEN_TITLES,
   USER_RELATION_SEARCH_SCREEN_TITLES,
 } from '#src/Queries/Users/UserRelationConstants';
+import {AdminAccessLevelsScreen} from '#src/Screens/Admin/AdminAccessLevelsScreen';
+import {AdminAnnouncementEditScreen} from '#src/Screens/Admin/AdminAnnouncementEditScreen';
+import {AdminAnnouncementsScreen} from '#src/Screens/Admin/AdminAnnouncementsScreen';
+import {AdminBoardgamesScreen} from '#src/Screens/Admin/AdminBoardgamesScreen';
+import {AdminBulkUserScreen} from '#src/Screens/Admin/AdminBulkUserScreen';
+import {AdminDailyThemeEditScreen} from '#src/Screens/Admin/AdminDailyThemeEditScreen';
+import {AdminDailyThemesScreen} from '#src/Screens/Admin/AdminDailyThemesScreen';
+import {AdminDiscordRegCodeScreen} from '#src/Screens/Admin/AdminDiscordRegCodeScreen';
+import {AdminEventFeedbackReportScreen} from '#src/Screens/Admin/AdminEventFeedbackReportScreen';
+import {AdminEventFeedbackReportsScreen} from '#src/Screens/Admin/AdminEventFeedbackReportsScreen';
+import {AdminEventFeedbackScreen} from '#src/Screens/Admin/AdminEventFeedbackScreen';
+import {AdminEventFeedbackStatsScreen} from '#src/Screens/Admin/AdminEventFeedbackStatsScreen';
+import {AdminFeaturesScreen} from '#src/Screens/Admin/AdminFeaturesScreen';
+import {AdminHelpScreen} from '#src/Screens/Admin/AdminHelpScreen';
+import {AdminHuntEditScreen} from '#src/Screens/Admin/AdminHuntEditScreen';
+import {AdminHuntsScreen} from '#src/Screens/Admin/AdminHuntsScreen';
+import {AdminKaraokeScreen} from '#src/Screens/Admin/AdminKaraokeScreen';
+import {AdminPuzzleEditScreen} from '#src/Screens/Admin/AdminPuzzleEditScreen';
+import {AdminRegCodesScreen} from '#src/Screens/Admin/AdminRegCodesScreen';
+import {AdminRegCodeStatsScreen} from '#src/Screens/Admin/AdminRegCodeStatsScreen';
+import {AdminRollupScreen} from '#src/Screens/Admin/AdminRollupScreen';
+import {AdminScheduleLogScreen} from '#src/Screens/Admin/AdminScheduleLogScreen';
+import {AdminScheduleScreen} from '#src/Screens/Admin/AdminScheduleScreen';
+import {AdminScheduleVerifyScreen} from '#src/Screens/Admin/AdminScheduleVerifyScreen';
+import {AdminScreen} from '#src/Screens/Admin/AdminScreen';
+import {AdminServerSettingsHelpScreen} from '#src/Screens/Admin/AdminServerSettingsHelpScreen';
+import {AdminServerSettingsScreen} from '#src/Screens/Admin/AdminServerSettingsScreen';
+import {AdminTimeZonesScreen} from '#src/Screens/Admin/AdminTimeZonesScreen';
+import {AdminUserRolesScreen} from '#src/Screens/Admin/AdminUserRolesScreen';
+import {AnnouncementHelpScreen} from '#src/Screens/Admin/AnnouncementHelpScreen';
+import {EventFeedbackHelpScreen} from '#src/Screens/Admin/EventFeedbackHelpScreen';
+import {RegistrationCodeHelpScreen} from '#src/Screens/Admin/RegistrationCodeHelpScreen';
 import {BoardgameHelpScreen} from '#src/Screens/Boardgames/BoardgameHelpScreen';
 import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
 import {PreRegistrationHelpScreen} from '#src/Screens/Disabled/PreRegistrationHelpScreen';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
+import {EventLocationScreen} from '#src/Screens/Event/EventLocationScreen';
 import {EventScreen} from '#src/Screens/Event/EventScreen';
 import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
+import {EventFeedbackFormScreen} from '#src/Screens/EventFeedback/EventFeedbackFormScreen';
+import {EventFeedbackSelectScreen} from '#src/Screens/EventFeedback/EventFeedbackSelectScreen';
 import {FezChatDetailsHelpScreen} from '#src/Screens/Fez/FezChatDetailsHelpScreen';
 import {FezChatDetailsScreen} from '#src/Screens/Fez/FezChatDetailsScreen';
 import {FezChatHelpScreen} from '#src/Screens/Fez/FezChatHelpScreen';
@@ -21,6 +56,7 @@ import {FezChatScreen} from '#src/Screens/Fez/FezChatScreen';
 import {ForumCategoriesHelpScreen} from '#src/Screens/Forum/ForumCategoriesHelpScreen';
 import {ForumCategoryHelpScreen} from '#src/Screens/Forum/ForumCategoryHelpScreen';
 import {ForumHelpScreen} from '#src/Screens/Forum/ForumHelpScreen';
+import {ForumPostMentionHelpScreen} from '#src/Screens/Forum/ForumPostMentionHelpScreen';
 import {ForumPostSearchHelpScreen} from '#src/Screens/Forum/ForumPostSearchHelpScreen';
 import {ForumThreadCreateHelpScreen} from '#src/Screens/Forum/ForumThreadCreateHelpScreen';
 import {ForumThreadHelpScreen} from '#src/Screens/Forum/ForumThreadHelpScreen';
@@ -28,6 +64,7 @@ import {ForumThreadSearchHelpScreen} from '#src/Screens/Forum/ForumThreadSearchH
 import {KeywordsHelpScreen} from '#src/Screens/Forum/KeywordsHelpScreen';
 import {ForumPostEditScreen} from '#src/Screens/Forum/Post/ForumPostEditScreen';
 import {ForumPostHashtagScreen} from '#src/Screens/Forum/Post/ForumPostHashtagScreen';
+import {ForumPostMentionScreen} from '#src/Screens/Forum/Post/ForumPostMentionScreen';
 import {ForumPostPinnedScreen} from '#src/Screens/Forum/Post/ForumPostPinnedScreen';
 import {ForumPostSearchScreen} from '#src/Screens/Forum/Post/ForumPostSearchScreen';
 import {ForumPostUserScreen} from '#src/Screens/Forum/Post/ForumPostUserScreen';
@@ -59,6 +96,8 @@ import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
 import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
 import {CruiseHelpScreen} from '#src/Screens/Main/CruiseHelpScreen';
 import {DailyThemeHelpScreen} from '#src/Screens/Main/DailyThemeHelpScreen';
+import {DailyThemeScreen} from '#src/Screens/Main/DailyThemeScreen';
+import {DailyThemesScreen} from '#src/Screens/Main/DailyThemesScreen';
 import {EasterEggHelpScreen} from '#src/Screens/Main/EasterEggHelpScreen';
 import {EasterEggScreen} from '#src/Screens/Main/EasterEggScreen';
 import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
@@ -98,7 +137,9 @@ import {SeamailCreateScreen} from '#src/Screens/Seamail/SeamailCreateScreen';
 import {SeamailEditScreen} from '#src/Screens/Seamail/SeamailEditScreen';
 import {SeamailHelpScreen} from '#src/Screens/Seamail/SeamailHelpScreen';
 import {SeamailListHelpScreen} from '#src/Screens/Seamail/SeamailListHelpScreen';
+import {SeamailListScreen} from '#src/Screens/Seamail/SeamailListScreen';
 import {SeamailSearchHelpScreen} from '#src/Screens/Seamail/SeamailSearchHelpScreen';
+import {SeamailSearchScreen} from '#src/Screens/Seamail/SeamailSearchScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
 import {RecoveryKeyScreen} from '#src/Screens/Settings/Account/RecoveryKeyScreen';
@@ -253,9 +294,24 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Edit Post'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.seamailListScreen}
+        component={SeamailListScreen}
+        options={{title: 'Seamail'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailSearchScreen}
+        component={SeamailSearchScreen}
+        options={{title: 'Search Seamail'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.seamailCreateScreen}
         component={SeamailCreateScreen}
         options={{title: 'New Seamail'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumPostMentionScreen}
+        component={ForumPostMentionScreen}
+        options={{title: 'Posts Mentioning You'}}
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostPinnedScreen}
@@ -441,6 +497,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Post Search Help'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.forumPostMentionHelpScreen}
+        component={ForumPostMentionHelpScreen}
+        options={{title: 'Mentions Help'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.keywordsHelpScreen}
         component={KeywordsHelpScreen}
         options={{title: 'Keywords Help'}}
@@ -598,6 +659,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Search Events'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.eventLocationScreen}
+        component={EventLocationScreen}
+        options={{title: 'Events by Location'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.eventAddPerformerScreen}
         component={EventAddPerformerScreen}
         options={{title: 'Add Performer'}}
@@ -708,6 +774,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Daily Theme Help'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.dailyThemesScreen}
+        component={DailyThemesScreen}
+        options={{title: 'Daily Themes'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.dailyThemeScreen}
+        component={DailyThemeScreen}
+        options={{title: 'Daily Theme'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.todayHelpScreen}
         component={TodayHelpScreen}
         options={{title: 'Today Help'}}
@@ -732,6 +808,141 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         component={KrakenTalkHelpScreen}
         options={{title: 'KrakenTalk Help'}}
       />
+      <Stack.Screen
+        name={CommonStackComponents.adminScreen}
+        component={AdminScreen}
+        options={{title: 'Server Admin'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminHelpScreen}
+        component={AdminHelpScreen}
+        options={{title: 'Server Admin Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminAnnouncementsScreen}
+        component={AdminAnnouncementsScreen}
+        options={{title: 'Announcements'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminAnnouncementEditScreen}
+        component={AdminAnnouncementEditScreen}
+        options={{title: 'Announcement'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.announcementHelpScreen}
+        component={AnnouncementHelpScreen}
+        options={{title: 'Announcements Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.registrationCodeHelpScreen}
+        component={RegistrationCodeHelpScreen}
+        options={{title: 'Registration Code Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminDailyThemesScreen}
+        component={AdminDailyThemesScreen}
+        options={{title: 'Daily Themes'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminDailyThemeEditScreen}
+        component={AdminDailyThemeEditScreen}
+        options={{title: 'Daily Theme'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminServerSettingsScreen}
+        component={AdminServerSettingsScreen}
+        options={{title: 'Server Settings'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminServerSettingsHelpScreen}
+        component={AdminServerSettingsHelpScreen}
+        options={{title: 'Server Settings Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminFeaturesScreen}
+        component={AdminFeaturesScreen}
+        options={{title: 'Disabled Features'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminRollupScreen}
+        component={AdminRollupScreen}
+        options={{title: 'Server Counts'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminTimeZonesScreen}
+        component={AdminTimeZonesScreen}
+        options={{title: 'Time Zones'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminScheduleScreen}
+        component={AdminScheduleScreen}
+        options={{title: 'Schedule Update'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminScheduleVerifyScreen}
+        component={AdminScheduleVerifyScreen}
+        options={{title: 'Verify Schedule'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminScheduleLogScreen}
+        component={AdminScheduleLogScreen}
+        options={{title: 'Schedule Log'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminRegCodesScreen}
+        component={AdminRegCodesScreen}
+        options={{title: 'Registration Codes'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminRegCodeStatsScreen}
+        component={AdminRegCodeStatsScreen}
+        options={{title: 'Registration Stats'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminDiscordRegCodeScreen}
+        component={AdminDiscordRegCodeScreen}
+        options={{title: 'Discord Codes'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminUserRolesScreen}
+        component={AdminUserRolesScreen}
+        options={{title: 'User Roles'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminAccessLevelsScreen}
+        component={AdminAccessLevelsScreen}
+        options={{title: 'Access Levels'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminBulkUserScreen}
+        component={AdminBulkUserScreen}
+        options={{title: 'Bulk User Import'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminKaraokeScreen}
+        component={AdminKaraokeScreen}
+        options={{title: 'Karaoke Catalog'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminBoardgamesScreen}
+        component={AdminBoardgamesScreen}
+        options={{title: 'Board Game Catalog'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminHuntsScreen}
+        component={AdminHuntsScreen}
+        options={{title: 'Puzzle Hunts'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminHuntEditScreen}
+        component={AdminHuntEditScreen}
+        options={{title: 'Hunt'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminPuzzleEditScreen}
+        component={AdminPuzzleEditScreen}
+        options={{title: 'Puzzle'}}
+      />
       <Stack.Screen name={CommonStackComponents.huntScreen} component={HuntScreen} options={{title: 'Puzzle Hunt'}} />
       <Stack.Screen
         name={CommonStackComponents.huntPuzzleScreen}
@@ -742,6 +953,41 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.huntHelpScreen}
         component={HuntHelpScreen}
         options={{title: 'Puzzle Hunt Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminEventFeedbackScreen}
+        component={AdminEventFeedbackScreen}
+        options={{title: 'Shadow Event Feedback'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminEventFeedbackReportsScreen}
+        component={AdminEventFeedbackReportsScreen}
+        options={{title: 'Feedback Responses'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminEventFeedbackStatsScreen}
+        component={AdminEventFeedbackStatsScreen}
+        options={{title: 'Feedback Stats'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminEventFeedbackReportScreen}
+        component={AdminEventFeedbackReportScreen}
+        options={{title: 'Feedback Report'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventFeedbackSelectScreen}
+        component={EventFeedbackSelectScreen}
+        options={{title: 'Event Feedback'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventFeedbackFormScreen}
+        component={EventFeedbackFormScreen}
+        options={{title: 'Event Feedback'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventFeedbackHelpScreen}
+        component={EventFeedbackHelpScreen}
+        options={{title: 'Event Feedback Help'}}
       />
     </>
   );

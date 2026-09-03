@@ -45,6 +45,9 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           screens: {
             MainScreen: getPath(MainStackComponents.mainScreen),
             HelpIndexScreen: getPath(CommonStackComponents.helpIndexScreen),
+            AdminScreen: getPath(CommonStackComponents.adminScreen),
+            EventFeedbackSelectScreen: getPath(CommonStackComponents.eventFeedbackSelectScreen),
+            EventFeedbackFormScreen: getPath(CommonStackComponents.eventFeedbackFormScreen),
             AboutTricordarrScreen: getPath(CommonStackComponents.aboutTricordarrScreen),
             AboutTwitarrScreen: getPath(CommonStackComponents.aboutTwitarrScreen),
             PrivacyScreen: getPath(CommonStackComponents.privacyScreen),
@@ -66,7 +69,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             MapScreen: getPath(CommonStackComponents.mapScreen),
             UserDirectoryScreen: getPath(MainStackComponents.userDirectoryScreen),
             MainConductScreen: getPath(MainStackComponents.conductScreen),
-            DailyThemesScreen: getPath(MainStackComponents.dailyThemesScreen),
+            DailyThemesScreen: getPath(CommonStackComponents.dailyThemesScreen),
             PhotostreamScreen: getPath(MainStackComponents.photostreamScreen),
             MicroKaraokeListScreen: getPath(MainStackComponents.microKaraokeListScreen),
             PerformerListScreen: getPath(MainStackComponents.performerListScreen),

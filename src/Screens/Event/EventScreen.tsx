@@ -62,5 +62,5 @@ export const EventScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  return <ScheduleItemScreenBase eventData={eventData} onRefresh={refetch} />;
+  return <ScheduleItemScreenBase eventData={eventData} onRefresh={refetch} showLocationActions />;
 };

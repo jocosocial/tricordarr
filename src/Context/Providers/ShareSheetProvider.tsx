@@ -1,4 +1,3 @@
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import React, {PropsWithChildren, useCallback, useMemo, useState} from 'react';
 
 import {ShareBottomSheet} from '#src/Components/Sheets/ShareBottomSheet';
@@ -7,6 +6,7 @@ import {ShareContentType} from '#src/Libraries/Sharing';
 
 /**
  * Owns a single share bottom sheet so it stays mounted when Paper menus unmount their children.
+ * Must render inside BottomSheetModalProvider (see BottomSheetProvider).
  */
 export const ShareSheetProvider = ({children}: PropsWithChildren) => {
   const [contentType, setContentType] = useState<ShareContentType | undefined>();
@@ -33,15 +33,13 @@ export const ShareSheetProvider = ({children}: PropsWithChildren) => {
 
   return (
     <ShareSheetContext.Provider value={contextValue}>
-      <BottomSheetModalProvider>
-        {children}
-        <ShareBottomSheet
-          contentType={contentType}
-          contentID={contentID}
-          isPresented={isPresented && contentType !== undefined && String(contentID ?? '').length > 0}
-          onDismiss={closeShareSheet}
-        />
-      </BottomSheetModalProvider>
+      {children}
+      <ShareBottomSheet
+        contentType={contentType}
+        contentID={contentID}
+        isPresented={isPresented && contentType !== undefined && String(contentID ?? '').length > 0}
+        onDismiss={closeShareSheet}
+      />
     </ShareSheetContext.Provider>
   );
 };

@@ -3,10 +3,10 @@ import {Portal} from 'react-native-paper';
 
 import {Lightbox} from '#src/Components/Lightbox';
 import {LightboxProvider} from '#src/Components/Lightbox/state';
+import {BottomSheetProvider} from '#src/Context/Providers/BottomSheetProvider';
 import {DrawerProvider} from '#src/Context/Providers/DrawerProvider';
 import {LayoutProvider} from '#src/Context/Providers/LayoutProvider';
 import {MenuProvider} from '#src/Context/Providers/MenuProvider';
-import {ShareSheetProvider} from '#src/Context/Providers/ShareSheetProvider';
 
 /**
  * "Shell" is all of the major UI components such as Drawer, Layout, Menus, etc.
@@ -24,10 +24,10 @@ export const ShellProvider = ({children}: PropsWithChildren) => {
       <DrawerProvider>
         <MenuProvider>
           <LightboxProvider>
-            <ShareSheetProvider>
+            <BottomSheetProvider>
               <Portal.Host>{children}</Portal.Host>
               <Lightbox />
-            </ShareSheetProvider>
+            </BottomSheetProvider>
           </LightboxProvider>
         </MenuProvider>
       </DrawerProvider>

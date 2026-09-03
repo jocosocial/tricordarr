@@ -11,8 +11,9 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useClipboard} from '#src/Hooks/useClipboard';
-import {formatRegCodeDisplay} from '#src/Libraries/StringUtils';
+import {displayString} from '#src/Libraries/RegistrationCode';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUnlockRegCodeMutation} from '#src/Queries/Admin/RegCodeMutations';
 import {useRegCodeForUserQuery} from '#src/Queries/Admin/RegCodeQueries';
@@ -23,7 +24,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userRe
 
 export const UserRegCodeScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.userProfilesHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.registrationCodeHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.users}
         urlPath={`/admin/regcodes/showuser/${props.route.params.userID}`}>
@@ -33,11 +34,15 @@ export const UserRegCodeScreen = (props: Props) => {
   );
 };
 
+/**
+ * Per-user registration code, related accounts, and password-recovery unlock.
+ */
 const UserRegCodeScreenInner = ({route, navigation}: Props) => {
   const {data} = useRegCodeForUserQuery({userID: route.params.userID});
   const {setSnackbarPayload} = useSnackbar();
   const unlockMutation = useUnlockRegCodeMutation();
   const {setString} = useClipboard();
+  useAdminHelpButton(CommonStackComponents.registrationCodeHelpScreen);
 
   const handleUnlock = () => {
     unlockMutation.mutate(
@@ -60,8 +65,8 @@ const UserRegCodeScreenInner = ({route, navigation}: Props) => {
           {data && (
             <DataFieldListItem
               title={'Registration Code'}
-              description={formatRegCodeDisplay(data.regCode)}
-              onLongPress={() => setString(formatRegCodeDisplay(data.regCode))}
+              description={displayString(data.regCode)}
+              onLongPress={() => setString(displayString(data.regCode))}
             />
           )}
           {accountCreatedAt && <DataFieldListItem title={'Account Created'} description={accountCreatedAt} />}

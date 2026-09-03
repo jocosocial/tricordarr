@@ -59,6 +59,12 @@ export const ForumHelpScreen = () => {
             onPress={() => commonNavigation.push(CommonStackComponents.forumPostSearchHelpScreen)}
           />
           <DataFieldListItem
+            title={'Mentions'}
+            description={'Posts that @mention you, including Moderator and TwitarrTeam inboxes.'}
+            icon={AppIcons.user}
+            onPress={() => commonNavigation.push(CommonStackComponents.forumPostMentionHelpScreen)}
+          />
+          <DataFieldListItem
             title={'Keywords'}
             description={'Configure alert and mute keywords for notifications and filtering forum content.'}
             icon={AppIcons.alertword}

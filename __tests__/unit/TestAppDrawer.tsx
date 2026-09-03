@@ -4,6 +4,7 @@ import {AppDrawer} from '#src/Components/Drawers/AppDrawer';
 
 let mockHasTwitarrTeam = false;
 let mockHasShutternautManager = false;
+let mockHasAccountManager = false;
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
@@ -43,6 +44,7 @@ jest.mock('#src/Context/Contexts/RoleContext', () => ({
   useRoles: () => ({
     hasShutternaut: false,
     hasShutternautManager: mockHasShutternautManager,
+    hasAccountManager: mockHasAccountManager,
   }),
 }));
 jest.mock('#src/Context/Contexts/StyleContext', () => ({
@@ -84,6 +86,7 @@ describe('AppDrawer Shutternaut management access', () => {
   beforeEach(() => {
     mockHasTwitarrTeam = false;
     mockHasShutternautManager = false;
+    mockHasAccountManager = false;
   });
 
   it('does not offer Manage Shutternauts to TwitarrTeam alone', () => {
@@ -96,5 +99,29 @@ describe('AppDrawer Shutternaut management access', () => {
     mockHasShutternautManager = true;
 
     expect(getDrawerLabels()).toContain('Manage Shutternauts');
+  });
+});
+
+describe('AppDrawer Server Admin access', () => {
+  beforeEach(() => {
+    mockHasTwitarrTeam = false;
+    mockHasShutternautManager = false;
+    mockHasAccountManager = false;
+  });
+
+  it('does not offer Server Admin to users without TwitarrTeam or Account Manager', () => {
+    expect(getDrawerLabels()).not.toContain('Server Admin');
+  });
+
+  it('offers Server Admin to TwitarrTeam', () => {
+    mockHasTwitarrTeam = true;
+
+    expect(getDrawerLabels()).toContain('Server Admin');
+  });
+
+  it('offers Server Admin to Account Managers', () => {
+    mockHasAccountManager = true;
+
+    expect(getDrawerLabels()).toContain('Server Admin');
   });
 });

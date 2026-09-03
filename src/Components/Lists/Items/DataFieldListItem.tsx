@@ -85,15 +85,17 @@ export const DataFieldListItem = ({
     onPress?.();
   }, [sensitive, onPress]);
 
-  // Mask sensitive string descriptions; wrap Element in callback for List.Item description type
+  // Mask sensitive string descriptions; wrap Element in callback for List.Item description type.
+  // Paper's List.Item treats numeric 0 as falsy and hides the description, so stringify numbers.
   const displayDescription = useMemo((): ListItemDescription => {
-    if (sensitive && typeof description === 'string') {
-      return showSensitive ? description : toSecureString(description);
+    const resolvedDescription = typeof description === 'number' ? String(description) : description;
+    if (sensitive && typeof resolvedDescription === 'string') {
+      return showSensitive ? resolvedDescription : toSecureString(resolvedDescription);
     }
-    if (React.isValidElement(description)) {
-      return () => description;
+    if (React.isValidElement(resolvedDescription)) {
+      return () => resolvedDescription;
     }
-    return description as ListItemDescription;
+    return resolvedDescription as ListItemDescription;
   }, [description, sensitive, showSensitive]);
 
   return (

@@ -44,7 +44,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             label={'Retries'}
             name={'retry'}
             testID={'queryRetry-slider'}
-            helperText={'Number of retry attempts to make if a query fails.'}
+            helperText={'Number of retry attempts to make if a query fails. Client errors (4XX) are never retried.'}
             onSlidingComplete={() => props.onSubmit(values)}
           />
           <SliderField
@@ -56,7 +56,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             name={'disruptionThreshold'}
             testID={'queryDisruptionThreshold-slider'}
             helperText={
-              'Number of failed query attempts before the server is considered disrupted, disabling future automatic queries.'
+              'Number of failed query attempts before the server is considered disrupted, disabling future automatic queries. Client errors (4XX) do not count.'
             }
             onSlidingComplete={() => props.onSubmit(values)}
           />

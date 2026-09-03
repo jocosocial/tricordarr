@@ -50,7 +50,7 @@ export const PerformerActionsMenu = ({performerData, performerID}: PerformerActi
         <>
           <Menu.Item
             title={'Edit Performer'}
-            leadingIcon={AppIcons.twitarteam}
+            leadingIcon={AppIcons.twitarrteam}
             onPress={() => {
               navigation.push(CommonStackComponents.siteUIScreen, {
                 resource: 'performer',

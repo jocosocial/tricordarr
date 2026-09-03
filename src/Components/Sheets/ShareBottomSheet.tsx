@@ -1,9 +1,4 @@
-import {
-  BottomSheetBackdrop,
-  type BottomSheetBackdropProps,
-  BottomSheetModal,
-  BottomSheetView,
-} from '@gorhom/bottom-sheet';
+import {BottomSheetBackdrop, type BottomSheetBackdropProps, BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useBackHandler} from '@react-native-community/hooks';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Linking, StyleSheet, Switch, View} from 'react-native';
@@ -13,6 +8,10 @@ import Share from 'react-native-share';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ShareQRCode, shareQrSize} from '#src/Components/QRCodes/ShareQRCode';
+import {
+  BottomSheetSnackbarContainer,
+  MeasuredBottomSheetView,
+} from '#src/Components/Sheets/BottomSheetSnackbarContainer';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -46,6 +45,7 @@ interface ShareBottomSheetProps {
  */
 export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss}: ShareBottomSheetProps) => {
   const sheetRef = useRef<BottomSheetModal>(null);
+  const isSheetOpenRef = useRef(false);
   const [showQr, setShowQr] = useState(false);
   const {setString} = useClipboard();
   const {snackbarTry} = useSnackbar();
@@ -67,9 +67,8 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
     : '';
 
   /**
-   * Compact fits the title, actions, and URI switch. Expanded adds the QR block.
-   * Both points stay registered so showing the QR snaps the same sheet
-   * instead of replacing snapPoints (which re-presents from the bottom).
+   * One snap point so the sheet cannot be dragged to QR height.
+   * Height follows QR visibility; pan down still closes.
    */
   const snapPoints = useMemo(() => {
     const paddingBottom = insets.bottom + styleDefaults.marginSize;
@@ -83,8 +82,8 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
       paddingBottom +
       layoutBuffer;
     const qrBlock = shareQrSize + itemGap;
-    return [compact, compact + qrBlock];
-  }, [insets.bottom]);
+    return [showQr ? compact + qrBlock : compact];
+  }, [insets.bottom, showQr]);
 
   const styles = useMemo(
     () =>
@@ -126,30 +125,40 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
   /**
    * Present only when opening. Never call dismiss() while the modal is still
    * unmounted — that leaves Gorhom stuck in DISMISSING so later present() calls
-   * never render. Reset the QR when the sheet is closed so the next open is fast.
-   * Re-seed Use Web URLs from the saved preference on each present so a sheet
-   * session can override it without writing back to appConfig.
+   * never render. Re-seed Use Web URLs from the saved preference on each present
+   * so a sheet session can override it without writing back to appConfig.
    */
   useEffect(() => {
     if (isPresented) {
       sheetRef.current?.present();
+      isSheetOpenRef.current = true;
       setShareWebURLs(!appConfig.userPreferences.shareAppURI);
-    } else {
-      setShowQr(false);
     }
   }, [isPresented, appConfig.userPreferences.shareAppURI]);
 
   /**
+   * Snap to the current (single) height after QR show/hide changes snapPoints.
+   * Skip while closed so a dismiss-time QR reset does not present() from the bottom.
+   */
+  useEffect(() => {
+    if (!isSheetOpenRef.current) {
+      return;
+    }
+    sheetRef.current?.snapToIndex(0);
+  }, [snapPoints]);
+
+  /**
    * Close the share sheet on Android Back before navigation or the root exit guard.
-   * Call dismiss() only while presented so Gorhom does not stick in DISMISSING.
+   * Key off Gorhom's presented ref, not React isPresented, so Back still works
+   * after Open in Browser backgrounds the app.
    */
   const handleShareSheetBackPress = useCallback(() => {
-    if (!isPresented) {
+    if (!isSheetOpenRef.current) {
       return false;
     }
     sheetRef.current?.dismiss();
     return true;
-  }, [isPresented]);
+  }, []);
 
   useBackHandler(handleShareSheetBackPress);
 
@@ -159,6 +168,16 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
   const renderBackdrop = useCallback((props: BottomSheetBackdropProps) => {
     return <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} pressBehavior={'close'} />;
   }, []);
+
+  /**
+   * Reset QR and the presented ref only when Gorhom actually closes, then
+   * notify the provider. Next present starts compact.
+   */
+  const handleDismiss = useCallback(() => {
+    isSheetOpenRef.current = false;
+    setShowQr(false);
+    onDismiss();
+  }, [onDismiss]);
 
   /**
    * Opens the system share sheet for the content URL or app URI.
@@ -179,10 +198,10 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
   });
 
   /**
-   * Dismisses the sheet and opens the content URL in the system browser.
+   * Opens the content URL in the system browser. The sheet stays open so further
+   * actions remain available when the user returns to the app.
    */
   const handleOpenInBrowser = snackbarTry(() => {
-    onDismiss();
     return Linking.openURL(webUrl);
   });
 
@@ -195,26 +214,11 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
   };
 
   /**
-   * Hides the QR if the user collapses the sheet without using the button.
-   */
-  const handleSheetChange = useCallback((index: number) => {
-    if (index < 1) {
-      setShowQr(false);
-    }
-  }, []);
-
-  /**
-   * Shows or hides the QR by snapping the existing sheet, not presenting a new one.
-   * The QR sits below the actions so it fills the extra space as the sheet grows.
+   * Shows or hides the QR. The single snap point grows or shrinks with showQr;
+   * the snapPoints effect then snaps the existing sheet to that height.
    */
   const handleToggleQr = () => {
-    if (showQr) {
-      setShowQr(false);
-      sheetRef.current?.snapToIndex(0);
-      return;
-    }
-    setShowQr(true);
-    sheetRef.current?.snapToIndex(1);
+    setShowQr(current => !current);
   };
 
   return (
@@ -223,13 +227,14 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
       index={0}
       snapPoints={snapPoints}
       enableDynamicSizing={false}
+      enableOverDrag={false}
       enablePanDownToClose={true}
-      onChange={handleSheetChange}
-      onDismiss={onDismiss}
+      onDismiss={handleDismiss}
+      containerComponent={BottomSheetSnackbarContainer}
       backdropComponent={renderBackdrop}
       backgroundStyle={styles.background}
       handleIndicatorStyle={styles.handleIndicator}>
-      <BottomSheetView>
+      <MeasuredBottomSheetView>
         <View style={styles.content}>
           <Text style={styles.title}>{getShareSheetTitle(contentType)}</Text>
           <PrimaryActionButton
@@ -274,7 +279,7 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
           </View>
           {showQr && webUrl.length > 0 && <ShareQRCode url={shareTarget} />}
         </View>
-      </BottomSheetView>
+      </MeasuredBottomSheetView>
     </BottomSheetModal>
   );
 };

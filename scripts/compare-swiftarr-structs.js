@@ -20,6 +20,7 @@ const REPO = 'jocosocial/swiftarr';
 
 const STRUCT_PATHS = [
   'Sources/swiftarr/Controllers/Structs/ControllerStructs.swift',
+  'Sources/swiftarr/Controllers/Structs/AdminControllerStructs.swift',
   'Sources/swiftarr/Controllers/Structs/SocketStructs.swift',
 ];
 
@@ -30,10 +31,12 @@ const ENUM_PATHS = [
   'Sources/swiftarr/Enumerations/DinnerTeam.swift',
   'Sources/swiftarr/Enumerations/LikeType.swift',
   'Sources/swiftarr/Enumerations/AppFeatures.swift',
+  'Sources/swiftarr/Enumerations/EventNotificationSetting.swift',
 ];
 
 const LOCAL_STRUCT_FILES = [
   path.join(ROOT, 'src/Structs/ControllerStructs.tsx'),
+  path.join(ROOT, 'src/Structs/AdminControllerStructs.tsx'),
   path.join(ROOT, 'src/Structs/SocketStructs.ts'),
 ];
 
@@ -44,6 +47,7 @@ const LOCAL_ENUM_FILES = [
   path.join(ROOT, 'src/Enums/DinnerTeam.ts'),
   path.join(ROOT, 'src/Enums/LikeType.ts'),
   path.join(ROOT, 'src/Enums/AppFeatures.ts'),
+  path.join(ROOT, 'src/Enums/EventNotificationSetting.ts'),
 ];
 
 const IOS_FILES = [
@@ -59,7 +63,7 @@ const IOS_KIT_TYPES = new Set([
   'PhoneSocketServerAddress',
 ]);
 
-const LOCAL_ONLY_TYPES = new Set(['SocketHealthcheckData']);
+const LOCAL_ONLY_TYPES = new Set(['SocketHealthcheckData', 'AdminAccessLevelListData', 'AdminUserRoleListData']);
 
 const SWIFT_TO_TS_PRIMITIVES = {
   UUID: 'string',
@@ -92,6 +96,8 @@ const ENUM_TYPE_NAMES = new Set([
   'SwiftarrClientApp',
   'SwiftarrFeature',
   'NotificationTypeData',
+  'EventNotificationSetting',
+  'ServerRollupCountType',
 ]);
 
 function parseArgs(argv) {

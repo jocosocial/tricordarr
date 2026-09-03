@@ -13,13 +13,12 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
-type Props = StackScreenProps<MainStackParamList, MainStackComponents.dailyThemesScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.dailyThemesScreen>;
 
 export const DailyThemesScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {

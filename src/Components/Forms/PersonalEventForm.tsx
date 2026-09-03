@@ -72,7 +72,7 @@ export const PersonalEventForm = ({
             suggestions={getUserSuggestedLocations(profilePublicData)}
           />
           <View style={[commonStyles.paddingBottom]}>
-            <DatePickerField name={'startDate'} testID={'personalEventStartDate-button'} />
+            <DatePickerField name={'startDate'} testID={'personalEventStartDate-button'} limitRange={true} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
             <TimePickerField name={'startTime'} testID={'personalEventStartTime-button'} />

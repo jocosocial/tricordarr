@@ -3,14 +3,14 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {CategoryData} from '#src/Structs/ControllerStructs';
-import {Optional, WithScrollToTopIntent} from '#src/Types/RouteParams';
+import {Optional, WithElevation, WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
   ForumCategoryScreen: WithScrollToTopIntent<{
     categoryID: string;
   }>;
-  ForumPostMentionScreen: undefined;
+  ForumPostMentionScreen: Optional<WithElevation>;
   ForumPostSelfScreen: Optional<WithScrollToTopIntent>;
   ForumPostFavoriteScreen: undefined;
   ForumFavoritesScreen: Optional<WithScrollToTopIntent>;

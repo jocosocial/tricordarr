@@ -29,6 +29,7 @@ export const allRoutes: RouteDefinition[] = [
   // ==================== Home Tab Routes ====================
   {screen: MainStackComponents.mainScreen, path: 'home'},
   {screen: CommonStackComponents.helpIndexScreen, path: 'help'},
+  {screen: CommonStackComponents.adminScreen, path: 'admin'},
   {screen: CommonStackComponents.aboutTricordarrScreen, path: 'about-app'},
   {screen: CommonStackComponents.aboutTwitarrScreen, path: 'about'},
   {screen: CommonStackComponents.privacyScreen, path: 'privacy'},
@@ -36,7 +37,7 @@ export const allRoutes: RouteDefinition[] = [
   {screen: CommonStackComponents.siteUIScreen, path: 'twitarrtab/:timestamp?/:resource?/:id?/:action?'},
   {screen: MainStackComponents.userDirectoryScreen, path: 'users'},
   {screen: MainStackComponents.conductScreen, path: 'codeOfConduct'},
-  {screen: MainStackComponents.dailyThemesScreen, path: 'dailyThemes'},
+  {screen: CommonStackComponents.dailyThemesScreen, path: 'dailyThemes'},
   {screen: MainStackComponents.photostreamScreen, path: 'photostream'},
   {screen: MainStackComponents.microKaraokeListScreen, path: 'microkaraoke'},
   {screen: MainStackComponents.karaokePerformanceListScreen, path: 'karaoke'},
@@ -86,6 +87,8 @@ export const allRoutes: RouteDefinition[] = [
   {screen: CommonStackComponents.scheduleDayScreen, path: 'events'},
   {screen: CommonStackComponents.eventScreen, path: 'events/:eventID'},
   {screen: CommonStackComponents.personalEventScreen, path: 'privateevent/:eventID'},
+  {screen: CommonStackComponents.eventFeedbackFormScreen, path: 'eventfeedback/form/:eventUID'},
+  {screen: CommonStackComponents.eventFeedbackSelectScreen, path: 'eventfeedback'},
 
   // ==================== Forum Tab Routes ====================
   {screen: ForumStackComponents.forumCategoriesScreen, path: 'forums'},
@@ -108,6 +111,8 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     // Event routes
     CommonStackComponents.eventScreen,
     CommonStackComponents.personalEventScreen,
+    CommonStackComponents.eventFeedbackSelectScreen,
+    CommonStackComponents.eventFeedbackFormScreen,
     // LFG routes
     CommonStackComponents.lfgChatScreen,
     CommonStackComponents.lfgScreen,
@@ -125,6 +130,7 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.huntPuzzleScreen,
     // Info routes
     CommonStackComponents.privacyScreen,
+    CommonStackComponents.adminScreen,
   ].includes(route.screen as CommonStackComponents),
 );
 

@@ -1,10 +1,11 @@
 // REST API client for interacting with the Swiftarr API.
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
 import {QueryClient} from '@tanstack/react-query';
 import {AxiosResponse} from 'axios';
 import {encode as base64_encode} from 'base-64';
 import superjson from 'superjson';
+
+import {queryCacheStorage} from '#src/Libraries/Storage/QueryCacheStorage';
 
 // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
 export class BadResponseFormatError extends Error {
@@ -57,25 +58,18 @@ export const createQueryClient = (_sessionID: string): QueryClient => {
 };
 
 /**
- * This is here because it gets referenced in the settings.
- */
-export const defaultCacheTime = 1000 * 60 * 60 * 24 * 30; // 30 days
-export const defaultStaleTime = 1000 * 60; // 60 seconds
-export const defaultImageStaleTime = 1000 * 60 * 60 * 24 * 30; // 30 days
-
-/**
  * React-Query Storage Persister Factory.
  * Creates a session-scoped persister to ensure query cache isolation between sessions.
  */
 export const createSessionPersister = (sessionID: string) => {
   return createAsyncStoragePersister({
-    storage: AsyncStorage,
+    storage: queryCacheStorage,
     throttleTime: 1000,
     // https://github.com/TanStack/query/issues/4309
     // The default [de]serializer turns undefined into null, which breaks pageParam.
     serialize: superjson.stringify,
     deserialize: superjson.parse,
-    key: `REACT_QUERY_CACHE_${sessionID}`,
+    key: `query-cache-${sessionID}`,
   });
 };
 

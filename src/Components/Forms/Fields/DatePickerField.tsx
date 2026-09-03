@@ -2,7 +2,7 @@ import {format} from 'date-fns';
 import {useField, useFormikContext} from 'formik';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button} from 'react-native-paper';
+import {Button, HelperText} from 'react-native-paper';
 import {DatePickerModal} from 'react-native-paper-dates';
 import {CalendarDate, ValidRangeType} from 'react-native-paper-dates/src/Date/Calendar';
 
@@ -13,6 +13,10 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 interface DatePickerFieldProps {
   name: string;
   testID: string;
+  /**
+   * When true, selectable dates are limited to the current cruise week.
+   * Off by default; pass true for event forms that should stay on-ship.
+   */
   limitRange?: boolean;
   startYear?: number;
   endYear?: number;
@@ -21,10 +25,14 @@ interface DatePickerFieldProps {
   disabled?: boolean;
 }
 
+/**
+ * Formik date field backed by react-native-paper-dates.
+ * Does not restrict selection to the cruise week unless `limitRange` is set.
+ */
 export const DatePickerField = ({
   name,
   testID,
-  limitRange = true,
+  limitRange = false,
   startYear,
   endYear,
   validRange,
@@ -89,6 +97,7 @@ export const DatePickerField = ({
         mode={'outlined'}>
         {label} ({getDateFormat()})
       </Button>
+      {meta.error && <HelperText type={'error'}>{meta.error}</HelperText>}
       <DatePickerModal
         visible={visible}
         onDismiss={onDismiss}
