@@ -12,7 +12,7 @@ import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
-import {UserFindSearchBar} from '#src/Components/Search/UserSearchBar/UserFindSearchBar';
+import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -34,7 +34,7 @@ const validationSchema = Yup.object().shape({
 });
 
 /**
- * Account-manager lookup for registration codes: find by code or by username.
+ * Account-manager lookup for registration codes: find by code or search by username.
  */
 export const AdminRegCodesScreen = (props: Props) => {
   return (
@@ -45,7 +45,7 @@ export const AdminRegCodesScreen = (props: Props) => {
 };
 
 /**
- * Find-by-code and find-by-user lookup. Stats are on a separate screen.
+ * Find-by-code and search-by-user lookup. Stats are on a separate screen.
  */
 const AdminRegCodesScreenInner = ({navigation}: Props) => {
   const [submittedCode, setSubmittedCode] = useState('');
@@ -99,7 +99,7 @@ const AdminRegCodesScreenInner = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <ListSection>
-          <ListSubheader>Find By Code</ListSubheader>
+          <ListSubheader>Search By Code</ListSubheader>
         </ListSection>
         <PaddedContentView padTop={true}>
           <Formik initialValues={{regCode: ''}} validationSchema={validationSchema} onSubmit={handleFind}>
@@ -129,7 +129,7 @@ const AdminRegCodesScreenInner = ({navigation}: Props) => {
                 />
                 <PrimaryActionButton
                   testID={'regCodeSearch-button'}
-                  buttonText={'Find'}
+                  buttonText={'Search'}
                   onPress={handleSubmit}
                   disabled={searching || !isWellFormed(values.regCode)}
                   isLoading={searching}
@@ -149,10 +149,10 @@ const AdminRegCodesScreenInner = ({navigation}: Props) => {
           />
         ))}
         <ListSection>
-          <ListSubheader>Find By User</ListSubheader>
+          <ListSubheader>Search By User</ListSubheader>
         </ListSection>
         <PaddedContentView padTop={true}>
-          <UserFindSearchBar
+          <UserMatchSearchBar
             testID={'regCodeUser-search'}
             label={'Username'}
             excludeSelf={false}
