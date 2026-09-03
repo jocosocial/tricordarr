@@ -39,10 +39,7 @@ const AdminRollupScreenInner = () => {
           <ListSubheader>Server Counts</ListSubheader>
         </ListSection>
         {ServerRollupCountType.all.map(countType => {
-          const value = data?.counts[countType];
-          if (value === undefined) {
-            return null;
-          }
+          const value = data?.counts[countType] ?? 0;
           return (
             <DataFieldListItem key={countType} title={ServerRollupCountType.getLabel(countType)} description={value} />
           );
