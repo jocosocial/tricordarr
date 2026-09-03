@@ -174,6 +174,18 @@ export const HelpManualScreen = () => {
             icon={AppIcons.feedback}
             onPress={() => commonNavigation.push(CommonStackComponents.eventFeedbackHelpScreen, {})}
           />
+          <DataFieldListItem
+            title={'Registration Codes'}
+            description={'Look up codes, unlock password recovery, and allocate Discord codes.'}
+            icon={AppIcons.registrationCode}
+            onPress={() => commonNavigation.push(CommonStackComponents.registrationCodeHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Server Settings'}
+            description={'Limits, notifications, Wi-Fi, and related server options.'}
+            icon={AppIcons.settings}
+            onPress={() => commonNavigation.push(CommonStackComponents.adminServerSettingsHelpScreen)}
+          />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Advanced'} noMargin={true}>
           <DataFieldListItem

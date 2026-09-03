@@ -34,6 +34,24 @@ export const AdminHelpScreen = () => {
             icon={AppIcons.feedback}
             onPress={() => commonNavigation.push(CommonStackComponents.eventFeedbackHelpScreen, {mode: 'admin'})}
           />
+          <DataFieldListItem
+            title={'Registration Codes'}
+            description={'Look up codes by user or code, unlock password recovery, and allocate Discord codes.'}
+            icon={AppIcons.registrationCode}
+            onPress={() => commonNavigation.push(CommonStackComponents.registrationCodeHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Server Settings'}
+            description={'Limits, notifications, Wi-Fi, and related server options.'}
+            icon={AppIcons.settings}
+            onPress={() => commonNavigation.push(CommonStackComponents.adminServerSettingsHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Disabled Features'}
+            description={'What users see when a feature is administratively disabled.'}
+            icon={AppIcons.disabled}
+            onPress={() => commonNavigation.push(CommonStackComponents.disabledHelpScreen)}
+          />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
           <HelpButtonHelpTopicView />

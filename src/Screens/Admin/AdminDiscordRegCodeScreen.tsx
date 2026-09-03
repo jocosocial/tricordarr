@@ -14,7 +14,8 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
-import {formatRegCodeDisplay} from '#src/Libraries/StringUtils';
+import {displayString} from '#src/Libraries/RegistrationCode';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAllocateDiscordRegCodeMutation} from '#src/Queries/Admin/DiscordRegCodeMutations';
 import {useRegCodeStatsQuery} from '#src/Queries/Admin/RegCodeQueries';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
@@ -33,7 +34,7 @@ const AdminDiscordRegCodeScreenInner = () => {
   const mutation = useAllocateDiscordRegCodeMutation();
   const {setSnackbarPayload} = useSnackbar();
   const [result, setResult] = useState<RegistrationCodeUserData>();
-  useAdminHelpButton();
+  useAdminHelpButton(CommonStackComponents.registrationCodeHelpScreen);
 
   return (
     <AppView>
@@ -82,7 +83,7 @@ const AdminDiscordRegCodeScreenInner = () => {
             )}
           </Formik>
         </PaddedContentView>
-        {result && <DataFieldListItem title={'Assigned Code'} description={formatRegCodeDisplay(result.regCode)} />}
+        {result && <DataFieldListItem title={'Assigned Code'} description={displayString(result.regCode)} />}
       </ScrollingContentView>
     </AppView>
   );

@@ -247,7 +247,7 @@ export const TextField = ({
         </HelperText>
       )}
       <HelperText type={'error'} visible={shouldShowError}>
-        {meta.error}
+        {shouldShowError ? meta.error : undefined}
       </HelperText>
     </View>
   );

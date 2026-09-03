@@ -21,6 +21,7 @@ import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {IntegerValidation} from '#src/Libraries/ValidationSchema';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAdminSettingsUpdateMutation} from '#src/Queries/Admin/SettingsMutations';
 import {useAdminSettingsQuery} from '#src/Queries/Admin/SettingsQueries';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
@@ -107,7 +108,7 @@ const AdminServerSettingsScreenInner = () => {
   const {canEditSettings} = useAdminAccess();
   const {setSnackbarPayload} = useSnackbar();
   const {commonStyles} = useStyles();
-  useAdminHelpButton();
+  useAdminHelpButton(CommonStackComponents.adminServerSettingsHelpScreen);
 
   const onSubmit = (values: SettingsFormValues, helpers: FormikHelpers<SettingsFormValues>) => {
     const payload: SettingsUpdateData = {

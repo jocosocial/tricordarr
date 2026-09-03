@@ -26,16 +26,19 @@ import {AdminHuntsScreen} from '#src/Screens/Admin/AdminHuntsScreen';
 import {AdminKaraokeScreen} from '#src/Screens/Admin/AdminKaraokeScreen';
 import {AdminPuzzleEditScreen} from '#src/Screens/Admin/AdminPuzzleEditScreen';
 import {AdminRegCodesScreen} from '#src/Screens/Admin/AdminRegCodesScreen';
+import {AdminRegCodeStatsScreen} from '#src/Screens/Admin/AdminRegCodeStatsScreen';
 import {AdminRollupScreen} from '#src/Screens/Admin/AdminRollupScreen';
 import {AdminScheduleLogScreen} from '#src/Screens/Admin/AdminScheduleLogScreen';
 import {AdminScheduleScreen} from '#src/Screens/Admin/AdminScheduleScreen';
 import {AdminScheduleVerifyScreen} from '#src/Screens/Admin/AdminScheduleVerifyScreen';
 import {AdminScreen} from '#src/Screens/Admin/AdminScreen';
+import {AdminServerSettingsHelpScreen} from '#src/Screens/Admin/AdminServerSettingsHelpScreen';
 import {AdminServerSettingsScreen} from '#src/Screens/Admin/AdminServerSettingsScreen';
 import {AdminTimeZonesScreen} from '#src/Screens/Admin/AdminTimeZonesScreen';
 import {AdminUserRolesScreen} from '#src/Screens/Admin/AdminUserRolesScreen';
 import {AnnouncementHelpScreen} from '#src/Screens/Admin/AnnouncementHelpScreen';
 import {EventFeedbackHelpScreen} from '#src/Screens/Admin/EventFeedbackHelpScreen';
+import {RegistrationCodeHelpScreen} from '#src/Screens/Admin/RegistrationCodeHelpScreen';
 import {BoardgameHelpScreen} from '#src/Screens/Boardgames/BoardgameHelpScreen';
 import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
 import {PreRegistrationHelpScreen} from '#src/Screens/Disabled/PreRegistrationHelpScreen';
@@ -819,6 +822,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Announcement Help'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.registrationCodeHelpScreen}
+        component={RegistrationCodeHelpScreen}
+        options={{title: 'Registration Code Help'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.adminDailyThemesScreen}
         component={AdminDailyThemesScreen}
         options={{title: 'Daily Themes'}}
@@ -832,6 +840,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.adminServerSettingsScreen}
         component={AdminServerSettingsScreen}
         options={{title: 'Server Settings'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminServerSettingsHelpScreen}
+        component={AdminServerSettingsHelpScreen}
+        options={{title: 'Server Settings Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.adminFeaturesScreen}
@@ -867,6 +880,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.adminRegCodesScreen}
         component={AdminRegCodesScreen}
         options={{title: 'Registration Codes'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.adminRegCodeStatsScreen}
+        component={AdminRegCodeStatsScreen}
+        options={{title: 'Registration Stats'}}
       />
       <Stack.Screen
         name={CommonStackComponents.adminDiscordRegCodeScreen}

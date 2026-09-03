@@ -280,6 +280,7 @@ export type CommonStackParamList = {
   AdminScreen: undefined;
   AdminHelpScreen: undefined;
   AnnouncementHelpScreen: undefined;
+  RegistrationCodeHelpScreen: undefined;
   AdminAnnouncementsScreen: undefined;
   AdminAnnouncementEditScreen: {
     announcement?: AnnouncementData;
@@ -289,6 +290,7 @@ export type CommonStackParamList = {
     dailyTheme?: DailyThemeData;
   };
   AdminServerSettingsScreen: undefined;
+  AdminServerSettingsHelpScreen: undefined;
   AdminFeaturesScreen: undefined;
   AdminRollupScreen: undefined;
   AdminTimeZonesScreen: undefined;
@@ -298,6 +300,7 @@ export type CommonStackParamList = {
     logID: number;
   };
   AdminRegCodesScreen: undefined;
+  AdminRegCodeStatsScreen: undefined;
   AdminDiscordRegCodeScreen: undefined;
   AdminUserRolesScreen: {
     role?: UserRoleType;
@@ -471,6 +474,8 @@ export enum CommonStackComponents {
   adminScreen = 'AdminScreen',
   adminHelpScreen = 'AdminHelpScreen',
   announcementHelpScreen = 'AnnouncementHelpScreen',
+  registrationCodeHelpScreen = 'RegistrationCodeHelpScreen',
+  adminServerSettingsHelpScreen = 'AdminServerSettingsHelpScreen',
   adminAnnouncementsScreen = 'AdminAnnouncementsScreen',
   adminAnnouncementEditScreen = 'AdminAnnouncementEditScreen',
   adminDailyThemesScreen = 'AdminDailyThemesScreen',
@@ -483,6 +488,7 @@ export enum CommonStackComponents {
   adminScheduleVerifyScreen = 'AdminScheduleVerifyScreen',
   adminScheduleLogScreen = 'AdminScheduleLogScreen',
   adminRegCodesScreen = 'AdminRegCodesScreen',
+  adminRegCodeStatsScreen = 'AdminRegCodeStatsScreen',
   adminDiscordRegCodeScreen = 'AdminDiscordRegCodeScreen',
   adminUserRolesScreen = 'AdminUserRolesScreen',
   adminAccessLevelsScreen = 'AdminAccessLevelsScreen',
@@ -562,6 +568,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.reportHelpScreen
   | CommonStackComponents.adminHelpScreen
   | CommonStackComponents.announcementHelpScreen
+  | CommonStackComponents.registrationCodeHelpScreen
+  | CommonStackComponents.adminServerSettingsHelpScreen
   | CommonStackComponents.huntHelpScreen
   | CommonStackComponents.eventFeedbackHelpScreen;
 
