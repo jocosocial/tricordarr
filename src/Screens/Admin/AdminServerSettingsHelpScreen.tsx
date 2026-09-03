@@ -5,7 +5,6 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
-import {AppIcons} from '#src/Enums/Icons';
 
 /**
  * Help for server settings. One topic per setting, matching the Server Settings form.
@@ -84,9 +83,6 @@ export const AdminServerSettingsHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
-          <HelpTopicView title={'Save'} icon={AppIcons.save}>
-            Write the form to the server. Hidden unless you are the admin account.
-          </HelpTopicView>
           <HelpButtonHelpTopicView />
         </HelpChapterTitleView>
       </ScrollingContentView>

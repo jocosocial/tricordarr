@@ -32,25 +32,26 @@ export const EventFeedbackHelpScreen = ({route}: EventFeedbackHelpScreenProps) =
           </HelpTopicView>
           {isAdmin && <HelpTopicView>THO can review the reports, print room signs, and export the data.</HelpTopicView>}
         </HelpChapterTitleView>
-        {isAdmin && (
-          <HelpChapterTitleView title={'Navigation'}>
-            <HelpTopicView>
-              On the full responses list, the day chips filter reports by the event's cruise day. All Days is the
-              default. Hidden when the list is already limited to a room or user.
-            </HelpTopicView>
-          </HelpChapterTitleView>
-        )}
-        <HelpChapterTitleView title={'Actions'}>
-          {isAdmin && (
-            <>
-              <HelpTopicView title={'Print Room Signs'} icon={AppIcons.webview}>
+        {isAdmin ? (
+          <>
+            <HelpChapterTitleView title={'Admin Screens'}>
+              <HelpTopicView title={'Print Room Signs'}>
                 Opens the website to edit the room list and print QR-code signs that send hosts to the feedback form.
               </HelpTopicView>
-              <HelpTopicView title={'View Feedback Responses'} icon={AppIcons.feedback}>
+              <HelpTopicView title={'View Feedback Responses'}>
                 View a list of submitted reports. Tap a report for the full text. Marked reports show the Actionable
                 icon. On a report, tap Location to open the deck map. Long press Location for Reports In This Room or
                 Events In This Room. Tap Reporting User for that person's reports.
               </HelpTopicView>
+              <HelpTopicView title={'Feedback Table'}>
+                Opens the website spreadsheet-style table of every report field on one page. Useful for copying to a
+                spreadsheet tool.
+              </HelpTopicView>
+              <HelpTopicView title={'Download'}>
+                Builds a CSV of all reports. Save it to a folder on the device or share it with another app.
+              </HelpTopicView>
+            </HelpChapterTitleView>
+            <HelpChapterTitleView title={'Actions'}>
               <HelpTopicView title={'Filter'} icon={AppIcons.filter}>
                 On the full responses list, filter reports by room. Long press the filter button to clear the filter.
                 The filter is hidden when the list is already limited to a room or user.
@@ -59,22 +60,15 @@ export const EventFeedbackHelpScreen = ({route}: EventFeedbackHelpScreenProps) =
                 On the full responses list, open Stats for shadow event counts, how many reports have been received, and
                 the response rate. Hidden when the list is already limited to a room or user.
               </HelpTopicView>
-              <HelpTopicView title={'Feedback Table'} icon={AppIcons.webview}>
-                Opens the website spreadsheet-style table of every report field on one page.
+              <HelpTopicView title={'Actionable'} icon={AppIcons.actionable}>
+                On a report, tap Actionable in the header when the host described something that needs follow-up. The
+                icon is highlighted when the report is marked.
               </HelpTopicView>
-              <HelpTopicView title={'Download'} icon={AppIcons.download}>
-                Builds a CSV of all reports. Save it to a folder on the device or share it with another app.
-              </HelpTopicView>
-            </>
-          )}
-          <HelpButtonHelpTopicView />
-        </HelpChapterTitleView>
-        {isAdmin && (
-          <HelpChapterTitleView title={'Privileged Actions'}>
-            <HelpTopicView title={'Actionable'} icon={AppIcons.actionable}>
-              On a report, tap Actionable in the header when the host described something that needs follow-up. The icon
-              is highlighted when the report is marked.
-            </HelpTopicView>
+            </HelpChapterTitleView>
+          </>
+        ) : (
+          <HelpChapterTitleView title={'Actions'}>
+            <HelpButtonHelpTopicView />
           </HelpChapterTitleView>
         )}
       </ScrollingContentView>

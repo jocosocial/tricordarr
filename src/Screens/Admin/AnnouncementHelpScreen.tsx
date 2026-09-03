@@ -3,6 +3,7 @@ import React from 'react';
 import {HelpFABView} from '#src/Components/Buttons/FloatingActionButtons/HelpFABView';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -16,28 +17,24 @@ export const AnnouncementHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
-            Announcements from THO and the TwitarrTeam appear on the Today screen for everyone. This list includes
-            inactive and deleted announcements so you can edit or review them.
+            Announcements appear on the Today screen for everyone and generate a push notification. Use sparingly as
+            they are noisy and have high visibility impact.
           </HelpTopicView>
-          <HelpTopicView title={'Editorial Guidance'}>
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Editorial Guidance'}>
+          <HelpTopicView>
             Deleting and creating a new announcement sends a push notification to all mobile users whereas editing an
             existing announcement does not. If you need to make a correction we consider it “a more better experience”
             to edit an existing announcement.
           </HelpTopicView>
           <HelpTopicView>Deleted announcements stay in this list. They are no longer shown to users.</HelpTopicView>
         </HelpChapterTitleView>
-        <HelpChapterTitleView title={'Form Fields'}>
-          <HelpTopicView title={'Announcement'}>The text shown on the Today screen.</HelpTopicView>
-          <HelpTopicView title={'Display Until'}>
-            Announcements stay visible until this date and time. After that they drop off Today but remain in this admin
-            list as inactive.
-          </HelpTopicView>
-        </HelpChapterTitleView>
         <HelpChapterTitleView title={'Floating Action Button'} />
         <HelpFABView icon={AppIcons.new} label={'New Announcement'} />
-        <HelpTopicView>
-          Create a new announcement. Mobile users will receive a push notification when the announcement is saved.
-        </HelpTopicView>
+        <HelpTopicView>Create a new announcement.</HelpTopicView>
+        <HelpChapterTitleView title={'Actions'}>
+          <HelpButtonHelpTopicView />
+        </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>
   );

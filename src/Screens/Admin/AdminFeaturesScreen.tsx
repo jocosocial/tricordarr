@@ -17,6 +17,7 @@ import {
   settingsUpdateFromFeatureDeltas,
   toggleFeaturePair,
 } from '#src/Libraries/Admin/FeatureDisable';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAdminSettingsUpdateMutation} from '#src/Queries/Admin/SettingsMutations';
 import {useAdminSettingsQuery} from '#src/Queries/Admin/SettingsQueries';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
@@ -37,7 +38,7 @@ const AdminFeaturesScreenInner = () => {
   const {canEditSettings} = useAdminAccess();
   const {setSnackbarPayload} = useSnackbar();
   const [current, setCurrent] = useState<SettingsAppFeaturePair[]>([]);
-  useAdminHelpButton();
+  useAdminHelpButton(CommonStackComponents.disabledHelpScreen);
 
   useEffect(() => {
     if (data) {

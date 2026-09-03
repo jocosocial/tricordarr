@@ -819,7 +819,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.announcementHelpScreen}
         component={AnnouncementHelpScreen}
-        options={{title: 'Announcement Help'}}
+        options={{title: 'Announcements Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.registrationCodeHelpScreen}
@@ -975,9 +975,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.eventFeedbackHelpScreen}
         component={EventFeedbackHelpScreen}
-        options={({route}: {route: RouteProp<CommonStackParamList, 'EventFeedbackHelpScreen'>}) => ({
-          title: route.params?.mode === 'admin' ? 'Admin Event Feedback Help' : 'Event Feedback Help',
-        })}
+        options={{title: 'Event Feedback Help'}}
       />
     </>
   );
