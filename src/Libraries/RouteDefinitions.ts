@@ -37,7 +37,7 @@ export const allRoutes: RouteDefinition[] = [
   {screen: CommonStackComponents.siteUIScreen, path: 'twitarrtab/:timestamp?/:resource?/:id?/:action?'},
   {screen: MainStackComponents.userDirectoryScreen, path: 'users'},
   {screen: MainStackComponents.conductScreen, path: 'codeOfConduct'},
-  {screen: MainStackComponents.dailyThemesScreen, path: 'dailyThemes'},
+  {screen: CommonStackComponents.dailyThemesScreen, path: 'dailyThemes'},
   {screen: MainStackComponents.photostreamScreen, path: 'photostream'},
   {screen: MainStackComponents.microKaraokeListScreen, path: 'microkaraoke'},
   {screen: MainStackComponents.karaokePerformanceListScreen, path: 'karaoke'},

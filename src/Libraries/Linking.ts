@@ -69,7 +69,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             MapScreen: getPath(CommonStackComponents.mapScreen),
             UserDirectoryScreen: getPath(MainStackComponents.userDirectoryScreen),
             MainConductScreen: getPath(MainStackComponents.conductScreen),
-            DailyThemesScreen: getPath(MainStackComponents.dailyThemesScreen),
+            DailyThemesScreen: getPath(CommonStackComponents.dailyThemesScreen),
             PhotostreamScreen: getPath(MainStackComponents.photostreamScreen),
             MicroKaraokeListScreen: getPath(MainStackComponents.microKaraokeListScreen),
             PerformerListScreen: getPath(MainStackComponents.performerListScreen),

@@ -4,7 +4,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {SettingsStackParamList} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
-import {BoardgameData, DailyThemeData} from '#src/Structs/ControllerStructs';
+import {BoardgameData} from '#src/Structs/ControllerStructs';
 import {Optional, WithScrollToTopIntent} from '#src/Types/RouteParams';
 
 export type MainStackParamList = CommonStackParamList & {
@@ -12,11 +12,7 @@ export type MainStackParamList = CommonStackParamList & {
   MainSettingsScreen: NavigatorScreenParams<SettingsStackParamList>;
   FaqScreen: undefined;
   UserDirectoryScreen: undefined;
-  DailyThemeScreen: {
-    dailyTheme: DailyThemeData;
-  };
   MainConductScreen: undefined;
-  DailyThemesScreen: undefined;
   PhotostreamScreen: Optional<WithScrollToTopIntent>;
   PhotostreamImageCreateScreen: undefined;
   MicroKaraokeListScreen: undefined;
@@ -54,9 +50,7 @@ export enum MainStackComponents {
   mainSettingsScreen = 'MainSettingsScreen',
   faqScreen = 'FaqScreen',
   userDirectoryScreen = 'UserDirectoryScreen',
-  dailyThemeScreen = 'DailyThemeScreen',
   conductScreen = 'MainConductScreen',
-  dailyThemesScreen = 'DailyThemesScreen',
   photostreamScreen = 'PhotostreamScreen',
   photostreamImageCreateScreen = 'PhotostreamImageCreateScreen',
   microKaraokeListScreen = 'MicroKaraokeListScreen',

@@ -268,6 +268,10 @@ export type CommonStackParamList = {
   MapHelpScreen: undefined;
   CruiseHelpScreen: undefined;
   DailyThemeHelpScreen: undefined;
+  DailyThemesScreen: undefined;
+  DailyThemeScreen: {
+    dailyTheme: DailyThemeData;
+  };
   EasterEggHelpScreen: undefined;
   TodayHelpScreen: undefined;
   KrakenTalkCreateScreen?: {
@@ -466,6 +470,8 @@ export enum CommonStackComponents {
   mapHelpScreen = 'MapHelpScreen',
   cruiseHelpScreen = 'CruiseHelpScreen',
   dailyThemeHelpScreen = 'DailyThemeHelpScreen',
+  dailyThemesScreen = 'DailyThemesScreen',
+  dailyThemeScreen = 'DailyThemeScreen',
   easterEggHelpScreen = 'EasterEggHelpScreen',
   todayHelpScreen = 'TodayHelpScreen',
   krakenTalkCreateScreen = 'KrakenTalkCreateScreen',

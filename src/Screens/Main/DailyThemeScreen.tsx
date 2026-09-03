@@ -12,11 +12,10 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
 
-type Props = StackScreenProps<MainStackParamList, MainStackComponents.dailyThemeScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.dailyThemeScreen>;
 
 export const DailyThemeScreen = ({route, navigation}: Props) => {
   const {refetch} = useDailyThemeQuery();

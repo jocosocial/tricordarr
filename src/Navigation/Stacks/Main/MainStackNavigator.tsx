@@ -16,8 +16,6 @@ import {KaraokeFavoritesListScreen} from '#src/Screens/Karaoke/KaraokeFavoritesL
 import {KaraokeLogPerformanceScreen} from '#src/Screens/Karaoke/KaraokeLogPerformanceScreen';
 import {KaraokePerformanceListScreen} from '#src/Screens/Karaoke/KaraokePerformanceListScreen';
 import {KaraokeSearchScreen} from '#src/Screens/Karaoke/KaraokeSearchScreen';
-import {DailyThemeScreen} from '#src/Screens/Main/DailyThemeScreen';
-import {DailyThemesScreen} from '#src/Screens/Main/DailyThemesScreen';
 import {FaqScreen} from '#src/Screens/Main/FaqScreen';
 import {MainConductScreen} from '#src/Screens/Main/MainConductScreen';
 import {TodayScreen} from '#src/Screens/Main/TodayScreen';
@@ -48,19 +46,9 @@ export const MainStackNavigator = () => {
         options={{title: 'Directory'}}
       />
       <MainStack.Screen
-        name={MainStackComponents.dailyThemeScreen}
-        component={DailyThemeScreen}
-        options={{title: 'Daily Theme'}}
-      />
-      <MainStack.Screen
         name={MainStackComponents.conductScreen}
         component={MainConductScreen}
         options={{title: 'Code of Conduct'}}
-      />
-      <MainStack.Screen
-        name={MainStackComponents.dailyThemesScreen}
-        component={DailyThemesScreen}
-        options={{title: 'Daily Themes'}}
       />
       <MainStack.Screen
         name={MainStackComponents.photostreamScreen}

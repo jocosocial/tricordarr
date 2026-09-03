@@ -45,13 +45,19 @@ const AdminScreenInner = () => {
                 description={'Create, edit, and delete system-wide announcements.'}
                 navComponent={CommonStackComponents.adminAnnouncementsScreen}
               />
-              {access.canManageThemes && (
-                <AdminNavigationListItem
-                  title={'Daily Themes'}
-                  description={'Set info for theme days, including explanatory text and pictures.'}
-                  navComponent={CommonStackComponents.adminDailyThemesScreen}
-                />
-              )}
+              <AdminNavigationListItem
+                title={'Daily Themes'}
+                description={
+                  access.canManageThemes
+                    ? 'Set info for theme days, including explanatory text and pictures.'
+                    : 'View all daily themes, including explanatory text and pictures.'
+                }
+                navComponent={
+                  access.canManageThemes
+                    ? CommonStackComponents.adminDailyThemesScreen
+                    : CommonStackComponents.dailyThemesScreen
+                }
+              />
               <AdminNavigationListItem
                 title={'TwitarrTeam Seamail'}
                 description={

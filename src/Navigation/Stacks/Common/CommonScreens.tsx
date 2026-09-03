@@ -96,6 +96,8 @@ import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
 import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
 import {CruiseHelpScreen} from '#src/Screens/Main/CruiseHelpScreen';
 import {DailyThemeHelpScreen} from '#src/Screens/Main/DailyThemeHelpScreen';
+import {DailyThemeScreen} from '#src/Screens/Main/DailyThemeScreen';
+import {DailyThemesScreen} from '#src/Screens/Main/DailyThemesScreen';
 import {EasterEggHelpScreen} from '#src/Screens/Main/EasterEggHelpScreen';
 import {EasterEggScreen} from '#src/Screens/Main/EasterEggScreen';
 import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
@@ -770,6 +772,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.dailyThemeHelpScreen}
         component={DailyThemeHelpScreen}
         options={{title: 'Daily Theme Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.dailyThemesScreen}
+        component={DailyThemesScreen}
+        options={{title: 'Daily Themes'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.dailyThemeScreen}
+        component={DailyThemeScreen}
+        options={{title: 'Daily Theme'}}
       />
       <Stack.Screen
         name={CommonStackComponents.todayHelpScreen}
