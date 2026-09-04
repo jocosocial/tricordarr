@@ -1,11 +1,11 @@
 import React from 'react';
 
-import {SettingsNavigationListItem} from '#src/Components/Lists/Items/Settings/SettingsNavigationListItem';
+import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 export const SettingsRegistrationListItem = () => {
   return (
-    <SettingsNavigationListItem
+    <NavigationListItem
       title={'Register'}
       description={'Create a new Twitarr account.'}
       navComponent={SettingsStackScreenComponents.registerScreen}

@@ -1,13 +1,18 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useMemo} from 'react';
+import {FlatList, Linking, StyleSheet} from 'react-native';
+import {Divider, Text, TouchableRipple} from 'react-native-paper';
 
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
-import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
+import {appUrl} from '#src/Libraries/UrlParser';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 
@@ -23,6 +28,62 @@ const cannedResponses = [
   'This entry has been investigated as a violation of the Code of Conduct and has been permanently locked. Thank you for your understanding.',
 ];
 
+interface CannedResponsesListProps {
+  responses: string[];
+}
+
+/**
+ * Bold divider between canned response rows.
+ */
+const CannedResponseSeparator = () => <Divider bold={true} />;
+
+/**
+ * Copyable canned reply row. Long-press copies the full text.
+ */
+const CannedResponseItem = ({text}: {text: string}) => {
+  const {commonStyles} = useStyles();
+  const {setString} = useClipboard();
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        item: {
+          ...commonStyles.paddingHorizontalSmall,
+          ...commonStyles.paddingVerticalSmall,
+        },
+      }),
+    [commonStyles],
+  );
+
+  return (
+    <TouchableRipple onLongPress={() => setString(text)}>
+      <Text style={styles.item}>{text}</Text>
+    </TouchableRipple>
+  );
+};
+
+/**
+ * Renders one canned response that can be copied with a long-press.
+ */
+const renderCannedResponse = ({item}: {item: string}) => <CannedResponseItem text={item} />;
+
+/**
+ * Nested list of copyable canned moderator replies. Does not scroll on its own
+ * so the parent ScrollingContentView remains the only scroller.
+ */
+const CannedResponsesList = ({responses}: CannedResponsesListProps) => {
+  return (
+    <FlatList
+      data={responses}
+      keyExtractor={item => item}
+      scrollEnabled={false}
+      renderItem={renderCannedResponse}
+      ListHeaderComponent={CannedResponseSeparator}
+      ItemSeparatorComponent={CannedResponseSeparator}
+    />
+  );
+};
+
 const ModeratorGuideScreenInner = () => {
   useModerationHelpHeader();
 
@@ -35,7 +96,7 @@ const ModeratorGuideScreenInner = () => {
           thrive in a positive manner.
         </HelpTopicView>
 
-        <HelpChapterTitleView title={'Part 1: Twit-arr Concepts'} />
+        <HelpChapterTitleView title={'Twit-arr Concepts'} />
         <HelpTopicView title={'Users'}>
           Users provide a registration code when creating an account. They may create multiple accounts, all tied to
           that code. You will create a normal account with the reg code from THO, then someone with THO access elevates
@@ -90,8 +151,7 @@ const ModeratorGuideScreenInner = () => {
           Moderators Only is for discussion, questions, and elevating issues to THO. Mods Only Dumpster Fire is for
           moving problem threads where regular users cannot see them.
         </HelpTopicView>
-
-        <HelpChapterTitleView title={'Part 2: Considerations'} />
+        <HelpChapterTitleView title={'Considerations'} />
         <HelpTopicView>
           The task is to keep users from posting content contrary to the JoCo Cruise Code of Conduct. If you are not
           sure, ask in private moderator seamail. Escalate if you get no response.
@@ -119,43 +179,15 @@ const ModeratorGuideScreenInner = () => {
 
         <HelpChapterTitleView title={'Canned Responses'} />
         <HelpTopicView>Long-press a response to copy it.</HelpTopicView>
-        <ListSection>
-          {cannedResponses.map(response => (
-            <DataFieldListItem key={response} title={'Canned response'} description={response} />
-          ))}
-        </ListSection>
-
-        <HelpChapterTitleView title={'Code of Conduct'} />
-        <HelpTopicView title={'Be excellent to each other'}>
-          Treat fellow passengers with kindness and respect. Foster a diverse, safe, welcoming environment for all
-          attendees regardless of race, gender identity or expression, sexual orientation, age, disability, body size or
-          type, neurotype, physical appearance, or religion. Invite people in, be supportive, look out for one another.
-        </HelpTopicView>
-        <HelpTopicView title={'Do not harass others'}>
-          This includes physical, verbal, or psychological abuse; threats, intimidation, and bullying; slurs; unwanted
-          romantic attention, sexual harassment, creepy or stalky behavior; and photographing anyone or physical
-          interactions without consent. If someone asks you to stop and you keep going, that is harassment.
-        </HelpTopicView>
-        <HelpTopicView title={'Ship staff, ports, theft, substances'}>
-          Be excellent to the ship's staff and anyone at a port of call. Do not steal. Do not use illegal substances or
-          bring them onboard.
-        </HelpTopicView>
-        <HelpTopicView title={'We are here to help'}>
-          Ship operations and health or physical well-being defer to Nieuw Amsterdam management. Breaches can mean
-          limiting access to events, expulsion without refund, and/or a permanent ban. Report violations to a Helper or
-          JoCo Cruise staff, at the Info Desk, by dialing 74501, or off-ship at conduct@jococruise.com.
-        </HelpTopicView>
-        <HelpTopicView title={'App moderation rules'}>
-          Do not harass others in public or private. Emoji or images used to convey the same meaning are also moderated.
-          Do not raise concerns about moderation on the app; contact @moderator. Breaches may mean removal or editing of
-          content, a temporary mute, a permanent ban, or an automatic ban for inappropriate, offensive, or illegal
-          material.
-        </HelpTopicView>
-        <HelpTopicView title={'User FAQ'}>
-          If content is moderated, the author gets a seamail. Disagreements go to @moderator. Moderators act according
-          to these rules, not personal dislike. Anyone can report content. A banned user sees a message when they try to
-          log in.
-        </HelpTopicView>
+        <CannedResponsesList responses={cannedResponses} />
+        <HelpChapterTitleView title={'Code of Conduct'} noMargin={true}>
+          <DataFieldListItem
+            title={'Code of Conduct'}
+            description={'The JoCo Cruise Code of Conduct that this guide is based on.'}
+            icon={AppIcons.codeofconduct}
+            onPress={() => Linking.openURL(appUrl('codeOfConduct'))}
+          />
+        </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>
   );

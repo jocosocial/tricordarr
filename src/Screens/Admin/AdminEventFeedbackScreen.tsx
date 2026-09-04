@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {AdminNavigationListItem} from '#src/Components/Lists/Items/Admin/AdminNavigationListItem';
+import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
 import {ListItem} from '#src/Components/Lists/ListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -54,18 +54,18 @@ const AdminEventFeedbackScreenInner = () => {
       <ScrollingContentView isStack={true}>
         <ListSection>
           <ListSubheader>Admin Actions</ListSubheader>
-          <AdminNavigationListItem
+          <NavigationListItem
             title={'Print Room Signs'}
             description={'Print a sign for each room where shadow events will be held.'}
             navComponent={CommonStackComponents.siteUIScreen}
             params={{resource: 'eventfeedback', id: 'roomposters', admin: true}}
           />
-          <AdminNavigationListItem
+          <NavigationListItem
             title={'View Feedback Responses'}
             description={'View reports from shadow event hosts.'}
             navComponent={CommonStackComponents.adminEventFeedbackReportsScreen}
           />
-          <AdminNavigationListItem
+          <NavigationListItem
             title={'Feedback Table'}
             description={'View reports on a single page, as a table.'}
             navComponent={CommonStackComponents.siteUIScreen}

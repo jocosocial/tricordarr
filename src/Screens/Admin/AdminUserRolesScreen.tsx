@@ -3,8 +3,8 @@ import React from 'react';
 import {Text} from 'react-native-paper';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {AdminNavigationListItem} from '#src/Components/Lists/Items/Admin/AdminNavigationListItem';
 import {AdminUserManageList} from '#src/Components/Lists/Items/Admin/AdminUserManageList';
+import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
@@ -57,7 +57,7 @@ const AdminUserRolesScreenInner = ({route, navigation}: Props) => {
             <ListSubheader>User Roles</ListSubheader>
           </ListSection>
           {MANAGED_ROLES.map(managedRole => (
-            <AdminNavigationListItem
+            <NavigationListItem
               key={managedRole}
               title={UserRoleType.getLabel(managedRole)}
               description={`Users with the ${UserRoleType.getLabel(managedRole)} role.`}
