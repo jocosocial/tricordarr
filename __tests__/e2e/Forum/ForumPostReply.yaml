@@ -6,9 +6,12 @@
 # string (`(?<!\S)@` in ContentFilterable.getMentionsSet), so the separator space in the
 # second scenario is the thing actually under test there.
 #
-# Precondition: signed in (run ../OOBE/Login.yaml first). FORUM_THREAD must name a thread
-# in FORUM_CATEGORY whose first post is by another user — Reply is deliberately absent on
-# your own posts, so the post at index 0 must not be yours.
+# Precondition: the app is signed in. ../OOBE/Login.yaml is meant to get you there but is
+# currently unreliable — its fixed `repeat: 7` scrolls do not reach the agree button, and
+# SetupApp.yaml's iOS branch leaves the app closed — so sign in by hand for now.
+#
+# FORUM_THREAD must name a thread in FORUM_CATEGORY whose first post is by another user:
+# Reply is deliberately absent on your own posts, so the post at index 0 must not be yours.
 appId: ${APP_ID}
 env:
   FORUM_CATEGORY: 'General'
