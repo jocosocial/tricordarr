@@ -82,7 +82,7 @@ const InnerSeamailCreateForm = ({onValidationChange}: InnerSeamailCreateFormProp
           name={'createdByTwitarrTeam'}
           testID={'seamailCreateAsTwitarrTeam-switch'}
           label={'Post as TwitarrTeam'}
-          icon={AppIcons.twitarteam}
+          icon={AppIcons.twitarrteam}
           helperText={'This will also create the seamail as the TwitarrTeam user.'}
         />
       )}

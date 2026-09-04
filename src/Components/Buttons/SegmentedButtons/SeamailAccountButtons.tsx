@@ -1,82 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {SegmentedButtons} from 'react-native-paper';
+import React from 'react';
 
-import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {useElevation} from '#src/Context/Contexts/ElevationContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {AppIcons} from '#src/Enums/Icons';
-import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
+import {PrivilegedAccountButtons} from '#src/Components/Buttons/SegmentedButtons/PrivilegedAccountButtons';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
-import {SegmentedButtonType} from '#src/Types';
 
+/**
+ * Seamail inbox switcher with unread counts for self, Moderator, and TwitarrTeam.
+ */
 export const SeamailAccountButtons = () => {
-  const {data: profilePublicData} = useUserProfileQuery();
   const {data: userNotificationData} = useUserNotificationDataQuery();
-  const {hasModerator, hasTwitarrTeam} = usePrivilege();
-  const {asPrivilegedUser, becomeUser, clearElevation} = useElevation();
-  const [forUser, setForUser] = useState(asPrivilegedUser || profilePublicData?.header.username);
-  const {theme} = useAppTheme();
-  const [buttons, setButtons] = useState<SegmentedButtonType[]>([]);
 
-  useEffect(() => {
-    let tempButtons: SegmentedButtonType[] = [];
-    if (hasModerator) {
-      const moderatorIcon = userNotificationData?.moderatorData?.newModeratorSeamailMessageCount
-        ? () => <AppIcon size={18} icon={AppIcons.notificationShow} color={theme.colors.error} />
-        : AppIcons.moderator;
-      tempButtons.push({
-        value: PrivilegedUserAccounts.moderator,
-        label: 'Moderator',
-        icon: moderatorIcon,
-        onPress: () => becomeUser(PrivilegedUserAccounts.moderator),
-        testID: 'seamailAccountModerator-button',
-      });
-    }
-
-    if (hasTwitarrTeam) {
-      const twitarrTeamIcon = userNotificationData?.moderatorData?.newTTSeamailMessageCount
-        ? () => <AppIcon size={18} icon={AppIcons.notificationShow} color={theme.colors.error} />
-        : AppIcons.moderator;
-      tempButtons.push({
-        value: PrivilegedUserAccounts.TwitarrTeam,
-        label: 'TwitarrTeam',
-        icon: twitarrTeamIcon,
-        onPress: () => becomeUser(PrivilegedUserAccounts.TwitarrTeam),
-        testID: 'seamailAccountTwitarrTeam-button',
-      });
-    }
-
-    // All Privileged Users
-    if (tempButtons.length !== 0 && profilePublicData) {
-      tempButtons.unshift({
-        value: profilePublicData.header.username,
-        // This used to try for Display Name but those get long and make the button weird
-        // so I'm going back to just username.
-        label: profilePublicData.header.username,
-        icon: userNotificationData?.newSeamailMessageCount ? AppIcons.notificationShow : AppIcons.user,
-        onPress: () => clearElevation(),
-        testID: 'seamailAccountSelf-button',
-      });
-    }
-
-    setButtons(tempButtons);
-  }, [
-    becomeUser,
-    clearElevation,
-    hasModerator,
-    hasTwitarrTeam,
-    profilePublicData,
-    theme.colors.error,
-    userNotificationData?.moderatorData?.newModeratorSeamailMessageCount,
-    userNotificationData?.moderatorData?.newTTSeamailMessageCount,
-    userNotificationData?.newSeamailMessageCount,
-  ]);
-
-  if (buttons.length > 0 && forUser) {
-    return <SegmentedButtons value={forUser} onValueChange={setForUser} buttons={buttons} />;
-  }
-
-  return <></>;
+  return (
+    <PrivilegedAccountButtons
+      selfNotificationCount={userNotificationData?.newSeamailMessageCount}
+      moderatorNotificationCount={userNotificationData?.moderatorData?.newModeratorSeamailMessageCount}
+      twitarrTeamNotificationCount={userNotificationData?.moderatorData?.newTTSeamailMessageCount}
+      testIDPrefix={'seamailAccount'}
+    />
+  );
 };

@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 
 import {FezType} from '#src/Enums/FezType';
+import {isWellFormed} from '#src/Libraries/RegistrationCode';
 
 export const UsernameValidation = Yup.string()
   .matches(/^[a-zA-Z0-9-.+_]+$/, 'Username can only contain alphanumeric characters plus "-.+_"')
@@ -12,6 +13,15 @@ export const RecoveryKeyValidation = Yup.string()
   .min(6)
   .max(7)
   .required('Six-character registration code is required.');
+
+/**
+ * Validates a THO registration code: 6 alphanumeric characters with optional whitespace.
+ */
+export const RegistrationCodeValidation = Yup.string()
+  .required('Registration code is required.')
+  .test('well-formed', 'Registration code must be 6 letters or numbers. Spaces are optional.', value =>
+    isWellFormed(value ?? ''),
+  );
 
 export const AccountRecoveryValidation = Yup.string()
   .min(6)
@@ -82,3 +92,8 @@ const developmentUrlValidation = Yup.string()
 export const ServerURLValidation = __DEV__ ? developmentUrlValidation : productionUrlValidation;
 
 export const SSIDValidation = Yup.string().required('SSID is required.').min(2).max(32);
+
+export const PuzzleAnswerValidation = Yup.string()
+  .trim()
+  .required('Enter an answer to submit.')
+  .max(100, 'Answer must be 100 characters or fewer.');

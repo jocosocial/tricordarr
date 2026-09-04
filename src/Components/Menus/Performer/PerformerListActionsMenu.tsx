@@ -23,7 +23,7 @@ export const PerformerListActionsMenu = () => {
         anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
         <Menu.Item
           title={'Add Performer'}
-          leadingIcon={AppIcons.twitarteam}
+          leadingIcon={AppIcons.twitarrteam}
           onPress={() => {
             navigation.push(CommonStackComponents.siteUIScreen, {
               resource: 'performer/add',

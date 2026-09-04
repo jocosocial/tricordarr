@@ -31,10 +31,10 @@ export const PerformerHelpScreen = () => {
             Open the Twitarr user profile of the person who created this performer bio. This is only available for
             Shadow performers and only to moderators.
           </HelpTopicView>
-          <HelpTopicView title={'Add Performer'} icon={AppIcons.twitarteam}>
+          <HelpTopicView title={'Add Performer'} icon={AppIcons.twitarrteam}>
             Add a new performer profile. This should only be used for official cruise guests.
           </HelpTopicView>
-          <HelpTopicView title={'Edit Performer'} icon={AppIcons.twitarteam}>
+          <HelpTopicView title={'Edit Performer'} icon={AppIcons.twitarrteam}>
             Edit the performer's profile.
           </HelpTopicView>
         </HelpChapterTitleView>

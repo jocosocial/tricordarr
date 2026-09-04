@@ -3,7 +3,6 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {MD3TypescaleKey} from 'react-native-paper/src/types';
 
-import {BoldText} from '#src/Components/Text/BoldText';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface ListTitleViewProps {
@@ -40,8 +39,15 @@ export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall', i
         title: {
           flexShrink: 1,
         },
+        titleText: {
+          ...commonStyles.bold,
+          ...commonStyles.textCenter,
+          ...commonStyles.fullWidth,
+        },
         text: {
           ...commonStyles.onBackground,
+          ...commonStyles.textCenter,
+          ...commonStyles.fullWidth,
         },
       }),
     [commonStyles],
@@ -57,12 +63,12 @@ export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall', i
         {icon ? (
           <View style={styles.titleRow}>
             <View style={styles.title}>
-              <BoldText>{title}</BoldText>
+              <Text style={styles.titleText}>{title}</Text>
             </View>
             {icon}
           </View>
         ) : (
-          <BoldText>{title}</BoldText>
+          <Text style={styles.titleText}>{title}</Text>
         )}
         {subtitle && (
           <Text style={styles.text} variant={subtitleVariant}>

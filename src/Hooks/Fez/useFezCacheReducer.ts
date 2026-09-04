@@ -17,6 +17,7 @@ import {
   updateItemsInPages,
 } from '#src/Libraries/CacheReduction';
 import {calcCruiseDayTime, swiftTimestampToISO} from '#src/Libraries/DateTime';
+import {applyAppendedPostCounts, applyMarkReadCounts, postReadCountsUnchanged} from '#src/Libraries/UnreadCounts';
 import {FezData, FezListData, FezPostData} from '#src/Structs/ControllerStructs';
 
 const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
@@ -515,13 +516,13 @@ export const useFezCacheReducer = () => {
             }
             const isLastPage = index === lastIndex;
             const posts = isLastPage ? [...(page.members.posts ?? []), post] : page.members.posts;
+            const nextCounts = applyAppendedPostCounts(page.members.postCount, page.members.readCount);
             return {
               ...page,
               lastModificationTime: now,
               members: {
                 ...page.members,
-                postCount: page.members.postCount + 1,
-                readCount: page.members.readCount + 1,
+                ...nextCounts,
                 posts,
               },
             };
@@ -529,17 +530,19 @@ export const useFezCacheReducer = () => {
         };
       });
 
-      updateFezInListCachesWithReorder(fezID, fez => ({
-        ...fez,
-        lastModificationTime: now,
-        members: fez.members
-          ? {
-              ...fez.members,
-              postCount: fez.members.postCount + 1,
-              readCount: fez.members.readCount + 1,
-            }
-          : fez.members,
-      }));
+      updateFezInListCachesWithReorder(fezID, fez => {
+        if (!fez.members) {
+          return fez;
+        }
+        return {
+          ...fez,
+          lastModificationTime: now,
+          members: {
+            ...fez.members,
+            ...applyAppendedPostCounts(fez.members.postCount, fez.members.readCount),
+          },
+        };
+      });
     },
     [queryClient, updateFezInListCachesWithReorder],
   );
@@ -605,16 +608,29 @@ export const useFezCacheReducer = () => {
 
   /**
    * Update readCount in all caches after viewing a fez. Local-only, no server call.
-   * Sets readCount = postCount (fully read).
+   * Sets readCount = postCount (fully read), clamped so unread cannot go negative.
    * When markReadCancelPush is enabled, also dismisses any displayed notification
    * whose ID is this fez (Seamail, LFG, and Private Event notifications all use fezID).
    */
   const markRead = useCallback(
     (fezID: string) => {
-      const readUpdater = (fez: FezData): FezData => ({
-        ...fez,
-        members: fez.members ? {...fez.members, readCount: fez.members.postCount} : fez.members,
-      });
+      /**
+       * Set members.readCount to postCount (fully read). Returns the same
+       * reference when the fez has no members or counts are already equal.
+       */
+      const readUpdater = (fez: FezData): FezData => {
+        if (!fez.members) {
+          return fez;
+        }
+        const next = applyMarkReadCounts(fez.members.postCount, fez.members.readCount);
+        if (postReadCountsUnchanged(fez.members, next)) {
+          return fez;
+        }
+        return {
+          ...fez,
+          members: {...fez.members, ...next},
+        };
+      };
       updateFezInAllListCaches(fezID, readUpdater);
       updateFezDetailCache(fezID, readUpdater);
       if (appConfig.markReadCancelPush) {

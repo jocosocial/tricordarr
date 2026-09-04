@@ -33,6 +33,7 @@ export const BooleanField = ({
   const {commonStyles, styleDefaults} = useStyles();
   const {theme} = useAppTheme();
   const [field, , helpers] = useField<boolean>(name);
+  const textColor = disabled ? theme.colors.onSurfaceDisabled : theme.colors.onBackground;
 
   const onPressDefault = () => {
     helpers.setValue(!field.value);
@@ -47,8 +48,11 @@ export const BooleanField = ({
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifySpaceBetween,
     },
+    label: {
+      color: textColor,
+    },
     helperText: {
-      color: theme.colors.onBackground,
+      color: textColor,
     },
   });
 
@@ -60,11 +64,11 @@ export const BooleanField = ({
       disabled={disabled}>
       <View>
         <View style={styles.wrapper}>
-          <Text>
+          <Text style={styles.label}>
             {icon && (
               // This is a bit hacky. I am not proud. View did weird aligning nonsense.
               <>
-                <AppIcon size={styleDefaults.fontSize} icon={icon} />
+                <AppIcon size={styleDefaults.fontSize} icon={icon} color={textColor} />
                 &nbsp;
               </>
             )}

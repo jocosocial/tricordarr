@@ -3,10 +3,13 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 import type {FezType} from '#src/Enums/FezType';
 import type {ReportContentType} from '#src/Enums/ReportContentType';
+import {UserRoleType} from '#src/Enums/UserRoleType';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {type UserRelationMode} from '#src/Queries/Users/UserRelationConstants';
 import {
+  AnnouncementData,
   CategoryData,
+  DailyThemeData,
   EventData,
   FezData,
   ForumData,
@@ -127,14 +130,25 @@ export type CommonStackParamList = {
   }>;
   AlertKeywordsScreen: undefined;
   MuteKeywordsScreen: undefined;
-  ForumThreadPostScreen: {
+  ForumThreadPostScreen: WithElevation<{
     postID: string;
-  };
+  }>;
   ForumPostEditScreen: {
     postData: PostData;
     forumData?: ForumData;
   };
+  SeamailListScreen: WithElevation<
+    WithScrollToTopIntent<
+      NoDrawerParams & {
+        onlyNew?: boolean;
+      }
+    >
+  >;
+  SeamailSearchScreen: {
+    forUser?: string;
+  };
   SeamailCreateScreen?: WithElevation<WithInitialUserHeaders<{}>>;
+  ForumPostMentionScreen: Optional<WithElevation>;
   ForumPostPinnedScreen: {
     forumID: string;
   };
@@ -210,6 +224,7 @@ export type CommonStackParamList = {
   ForumThreadCreateHelpScreen: undefined;
   ForumThreadSearchHelpScreen: undefined;
   ForumPostSearchHelpScreen: undefined;
+  ForumPostMentionHelpScreen: undefined;
   KeywordsHelpScreen: undefined;
   ScheduleHelpScreen: undefined;
   ScheduleDayHelpScreen: undefined;
@@ -239,9 +254,11 @@ export type CommonStackParamList = {
   LfgListHelpScreen: undefined;
   LfgCreateHelpScreen: undefined;
   LfgParticipationHelpScreen: undefined;
-  EventHelpScreen: {
-    mode?: 'official' | 'shadow';
-  };
+  EventHelpScreen:
+    | {
+        mode?: 'official' | 'shadow';
+      }
+    | undefined;
   PersonalEventHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
   TimeZoneHelpScreen: undefined;
@@ -252,6 +269,10 @@ export type CommonStackParamList = {
   ScheduleImportScreen: undefined;
   CruiseSettingsScreen: undefined;
   EventSearchScreen: undefined;
+  EventLocationScreen: {
+    location: string;
+    cruiseDay?: number;
+  };
   EventAddPerformerScreen: {
     eventID: string;
   };
@@ -286,6 +307,10 @@ export type CommonStackParamList = {
   MapHelpScreen: undefined;
   CruiseHelpScreen: undefined;
   DailyThemeHelpScreen: undefined;
+  DailyThemesScreen: undefined;
+  DailyThemeScreen: {
+    dailyTheme: DailyThemeData;
+  };
   EasterEggHelpScreen: undefined;
   TodayHelpScreen: undefined;
   KrakenTalkCreateScreen?: {
@@ -295,6 +320,75 @@ export type CommonStackParamList = {
     callID: string;
   };
   KrakenTalkHelpScreen: undefined;
+  AdminScreen: undefined;
+  AdminHelpScreen: undefined;
+  AnnouncementHelpScreen: undefined;
+  RegistrationCodeHelpScreen: undefined;
+  AdminAnnouncementsScreen: undefined;
+  AdminAnnouncementEditScreen: {
+    announcement?: AnnouncementData;
+  };
+  AdminDailyThemesScreen: undefined;
+  AdminDailyThemeEditScreen: {
+    dailyTheme?: DailyThemeData;
+  };
+  AdminServerSettingsScreen: undefined;
+  AdminServerSettingsHelpScreen: undefined;
+  AdminFeaturesScreen: undefined;
+  AdminRollupScreen: undefined;
+  AdminTimeZonesScreen: undefined;
+  AdminScheduleScreen: undefined;
+  AdminScheduleVerifyScreen: undefined;
+  AdminScheduleLogScreen: {
+    logID: number;
+  };
+  AdminRegCodesScreen: undefined;
+  AdminRegCodeStatsScreen: undefined;
+  AdminDiscordRegCodeScreen: undefined;
+  AdminUserRolesScreen: {
+    role?: UserRoleType;
+  };
+  AdminAccessLevelsScreen: {
+    level?: 'moderator' | 'twitarrteam' | 'tho';
+  };
+  AdminBulkUserScreen: undefined;
+  AdminKaraokeScreen: undefined;
+  AdminBoardgamesScreen: undefined;
+  AdminHuntsScreen: undefined;
+  AdminHuntEditScreen: {
+    huntID?: string;
+  };
+  AdminPuzzleEditScreen: {
+    huntID: string;
+    puzzleID: string;
+  };
+  HuntScreen: {
+    huntID: string;
+  };
+  HuntPuzzleScreen: {
+    puzzleID: string;
+  };
+  HuntHelpScreen: undefined;
+  EventFeedbackSelectScreen: {
+    room?: string;
+  };
+  EventFeedbackFormScreen: {
+    eventUID: string;
+  };
+  AdminEventFeedbackScreen: undefined;
+  AdminEventFeedbackReportsScreen: {
+    location?: string;
+    userID?: string;
+  };
+  AdminEventFeedbackStatsScreen: undefined;
+  AdminEventFeedbackReportScreen: {
+    feedbackID: string;
+  };
+  EventFeedbackHelpScreen:
+    | {
+        mode?: 'admin';
+      }
+    | undefined;
 };
 
 export enum CommonStackComponents {
@@ -338,7 +432,10 @@ export enum CommonStackComponents {
   muteKeywords = 'MuteKeywordsScreen',
   forumThreadPostScreen = 'ForumThreadPostScreen',
   forumPostEditScreen = 'ForumPostEditScreen',
+  seamailListScreen = 'SeamailListScreen',
+  seamailSearchScreen = 'SeamailSearchScreen',
   seamailCreateScreen = 'SeamailCreateScreen',
+  forumPostMentionScreen = 'ForumPostMentionScreen',
   forumPostPinnedScreen = 'ForumPostPinnedScreen',
   configServerUrl = 'ConfigServerUrlScreen',
   forumPostHashtagScreen = 'ForumPostHashtagScreen',
@@ -374,6 +471,7 @@ export enum CommonStackComponents {
   forumThreadCreateHelpScreen = 'ForumThreadCreateHelpScreen',
   forumThreadSearchHelpScreen = 'ForumThreadSearchHelpScreen',
   forumPostSearchHelpScreen = 'ForumPostSearchHelpScreen',
+  forumPostMentionHelpScreen = 'ForumPostMentionHelpScreen',
   keywordsHelpScreen = 'KeywordsHelpScreen',
   scheduleHelpScreen = 'ScheduleHelpScreen',
   scheduleDayHelpScreen = 'ScheduleDayHelpScreen',
@@ -405,6 +503,7 @@ export enum CommonStackComponents {
   scheduleImportScreen = 'ScheduleImportScreen',
   cruiseSettingsScreen = 'CruiseSettingsScreen',
   eventSearchScreen = 'EventSearchScreen',
+  eventLocationScreen = 'EventLocationScreen',
   eventAddPerformerScreen = 'EventAddPerformerScreen',
   performerCreateScreen = 'PerformerCreateScreen',
   performerEditScreen = 'PerformerEditScreen',
@@ -427,11 +526,50 @@ export enum CommonStackComponents {
   mapHelpScreen = 'MapHelpScreen',
   cruiseHelpScreen = 'CruiseHelpScreen',
   dailyThemeHelpScreen = 'DailyThemeHelpScreen',
+  dailyThemesScreen = 'DailyThemesScreen',
+  dailyThemeScreen = 'DailyThemeScreen',
   easterEggHelpScreen = 'EasterEggHelpScreen',
   todayHelpScreen = 'TodayHelpScreen',
   krakenTalkCreateScreen = 'KrakenTalkCreateScreen',
   krakenTalkActiveCallScreen = 'KrakenTalkActiveCallScreen',
   krakenTalkHelpScreen = 'KrakenTalkHelpScreen',
+  adminScreen = 'AdminScreen',
+  adminHelpScreen = 'AdminHelpScreen',
+  announcementHelpScreen = 'AnnouncementHelpScreen',
+  registrationCodeHelpScreen = 'RegistrationCodeHelpScreen',
+  adminServerSettingsHelpScreen = 'AdminServerSettingsHelpScreen',
+  adminAnnouncementsScreen = 'AdminAnnouncementsScreen',
+  adminAnnouncementEditScreen = 'AdminAnnouncementEditScreen',
+  adminDailyThemesScreen = 'AdminDailyThemesScreen',
+  adminDailyThemeEditScreen = 'AdminDailyThemeEditScreen',
+  adminServerSettingsScreen = 'AdminServerSettingsScreen',
+  adminFeaturesScreen = 'AdminFeaturesScreen',
+  adminRollupScreen = 'AdminRollupScreen',
+  adminTimeZonesScreen = 'AdminTimeZonesScreen',
+  adminScheduleScreen = 'AdminScheduleScreen',
+  adminScheduleVerifyScreen = 'AdminScheduleVerifyScreen',
+  adminScheduleLogScreen = 'AdminScheduleLogScreen',
+  adminRegCodesScreen = 'AdminRegCodesScreen',
+  adminRegCodeStatsScreen = 'AdminRegCodeStatsScreen',
+  adminDiscordRegCodeScreen = 'AdminDiscordRegCodeScreen',
+  adminUserRolesScreen = 'AdminUserRolesScreen',
+  adminAccessLevelsScreen = 'AdminAccessLevelsScreen',
+  adminBulkUserScreen = 'AdminBulkUserScreen',
+  adminKaraokeScreen = 'AdminKaraokeScreen',
+  adminBoardgamesScreen = 'AdminBoardgamesScreen',
+  adminHuntsScreen = 'AdminHuntsScreen',
+  adminHuntEditScreen = 'AdminHuntEditScreen',
+  adminPuzzleEditScreen = 'AdminPuzzleEditScreen',
+  huntScreen = 'HuntScreen',
+  huntPuzzleScreen = 'HuntPuzzleScreen',
+  huntHelpScreen = 'HuntHelpScreen',
+  eventFeedbackSelectScreen = 'EventFeedbackSelectScreen',
+  eventFeedbackFormScreen = 'EventFeedbackFormScreen',
+  adminEventFeedbackScreen = 'AdminEventFeedbackScreen',
+  adminEventFeedbackReportsScreen = 'AdminEventFeedbackReportsScreen',
+  adminEventFeedbackStatsScreen = 'AdminEventFeedbackStatsScreen',
+  adminEventFeedbackReportScreen = 'AdminEventFeedbackReportScreen',
+  eventFeedbackHelpScreen = 'EventFeedbackHelpScreen',
 }
 
 /**
@@ -453,6 +591,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.forumThreadCreateHelpScreen
   | CommonStackComponents.forumThreadSearchHelpScreen
   | CommonStackComponents.forumPostSearchHelpScreen
+  | CommonStackComponents.forumPostMentionHelpScreen
   | CommonStackComponents.keywordsHelpScreen
   | CommonStackComponents.seamailHelpScreen
   | CommonStackComponents.seamailListHelpScreen
@@ -489,7 +628,13 @@ export type HelpScreenComponents =
   | CommonStackComponents.todayHelpScreen
   | CommonStackComponents.krakenTalkHelpScreen
   | CommonStackComponents.reportHelpScreen
-  | CommonStackComponents.moderatorGuideScreen;
+  | CommonStackComponents.moderatorGuideScreen
+  | CommonStackComponents.adminHelpScreen
+  | CommonStackComponents.announcementHelpScreen
+  | CommonStackComponents.registrationCodeHelpScreen
+  | CommonStackComponents.adminServerSettingsHelpScreen
+  | CommonStackComponents.huntHelpScreen
+  | CommonStackComponents.eventFeedbackHelpScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 

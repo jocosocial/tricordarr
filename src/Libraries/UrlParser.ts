@@ -1,4 +1,5 @@
 import urlJoin from 'url-join';
+import URLParse from 'url-parse';
 
 /**
  * Scheme prefix registered with React Navigation for in-app deep links.
@@ -62,4 +63,29 @@ export const extractPathFromTricordarrUrl = (url: string): string | undefined =>
     return url.slice('tricordarr:/'.length);
   }
   return undefined;
+};
+
+/**
+ * True when the URL should be opened as an in-app Twitarr deep link rather than externally.
+ *
+ * - Relative path: `/events/123` from markdown or the site UI — always a Twitarr route.
+ * - App scheme: `tricordarr://puzzle/...` share links and in-app deep links.
+ * - Configured server: absolute URL that starts with `serverUrl`.
+ * - Canonical host: hostname listed in `canonicalHostnames` (e.g. twitarr.com).
+ */
+export const isTwitarrUrl = (url: string, serverUrl: string, canonicalHostnames: string[]): boolean => {
+  // Relative path from markdown or the site UI.
+  if (url.startsWith('/')) {
+    return true;
+  }
+  // In-app deep link (appLinkPrefix, e.g. tricordarr://).
+  if (url.startsWith(appLinkPrefix)) {
+    return true;
+  }
+  // Absolute URL on the server this app is currently using.
+  if (url.startsWith(serverUrl)) {
+    return true;
+  }
+  // Public Twitarr hostname from the canonical list.
+  return canonicalHostnames.includes(new URLParse(url).hostname);
 };

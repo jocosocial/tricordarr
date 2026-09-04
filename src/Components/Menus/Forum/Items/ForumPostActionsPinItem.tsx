@@ -1,7 +1,7 @@
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
-import {StateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
+import {getStateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useForumPostPinMutation} from '#src/Queries/Forum/ForumPostPinMutations';
@@ -13,6 +13,7 @@ interface ForumPostActionsPinItemProps {
   closeMenu: () => void;
 }
 
+/** Moderator action to pin or unpin a post within its thread. */
 export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => {
   const pinMutation = useForumPostPinMutation();
   const {updatePostPin} = useForumCacheReducer();
@@ -34,20 +35,16 @@ export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => 
     );
   };
 
-  const getIcon = () => (
-    <StateLoadingIcon
-      isLoading={pinMutation.isPending}
-      state={props.forumPost.isPinned}
-      iconTrue={AppIcons.unpin}
-      iconFalse={AppIcons.pin}
-    />
-  );
-
   return (
     <Menu.Item
       title={props.forumPost.isPinned ? 'Unpin' : 'Pin Post to Thread'}
       dense={false}
-      leadingIcon={getIcon}
+      leadingIcon={getStateLoadingIcon({
+        isLoading: pinMutation.isPending,
+        state: props.forumPost.isPinned,
+        iconTrue: AppIcons.unpin,
+        iconFalse: AppIcons.pin,
+      })}
       onPress={handleFavorite}
     />
   );

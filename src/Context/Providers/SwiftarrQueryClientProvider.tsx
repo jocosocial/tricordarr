@@ -1,5 +1,5 @@
 import {Query, QueryKey} from '@tanstack/react-query';
-import {PersistQueryClientProvider, persistQueryClientRestore} from '@tanstack/react-query-persist-client';
+import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import DeviceInfo from 'react-native-device-info';
@@ -11,6 +11,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrQueryClientContext} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {BadResponseFormatError, createQueryClient, createSessionPersister} from '#src/Libraries/Network/APIClient';
+import {isHttpClientError, shouldRetryQuery} from '#src/Libraries/Network/Retry';
 import {joinUrl} from '#src/Libraries/UrlParser';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
@@ -118,34 +119,6 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   // Use sessionID (or placeholder) as key to force PersistQueryClientProvider to remount
   // when session loads, ensuring it re-hydrates with the correct persister
   const persistKey = currentSession?.sessionID || '__pending_session__';
-
-  // Track if we've manually restored to avoid double-restoration
-  const hasManuallyRestoredRef = useRef(false);
-
-  // Manually restore cache when session loads (in addition to key-based remount)
-  useEffect(() => {
-    if (!currentSession || !queryClientRef.current || hasManuallyRestoredRef.current) {
-      return;
-    }
-
-    const restoreCache = async () => {
-      try {
-        const persister = createSessionPersister(currentSession.sessionID);
-        await persistQueryClientRestore({
-          queryClient: queryClientRef.current!,
-          persister,
-          maxAge: appConfig.apiClientConfig.cacheTime,
-          buster: appConfig.apiClientConfig.cacheBuster,
-        });
-
-        hasManuallyRestoredRef.current = true;
-      } catch (error) {
-        logger.error('Error manually restoring cache:', error);
-      }
-    };
-
-    restoreCache();
-  }, [currentSession, appConfig.apiClientConfig.cacheTime, appConfig.apiClientConfig.cacheBuster]);
 
   /**
    * Bonus data to inject into the clients query keys.
@@ -255,7 +228,9 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         }
         logger.debug('Query error encountered via', query.queryKey);
         logger.debug('Error details:', error);
-        setErrorCount(prev => prev + 1);
+        if (!isHttpClientError(error)) {
+          setErrorCount(prev => prev + 1);
+        }
         if (!disruptionDetected) {
           setSnackbarPayload({message: errorString, messageType: 'error'});
         }
@@ -337,7 +312,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         ...currentOptions.queries,
         gcTime: appConfig.apiClientConfig.cacheTime,
         staleTime: appConfig.apiClientConfig.staleTime,
-        retry: appConfig.apiClientConfig.retry,
+        retry: shouldRetryQuery(appConfig.apiClientConfig.retry),
       },
     });
   }, [appConfig.apiClientConfig.cacheTime, appConfig.apiClientConfig.retry, appConfig.apiClientConfig.staleTime]);

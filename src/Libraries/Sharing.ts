@@ -11,8 +11,36 @@ export enum ShareContentType {
   user = 'user',
   event = 'events',
   performer = 'performer',
+  hunt = 'hunt',
+  puzzle = 'puzzle',
   siteUI = 'siteui',
 }
+
+/**
+ * User-facing name for each shareable content type. Used in the share sheet title.
+ */
+export const shareContentTypeLabels: Record<ShareContentType, string> = {
+  [ShareContentType.forum]: 'Forum',
+  [ShareContentType.forumPost]: 'Forum Post',
+  [ShareContentType.lfg]: 'LFG',
+  [ShareContentType.user]: 'User Profile',
+  [ShareContentType.event]: 'Event',
+  [ShareContentType.performer]: 'Performer',
+  [ShareContentType.hunt]: 'Puzzle Hunt',
+  [ShareContentType.puzzle]: 'Puzzle',
+  [ShareContentType.siteUI]: 'Link',
+};
+
+/**
+ * Share-sheet title for a content type, e.g. "Share Puzzle Hunt".
+ * Falls back to "Share" when the type is unknown.
+ */
+export const getShareSheetTitle = (contentType?: ShareContentType): string => {
+  if (!contentType) {
+    return 'Share';
+  }
+  return `Share ${shareContentTypeLabels[contentType]}`;
+};
 
 /**
  * Whether a share link is a public HTTPS URL or a tricordarr:// deep link.

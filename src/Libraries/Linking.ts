@@ -1,6 +1,5 @@
 import type {PathConfig, PathConfigMap} from '@react-navigation/core';
 import {LinkingOptions} from '@react-navigation/native';
-import URLParse from 'url-parse';
 
 import {getPath} from '#src/Libraries/RouteDefinitions';
 import {appLinkPrefix} from '#src/Libraries/UrlParser';
@@ -25,26 +24,6 @@ type DeepLinksConfig<ParamList extends {}> = {
 const tabLinkConfig = <T extends {}>(config: PathConfig<T>): any => config;
 
 /**
- * True when the URL should be opened as an in-app Twitarr deep link rather than externally.
- *
- * - Relative path: `/events/123` from markdown or the site UI — always a Twitarr route.
- * - Configured server: absolute URL that starts with `serverUrl`.
- * - Canonical host: hostname listed in `canonicalHostnames` (e.g. twitarr.com).
- */
-export const isTwitarrUrl = (url: string, serverUrl: string, canonicalHostnames: string[]): boolean => {
-  // Relative path from markdown or the site UI.
-  if (url.startsWith('/')) {
-    return true;
-  }
-  // Absolute URL on the server this app is currently using.
-  if (url.startsWith(serverUrl)) {
-    return true;
-  }
-  // Public Twitarr hostname from the canonical list.
-  return canonicalHostnames.includes(new URLParse(url).hostname);
-};
-
-/**
  * Route map of all routes necessary for deep linking. initialRouteName's should probably
  * be based on a StackScreenComponent enum value. The actual tabs will vary and should loosely
  * follow the routes that we use in the Swiftarr web UI.
@@ -66,6 +45,9 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           screens: {
             MainScreen: getPath(MainStackComponents.mainScreen),
             HelpIndexScreen: getPath(CommonStackComponents.helpIndexScreen),
+            AdminScreen: getPath(CommonStackComponents.adminScreen),
+            EventFeedbackSelectScreen: getPath(CommonStackComponents.eventFeedbackSelectScreen),
+            EventFeedbackFormScreen: getPath(CommonStackComponents.eventFeedbackFormScreen),
             AboutTricordarrScreen: getPath(CommonStackComponents.aboutTricordarrScreen),
             AboutTwitarrScreen: getPath(CommonStackComponents.aboutTwitarrScreen),
             PrivacyScreen: getPath(CommonStackComponents.privacyScreen),
@@ -87,12 +69,15 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             MapScreen: getPath(CommonStackComponents.mapScreen),
             UserDirectoryScreen: getPath(MainStackComponents.userDirectoryScreen),
             MainConductScreen: getPath(MainStackComponents.conductScreen),
-            DailyThemesScreen: getPath(MainStackComponents.dailyThemesScreen),
+            DailyThemesScreen: getPath(CommonStackComponents.dailyThemesScreen),
             PhotostreamScreen: getPath(MainStackComponents.photostreamScreen),
             MicroKaraokeListScreen: getPath(MainStackComponents.microKaraokeListScreen),
             PerformerListScreen: getPath(MainStackComponents.performerListScreen),
             MainTimeZoneScreen: getPath(CommonStackComponents.mainTimeZoneScreen),
             BoardgameListScreen: getPath(MainStackComponents.boardgameListScreen),
+            HuntListScreen: getPath(MainStackComponents.huntListScreen),
+            HuntScreen: getPath(CommonStackComponents.huntScreen),
+            HuntPuzzleScreen: getPath(CommonStackComponents.huntPuzzleScreen),
             KaraokePerformanceListScreen: getPath(MainStackComponents.karaokePerformanceListScreen),
             KaraokeSearchScreen: getPath(MainStackComponents.karaokeSearchScreen),
             KaraokeFavoritesListScreen: getPath(MainStackComponents.karaokeFavoritesListScreen),

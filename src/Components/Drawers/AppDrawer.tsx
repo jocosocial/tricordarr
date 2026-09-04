@@ -24,7 +24,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
-  const {hasShutternaut, hasShutternautManager} = useRoles();
+  const {hasShutternaut, hasShutternautManager, hasAccountManager} = useRoles();
   const {data: userNotificationData} = useUserNotificationDataQuery({
     enabled: oobeCompleted && !preRegistrationMode,
   });
@@ -235,12 +235,12 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   right={getModBadge}
                 />
               )}
-              {hasTwitarrTeam && (
+              {(hasTwitarrTeam || hasAccountManager) && (
                 <PaperDrawer.Item
                   label={'Server Admin'}
-                  icon={AppIcons.twitarteam}
-                  onPress={() => Linking.openURL(appSiteUrl('admin'))}
-                  right={getTTBadge}
+                  icon={AppIcons.admin}
+                  onPress={() => Linking.openURL(appUrl('admin'))}
+                  right={hasTwitarrTeam ? getTTBadge : undefined}
                 />
               )}
             </PaperDrawer.Section>

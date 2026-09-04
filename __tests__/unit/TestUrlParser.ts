@@ -1,4 +1,11 @@
-import {appSiteUrl, appUrl, joinUrl} from '#src/Libraries/UrlParser';
+import {
+  appLinkPrefix,
+  appSiteUrl,
+  appUrl,
+  extractPathFromTricordarrUrl,
+  isTwitarrUrl,
+  joinUrl,
+} from '#src/Libraries/UrlParser';
 
 describe('appUrl', () => {
   it('joins a path onto the tricordarr scheme without a third slash', () => {
@@ -47,5 +54,40 @@ describe('appSiteUrl', () => {
 
   it('joins remaining path segments like appUrl', () => {
     expect(appSiteUrl('dayplanner', 'shutternauts')).toBe('tricordarr://twitarrtab/123/dayplanner/shutternauts');
+  });
+});
+
+describe('extractPathFromTricordarrUrl', () => {
+  it('strips the app scheme prefix from a puzzle deep link', () => {
+    expect(extractPathFromTricordarrUrl(`${appLinkPrefix}puzzle/B13F1F2C-6CAC-4A33-A0AC-A19873EF5A12`)).toBe(
+      'puzzle/B13F1F2C-6CAC-4A33-A0AC-A19873EF5A12',
+    );
+  });
+
+  it('returns undefined for http URLs', () => {
+    expect(extractPathFromTricordarrUrl('https://twitarr.com/puzzle/abc')).toBeUndefined();
+  });
+});
+
+describe('isTwitarrUrl', () => {
+  const serverUrl = 'https://twitarr.com';
+  const canonicalHostnames = ['twitarr.com'];
+
+  it('treats app-scheme deep links as in-app URLs', () => {
+    expect(
+      isTwitarrUrl(`${appLinkPrefix}puzzle/B13F1F2C-6CAC-4A33-A0AC-A19873EF5A12`, serverUrl, canonicalHostnames),
+    ).toBe(true);
+  });
+
+  it('treats relative paths as in-app URLs', () => {
+    expect(isTwitarrUrl('/events/123', serverUrl, canonicalHostnames)).toBe(true);
+  });
+
+  it('treats the configured server as in-app', () => {
+    expect(isTwitarrUrl(`${serverUrl}/forum/abc`, serverUrl, canonicalHostnames)).toBe(true);
+  });
+
+  it('rejects unrelated https URLs', () => {
+    expect(isTwitarrUrl('https://example.com/puzzle/abc', serverUrl, canonicalHostnames)).toBe(false);
   });
 });

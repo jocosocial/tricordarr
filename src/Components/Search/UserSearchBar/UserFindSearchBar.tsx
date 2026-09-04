@@ -7,7 +7,7 @@ import {useUserFindQuery} from '#src/Queries/Users/UsersQueries';
 
 /**
  * Search widget to find a user by exact username. Used during preregistration
- * favoriting, where a miss is an HTTP 404 handled by `useUserFindQuery`.
+ * favoriting. A miss is an HTTP 404 and is not retried.
  * Displays matching users as List.Items below the search bar.
  */
 export const UserFindSearchBar = ({
@@ -23,7 +23,7 @@ export const UserFindSearchBar = ({
     clearOnPress,
   });
 
-  // Manual search only. 404-as-not-found is handled in useUserFindQuery.
+  // Manual search only.
   const {data, refetch} = useUserFindQuery(searchQuery, {enabled: false});
 
   return (

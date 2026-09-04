@@ -82,6 +82,38 @@ export const guessDeckNumber = (location?: string): number | undefined => {
   return undefined;
 };
 
+/**
+ * Room name from a Sched-style location: text before the first comma or '('.
+ * Matches Swiftarr `GET /api/v3/admin/feedback/roomlist` (prefix until `,` or `(`).
+ * "Lower Main Dining Room, Deck 2, Aft" → "Lower Main Dining Room"
+ */
+export const getRoomName = (location?: string): string => {
+  if (!location) {
+    return '';
+  }
+  const match = /^[^,(]*/.exec(location);
+  return (match?.[0] ?? '').trim();
+};
+
+/**
+ * Unique room names from location strings, sorted alphabetically.
+ * Duplicate names that differ only by case are collapsed to the first spelling seen.
+ */
+export const getUniqueRoomNames = (locations: readonly string[]): string[] => {
+  const seen = new Map<string, string>();
+  for (const location of locations) {
+    const roomName = getRoomName(location);
+    if (!roomName) {
+      continue;
+    }
+    const key = roomName.toLowerCase();
+    if (!seen.has(key)) {
+      seen.set(key, roomName);
+    }
+  }
+  return [...seen.values()].sort((a, b) => a.localeCompare(b));
+};
+
 export const publicLocationSuggestions = [
   'Atrium, Deck 1, Midship',
   'Casino, Deck 2, Forward',

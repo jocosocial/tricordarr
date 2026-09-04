@@ -45,6 +45,12 @@ export const PickerField = <TData,>({
   const {theme} = useAppTheme();
   const {setFieldValue, isSubmitting} = useFormikContext();
   const [_, meta] = useField<TData>(name);
+  const isFieldDisabled = disabled || isSubmitting;
+  const textColor = meta.error
+    ? theme.colors.error
+    : isFieldDisabled
+      ? theme.colors.onSurfaceDisabled
+      : theme.colors.onBackground;
 
   const handleSelect = (newValue: TData | undefined) => {
     logger.debug('Selecting value', newValue);
@@ -67,7 +73,7 @@ export const PickerField = <TData,>({
       fontWeight: 'normal',
       ...commonStyles.fontFamilyNormal,
       ...(anchorButtonMode === 'outlined' ? {marginHorizontal: 14} : commonStyles.marginHorizontalSmall),
-      color: meta.error ? theme.colors.error : theme.colors.onBackground,
+      color: textColor,
     },
     content: {
       ...commonStyles.flexRow,
@@ -92,12 +98,12 @@ export const PickerField = <TData,>({
           <Button
             testID={testID}
             buttonColor={theme.colors.background}
-            textColor={theme.colors.onBackground}
+            textColor={textColor}
             labelStyle={styles.text}
             contentStyle={styles.content}
             style={styles.button}
             onPress={openMenu}
-            disabled={disabled || isSubmitting}
+            disabled={isFieldDisabled}
             mode={anchorButtonMode}>
             {label} ({getTitle(value)})
           </Button>

@@ -3,7 +3,7 @@ import {Card, Text} from 'react-native-paper';
 
 import {APIImage} from '#src/Components/Images/APIImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DailyThemeData} from '#src/Structs/ControllerStructs';
 
 interface DailyThemeCardProps {
@@ -17,10 +17,10 @@ interface DailyThemeCardProps {
  */
 export const DailyThemeCard = (props: DailyThemeCardProps) => {
   const {commonStyles} = useStyles();
-  const mainNavigation = useMainStack();
+  const commonNavigation = useCommonStack();
 
   const onPress = () => {
-    mainNavigation.push(MainStackComponents.dailyThemeScreen, {
+    commonNavigation.push(CommonStackComponents.dailyThemeScreen, {
       dailyTheme: props.dailyTheme,
     });
   };

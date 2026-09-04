@@ -418,6 +418,12 @@ export interface AnnouncementData {
   isDeleted: boolean;
 }
 
+export namespace AnnouncementData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/notification/announcements']];
+  };
+}
+
 export interface DailyThemeData {
   /// The theme's ID Probably only useful for admins in order to edit or delete themes.
   themeID: string;
@@ -432,6 +438,10 @@ export interface DailyThemeData {
 }
 
 export namespace DailyThemeData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/notification/dailythemes']];
+  };
+
   export const getThemeForDay = (cruiseDayIndex: number, cruiseLength: number, dailyThemeData?: DailyThemeData[]) => {
     if (dailyThemeData) {
       let todaysTheme: DailyThemeData | undefined;
@@ -564,6 +574,137 @@ export namespace EventData {
   };
 }
 
+/**
+ * Body for `POST /api/v3/feedback`. Creates or updates the current user's report for an event.
+ */
+export interface EventFeedbackData {
+  /// Sched ICS UID of the event, not the Twitarr eventID. Required by the server today.
+  eventUID?: string;
+  /// Title of the event being reported on. Copied from the schedule Event.
+  eventTitle: string;
+  /// Where the event took place. Copied from Event.location; not a host-editable form field.
+  eventLocation: string;
+  /// Start time of the event. ISO8601.
+  eventTime: string;
+  /// Name of the shadow event host submitting this report.
+  hostName: string;
+  /// Host's estimate of attendance. Free text; do not treat as a number.
+  attendance: string;
+  /// The "How did everything go?" field.
+  recapString: string;
+  /// The "Any issues?" field.
+  issuesString: string;
+}
+
+export namespace EventFeedbackData {
+  export const getCacheKeys = (eventUID?: string, eventID?: string): QueryKey[] => {
+    const keys: QueryKey[] = [['/feedback/eventlist']];
+    if (eventUID) {
+      keys.push([`/feedback/uid/${encodeURIComponent(eventUID)}`]);
+    }
+    if (eventID) {
+      keys.push([`/feedback/id/${eventID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Event lists for the host feedback picker.
+ * Returned by `GET /api/v3/feedback/eventlist`.
+ */
+export interface EventFeedbackSelectionData {
+  /// Events the user has already given feedback on.
+  existingFeedback: EventData[];
+  /// If the user has a Performer record, events for that performer.
+  performerAttached: EventData[];
+  /// If the request included a room filter, events in that room.
+  matchingRoom: EventData[];
+  /// All events eligible for feedback (shadow/workshop that have started).
+  events: EventData[];
+}
+
+export namespace EventFeedbackSelectionData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/feedback/eventlist']];
+  };
+}
+
+/**
+ * Admin-only fields on an event feedback report. NULL for normal users.
+ * Nested in EventFeedbackReport from Swiftarr ControllerStructs.
+ */
+export interface EventFeedbackAdminFields {
+  /// TRUE if an admin has marked this feedback as containing something actionable.
+  actionable: boolean;
+  /// Number of users that have followed the event.
+  followCount: number;
+  /// Forum ID of the event's forum thread.
+  forumID?: string;
+  /// Number of forum posts about this event.
+  forumPostCount: number;
+}
+
+/**
+ * A shadow-event host feedback report.
+ * Returned by `GET /api/v3/admin/feedback/reports` and `GET /api/v3/admin/feedback/report/:report_id`.
+ */
+export interface EventFeedbackReport {
+  /// Database ID for this report. Nil when no report has been filed yet.
+  id?: string;
+  /// Twitarr user that wrote the report.
+  reportingUser: UserHeader;
+  /// Time of the most recent update to this report. ISO8601.
+  reportModDate?: string;
+  /// The event being reported on, when attached to the official schedule.
+  event?: EventData;
+  eventTitle: string;
+  eventLocation: string;
+  /// Start time of the event. ISO8601.
+  eventTime: string;
+  /// Self-reported name of the host from the form.
+  hostName: string;
+  /// Host's estimate of attendance. Free text; do not treat as a number.
+  attendance: string;
+  /// Host's notes on how the event went.
+  recapString: string;
+  /// Any issues the host chose to share.
+  issuesString: string;
+  /// Populated for TwitarrTeam and above.
+  adminFields?: EventFeedbackAdminFields;
+}
+
+export namespace EventFeedbackReport {
+  export const getCacheKeys = (feedbackID?: string): QueryKey[] => {
+    const keys: QueryKey[] = [['/admin/feedback/reports']];
+    if (feedbackID) {
+      keys.push([`/admin/feedback/report/${feedbackID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Statistics on shadow events and feedback reports.
+ * Returned by `GET /api/v3/admin/feedback/stats`.
+ */
+export interface EventFeedbackStats {
+  /// How many events of type shadow or workshop are on the schedule.
+  totalShadowEvents: number;
+  /// How many shadow events have completed.
+  completedShadowEvents: number;
+  /// How many feedback reports have been received. The same event may have multiple reports.
+  totalFeedbackReports: number;
+  /// How many shadow events have at least one report.
+  uniqueEventsWithFeedback: number;
+}
+
+export namespace EventFeedbackStats {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/admin/feedback/stats']];
+  };
+}
+
 export interface UserProfileUploadData {
   /// Basic info about the user--their ID, username, displayname, and avatar image. May be nil on POST.
   header?: UserHeader;
@@ -657,6 +798,10 @@ export interface RegistrationCodeUserData {
   users: UserHeader[];
   /// The registration code associated with this account. If this account doesn't have an associated regcode, will be the empty string.
   regCode: string;
+  /// TRUE if this reg code was created to get allocated to a Discord user for the purpose of creating an account on the pre-prod server.
+  isForDiscordUser: boolean;
+  /// If this reg code has been allocated to a Discord user, the name of the user. Nil if not a Discord regcode or if not yet allocated.
+  discordUsername?: string;
   /// TRUE if this account already used its registration code for password recovery.
   hasUsedRegCodeForPasswordRecovery: boolean;
   /// Account creation time of the primary user. Nil if the code has not been used to create an account.
@@ -1089,6 +1234,12 @@ export interface TimeZoneChangeData {
   currentOffsetSeconds: number;
 }
 
+export namespace TimeZoneChangeData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/admin/timezonechanges']];
+  };
+}
+
 /// Parameters for the game recommender engine. Pass these values in, get back a `BoardgameResponseData` with a
 /// list of games filtered to match the criteria, and sorted based on how well they match the criteria. The sort takes into account each games'
 /// overall rating from BGG, the recommended number of players (not just min and max allowed players), the average playtime,
@@ -1218,6 +1369,89 @@ export namespace BoardgameData {
     }
     return queryKeys;
   };
+}
+
+/// Used to return a list of hunts.
+/// We probably don't have enough of them to require a paginator for now.
+/// Returned by:
+/// * `GET /api/v3/hunts`
+export interface HuntListData {
+  hunts: HuntListItemData[];
+}
+
+export namespace HuntListData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/hunts']];
+  };
+}
+
+export interface HuntListItemData {
+  huntID: string;
+  title: string;
+  description: string;
+}
+
+/// Used to return a single hunt in as much detail as the caller can see.
+/// For example, it only includes the currently unlocked puzzles, and puzzles
+/// only have their answer field set if the user is logged in and has solved them.
+/// Returned by:
+/// * `GET /api/v3/hunts/:huntID`
+/// * `GET /api/v3/hunts/:huntID/admin`
+export interface HuntData {
+  huntID: string;
+  title: string;
+  description: string;
+  /// For solvers, only contains puzzles which are unlocked
+  puzzles: HuntPuzzleData[];
+  /// If any puzzles are locked, the time of the next one to unlock.
+  nextUnlockTime?: string;
+}
+
+export namespace HuntData {
+  export const getCacheKeys = (huntID?: string): QueryKey[] => {
+    const keys = HuntListData.getCacheKeys();
+    if (huntID) {
+      keys.push([`/hunts/${huntID}`]);
+      keys.push([`/hunts/${huntID}/admin`]);
+    }
+    return keys;
+  };
+}
+
+export interface HuntPuzzleData {
+  puzzleID: string;
+  title: string;
+  body: string;
+  /// The answer to this puzzle, if you have solved it or are using the admin interface.
+  answer?: string;
+  unlockTime?: string;
+  /// Only set if fetched via the admin interface
+  hints?: Record<string, string>;
+}
+
+/// A single puzzle, including (if you're logged in) all of your callin attempts on it.
+/// Returned by:
+/// * `GET /api/v3/hunts/puzzles/:puzzleID`
+export interface HuntPuzzleDetailData {
+  huntID: string;
+  huntTitle: string;
+  puzzleID: string;
+  title: string;
+  body: string;
+  /// Will be sorted in ascending order by creationTime.
+  /// The puzzle is solved if any of these have "correct" set.
+  callIns: HuntPuzzleCallInResultData[];
+}
+
+export interface HuntPuzzleCallInResultData {
+  /// ISO 8601 date string.
+  creationTime: string;
+  /// What the user called in, without normalization
+  rawSubmission: string;
+  /// If the callin was correct, this will be the canonical form of the answer.
+  correct?: string;
+  /// If the answer wasn't correct but matched a configured hint, this is the nudge.
+  hint?: string;
 }
 
 /// Used to create and update Performer models.

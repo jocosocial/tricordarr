@@ -9,7 +9,6 @@ import {ForumCategoriesScreen} from '#src/Screens/Forum/ForumCategoriesScreen';
 import {ForumCategoryScreen} from '#src/Screens/Forum/ForumCategoryScreen';
 import {ForumPostAlertwordScreen} from '#src/Screens/Forum/Post/ForumPostAlertwordScreen';
 import {ForumPostFavoriteScreen} from '#src/Screens/Forum/Post/ForumPostFavoriteScreen';
-import {ForumPostMentionScreen} from '#src/Screens/Forum/Post/ForumPostMentionScreen';
 import {ForumPostSelfScreen} from '#src/Screens/Forum/Post/ForumPostSelfScreen';
 import {ForumThreadCreateScreen} from '#src/Screens/Forum/Thread/ForumThreadCreateScreen';
 import {ForumThreadFavoritesScreen} from '#src/Screens/Forum/Thread/ForumThreadFavoritesScreen';
@@ -41,11 +40,6 @@ export const ForumStackNavigator = () => {
         options={{
           title: 'Forums',
         }}
-      />
-      <Stack.Screen
-        name={ForumStackComponents.forumPostMentionScreen}
-        component={ForumPostMentionScreen}
-        options={{title: 'Posts Mentioning You'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumPostSelfScreen}
