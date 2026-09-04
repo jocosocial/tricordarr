@@ -5,12 +5,12 @@ import {View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {Item} from 'react-navigation-header-buttons';
 
-import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {ForumCreateForm} from '#src/Components/Forms/Forum/ForumCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
@@ -132,7 +132,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <PostAsUserBanner />
+      <PostAsUserWarningView />
       <ScrollingContentView>
         <ForumCreateForm onSubmit={onForumSubmit} formRef={forumFormRef} onValidationChange={setForumFormValid} />
       </ScrollingContentView>

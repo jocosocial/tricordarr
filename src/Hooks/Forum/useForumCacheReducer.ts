@@ -1,5 +1,6 @@
 import {InfiniteData, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
+import {v4 as uuidv4} from 'uuid';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -23,10 +24,13 @@ import {
   CategoryData,
   ForumData,
   ForumListData,
+  ForumPostModerationData,
   ForumSearchData,
   PostData,
   PostDetailData,
+  PostEditLogData,
   PostSearchData,
+  UserHeader,
 } from '#src/Structs/ControllerStructs';
 
 /**
@@ -799,6 +803,44 @@ export const useForumCacheReducer = () => {
   );
 
   /**
+   * After a moderator-initiated post edit, patch the forum post moderation
+   * cache: update the cached PostDetailData's text/images and insert a
+   * synthetic PostEditLogData entry (the pre-edit snapshot). Uses the
+   * submitted content, not the public PostData — quarantined posts return
+   * placeholder copy such as "this forum post is under moderator review".
+   * The server records the authoritative edit log entry; this keeps the
+   * moderation screen in sync until the next refetch.
+   */
+  const updatePostModeration = useCallback(
+    (
+      postID: number,
+      previousPost: PostData,
+      nextText: string,
+      nextImages: string[] | undefined,
+      editor: UserHeader,
+    ) => {
+      const newEdit: PostEditLogData = {
+        postID,
+        editID: uuidv4(),
+        createdAt: new Date().toISOString(),
+        author: editor,
+        text: previousPost.text,
+        images: previousPost.images,
+      };
+      queryClient.setQueriesData<ForumPostModerationData>({queryKey: [`/mod/forumpost/${postID}`]}, oldData =>
+        oldData
+          ? {
+              ...oldData,
+              forumPost: {...oldData.forumPost, text: nextText, images: nextImages},
+              edits: [...oldData.edits, newEdit],
+            }
+          : oldData,
+      );
+    },
+    [queryClient],
+  );
+
+  /**
    * Remove a post from thread, search, pinned posts, and post detail caches.
    * Decrements postCount in all forum list caches.
    */
@@ -929,6 +971,7 @@ export const useForumCacheReducer = () => {
     updatePinned,
     updatePost,
     updatePostBookmark,
+    updatePostModeration,
     updatePostPin,
   };
 };

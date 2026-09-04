@@ -13,12 +13,24 @@ import {ForumThreadScreenBase} from '#src/Screens/Forum/Thread/ForumThreadScreen
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadPostScreen>;
 
+/**
+ * Site UI fallback uses /forum/{forumID}?startPost= when we have the forum UUID.
+ * /forum/containingpost/{postID} 404s for deleted posts the same way the API
+ * /forum/post/{id}/forum does.
+ */
+const getSiteUiPath = (forumID: string | undefined, postID: string) => {
+  if (forumID) {
+    return `/forum/${forumID}?startPost=${postID}`;
+  }
+  return `/forum/containingpost/${postID}`;
+};
+
 export const ForumThreadPostScreen = (props: Props) => {
   return (
     <PreRegistrationScreen helpScreen={CommonStackComponents.forumThreadHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.forums}
-        urlPath={`/forum/containingpost/${props.route.params.postID}`}>
+        urlPath={getSiteUiPath(props.route.params.forumID, props.route.params.postID)}>
         <ForumThreadPostScreenInner {...props} />
       </DisabledFeatureScreen>
     </PreRegistrationScreen>
@@ -26,6 +38,8 @@ export const ForumThreadPostScreen = (props: Props) => {
 };
 
 const ForumThreadPostScreenInner = ({route, navigation}: Props) => {
+  // Forward forumID so the query uses /forum/{forumID}?startPost= instead of
+  // /forum/post/{id}/forum, which 404s when the post is soft-deleted.
   const {
     data,
     refetch,
@@ -35,7 +49,7 @@ const ForumThreadPostScreenInner = ({route, navigation}: Props) => {
     isFetchingNextPage,
     isFetchingPreviousPage,
     hasNextPage,
-  } = useForumThreadQuery(undefined, route.params.postID);
+  } = useForumThreadQuery(route.params.forumID, route.params.postID);
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
@@ -85,6 +99,7 @@ const ForumThreadPostScreenInner = ({route, navigation}: Props) => {
       hasNextPage={hasNextPage}
       getListHeader={route.params.postID ? getListHeader : undefined}
       initialElevation={route.params.asPrivilegedUser}
+      startFromPost={true}
     />
   );
 };

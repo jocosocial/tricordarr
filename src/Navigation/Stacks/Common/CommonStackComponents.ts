@@ -25,6 +25,7 @@ import {
   ScheduleDayParams,
   WithElevation,
   WithInitialUserHeaders,
+  WithIntent,
   WithScrollToTopIntent,
 } from '#src/Types/RouteParams';
 
@@ -66,6 +67,40 @@ export type CommonStackParamList = {
     contentID: string | number;
   };
   ReportHelpScreen: undefined;
+  ModeratorRootScreen: undefined;
+  ModeratorReportsScreen: {
+    closed?: boolean;
+  };
+  ModeratorLogScreen: undefined;
+  ModeratorGuideScreen: undefined;
+  ForumPostModerateScreen: {
+    id: string;
+  };
+  ForumModerateScreen: {
+    id: string;
+  };
+  FezModerateScreen: {
+    id: string;
+  };
+  FezPostModerateScreen: {
+    id: string;
+  };
+  ProfileModerateScreen: {
+    id: string;
+  };
+  UserModerateScreen: {
+    id: string;
+  };
+  PhotostreamModerateScreen: {
+    id: string;
+  };
+  PersonalEventModerateScreen: {
+    id: string;
+  };
+  MicroKaraokeSongsModerateScreen: undefined;
+  MicroKaraokeSongModerateScreen: {
+    id: string;
+  };
   EasterEggScreen: undefined;
   ForumThreadUserScreen: {
     user: UserHeader;
@@ -93,11 +128,15 @@ export type CommonStackParamList = {
   MuteKeywordsScreen: undefined;
   ForumThreadPostScreen: WithElevation<{
     postID: string;
+    forumID?: string;
   }>;
-  ForumPostEditScreen: {
-    postData: PostData;
-    forumData?: ForumData;
-  };
+  ForumPostEditScreen: WithIntent<
+    {
+      postData: PostData;
+      forumID?: string;
+    },
+    'moderate'
+  >;
   SeamailListScreen: WithElevation<
     WithScrollToTopIntent<
       NoDrawerParams & {
@@ -365,6 +404,20 @@ export enum CommonStackComponents {
   recoveryKeyScreen = 'RecoveryKeyScreen',
   reportScreen = 'ReportScreen',
   reportHelpScreen = 'ReportHelpScreen',
+  moderatorRootScreen = 'ModeratorRootScreen',
+  moderatorReportsScreen = 'ModeratorReportsScreen',
+  moderatorLogScreen = 'ModeratorLogScreen',
+  moderatorGuideScreen = 'ModeratorGuideScreen',
+  forumPostModerateScreen = 'ForumPostModerateScreen',
+  forumModerateScreen = 'ForumModerateScreen',
+  fezModerateScreen = 'FezModerateScreen',
+  fezPostModerateScreen = 'FezPostModerateScreen',
+  profileModerateScreen = 'ProfileModerateScreen',
+  userModerateScreen = 'UserModerateScreen',
+  photostreamModerateScreen = 'PhotostreamModerateScreen',
+  personalEventModerateScreen = 'PersonalEventModerateScreen',
+  microKaraokeSongsModerateScreen = 'MicroKaraokeSongsModerateScreen',
+  microKaraokeSongModerateScreen = 'MicroKaraokeSongModerateScreen',
   easterEggScreen = 'EasterEggScreen',
   forumThreadUserScreen = 'ForumThreadUserScreen',
   forumPostUserScreen = 'ForumPostUserScreen',
@@ -572,6 +625,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.todayHelpScreen
   | CommonStackComponents.krakenTalkHelpScreen
   | CommonStackComponents.reportHelpScreen
+  | CommonStackComponents.moderatorGuideScreen
   | CommonStackComponents.adminHelpScreen
   | CommonStackComponents.announcementHelpScreen
   | CommonStackComponents.registrationCodeHelpScreen

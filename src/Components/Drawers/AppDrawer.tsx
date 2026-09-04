@@ -231,7 +231,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 <PaperDrawer.Item
                   label={'Moderator Actions'}
                   icon={AppIcons.moderator}
-                  onPress={() => Linking.openURL(appSiteUrl('moderator'))}
+                  onPress={() => Linking.openURL(appUrl('moderator'))}
                   right={getModBadge}
                 />
               )}

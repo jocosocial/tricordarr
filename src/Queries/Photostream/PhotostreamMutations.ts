@@ -16,7 +16,10 @@ export const usePhotostreamImageUploadMutation = () => {
   return useTokenAuthMutation(queryHandler);
 };
 
-// There is no delete handler. Per cfry 2024/08/27:
-// Mods can delete photos, and letting users delete their photos increases
-// the chance people will try posting bad photos and quickly deleting them
-// before they can be reported.
+/**
+ * Moderators can delete photostream photos. Authors cannot delete their own, so there is
+ * no user-facing delete. Per cfry 2024/08/27: letting users delete increases the chance
+ * people will try posting bad photos and quickly deleting them before they can be reported.
+ *
+ * Prefer `usePhotostreamModerationDeleteMutation` in `#src/Queries/Moderation/ModerationMutations`.
+ */

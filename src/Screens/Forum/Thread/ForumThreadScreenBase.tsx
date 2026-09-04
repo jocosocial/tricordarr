@@ -7,7 +7,6 @@ import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
@@ -21,6 +20,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
@@ -59,6 +59,12 @@ interface Props {
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
   initialElevation?: keyof typeof PrivilegedUserAccounts;
+  /**
+   * True when this thread was opened from a specific post. `startPost` returns that
+   * post as the first item, so we must not treat a missing forumListData as fully-read
+   * and scroll to the end.
+   */
+  startFromPost?: boolean;
 }
 
 /**
@@ -87,6 +93,7 @@ const ForumThreadScreenBaseInner = ({
   hasPreviousPage,
   getListHeader,
   forumListData,
+  startFromPost,
 }: Props) => {
   const navigation = useCommonStack();
   const {asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam} = useElevation();
@@ -264,6 +271,11 @@ const ForumThreadScreenBaseInner = ({
   }
 
   const getInitialScrollIndex = () => {
+    // startPost returns the selected post as the first item on the page. The
+    // fully-read path below would scroll to the last loaded post and hide it.
+    if (startFromPost) {
+      return forumPosts.length > 0 ? 0 : undefined;
+    }
     if (!forumListData || forumListData.readCount === forumListData.postCount) {
       // Fully read: scroll to the last post via initialScrollIndex.
       // We use this instead of scrollToEnd because scrollToEnd fires before
@@ -296,7 +308,7 @@ const ForumThreadScreenBaseInner = ({
 
   return (
     <AppView>
-      <PostAsUserBanner />
+      <PostAsUserWarningView />
       <ListTitleView
         title={forumData?.title ?? ''}
         subtitle={pinnedPostsSubtitle}
@@ -317,6 +329,7 @@ const ForumThreadScreenBaseInner = ({
           forumListData={forumListData}
           initialScrollIndex={getInitialScrollIndex()}
           onReadyToShow={onReadyToShow}
+          startFromPost={startFromPost}
         />
         {!readyToShow && (
           <View style={overlayStyles.overlay}>

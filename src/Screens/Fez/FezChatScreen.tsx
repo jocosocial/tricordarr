@@ -7,7 +7,6 @@ import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
@@ -19,6 +18,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {FezMutedView} from '#src/Components/Views/Static/FezMutedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
@@ -422,7 +422,7 @@ const FezChatScreenInner = ({route}: Props) => {
   return (
     <AppView>
       <ListTitleView title={fez.title} />
-      <PostAsUserBanner />
+      <PostAsUserWarningView />
       {fez.members?.isMuted && <FezMutedView />}
       <View style={commonStyles.flex}>
         <FezConversationListV2

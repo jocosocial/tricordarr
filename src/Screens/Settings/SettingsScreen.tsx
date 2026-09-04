@@ -3,9 +3,9 @@ import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
+import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
 import {SettingsAccountListItem} from '#src/Components/Lists/Items/Settings/SettingsAccountListItem';
 import {SettingsLoginListItem} from '#src/Components/Lists/Items/Settings/SettingsLoginListItem';
-import {SettingsNavigationListItem} from '#src/Components/Lists/Items/Settings/SettingsNavigationListItem';
 import {SettingsRegistrationListItem} from '#src/Components/Lists/Items/Settings/SettingsRegistrationListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -43,12 +43,12 @@ export const SettingsScreen = ({navigation}: Props) => {
             <ListSubheader>General</ListSubheader>
             {tokenData ? <SettingsAccountListItem /> : <SettingsLoginListItem />}
             {!tokenData && <SettingsRegistrationListItem />}
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Server URL'}
               description={'URL of the Twitarr server.'}
               navComponent={CommonStackComponents.configServerUrl}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Appearance'}
               description={'Theme and styling options for this app.'}
               navComponent={CommonStackComponents.accessibilitySettingsScreen}
@@ -57,17 +57,17 @@ export const SettingsScreen = ({navigation}: Props) => {
           <Divider bold={true} />
           <ListSection>
             <ListSubheader>Notifications</ListSubheader>
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Push Notifications'}
               description={'Configure what events you wish to trigger a push notification.'}
               navComponent={SettingsStackScreenComponents.pushNotificationSettings}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Background Worker'}
               description={'Manage the worker that maintains a connection to the server when this app is not running.'}
               navComponent={SettingsStackScreenComponents.backgroundConnectionSettings}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Polling'}
               description={'Configure periodic notification updates that happen while the app is running.'}
               navComponent={SettingsStackScreenComponents.notificationPollerSettingsScreen}
@@ -76,32 +76,32 @@ export const SettingsScreen = ({navigation}: Props) => {
           <Divider bold={true} />
           <ListSection>
             <ListSubheader>Content</ListSubheader>
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Chat Settings'}
               description={'Settings for Seamail and KrakenTalk.'}
               navComponent={CommonStackComponents.chatSettingsScreen}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Forum Settings'}
               description={'Settings for Forum threads and categories.'}
               navComponent={CommonStackComponents.forumSettingsScreen}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Image Settings'}
               description={'Manage settings for images.'}
               navComponent={CommonStackComponents.imageSettingsScreen}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'LFG Settings'}
               description={'Settings for community organized events.'}
               navComponent={CommonStackComponents.lfgSettingsScreen}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Schedule Settings'}
               description={'Settings related to the day and schedule.'}
               navComponent={CommonStackComponents.eventSettingsScreen}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Share Settings'}
               description={'Setings for sharing content with other users and apps.'}
               navComponent={CommonStackComponents.shareSettingsScreen}
@@ -110,37 +110,37 @@ export const SettingsScreen = ({navigation}: Props) => {
           <Divider bold={true} />
           <ListSection>
             <ListSubheader>Troubleshooting</ListSubheader>
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Logging'}
               description={'Configure app logging and export log files.'}
               navComponent={SettingsStackScreenComponents.loggingSettings}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Time'}
               description={'Clock and time settings for this app.'}
               navComponent={SettingsStackScreenComponents.timeSettingsScreen}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Cruise Settings'}
               description={'Settings for the cruise.'}
               navComponent={SettingsStackScreenComponents.cruiseSettingsScreen}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Manage Features'}
               description={'Show server feature state and manage experiments.'}
               navComponent={SettingsStackScreenComponents.featureSettingsScreen}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Query Client'}
               description={'Settings for the Twitarr API client.'}
               navComponent={SettingsStackScreenComponents.querySettingsScreen}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'Sessions'}
               description={'Manage local account sessions.'}
               navComponent={SettingsStackScreenComponents.sessionSettings}
             />
-            <SettingsNavigationListItem
+            <NavigationListItem
               title={'About'}
               description={'Show version information about this app and your device.'}
               navComponent={SettingsStackScreenComponents.aboutSettingsScreen}
@@ -151,22 +151,22 @@ export const SettingsScreen = ({navigation}: Props) => {
               <Divider bold={true} />
               <ListSection>
                 <ListSubheader>Developers</ListSubheader>
-                <SettingsNavigationListItem
+                <NavigationListItem
                   title={'Test Notifications'}
                   description={'Generate a test notification for debugging.'}
                   navComponent={SettingsStackScreenComponents.testNotification}
                 />
-                <SettingsNavigationListItem
+                <NavigationListItem
                   title={'Errors'}
                   description={'Generate test error messages.'}
                   navComponent={SettingsStackScreenComponents.testError}
                 />
-                <SettingsNavigationListItem
+                <NavigationListItem
                   title={'Sockets'}
                   description={'Manage websocket internals.'}
                   navComponent={SettingsStackScreenComponents.socketSettings}
                 />
-                <SettingsNavigationListItem
+                <NavigationListItem
                   title={'Out-of-box Experience'}
                   description={'Internal OOBE information.'}
                   navComponent={SettingsStackScreenComponents.oobeSettings}

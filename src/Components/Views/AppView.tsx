@@ -9,9 +9,9 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ErrorBanner} from '#src/Components/Banners/ErrorBanner';
 import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
-import {ConnectionDisruptedView} from '#src/Components/Views/Warnings/ConnectionDisruptedView';
+import {ConnectionDisruptedWarningView} from '#src/Components/Views/Warnings/ConnectionDisruptedWarningView';
 import {PreRegistrationWarningView} from '#src/Components/Views/Warnings/PreRegistrationWarningView';
-import {UnsavedChangesView} from '#src/Components/Views/Warnings/UnsavedChangesView';
+import {UnsavedChangesWarningView} from '#src/Components/Views/Warnings/UnsavedChangesWarningView';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useLayout} from '#src/Context/Contexts/LayoutContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
@@ -107,9 +107,9 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
           <AppSnackbar />
         </Portal>
         {preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
-        {disruptionDetected && <ConnectionDisruptedView />}
+        {disruptionDetected && <ConnectionDisruptedWarningView />}
         {children}
-        <UnsavedChangesView isVisible={hasUnsavedWork} />
+        <UnsavedChangesWarningView isVisible={hasUnsavedWork} />
       </ModuleKeyboardAvoidingView>
     </View>
   );

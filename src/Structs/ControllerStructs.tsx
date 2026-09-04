@@ -5,9 +5,12 @@ import pluralize from 'pluralize';
 import URLParse from 'url-parse';
 
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {FezType} from '#src/Enums/FezType';
 import {LikeType} from '#src/Enums/LikeType';
+import {ModeratorActionType} from '#src/Enums/ModeratorActionType';
+import {ReportType} from '#src/Enums/ReportType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {createLogger} from '#src/Libraries/Logger';
@@ -946,7 +949,7 @@ export interface PostDetailData {
   /// The ID of the post.
   postID: number;
   /// The ID of the Forum containing the post.
-  forumID: number;
+  forumID: string;
   /// The timestamp of the post.
   createdAt: string;
   /// The post's author.
@@ -1582,4 +1585,361 @@ export interface CurrentUserData {
   accessLevel: UserAccessLevel;
   /// A list of the user's roles
   roles: UserRoleType[];
+}
+
+export interface ReportModerationData {
+  /// The id of the report.
+  id: string;
+  /// The type of content being reported.
+  type: ReportType;
+  /// The ID of the reported entity. Could resolve to an Int or a UUID, depending on `type`.
+  reportedID: string;
+  /// The user that authored the content being reported.
+  reportedUser: UserHeader;
+  /// Text the report author wrote when submitting the report.
+  submitterMessage?: string;
+  /// The user that submitted the report, not the author of the reported content.
+  author: UserHeader;
+  /// The mod who handled (or closed) the report.
+  handledBy?: UserHeader;
+  /// TRUE if the report has been closed by moderators.
+  isClosed: boolean;
+  /// The time the submitter filed the report.
+  creationTime: string;
+  /// The last time the report has been modified.
+  updateTime: string;
+}
+
+export namespace ReportModerationData {
+  export const getCacheKeys = (): QueryKey[] => {
+    const keys: QueryKey[] = [['/mod/reports']];
+    return keys.concat(UserNotificationData.getCacheKeys());
+  };
+}
+
+/**
+ * Previous edit of a twarrt or forum post. The saved edit is the state BEFORE the editor changed it.
+ */
+export interface PostEditLogData {
+  /// The ID of the post. Depending on context, a twarrtID or a forumPostID.
+  postID: number;
+  /// The ID of the edit.
+  editID: string;
+  /// The timestamp of the edit.
+  createdAt: string;
+  /// Who initiated the edit. Usually the post author, but could be a moderator.
+  author: UserHeader;
+  /// The text of the post before this edit.
+  text: string;
+  /// The filenames of the post's optional images before this edit.
+  images?: string[];
+}
+
+/**
+ * Previous edit of a forum title or category.
+ */
+export interface ForumEditLogData {
+  /// The ID of the forum.
+  forumID: string;
+  /// The ID of the edit.
+  editID: string;
+  /// The timestamp of the edit.
+  createdAt: string;
+  /// Who initiated the edit.
+  author: UserHeader;
+  /// The title of the forum just BEFORE this edit.
+  title: string;
+  /// The category the forum was in just BEFORE this edit.
+  categoryID?: string;
+}
+
+/**
+ * Previous edit of a fez title, info, or location.
+ */
+export interface FezEditLogData {
+  /// The ID of the fez.
+  fezID: string;
+  /// The ID of the edit.
+  editID: string;
+  /// The timestamp of the edit.
+  createdAt: string;
+  /// Who initiated the edit.
+  author: UserHeader;
+  /// The title of the fez just before this edit.
+  title: string;
+  /// The info field just before this edit.
+  info: string;
+  /// The location field just before this edit.
+  location: string;
+}
+
+/**
+ * Previous edit of a user profile. Either `profileData` or `profileImage` is populated.
+ */
+export interface ProfileEditLogData {
+  editID: string;
+  createdAt: string;
+  author: UserHeader;
+  profileData?: UserProfileUploadData;
+  profileImage?: string;
+}
+
+/**
+ * Data a moderator needs to review a forum post.
+ * Returned by `GET /api/v3/mod/forumpost/:id`
+ */
+export interface ForumPostModerationData {
+  forumPost: PostDetailData;
+  isDeleted: boolean;
+  moderationStatus: ContentModerationStatus;
+  edits: PostEditLogData[];
+  reports: ReportModerationData[];
+}
+
+export namespace ForumPostModerationData {
+  export const getCacheKeys = (postID?: string, forumID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys();
+    if (postID) {
+      keys.push([`/mod/forumpost/${postID}`]);
+      keys.push([`/forum/post/${postID}`]);
+      keys.push([`/forum/post/${postID}/forum`]);
+    }
+    if (forumID) {
+      keys.push([`/forum/${forumID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Data a moderator needs to review a forum thread.
+ * Returned by `GET /api/v3/mod/forum/:id`
+ */
+export interface ForumModerationData {
+  forumID: string;
+  categoryID: string;
+  creator: UserHeader;
+  title: string;
+  createdAt: string;
+  moderationStatus: ContentModerationStatus;
+  isDeleted: boolean;
+  edits: ForumEditLogData[];
+  reports: ReportModerationData[];
+}
+
+export namespace ForumModerationData {
+  export const getCacheKeys = (forumID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys().concat([['/forum/categories']]);
+    if (forumID) {
+      keys.push([`/mod/forum/${forumID}`]);
+      keys.push([`/forum/${forumID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Data a moderator needs to review a fez (LFG or seamail).
+ * Returned by `GET /api/v3/mod/fez/:id`
+ */
+export interface FezModerationData {
+  fez: FezData;
+  isDeleted: boolean;
+  moderationStatus: ContentModerationStatus;
+  edits: FezEditLogData[];
+  reports: ReportModerationData[];
+}
+
+export namespace FezModerationData {
+  export const getCacheKeys = (fezID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys();
+    if (fezID) {
+      keys.push([`/mod/fez/${fezID}`]);
+      keys.push([`/fez/${fezID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Data a moderator needs to review a fez post. Fez posts cannot be edited.
+ * Returned by `GET /api/v3/mod/fezpost/:id`
+ */
+export interface FezPostModerationData {
+  fezPost: FezPostData;
+  fezID: string;
+  fezType: FezType;
+  isDeleted: boolean;
+  moderationStatus: ContentModerationStatus;
+  reports: ReportModerationData[];
+}
+
+export namespace FezPostModerationData {
+  export const getCacheKeys = (postID?: string, fezID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys();
+    if (postID) {
+      keys.push([`/mod/fezpost/${postID}`]);
+    }
+    if (fezID) {
+      keys.push([`/fez/${fezID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Data a moderator needs to review a user profile.
+ * Returned by `GET /api/v3/mod/profile/:id`
+ */
+export interface ProfileModerationData {
+  profile: UserProfileUploadData;
+  moderationStatus: ContentModerationStatus;
+  edits: ProfileEditLogData[];
+  reports: ReportModerationData[];
+}
+
+export namespace ProfileModerationData {
+  export const getCacheKeys = (userID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys();
+    if (userID) {
+      keys.push([`/mod/profile/${userID}`]);
+      keys.push([`/users/${userID}/profile`]);
+    }
+    return keys.concat(UserHeader.getCacheKeys());
+  };
+}
+
+/**
+ * Data a moderator needs to review a user account (access level, temp ban, reports).
+ * Returned by `GET /api/v3/mod/user/:id`
+ */
+export interface UserModerationData {
+  header: UserHeader;
+  subAccounts: UserHeader[];
+  accessLevel: UserAccessLevel;
+  tempQuarantineEndTime?: string;
+  reports: ReportModerationData[];
+}
+
+export namespace UserModerationData {
+  export const getCacheKeys = (userID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys();
+    if (userID) {
+      keys.push([`/mod/user/${userID}`]);
+    }
+    return keys.concat(UserHeader.getCacheKeys());
+  };
+}
+
+/**
+ * Data a moderator needs to review a photostream photo.
+ * Returned by `GET /api/v3/mod/photostream/:id`
+ */
+export interface PhotostreamModerationData {
+  photo: PhotostreamImageData;
+  isDeleted: boolean;
+  moderationStatus: ContentModerationStatus;
+  reports: ReportModerationData[];
+}
+
+export namespace PhotostreamModerationData {
+  export const getCacheKeys = (photoID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys().concat(PhotostreamImageData.getCacheKeys());
+    if (photoID) {
+      keys.push([`/mod/photostream/${photoID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Personal event as returned by the moderation API.
+ * Returned inside `PersonalEventModerationData`.
+ */
+export interface PersonalEventData {
+  personalEventID: string;
+  title: string;
+  description?: string;
+  startTime: string;
+  endTime: string;
+  timeZone: string;
+  timeZoneID: string;
+  location?: string;
+  lastUpdateTime: string;
+  owner: UserHeader;
+  participants: UserHeader[];
+}
+
+/**
+ * Data a moderator needs to review a personal event.
+ * Returned by `GET /api/v3/mod/personalevent/:id`
+ */
+export interface PersonalEventModerationData {
+  personalEvent: PersonalEventData;
+  isDeleted: boolean;
+  moderationStatus: ContentModerationStatus;
+  reports: ReportModerationData[];
+}
+
+export namespace PersonalEventModerationData {
+  export const getCacheKeys = (eventID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys();
+    if (eventID) {
+      keys.push([`/mod/personalevent/${eventID}`]);
+      keys.push([`/fez/${eventID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * A Micro Karaoke clip as returned to moderators.
+ * Returned by `GET /api/v3/mod/microkaraoke/snippets/:song_id`
+ */
+export interface MicroKaraokeSnippetModeration {
+  snippetID: string;
+  songID: number;
+  snippetIndex: number;
+  user: UserHeader;
+  videoURL?: string;
+}
+
+export namespace MicroKaraokeCompletedSong {
+  export const getModerationCacheKeys = (songID?: number): QueryKey[] => {
+    const keys: QueryKey[] = [['/mod/microkaraoke/songlist']];
+    if (songID !== undefined) {
+      keys.push([`/mod/microkaraoke/song/${songID}`]);
+      keys.push([`/mod/microkaraoke/snippets/${songID}`]);
+    }
+    return keys.concat(ReportModerationData.getCacheKeys());
+  };
+}
+
+/**
+ * One logged use of moderator powers.
+ * Included in `ModeratorActionLogResponseData`.
+ */
+export interface ModeratorActionLogData {
+  id: string;
+  actionType: ModeratorActionType;
+  contentType: ReportType;
+  contentID: string;
+  timestamp: string;
+  moderator: UserHeader;
+  targetUser: UserHeader;
+}
+
+/**
+ * Paginated moderator action log.
+ * Returned by `GET /api/v3/mod/moderationlog`
+ */
+export interface ModeratorActionLogResponseData {
+  actions: ModeratorActionLogData[];
+  paginator: Paginator;
+}
+
+export namespace ModeratorActionLogResponseData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/mod/moderationlog']];
+  };
 }
