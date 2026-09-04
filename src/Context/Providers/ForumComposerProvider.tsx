@@ -40,6 +40,10 @@ export const ForumComposerProvider = ({
           return;
         }
         const text = appendMention(form.values.text, username);
+        // Not awaited on purpose: this resolves with validation errors we don't act on,
+        // and the focus below is sequenced on the render rather than on that promise.
+        // Matches ElevationPrivilegeSync in ContentPostForm. (`no-void` rules out marking
+        // it with the void operator.)
         form.setFieldValue('text', text);
         // Opening the actions menu dismissed the keyboard and blurred the composer, so
         // without this the user is left looking at a mention they cannot type after.

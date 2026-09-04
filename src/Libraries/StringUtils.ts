@@ -29,6 +29,12 @@ export const toSecureString = (originalText?: string): string => {
  * Matching is case-insensitive because Swiftarr matches mentions case-insensitively
  * (`ContentFilterable.filterForMention` uses `.caseInsensitive`).
  *
+ * Trailing punctuation is ignored, so `@user,` at the end of a clause still counts as a
+ * mention. Swiftarr's usernames are `[A-Za-z0-9]` with `-.+_` only ever appearing between
+ * alphanumerics, so anything non-alphanumeric at the end of a word cannot be part of the
+ * name. Leading characters are not stripped: Swiftarr's `(?<!\S)@` requires the `@` to
+ * follow whitespace or start the string, so `(@user` is not a mention to begin with.
+ *
  * @param text The text to search.
  * @param username The username to look for, without the leading `@`.
  * @returns True if the text already mentions that user.
@@ -38,7 +44,7 @@ export const isMentioned = (text: string, username: string): boolean => {
   return text
     .toLowerCase()
     .split(/\s+/)
-    .some(token => token === mention);
+    .some(token => token.replace(/[^a-z0-9]+$/, '') === mention);
 };
 
 /**
