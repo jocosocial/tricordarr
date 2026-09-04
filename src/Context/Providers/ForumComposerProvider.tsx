@@ -45,11 +45,17 @@ export const ForumComposerProvider = ({
         // Matches ElevationPrivilegeSync in ContentPostForm. (`no-void` rules out marking
         // it with the void operator.)
         form.setFieldValue('text', text);
-        // Opening the actions menu dismissed the keyboard and blurred the composer, so
-        // without this the user is left looking at a mention they cannot type after.
-        // Deferred a frame so focus lands after the new value has been applied, and the
+        // Opening the actions menu leaves the composer unusable, so without this the user
+        // is looking at a mention they cannot type after. The two platforms get there
+        // differently: iOS fully blurs the field, while Android keeps focus and the caret
+        // but closes the soft keyboard. `focus()` alone fixes iOS but is a no-op on
+        // Android, where the field never lost focus — hence the explicit blur first, which
+        // forces the keyboard back up on both.
+        //
+        // Deferred a frame so this lands after the new value has been applied, and the
         // caret is placed explicitly rather than wherever the field was last left.
         requestAnimationFrame(() => {
+          inputRef.current?.blur();
           inputRef.current?.focus();
           // setSelection rather than setNativeProps: this app runs the new architecture,
           // where setNativeProps goes through legacy viewConfig attribute filtering.

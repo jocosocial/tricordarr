@@ -20,7 +20,13 @@ env:
 # keyboard is up, and an open keyboard covers the bottom tab bar, so the tab tap below
 # would otherwise land on the keyboard and never navigate. No clearState: the session is
 # reused so the flow stays signed in.
-- launchApp
+#
+# The launch argument suppresses the Expo dev-menu sheet, which otherwise covers the app
+# on the first launch after app data is cleared and swallows the taps below. Same argument
+# SetupApp.yaml passes.
+- launchApp:
+    arguments:
+      '-EXDevMenuIsOnboardingFinished': true
 # Tab labels bundle icon glyphs in with the text ("<glyph>, <glyph>, Forums, Forums"), so
 # every text selector here needs wildcards rather than a bare literal.
 - tapOn: '(?s).*Forums.*'
