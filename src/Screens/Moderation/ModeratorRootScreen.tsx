@@ -33,12 +33,12 @@ const ModeratorRootScreenInner = () => {
           <Divider bold={true} />
           <ListSection>
             <NavigationListItem
-              title={
-                moderatorData?.openReportCount ? `Open Reports (${moderatorData.openReportCount})` : 'Open Reports'
-              }
+              title={'Open Reports'}
               description={'Reports that still need a moderator decision.'}
               navComponent={CommonStackComponents.moderatorReportsScreen}
               params={{closed: false}}
+              unreadCount={moderatorData?.openReportCount}
+              unreadUnit={'report'}
             />
             <NavigationListItem
               title={'Closed Reports'}

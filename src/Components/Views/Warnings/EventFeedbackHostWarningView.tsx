@@ -1,7 +1,6 @@
-import React, {useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Text} from 'react-native-paper';
+import React from 'react';
 
+import {BaseWarningView} from '#src/Components/Views/Warnings/BaseWarningView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 /**
@@ -10,36 +9,14 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 export const EventFeedbackHostWarningView = () => {
   const {commonStyles} = useStyles();
 
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        headerView: {
-          ...commonStyles.twitarrNegative,
-          ...commonStyles.alignItemsCenter,
-          ...commonStyles.paddingVerticalSmall,
-          ...commonStyles.paddingHorizontal,
-        },
-        headerText: {
-          ...commonStyles.onTwitarrButton,
-          ...commonStyles.bold,
-          ...commonStyles.textCenter,
-          ...commonStyles.fullWidth,
-        },
-        subText: {
-          ...commonStyles.onTwitarrButton,
-          ...commonStyles.textCenter,
-          ...commonStyles.fullWidth,
-        },
-      }),
-    [commonStyles],
-  );
-
   return (
-    <View style={styles.headerView}>
-      <Text style={styles.headerText}>For Event Hosts Only</Text>
-      <Text variant={'bodyMedium'} style={styles.subText}>
-        Please don't use this to give feedback about events you attended. Save that for the post-cruise survey.
-      </Text>
-    </View>
+    <BaseWarningView
+      variant={'negative'}
+      title={'For Event Hosts Only'}
+      message={
+        "Please don't use this to give feedback about events you attended. Save that for the post-cruise survey."
+      }
+      containerStyle={commonStyles.paddingHorizontal}
+    />
   );
 };

@@ -125,7 +125,6 @@ import {PhotostreamModerateScreen} from '#src/Screens/Moderation/PhotostreamMode
 import {ProfileModerateScreen} from '#src/Screens/Moderation/ProfileModerateScreen';
 import {ReportHelpScreen} from '#src/Screens/Moderation/ReportHelpScreen';
 import {ReportScreen} from '#src/Screens/Moderation/ReportScreen';
-import {TwarrtModerateScreen} from '#src/Screens/Moderation/TwarrtModerateScreen';
 import {UserModerateScreen} from '#src/Screens/Moderation/UserModerateScreen';
 import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScreen';
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
@@ -286,11 +285,6 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.moderatorForumMentionsScreen}
         component={ModeratorForumMentionsScreen}
         options={{title: '@moderator Mentions'}}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.twarrtModerateScreen}
-        component={TwarrtModerateScreen}
-        options={{title: 'Moderate Twarrt'}}
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostModerateScreen}

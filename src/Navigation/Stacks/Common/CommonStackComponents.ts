@@ -74,9 +74,6 @@ export type CommonStackParamList = {
   ModeratorGuideScreen: undefined;
   ModeratorSeamailScreen: undefined;
   ModeratorForumMentionsScreen: undefined;
-  TwarrtModerateScreen: {
-    id: string;
-  };
   ForumPostModerateScreen: {
     id: string;
   };
@@ -132,6 +129,7 @@ export type CommonStackParamList = {
   MuteKeywordsScreen: undefined;
   ForumThreadPostScreen: WithElevation<{
     postID: string;
+    forumID?: string;
   }>;
   ForumPostEditScreen: {
     postData: PostData;
@@ -410,7 +408,6 @@ export enum CommonStackComponents {
   moderatorGuideScreen = 'ModeratorGuideScreen',
   moderatorSeamailScreen = 'ModeratorSeamailScreen',
   moderatorForumMentionsScreen = 'ModeratorForumMentionsScreen',
-  twarrtModerateScreen = 'TwarrtModerateScreen',
   forumPostModerateScreen = 'ForumPostModerateScreen',
   forumModerateScreen = 'ForumModerateScreen',
   fezModerateScreen = 'FezModerateScreen',

@@ -4,14 +4,16 @@ import {Text} from 'react-native-paper';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {APIImage} from '#src/Components/Images/APIImage';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {ModerationContentPreview} from '#src/Components/Views/Moderation/ModerationContentPreview';
-import {ModerationDeletedNotice} from '#src/Components/Views/Moderation/ModerationDeletedNotice';
-import {ModerationReportsSection} from '#src/Components/Views/Moderation/ModerationReportsSection';
+import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
@@ -60,11 +62,11 @@ const PhotostreamModerateScreenInner = ({route}: Props) => {
 
   return (
     <AppView>
+      <ModerationDeletedWarningView contentLabel={'photostream photo'} visible={data.isDeleted} />
       <ScrollingContentView
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ModerationDeletedNotice contentLabel={'photostream photo'} visible={data.isDeleted} />
         <PaddedContentView padTop={true}>
           <ModerationContentPreview
             author={data.photo.author}
@@ -90,18 +92,22 @@ const PhotostreamModerateScreenInner = ({route}: Props) => {
               },
               {
                 label: 'View Author Photos',
-                onPress: () => navigation.push(CommonStackComponents.photostreamUserScreen, {user: data.photo.author}),
+                onPress: () =>
+                  navigation.push(CommonStackComponents.photostreamUserScreen, {user: data.photo.author}),
               },
             ]}
           />
         </PaddedContentView>
-        <ModerationReportsSection
-          reports={data.reports}
-          contentLabel={'photo'}
-          isLoading={actions.isLoading}
-          onHandleAll={() => actions.handleAll(data.reports)}
-          onCloseAll={() => actions.closeAll(data.reports)}
-        />
+        <ListSection>
+          <ListSubheader>Reports</ListSubheader>
+        </ListSection>
+        {data.reports.length === 0 ? (
+          <PaddedContentView padTop={true}>
+            <Text>No reports on this photo.</Text>
+          </PaddedContentView>
+        ) : (
+          data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
+        )}
       </ScrollingContentView>
     </AppView>
   );

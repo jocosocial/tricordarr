@@ -949,7 +949,7 @@ export interface PostDetailData {
   /// The ID of the post.
   postID: number;
   /// The ID of the Forum containing the post.
-  forumID: number;
+  forumID: string;
   /// The timestamp of the post.
   createdAt: string;
   /// The post's author.
@@ -1682,43 +1682,6 @@ export interface ProfileEditLogData {
   author: UserHeader;
   profileData?: UserProfileUploadData;
   profileImage?: string;
-}
-
-/**
- * Twarrt as returned to clients. Only needed in Tricordarr for moderator review.
- */
-export interface TwarrtData {
-  twarrtID: number;
-  createdAt: string;
-  author: UserHeader;
-  text: string;
-  images?: string[];
-  replyGroupID?: number;
-  isBookmarked: boolean;
-  userLike?: LikeType;
-  likeCount: number;
-}
-
-/**
- * Data a moderator needs to review a twarrt.
- * Returned by `GET /api/v3/mod/twarrt/:id`
- */
-export interface TwarrtModerationData {
-  twarrt: TwarrtData;
-  isDeleted: boolean;
-  moderationStatus: ContentModerationStatus;
-  edits: PostEditLogData[];
-  reports: ReportModerationData[];
-}
-
-export namespace TwarrtModerationData {
-  export const getCacheKeys = (twarrtID?: string): QueryKey[] => {
-    const keys = ReportModerationData.getCacheKeys();
-    if (twarrtID) {
-      keys.push([`/mod/twarrt/${twarrtID}`]);
-    }
-    return keys;
-  };
 }
 
 /**

@@ -5,7 +5,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stack
 
 /**
  * Opens the native moderation screen for a piece of content.
- * Quartermaster is not implemented in the app, so it falls back to the site UI.
+ * Twarrts and Quartermaster are not implemented in the app, so they fall back to the site UI.
  */
 export const pushModerateScreen = (
   navigation: StackNavigationProp<CommonStackParamList>,
@@ -14,7 +14,11 @@ export const pushModerateScreen = (
 ): void => {
   switch (type) {
     case ReportType.twarrt:
-      navigation.push(CommonStackComponents.twarrtModerateScreen, {id});
+      navigation.push(CommonStackComponents.siteUIScreen, {
+        resource: 'twarrt',
+        id,
+        moderate: true,
+      });
       return;
     case ReportType.forumPost:
       navigation.push(CommonStackComponents.forumPostModerateScreen, {id});

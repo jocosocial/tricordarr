@@ -10,17 +10,16 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {ModerationContentPreview} from '#src/Components/Views/Moderation/ModerationContentPreview';
-import {ModerationDeletedNotice} from '#src/Components/Views/Moderation/ModerationDeletedNotice';
-import {ModerationReportsSection} from '#src/Components/Views/Moderation/ModerationReportsSection';
-import {ModerationStateActions} from '#src/Components/Views/Moderation/ModerationStateActions';
+import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
+import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {FezType} from '#src/Enums/FezType';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
-import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -41,7 +40,7 @@ const FezModerateScreenInner = ({route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(FezModerationData.getCacheKeys(id));
   const deleteMutation = useFezDeleteMutation();
-  useModerationHelpHeader();
+  useModerationHelpHeader(data?.fez.owner.userID);
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
@@ -83,11 +82,11 @@ const FezModerateScreenInner = ({route}: Props) => {
 
   return (
     <AppView>
+      <ModerationDeletedWarningView contentLabel={contentLabel} visible={data.isDeleted} />
       <ScrollingContentView
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ModerationDeletedNotice contentLabel={contentLabel} visible={data.isDeleted} />
         <PaddedContentView padTop={true}>
           <ModerationContentPreview
             author={fez.owner}
@@ -110,10 +109,6 @@ const FezModerateScreenInner = ({route}: Props) => {
                 onPress: onDelete,
               },
               {
-                label: 'Mod User',
-                onPress: () => pushModerateResource(navigation, 'user', fez.owner.userID),
-              },
-              {
                 label: isLfg ? 'View LFG' : 'View Chat',
                 onPress: onView,
               },
@@ -121,12 +116,7 @@ const FezModerateScreenInner = ({route}: Props) => {
           />
         </PaddedContentView>
         <PaddedContentView>
-          <ModerationStateActions
-            status={data.moderationStatus}
-            disabled={data.isDeleted}
-            isLoading={actions.isLoading}
-            onSelect={state => actions.setState('fez', id, state)}
-          />
+          <ModeratorStateView data={data} />
         </PaddedContentView>
         <ListSection>
           <ListSubheader>Edit History</ListSubheader>
@@ -146,13 +136,16 @@ const FezModerateScreenInner = ({route}: Props) => {
             </PaddedContentView>
           ))
         )}
-        <ModerationReportsSection
-          reports={data.reports}
-          contentLabel={contentLabel}
-          isLoading={actions.isLoading}
-          onHandleAll={() => actions.handleAll(data.reports)}
-          onCloseAll={() => actions.closeAll(data.reports)}
-        />
+        <ListSection>
+          <ListSubheader>Reports</ListSubheader>
+        </ListSection>
+        {data.reports.length === 0 ? (
+          <PaddedContentView padTop={true}>
+            <Text>No reports on this {contentLabel}.</Text>
+          </PaddedContentView>
+        ) : (
+          data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
+        )}
       </ScrollingContentView>
     </AppView>
   );

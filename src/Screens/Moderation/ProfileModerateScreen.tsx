@@ -11,14 +11,12 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {ModerationContentPreview} from '#src/Components/Views/Moderation/ModerationContentPreview';
-import {ModerationReportsSection} from '#src/Components/Views/Moderation/ModerationReportsSection';
-import {ModerationStateActions} from '#src/Components/Views/Moderation/ModerationStateActions';
+import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
+import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {profilePublicDataFromUpload} from '#src/Libraries/Moderation';
-import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -26,7 +24,6 @@ import {
 } from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useProfileModerationQuery} from '#src/Queries/Moderation/ModerationQueries';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
-import {ProfileModerationData} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.profileModerateScreen>;
 
@@ -35,8 +32,7 @@ const ProfileModerateScreenInner = ({route}: Props) => {
   const navigation = useCommonStack();
   const {data, refetch, isLoading} = useProfileModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
-  const actions = useModerationContentActions(ProfileModerationData.getCacheKeys(id));
-  useModerationHelpHeader();
+  useModerationHelpHeader(id);
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
@@ -83,10 +79,6 @@ const ProfileModerateScreenInner = ({route}: Props) => {
                 },
               },
               {
-                label: 'Mod User',
-                onPress: () => pushModerateResource(navigation, 'user', id),
-              },
-              {
                 label: 'View Profile',
                 onPress: () => navigation.push(CommonStackComponents.userProfileScreen, {userID: id}),
               },
@@ -94,11 +86,7 @@ const ProfileModerateScreenInner = ({route}: Props) => {
           />
         </PaddedContentView>
         <PaddedContentView>
-          <ModerationStateActions
-            status={data.moderationStatus}
-            isLoading={actions.isLoading}
-            onSelect={state => actions.setState('profile', id, state)}
-          />
+          <ModeratorStateView data={data} />
         </PaddedContentView>
         <ListSection>
           <ListSubheader>Edit History</ListSubheader>
@@ -137,13 +125,16 @@ const ProfileModerateScreenInner = ({route}: Props) => {
             </PaddedContentView>
           ))
         )}
-        <ModerationReportsSection
-          reports={data.reports}
-          contentLabel={'profile'}
-          isLoading={actions.isLoading}
-          onHandleAll={() => actions.handleAll(data.reports)}
-          onCloseAll={() => actions.closeAll(data.reports)}
-        />
+        <ListSection>
+          <ListSubheader>Reports</ListSubheader>
+        </ListSection>
+        {data.reports.length === 0 ? (
+          <PaddedContentView padTop={true}>
+            <Text>No reports on this profile.</Text>
+          </PaddedContentView>
+        ) : (
+          data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
+        )}
       </ScrollingContentView>
     </AppView>
   );

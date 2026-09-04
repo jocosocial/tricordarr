@@ -11,9 +11,9 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {ModerationContentPreview} from '#src/Components/Views/Moderation/ModerationContentPreview';
-import {ModerationDeletedNotice} from '#src/Components/Views/Moderation/ModerationDeletedNotice';
-import {ModerationReportsSection} from '#src/Components/Views/Moderation/ModerationReportsSection';
+import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
@@ -64,11 +64,11 @@ const PersonalEventModerateScreenInner = ({route}: Props) => {
 
   return (
     <AppView>
+      <ModerationDeletedWarningView contentLabel={'personal event'} visible={data.isDeleted} />
       <ScrollingContentView
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ModerationDeletedNotice contentLabel={'personal event'} visible={data.isDeleted} />
         <PaddedContentView padTop={true}>
           <ModerationContentPreview
             author={event.owner}
@@ -125,13 +125,16 @@ const PersonalEventModerateScreenInner = ({route}: Props) => {
             </PaddedContentView>
           ))
         )}
-        <ModerationReportsSection
-          reports={data.reports}
-          contentLabel={'personal event'}
-          isLoading={actions.isLoading}
-          onHandleAll={() => actions.handleAll(data.reports)}
-          onCloseAll={() => actions.closeAll(data.reports)}
-        />
+        <ListSection>
+          <ListSubheader>Reports</ListSubheader>
+        </ListSection>
+        {data.reports.length === 0 ? (
+          <PaddedContentView padTop={true}>
+            <Text>No reports on this personal event.</Text>
+          </PaddedContentView>
+        ) : (
+          data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
+        )}
       </ScrollingContentView>
     </AppView>
   );

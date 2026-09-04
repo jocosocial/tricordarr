@@ -71,7 +71,7 @@ export namespace ContentModerationStatus {
    */
   export const getActionLabel = (status: ContentModerationStatus): string => {
     if (status === ContentModerationStatus.modReviewed) {
-      return 'Moderator Reviewed (looks good as is)';
+      return 'Moderator Reviewed (looks good)';
     }
     return getLabel(status);
   };

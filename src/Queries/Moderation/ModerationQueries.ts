@@ -11,7 +11,6 @@ import {
   PhotostreamModerationData,
   ProfileModerationData,
   ReportModerationData,
-  TwarrtModerationData,
   UserModerationData,
 } from '#src/Structs/ControllerStructs';
 
@@ -27,13 +26,6 @@ export const useModerationReportsQuery = () => {
  */
 export const useModerationLogQuery = () => {
   return useTokenAuthPaginationQuery<ModeratorActionLogResponseData>('/mod/moderationlog');
-};
-
-/**
- * Moderation payload for a twarrt, including edits and reports. Works if deleted.
- */
-export const useTwarrtModerationQuery = (twarrtID: string) => {
-  return useTokenAuthQuery<TwarrtModerationData>(`/mod/twarrt/${twarrtID}`);
 };
 
 /**

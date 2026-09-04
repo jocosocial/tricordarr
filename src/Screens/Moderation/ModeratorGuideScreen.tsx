@@ -109,10 +109,10 @@ const ModeratorGuideScreenInner = () => {
           temporarily or permanently. That affects all accounts tied to their registration code.
         </HelpTopicView>
         <HelpTopicView title={'Content Types'}>
-          Twarrts, forums (the title), forum posts, LFGs (title, info, location), LFG/seamail posts, user profiles
-          (fields such as home location—not the user), personal events, and photostream photos. Every publicly viewable
-          piece of content can be reported and moderated. Authors can edit their content; tweets, forum posts, and LFG
-          posts can also be deleted by the author. All of these keep an edit trail.
+          Forums (the title), forum posts, LFGs (title, info, location), LFG/seamail posts, user profiles (fields such
+          as home location—not the user), personal events, and photostream photos. Every publicly viewable piece of
+          content can be reported and moderated. Authors can edit their content; forum posts and LFG posts can also be
+          deleted by the author. All of these keep an edit trail.
         </HelpTopicView>
         <HelpTopicView title={'What you can do'}>
           Edit content any user created. Delete all content types except user profiles. Lock content so the author

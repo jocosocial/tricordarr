@@ -12,10 +12,10 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {ModerationContentPreview} from '#src/Components/Views/Moderation/ModerationContentPreview';
-import {ModerationDeletedNotice} from '#src/Components/Views/Moderation/ModerationDeletedNotice';
-import {ModerationReportsSection} from '#src/Components/Views/Moderation/ModerationReportsSection';
-import {ModerationStateActions} from '#src/Components/Views/Moderation/ModerationStateActions';
+import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
+import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -24,7 +24,6 @@ import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
 import {forumDataFromModeration} from '#src/Libraries/Moderation';
-import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {invalidateQueryKeys} from '#src/Libraries/QueryInvalidation';
 import {
   CommonStackComponents,
@@ -53,7 +52,7 @@ const ForumModerateScreenInner = ({route}: Props) => {
   const deleteMutation = useForumDeleteMutation();
   const setCategoryMutation = useForumSetCategoryMutation();
   const {visible, openMenu, closeMenu} = useMenu();
-  useModerationHelpHeader();
+  useModerationHelpHeader(data?.creator.userID);
 
   const styles = useMemo(
     () =>
@@ -106,11 +105,11 @@ const ForumModerateScreenInner = ({route}: Props) => {
 
   return (
     <AppView>
+      <ModerationDeletedWarningView contentLabel={'forum'} visible={data.isDeleted} />
       <ScrollingContentView
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ModerationDeletedNotice contentLabel={'forum'} visible={data.isDeleted} />
         <PaddedContentView padTop={true}>
           <ModerationContentPreview author={data.creator} timestamp={data.createdAt} text={data.title} />
           <Text>Category: {currentCategory?.title ?? data.categoryID}</Text>
@@ -130,10 +129,6 @@ const ForumModerateScreenInner = ({route}: Props) => {
                 label: 'Delete',
                 disabled: data.isDeleted || deleteMutation.isPending,
                 onPress: onDelete,
-              },
-              {
-                label: 'Mod User',
-                onPress: () => pushModerateResource(navigation, 'user', data.creator.userID),
               },
               {
                 label: 'View Thread',
@@ -169,12 +164,7 @@ const ForumModerateScreenInner = ({route}: Props) => {
           </View>
         </PaddedContentView>
         <PaddedContentView>
-          <ModerationStateActions
-            status={data.moderationStatus}
-            disabled={data.isDeleted}
-            isLoading={actions.isLoading}
-            onSelect={state => actions.setState('forum', id, state)}
-          />
+          <ModeratorStateView data={data} />
         </PaddedContentView>
         <ListSection>
           <ListSubheader>Title History</ListSubheader>
@@ -190,13 +180,16 @@ const ForumModerateScreenInner = ({route}: Props) => {
             </PaddedContentView>
           ))
         )}
-        <ModerationReportsSection
-          reports={data.reports}
-          contentLabel={'forum'}
-          isLoading={actions.isLoading}
-          onHandleAll={() => actions.handleAll(data.reports)}
-          onCloseAll={() => actions.closeAll(data.reports)}
-        />
+        <ListSection>
+          <ListSubheader>Reports</ListSubheader>
+        </ListSection>
+        {data.reports.length === 0 ? (
+          <PaddedContentView padTop={true}>
+            <Text>No reports on this forum.</Text>
+          </PaddedContentView>
+        ) : (
+          data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
+        )}
       </ScrollingContentView>
     </AppView>
   );
