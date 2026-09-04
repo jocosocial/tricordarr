@@ -5,11 +5,22 @@
 # string (`(?<!\S)@` in ContentFilterable.getMentionsSet), so the separator space between
 # text already typed and the inserted mention is the thing actually under test.
 #
-# Precondition: signed in and viewing a forum thread whose first post is by another user.
-# Run ../OOBE/Login.yaml first, then navigate to such a thread. Reply is deliberately
-# absent on your own posts, so index 0 must not be yours.
+# Precondition: signed in (run ../OOBE/Login.yaml first). FORUM_THREAD must name a thread
+# in FORUM_CATEGORY whose first post is by another user — Reply is deliberately absent on
+# your own posts, so the post at index 0 must not be yours.
 appId: ${APP_ID}
+env:
+  FORUM_CATEGORY: 'General'
+  FORUM_THREAD: 'Reply caret test thread'
 ---
+# Tab labels bundle icon glyphs in with the text ("<glyph>, <glyph>, Forums, Forums"), so
+# every text selector here needs wildcards rather than a bare literal.
+- tapOn: '(?s).*Forums.*'
+- tapOn: '(?s).*${FORUM_CATEGORY}.*'
+- tapOn: '(?s).*${FORUM_THREAD}.*'
+- assertVisible:
+    id: 'contentPostText-input'
+# Text already in the composer must survive, and the mention must land after it.
 - tapOn:
     id: 'contentPostText-input'
 - eraseText
