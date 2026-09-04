@@ -1,9 +1,10 @@
-# Reply appends an @mention of the post's author to the thread composer.
+# Reply appends an @mention of the post's author to the thread composer and leaves the
+# user ready to type.
 #
 # Swiftarr has no structural reply relation for forum posts; the @mention is what notifies
 # the author. It only counts the mention when the @ follows whitespace or the start of the
-# string (`(?<!\S)@` in ContentFilterable.getMentionsSet), so the separator space between
-# text already typed and the inserted mention is the thing actually under test.
+# string (`(?<!\S)@` in ContentFilterable.getMentionsSet), so the separator space in the
+# second scenario is the thing actually under test there.
 #
 # Precondition: signed in (run ../OOBE/Login.yaml first). FORUM_THREAD must name a thread
 # in FORUM_CATEGORY whose first post is by another user — Reply is deliberately absent on
@@ -12,7 +13,14 @@ appId: ${APP_ID}
 env:
   FORUM_CATEGORY: 'General'
   FORUM_THREAD: 'Reply caret test thread'
+  # Marker typed into the composer. Distinctive so assertions can't match post text.
+  MARKER: 'zzq'
 ---
+# Start from a known screen. `hideKeyboard` is not usable here because it errors when no
+# keyboard is up, and an open keyboard covers the bottom tab bar, so the tab tap below
+# would otherwise land on the keyboard and never navigate. No clearState: the session is
+# reused so the flow stays signed in.
+- launchApp
 # Tab labels bundle icon glyphs in with the text ("<glyph>, <glyph>, Forums, Forums"), so
 # every text selector here needs wildcards rather than a bare literal.
 - tapOn: '(?s).*Forums.*'
@@ -20,12 +28,13 @@ env:
 - tapOn: '(?s).*${FORUM_THREAD}.*'
 - assertVisible:
     id: 'contentPostText-input'
-# Text already in the composer must survive, and the mention must land after it.
+
+# Scenario 1 — the common one. Long-press a post, hit Reply, start typing. Opening the
+# actions menu blurs the composer, so Reply has to restore focus and put the caret after
+# the mention. Without that the keystrokes below go nowhere.
 - tapOn:
     id: 'contentPostText-input'
 - eraseText
-- inputText: 'hello'
-- assertVisible: '(?s).*hello.*'
 # The keyboard must be down before the long-press. With it up, the post's centre sits
 # behind it and the press lands on the keyboard, which silently dismisses it instead of
 # opening the menu.
@@ -37,5 +46,17 @@ env:
     index: 0
 - assertVisible: 'Reply'
 - tapOn: 'Reply'
-# Separator space preserved, existing text untouched, mention appended after it.
+# Deliberately no tap on the composer first — that is the whole point of this scenario.
+- inputText: ${MARKER}
+- assertVisible: '(?s).*@.*${MARKER}.*'
+
+# Scenario 2 — replying while part-way through a sentence. Existing text must survive and
+# the mention must land after it, separated by a space.
+- eraseText
+- inputText: 'hello'
+- hideKeyboard
+- longPressOn:
+    id: 'forumPost-message'
+    index: 0
+- tapOn: 'Reply'
 - assertVisible: '(?s).*hello @.*'

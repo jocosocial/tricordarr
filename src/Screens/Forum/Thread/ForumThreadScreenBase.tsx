@@ -2,7 +2,7 @@ import {InfiniteData, QueryObserverResult} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -92,6 +92,7 @@ const ForumThreadScreenBaseInner = ({
   const navigation = useCommonStack();
   const {asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam} = useElevation();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
+  const postInputRef = useRef<TextInput | null>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const markReadMutation = useForumMarkReadMutation();
   const flatListRef = useRef<TConversationListV2Ref>(null);
@@ -296,7 +297,7 @@ const ForumThreadScreenBaseInner = ({
   });
 
   return (
-    <ForumComposerProvider formRef={postFormRef} enabled={showForm}>
+    <ForumComposerProvider formRef={postFormRef} inputRef={postInputRef} enabled={showForm}>
       <AppView>
         <PostAsUserBanner />
         <ListTitleView
@@ -330,6 +331,7 @@ const ForumThreadScreenBaseInner = ({
           <ContentPostForm
             onSubmit={onPostSubmit}
             formRef={postFormRef}
+            inputRef={postInputRef}
             enablePhotos={true}
             maxLength={2000}
             maxPhotos={maxForumPostImages}

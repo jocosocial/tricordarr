@@ -11,12 +11,18 @@ interface MentionTextFieldProps {
   name: string;
   testID: string;
   style?: StyleProp<ViewStyle>;
+  /**
+   * Receives the underlying TextInput so callers can focus it or move the caret. Needed
+   * when something outside the form writes into the field, since the user is otherwise
+   * left with text they cannot type after.
+   */
+  inputRef?: React.MutableRefObject<TextInput | null>;
 }
 
 export const MentionTextField = (props: MentionTextFieldProps) => {
   const {commonStyles} = useStyles();
   const [field, _, helpers] = useField<string>(props.name);
-  const textInputRef = useRef<TextInput>(null);
+  const textInputRef = useRef<TextInput | null>(null);
   const pendingMentionInsertionRef = useRef<boolean>(false);
 
   const triggersConfig: TriggersConfig<'mention' | 'hashtag'> = useMemo(
@@ -108,7 +114,12 @@ export const MentionTextField = (props: MentionTextFieldProps) => {
       {mentionTriggerProps && <ContentPostMentionSuggestionsView {...mentionTriggerProps} />}
       <TextInput
         testID={props.testID}
-        ref={textInputRef}
+        ref={node => {
+          textInputRef.current = node;
+          if (props.inputRef) {
+            props.inputRef.current = node;
+          }
+        }}
         // The textInputProps provides onChangeText and onSelectionChange.
         {...textInputProps}
         style={props.style}
