@@ -109,9 +109,7 @@ export const allRoutes: RouteDefinition[] = [
   {screen: CommonStackComponents.photostreamModerateScreen, path: 'moderate/photostream/:id'},
   {screen: CommonStackComponents.personalEventModerateScreen, path: 'moderate/personalevent/:id'},
   {screen: CommonStackComponents.moderatorLogScreen, path: 'moderator/log'},
-  {screen: CommonStackComponents.moderatorSeamailScreen, path: 'moderator/seamail'},
   {screen: CommonStackComponents.moderatorGuideScreen, path: 'moderator/guide'},
-  {screen: CommonStackComponents.moderatorForumMentionsScreen, path: 'moderator/mentions'},
   {screen: CommonStackComponents.moderatorReportsScreen, path: 'reports/:closed?'},
   {screen: CommonStackComponents.moderatorRootScreen, path: 'moderator'},
 ];
@@ -153,8 +151,6 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.moderatorReportsScreen,
     CommonStackComponents.moderatorLogScreen,
     CommonStackComponents.moderatorGuideScreen,
-    CommonStackComponents.moderatorSeamailScreen,
-    CommonStackComponents.moderatorForumMentionsScreen,
     CommonStackComponents.forumPostModerateScreen,
     CommonStackComponents.forumModerateScreen,
     CommonStackComponents.fezModerateScreen,

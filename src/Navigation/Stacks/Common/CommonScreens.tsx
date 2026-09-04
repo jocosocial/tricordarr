@@ -114,12 +114,10 @@ import {ForumModerateScreen} from '#src/Screens/Moderation/ForumModerateScreen';
 import {ForumPostModerateScreen} from '#src/Screens/Moderation/ForumPostModerateScreen';
 import {MicroKaraokeSongModerateScreen} from '#src/Screens/Moderation/MicroKaraokeSongModerateScreen';
 import {MicroKaraokeSongsModerateScreen} from '#src/Screens/Moderation/MicroKaraokeSongsModerateScreen';
-import {ModeratorForumMentionsScreen} from '#src/Screens/Moderation/ModeratorForumMentionsScreen';
 import {ModeratorGuideScreen} from '#src/Screens/Moderation/ModeratorGuideScreen';
 import {ModeratorLogScreen} from '#src/Screens/Moderation/ModeratorLogScreen';
 import {ModeratorReportsScreen} from '#src/Screens/Moderation/ModeratorReportsScreen';
 import {ModeratorRootScreen} from '#src/Screens/Moderation/ModeratorRootScreen';
-import {ModeratorSeamailScreen} from '#src/Screens/Moderation/ModeratorSeamailScreen';
 import {PersonalEventModerateScreen} from '#src/Screens/Moderation/PersonalEventModerateScreen';
 import {PhotostreamModerateScreen} from '#src/Screens/Moderation/PhotostreamModerateScreen';
 import {ProfileModerateScreen} from '#src/Screens/Moderation/ProfileModerateScreen';
@@ -275,16 +273,6 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.moderatorGuideScreen}
         component={ModeratorGuideScreen}
         options={{title: 'Moderator Guide'}}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.moderatorSeamailScreen}
-        component={ModeratorSeamailScreen}
-        options={{title: 'Seamail to @moderator'}}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.moderatorForumMentionsScreen}
-        component={ModeratorForumMentionsScreen}
-        options={{title: '@moderator Mentions'}}
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostModerateScreen}

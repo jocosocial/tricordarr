@@ -72,8 +72,6 @@ export type CommonStackParamList = {
   };
   ModeratorLogScreen: undefined;
   ModeratorGuideScreen: undefined;
-  ModeratorSeamailScreen: undefined;
-  ModeratorForumMentionsScreen: undefined;
   ForumPostModerateScreen: {
     id: string;
   };
@@ -406,8 +404,6 @@ export enum CommonStackComponents {
   moderatorReportsScreen = 'ModeratorReportsScreen',
   moderatorLogScreen = 'ModeratorLogScreen',
   moderatorGuideScreen = 'ModeratorGuideScreen',
-  moderatorSeamailScreen = 'ModeratorSeamailScreen',
-  moderatorForumMentionsScreen = 'ModeratorForumMentionsScreen',
   forumPostModerateScreen = 'ForumPostModerateScreen',
   forumModerateScreen = 'ForumModerateScreen',
   fezModerateScreen = 'FezModerateScreen',

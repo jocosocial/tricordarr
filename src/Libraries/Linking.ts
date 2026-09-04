@@ -94,8 +94,6 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             },
             ModeratorLogScreen: getPath(CommonStackComponents.moderatorLogScreen),
             ModeratorGuideScreen: getPath(CommonStackComponents.moderatorGuideScreen),
-            ModeratorSeamailScreen: getPath(CommonStackComponents.moderatorSeamailScreen),
-            ModeratorForumMentionsScreen: getPath(CommonStackComponents.moderatorForumMentionsScreen),
             ForumPostModerateScreen: getPath(CommonStackComponents.forumPostModerateScreen),
             ForumModerateScreen: getPath(CommonStackComponents.forumModerateScreen),
             FezModerateScreen: getPath(CommonStackComponents.fezModerateScreen),

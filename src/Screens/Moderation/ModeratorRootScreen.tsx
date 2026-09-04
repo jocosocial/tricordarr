@@ -8,6 +8,7 @@ import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -58,7 +59,8 @@ const ModeratorRootScreenInner = () => {
                   : 'Seamail to @moderator'
               }
               description={'Seamails where @moderator is a participant.'}
-              navComponent={CommonStackComponents.moderatorSeamailScreen}
+              navComponent={CommonStackComponents.seamailListScreen}
+              params={{asPrivilegedUser: PrivilegedUserAccounts.moderator, noDrawer: true}}
             />
             <NavigationListItem
               title={
@@ -67,7 +69,8 @@ const ModeratorRootScreenInner = () => {
                   : 'Forum Mentions of @moderator'
               }
               description={'Forum posts that mention @moderator.'}
-              navComponent={CommonStackComponents.moderatorForumMentionsScreen}
+              navComponent={CommonStackComponents.forumPostMentionScreen}
+              params={{asPrivilegedUser: PrivilegedUserAccounts.moderator}}
             />
             <NavigationListItem
               title={'Micro Karaoke'}

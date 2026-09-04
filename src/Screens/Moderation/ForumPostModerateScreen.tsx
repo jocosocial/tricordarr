@@ -22,6 +22,7 @@ import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/Moder
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -49,6 +50,7 @@ const ForumPostModerateScreenInner = ({route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(ForumPostModerationData.getCacheKeys(id));
   const deleteMutation = useForumPostDeleteMutation();
+  const {deletePost} = useForumCacheReducer();
   useModerationHelpHeader();
 
   const styles = useMemo(
@@ -77,6 +79,7 @@ const ForumPostModerateScreenInner = ({route}: Props) => {
         {postID: id},
         {
           onSuccess: async () => {
+            deletePost(data.forumPost.postID, data.forumPost.forumID, undefined);
             await actions.invalidate();
             setSnackbarPayload({message: 'Forum post deleted.', messageType: 'info'});
           },
