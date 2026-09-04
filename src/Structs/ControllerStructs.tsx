@@ -1697,12 +1697,15 @@ export interface ForumPostModerationData {
 }
 
 export namespace ForumPostModerationData {
-  export const getCacheKeys = (postID?: string): QueryKey[] => {
+  export const getCacheKeys = (postID?: string, forumID?: string): QueryKey[] => {
     const keys = ReportModerationData.getCacheKeys();
     if (postID) {
       keys.push([`/mod/forumpost/${postID}`]);
       keys.push([`/forum/post/${postID}`]);
       keys.push([`/forum/post/${postID}/forum`]);
+    }
+    if (forumID) {
+      keys.push([`/forum/${forumID}`]);
     }
     return keys;
   };

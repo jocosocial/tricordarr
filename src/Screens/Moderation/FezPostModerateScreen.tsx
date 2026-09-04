@@ -9,7 +9,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
-import {ModerationContentPreview} from '#src/Components/Views/Moderation/ModerationContentPreview';
+import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -68,7 +68,7 @@ const FezPostModerateScreenInner = ({route}: Props) => {
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
-          <ModerationContentPreview
+          <ModerationEditListItem
             author={data.fezPost.author}
             timestamp={data.fezPost.timestamp}
             text={data.fezPost.text}

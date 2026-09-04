@@ -28,22 +28,22 @@ export const ModerationReportListItem = ({report}: ModerationReportListItemProps
         },
         headerRow: {
           ...commonStyles.flexRow,
-          ...commonStyles.justifySpaceBetween,
-          ...commonStyles.alignItemsCenter,
+          alignItems: 'flex-start',
         },
-        headerLabel: {
-          ...commonStyles.fontSizeLabel,
-          ...commonStyles.onBackground,
+        bylineContainer: {
           ...commonStyles.flex,
         },
         label: {
+          ...commonStyles.fontSizeLabel,
+          ...commonStyles.onBackground,
+        },
+        sectionLabel: {
           ...commonStyles.fontSizeLabel,
           ...commonStyles.onBackground,
           ...commonStyles.marginTopSmall,
         },
         byline: {
           ...commonStyles.fontSizeDefault,
-          ...commonStyles.flexStart,
         },
         unassigned: {
           ...commonStyles.fontSizeDefault,
@@ -72,14 +72,16 @@ export const ModerationReportListItem = ({report}: ModerationReportListItemProps
 
   return (
     <View style={styles.container}>
+      <Text style={styles.label} selectable={false}>
+        Reported by:
+      </Text>
       <View style={styles.headerRow}>
-        <Text style={styles.headerLabel} selectable={false}>
-          Reported by:
-        </Text>
+        <View style={styles.bylineContainer}>
+          <UserBylineTag user={report.author} onPress={onPressAuthor} style={styles.byline} />
+        </View>
         <RelativeTimeTag date={new Date(report.creationTime)} style={styles.time} />
       </View>
-      <UserBylineTag user={report.author} onPress={onPressAuthor} style={styles.byline} />
-      <Text style={styles.label} selectable={false}>
+      <Text style={styles.sectionLabel} selectable={false}>
         {report.isClosed ? 'Closed by:' : 'Being handled by:'}
       </Text>
       {report.handledBy ? (
@@ -91,7 +93,7 @@ export const ModerationReportListItem = ({report}: ModerationReportListItemProps
       )}
       {!!report.submitterMessage && (
         <>
-          <Text style={styles.label} selectable={false}>
+          <Text style={styles.sectionLabel} selectable={false}>
             Additional information:
           </Text>
           <Text style={styles.message} selectable={false}>

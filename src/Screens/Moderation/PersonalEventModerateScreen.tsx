@@ -10,7 +10,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
-import {ModerationContentPreview} from '#src/Components/Views/Moderation/ModerationContentPreview';
+import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
@@ -70,7 +70,7 @@ const PersonalEventModerateScreenInner = ({route}: Props) => {
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
-          <ModerationContentPreview
+          <ModerationEditListItem
             author={event.owner}
             timestamp={event.startTime}
             text={[event.title, event.description, event.location].filter(Boolean).join('\n')}

@@ -129,6 +129,8 @@ const ForumPostModerateScreenInner = ({route}: Props) => {
               onEdit={() =>
                 navigation.push(CommonStackComponents.forumPostEditScreen, {
                   postData,
+                  forumID: data.forumPost.forumID,
+                  intent: 'moderate',
                 })
               }
               onDelete={onDelete}

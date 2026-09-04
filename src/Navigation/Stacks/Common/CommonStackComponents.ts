@@ -25,6 +25,7 @@ import {
   ScheduleDayParams,
   WithElevation,
   WithInitialUserHeaders,
+  WithIntent,
   WithScrollToTopIntent,
 } from '#src/Types/RouteParams';
 
@@ -129,10 +130,13 @@ export type CommonStackParamList = {
     postID: string;
     forumID?: string;
   }>;
-  ForumPostEditScreen: {
-    postData: PostData;
-    forumData?: ForumData;
-  };
+  ForumPostEditScreen: WithIntent<
+    {
+      postData: PostData;
+      forumID?: string;
+    },
+    'moderate'
+  >;
   SeamailListScreen: WithElevation<
     WithScrollToTopIntent<
       NoDrawerParams & {

@@ -10,7 +10,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
-import {ModerationContentPreview} from '#src/Components/Views/Moderation/ModerationContentPreview';
+import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -61,7 +61,7 @@ const ProfileModerateScreenInner = ({route}: Props) => {
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
           {header ? (
-            <ModerationContentPreview author={header} text={profileText} />
+            <ModerationEditListItem author={header} text={profileText} />
           ) : (
             <Text>{profileText || 'Empty profile.'}</Text>
           )}
@@ -99,7 +99,7 @@ const ProfileModerateScreenInner = ({route}: Props) => {
           data.edits.map(edit => (
             <PaddedContentView key={edit.editID} padTop={true}>
               {edit.profileData && edit.author && (
-                <ModerationContentPreview
+                <ModerationEditListItem
                   author={edit.author}
                   timestamp={edit.createdAt}
                   text={[
@@ -116,7 +116,7 @@ const ProfileModerateScreenInner = ({route}: Props) => {
               )}
               {edit.profileImage && <APIImage path={edit.profileImage} />}
               {!edit.profileData && !edit.profileImage && edit.author && (
-                <ModerationContentPreview
+                <ModerationEditListItem
                   author={edit.author}
                   timestamp={edit.createdAt}
                   text={'Profile image or fields changed.'}

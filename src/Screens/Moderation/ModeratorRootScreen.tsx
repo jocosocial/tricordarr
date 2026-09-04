@@ -39,7 +39,6 @@ const ModeratorRootScreenInner = () => {
               navComponent={CommonStackComponents.moderatorReportsScreen}
               params={{closed: false}}
               unreadCount={moderatorData?.openReportCount}
-              unreadUnit={'report'}
             />
             <NavigationListItem
               title={'Closed Reports'}
@@ -53,24 +52,18 @@ const ModeratorRootScreenInner = () => {
               navComponent={CommonStackComponents.moderatorLogScreen}
             />
             <NavigationListItem
-              title={
-                moderatorData?.newModeratorSeamailMessageCount
-                  ? `Seamail to @moderator (${moderatorData.newModeratorSeamailMessageCount})`
-                  : 'Seamail to @moderator'
-              }
+              title={'Seamail to @moderator'}
               description={'Seamails where @moderator is a participant.'}
               navComponent={CommonStackComponents.seamailListScreen}
               params={{asPrivilegedUser: PrivilegedUserAccounts.moderator, noDrawer: true}}
+              unreadCount={moderatorData?.newModeratorSeamailMessageCount}
             />
             <NavigationListItem
-              title={
-                moderatorData?.newModeratorForumMentionCount
-                  ? `Forum Mentions of @moderator (${moderatorData.newModeratorForumMentionCount})`
-                  : 'Forum Mentions of @moderator'
-              }
+              title={'Forum Mentions of @moderator'}
               description={'Forum posts that mention @moderator.'}
               navComponent={CommonStackComponents.forumPostMentionScreen}
               params={{asPrivilegedUser: PrivilegedUserAccounts.moderator}}
+              unreadCount={moderatorData?.newModeratorForumMentionCount}
             />
             <NavigationListItem
               title={'Micro Karaoke'}

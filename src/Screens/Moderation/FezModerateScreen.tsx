@@ -9,7 +9,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
-import {ModerationContentPreview} from '#src/Components/Views/Moderation/ModerationContentPreview';
+import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -88,7 +88,7 @@ const FezModerateScreenInner = ({route}: Props) => {
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
-          <ModerationContentPreview
+          <ModerationEditListItem
             author={fez.owner}
             timestamp={fez.lastModificationTime}
             text={[fez.title, fez.info, fez.location].filter(Boolean).join('\n')}
@@ -128,7 +128,7 @@ const FezModerateScreenInner = ({route}: Props) => {
         ) : (
           data.edits.map(edit => (
             <PaddedContentView key={edit.editID} padTop={true}>
-              <ModerationContentPreview
+              <ModerationEditListItem
                 author={edit.author}
                 timestamp={edit.createdAt}
                 text={[edit.title, edit.info, edit.location].filter(Boolean).join('\n')}

@@ -11,7 +11,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
-import {ModerationContentPreview} from '#src/Components/Views/Moderation/ModerationContentPreview';
+import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -111,7 +111,7 @@ const ForumModerateScreenInner = ({route}: Props) => {
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
-          <ModerationContentPreview author={data.creator} timestamp={data.createdAt} text={data.title} />
+          <ModerationEditListItem author={data.creator} timestamp={data.createdAt} text={data.title} />
           <Text>Category: {currentCategory?.title ?? data.categoryID}</Text>
         </PaddedContentView>
         <PaddedContentView>
@@ -176,7 +176,7 @@ const ForumModerateScreenInner = ({route}: Props) => {
         ) : (
           data.edits.map(edit => (
             <PaddedContentView key={edit.editID} padTop={true}>
-              <ModerationContentPreview author={edit.author} timestamp={edit.createdAt} text={edit.title} />
+              <ModerationEditListItem author={edit.author} timestamp={edit.createdAt} text={edit.title} />
             </PaddedContentView>
           ))
         )}

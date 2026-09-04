@@ -4,7 +4,7 @@ import {Text} from 'react-native-paper';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {ModerationContentPreview} from '#src/Components/Views/Moderation/ModerationContentPreview';
+import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
 import {PostEditLogData} from '#src/Structs/ControllerStructs';
 
 interface ModerationPostEditListProps {
@@ -30,7 +30,7 @@ export const ModerationPostEditList = ({edits}: ModerationPostEditListProps) => 
       </ListSection>
       {edits.map(edit => (
         <PaddedContentView key={edit.editID} padTop={true}>
-          <ModerationContentPreview
+          <ModerationEditListItem
             author={edit.author}
             timestamp={edit.createdAt}
             text={edit.text}

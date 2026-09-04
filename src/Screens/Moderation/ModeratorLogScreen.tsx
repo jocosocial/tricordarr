@@ -1,20 +1,18 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useMemo} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
-import {Text} from 'react-native-paper';
+import {Divider, Text} from 'react-native-paper';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {ListItem} from '#src/Components/Lists/ListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ModerationLogListItem} from '#src/Components/Views/Moderation/ModerationLogListItem';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {ModeratorActionType} from '#src/Enums/ModeratorActionType';
 import {ReportType} from '#src/Enums/ReportType';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {timeAgo} from '#src/Libraries/DateTime';
 import {pushModerateScreen} from '#src/Libraries/ModerationNavigation';
 import {
   CommonStackComponents,
@@ -26,6 +24,11 @@ import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureSc
 import {ModeratorActionLogData} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderatorLogScreen>;
+
+/**
+ * Bold divider between logged moderator actions.
+ */
+const LogItemSeparator = () => <Divider bold={true} />;
 
 const ModeratorLogScreenInner = () => {
   const {commonStyles} = useStyles();
@@ -75,19 +78,13 @@ const ModeratorLogScreenInner = () => {
         keyExtractor={item => item.id}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
+        ItemSeparatorComponent={LogItemSeparator}
         ListEmptyComponent={
           <PaddedContentView>
             <Text style={styles.empty}>No moderator actions have been logged yet.</Text>
           </PaddedContentView>
         }
-        renderItem={({item}) => (
-          <ListItem
-            title={`@${item.moderator.username}: ${ModeratorActionType.getLabel(item.actionType)}`}
-            description={`@${item.targetUser.username}'s ${ReportType.getLabel(item.contentType)}\n${timeAgo.format(new Date(item.timestamp))}`}
-            descriptionNumberOfLines={3}
-            onPress={() => onPressAction(item)}
-          />
-        )}
+        renderItem={({item}) => <ModerationLogListItem action={item} onPress={() => onPressAction(item)} />}
       />
     </AppView>
   );

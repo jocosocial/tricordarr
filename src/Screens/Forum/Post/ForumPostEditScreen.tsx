@@ -11,6 +11,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumPostUpdateMutation} from '#src/Queries/Forum/ForumPostMutations';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ImageUploadData, PostContentData} from '#src/Structs/ControllerStructs';
@@ -31,9 +32,14 @@ export const ForumPostEditScreen = (props: Props) => {
 
 const ForumPostEditScreenInner = ({route, navigation}: Props) => {
   const postUpdateMutation = useForumPostUpdateMutation();
-  const {updatePost} = useForumCacheReducer();
+  const {updatePost, updatePostModeration} = useForumCacheReducer();
   const {maxForumPostImages} = useClientSettings();
+  const {data: profilePublicData} = useUserProfileQuery();
 
+  /**
+   * Submit the edited post, then patch forum caches and (when launched from
+   * the moderate screen) the forum-post moderation cache before going back.
+   */
   const onSubmit = (values: PostContentData, helpers: FormikHelpers<PostContentData>) => {
     values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
     postUpdateMutation.mutate(
@@ -43,7 +49,16 @@ const ForumPostEditScreenInner = ({route, navigation}: Props) => {
       },
       {
         onSuccess: response => {
-          updatePost(route.params.postData.postID, route.params.forumData?.forumID, response.data);
+          updatePost(route.params.postData.postID, route.params.forumID, response.data);
+          if (route.params.intent === 'moderate' && profilePublicData) {
+            updatePostModeration(
+              route.params.postData.postID,
+              route.params.postData,
+              values.text,
+              values.images.map(image => image.filename).filter((filename): filename is string => Boolean(filename)),
+              profilePublicData.header,
+            );
+          }
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),
