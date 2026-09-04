@@ -25,6 +25,22 @@ export const MentionTextField = (props: MentionTextFieldProps) => {
   const textInputRef = useRef<TextInput | null>(null);
   const pendingMentionInsertionRef = useRef<boolean>(false);
 
+  /**
+   * Fans the input out to the caller's ref as well as the local one. Stable so React
+   * doesn't detach and reattach it on every render, which would leave the caller's ref
+   * momentarily null.
+   */
+  const callerInputRef = props.inputRef;
+  const setInputRefs = useCallback(
+    (node: TextInput | null) => {
+      textInputRef.current = node;
+      if (callerInputRef) {
+        callerInputRef.current = node;
+      }
+    },
+    [callerInputRef],
+  );
+
   const triggersConfig: TriggersConfig<'mention' | 'hashtag'> = useMemo(
     () => ({
       mention: {
@@ -114,12 +130,7 @@ export const MentionTextField = (props: MentionTextFieldProps) => {
       {mentionTriggerProps && <ContentPostMentionSuggestionsView {...mentionTriggerProps} />}
       <TextInput
         testID={props.testID}
-        ref={node => {
-          textInputRef.current = node;
-          if (props.inputRef) {
-            props.inputRef.current = node;
-          }
-        }}
+        ref={setInputRefs}
         // The textInputProps provides onChangeText and onSelectionChange.
         {...textInputProps}
         style={props.style}

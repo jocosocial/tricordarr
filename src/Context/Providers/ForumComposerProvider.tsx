@@ -47,7 +47,9 @@ export const ForumComposerProvider = ({
         // caret is placed explicitly rather than wherever the field was last left.
         requestAnimationFrame(() => {
           inputRef.current?.focus();
-          inputRef.current?.setNativeProps({selection: {start: text.length, end: text.length}});
+          // setSelection rather than setNativeProps: this app runs the new architecture,
+          // where setNativeProps goes through legacy viewConfig attribute filtering.
+          inputRef.current?.setSelection(text.length, text.length);
         });
       },
     };
