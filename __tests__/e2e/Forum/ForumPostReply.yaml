@@ -48,15 +48,22 @@ env:
 - tapOn: 'Reply'
 # Deliberately no tap on the composer first — that is the whole point of this scenario.
 - inputText: ${MARKER}
-- assertVisible: '(?s).*@.*${MARKER}.*'
+# Every assertion here is scoped to the composer by id. An unscoped text assertion also
+# matches the posts rendered in the thread, so it would pass even if Reply did nothing.
+- assertVisible:
+    id: 'contentPostText-input'
+    text: '(?s).*@.*${MARKER}.*'
 
 # Scenario 2 — replying while part-way through a sentence. Existing text must survive and
-# the mention must land after it, separated by a space.
+# the mention must land after it, separated by a space. The typed text carries the marker
+# so it cannot collide with post content.
 - eraseText
-- inputText: 'hello'
+- inputText: '${MARKER}pre'
 - hideKeyboard
 - longPressOn:
     id: 'forumPost-message'
     index: 0
 - tapOn: 'Reply'
-- assertVisible: '(?s).*hello @.*'
+- assertVisible:
+    id: 'contentPostText-input'
+    text: '(?s).*${MARKER}pre @.*'
