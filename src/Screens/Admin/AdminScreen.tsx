@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Divider} from 'react-native-paper';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -8,8 +9,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
 
@@ -25,9 +25,16 @@ export const AdminScreen = () => {
  * Server Admin hub, grouped to match Swiftarr's `/admin` root: Communication, Configuration, and Data Loading.
  */
 const AdminScreenInner = () => {
+  const navigation = useCommonStack();
   const access = useAdminAccess();
   const {data: userNotificationData} = useUserNotificationDataQuery();
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const ttSeamailCount = userNotificationData?.moderatorData?.newTTSeamailMessageCount ?? 0;
   const ttMentionCount = userNotificationData?.moderatorData?.newTTForumMentionCount ?? 0;

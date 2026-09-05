@@ -1,7 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AdminUserManageList} from '#src/Components/Lists/Items/Admin/AdminUserManageList';
 import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
@@ -13,7 +14,6 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {UserRoleType} from '#src/Enums/UserRoleType';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertPromoteUser, alertRemoveRole} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -43,9 +43,15 @@ export const AdminUserRolesScreen = (props: Props) => {
 
 const AdminUserRolesScreenInner = ({route, navigation}: Props) => {
   const role = route.params?.role;
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
 
-  React.useEffect(() => {
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
+
+  useEffect(() => {
     navigation.setOptions({title: role ? UserRoleType.getLabel(role) : 'User Roles'});
   }, [navigation, role]);
 
@@ -85,7 +91,13 @@ const AdminUserRoleDetail = ({role, navigation}: AdminUserRoleDetailProps) => {
   const removeMutation = useRemoveUserRoleMutation();
   const {setSnackbarPayload} = useSnackbar();
   const roleName = UserRoleType.getLabel(role);
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const openProfile = (user: UserHeader) => {
     navigation.push(CommonStackComponents.userProfileScreen, {userID: user.userID});

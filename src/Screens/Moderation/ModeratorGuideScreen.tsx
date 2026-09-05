@@ -1,8 +1,9 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {FlatList, Linking, StyleSheet} from 'react-native';
 import {Divider, Text, TouchableRipple} from 'react-native-paper';
 
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -11,9 +12,12 @@ import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {appUrl} from '#src/Libraries/UrlParser';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {
+  CommonStackComponents,
+  CommonStackParamList,
+  useCommonStack,
+} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderatorGuideScreen>;
@@ -85,7 +89,14 @@ const CannedResponsesList = ({responses}: CannedResponsesListProps) => {
 };
 
 const ModeratorGuideScreenInner = () => {
-  useModerationHelpHeader();
+  const navigation = useCommonStack();
+  const getNavButtons = useModerationHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>

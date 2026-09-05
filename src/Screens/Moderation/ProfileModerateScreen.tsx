@@ -1,7 +1,8 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -15,7 +16,6 @@ import {ModerationReportListItem} from '#src/Components/Views/Moderation/Moderat
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {AppIcons} from '#src/Enums/Icons';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {profilePublicDataFromUpload} from '#src/Libraries/Moderation/Content';
 import {ShareContentType} from '#src/Libraries/Sharing';
@@ -34,13 +34,19 @@ const ProfileModerateScreenInner = ({route}: Props) => {
   const navigation = useCommonStack();
   const {data, refetch, isLoading} = useProfileModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
-  useModerationHelpHeader({
+  const getNavButtons = useModerationHeaderButtons({
     contentType: ShareContentType.user,
     contentID: id,
     contentIcon: AppIcons.user,
     moderateType: ShareContentType.profileModerate,
     moderateID: id,
   });
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;

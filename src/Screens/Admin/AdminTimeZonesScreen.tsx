@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
@@ -11,9 +12,9 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertReloadTimeZones} from '#src/Libraries/Alerts/AdminAlerts';
+import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useReloadTimeZoneDataMutation} from '#src/Queries/Admin/TimeZoneMutations';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
@@ -27,12 +28,19 @@ export const AdminTimeZonesScreen = () => {
 };
 
 const AdminTimeZonesScreenInner = () => {
+  const navigation = useCommonStack();
   const {data, refetch, isLoading} = useTimeZoneChangesQuery({enabled: true});
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const reloadMutation = useReloadTimeZoneDataMutation();
   const {canReloadTimeZones} = useAdminAccess();
   const {setSnackbarPayload} = useSnackbar();
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (isLoading && !data) {
     return <LoadingView />;

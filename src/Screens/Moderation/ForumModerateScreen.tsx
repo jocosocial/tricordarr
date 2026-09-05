@@ -1,9 +1,10 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQueryClient} from '@tanstack/react-query';
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Menu, Text} from 'react-native-paper';
 
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -21,7 +22,6 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
 import {forumDataFromModeration} from '#src/Libraries/Moderation/Content';
@@ -54,13 +54,19 @@ const ForumModerateScreenInner = ({route}: Props) => {
   const deleteMutation = useForumDeleteMutation();
   const setCategoryMutation = useForumSetCategoryMutation();
   const {visible, openMenu, closeMenu} = useMenu();
-  useModerationHelpHeader({
+  const getNavButtons = useModerationHeaderButtons({
     contentType: ShareContentType.forum,
     contentID: id,
     contentIcon: AppIcons.forum,
     moderateType: ShareContentType.forumModerate,
     moderateID: id,
   });
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const styles = useMemo(
     () =>

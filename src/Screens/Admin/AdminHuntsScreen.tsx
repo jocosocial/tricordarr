@@ -1,8 +1,9 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
 import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -11,7 +12,6 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useHuntsQuery} from '#src/Queries/Admin/HuntQueries';
@@ -30,7 +30,13 @@ export const AdminHuntsScreen = (props: Props) => {
 const AdminHuntsScreenInner = ({navigation}: Props) => {
   const {data, refetch, isLoading} = useHuntsQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (isLoading && !data) {
     return <LoadingView />;

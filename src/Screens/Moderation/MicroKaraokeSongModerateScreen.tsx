@@ -1,9 +1,10 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQueryClient} from '@tanstack/react-query';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Linking} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -14,7 +15,6 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertApproveMicroKaraokeSong, alertDeleteMicroKaraokeSnippet} from '#src/Libraries/Alerts/ModerationAlerts';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
@@ -52,10 +52,16 @@ const MicroKaraokeSongModerateScreenInner = ({route}: Props) => {
   });
   const deleteMutation = useMicroKaraokeSnippetDeleteMutation();
   const approveMutation = useMicroKaraokeApproveSongMutation();
-  useModerationHelpHeader({
+  const getNavButtons = useModerationHeaderButtons({
     moderateType: ShareContentType.microKaraokeSongModerate,
     moderateID: songID,
   });
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const song = songQuery.data;
   const snippets = snippetsQuery.data;

@@ -1,7 +1,8 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -16,7 +17,6 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
@@ -41,10 +41,16 @@ const PhotostreamModerateScreenInner = ({route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(PhotostreamModerationData.getCacheKeys(id));
   const deleteMutation = usePhotostreamModerationDeleteMutation();
-  useModerationHelpHeader({
+  const getNavButtons = useModerationHeaderButtons({
     moderateType: ShareContentType.photostreamModerate,
     moderateID: id,
   });
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;

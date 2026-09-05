@@ -1,9 +1,10 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQueryClient} from '@tanstack/react-query';
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Menu, Text, TextInput} from 'react-native-paper';
 
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -20,7 +21,6 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {useMenu} from '#src/Hooks/useMenu';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {ReportContentGroup} from '#src/Libraries/Moderation/ReportContentGroup';
 import {invalidateQueryKeys} from '#src/Libraries/QueryInvalidation';
@@ -61,13 +61,19 @@ const UserModerateScreenInner = ({route}: Props) => {
   const quarantineMutation = useUserTempQuarantineMutation();
   const {visible, openMenu, closeMenu} = useMenu();
   const [hours, setHours] = useState('');
-  useModerationHelpHeader({
+  const getNavButtons = useModerationHeaderButtons({
     contentType: ShareContentType.user,
     contentID: id,
     contentIcon: AppIcons.user,
     moderateType: ShareContentType.userModerate,
     moderateID: id,
   });
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const styles = useMemo(
     () =>

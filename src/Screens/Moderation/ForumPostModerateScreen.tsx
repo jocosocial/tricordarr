@@ -1,9 +1,10 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ModeratorContentSegmentedButtons} from '#src/Components/Buttons/SegmentedButtons/ModeratorContentSegmentedButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
@@ -25,7 +26,6 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
 import {postDataFromDetail} from '#src/Libraries/Moderation/Content';
@@ -53,13 +53,19 @@ const ForumPostModerateScreenInner = ({route}: Props) => {
   const actions = useModerationContentActions(ForumPostModerationData.getCacheKeys(id));
   const deleteMutation = useForumPostDeleteMutation();
   const {deletePost} = useForumCacheReducer();
-  useModerationHelpHeader({
+  const getNavButtons = useModerationHeaderButtons({
     contentType: ShareContentType.forumPost,
     contentID: id,
     contentIcon: AppIcons.forum,
     moderateType: ShareContentType.forumPostModerate,
     moderateID: id,
   });
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const styles = useMemo(
     () =>

@@ -1,8 +1,9 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ListItem} from '#src/Components/Lists/ListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -11,7 +12,6 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {
   CommonStackComponents,
@@ -28,7 +28,13 @@ const MicroKaraokeSongsModerateScreenInner = () => {
   const navigation = useCommonStack();
   const {data, refetch, isLoading} = useMicroKaraokeModerationSongListQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
-  useModerationHelpHeader();
+  const getNavButtons = useModerationHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const styles = useMemo(
     () =>

@@ -1,7 +1,8 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -17,7 +18,6 @@ import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/Moder
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertRemovePersonalEventMember} from '#src/Libraries/Alerts/ModerationAlerts';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
@@ -42,13 +42,19 @@ const PersonalEventModerateScreenInner = ({route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(PersonalEventModerationData.getCacheKeys(id));
   const removeMutation = usePersonalEventMemberRemoveMutation();
-  useModerationHelpHeader({
+  const getNavButtons = useModerationHeaderButtons({
     contentType: ShareContentType.personalEvent,
     contentID: id,
     contentIcon: AppIcons.personalEvent,
     moderateType: ShareContentType.personalEventModerate,
     moderateID: id,
   });
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;

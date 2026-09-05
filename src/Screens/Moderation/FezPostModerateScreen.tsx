@@ -1,7 +1,8 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -17,7 +18,6 @@ import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/Moder
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {FezType} from '#src/Enums/FezType';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
 import {getFezPublicShare} from '#src/Libraries/Moderation/Share';
@@ -43,11 +43,17 @@ const FezPostModerateScreenInner = ({route}: Props) => {
   const actions = useModerationContentActions(FezPostModerationData.getCacheKeys(id));
   const deleteMutation = useFezPostDeleteMutation();
   const fezShare = data ? getFezPublicShare(data.fezType, data.fezID) : undefined;
-  useModerationHelpHeader({
+  const getNavButtons = useModerationHeaderButtons({
     moderateType: ShareContentType.fezPostModerate,
     moderateID: id,
     ...fezShare,
   });
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;

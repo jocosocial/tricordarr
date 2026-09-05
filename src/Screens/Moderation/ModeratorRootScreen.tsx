@@ -1,26 +1,37 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {
+  CommonStackComponents,
+  CommonStackParamList,
+  useCommonStack,
+} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderatorRootScreen>;
 
 const ModeratorRootScreenInner = () => {
+  const navigation = useCommonStack();
   const {data, refetch} = useUserNotificationDataQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
-  useModerationHelpHeader();
+  const getNavButtons = useModerationHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const moderatorData = data?.moderatorData;
 

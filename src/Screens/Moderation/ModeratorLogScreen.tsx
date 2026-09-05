@@ -1,8 +1,9 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
 import {Divider, Text} from 'react-native-paper';
 
+import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -10,7 +11,6 @@ import {ModerationLogListItem} from '#src/Components/Views/Moderation/Moderation
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ReportType} from '#src/Enums/ReportType';
-import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {pushModerateScreen} from '#src/Libraries/ModerationNavigation';
@@ -41,7 +41,13 @@ const ModeratorLogScreenInner = () => {
     isFetchingNextPage,
     setRefreshing,
   });
-  useModerationHelpHeader();
+  const getNavButtons = useModerationHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const styles = useMemo(
     () =>
