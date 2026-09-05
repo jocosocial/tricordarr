@@ -30,8 +30,16 @@ env:
 - launchApp:
     arguments:
       '-EXDevMenuIsOnboardingFinished': true
+# Relaunching makes the dev client refetch the JS bundle, so wait for the tab bar to
+# actually exist before tapping it. Android is slow enough here that tapping immediately
+# fails with a bare "Element not found"; iOS usually wins the race, which is exactly the
+# kind of difference that makes this flaky rather than broken.
+#
 # Tab labels bundle icon glyphs in with the text ("<glyph>, <glyph>, Forums, Forums"), so
 # every text selector here needs wildcards rather than a bare literal.
+- extendedWaitUntil:
+    visible: '(?s).*Forums.*'
+    timeout: 120000
 - tapOn: '(?s).*Forums.*'
 - tapOn: '(?s).*${FORUM_CATEGORY}.*'
 - tapOn: '(?s).*${FORUM_THREAD}.*'
