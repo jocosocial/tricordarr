@@ -63,6 +63,16 @@ export const ModeratorHelpScreen = () => {
           also see a red banner at the top of the screen.
         </HelpTopicView>
         <HelpChapterTitleView title={'Actions'}>
+          <HelpTopicView title={'Share'} icon={AppIcons.share}>
+            On a content moderate screen, opens a menu to share a public content link or a Moderator View link.
+          </HelpTopicView>
+          <HelpTopicView title={'Content'} icon={AppIcons.forum}>
+            Share the public link for this content. The icon matches the content type. Hidden for photostream photos and
+            Micro Karaoke songs, which have no public item link.
+          </HelpTopicView>
+          <HelpTopicView title={'Moderator View'} icon={AppIcons.moderator}>
+            Share a link that opens this moderate screen.
+          </HelpTopicView>
           <HelpButtonHelpTopicView />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Privileged Actions'} />

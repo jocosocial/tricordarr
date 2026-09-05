@@ -8,7 +8,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
-import {ModeratedContentData, ModerationStateContext} from '#src/Libraries/Moderation';
+import {ModeratedContentData, ModerationStateContext} from '#src/Libraries/Moderation/ModerationStateContext';
 
 interface ModeratorStateViewProps {
   data: ModeratedContentData;

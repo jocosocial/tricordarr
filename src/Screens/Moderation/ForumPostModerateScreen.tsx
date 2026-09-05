@@ -22,12 +22,14 @@ import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/Moder
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
-import {postDataFromDetail} from '#src/Libraries/Moderation';
+import {postDataFromDetail} from '#src/Libraries/Moderation/Content';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -51,7 +53,13 @@ const ForumPostModerateScreenInner = ({route}: Props) => {
   const actions = useModerationContentActions(ForumPostModerationData.getCacheKeys(id));
   const deleteMutation = useForumPostDeleteMutation();
   const {deletePost} = useForumCacheReducer();
-  useModerationHelpHeader();
+  useModerationHelpHeader({
+    contentType: ShareContentType.forumPost,
+    contentID: id,
+    contentIcon: AppIcons.forum,
+    moderateType: ShareContentType.forumPostModerate,
+    moderateID: id,
+  });
 
   const styles = useMemo(
     () =>

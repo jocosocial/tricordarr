@@ -19,6 +19,7 @@ import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertApproveMicroKaraokeSong, alertDeleteMicroKaraokeSnippet} from '#src/Libraries/Alerts/ModerationAlerts';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {invalidateQueryKeys} from '#src/Libraries/QueryInvalidation';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -51,7 +52,10 @@ const MicroKaraokeSongModerateScreenInner = ({route}: Props) => {
   });
   const deleteMutation = useMicroKaraokeSnippetDeleteMutation();
   const approveMutation = useMicroKaraokeApproveSongMutation();
-  useModerationHelpHeader();
+  useModerationHelpHeader({
+    moderateType: ShareContentType.microKaraokeSongModerate,
+    moderateID: songID,
+  });
 
   const song = songQuery.data;
   const snippets = snippetsQuery.data;

@@ -14,9 +14,11 @@ import {ModerationEditListItem} from '#src/Components/Views/Moderation/Moderatio
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {AppIcons} from '#src/Enums/Icons';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {profilePublicDataFromUpload} from '#src/Libraries/Moderation';
+import {profilePublicDataFromUpload} from '#src/Libraries/Moderation/Content';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -32,7 +34,13 @@ const ProfileModerateScreenInner = ({route}: Props) => {
   const navigation = useCommonStack();
   const {data, refetch, isLoading} = useProfileModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
-  useModerationHelpHeader(id);
+  useModerationHelpHeader({
+    contentType: ShareContentType.user,
+    contentID: id,
+    contentIcon: AppIcons.user,
+    moderateType: ShareContentType.profileModerate,
+    moderateID: id,
+  });
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;

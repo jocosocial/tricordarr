@@ -17,12 +17,14 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {generateReportContentGroups} from '#src/Libraries/Moderation';
+import {ReportContentGroup} from '#src/Libraries/Moderation/ReportContentGroup';
 import {invalidateQueryKeys} from '#src/Libraries/QueryInvalidation';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -59,7 +61,13 @@ const UserModerateScreenInner = ({route}: Props) => {
   const quarantineMutation = useUserTempQuarantineMutation();
   const {visible, openMenu, closeMenu} = useMenu();
   const [hours, setHours] = useState('');
-  useModerationHelpHeader();
+  useModerationHelpHeader({
+    contentType: ShareContentType.user,
+    contentID: id,
+    contentIcon: AppIcons.user,
+    moderateType: ShareContentType.userModerate,
+    moderateID: id,
+  });
 
   const styles = useMemo(
     () =>
@@ -78,7 +86,7 @@ const UserModerateScreenInner = ({route}: Props) => {
   );
 
   const allowedLevels = hasTHO ? thoAccessLevels : moderatorAccessLevels;
-  const groups = useMemo(() => (data ? generateReportContentGroups(data.reports) : []), [data]);
+  const groups = useMemo(() => (data ? ReportContentGroup.groupsFromReports(data.reports) : []), [data]);
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;

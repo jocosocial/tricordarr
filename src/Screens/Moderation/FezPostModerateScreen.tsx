@@ -20,6 +20,8 @@ import {useModerationContentActions} from '#src/Hooks/useModerationContentAction
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
+import {getFezPublicShare} from '#src/Libraries/Moderation/Share';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -40,7 +42,12 @@ const FezPostModerateScreenInner = ({route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(FezPostModerationData.getCacheKeys(id));
   const deleteMutation = useFezPostDeleteMutation();
-  useModerationHelpHeader(data?.fezPost.author.userID);
+  const fezShare = data ? getFezPublicShare(data.fezType, data.fezID) : undefined;
+  useModerationHelpHeader({
+    moderateType: ShareContentType.fezPostModerate,
+    moderateID: id,
+    ...fezShare,
+  });
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;

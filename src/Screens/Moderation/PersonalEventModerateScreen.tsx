@@ -15,11 +15,13 @@ import {ModerationReportListItem} from '#src/Components/Views/Moderation/Moderat
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertRemovePersonalEventMember} from '#src/Libraries/Alerts/ModerationAlerts';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -40,7 +42,13 @@ const PersonalEventModerateScreenInner = ({route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(PersonalEventModerationData.getCacheKeys(id));
   const removeMutation = usePersonalEventMemberRemoveMutation();
-  useModerationHelpHeader();
+  useModerationHelpHeader({
+    contentType: ShareContentType.personalEvent,
+    contentID: id,
+    contentIcon: AppIcons.personalEvent,
+    moderateType: ShareContentType.personalEventModerate,
+    moderateID: id,
+  });
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;

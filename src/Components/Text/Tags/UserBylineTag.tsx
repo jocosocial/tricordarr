@@ -55,7 +55,7 @@ export const UserBylineTag = ({
   const {privilegedUsernames} = usePrivilege();
   const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
-  const byPrivilegedUser = privilegedUsernames.some(username => user.username === username);
+  const byPrivilegedUser = privilegedUsernames.some(username => user.username.toLowerCase() === username.toLowerCase());
 
   const styles = StyleSheet.create({
     innerText: style as TextStyle,

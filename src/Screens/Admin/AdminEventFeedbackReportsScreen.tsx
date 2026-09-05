@@ -2,14 +2,11 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View} from 'react-native';
-import {Divider} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
-import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
 import {EventFeedbackReportListItem} from '#src/Components/Lists/Items/Admin/EventFeedbackReportListItem';
 import {EventFeedbackLocationFilterMenu} from '#src/Components/Menus/EventFeedback/EventFeedbackLocationFilterMenu';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
@@ -19,6 +16,7 @@ import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderV
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {calcCruiseDayTime} from '#src/Libraries/DateTime';
@@ -129,16 +127,7 @@ const AdminEventFeedbackReportsScreenInner = ({navigation, route}: Props) => {
     return <EventFeedbackReportListItem report={item} />;
   }, []);
 
-  const renderListFooter = useCallback(() => {
-    if (filteredReports.length > 0) {
-      return <EndResultsFooter />;
-    }
-    return <NoResultsFooter />;
-  }, [filteredReports.length]);
-
-  const renderItemSeparator = useCallback(() => {
-    return <Divider bold={true} />;
-  }, []);
+  const {getListSeparator, getListFooter} = useAppFlashList({data: filteredReports});
 
   const keyExtractor = useCallback((item: EventFeedbackReportWithId) => item.id, []);
 
@@ -171,8 +160,8 @@ const AdminEventFeedbackReportsScreenInner = ({navigation, route}: Props) => {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        renderListFooter={renderListFooter}
-        renderItemSeparator={renderItemSeparator}
+        renderListFooter={getListFooter}
+        renderItemSeparator={getListSeparator}
       />
     </AppView>
   );

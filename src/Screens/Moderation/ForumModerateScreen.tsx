@@ -18,13 +18,15 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
 import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
-import {forumDataFromModeration} from '#src/Libraries/Moderation';
+import {forumDataFromModeration} from '#src/Libraries/Moderation/Content';
 import {invalidateQueryKeys} from '#src/Libraries/QueryInvalidation';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -52,7 +54,13 @@ const ForumModerateScreenInner = ({route}: Props) => {
   const deleteMutation = useForumDeleteMutation();
   const setCategoryMutation = useForumSetCategoryMutation();
   const {visible, openMenu, closeMenu} = useMenu();
-  useModerationHelpHeader(data?.creator.userID);
+  useModerationHelpHeader({
+    contentType: ShareContentType.forum,
+    contentID: id,
+    contentIcon: AppIcons.forum,
+    moderateType: ShareContentType.forumModerate,
+    moderateID: id,
+  });
 
   const styles = useMemo(
     () =>

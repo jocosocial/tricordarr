@@ -18,12 +18,8 @@ jest.mock('@react-navigation/stack', () => ({
 
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {ReportType} from '#src/Enums/ReportType';
-import {
-  filterReportGroupsByClosed,
-  generateReportContentGroups,
-  getReportGroupStatusLabel,
-  isClosedReportsParam,
-} from '#src/Libraries/Moderation';
+import {isClosedReportsParam} from '#src/Libraries/Moderation/ModerationStateContext';
+import {ReportContentGroup} from '#src/Libraries/Moderation/ReportContentGroup';
 import {parseDeepLinkUrl} from '#src/Libraries/RouteDefinitions';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ReportModerationData, UserHeader} from '#src/Structs/ControllerStructs';
@@ -51,7 +47,7 @@ const report = (
   };
 };
 
-describe('generateReportContentGroups', () => {
+describe('ReportContentGroup.groupsFromReports', () => {
   it('groups reports for the same content and keeps the earliest firstReport', () => {
     const reports = [
       report({
@@ -74,7 +70,7 @@ describe('generateReportContentGroups', () => {
       }),
     ];
 
-    const groups = generateReportContentGroups(reports);
+    const groups = ReportContentGroup.groupsFromReports(reports);
     expect(groups).toHaveLength(2);
     expect(groups[0].reportedID).toBe('post-1');
     expect(groups[0].reports).toHaveLength(2);
@@ -84,9 +80,9 @@ describe('generateReportContentGroups', () => {
   });
 });
 
-describe('filterReportGroupsByClosed', () => {
+describe('ReportContentGroup.filterByClosed', () => {
   it('keeps groups with remaining open reports on the open list', () => {
-    const groups = generateReportContentGroups([
+    const groups = ReportContentGroup.groupsFromReports([
       report({
         id: 'open',
         reportedID: 'a',
@@ -100,14 +96,14 @@ describe('filterReportGroupsByClosed', () => {
         creationTime: '2026-03-01T00:00:00.000Z',
       }),
     ]);
-    expect(filterReportGroupsByClosed(groups, false).map(group => group.reportedID)).toEqual(['a']);
-    expect(filterReportGroupsByClosed(groups, true).map(group => group.reportedID)).toEqual(['b']);
+    expect(ReportContentGroup.filterByClosed(groups, false).map(group => group.reportedID)).toEqual(['a']);
+    expect(ReportContentGroup.filterByClosed(groups, true).map(group => group.reportedID)).toEqual(['b']);
   });
 });
 
-describe('getReportGroupStatusLabel', () => {
+describe('ReportContentGroup.getStatusLabel', () => {
   it('summarizes a single open report', () => {
-    const [group] = generateReportContentGroups([
+    const [group] = ReportContentGroup.groupsFromReports([
       report({
         id: 'open',
         reportedID: 'a',
@@ -115,7 +111,7 @@ describe('getReportGroupStatusLabel', () => {
         creationTime: '2026-03-01T00:00:00.000Z',
       }),
     ]);
-    expect(getReportGroupStatusLabel(group)).toBe('1 open report by @reporter');
+    expect(ReportContentGroup.getStatusLabel(group)).toBe('1 open report by @reporter');
   });
 });
 

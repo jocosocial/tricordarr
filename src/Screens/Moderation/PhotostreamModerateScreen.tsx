@@ -20,6 +20,7 @@ import {useModerationHelpHeader} from '#src/Hooks/useModerationHelpHeader';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -40,7 +41,10 @@ const PhotostreamModerateScreenInner = ({route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(PhotostreamModerationData.getCacheKeys(id));
   const deleteMutation = usePhotostreamModerationDeleteMutation();
-  useModerationHelpHeader();
+  useModerationHelpHeader({
+    moderateType: ShareContentType.photostreamModerate,
+    moderateID: id,
+  });
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
@@ -92,8 +96,7 @@ const PhotostreamModerateScreenInner = ({route}: Props) => {
               },
               {
                 label: 'View Author Photos',
-                onPress: () =>
-                  navigation.push(CommonStackComponents.photostreamUserScreen, {user: data.photo.author}),
+                onPress: () => navigation.push(CommonStackComponents.photostreamUserScreen, {user: data.photo.author}),
               },
             ]}
           />
