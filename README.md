@@ -32,6 +32,10 @@ npm run typecheck
 npm run lint
 ```
 
+Note that `npm test` is not currently green on a clean checkout: `TestDateTime`,
+`TestNewDayMinuteCalculator` and `TestScheduleMarker` fail (5 tests), apparently
+timezone-dependent. Compare against a clean tree before assuming you caused a failure.
+
 End-to-end flows live in `__tests__/e2e/` and run on
 [Maestro](https://maestro.mobile.dev). Install it with the official installer
 (`curl -Ls "https://get.maestro.mobile.dev" | bash`), which needs a JDK and drops into
