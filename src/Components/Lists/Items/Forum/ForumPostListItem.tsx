@@ -78,6 +78,7 @@ const ForumPostListItemInternal = ({
       </MessageAvatarContainerView>
       <MessageViewContainer>
         <MessageView
+          testID={'forumPost-message'}
           author={postData.author}
           text={postData.text}
           timestamp={new Date(postData.createdAt)}

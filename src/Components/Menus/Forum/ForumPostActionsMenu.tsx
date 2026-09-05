@@ -6,9 +6,11 @@ import {ForumPostActionsFavoriteItem} from '#src/Components/Menus/Forum/Items/Fo
 import {ForumPostActionsModerateItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsModerateItem';
 import {ForumPostActionsPinItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsPinItem';
 import {ForumPostActionsReactionItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReactionItem';
+import {ForumPostActionsReplyItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReplyItem';
 import {ForumPostActionsReportItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReportItem';
 import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsShowThreadItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {useForumComposer} from '#src/Context/Contexts/ForumComposerContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
@@ -40,6 +42,12 @@ export const ForumPostActionsMenu = ({
   // Apparently this doesn't get to be available in the sub items? That's annoying.
   const commonNavigation = useCommonStack();
   const {setString} = useClipboard();
+  // Undefined outside a thread composer. Same portal caveat as the navigation above, so
+  // read it here and pass the callback down.
+  const composer = useForumComposer();
+  // Replying to yourself would tag yourself, and Swiftarr drops self-mentions
+  // (`userDidntMentionSelf` in ForumController), so there is nothing to gain.
+  const onReply = composer && !bySelf ? composer.mentionUser : undefined;
 
   /**
    * closeMenu comes from the instance established in MessageView so we need to drill
@@ -47,9 +55,12 @@ export const ForumPostActionsMenu = ({
    */
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
-      {enableShowInThread && (
+      {(onReply || enableShowInThread) && (
         <>
-          <ForumPostActionsShowThreadItem forumPost={forumPost} closeMenu={closeMenu} navigation={commonNavigation} />
+          {onReply && <ForumPostActionsReplyItem forumPost={forumPost} closeMenu={closeMenu} onReply={onReply} />}
+          {enableShowInThread && (
+            <ForumPostActionsShowThreadItem forumPost={forumPost} closeMenu={closeMenu} navigation={commonNavigation} />
+          )}
           <Divider bold={true} />
         </>
       )}

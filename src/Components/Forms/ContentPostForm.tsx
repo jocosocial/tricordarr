@@ -1,6 +1,6 @@
 import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
 import React, {useEffect} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import * as Yup from 'yup';
 
@@ -58,6 +58,8 @@ interface ContentPostFormProps {
   maxPhotos?: number;
   initialValues?: PostContentData;
   disabled?: boolean;
+  /** Receives the text input, so callers can focus it after writing into the form. */
+  inputRef?: React.MutableRefObject<TextInput | null>;
 }
 
 // https://formik.org/docs/guides/react-native
@@ -71,6 +73,7 @@ export const ContentPostForm = ({
   maxPhotos = 1,
   initialValues,
   disabled = false,
+  inputRef,
 }: ContentPostFormProps) => {
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = useElevation();
@@ -198,7 +201,12 @@ export const ContentPostForm = ({
                   />
                 </View>
                 <View style={styles.inputWrapperView}>
-                  <MentionTextField name={'text'} testID={'contentPostText-input'} style={styles.input} />
+                  <MentionTextField
+                    name={'text'}
+                    testID={'contentPostText-input'}
+                    style={styles.input}
+                    inputRef={inputRef}
+                  />
                   <ContentInsertPhotosView />
                 </View>
                 <View style={styles.inputWrapperViewSide}>

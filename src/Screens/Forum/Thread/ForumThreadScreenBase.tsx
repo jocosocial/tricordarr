@@ -2,7 +2,7 @@ import {InfiniteData, QueryObserverResult} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -27,6 +27,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
+import {ForumComposerProvider} from '#src/Context/Providers/ForumComposerProvider';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
@@ -91,6 +92,7 @@ const ForumThreadScreenBaseInner = ({
   const navigation = useCommonStack();
   const {asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam} = useElevation();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
+  const postInputRef = useRef<TextInput | null>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const markReadMutation = useForumMarkReadMutation();
   const flatListRef = useRef<TConversationListV2Ref>(null);
@@ -295,44 +297,47 @@ const ForumThreadScreenBaseInner = ({
   });
 
   return (
-    <AppView>
-      <PostAsUserBanner />
-      <ListTitleView
-        title={forumData?.title ?? ''}
-        subtitle={pinnedPostsSubtitle}
-        icon={forumData?.isFavorite ? <AppIcon icon={AppIcons.favorite} small={true} /> : undefined}
-      />
-      {forumData?.isLocked && <ForumLockedView />}
-      <View style={commonStyles.flex}>
-        <ForumConversationListV2
-          postList={forumPosts}
-          handleLoadNext={handleLoadNext}
-          handleLoadPrevious={handleLoadPrevious}
-          refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
-          forumData={forumData}
-          hasPreviousPage={hasPreviousPage}
-          getListHeader={getListHeader}
-          listRef={flatListRef}
-          hasNextPage={hasNextPage}
-          forumListData={forumListData}
-          initialScrollIndex={getInitialScrollIndex()}
-          onReadyToShow={onReadyToShow}
+    <ForumComposerProvider formRef={postFormRef} inputRef={postInputRef} enabled={showForm}>
+      <AppView>
+        <PostAsUserBanner />
+        <ListTitleView
+          title={forumData?.title ?? ''}
+          subtitle={pinnedPostsSubtitle}
+          icon={forumData?.isFavorite ? <AppIcon icon={AppIcons.favorite} small={true} /> : undefined}
         />
-        {!readyToShow && (
-          <View style={overlayStyles.overlay}>
-            <ActivityIndicator size={'large'} />
-          </View>
+        {forumData?.isLocked && <ForumLockedView />}
+        <View style={commonStyles.flex}>
+          <ForumConversationListV2
+            postList={forumPosts}
+            handleLoadNext={handleLoadNext}
+            handleLoadPrevious={handleLoadPrevious}
+            refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
+            forumData={forumData}
+            hasPreviousPage={hasPreviousPage}
+            getListHeader={getListHeader}
+            listRef={flatListRef}
+            hasNextPage={hasNextPage}
+            forumListData={forumListData}
+            initialScrollIndex={getInitialScrollIndex()}
+            onReadyToShow={onReadyToShow}
+          />
+          {!readyToShow && (
+            <View style={overlayStyles.overlay}>
+              <ActivityIndicator size={'large'} />
+            </View>
+          )}
+        </View>
+        {showForm && (
+          <ContentPostForm
+            onSubmit={onPostSubmit}
+            formRef={postFormRef}
+            inputRef={postInputRef}
+            enablePhotos={true}
+            maxLength={2000}
+            maxPhotos={maxForumPostImages}
+          />
         )}
-      </View>
-      {showForm && (
-        <ContentPostForm
-          onSubmit={onPostSubmit}
-          formRef={postFormRef}
-          enablePhotos={true}
-          maxLength={2000}
-          maxPhotos={maxForumPostImages}
-        />
-      )}
-    </AppView>
+      </AppView>
+    </ForumComposerProvider>
   );
 };

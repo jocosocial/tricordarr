@@ -24,6 +24,56 @@ export const toSecureString = (originalText?: string): string => {
 };
 
 /**
+ * Whether `username` is already @mentioned in `text` as a standalone word.
+ *
+ * Matching is case-insensitive because Swiftarr matches mentions case-insensitively
+ * (`ContentFilterable.filterForMention` uses `.caseInsensitive`).
+ *
+ * Trailing punctuation is ignored, so `@user,` at the end of a clause still counts as a
+ * mention. Swiftarr's usernames are `[A-Za-z0-9]` with `-.+_` only ever appearing between
+ * alphanumerics, so anything non-alphanumeric at the end of a word cannot be part of the
+ * name. Leading characters are not stripped: Swiftarr's `(?<!\S)@` requires the `@` to
+ * follow whitespace or start the string, so `(@user` is not a mention to begin with.
+ *
+ * @param text The text to search.
+ * @param username The username to look for, without the leading `@`.
+ * @returns True if the text already mentions that user.
+ */
+export const isMentioned = (text: string, username: string): boolean => {
+  const mention = `@${username}`.toLowerCase();
+  return text
+    .toLowerCase()
+    .split(/\s+/)
+    .some(token => token.replace(/[^a-z0-9]+$/, '') === mention);
+};
+
+/**
+ * Appends an @mention of `username` to composer text.
+ *
+ * Swiftarr only counts a mention when the `@` is preceded by whitespace or the start of
+ * the string (the `(?<!\S)@` in `ContentFilterable.getMentionsSet`), so this always
+ * inserts a separating space when the existing text does not end in whitespace.
+ *
+ * A user already mentioned in the text is not added again, so tapping Reply twice on the
+ * same author does not stack duplicates. Mentioning several different authors still works.
+ *
+ * @param text The current composer text.
+ * @param username The username to mention, without the leading `@`.
+ * @returns The text with the mention appended, followed by a trailing space to type after.
+ */
+export const appendMention = (text: string, username: string): string => {
+  if (isMentioned(text, username)) {
+    return text;
+  }
+  const mention = `@${username}`;
+  if (!text) {
+    return `${mention} `;
+  }
+  const separator = /\s$/.test(text) ? '' : ' ';
+  return `${text}${separator}${mention} `;
+};
+
+/**
  * Hide a tab/list badge when the count is 0. React Navigation treats a defined
  * `tabBarBadge` as visible, so a 0 would otherwise render as a badge.
  *
