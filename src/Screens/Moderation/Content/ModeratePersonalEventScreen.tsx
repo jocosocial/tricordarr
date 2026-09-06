@@ -2,7 +2,9 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
+import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -17,6 +19,7 @@ import {ModerationReportListItem} from '#src/Components/Views/Moderation/Moderat
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -39,6 +42,7 @@ const ModeratePersonalEventScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const {setSnackbarPayload} = useSnackbar();
+  const {theme} = useAppTheme();
   const {data, refetch, isLoading} = usePersonalEventModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(PersonalEventModerationData.getCacheKeys(id));
@@ -84,7 +88,10 @@ const ModeratePersonalEventScreenInner = ({route}: Props) => {
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <PaddedContentView padTop={true}>
+        <ListSection>
+          <ListSubheader>Content</ListSubheader>
+        </ListSection>
+        <PaddedContentView>
           <ModerationEditListItem
             author={event.owner}
             timestamp={event.startTime}
@@ -95,23 +102,17 @@ const ModeratePersonalEventScreenInner = ({route}: Props) => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
+          <PrimaryActionButton
+            testID={'personalEventModerateView-button'}
+            buttonText={'View Event'}
+            buttonColor={theme.colors.twitarrNeutralButton}
+            onPress={() => navigation.push(CommonStackComponents.personalEventScreen, {eventID: id})}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
           <Text>
             Personal events cannot be quarantined in the site UI. Remove participants or moderate the owner if needed.
           </Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <ModerationActionRow
-            buttons={[
-              {
-                label: 'Mod Owner',
-                onPress: () => pushModerateResource(navigation, 'user', event.owner.userID),
-              },
-              {
-                label: 'View Event',
-                onPress: () => navigation.push(CommonStackComponents.personalEventScreen, {eventID: id}),
-              },
-            ]}
-          />
         </PaddedContentView>
         <ListSection>
           <ListSubheader>Participants</ListSubheader>
@@ -149,6 +150,13 @@ const ModeratePersonalEventScreenInner = ({route}: Props) => {
           data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
         )}
       </ScrollingContentView>
+      <ModeratorReportFAB
+        reports={data.reports}
+        moderateUserID={event.owner.userID}
+        testIDPrefix={'personalEventModerate'}
+        onHandleAll={() => actions.handleAll(data.reports)}
+        onCloseAll={() => actions.closeAll(data.reports)}
+      />
     </AppView>
   );
 };

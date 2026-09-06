@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useEffect, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
@@ -13,8 +13,9 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ModerationEditList} from '#src/Components/Views/Moderation/ModerationEditList';
+import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
 import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
-import {ModerationPostEditList} from '#src/Components/Views/Moderation/ModerationPostEditList';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -37,7 +38,7 @@ import {
 import {useForumPostDeleteMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {useForumPostModerationQuery} from '#src/Queries/Moderation/ModerationQueries';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
-import {ForumPostModerationData} from '#src/Structs/ControllerStructs';
+import {ForumPostModerationData, PostEditLogData} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderateForumPostScreen>;
 
@@ -81,6 +82,15 @@ const ModerateForumPostScreenInner = ({route}: Props) => {
       }),
     [commonStyles],
   );
+
+  /**
+   * Renders one previous forum-post edit as a compact content row.
+   */
+  const renderEdit = useCallback((edit: PostEditLogData) => {
+    return (
+      <ModerationEditListItem author={edit.author} timestamp={edit.createdAt} text={edit.text} images={edit.images} />
+    );
+  }, []);
 
   if (isLoading || !data) {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
@@ -142,6 +152,7 @@ const ModerateForumPostScreenInner = ({route}: Props) => {
         {!data.isDeleted && (
           <View style={styles.editDelete}>
             <ModeratorContentSegmentedButtons
+              testIDPrefix={'forumPostModerate'}
               onEdit={() =>
                 navigation.push(CommonStackComponents.forumPostEditScreen, {
                   postData,
@@ -154,7 +165,7 @@ const ModerateForumPostScreenInner = ({route}: Props) => {
             />
           </View>
         )}
-        <ModerationPostEditList edits={data.edits} />
+        <ModerationEditList edits={data.edits} renderEdit={renderEdit} />
         <ListSection>
           <ListSubheader>Reports</ListSubheader>
         </ListSection>
@@ -165,7 +176,9 @@ const ModerateForumPostScreenInner = ({route}: Props) => {
         )}
       </ScrollingContentView>
       <ModeratorReportFAB
-        data={data}
+        reports={data.reports}
+        moderateUserID={data.forumPost.author.userID}
+        testIDPrefix={'forumPostModerate'}
         onHandleAll={() => actions.handleAll(data.reports)}
         onCloseAll={() => actions.closeAll(data.reports)}
       />

@@ -152,7 +152,10 @@ const ModerateUserScreenInner = ({route}: Props) => {
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <PaddedContentView padTop={true}>
+        <ListSection>
+          <ListSubheader>Content</ListSubheader>
+        </ListSection>
+        <PaddedContentView>
           <UserBylineTag
             user={data.header}
             onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: data.header.userID})}

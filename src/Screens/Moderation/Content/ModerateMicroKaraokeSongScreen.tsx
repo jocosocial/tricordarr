@@ -5,6 +5,7 @@ import {Linking} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -113,7 +114,10 @@ const ModerateMicroKaraokeSongScreenInner = ({route}: Props) => {
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <PaddedContentView padTop={true}>
+        <ListSection>
+          <ListSubheader>Content</ListSubheader>
+        </ListSection>
+        <PaddedContentView>
           <Text variant={'titleMedium'}>
             {song.songName} — {song.artistName}
           </Text>
@@ -126,14 +130,12 @@ const ModerateMicroKaraokeSongScreenInner = ({route}: Props) => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
-          <ModerationActionRow
-            buttons={[
-              {
-                label: 'Approve',
-                disabled: !canApprove || approveMutation.isPending,
-                onPress: onApprove,
-              },
-            ]}
+          <PrimaryActionButton
+            testID={'microKaraokeSongModerateApprove-button'}
+            buttonText={'Approve'}
+            disabled={!canApprove || approveMutation.isPending}
+            isLoading={approveMutation.isPending}
+            onPress={onApprove}
           />
         </PaddedContentView>
         <ListSection>

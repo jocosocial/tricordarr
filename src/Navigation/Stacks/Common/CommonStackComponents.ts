@@ -76,7 +76,7 @@ export type CommonStackParamList = {
   ModerateForumPostScreen: {
     id: string;
   };
-  ModerateForumScreen: {
+  ModerateForumThreadScreen: {
     id: string;
   };
   ModerateFezScreen: {
@@ -409,7 +409,7 @@ export enum CommonStackComponents {
   moderatorLogScreen = 'ModeratorLogScreen',
   moderatorGuideScreen = 'ModeratorGuideScreen',
   moderateForumPostScreen = 'ModerateForumPostScreen',
-  moderateForumScreen = 'ModerateForumScreen',
+  moderateForumThreadScreen = 'ModerateForumThreadScreen',
   moderateFezScreen = 'ModerateFezScreen',
   moderateFezPostScreen = 'ModerateFezPostScreen',
   moderateProfileScreen = 'ModerateProfileScreen',

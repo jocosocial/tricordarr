@@ -7,6 +7,7 @@ import {SegmentedButtonType} from '#src/Types';
 interface ModeratorContentSegmentedButtonsProps {
   onEdit: () => void;
   onDelete: () => void;
+  testIDPrefix: string;
   isDeleting?: boolean;
 }
 
@@ -16,6 +17,7 @@ interface ModeratorContentSegmentedButtonsProps {
 export const ModeratorContentSegmentedButtons = ({
   onEdit,
   onDelete,
+  testIDPrefix,
   isDeleting,
 }: ModeratorContentSegmentedButtonsProps) => {
   const buttons: SegmentedButtonType[] = [
@@ -23,14 +25,14 @@ export const ModeratorContentSegmentedButtons = ({
       value: 'edit',
       label: 'Edit',
       icon: AppIcons.edit,
-      testID: 'forumPostModerateEdit-button',
+      testID: `${testIDPrefix}Edit-button`,
     },
     {
       value: 'delete',
       label: 'Delete',
       icon: AppIcons.delete,
       disabled: isDeleting,
-      testID: 'forumPostModerateDelete-button',
+      testID: `${testIDPrefix}Delete-button`,
     },
   ];
 

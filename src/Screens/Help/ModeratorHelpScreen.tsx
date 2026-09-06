@@ -21,17 +21,17 @@ export const ModeratorHelpScreen = () => {
         <HelpChapterTitleView title={'Floating Action Button'}>
           <HelpFABView icon={AppIcons.moderator} label={'Actions'} />
           <HelpTopicView>
-            On a forum post moderate screen, press Actions in the lower right to handle reports or moderate the author.
-            Start Handling All and Close All are hidden if there are no open reports.
+            On a content moderate screen, press Actions in the lower right to handle reports or moderate the author.
+            Handle All and Close All are hidden if there are no open reports.
           </HelpTopicView>
-          <HelpTopicView title={'Start Handling All'} icon={AppIcons.markAsRead}>
+          <HelpTopicView title={'Handle All Reports'} icon={AppIcons.markAsRead}>
             Marks all open reports on this content as being handled by you.
           </HelpTopicView>
-          <HelpTopicView title={'Close All'} icon={AppIcons.close}>
+          <HelpTopicView title={'Close All Reports'} icon={AppIcons.close}>
             Closes all open reports on this content.
           </HelpTopicView>
-          <HelpTopicView title={'Mod User'} icon={AppIcons.user}>
-            Open account-level moderation for the post author.
+          <HelpTopicView title={'Moderate User'} icon={AppIcons.user}>
+            Open account-level moderation for the content author.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Moderator Actions'} />
@@ -49,13 +49,16 @@ export const ModeratorHelpScreen = () => {
           the server when enough users report the same item. Photostream photos can be deleted but not quarantined.
         </HelpTopicView>
         <HelpTopicView title={'View in Context'}>
-          On a forum post moderate screen, View in Context opens the forum thread at this post.
+          Opens the public view for this content, such as the forum thread at a post, the LFG or chat, or the user
+          profile.
         </HelpTopicView>
         <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
-          Edit the forum post text and images. Hidden if the post has already been deleted.
+          Edit the content. Hidden if the item has already been deleted. Some types, such as fez posts and photostream
+          photos, cannot be edited.
         </HelpTopicView>
         <HelpTopicView title={'Delete'} icon={AppIcons.delete}>
-          Permanently delete the forum post. There is no recovery. Hidden if the post has already been deleted.
+          Permanently delete the content. There is no recovery. Hidden if the item has already been deleted. User
+          profiles cannot be deleted.
         </HelpTopicView>
         <HelpChapterTitleView title={'Posting'} />
         <HelpTopicView>

@@ -1,7 +1,9 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
 
+import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -16,6 +18,7 @@ import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStat
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -38,6 +41,7 @@ const ModerateFezPostScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const {setSnackbarPayload} = useSnackbar();
+  const {theme} = useAppTheme();
   const {data, refetch, isLoading} = useFezPostModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(FezPostModerationData.getCacheKeys(id));
@@ -73,6 +77,12 @@ const ModerateFezPostScreenInner = ({route}: Props) => {
     });
   };
 
+  const onViewInContext = () => {
+    navigation.push(FezType.getChatScreen(data.fezType), {
+      fezID: data.fezID,
+    });
+  };
+
   return (
     <AppView>
       <ModerationDeletedWarningView contentLabel={'post'} visible={data.isDeleted} />
@@ -80,7 +90,10 @@ const ModerateFezPostScreenInner = ({route}: Props) => {
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <PaddedContentView padTop={true}>
+        <ListSection>
+          <ListSubheader>Content</ListSubheader>
+        </ListSection>
+        <PaddedContentView>
           <ModerationEditListItem
             author={data.fezPost.author}
             timestamp={data.fezPost.timestamp}
@@ -89,26 +102,30 @@ const ModerateFezPostScreenInner = ({route}: Props) => {
           />
         </PaddedContentView>
         <PaddedContentView>
-          <ModerationActionRow
-            buttons={[
-              {
-                label: 'Delete',
-                disabled: data.isDeleted || deleteMutation.isPending,
-                onPress: onDelete,
-              },
-              {
-                label: 'View in Context',
-                onPress: () =>
-                  navigation.push(FezType.getChatScreen(data.fezType), {
-                    fezID: data.fezID,
-                  }),
-              },
-            ]}
+          <PrimaryActionButton
+            testID={'fezPostModerateView-button'}
+            buttonText={'View in Context'}
+            buttonColor={theme.colors.twitarrNeutralButton}
+            onPress={onViewInContext}
           />
         </PaddedContentView>
-        <PaddedContentView>
-          <ModeratorStateView data={data} />
-        </PaddedContentView>
+        <ListSection>
+          <ListSubheader>Visibility</ListSubheader>
+        </ListSection>
+        <ModeratorStateView data={data} />
+        {!data.isDeleted && (
+          <PaddedContentView>
+            <ModerationActionRow
+              buttons={[
+                {
+                  label: 'Delete',
+                  disabled: deleteMutation.isPending,
+                  onPress: onDelete,
+                },
+              ]}
+            />
+          </PaddedContentView>
+        )}
         <ListSection>
           <ListSubheader>Reports</ListSubheader>
         </ListSection>
@@ -118,6 +135,13 @@ const ModerateFezPostScreenInner = ({route}: Props) => {
           data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
         )}
       </ScrollingContentView>
+      <ModeratorReportFAB
+        reports={data.reports}
+        moderateUserID={data.fezPost.author.userID}
+        testIDPrefix={'fezPostModerate'}
+        onHandleAll={() => actions.handleAll(data.reports)}
+        onCloseAll={() => actions.closeAll(data.reports)}
+      />
     </AppView>
   );
 };

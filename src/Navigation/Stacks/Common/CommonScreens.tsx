@@ -111,7 +111,7 @@ import {MicroKaraokeHelpScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeHelp
 import {ModerateFezPostScreen} from '#src/Screens/Moderation/Content/ModerateFezPostScreen';
 import {ModerateFezScreen} from '#src/Screens/Moderation/Content/ModerateFezScreen';
 import {ModerateForumPostScreen} from '#src/Screens/Moderation/Content/ModerateForumPostScreen';
-import {ModerateForumScreen} from '#src/Screens/Moderation/Content/ModerateForumScreen';
+import {ModerateForumThreadScreen} from '#src/Screens/Moderation/Content/ModerateForumThreadScreen';
 import {ModerateMicroKaraokeSongScreen} from '#src/Screens/Moderation/Content/ModerateMicroKaraokeSongScreen';
 import {ModerateMicroKaraokeSongsScreen} from '#src/Screens/Moderation/Content/ModerateMicroKaraokeSongsScreen';
 import {ModeratePersonalEventScreen} from '#src/Screens/Moderation/Content/ModeratePersonalEventScreen';
@@ -280,9 +280,9 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Moderate Forum Post'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.moderateForumScreen}
-        component={ModerateForumScreen}
-        options={{title: 'Moderate Forum'}}
+        name={CommonStackComponents.moderateForumThreadScreen}
+        component={ModerateForumThreadScreen}
+        options={{title: 'Moderate Forum Thread'}}
       />
       <Stack.Screen
         name={CommonStackComponents.moderateFezScreen}
