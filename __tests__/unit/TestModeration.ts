@@ -18,7 +18,7 @@ jest.mock('@react-navigation/stack', () => ({
 
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {ReportType} from '#src/Enums/ReportType';
-import {forumDataFromModeration, FORUM_QUARANTINED_TITLE, publicForumTitle} from '#src/Libraries/Moderation/Content';
+import {FORUM_QUARANTINED_TITLE, forumDataFromModeration, publicForumTitle} from '#src/Libraries/Moderation/Content';
 import {isClosedReportsParam} from '#src/Libraries/Moderation/ModerationStateContext';
 import {ReportContentGroup} from '#src/Libraries/Moderation/ReportContentGroup';
 import {parseDeepLinkUrl} from '#src/Libraries/RouteDefinitions';
