@@ -9,6 +9,7 @@ import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/Mod
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ModerationContentAuthorSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentAuthorSectionView';
 import {ModerationContentHistorySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentHistorySectionView';
 import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
 import {ModerationContentSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentSectionView';
@@ -138,10 +139,10 @@ const ModerateFezScreenInner = ({route}: Props) => {
         />
         <ModerationContentHistorySectionView edits={data.edits} renderEdit={renderEdit} />
         <ModerationContentReportsSectionView reports={data.reports} />
+        <ModerationContentAuthorSectionView moderateUserID={fez.owner.userID} />
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}
-        moderateUserID={fez.owner.userID}
         testIDPrefix={'fezModerate'}
         onHandleAll={() => actions.handleAll(data.reports)}
         onCloseAll={() => actions.closeAll(data.reports)}

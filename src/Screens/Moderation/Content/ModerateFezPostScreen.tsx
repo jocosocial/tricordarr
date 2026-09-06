@@ -8,6 +8,7 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ModerationContentAuthorSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentAuthorSectionView';
 import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
 import {ModerationContentSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentSectionView';
 import {ModerationContentVisibilitySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentVisibilitySectionView';
@@ -117,10 +118,10 @@ const ModerateFezPostScreenInner = ({route}: Props) => {
           isDeleting={deleteMutation.isPending}
         />
         <ModerationContentReportsSectionView reports={data.reports} />
+        <ModerationContentAuthorSectionView moderateUserID={data.fezPost.author.userID} />
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}
-        moderateUserID={data.fezPost.author.userID}
         testIDPrefix={'fezPostModerate'}
         onHandleAll={() => actions.handleAll(data.reports)}
         onCloseAll={() => actions.closeAll(data.reports)}

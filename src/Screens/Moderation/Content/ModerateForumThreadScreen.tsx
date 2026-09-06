@@ -6,8 +6,10 @@ import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ModerateForumThreadListItem} from '#src/Components/Lists/Items/Moderation/ModerateForumThreadListItem';
 import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
+import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ModerationContentAuthorSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentAuthorSectionView';
 import {ModerationContentHistorySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentHistorySectionView';
 import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
 import {ModerationContentSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentSectionView';
@@ -130,10 +132,16 @@ const ModerateForumThreadScreenInner = ({route}: Props) => {
         </ModerationContentVisibilitySectionView>
         <ModerationContentHistorySectionView header={'Title History'} edits={data.edits} renderEdit={renderEdit} />
         <ModerationContentReportsSectionView reports={data.reports} />
+        <ModerationContentAuthorSectionView moderateUserID={data.creator.userID}>
+          <NavigationListItem
+            title={'All Forums'}
+            description={'View all forums by this user.'}
+            onPress={() => navigation.push(CommonStackComponents.forumThreadUserScreen, {user: data.creator})}
+          />
+        </ModerationContentAuthorSectionView>
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}
-        moderateUserID={data.creator.userID}
         testIDPrefix={'forumModerate'}
         onHandleAll={() => actions.handleAll(data.reports)}
         onCloseAll={() => actions.closeAll(data.reports)}

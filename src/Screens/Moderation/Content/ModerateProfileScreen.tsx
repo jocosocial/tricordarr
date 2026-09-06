@@ -13,6 +13,7 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ModerationContentAuthorSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentAuthorSectionView';
 import {ModerationContentHistorySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentHistorySectionView';
 import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
@@ -154,10 +155,10 @@ const ModerateProfileScreenInner = ({route}: Props) => {
         </PaddedContentView>
         <ModerationContentHistorySectionView edits={data.edits} renderEdit={renderEdit} />
         <ModerationContentReportsSectionView reports={data.reports} />
+        <ModerationContentAuthorSectionView moderateUserID={id} />
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}
-        moderateUserID={id}
         testIDPrefix={'profileModerate'}
         onHandleAll={() => actions.handleAll(data.reports)}
         onCloseAll={() => actions.closeAll(data.reports)}

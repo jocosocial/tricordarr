@@ -1,10 +1,11 @@
 import React from 'react';
 import {View} from 'react-native';
+import {Text} from 'react-native-paper';
 
 import {ModerationReportListItem} from '#src/Components/Lists/Items/Moderation/ModerationReportListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
-import {ModerationContentNoReportsView} from '#src/Components/Views/Moderation/Content/ModerationContentNoReportsView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ReportModerationData} from '#src/Structs/ControllerStructs';
 
 interface ModerationContentReportsSectionViewProps {
@@ -21,7 +22,9 @@ export const ModerationContentReportsSectionView = ({reports}: ModerationContent
         <ListSubheader>Reports</ListSubheader>
       </ListSection>
       {reports.length === 0 ? (
-        <ModerationContentNoReportsView />
+        <PaddedContentView padTop={true}>
+          <Text>No reports on this content.</Text>
+        </PaddedContentView>
       ) : (
         reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
       )}

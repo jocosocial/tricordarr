@@ -7,8 +7,10 @@ import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostListItem';
 import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
+import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ModerationContentAuthorSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentAuthorSectionView';
 import {ModerationContentHistorySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentHistorySectionView';
 import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
 import {ModerationContentSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentSectionView';
@@ -142,10 +144,16 @@ const ModerateForumPostScreenInner = ({route}: Props) => {
         />
         <ModerationContentHistorySectionView edits={data.edits} renderEdit={renderEdit} />
         <ModerationContentReportsSectionView reports={data.reports} />
+        <ModerationContentAuthorSectionView moderateUserID={data.forumPost.author.userID}>
+          <NavigationListItem
+            title={'All Forum Posts'}
+            description={'View all forum posts by this user.'}
+            onPress={() => navigation.push(CommonStackComponents.forumPostUserScreen, {user: data.forumPost.author})}
+          />
+        </ModerationContentAuthorSectionView>
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}
-        moderateUserID={data.forumPost.author.userID}
         testIDPrefix={'forumPostModerate'}
         onHandleAll={() => actions.handleAll(data.reports)}
         onCloseAll={() => actions.closeAll(data.reports)}

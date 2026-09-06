@@ -13,6 +13,7 @@ import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ModerationContentAuthorSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentAuthorSectionView';
 import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -141,10 +142,10 @@ const ModeratePersonalEventScreenInner = ({route}: Props) => {
           ))
         )}
         <ModerationContentReportsSectionView reports={data.reports} />
+        <ModerationContentAuthorSectionView moderateUserID={event.owner.userID} />
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}
-        moderateUserID={event.owner.userID}
         testIDPrefix={'personalEventModerate'}
         onHandleAll={() => actions.handleAll(data.reports)}
         onCloseAll={() => actions.closeAll(data.reports)}

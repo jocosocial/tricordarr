@@ -4,21 +4,21 @@ import {Text} from 'react-native-paper';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
+import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ModerationContentAuthorSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentAuthorSectionView';
 import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
@@ -39,7 +39,6 @@ const ModeratePhotostreamScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const {setSnackbarPayload} = useSnackbar();
-  const {theme} = useAppTheme();
   const {data, refetch, isLoading} = usePhotostreamModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(PhotostreamModerationData.getCacheKeys(id));
@@ -92,14 +91,6 @@ const ModeratePhotostreamScreenInner = ({route}: Props) => {
           {!data.isDeleted && <APIImage path={data.photo.image} />}
         </PaddedContentView>
         <PaddedContentView>
-          <PrimaryActionButton
-            testID={'photostreamModerateView-button'}
-            buttonText={'View Author Photos'}
-            buttonColor={theme.colors.twitarrNeutralButton}
-            onPress={() => navigation.push(CommonStackComponents.photostreamUserScreen, {user: data.photo.author})}
-          />
-        </PaddedContentView>
-        <PaddedContentView>
           <Text>Photostream photos cannot be quarantined. Delete the photo if it should not stay public.</Text>
         </PaddedContentView>
         {!data.isDeleted && (
@@ -116,10 +107,16 @@ const ModeratePhotostreamScreenInner = ({route}: Props) => {
           </PaddedContentView>
         )}
         <ModerationContentReportsSectionView reports={data.reports} />
+        <ModerationContentAuthorSectionView moderateUserID={data.photo.author.userID}>
+          <NavigationListItem
+            title={'All Photostream'}
+            description={'View all photostream photos by this user.'}
+            onPress={() => navigation.push(CommonStackComponents.photostreamUserScreen, {user: data.photo.author})}
+          />
+        </ModerationContentAuthorSectionView>
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}
-        moderateUserID={data.photo.author.userID}
         testIDPrefix={'photostreamModerate'}
         onHandleAll={() => actions.handleAll(data.reports)}
         onCloseAll={() => actions.closeAll(data.reports)}

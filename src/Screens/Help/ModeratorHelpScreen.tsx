@@ -21,17 +21,14 @@ export const ModeratorHelpScreen = () => {
         <HelpChapterTitleView title={'Floating Action Button'}>
           <HelpFABView icon={AppIcons.moderator} label={'Actions'} />
           <HelpTopicView>
-            On a content moderate screen, press Actions in the lower right to handle reports or moderate the author.
-            Handle All and Close All are hidden if there are no open reports.
+            On a content moderate screen, press Actions in the lower right to handle reports. The button is hidden if
+            there are no open reports.
           </HelpTopicView>
           <HelpTopicView title={'Handle All Reports'} icon={AppIcons.markAsRead}>
             Marks all open reports on this content as being handled by you.
           </HelpTopicView>
           <HelpTopicView title={'Close All Reports'} icon={AppIcons.close}>
             Closes all open reports on this content.
-          </HelpTopicView>
-          <HelpTopicView title={'Moderate User'} icon={AppIcons.user}>
-            Open account-level moderation for the content author.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Moderator Actions'} />
@@ -47,6 +44,10 @@ export const ModeratorHelpScreen = () => {
         <HelpTopicView title={'Content screens'}>
           Set State can mark content normal, quarantined, moderator reviewed, or locked. Auto-quarantined is assigned by
           the server when enough users report the same item. Photostream photos can be deleted but not quarantined.
+        </HelpTopicView>
+        <HelpTopicView title={'Moderate User'}>
+          In the Author section, open account-level moderation for the content author. Forum threads, forum posts, and
+          photostream photos also link to all of that author's content of the same type.
         </HelpTopicView>
         <HelpTopicView title={'View in Context'}>
           Opens the public view for this content, such as the forum thread at a post, the LFG or chat, or the user
