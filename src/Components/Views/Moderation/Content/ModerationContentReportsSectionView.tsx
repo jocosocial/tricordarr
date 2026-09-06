@@ -10,12 +10,16 @@ import {ReportModerationData} from '#src/Structs/ControllerStructs';
 
 interface ModerationContentReportsSectionViewProps {
   reports: ReportModerationData[];
+  emptyMessage?: string;
 }
 
 /**
  * Reports section on a content moderate screen. Renders a header, an empty message, or one row per report.
  */
-export const ModerationContentReportsSectionView = ({reports}: ModerationContentReportsSectionViewProps) => {
+export const ModerationContentReportsSectionView = ({
+  reports,
+  emptyMessage = 'No reports on this content.',
+}: ModerationContentReportsSectionViewProps) => {
   return (
     <View>
       <ListSection>
@@ -23,7 +27,7 @@ export const ModerationContentReportsSectionView = ({reports}: ModerationContent
       </ListSection>
       {reports.length === 0 ? (
         <PaddedContentView padTop={true}>
-          <Text>No reports on this content.</Text>
+          <Text>{emptyMessage}</Text>
         </PaddedContentView>
       ) : (
         reports.map(report => <ModerationReportListItem key={report.id} report={report} />)

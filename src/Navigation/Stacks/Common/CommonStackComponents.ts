@@ -207,9 +207,12 @@ export type CommonStackParamList = {
   AccessibilitySettingsScreen: undefined;
   ImageSettingsScreen: undefined;
   ShareSettingsScreen: undefined;
-  PersonalEventEditScreen: {
-    personalEvent: FezData;
-  };
+  PersonalEventEditScreen: WithIntent<
+    {
+      personalEvent: FezData;
+    },
+    'moderate'
+  >;
   PersonalEventCreateScreen: WithInitialUserHeaders<{
     cruiseDay?: number;
   }>;

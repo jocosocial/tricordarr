@@ -39,7 +39,8 @@ export const ModeratorHelpScreen = () => {
         </HelpTopicView>
         <HelpTopicView title={'Reports'}>
           Open Reports groups filings that refer to the same content. Start Handling All marks them as yours; Close All
-          when you are done. Closed Reports shows groups with no remaining open filings.
+          when you are done. Closed Reports shows groups with no remaining open filings. Seamail conversations cannot be
+          reported; LFGs, private events, and individual seamail posts can.
         </HelpTopicView>
         <HelpTopicView title={'Content screens'}>
           Set State can mark content normal, quarantined, moderator reviewed, or locked. Auto-quarantined is assigned by
@@ -50,8 +51,8 @@ export const ModeratorHelpScreen = () => {
           photostream photos also link to all of that author's content of the same type.
         </HelpTopicView>
         <HelpTopicView title={'View in Context'}>
-          Opens the public view for this content, such as the forum thread at a post, the LFG or chat, or the user
-          profile. Seamail posts confirm before opening the private conversation.
+          Opens the public view for this content, such as the forum thread at a post, the LFG, private event, or the
+          user profile. Seamail conversations and posts confirm before opening the private conversation.
         </HelpTopicView>
         <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
           Edit the content. Disabled if the item has already been deleted, or for types that cannot be edited such as

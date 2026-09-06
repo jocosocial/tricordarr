@@ -1,9 +1,9 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useEffect} from 'react';
-import {Text} from 'react-native-paper';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
+import {FezCard} from '#src/Components/Cards/Schedule/FezCard';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
 import {AppView} from '#src/Components/Views/AppView';
@@ -20,7 +20,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {FezType} from '#src/Enums/FezType';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
+import {alertDeleteModeratedContent, alertViewPrivateSeamail} from '#src/Libraries/Alerts/ModerationAlerts';
 import {getFezPublicShare} from '#src/Libraries/Moderation/Share';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {
@@ -53,8 +53,9 @@ const ModerateFezScreenInner = ({route}: Props) => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
+      ...(data && {title: `Moderate ${FezType.getChatTypeString(data.fez.fezType)}`}),
     });
-  }, [getNavButtons, navigation]);
+  }, [data, getNavButtons, navigation]);
 
   /**
    * Renders one previous fez title/info/location edit as a compact content row.
@@ -75,7 +76,9 @@ const ModerateFezScreenInner = ({route}: Props) => {
 
   const fez = data.fez;
   const isLfg = FezType.isLFGType(fez.fezType);
-  const contentLabel = isLfg ? 'LFG' : 'seamail';
+  const isPrivateEvent = FezType.isPrivateEventType(fez.fezType);
+  const isSeamail = FezType.isSeamailType(fez.fezType);
+  const contentLabel = FezType.getChatTypeString(fez.fezType);
 
   const onDelete = () => {
     alertDeleteModeratedContent(contentLabel, () => {
@@ -99,6 +102,13 @@ const ModerateFezScreenInner = ({route}: Props) => {
       });
       return;
     }
+    if (isPrivateEvent) {
+      navigation.push(CommonStackComponents.personalEventEditScreen, {
+        personalEvent: fez,
+        intent: 'moderate',
+      });
+      return;
+    }
     navigation.push(CommonStackComponents.seamailEditScreen, {
       fezID: fez.fezID,
       intent: 'moderate',
@@ -110,7 +120,13 @@ const ModerateFezScreenInner = ({route}: Props) => {
       navigation.push(CommonStackComponents.lfgScreen, {fezID: fez.fezID});
       return;
     }
-    navigation.push(FezType.getChatScreen(fez.fezType), {fezID: fez.fezID});
+    if (isPrivateEvent) {
+      navigation.push(CommonStackComponents.personalEventScreen, {eventID: fez.fezID});
+      return;
+    }
+    alertViewPrivateSeamail(() => {
+      navigation.push(CommonStackComponents.seamailChatScreen, {fezID: fez.fezID});
+    });
   };
 
   return (
@@ -121,13 +137,8 @@ const ModerateFezScreenInner = ({route}: Props) => {
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ModerationContentSectionView testIDPrefix={'fezModerate'} onViewInContext={onViewInContext}>
-          <PaddedContentView>
-            <ModerationEditListItem
-              author={fez.owner}
-              timestamp={fez.lastModificationTime}
-              text={[fez.title, fez.info, fez.location].filter(Boolean).join('\n')}
-            />
-            <Text>{FezType.getLabel(fez.fezType)}</Text>
+          <PaddedContentView padTop={true}>
+            <FezCard fez={fez} showDay={true} showIcon={true} disabled={true} />
           </PaddedContentView>
         </ModerationContentSectionView>
         <ModerationContentVisibilitySectionView
@@ -138,7 +149,10 @@ const ModerateFezScreenInner = ({route}: Props) => {
           isDeleting={deleteMutation.isPending}
         />
         <ModerationContentHistorySectionView edits={data.edits} renderEdit={renderEdit} />
-        <ModerationContentReportsSectionView reports={data.reports} />
+        <ModerationContentReportsSectionView
+          reports={data.reports}
+          emptyMessage={isSeamail ? 'Seamails cannot be reported.' : undefined}
+        />
         <ModerationContentAuthorSectionView moderateUserID={fez.owner.userID} />
       </ScrollingContentView>
       <ModeratorReportFAB

@@ -29,6 +29,7 @@ interface FezCardProps {
   titleHeader?: string;
   enableReportOnly?: boolean;
   icon?: string;
+  disabled?: boolean;
 }
 
 const FezCardInternal = ({
@@ -41,6 +42,7 @@ const FezCardInternal = ({
   titleHeader,
   enableReportOnly = false,
   icon,
+  disabled = false,
 }: FezCardProps) => {
   const {theme} = useAppTheme();
   const unreadCount = fez.members ? unreadPostCount(fez.members.postCount, fez.members.readCount) : 0;
@@ -110,6 +112,7 @@ const FezCardInternal = ({
 
   const cardContent = (
     <ScheduleItemCardBase
+      disabled={disabled}
       onPress={enableReportOnly ? undefined : onPress}
       onLongPress={handleLongPress}
       cardStyle={styles.card}
