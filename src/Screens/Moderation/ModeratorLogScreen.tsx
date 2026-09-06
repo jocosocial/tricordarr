@@ -66,7 +66,7 @@ const ModeratorLogScreenInner = () => {
 
   const onPressAction = (action: ModeratorActionLogData) => {
     if (action.contentType === ReportType.userProfile) {
-      navigation.push(CommonStackComponents.userModerateScreen, {id: action.contentID});
+      navigation.push(CommonStackComponents.moderateUserScreen, {id: action.contentID});
       return;
     }
     pushModerateScreen(navigation, action.contentType, action.contentID);

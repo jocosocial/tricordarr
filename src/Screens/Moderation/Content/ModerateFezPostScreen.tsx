@@ -32,9 +32,9 @@ import {useFezPostModerationQuery} from '#src/Queries/Moderation/ModerationQueri
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 import {FezPostModerationData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.fezPostModerateScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderateFezPostScreen>;
 
-const FezPostModerateScreenInner = ({route}: Props) => {
+const ModerateFezPostScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const {setSnackbarPayload} = useSnackbar();
@@ -122,10 +122,10 @@ const FezPostModerateScreenInner = ({route}: Props) => {
   );
 };
 
-export const FezPostModerateScreen = (props: Props) => {
+export const ModerateFezPostScreen = (props: Props) => {
   return (
     <ModeratorFeatureScreen>
-      <FezPostModerateScreenInner {...props} />
+      <ModerateFezPostScreenInner {...props} />
     </ModeratorFeatureScreen>
   );
 };

@@ -36,9 +36,9 @@ import {
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 import {MicroKaraokeCompletedSong, ModeratorActionLogResponseData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.microKaraokeSongModerateScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderateMicroKaraokeSongScreen>;
 
-const MicroKaraokeSongModerateScreenInner = ({route}: Props) => {
+const ModerateMicroKaraokeSongScreenInner = ({route}: Props) => {
   const songID = Number.parseInt(route.params.id, 10);
   const navigation = useCommonStack();
   const queryClient = useQueryClient();
@@ -181,10 +181,10 @@ const MicroKaraokeSongModerateScreenInner = ({route}: Props) => {
   );
 };
 
-export const MicroKaraokeSongModerateScreen = (props: Props) => {
+export const ModerateMicroKaraokeSongScreen = (props: Props) => {
   return (
     <ModeratorFeatureScreen>
-      <MicroKaraokeSongModerateScreenInner {...props} />
+      <ModerateMicroKaraokeSongScreenInner {...props} />
     </ModeratorFeatureScreen>
   );
 };

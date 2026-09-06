@@ -19,9 +19,9 @@ import {
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderatorRootScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderatorHomeScreen>;
 
-const ModeratorRootScreenInner = () => {
+const ModeratorHomeScreenInner = () => {
   const navigation = useCommonStack();
   const {data, refetch} = useUserNotificationDataQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
@@ -79,7 +79,7 @@ const ModeratorRootScreenInner = () => {
             <NavigationListItem
               title={'Micro Karaoke'}
               description={'Review clips and approve completed songs.'}
-              navComponent={CommonStackComponents.microKaraokeSongsModerateScreen}
+              navComponent={CommonStackComponents.moderateMicroKaraokeSongsScreen}
             />
             <NavigationListItem
               title={'Moderator Guide'}
@@ -93,10 +93,10 @@ const ModeratorRootScreenInner = () => {
   );
 };
 
-export const ModeratorRootScreen = (_props: Props) => {
+export const ModeratorHomeScreen = (_props: Props) => {
   return (
     <ModeratorFeatureScreen>
-      <ModeratorRootScreenInner />
+      <ModeratorHomeScreenInner />
     </ModeratorFeatureScreen>
   );
 };

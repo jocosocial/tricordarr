@@ -145,7 +145,7 @@ describe('ReportType.getLabel', () => {
 describe('moderator deep links', () => {
   it('parses hub, reports, and per-content moderate paths', () => {
     expect(parseDeepLinkUrl('moderator')).toEqual({
-      screen: CommonStackComponents.moderatorRootScreen,
+      screen: CommonStackComponents.moderatorHomeScreen,
     });
     expect(parseDeepLinkUrl('reports')).toEqual({
       screen: CommonStackComponents.moderatorReportsScreen,
@@ -155,11 +155,11 @@ describe('moderator deep links', () => {
       params: {closed: 'closed'},
     });
     expect(parseDeepLinkUrl('moderate/forumpost/abc')).toEqual({
-      screen: CommonStackComponents.forumPostModerateScreen,
+      screen: CommonStackComponents.moderateForumPostScreen,
       params: {id: 'abc'},
     });
     expect(parseDeepLinkUrl('moderate/lfg/fez-1')).toEqual({
-      screen: CommonStackComponents.fezModerateScreen,
+      screen: CommonStackComponents.moderateFezScreen,
       params: {id: 'fez-1'},
     });
     expect(parseDeepLinkUrl('moderator/guide')).toEqual({

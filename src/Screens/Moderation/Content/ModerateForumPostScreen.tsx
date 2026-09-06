@@ -39,9 +39,9 @@ import {useForumPostModerationQuery} from '#src/Queries/Moderation/ModerationQue
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 import {ForumPostModerationData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostModerateScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderateForumPostScreen>;
 
-const ForumPostModerateScreenInner = ({route}: Props) => {
+const ModerateForumPostScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const {setSnackbarPayload} = useSnackbar();
@@ -173,10 +173,10 @@ const ForumPostModerateScreenInner = ({route}: Props) => {
   );
 };
 
-export const ForumPostModerateScreen = (props: Props) => {
+export const ModerateForumPostScreen = (props: Props) => {
   return (
     <ModeratorFeatureScreen>
-      <ForumPostModerateScreenInner {...props} />
+      <ModerateForumPostScreenInner {...props} />
     </ModeratorFeatureScreen>
   );
 };

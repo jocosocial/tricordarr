@@ -4,7 +4,6 @@ import {Text} from 'react-native-paper';
 
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {APIImage} from '#src/Components/Images/APIImage';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
@@ -14,37 +13,41 @@ import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationAc
 import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
 import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
+import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {FezType} from '#src/Enums/FezType';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
-import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
+import {getFezPublicShare} from '#src/Libraries/Moderation/Share';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {
   CommonStackComponents,
   CommonStackParamList,
   useCommonStack,
 } from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {usePhotostreamModerationDeleteMutation} from '#src/Queries/Moderation/ModerationMutations';
-import {usePhotostreamModerationQuery} from '#src/Queries/Moderation/ModerationQueries';
+import {useFezDeleteMutation} from '#src/Queries/Fez/FezMutations';
+import {useFezModerationQuery} from '#src/Queries/Moderation/ModerationQueries';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
-import {PhotostreamModerationData} from '#src/Structs/ControllerStructs';
+import {FezModerationData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.photostreamModerateScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderateFezScreen>;
 
-const PhotostreamModerateScreenInner = ({route}: Props) => {
+const ModerateFezScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const {setSnackbarPayload} = useSnackbar();
-  const {data, refetch, isLoading} = usePhotostreamModerationQuery(id);
+  const {data, refetch, isLoading} = useFezModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
-  const actions = useModerationContentActions(PhotostreamModerationData.getCacheKeys(id));
-  const deleteMutation = usePhotostreamModerationDeleteMutation();
+  const actions = useModerationContentActions(FezModerationData.getCacheKeys(id));
+  const deleteMutation = useFezDeleteMutation();
+  const fezShare = data ? getFezPublicShare(data.fez.fezType, data.fez.fezID) : undefined;
   const getNavButtons = useModerationHeaderButtons({
-    moderateType: ShareContentType.photostreamModerate,
+    moderateType: ShareContentType.fezModerate,
     moderateID: id,
+    ...fezShare,
   });
 
   useEffect(() => {
@@ -57,57 +60,96 @@ const PhotostreamModerateScreenInner = ({route}: Props) => {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
   }
 
+  const fez = data.fez;
+  const isLfg = FezType.isLFGType(fez.fezType);
+  const contentLabel = isLfg ? 'LFG' : 'seamail';
+
   const onDelete = () => {
-    alertDeleteModeratedContent('photostream photo', () => {
+    alertDeleteModeratedContent(contentLabel, () => {
       deleteMutation.mutate(
-        {photoID: id},
+        {fezID: fez.fezID},
         {
           onSuccess: async () => {
             await actions.invalidate();
-            setSnackbarPayload({message: 'Photo deleted.', messageType: 'info'});
+            setSnackbarPayload({message: `${contentLabel} deleted.`, messageType: 'info'});
           },
         },
       );
     });
   };
 
+  const onView = () => {
+    if (isLfg) {
+      navigation.push(CommonStackComponents.lfgScreen, {fezID: fez.fezID});
+      return;
+    }
+    navigation.push(FezType.getChatScreen(fez.fezType), {fezID: fez.fezID});
+  };
+
+  const onEdit = () => {
+    if (isLfg) {
+      navigation.push(CommonStackComponents.lfgEditScreen, {fez});
+      return;
+    }
+    navigation.push(CommonStackComponents.seamailEditScreen, {fezID: fez.fezID});
+  };
+
   return (
     <AppView>
-      <ModerationDeletedWarningView contentLabel={'photostream photo'} visible={data.isDeleted} />
+      <ModerationDeletedWarningView contentLabel={contentLabel} visible={data.isDeleted} />
       <ScrollingContentView
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
           <ModerationEditListItem
-            author={data.photo.author}
-            timestamp={data.photo.createdAt}
-            text={data.photo.event?.title ?? data.photo.location}
+            author={fez.owner}
+            timestamp={fez.lastModificationTime}
+            text={[fez.title, fez.info, fez.location].filter(Boolean).join('\n')}
           />
-          {!data.isDeleted && <APIImage path={data.photo.image} />}
-        </PaddedContentView>
-        <PaddedContentView>
-          <Text>Photostream photos cannot be quarantined. Delete the photo if it should not stay public.</Text>
+          <Text>{FezType.getLabel(fez.fezType)}</Text>
         </PaddedContentView>
         <PaddedContentView>
           <ModerationActionRow
             buttons={[
+              {
+                label: 'Edit',
+                disabled: data.isDeleted,
+                onPress: onEdit,
+              },
               {
                 label: 'Delete',
                 disabled: data.isDeleted || deleteMutation.isPending,
                 onPress: onDelete,
               },
               {
-                label: 'Mod User',
-                onPress: () => pushModerateResource(navigation, 'user', data.photo.author.userID),
-              },
-              {
-                label: 'View Author Photos',
-                onPress: () => navigation.push(CommonStackComponents.photostreamUserScreen, {user: data.photo.author}),
+                label: isLfg ? 'View LFG' : 'View Chat',
+                onPress: onView,
               },
             ]}
           />
         </PaddedContentView>
+        <PaddedContentView>
+          <ModeratorStateView data={data} />
+        </PaddedContentView>
+        <ListSection>
+          <ListSubheader>Edit History</ListSubheader>
+        </ListSection>
+        {data.edits.length === 0 ? (
+          <PaddedContentView padTop={true}>
+            <Text>No previous edits.</Text>
+          </PaddedContentView>
+        ) : (
+          data.edits.map(edit => (
+            <PaddedContentView key={edit.editID} padTop={true}>
+              <ModerationEditListItem
+                author={edit.author}
+                timestamp={edit.createdAt}
+                text={[edit.title, edit.info, edit.location].filter(Boolean).join('\n')}
+              />
+            </PaddedContentView>
+          ))
+        )}
         <ListSection>
           <ListSubheader>Reports</ListSubheader>
         </ListSection>
@@ -121,10 +163,10 @@ const PhotostreamModerateScreenInner = ({route}: Props) => {
   );
 };
 
-export const PhotostreamModerateScreen = (props: Props) => {
+export const ModerateFezScreen = (props: Props) => {
   return (
     <ModeratorFeatureScreen>
-      <PhotostreamModerateScreenInner {...props} />
+      <ModerateFezScreenInner {...props} />
     </ModeratorFeatureScreen>
   );
 };

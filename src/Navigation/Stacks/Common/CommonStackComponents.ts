@@ -67,38 +67,38 @@ export type CommonStackParamList = {
     contentID: string | number;
   };
   ReportHelpScreen: undefined;
-  ModeratorRootScreen: undefined;
+  ModeratorHomeScreen: undefined;
   ModeratorReportsScreen: {
     closed?: boolean;
   };
   ModeratorLogScreen: undefined;
   ModeratorGuideScreen: undefined;
-  ForumPostModerateScreen: {
+  ModerateForumPostScreen: {
     id: string;
   };
-  ForumModerateScreen: {
+  ModerateForumScreen: {
     id: string;
   };
-  FezModerateScreen: {
+  ModerateFezScreen: {
     id: string;
   };
-  FezPostModerateScreen: {
+  ModerateFezPostScreen: {
     id: string;
   };
-  ProfileModerateScreen: {
+  ModerateProfileScreen: {
     id: string;
   };
-  UserModerateScreen: {
+  ModerateUserScreen: {
     id: string;
   };
-  PhotostreamModerateScreen: {
+  ModeratePhotostreamScreen: {
     id: string;
   };
-  PersonalEventModerateScreen: {
+  ModeratePersonalEventScreen: {
     id: string;
   };
-  MicroKaraokeSongsModerateScreen: undefined;
-  MicroKaraokeSongModerateScreen: {
+  ModerateMicroKaraokeSongsScreen: undefined;
+  ModerateMicroKaraokeSongScreen: {
     id: string;
   };
   EasterEggScreen: undefined;
@@ -404,20 +404,20 @@ export enum CommonStackComponents {
   recoveryKeyScreen = 'RecoveryKeyScreen',
   reportScreen = 'ReportScreen',
   reportHelpScreen = 'ReportHelpScreen',
-  moderatorRootScreen = 'ModeratorRootScreen',
+  moderatorHomeScreen = 'ModeratorHomeScreen',
   moderatorReportsScreen = 'ModeratorReportsScreen',
   moderatorLogScreen = 'ModeratorLogScreen',
   moderatorGuideScreen = 'ModeratorGuideScreen',
-  forumPostModerateScreen = 'ForumPostModerateScreen',
-  forumModerateScreen = 'ForumModerateScreen',
-  fezModerateScreen = 'FezModerateScreen',
-  fezPostModerateScreen = 'FezPostModerateScreen',
-  profileModerateScreen = 'ProfileModerateScreen',
-  userModerateScreen = 'UserModerateScreen',
-  photostreamModerateScreen = 'PhotostreamModerateScreen',
-  personalEventModerateScreen = 'PersonalEventModerateScreen',
-  microKaraokeSongsModerateScreen = 'MicroKaraokeSongsModerateScreen',
-  microKaraokeSongModerateScreen = 'MicroKaraokeSongModerateScreen',
+  moderateForumPostScreen = 'ModerateForumPostScreen',
+  moderateForumScreen = 'ModerateForumScreen',
+  moderateFezScreen = 'ModerateFezScreen',
+  moderateFezPostScreen = 'ModerateFezPostScreen',
+  moderateProfileScreen = 'ModerateProfileScreen',
+  moderateUserScreen = 'ModerateUserScreen',
+  moderatePhotostreamScreen = 'ModeratePhotostreamScreen',
+  moderatePersonalEventScreen = 'ModeratePersonalEventScreen',
+  moderateMicroKaraokeSongsScreen = 'ModerateMicroKaraokeSongsScreen',
+  moderateMicroKaraokeSongScreen = 'ModerateMicroKaraokeSongScreen',
   easterEggScreen = 'EasterEggScreen',
   forumThreadUserScreen = 'ForumThreadUserScreen',
   forumPostUserScreen = 'ForumPostUserScreen',

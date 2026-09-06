@@ -108,22 +108,22 @@ import {PrivacyScreen} from '#src/Screens/Main/PrivacyScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
 import {TodayHelpScreen} from '#src/Screens/Main/TodayHelpScreen';
 import {MicroKaraokeHelpScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeHelpScreen';
-import {FezModerateScreen} from '#src/Screens/Moderation/FezModerateScreen';
-import {FezPostModerateScreen} from '#src/Screens/Moderation/FezPostModerateScreen';
-import {ForumModerateScreen} from '#src/Screens/Moderation/ForumModerateScreen';
-import {ForumPostModerateScreen} from '#src/Screens/Moderation/ForumPostModerateScreen';
-import {MicroKaraokeSongModerateScreen} from '#src/Screens/Moderation/MicroKaraokeSongModerateScreen';
-import {MicroKaraokeSongsModerateScreen} from '#src/Screens/Moderation/MicroKaraokeSongsModerateScreen';
+import {ModerateFezPostScreen} from '#src/Screens/Moderation/Content/ModerateFezPostScreen';
+import {ModerateFezScreen} from '#src/Screens/Moderation/Content/ModerateFezScreen';
+import {ModerateForumPostScreen} from '#src/Screens/Moderation/Content/ModerateForumPostScreen';
+import {ModerateForumScreen} from '#src/Screens/Moderation/Content/ModerateForumScreen';
+import {ModerateMicroKaraokeSongScreen} from '#src/Screens/Moderation/Content/ModerateMicroKaraokeSongScreen';
+import {ModerateMicroKaraokeSongsScreen} from '#src/Screens/Moderation/Content/ModerateMicroKaraokeSongsScreen';
+import {ModeratePersonalEventScreen} from '#src/Screens/Moderation/Content/ModeratePersonalEventScreen';
+import {ModeratePhotostreamScreen} from '#src/Screens/Moderation/Content/ModeratePhotostreamScreen';
+import {ModerateProfileScreen} from '#src/Screens/Moderation/Content/ModerateProfileScreen';
+import {ModerateUserScreen} from '#src/Screens/Moderation/Content/ModerateUserScreen';
 import {ModeratorGuideScreen} from '#src/Screens/Moderation/ModeratorGuideScreen';
+import {ModeratorHomeScreen} from '#src/Screens/Moderation/ModeratorHomeScreen';
 import {ModeratorLogScreen} from '#src/Screens/Moderation/ModeratorLogScreen';
 import {ModeratorReportsScreen} from '#src/Screens/Moderation/ModeratorReportsScreen';
-import {ModeratorRootScreen} from '#src/Screens/Moderation/ModeratorRootScreen';
-import {PersonalEventModerateScreen} from '#src/Screens/Moderation/PersonalEventModerateScreen';
-import {PhotostreamModerateScreen} from '#src/Screens/Moderation/PhotostreamModerateScreen';
-import {ProfileModerateScreen} from '#src/Screens/Moderation/ProfileModerateScreen';
 import {ReportHelpScreen} from '#src/Screens/Moderation/ReportHelpScreen';
 import {ReportScreen} from '#src/Screens/Moderation/ReportScreen';
-import {UserModerateScreen} from '#src/Screens/Moderation/UserModerateScreen';
 import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScreen';
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {PerformerHelpScreen} from '#src/Screens/Performer/PerformerHelpScreen';
@@ -253,8 +253,8 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Report Help'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.moderatorRootScreen}
-        component={ModeratorRootScreen}
+        name={CommonStackComponents.moderatorHomeScreen}
+        component={ModeratorHomeScreen}
         options={{title: 'Moderator'}}
       />
       <Stack.Screen
@@ -275,53 +275,53 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Moderator Guide'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.forumPostModerateScreen}
-        component={ForumPostModerateScreen}
+        name={CommonStackComponents.moderateForumPostScreen}
+        component={ModerateForumPostScreen}
         options={{title: 'Moderate Forum Post'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.forumModerateScreen}
-        component={ForumModerateScreen}
+        name={CommonStackComponents.moderateForumScreen}
+        component={ModerateForumScreen}
         options={{title: 'Moderate Forum'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.fezModerateScreen}
-        component={FezModerateScreen}
+        name={CommonStackComponents.moderateFezScreen}
+        component={ModerateFezScreen}
         options={{title: 'Moderate LFG'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.fezPostModerateScreen}
-        component={FezPostModerateScreen}
+        name={CommonStackComponents.moderateFezPostScreen}
+        component={ModerateFezPostScreen}
         options={{title: 'Moderate Post'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.profileModerateScreen}
-        component={ProfileModerateScreen}
+        name={CommonStackComponents.moderateProfileScreen}
+        component={ModerateProfileScreen}
         options={{title: 'Moderate Profile'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.userModerateScreen}
-        component={UserModerateScreen}
+        name={CommonStackComponents.moderateUserScreen}
+        component={ModerateUserScreen}
         options={{title: 'Moderate User'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.photostreamModerateScreen}
-        component={PhotostreamModerateScreen}
+        name={CommonStackComponents.moderatePhotostreamScreen}
+        component={ModeratePhotostreamScreen}
         options={{title: 'Moderate Photo'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.personalEventModerateScreen}
-        component={PersonalEventModerateScreen}
+        name={CommonStackComponents.moderatePersonalEventScreen}
+        component={ModeratePersonalEventScreen}
         options={{title: 'Moderate Personal Event'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.microKaraokeSongsModerateScreen}
-        component={MicroKaraokeSongsModerateScreen}
+        name={CommonStackComponents.moderateMicroKaraokeSongsScreen}
+        component={ModerateMicroKaraokeSongsScreen}
         options={{title: 'Micro Karaoke'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.microKaraokeSongModerateScreen}
-        component={MicroKaraokeSongModerateScreen}
+        name={CommonStackComponents.moderateMicroKaraokeSongScreen}
+        component={ModerateMicroKaraokeSongScreen}
         options={{title: 'Moderate Song'}}
       />
       <Stack.Screen

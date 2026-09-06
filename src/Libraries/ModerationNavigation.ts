@@ -21,29 +21,29 @@ export const pushModerateScreen = (
       });
       return;
     case ReportType.forumPost:
-      navigation.push(CommonStackComponents.forumPostModerateScreen, {id});
+      navigation.push(CommonStackComponents.moderateForumPostScreen, {id});
       return;
     case ReportType.forum:
-      navigation.push(CommonStackComponents.forumModerateScreen, {id});
+      navigation.push(CommonStackComponents.moderateForumScreen, {id});
       return;
     case ReportType.fez:
-      navigation.push(CommonStackComponents.fezModerateScreen, {id});
+      navigation.push(CommonStackComponents.moderateFezScreen, {id});
       return;
     case ReportType.fezPost:
-      navigation.push(CommonStackComponents.fezPostModerateScreen, {id});
+      navigation.push(CommonStackComponents.moderateFezPostScreen, {id});
       return;
     case ReportType.userProfile:
-      navigation.push(CommonStackComponents.profileModerateScreen, {id});
+      navigation.push(CommonStackComponents.moderateProfileScreen, {id});
       return;
     case ReportType.mkSong:
     case ReportType.mkSongSnippet:
-      navigation.push(CommonStackComponents.microKaraokeSongModerateScreen, {id});
+      navigation.push(CommonStackComponents.moderateMicroKaraokeSongScreen, {id});
       return;
     case ReportType.streamPhoto:
-      navigation.push(CommonStackComponents.photostreamModerateScreen, {id});
+      navigation.push(CommonStackComponents.moderatePhotostreamScreen, {id});
       return;
     case ReportType.personalEvent:
-      navigation.push(CommonStackComponents.personalEventModerateScreen, {id});
+      navigation.push(CommonStackComponents.moderatePersonalEventScreen, {id});
       return;
     case ReportType.quartermasterItem:
       navigation.push(CommonStackComponents.siteUIScreen, {
@@ -89,7 +89,7 @@ export const pushModerateResource = (
       pushModerateScreen(navigation, ReportType.userProfile, id);
       return;
     case 'user':
-      navigation.push(CommonStackComponents.userModerateScreen, {id});
+      navigation.push(CommonStackComponents.moderateUserScreen, {id});
       return;
     case 'personalevent':
       pushModerateScreen(navigation, ReportType.personalEvent, id);

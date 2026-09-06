@@ -21,8 +21,8 @@ import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/Moder
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/useMenu';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
+import {useMenu} from '#src/Hooks/useMenu';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
 import {forumDataFromModeration} from '#src/Libraries/Moderation/Content';
@@ -40,9 +40,9 @@ import {useForumModerationQuery} from '#src/Queries/Moderation/ModerationQueries
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 import {ForumModerationData, ModeratorActionLogResponseData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumModerateScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderateForumScreen>;
 
-const ForumModerateScreenInner = ({route}: Props) => {
+const ModerateForumScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const queryClient = useQueryClient();
@@ -208,10 +208,10 @@ const ForumModerateScreenInner = ({route}: Props) => {
   );
 };
 
-export const ForumModerateScreen = (props: Props) => {
+export const ModerateForumScreen = (props: Props) => {
   return (
     <ModeratorFeatureScreen>
-      <ForumModerateScreenInner {...props} />
+      <ModerateForumScreenInner {...props} />
     </ModeratorFeatureScreen>
   );
 };

@@ -4,6 +4,7 @@ import {Text} from 'react-native-paper';
 
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
+import {APIImage} from '#src/Components/Images/APIImage';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
@@ -15,39 +16,31 @@ import {ModerationNoReportsView} from '#src/Components/Views/Moderation/Moderati
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
-import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {FezType} from '#src/Enums/FezType';
-import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
+import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
-import {getFezPublicShare} from '#src/Libraries/Moderation/Share';
+import {profilePublicDataFromUpload} from '#src/Libraries/Moderation/Content';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {
   CommonStackComponents,
   CommonStackParamList,
   useCommonStack,
 } from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {useFezDeleteMutation} from '#src/Queries/Fez/FezMutations';
-import {useFezModerationQuery} from '#src/Queries/Moderation/ModerationQueries';
+import {useProfileModerationQuery} from '#src/Queries/Moderation/ModerationQueries';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
-import {FezModerationData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.fezModerateScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderateProfileScreen>;
 
-const FezModerateScreenInner = ({route}: Props) => {
+const ModerateProfileScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
-  const {setSnackbarPayload} = useSnackbar();
-  const {data, refetch, isLoading} = useFezModerationQuery(id);
+  const {data, refetch, isLoading} = useProfileModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
-  const actions = useModerationContentActions(FezModerationData.getCacheKeys(id));
-  const deleteMutation = useFezDeleteMutation();
-  const fezShare = data ? getFezPublicShare(data.fez.fezType, data.fez.fezID) : undefined;
   const getNavButtons = useModerationHeaderButtons({
-    moderateType: ShareContentType.fezModerate,
+    contentType: ShareContentType.user,
+    contentID: id,
+    contentIcon: AppIcons.user,
+    moderateType: ShareContentType.profileModerate,
     moderateID: id,
-    ...fezShare,
   });
 
   useEffect(() => {
@@ -60,71 +53,49 @@ const FezModerateScreenInner = ({route}: Props) => {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
   }
 
-  const fez = data.fez;
-  const isLfg = FezType.isLFGType(fez.fezType);
-  const contentLabel = isLfg ? 'LFG' : 'seamail';
-
-  const onDelete = () => {
-    alertDeleteModeratedContent(contentLabel, () => {
-      deleteMutation.mutate(
-        {fezID: fez.fezID},
-        {
-          onSuccess: async () => {
-            await actions.invalidate();
-            setSnackbarPayload({message: `${contentLabel} deleted.`, messageType: 'info'});
-          },
-        },
-      );
-    });
-  };
-
-  const onView = () => {
-    if (isLfg) {
-      navigation.push(CommonStackComponents.lfgScreen, {fezID: fez.fezID});
-      return;
-    }
-    navigation.push(FezType.getChatScreen(fez.fezType), {fezID: fez.fezID});
-  };
-
-  const onEdit = () => {
-    if (isLfg) {
-      navigation.push(CommonStackComponents.lfgEditScreen, {fez});
-      return;
-    }
-    navigation.push(CommonStackComponents.seamailEditScreen, {fezID: fez.fezID});
-  };
+  const header = data.profile.header;
+  const publicProfile = profilePublicDataFromUpload(data.profile);
+  const profileText = [
+    data.profile.displayName && `Display name: ${data.profile.displayName}`,
+    data.profile.realName && `Real name: ${data.profile.realName}`,
+    data.profile.homeLocation && `Home: ${data.profile.homeLocation}`,
+    data.profile.roomNumber && `Cabin: ${data.profile.roomNumber}`,
+    data.profile.email && `Email: ${data.profile.email}`,
+    data.profile.message && `Message: ${data.profile.message}`,
+    data.profile.about && `About: ${data.profile.about}`,
+    data.profile.discordUsername && `Discord: ${data.profile.discordUsername}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
 
   return (
     <AppView>
-      <ModerationDeletedWarningView contentLabel={contentLabel} visible={data.isDeleted} />
       <ScrollingContentView
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
-          <ModerationEditListItem
-            author={fez.owner}
-            timestamp={fez.lastModificationTime}
-            text={[fez.title, fez.info, fez.location].filter(Boolean).join('\n')}
-          />
-          <Text>{FezType.getLabel(fez.fezType)}</Text>
+          {header ? (
+            <ModerationEditListItem author={header} text={profileText} />
+          ) : (
+            <Text>{profileText || 'Empty profile.'}</Text>
+          )}
         </PaddedContentView>
         <PaddedContentView>
           <ModerationActionRow
             buttons={[
               {
                 label: 'Edit',
-                disabled: data.isDeleted,
-                onPress: onEdit,
+                disabled: !publicProfile,
+                onPress: () => {
+                  if (publicProfile) {
+                    navigation.push(CommonStackComponents.userProfileEditScreen, {user: publicProfile});
+                  }
+                },
               },
               {
-                label: 'Delete',
-                disabled: data.isDeleted || deleteMutation.isPending,
-                onPress: onDelete,
-              },
-              {
-                label: isLfg ? 'View LFG' : 'View Chat',
-                onPress: onView,
+                label: 'View Profile',
+                onPress: () => navigation.push(CommonStackComponents.userProfileScreen, {userID: id}),
               },
             ]}
           />
@@ -137,16 +108,35 @@ const FezModerateScreenInner = ({route}: Props) => {
         </ListSection>
         {data.edits.length === 0 ? (
           <PaddedContentView padTop={true}>
-            <Text>No previous edits.</Text>
+            <Text>No previous profile edits.</Text>
           </PaddedContentView>
         ) : (
           data.edits.map(edit => (
             <PaddedContentView key={edit.editID} padTop={true}>
-              <ModerationEditListItem
-                author={edit.author}
-                timestamp={edit.createdAt}
-                text={[edit.title, edit.info, edit.location].filter(Boolean).join('\n')}
-              />
+              {edit.profileData && edit.author && (
+                <ModerationEditListItem
+                  author={edit.author}
+                  timestamp={edit.createdAt}
+                  text={[
+                    edit.profileData.displayName && `Display name: ${edit.profileData.displayName}`,
+                    edit.profileData.realName && `Real name: ${edit.profileData.realName}`,
+                    edit.profileData.homeLocation && `Home: ${edit.profileData.homeLocation}`,
+                    edit.profileData.roomNumber && `Cabin: ${edit.profileData.roomNumber}`,
+                    edit.profileData.message && `Message: ${edit.profileData.message}`,
+                    edit.profileData.about && `About: ${edit.profileData.about}`,
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                />
+              )}
+              {edit.profileImage && <APIImage path={edit.profileImage} />}
+              {!edit.profileData && !edit.profileImage && edit.author && (
+                <ModerationEditListItem
+                  author={edit.author}
+                  timestamp={edit.createdAt}
+                  text={'Profile image or fields changed.'}
+                />
+              )}
             </PaddedContentView>
           ))
         )}
@@ -163,10 +153,10 @@ const FezModerateScreenInner = ({route}: Props) => {
   );
 };
 
-export const FezModerateScreen = (props: Props) => {
+export const ModerateProfileScreen = (props: Props) => {
   return (
     <ModeratorFeatureScreen>
-      <FezModerateScreenInner {...props} />
+      <ModerateProfileScreenInner {...props} />
     </ModeratorFeatureScreen>
   );
 };

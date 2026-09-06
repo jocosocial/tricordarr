@@ -53,7 +53,7 @@ export const ModerationReportGroupListItem = ({group, showUnread = false}: Moder
 
   const onPress = useCallback(() => {
     if (group.reportType === ReportType.userProfile) {
-      navigation.push(CommonStackComponents.profileModerateScreen, {id: group.reportedID});
+      navigation.push(CommonStackComponents.moderateProfileScreen, {id: group.reportedID});
       return;
     }
     pushModerateScreen(navigation, group.reportType, group.reportedID);

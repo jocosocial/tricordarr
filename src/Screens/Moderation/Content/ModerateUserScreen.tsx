@@ -38,7 +38,7 @@ import {useUserModerationQuery} from '#src/Queries/Moderation/ModerationQueries'
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 import {ModeratorActionLogResponseData, UserModerationData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userModerateScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderateUserScreen>;
 
 const moderatorAccessLevels = [UserAccessLevel.quarantined, UserAccessLevel.verified];
 const thoAccessLevels = [
@@ -48,7 +48,7 @@ const thoAccessLevels = [
   UserAccessLevel.verified,
 ];
 
-const UserModerateScreenInner = ({route}: Props) => {
+const ModerateUserScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const queryClient = useQueryClient();
@@ -173,7 +173,7 @@ const UserModerateScreenInner = ({route}: Props) => {
               },
               {
                 label: 'Moderate Profile',
-                onPress: () => navigation.push(CommonStackComponents.profileModerateScreen, {id}),
+                onPress: () => navigation.push(CommonStackComponents.moderateProfileScreen, {id}),
               },
             ]}
           />
@@ -240,7 +240,7 @@ const UserModerateScreenInner = ({route}: Props) => {
             <PaddedContentView key={account.userID} padTop={true}>
               <UserBylineTag
                 user={account}
-                onPress={() => navigation.push(CommonStackComponents.userModerateScreen, {id: account.userID})}
+                onPress={() => navigation.push(CommonStackComponents.moderateUserScreen, {id: account.userID})}
               />
             </PaddedContentView>
           ))
@@ -262,10 +262,10 @@ const UserModerateScreenInner = ({route}: Props) => {
   );
 };
 
-export const UserModerateScreen = (props: Props) => {
+export const ModerateUserScreen = (props: Props) => {
   return (
     <ModeratorFeatureScreen>
-      <UserModerateScreenInner {...props} />
+      <ModerateUserScreenInner {...props} />
     </ModeratorFeatureScreen>
   );
 };

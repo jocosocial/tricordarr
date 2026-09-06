@@ -21,9 +21,9 @@ import {
 import {useMicroKaraokeModerationSongListQuery} from '#src/Queries/Moderation/ModerationQueries';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.microKaraokeSongsModerateScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderateMicroKaraokeSongsScreen>;
 
-const MicroKaraokeSongsModerateScreenInner = () => {
+const ModerateMicroKaraokeSongsScreenInner = () => {
   const {commonStyles} = useStyles();
   const navigation = useCommonStack();
   const {data, refetch, isLoading} = useMicroKaraokeModerationSongListQuery();
@@ -76,7 +76,7 @@ const MicroKaraokeSongsModerateScreenInner = () => {
                     title={`${song.songName} — ${song.artistName}`}
                     description={status}
                     onPress={() =>
-                      navigation.push(CommonStackComponents.microKaraokeSongModerateScreen, {
+                      navigation.push(CommonStackComponents.moderateMicroKaraokeSongScreen, {
                         id: String(song.songID),
                       })
                     }
@@ -91,10 +91,10 @@ const MicroKaraokeSongsModerateScreenInner = () => {
   );
 };
 
-export const MicroKaraokeSongsModerateScreen = (_props: Props) => {
+export const ModerateMicroKaraokeSongsScreen = (_props: Props) => {
   return (
     <ModeratorFeatureScreen>
-      <MicroKaraokeSongsModerateScreenInner />
+      <ModerateMicroKaraokeSongsScreenInner />
     </ModeratorFeatureScreen>
   );
 };
