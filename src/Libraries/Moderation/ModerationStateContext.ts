@@ -75,7 +75,7 @@ export namespace ModerationStateContext {
     return {
       path: 'forum',
       contentID: data.forumID,
-      cacheKeys: ForumModerationData.getCacheKeys(data.forumID),
+      cacheKeys: ForumModerationData.getCacheKeys(data.forumID, data.categoryID),
       isDeleted: data.isDeleted,
     };
   };

@@ -92,10 +92,16 @@ const ModerateFezScreenInner = ({route}: Props) => {
 
   const onEdit = () => {
     if (isLfg) {
-      navigation.push(CommonStackComponents.lfgEditScreen, {fez});
+      navigation.push(CommonStackComponents.lfgEditScreen, {
+        fez,
+        intent: 'moderate',
+      });
       return;
     }
-    navigation.push(CommonStackComponents.seamailEditScreen, {fezID: fez.fezID});
+    navigation.push(CommonStackComponents.seamailEditScreen, {
+      fezID: fez.fezID,
+      intent: 'moderate',
+    });
   };
 
   const onViewInContext = () => {

@@ -1728,11 +1728,19 @@ export interface ForumModerationData {
 }
 
 export namespace ForumModerationData {
-  export const getCacheKeys = (forumID?: string): QueryKey[] => {
+  /**
+   * Query keys to invalidate after a forum-thread moderation mutation.
+   * Includes the category index and, when `categoryID` is set, the
+   * per-category thread list used by ForumCategoryScreen.
+   */
+  export const getCacheKeys = (forumID?: string, categoryID?: string): QueryKey[] => {
     const keys = ReportModerationData.getCacheKeys().concat([['/forum/categories']]);
     if (forumID) {
       keys.push([`/mod/forum/${forumID}`]);
       keys.push([`/forum/${forumID}`]);
+    }
+    if (categoryID) {
+      keys.push([`/forum/categories/${categoryID}`]);
     }
     return keys;
   };

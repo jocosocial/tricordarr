@@ -18,11 +18,12 @@ jest.mock('@react-navigation/stack', () => ({
 
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {ReportType} from '#src/Enums/ReportType';
+import {forumDataFromModeration, FORUM_QUARANTINED_TITLE, publicForumTitle} from '#src/Libraries/Moderation/Content';
 import {isClosedReportsParam} from '#src/Libraries/Moderation/ModerationStateContext';
 import {ReportContentGroup} from '#src/Libraries/Moderation/ReportContentGroup';
 import {parseDeepLinkUrl} from '#src/Libraries/RouteDefinitions';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {ReportModerationData, UserHeader} from '#src/Structs/ControllerStructs';
+import {ForumModerationData, ReportModerationData, UserHeader} from '#src/Structs/ControllerStructs';
 
 const author: UserHeader = {
   userID: 'author-1',
@@ -139,6 +140,36 @@ describe('ReportType.getLabel', () => {
     expect(ReportType.getLabel(ReportType.forumPost)).toBe('forum post');
     expect(ReportType.getLabel(ReportType.fez)).toBe('LFG');
     expect(ReportType.getLabel(ReportType.streamPhoto)).toBe('photostream photo');
+  });
+});
+
+describe('forumDataFromModeration', () => {
+  it('keeps the original title for a quarantined thread', () => {
+    const data: ForumModerationData = {
+      forumID: 'forum-1',
+      categoryID: 'cat-1',
+      creator: reportedUser,
+      title: 'Actual reported title',
+      createdAt: '2026-03-01T00:00:00.000Z',
+      moderationStatus: ContentModerationStatus.quarantined,
+      isDeleted: false,
+      edits: [],
+      reports: [],
+    };
+    expect(forumDataFromModeration(data).title).toBe('Actual reported title');
+  });
+});
+
+describe('publicForumTitle', () => {
+  it('returns the quarantine placeholder when content is hidden', () => {
+    expect(publicForumTitle('Actual title', ContentModerationStatus.quarantined)).toBe(FORUM_QUARANTINED_TITLE);
+    expect(publicForumTitle('Actual title', ContentModerationStatus.autoQuarantined)).toBe(FORUM_QUARANTINED_TITLE);
+  });
+
+  it('returns the real title when content is visible', () => {
+    expect(publicForumTitle('Actual title', ContentModerationStatus.normal)).toBe('Actual title');
+    expect(publicForumTitle('Actual title', ContentModerationStatus.modReviewed)).toBe('Actual title');
+    expect(publicForumTitle('Actual title', ContentModerationStatus.locked)).toBe('Actual title');
   });
 });
 

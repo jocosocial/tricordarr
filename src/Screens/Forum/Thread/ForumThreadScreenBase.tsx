@@ -58,6 +58,11 @@ interface Props {
   hasPreviousPage?: boolean;
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
+  /**
+   * Unmasked title from a moderation View in Context. Public thread
+   * payloads replace quarantined titles with placeholder copy.
+   */
+  titleOverride?: string;
   initialElevation?: keyof typeof PrivilegedUserAccounts;
   /**
    * True when this thread was opened from a specific post. `startPost` returns that
@@ -93,6 +98,7 @@ const ForumThreadScreenBaseInner = ({
   hasPreviousPage,
   getListHeader,
   forumListData,
+  titleOverride,
   startFromPost,
 }: Props) => {
   const navigation = useCommonStack();
@@ -310,7 +316,7 @@ const ForumThreadScreenBaseInner = ({
     <AppView>
       <PostAsUserWarningView />
       <ListTitleView
-        title={forumData?.title ?? ''}
+        title={titleOverride ?? forumData?.title ?? ''}
         subtitle={pinnedPostsSubtitle}
         icon={forumData?.isFavorite ? <AppIcon icon={AppIcons.favorite} small={true} /> : undefined}
       />

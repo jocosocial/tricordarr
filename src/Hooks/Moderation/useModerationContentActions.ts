@@ -26,11 +26,21 @@ export const useModerationContentActions = (cacheKeys: QueryKey[]) => {
     await invalidateQueryKeys(queryClient, keys);
   };
 
-  const setState = (path: ModerationSetStatePath, contentID: string, state: ContentModerationStatus) => {
+  /**
+   * Set content moderation status, then optionally run `onSuccess` before
+   * invalidating cache keys (so forum list patches apply before refetch).
+   */
+  const setState = (
+    path: ModerationSetStatePath,
+    contentID: string,
+    state: ContentModerationStatus,
+    onSuccess?: () => void,
+  ) => {
     setStateMutation.mutate(
       {path, contentID, state},
       {
         onSuccess: async () => {
+          onSuccess?.();
           await invalidate();
           setSnackbarPayload({
             message: `State set to ${ContentModerationStatus.getLabel(state)}.`,

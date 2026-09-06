@@ -20,6 +20,8 @@ interface ModerateForumThreadListItemProps {
 /**
  * Forum-thread preview for the moderate-forum screen. Mirrors ForumThreadListItem
  * for title, created-by, and locked state using the fields moderation data provides.
+ * Title is the original from `/mod/forum/{id}`, not the public placeholder used
+ * when a thread is quarantined.
  */
 export const ModerateForumThreadListItem = ({data, categoryTitle}: ModerateForumThreadListItemProps) => {
   const {commonStyles} = useStyles();

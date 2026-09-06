@@ -25,7 +25,22 @@ export const postDataFromDetail = (detail: PostDetailData): PostData => {
 };
 
 /**
+ * Public title Swiftarr returns for a quarantined forum thread.
+ */
+export const FORUM_QUARANTINED_TITLE = 'Forum Title is under moderator review';
+
+/**
+ * Title shown on public forum list/thread payloads. Quarantined threads
+ * use {@link FORUM_QUARANTINED_TITLE}; other states keep `realTitle`.
+ */
+export const publicForumTitle = (realTitle: string, status: ContentModerationStatus): string => {
+  return ContentModerationStatus.showsContent(status) ? realTitle : FORUM_QUARANTINED_TITLE;
+};
+
+/**
  * Minimal ForumData so ForumThreadEditScreen can rename a thread from moderation.
+ * Uses ForumModerationData.title (the original), not public ForumData, which
+ * replaces quarantined titles with {@link FORUM_QUARANTINED_TITLE}.
  */
 export const forumDataFromModeration = (data: ForumModerationData): ForumData => {
   return {

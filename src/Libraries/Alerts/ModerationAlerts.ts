@@ -1,6 +1,16 @@
 import {Alert} from 'react-native';
 
 /**
+ * Warns that opening View in Context for a Seamail post enters a private conversation.
+ */
+export const alertViewPrivateSeamail = (onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert('Private Seamail', 'You are about to view a private Seamail conversation.', [
+    {text: 'Cancel', style: 'cancel', onPress: onCancel},
+    {text: 'Proceed', onPress: onConfirm},
+  ]);
+};
+
+/**
  * Confirms permanently deleting moderated content.
  */
 export const alertDeleteModeratedContent = (

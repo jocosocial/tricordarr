@@ -15,9 +15,12 @@ interface FezPostActionsMenuProps {
   closeMenu: () => void;
   anchor: ReactNode;
   fezPost: FezPostData;
-  fez: FezData;
+  fez?: FezData;
 }
 
+/**
+ * Overflow actions for a fez post. `fez` is optional; Report is hidden when it is omitted.
+ */
 export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: FezPostActionsMenuProps) => {
   const {setString} = useClipboard();
   const commonNavigation = useCommonStack();

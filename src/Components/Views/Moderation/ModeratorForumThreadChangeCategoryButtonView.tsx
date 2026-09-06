@@ -41,7 +41,9 @@ export const ModeratorForumThreadChangeCategoryButtonView = ({
         onSuccess: async () => {
           await invalidateQueryKeys(
             queryClient,
-            ForumModerationData.getCacheKeys(forumID).concat(ModeratorActionLogResponseData.getCacheKeys()),
+            ForumModerationData.getCacheKeys(forumID, currentCategoryID)
+              .concat([[`/forum/categories/${categoryID}`]])
+              .concat(ModeratorActionLogResponseData.getCacheKeys()),
           );
           setSnackbarPayload({message: 'Forum category updated.', messageType: 'info'});
         },

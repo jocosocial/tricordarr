@@ -123,6 +123,11 @@ export type CommonStackParamList = {
   ForumThreadScreen: WithElevation<{
     forumID: string;
     forumListData?: ForumListData;
+    /**
+     * Original title from the moderation API. Public `/forum/{id}` masks
+     * quarantined threads as "Forum Title is under moderator review".
+     */
+    titleOverride?: string;
   }>;
   AlertKeywordsScreen: undefined;
   MuteKeywordsScreen: undefined;
@@ -166,9 +171,12 @@ export type CommonStackParamList = {
   SeamailAddParticipantScreen: {
     fez: FezData;
   };
-  SeamailEditScreen: {
-    fezID: string;
-  };
+  SeamailEditScreen: WithIntent<
+    {
+      fezID: string;
+    },
+    'moderate'
+  >;
   LfgScreen: {
     fezID: string;
   };
@@ -183,13 +191,19 @@ export type CommonStackParamList = {
     fezID: string;
     initialReadCount?: number;
   };
-  LfgEditScreen: {
-    fez: FezData;
-  };
+  LfgEditScreen: WithIntent<
+    {
+      fez: FezData;
+    },
+    'moderate'
+  >;
   LfgSettingsScreen: undefined;
-  ForumThreadEditScreen: {
-    forumData: ForumData;
-  };
+  ForumThreadEditScreen: WithIntent<
+    {
+      forumData: ForumData;
+    },
+    'moderate'
+  >;
   AccessibilitySettingsScreen: undefined;
   ImageSettingsScreen: undefined;
   ShareSettingsScreen: undefined;

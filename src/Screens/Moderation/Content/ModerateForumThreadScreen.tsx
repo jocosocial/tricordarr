@@ -42,7 +42,7 @@ const ModerateForumThreadScreenInner = ({route}: Props) => {
   const {data, refetch, isLoading} = useForumModerationQuery(id);
   const {data: categories} = useForumCategoriesQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
-  const actions = useModerationContentActions(ForumModerationData.getCacheKeys(id));
+  const actions = useModerationContentActions(ForumModerationData.getCacheKeys(id, data?.categoryID));
   const deleteMutation = useForumDeleteMutation();
   const getNavButtons = useModerationHeaderButtons({
     contentType: ShareContentType.forum,
@@ -88,11 +88,19 @@ const ModerateForumThreadScreenInner = ({route}: Props) => {
   const onEdit = () => {
     navigation.push(CommonStackComponents.forumThreadEditScreen, {
       forumData: forumDataFromModeration(data),
+      intent: 'moderate',
     });
   };
 
+  /**
+   * Pass the unmasked title. Public `/forum/{id}` replaces quarantined
+   * titles with "Forum Title is under moderator review".
+   */
   const onViewInContext = () => {
-    navigation.push(CommonStackComponents.forumThreadScreen, {forumID: data.forumID});
+    navigation.push(CommonStackComponents.forumThreadScreen, {
+      forumID: data.forumID,
+      titleOverride: data.title,
+    });
   };
 
   return (

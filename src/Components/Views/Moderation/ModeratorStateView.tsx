@@ -7,6 +7,7 @@ import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useMenu} from '#src/Hooks/useMenu';
 import {ModeratedContentData, ModerationStateContext} from '#src/Libraries/Moderation/ModerationStateContext';
@@ -23,6 +24,7 @@ export const ModeratorStateView = ({data}: ModeratorStateViewProps) => {
   const {theme} = useAppTheme();
   const context = useMemo(() => ModerationStateContext.fromData(data), [data]);
   const actions = useModerationContentActions(context.cacheKeys);
+  const {updateThreadVisibility} = useForumCacheReducer();
 
   return (
     <View>
@@ -52,7 +54,11 @@ export const ModeratorStateView = ({data}: ModeratorStateViewProps) => {
               disabled={state === data.moderationStatus}
               onPress={() => {
                 closeMenu();
-                actions.setState(context.path, context.contentID, state);
+                actions.setState(context.path, context.contentID, state, () => {
+                  if ('forumID' in data && !('forumPost' in data)) {
+                    updateThreadVisibility(data.forumID, data.categoryID, state, data.title);
+                  }
+                });
               }}
             />
           ))}

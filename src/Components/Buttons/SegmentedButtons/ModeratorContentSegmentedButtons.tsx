@@ -5,7 +5,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {SegmentedButtonType} from '#src/Types';
 
 interface ModeratorContentSegmentedButtonsProps {
-  onEdit: () => void;
+  onEdit?: () => void;
   onDelete: () => void;
   testIDPrefix: string;
   isDeleting?: boolean;
@@ -14,6 +14,7 @@ interface ModeratorContentSegmentedButtonsProps {
 
 /**
  * Edit / Delete control on a content moderate screen.
+ * Omit `onEdit` when the content type cannot be edited; Edit stays visible but disabled.
  */
 export const ModeratorContentSegmentedButtons = ({
   onEdit,
@@ -27,7 +28,7 @@ export const ModeratorContentSegmentedButtons = ({
       value: 'edit',
       label: 'Edit',
       icon: AppIcons.edit,
-      disabled,
+      disabled: disabled || !onEdit,
       testID: `${testIDPrefix}Edit-button`,
     },
     {
@@ -41,7 +42,7 @@ export const ModeratorContentSegmentedButtons = ({
 
   const onValueChange = (value: string) => {
     if (value === 'edit') {
-      onEdit();
+      onEdit?.();
       return;
     }
     if (value === 'delete') {

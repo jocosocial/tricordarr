@@ -10,7 +10,7 @@ import {ModeratedContentData} from '#src/Libraries/Moderation/ModerationStateCon
 
 interface ModerationContentVisibilitySectionViewProps extends PropsWithChildren {
   data: ModeratedContentData;
-  onEdit: () => void;
+  onEdit?: () => void;
   onDelete: () => void;
   testIDPrefix: string;
   isDeleting?: boolean;
@@ -18,6 +18,7 @@ interface ModerationContentVisibilitySectionViewProps extends PropsWithChildren 
 
 /**
  * Visibility section on a content moderate screen: current state, edit/delete, then any extra actions.
+ * Omit `onEdit` when the content type cannot be edited; Edit stays visible but disabled.
  */
 export const ModerationContentVisibilitySectionView = ({
   data,

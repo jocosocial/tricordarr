@@ -50,11 +50,11 @@ export const ModeratorHelpScreen = () => {
         </HelpTopicView>
         <HelpTopicView title={'View in Context'}>
           Opens the public view for this content, such as the forum thread at a post, the LFG or chat, or the user
-          profile.
+          profile. Seamail posts confirm before opening the private conversation.
         </HelpTopicView>
         <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
-          Edit the content. Disabled if the item has already been deleted. Some types, such as fez posts and photostream
-          photos, cannot be edited.
+          Edit the content. Disabled if the item has already been deleted, or for types that cannot be edited such as
+          fez posts and photostream photos.
         </HelpTopicView>
         <HelpTopicView title={'Delete'} icon={AppIcons.delete}>
           Permanently delete the content. There is no recovery. Disabled if the item has already been deleted. User
