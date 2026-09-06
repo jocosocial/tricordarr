@@ -144,10 +144,11 @@ describe('ContentModerationStatus.getApiParameter', () => {
 
 describe('ReportType.getLabel', () => {
   it('returns short labels used in lists', () => {
-    expect(ReportType.getLabel(ReportType.forumPost)).toBe('forum post');
-    expect(ReportType.getLabel(ReportType.fez)).toBe('LFG/private event');
-    expect(ReportType.getLabel(ReportType.fezPost)).toBe('LFG/seamail/private event post');
-    expect(ReportType.getLabel(ReportType.streamPhoto)).toBe('photostream photo');
+    expect(ReportType.getLabel(ReportType.forumPost)).toBe('Forum Post');
+    expect(ReportType.getLabel(ReportType.fez)).toBe('LFG');
+    expect(ReportType.getLabel(ReportType.fezPost)).toBe('Chat Post');
+    expect(ReportType.getLabel(ReportType.privateEvent)).toBe('Private Event');
+    expect(ReportType.getLabel(ReportType.streamPhoto)).toBe('Photostream Photo');
   });
 });
 

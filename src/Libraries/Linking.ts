@@ -101,7 +101,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             ModerateProfileScreen: getPath(CommonStackComponents.moderateProfileScreen),
             ModerateUserScreen: getPath(CommonStackComponents.moderateUserScreen),
             ModeratePhotostreamScreen: getPath(CommonStackComponents.moderatePhotostreamScreen),
-            ModeratePersonalEventScreen: getPath(CommonStackComponents.moderatePersonalEventScreen),
+            ModeratePrivateEventScreen: getPath(CommonStackComponents.moderatePrivateEventScreen),
             ModerateMicroKaraokeSongsScreen: getPath(CommonStackComponents.moderateMicroKaraokeSongsScreen),
             ModerateMicroKaraokeSongScreen: getPath(CommonStackComponents.moderateMicroKaraokeSongScreen),
           },

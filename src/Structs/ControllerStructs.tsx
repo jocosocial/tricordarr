@@ -1872,7 +1872,7 @@ export namespace PhotostreamModerationData {
 }
 
 /**
- * Personal event as returned by the moderation API.
+ * Private event as returned by the moderation API.
  * Returned inside `PersonalEventModerationData`.
  */
 export interface PersonalEventData {
@@ -1890,8 +1890,8 @@ export interface PersonalEventData {
 }
 
 /**
- * Data a moderator needs to review a personal event.
- * Returned by `GET /api/v3/mod/personalevent/:id`
+ * Data a moderator needs to review a private event.
+ * Returned by `GET /api/v3/mod/privateevent/:id`
  */
 export interface PersonalEventModerationData {
   personalEvent: PersonalEventData;
@@ -1904,7 +1904,7 @@ export namespace PersonalEventModerationData {
   export const getCacheKeys = (eventID?: string): QueryKey[] => {
     const keys = ReportModerationData.getCacheKeys();
     if (eventID) {
-      keys.push([`/mod/personalevent/${eventID}`]);
+      keys.push([`/mod/privateevent/${eventID}`]);
       keys.push([`/fez/${eventID}`]);
     }
     return keys;

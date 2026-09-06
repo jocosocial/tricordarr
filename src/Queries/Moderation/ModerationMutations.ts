@@ -161,10 +161,10 @@ export const useMicroKaraokeApproveSongMutation = () => {
 };
 
 /**
- * Removes a participant from a personal event.
+ * Removes a participant from a private event.
  * POST /api/v3/personalevents/:eventID/user/:userID/remove
  */
-export const usePersonalEventMemberRemoveMutation = () => {
+export const usePrivateEventMemberRemoveMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
 
   const queryHandler = async ({eventID, userID}: {eventID: string; userID: string}) => {

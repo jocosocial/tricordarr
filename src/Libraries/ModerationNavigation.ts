@@ -42,8 +42,8 @@ export const pushModerateScreen = (
     case ReportType.streamPhoto:
       navigation.push(CommonStackComponents.moderatePhotostreamScreen, {id});
       return;
-    case ReportType.personalEvent:
-      navigation.push(CommonStackComponents.moderatePersonalEventScreen, {id});
+    case ReportType.privateEvent:
+      navigation.push(CommonStackComponents.moderatePrivateEventScreen, {id});
       return;
     case ReportType.quartermasterItem:
       navigation.push(CommonStackComponents.siteUIScreen, {
@@ -92,7 +92,7 @@ export const pushModerateResource = (
       navigation.push(CommonStackComponents.moderateUserScreen, {id});
       return;
     case 'personalevent':
-      pushModerateScreen(navigation, ReportType.personalEvent, id);
+      pushModerateScreen(navigation, ReportType.privateEvent, id);
       return;
     case 'twarrt':
       pushModerateScreen(navigation, ReportType.twarrt, id);

@@ -94,7 +94,7 @@ export type CommonStackParamList = {
   ModeratePhotostreamScreen: {
     id: string;
   };
-  ModeratePersonalEventScreen: {
+  ModeratePrivateEventScreen: {
     id: string;
   };
   ModerateMicroKaraokeSongsScreen: undefined;
@@ -432,7 +432,7 @@ export enum CommonStackComponents {
   moderateProfileScreen = 'ModerateProfileScreen',
   moderateUserScreen = 'ModerateUserScreen',
   moderatePhotostreamScreen = 'ModeratePhotostreamScreen',
-  moderatePersonalEventScreen = 'ModeratePersonalEventScreen',
+  moderatePrivateEventScreen = 'ModeratePrivateEventScreen',
   moderateMicroKaraokeSongsScreen = 'ModerateMicroKaraokeSongsScreen',
   moderateMicroKaraokeSongScreen = 'ModerateMicroKaraokeSongScreen',
   easterEggScreen = 'EasterEggScreen',

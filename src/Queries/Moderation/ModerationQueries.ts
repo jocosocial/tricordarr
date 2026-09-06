@@ -78,10 +78,10 @@ export const usePhotostreamModerationQuery = (photoID: string) => {
 };
 
 /**
- * Moderation payload for a personal event. Works if deleted.
+ * Moderation payload for a private event. Works if deleted.
  */
-export const usePersonalEventModerationQuery = (eventID: string) => {
-  return useTokenAuthQuery<PersonalEventModerationData>(`/mod/personalevent/${eventID}`);
+export const usePrivateEventModerationQuery = (eventID: string) => {
+  return useTokenAuthQuery<PersonalEventModerationData>(`/mod/privateevent/${eventID}`);
 };
 
 /**

@@ -23,7 +23,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {alertRemovePersonalEventMember} from '#src/Libraries/Alerts/ModerationAlerts';
+import {alertRemovePrivateEventMember} from '#src/Libraries/Alerts/ModerationAlerts';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {
@@ -31,27 +31,27 @@ import {
   CommonStackParamList,
   useCommonStack,
 } from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {usePersonalEventMemberRemoveMutation} from '#src/Queries/Moderation/ModerationMutations';
-import {usePersonalEventModerationQuery} from '#src/Queries/Moderation/ModerationQueries';
+import {usePrivateEventMemberRemoveMutation} from '#src/Queries/Moderation/ModerationMutations';
+import {usePrivateEventModerationQuery} from '#src/Queries/Moderation/ModerationQueries';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
 import {PersonalEventModerationData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderatePersonalEventScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderatePrivateEventScreen>;
 
-const ModeratePersonalEventScreenInner = ({route}: Props) => {
+const ModeratePrivateEventScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const {setSnackbarPayload} = useSnackbar();
   const {theme} = useAppTheme();
-  const {data, refetch, isLoading} = usePersonalEventModerationQuery(id);
+  const {data, refetch, isLoading} = usePrivateEventModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(PersonalEventModerationData.getCacheKeys(id));
-  const removeMutation = usePersonalEventMemberRemoveMutation();
+  const removeMutation = usePrivateEventMemberRemoveMutation();
   const getNavButtons = useModerationHeaderButtons({
     contentType: ShareContentType.personalEvent,
     contentID: id,
     contentIcon: AppIcons.personalEvent,
-    moderateType: ShareContentType.personalEventModerate,
+    moderateType: ShareContentType.privateEventModerate,
     moderateID: id,
   });
 
@@ -68,13 +68,13 @@ const ModeratePersonalEventScreenInner = ({route}: Props) => {
   const event = data.personalEvent;
 
   const onRemove = (userID: string, username: string) => {
-    alertRemovePersonalEventMember(username, () => {
+    alertRemovePrivateEventMember(username, () => {
       removeMutation.mutate(
         {eventID: id, userID},
         {
           onSuccess: async () => {
             await actions.invalidate();
-            setSnackbarPayload({message: `@${username} removed from this personal event.`, messageType: 'info'});
+            setSnackbarPayload({message: `@${username} removed from this private event.`, messageType: 'info'});
           },
         },
       );
@@ -83,7 +83,7 @@ const ModeratePersonalEventScreenInner = ({route}: Props) => {
 
   return (
     <AppView>
-      <ModerationDeletedWarningView contentLabel={'personal event'} visible={data.isDeleted} />
+      <ModerationDeletedWarningView contentLabel={'private event'} visible={data.isDeleted} />
       <ScrollingContentView
         isStack={true}
         overScroll={true}
@@ -103,7 +103,7 @@ const ModeratePersonalEventScreenInner = ({route}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
-            testID={'personalEventModerateView-button'}
+            testID={'privateEventModerateView-button'}
             buttonText={'View Event'}
             buttonColor={theme.colors.twitarrNeutralButton}
             onPress={() => navigation.push(CommonStackComponents.personalEventScreen, {eventID: id})}
@@ -111,7 +111,7 @@ const ModeratePersonalEventScreenInner = ({route}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <Text>
-            Personal events cannot be quarantined in the site UI. Remove participants or moderate the owner if needed.
+            Private events cannot be quarantined in the site UI. Remove participants or moderate the owner if needed.
           </Text>
         </PaddedContentView>
         <ListSection>
@@ -154,10 +154,10 @@ const ModeratePersonalEventScreenInner = ({route}: Props) => {
   );
 };
 
-export const ModeratePersonalEventScreen = (props: Props) => {
+export const ModeratePrivateEventScreen = (props: Props) => {
   return (
     <ModeratorFeatureScreen>
-      <ModeratePersonalEventScreenInner {...props} />
+      <ModeratePrivateEventScreenInner {...props} />
     </ModeratorFeatureScreen>
   );
 };

@@ -23,7 +23,7 @@ export enum ShareContentType {
   profileModerate = 'moderate/userprofile',
   userModerate = 'moderate/user',
   photostreamModerate = 'moderate/photostream',
-  personalEventModerate = 'moderate/personalevent',
+  privateEventModerate = 'moderate/personalevent',
   microKaraokeSongModerate = 'moderate/microkaraoke/song',
 }
 
@@ -42,15 +42,15 @@ export const shareContentTypeLabels: Record<ShareContentType, string> = {
   [ShareContentType.hunt]: 'Puzzle Hunt',
   [ShareContentType.puzzle]: 'Puzzle',
   [ShareContentType.siteUI]: 'Link',
-  [ShareContentType.forumPostModerate]: 'Moderate Forum Post',
-  [ShareContentType.forumModerate]: 'Moderate Forum',
-  [ShareContentType.fezModerate]: 'Moderate LFG',
-  [ShareContentType.fezPostModerate]: 'Moderate Post',
-  [ShareContentType.profileModerate]: 'Moderate User Profile',
-  [ShareContentType.userModerate]: 'Moderate User',
-  [ShareContentType.photostreamModerate]: 'Moderate Photostream',
-  [ShareContentType.personalEventModerate]: 'Moderate Personal Event',
-  [ShareContentType.microKaraokeSongModerate]: 'Moderate Micro Karaoke Song',
+  [ShareContentType.forumPostModerate]: 'Moderator View',
+  [ShareContentType.forumModerate]: 'Moderator View',
+  [ShareContentType.fezModerate]: 'Moderator View',
+  [ShareContentType.fezPostModerate]: 'Moderator View',
+  [ShareContentType.profileModerate]: 'Moderator View',
+  [ShareContentType.userModerate]: 'Moderator View',
+  [ShareContentType.photostreamModerate]: 'Moderator View',
+  [ShareContentType.privateEventModerate]: 'Moderator View',
+  [ShareContentType.microKaraokeSongModerate]: 'Moderator View',
 };
 
 /**

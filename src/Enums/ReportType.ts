@@ -13,7 +13,7 @@ export enum ReportType {
   mkSong = 'mkSong',
   mkSongSnippet = 'mkSongSnippet',
   streamPhoto = 'streamPhoto',
-  personalEvent = 'personalEvent',
+  privateEvent = 'privateEvent',
   quartermasterItem = 'quartermasterItem',
 }
 
@@ -32,17 +32,17 @@ export namespace ReportType {
       case ReportType.userProfile:
         return 'User Profile';
       case ReportType.fez:
-        return 'LFG/Private Event';
+        return 'LFG';
       case ReportType.fezPost:
-        return 'Chat Message';
+        return 'Chat Post';
       case ReportType.mkSong:
         return 'Micro Karaoke Song';
       case ReportType.mkSongSnippet:
         return 'Micro Karaoke Snippet';
       case ReportType.streamPhoto:
         return 'Photostream Photo';
-      case ReportType.personalEvent:
-        return 'Personal Event';
+      case ReportType.privateEvent:
+        return 'Private Event';
       case ReportType.quartermasterItem:
         return 'Quartermaster Item';
       default:

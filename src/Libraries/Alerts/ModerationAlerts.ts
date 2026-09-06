@@ -25,14 +25,10 @@ export const alertDeleteModeratedContent = (
 };
 
 /**
- * Confirms removing a participant from a personal event.
+ * Confirms removing a participant from a private event.
  */
-export const alertRemovePersonalEventMember = (
-  username: string,
-  onConfirm: () => void,
-  onCancel?: () => void,
-): void => {
-  Alert.alert('Remove Participant', `Remove @${username} from this personal event?`, [
+export const alertRemovePrivateEventMember = (username: string, onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert('Remove Participant', `Remove @${username} from this private event?`, [
     {text: 'Cancel', style: 'cancel', onPress: onCancel},
     {text: 'Remove', style: 'destructive', onPress: onConfirm},
   ]);

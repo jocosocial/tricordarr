@@ -114,8 +114,8 @@ import {ModerateForumPostScreen} from '#src/Screens/Moderation/Content/ModerateF
 import {ModerateForumThreadScreen} from '#src/Screens/Moderation/Content/ModerateForumThreadScreen';
 import {ModerateMicroKaraokeSongScreen} from '#src/Screens/Moderation/Content/ModerateMicroKaraokeSongScreen';
 import {ModerateMicroKaraokeSongsScreen} from '#src/Screens/Moderation/Content/ModerateMicroKaraokeSongsScreen';
-import {ModeratePersonalEventScreen} from '#src/Screens/Moderation/Content/ModeratePersonalEventScreen';
 import {ModeratePhotostreamScreen} from '#src/Screens/Moderation/Content/ModeratePhotostreamScreen';
+import {ModeratePrivateEventScreen} from '#src/Screens/Moderation/Content/ModeratePrivateEventScreen';
 import {ModerateProfileScreen} from '#src/Screens/Moderation/Content/ModerateProfileScreen';
 import {ModerateUserScreen} from '#src/Screens/Moderation/Content/ModerateUserScreen';
 import {ModeratorGuideScreen} from '#src/Screens/Moderation/ModeratorGuideScreen';
@@ -310,9 +310,9 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Moderate Photo'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.moderatePersonalEventScreen}
-        component={ModeratePersonalEventScreen}
-        options={{title: 'Moderate Personal Event'}}
+        name={CommonStackComponents.moderatePrivateEventScreen}
+        component={ModeratePrivateEventScreen}
+        options={{title: 'Moderate Private Event'}}
       />
       <Stack.Screen
         name={CommonStackComponents.moderateMicroKaraokeSongsScreen}

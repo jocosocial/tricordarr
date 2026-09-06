@@ -54,7 +54,7 @@ describe('getShareSheetTitle', () => {
     expect(getShareSheetTitle(ShareContentType.profileModerate)).toBe('Share Moderator View');
     expect(getShareSheetTitle(ShareContentType.userModerate)).toBe('Share Moderator View');
     expect(getShareSheetTitle(ShareContentType.photostreamModerate)).toBe('Share Moderator View');
-    expect(getShareSheetTitle(ShareContentType.personalEventModerate)).toBe('Share Moderator View');
+    expect(getShareSheetTitle(ShareContentType.privateEventModerate)).toBe('Share Moderator View');
     expect(getShareSheetTitle(ShareContentType.microKaraokeSongModerate)).toBe('Share Moderator View');
   });
 
