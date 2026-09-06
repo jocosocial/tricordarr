@@ -1,7 +1,6 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useEffect, useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Text} from 'react-native-paper';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
@@ -14,7 +13,7 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
 import {ModerationPostEditList} from '#src/Components/Views/Moderation/ModerationPostEditList';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
@@ -25,7 +24,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
-import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
+import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
 import {postDataFromDetail} from '#src/Libraries/Moderation/Content';
@@ -122,7 +121,9 @@ const ForumPostModerateScreenInner = ({route}: Props) => {
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ListTitleView title={'Content'} />
+        <ListSection>
+          <ListSubheader>Content</ListSubheader>
+        </ListSection>
         <View style={styles.post}>
           <ForumPostListItem postData={postData} enableShowInThread={!data.isDeleted} />
         </View>
@@ -134,9 +135,10 @@ const ForumPostModerateScreenInner = ({route}: Props) => {
             onPress={onViewInContext}
           />
         </PaddedContentView>
-        <PaddedContentView>
-          <ModeratorStateView data={data} />
-        </PaddedContentView>
+        <ListSection>
+          <ListSubheader>Visibility</ListSubheader>
+        </ListSection>
+        <ModeratorStateView data={data} />
         {!data.isDeleted && (
           <View style={styles.editDelete}>
             <ModeratorContentSegmentedButtons
@@ -157,9 +159,7 @@ const ForumPostModerateScreenInner = ({route}: Props) => {
           <ListSubheader>Reports</ListSubheader>
         </ListSection>
         {data.reports.length === 0 ? (
-          <PaddedContentView padTop={true}>
-            <Text>No reports on this forum post.</Text>
-          </PaddedContentView>
+          <ModerationNoReportsView />
         ) : (
           data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
         )}

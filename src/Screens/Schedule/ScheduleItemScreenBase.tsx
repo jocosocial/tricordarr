@@ -25,7 +25,7 @@ import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {getParticipantLabel} from '#src/Hooks/useFezData';
+import {getParticipantLabel} from '#src/Hooks/Fez/useFezData';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {calcCruiseDayTime, getDurationString} from '#src/Libraries/DateTime';
 import {openFezChatScreen} from '#src/Libraries/Navigation';

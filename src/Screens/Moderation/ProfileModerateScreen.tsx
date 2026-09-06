@@ -12,6 +12,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
+import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -143,9 +144,7 @@ const ProfileModerateScreenInner = ({route}: Props) => {
           <ListSubheader>Reports</ListSubheader>
         </ListSection>
         {data.reports.length === 0 ? (
-          <PaddedContentView padTop={true}>
-            <Text>No reports on this profile.</Text>
-          </PaddedContentView>
+          <ModerationNoReportsView />
         ) : (
           data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
         )}

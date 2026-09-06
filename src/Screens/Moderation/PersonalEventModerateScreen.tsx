@@ -12,12 +12,13 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
+import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
+import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertRemovePersonalEventMember} from '#src/Libraries/Alerts/ModerationAlerts';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
@@ -143,9 +144,7 @@ const PersonalEventModerateScreenInner = ({route}: Props) => {
           <ListSubheader>Reports</ListSubheader>
         </ListSection>
         {data.reports.length === 0 ? (
-          <PaddedContentView padTop={true}>
-            <Text>No reports on this personal event.</Text>
-          </PaddedContentView>
+          <ModerationNoReportsView />
         ) : (
           data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
         )}

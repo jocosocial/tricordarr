@@ -11,13 +11,14 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
+import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {FezType} from '#src/Enums/FezType';
-import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
+import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
 import {getFezPublicShare} from '#src/Libraries/Moderation/Share';
@@ -153,9 +154,7 @@ const FezModerateScreenInner = ({route}: Props) => {
           <ListSubheader>Reports</ListSubheader>
         </ListSection>
         {data.reports.length === 0 ? (
-          <PaddedContentView padTop={true}>
-            <Text>No reports on this {contentLabel}.</Text>
-          </PaddedContentView>
+          <ModerationNoReportsView />
         ) : (
           data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
         )}

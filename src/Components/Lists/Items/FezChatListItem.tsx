@@ -17,7 +17,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {getParticipantLabel} from '#src/Hooks/useFezData';
+import {getParticipantLabel} from '#src/Hooks/Fez/useFezData';
 import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
 import {useChatStack} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';

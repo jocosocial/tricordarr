@@ -13,6 +13,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
+import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
 import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -21,7 +22,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {useModerationContentActions} from '#src/Hooks/useModerationContentActions';
+import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
 import {forumDataFromModeration} from '#src/Libraries/Moderation/Content';
@@ -198,9 +199,7 @@ const ForumModerateScreenInner = ({route}: Props) => {
           <ListSubheader>Reports</ListSubheader>
         </ListSection>
         {data.reports.length === 0 ? (
-          <PaddedContentView padTop={true}>
-            <Text>No reports on this forum.</Text>
-          </PaddedContentView>
+          <ModerationNoReportsView />
         ) : (
           data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
         )}
