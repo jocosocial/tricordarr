@@ -4,7 +4,6 @@ import {Text} from 'react-native-paper';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
@@ -16,10 +15,11 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {ModerationContentAuthorSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentAuthorSectionView';
 import {ModerationContentHistorySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentHistorySectionView';
 import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
+import {ModerationContentSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentSectionView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {UserProfileView} from '#src/Components/Views/UserProfileView';
 import {AppIcons} from '#src/Enums/Icons';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -39,9 +39,8 @@ type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.
 const ModerateProfileScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
-  const {theme} = useAppTheme();
   const {data, refetch, isLoading} = useProfileModerationQuery(id);
-  const {refreshing, onRefresh} = useRefresh({refresh: refetch});
+  const {refreshing, setRefreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(ProfileModerationData.getCacheKeys(id));
   const getNavButtons = useModerationHeaderButtons({
     contentType: ShareContentType.user,
@@ -95,20 +94,7 @@ const ModerateProfileScreenInner = ({route}: Props) => {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
   }
 
-  const header = data.profile.header;
   const publicProfile = profilePublicDataFromUpload(data.profile);
-  const profileText = [
-    data.profile.displayName && `Display name: ${data.profile.displayName}`,
-    data.profile.realName && `Real name: ${data.profile.realName}`,
-    data.profile.homeLocation && `Home: ${data.profile.homeLocation}`,
-    data.profile.roomNumber && `Cabin: ${data.profile.roomNumber}`,
-    data.profile.email && `Email: ${data.profile.email}`,
-    data.profile.message && `Message: ${data.profile.message}`,
-    data.profile.about && `About: ${data.profile.about}`,
-    data.profile.discordUsername && `Discord: ${data.profile.discordUsername}`,
-  ]
-    .filter(Boolean)
-    .join('\n');
 
   return (
     <AppView>
@@ -116,24 +102,17 @@ const ModerateProfileScreenInner = ({route}: Props) => {
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ListSection>
-          <ListSubheader>Content</ListSubheader>
-        </ListSection>
-        <PaddedContentView>
-          {header ? (
-            <ModerationEditListItem author={header} text={profileText} />
+        <ModerationContentSectionView
+          testIDPrefix={'profileModerate'}
+          onViewInContext={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: id})}>
+          {publicProfile ? (
+            <UserProfileView user={publicProfile} setRefreshing={setRefreshing} />
           ) : (
-            <Text>{profileText || 'Empty profile.'}</Text>
+            <PaddedContentView>
+              <Text>Empty profile.</Text>
+            </PaddedContentView>
           )}
-        </PaddedContentView>
-        <PaddedContentView>
-          <PrimaryActionButton
-            testID={'profileModerateView-button'}
-            buttonText={'View Profile'}
-            buttonColor={theme.colors.twitarrNeutralButton}
-            onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: id})}
-          />
-        </PaddedContentView>
+        </ModerationContentSectionView>
         <ListSection>
           <ListSubheader>Visibility</ListSubheader>
         </ListSection>
