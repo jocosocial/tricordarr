@@ -61,7 +61,7 @@ const AppFlashListInner = <TItem,>(
   const {commonStyles, styleDefaults} = useStyles();
   const {appConfig} = useConfig();
   const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
-  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [scrollButtons, setScrollButtons] = useState({up: false, down: false});
 
   /**
    * Callback handler for when the scroll button is pressed.
@@ -74,14 +74,26 @@ const AppFlashListInner = <TItem,>(
     }
   }, [ref]);
 
+  /** Scroll to the final item in the list. */
+  const handleScrollToEnd = useCallback(() => {
+    if (ref && typeof ref !== 'function' && ref.current) {
+      ref.current.scrollToEnd({animated: true});
+    }
+  }, [ref]);
+
   /**
    * Show the scroll button when a certain scroll threshold has been hit.
    * Allows for a callback to be triggered on that same threshold.
    */
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const scrollThresholdCondition = event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold;
-      setShowScrollButton(scrollThresholdCondition);
+      const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
+      const scrollThresholdCondition = contentOffset.y > styleDefaults.listScrollThreshold;
+      const distanceFromBottom = contentSize.height - layoutMeasurement.height - contentOffset.y;
+      setScrollButtons({
+        up: scrollThresholdCondition,
+        down: distanceFromBottom > styleDefaults.listScrollThreshold,
+      });
       if (onScrollThreshold) {
         onScrollThreshold(scrollThresholdCondition);
       }
@@ -113,11 +125,14 @@ const AppFlashListInner = <TItem,>(
         // columnWrapperStyle is not supported in FlashList v2.
         masonry={masonry}
       />
-      {effectiveScrollButton && showScrollButton && (
+      {effectiveScrollButton && (scrollButtons.up || scrollButtons.down) && (
         <FloatingScrollButton
           testID={'flashListScroll-button'}
-          icon={AppIcons.scrollUp}
-          onPress={handleScrollButtonPress}
+          icon={scrollButtons.up ? AppIcons.scrollUp : AppIcons.scrollDown}
+          onPress={scrollButtons.up ? handleScrollButtonPress : handleScrollToEnd}
+          secondaryTestID={scrollButtons.up && scrollButtons.down ? 'flashListScrollDown-button' : undefined}
+          secondaryIcon={scrollButtons.up && scrollButtons.down ? AppIcons.scrollDown : undefined}
+          secondaryOnPress={scrollButtons.up && scrollButtons.down ? handleScrollToEnd : undefined}
           small={scrollButtonSmall}
         />
       )}

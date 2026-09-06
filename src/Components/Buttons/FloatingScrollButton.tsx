@@ -10,6 +10,9 @@ import {AppIcons} from '#src/Enums/Icons';
 interface FloatingScrollButtonProps {
   onPress: () => void;
   icon?: IconSource;
+  secondaryOnPress?: () => void;
+  secondaryIcon?: IconSource;
+  secondaryTestID?: string;
   small?: boolean;
   testID: string;
 }
@@ -21,6 +24,9 @@ interface FloatingScrollButtonProps {
 export const FloatingScrollButton = ({
   onPress,
   icon = AppIcons.scrollDown,
+  secondaryOnPress,
+  secondaryIcon,
+  secondaryTestID,
   small = false,
   testID,
 }: FloatingScrollButtonProps) => {
@@ -41,6 +47,15 @@ export const FloatingScrollButton = ({
 
   return (
     <View style={styles.container} pointerEvents={'box-none'}>
+      {secondaryOnPress && secondaryIcon && secondaryTestID ? (
+        <IconButton
+          testID={secondaryTestID}
+          icon={secondaryIcon}
+          size={small ? 15 : 30}
+          onPress={secondaryOnPress}
+          mode={'contained-tonal'}
+        />
+      ) : null}
       <IconButton testID={testID} icon={icon} size={small ? 15 : 30} onPress={onPress} mode={'contained-tonal'} />
     </View>
   );

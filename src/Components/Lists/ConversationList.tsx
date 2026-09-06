@@ -5,6 +5,7 @@ import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp,
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {createLogger} from '#src/Libraries/Logger';
 import {RNFlatListSeparatorComponent} from '#src/Types';
 
@@ -57,7 +58,7 @@ export const ConversationList = <TItem,>({
   const {commonStyles, styleDefaults} = useStyles();
   const {appConfig} = useConfig();
   const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
-  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [scrollButtons, setScrollButtons] = useState({up: false, down: false});
   const [init, setInit] = useState(true);
   const [hasLayout, setHasLayout] = useState(false);
 
@@ -72,6 +73,11 @@ export const ConversationList = <TItem,>({
    */
   const handleScrollButtonPress = useCallback(() => {
     listRef.current?.scrollToEnd({animated: true});
+  }, [listRef]);
+
+  /** Scroll to the first item in the conversation. */
+  const handleScrollToStart = useCallback(() => {
+    listRef.current?.scrollToIndex({index: 0, animated: true});
   }, [listRef]);
 
   /**
@@ -91,7 +97,10 @@ export const ConversationList = <TItem,>({
         event.nativeEvent.layoutMeasurement.height -
         event.nativeEvent.contentOffset.y;
       const scrollThresholdCondition = distanceFromBottom > styleDefaults.listScrollThreshold;
-      setShowScrollButton(scrollThresholdCondition);
+      setScrollButtons({
+        up: event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold,
+        down: scrollThresholdCondition,
+      });
       if (onScrollThreshold) {
         onScrollThreshold(scrollThresholdCondition);
       }
@@ -154,8 +163,15 @@ export const ConversationList = <TItem,>({
         style={style}
         scrollsToTop={false}
       />
-      {effectiveScrollButton && showScrollButton && (
-        <FloatingScrollButton testID={'conversationScroll-button'} onPress={handleScrollButtonPress} />
+      {effectiveScrollButton && (scrollButtons.up || scrollButtons.down) && (
+        <FloatingScrollButton
+          testID={'conversationScroll-button'}
+          onPress={scrollButtons.down ? handleScrollButtonPress : handleScrollToStart}
+          icon={scrollButtons.down ? AppIcons.scrollDown : AppIcons.scrollUp}
+          secondaryTestID={scrollButtons.up && scrollButtons.down ? 'conversationScrollUp-button' : undefined}
+          secondaryOnPress={scrollButtons.up && scrollButtons.down ? handleScrollToStart : undefined}
+          secondaryIcon={scrollButtons.up && scrollButtons.down ? AppIcons.scrollUp : undefined}
+        />
       )}
     </View>
   );

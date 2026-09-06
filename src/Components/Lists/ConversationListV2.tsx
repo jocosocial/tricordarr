@@ -286,6 +286,15 @@ export const ConversationListV2 = <TItem,>({
     }
   }, [listRef, newDividerIndex]);
 
+  /** Scroll to the list edge opposite the divider button's direction. */
+  const handleSecondaryScrollButtonPress = useCallback(() => {
+    if (scrollButtonDirection === 'up') {
+      listRef.current?.scrollToEnd({animated: true});
+    } else {
+      listRef.current?.scrollToIndex({index: 0, animated: true});
+    }
+  }, [listRef, scrollButtonDirection]);
+
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const {contentSize, layoutMeasurement, contentOffset} = event.nativeEvent;
@@ -471,6 +480,9 @@ export const ConversationListV2 = <TItem,>({
           testID={'conversationListScroll-button'}
           onPress={handleScrollButtonPress}
           icon={scrollButtonDirection === 'up' ? AppIcons.scrollUp : AppIcons.scrollDown}
+          secondaryTestID={'conversationListSecondaryScroll-button'}
+          secondaryOnPress={handleSecondaryScrollButtonPress}
+          secondaryIcon={scrollButtonDirection === 'up' ? AppIcons.scrollDown : AppIcons.scrollUp}
         />
       )}
     </View>
