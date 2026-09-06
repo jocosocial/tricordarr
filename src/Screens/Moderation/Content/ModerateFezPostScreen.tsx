@@ -3,22 +3,20 @@ import React, {useEffect} from 'react';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
+import {ModerationContentSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentSectionView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
-import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
-import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
-import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
+import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
 import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -41,7 +39,6 @@ const ModerateFezPostScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const {setSnackbarPayload} = useSnackbar();
-  const {theme} = useAppTheme();
   const {data, refetch, isLoading} = useFezPostModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(FezPostModerationData.getCacheKeys(id));
@@ -90,25 +87,16 @@ const ModerateFezPostScreenInner = ({route}: Props) => {
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ListSection>
-          <ListSubheader>Content</ListSubheader>
-        </ListSection>
-        <PaddedContentView>
-          <ModerationEditListItem
-            author={data.fezPost.author}
-            timestamp={data.fezPost.timestamp}
-            text={data.fezPost.text}
-            images={data.fezPost.image ? [data.fezPost.image] : undefined}
-          />
-        </PaddedContentView>
-        <PaddedContentView>
-          <PrimaryActionButton
-            testID={'fezPostModerateView-button'}
-            buttonText={'View in Context'}
-            buttonColor={theme.colors.twitarrNeutralButton}
-            onPress={onViewInContext}
-          />
-        </PaddedContentView>
+        <ModerationContentSectionView testIDPrefix={'fezPostModerate'} onViewInContext={onViewInContext}>
+          <PaddedContentView>
+            <ModerationEditListItem
+              author={data.fezPost.author}
+              timestamp={data.fezPost.timestamp}
+              text={data.fezPost.text}
+              images={data.fezPost.image ? [data.fezPost.image] : undefined}
+            />
+          </PaddedContentView>
+        </ModerationContentSectionView>
         <ListSection>
           <ListSubheader>Visibility</ListSubheader>
         </ListSection>
@@ -126,14 +114,7 @@ const ModerateFezPostScreenInner = ({route}: Props) => {
             />
           </PaddedContentView>
         )}
-        <ListSection>
-          <ListSubheader>Reports</ListSubheader>
-        </ListSection>
-        {data.reports.length === 0 ? (
-          <ModerationNoReportsView />
-        ) : (
-          data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
-        )}
+        <ModerationContentReportsSectionView reports={data.reports} />
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}

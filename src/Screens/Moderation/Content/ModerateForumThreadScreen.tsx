@@ -1,29 +1,21 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useCallback, useEffect, useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Text} from 'react-native-paper';
+import React, {useCallback, useEffect} from 'react';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {ModeratorContentSegmentedButtons} from '#src/Components/Buttons/SegmentedButtons/ModeratorContentSegmentedButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {ModerateForumThreadListItem} from '#src/Components/Lists/Items/Moderation/ModerateForumThreadListItem';
 import {AppView} from '#src/Components/Views/AppView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {ModerationEditList} from '#src/Components/Views/Moderation/ModerationEditList';
-import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
-import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
-import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
-import {ModeratorForumCategoryView} from '#src/Components/Views/Moderation/ModeratorForumCategoryView';
-import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
+import {ModerationContentHistorySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentHistorySectionView';
+import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
+import {ModerationContentSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentSectionView';
+import {ModerationContentVisibilitySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentVisibilitySectionView';
+import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
+import {ModeratorForumThreadChangeCategoryButtonView} from '#src/Components/Views/Moderation/ModeratorForumThreadChangeCategoryButtonView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -47,8 +39,6 @@ const ModerateForumThreadScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const {setSnackbarPayload} = useSnackbar();
-  const {commonStyles} = useStyles();
-  const {theme} = useAppTheme();
   const {data, refetch, isLoading} = useForumModerationQuery(id);
   const {data: categories} = useForumCategoriesQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
@@ -67,17 +57,6 @@ const ModerateForumThreadScreenInner = ({route}: Props) => {
       headerRight: getNavButtons,
     });
   }, [getNavButtons, navigation]);
-
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        editDelete: {
-          ...commonStyles.paddingHorizontalSmall,
-          ...commonStyles.paddingBottomSmall,
-        },
-      }),
-    [commonStyles],
-  );
 
   /**
    * Renders one previous forum title as a compact content row.
@@ -106,6 +85,16 @@ const ModerateForumThreadScreenInner = ({route}: Props) => {
     });
   };
 
+  const onEdit = () => {
+    navigation.push(CommonStackComponents.forumThreadEditScreen, {
+      forumData: forumDataFromModeration(data),
+    });
+  };
+
+  const onViewInContext = () => {
+    navigation.push(CommonStackComponents.forumThreadScreen, {forumID: data.forumID});
+  };
+
   return (
     <AppView>
       <ModerationDeletedWarningView contentLabel={'forum'} visible={data.isDeleted} />
@@ -113,50 +102,26 @@ const ModerateForumThreadScreenInner = ({route}: Props) => {
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ListSection>
-          <ListSubheader>Content</ListSubheader>
-        </ListSection>
-        <PaddedContentView>
-          <ModerationEditListItem author={data.creator} timestamp={data.createdAt} text={data.title} />
-          <Text>Category: {currentCategory?.title ?? data.categoryID}</Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <PrimaryActionButton
-            testID={'forumModerateView-button'}
-            buttonText={'View Thread'}
-            buttonColor={theme.colors.twitarrNeutralButton}
-            disabled={data.isDeleted}
-            onPress={() => navigation.push(CommonStackComponents.forumThreadScreen, {forumID: data.forumID})}
+        <ModerationContentSectionView
+          testIDPrefix={'forumModerate'}
+          onViewInContext={onViewInContext}
+          disabled={data.isDeleted}>
+          <ModerateForumThreadListItem data={data} categoryTitle={currentCategory?.title} />
+        </ModerationContentSectionView>
+        <ModerationContentVisibilitySectionView
+          data={data}
+          testIDPrefix={'forumModerate'}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          isDeleting={deleteMutation.isPending}>
+          <ModeratorForumThreadChangeCategoryButtonView
+            forumID={id}
+            currentCategoryID={data.categoryID}
+            isDeleted={data.isDeleted}
           />
-        </PaddedContentView>
-        <ListSection>
-          <ListSubheader>Visibility</ListSubheader>
-        </ListSection>
-        <ModeratorStateView data={data} />
-        {!data.isDeleted && (
-          <View style={styles.editDelete}>
-            <ModeratorContentSegmentedButtons
-              testIDPrefix={'forumModerate'}
-              onEdit={() =>
-                navigation.push(CommonStackComponents.forumThreadEditScreen, {
-                  forumData: forumDataFromModeration(data),
-                })
-              }
-              onDelete={onDelete}
-              isDeleting={deleteMutation.isPending}
-            />
-          </View>
-        )}
-        <ModeratorForumCategoryView forumID={id} currentCategoryID={data.categoryID} isDeleted={data.isDeleted} />
-        <ModerationEditList header={'Title History'} edits={data.edits} renderEdit={renderEdit} />
-        <ListSection>
-          <ListSubheader>Reports</ListSubheader>
-        </ListSection>
-        {data.reports.length === 0 ? (
-          <ModerationNoReportsView />
-        ) : (
-          data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
-        )}
+        </ModerationContentVisibilitySectionView>
+        <ModerationContentHistorySectionView header={'Title History'} edits={data.edits} renderEdit={renderEdit} />
+        <ModerationContentReportsSectionView reports={data.reports} />
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}

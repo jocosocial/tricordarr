@@ -1,4 +1,5 @@
 import React from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -9,7 +10,7 @@ interface ModerationEdit {
   editID: string;
 }
 
-interface ModerationEditListProps<T extends ModerationEdit> {
+interface ModerationContentHistorySectionViewProps<T extends ModerationEdit> {
   edits: T[];
   renderEdit: (edit: T) => React.ReactNode;
   header?: string;
@@ -19,14 +20,14 @@ interface ModerationEditListProps<T extends ModerationEdit> {
 /**
  * Edit-history section on a content moderate screen. Renders a header, an empty message, or one row per edit.
  */
-const ModerationEditListInternal = <T extends ModerationEdit>({
+const ModerationContentHistorySectionViewInternal = <T extends ModerationEdit>({
   edits,
   renderEdit,
   header = 'Edit History',
   emptyText = 'No previous edits.',
-}: ModerationEditListProps<T>) => {
+}: ModerationContentHistorySectionViewProps<T>) => {
   return (
-    <>
+    <View>
       <ListSection>
         <ListSubheader>{header}</ListSubheader>
       </ListSection>
@@ -41,8 +42,10 @@ const ModerationEditListInternal = <T extends ModerationEdit>({
           </PaddedContentView>
         ))
       )}
-    </>
+    </View>
   );
 };
 
-export const ModerationEditList = React.memo(ModerationEditListInternal) as typeof ModerationEditListInternal;
+export const ModerationContentHistorySectionView = React.memo(
+  ModerationContentHistorySectionViewInternal,
+) as typeof ModerationContentHistorySectionViewInternal;

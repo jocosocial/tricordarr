@@ -4,25 +4,19 @@ import {StyleSheet, View} from 'react-native';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {ModeratorContentSegmentedButtons} from '#src/Components/Buttons/SegmentedButtons/ModeratorContentSegmentedButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostListItem';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {ModerationEditList} from '#src/Components/Views/Moderation/ModerationEditList';
-import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
-import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
-import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
-import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
+import {ModerationContentHistorySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentHistorySectionView';
+import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
+import {ModerationContentSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentSectionView';
+import {ModerationContentVisibilitySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentVisibilitySectionView';
+import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
@@ -47,7 +41,6 @@ const ModerateForumPostScreenInner = ({route}: Props) => {
   const navigation = useCommonStack();
   const {setSnackbarPayload} = useSnackbar();
   const {commonStyles} = useStyles();
-  const {theme} = useAppTheme();
   const {data, refetch, isLoading} = useForumPostModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(ForumPostModerationData.getCacheKeys(id));
@@ -75,10 +68,6 @@ const ModerateForumPostScreenInner = ({route}: Props) => {
           ...commonStyles.paddingTopSmall,
           ...commonStyles.paddingBottomSmall,
         },
-        editDelete: {
-          ...commonStyles.paddingHorizontalSmall,
-          ...commonStyles.paddingBottomSmall,
-        },
       }),
     [commonStyles],
   );
@@ -96,6 +85,8 @@ const ModerateForumPostScreenInner = ({route}: Props) => {
     return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
   }
 
+  const postData = postDataFromDetail(data.forumPost);
+
   const onDelete = () => {
     alertDeleteModeratedContent('forum post', () => {
       deleteMutation.mutate(
@@ -111,7 +102,13 @@ const ModerateForumPostScreenInner = ({route}: Props) => {
     });
   };
 
-  const postData = postDataFromDetail(data.forumPost);
+  const onEdit = () => {
+    navigation.push(CommonStackComponents.forumPostEditScreen, {
+      postData,
+      forumID: data.forumPost.forumID,
+      intent: 'moderate',
+    });
+  };
 
   /**
    * Pass forumID so the thread screen uses /forum/{forumID}?startPost=
@@ -131,49 +128,20 @@ const ModerateForumPostScreenInner = ({route}: Props) => {
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ListSection>
-          <ListSubheader>Content</ListSubheader>
-        </ListSection>
-        <View style={styles.post}>
-          <ForumPostListItem postData={postData} enableShowInThread={!data.isDeleted} />
-        </View>
-        <PaddedContentView>
-          <PrimaryActionButton
-            testID={'forumPostModerateView-button'}
-            buttonText={'View in Context'}
-            buttonColor={theme.colors.twitarrNeutralButton}
-            onPress={onViewInContext}
-          />
-        </PaddedContentView>
-        <ListSection>
-          <ListSubheader>Visibility</ListSubheader>
-        </ListSection>
-        <ModeratorStateView data={data} />
-        {!data.isDeleted && (
-          <View style={styles.editDelete}>
-            <ModeratorContentSegmentedButtons
-              testIDPrefix={'forumPostModerate'}
-              onEdit={() =>
-                navigation.push(CommonStackComponents.forumPostEditScreen, {
-                  postData,
-                  forumID: data.forumPost.forumID,
-                  intent: 'moderate',
-                })
-              }
-              onDelete={onDelete}
-              isDeleting={deleteMutation.isPending}
-            />
+        <ModerationContentSectionView testIDPrefix={'forumPostModerate'} onViewInContext={onViewInContext}>
+          <View style={styles.post}>
+            <ForumPostListItem postData={postData} enableShowInThread={!data.isDeleted} />
           </View>
-        )}
-        <ModerationEditList edits={data.edits} renderEdit={renderEdit} />
-        <ListSection>
-          <ListSubheader>Reports</ListSubheader>
-        </ListSection>
-        {data.reports.length === 0 ? (
-          <ModerationNoReportsView />
-        ) : (
-          data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
-        )}
+        </ModerationContentSectionView>
+        <ModerationContentVisibilitySectionView
+          data={data}
+          testIDPrefix={'forumPostModerate'}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          isDeleting={deleteMutation.isPending}
+        />
+        <ModerationContentHistorySectionView edits={data.edits} renderEdit={renderEdit} />
+        <ModerationContentReportsSectionView reports={data.reports} />
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}

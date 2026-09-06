@@ -53,11 +53,11 @@ export const ModeratorHelpScreen = () => {
           profile.
         </HelpTopicView>
         <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
-          Edit the content. Hidden if the item has already been deleted. Some types, such as fez posts and photostream
+          Edit the content. Disabled if the item has already been deleted. Some types, such as fez posts and photostream
           photos, cannot be edited.
         </HelpTopicView>
         <HelpTopicView title={'Delete'} icon={AppIcons.delete}>
-          Permanently delete the content. There is no recovery. Hidden if the item has already been deleted. User
+          Permanently delete the content. There is no recovery. Disabled if the item has already been deleted. User
           profiles cannot be deleted.
         </HelpTopicView>
         <HelpChapterTitleView title={'Posting'} />

@@ -12,7 +12,7 @@ import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {useForumSetCategoryMutation} from '#src/Queries/Moderation/ModerationMutations';
 import {ForumModerationData, ModeratorActionLogResponseData} from '#src/Structs/ControllerStructs';
 
-interface ModeratorForumCategoryViewProps {
+interface ModeratorForumThreadChangeCategoryButtonViewProps {
   forumID: string;
   currentCategoryID: string;
   isDeleted: boolean;
@@ -21,11 +21,11 @@ interface ModeratorForumCategoryViewProps {
 /**
  * Change-category menu for a forum thread on the moderate screen.
  */
-export const ModeratorForumCategoryView = ({
+export const ModeratorForumThreadChangeCategoryButtonView = ({
   forumID,
   currentCategoryID,
   isDeleted,
-}: ModeratorForumCategoryViewProps) => {
+}: ModeratorForumThreadChangeCategoryButtonViewProps) => {
   const queryClient = useQueryClient();
   const {setSnackbarPayload} = useSnackbar();
   const {theme} = useAppTheme();

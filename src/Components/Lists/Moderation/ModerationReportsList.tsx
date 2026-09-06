@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {ModerationReportGroupListItem} from '#src/Components/Views/Moderation/ModerationReportGroupListItem';
+import {ModerationReportGroupListItem} from '#src/Components/Lists/Items/Moderation/ModerationReportGroupListItem';
 import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {ReportContentGroup} from '#src/Libraries/Moderation/ReportContentGroup';
 

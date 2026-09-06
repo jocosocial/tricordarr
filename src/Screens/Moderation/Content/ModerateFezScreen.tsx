@@ -1,28 +1,21 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useCallback, useEffect, useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {ModeratorContentSegmentedButtons} from '#src/Components/Buttons/SegmentedButtons/ModeratorContentSegmentedButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {ModerationEditList} from '#src/Components/Views/Moderation/ModerationEditList';
-import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
-import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
-import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
-import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
+import {ModerationContentHistorySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentHistorySectionView';
+import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
+import {ModerationContentSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentSectionView';
+import {ModerationContentVisibilitySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentVisibilitySectionView';
+import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -45,8 +38,6 @@ const ModerateFezScreenInner = ({route}: Props) => {
   const {id} = route.params;
   const navigation = useCommonStack();
   const {setSnackbarPayload} = useSnackbar();
-  const {commonStyles} = useStyles();
-  const {theme} = useAppTheme();
   const {data, refetch, isLoading} = useFezModerationQuery(id);
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(FezModerationData.getCacheKeys(id));
@@ -63,17 +54,6 @@ const ModerateFezScreenInner = ({route}: Props) => {
       headerRight: getNavButtons,
     });
   }, [getNavButtons, navigation]);
-
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        editDelete: {
-          ...commonStyles.paddingHorizontalSmall,
-          ...commonStyles.paddingBottomSmall,
-        },
-      }),
-    [commonStyles],
-  );
 
   /**
    * Renders one previous fez title/info/location edit as a compact content row.
@@ -110,20 +90,20 @@ const ModerateFezScreenInner = ({route}: Props) => {
     });
   };
 
-  const onView = () => {
-    if (isLfg) {
-      navigation.push(CommonStackComponents.lfgScreen, {fezID: fez.fezID});
-      return;
-    }
-    navigation.push(FezType.getChatScreen(fez.fezType), {fezID: fez.fezID});
-  };
-
   const onEdit = () => {
     if (isLfg) {
       navigation.push(CommonStackComponents.lfgEditScreen, {fez});
       return;
     }
     navigation.push(CommonStackComponents.seamailEditScreen, {fezID: fez.fezID});
+  };
+
+  const onViewInContext = () => {
+    if (isLfg) {
+      navigation.push(CommonStackComponents.lfgScreen, {fezID: fez.fezID});
+      return;
+    }
+    navigation.push(FezType.getChatScreen(fez.fezType), {fezID: fez.fezID});
   };
 
   return (
@@ -133,48 +113,25 @@ const ModerateFezScreenInner = ({route}: Props) => {
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ListSection>
-          <ListSubheader>Content</ListSubheader>
-        </ListSection>
-        <PaddedContentView>
-          <ModerationEditListItem
-            author={fez.owner}
-            timestamp={fez.lastModificationTime}
-            text={[fez.title, fez.info, fez.location].filter(Boolean).join('\n')}
-          />
-          <Text>{FezType.getLabel(fez.fezType)}</Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <PrimaryActionButton
-            testID={'fezModerateView-button'}
-            buttonText={isLfg ? 'View LFG' : 'View Chat'}
-            buttonColor={theme.colors.twitarrNeutralButton}
-            onPress={onView}
-          />
-        </PaddedContentView>
-        <ListSection>
-          <ListSubheader>Visibility</ListSubheader>
-        </ListSection>
-        <ModeratorStateView data={data} />
-        {!data.isDeleted && (
-          <View style={styles.editDelete}>
-            <ModeratorContentSegmentedButtons
-              testIDPrefix={'fezModerate'}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              isDeleting={deleteMutation.isPending}
+        <ModerationContentSectionView testIDPrefix={'fezModerate'} onViewInContext={onViewInContext}>
+          <PaddedContentView>
+            <ModerationEditListItem
+              author={fez.owner}
+              timestamp={fez.lastModificationTime}
+              text={[fez.title, fez.info, fez.location].filter(Boolean).join('\n')}
             />
-          </View>
-        )}
-        <ModerationEditList edits={data.edits} renderEdit={renderEdit} />
-        <ListSection>
-          <ListSubheader>Reports</ListSubheader>
-        </ListSection>
-        {data.reports.length === 0 ? (
-          <ModerationNoReportsView />
-        ) : (
-          data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
-        )}
+            <Text>{FezType.getLabel(fez.fezType)}</Text>
+          </PaddedContentView>
+        </ModerationContentSectionView>
+        <ModerationContentVisibilitySectionView
+          data={data}
+          testIDPrefix={'fezModerate'}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          isDeleting={deleteMutation.isPending}
+        />
+        <ModerationContentHistorySectionView edits={data.edits} renderEdit={renderEdit} />
+        <ModerationContentReportsSectionView reports={data.reports} />
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}

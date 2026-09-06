@@ -9,6 +9,7 @@ interface ModeratorContentSegmentedButtonsProps {
   onDelete: () => void;
   testIDPrefix: string;
   isDeleting?: boolean;
+  disabled?: boolean;
 }
 
 /**
@@ -19,19 +20,21 @@ export const ModeratorContentSegmentedButtons = ({
   onDelete,
   testIDPrefix,
   isDeleting,
+  disabled,
 }: ModeratorContentSegmentedButtonsProps) => {
   const buttons: SegmentedButtonType[] = [
     {
       value: 'edit',
       label: 'Edit',
       icon: AppIcons.edit,
+      disabled,
       testID: `${testIDPrefix}Edit-button`,
     },
     {
       value: 'delete',
       label: 'Delete',
       icon: AppIcons.delete,
-      disabled: isDeleting,
+      disabled: disabled || isDeleting,
       testID: `${testIDPrefix}Delete-button`,
     },
   ];

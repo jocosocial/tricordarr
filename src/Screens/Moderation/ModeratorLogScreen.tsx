@@ -7,7 +7,7 @@ import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {ModerationLogListItem} from '#src/Components/Views/Moderation/ModerationLogListItem';
+import {ModerationLogListItem} from '#src/Components/Lists/Items/Moderation/ModerationLogListItem';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ReportType} from '#src/Enums/ReportType';

@@ -12,10 +12,9 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
-import {ModerationEditListItem} from '#src/Components/Views/Moderation/ModerationEditListItem';
-import {ModerationNoReportsView} from '#src/Components/Views/Moderation/ModerationNoReportsView';
-import {ModerationReportListItem} from '#src/Components/Views/Moderation/ModerationReportListItem';
+import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
@@ -116,14 +115,7 @@ const ModeratePhotostreamScreenInner = ({route}: Props) => {
             />
           </PaddedContentView>
         )}
-        <ListSection>
-          <ListSubheader>Reports</ListSubheader>
-        </ListSection>
-        {data.reports.length === 0 ? (
-          <ModerationNoReportsView />
-        ) : (
-          data.reports.map(report => <ModerationReportListItem key={report.id} report={report} />)
-        )}
+        <ModerationContentReportsSectionView reports={data.reports} />
       </ScrollingContentView>
       <ModeratorReportFAB
         reports={data.reports}
