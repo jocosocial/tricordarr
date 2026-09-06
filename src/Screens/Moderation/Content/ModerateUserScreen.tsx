@@ -6,6 +6,7 @@ import {Button, Menu, Text, TextInput} from 'react-native-paper';
 
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
+import {ModerationReportGroupListItem} from '#src/Components/Lists/Items/Moderation/ModerationReportGroupListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
@@ -13,7 +14,6 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
-import {ModerationReportGroupListItem} from '#src/Components/Lists/Items/Moderation/ModerationReportGroupListItem';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';

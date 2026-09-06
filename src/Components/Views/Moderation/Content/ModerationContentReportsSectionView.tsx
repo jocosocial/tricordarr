@@ -1,10 +1,10 @@
 import React from 'react';
 import {View} from 'react-native';
 
+import {ModerationReportListItem} from '#src/Components/Lists/Items/Moderation/ModerationReportListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {ModerationContentNoReportsView} from '#src/Components/Views/Moderation/Content/ModerationContentNoReportsView';
-import {ModerationReportListItem} from '#src/Components/Lists/Items/Moderation/ModerationReportListItem';
 import {ReportModerationData} from '#src/Structs/ControllerStructs';
 
 interface ModerationContentReportsSectionViewProps {
