@@ -7,6 +7,7 @@ import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -25,6 +26,7 @@ export const ModeratorStateView = ({data}: ModeratorStateViewProps) => {
   const context = useMemo(() => ModerationStateContext.fromData(data), [data]);
   const actions = useModerationContentActions(context.cacheKeys);
   const {updateThreadVisibility} = useForumCacheReducer();
+  const {updateFezVisibility} = useFezCacheReducer();
 
   return (
     <View>
@@ -57,6 +59,16 @@ export const ModeratorStateView = ({data}: ModeratorStateViewProps) => {
                 actions.setState(context.path, context.contentID, state, () => {
                   if ('forumID' in data && !('forumPost' in data)) {
                     updateThreadVisibility(data.forumID, data.categoryID, state, data.title);
+                  }
+                  if ('fez' in data) {
+                    updateFezVisibility(
+                      data.fez.fezID,
+                      data.fez.fezType,
+                      state,
+                      data.fez.title,
+                      data.fez.info,
+                      data.fez.location,
+                    );
                   }
                 });
               }}

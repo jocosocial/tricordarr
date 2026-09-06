@@ -17,13 +17,20 @@ jest.mock('@react-navigation/stack', () => ({
 }));
 
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
+import {FezType} from '#src/Enums/FezType';
+import {ModeratorActionType} from '#src/Enums/ModeratorActionType';
 import {ReportType} from '#src/Enums/ReportType';
-import {FORUM_QUARANTINED_TITLE, forumDataFromModeration, publicForumTitle} from '#src/Libraries/Moderation/Content';
+import {
+  FORUM_QUARANTINED_TITLE,
+  forumDataFromModeration,
+  publicFezField,
+  publicForumTitle,
+} from '#src/Libraries/Moderation/Content';
 import {isClosedReportsParam} from '#src/Libraries/Moderation/ModerationStateContext';
 import {ReportContentGroup} from '#src/Libraries/Moderation/ReportContentGroup';
 import {parseDeepLinkUrl} from '#src/Libraries/RouteDefinitions';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {ForumModerationData, ReportModerationData, UserHeader} from '#src/Structs/ControllerStructs';
+import {FezModerationData, ForumModerationData, ReportModerationData, UserHeader} from '#src/Structs/ControllerStructs';
 
 const author: UserHeader = {
   userID: 'author-1',
@@ -138,7 +145,8 @@ describe('ContentModerationStatus.getApiParameter', () => {
 describe('ReportType.getLabel', () => {
   it('returns short labels used in lists', () => {
     expect(ReportType.getLabel(ReportType.forumPost)).toBe('forum post');
-    expect(ReportType.getLabel(ReportType.fez)).toBe('LFG');
+    expect(ReportType.getLabel(ReportType.fez)).toBe('LFG/private event');
+    expect(ReportType.getLabel(ReportType.fezPost)).toBe('LFG/seamail/private event post');
     expect(ReportType.getLabel(ReportType.streamPhoto)).toBe('photostream photo');
   });
 });
@@ -170,6 +178,57 @@ describe('publicForumTitle', () => {
     expect(publicForumTitle('Actual title', ContentModerationStatus.normal)).toBe('Actual title');
     expect(publicForumTitle('Actual title', ContentModerationStatus.modReviewed)).toBe('Actual title');
     expect(publicForumTitle('Actual title', ContentModerationStatus.locked)).toBe('Actual title');
+  });
+});
+
+describe('FezModerationData.getCacheKeys', () => {
+  it('includes list prefixes plus mod and public fez detail keys', () => {
+    expect(FezModerationData.getCacheKeys('fez-1')).toEqual(
+      expect.arrayContaining([
+        ['/fez/joined'],
+        ['/fez/owner'],
+        ['/fez/open'],
+        ['/fez/former'],
+        ['/mod/fez/fez-1'],
+        ['/fez/fez-1'],
+      ]),
+    );
+  });
+});
+
+describe('publicFezField', () => {
+  it('returns the type-specific placeholder when content is hidden', () => {
+    expect(publicFezField('Actual title', ContentModerationStatus.quarantined, FezType.activity)).toBe(
+      'LFG is under moderator review',
+    );
+    expect(publicFezField('Actual title', ContentModerationStatus.autoQuarantined, FezType.open)).toBe(
+      'Seamail is under moderator review',
+    );
+    expect(publicFezField('Deck 3', ContentModerationStatus.quarantined, FezType.privateEvent)).toBe(
+      'Private Event is under moderator review',
+    );
+  });
+
+  it('returns the real value when content is visible', () => {
+    expect(publicFezField('Actual title', ContentModerationStatus.normal, FezType.activity)).toBe('Actual title');
+    expect(publicFezField('Actual info', ContentModerationStatus.modReviewed, FezType.open)).toBe('Actual info');
+    expect(publicFezField(undefined, ContentModerationStatus.locked, FezType.privateEvent)).toBeUndefined();
+  });
+});
+
+describe('ModeratorActionType.isAccountAction', () => {
+  it('is true for access-level and temp-quarantine actions', () => {
+    expect(ModeratorActionType.isAccountAction(ModeratorActionType.accessLevelBanned)).toBe(true);
+    expect(ModeratorActionType.isAccountAction(ModeratorActionType.accessLevelVerified)).toBe(true);
+    expect(ModeratorActionType.isAccountAction(ModeratorActionType.tempQuarantine)).toBe(true);
+    expect(ModeratorActionType.isAccountAction(ModeratorActionType.tempQuarantineCleared)).toBe(true);
+  });
+
+  it('is false for profile-content actions', () => {
+    expect(ModeratorActionType.isAccountAction(ModeratorActionType.quarantine)).toBe(false);
+    expect(ModeratorActionType.isAccountAction(ModeratorActionType.lock)).toBe(false);
+    expect(ModeratorActionType.isAccountAction(ModeratorActionType.edit)).toBe(false);
+    expect(ModeratorActionType.isAccountAction(undefined)).toBe(false);
   });
 });
 

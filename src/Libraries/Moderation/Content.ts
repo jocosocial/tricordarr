@@ -1,4 +1,5 @@
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
+import {FezType} from '#src/Enums/FezType';
 import {
   ForumData,
   ForumModerationData,
@@ -35,6 +36,21 @@ export const FORUM_QUARANTINED_TITLE = 'Forum Title is under moderator review';
  */
 export const publicForumTitle = (realTitle: string, status: ContentModerationStatus): string => {
   return ContentModerationStatus.showsContent(status) ? realTitle : FORUM_QUARANTINED_TITLE;
+};
+
+/**
+ * Public title, info, or location Swiftarr returns for a quarantined fez.
+ * Matches FezType.lfgLabel: "LFG is under moderator review", etc.
+ */
+export const publicFezField = (
+  realValue: string | undefined,
+  status: ContentModerationStatus,
+  fezType: FezType,
+): string | undefined => {
+  if (ContentModerationStatus.showsContent(status)) {
+    return realValue;
+  }
+  return `${FezType.getChatTypeString(fezType)} is under moderator review`;
 };
 
 /**

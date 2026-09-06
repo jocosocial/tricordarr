@@ -24,27 +24,27 @@ export namespace ReportType {
   export const getLabel = (type?: ReportType): string => {
     switch (type) {
       case ReportType.forum:
-        return 'forum';
+        return 'Forum Thread';
       case ReportType.forumPost:
-        return 'forum post';
+        return 'Forum Post';
       case ReportType.twarrt:
         return 'twarrt';
       case ReportType.userProfile:
-        return 'profile';
+        return 'User Profile';
       case ReportType.fez:
-        return 'LFG';
+        return 'LFG/Private Event';
       case ReportType.fezPost:
-        return 'LFG/Seamail post';
+        return 'Chat Message';
       case ReportType.mkSong:
-        return 'Micro Karaoke song';
+        return 'Micro Karaoke Song';
       case ReportType.mkSongSnippet:
-        return 'Micro Karaoke snippet';
+        return 'Micro Karaoke Snippet';
       case ReportType.streamPhoto:
-        return 'photostream photo';
+        return 'Photostream Photo';
       case ReportType.personalEvent:
-        return 'personal event';
+        return 'Personal Event';
       case ReportType.quartermasterItem:
-        return 'quartermaster item';
+        return 'Quartermaster Item';
       default:
         return type ?? 'content';
     }

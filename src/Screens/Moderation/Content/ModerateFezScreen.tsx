@@ -138,7 +138,7 @@ const ModerateFezScreenInner = ({route}: Props) => {
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ModerationContentSectionView testIDPrefix={'fezModerate'} onViewInContext={onViewInContext}>
           <PaddedContentView padTop={true}>
-            <FezCard fez={fez} showDay={true} showIcon={true} disabled={true} />
+            <FezCard fez={fez} showDay={true} showIcon={true} disabled={true} showDescription={true} />
           </PaddedContentView>
         </ModerationContentSectionView>
         <ModerationContentVisibilitySectionView

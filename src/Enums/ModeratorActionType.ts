@@ -72,4 +72,25 @@ export namespace ModeratorActionType {
         return action ?? 'Unknown';
     }
   };
+
+  /**
+   * True when the action is against the account (access level / temp quarantine),
+   * not the profile fields. Those log rows still use ReportType.userProfile.
+   */
+  export const isAccountAction = (action?: ModeratorActionType): boolean => {
+    switch (action) {
+      case ModeratorActionType.accessLevelUnverified:
+      case ModeratorActionType.accessLevelBanned:
+      case ModeratorActionType.accessLevelQuarantined:
+      case ModeratorActionType.accessLevelVerified:
+      case ModeratorActionType.accessLevelModerator:
+      case ModeratorActionType.accessLevelTwitarrTeam:
+      case ModeratorActionType.accessLevelTHO:
+      case ModeratorActionType.tempQuarantine:
+      case ModeratorActionType.tempQuarantineCleared:
+        return true;
+      default:
+        return false;
+    }
+  };
 }

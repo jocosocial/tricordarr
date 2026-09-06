@@ -5,6 +5,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {FezType} from '#src/Enums/FezType';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {
@@ -18,6 +19,7 @@ import {
   updateItemsInPages,
 } from '#src/Libraries/CacheReduction';
 import {calcCruiseDayTime, swiftTimestampToISO} from '#src/Libraries/DateTime';
+import {publicFezField} from '#src/Libraries/Moderation/Content';
 import {applyAppendedPostCounts, applyMarkReadCounts, postReadCountsUnchanged} from '#src/Libraries/UnreadCounts';
 import {
   FezData,
@@ -501,6 +503,30 @@ export const useFezCacheReducer = () => {
   );
 
   /**
+   * After Set State on a fez, patch public list and detail caches with the
+   * visible title/info/location (quarantine placeholder vs real). Does not
+   * touch `/mod/fez/{id}`, which keeps the unmasked fields.
+   */
+  const updateFezVisibility = useCallback(
+    (
+      fezID: string,
+      fezType: FezType,
+      status: ContentModerationStatus,
+      realTitle: string,
+      realInfo: string,
+      realLocation: string | undefined,
+    ) => {
+      const title = publicFezField(realTitle, status, fezType) ?? realTitle;
+      const info = publicFezField(realInfo, status, fezType) ?? realInfo;
+      const location = publicFezField(realLocation, status, fezType);
+      const updater = (fez: FezData): FezData => ({...fez, title, info, location});
+      updateFezInAllListCaches(fezID, updater);
+      updateFezDetailCache(fezID, updater);
+    },
+    [updateFezInAllListCaches, updateFezDetailCache],
+  );
+
+  /**
    * Remove a fez from all caches after deletion.
    */
   const deleteFez = useCallback(
@@ -715,6 +741,7 @@ export const useFezCacheReducer = () => {
     markRead,
     updateFez,
     updateFezModeration,
+    updateFezVisibility,
     updateMembership,
     updateMute,
   };

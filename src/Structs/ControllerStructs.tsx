@@ -1751,6 +1751,7 @@ export namespace ForumModerationData {
  * Returned by `GET /api/v3/mod/fez/:id`
  */
 export interface FezModerationData {
+  /// The fez in question, with quarantine masking overridden so moderators see the real text.
   fez: FezData;
   isDeleted: boolean;
   moderationStatus: ContentModerationStatus;
@@ -1759,8 +1760,18 @@ export interface FezModerationData {
 }
 
 export namespace FezModerationData {
+  /**
+   * Query keys to invalidate after a fez moderation mutation.
+   * Includes the four fez list endpoints used by LFG, seamail, and
+   * private-event screens, matching `useFezCacheReducer` prefixes.
+   */
   export const getCacheKeys = (fezID?: string): QueryKey[] => {
-    const keys = ReportModerationData.getCacheKeys();
+    const keys = ReportModerationData.getCacheKeys().concat([
+      ['/fez/joined'],
+      ['/fez/owner'],
+      ['/fez/open'],
+      ['/fez/former'],
+    ]);
     if (fezID) {
       keys.push([`/mod/fez/${fezID}`]);
       keys.push([`/fez/${fezID}`]);

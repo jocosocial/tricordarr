@@ -7,18 +7,18 @@ import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ModeratorActionType} from '#src/Enums/ModeratorActionType';
 import {ReportType} from '#src/Enums/ReportType';
+import {pushModerateScreen} from '#src/Libraries/ModerationNavigation';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ModeratorActionLogData} from '#src/Structs/ControllerStructs';
 
 interface ModerationLogListItemProps {
   action: ModeratorActionLogData;
-  onPress: () => void;
 }
 
 /**
  * One logged moderator action: who acted, what they did, and who it targeted.
  */
-export const ModerationLogListItem = ({action, onPress}: ModerationLogListItemProps) => {
+export const ModerationLogListItem = ({action}: ModerationLogListItemProps) => {
   const navigation = useCommonStack();
   const {commonStyles} = useStyles();
   const styles = useMemo(
@@ -66,6 +66,14 @@ export const ModerationLogListItem = ({action, onPress}: ModerationLogListItemPr
   const onPressTarget = useCallback(() => {
     navigation.push(CommonStackComponents.userProfileScreen, {userID: action.targetUser.userID});
   }, [action.targetUser.userID, navigation]);
+
+  const onPress = useCallback(() => {
+    if (action.contentType === ReportType.userProfile && ModeratorActionType.isAccountAction(action.actionType)) {
+      navigation.push(CommonStackComponents.moderateUserScreen, {id: action.contentID});
+      return;
+    }
+    pushModerateScreen(navigation, action.contentType, action.contentID);
+  }, [action.actionType, action.contentID, action.contentType, navigation]);
 
   return (
     <TouchableRipple onPress={onPress}>
