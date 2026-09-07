@@ -73,6 +73,11 @@ export const ModeratorHelpScreen = () => {
           Edit the content. Disabled if the item has already been deleted, or for types that cannot be edited such as
           fez posts and photostream photos.
         </HelpTopicView>
+        <HelpTopicView title={'Edit Username'} icon={AppIcons.edituser}>
+          On Moderate Profile, a Visibility extra that changes the user's login name, not their display name. All of
+          their posts update to the new name. They cannot log in until they know the new username; seamail will not
+          reach them because they cannot read it.
+        </HelpTopicView>
         <HelpTopicView title={'Delete'} icon={AppIcons.delete}>
           Permanently delete the content. There is no recovery. Disabled if the item has already been deleted. User
           profiles cannot be deleted.
@@ -97,8 +102,8 @@ export const ModeratorHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Privileged Actions'} />
         <HelpTopicView>
-          Moderators can quarantine or restore users and apply a temporary quarantine. THO can also ban or unverify.
-          Every action is written to the Moderator Log.
+          Moderators can quarantine or restore users, apply a temporary quarantine, and change a user's login name from
+          Moderate Profile. THO can also ban or unverify. Every action is written to the Moderator Log.
         </HelpTopicView>
       </ScrollingContentView>
     </AppView>

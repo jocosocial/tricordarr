@@ -108,6 +108,7 @@ import {PrivacyScreen} from '#src/Screens/Main/PrivacyScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
 import {TodayHelpScreen} from '#src/Screens/Main/TodayHelpScreen';
 import {MicroKaraokeHelpScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeHelpScreen';
+import {ModerateChangeUsernameScreen} from '#src/Screens/Moderation/Content/ModerateChangeUsernameScreen';
 import {ModerateFezPostScreen} from '#src/Screens/Moderation/Content/ModerateFezPostScreen';
 import {ModerateFezScreen} from '#src/Screens/Moderation/Content/ModerateFezScreen';
 import {ModerateForumPostScreen} from '#src/Screens/Moderation/Content/ModerateForumPostScreen';
@@ -298,6 +299,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.moderateProfileScreen}
         component={ModerateProfileScreen}
         options={{title: 'Moderate Profile'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateChangeUsernameScreen}
+        component={ModerateChangeUsernameScreen}
+        options={{title: 'Edit Username'}}
       />
       <Stack.Screen
         name={CommonStackComponents.moderateUserScreen}

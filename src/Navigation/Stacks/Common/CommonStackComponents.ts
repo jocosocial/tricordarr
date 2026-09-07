@@ -88,6 +88,10 @@ export type CommonStackParamList = {
   ModerateProfileScreen: {
     id: string;
   };
+  ModerateChangeUsernameScreen: {
+    userID: string;
+    username: string;
+  };
   ModerateUserScreen: {
     id: string;
   };
@@ -430,6 +434,7 @@ export enum CommonStackComponents {
   moderateFezScreen = 'ModerateFezScreen',
   moderateFezPostScreen = 'ModerateFezPostScreen',
   moderateProfileScreen = 'ModerateProfileScreen',
+  moderateChangeUsernameScreen = 'ModerateChangeUsernameScreen',
   moderateUserScreen = 'ModerateUserScreen',
   moderatePhotostreamScreen = 'ModeratePhotostreamScreen',
   moderatePrivateEventScreen = 'ModeratePrivateEventScreen',

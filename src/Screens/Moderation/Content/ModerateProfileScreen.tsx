@@ -15,6 +15,7 @@ import {ModerationContentHistorySectionView} from '#src/Components/Views/Moderat
 import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
 import {ModerationContentSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentSectionView';
 import {ModerationContentVisibilitySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentVisibilitySectionView';
+import {ModeratorEditUsernameButtonView} from '#src/Components/Views/Moderation/ModeratorEditUsernameButtonView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {UserProfileView} from '#src/Components/Views/UserProfileView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -122,8 +123,13 @@ const ModerateProfileScreenInner = ({route}: Props) => {
         <ModerationContentVisibilitySectionView
           data={data}
           testIDPrefix={'profileModerate'}
-          onEdit={publicProfile ? onEdit : undefined}
-        />
+          onEdit={publicProfile ? onEdit : undefined}>
+          <ModeratorEditUsernameButtonView
+            userID={id}
+            username={publicProfile?.header.username}
+            disabled={!publicProfile}
+          />
+        </ModerationContentVisibilitySectionView>
         <ModerationContentHistorySectionView edits={data.edits} renderEdit={renderEdit} />
         <ModerationContentReportsSectionView reports={data.reports} />
         <ModerationContentAuthorSectionView moderateUserID={id} />
