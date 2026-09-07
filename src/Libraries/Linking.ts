@@ -82,6 +82,28 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             KaraokeSearchScreen: getPath(MainStackComponents.karaokeSearchScreen),
             KaraokeFavoritesListScreen: getPath(MainStackComponents.karaokeFavoritesListScreen),
             KaraokeLogPerformanceScreen: getPath(MainStackComponents.karaokeLogPerformanceScreen),
+            ModeratorHomeScreen: getPath(CommonStackComponents.moderatorHomeScreen),
+            ModeratorReportsScreen: {
+              path: 'reports/:closed?',
+              parse: {
+                closed: (value?: string) => value === 'closed' || value === 'true',
+              },
+              stringify: {
+                closed: (value?: boolean) => (value ? 'closed' : undefined) as string,
+              },
+            },
+            ModeratorLogScreen: getPath(CommonStackComponents.moderatorLogScreen),
+            ModeratorGuideScreen: getPath(CommonStackComponents.moderatorGuideScreen),
+            ModerateForumPostScreen: getPath(CommonStackComponents.moderateForumPostScreen),
+            ModerateForumThreadScreen: getPath(CommonStackComponents.moderateForumThreadScreen),
+            ModerateFezScreen: getPath(CommonStackComponents.moderateFezScreen),
+            ModerateFezPostScreen: getPath(CommonStackComponents.moderateFezPostScreen),
+            ModerateProfileScreen: getPath(CommonStackComponents.moderateProfileScreen),
+            ModerateUserScreen: getPath(CommonStackComponents.moderateUserScreen),
+            ModeratePhotostreamScreen: getPath(CommonStackComponents.moderatePhotostreamScreen),
+            ModeratePrivateEventScreen: getPath(CommonStackComponents.moderatePrivateEventScreen),
+            ModerateMicroKaraokeSongsScreen: getPath(CommonStackComponents.moderateMicroKaraokeSongsScreen),
+            ModerateMicroKaraokeSongScreen: getPath(CommonStackComponents.moderateMicroKaraokeSongScreen),
           },
         }),
         SeamailTab: tabLinkConfig<ChatStackParamList>({

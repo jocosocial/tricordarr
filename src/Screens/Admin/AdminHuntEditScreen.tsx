@@ -1,7 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
-import React from 'react';
+import React, {useEffect} from 'react';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AdminHuntForm} from '#src/Components/Forms/Admin/AdminHuntForm';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
@@ -13,7 +14,6 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {parseHuntPuzzlesJson} from '#src/Libraries/Admin/HuntPuzzles';
 import {alertDeleteHunt} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -40,7 +40,13 @@ const AdminHuntEditScreenInner = ({route, navigation}: Props) => {
   const deleteMutation = useDeleteHuntMutation();
   const {setSnackbarPayload} = useSnackbar();
   const {theme} = useAppTheme();
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const initialValues: AdminHuntFormValues = {
     title: data?.title ?? '',

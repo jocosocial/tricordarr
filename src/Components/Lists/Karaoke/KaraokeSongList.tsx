@@ -1,14 +1,11 @@
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {forwardRef, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
-import {Divider} from 'react-native-paper';
 
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
-import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
-import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
 import {KaraokeSongListItem} from '#src/Components/Lists/Items/KaraokeSongListItem';
 import type {KaraokeSongListItemData} from '#src/Components/Lists/Items/KaraokeSongListItem';
+import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {KaraokePerformedSongsData, KaraokeSongData} from '#src/Structs/ControllerStructs';
 
 export type KaraokeSongListItem = KaraokeSongListItemData;
@@ -26,22 +23,13 @@ interface KaraokeSongListProps {
   hasNextPage?: boolean;
   handleLoadNext?: () => void;
   listHeader?: React.ComponentType<any>;
-  showEmptyFooter?: boolean;
 }
 
 const KaraokeSongListInner = (
-  {
-    items,
-    swipeableEnabled = false,
-    refreshControl,
-    hasNextPage,
-    handleLoadNext,
-    listHeader,
-    showEmptyFooter = true,
-  }: KaraokeSongListProps,
+  {items, swipeableEnabled = false, refreshControl, hasNextPage, handleLoadNext, listHeader}: KaraokeSongListProps,
   ref: React.ForwardedRef<FlashListRef<KaraokeSongListItem>>,
 ) => {
-  const getListSeparator = useCallback(() => <Divider bold={true} />, []);
+  const {getListSeparator, getListFooter} = useAppFlashList({data: items, hasNextPage});
 
   const renderItem = useCallback(
     ({item}: {item: KaraokeSongListItem}) => <KaraokeSongListItem item={item} swipeableEnabled={swipeableEnabled} />,
@@ -53,13 +41,6 @@ const KaraokeSongListInner = (
     const p = item as KaraokePerformedSongsData;
     return `${p.songID}-${p.time}-${p.performers}`;
   }, []);
-
-  const getListFooter = useCallback(() => {
-    if (hasNextPage) return <LoadingNextFooter />;
-    if (items.length > 0) return <EndResultsFooter />;
-    if (items.length === 0 && showEmptyFooter) return <NoResultsFooter />;
-    return null;
-  }, [items.length, hasNextPage, showEmptyFooter]);
 
   return (
     <AppFlashList<KaraokeSongListItem>

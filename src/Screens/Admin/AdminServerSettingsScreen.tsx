@@ -1,7 +1,8 @@
 import {Formik, FormikHelpers} from 'formik';
-import React from 'react';
+import React, {useEffect} from 'react';
 import * as Yup from 'yup';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
@@ -18,10 +19,9 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {EventNotificationSetting} from '#src/Enums/EventNotificationSetting';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {IntegerValidation} from '#src/Libraries/ValidationSchema';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAdminSettingsUpdateMutation} from '#src/Queries/Admin/SettingsMutations';
 import {useAdminSettingsQuery} from '#src/Queries/Admin/SettingsQueries';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
@@ -102,13 +102,20 @@ export const AdminServerSettingsScreen = () => {
 };
 
 const AdminServerSettingsScreenInner = () => {
+  const navigation = useCommonStack();
   const {data, refetch, isLoading} = useAdminSettingsQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const mutation = useAdminSettingsUpdateMutation();
   const {canEditSettings} = useAdminAccess();
   const {setSnackbarPayload} = useSnackbar();
   const {commonStyles} = useStyles();
-  useAdminHelpButton(CommonStackComponents.adminServerSettingsHelpScreen);
+  const getNavButtons = useAdminHeaderButtons(CommonStackComponents.adminServerSettingsHelpScreen);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const onSubmit = (values: SettingsFormValues, helpers: FormikHelpers<SettingsFormValues>) => {
     const payload: SettingsUpdateData = {

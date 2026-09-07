@@ -74,7 +74,7 @@ export const ForumPostActionsMenu = ({
               closeMenu();
               commonNavigation.push(CommonStackComponents.forumPostEditScreen, {
                 postData: forumPost,
-                forumData: forumData,
+                forumID: forumData?.forumID,
               });
             }}
           />

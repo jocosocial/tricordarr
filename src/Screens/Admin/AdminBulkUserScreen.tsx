@@ -1,9 +1,10 @@
 import {File, Paths} from 'expo-file-system';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Linking} from 'react-native';
 import {Text} from 'react-native-paper';
 import Share from 'react-native-share';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
@@ -13,11 +14,11 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertApplyBulkUser} from '#src/Libraries/Alerts/AdminAlerts';
 import {createLogger} from '#src/Libraries/Logger';
 import {appSiteUrl} from '#src/Libraries/UrlParser';
+import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {
   useBulkUserApplyMutation,
   useBulkUserDownloadMutation,
@@ -40,6 +41,7 @@ export const AdminBulkUserScreen = () => {
 };
 
 const AdminBulkUserScreenInner = () => {
+  const navigation = useCommonStack();
   const [uploaded, setUploaded] = useState(false);
   const {data, refetch, isLoading} = useBulkUserVerifyQuery({enabled: uploaded});
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
@@ -47,7 +49,13 @@ const AdminBulkUserScreenInner = () => {
   const uploadMutation = useBulkUserUploadMutation();
   const applyMutation = useBulkUserApplyMutation();
   const {setSnackbarPayload} = useSnackbar();
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const handleDownload = () => {
     downloadMutation.mutate(undefined, {

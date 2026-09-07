@@ -96,6 +96,22 @@ export const allRoutes: RouteDefinition[] = [
   {screen: ForumStackComponents.forumPostMentionScreen, path: 'forumpost/mentions'},
   {screen: CommonStackComponents.forumThreadPostScreen, path: 'forum/containingpost/:postID'},
   {screen: CommonStackComponents.forumThreadScreen, path: 'forum/:forumID'},
+
+  // ==================== Moderator Routes ====================
+  {screen: CommonStackComponents.moderateMicroKaraokeSongScreen, path: 'moderate/microkaraoke/song/:id'},
+  {screen: CommonStackComponents.moderateMicroKaraokeSongsScreen, path: 'moderate/microkaraoke'},
+  {screen: CommonStackComponents.moderateForumPostScreen, path: 'moderate/forumpost/:id'},
+  {screen: CommonStackComponents.moderateForumThreadScreen, path: 'moderate/forum/:id'},
+  {screen: CommonStackComponents.moderateFezPostScreen, path: 'moderate/fezpost/:id'},
+  {screen: CommonStackComponents.moderateFezScreen, path: 'moderate/lfg/:id'},
+  {screen: CommonStackComponents.moderateProfileScreen, path: 'moderate/userprofile/:id'},
+  {screen: CommonStackComponents.moderateUserScreen, path: 'moderate/user/:id'},
+  {screen: CommonStackComponents.moderatePhotostreamScreen, path: 'moderate/photostream/:id'},
+  {screen: CommonStackComponents.moderatePrivateEventScreen, path: 'moderate/personalevent/:id'},
+  {screen: CommonStackComponents.moderatorLogScreen, path: 'moderator/log'},
+  {screen: CommonStackComponents.moderatorGuideScreen, path: 'moderator/guide'},
+  {screen: CommonStackComponents.moderatorReportsScreen, path: 'reports/:closed?'},
+  {screen: CommonStackComponents.moderatorHomeScreen, path: 'moderator'},
 ];
 
 /**
@@ -130,7 +146,21 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.huntPuzzleScreen,
     // Info routes
     CommonStackComponents.privacyScreen,
-    CommonStackComponents.adminScreen,
+    // Moderator routes
+    CommonStackComponents.moderatorHomeScreen,
+    CommonStackComponents.moderatorReportsScreen,
+    CommonStackComponents.moderatorLogScreen,
+    CommonStackComponents.moderatorGuideScreen,
+    CommonStackComponents.moderateForumPostScreen,
+    CommonStackComponents.moderateForumThreadScreen,
+    CommonStackComponents.moderateFezScreen,
+    CommonStackComponents.moderateFezPostScreen,
+    CommonStackComponents.moderateProfileScreen,
+    CommonStackComponents.moderateUserScreen,
+    CommonStackComponents.moderatePhotostreamScreen,
+    CommonStackComponents.moderatePrivateEventScreen,
+    CommonStackComponents.moderateMicroKaraokeSongsScreen,
+    CommonStackComponents.moderateMicroKaraokeSongScreen,
   ].includes(route.screen as CommonStackComponents),
 );
 
@@ -165,9 +195,9 @@ export const extractParamNames = (path: string): string[] => {
 export const pathToRegex = (path: string): RegExp => {
   let regexStr = path;
 
-  // Handle optional parameters (e.g., :deckNumber?)
-  // Replace :param? with an optional group that captures the value
-  regexStr = regexStr.replace(/:([^/?]+)\?/g, '(?:/([^/]+))?');
+  // Handle optional parameters (e.g., :deckNumber?). Consume the slash before the
+  // param so `map/:deckNumber?` matches both `map` and `map/3`.
+  regexStr = regexStr.replace(/\/:([^/?]+)\?/g, '(?:/([^/]+))?');
 
   // Handle required parameters (e.g., :forumID)
   regexStr = regexStr.replace(/:([^/]+)/g, '([^/]+)');

@@ -108,6 +108,21 @@ import {PrivacyScreen} from '#src/Screens/Main/PrivacyScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
 import {TodayHelpScreen} from '#src/Screens/Main/TodayHelpScreen';
 import {MicroKaraokeHelpScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeHelpScreen';
+import {ModerateChangeUsernameScreen} from '#src/Screens/Moderation/Content/ModerateChangeUsernameScreen';
+import {ModerateFezPostScreen} from '#src/Screens/Moderation/Content/ModerateFezPostScreen';
+import {ModerateFezScreen} from '#src/Screens/Moderation/Content/ModerateFezScreen';
+import {ModerateForumPostScreen} from '#src/Screens/Moderation/Content/ModerateForumPostScreen';
+import {ModerateForumThreadScreen} from '#src/Screens/Moderation/Content/ModerateForumThreadScreen';
+import {ModerateMicroKaraokeSongScreen} from '#src/Screens/Moderation/Content/ModerateMicroKaraokeSongScreen';
+import {ModerateMicroKaraokeSongsScreen} from '#src/Screens/Moderation/Content/ModerateMicroKaraokeSongsScreen';
+import {ModeratePhotostreamScreen} from '#src/Screens/Moderation/Content/ModeratePhotostreamScreen';
+import {ModeratePrivateEventScreen} from '#src/Screens/Moderation/Content/ModeratePrivateEventScreen';
+import {ModerateProfileScreen} from '#src/Screens/Moderation/Content/ModerateProfileScreen';
+import {ModerateUserScreen} from '#src/Screens/Moderation/Content/ModerateUserScreen';
+import {ModeratorGuideScreen} from '#src/Screens/Moderation/ModeratorGuideScreen';
+import {ModeratorHomeScreen} from '#src/Screens/Moderation/ModeratorHomeScreen';
+import {ModeratorLogScreen} from '#src/Screens/Moderation/ModeratorLogScreen';
+import {ModeratorReportsScreen} from '#src/Screens/Moderation/ModeratorReportsScreen';
 import {ReportHelpScreen} from '#src/Screens/Moderation/ReportHelpScreen';
 import {ReportScreen} from '#src/Screens/Moderation/ReportScreen';
 import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScreen';
@@ -237,6 +252,83 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.reportHelpScreen}
         component={ReportHelpScreen}
         options={{title: 'Report Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorHomeScreen}
+        component={ModeratorHomeScreen}
+        options={{title: 'Moderator'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorReportsScreen}
+        component={ModeratorReportsScreen}
+        options={({route}: {route: RouteProp<CommonStackParamList, CommonStackComponents.moderatorReportsScreen>}) => ({
+          title: route.params.closed ? 'Closed Reports' : 'Open Reports',
+        })}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorLogScreen}
+        component={ModeratorLogScreen}
+        options={{title: 'Moderator Log'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatorGuideScreen}
+        component={ModeratorGuideScreen}
+        options={{title: 'Moderator Guide'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateForumPostScreen}
+        component={ModerateForumPostScreen}
+        options={{title: 'Moderate Forum Post'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateForumThreadScreen}
+        component={ModerateForumThreadScreen}
+        options={{title: 'Moderate Forum Thread'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateFezScreen}
+        component={ModerateFezScreen}
+        options={{title: 'Moderate LFG'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateFezPostScreen}
+        component={ModerateFezPostScreen}
+        options={{title: 'Moderate Post'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateProfileScreen}
+        component={ModerateProfileScreen}
+        options={{title: 'Moderate Profile'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateChangeUsernameScreen}
+        component={ModerateChangeUsernameScreen}
+        options={{title: 'Edit Username'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateUserScreen}
+        component={ModerateUserScreen}
+        options={{title: 'Moderate User'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatePhotostreamScreen}
+        component={ModeratePhotostreamScreen}
+        options={{title: 'Moderate Photo'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderatePrivateEventScreen}
+        component={ModeratePrivateEventScreen}
+        options={{title: 'Moderate Private Event'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateMicroKaraokeSongsScreen}
+        component={ModerateMicroKaraokeSongsScreen}
+        options={{title: 'Micro Karaoke'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateMicroKaraokeSongScreen}
+        component={ModerateMicroKaraokeSongScreen}
+        options={{title: 'Moderate Song'}}
       />
       <Stack.Screen
         name={CommonStackComponents.easterEggScreen}
@@ -410,17 +502,17 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.personalEventScreen}
         component={PersonalEventScreen}
-        options={{title: 'Personal Event'}}
+        options={{title: 'Private Event'}}
       />
       <Stack.Screen
         name={CommonStackComponents.personalEventEditScreen}
         component={PersonalEventEditScreen}
-        options={{title: 'Edit Personal Event'}}
+        options={{title: 'Edit Private Event'}}
       />
       <Stack.Screen
         name={CommonStackComponents.personalEventCreateScreen}
         component={PersonalEventCreateScreen}
-        options={{title: 'Create Personal Event'}}
+        options={{title: 'Create Private Event'}}
       />
       <Stack.Screen
         name={CommonStackComponents.userProfileHelpScreen}
@@ -626,7 +718,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.personalEventHelpScreen}
         component={PersonalEventHelpScreen}
-        options={{title: 'Personal Event Help'}}
+        options={{title: 'Private Event Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.mainTimeZoneScreen}

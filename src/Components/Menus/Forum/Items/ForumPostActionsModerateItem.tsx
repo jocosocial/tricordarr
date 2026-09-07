@@ -4,7 +4,8 @@ import {Menu} from 'react-native-paper';
 
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
+import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostActionsModerateItemProps {
@@ -27,11 +28,7 @@ export const ForumPostActionsModerateItem = ({forumPost, closeMenu, navigation}:
       leadingIcon={AppIcons.moderator}
       onPress={() => {
         closeMenu();
-        navigation.push(CommonStackComponents.siteUIScreen, {
-          resource: 'forumpost',
-          id: forumPost.postID.toString(),
-          moderate: true,
-        });
+        pushModerateResource(navigation, 'forumpost', forumPost.postID.toString());
       }}
     />
   );

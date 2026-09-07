@@ -3409,7 +3409,7 @@ SPEC CHECKSUMS:
   ExpoSecureStore: 94793113049a2d7478dfe1a13aa15081e9f61755
   EXUpdatesInterface: 92d2aa5194b6fb93ca8ab749db75665cb28b2e60
   FBLazyVector: 3c3be9a019176b5699455f7f66c5444b78a411c6
-  hermes-engine: ded8bb1acae9ff20b2fe6abcf3366004e4a9cc38
+  hermes-engine: 9c4b6763c804d31f44a4afb24ff615e93a91e936
   libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8

@@ -11,12 +11,20 @@ interface ShareMenuItemProps {
   contentType: ShareContentType;
   contentID: string | number;
   closeMenu?: () => void;
+  title?: string;
+  leadingIcon?: string;
 }
 
 /**
  * Actions-menu item that presents the share bottom sheet for this content.
  */
-export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItemProps) => {
+export const ShareMenuItem = ({
+  contentType,
+  contentID,
+  closeMenu,
+  title = 'Share',
+  leadingIcon = AppIcons.share,
+}: ShareMenuItemProps) => {
   const {oobeCompleted} = useOobe();
   const {openShareSheet} = useShareSheet();
   const {snackbarTry} = useSnackbar();
@@ -35,11 +43,6 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
    * wanted to share content from Start.
    */
   return (
-    <Menu.Item
-      disabled={!oobeCompleted}
-      title={'Share'}
-      leadingIcon={AppIcons.share}
-      onPress={snackbarTry(handlePress)}
-    />
+    <Menu.Item disabled={!oobeCompleted} title={title} leadingIcon={leadingIcon} onPress={snackbarTry(handlePress)} />
   );
 };

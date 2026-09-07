@@ -13,9 +13,10 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/useFezData';
+import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ForumThreadValues} from '#src/Types/FormValues';
@@ -35,7 +36,8 @@ export const SeamailEditScreen = (props: Props) => {
 const SeamailEditScreenInner = ({route, navigation}: Props) => {
   const {fezData, isLoading} = useFezData({fezID: route.params.fezID});
   const updateMutation = useFezUpdateMutation();
-  const {updateFez} = useFezCacheReducer();
+  const {updateFez, updateFezModeration} = useFezCacheReducer();
+  const {data: profilePublicData} = useUserProfileQuery();
 
   const getNavButtons = useCallback(() => {
     return (
@@ -57,6 +59,10 @@ const SeamailEditScreenInner = ({route, navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
+  /**
+   * Submit the edited seamail title, then patch fez caches and (when launched
+   * from the moderate screen) the fez moderation cache before going back.
+   */
   const onSubmit = (values: ForumThreadValues, helpers: FormikHelpers<ForumThreadValues>) => {
     if (!fezData) {
       return;
@@ -77,6 +83,9 @@ const SeamailEditScreenInner = ({route, navigation}: Props) => {
       {
         onSuccess: response => {
           updateFez(route.params.fezID, response.data);
+          if (route.params.intent === 'moderate' && profilePublicData) {
+            updateFezModeration(route.params.fezID, fezData, response.data, profilePublicData.header);
+          }
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

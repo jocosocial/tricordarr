@@ -5,7 +5,7 @@ import {PersonalEventForm} from '#src/Components/Forms/PersonalEventForm';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezForm} from '#src/Hooks/useFezForm';
+import {useFezForm} from '#src/Hooks/Fez/useFezForm';
 import {
   CommonStackComponents,
   CommonStackParamList,

@@ -11,6 +11,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useMenu} from '#src/Hooks/useMenu';
 import {alertBlock, alertMute} from '#src/Libraries/Alerts/UserAlerts';
+import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
@@ -34,11 +35,11 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
 
   const handleModerate = () => {
     closeMenu();
-    commonNavigation.push(CommonStackComponents.siteUIScreen, {
-      resource: 'userprofile',
-      id: profile.header.userID,
-      moderate: true,
-    });
+    pushModerateResource(commonNavigation, 'userprofile', profile.header.userID);
+  };
+  const handleModerateUser = () => {
+    closeMenu();
+    pushModerateResource(commonNavigation, 'user', profile.header.userID);
   };
   const handleReport = () => {
     closeMenu();
@@ -138,7 +139,12 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
       {(hasModerator || hasTwitarrTeam || hasAccountManager) && (
         <>
           <Divider bold={true} />
-          {hasModerator && <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate'} onPress={handleModerate} />}
+          {hasModerator && (
+            <>
+              <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate Profile'} onPress={handleModerate} />
+              <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate User'} onPress={handleModerateUser} />
+            </>
+          )}
           {(hasTwitarrTeam || hasAccountManager) && (
             <Menu.Item leadingIcon={AppIcons.registrationCode} title={'Registration'} onPress={handleRegCode} />
           )}

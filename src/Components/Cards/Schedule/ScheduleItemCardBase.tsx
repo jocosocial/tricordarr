@@ -32,6 +32,7 @@ interface ScheduleItemCardBaseProps {
   titleHeader?: string;
   /** When true and marker is 'soon', the soon marker gets a 1px black right border (e.g. gold card contrast). */
   showMarkerBorder?: boolean;
+  disabled?: boolean;
 }
 
 export const ScheduleItemCardBase = ({
@@ -52,6 +53,7 @@ export const ScheduleItemCardBase = ({
   titleHeader,
   showDay = false,
   showMarkerBorder = false,
+  disabled = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
@@ -116,7 +118,7 @@ export const ScheduleItemCardBase = ({
 
   return (
     <Card mode={'contained'} style={cardStyle}>
-      <TouchableRipple onPress={onPress} onLongPress={onLongPress}>
+      <TouchableRipple onPress={onPress} onLongPress={onLongPress} disabled={disabled}>
         <Card.Content style={styles.cardContent}>
           <View style={styles.contentView}>
             {marker === 'now' && <EventCardNowView />}

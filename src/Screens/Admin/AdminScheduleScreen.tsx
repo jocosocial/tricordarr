@@ -1,8 +1,9 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {Formik} from 'formik';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
@@ -14,7 +15,6 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useScheduleReloadMutation, useScheduleUploadMutation} from '#src/Queries/Admin/ScheduleMutations';
@@ -45,7 +45,13 @@ const AdminScheduleScreenInner = ({navigation}: Props) => {
   const {canReloadNotifications} = useAdminAccess();
   const {setSnackbarPayload} = useSnackbar();
   const [uploaded, setUploaded] = useState(false);
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const onUpload = (values: UploadForm) => {
     uploadMutation.mutate(
