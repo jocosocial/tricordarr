@@ -48,7 +48,17 @@ export const ModeratorHelpScreen = () => {
         </HelpTopicView>
         <HelpTopicView title={'Moderate User'}>
           In the Author section, open account-level moderation for the content author. Forum threads, forum posts, and
-          photostream photos also link to all of that author's content of the same type.
+          photostream photos also link to all of that author's content of the same type. On the user screen itself, tap
+          the user row to open the public profile. The Author section lists that user's forums, photostream photos, and
+          forum posts instead of Moderate User.
+        </HelpTopicView>
+        <HelpTopicView title={'Access'}>
+          Set Access Level can quarantine or restore a user. THO can also ban or unverify. The slider sets a temporary
+          quarantine from 0 to 200 hours. Start Quarantine stays disabled until you move the slider. Cancel clears an
+          active temporary quarantine.
+        </HelpTopicView>
+        <HelpTopicView title={'Alternate Accounts'}>
+          Related accounts that share a registration code. Tap a row to open that account's moderate screen.
         </HelpTopicView>
         <HelpTopicView title={'View in Context'}>
           Opens the public view for this content, such as the forum thread at a post, the LFG, private event, or the

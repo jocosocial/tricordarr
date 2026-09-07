@@ -8,12 +8,15 @@ import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 interface ModerationContentAuthorSectionViewProps extends PropsWithChildren {
-  moderateUserID: string;
+  /**
+   * Omit on the user moderate screen itself so the Moderate User row is not shown.
+   */
+  moderateUserID?: string;
 }
 
 /**
  * Section of Moderation content screens showing actions available against the author.
- * @param moderateUserID - The user ID of the content author.
+ * @param moderateUserID - The user ID of the content author. Omit when already on that user's screen.
  * @param children - Additional screen-specific actions or content.
  */
 export const ModerationContentAuthorSectionView = ({
