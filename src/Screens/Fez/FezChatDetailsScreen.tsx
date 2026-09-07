@@ -109,7 +109,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
                 onRemove={() => onParticipantRemove(fezData.fezID, u.userID)}
                 key={u.userID}
                 user={u}
-                fez={fezData}
+                owner={fezData.owner}
                 onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
               />
             ))}

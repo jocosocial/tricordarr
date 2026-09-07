@@ -45,6 +45,11 @@ export const ModeratorHelpScreen = () => {
         <HelpTopicView title={'Content screens'}>
           Set State can mark content normal, quarantined, moderator reviewed, or locked. Auto-quarantined is assigned by
           the server when enough users report the same item. Photostream photos can be deleted but not quarantined.
+          Private events cannot be quarantined; remove participants or moderate the owner.
+        </HelpTopicView>
+        <HelpTopicView title={'Participants'} icon={AppIcons.group}>
+          On a private event moderate screen, each row opens that person's profile. The shield opens Moderate User.
+          Delete removes them from the event. The owner cannot be removed.
         </HelpTopicView>
         <HelpTopicView title={'Moderate User'}>
           In the Author section, open account-level moderation for the content author. Forum threads, forum posts, and

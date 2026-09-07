@@ -20,10 +20,10 @@ export const getFezPublicShare = (fezType: FezType, fezID: string): FezPublicSha
   }
   if (fezType === FezType.privateEvent) {
     return {
-      contentType: ShareContentType.personalEvent,
+      contentType: ShareContentType.privateEvent,
       contentID: `${fezID}/chat`,
       contentIcon: AppIcons.personalEvent,
     };
   }
-  return {contentType: ShareContentType.personalEvent, contentID: fezID, contentIcon: AppIcons.personalEvent};
+  return {contentType: ShareContentType.privateEvent, contentID: fezID, contentIcon: AppIcons.personalEvent};
 };

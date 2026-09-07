@@ -164,7 +164,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
             })
           }
           user={lfg.owner}
-          fez={lfg}
+          owner={lfg.owner}
         />
         {FezType.isLFGType(lfg.fezType) && (
           <>
@@ -196,7 +196,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
                 onRemove={() => onParticipantRemove(lfg, u.userID)}
                 key={u.userID}
                 user={u}
-                fez={lfg}
+                owner={lfg.owner}
                 onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
               />
             ))}
@@ -225,7 +225,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
                     onRemove={() => onParticipantRemove(lfg, u.userID)}
                     key={u.userID}
                     user={u}
-                    fez={lfg}
+                    owner={lfg.owner}
                     onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
                   />
                 ))}

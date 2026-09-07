@@ -44,7 +44,7 @@ describe('getShareSheetTitle', () => {
     expect(getShareSheetTitle(ShareContentType.seamail)).toBe('Share Seamail');
     expect(getShareSheetTitle(ShareContentType.user)).toBe('Share User Profile');
     expect(getShareSheetTitle(ShareContentType.event)).toBe('Share Event');
-    expect(getShareSheetTitle(ShareContentType.personalEvent)).toBe('Share Personal Event');
+    expect(getShareSheetTitle(ShareContentType.privateEvent)).toBe('Share Private Event');
     expect(getShareSheetTitle(ShareContentType.performer)).toBe('Share Performer');
     expect(getShareSheetTitle(ShareContentType.siteUI)).toBe('Share Link');
     expect(getShareSheetTitle(ShareContentType.forumPostModerate)).toBe('Share Moderator View');
@@ -194,7 +194,7 @@ describe('getShareLink', () => {
       getShareLink({
         mode: ShareLinkMode.web,
         serverUrl,
-        contentType: ShareContentType.personalEvent,
+        contentType: ShareContentType.privateEvent,
         contentID: 'event-1',
       }),
     ).toBe('https://twitarr.com/privateevent/event-1');
@@ -202,7 +202,7 @@ describe('getShareLink', () => {
       getShareLink({
         mode: ShareLinkMode.app,
         serverUrl,
-        contentType: ShareContentType.personalEvent,
+        contentType: ShareContentType.privateEvent,
         contentID: 'event-1',
       }),
     ).toBe(`${appLinkPrefix}privateevent/event-1`);
@@ -247,7 +247,7 @@ describe('getFezPublicShare', () => {
 
   it('shares a personal event as privateevent/:id', () => {
     expect(getFezPublicShare(FezType.personalEvent, 'fez-1')).toEqual({
-      contentType: ShareContentType.personalEvent,
+      contentType: ShareContentType.privateEvent,
       contentID: 'fez-1',
       contentIcon: AppIcons.personalEvent,
     });
@@ -255,7 +255,7 @@ describe('getFezPublicShare', () => {
 
   it('shares a private event chat as privateevent/:id/chat', () => {
     expect(getFezPublicShare(FezType.privateEvent, 'fez-1')).toEqual({
-      contentType: ShareContentType.personalEvent,
+      contentType: ShareContentType.privateEvent,
       contentID: 'fez-1/chat',
       contentIcon: AppIcons.personalEvent,
     });

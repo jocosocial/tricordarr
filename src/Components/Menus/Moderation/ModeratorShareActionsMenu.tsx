@@ -5,7 +5,7 @@ import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {shareContentTypeLabels, ShareContentType} from '#src/Libraries/Sharing';
+import {ShareContentType, shareContentTypeLabels} from '#src/Libraries/Sharing';
 
 export interface ModeratorShareActionsMenuProps {
   moderateType: ShareContentType;
