@@ -71,7 +71,7 @@ export const ModerationContentVisibilitySectionView = ({
         <ModeratorStateView data={data} />
       ) : (
         <PaddedContentView padTop={true}>
-          <Text>Content visibility cannot be changed. Delete the content if it should not stay public.</Text>
+          <Text>Content visibility cannot be changed. Objectionable public content should be deleted. Objectional private content cannot be deleted, take action against the creator instead.</Text>
         </PaddedContentView>
       )}
       <View style={styles.editDelete}>

@@ -27,7 +27,7 @@ export const pushModerateScreen = (
       navigation.push(CommonStackComponents.moderateForumThreadScreen, {id});
       return;
     case ReportType.fez:
-      navigation.push(CommonStackComponents.moderateFezScreen, {id});
+      navigation.push(CommonStackComponents.moderateLfgScreen, {id});
       return;
     case ReportType.fezPost:
       navigation.push(CommonStackComponents.moderateFezPostScreen, {id});

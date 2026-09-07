@@ -1,11 +1,10 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
-import {Text} from 'react-native-paper';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
+import {FezCard} from '#src/Components/Cards/Schedule/FezCard';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -17,6 +16,7 @@ import {ModerationContentVisibilitySectionView} from '#src/Components/Views/Mode
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -30,7 +30,7 @@ import {
 import {usePrivateEventMemberRemoveMutation} from '#src/Queries/Moderation/ModerationMutations';
 import {usePrivateEventModerationQuery} from '#src/Queries/Moderation/ModerationQueries';
 import {ModeratorFeatureScreen} from '#src/Screens/Checkpoint/ModeratorFeatureScreen';
-import {PersonalEventModerationData, UserHeader} from '#src/Structs/ControllerStructs';
+import {FezData, PersonalEventModerationData, UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.moderatePrivateEventScreen>;
 
@@ -61,6 +61,28 @@ const ModeratePrivateEventScreenInner = ({route}: Props) => {
   }
 
   const event = data.personalEvent;
+
+  /**
+   * The moderation API returns a trimmed-down PersonalEventData rather than a full FezData,
+   * so adapt it here to reuse FezCard for consistent content rendering across moderation screens.
+   */
+  const fez: FezData = {
+    fezID: event.personalEventID,
+    owner: event.owner,
+    fezType: FezType.privateEvent,
+    title: event.title,
+    info: event.description ?? '',
+    startTime: event.startTime,
+    endTime: event.endTime,
+    timeZone: event.timeZone,
+    timeZoneID: event.timeZoneID,
+    location: event.location,
+    participantCount: event.participants.length,
+    minParticipants: 0,
+    maxParticipants: event.participants.length,
+    cancelled: false,
+    lastModificationTime: event.lastUpdateTime,
+  };
 
   /**
    * Confirms and removes a participant from this private event.
@@ -95,14 +117,7 @@ const ModeratePrivateEventScreenInner = ({route}: Props) => {
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ModerationContentSectionView testIDPrefix={'privateEventModerate'} onViewInContext={onViewInContext}>
           <PaddedContentView padTop={true}>
-            <ModerationEditListItem
-              author={event.owner}
-              timestamp={event.startTime}
-              text={[event.title, event.description, event.location].filter(Boolean).join('\n')}
-            />
-            <Text>
-              {event.startTime} – {event.endTime}
-            </Text>
+            <FezCard fez={fez} showDay={true} showIcon={true} disabled={true} showDescription={true} />
           </PaddedContentView>
         </ModerationContentSectionView>
         <ModerationContentVisibilitySectionView

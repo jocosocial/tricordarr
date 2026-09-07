@@ -250,7 +250,7 @@ describe('moderator deep links', () => {
       params: {id: 'abc'},
     });
     expect(parseDeepLinkUrl('moderate/lfg/fez-1')).toEqual({
-      screen: CommonStackComponents.moderateFezScreen,
+      screen: CommonStackComponents.moderateLfgScreen,
       params: {id: 'fez-1'},
     });
     expect(parseDeepLinkUrl('moderator/guide')).toEqual({

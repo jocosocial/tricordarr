@@ -110,9 +110,9 @@ import {TodayHelpScreen} from '#src/Screens/Main/TodayHelpScreen';
 import {MicroKaraokeHelpScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeHelpScreen';
 import {ModerateChangeUsernameScreen} from '#src/Screens/Moderation/Content/ModerateChangeUsernameScreen';
 import {ModerateFezPostScreen} from '#src/Screens/Moderation/Content/ModerateFezPostScreen';
-import {ModerateFezScreen} from '#src/Screens/Moderation/Content/ModerateFezScreen';
 import {ModerateForumPostScreen} from '#src/Screens/Moderation/Content/ModerateForumPostScreen';
 import {ModerateForumThreadScreen} from '#src/Screens/Moderation/Content/ModerateForumThreadScreen';
+import {ModerateLfgScreen} from '#src/Screens/Moderation/Content/ModerateLfgScreen';
 import {ModerateMicroKaraokeSongScreen} from '#src/Screens/Moderation/Content/ModerateMicroKaraokeSongScreen';
 import {ModerateMicroKaraokeSongsScreen} from '#src/Screens/Moderation/Content/ModerateMicroKaraokeSongsScreen';
 import {ModeratePhotostreamScreen} from '#src/Screens/Moderation/Content/ModeratePhotostreamScreen';
@@ -286,8 +286,8 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Moderate Forum Thread'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.moderateFezScreen}
-        component={ModerateFezScreen}
+        name={CommonStackComponents.moderateLfgScreen}
+        component={ModerateLfgScreen}
         options={{title: 'Moderate LFG'}}
       />
       <Stack.Screen
