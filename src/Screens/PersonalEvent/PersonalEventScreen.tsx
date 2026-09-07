@@ -78,7 +78,7 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
-      title: eventData?.fezType === FezType.privateEvent ? 'Private Event' : 'Personal Event',
+      title: 'Private Event',
     });
   }, [getNavButtons, navigation, eventData]);
 

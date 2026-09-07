@@ -121,7 +121,7 @@ const ModeratorGuideScreenInner = () => {
         </HelpTopicView>
         <HelpTopicView title={'Content Types'}>
           Forums (the title), forum posts, LFGs (title, info, location), LFG/seamail posts, user profiles (fields such
-          as home location—not the user), personal events, and photostream photos. Every publicly viewable piece of
+          as home location—not the user), private events, and photostream photos. Every publicly viewable piece of
           content can be reported and moderated. Authors can edit their content; forum posts and LFG posts can also be
           deleted by the author. All of these keep an edit trail.
         </HelpTopicView>

@@ -15,11 +15,7 @@ interface ModeratorEditUsernameButtonViewProps {
 /**
  * Navigates to the moderator change-username form from a profile moderate screen.
  */
-export const ModeratorEditUsernameButtonView = ({
-  userID,
-  username,
-  disabled,
-}: ModeratorEditUsernameButtonViewProps) => {
+export const ModeratorEditUsernameButtonView = ({userID, username, disabled}: ModeratorEditUsernameButtonViewProps) => {
   const navigation = useCommonStack();
   const {theme} = useAppTheme();
 

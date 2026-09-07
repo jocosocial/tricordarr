@@ -49,7 +49,7 @@ export const FezChatHelpScreen = () => {
             back there instead of opening a new copy. This button only appears for private event chats.
           </HelpTopicView>
           <HelpTopicView title={'Create Event'} icon={AppIcons.eventCreate}>
-            Schedule a personal event with the users in this seamail conversation. This button only appears for seamail
+            Schedule a private event with the users in this seamail conversation. This button only appears for seamail
             conversations that have participants.
           </HelpTopicView>
           <ReloadButtonHelpTopicView />

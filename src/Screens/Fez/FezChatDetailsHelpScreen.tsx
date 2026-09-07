@@ -18,7 +18,7 @@ export const FezChatDetailsHelpScreen = () => {
           </HelpTopicView>
           <HelpTopicView>
             If you are the ower of an Open seamail conversation you can add or remove participants from this screen.
-            Owners of LFGs and Personal Events can do this from the Participation screen.
+            Owners of LFGs and Private Events can do this from the Participation screen.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>

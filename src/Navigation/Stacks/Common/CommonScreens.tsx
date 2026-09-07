@@ -502,17 +502,17 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.personalEventScreen}
         component={PersonalEventScreen}
-        options={{title: 'Personal Event'}}
+        options={{title: 'Private Event'}}
       />
       <Stack.Screen
         name={CommonStackComponents.personalEventEditScreen}
         component={PersonalEventEditScreen}
-        options={{title: 'Edit Personal Event'}}
+        options={{title: 'Edit Private Event'}}
       />
       <Stack.Screen
         name={CommonStackComponents.personalEventCreateScreen}
         component={PersonalEventCreateScreen}
-        options={{title: 'Create Personal Event'}}
+        options={{title: 'Create Private Event'}}
       />
       <Stack.Screen
         name={CommonStackComponents.userProfileHelpScreen}
@@ -718,7 +718,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       <Stack.Screen
         name={CommonStackComponents.personalEventHelpScreen}
         component={PersonalEventHelpScreen}
-        options={{title: 'Personal Event Help'}}
+        options={{title: 'Private Event Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.mainTimeZoneScreen}
