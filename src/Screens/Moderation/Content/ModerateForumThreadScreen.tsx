@@ -134,7 +134,7 @@ const ModerateForumThreadScreenInner = ({route}: Props) => {
         <ModerationContentReportsSectionView reports={data.reports} />
         <ModerationContentAuthorSectionView moderateUserID={data.creator.userID}>
           <NavigationListItem
-            title={'All Forums'}
+            title={'All Forum Threads'}
             description={'View all forums by this user.'}
             onPress={() => navigation.push(CommonStackComponents.forumThreadUserScreen, {user: data.creator})}
           />

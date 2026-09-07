@@ -71,9 +71,9 @@ export const ModeratorHelpScreen = () => {
           <HelpTopicView title={'Share'} icon={AppIcons.share}>
             On a content moderate screen, opens a menu to share a public content link or a Moderator View link.
           </HelpTopicView>
-          <HelpTopicView title={'Content'} icon={AppIcons.forum}>
-            Share the public link for this content. The icon matches the content type. Hidden for photostream photos and
-            Micro Karaoke songs, which have no public item link.
+          <HelpTopicView title={'Forum, LFG, User Profile, …'} icon={AppIcons.forum}>
+            Share the public link for this item. The title and icon match the content type. Hidden for photostream
+            photos and Micro Karaoke songs, which have no public item link.
           </HelpTopicView>
           <HelpTopicView title={'Moderator View'} icon={AppIcons.moderator}>
             Share a link that opens this moderate screen.

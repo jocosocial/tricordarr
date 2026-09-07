@@ -1,21 +1,18 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
-import {Text} from 'react-native-paper';
 
 import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/ModeratorReportFAB';
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {APIImage} from '#src/Components/Images/APIImage';
-import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
 import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
+import {PhotostreamListItem} from '#src/Components/Lists/Items/PhotostreamListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ModerationContentAuthorSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentAuthorSectionView';
 import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
-import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
+import {ModerationContentVisibilitySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentVisibilitySectionView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
@@ -82,30 +79,14 @@ const ModeratePhotostreamScreenInner = ({route}: Props) => {
         <ListSection>
           <ListSubheader>Content</ListSubheader>
         </ListSection>
-        <PaddedContentView>
-          <ModerationEditListItem
-            author={data.photo.author}
-            timestamp={data.photo.createdAt}
-            text={data.photo.event?.title ?? data.photo.location}
-          />
-          {!data.isDeleted && <APIImage path={data.photo.image} />}
-        </PaddedContentView>
-        <PaddedContentView>
-          <Text>Photostream photos cannot be quarantined. Delete the photo if it should not stay public.</Text>
-        </PaddedContentView>
-        {!data.isDeleted && (
-          <PaddedContentView>
-            <ModerationActionRow
-              buttons={[
-                {
-                  label: 'Delete',
-                  disabled: deleteMutation.isPending,
-                  onPress: onDelete,
-                },
-              ]}
-            />
-          </PaddedContentView>
-        )}
+        <PhotostreamListItem item={data.photo} hideMenuButton={true} />
+        <ModerationContentVisibilitySectionView
+          canChangeState={false}
+          isDeleted={data.isDeleted}
+          testIDPrefix={'photostreamModerate'}
+          onDelete={onDelete}
+          isDeleting={deleteMutation.isPending}
+        />
         <ModerationContentReportsSectionView reports={data.reports} />
         <ModerationContentAuthorSectionView moderateUserID={data.photo.author.userID}>
           <NavigationListItem

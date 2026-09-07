@@ -8,12 +8,13 @@ import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
 interface PhotostreamListItemProps {
   item: PhotostreamImageData;
+  hideMenuButton?: boolean;
 }
 
-const PhotostreamListItemInternal = ({item}: PhotostreamListItemProps) => {
+const PhotostreamListItemInternal = ({item, hideMenuButton}: PhotostreamListItemProps) => {
   return (
     <View>
-      <PhotostreamImageHeaderView image={item} />
+      <PhotostreamImageHeaderView image={item} hideMenuButton={hideMenuButton} />
       <View>
         <APIImage mode={'scaledimage'} path={item.image} />
       </View>

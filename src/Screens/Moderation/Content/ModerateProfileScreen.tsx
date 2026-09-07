@@ -7,8 +7,6 @@ import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {ModerationEditListItem} from '#src/Components/Lists/Items/Moderation/ModerationEditListItem';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -16,8 +14,7 @@ import {ModerationContentAuthorSectionView} from '#src/Components/Views/Moderati
 import {ModerationContentHistorySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentHistorySectionView';
 import {ModerationContentReportsSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentReportsSectionView';
 import {ModerationContentSectionView} from '#src/Components/Views/Moderation/Content/ModerationContentSectionView';
-import {ModerationActionRow} from '#src/Components/Views/Moderation/ModerationActionRow';
-import {ModeratorStateView} from '#src/Components/Views/Moderation/ModeratorStateView';
+import {ModerationContentVisibilitySectionView} from '#src/Components/Views/Moderation/Content/ModerationContentVisibilitySectionView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {UserProfileView} from '#src/Components/Views/UserProfileView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -96,15 +93,24 @@ const ModerateProfileScreenInner = ({route}: Props) => {
 
   const publicProfile = profilePublicDataFromUpload(data.profile);
 
+  const onEdit = () => {
+    if (!publicProfile) {
+      return;
+    }
+    navigation.push(CommonStackComponents.userProfileEditScreen, {user: publicProfile});
+  };
+
+  const onViewInContext = () => {
+    navigation.push(CommonStackComponents.userProfileScreen, {userID: id});
+  };
+
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
         overScroll={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <ModerationContentSectionView
-          testIDPrefix={'profileModerate'}
-          onViewInContext={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: id})}>
+        <ModerationContentSectionView testIDPrefix={'profileModerate'} onViewInContext={onViewInContext}>
           {publicProfile ? (
             <UserProfileView user={publicProfile} setRefreshing={setRefreshing} />
           ) : (
@@ -113,25 +119,11 @@ const ModerateProfileScreenInner = ({route}: Props) => {
             </PaddedContentView>
           )}
         </ModerationContentSectionView>
-        <ListSection>
-          <ListSubheader>Visibility</ListSubheader>
-        </ListSection>
-        <ModeratorStateView data={data} />
-        <PaddedContentView>
-          <ModerationActionRow
-            buttons={[
-              {
-                label: 'Edit',
-                disabled: !publicProfile,
-                onPress: () => {
-                  if (publicProfile) {
-                    navigation.push(CommonStackComponents.userProfileEditScreen, {user: publicProfile});
-                  }
-                },
-              },
-            ]}
-          />
-        </PaddedContentView>
+        <ModerationContentVisibilitySectionView
+          data={data}
+          testIDPrefix={'profileModerate'}
+          onEdit={publicProfile ? onEdit : undefined}
+        />
         <ModerationContentHistorySectionView edits={data.edits} renderEdit={renderEdit} />
         <ModerationContentReportsSectionView reports={data.reports} />
         <ModerationContentAuthorSectionView moderateUserID={id} />

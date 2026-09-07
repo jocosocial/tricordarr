@@ -5,7 +5,7 @@ import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {ShareContentType} from '#src/Libraries/Sharing';
+import {shareContentTypeLabels, ShareContentType} from '#src/Libraries/Sharing';
 
 export interface ModeratorShareActionsMenuProps {
   moderateType: ShareContentType;
@@ -16,8 +16,8 @@ export interface ModeratorShareActionsMenuProps {
 }
 
 /**
- * Header share menu on content moderate screens. Content shares the public link;
- * Moderator View shares a link that opens this moderate screen.
+ * Header share menu on content moderate screens. The public-link item is labeled
+ * with the content type; Moderator View shares a link that opens this moderate screen.
  */
 export const ModeratorShareActionsMenu = ({
   moderateType,
@@ -35,7 +35,7 @@ export const ModeratorShareActionsMenu = ({
       anchor={<MenuAnchor title={'Share'} iconName={AppIcons.share} onPress={openMenu} />}>
       {contentType !== undefined && contentID !== undefined && contentIcon !== undefined && (
         <ShareMenuItem
-          title={'Content'}
+          title={shareContentTypeLabels[contentType]}
           leadingIcon={contentIcon}
           contentType={contentType}
           contentID={contentID}
