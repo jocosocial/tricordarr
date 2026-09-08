@@ -10,7 +10,13 @@ jest.mock('@react-navigation/stack', () => ({
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {getFezPublicShare} from '#src/Libraries/Moderation/Share';
-import {getShareLink, getShareSheetTitle, ShareContentType, ShareLinkMode} from '#src/Libraries/Sharing';
+import {
+  buildShareMessage,
+  getShareLink,
+  getShareSheetTitle,
+  ShareContentType,
+  ShareLinkMode,
+} from '#src/Libraries/Sharing';
 import {appLinkPrefix} from '#src/Libraries/UrlParser';
 
 describe('ShareContentType.performer', () => {
@@ -225,6 +231,19 @@ describe('getShareLink', () => {
         contentID: 'post-1',
       }),
     ).toBe(`${appLinkPrefix}moderate/forumpost/post-1`);
+  });
+});
+
+describe('buildShareMessage', () => {
+  const link = 'https://twitarr.com/forum/containingpost/post-1';
+
+  it('returns the bare link when there is no text', () => {
+    expect(buildShareMessage(undefined, link)).toBe(link);
+    expect(buildShareMessage('', link)).toBe(link);
+  });
+
+  it('combines text and link with a blank line', () => {
+    expect(buildShareMessage('Hello world', link)).toBe(`Hello world\n\n${link}`);
   });
 });
 

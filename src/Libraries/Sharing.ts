@@ -99,3 +99,14 @@ export const getShareLink = ({mode, serverUrl, contentType, contentID}: GetShare
   }
   return joinUrl(serverUrl, relativePath);
 };
+
+/**
+ * Combines a post's text with its share link into one plaintext message.
+ * Falls back to the bare link when there is no text to share.
+ */
+export const buildShareMessage = (text: string | undefined, link: string): string => {
+  if (!text) {
+    return link;
+  }
+  return `${text}\n\n${link}`;
+};
