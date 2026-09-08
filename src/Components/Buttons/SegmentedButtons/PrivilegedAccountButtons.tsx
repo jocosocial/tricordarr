@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {SegmentedButtons} from 'react-native-paper';
+import {SegmentedButtons, Text} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
@@ -15,6 +16,7 @@ interface PrivilegedAccountButtonsProps {
   moderatorNotificationCount?: number;
   twitarrTeamNotificationCount?: number;
   testIDPrefix?: string;
+  label?: string;
 }
 
 /**
@@ -26,12 +28,14 @@ export const PrivilegedAccountButtons = ({
   moderatorNotificationCount,
   twitarrTeamNotificationCount,
   testIDPrefix = 'privilegedAccount',
+  label,
 }: PrivilegedAccountButtonsProps) => {
   const {data: profilePublicData} = useUserProfileQuery();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {asPrivilegedUser, becomeUser, clearElevation} = useElevation();
   const [forUser, setForUser] = useState(asPrivilegedUser || profilePublicData?.header.username);
   const {theme} = useAppTheme();
+  const {commonStyles} = useStyles();
   const [buttons, setButtons] = useState<SegmentedButtonType[]>([]);
 
   useEffect(() => {
@@ -91,7 +95,12 @@ export const PrivilegedAccountButtons = ({
   ]);
 
   if (buttons.length > 0 && forUser) {
-    return <SegmentedButtons value={forUser} onValueChange={setForUser} buttons={buttons} />;
+    return (
+      <>
+        {label && <Text style={commonStyles.marginBottomSmall}>{label}</Text>}
+        <SegmentedButtons value={forUser} onValueChange={setForUser} buttons={buttons} />
+      </>
+    );
   }
 
   return <></>;
