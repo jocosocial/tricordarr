@@ -10,7 +10,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {FloatingScrollButtonsView} from '#src/Components/Buttons/FloatingScrollButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -476,13 +476,30 @@ export const ConversationListV2 = <TItem,>({
         scrollsToTop={false}
       />
       {effectiveScrollButton && scrollButtonDirection !== null && (
-        <FloatingScrollButton
-          testID={'conversationListScroll-button'}
-          onPress={handleScrollButtonPress}
-          icon={scrollButtonDirection === 'up' ? AppIcons.scrollUp : AppIcons.scrollDown}
-          secondaryTestID={'conversationListSecondaryScroll-button'}
-          secondaryOnPress={handleSecondaryScrollButtonPress}
-          secondaryIcon={scrollButtonDirection === 'up' ? AppIcons.scrollDown : AppIcons.scrollUp}
+        <FloatingScrollButtonsView
+          actions={
+            scrollButtonDirection === 'up'
+              ? [
+                  {testID: 'conversationListScroll-button', icon: AppIcons.scrollUp, onPress: handleScrollButtonPress},
+                  {
+                    testID: 'conversationListSecondaryScroll-button',
+                    icon: AppIcons.scrollDown,
+                    onPress: handleSecondaryScrollButtonPress,
+                  },
+                ]
+              : [
+                  {
+                    testID: 'conversationListScroll-button',
+                    icon: AppIcons.scrollDown,
+                    onPress: handleScrollButtonPress,
+                  },
+                  {
+                    testID: 'conversationListSecondaryScroll-button',
+                    icon: AppIcons.scrollUp,
+                    onPress: handleSecondaryScrollButtonPress,
+                  },
+                ]
+          }
         />
       )}
     </View>

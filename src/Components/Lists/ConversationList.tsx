@@ -2,7 +2,7 @@ import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/l
 import React, {useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
-import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {FloatingScrollButtonsView} from '#src/Components/Buttons/FloatingScrollButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -164,13 +164,15 @@ export const ConversationList = <TItem,>({
         scrollsToTop={false}
       />
       {effectiveScrollButton && (scrollButtons.up || scrollButtons.down) && (
-        <FloatingScrollButton
-          testID={'conversationScroll-button'}
-          onPress={scrollButtons.down ? handleScrollButtonPress : handleScrollToStart}
-          icon={scrollButtons.down ? AppIcons.scrollDown : AppIcons.scrollUp}
-          secondaryTestID={scrollButtons.up && scrollButtons.down ? 'conversationScrollUp-button' : undefined}
-          secondaryOnPress={scrollButtons.up && scrollButtons.down ? handleScrollToStart : undefined}
-          secondaryIcon={scrollButtons.up && scrollButtons.down ? AppIcons.scrollUp : undefined}
+        <FloatingScrollButtonsView
+          actions={[
+            ...(scrollButtons.up
+              ? [{testID: 'conversationScrollUp-button', icon: AppIcons.scrollUp, onPress: handleScrollToStart}]
+              : []),
+            ...(scrollButtons.down
+              ? [{testID: 'conversationScrollDown-button', icon: AppIcons.scrollDown, onPress: handleScrollButtonPress}]
+              : []),
+          ]}
         />
       )}
     </View>

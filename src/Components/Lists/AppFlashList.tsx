@@ -2,7 +2,7 @@ import {FlashList, type FlashListRef, ListRenderItem} from '@shopify/flash-list'
 import React, {forwardRef, useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
-import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {FloatingScrollButtonsView} from '#src/Components/Buttons/FloatingScrollButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -126,14 +126,16 @@ const AppFlashListInner = <TItem,>(
         masonry={masonry}
       />
       {effectiveScrollButton && (scrollButtons.up || scrollButtons.down) && (
-        <FloatingScrollButton
-          testID={'flashListScroll-button'}
-          icon={scrollButtons.up ? AppIcons.scrollUp : AppIcons.scrollDown}
-          onPress={scrollButtons.up ? handleScrollButtonPress : handleScrollToEnd}
-          secondaryTestID={scrollButtons.up && scrollButtons.down ? 'flashListScrollDown-button' : undefined}
-          secondaryIcon={scrollButtons.up && scrollButtons.down ? AppIcons.scrollDown : undefined}
-          secondaryOnPress={scrollButtons.up && scrollButtons.down ? handleScrollToEnd : undefined}
+        <FloatingScrollButtonsView
           small={scrollButtonSmall}
+          actions={[
+            ...(scrollButtons.up
+              ? [{testID: 'flashListScrollUp-button', icon: AppIcons.scrollUp, onPress: handleScrollButtonPress}]
+              : []),
+            ...(scrollButtons.down
+              ? [{testID: 'flashListScrollDown-button', icon: AppIcons.scrollDown, onPress: handleScrollToEnd}]
+              : []),
+          ]}
         />
       )}
     </View>
