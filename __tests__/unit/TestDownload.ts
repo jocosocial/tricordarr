@@ -4,11 +4,12 @@ describe('getDownloadFileExtension', () => {
   it('maps mime types to file extensions', () => {
     expect(getDownloadFileExtension('text/csv')).toBe('csv');
     expect(getDownloadFileExtension('text/calendar')).toBe('ics');
+    expect(getDownloadFileExtension('text/vcard')).toBe('vcf');
     expect(getDownloadFileExtension('text/plain')).toBe('txt');
   });
 
   it('falls back to txt for unknown mime types', () => {
-    expect(getDownloadFileExtension('application/octet-stream')).toBe('txt');
+    expect(getDownloadFileExtension('application/x-totally-made-up')).toBe('txt');
   });
 });
 
