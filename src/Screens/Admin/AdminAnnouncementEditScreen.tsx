@@ -1,7 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
-import React from 'react';
+import React, {useEffect} from 'react';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AdminAnnouncementForm} from '#src/Components/Forms/Admin/AdminAnnouncementForm';
 import {AppView} from '#src/Components/Views/AppView';
@@ -9,7 +10,6 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {combineDateAndTime, splitIsoDateTime} from '#src/Libraries/Admin/AdminDateTime';
 import {alertDeleteAnnouncement} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -37,7 +37,13 @@ const AdminAnnouncementEditScreenInner = ({route, navigation}: Props) => {
   const editMutation = useEditAnnouncementMutation();
   const deleteMutation = useDeleteAnnouncementMutation();
   const {setSnackbarPayload} = useSnackbar();
-  useAdminHelpButton(CommonStackComponents.announcementHelpScreen);
+  const getNavButtons = useAdminHeaderButtons(CommonStackComponents.announcementHelpScreen);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
   const {theme} = useAppTheme();
 
   const existing = announcement ? splitIsoDateTime(announcement.displayUntil) : undefined;

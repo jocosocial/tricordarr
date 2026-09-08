@@ -19,33 +19,31 @@ export const PersonalEventHelpScreen = () => {
           friends. Useful for a single-app schedule for your day or making reminders for yourself.
         </HelpTopicView>
         <HelpTopicView>
-          You can add guests to your personal events. This will automatically create a Seamail chat for it. You can add
-          or remove users later on. If you have already created your personal event you cannot add users later. You'll
-          need to create a new personal event and add them at the time of creation.
+          You can add guests when creating a private event. This automatically creates a Seamail chat. If you create the
+          event without guests, you cannot add users later; you'll need to create a new private event and invite them at
+          creation. If the event already has guests, you can add or remove users later.
         </HelpTopicView>
         <EventLocationHelpChapterView />
         <HelpChapterTitleView title={'Actions'} />
         <OverlappingHelpTopicView />
         <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
-          Edit the details of this personal event. This option only appears if you are the owner of the event.
+          Edit the details of this private event. This option only appears if you are the owner of the event.
         </HelpTopicView>
         <HelpTopicView title={'Delete'} icon={AppIcons.delete}>
-          Delete this personal event. This option only appears if you are the owner of the event and it is a personal
-          event (not a private event).
+          Delete this private event. This option only appears if you are the owner and the event has no guests.
         </HelpTopicView>
         <HelpTopicView title={'Cancel'} icon={AppIcons.cancel}>
-          Cancel this private event. This option only appears if you are the owner of the event and it is a private
-          event (not a personal event).
+          Cancel this private event. This option only appears if you are the owner and the event has guests.
         </HelpTopicView>
         <HelpTopicView title={'Leave'} icon={AppIcons.leave}>
           Leave this private event. This option only appears if you were invited and are not the owner, and appears on
           the event screen rather than the actions menu. After leaving, you return to the previous screen.
         </HelpTopicView>
         <HelpTopicView title={'Report'} icon={AppIcons.report}>
-          Report this personal event to the moderation team if it violates the Code of Conduct.
+          Report this private event to the moderation team if it violates the Code of Conduct.
         </HelpTopicView>
         <HelpTopicView title={'Chat'} icon={AppIcons.chat}>
-          Open the Seamail chat for this private event. This option only appears for private events where you are a
+          Open the Seamail chat for this private event. This option only appears for events with guests where you are a
           participant, and appears in the header rather than the actions menu.
         </HelpTopicView>
         <HelpButtonHelpTopicView />

@@ -1,9 +1,11 @@
 import {InfiniteData, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
 import notifee from 'react-native-notify-kit';
+import {v4 as uuidv4} from 'uuid';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {FezType} from '#src/Enums/FezType';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {
@@ -17,8 +19,16 @@ import {
   updateItemsInPages,
 } from '#src/Libraries/CacheReduction';
 import {calcCruiseDayTime, swiftTimestampToISO} from '#src/Libraries/DateTime';
+import {publicFezField} from '#src/Libraries/Moderation/Content';
 import {applyAppendedPostCounts, applyMarkReadCounts, postReadCountsUnchanged} from '#src/Libraries/UnreadCounts';
-import {FezData, FezListData, FezPostData} from '#src/Structs/ControllerStructs';
+import {
+  FezData,
+  FezEditLogData,
+  FezListData,
+  FezModerationData,
+  FezPostData,
+  UserHeader,
+} from '#src/Structs/ControllerStructs';
 
 const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
   get: page => page.fezzes,
@@ -457,6 +467,66 @@ export const useFezCacheReducer = () => {
   );
 
   /**
+   * After a moderator-initiated fez edit, patch the fez moderation cache:
+   * update the cached title/info/location and insert a synthetic
+   * FezEditLogData entry (the pre-edit snapshot). The server records the
+   * authoritative edit log entry; this keeps the moderation screen in sync
+   * until the next refetch.
+   */
+  const updateFezModeration = useCallback(
+    (fezID: string, previousFez: FezData, updatedFez: FezData, editor: UserHeader) => {
+      const newEdit: FezEditLogData = {
+        fezID,
+        editID: uuidv4(),
+        createdAt: new Date().toISOString(),
+        author: editor,
+        title: previousFez.title,
+        info: previousFez.info,
+        location: previousFez.location ?? '',
+      };
+      queryClient.setQueriesData<FezModerationData>({queryKey: [`/mod/fez/${fezID}`]}, oldData =>
+        oldData
+          ? {
+              ...oldData,
+              fez: {
+                ...oldData.fez,
+                title: updatedFez.title,
+                info: updatedFez.info,
+                location: updatedFez.location,
+              },
+              edits: [...oldData.edits, newEdit],
+            }
+          : oldData,
+      );
+    },
+    [queryClient],
+  );
+
+  /**
+   * After Set State on a fez, patch public list and detail caches with the
+   * visible title/info/location (quarantine placeholder vs real). Does not
+   * touch `/mod/fez/{id}`, which keeps the unmasked fields.
+   */
+  const updateFezVisibility = useCallback(
+    (
+      fezID: string,
+      fezType: FezType,
+      status: ContentModerationStatus,
+      realTitle: string,
+      realInfo: string,
+      realLocation: string | undefined,
+    ) => {
+      const title = publicFezField(realTitle, status, fezType) ?? realTitle;
+      const info = publicFezField(realInfo, status, fezType) ?? realInfo;
+      const location = publicFezField(realLocation, status, fezType);
+      const updater = (fez: FezData): FezData => ({...fez, title, info, location});
+      updateFezInAllListCaches(fezID, updater);
+      updateFezDetailCache(fezID, updater);
+    },
+    [updateFezInAllListCaches, updateFezDetailCache],
+  );
+
+  /**
    * Remove a fez from all caches after deletion.
    */
   const deleteFez = useCallback(
@@ -670,6 +740,8 @@ export const useFezCacheReducer = () => {
     invalidateFez,
     markRead,
     updateFez,
+    updateFezModeration,
+    updateFezVisibility,
     updateMembership,
     updateMute,
   };

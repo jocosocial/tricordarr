@@ -10,13 +10,24 @@ import {ShareContentType} from '#src/Libraries/Sharing';
 interface ShareMenuItemProps {
   contentType: ShareContentType;
   contentID: string | number;
+  contentText?: string;
   closeMenu?: () => void;
+  title?: string;
+  leadingIcon?: string;
 }
 
 /**
  * Actions-menu item that presents the share bottom sheet for this content.
+ * contentText, when provided, is combined with the share link when sharing to other apps.
  */
-export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItemProps) => {
+export const ShareMenuItem = ({
+  contentType,
+  contentID,
+  contentText,
+  closeMenu,
+  title = 'Share',
+  leadingIcon = AppIcons.share,
+}: ShareMenuItemProps) => {
   const {oobeCompleted} = useOobe();
   const {openShareSheet} = useShareSheet();
   const {snackbarTry} = useSnackbar();
@@ -26,8 +37,8 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
    */
   const handlePress = React.useCallback(() => {
     closeMenu?.();
-    openShareSheet(contentType, contentID);
-  }, [closeMenu, contentID, contentType, openShareSheet]);
+    openShareSheet(contentType, contentID, contentText);
+  }, [closeMenu, contentID, contentText, contentType, openShareSheet]);
 
   /**
    * If the user hasn't finished setup don't let them share content.
@@ -35,11 +46,6 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
    * wanted to share content from Start.
    */
   return (
-    <Menu.Item
-      disabled={!oobeCompleted}
-      title={'Share'}
-      leadingIcon={AppIcons.share}
-      onPress={snackbarTry(handlePress)}
-    />
+    <Menu.Item disabled={!oobeCompleted} title={title} leadingIcon={leadingIcon} onPress={snackbarTry(handlePress)} />
   );
 };

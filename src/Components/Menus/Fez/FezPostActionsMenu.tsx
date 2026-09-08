@@ -1,10 +1,12 @@
 import React, {ReactNode} from 'react';
 import {Menu} from 'react-native-paper';
 
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
@@ -13,12 +15,16 @@ interface FezPostActionsMenuProps {
   closeMenu: () => void;
   anchor: ReactNode;
   fezPost: FezPostData;
-  fez: FezData;
+  fez?: FezData;
 }
 
+/**
+ * Overflow actions for a fez post. `fez` is optional; Report is hidden when it is omitted.
+ */
 export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: FezPostActionsMenuProps) => {
   const {setString} = useClipboard();
   const commonNavigation = useCommonStack();
+  const {hasModerator} = usePrivilege();
 
   const handleReport = () => {
     closeMenu();
@@ -41,6 +47,17 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
       />
       {fez && fez.fezType !== FezType.closed && (
         <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
+      )}
+      {hasModerator && (
+        <Menu.Item
+          dense={false}
+          leadingIcon={AppIcons.moderator}
+          title={'Moderate'}
+          onPress={() => {
+            closeMenu();
+            pushModerateResource(commonNavigation, 'fezpost', fezPost.postID.toString());
+          }}
+        />
       )}
     </Menu>
   );

@@ -91,6 +91,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
     if (userNotificationData?.moderatorData) {
       count += userNotificationData.moderatorData.openReportCount;
       count += userNotificationData.moderatorData.newModeratorForumMentionCount;
+      count += userNotificationData.moderatorData.newModeratorSeamailMessageCount;
     }
     if (count) {
       return <Badge>{count}</Badge>;
@@ -231,7 +232,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 <PaperDrawer.Item
                   label={'Moderator Actions'}
                   icon={AppIcons.moderator}
-                  onPress={() => Linking.openURL(appSiteUrl('moderator'))}
+                  onPress={() => Linking.openURL(appUrl('moderator'))}
                   right={getModBadge}
                 />
               )}

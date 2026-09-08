@@ -12,7 +12,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {useFezData} from '#src/Hooks/useFezData';
+import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {openFezChatScreen} from '#src/Libraries/Navigation';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';

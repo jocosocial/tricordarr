@@ -16,17 +16,23 @@ import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface FezPostListItemProps {
-  fez: FezData;
+  fez?: FezData;
   fezPost: FezPostData;
-  index: number;
+  index?: number;
+  fullWidth?: boolean;
 }
 
-const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
+/**
+ * Renders a fez post as a chat-style message row. `fez` is optional so the same
+ * item can preview a post on a moderate screen that only has FezPostData.
+ * `fullWidth` matches ForumPostListItem: avatar on the left, no side spacer, bubble stretched.
+ */
+const FezPostListItemInternal = ({fezPost, fez, fullWidth}: FezPostListItemProps) => {
   const {currentUserID} = useSession();
   const {asPrivilegedUser} = useElevation();
   const seamailNavigation = useChatStack();
 
-  let showAuthor = fez.participantCount > 2;
+  let showAuthor = fez ? fez.participantCount > 2 : true;
 
   // Do not show the author for the users own messages.
   if (fezPost.author.userID === currentUserID) {
@@ -38,7 +44,13 @@ const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
     showAuthor = true;
   }
 
-  const messageOnRight = fezPost.author.userID === currentUserID || fezPost.author.username === asPrivilegedUser;
+  if (fullWidth) {
+    showAuthor = true;
+  }
+
+  const messageOnRight = fullWidth
+    ? false
+    : fezPost.author.userID === currentUserID || fezPost.author.username === asPrivilegedUser;
 
   const onPress = () => {
     seamailNavigation.push(CommonStackComponents.userProfileScreen, {
@@ -61,13 +73,14 @@ const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
           timestamp={new Date(fezPost.timestamp)}
           messageOnRight={messageOnRight}
           showAuthor={showAuthor}
+          fullWidth={fullWidth}
           renderActionsMenu={({visible, closeMenu, anchor}) => (
             <FezPostActionsMenu visible={visible} closeMenu={closeMenu} anchor={anchor} fezPost={fezPost} fez={fez} />
           )}
         />
         <ContentPostImages images={fezPost.image ? [fezPost.image] : []} messageOnRight={messageOnRight} />
       </MessageViewContainer>
-      {!messageOnRight && <MessageSpacerView />}
+      {!messageOnRight && !fullWidth && <MessageSpacerView />}
     </FlatListItemContent>
   );
 };

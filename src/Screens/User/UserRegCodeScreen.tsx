@@ -1,7 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View} from 'react-native';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
@@ -11,7 +12,6 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {displayString} from '#src/Libraries/RegistrationCode';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -42,7 +42,13 @@ const UserRegCodeScreenInner = ({route, navigation}: Props) => {
   const {setSnackbarPayload} = useSnackbar();
   const unlockMutation = useUnlockRegCodeMutation();
   const {setString} = useClipboard();
-  useAdminHelpButton(CommonStackComponents.registrationCodeHelpScreen);
+  const getNavButtons = useAdminHeaderButtons(CommonStackComponents.registrationCodeHelpScreen);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const handleUnlock = () => {
     unlockMutation.mutate(
