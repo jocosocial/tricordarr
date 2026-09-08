@@ -75,7 +75,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
       return (
         <View>
           <MaterialHeaderButtons left>
-            <UserProfileSelfActionsMenu userID={data.header.userID} />
+            <UserProfileSelfActionsMenu header={data.header} />
           </MaterialHeaderButtons>
         </View>
       );

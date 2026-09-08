@@ -1,3 +1,5 @@
+import * as mime from 'react-native-mime-types';
+
 /**
  * Payload for the download bottom sheet. Contents are UTF-8 text;
  * the mime type selects the file extension when saving or sharing.
@@ -13,16 +15,15 @@ export interface DownloadSheetContent {
 
 /**
  * File extension (no leading dot) for a download mime type.
+ *
+ * text/vcard is overridden to vcf: mime-db's IANA-registered extension is
+ * "vcard", but "vcf" is the extension every contacts app actually expects.
  */
 export const getDownloadFileExtension = (mimeType: string): string => {
-  switch (mimeType) {
-    case 'text/csv':
-      return 'csv';
-    case 'text/calendar':
-      return 'ics';
-    default:
-      return 'txt';
+  if (mimeType === 'text/vcard') {
+    return 'vcf';
   }
+  return mime.extension(mimeType) || 'txt';
 };
 
 /**

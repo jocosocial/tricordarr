@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {UserVCardDownloadMenuItem} from '#src/Components/Menus/User/UserVCardDownloadMenuItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -124,6 +125,7 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <ShareMenuItem contentType={ShareContentType.user} contentID={profile.header.userID} closeMenu={closeMenu} />
+      <UserVCardDownloadMenuItem header={profile.header} closeMenu={closeMenu} />
       <Divider bold={true} />
       <Menu.Item
         leadingIcon={isBlocked ? AppIcons.unblock : AppIcons.block}
