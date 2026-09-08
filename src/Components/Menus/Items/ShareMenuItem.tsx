@@ -10,6 +10,7 @@ import {ShareContentType} from '#src/Libraries/Sharing';
 interface ShareMenuItemProps {
   contentType: ShareContentType;
   contentID: string | number;
+  contentText?: string;
   closeMenu?: () => void;
   title?: string;
   leadingIcon?: string;
@@ -17,10 +18,12 @@ interface ShareMenuItemProps {
 
 /**
  * Actions-menu item that presents the share bottom sheet for this content.
+ * contentText, when provided, is combined with the share link when sharing to other apps.
  */
 export const ShareMenuItem = ({
   contentType,
   contentID,
+  contentText,
   closeMenu,
   title = 'Share',
   leadingIcon = AppIcons.share,
@@ -34,8 +37,8 @@ export const ShareMenuItem = ({
    */
   const handlePress = React.useCallback(() => {
     closeMenu?.();
-    openShareSheet(contentType, contentID);
-  }, [closeMenu, contentID, contentType, openShareSheet]);
+    openShareSheet(contentType, contentID, contentText);
+  }, [closeMenu, contentID, contentText, contentType, openShareSheet]);
 
   /**
    * If the user hasn't finished setup don't let them share content.

@@ -175,7 +175,7 @@ export const defaultAppConfig: AppConfig = {
     highlightForumAlertWords: true,
     autosavePhotos: true,
     autoCompressOversizedImages: true,
-    shareAppURI: true,
+    shareAppURI: false,
     seamailIncludeLfgs: true,
     seamailIncludePrivateEvents: true,
   },
@@ -249,7 +249,7 @@ export const getAppConfig = async () => {
     appConfig.userPreferences.autoCompressOversizedImages = true;
   }
   if (appConfig.userPreferences.shareAppURI === undefined) {
-    appConfig.userPreferences.shareAppURI = true;
+    appConfig.userPreferences.shareAppURI = false;
   }
   if (appConfig.userPreferences.seamailIncludeLfgs === undefined) {
     appConfig.userPreferences.seamailIncludeLfgs = true;

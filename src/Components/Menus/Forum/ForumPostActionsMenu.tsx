@@ -62,7 +62,12 @@ export const ForumPostActionsMenu = ({
           closeMenu();
         }}
       />
-      <ShareMenuItem contentType={ShareContentType.forumPost} contentID={forumPost.postID} closeMenu={closeMenu} />
+      <ShareMenuItem
+        contentType={ShareContentType.forumPost}
+        contentID={forumPost.postID}
+        contentText={forumPost.text}
+        closeMenu={closeMenu}
+      />
       <Divider bold={true} />
       {bySelf && (
         <>
