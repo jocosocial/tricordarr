@@ -47,10 +47,8 @@ export const UserProfileView = ({user, setRefreshing}: UserProfileViewProps) => 
       <PaddedContentView padTop={true} style={styles.listContentCenter}>
         <UserProfileAvatar user={user} setRefreshing={setRefreshing} />
       </PaddedContentView>
-      <PaddedContentView style={styles.listContentCenter}>
-        <Text selectable={true} variant={'headlineMedium'} style={styles.titleText}>
-          <UserBylineTag user={user.header} includePronoun={false} variant={'headlineMedium'} />
-        </Text>
+      <PaddedContentView>
+        <UserBylineTag user={user.header} includePronoun={false} variant={'headlineMedium'} style={styles.titleText} />
       </PaddedContentView>
       <PaddedContentView>
         <UserProfileCard user={user} />
