@@ -17,6 +17,7 @@ interface SeamailCreateFormProps {
   formRef: React.RefObject<FormikProps<SeamailFormValues> | null>;
   initialValues: SeamailFormValues;
   onValidationChange?: (isValid: boolean) => void;
+  showPostAsOptions?: boolean;
 }
 
 const validationSchema = Yup.object().shape({
@@ -26,9 +27,10 @@ const validationSchema = Yup.object().shape({
 
 interface InnerSeamailCreateFormProps {
   onValidationChange?: (isValid: boolean) => void;
+  showPostAsOptions?: boolean;
 }
 
-const InnerSeamailCreateForm = ({onValidationChange}: InnerSeamailCreateFormProps) => {
+const InnerSeamailCreateForm = ({onValidationChange, showPostAsOptions = true}: InnerSeamailCreateFormProps) => {
   const {values, setFieldValue, isValid, dirty} = useFormikContext<SeamailFormValues>();
 
   useElevationFieldSync('createdByModerator', 'createdByTwitarrTeam');
@@ -56,12 +58,18 @@ const InnerSeamailCreateForm = ({onValidationChange}: InnerSeamailCreateFormProp
         onPress={() => setFieldValue('fezType', values.fezType === FezType.open ? FezType.closed : FezType.open)}
         value={values.fezType === FezType.open}
       />
-      <PrivilegedAccountButtons testIDPrefix={'seamailCreatePostAs'} label={'Post as User'} />
+      {showPostAsOptions && <PrivilegedAccountButtons testIDPrefix={'seamailCreatePostAs'} label={'Post as User'} />}
     </PaddedContentView>
   );
 };
 
-export const SeamailCreateForm = ({onSubmit, formRef, initialValues, onValidationChange}: SeamailCreateFormProps) => {
+export const SeamailCreateForm = ({
+  onSubmit,
+  formRef,
+  initialValues,
+  onValidationChange,
+  showPostAsOptions,
+}: SeamailCreateFormProps) => {
   return (
     <Formik
       innerRef={formRef}
@@ -69,7 +77,7 @@ export const SeamailCreateForm = ({onSubmit, formRef, initialValues, onValidatio
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
-      <InnerSeamailCreateForm onValidationChange={onValidationChange} />
+      <InnerSeamailCreateForm onValidationChange={onValidationChange} showPostAsOptions={showPostAsOptions} />
     </Formik>
   );
 };
