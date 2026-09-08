@@ -10,7 +10,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {FloatingScrollButtonsView} from '#src/Components/Buttons/FloatingScrollButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -286,6 +286,15 @@ export const ConversationListV2 = <TItem,>({
     }
   }, [listRef, newDividerIndex]);
 
+  /** Scroll to the list edge opposite the divider button's direction. */
+  const handleSecondaryScrollButtonPress = useCallback(() => {
+    if (scrollButtonDirection === 'up') {
+      listRef.current?.scrollToEnd({animated: true});
+    } else {
+      listRef.current?.scrollToIndex({index: 0, animated: true});
+    }
+  }, [listRef, scrollButtonDirection]);
+
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const {contentSize, layoutMeasurement, contentOffset} = event.nativeEvent;
@@ -467,10 +476,30 @@ export const ConversationListV2 = <TItem,>({
         scrollsToTop={false}
       />
       {effectiveScrollButton && scrollButtonDirection !== null && (
-        <FloatingScrollButton
-          testID={'conversationListScroll-button'}
-          onPress={handleScrollButtonPress}
-          icon={scrollButtonDirection === 'up' ? AppIcons.scrollUp : AppIcons.scrollDown}
+        <FloatingScrollButtonsView
+          actions={
+            scrollButtonDirection === 'up'
+              ? [
+                  {testID: 'conversationListScroll-button', icon: AppIcons.scrollUp, onPress: handleScrollButtonPress},
+                  {
+                    testID: 'conversationListSecondaryScroll-button',
+                    icon: AppIcons.scrollDown,
+                    onPress: handleSecondaryScrollButtonPress,
+                  },
+                ]
+              : [
+                  {
+                    testID: 'conversationListScroll-button',
+                    icon: AppIcons.scrollDown,
+                    onPress: handleScrollButtonPress,
+                  },
+                  {
+                    testID: 'conversationListSecondaryScroll-button',
+                    icon: AppIcons.scrollUp,
+                    onPress: handleSecondaryScrollButtonPress,
+                  },
+                ]
+          }
         />
       )}
     </View>
