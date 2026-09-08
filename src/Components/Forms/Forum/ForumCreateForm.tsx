@@ -2,14 +2,11 @@ import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
 import React, {useEffect} from 'react';
 import * as Yup from 'yup';
 
-import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
+import {PrivilegedAccountButtons} from '#src/Components/Buttons/SegmentedButtons/PrivilegedAccountButtons';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {useElevation} from '#src/Context/Contexts/ElevationContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {AppIcons} from '#src/Enums/Icons';
-import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
+import {useElevationFieldSync} from '#src/Hooks/Elevation/useElevationFieldSync';
 import {InfoStringValidation} from '#src/Libraries/ValidationSchema';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
@@ -28,19 +25,9 @@ interface InnerFormProps {
 }
 
 const InnerForm = ({onValidationChange}: InnerFormProps) => {
-  const {values, isValid, dirty} = useFormikContext<ForumThreadValues>();
-  const {hasModerator, hasTwitarrTeam} = usePrivilege();
-  const {becomeUser, clearElevation} = useElevation();
+  const {isValid, dirty} = useFormikContext<ForumThreadValues>();
 
-  useEffect(() => {
-    if (values.postAsModerator) {
-      becomeUser(PrivilegedUserAccounts.moderator);
-    } else if (values.postAsTwitarrTeam) {
-      becomeUser(PrivilegedUserAccounts.TwitarrTeam);
-    } else {
-      clearElevation();
-    }
-  }, [values.postAsModerator, values.postAsTwitarrTeam, becomeUser, clearElevation]);
+  useElevationFieldSync('postAsModerator', 'postAsTwitarrTeam');
 
   useEffect(() => {
     // Only consider the form valid if it's both valid AND has been touched
@@ -51,24 +38,7 @@ const InnerForm = ({onValidationChange}: InnerFormProps) => {
     <PaddedContentView>
       <DirtyDetectionField />
       <TextField name={'title'} testID={'forumCreateTitle-input'} label={'Title'} />
-      {hasModerator && (
-        <BooleanField
-          name={'postAsModerator'}
-          testID={'forumCreateAsModerator-switch'}
-          label={'Post as Moderator'}
-          icon={AppIcons.moderator}
-          helperText={'This will also create the forum as the Moderator user.'}
-        />
-      )}
-      {hasTwitarrTeam && (
-        <BooleanField
-          name={'postAsTwitarrTeam'}
-          testID={'forumCreateAsTwitarrTeam-switch'}
-          label={'Post as TwitarrTeam'}
-          icon={AppIcons.twitarrteam}
-          helperText={'This will also create the forum as the TwitarrTeam user.'}
-        />
-      )}
+      <PrivilegedAccountButtons testIDPrefix={'forumCreatePostAs'} label={'Post as User'} />
     </PaddedContentView>
   );
 };
