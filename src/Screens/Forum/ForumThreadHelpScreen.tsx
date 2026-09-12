@@ -30,6 +30,10 @@ export const ForumThreadHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Post Actions'}>
           <HelpTopicView>Long-press a post to access a menu of actions for that specific post.</HelpTopicView>
+          <HelpTopicView title={'Reply'} icon={AppIcons.reply}>
+            Adds an @mention of the post's author to the box at the bottom of the screen, so they are notified when you
+            post. Anything you have already typed is kept. Not shown on your own posts.
+          </HelpTopicView>
           <CopyButtonHelpTopicView />
           <ShareButtonHelpTopicView />
           <HelpTopicView title={'Edit'} icon={AppIcons.edit}>

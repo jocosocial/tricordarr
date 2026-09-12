@@ -34,6 +34,12 @@ interface MessageViewProps {
   isBookmarked?: boolean;
   isPinned?: boolean;
   renderActionsMenu: (props: MessageViewActionsMenuProps) => ReactNode;
+  /**
+   * Applied to the pressable that opens the actions menu, so E2E flows can long-press a
+   * message by id instead of by screen coordinates. Every message in a list shares the
+   * value, so flows select a particular one with Maestro's `index`.
+   */
+  testID?: string;
 }
 
 /**
@@ -56,6 +62,7 @@ export const MessageView = ({
   isBookmarked,
   isPinned,
   renderActionsMenu,
+  testID,
 }: MessageViewProps) => {
   const {commonStyles} = useStyles();
   const {visible: menuVisible, openMenu, closeMenu} = useMenu();
@@ -112,6 +119,7 @@ export const MessageView = ({
   return (
     <View style={styles.messageView}>
       <TouchableOpacity
+        testID={testID}
         style={styles.opacity}
         activeOpacity={1}
         /**
