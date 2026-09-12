@@ -46,7 +46,7 @@ export const LfgListHelpScreen = () => {
             highlighted. Long press the filter button to clear all active filters.
           </HelpTopicView>
           <HelpTopicView title={'Former LFGs'} icon={AppIcons.lfgFormer}>
-            View LFGs, Personal Events, and Seamails that you were previously a member of, but have since left or been
+            View LFGs, Private Events, and Seamails that you were previously a member of, but have since left or been
             removed from. You can use this to report any content that you can no longer access. You still will be unable
             to directly view the content.
           </HelpTopicView>

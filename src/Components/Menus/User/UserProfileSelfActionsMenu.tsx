@@ -4,19 +4,21 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {UserVCardDownloadMenuItem} from '#src/Components/Menus/User/UserVCardDownloadMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {UserHeader} from '#src/Structs/ControllerStructs';
 
 interface UserProfileSelfActionsMenuProps {
-  userID: string;
+  header: UserHeader;
 }
 
 /**
  * Actions menu for when you're viewing your own profile.
  */
-export const UserProfileSelfActionsMenu = ({userID}: UserProfileSelfActionsMenuProps) => {
+export const UserProfileSelfActionsMenu = ({header}: UserProfileSelfActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
 
@@ -30,7 +32,8 @@ export const UserProfileSelfActionsMenu = ({userID}: UserProfileSelfActionsMenuP
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <ShareMenuItem contentType={ShareContentType.user} contentID={userID} closeMenu={closeMenu} />
+      <ShareMenuItem contentType={ShareContentType.user} contentID={header.userID} closeMenu={closeMenu} />
+      <UserVCardDownloadMenuItem header={header} closeMenu={closeMenu} />
       <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
     </AppMenu>
   );

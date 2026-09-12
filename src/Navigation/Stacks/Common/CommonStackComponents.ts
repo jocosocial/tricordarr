@@ -25,6 +25,7 @@ import {
   ScheduleDayParams,
   WithElevation,
   WithInitialUserHeaders,
+  WithIntent,
   WithScrollToTopIntent,
 } from '#src/Types/RouteParams';
 
@@ -66,6 +67,44 @@ export type CommonStackParamList = {
     contentID: string | number;
   };
   ReportHelpScreen: undefined;
+  ModeratorHomeScreen: undefined;
+  ModeratorReportsScreen: {
+    closed?: boolean;
+  };
+  ModeratorLogScreen: undefined;
+  ModeratorGuideScreen: undefined;
+  ModerateForumPostScreen: {
+    id: string;
+  };
+  ModerateForumThreadScreen: {
+    id: string;
+  };
+  ModerateLfgScreen: {
+    id: string;
+  };
+  ModerateFezPostScreen: {
+    id: string;
+  };
+  ModerateProfileScreen: {
+    id: string;
+  };
+  ModerateChangeUsernameScreen: {
+    userID: string;
+    username: string;
+  };
+  ModerateUserScreen: {
+    id: string;
+  };
+  ModeratePhotostreamScreen: {
+    id: string;
+  };
+  ModeratePrivateEventScreen: {
+    id: string;
+  };
+  ModerateMicroKaraokeSongsScreen: undefined;
+  ModerateMicroKaraokeSongScreen: {
+    id: string;
+  };
   EasterEggScreen: undefined;
   ForumThreadUserScreen: {
     user: UserHeader;
@@ -88,16 +127,25 @@ export type CommonStackParamList = {
   ForumThreadScreen: WithElevation<{
     forumID: string;
     forumListData?: ForumListData;
+    /**
+     * Original title from the moderation API. Public `/forum/{id}` masks
+     * quarantined threads as "Forum Title is under moderator review".
+     */
+    titleOverride?: string;
   }>;
   AlertKeywordsScreen: undefined;
   MuteKeywordsScreen: undefined;
   ForumThreadPostScreen: WithElevation<{
     postID: string;
+    forumID?: string;
   }>;
-  ForumPostEditScreen: {
-    postData: PostData;
-    forumData?: ForumData;
-  };
+  ForumPostEditScreen: WithIntent<
+    {
+      postData: PostData;
+      forumID?: string;
+    },
+    'moderate'
+  >;
   SeamailListScreen: WithElevation<
     WithScrollToTopIntent<
       NoDrawerParams & {
@@ -127,9 +175,12 @@ export type CommonStackParamList = {
   SeamailAddParticipantScreen: {
     fez: FezData;
   };
-  SeamailEditScreen: {
-    fezID: string;
-  };
+  SeamailEditScreen: WithIntent<
+    {
+      fezID: string;
+    },
+    'moderate'
+  >;
   LfgScreen: {
     fezID: string;
   };
@@ -144,19 +195,28 @@ export type CommonStackParamList = {
     fezID: string;
     initialReadCount?: number;
   };
-  LfgEditScreen: {
-    fez: FezData;
-  };
+  LfgEditScreen: WithIntent<
+    {
+      fez: FezData;
+    },
+    'moderate'
+  >;
   LfgSettingsScreen: undefined;
-  ForumThreadEditScreen: {
-    forumData: ForumData;
-  };
+  ForumThreadEditScreen: WithIntent<
+    {
+      forumData: ForumData;
+    },
+    'moderate'
+  >;
   AccessibilitySettingsScreen: undefined;
   ImageSettingsScreen: undefined;
   ShareSettingsScreen: undefined;
-  PersonalEventEditScreen: {
-    personalEvent: FezData;
-  };
+  PersonalEventEditScreen: WithIntent<
+    {
+      personalEvent: FezData;
+    },
+    'moderate'
+  >;
   PersonalEventCreateScreen: WithInitialUserHeaders<{
     cruiseDay?: number;
   }>;
@@ -365,6 +425,21 @@ export enum CommonStackComponents {
   recoveryKeyScreen = 'RecoveryKeyScreen',
   reportScreen = 'ReportScreen',
   reportHelpScreen = 'ReportHelpScreen',
+  moderatorHomeScreen = 'ModeratorHomeScreen',
+  moderatorReportsScreen = 'ModeratorReportsScreen',
+  moderatorLogScreen = 'ModeratorLogScreen',
+  moderatorGuideScreen = 'ModeratorGuideScreen',
+  moderateForumPostScreen = 'ModerateForumPostScreen',
+  moderateForumThreadScreen = 'ModerateForumThreadScreen',
+  moderateLfgScreen = 'ModerateLfgScreen',
+  moderateFezPostScreen = 'ModerateFezPostScreen',
+  moderateProfileScreen = 'ModerateProfileScreen',
+  moderateChangeUsernameScreen = 'ModerateChangeUsernameScreen',
+  moderateUserScreen = 'ModerateUserScreen',
+  moderatePhotostreamScreen = 'ModeratePhotostreamScreen',
+  moderatePrivateEventScreen = 'ModeratePrivateEventScreen',
+  moderateMicroKaraokeSongsScreen = 'ModerateMicroKaraokeSongsScreen',
+  moderateMicroKaraokeSongScreen = 'ModerateMicroKaraokeSongScreen',
   easterEggScreen = 'EasterEggScreen',
   forumThreadUserScreen = 'ForumThreadUserScreen',
   forumPostUserScreen = 'ForumPostUserScreen',
@@ -572,6 +647,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.todayHelpScreen
   | CommonStackComponents.krakenTalkHelpScreen
   | CommonStackComponents.reportHelpScreen
+  | CommonStackComponents.moderatorGuideScreen
   | CommonStackComponents.adminHelpScreen
   | CommonStackComponents.announcementHelpScreen
   | CommonStackComponents.registrationCodeHelpScreen

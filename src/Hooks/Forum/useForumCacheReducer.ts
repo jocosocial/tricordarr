@@ -1,8 +1,10 @@
 import {InfiniteData, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
+import {v4 as uuidv4} from 'uuid';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {
   filterItemsFromPages,
@@ -13,6 +15,7 @@ import {
   sortedInsertIntoPages,
   updateItemsInPages,
 } from '#src/Libraries/CacheReduction';
+import {publicForumTitle} from '#src/Libraries/Moderation/Content';
 import {
   applyAppendedPostCounts,
   applyDeletedPostCounts,
@@ -22,11 +25,16 @@ import {
 import {
   CategoryData,
   ForumData,
+  ForumEditLogData,
   ForumListData,
+  ForumModerationData,
+  ForumPostModerationData,
   ForumSearchData,
   PostData,
   PostDetailData,
+  PostEditLogData,
   PostSearchData,
+  UserHeader,
 } from '#src/Structs/ControllerStructs';
 
 /**
@@ -735,6 +743,45 @@ export const useForumCacheReducer = () => {
   );
 
   /**
+   * After a moderator-initiated forum rename, patch the forum moderation
+   * cache: update the cached title and insert a synthetic ForumEditLogData
+   * entry (the pre-edit snapshot). Uses the submitted title, not the public
+   * ForumData — quarantined threads return {@link FORUM_QUARANTINED_TITLE}.
+   * The server records the authoritative edit log entry; this keeps the
+   * moderation screen in sync until the next refetch.
+   */
+  const renameThreadModeration = useCallback(
+    (forumID: string, previousTitle: string, newTitle: string, editor: UserHeader) => {
+      const newEdit: ForumEditLogData = {
+        forumID,
+        editID: uuidv4(),
+        createdAt: new Date().toISOString(),
+        author: editor,
+        title: previousTitle,
+      };
+      queryClient.setQueriesData<ForumModerationData>({queryKey: [`/mod/forum/${forumID}`]}, oldData =>
+        oldData ? {...oldData, title: newTitle, edits: [...oldData.edits, newEdit]} : oldData,
+      );
+    },
+    [queryClient],
+  );
+
+  /**
+   * After Set State on a forum thread, patch public list and thread caches
+   * with the visible title (quarantine placeholder vs real) and isLocked.
+   * Does not touch `/mod/forum/{id}`, which keeps the unmasked title.
+   */
+  const updateThreadVisibility = useCallback(
+    (forumID: string, categoryID: string | undefined, status: ContentModerationStatus, realTitle: string) => {
+      const title = publicForumTitle(realTitle, status);
+      const isLocked = status === ContentModerationStatus.locked;
+      updateForumListInAllCaches(forumID, categoryID, entry => ({...entry, title, isLocked}));
+      updateForumThreadCache(forumID, page => ({...page, title, isLocked}));
+    },
+    [updateForumListInAllCaches, updateForumThreadCache],
+  );
+
+  /**
    * Toggle isPinned on a post across thread, search, and pinned posts caches.
    */
   const updatePostPin = useCallback(
@@ -796,6 +843,44 @@ export const useForumCacheReducer = () => {
       );
     },
     [queryClient, updatePostInThreadCaches, updatePostInSearchCaches],
+  );
+
+  /**
+   * After a moderator-initiated post edit, patch the forum post moderation
+   * cache: update the cached PostDetailData's text/images and insert a
+   * synthetic PostEditLogData entry (the pre-edit snapshot). Uses the
+   * submitted content, not the public PostData — quarantined posts return
+   * placeholder copy such as "this forum post is under moderator review".
+   * The server records the authoritative edit log entry; this keeps the
+   * moderation screen in sync until the next refetch.
+   */
+  const updatePostModeration = useCallback(
+    (
+      postID: number,
+      previousPost: PostData,
+      nextText: string,
+      nextImages: string[] | undefined,
+      editor: UserHeader,
+    ) => {
+      const newEdit: PostEditLogData = {
+        postID,
+        editID: uuidv4(),
+        createdAt: new Date().toISOString(),
+        author: editor,
+        text: previousPost.text,
+        images: previousPost.images,
+      };
+      queryClient.setQueriesData<ForumPostModerationData>({queryKey: [`/mod/forumpost/${postID}`]}, oldData =>
+        oldData
+          ? {
+              ...oldData,
+              forumPost: {...oldData.forumPost, text: nextText, images: nextImages},
+              edits: [...oldData.edits, newEdit],
+            }
+          : oldData,
+      );
+    },
+    [queryClient],
   );
 
   /**
@@ -924,11 +1009,14 @@ export const useForumCacheReducer = () => {
     deletePost,
     markRead,
     renameThread,
+    renameThreadModeration,
     updateFavorite,
     updateMute,
     updatePinned,
     updatePost,
     updatePostBookmark,
+    updatePostModeration,
     updatePostPin,
+    updateThreadVisibility,
   };
 };

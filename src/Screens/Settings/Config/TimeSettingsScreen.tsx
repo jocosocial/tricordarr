@@ -134,7 +134,7 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
                   onPress={toggleForceShowTimezoneWarning}
                   value={forceShowTimezoneWarning}
                   helperText={
-                    'Always show the timezone warning throughout schedule, event, LFG, and personal event screens.'
+                    'Always show the timezone warning throughout schedule, event, LFG, and private event screens.'
                   }
                   disabled={appConfig.silenceTimezoneWarnings}
                   style={commonStyles.paddingHorizontalSmall}

@@ -13,9 +13,10 @@ import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
 interface PhotostreamAuthorViewProps {
   image: PhotostreamImageData;
+  hideMenuButton?: boolean;
 }
 
-export const PhotostreamImageHeaderView = (props: PhotostreamAuthorViewProps) => {
+export const PhotostreamImageHeaderView = ({image, hideMenuButton}: PhotostreamAuthorViewProps) => {
   const {commonStyles} = useStyles();
   const [menuVisible, setMenuVisible] = React.useState(false);
   const openMenu = () => setMenuVisible(true);
@@ -42,28 +43,30 @@ export const PhotostreamImageHeaderView = (props: PhotostreamAuthorViewProps) =>
 
   const onHeaderPress = () =>
     commonNavigation.push(CommonStackComponents.userProfileScreen, {
-      userID: props.image.author.userID,
+      userID: image.author.userID,
     });
 
   return (
     <View style={styles.viewContainer}>
       <TouchableOpacity style={styles.avatarContainer} onPress={onHeaderPress}>
-        <AvatarImage userHeader={props.image.author} />
+        <AvatarImage userHeader={image.author} />
       </TouchableOpacity>
       <View style={styles.rowContainer}>
         <TouchableOpacity onPress={onHeaderPress}>
-          <UserBylineTag user={props.image.author} style={commonStyles.bold} />
+          <UserBylineTag user={image.author} style={commonStyles.bold} />
         </TouchableOpacity>
-        <RelativeTimeTag date={new Date(props.image.createdAt)} variant={'labelMedium'} />
+        <RelativeTimeTag date={new Date(image.createdAt)} variant={'labelMedium'} />
       </View>
-      <View>
-        <PhotostreamImageActionsMenu
-          anchor={<IconButton icon={AppIcons.menu} style={styles.menuIconButton} onPress={openMenu} />}
-          image={props.image}
-          closeMenu={closeMenu}
-          visible={menuVisible}
-        />
-      </View>
+      {!hideMenuButton && (
+        <View>
+          <PhotostreamImageActionsMenu
+            anchor={<IconButton icon={AppIcons.menu} style={styles.menuIconButton} onPress={openMenu} />}
+            image={image}
+            closeMenu={closeMenu}
+            visible={menuVisible}
+          />
+        </View>
+      )}
     </View>
   );
 };

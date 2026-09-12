@@ -4,6 +4,7 @@ import {StyleSheet, View} from 'react-native';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AnnouncementPostAsButtons} from '#src/Components/Buttons/SegmentedButtons/AnnouncementPostAsButtons';
 import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
@@ -17,6 +18,7 @@ interface AdminAnnouncementFormProps {
   initialValues: AdminAnnouncementFormValues;
   onSubmit: (values: AdminAnnouncementFormValues, helpers: FormikHelpers<AdminAnnouncementFormValues>) => void;
   buttonText: string;
+  showPostAsOptions?: boolean;
 }
 
 /**
@@ -42,7 +44,12 @@ const validationSchema = Yup.object().shape({
   }),
 });
 
-export const AdminAnnouncementForm = ({initialValues, onSubmit, buttonText}: AdminAnnouncementFormProps) => {
+export const AdminAnnouncementForm = ({
+  initialValues,
+  onSubmit,
+  buttonText,
+  showPostAsOptions,
+}: AdminAnnouncementFormProps) => {
   const {commonStyles} = useStyles();
   const styles = StyleSheet.create({
     field: {
@@ -56,7 +63,7 @@ export const AdminAnnouncementForm = ({initialValues, onSubmit, buttonText}: Adm
       onSubmit={onSubmit}
       validationSchema={validationSchema}
       enableReinitialize={true}>
-      {({handleSubmit, isSubmitting, isValid}) => (
+      {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
           <TextField
@@ -72,11 +79,16 @@ export const AdminAnnouncementForm = ({initialValues, onSubmit, buttonText}: Adm
           <View style={styles.field}>
             <TimePickerField name={'displayUntilTime'} testID={'announcementTime-button'} />
           </View>
+          {showPostAsOptions && (
+            <View style={styles.field}>
+              <AnnouncementPostAsButtons name={'postAsUser'} label={'Post as User'} />
+            </View>
+          )}
           <PrimaryActionButton
             testID={'announcementSave-button'}
             buttonText={buttonText}
             onPress={handleSubmit}
-            disabled={!isValid || isSubmitting}
+            disabled={!isValid || isSubmitting || !dirty}
             isLoading={isSubmitting}
           />
         </View>

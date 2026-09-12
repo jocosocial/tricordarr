@@ -21,7 +21,13 @@ import {styleDefaults} from '#src/Context/Providers/StyleProvider';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
-import {getShareLink, getShareSheetTitle, ShareContentType, ShareLinkMode} from '#src/Libraries/Sharing';
+import {
+  buildShareMessage,
+  getShareLink,
+  getShareSheetTitle,
+  ShareContentType,
+  ShareLinkMode,
+} from '#src/Libraries/Sharing';
 
 const handleHeight = 24;
 const titleHeight = 24;
@@ -34,6 +40,7 @@ const switchRowHeight = 32;
 interface ShareBottomSheetProps {
   contentType?: ShareContentType;
   contentID?: string | number;
+  contentText?: string;
   isPresented: boolean;
   onDismiss: () => void;
 }
@@ -43,7 +50,13 @@ interface ShareBottomSheetProps {
  * Copy, Share to Apps, and the QR use app deep links unless Share Web URLs is on.
  * Open in Browser always uses the web URL.
  */
-export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss}: ShareBottomSheetProps) => {
+export const ShareBottomSheet = ({
+  contentType,
+  contentID,
+  contentText,
+  isPresented,
+  onDismiss,
+}: ShareBottomSheetProps) => {
   const sheetRef = useRef<BottomSheetModal>(null);
   const isSheetOpenRef = useRef(false);
   const [showQr, setShowQr] = useState(false);
@@ -182,10 +195,16 @@ export const ShareBottomSheet = ({contentType, contentID, isPresented, onDismiss
   /**
    * Opens the system share sheet for the content URL or app URI.
    * Android puts the link in message so it is sent as text; iOS uses url so the sheet can preview it.
+   * When contentText is present (e.g. a post body), both platforms share it combined with the
+   * link as one plaintext message instead, since there's no separate preview to preserve.
    */
   const handleShare = snackbarTry(async () => {
     await Share.open({
-      ...(isAndroid ? {message: shareTarget} : {url: shareTarget}),
+      ...(contentText
+        ? {message: buildShareMessage(contentText, shareTarget)}
+        : isAndroid
+          ? {message: shareTarget}
+          : {url: shareTarget}),
       failOnCancel: false,
     });
   });

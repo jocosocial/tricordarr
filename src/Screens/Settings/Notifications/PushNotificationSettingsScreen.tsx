@@ -205,7 +205,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
       categories: ['microKaraokeSongReady'] as const,
     },
     {
-      title: 'Personal Events',
+      title: 'Private Events',
       categories: [
         'personalEventStarting',
         'addedToPrivateEvent',

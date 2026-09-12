@@ -11,11 +11,13 @@ import {ShareContentType} from '#src/Libraries/Sharing';
 export const ShareSheetProvider = ({children}: PropsWithChildren) => {
   const [contentType, setContentType] = useState<ShareContentType | undefined>();
   const [contentID, setContentID] = useState<string | number | undefined>();
+  const [contentText, setContentText] = useState<string | undefined>();
   const [isPresented, setIsPresented] = useState(false);
 
-  const openShareSheet = useCallback((type: ShareContentType, id: string | number) => {
+  const openShareSheet = useCallback((type: ShareContentType, id: string | number, text?: string) => {
     setContentType(type);
     setContentID(id);
+    setContentText(text);
     setIsPresented(true);
   }, []);
 
@@ -37,6 +39,7 @@ export const ShareSheetProvider = ({children}: PropsWithChildren) => {
       <ShareBottomSheet
         contentType={contentType}
         contentID={contentID}
+        contentText={contentText}
         isPresented={isPresented && contentType !== undefined && String(contentID ?? '').length > 0}
         onDismiss={closeShareSheet}
       />

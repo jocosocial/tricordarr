@@ -10,13 +10,14 @@ import {UserProfileForm} from '#src/Components/Forms/User/UserProfileForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserProfileMutation} from '#src/Queries/User/UserProfileMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
-import {UserHeader, UserProfileUploadData} from '#src/Structs/ControllerStructs';
+import {ProfileModerationData, UserHeader, UserProfileUploadData} from '#src/Structs/ControllerStructs';
 import {UserProfileFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userProfileEditScreen>;
@@ -32,6 +33,8 @@ export const UserProfileEditScreen = (props: Props) => {
 const UserProfileEditScreenInner = ({route, navigation}: Props) => {
   const profileMutation = useUserProfileMutation();
   const queryClient = useQueryClient();
+  const {currentUserID} = useSession();
+  const isSelf = route.params.user.header.userID === currentUserID;
   const initialValues: UserProfileFormValues = {
     displayName: route.params.user.header.displayName || '',
     realName: route.params.user.realName,
@@ -83,11 +86,15 @@ const UserProfileEditScreenInner = ({route, navigation}: Props) => {
     profileMutation.mutate(
       {
         profileData: postData,
+        userID: isSelf ? undefined : route.params.user.header.userID,
       },
       {
         onSettled: () => helpers.setSubmitting(false),
         onSuccess: async () => {
-          const invalidations = UserHeader.getCacheKeys(route.params.user.header).map(key => {
+          const keys = UserHeader.getCacheKeys(route.params.user.header).concat(
+            ProfileModerationData.getCacheKeys(route.params.user.header.userID),
+          );
+          const invalidations = keys.map(key => {
             return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);

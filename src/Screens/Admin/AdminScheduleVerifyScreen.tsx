@@ -1,7 +1,8 @@
 import {Formik} from 'formik';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
@@ -13,9 +14,9 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertApplySchedule} from '#src/Libraries/Alerts/AdminAlerts';
+import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useScheduleApplyMutation} from '#src/Queries/Admin/ScheduleMutations';
 import {useScheduleVerifyQuery} from '#src/Queries/Admin/ScheduleQueries';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
@@ -51,11 +52,18 @@ export const AdminScheduleVerifyScreen = () => {
 };
 
 const AdminScheduleVerifyScreenInner = () => {
+  const navigation = useCommonStack();
   const {data, refetch, isLoading} = useScheduleVerifyQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const applyMutation = useScheduleApplyMutation();
   const {setSnackbarPayload} = useSnackbar();
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const onApply = (values: AdminScheduleApplyFormValues) => {
     alertApplySchedule(() =>

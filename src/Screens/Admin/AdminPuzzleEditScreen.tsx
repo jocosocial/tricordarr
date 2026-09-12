@@ -1,15 +1,15 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {AdminPuzzleForm} from '#src/Components/Forms/Admin/AdminPuzzleForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {combineDateAndTime, splitIsoDateTime} from '#src/Libraries/Admin/AdminDateTime';
 import {hintsToJson, parseHintsJson} from '#src/Libraries/Admin/HuntPuzzles';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -34,7 +34,13 @@ const AdminPuzzleEditScreenInner = ({route, navigation}: Props) => {
   const {data, isLoading} = useHuntAdminQuery({huntID});
   const mutation = usePatchHuntPuzzleMutation();
   const {setSnackbarPayload} = useSnackbar();
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const puzzle = data?.puzzles.find(item => item.puzzleID === puzzleID);
   const existing = puzzle?.unlockTime ? splitIsoDateTime(puzzle.unlockTime) : undefined;

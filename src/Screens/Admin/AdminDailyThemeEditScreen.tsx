@@ -1,14 +1,14 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
-import React from 'react';
+import React, {useEffect} from 'react';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AdminDailyThemeForm} from '#src/Components/Forms/Admin/AdminDailyThemeForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {alertDeleteDailyTheme} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {
@@ -36,7 +36,13 @@ const AdminDailyThemeEditScreenInner = ({route, navigation}: Props) => {
   const editMutation = useEditDailyThemeMutation();
   const deleteMutation = useDeleteDailyThemeMutation();
   const {setSnackbarPayload} = useSnackbar();
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const initialValues: AdminDailyThemeFormValues = {
     title: theme?.title ?? '',

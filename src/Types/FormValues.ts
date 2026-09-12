@@ -143,6 +143,7 @@ export interface AdminAnnouncementFormValues {
   text: string;
   displayUntilDate: Date;
   displayUntilTime: StartTime;
+  postAsUser: string;
 }
 
 export interface AdminDailyThemeFormValues {

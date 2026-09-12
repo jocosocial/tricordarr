@@ -3,7 +3,7 @@ import React from 'react';
 import {LfgForm} from '#src/Components/Forms/LfgForm';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezForm} from '#src/Hooks/useFezForm';
+import {useFezForm} from '#src/Hooks/Fez/useFezForm';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';

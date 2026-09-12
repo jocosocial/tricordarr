@@ -127,13 +127,13 @@ export const ScheduleEventFilterMenu = () => {
       })}
       <Divider bold={true} />
       <SelectableMenuItem
-        title={'Personal Events'}
+        title={'Private Events'}
         onPress={handlePersonalSelection}
         selected={eventPersonalFilter}
         disabled={!oobeCompleted}
       />
       <SelectableMenuItem
-        title={'Unread Personal Events'}
+        title={'Unread Private Events'}
         onPress={handlePersonalUnreadSelection}
         selected={eventPersonalUnreadFilter}
         disabled={!oobeCompleted}

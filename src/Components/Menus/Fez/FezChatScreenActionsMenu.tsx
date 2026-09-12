@@ -10,8 +10,9 @@ import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/useFezData';
+import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {useMenu} from '#src/Hooks/useMenu';
+import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
 
@@ -81,6 +82,16 @@ export const FezChatScreenActionsMenu = ({
           <Divider bold={true} />
           <PostAsModeratorMenuItem closeMenu={closeMenu} active={asModerator} onPress={toggleModerator} />
           <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} active={asTwitarrTeam} onPress={toggleTwitarrTeam} />
+          {hasModerator && (
+            <Menu.Item
+              leadingIcon={AppIcons.moderator}
+              title={'Moderate'}
+              onPress={() => {
+                closeMenu();
+                pushModerateResource(navigation, 'lfg', fezID);
+              }}
+            />
+          )}
           <Divider bold={true} />
         </>
       )}

@@ -140,7 +140,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         <View style={styles.emptyMessage}>
           <Text style={styles.emptyText}>No items in your Day Planner for this day.</Text>
           <Text style={styles.emptyText}>
-            Follow events on the schedule! Once you're on board, you can join LFGs or create personal events to see them
+            Follow events on the schedule! Once you're on board, you can join LFGs or create private events to see them
             here.
           </Text>
         </View>

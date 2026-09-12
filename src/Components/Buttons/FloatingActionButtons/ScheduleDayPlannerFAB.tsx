@@ -20,7 +20,7 @@ export const ScheduleDayPlannerFAB = ({cruiseDay}: ScheduleDayPlannerFABProps) =
   const actions = [
     FabGroupAction({
       icon: AppIcons.eventCreate,
-      label: 'Personal Event',
+      label: 'Private Event',
       onPress: () =>
         navigation.push(CommonStackComponents.personalEventCreateScreen, {
           cruiseDay,

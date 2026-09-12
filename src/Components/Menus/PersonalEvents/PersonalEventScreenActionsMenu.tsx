@@ -3,13 +3,15 @@ import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useScheduleStackNavigation} from '#src/Navigation/Stacks/Schedule/ScheduleStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
 
@@ -21,6 +23,8 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
   const {visible, openMenu, closeMenu} = useMenu();
   const {currentUserID} = useSession();
   const navigation = useScheduleStackNavigation();
+  const commonNavigation = useCommonStack();
+  const {hasModerator} = usePrivilege();
   const {confirmCancel, confirmDelete} = useFezAlert(props.event);
 
   return (
@@ -72,6 +76,16 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
           });
         }}
       />
+      {hasModerator && (
+        <Menu.Item
+          leadingIcon={AppIcons.moderator}
+          title={'Moderate'}
+          onPress={() => {
+            closeMenu();
+            pushModerateResource(commonNavigation, 'personalevent', props.event.fezID);
+          }}
+        />
+      )}
       <Menu.Item
         leadingIcon={AppIcons.help}
         title={'Help'}

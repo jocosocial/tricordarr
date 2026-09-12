@@ -1,15 +1,15 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {getEventFeedbackResponseRate} from '#src/Libraries/Admin/EventFeedbackCsv';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventFeedbackStatsQuery} from '#src/Queries/Admin/EventFeedbackQueries';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
 
@@ -25,9 +25,16 @@ export const AdminEventFeedbackStatsScreen = () => {
 };
 
 const AdminEventFeedbackStatsScreenInner = () => {
+  const navigation = useCommonStack();
   const {data: stats, refetch, isLoading} = useEventFeedbackStatsQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
-  useAdminHelpButton(CommonStackComponents.eventFeedbackHelpScreen, {mode: 'admin'});
+  const getNavButtons = useAdminHeaderButtons(CommonStackComponents.eventFeedbackHelpScreen, {mode: 'admin'});
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (isLoading && !stats) {
     return <LoadingView />;

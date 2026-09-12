@@ -18,7 +18,7 @@ export const ScheduleDayPlannerHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
-            The Day Planner shows your events in a calendar-style view. This includes favorited events, personal events,
+            The Day Planner shows your events in a calendar-style view. This includes favorited events, private events,
             and joined LFGs. Once you've picked your events, this is your main screen for keeping track of your days
             onboard.
           </HelpTopicView>
@@ -32,8 +32,8 @@ export const ScheduleDayPlannerHelpScreen = () => {
             Press the "New" button in the lower right to choose what to create for the currently selected day. This
             button only appears when not in pre-registration mode.
           </HelpTopicView>
-          <HelpTopicView title={'Private'} icon={AppIcons.eventCreate}>
-            Create a new personal or private event on the selected day.
+          <HelpTopicView title={'Private Event'} icon={AppIcons.eventCreate}>
+            Create a new private event on the selected day.
           </HelpTopicView>
           <HelpTopicView title={'LFG'} icon={AppIcons.lfgCreate}>
             Create a new Looking For Group event on the selected day.

@@ -17,6 +17,8 @@ interface UserListItemProps {
   userHeader: UserHeader;
   buttonOnPress?: (uh: UserHeader) => void;
   buttonIcon?: IconSource;
+  secondaryButtonOnPress?: (uh: UserHeader) => void;
+  secondaryButtonIcon?: IconSource;
   disabled?: boolean;
   enableSelection?: boolean;
   setEnableSelection?: Dispatch<SetStateAction<boolean>>;
@@ -26,12 +28,16 @@ interface UserListItemProps {
 /**
  * Presentational user row used by relation lists, search, and participant pickers.
  * Stays swipe-free; FlashList screens wrap it via UserFlatListItem.
+ * Optional trailing IconButtons: `buttonIcon` is the primary (rightmost) action;
+ * `secondaryButtonIcon` sits to its left when both are set.
  */
 const UserListItemInternal = ({
   userHeader,
   onPress,
   buttonOnPress,
   buttonIcon,
+  secondaryButtonOnPress,
+  secondaryButtonIcon,
   disabled = false,
   enableSelection = false,
   setEnableSelection,
@@ -64,6 +70,10 @@ const UserListItemInternal = ({
           ...commonStyles.flexColumn,
           ...commonStyles.justifyCenter,
         },
+        actions: {
+          ...commonStyles.flexRow,
+          ...commonStyles.alignItemsCenter,
+        },
       }),
     [commonStyles, disabled, theme],
   );
@@ -90,18 +100,50 @@ const UserListItemInternal = ({
     </View>
   );
 
+  /**
+   * Renders the trailing IconButton(s). A lone button is returned as-is so existing
+   * single-action rows keep the same layout; two buttons sit in a horizontal row.
+   */
   const getActionButton = useCallback(() => {
-    if (buttonOnPress && buttonIcon) {
-      return (
+    const primary =
+      buttonOnPress && buttonIcon ? (
         <IconButton
           mode={'outlined'}
           size={styleDefaults.avatarSizeSmall}
           icon={buttonIcon}
           onPress={() => buttonOnPress(userHeader)}
         />
+      ) : undefined;
+    const secondary =
+      secondaryButtonOnPress && secondaryButtonIcon ? (
+        <IconButton
+          mode={'outlined'}
+          size={styleDefaults.avatarSizeSmall}
+          icon={secondaryButtonIcon}
+          onPress={() => secondaryButtonOnPress(userHeader)}
+        />
+      ) : undefined;
+    if (!primary && !secondary) {
+      return undefined;
+    }
+    if (primary && secondary) {
+      return (
+        <View style={styles.actions}>
+          {secondary}
+          {primary}
+        </View>
       );
     }
-  }, [buttonOnPress, buttonIcon, userHeader, styleDefaults.avatarSizeSmall]);
+    return primary ?? secondary;
+  }, [
+    buttonOnPress,
+    buttonIcon,
+    secondaryButtonOnPress,
+    secondaryButtonIcon,
+    userHeader,
+    styleDefaults.avatarSizeSmall,
+    styles.actions,
+  ]);
 
   const onLongPress = () => {
     if (setEnableSelection) {

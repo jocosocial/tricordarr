@@ -3,7 +3,6 @@ import React from 'react';
 
 import {PersonalEventForm} from '#src/Components/Forms/PersonalEventForm';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {FezType} from '#src/Enums/FezType';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -18,8 +17,9 @@ export const PersonalEventEditScreen = (props: Props) => {
       <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={`/privateevent/${fez.fezID}/update`}>
         <FezEditScreenBase
           fez={fez}
+          intent={props.route.params.intent}
           helpScreen={CommonStackComponents.personalEventHelpScreen}
-          screenTitle={fez.fezType === FezType.privateEvent ? 'Edit Private Event' : 'Edit Personal Event'}
+          screenTitle={'Edit Private Event'}
           renderForm={({onSubmit, initialValues}) => (
             <PersonalEventForm onSubmit={onSubmit} initialValues={initialValues} create={false} />
           )}

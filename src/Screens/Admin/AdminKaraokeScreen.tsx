@@ -1,14 +1,15 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {alertReloadSeed} from '#src/Libraries/Alerts/AdminAlerts';
+import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useReloadKaraokeMutation} from '#src/Queries/Admin/SeedMutations';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
 
@@ -21,10 +22,17 @@ export const AdminKaraokeScreen = () => {
 };
 
 const AdminKaraokeScreenInner = () => {
+  const navigation = useCommonStack();
   const mutation = useReloadKaraokeMutation();
   const {setSnackbarPayload} = useSnackbar();
   const {theme} = useAppTheme();
-  useAdminHelpButton();
+  const getNavButtons = useAdminHeaderButtons();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>

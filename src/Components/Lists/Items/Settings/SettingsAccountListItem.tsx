@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {SettingsNavigationListItem} from '#src/Components/Lists/Items/Settings/SettingsNavigationListItem';
+import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 /**
@@ -8,7 +8,7 @@ import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/Set
  */
 export const SettingsAccountListItem = () => {
   return (
-    <SettingsNavigationListItem
+    <NavigationListItem
       title={'Your Account'}
       description={'Manage your Twitarr account.'}
       navComponent={SettingsStackScreenComponents.accountManagement}

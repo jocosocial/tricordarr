@@ -12,8 +12,6 @@ import {
 import {EventCard} from '#src/Components/Cards/Schedule/EventCard';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
-import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -21,6 +19,7 @@ import {EventFeedbackHostWarningView} from '#src/Components/Views/Warnings/Event
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventFeedbackEventListQuery} from '#src/Queries/EventFeedback/EventFeedbackQueries';
@@ -125,12 +124,7 @@ const EventFeedbackSelectScreenInner = ({navigation, route}: Props) => {
     );
   }, [tab]);
 
-  const renderListFooter = useCallback(() => {
-    if (events.length > 0) {
-      return <EndResultsFooter />;
-    }
-    return <NoResultsFooter />;
-  }, [events.length]);
+  const {getListFooter} = useAppFlashList({data: events});
 
   const keyExtractor = useCallback((item: EventData) => item.eventID, []);
 
@@ -149,7 +143,7 @@ const EventFeedbackSelectScreenInner = ({navigation, route}: Props) => {
         extraData={{tab}}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderListHeader={renderListHeader}
-        renderListFooter={renderListFooter}
+        renderListFooter={getListFooter}
       />
     </AppView>
   );

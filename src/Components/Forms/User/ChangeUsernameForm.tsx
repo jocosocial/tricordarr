@@ -12,27 +12,26 @@ import {ChangeUsernameFormValues} from '#src/Types/FormValues';
 
 interface ChangeUsernameFormProps {
   onSubmit: (values: ChangeUsernameFormValues, helpers: FormikHelpers<ChangeUsernameFormValues>) => void;
+  initialValues: ChangeUsernameFormValues;
 }
 
 const validationSchema = Yup.object().shape({
   username: UsernameValidation,
 });
 
-const initialValues: ChangeUsernameFormValues = {
-  username: '',
-};
-
-// https://formik.org/docs/guides/react-native
-export const ChangeUsernameForm = ({onSubmit}: ChangeUsernameFormProps) => {
+/**
+ * Username field prefilled with the current name. Save stays disabled until the value changes.
+ */
+export const ChangeUsernameForm = ({onSubmit, initialValues}: ChangeUsernameFormProps) => {
   const {commonStyles} = useStyles();
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({handleSubmit, values, isSubmitting}) => (
+      {({handleSubmit, values, isSubmitting, dirty}) => (
         <View>
           <DirtyDetectionField />
           <UsernameTextField testID={'changeUsername-input'} />
           <PrimaryActionButton
-            disabled={!values.username || isSubmitting}
+            disabled={!values.username || isSubmitting || !dirty}
             isLoading={isSubmitting}
             viewStyle={[commonStyles.marginTopSmall]}
             onPress={handleSubmit}

@@ -9,7 +9,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/useFezData';
+import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';

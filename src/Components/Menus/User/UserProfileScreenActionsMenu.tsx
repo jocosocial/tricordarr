@@ -5,12 +5,14 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {UserVCardDownloadMenuItem} from '#src/Components/Menus/User/UserVCardDownloadMenuItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useMenu} from '#src/Hooks/useMenu';
 import {alertBlock, alertMute} from '#src/Libraries/Alerts/UserAlerts';
+import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
@@ -34,11 +36,11 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
 
   const handleModerate = () => {
     closeMenu();
-    commonNavigation.push(CommonStackComponents.siteUIScreen, {
-      resource: 'userprofile',
-      id: profile.header.userID,
-      moderate: true,
-    });
+    pushModerateResource(commonNavigation, 'userprofile', profile.header.userID);
+  };
+  const handleModerateUser = () => {
+    closeMenu();
+    pushModerateResource(commonNavigation, 'user', profile.header.userID);
   };
   const handleReport = () => {
     closeMenu();
@@ -123,6 +125,7 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <ShareMenuItem contentType={ShareContentType.user} contentID={profile.header.userID} closeMenu={closeMenu} />
+      <UserVCardDownloadMenuItem header={profile.header} closeMenu={closeMenu} />
       <Divider bold={true} />
       <Menu.Item
         leadingIcon={isBlocked ? AppIcons.unblock : AppIcons.block}
@@ -138,7 +141,12 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
       {(hasModerator || hasTwitarrTeam || hasAccountManager) && (
         <>
           <Divider bold={true} />
-          {hasModerator && <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate'} onPress={handleModerate} />}
+          {hasModerator && (
+            <>
+              <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate Profile'} onPress={handleModerate} />
+              <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate User'} onPress={handleModerateUser} />
+            </>
+          )}
           {(hasTwitarrTeam || hasAccountManager) && (
             <Menu.Item leadingIcon={AppIcons.registrationCode} title={'Registration'} onPress={handleRegCode} />
           )}

@@ -1,13 +1,10 @@
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {forwardRef, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
-import {Divider} from 'react-native-paper';
 
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
-import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
-import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
 import {BoardgameListItem} from '#src/Components/Lists/Items/BoardgameListItem';
+import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 
 interface BoardgameFlatListProps {
@@ -20,7 +17,6 @@ interface BoardgameFlatListProps {
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
   listHeader?: React.ComponentType<any>;
-  showEmptyFooter?: boolean;
 }
 
 const BoardgameFlatListInner = (
@@ -34,37 +30,14 @@ const BoardgameFlatListInner = (
     handleLoadNext,
     handleLoadPrevious: _handleLoadPrevious,
     listHeader,
-    showEmptyFooter = true,
   }: BoardgameFlatListProps,
   ref: React.ForwardedRef<FlashListRef<BoardgameData>>,
 ) => {
-  const getListSeparator = useCallback(() => {
-    return <Divider bold={true} />;
-  }, []);
+  const {getListSeparator, getListHeader, getListFooter} = useAppFlashList({data: items, hasNextPage});
 
   const renderItem = useCallback(({item}: {item: BoardgameData}) => {
     return <BoardgameListItem boardgame={item} />;
   }, []);
-
-  const getListHeader = useCallback(() => {
-    if (items.length > 0) {
-      return <Divider bold={true} />;
-    }
-    return <></>;
-  }, [items.length]);
-
-  const getListFooter = useCallback(() => {
-    if (hasNextPage) {
-      return <LoadingNextFooter />;
-    }
-    if (items.length > 0) {
-      return <EndResultsFooter />;
-    }
-    if (items.length === 0 && showEmptyFooter) {
-      return <NoResultsFooter />;
-    }
-    return null;
-  }, [items.length, hasNextPage, showEmptyFooter]);
 
   return (
     <AppFlashList<BoardgameData>

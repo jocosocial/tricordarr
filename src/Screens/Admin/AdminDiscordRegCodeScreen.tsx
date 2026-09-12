@@ -1,8 +1,8 @@
 import {Formik} from 'formik';
-import React from 'react';
-import {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
@@ -13,9 +13,8 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {displayString} from '#src/Libraries/RegistrationCode';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAllocateDiscordRegCodeMutation} from '#src/Queries/Admin/DiscordRegCodeMutations';
 import {useRegCodeStatsQuery} from '#src/Queries/Admin/RegCodeQueries';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
@@ -30,11 +29,18 @@ export const AdminDiscordRegCodeScreen = () => {
 };
 
 const AdminDiscordRegCodeScreenInner = () => {
+  const navigation = useCommonStack();
   const {data: stats} = useRegCodeStatsQuery();
   const mutation = useAllocateDiscordRegCodeMutation();
   const {setSnackbarPayload} = useSnackbar();
   const [result, setResult] = useState<RegistrationCodeUserData>();
-  useAdminHelpButton(CommonStackComponents.registrationCodeHelpScreen);
+  const getNavButtons = useAdminHeaderButtons(CommonStackComponents.registrationCodeHelpScreen);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>

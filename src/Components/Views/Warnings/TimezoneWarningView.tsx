@@ -1,15 +1,16 @@
 import React from 'react';
-import {Linking, StyleSheet, TouchableOpacity} from 'react-native';
-import {Text} from 'react-native-paper';
+import {Linking} from 'react-native';
 
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {BaseWarningView} from '#src/Components/Views/Warnings/BaseWarningView';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useTime} from '#src/Context/Contexts/TimeContext';
 import {joinUrl} from '#src/Libraries/UrlParser';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
+/**
+ * Banner shown when the device time zone does not match the server. Tapping opens the time zone screen.
+ */
 export const TimezoneWarningView = () => {
-  const {commonStyles} = useStyles();
   const {showTimeZoneWarning} = useTime();
   const {serverUrl} = useSwiftarrQueryClient();
   const commonStack = useCommonStack();
@@ -20,31 +21,14 @@ export const TimezoneWarningView = () => {
   // This here for debugging.
   const onLongPress = () => Linking.openURL(joinUrl(serverUrl, 'time'));
 
-  const styles = StyleSheet.create({
-    headerView: {
-      ...commonStyles.twitarrNegative,
-      ...commonStyles.alignItemsCenter,
-      ...commonStyles.paddingVerticalSmall,
-    },
-    headerText: {
-      ...commonStyles.onTwitarrButton,
-      ...commonStyles.bold,
-    },
-    subText: {
-      ...commonStyles.onTwitarrButton,
-    },
-  });
-
-  if (!showTimeZoneWarning) {
-    return null;
-  }
-
   return (
-    <TouchableOpacity style={styles.headerView} onPress={onPress} onLongPress={onLongPress}>
-      <Text style={styles.headerText}>Time Zone Warning!</Text>
-      <Text variant={'bodyMedium'} style={styles.subText}>
-        Your device is in a different time zone than the server.
-      </Text>
-    </TouchableOpacity>
+    <BaseWarningView
+      variant={'negative'}
+      title={'Time Zone Warning!'}
+      message={'Your device is in a different time zone than the server.'}
+      visible={showTimeZoneWarning}
+      onPress={onPress}
+      onLongPress={onLongPress}
+    />
   );
 };

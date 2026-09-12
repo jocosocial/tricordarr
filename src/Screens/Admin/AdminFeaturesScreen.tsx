@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import {AdminFeatureMatrix} from '#src/Components/Admin/AdminFeatureMatrix';
+import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
@@ -10,14 +11,13 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ServerSettingsReadOnlyWarningView} from '#src/Components/Views/Warnings/ServerSettingsReadOnlyWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
-import {useAdminHelpButton} from '#src/Hooks/Admin/useAdminHelpButton';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {
   computeFeatureDeltas,
   settingsUpdateFromFeatureDeltas,
   toggleFeaturePair,
 } from '#src/Libraries/Admin/FeatureDisable';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAdminSettingsUpdateMutation} from '#src/Queries/Admin/SettingsMutations';
 import {useAdminSettingsQuery} from '#src/Queries/Admin/SettingsQueries';
 import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
@@ -32,13 +32,20 @@ export const AdminFeaturesScreen = () => {
 };
 
 const AdminFeaturesScreenInner = () => {
+  const navigation = useCommonStack();
   const {data, refetch, isLoading} = useAdminSettingsQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const mutation = useAdminSettingsUpdateMutation();
   const {canEditSettings} = useAdminAccess();
   const {setSnackbarPayload} = useSnackbar();
   const [current, setCurrent] = useState<SettingsAppFeaturePair[]>([]);
-  useAdminHelpButton(CommonStackComponents.disabledHelpScreen);
+  const getNavButtons = useAdminHeaderButtons(CommonStackComponents.disabledHelpScreen);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   useEffect(() => {
     if (data) {
