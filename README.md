@@ -20,8 +20,4 @@ npx pod-install
 npx expo run:ios --scheme Development # or Production, --device "Simulator Name"
 ```
 
-Testing
--------
-
-See [docs/Testing.md](./docs/Testing.md) for running unit and end-to-end tests, `testID`
-conventions, and manual QA cases, and [Docs](./docs/) for more.
+See [Docs](./docs/) for more.
