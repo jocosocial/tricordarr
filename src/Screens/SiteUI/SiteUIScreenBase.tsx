@@ -126,6 +126,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
         ref={webViewRef}
         onNavigationStateChange={handleWebViewNavigationStateChange}
         sharedCookiesEnabled={isIOS}
+        pullToRefreshEnabled={isIOS}
       />
     </AppView>
   );
