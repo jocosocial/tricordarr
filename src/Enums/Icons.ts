@@ -84,6 +84,7 @@ export enum AppIcons {
   lfgCreate = 'account-multiple-plus-outline',
   edit = 'pencil',
   description = 'text-box',
+  logView = 'text-box-search-outline',
   type = 'shape',
   join = 'account-plus',
   leave = 'account-remove',

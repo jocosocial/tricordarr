@@ -4,7 +4,7 @@ import {consoleTransport, logger as rnLogger} from 'react-native-logs';
 
 import {getAppConfig} from '#src/Libraries/AppConfig';
 import {LogBuffer} from '#src/Libraries/Logger/LogBuffer';
-import {Logger, LogLevel} from '#src/Libraries/Logger/types';
+import {LogEntry, Logger, LogLevel} from '#src/Libraries/Logger/types';
 
 // let currentLogLevel: LogLevel = __DEV__ ? LogLevel.DEBUG : LogLevel.WARN;
 let currentLogLevel: LogLevel = LogLevel.DEBUG;
@@ -270,4 +270,49 @@ export const getLogFileInfo = async (): Promise<{
 
 export const flushLogs = async (): Promise<void> => {
   await logBuffer?.flushNow();
+};
+
+// Matches the format produced by formatLogMessage: [timestamp] [LEVEL] [tag] message
+const LOG_LINE_PATTERN = /^\[(.+?)\] \[(\w+)\] \[(.+?)\] (.*)$/;
+
+const parseLogLine = (line: string): LogEntry | null => {
+  const match = LOG_LINE_PATTERN.exec(line);
+  if (!match) {
+    return null;
+  }
+  const [, timestampStr, level, tag, message] = match;
+  const timestamp = new Date(timestampStr.replace(' ', 'T') + 'Z');
+  if (isNaN(timestamp.getTime())) {
+    return null;
+  }
+  return {
+    timestamp,
+    level: level.toLowerCase() as LogLevel,
+    tag,
+    message,
+    raw: line,
+  };
+};
+
+export const getLogEntries = async (): Promise<LogEntry[]> => {
+  await logBuffer?.flushNow();
+
+  const entries: LogEntry[] = [];
+  for (const file of listLogFiles()) {
+    if (!file.exists) {
+      continue;
+    }
+    const text = await file.text();
+    for (const line of text.split('\n')) {
+      if (!line.trim()) {
+        continue;
+      }
+      const entry = parseLogLine(line);
+      if (entry) {
+        entries.push(entry);
+      }
+    }
+  }
+
+  return entries.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 };

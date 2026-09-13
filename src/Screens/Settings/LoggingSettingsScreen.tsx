@@ -1,6 +1,10 @@
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
+import {View} from 'react-native';
 import {SegmentedButtons} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
@@ -18,10 +22,17 @@ import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertClearLogs} from '#src/Libraries/Alerts/SettingsAlerts';
 import {clearAllLogs, flushLogs, getCurrentLogFile, getLogFileInfo, setLogLevel} from '#src/Libraries/Logger';
 import {LogLevel} from '#src/Libraries/Logger/types';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 const getExportFileName = () => `tricordarr-${Math.floor(Date.now() / 1000)}`;
 
-export const LoggingSettingsScreen = () => {
+type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.loggingSettings>;
+
+export const LoggingSettingsScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
   const {setSnackbarPayload} = useSnackbar();
   const {openDownloadSheet} = useDownloadSheet();
@@ -40,6 +51,26 @@ export const LoggingSettingsScreen = () => {
   useEffect(() => {
     refreshLogFileInfo();
   }, [refreshLogFileInfo]);
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.loggingHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const handleLogLevelChange = (value: string) => {
     const newLevel = value as LogLevel;
@@ -110,6 +141,40 @@ export const LoggingSettingsScreen = () => {
         isStack={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ListSection>
+          <ListSubheader>Actions</ListSubheader>
+          <PaddedContentView padTop={true}>
+            <PrimaryActionButton
+              testID={'viewLogs-button'}
+              icon={AppIcons.logView}
+              buttonText={'View Logs'}
+              onPress={() => navigation.navigate(SettingsStackScreenComponents.logViewerScreen)}
+              buttonColor={theme.colors.twitarrNeutralButton}
+            />
+          </PaddedContentView>
+          <PaddedContentView>
+            <PrimaryActionButton
+              testID={'downloadLogs-button'}
+              icon={AppIcons.download}
+              buttonText={'Download Logs'}
+              onPress={handleDownload}
+              disabled={!logFileInfo || isDownloading}
+              isLoading={isDownloading}
+            />
+          </PaddedContentView>
+          <PaddedContentView>
+            <PrimaryActionButton
+              testID={'clearAllLogs-button'}
+              icon={AppIcons.delete}
+              buttonText={'Clear All Logs'}
+              onPress={handleClear}
+              disabled={!logFileInfo || isClearing || isDownloading}
+              isLoading={isClearing}
+              buttonColor={theme.colors.twitarrNegativeButton}
+            />
+          </PaddedContentView>
+        </ListSection>
+
+        <ListSection>
           <ListSubheader>Log Level</ListSubheader>
           <PaddedContentView padTop={true}>
             <SegmentedButtons
@@ -142,31 +207,6 @@ export const LoggingSettingsScreen = () => {
           <DataFieldListItem title={'Current Log File'} description={logFileInfo ? logFileInfo.size : 'No logs yet'} />
           {logFileInfo && <DataFieldListItem title={'Last Modified'} description={logFileInfo.lastModified} />}
           <DataFieldListItem title={'Retention'} description={'7 days'} />
-        </ListSection>
-
-        <ListSection>
-          <ListSubheader>Actions</ListSubheader>
-          <PaddedContentView padTop={true}>
-            <PrimaryActionButton
-              testID={'downloadLogs-button'}
-              icon={AppIcons.download}
-              buttonText={'Download Logs'}
-              onPress={handleDownload}
-              disabled={!logFileInfo || isDownloading}
-              isLoading={isDownloading}
-            />
-          </PaddedContentView>
-          <PaddedContentView>
-            <PrimaryActionButton
-              testID={'clearAllLogs-button'}
-              icon={AppIcons.delete}
-              buttonText={'Clear All Logs'}
-              onPress={handleClear}
-              disabled={!logFileInfo || isClearing || isDownloading}
-              isLoading={isClearing}
-              buttonColor={theme.colors.twitarrNegativeButton}
-            />
-          </PaddedContentView>
         </ListSection>
       </ScrollingContentView>
     </AppView>

@@ -28,6 +28,7 @@ import {QuerySettingsScreen} from '#src/Screens/Settings/Developer/QuerySettings
 import {TestErrorScreen} from '#src/Screens/Settings/Developer/TestErrorScreen';
 import {TestNotificationScreen} from '#src/Screens/Settings/Developer/TestNotificationScreen';
 import {LoggingSettingsScreen} from '#src/Screens/Settings/LoggingSettingsScreen';
+import {LogViewerScreen} from '#src/Screens/Settings/LogViewerScreen';
 import {BackgroundConnectionSettingsScreen} from '#src/Screens/Settings/Notifications/BackgroundConnectionSettingsScreen';
 import {NotificationPollerSettingsScreen} from '#src/Screens/Settings/Notifications/NotificationPollerSettingsScreen';
 import {PushNotificationSettingsScreen} from '#src/Screens/Settings/Notifications/PushNotificationSettingsScreen';
@@ -168,6 +169,11 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.loggingSettings}
         component={LoggingSettingsScreen}
         options={{title: 'Logging'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.logViewerScreen}
+        component={LogViewerScreen}
+        options={{title: 'View Logs'}}
       />
     </Stack.Navigator>
   );

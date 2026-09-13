@@ -7,10 +7,16 @@ import * as mime from 'react-native-mime-types';
 export interface DownloadSheetContent {
   /** Sheet title. Defaults to "Download". */
   title?: string;
-  /** Filename without extension; SAF/createFile and share add it from the mime type. */
-  baseName: string;
+  /** Filename without extension; SAF/createFile and share add it from the mime type. Required in 'file' mode. */
+  baseName?: string;
   mimeType: string;
   contents: string;
+  /**
+   * 'file' (default): offers Save to Folder and shares as a file attachment.
+   * 'text': no save option; shares as a plain-text message instead of a file.
+   * Use 'text' for content too small/ephemeral to be worth a file, e.g. a single log line.
+   */
+  mode?: 'file' | 'text';
 }
 
 /**

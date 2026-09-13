@@ -35,6 +35,7 @@ export type SettingsStackParamList = CommonStackParamList & {
     sessionID: string;
   };
   LoggingSettingsScreen: undefined;
+  LogViewerScreen: undefined;
 };
 
 export enum SettingsStackScreenComponents {
@@ -63,6 +64,7 @@ export enum SettingsStackScreenComponents {
   sessionSettings = 'SessionSettingsScreen',
   sessionDetails = 'SessionDetailsScreen',
   loggingSettings = 'LoggingSettingsScreen',
+  logViewerScreen = 'LogViewerScreen',
 }
 
 export const useSettingsStack = () => useNavigation<StackNavigationProp<SettingsStackParamList>>();
