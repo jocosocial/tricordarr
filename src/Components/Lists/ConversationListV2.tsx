@@ -476,6 +476,8 @@ export const ConversationListV2 = <TItem,>({
         scrollsToTop={false}
       />
       {effectiveScrollButton && scrollButtonDirection !== null && (
+        // The stack renders top to bottom, so up stays above down regardless of
+        // which direction is primary.
         <FloatingScrollButtonsView
           actions={
             scrollButtonDirection === 'up'
@@ -489,14 +491,14 @@ export const ConversationListV2 = <TItem,>({
                 ]
               : [
                   {
-                    testID: 'conversationListScroll-button',
-                    icon: AppIcons.scrollDown,
-                    onPress: handleScrollButtonPress,
-                  },
-                  {
                     testID: 'conversationListSecondaryScroll-button',
                     icon: AppIcons.scrollUp,
                     onPress: handleSecondaryScrollButtonPress,
+                  },
+                  {
+                    testID: 'conversationListScroll-button',
+                    icon: AppIcons.scrollDown,
+                    onPress: handleScrollButtonPress,
                   },
                 ]
           }

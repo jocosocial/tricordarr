@@ -21,6 +21,10 @@ interface FloatingScrollButtonsViewProps {
  * Floating container that composes discrete FloatingScrollButtons for the given
  * scroll actions (e.g. up and/or down). Positioned absolutely within its nearest
  * positioned ancestor (the list wrapper View).
+ *
+ * Actions render top to bottom in the order given, so pass scroll-up before
+ * scroll-down to keep the stack consistent. IconButton supplies its own small
+ * margin, which is all the separation the stack needs.
  */
 export const FloatingScrollButtonsView = ({actions, small = false}: FloatingScrollButtonsViewProps) => {
   const {commonStyles, styleDefaults} = useStyles();
@@ -29,7 +33,6 @@ export const FloatingScrollButtonsView = ({actions, small = false}: FloatingScro
   const styles = StyleSheet.create({
     container: {
       ...commonStyles.flexColumn,
-      ...commonStyles.gapSmall,
       ...commonStyles.backgroundTransparent,
       ...commonStyles.positionAbsolute,
       bottom: styleDefaults.marginSize,

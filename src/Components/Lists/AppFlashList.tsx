@@ -82,23 +82,34 @@ const AppFlashListInner = <TItem,>(
   }, [ref]);
 
   /**
-   * Show the scroll button when a certain scroll threshold has been hit.
+   * Show the scroll buttons when a certain scroll threshold has been hit.
    * Allows for a callback to be triggered on that same threshold.
    */
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
-      const scrollThresholdCondition = contentOffset.y > styleDefaults.listScrollThreshold;
-      const distanceFromBottom = contentSize.height - layoutMeasurement.height - contentOffset.y;
+      const distanceFromTop = contentOffset.y;
+      const scrollableHeight = Math.max(0, contentSize.height - layoutMeasurement.height);
+      const distanceFromBottom = scrollableHeight - distanceFromTop;
+      /**
+       * Lists that cannot scroll past the default threshold would otherwise lose a
+       * direction's button while still scrollable, which makes the buttons vanish at
+       * the ends of shorter lists. Scale the threshold down instead.
+       */
+      const scrollThreshold = Math.min(
+        styleDefaults.listScrollThreshold,
+        Math.max(scrollableHeight / 3, styleDefaults.marginSize),
+      );
+      const scrollThresholdCondition = distanceFromTop > styleDefaults.listScrollThreshold;
       setScrollButtons({
-        up: scrollThresholdCondition,
-        down: distanceFromBottom > styleDefaults.listScrollThreshold,
+        up: distanceFromTop > scrollThreshold,
+        down: distanceFromBottom > scrollThreshold,
       });
       if (onScrollThreshold) {
         onScrollThreshold(scrollThresholdCondition);
       }
     },
-    [onScrollThreshold, styleDefaults.listScrollThreshold],
+    [onScrollThreshold, styleDefaults.listScrollThreshold, styleDefaults.marginSize],
   );
 
   // https://github.com/facebook/react-native/issues/25239
