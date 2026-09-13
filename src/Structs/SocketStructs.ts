@@ -120,9 +120,14 @@ export namespace SocketNotificationData {
 }
 
 /**
- * Custom to Tricordarr. Store a healthcheck result.
+ * Custom to Tricordarr. Debug info about the platform-specific background websocket
+ * (Android's JS-managed ReconnectingWebSocket, or iOS's native LocalPushExtension socket).
+ * Shared shape so both platforms' settings screens can render the same fields.
  */
-export interface SocketHealthcheckData {
-  result: boolean;
-  timestamp: string;
+export interface WebsocketDebugStatus {
+  state?: string;
+  lastHealthcheckAt?: string;
+  lastHealthcheckSuccess?: boolean;
+  lastError?: string;
+  lastErrorAt?: string;
 }

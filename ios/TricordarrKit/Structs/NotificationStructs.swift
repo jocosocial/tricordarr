@@ -107,6 +107,26 @@ extension ForegroundPushProviderStatus {
 	}
 }
 
+struct WebsocketStatus: Codable {
+	var state: String?
+	var lastHealthcheckAt: String?
+	var lastHealthcheckSuccess: Bool?
+	var lastError: String?
+	var lastErrorAt: String?
+}
+
+extension WebsocketStatus {
+	var asDictionary: [String: Any] {
+		var dict: [String: Any] = [:]
+		dict["state"] = state ?? NSNull()
+		dict["lastHealthcheckAt"] = lastHealthcheckAt ?? NSNull()
+		dict["lastHealthcheckSuccess"] = lastHealthcheckSuccess ?? NSNull()
+		dict["lastError"] = lastError ?? NSNull()
+		dict["lastErrorAt"] = lastErrorAt ?? NSNull()
+		return dict
+	}
+}
+
 /// Normalized input used for building provider config and change detection.
 struct PushManagerSettings {
   let socketUrl: String

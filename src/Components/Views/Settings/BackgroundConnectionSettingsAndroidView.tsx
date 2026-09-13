@@ -24,7 +24,7 @@ import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
 import {fgsFailedCounter, getSharedWebSocket} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 import {StorageKeys} from '#src/Libraries/Storage';
-import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
+import {WebsocketDebugStatus} from '#src/Structs/SocketStructs';
 
 export const BackgroundConnectionSettingsAndroidView = () => {
   const {commonStyles} = useStyles();
@@ -33,7 +33,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {enableUserNotifications} = useEnableUserNotification();
   const {appConfig, updateAppConfig} = useConfig();
-  const [healthData, setHealthData] = useState<SocketHealthcheckData | undefined>();
+  const [healthData, setHealthData] = useState<WebsocketDebugStatus | undefined>();
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
   const [fgsHealthTime, setFgsHealthTime] = useState(appConfig.fgsWorkerHealthTimer / 1000);
   const [fgsStartDate, setFgsStartDate] = useState<Date | undefined>();
@@ -45,7 +45,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
     }
     AsyncStorage.getItem(StorageKeys.WS_HEALTHCHECK_DATA).then(item => {
       if (item) {
-        const wsData = JSON.parse(item) as SocketHealthcheckData;
+        const wsData = JSON.parse(item) as WebsocketDebugStatus;
         setHealthData(wsData);
       }
     });
@@ -158,9 +158,21 @@ export const BackgroundConnectionSettingsAndroidView = () => {
             description={WebSocketState[socketState as keyof typeof WebSocketState]}
           />
           <DataFieldListItem
-            title={'Last Check'}
-            description={healthData ? <RelativeTimeTag date={new Date(healthData.timestamp)} /> : <Text>Unknown</Text>}
+            title={'Last Healthcheck'}
+            description={
+              healthData?.lastHealthcheckAt ? (
+                <RelativeTimeTag date={new Date(healthData.lastHealthcheckAt)} />
+              ) : (
+                <Text>Unknown</Text>
+              )
+            }
           />
+          {healthData?.lastHealthcheckAt && (
+            <DataFieldListItem
+              title={'Last Healthcheck Result'}
+              description={healthData.lastHealthcheckSuccess ? 'Success' : 'Failure'}
+            />
+          )}
           <DataFieldListItem title={'Failed Count'} description={String(fgsFailedCounter)} />
         </ListSection>
         <PaddedContentView padBottom={false} />

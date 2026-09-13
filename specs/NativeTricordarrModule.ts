@@ -16,6 +16,13 @@ export interface Spec extends TurboModule {
     isActive?: boolean;
     socketPingInterval?: number;
   }>;
+  getWebsocketStatus(): Promise<{
+    state?: string;
+    lastHealthcheckAt?: string;
+    lastHealthcheckSuccess?: boolean;
+    lastError?: string;
+    lastErrorAt?: string;
+  }>;
   clearLocalPushManager(): void;
 }
 

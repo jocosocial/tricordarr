@@ -64,6 +64,12 @@
   resolve(status);
 }
 
+- (void)getWebsocketStatus:(RCTPromiseResolveBlock)resolve
+                     reject:(RCTPromiseRejectBlock)reject {
+  NSDictionary *status = [Notifications getWebsocketStatusDictionary];
+  resolve(status);
+}
+
 - (void)clearLocalPushManager {
   [Notifications clearSettings];
 }

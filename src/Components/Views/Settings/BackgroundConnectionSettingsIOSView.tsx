@@ -11,6 +11,7 @@ import {BackgroundConnectionSettingsForm} from '#src/Components/Forms/Settings/B
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -24,6 +25,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {buildWebsocketURL} from '#src/Libraries/Network/Websockets';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {WebsocketDebugStatus} from '#src/Structs/SocketStructs';
 import {BackgroundConnectionSettingsFormValues} from '#src/Types/FormValues';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
@@ -57,11 +59,12 @@ export const BackgroundConnectionSettingsIOSView = () => {
   const tokenData = currentSession?.tokenData || null;
   const [managerStatus, setManagerStatus] = useState<ManagerStatus | null>(null);
   const [foregroundProviderStatus, setForegroundProviderStatus] = useState<ForegroundProviderStatus | null>(null);
+  const [websocketStatus, setWebsocketStatus] = useState<WebsocketDebugStatus | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await Promise.all([refetch(), fetchManagerStatus(), fetchForegroundProviderStatus()]);
+    await Promise.all([refetch(), fetchManagerStatus(), fetchForegroundProviderStatus(), fetchWebsocketStatus()]);
     setRefreshing(false);
   }, [refetch]);
 
@@ -75,6 +78,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
     setTimeout(() => {
       fetchManagerStatus();
       fetchForegroundProviderStatus();
+      fetchWebsocketStatus();
     }, 1000);
   };
 
@@ -141,6 +145,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
       // Refresh status after recycling worker
       fetchManagerStatus();
       fetchForegroundProviderStatus();
+      fetchWebsocketStatus();
     } catch (error) {
       logger.error('Error getting socket URL:', error);
     }
@@ -190,6 +195,15 @@ export const BackgroundConnectionSettingsIOSView = () => {
     }
   };
 
+  const fetchWebsocketStatus = async () => {
+    try {
+      const status = await NativeTricordarrModule.getWebsocketStatus();
+      setWebsocketStatus(status);
+    } catch (error) {
+      logger.error('Failed to fetch websocket status:', error);
+    }
+  };
+
   const parseProviderConfiguration = (configJson?: string): Record<string, any> | null => {
     if (!configJson) {
       return null;
@@ -205,6 +219,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
   useEffect(() => {
     fetchManagerStatus();
     fetchForegroundProviderStatus();
+    fetchWebsocketStatus();
   }, []);
 
   return (
@@ -304,6 +319,48 @@ export const BackgroundConnectionSettingsIOSView = () => {
           </>
         )}
         <DataFieldListItem title={'Server Default Network'} description={data?.shipWifiSSID} />
+
+        <ListSection>
+          <ListSubheader>Socket Status</ListSubheader>
+        </ListSection>
+        <PaddedContentView padTop={true} padSides={false} padBottom={false}>
+          <HelpTopicView>
+            The actual websocket connection may be run by either the background manager or the foreground provider
+            above, whichever is currently active. This reflects whichever of those most recently reported in.
+          </HelpTopicView>
+        </PaddedContentView>
+        <DataFieldListItem title={'Socket State'} description={websocketStatus?.state ?? 'Uninitialized'} />
+        <DataFieldListItem
+          title={'Last Healthcheck'}
+          description={
+            websocketStatus?.lastHealthcheckAt ? (
+              <RelativeTimeTag date={new Date(websocketStatus.lastHealthcheckAt)} />
+            ) : (
+              <Text>Unknown</Text>
+            )
+          }
+        />
+        {websocketStatus?.lastHealthcheckAt && (
+          <DataFieldListItem
+            title={'Last Healthcheck Result'}
+            description={websocketStatus.lastHealthcheckSuccess ? 'Success' : 'Failure'}
+          />
+        )}
+        {websocketStatus?.lastError && (
+          <>
+            <DataFieldListItem title={'Last Error'} description={websocketStatus.lastError} />
+            <DataFieldListItem
+              title={'Last Error At'}
+              description={
+                websocketStatus.lastErrorAt ? (
+                  <RelativeTimeTag date={new Date(websocketStatus.lastErrorAt)} />
+                ) : (
+                  <Text>Unknown</Text>
+                )
+              }
+            />
+          </>
+        )}
 
         <ListSection>
           <ListSubheader>Background Provider Configuration</ListSubheader>

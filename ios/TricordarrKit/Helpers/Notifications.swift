@@ -185,6 +185,36 @@ import UserNotifications
 		return getForegroundPushProviderStatus().asDictionary
 	}
 
+	/**
+	 Gets the current status of the websocket connection, however it is being run (extension or in-app).
+	 Read from the shared App Group UserDefaults suite since `WebsocketNotifier` persists its status there,
+	 which works regardless of which process (extension or app) currently owns the socket.
+	 Called from the JavaScript side over the "bridge".
+
+	 - Returns: WebsocketStatus struct with optional state, lastHealthcheckAt, lastHealthcheckSuccess, lastError, and lastErrorAt
+	 */
+	static func getWebsocketStatus() -> WebsocketStatus {
+		let defaults = UserDefaults(suiteName: WebsocketNotifier.appGroupSuiteName)
+		return WebsocketStatus(
+			state: defaults?.string(forKey: "ws_state"),
+			lastHealthcheckAt: defaults?.string(forKey: "ws_last_healthcheck_at"),
+			lastHealthcheckSuccess: defaults?.object(forKey: "ws_last_healthcheck_success") as? Bool,
+			lastError: defaults?.string(forKey: "ws_last_error"),
+			lastErrorAt: defaults?.string(forKey: "ws_last_error_at")
+		)
+	}
+
+	/**
+	 Gets the current status of the websocket connection as a dictionary.
+	 Objective-C bridge method that converts WebsocketStatus to [String: Any].
+	 Called from the Objective-C bridge.
+
+	 - Returns: Dictionary with keys: "state", "lastHealthcheckAt", "lastHealthcheckSuccess", "lastError", "lastErrorAt" (each String/Bool or NSNull)
+	 */
+	@objc public static func getWebsocketStatusDictionary() -> [String: Any] {
+		return getWebsocketStatus().asDictionary
+	}
+
 	// MARK: - Notification Generation
 
 	/**
