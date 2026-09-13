@@ -406,14 +406,12 @@ export const BackgroundConnectionSettingsIOSView = () => {
             <DataFieldListItem
               title={'Last Ping'}
               description={
-                foregroundProviderStatus.lastPing
-                  ? // <RelativeTimeTag date={new Date(foregroundProviderStatus.lastPing)} />
-                    foregroundProviderStatus.lastPing.toString()
-                  : 'Never'
+                foregroundProviderStatus.lastPing ? (
+                  <RelativeTimeTag date={new Date(foregroundProviderStatus.lastPing)} />
+                ) : (
+                  <Text>Never</Text>
+                )
               }
-              // description={
-              //   foregroundProviderStatus.lastPing ? new Date(foregroundProviderStatus.lastPing).toString() : 'Never'
-              // }
             />
             <DataFieldListItem
               title={'Provider Active'}
