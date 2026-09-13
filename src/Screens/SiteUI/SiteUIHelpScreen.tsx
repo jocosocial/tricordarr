@@ -21,7 +21,8 @@ export const SiteUIHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
           <HelpTopicView title={'Reload'} icon={AppIcons.reload}>
-            Refresh the webview at the current URL, whatever it may be. On iOS, you can also pull down on the page to refresh it. This is not available on Android.
+            Refresh the webview at the current URL, whatever it may be. On iOS, you can also pull down on the page to
+            refresh it. This is not available on Android.
           </HelpTopicView>
           <HelpTopicView title={'Back'} icon={AppIcons.back}>
             The standard back button in the header will take you back in the webview, then to the previous screen in the
