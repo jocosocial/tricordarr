@@ -4,6 +4,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Share from 'react-native-share';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {
@@ -15,6 +16,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {styleDefaults} from '#src/Context/Providers/StyleProvider';
 import {AppIcons} from '#src/Enums/Icons';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {DownloadSheetContent, getDownloadFileName, getDownloadSheetTitle} from '#src/Libraries/Download';
 import {saveTextToPickedDirectory} from '#src/Libraries/Storage/saveTextToPickedDirectory';
 import {shareTextAsCachedFile} from '#src/Libraries/Storage/shareTextAsCachedFile';
@@ -24,7 +26,6 @@ const titleHeight = 24;
 const paperButtonHeight = 40;
 const itemGap = styleDefaults.marginSize / 2;
 const layoutBuffer = 16;
-const buttonCount = 2;
 
 interface DownloadBottomSheetProps {
   content?: DownloadSheetContent;
@@ -34,19 +35,24 @@ interface DownloadBottomSheetProps {
 
 /**
  * Download sheet with save-to-folder and system-share actions for a text file.
+ * In 'text' mode (content.mode === 'text') there is no Save to Folder option, and
+ * Share to Apps shares the raw text directly instead of as a file attachment.
  */
 export const DownloadBottomSheet = ({content, isPresented, onDismiss}: DownloadBottomSheetProps) => {
   const sheetRef = useRef<BottomSheetModal>(null);
   const {setSnackbarPayload, snackbarTry} = useSnackbar();
+  const {setString} = useClipboard();
   const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
   const insets = useSafeAreaInsets();
   const [isSaving, setIsSaving] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const isBusy = isSaving || isSharing;
+  const isTextMode = content?.mode === 'text';
+  const buttonCount = isTextMode ? 2 : 3;
 
   /**
-   * Fits the title and the two action buttons.
+   * Fits the title and the action buttons. Text mode omits Save to Folder.
    */
   const snapPoints = useMemo(() => {
     const paddingBottom = insets.bottom + styleDefaults.marginSize;
@@ -58,7 +64,7 @@ export const DownloadBottomSheet = ({content, isPresented, onDismiss}: DownloadB
       paddingBottom +
       layoutBuffer;
     return [compact];
-  }, [insets.bottom]);
+  }, [insets.bottom, buttonCount]);
 
   const styles = useMemo(
     () =>
@@ -123,7 +129,7 @@ export const DownloadBottomSheet = ({content, isPresented, onDismiss}: DownloadB
    * Prompts for a folder and writes the file. Stays open if the picker is cancelled.
    */
   const handleSave = snackbarTry(async () => {
-    if (!content) {
+    if (!content || !content.baseName) {
       return;
     }
     setIsSaving(true);
@@ -143,7 +149,8 @@ export const DownloadBottomSheet = ({content, isPresented, onDismiss}: DownloadB
   });
 
   /**
-   * Opens the system share sheet for the file. Stays open if the user cancels.
+   * Opens the system share sheet. In 'text' mode this shares the raw text directly
+   * (no file involved); otherwise it shares the content as a file attachment.
    */
   const handleShare = snackbarTry(async () => {
     if (!content) {
@@ -151,6 +158,10 @@ export const DownloadBottomSheet = ({content, isPresented, onDismiss}: DownloadB
     }
     setIsSharing(true);
     try {
+      if (isTextMode) {
+        await Share.open({message: content.contents, failOnCancel: false});
+        return;
+      }
       await shareTextAsCachedFile({
         fileName: getDownloadFileName(content),
         mimeType: content.mimeType,
@@ -159,6 +170,16 @@ export const DownloadBottomSheet = ({content, isPresented, onDismiss}: DownloadB
     } finally {
       setIsSharing(false);
     }
+  });
+
+  /**
+   * Copies the raw contents to the clipboard. The sheet stays open so further actions remain available.
+   */
+  const handleCopy = snackbarTry(() => {
+    if (!content) {
+      return;
+    }
+    setString(content.contents);
   });
 
   return (
@@ -176,16 +197,18 @@ export const DownloadBottomSheet = ({content, isPresented, onDismiss}: DownloadB
       <MeasuredBottomSheetView>
         <View style={styles.content}>
           <Text style={styles.title}>{getDownloadSheetTitle(content)}</Text>
-          <PrimaryActionButton
-            buttonText={'Save to Folder'}
-            onPress={handleSave}
-            buttonColor={theme.colors.twitarrNeutralButton}
-            icon={AppIcons.download}
-            testID={'downloadSave-button'}
-            viewStyle={styles.button}
-            disabled={isBusy}
-            isLoading={isSaving}
-          />
+          {!isTextMode && (
+            <PrimaryActionButton
+              buttonText={'Save to Folder'}
+              onPress={handleSave}
+              buttonColor={theme.colors.twitarrNeutralButton}
+              icon={AppIcons.download}
+              testID={'downloadSave-button'}
+              viewStyle={styles.button}
+              disabled={isBusy}
+              isLoading={isSaving}
+            />
+          )}
           <PrimaryActionButton
             buttonText={'Share to Apps'}
             onPress={handleShare}
@@ -195,6 +218,15 @@ export const DownloadBottomSheet = ({content, isPresented, onDismiss}: DownloadB
             viewStyle={styles.button}
             disabled={isBusy}
             isLoading={isSharing}
+          />
+          <PrimaryActionButton
+            buttonText={'Copy to Clipboard'}
+            onPress={handleCopy}
+            buttonColor={theme.colors.twitarrNeutralButton}
+            icon={AppIcons.copy}
+            testID={'downloadCopy-button'}
+            viewStyle={styles.button}
+            disabled={isBusy}
           />
         </View>
       </MeasuredBottomSheetView>

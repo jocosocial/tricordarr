@@ -11,3 +11,11 @@ export interface Logger {
   warn: (message: string, ...args: any[]) => void;
   error: (message: string, ...args: any[]) => void;
 }
+
+export interface LogEntry {
+  timestamp: Date;
+  level: LogLevel;
+  tag: string;
+  message: string;
+  raw: string;
+}

@@ -334,6 +334,7 @@ export type CommonStackParamList = {
   };
   EasterEggHelpScreen: undefined;
   TodayHelpScreen: undefined;
+  LoggingHelpScreen: undefined;
   KrakenTalkCreateScreen?: {
     initialUserHeader?: UserHeader;
   };
@@ -549,6 +550,7 @@ export enum CommonStackComponents {
   dailyThemeScreen = 'DailyThemeScreen',
   easterEggHelpScreen = 'EasterEggHelpScreen',
   todayHelpScreen = 'TodayHelpScreen',
+  loggingHelpScreen = 'LoggingHelpScreen',
   krakenTalkCreateScreen = 'KrakenTalkCreateScreen',
   krakenTalkActiveCallScreen = 'KrakenTalkActiveCallScreen',
   krakenTalkHelpScreen = 'KrakenTalkHelpScreen',
@@ -653,7 +655,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.registrationCodeHelpScreen
   | CommonStackComponents.adminServerSettingsHelpScreen
   | CommonStackComponents.huntHelpScreen
-  | CommonStackComponents.eventFeedbackHelpScreen;
+  | CommonStackComponents.eventFeedbackHelpScreen
+  | CommonStackComponents.loggingHelpScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 

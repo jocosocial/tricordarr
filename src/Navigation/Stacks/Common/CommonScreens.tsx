@@ -166,6 +166,7 @@ import {ImageSettingsScreen} from '#src/Screens/Settings/Content/ImageSettingsSc
 import {MuteKeywordsScreen} from '#src/Screens/Settings/Content/MuteKeywordsSettingsScreen';
 import {ShareSettingsScreen} from '#src/Screens/Settings/Content/ShareSettingsScreen';
 import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
+import {LoggingHelpScreen} from '#src/Screens/Settings/LoggingHelpScreen';
 import {SiteUIHelpScreen} from '#src/Screens/SiteUI/SiteUIHelpScreen';
 import {SiteUILinkScreen} from '#src/Screens/SiteUI/SiteUILinkScreen';
 import {SiteUIScreen} from '#src/Screens/SiteUI/SiteUIScreen';
@@ -884,6 +885,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.easterEggHelpScreen}
         component={EasterEggHelpScreen}
         options={{title: '...... why?'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.loggingHelpScreen}
+        component={LoggingHelpScreen}
+        options={{title: 'Logging Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.krakenTalkCreateScreen}
