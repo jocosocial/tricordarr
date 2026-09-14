@@ -139,10 +139,19 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     }
   }
 
+  // Recomputes immediately (rather than clearing the ref and waiting for the next
+  // render's render-body recompute) so the new value is read in the same tick as
+  // the cache writes that motivated the reset (e.g. appendPost after sending a
+  // message), instead of depending on React's re-render scheduling to observe them.
   const resetInitialReadCount = useCallback(() => {
-    initialReadCountRef.current = undefined;
+    const detailReadCount = queryClient
+      .getQueriesData<InfiniteData<FezData>>({queryKey: [`/fez/${fezID}`]})
+      .map(([, entryData]) => entryData?.pages[entryData.pages.length - 1]?.members?.readCount)
+      .find(value => value !== undefined);
+    const listReadCount = getListCacheReadCount(queryClient, fezID);
+    initialReadCountRef.current = listReadCount ?? detailReadCount;
     setReadCountVersion(v => v + 1);
-  }, []);
+  }, [queryClient, fezID]);
 
   /**
    * Get the query pages.
