@@ -30,6 +30,7 @@ export const CruiseSettingsScreen = () => {
     cruiseLength: appConfig.cruiseLength.toString(),
     startDate: appConfig.cruiseStartDate,
     schedBaseUrl: appConfig.schedBaseUrl,
+    shipCode: appConfig.shipCode,
   };
 
   const onSubmit = (values: CruiseSettingsFormValues, helpers: FormikHelpers<CruiseSettingsFormValues>) => {
@@ -48,6 +49,7 @@ export const CruiseSettingsScreen = () => {
       cruiseStartDateStr: `${y}-${m}-${d}`,
       cruiseStartDate: startDate,
       schedBaseUrl: values.schedBaseUrl,
+      shipCode: values.shipCode,
     });
     helpers.setSubmitting(false);
     helpers.resetForm({
@@ -56,6 +58,7 @@ export const CruiseSettingsScreen = () => {
         cruiseLength: values.cruiseLength,
         startDate: values.startDate,
         schedBaseUrl: values.schedBaseUrl,
+        shipCode: values.shipCode,
       },
     });
   };
@@ -97,11 +100,7 @@ export const CruiseSettingsScreen = () => {
           />
         </PaddedContentView>
         <PaddedContentView>
-          <CruiseSettingsForm
-            onSubmit={onSubmit}
-            initialValues={initialValues}
-            disabled={!appConfig.enableDeveloperOptions}
-          />
+          <CruiseSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
         </PaddedContentView>
         <ListSubheader>Pre-Registration</ListSubheader>
         <PaddedContentView padTop={true}>

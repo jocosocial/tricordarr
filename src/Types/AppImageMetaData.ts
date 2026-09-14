@@ -39,7 +39,8 @@ export namespace AppImageMetaData {
   /**
    * Create an object for a file under a server's /public/ path (not the
    * /api/v3/image/... family fromFileName builds) — e.g. deck-map images at
-   * /public/ship/deck1.png. No thumb/full split; these files are served as-is.
+   * /public/ship/<code>/deck1.png. No thumb/full split; these files are
+   * served as-is.
    */
   export const fromPublicPath = (path: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
     const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;

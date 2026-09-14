@@ -92,15 +92,17 @@ export const MapScreen = ({navigation, route}: Props) => {
 
   const highlightLabels = shipDeck?.number === activeTarget?.deckNumber ? (activeTarget?.labels ?? []) : [];
 
-  // Reload token as a query param, not part of the path: it only needs to change
-  // the URI string so cache lookups treat it as new, not to mean anything to the
-  // server, which will serve the same file regardless.
+  // Each ship's assets live under their own code (/public/ship/hal-ed/, .../hal-ko/,
+  // ...), so switching appConfig.shipCode is itself a different URL per deck image -
+  // no separate cache-busting needed to tell "the operator deployed a different
+  // ship" from "nothing changed". reloadToken (below) is only the manual override
+  // for re-fetching the *same* ship's assets on demand.
   const buildShipAssetUrl = useCallback(
     (path: string) => {
-      const base = joinUrl(serverUrl, '/public/ship', path);
+      const base = joinUrl(serverUrl, '/public/ship', appConfig.shipCode, path);
       return reloadToken > 0 ? `${base}?reload=${reloadToken}` : base;
     },
-    [serverUrl, reloadToken],
+    [serverUrl, appConfig.shipCode, reloadToken],
   );
 
   const imageUri = shipDeck ? buildShipAssetUrl(shipDeck.image) : undefined;

@@ -22,6 +22,14 @@ export const MapScreenActionsMenu = ({onReload}: MapScreenActionsMenuProps) => {
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <ReloadMenuItem closeMenu={closeMenu} onReload={onReload} />
       <Menu.Item
+        title={'Settings'}
+        leadingIcon={AppIcons.settings}
+        onPress={() => {
+          closeMenu();
+          navigation.push(CommonStackComponents.cruiseSettingsScreen);
+        }}
+      />
+      <Menu.Item
         title={'Help'}
         leadingIcon={AppIcons.help}
         onPress={() => {
