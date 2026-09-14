@@ -21,6 +21,12 @@ export interface APIClientConfig {
   staleTime: number;
   disruptionThreshold: number;
   requestTimeout: number;
+  /**
+   * Timeout for write requests (POST/DELETE). Deliberately longer than requestTimeout: a write
+   * that times out client-side may still have succeeded server-side, and the user retrying it is
+   * exactly how duplicate posts happen on the ship network. See #533.
+   */
+  mutationTimeout: number;
   imageStaleTime: number;
 }
 
@@ -157,6 +163,7 @@ export const defaultAppConfig: AppConfig = {
     staleTime: defaultStaleTime,
     disruptionThreshold: 10,
     requestTimeout: 10000,
+    mutationTimeout: 30000,
     imageStaleTime: defaultImageStaleTime,
   },
   enableEasterEgg: false,

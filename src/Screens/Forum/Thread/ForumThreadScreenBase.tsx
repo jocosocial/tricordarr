@@ -214,59 +214,58 @@ const ForumThreadScreenBaseInner = ({
 
   /**
    * Creates a forum post and resets the composer, keeping the current elevation flags.
+   *
+   * Awaits the mutation so Formik holds isSubmitting (and the submit button stays disabled)
+   * for the full round trip. See #533.
    */
-  const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
-    formikHelpers.setSubmitting(true);
+  const onPostSubmit = async (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     if (!forumData) {
-      formikHelpers.setSubmitting(false);
       return;
     }
     values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
-    postCreateMutation.mutate(
-      {
+    try {
+      const response = await postCreateMutation.mutateAsync({
         forumID: forumData.forumID,
         postData: values,
-      },
-      {
-        onSuccess: response => {
-          formikHelpers.resetForm({
-            values: {
-              text: '',
-              images: [],
-              postAsModerator: asModerator,
-              postAsTwitarrTeam: asTwitarrTeam,
-            },
-          });
+      });
 
-          // Update React Query caches (instant, no network).
-          // This triggers a re-render via the derived useForumData.
-          appendPost(forumData.forumID, forumData.categoryID, response.data);
-
-          // Signal screens to scroll to the top when the user navigates back.
-          dispatchScrollToTop(
-            ForumStackComponents.forumCategoryScreen,
-            ForumStackComponents.forumPostSelfScreen,
-            ForumStackComponents.forumFavoritesScreen,
-            ForumStackComponents.forumMutesScreen,
-            ForumStackComponents.forumOwnedScreen,
-            ForumStackComponents.forumRecentScreen,
-          );
-
-          // Clear server unread status (fire-and-forget).
-          markReadMutation.mutate({forumID: forumData.forumID});
-
-          // Scroll to the new post.
-          // requestAnimationFrame(() => {
-          //   requestAnimationFrame(() => {
-          flatListRef.current?.scrollToEnd({animated: false});
-          //   });
-          // });
+      formikHelpers.resetForm({
+        values: {
+          text: '',
+          images: [],
+          postAsModerator: asModerator,
+          postAsTwitarrTeam: asTwitarrTeam,
         },
-        onSettled: () => {
-          formikHelpers.setSubmitting(false);
-        },
-      },
-    );
+      });
+
+      // Update React Query caches (instant, no network).
+      // This triggers a re-render via the derived useForumData.
+      appendPost(forumData.forumID, forumData.categoryID, response.data);
+
+      // Signal screens to scroll to the top when the user navigates back.
+      dispatchScrollToTop(
+        ForumStackComponents.forumCategoryScreen,
+        ForumStackComponents.forumPostSelfScreen,
+        ForumStackComponents.forumFavoritesScreen,
+        ForumStackComponents.forumMutesScreen,
+        ForumStackComponents.forumOwnedScreen,
+        ForumStackComponents.forumRecentScreen,
+      );
+
+      // Clear server unread status (fire-and-forget).
+      markReadMutation.mutate({forumID: forumData.forumID});
+
+      // Scroll to the new post.
+      // requestAnimationFrame(() => {
+      //   requestAnimationFrame(() => {
+      flatListRef.current?.scrollToEnd({animated: false});
+      //   });
+      // });
+    } catch (error) {
+      // The error snackbar is raised by useTokenAuthMutation's onError. Swallow here so the
+      // rejection doesn't escape into Formik's submit handling.
+      logger.error('Forum post create failed.', error);
+    }
   };
 
   const onReadyToShow = useCallback(() => {

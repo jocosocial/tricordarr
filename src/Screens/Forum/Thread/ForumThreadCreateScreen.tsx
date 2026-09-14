@@ -48,7 +48,6 @@ export const ForumThreadCreateScreen = (props: Props) => {
 const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   const forumFormRef = useRef<FormikProps<ForumThreadValues>>(null);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
-  const [submitting, setSubmitting] = useState(false);
   const [forumFormValid, setForumFormValid] = useState(false);
   const forumCreateMutation = useForumCreateMutation();
   const {maxForumPostImages} = useClientSettings();
@@ -59,10 +58,9 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   const createdForumRef = useRef<ForumData | null>(null);
 
   const onForumSubmit = (values: ForumThreadValues, formikHelpers: FormikHelpers<ForumThreadValues>) => {
-    setSubmitting(true);
     if (!postFormRef.current) {
       logger.error('Post form ref undefined.');
-      setSubmitting(false);
+      formikHelpers.setSubmitting(false);
       return;
     }
     // Whatever we picked in the Forum is what should be set in the Post.
@@ -106,7 +104,6 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
 
   // Handler to trigger the chain of events needed to complete this screen.
   const onSubmit = () => {
-    setSubmitting(true);
     forumFormRef.current?.submitForm();
   };
 
@@ -139,7 +136,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
       <ContentPostForm
         onSubmit={onPostSubmit}
         formRef={postFormRef}
-        overrideSubmitting={submitting}
+        overrideSubmitting={forumCreateMutation.isPending}
         onPress={onSubmit}
         enablePhotos={true}
         maxLength={2000}

@@ -244,33 +244,38 @@ const FezChatScreenInner = ({route}: Props) => {
 
   /**
    * Posts to the fez and resets the composer, keeping the current elevation flags.
+   *
+   * Awaits the mutation so Formik holds isSubmitting (and the submit button stays disabled)
+   * for the full round trip. See #533.
    */
   const onSubmit = useCallback(
-    (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
+    async (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
       values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
       // Mark as read if applicable.
       if (fez && fez.members) {
         markRead(fez.fezID);
       }
-      fezPostMutation.mutate(
-        {fezID: route.params.fezID, postContentData: values},
-        {
-          onSuccess: response => {
-            formikHelpers.resetForm({
-              values: {
-                text: '',
-                images: [],
-                postAsModerator: asModerator,
-                postAsTwitarrTeam: asTwitarrTeam,
-              },
-            });
-            appendPostToCache(route.params.fezID, response.data);
-            resetInitialReadCount();
-            dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+      try {
+        const response = await fezPostMutation.mutateAsync({
+          fezID: route.params.fezID,
+          postContentData: values,
+        });
+        formikHelpers.resetForm({
+          values: {
+            text: '',
+            images: [],
+            postAsModerator: asModerator,
+            postAsTwitarrTeam: asTwitarrTeam,
           },
-          onSettled: () => formikHelpers.setSubmitting(false),
-        },
-      );
+        });
+        appendPostToCache(route.params.fezID, response.data);
+        resetInitialReadCount();
+        dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+      } catch (error) {
+        // The error snackbar is raised by useTokenAuthMutation's onError. Swallow here so the
+        // rejection doesn't escape into Formik's submit handling.
+        logger.error('Fez post create failed.', error);
+      }
     },
     [
       fez,

@@ -149,26 +149,30 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     [ServerQueryClient],
   );
 
+  // Writes get a longer timeout budget than reads. Aborting a POST that the server actually
+  // processed leads the user to retry and duplicate it. Callers may still override. See #533.
   const apiPost = useCallback(
     async <TResponseData = void, TRequestData = void>(
       url: string,
       body?: TRequestData,
       config?: AxiosRequestConfig,
     ) => {
-      return await ServerQueryClient.post<TResponseData, AxiosResponse<TResponseData, TResponseData>>(
-        url,
-        body,
-        config,
-      );
+      return await ServerQueryClient.post<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url, body, {
+        timeout: appConfig.apiClientConfig.mutationTimeout,
+        ...config,
+      });
     },
-    [ServerQueryClient],
+    [ServerQueryClient, appConfig.apiClientConfig.mutationTimeout],
   );
 
   const apiDelete = useCallback(
-    async <TResponseData = void,>(url: string) => {
-      return await ServerQueryClient.delete<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url);
+    async <TResponseData = void,>(url: string, config?: AxiosRequestConfig) => {
+      return await ServerQueryClient.delete<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url, {
+        timeout: appConfig.apiClientConfig.mutationTimeout,
+        ...config,
+      });
     },
-    [ServerQueryClient],
+    [ServerQueryClient, appConfig.apiClientConfig.mutationTimeout],
   );
 
   const publicGet = useCallback(
@@ -187,13 +191,12 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       body?: TRequestData,
       config?: AxiosRequestConfig,
     ) => {
-      return await PublicQueryClient.post<TResponseData, AxiosResponse<TResponseData, TResponseData>>(
-        url,
-        body,
-        config,
-      );
+      return await PublicQueryClient.post<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url, body, {
+        timeout: appConfig.apiClientConfig.mutationTimeout,
+        ...config,
+      });
     },
-    [PublicQueryClient],
+    [PublicQueryClient, appConfig.apiClientConfig.mutationTimeout],
   );
 
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
@@ -313,6 +316,14 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         gcTime: appConfig.apiClientConfig.cacheTime,
         staleTime: appConfig.apiClientConfig.staleTime,
         retry: shouldRetryQuery(appConfig.apiClientConfig.retry),
+      },
+      mutations: {
+        ...currentOptions.mutations,
+        // Deliberately the opposite of the query policy above. Replaying a GET is free;
+        // replaying a POST creates a second post. The server can't tell our retry apart from
+        // the user tapping twice, so we never retry writes automatically. See #533.
+        retry: 0,
+        networkMode: 'online',
       },
     });
   }, [appConfig.apiClientConfig.cacheTime, appConfig.apiClientConfig.retry, appConfig.apiClientConfig.staleTime]);
