@@ -5,6 +5,7 @@ import {LayoutChangeEvent, ScrollView, StyleSheet, View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
+import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DeckMapMenu} from '#src/Components/Menus/DeckMapMenu';
 import {MapScreenActionsMenu} from '#src/Components/Menus/Main/MapScreenActionsMenu';
 import {MapSearchBar} from '#src/Components/Search/MapSearchBar';
@@ -47,12 +48,6 @@ export const MapScreen = ({navigation, route}: Props) => {
   const [manualDeckNumber, setManualDeckNumber] = useState<number | undefined>(undefined);
   const [imageLayout, setImageLayout] = useState({width: 0, height: 0});
   const [searchVisible, setSearchVisible] = useState(false);
-  // Bumped by the header "Reload" action. Deck images are otherwise cached for as
-  // long as any other API image (see appConfig.apiClientConfig.imageStaleTime,
-  // 30 days by default) — this forces a real re-fetch on demand by giving the
-  // cache-key-by-URI logic in useCachedImageSource / FastImage a new URI to key
-  // on, rather than clearing the app's entire shared image cache.
-  const [reloadToken, setReloadToken] = useState(0);
 
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollContentRef = useRef<View | null>(null);
@@ -100,16 +95,12 @@ export const MapScreen = ({navigation, route}: Props) => {
     manualDeckNumber === undefined && shipDeck?.number === activeTarget?.deckNumber ? (activeTarget?.labels ?? []) : [];
 
   // Each ship's assets live under their own code (/public/ship/hal-ed/, .../hal-ko/,
-  // ...), so switching appConfig.shipCode is itself a different URL per deck image -
-  // no separate cache-busting needed to tell "the operator deployed a different
-  // ship" from "nothing changed". reloadToken (below) is only the manual override
-  // for re-fetching the *same* ship's assets on demand.
+  // ...), so switching appConfig.shipCode is itself a different URL per deck image.
+  // Stale cached images are handled the same way as everywhere else in the app:
+  // "Clear Image Cache" on the Query Settings developer screen.
   const buildShipAssetUrl = useCallback(
-    (path: string) => {
-      const base = joinUrl(serverUrl, '/public/ship', appConfig.shipCode, path);
-      return reloadToken > 0 ? `${base}?reload=${reloadToken}` : base;
-    },
-    [serverUrl, appConfig.shipCode, reloadToken],
+    (path: string) => joinUrl(serverUrl, '/public/ship', appConfig.shipCode, path),
+    [serverUrl, appConfig.shipCode],
   );
 
   const imageUri = shipDeck ? buildShipAssetUrl(shipDeck.image) : undefined;
@@ -126,14 +117,6 @@ export const MapScreen = ({navigation, route}: Props) => {
     setSearchVisible(false);
   }, []);
 
-  const onReload = useCallback(() => {
-    // Re-arm the preload effect below so it fires again for the bumped URIs,
-    // and force the index itself past its own staleTime.
-    preloadedRef.current = false;
-    setReloadToken(t => t + 1);
-    refetch();
-  }, [refetch]);
-
   const getNavButtons = useCallback(() => {
     return (
       <View>
@@ -142,11 +125,11 @@ export const MapScreen = ({navigation, route}: Props) => {
           {index && shipDeck && (
             <DeckMapMenu decks={index.decks} currentDeckNumber={shipDeck.number} onSelect={onSelectDeck} />
           )}
-          <MapScreenActionsMenu onReload={onReload} />
+          <MapScreenActionsMenu />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [index, shipDeck, onSelectDeck, onReload]);
+  }, [index, shipDeck, onSelectDeck]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -239,7 +222,10 @@ export const MapScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={true} ref={scrollViewRef}>
+      <ScrollingContentView
+        isStack={true}
+        ref={scrollViewRef}
+        refreshControl={<AppRefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
         <View
           ref={ref => {
             scrollContentRef.current = ref;
