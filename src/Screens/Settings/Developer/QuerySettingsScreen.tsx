@@ -1,3 +1,4 @@
+import FastImage from '@d11/react-native-fast-image';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -52,6 +53,12 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     });
     queryClient.getQueryCache().clear();
     refreshCacheStats();
+  };
+
+  const clearImageCache = async () => {
+    logger.debug('Clearing image cache.');
+    await FastImage.clearMemoryCache();
+    await FastImage.clearDiskCache();
   };
 
   const triggerDisruption = () => {
@@ -129,6 +136,13 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
             testID={'clearQueryCache-button'}
             buttonText={'Clear Query Cache'}
             onPress={bustQueryCache}
+            buttonColor={theme.colors.twitarrNegativeButton}
+            style={commonStyles.marginBottom}
+          />
+          <PrimaryActionButton
+            testID={'clearImageCache-button'}
+            buttonText={'Clear Image Cache'}
+            onPress={clearImageCache}
             buttonColor={theme.colors.twitarrNegativeButton}
             style={commonStyles.marginBottom}
           />

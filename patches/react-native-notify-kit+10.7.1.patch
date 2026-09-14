@@ -1,8 +1,8 @@
 diff --git a/node_modules/react-native-notify-kit/android/src/main/java/app/notifee/core/ReceiverService.java b/node_modules/react-native-notify-kit/android/src/main/java/app/notifee/core/ReceiverService.java
-index 736e3eb..8c1bd44 100644
+index 277d7c3..6ff0ab3 100644
 --- a/node_modules/react-native-notify-kit/android/src/main/java/app/notifee/core/ReceiverService.java
 +++ b/node_modules/react-native-notify-kit/android/src/main/java/app/notifee/core/ReceiverService.java
-@@ -121,9 +121,12 @@ public class ReceiverService extends Service {
+@@ -158,9 +158,12 @@ public class ReceiverService extends Service {
      NotificationModel notificationModel = NotificationModel.fromBundle(notification);
  
      // On Android 14+, users can dismiss foreground service notifications even with ongoing: true.

@@ -1,4 +1,5 @@
 import {FezType} from '#src/Enums/FezType';
+import {ShipCode} from '#src/Enums/ShipCode';
 import {ServerUrlChoice} from '#src/Libraries/Network/ServerChoices';
 import {EventData, ImageUploadData, UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -89,6 +90,7 @@ export interface CruiseSettingsFormValues {
   cruiseLength: string;
   portTimeZoneID: string;
   schedBaseUrl: string;
+  shipCode: ShipCode;
 }
 
 export interface TimeSettingsFormValues {

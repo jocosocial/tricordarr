@@ -60,6 +60,12 @@ LoggedInScreen
 
 - Use `src/Libraries/Platform/Detection.ts`
 
+## Native Module
+
+- Any API added to `specs/NativeTricordarrModule.ts` MUST be implemented on both platforms: iOS (`ios/NativeTricordarrModule/RCTNativeTricordarrModule.mm`) and Android (`android/app/src/main/java/com/tricordarr/nativemodule/NativeTricordarrModule.kt`)
+- If a platform has no real behavior for a method, add a no-op override there (log + resolve/return), matching the existing no-op methods — do not leave it unimplemented
+- Android only fails to compile over this at a full/clean build, so an incremental build can hide a missing override
+
 ## Menus (Actions Menus)
 
 - Visibility: `useMenu`
