@@ -105,9 +105,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             label={'Mutation Timeout'}
             name={'mutationTimeoutSeconds'}
             testID={'queryMutationTimeout-slider'}
-            helperText={
-              'Amount of time to wait for a write request (post, edit, delete) to complete before giving up.'
-            }
+            helperText={'Amount of time to wait for a write request (post, edit, delete) to complete before giving up.'}
             unit={'second'}
             onSlidingComplete={() => props.onSubmit(values)}
           />
