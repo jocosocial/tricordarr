@@ -79,6 +79,17 @@ LoggedInScreen
 
 - Invalidate via `getCacheKeys()`
 - NEVER hardcode query keys
+- Every control that triggers a mutation must be disabled while it is in flight. This is a
+  reliability requirement, not polish: the app runs on a high-latency, lossy ship network,
+  and a re-tappable button during a write produces duplicate posts/messages (see #533,
+  details in `docs/Code Notes.md` under "Mutation In-Flight State")
+  - Formik forms: submit handler MUST `await mutation.mutateAsync(...)` if it's `async`.
+    An `async` handler that fires `mutation.mutate()` without awaiting it hands `isSubmitting`
+    back to Formik on the wrong tick and re-enables the button mid-request
+  - Everything else (menu items, swipeables, header buttons): explicit
+    `disabled={mutation.isPending}`. A loading icon alone does not block a second tap.
+  - Batch operations: track a local `busy` flag around the batch, separate from any
+    `setRefreshing` call (that drives the parent list's pull-to-refresh, not this control)
 
 ## Code Smells
 
