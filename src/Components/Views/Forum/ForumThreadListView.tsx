@@ -15,6 +15,8 @@ interface ForumThreadListViewProps {
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
   enableFAB?: boolean;
+  /** Raise the scroll buttons above a bottom-right FAB. Defaults to `enableFAB`, which says whether this view renders its own FAB. */
+  scrollButtonRaised?: boolean;
   category?: CategoryData;
   setRefreshing: SetRefreshing;
   fetchNextPage: () => Promise<unknown>;
@@ -33,6 +35,7 @@ export const ForumThreadListView = ({
   hasNextPage,
   hasPreviousPage,
   enableFAB = false,
+  scrollButtonRaised = enableFAB,
   category,
   setRefreshing,
   fetchNextPage,
@@ -77,6 +80,7 @@ export const ForumThreadListView = ({
         categoryID={category?.categoryID}
         onScrollThreshold={onScrollThreshold}
         scrollToTopIntent={scrollToTopIntent}
+        scrollButtonRaised={scrollButtonRaised}
       />
       {enableFAB && category && <ForumCategoryFAB category={category} showLabel={showFabLabel} />}
     </>

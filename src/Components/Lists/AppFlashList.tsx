@@ -30,12 +30,15 @@ interface AppFlashListProps<TItem> {
   extraData?: any;
   style?: ViewStyle;
   scrollButtonSmall?: boolean;
+  /** Anchor the scroll buttons above a bottom-right FAB. Set by screens that render one. */
+  scrollButtonRaised?: boolean;
   masonry?: boolean;
 }
 
 const AppFlashListInner = <TItem,>(
   {
     scrollButtonSmall,
+    scrollButtonRaised,
     onEndReachedThreshold = 1,
     keyExtractor,
     /** 0 == first item, undefined == start, including header */
@@ -139,6 +142,7 @@ const AppFlashListInner = <TItem,>(
       {effectiveScrollButton && (scrollButtons.up || scrollButtons.down) && (
         <FloatingScrollButtonsView
           small={scrollButtonSmall}
+          raised={scrollButtonRaised}
           actions={[
             ...(scrollButtons.up
               ? [{testID: 'flashListScrollUp-button', icon: AppIcons.scrollUp, onPress: handleScrollButtonPress}]

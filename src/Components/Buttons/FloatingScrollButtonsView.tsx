@@ -15,6 +15,8 @@ interface FloatingScrollAction {
 interface FloatingScrollButtonsViewProps {
   actions: FloatingScrollAction[];
   small?: boolean;
+  /** Anchor the stack above a bottom-right FAB instead of inside its footprint. Screens that render one pass true; the raised anchor sits at bottom = marginSize * 4 (80px), clearing the FAB's top edge at 72px. */
+  raised?: boolean;
 }
 
 /**
@@ -25,8 +27,11 @@ interface FloatingScrollButtonsViewProps {
  * Actions render top to bottom in the order given, so pass scroll-up before
  * scroll-down to keep the stack consistent. IconButton supplies its own small
  * margin, which is all the separation the stack needs.
+ *
+ * Pass raised when the screen also renders a bottom-right FAB, so the stack
+ * clears it instead of collapsing into the FAB's footprint at the list ends.
  */
-export const FloatingScrollButtonsView = ({actions, small = false}: FloatingScrollButtonsViewProps) => {
+export const FloatingScrollButtonsView = ({actions, small = false, raised = false}: FloatingScrollButtonsViewProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const {appConfig} = useConfig();
 
@@ -35,7 +40,7 @@ export const FloatingScrollButtonsView = ({actions, small = false}: FloatingScro
       ...commonStyles.flexColumn,
       ...commonStyles.backgroundTransparent,
       ...commonStyles.positionAbsolute,
-      bottom: styleDefaults.marginSize,
+      bottom: raised ? styleDefaults.marginSize * 4 : styleDefaults.marginSize,
       ...(appConfig.userPreferences.reverseSwipeOrientation
         ? {left: styleDefaults.marginSize / 2}
         : {right: styleDefaults.marginSize / 2}),
