@@ -145,10 +145,10 @@ export const MapScreen = ({navigation, route}: Props) => {
     return (
       <View>
         <MaterialHeaderButtons>
+          <Item title={'Search'} iconName={AppIcons.search} onPress={() => setSearchVisible(v => !v)} />
           {index && shipDeck && (
             <DeckMapMenu decks={index.decks} currentDeckNumber={shipDeck.number} onSelect={onSelectDeck} />
           )}
-          <Item title={'Search'} iconName={AppIcons.search} onPress={() => setSearchVisible(v => !v)} />
           <MapScreenActionsMenu onReload={onReload} />
         </MaterialHeaderButtons>
       </View>
