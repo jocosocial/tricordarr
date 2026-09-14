@@ -26,6 +26,14 @@ export const MapHelpScreen = () => {
             Tap the deck menu button in the header to quickly switch between different decks. The current deck is
             highlighted in the menu.
           </HelpTopicView>
+          <HelpTopicView title={'Search'} icon={AppIcons.search}>
+            Tap the search button to look up a venue or stateroom by name or number. Selecting a result jumps to the
+            right deck and highlights it on the map.
+          </HelpTopicView>
+          <HelpTopicView>
+            Opening the map from an event, photo, or report location jumps straight to that spot and highlights it, with
+            an arrow at the port or starboard edge pointing to it.
+          </HelpTopicView>
         </HelpChapterTitleView>
         <HelpButtonHelpTopicView />
       </ScrollingContentView>

@@ -29,7 +29,6 @@ import {getParticipantLabel} from '#src/Hooks/Fez/useFezData';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {calcCruiseDayTime, getDurationString} from '#src/Libraries/DateTime';
 import {openFezChatScreen} from '#src/Libraries/Navigation';
-import {guessDeckNumber} from '#src/Libraries/Ship';
 import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
@@ -77,9 +76,8 @@ export const ScheduleItemScreenBase = ({
     if (!eventData) {
       return;
     }
-    const deck = guessDeckNumber(eventData.location);
     navigation.push(CommonStackComponents.mapScreen, {
-      deckNumber: deck,
+      location: eventData.location,
     });
   };
 
