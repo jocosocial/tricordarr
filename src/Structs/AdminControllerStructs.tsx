@@ -26,6 +26,10 @@ export interface AnnouncementCreateData {
   text: string;
   /// How long to display the announcement to users. ISO8601. Interpreted as floating time in the ship's Port timezone.
   displayUntil: string;
+  /// Author the announcement as this privileged account: "TwitarrTeam", "THO", or "admin".
+  /// Omitted, or the caller's own username, means the caller. Validated server-side against
+  /// the caller's access level. Edits validate this but never change the existing author.
+  postAsUser?: string;
 }
 
 /**

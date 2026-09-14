@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment-timezone';
 
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
+import {ShipCode} from '#src/Enums/ShipCode';
 import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {LogLevel} from '#src/Libraries/Logger/types';
 import {StorageKeys} from '#src/Libraries/Storage';
@@ -21,6 +22,12 @@ export interface APIClientConfig {
   staleTime: number;
   disruptionThreshold: number;
   requestTimeout: number;
+  /**
+   * Timeout for write requests (POST/DELETE). Deliberately longer than requestTimeout: a write
+   * that times out client-side may still have succeeded server-side, and the user retrying it is
+   * exactly how duplicate posts happen on the ship network. See #533.
+   */
+  mutationTimeout: number;
   imageStaleTime: number;
 }
 
@@ -81,6 +88,9 @@ export interface AppConfig {
   skipThumbnails: boolean;
   imagePreloadDelaySeconds: number;
   schedBaseUrl: string;
+  // Which ship's deck maps to fetch from /public/ship/<code>/. Hardcoded client-side
+  // for now; should eventually come from the server via /client/settings.
+  shipCode: ShipCode;
   userPreferences: UserPreferences;
   markReadCancelPush: boolean;
   preRegistrationServerUrl: string;
@@ -157,6 +167,7 @@ export const defaultAppConfig: AppConfig = {
     staleTime: defaultStaleTime,
     disruptionThreshold: 10,
     requestTimeout: 10000,
+    mutationTimeout: 30000,
     imageStaleTime: defaultImageStaleTime,
   },
   enableEasterEgg: false,
@@ -167,6 +178,7 @@ export const defaultAppConfig: AppConfig = {
   skipThumbnails: true,
   imagePreloadDelaySeconds: 2,
   schedBaseUrl: '',
+  shipCode: ShipCode.halEd,
   userPreferences: {
     reverseSwipeOrientation: false,
     showScrollButton: true,
@@ -259,6 +271,12 @@ export const getAppConfig = async () => {
   }
   if (appConfig.dismissWelcomeAboard === undefined) {
     appConfig.dismissWelcomeAboard = false;
+  }
+  if (appConfig.shipCode === undefined) {
+    appConfig.shipCode = ShipCode.halEd;
+  }
+  if (appConfig.apiClientConfig.mutationTimeout === undefined) {
+    appConfig.apiClientConfig.mutationTimeout = defaultAppConfig.apiClientConfig.mutationTimeout;
   }
 
   // Ok now we're done

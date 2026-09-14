@@ -60,6 +60,12 @@ LoggedInScreen
 
 - Use `src/Libraries/Platform/Detection.ts`
 
+## Native Module
+
+- Any API added to `specs/NativeTricordarrModule.ts` MUST be implemented on both platforms: iOS (`ios/NativeTricordarrModule/RCTNativeTricordarrModule.mm`) and Android (`android/app/src/main/java/com/tricordarr/nativemodule/NativeTricordarrModule.kt`)
+- If a platform has no real behavior for a method, add a no-op override there (log + resolve/return), matching the existing no-op methods — do not leave it unimplemented
+- Android only fails to compile over this at a full/clean build, so an incremental build can hide a missing override
+
 ## Menus (Actions Menus)
 
 - Visibility: `useMenu`
@@ -73,6 +79,17 @@ LoggedInScreen
 
 - Invalidate via `getCacheKeys()`
 - NEVER hardcode query keys
+- Every control that triggers a mutation must be disabled while it is in flight. This is a
+  reliability requirement, not polish: the app runs on a high-latency, lossy ship network,
+  and a re-tappable button during a write produces duplicate posts/messages (see #533,
+  details in `docs/Code Notes.md` under "Mutation In-Flight State")
+  - Formik forms: submit handler MUST `await mutation.mutateAsync(...)` if it's `async`.
+    An `async` handler that fires `mutation.mutate()` without awaiting it hands `isSubmitting`
+    back to Formik on the wrong tick and re-enables the button mid-request
+  - Everything else (menu items, swipeables, header buttons): explicit
+    `disabled={mutation.isPending}`. A loading icon alone does not block a second tap.
+  - Batch operations: track a local `busy` flag around the batch, separate from any
+    `setRefreshing` call (that drives the parent list's pull-to-refresh, not this control)
 
 ## Code Smells
 

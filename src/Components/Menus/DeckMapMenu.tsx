@@ -1,38 +1,38 @@
 import * as React from 'react';
-import {Dispatch, SetStateAction} from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {DeckData, ShipDecks} from '#src/Libraries/Ship';
+import {ShipDeck} from '#src/Structs/ShipStructs';
 
 interface DeckMapMenuProps {
-  shipDeck: DeckData;
-  setShipDeck: Dispatch<SetStateAction<DeckData>>;
+  decks: ShipDeck[];
+  currentDeckNumber: number;
+  onSelect: (deck: ShipDeck) => void;
 }
 
-export const DeckMapMenu = (props: DeckMapMenuProps) => {
+export const DeckMapMenu = ({decks, currentDeckNumber, onSelect}: DeckMapMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
 
-  const onPress = (value: DeckData) => {
+  const onPress = (deck: ShipDeck) => {
     closeMenu();
-    props.setShipDeck(value);
+    onSelect(deck);
   };
 
   return (
     <AppMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.decks} onPress={openMenu} />}>
-      {ShipDecks.map(deck => {
+      anchor={<Item title={'Decks'} iconName={AppIcons.decks} onPress={openMenu} />}>
+      {decks.map(deck => {
         return (
           <SelectableMenuItem
             key={deck.number}
-            title={`Deck ${deck.number} - ${deck.label}`}
+            title={`Deck ${deck.number}${deck.name ? ` - ${deck.name}` : ''}`}
             onPress={() => onPress(deck)}
-            selected={props.shipDeck.number === deck.number}
+            selected={currentDeckNumber === deck.number}
           />
         );
       })}

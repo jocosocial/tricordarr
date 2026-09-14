@@ -22,7 +22,6 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {calcCruiseDayTime, getEventTimeString} from '#src/Libraries/DateTime';
-import {guessDeckNumber} from '#src/Libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventFeedbackMarkMutation} from '#src/Queries/Admin/EventFeedbackMutations';
 import {useEventFeedbackReportQuery} from '#src/Queries/Admin/EventFeedbackQueries';
@@ -120,7 +119,7 @@ const AdminEventFeedbackReportScreenInner = ({navigation, route}: Props) => {
    */
   const handleMap = () => {
     navigation.push(CommonStackComponents.mapScreen, {
-      deckNumber: guessDeckNumber(report.eventLocation),
+      location: report.eventLocation,
     });
   };
 

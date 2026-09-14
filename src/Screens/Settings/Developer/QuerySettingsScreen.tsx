@@ -1,3 +1,4 @@
+import FastImage from '@d11/react-native-fast-image';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -54,6 +55,12 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     refreshCacheStats();
   };
 
+  const clearImageCache = async () => {
+    logger.debug('Clearing image cache.');
+    await FastImage.clearMemoryCache();
+    await FastImage.clearDiskCache();
+  };
+
   const triggerDisruption = () => {
     setErrorCount(appConfig.apiClientConfig.disruptionThreshold + 1);
   };
@@ -65,6 +72,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     staleTimeMinutes: appConfig.apiClientConfig.staleTime / 60 / 1000,
     disruptionThreshold: appConfig.apiClientConfig.disruptionThreshold,
     imageStaleTimeDays: appConfig.apiClientConfig.imageStaleTime / 24 / 60 / 60 / 1000,
+    mutationTimeoutSeconds: appConfig.apiClientConfig.mutationTimeout / 1000,
   };
 
   const onSubmit = (values: QuerySettingsFormValues) => {
@@ -79,6 +87,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         staleTime: values.staleTimeMinutes * 60 * 1000,
         disruptionThreshold: values.disruptionThreshold,
         imageStaleTime: values.imageStaleTimeDays * 24 * 60 * 60 * 1000,
+        mutationTimeout: values.mutationTimeoutSeconds * 1000,
         cacheBuster: bustCache ? generateNewCacheBuster() : appConfig.apiClientConfig.cacheBuster,
       },
     });
@@ -129,6 +138,13 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
             testID={'clearQueryCache-button'}
             buttonText={'Clear Query Cache'}
             onPress={bustQueryCache}
+            buttonColor={theme.colors.twitarrNegativeButton}
+            style={commonStyles.marginBottom}
+          />
+          <PrimaryActionButton
+            testID={'clearImageCache-button'}
+            buttonText={'Clear Image Cache'}
+            onPress={clearImageCache}
             buttonColor={theme.colors.twitarrNegativeButton}
             style={commonStyles.marginBottom}
           />

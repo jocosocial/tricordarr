@@ -11,7 +11,7 @@ import {buildWebSocket, wsHealthcheck} from '#src/Libraries/Network/Websockets';
 import {serviceChannel} from '#src/Libraries/Notifications/Channels';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {StorageKeys} from '#src/Libraries/Storage';
-import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
+import {WebsocketDebugStatus} from '#src/Structs/SocketStructs';
 import {getTheme} from '#src/Styles/Theme';
 
 const logger = createLogger('ForegroundService.ts');
@@ -33,14 +33,14 @@ export let fgsFailedThreshold = 10;
 const fgsWorkerHealthcheck = async () => {
   logger.debug('Performing WebSocket Healthcheck');
   const ws = await getSharedWebSocket();
-  const healthcheckResult: SocketHealthcheckData = {
-    result: wsHealthcheck(ws),
-    timestamp: new Date().toISOString(),
+  const healthcheckResult: WebsocketDebugStatus = {
+    lastHealthcheckSuccess: wsHealthcheck(ws),
+    lastHealthcheckAt: new Date().toISOString(),
   };
 
   // Store the healthcheck data
   await AsyncStorage.setItem(StorageKeys.WS_HEALTHCHECK_DATA, JSON.stringify(healthcheckResult));
-  if (healthcheckResult.result) {
+  if (healthcheckResult.lastHealthcheckSuccess) {
     fgsFailedCounter = 0;
   } else {
     fgsFailedCounter += 1;

@@ -178,6 +178,7 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
           onSubmit={onFezSubmit}
           initialValues={initialFormValues}
           onValidationChange={setSeamailFormValid}
+          showPostAsOptions={false}
         />
       </ScrollingContentView>
       <ContentPostForm

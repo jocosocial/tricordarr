@@ -38,6 +38,7 @@ export enum AppIcons {
   report = 'alert-octagon',
   help = 'help-circle-outline',
   copy = 'content-copy',
+  reply = 'reply',
   // Users
   profile = 'account-details-outline',
   user = 'account',
@@ -83,6 +84,7 @@ export enum AppIcons {
   lfgCreate = 'account-multiple-plus-outline',
   edit = 'pencil',
   description = 'text-box',
+  logView = 'text-box-search-outline',
   type = 'shape',
   join = 'account-plus',
   leave = 'account-remove',

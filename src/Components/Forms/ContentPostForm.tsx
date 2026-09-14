@@ -1,6 +1,6 @@
 import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
 import React, {useEffect} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import * as Yup from 'yup';
 
@@ -49,7 +49,15 @@ const ElevationPrivilegeSync = () => {
 };
 
 interface ContentPostFormProps {
-  onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
+  /**
+   * Handler for the submit action. This MUST return a promise that covers the network
+   * request (use `mutation.mutateAsync()`, not `mutation.mutate()`). Formik keeps
+   * `isSubmitting` true until the returned promise settles, which is what keeps the submit
+   * button spinning and disabled for the real lifetime of the request. Returning early
+   * (or firing a mutation and returning) re-enables the button while the post is still in
+   * flight, which produces duplicate posts on a laggy network. See #533.
+   */
+  onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void | Promise<void>;
   formRef?: React.RefObject<FormikProps<PostContentData> | null>;
   onPress?: () => void;
   overrideSubmitting?: boolean;
@@ -58,6 +66,8 @@ interface ContentPostFormProps {
   maxPhotos?: number;
   initialValues?: PostContentData;
   disabled?: boolean;
+  /** Receives the text input, so callers can focus it after writing into the form. */
+  inputRef?: React.MutableRefObject<TextInput | null>;
 }
 
 // https://formik.org/docs/guides/react-native
@@ -71,6 +81,7 @@ export const ContentPostForm = ({
   maxPhotos = 1,
   initialValues,
   disabled = false,
+  inputRef,
 }: ContentPostFormProps) => {
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = useElevation();
@@ -81,6 +92,10 @@ export const ContentPostForm = ({
   /**
    * Saves camera photos if needed, then submits with privilege flags taken from
    * elevation rather than stale Formik state.
+   *
+   * The onSubmit result is awaited so that the promise this returns resolves only once the
+   * caller's network request has settled. Formik clears isSubmitting on that resolution, so
+   * failing to await here drops the spinner (and re-enables the button) mid-request. See #533.
    */
   const handleSubmitWithPhotoSave = async (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => {
     // Save photos taken with camera to camera roll if enabled
@@ -94,7 +109,7 @@ export const ContentPostForm = ({
       }
     }
 
-    onSubmit(
+    await onSubmit(
       {
         ...values,
         ...getPrivilegeFlags(asPrivilegedUser),
@@ -198,7 +213,12 @@ export const ContentPostForm = ({
                   />
                 </View>
                 <View style={styles.inputWrapperView}>
-                  <MentionTextField name={'text'} testID={'contentPostText-input'} style={styles.input} />
+                  <MentionTextField
+                    name={'text'}
+                    testID={'contentPostText-input'}
+                    style={styles.input}
+                    inputRef={inputRef}
+                  />
                   <ContentInsertPhotosView />
                 </View>
                 <View style={styles.inputWrapperViewSide}>

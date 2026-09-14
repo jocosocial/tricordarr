@@ -45,6 +45,9 @@ export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => 
         iconTrue: AppIcons.unpin,
         iconFalse: AppIcons.pin,
       })}
+      // Menus stay open until onSettled closes them, so a mutation in flight is still tappable.
+      // Without this a fast double-tap fires the toggle twice and can flip the state back. See #533.
+      disabled={pinMutation.isPending}
       onPress={handleFavorite}
     />
   );

@@ -56,6 +56,14 @@ export type CommonStackParamList = {
   };
   MapScreen: {
     deckNumber?: number;
+    region?: 'forward' | 'midship' | 'aft';
+    // Venue/facility slug from ship.json.
+    venue?: string;
+    // Stateroom number, e.g. "1234" or a lettered sub-unit like "7000A".
+    room?: string;
+    // Raw Sched-style location string ("Ocean Bar, Deck 3, Midship"), resolved
+    // against the ship index by MapScreen itself.
+    location?: string;
   };
   AccountRecoveryScreen: undefined;
   RecoveryKeyScreen: {
@@ -334,6 +342,7 @@ export type CommonStackParamList = {
   };
   EasterEggHelpScreen: undefined;
   TodayHelpScreen: undefined;
+  LoggingHelpScreen: undefined;
   KrakenTalkCreateScreen?: {
     initialUserHeader?: UserHeader;
   };
@@ -549,6 +558,7 @@ export enum CommonStackComponents {
   dailyThemeScreen = 'DailyThemeScreen',
   easterEggHelpScreen = 'EasterEggHelpScreen',
   todayHelpScreen = 'TodayHelpScreen',
+  loggingHelpScreen = 'LoggingHelpScreen',
   krakenTalkCreateScreen = 'KrakenTalkCreateScreen',
   krakenTalkActiveCallScreen = 'KrakenTalkActiveCallScreen',
   krakenTalkHelpScreen = 'KrakenTalkHelpScreen',
@@ -653,7 +663,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.registrationCodeHelpScreen
   | CommonStackComponents.adminServerSettingsHelpScreen
   | CommonStackComponents.huntHelpScreen
-  | CommonStackComponents.eventFeedbackHelpScreen;
+  | CommonStackComponents.eventFeedbackHelpScreen
+  | CommonStackComponents.loggingHelpScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 

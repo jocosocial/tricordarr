@@ -1,0 +1,86 @@
+# Reply appends an @mention of the post's author to the thread composer and leaves the
+# user ready to type.
+#
+# Swiftarr has no structural reply relation for forum posts; the @mention is what notifies
+# the author. It only counts the mention when the @ follows whitespace or the start of the
+# string (`(?<!\S)@` in ContentFilterable.getMentionsSet), so the separator space in the
+# second scenario is the thing actually under test there.
+#
+# Precondition: the app is signed in. ../OOBE/Login.yaml is meant to get you there but is
+# currently unreliable — its fixed `repeat: 7` scrolls do not reach the agree button, and
+# SetupApp.yaml's iOS branch leaves the app closed — so sign in by hand for now.
+#
+# FORUM_THREAD must name a thread in FORUM_CATEGORY whose first post is by another user:
+# Reply is deliberately absent on your own posts, so the post at index 0 must not be yours.
+appId: ${APP_ID}
+env:
+  FORUM_CATEGORY: 'General'
+  FORUM_THREAD: 'Reply caret test thread'
+  # Marker typed into the composer. Distinctive so assertions can't match post text.
+  MARKER: 'zzq'
+---
+# Start from a known screen. `hideKeyboard` is not usable here because it errors when no
+# keyboard is up, and an open keyboard covers the bottom tab bar, so the tab tap below
+# would otherwise land on the keyboard and never navigate. No clearState: the session is
+# reused so the flow stays signed in.
+#
+# The launch argument suppresses the Expo dev-menu sheet, which otherwise covers the app
+# on the first launch after app data is cleared and swallows the taps below. Same argument
+# SetupApp.yaml passes.
+- launchApp:
+    arguments:
+      '-EXDevMenuIsOnboardingFinished': true
+# Relaunching makes the dev client refetch the JS bundle, so wait for the tab bar to
+# actually exist before tapping it. Android is slow enough here that tapping immediately
+# fails with a bare "Element not found"; iOS usually wins the race, which is exactly the
+# kind of difference that makes this flaky rather than broken.
+#
+# Tab labels bundle icon glyphs in with the text ("<glyph>, <glyph>, Forums, Forums"), so
+# every text selector here needs wildcards rather than a bare literal.
+- extendedWaitUntil:
+    visible: '(?s).*Forums.*'
+    timeout: 120000
+- tapOn: '(?s).*Forums.*'
+- tapOn: '(?s).*${FORUM_CATEGORY}.*'
+- tapOn: '(?s).*${FORUM_THREAD}.*'
+- assertVisible:
+    id: 'contentPostText-input'
+
+# Scenario 1 — the common one. Long-press a post, hit Reply, start typing. Opening the
+# actions menu blurs the composer, so Reply has to restore focus and put the caret after
+# the mention. Without that the keystrokes below go nowhere.
+- tapOn:
+    id: 'contentPostText-input'
+- eraseText
+# The keyboard must be down before the long-press. With it up, the post's centre sits
+# behind it and the press lands on the keyboard, which silently dismisses it instead of
+# opening the menu.
+- hideKeyboard
+# Long-press by id rather than by text: the post's text selector resolves to an oversized
+# container whose centre is empty space.
+- longPressOn:
+    id: 'forumPost-message'
+    index: 0
+- assertVisible: 'Reply'
+- tapOn: 'Reply'
+# Deliberately no tap on the composer first — that is the whole point of this scenario.
+- inputText: ${MARKER}
+# Every assertion here is scoped to the composer by id. An unscoped text assertion also
+# matches the posts rendered in the thread, so it would pass even if Reply did nothing.
+- assertVisible:
+    id: 'contentPostText-input'
+    text: '(?s).*@.*${MARKER}.*'
+
+# Scenario 2 — replying while part-way through a sentence. Existing text must survive and
+# the mention must land after it, separated by a space. The typed text carries the marker
+# so it cannot collide with post content.
+- eraseText
+- inputText: '${MARKER}pre'
+- hideKeyboard
+- longPressOn:
+    id: 'forumPost-message'
+    index: 0
+- tapOn: 'Reply'
+- assertVisible:
+    id: 'contentPostText-input'
+    text: '(?s).*${MARKER}pre @.*'

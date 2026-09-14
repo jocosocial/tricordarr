@@ -51,12 +51,17 @@ const AdminAnnouncementEditScreenInner = ({route, navigation}: Props) => {
     text: announcement?.text ?? '',
     displayUntilDate: existing?.date ?? new Date(),
     displayUntilTime: existing?.time ?? {hours: 23, minutes: 59},
+    postAsUser: 'self',
   };
+  // Editing never applies postAsUser server-side (it only preserves the existing author),
+  // so the post-as picker only makes sense — and is only shown — when creating.
+  const showPostAsOptions = !announcement;
 
   const onSubmit = (values: AdminAnnouncementFormValues, helpers: FormikHelpers<AdminAnnouncementFormValues>) => {
     const data = {
       text: values.text,
       displayUntil: combineDateAndTime(values.displayUntilDate, values.displayUntilTime),
+      postAsUser: values.postAsUser !== 'self' ? values.postAsUser : undefined,
     };
     if (announcement) {
       editMutation.mutate(
@@ -88,6 +93,7 @@ const AdminAnnouncementEditScreenInner = ({route, navigation}: Props) => {
             initialValues={initialValues}
             onSubmit={onSubmit}
             buttonText={announcement ? 'Save' : 'Create'}
+            showPostAsOptions={showPostAsOptions}
           />
         </PaddedContentView>
         {announcement && (

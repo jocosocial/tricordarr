@@ -1,5 +1,5 @@
 import {AxiosResponse} from 'axios';
-import React from 'react';
+import React, {useState} from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -24,8 +24,13 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
   const {commonStyles} = useStyles();
   const markReadMutation = useForumMarkReadMutation();
   const {markRead, updateFavorite, updateMute} = useForumCacheReducer();
+  // Tracks the batch mutation separately from props.setRefreshing: that drives the pull-to-refresh
+  // spinner on the parent list, not this button's own tappability. Without it a fast repeat tap
+  // re-fires the whole batch and can flip a relation back off before the first pass lands. See #533.
+  const [busy, setBusy] = useState(false);
 
   const onPress = async (relation: 'mute' | 'favorite') => {
+    setBusy(true);
     props.setRefreshing(true);
 
     // https://stackoverflow.com/questions/70771324/how-to-handle-multiple-mutations-in-parallel-with-react-query
@@ -54,9 +59,11 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
     });
     await Promise.allSettled(mutations);
     props.setRefreshing(false);
+    setBusy(false);
   };
 
   const markAsRead = async () => {
+    setBusy(true);
     props.setRefreshing(true);
     const itemMutations: {id: string; mutation: Promise<AxiosResponse<void, any>>}[] = [];
 
@@ -77,9 +84,10 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
       }
     });
     props.setRefreshing(false);
+    setBusy(false);
   };
 
-  const disableButtons = props.selectedItems.length === 0;
+  const disableButtons = props.selectedItems.length === 0 || busy;
 
   return (
     <MaterialHeaderButtons>

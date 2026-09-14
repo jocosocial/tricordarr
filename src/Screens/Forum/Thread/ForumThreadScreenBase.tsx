@@ -2,7 +2,7 @@ import {InfiniteData, QueryObserverResult} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -27,6 +27,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
+import {ForumComposerProvider} from '#src/Context/Providers/ForumComposerProvider';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
@@ -104,6 +105,7 @@ const ForumThreadScreenBaseInner = ({
   const navigation = useCommonStack();
   const {asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam} = useElevation();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
+  const postInputRef = useRef<TextInput | null>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const markReadMutation = useForumMarkReadMutation();
   const flatListRef = useRef<TConversationListV2Ref>(null);
@@ -212,59 +214,58 @@ const ForumThreadScreenBaseInner = ({
 
   /**
    * Creates a forum post and resets the composer, keeping the current elevation flags.
+   *
+   * Awaits the mutation so Formik holds isSubmitting (and the submit button stays disabled)
+   * for the full round trip. See #533.
    */
-  const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
-    formikHelpers.setSubmitting(true);
+  const onPostSubmit = async (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     if (!forumData) {
-      formikHelpers.setSubmitting(false);
       return;
     }
     values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
-    postCreateMutation.mutate(
-      {
+    try {
+      const response = await postCreateMutation.mutateAsync({
         forumID: forumData.forumID,
         postData: values,
-      },
-      {
-        onSuccess: response => {
-          formikHelpers.resetForm({
-            values: {
-              text: '',
-              images: [],
-              postAsModerator: asModerator,
-              postAsTwitarrTeam: asTwitarrTeam,
-            },
-          });
+      });
 
-          // Update React Query caches (instant, no network).
-          // This triggers a re-render via the derived useForumData.
-          appendPost(forumData.forumID, forumData.categoryID, response.data);
-
-          // Signal screens to scroll to the top when the user navigates back.
-          dispatchScrollToTop(
-            ForumStackComponents.forumCategoryScreen,
-            ForumStackComponents.forumPostSelfScreen,
-            ForumStackComponents.forumFavoritesScreen,
-            ForumStackComponents.forumMutesScreen,
-            ForumStackComponents.forumOwnedScreen,
-            ForumStackComponents.forumRecentScreen,
-          );
-
-          // Clear server unread status (fire-and-forget).
-          markReadMutation.mutate({forumID: forumData.forumID});
-
-          // Scroll to the new post.
-          // requestAnimationFrame(() => {
-          //   requestAnimationFrame(() => {
-          flatListRef.current?.scrollToEnd({animated: false});
-          //   });
-          // });
+      formikHelpers.resetForm({
+        values: {
+          text: '',
+          images: [],
+          postAsModerator: asModerator,
+          postAsTwitarrTeam: asTwitarrTeam,
         },
-        onSettled: () => {
-          formikHelpers.setSubmitting(false);
-        },
-      },
-    );
+      });
+
+      // Update React Query caches (instant, no network).
+      // This triggers a re-render via the derived useForumData.
+      appendPost(forumData.forumID, forumData.categoryID, response.data);
+
+      // Signal screens to scroll to the top when the user navigates back.
+      dispatchScrollToTop(
+        ForumStackComponents.forumCategoryScreen,
+        ForumStackComponents.forumPostSelfScreen,
+        ForumStackComponents.forumFavoritesScreen,
+        ForumStackComponents.forumMutesScreen,
+        ForumStackComponents.forumOwnedScreen,
+        ForumStackComponents.forumRecentScreen,
+      );
+
+      // Clear server unread status (fire-and-forget).
+      markReadMutation.mutate({forumID: forumData.forumID});
+
+      // Scroll to the new post.
+      // requestAnimationFrame(() => {
+      //   requestAnimationFrame(() => {
+      flatListRef.current?.scrollToEnd({animated: false});
+      //   });
+      // });
+    } catch (error) {
+      // The error snackbar is raised by useTokenAuthMutation's onError. Swallow here so the
+      // rejection doesn't escape into Formik's submit handling.
+      logger.error('Forum post create failed.', error);
+    }
   };
 
   const onReadyToShow = useCallback(() => {
@@ -313,45 +314,48 @@ const ForumThreadScreenBaseInner = ({
   });
 
   return (
-    <AppView>
-      <PostAsUserWarningView />
-      <ListTitleView
-        title={titleOverride ?? forumData?.title ?? ''}
-        subtitle={pinnedPostsSubtitle}
-        icon={forumData?.isFavorite ? <AppIcon icon={AppIcons.favorite} small={true} /> : undefined}
-      />
-      {forumData?.isLocked && <ForumLockedView />}
-      <View style={commonStyles.flex}>
-        <ForumConversationListV2
-          postList={forumPosts}
-          handleLoadNext={handleLoadNext}
-          handleLoadPrevious={handleLoadPrevious}
-          refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
-          forumData={forumData}
-          hasPreviousPage={hasPreviousPage}
-          getListHeader={getListHeader}
-          listRef={flatListRef}
-          hasNextPage={hasNextPage}
-          forumListData={forumListData}
-          initialScrollIndex={getInitialScrollIndex()}
-          onReadyToShow={onReadyToShow}
-          startFromPost={startFromPost}
+    <ForumComposerProvider formRef={postFormRef} inputRef={postInputRef} enabled={showForm}>
+      <AppView>
+        <PostAsUserWarningView />
+        <ListTitleView
+          title={titleOverride ?? forumData?.title ?? ''}
+          subtitle={pinnedPostsSubtitle}
+          icon={forumData?.isFavorite ? <AppIcon icon={AppIcons.favorite} small={true} /> : undefined}
         />
-        {!readyToShow && (
-          <View style={overlayStyles.overlay}>
-            <ActivityIndicator size={'large'} />
-          </View>
+        {forumData?.isLocked && <ForumLockedView />}
+        <View style={commonStyles.flex}>
+          <ForumConversationListV2
+            postList={forumPosts}
+            handleLoadNext={handleLoadNext}
+            handleLoadPrevious={handleLoadPrevious}
+            refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
+            forumData={forumData}
+            hasPreviousPage={hasPreviousPage}
+            getListHeader={getListHeader}
+            listRef={flatListRef}
+            hasNextPage={hasNextPage}
+            forumListData={forumListData}
+            initialScrollIndex={getInitialScrollIndex()}
+            onReadyToShow={onReadyToShow}
+            startFromPost={startFromPost}
+          />
+          {!readyToShow && (
+            <View style={overlayStyles.overlay}>
+              <ActivityIndicator size={'large'} />
+            </View>
+          )}
+        </View>
+        {showForm && (
+          <ContentPostForm
+            onSubmit={onPostSubmit}
+            formRef={postFormRef}
+            inputRef={postInputRef}
+            enablePhotos={true}
+            maxLength={2000}
+            maxPhotos={maxForumPostImages}
+          />
         )}
-      </View>
-      {showForm && (
-        <ContentPostForm
-          onSubmit={onPostSubmit}
-          formRef={postFormRef}
-          enablePhotos={true}
-          maxLength={2000}
-          maxPhotos={maxForumPostImages}
-        />
-      )}
-    </AppView>
+      </AppView>
+    </ForumComposerProvider>
   );
 };
