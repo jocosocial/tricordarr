@@ -1,29 +1,26 @@
 import FastImage, {type ImageStyle as FastImageStyle} from '@d11/react-native-fast-image';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {LayoutChangeEvent, ScrollView, StyleSheet, View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
-import {ListItem} from '#src/Components/Lists/ListItem';
 import {DeckMapMenu} from '#src/Components/Menus/DeckMapMenu';
 import {MapScreenActionsMenu} from '#src/Components/Menus/Main/MapScreenActionsMenu';
-import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
+import {MapSearchBar} from '#src/Components/Search/MapSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {MapHighlightOverlay} from '#src/Components/Views/MapHighlightOverlay';
 import {MapIndicatorView} from '#src/Components/Views/MapIndicatorView';
-import {MenuScrollIndicator} from '#src/Components/Views/MenuScrollIndicator';
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useCachedImageSource} from '#src/Hooks/useCachedImageSource';
-import {MapTarget, resolveTarget, searchLabels, ShipSearchResult} from '#src/Libraries/ShipIndex';
+import {MapTarget, resolveTarget, ShipSearchResult} from '#src/Libraries/ShipIndex';
 import {joinUrl} from '#src/Libraries/UrlParser';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useShipIndexQuery} from '#src/Queries/Ship/ShipQueries';
@@ -34,39 +31,35 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.mapScr
 // Vertical offset above a scrolled-to target so it isn't flush against the header.
 const SCROLL_TOP_PADDING = 24;
 
-// Cap on the search results panel's height, in points, before it scrolls
-// instead of growing further. Sized to content up to this cap (see
-// resultsContentHeight below) rather than always reserving this much space —
-// a plain percentage-of-screen maxHeight leaves blank space under a couple
-// of results, which is the "wasted space" AppMenu's own results list avoids.
-const MAX_RESULTS_HEIGHT = 320;
-
 export const MapScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
-  const {theme} = useAppTheme();
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
   const {data: index, isLoading, isError, refetch, isRefetching} = useShipIndexQuery();
 
   const [activeTarget, setActiveTarget] = useState<MapTarget | undefined>(undefined);
+  // Set only by the deck menu. Manually switching decks is a "keep looking at
+  // roughly the same part of the ship" gesture, so it deliberately does not
+  // touch activeTarget/scroll position — every deck's image is the same pixel
+  // size (one shared crop per ship), so leaving the scroll offset alone lands
+  // on roughly the same physical location on the new deck. Cleared whenever a
+  // real target (route params, search) should take over deck + scroll again.
+  const [manualDeckNumber, setManualDeckNumber] = useState<number | undefined>(undefined);
   const [imageLayout, setImageLayout] = useState({width: 0, height: 0});
   const [searchVisible, setSearchVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   // Bumped by the header "Reload" action. Deck images are otherwise cached for as
   // long as any other API image (see appConfig.apiClientConfig.imageStaleTime,
   // 30 days by default) — this forces a real re-fetch on demand by giving the
   // cache-key-by-URI logic in useCachedImageSource / FastImage a new URI to key
   // on, rather than clearing the app's entire shared image cache.
   const [reloadToken, setReloadToken] = useState(0);
-  const [resultsContentHeight, setResultsContentHeight] = useState(0);
-  const [resultsAtBottom, setResultsAtBottom] = useState(false);
 
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollContentRef = useRef<View | null>(null);
   const imageContainerRef = useRef<View | null>(null);
   const lastScrolledKey = useRef<string | undefined>(undefined);
   const preloadedRef = useRef(false);
-  const resultsScrollRef = useRef<ScrollView>(null);
+  const previousShipRef = useRef<string | undefined>(undefined);
 
   const params = route.params;
 
@@ -76,6 +69,19 @@ export const MapScreen = ({navigation, route}: Props) => {
     if (!index) {
       return;
     }
+    // A different ship's assets loaded (the Ship cruise setting changed, not
+    // just a stale-data refetch of the same one) — start over at the top of
+    // deck 1 rather than carrying over wherever the previous ship's route
+    // params or manual deck pick left off.
+    if (previousShipRef.current !== undefined && previousShipRef.current !== index.ship) {
+      previousShipRef.current = index.ship;
+      setManualDeckNumber(undefined);
+      lastScrolledKey.current = undefined;
+      setActiveTarget({deckNumber: index.decks[0].number, labels: []});
+      return;
+    }
+    previousShipRef.current = index.ship;
+
     setActiveTarget(
       resolveTarget(index, {
         deckNumber: params?.deckNumber !== undefined ? Number(params.deckNumber) : undefined,
@@ -88,9 +94,10 @@ export const MapScreen = ({navigation, route}: Props) => {
   }, [index, params?.deckNumber, params?.region, params?.venue, params?.room, params?.location]);
 
   const shipDeck: ShipDeck | undefined =
-    index?.decks.find(d => d.number === activeTarget?.deckNumber) ?? index?.decks[0];
+    index?.decks.find(d => d.number === (manualDeckNumber ?? activeTarget?.deckNumber)) ?? index?.decks[0];
 
-  const highlightLabels = shipDeck?.number === activeTarget?.deckNumber ? (activeTarget?.labels ?? []) : [];
+  const highlightLabels =
+    manualDeckNumber === undefined && shipDeck?.number === activeTarget?.deckNumber ? (activeTarget?.labels ?? []) : [];
 
   // Each ship's assets live under their own code (/public/ship/hal-ed/, .../hal-ko/,
   // ...), so switching appConfig.shipCode is itself a different URL per deck image -
@@ -109,30 +116,14 @@ export const MapScreen = ({navigation, route}: Props) => {
   const imageSource = useCachedImageSource(imageUri);
   const aspectRatio = index?.geometry.imagePx ? index.geometry.imagePx.w / index.geometry.imagePx.h : undefined;
 
-  const searchResults: ShipSearchResult[] = useMemo(() => searchLabels(index, searchQuery), [index, searchQuery]);
-
-  // A fresh set of results should start scrolled to top, not carry over
-  // "at bottom" from whatever the previous query's results looked like.
-  useEffect(() => {
-    setResultsAtBottom(false);
-  }, [searchResults]);
-
   const onSelectDeck = useCallback((deck: ShipDeck) => {
-    setActiveTarget({deckNumber: deck.number, labels: []});
+    setManualDeckNumber(deck.number);
   }, []);
 
   const onSelectSearchResult = useCallback((result: ShipSearchResult) => {
+    setManualDeckNumber(undefined);
     setActiveTarget({deckNumber: result.deckNumber, labels: result.labels});
     setSearchVisible(false);
-    setSearchQuery('');
-  }, []);
-
-  const onSearchClear = useCallback(() => setSearchQuery(''), []);
-
-  const onResultsScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
-    const maxScrollY = contentSize.height - layoutMeasurement.height;
-    setResultsAtBottom(contentOffset.y >= maxScrollY - 5);
   }, []);
 
   const onReload = useCallback(() => {
@@ -232,29 +223,7 @@ export const MapScreen = ({navigation, route}: Props) => {
       width: undefined,
       aspectRatio,
     },
-    searchOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      zIndex: 10,
-      elevation: 10,
-      backgroundColor: theme.colors.background,
-      ...commonStyles.paddingHorizontalSmall,
-    },
-    searchResultsContainer: {
-      position: 'relative',
-    },
-    searchResults: {
-      // Sized to the actual content up to the cap, not always the cap itself —
-      // a bare maxHeight here reserves that much blank space under a couple
-      // of results, same as AppMenu was written to avoid.
-      maxHeight: Math.min(resultsContentHeight, MAX_RESULTS_HEIGHT),
-    },
   });
-
-  const isResultsScrollable = resultsContentHeight > MAX_RESULTS_HEIGHT;
-  const showResultsScrollIndicator = isResultsScrollable && !resultsAtBottom;
 
   if (isLoading) {
     return <LoadingView />;
@@ -296,45 +265,10 @@ export const MapScreen = ({navigation, route}: Props) => {
           <MapIndicatorView direction={'Aft'} />
         </View>
       </ScrollingContentView>
-      {searchVisible && (
-        // Deliberately outside ScrollingContentView: this must stay visible
-        // regardless of scroll position, or hitting search while looking at
-        // the aft of the ship appears to do nothing.
-        <View style={styles.searchOverlay}>
-          <SearchBarBase
-            testID={'mapSearch-input'}
-            searchQuery={searchQuery}
-            onChangeSearch={setSearchQuery}
-            onClear={onSearchClear}
-            autoSearch={true}
-            minLength={2}
-            placeholder={'Search venues and staterooms'}
-          />
-          <View style={styles.searchResultsContainer}>
-            <ScrollView
-              ref={resultsScrollRef}
-              style={styles.searchResults}
-              scrollEnabled={isResultsScrollable}
-              onContentSizeChange={(_w, h) => setResultsContentHeight(h)}
-              onScroll={onResultsScroll}
-              scrollEventThrottle={16}
-              keyboardShouldPersistTaps={'handled'}>
-              {searchResults.map(result => (
-                <ListItem
-                  key={`${result.deckNumber}:${result.key}`}
-                  title={result.name}
-                  description={`Deck ${result.deckNumber}`}
-                  onPress={() => onSelectSearchResult(result)}
-                />
-              ))}
-            </ScrollView>
-            <MenuScrollIndicator
-              visible={showResultsScrollIndicator}
-              onPress={() => resultsScrollRef.current?.scrollToEnd()}
-            />
-          </View>
-        </View>
-      )}
+      {/* Deliberately outside ScrollingContentView: this must stay visible regardless
+          of scroll position, or hitting search while looking at the aft of the ship
+          appears to do nothing. */}
+      <MapSearchBar visible={searchVisible} index={index} onSelectResult={onSelectSearchResult} />
     </AppView>
   );
 };
