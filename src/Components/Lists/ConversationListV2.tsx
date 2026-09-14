@@ -63,6 +63,14 @@ interface ConversationListV2Props<TItem> {
    * or the bottom of the list.
    */
   newDividerIndex?: number;
+  /**
+   * Forwarded to LegendList's `extraData`. With `recycleItems` enabled, a recycled
+   * cell only re-invokes `renderItem` when its `item`/`index` change or `extraData`
+   * changes identity — a ref mutation elsewhere (e.g. divider position/visibility
+   * state derived outside `data`) is otherwise invisible to already-rendered cells,
+   * which then keep stale content (e.g. a "New" divider that never clears).
+   */
+  extraData?: unknown;
 }
 
 /**
@@ -129,6 +137,7 @@ export const ConversationListV2 = <TItem,>({
   estimatedItemSize,
   onReadyToShow,
   newDividerIndex,
+  extraData,
 }: ConversationListV2Props<TItem>) => {
   // Default maintainScrollAtEnd to follow alignItemsAtEnd when not explicitly provided.
   const effectiveMaintainScrollAtEnd = maintainScrollAtEnd ?? alignItemsAtEnd;
@@ -444,6 +453,7 @@ export const ConversationListV2 = <TItem,>({
         // Recommended props
         keyExtractor={keyExtractor}
         recycleItems={true}
+        extraData={extraData}
         // Chat interface props
         alignItemsAtEnd={alignItemsAtEnd}
         maintainScrollAtEnd={effectiveMaintainScrollAtEnd}
