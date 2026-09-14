@@ -26,6 +26,6 @@ export const AppRefreshControl = forwardRef<RefreshControl, AppRefreshControlPro
       return null;
     }
 
-    return <RefreshControl ref={ref} {...props} />;
+    return <RefreshControl ref={ref} enabled={enabled} {...props} />;
   },
 );
