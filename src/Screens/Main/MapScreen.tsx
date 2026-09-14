@@ -1,7 +1,7 @@
 import FastImage, {type ImageStyle as FastImageStyle} from '@d11/react-native-fast-image';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {LayoutChangeEvent, ScrollView, StyleSheet, View} from 'react-native';
+import {LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -14,6 +14,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {MapHighlightOverlay} from '#src/Components/Views/MapHighlightOverlay';
 import {MapIndicatorView} from '#src/Components/Views/MapIndicatorView';
+import {MenuScrollIndicator} from '#src/Components/Views/MenuScrollIndicator';
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -33,6 +34,13 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.mapScr
 // Vertical offset above a scrolled-to target so it isn't flush against the header.
 const SCROLL_TOP_PADDING = 24;
 
+// Cap on the search results panel's height, in points, before it scrolls
+// instead of growing further. Sized to content up to this cap (see
+// resultsContentHeight below) rather than always reserving this much space —
+// a plain percentage-of-screen maxHeight leaves blank space under a couple
+// of results, which is the "wasted space" AppMenu's own results list avoids.
+const MAX_RESULTS_HEIGHT = 320;
+
 export const MapScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
@@ -50,12 +58,15 @@ export const MapScreen = ({navigation, route}: Props) => {
   // cache-key-by-URI logic in useCachedImageSource / FastImage a new URI to key
   // on, rather than clearing the app's entire shared image cache.
   const [reloadToken, setReloadToken] = useState(0);
+  const [resultsContentHeight, setResultsContentHeight] = useState(0);
+  const [resultsAtBottom, setResultsAtBottom] = useState(false);
 
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollContentRef = useRef<View | null>(null);
   const imageContainerRef = useRef<View | null>(null);
   const lastScrolledKey = useRef<string | undefined>(undefined);
   const preloadedRef = useRef(false);
+  const resultsScrollRef = useRef<ScrollView>(null);
 
   const params = route.params;
 
@@ -98,6 +109,12 @@ export const MapScreen = ({navigation, route}: Props) => {
 
   const searchResults: ShipSearchResult[] = useMemo(() => searchLabels(index, searchQuery), [index, searchQuery]);
 
+  // A fresh set of results should start scrolled to top, not carry over
+  // "at bottom" from whatever the previous query's results looked like.
+  useEffect(() => {
+    setResultsAtBottom(false);
+  }, [searchResults]);
+
   const onSelectDeck = useCallback((deck: ShipDeck) => {
     setActiveTarget({deckNumber: deck.number, labels: []});
   }, []);
@@ -109,6 +126,12 @@ export const MapScreen = ({navigation, route}: Props) => {
   }, []);
 
   const onSearchClear = useCallback(() => setSearchQuery(''), []);
+
+  const onResultsScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
+    const maxScrollY = contentSize.height - layoutMeasurement.height;
+    setResultsAtBottom(contentOffset.y >= maxScrollY - 5);
+  }, []);
 
   const onReload = useCallback(() => {
     // Re-arm the preload effect below so it fires again for the bumped URIs,
@@ -217,10 +240,19 @@ export const MapScreen = ({navigation, route}: Props) => {
       backgroundColor: theme.colors.background,
       ...commonStyles.paddingHorizontalSmall,
     },
+    searchResultsContainer: {
+      position: 'relative',
+    },
     searchResults: {
-      maxHeight: '60%',
+      // Sized to the actual content up to the cap, not always the cap itself —
+      // a bare maxHeight here reserves that much blank space under a couple
+      // of results, same as AppMenu was written to avoid.
+      maxHeight: Math.min(resultsContentHeight, MAX_RESULTS_HEIGHT),
     },
   });
+
+  const isResultsScrollable = resultsContentHeight > MAX_RESULTS_HEIGHT;
+  const showResultsScrollIndicator = isResultsScrollable && !resultsAtBottom;
 
   if (isLoading) {
     return <LoadingView />;
@@ -276,16 +308,29 @@ export const MapScreen = ({navigation, route}: Props) => {
             minLength={2}
             placeholder={'Search venues and staterooms'}
           />
-          <ScrollView style={styles.searchResults} keyboardShouldPersistTaps={'handled'}>
-            {searchResults.map(result => (
-              <ListItem
-                key={`${result.deckNumber}:${result.key}`}
-                title={result.name}
-                description={`Deck ${result.deckNumber}`}
-                onPress={() => onSelectSearchResult(result)}
-              />
-            ))}
-          </ScrollView>
+          <View style={styles.searchResultsContainer}>
+            <ScrollView
+              ref={resultsScrollRef}
+              style={styles.searchResults}
+              scrollEnabled={isResultsScrollable}
+              onContentSizeChange={(_w, h) => setResultsContentHeight(h)}
+              onScroll={onResultsScroll}
+              scrollEventThrottle={16}
+              keyboardShouldPersistTaps={'handled'}>
+              {searchResults.map(result => (
+                <ListItem
+                  key={`${result.deckNumber}:${result.key}`}
+                  title={result.name}
+                  description={`Deck ${result.deckNumber}`}
+                  onPress={() => onSelectSearchResult(result)}
+                />
+              ))}
+            </ScrollView>
+            <MenuScrollIndicator
+              visible={showResultsScrollIndicator}
+              onPress={() => resultsScrollRef.current?.scrollToEnd()}
+            />
+          </View>
         </View>
       )}
     </AppView>

@@ -22,7 +22,10 @@ export interface ShipLabel {
   number: number | null;
   /// Stateroom category prefix (e.g. "F", "VQ"). Cabins only.
   category: string | null;
-  /// Stateroom unit suffix letter for lettered sub-units (e.g. "D7000D"). Cabins only.
+  /// Trailing letter of the room's printed number (e.g. "D7000D"). Cabins only.
+  /// A handful of rooms share a leading number with a different suffix each
+  /// (deck 7's 7000A/D/H/L/N) — independent staterooms under this ship's
+  /// numbering scheme for them, not variants or sub-units of one another.
   suffix: string | null;
   /// Normalized box, fractions of the deck image: 0-1 from the top-left.
   x: number;

@@ -20,7 +20,7 @@ export interface MapTargetParams {
   region?: ShipRegion;
   /// Venue/facility slug from ship.json.
   venue?: string;
-  /// Stateroom number, e.g. "1234" or a lettered sub-unit like "7000A".
+  /// Stateroom number, e.g. "1234" or a room with a trailing letter like "7000A".
   room?: string;
   /// Raw Sched-style location string ("Ocean Bar, Deck 3, Midship"), resolved against
   /// each label's `matches`/`aliases`/`name`, then falling back to guessDeckNumber().
@@ -29,7 +29,7 @@ export interface MapTargetParams {
 
 const norm = (text: string) => text.trim().toLowerCase();
 
-/// A stateroom number with an optional lettered sub-unit ("7000A" -> owner's suite D).
+/// A stateroom number with an optional trailing letter ("7000A").
 const ROOM_NUMBER_RE = /^(\d{4,5})([A-Za-z])?$/;
 
 /**
@@ -49,9 +49,10 @@ export const parseRoomNumber = (raw: string): {number: number; suffix?: string} 
 /**
  * Every cabin label matching a stateroom number (label.number is the full
  * 4-5 digit number Kraken's deck-prefix rule already validated at index-build
- * time, so simple equality is enough here). A number with no suffix given can
- * match more than one lettered sub-unit sharing that number (deck 7's owner's
- * suites) - all of them highlight, same as a venue captioned more than once.
+ * time, so simple equality is enough here). A handful of rooms are independent
+ * staterooms that happen to share a leading number with a different trailing
+ * letter each (deck 7's 7000A/D/H/L/N) - a query with no letter is ambiguous
+ * between them, so every match highlights, same as a venue captioned twice.
  */
 const findCabinLabels = (
   decks: readonly ShipDeck[],
@@ -200,7 +201,11 @@ export const searchLabels = (index: ShipIndex | undefined, query: string, limit 
 
   const grouped = new Map<string, ShipSearchResult>();
   const pushLabel = (deck: ShipDeck, label: ShipLabel) => {
-    const key = label.slug ?? String(label.number);
+    // A cabin's key includes its suffix: deck 7's 7000A/D/H/L/N are each
+    // their own independent stateroom that happens to share a leading
+    // number with the others, not related rooms — grouping them by number
+    // alone would hide all but one from the results.
+    const key = label.slug ?? `${label.number}${label.suffix ?? ''}`;
     const groupKey = `${deck.number}:${key}`;
     const existing = grouped.get(groupKey);
     if (existing) {
@@ -220,8 +225,13 @@ export const searchLabels = (index: ShipIndex | undefined, query: string, limit 
         if (haystack.some(h => h.includes(q))) {
           pushLabel(deck, label);
         }
-      } else if (label.kind === 'cabin' && label.number !== undefined && String(label.number).startsWith(q)) {
-        pushLabel(deck, label);
+      } else if (label.kind === 'cabin' && label.number !== undefined) {
+        // Match the bare number ("7000" finds every independent room that
+        // shares that leading number) or the full printed label ("7000a" /
+        // "d7000a" finds that one room alone).
+        if (String(label.number).startsWith(q) || norm(label.raw).includes(q)) {
+          pushLabel(deck, label);
+        }
       }
     }
     if (grouped.size > limit) {
