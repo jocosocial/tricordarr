@@ -275,6 +275,9 @@ export const getAppConfig = async () => {
   if (appConfig.shipCode === undefined) {
     appConfig.shipCode = ShipCode.halEd;
   }
+  if (appConfig.apiClientConfig.mutationTimeout === undefined) {
+    appConfig.apiClientConfig.mutationTimeout = defaultAppConfig.apiClientConfig.mutationTimeout;
+  }
 
   // Ok now we're done
   return appConfig;
