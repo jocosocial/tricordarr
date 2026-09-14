@@ -45,6 +45,9 @@ export const ForumPostActionsFavoriteItem = ({forumPost, forumData, closeMenu}: 
         iconTrue: AppIcons.unfavorite,
         iconFalse: AppIcons.favorite,
       })}
+      // Menus stay open until onSettled closes them, so a mutation in flight is still tappable.
+      // Without this a fast double-tap fires the toggle twice and can flip the state back. See #533.
+      disabled={favoriteMutation.isPending}
       onPress={handleFavorite}
     />
   );

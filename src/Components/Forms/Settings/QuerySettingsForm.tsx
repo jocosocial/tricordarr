@@ -18,6 +18,7 @@ const validationSchema = Yup.object().shape({
   staleTimeMinutes: Yup.number().required(),
   disruptionThreshold: Yup.number().required(),
   imageStaleTimeDays: Yup.number().required(),
+  mutationTimeoutSeconds: Yup.number().required(),
 });
 
 export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
@@ -94,6 +95,18 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             testID={'queryImageStaleTime-slider'}
             helperText={'Amount of time for image response data to be considered fresh before automatically refreshed.'}
             unit={'day'}
+            onSlidingComplete={() => props.onSubmit(values)}
+          />
+          <SliderField
+            value={values.mutationTimeoutSeconds}
+            maximumValue={60}
+            minimumValue={10}
+            step={5}
+            label={'Mutation Timeout'}
+            name={'mutationTimeoutSeconds'}
+            testID={'queryMutationTimeout-slider'}
+            helperText={'Amount of time to wait for a write request (post, edit, delete) to complete before giving up.'}
+            unit={'second'}
             onSlidingComplete={() => props.onSubmit(values)}
           />
         </View>

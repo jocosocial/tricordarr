@@ -18,7 +18,10 @@ interface SwiftarrQueryClientContextType {
     body?: TRequestData | undefined,
     config?: AxiosRequestConfig,
   ) => Promise<AxiosResponse<TResponseData, TResponseData>>;
-  apiDelete: <TResponseData = void>(url: string) => Promise<AxiosResponse<TResponseData, TResponseData>>;
+  apiDelete: <TResponseData = void>(
+    url: string,
+    config?: AxiosRequestConfig,
+  ) => Promise<AxiosResponse<TResponseData, TResponseData>>;
   queryKeyExtraData: QueryKey;
   publicGet: <TData, TQueryParams>(
     url: string,

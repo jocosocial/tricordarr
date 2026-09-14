@@ -108,6 +108,7 @@ export interface QuerySettingsFormValues {
   staleTimeMinutes: number;
   disruptionThreshold: number;
   imageStaleTimeDays: number;
+  mutationTimeoutSeconds: number;
 }
 
 export interface NotificationPollingSettingsFormValues {

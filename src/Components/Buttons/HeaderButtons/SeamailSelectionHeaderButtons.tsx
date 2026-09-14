@@ -1,5 +1,5 @@
 import {useQueryClient} from '@tanstack/react-query';
-import React from 'react';
+import React, {useState} from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -22,8 +22,13 @@ export const SeamailSelectionHeaderButtons = (props: SeamailSelectionHeaderButto
   const muteMutation = useFezMuteMutation();
   const queryClient = useQueryClient();
   const {markRead, updateMute} = useFezCacheReducer();
+  // Tracks the batch mutation separately from props.setRefreshing: that drives the pull-to-refresh
+  // spinner on the parent list, not this button's own tappability. Without it a fast repeat tap
+  // re-fires the whole batch and can flip a relation back off before the first pass lands. See #533.
+  const [busy, setBusy] = useState(false);
 
   const markAsRead = async () => {
+    setBusy(true);
     props.setRefreshing(true);
     const refetches = props.selectedItems.map(selectedItem => {
       return queryClient.refetchQueries({queryKey: [`/fez/${selectedItem.id}`]});
@@ -33,9 +38,11 @@ export const SeamailSelectionHeaderButtons = (props: SeamailSelectionHeaderButto
       markRead(selectedItem.id);
     }
     props.setRefreshing(false);
+    setBusy(false);
   };
 
   const handleMute = async () => {
+    setBusy(true);
     props.setRefreshing(true);
     const mutations = props.selectedItems.map(selectedItem => {
       const sourceItem = props.items?.find(item => item.fezID === selectedItem.id);
@@ -47,9 +54,10 @@ export const SeamailSelectionHeaderButtons = (props: SeamailSelectionHeaderButto
     });
     await Promise.allSettled(mutations);
     props.setRefreshing(false);
+    setBusy(false);
   };
 
-  const disableButtons = props.selectedItems.length === 0;
+  const disableButtons = props.selectedItems.length === 0 || busy;
 
   return (
     <MaterialHeaderButtons>

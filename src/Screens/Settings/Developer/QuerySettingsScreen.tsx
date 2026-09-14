@@ -72,6 +72,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     staleTimeMinutes: appConfig.apiClientConfig.staleTime / 60 / 1000,
     disruptionThreshold: appConfig.apiClientConfig.disruptionThreshold,
     imageStaleTimeDays: appConfig.apiClientConfig.imageStaleTime / 24 / 60 / 60 / 1000,
+    mutationTimeoutSeconds: appConfig.apiClientConfig.mutationTimeout / 1000,
   };
 
   const onSubmit = (values: QuerySettingsFormValues) => {
@@ -86,6 +87,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         staleTime: values.staleTimeMinutes * 60 * 1000,
         disruptionThreshold: values.disruptionThreshold,
         imageStaleTime: values.imageStaleTimeDays * 24 * 60 * 60 * 1000,
+        mutationTimeout: values.mutationTimeoutSeconds * 1000,
         cacheBuster: bustCache ? generateNewCacheBuster() : appConfig.apiClientConfig.cacheBuster,
       },
     });

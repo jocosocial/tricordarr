@@ -53,7 +53,9 @@ export const PrimaryActionButton = ({
         mode={mode}
         onPress={onPress}
         icon={isLoading ? getLoadingIcon : icon}
-        disabled={disabled}>
+        // isLoading always implies disabled. A button that spins but still accepts taps
+        // produces duplicate submissions on a laggy network. See #533.
+        disabled={disabled || isLoading}>
         {buttonText}
       </Button>
     </View>

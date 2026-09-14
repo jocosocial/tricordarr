@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -30,6 +30,9 @@ export const UserListSelectionHeaderButtons = (props: UserListSelectionHeaderBut
   const muteMutation = useUserMuteMutation();
   const blockMutation = useUserBlockMutation();
   const {preRegistrationMode} = usePreRegistration();
+  // Guards only the Remove button: Seamail/Event are pure navigation, not mutations. Without this
+  // a fast repeat tap re-fires the batch remove and can race removeRelation. See #533.
+  const [busy, setBusy] = useState(false);
 
   const resolveUserHeaders = (): UserHeader[] =>
     props.selectedItems
@@ -37,6 +40,7 @@ export const UserListSelectionHeaderButtons = (props: UserListSelectionHeaderBut
       .filter((h): h is UserHeader => h !== undefined);
 
   const handleRemove = async () => {
+    setBusy(true);
     props.setRefreshing(true);
     const itemsToRemove: UserHeader[] = [];
     const mutations = props.selectedItems.map(selectedItem => {
@@ -59,6 +63,7 @@ export const UserListSelectionHeaderButtons = (props: UserListSelectionHeaderBut
       }
     });
     props.setRefreshing(false);
+    setBusy(false);
   };
 
   const handleSeamail = () => {
@@ -101,8 +106,8 @@ export const UserListSelectionHeaderButtons = (props: UserListSelectionHeaderBut
         iconName={AppIcons.delete}
         title={'Remove'}
         onPress={handleRemove}
-        disabled={disableButtons}
-        style={disableButtons ? commonStyles.disabled : undefined}
+        disabled={disableButtons || busy}
+        style={disableButtons || busy ? commonStyles.disabled : undefined}
         testID={'userListSelectionRemove-headerButton'}
       />
     </MaterialHeaderButtons>
