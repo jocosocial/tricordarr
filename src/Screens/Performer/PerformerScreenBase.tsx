@@ -47,7 +47,11 @@ export const PerformerScreenBase = ({performerData, onRefresh, isFetching = fals
   });
 
   if (!performerData) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

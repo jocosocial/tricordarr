@@ -274,7 +274,11 @@ const ForumThreadScreenBaseInner = ({
   }, []);
 
   if (!data || isLoading || isLoadingFavorites) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const getInitialScrollIndex = () => {

@@ -399,7 +399,11 @@ const FezChatScreenInner = ({route}: Props) => {
 
   // This is kinda hax for the fezPostData below
   if (!fez) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const computedScrollIndex = getInitialScrollIndex(fez, fezPostsData, initialReadCount);

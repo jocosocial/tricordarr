@@ -84,7 +84,11 @@ const ModerateForumPostScreenInner = ({route}: Props) => {
   }, []);
 
   if (isLoading || !data) {
-    return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
+    return (
+      <AppView>
+        <LoadingView refreshing={refreshing} onRefresh={onRefresh} />
+      </AppView>
+    );
   }
 
   const postData = postDataFromDetail(data.forumPost);

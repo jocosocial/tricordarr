@@ -116,7 +116,11 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (!locationData) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

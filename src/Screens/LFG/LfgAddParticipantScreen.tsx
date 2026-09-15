@@ -52,7 +52,11 @@ const LfgAddParticipantScreenInner = ({route, navigation}: Props) => {
   };
 
   if (!lfg || !lfg.members) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

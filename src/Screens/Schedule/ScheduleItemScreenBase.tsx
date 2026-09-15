@@ -106,7 +106,11 @@ export const ScheduleItemScreenBase = ({
   };
 
   if (!eventData) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const getInfoContent = () => {

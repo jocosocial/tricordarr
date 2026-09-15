@@ -55,7 +55,11 @@ const DailyThemesScreenInner = () => {
   const {cruiseDayIndex} = useCruise();
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

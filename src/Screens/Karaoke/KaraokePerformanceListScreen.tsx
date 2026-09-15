@@ -117,7 +117,13 @@ const KaraokePerformanceListScreenInner = ({navigation}: Props) => {
     navigation.setOptions({headerRight: getNavButtons});
   }, [getNavButtons, navigation]);
 
-  if (isLoading) return <LoadingView />;
+  if (isLoading) {
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
+  }
 
   const items = data?.pages.flatMap(p => p.songs) ?? [];
 

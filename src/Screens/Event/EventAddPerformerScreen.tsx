@@ -123,7 +123,11 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
   };
 
   if (isLoadingPerformer || isLoadingEvent) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const alreadyAttached = eventData?.performers.some(p => p.id === performerData?.header.id);

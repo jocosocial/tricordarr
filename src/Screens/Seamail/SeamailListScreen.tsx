@@ -174,7 +174,11 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   }, [route.params, setSeamailOnlyNew]);
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

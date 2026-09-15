@@ -87,7 +87,11 @@ const AdminHuntEditScreenInner = ({route, navigation}: Props) => {
   };
 
   if (huntID && isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

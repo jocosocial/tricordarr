@@ -122,7 +122,11 @@ const UsersListScreenInner = ({navigation, mode}: Props & {mode: UserRelationMod
   }, [enableSelection, activeQuery.data, mode, hasModerator]);
 
   if (activeQuery.data === undefined) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

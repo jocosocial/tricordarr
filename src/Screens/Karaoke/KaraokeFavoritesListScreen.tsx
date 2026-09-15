@@ -46,7 +46,13 @@ const KaraokeFavoritesListScreenInner = (_props: Props) => {
 
   const items = useMemo(() => data?.pages.flatMap(p => p.songs) ?? [], [data?.pages]);
 
-  if (isLoading) return <LoadingView />;
+  if (isLoading) {
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
+  }
 
   return (
     <AppView>

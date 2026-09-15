@@ -51,7 +51,7 @@ export const HuntScreen = (props: Props) => {
  */
 const HuntScreenInner = ({navigation, route}: Props) => {
   const isFocused = useIsFocused();
-  const {data, isLoading, isError, error, refetch} = useHuntQuery({
+  const {data, isLoading, error, refetch} = useHuntQuery({
     huntID: route.params.huntID,
     options: {
       // Schedule the next fetch so newly unlocked puzzles appear without pull-to-refresh.
@@ -100,10 +100,14 @@ const HuntScreenInner = ({navigation, route}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
-  if (isError && !data) {
+  if (!data) {
     return (
       <HuntLoadErrorView
         resource={'hunt'}
@@ -111,10 +115,6 @@ const HuntScreenInner = ({navigation, route}: Props) => {
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
     );
-  }
-
-  if (!data) {
-    return <LoadingView />;
   }
 
   const nextUnlockLabel = data.nextUnlockTime

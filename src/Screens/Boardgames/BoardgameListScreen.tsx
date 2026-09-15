@@ -96,7 +96,11 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const items = data?.pages.flatMap(p => p.gameArray) || [];
