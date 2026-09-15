@@ -137,6 +137,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
           relationType={ForumFilter.toRelation(forumFilter)}
           category={category}
           title={category.title}
+          scrollButtonRaised={!isUserRestricted}
         />
         {!isUserRestricted && <ForumCategoryFAB category={category} />}
       </AppView>

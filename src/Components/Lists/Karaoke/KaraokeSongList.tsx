@@ -23,10 +23,20 @@ interface KaraokeSongListProps {
   hasNextPage?: boolean;
   handleLoadNext?: () => void;
   listHeader?: React.ComponentType<any>;
+  /** When true, anchor the scroll buttons above a bottom-right FAB. */
+  scrollButtonRaised?: boolean;
 }
 
 const KaraokeSongListInner = (
-  {items, swipeableEnabled = false, refreshControl, hasNextPage, handleLoadNext, listHeader}: KaraokeSongListProps,
+  {
+    items,
+    swipeableEnabled = false,
+    refreshControl,
+    hasNextPage,
+    handleLoadNext,
+    listHeader,
+    scrollButtonRaised,
+  }: KaraokeSongListProps,
   ref: React.ForwardedRef<FlashListRef<KaraokeSongListItem>>,
 ) => {
   const {getListSeparator, getListFooter} = useAppFlashList({data: items, hasNextPage});
@@ -53,6 +63,7 @@ const KaraokeSongListInner = (
       renderListFooter={getListFooter}
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
+      scrollButtonRaised={scrollButtonRaised}
     />
   );
 };
