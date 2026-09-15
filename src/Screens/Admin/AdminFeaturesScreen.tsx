@@ -70,7 +70,11 @@ const AdminFeaturesScreenInner = () => {
   };
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const deltas = data

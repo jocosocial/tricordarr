@@ -36,7 +36,11 @@ const AdminRegCodeStatsScreenInner = () => {
   }, [getNavButtons, navigation]);
 
   if (isLoading && !stats) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

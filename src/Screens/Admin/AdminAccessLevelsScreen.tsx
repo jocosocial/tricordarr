@@ -84,7 +84,11 @@ const AdminAccessLevelsScreenInner = ({navigation}: Props) => {
   };
 
   if ((loadingMods || loadingTeam || loadingTho) && !moderators && !twitarrTeam && !tho) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

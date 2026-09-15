@@ -51,7 +51,11 @@ const ModerateUserScreenInner = ({route}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading || !data) {
-    return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
+    return (
+      <AppView>
+        <LoadingView refreshing={refreshing} onRefresh={onRefresh} />
+      </AppView>
+    );
   }
 
   return (

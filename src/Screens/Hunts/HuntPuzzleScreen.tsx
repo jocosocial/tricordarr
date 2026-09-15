@@ -51,7 +51,7 @@ export const HuntPuzzleScreen = (props: Props) => {
  * Puzzle body, call-in form, and prior submissions for one puzzle.
  */
 const HuntPuzzleScreenInner = ({navigation, route}: Props) => {
-  const {puzzle, isLoading, isError, error, isSolved, callInsNewestFirst, refetch} = useHuntPuzzleData({
+  const {puzzle, isLoading, error, isSolved, callInsNewestFirst, refetch} = useHuntPuzzleData({
     puzzleID: route.params.puzzleID,
   });
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
@@ -109,22 +109,21 @@ const HuntPuzzleScreenInner = ({navigation, route}: Props) => {
   );
 
   if (isLoading) {
-    return <LoadingView />;
-  }
-
-  if (isError && !puzzle) {
-    const status = (error as AxiosError<ErrorResponse>)?.response?.status;
     return (
-      <HuntLoadErrorView
-        resource={'puzzle'}
-        status={status}
-        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      />
+      <AppView>
+        <LoadingView />
+      </AppView>
     );
   }
 
   if (!puzzle) {
-    return <LoadingView />;
+    return (
+      <HuntLoadErrorView
+        resource={'puzzle'}
+        status={(error as AxiosError<ErrorResponse>)?.response?.status}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      />
+    );
   }
 
   return (

@@ -68,7 +68,11 @@ const ModerateMicroKaraokeSongScreenInner = ({route}: Props) => {
   const snippets = snippetsQuery.data;
 
   if (songQuery.isLoading || snippetsQuery.isLoading || !song || !snippets) {
-    return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
+    return (
+      <AppView>
+        <LoadingView refreshing={refreshing} onRefresh={onRefresh} />
+      </AppView>
+    );
   }
 
   const invalidate = async () => {

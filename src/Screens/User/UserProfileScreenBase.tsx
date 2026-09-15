@@ -117,7 +117,11 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   }, [blocks, getNavButtons, mutes, commonNavigation, data]);
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   if (!data) {

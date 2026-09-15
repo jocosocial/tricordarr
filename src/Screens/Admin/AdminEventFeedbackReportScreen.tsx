@@ -88,7 +88,11 @@ const AdminEventFeedbackReportScreenInner = ({navigation, route}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading && !report) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   if (!report) {

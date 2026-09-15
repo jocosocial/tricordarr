@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PerformerActionsMenu} from '#src/Components/Menus/Performer/PerformerActionsMenu';
+import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -63,7 +64,11 @@ const PerformerScreenInner = ({route, navigation}: Props) => {
   }, [navigation, getHeaderButtons]);
 
   if (!data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return <PerformerScreenBase performerData={data} onRefresh={onRefresh} isFetching={isFetching} />;

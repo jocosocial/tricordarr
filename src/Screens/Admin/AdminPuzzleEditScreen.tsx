@@ -83,7 +83,11 @@ const AdminPuzzleEditScreenInner = ({route, navigation}: Props) => {
   };
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   if (!puzzle) {

@@ -144,7 +144,11 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (!lfg || !lfg.members) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const manageUsers = lfg.owner.userID === currentUserID;

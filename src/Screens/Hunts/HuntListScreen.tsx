@@ -44,7 +44,7 @@ export const HuntListScreen = (props: Props) => {
  * Hunt catalog list with pull-to-refresh.
  */
 const HuntListScreenInner = ({navigation}: Props) => {
-  const {data, isLoading, isError, error, refetch} = useHuntsQuery();
+  const {data, isLoading, error, refetch} = useHuntsQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const {commonStyles} = useStyles();
 
@@ -60,10 +60,14 @@ const HuntListScreenInner = ({navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
-  if (isError && !data) {
+  if (!data) {
     return (
       <HuntLoadErrorView
         resource={'hunts'}
@@ -71,10 +75,6 @@ const HuntListScreenInner = ({navigation}: Props) => {
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
     );
-  }
-
-  if (!data) {
-    return <LoadingView />;
   }
 
   const hunts = data.hunts;

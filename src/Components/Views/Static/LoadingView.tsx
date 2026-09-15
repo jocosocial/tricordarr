@@ -3,7 +3,6 @@ import {StyleSheet, View} from 'react-native';
 import {ActivityIndicator, Text} from 'react-native-paper';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
@@ -12,6 +11,11 @@ interface LoadingViewProps {
   onRefresh?: () => void;
 }
 
+/**
+ * Loading spinner content. Renders no screen chrome -- the caller is responsible for
+ * wrapping it in an <AppView>. Rendering an AppView here would double the app-wide
+ * banners whenever this is used inside a screen that already has one.
+ */
 export const LoadingView = (props: LoadingViewProps) => {
   const {commonStyles} = useStyles();
 
@@ -25,14 +29,12 @@ export const LoadingView = (props: LoadingViewProps) => {
   });
 
   return (
-    <AppView>
-      <ScrollingContentView
-        refreshControl={<AppRefreshControl refreshing={props.refreshing || false} onRefresh={props.onRefresh} />}>
-        <ActivityIndicator />
-        <View style={styles.container}>
-          <Text>Loading...</Text>
-        </View>
-      </ScrollingContentView>
-    </AppView>
+    <ScrollingContentView
+      refreshControl={<AppRefreshControl refreshing={props.refreshing || false} onRefresh={props.onRefresh} />}>
+      <ActivityIndicator />
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    </ScrollingContentView>
   );
 };

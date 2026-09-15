@@ -116,7 +116,11 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
   }, [data]);
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

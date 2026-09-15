@@ -1,5 +1,6 @@
 import {Formik, FormikHelpers} from 'formik';
 import React, {useEffect} from 'react';
+import {Text} from 'react-native-paper';
 import * as Yup from 'yup';
 
 import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
@@ -151,10 +152,22 @@ const AdminServerSettingsScreenInner = () => {
   };
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
   if (!data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          <PaddedContentView padTop={true}>
+            <Text style={commonStyles.onBackground}>Unable to load server settings. Pull to retry.</Text>
+          </PaddedContentView>
+        </ScrollingContentView>
+      </AppView>
+    );
   }
 
   return (

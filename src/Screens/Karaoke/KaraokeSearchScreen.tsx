@@ -57,7 +57,13 @@ const KaraokeSearchScreenInner = (_props: Props) => {
 
   const items = useMemo(() => data?.pages.flatMap(p => p.songs) ?? [], [data?.pages]);
 
-  if (isLoading && canSearch) return <LoadingView />;
+  if (isLoading && canSearch) {
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
+  }
 
   return (
     <AppView>

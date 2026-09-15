@@ -79,7 +79,11 @@ const AdminScheduleVerifyScreenInner = () => {
   };
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

@@ -72,7 +72,11 @@ const ForumCategoriesScreenInner = ({navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

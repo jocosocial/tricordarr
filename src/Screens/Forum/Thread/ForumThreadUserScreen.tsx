@@ -94,7 +94,11 @@ const ForumThreadUserScreenInner = ({route, navigation}: Props) => {
   }, [data, setForumListData]);
 
   if (!data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   if (forumListData.length === 0) {

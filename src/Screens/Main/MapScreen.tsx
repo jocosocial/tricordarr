@@ -247,7 +247,11 @@ export const MapScreen = ({navigation, route}: Props) => {
   });
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   if (isError || !index || index.decks.length === 0) {
