@@ -170,6 +170,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       pressActionID = PressAction.personalEvent;
       title = 'New Private Event Message';
       url = `/privateevent/${notificationData.contentID}/chat`;
+      markAsReadUrl = `/fez/${notificationData.contentID}`;
       break;
     default:
       logger.warn(`Ignoring event of type ${notificationType}`);
