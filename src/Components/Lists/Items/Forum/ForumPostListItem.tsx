@@ -88,6 +88,7 @@ const ForumPostListItemInternal = ({
           showFavoriteAuthor={true}
           isBookmarked={postData.isBookmarked}
           isPinned={postData.isPinned}
+          reactions={postData.reactions}
           onPress={enableShowInThread ? handleShowInThread : undefined}
           hashtagOnPress={handleHashtagPress}
           mentionOnPress={handleMentionPress}

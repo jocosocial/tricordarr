@@ -35,6 +35,10 @@ export const FezChatHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Post Actions'}>
           <HelpTopicView>Long-press on a message to access a menu of additional actions.</HelpTopicView>
+          <HelpTopicView title={'React'}>
+            Choose React to add a unicode or custom emoji reaction to another participant's message. Choose a reaction
+            you have already added to remove it. Tap a reaction badge below a message to see who reacted.
+          </HelpTopicView>
           <CopyButtonHelpTopicView />
           <ReportButtonHelpTopicView />
           <HelpTopicView>Messages made in Open seamails can be reported to the moderation team.</HelpTopicView>

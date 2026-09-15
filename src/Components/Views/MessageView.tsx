@@ -1,17 +1,20 @@
-import React, {ReactNode, useMemo} from 'react';
+import React, {ReactNode, useMemo, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {ReactionBadges} from '#src/Components/Reactions/ReactionBadges';
 import {ContentText} from '#src/Components/Text/ContentText';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
+import {ReactionsDetailModal} from '#src/Components/Views/Modals/ReactionsDetailModal';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {UserHeader} from '#src/Structs/ControllerStructs';
+import {ReactionData, UserHeader} from '#src/Structs/ControllerStructs';
 
 interface MessageViewActionsMenuProps {
   visible: boolean;
@@ -33,6 +36,7 @@ interface MessageViewProps {
   showFavoriteAuthor?: boolean;
   isBookmarked?: boolean;
   isPinned?: boolean;
+  reactions?: ReactionData[];
   renderActionsMenu: (props: MessageViewActionsMenuProps) => ReactNode;
   /**
    * Applied to the pressable that opens the actions menu, so E2E flows can long-press a
@@ -61,11 +65,14 @@ export const MessageView = ({
   showFavoriteAuthor,
   isBookmarked,
   isPinned,
+  reactions = [],
   renderActionsMenu,
   testID,
 }: MessageViewProps) => {
   const {commonStyles} = useStyles();
+  const {currentUserID} = useSession();
   const {visible: menuVisible, openMenu, closeMenu} = useMenu();
+  const [reactionDetailsVisible, setReactionDetailsVisible] = useState(false);
   const {theme} = useAppTheme();
   const {data: favorites} = useUserFavoritesQuery({enabled: !!showFavoriteAuthor});
 
@@ -170,6 +177,17 @@ export const MessageView = ({
           </View>
         </View>
       </TouchableOpacity>
+      <ReactionBadges
+        reactions={reactions}
+        currentUserID={currentUserID ?? ''}
+        onBadgePress={() => setReactionDetailsVisible(true)}
+        alignRight={messageOnRight}
+      />
+      <ReactionsDetailModal
+        reactions={reactions}
+        visible={reactionDetailsVisible}
+        onDismiss={() => setReactionDetailsVisible(false)}
+      />
     </View>
   );
 };

@@ -617,6 +617,25 @@ export const useFezCacheReducer = () => {
     [queryClient, updateFezInListCachesWithReorder],
   );
 
+  /** Replaces one post after a reaction change without changing unread or post counts. */
+  const updatePostReactions = useCallback(
+    (fezID: string, postID: number, reactions: FezPostData['reactions']) => {
+      updateFezDetailCache(fezID, fez => {
+        if (!fez.members?.posts) {
+          return fez;
+        }
+        return {
+          ...fez,
+          members: {
+            ...fez.members,
+            posts: fez.members.posts.map(post => (post.postID === postID ? {...post, reactions} : post)),
+          },
+        };
+      });
+    },
+    [updateFezDetailCache],
+  );
+
   /**
    * Replace FezData across all caches after a membership change (join, unjoin,
    * add participant, remove participant). These mutations return updated FezData.
@@ -744,5 +763,6 @@ export const useFezCacheReducer = () => {
     updateFezVisibility,
     updateMembership,
     updateMute,
+    updatePostReactions,
   };
 };

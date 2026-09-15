@@ -49,7 +49,7 @@ import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {type FezData, type FezPostData, type PostContentData} from '#src/Structs/ControllerStructs';
-import {SocketFezMemberChangeData, SocketFezPostData} from '#src/Structs/SocketStructs';
+import {SocketFezMemberChangeData, SocketFezPostData, SocketFezReactionData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('FezChatScreen.tsx');
 
@@ -139,7 +139,7 @@ const FezChatScreenInner = ({route}: Props) => {
   const {setSnackbarPayload} = useSnackbar();
   const {openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
-  const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
+  const {appendPost: appendPostToCache, markRead, updatePostReactions} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
   const flatListRef = useRef<TConversationListV2Ref>(null);
   const fezSocketWithHandlerRef = useRef<{
@@ -203,7 +203,10 @@ const FezChatScreenInner = ({route}: Props) => {
     (event: WebSocketMessageEvent) => {
       logger.info('fezSocketMessageHandler responding event', event);
       const socketMessage = JSON.parse(event.data);
-      if ('joined' in socketMessage) {
+      if ('reactions' in socketMessage) {
+        const reactionData = socketMessage as SocketFezReactionData;
+        updatePostReactions(route.params.fezID, reactionData.postID, reactionData.reactions);
+      } else if ('joined' in socketMessage) {
         const memberChangeData = socketMessage as SocketFezMemberChangeData;
         const changeActionString = memberChangeData.joined ? 'joined' : 'left';
         const changeString = `User ${memberChangeData.user.username} has ${changeActionString} the chat.`;
@@ -219,7 +222,7 @@ const FezChatScreenInner = ({route}: Props) => {
         appendPostToCache(route.params.fezID, socketFezPostData);
       }
     },
-    [appendPostToCache, route.params.fezID, setSnackbarPayload],
+    [appendPostToCache, route.params.fezID, setSnackbarPayload, updatePostReactions],
   );
   fezSocketMessageHandlerRef.current = fezSocketMessageHandler;
 

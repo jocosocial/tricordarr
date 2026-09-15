@@ -1,4 +1,4 @@
-import {UserHeader} from '#src/Structs/ControllerStructs';
+import {ReactionData, UserHeader} from '#src/Structs/ControllerStructs';
 
 export interface SocketFezPostData {
   /// PostID of the new post
@@ -26,6 +26,12 @@ export interface SocketFezMemberChangeData {
   /// HTML fragment for the action, using the Swiftarr Web UI's front end. Fragment is built using the same semantic data available in the other fields in this struct.
   /// Please don't try parsing this to gather data. This field is here so the Javascript can insert HTML that matches what the HTTP endpoints render.
   html?: string;
+}
+
+/** Complete reaction state for a chat post after a participant adds or removes one. */
+export interface SocketFezReactionData {
+  postID: number;
+  reactions: ReactionData[];
 }
 
 export enum NotificationTypeData {

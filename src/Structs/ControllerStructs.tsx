@@ -276,6 +276,30 @@ export interface FezPostData {
   timestamp: string;
   /// The image content of the fez post.
   image?: string;
+  /// Reactions grouped by Unicode emoji or custom emoji token.
+  reactions?: ReactionData[];
+}
+
+/** A reaction and the users who applied it to a post. */
+export interface ReactionData {
+  /// A Unicode emoji or a custom emoji token such as `:arr:`.
+  reaction: string;
+  users: UserHeader[];
+}
+
+export namespace ReactionData {
+  /** Returns whether a user applied a reaction, optionally restricted to one value. */
+  export const hasUserReacted = (reactions: ReactionData[], userID: string, reaction?: string): boolean => {
+    return reactions.some(
+      item => (reaction === undefined || item.reaction === reaction) && item.users.some(user => user.userID === userID),
+    );
+  };
+}
+
+/** Payload for adding or removing a post reaction. */
+export interface PostReactionData {
+  /// A Unicode emoji or a custom emoji token such as `:arr:`.
+  reaction: string;
 }
 
 export interface MembersOnlyData {
@@ -923,6 +947,8 @@ export interface PostData {
   userLike?: LikeType;
   /// The total number of `LikeType` reactions on the post.
   likeCount: number;
+  /// Reactions grouped by Unicode emoji or custom emoji token.
+  reactions?: ReactionData[];
   /// Whether the post has been pinned to the forum.
   isPinned?: boolean;
 }
@@ -968,6 +994,8 @@ export interface PostDetailData {
   likes: UserHeader[];
   /// The users with "love" reactions on the post.
   loves: UserHeader[];
+  /// Reactions grouped by Unicode emoji or custom emoji token.
+  reactions?: ReactionData[];
 }
 
 export namespace PostDetailData {
