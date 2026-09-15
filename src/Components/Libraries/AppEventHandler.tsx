@@ -1,14 +1,16 @@
 import {useLinkTo} from '@react-navigation/native';
-import {useEffect} from 'react';
+import {useCallback, useEffect} from 'react';
 import {Linking} from 'react-native';
-import notifee, {Event, EventType} from 'react-native-notify-kit';
+import notifee, {Event, EventType, Notification} from 'react-native-notify-kit';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {PressAction} from '#src/Enums/Notifications';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {createLogger} from '#src/Libraries/Logger';
 import {getUrlForNotificationEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {appUrl} from '#src/Libraries/UrlParser';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('AppEventHandler.tsx');
 
@@ -20,6 +22,32 @@ export const AppEventHandler = () => {
   const linkTo = useLinkTo();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {apiGet} = useSwiftarrQueryClient();
+  const {invalidateFez} = useFezCacheReducer();
+
+  // Responds to a "Mark As Read" notification action press. Marks the content read on the
+  // server, then syncs whatever local cache backs that content's unread state so badges
+  // update immediately instead of waiting for the next unrelated refetch (or app relaunch).
+  const handleMarkAsRead = useCallback(
+    async (notification?: Notification) => {
+      if (notification?.id) {
+        await notifee.cancelDisplayedNotification(notification.id);
+      }
+      if (notification?.data) {
+        await apiGet(notification.data.markAsReadUrl.toString());
+        switch (notification.data.type) {
+          case NotificationTypeData.seamailUnreadMsg:
+          case NotificationTypeData.fezUnreadMsg:
+          case NotificationTypeData.privateEventUnreadMsg:
+            await invalidateFez(notification.data.contentID?.toString());
+            break;
+          default:
+            break;
+        }
+        await refetchUserNotificationData();
+      }
+    },
+    [apiGet, invalidateFez, refetchUserNotificationData],
+  );
 
   // Foreground events occur when the app is front and center in the users view.
   // This has to be a useEffect otherwise the navigator could be used before it's
@@ -43,13 +71,7 @@ export const AppEventHandler = () => {
       // so that we can pick up the appropriate state.
       if (pressAction?.id === PressAction.markAsRead) {
         logger.info('handleForegroundEvent is marking as read.');
-        if (notification?.id) {
-          await notifee.cancelDisplayedNotification(notification.id);
-        }
-        if (notification?.data) {
-          await apiGet(notification.data.markAsReadUrl.toString());
-          await refetchUserNotificationData();
-        }
+        await handleMarkAsRead(notification);
         return;
       }
 
@@ -70,7 +92,7 @@ export const AppEventHandler = () => {
     return () => {
       unsubscribe();
     };
-  }, [apiGet, linkTo, refetchUserNotificationData]);
+  }, [handleMarkAsRead, linkTo]);
 
   // Background events occur when the app is still running but not in the users view.
   // The OS may kill the app at any time.
@@ -92,13 +114,7 @@ export const AppEventHandler = () => {
     // so that we can pick up the appropriate state.
     if (pressAction?.id === PressAction.markAsRead) {
       logger.info('handleForegroundEvent is marking as read.');
-      if (notification?.id) {
-        await notifee.cancelDisplayedNotification(notification.id);
-      }
-      if (notification?.data) {
-        await apiGet(notification.data.markAsReadUrl.toString());
-        await refetchUserNotificationData();
-      }
+      await handleMarkAsRead(notification);
       return;
     }
 
