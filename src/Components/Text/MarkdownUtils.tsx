@@ -180,3 +180,13 @@ export const stripMarkdownIdentifier = (text: string): string => {
   const markdownIdentifier = '<Markdown>';
   return text.replace(markdownIdentifier, '').trim();
 };
+
+/**
+ * Strips Unicode Object Replacement Characters (U+FFFC). Some clients (e.g. iOS, via
+ * Genmoji or other inline attachments) leave this placeholder behind in submitted text
+ * after the actual embedded content is discarded, which otherwise renders as a broken
+ * "tofu" box. https://github.com/jocosocial/tricordarr/issues/545
+ */
+export const stripObjectReplacementCharacters = (text: string): string => {
+  return text.replace(/￼/g, '');
+};
