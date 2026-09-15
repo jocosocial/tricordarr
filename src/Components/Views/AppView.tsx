@@ -10,6 +10,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ErrorBanner} from '#src/Components/Banners/ErrorBanner';
 import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {ConnectionDisruptedWarningView} from '#src/Components/Views/Warnings/ConnectionDisruptedWarningView';
+import {MinAccessLevelWarningView} from '#src/Components/Views/Warnings/MinAccessLevelWarningView';
 import {PreRegistrationWarningView} from '#src/Components/Views/Warnings/PreRegistrationWarningView';
 import {UnsavedChangesWarningView} from '#src/Components/Views/Warnings/UnsavedChangesWarningView';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
@@ -24,13 +25,18 @@ const logger = createLogger('AppView.tsx');
 
 interface AppViewProps extends PropsWithChildren {
   disablePreRegistrationWarning?: boolean;
+  disableMinAccessLevelWarning?: boolean;
 }
 
 /**
  * Highest level View container that contains app-specific components that
  * can be utilized by all children. For example, error messages.
  */
-export const AppView = ({children, disablePreRegistrationWarning = false}: AppViewProps) => {
+export const AppView = ({
+  children,
+  disablePreRegistrationWarning = false,
+  disableMinAccessLevelWarning = false,
+}: AppViewProps) => {
   const {commonStyles} = useStyles();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {hasUnsavedWork} = useErrorHandler();
@@ -107,6 +113,7 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
           <AppSnackbar />
         </Portal>
         {preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
+        {!disableMinAccessLevelWarning && <MinAccessLevelWarningView />}
         {disruptionDetected && <ConnectionDisruptedWarningView />}
         {children}
         <UnsavedChangesWarningView isVisible={hasUnsavedWork} />

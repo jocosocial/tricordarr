@@ -23,3 +23,17 @@ export const alertDisablePreRegistration = (onConfirm: () => void, onCancel?: ()
     ],
   );
 };
+
+/**
+ * Confirms permanently hiding the Maintenance Mode warning banner.
+ */
+export const alertDismissMinAccessWarning = (onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert(
+    'Hide Maintenance Mode Warning',
+    'Permanently hide this warning? You can turn it back on later in Cruise Settings.',
+    [
+      {text: 'No', style: 'cancel', onPress: onCancel},
+      {text: 'Yes', onPress: onConfirm},
+    ],
+  );
+};

@@ -18,6 +18,7 @@ import {TodayThemeView} from '#src/Components/Views/Today/TodayThemeView';
 import {TodayTimezoneWarningView} from '#src/Components/Views/Today/TodayTimezoneWarningView';
 import {TodayWelcomeAboardView} from '#src/Components/Views/Today/TodayWelcomeAboardView';
 import {TodayAppUpdateView} from '#src/Components/Views/TodayAppUpdateView';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -50,12 +51,19 @@ export const TodayScreen = ({navigation}: Props) => {
 
   const {isLoggedIn} = useSession();
   const {preRegistrationMode} = usePreRegistration();
+  const {isAccessRestricted} = useClientSettings();
   const {refreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
-      var refreshes: Promise<any>[] = [refetchAnnouncements(), refetchClientConfig(), refetchTimeZoneChanges()];
+      var refreshes: Promise<any>[] = [refetchClientConfig(), refetchTimeZoneChanges()];
+      // When logged out, only fire these if the server would actually allow anonymous access.
+      if (isLoggedIn || !isAccessRestricted) {
+        refreshes.push(refetchAnnouncements());
+      }
       // These queries not available in pre-registration mode.
       if (!preRegistrationMode) {
-        refreshes.push(refetchThemes(), refetchUserNotificationData());
+        if (isLoggedIn || !isAccessRestricted) {
+          refreshes.push(refetchThemes(), refetchUserNotificationData());
+        }
         if (isLoggedIn) {
           // useUserProfileQuery is here because the menu has the users picture.
           // useUserFavoritesQuery is here because the favorites list is sneakily used
@@ -67,6 +75,7 @@ export const TodayScreen = ({navigation}: Props) => {
     }, [
       preRegistrationMode,
       isLoggedIn,
+      isAccessRestricted,
       refetchAnnouncements,
       refetchThemes,
       refetchUserNotificationData,

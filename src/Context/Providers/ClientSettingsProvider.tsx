@@ -9,6 +9,7 @@ import {
 } from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {useClientSettingsQuery} from '#src/Queries/Client/ClientQueries';
 import {ClientSettingsData} from '#src/Structs/ControllerStructs';
 
@@ -23,6 +24,9 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
   const maxImageSize = clientSettings?.maxImageSize ?? DEFAULT_MAX_IMAGE_SIZE;
   const photostreamUploadRateLimit =
     clientSettings?.photostreamUploadRateLimit ?? DEFAULT_PHOTOSTREAM_UPLOAD_RATE_LIMIT;
+  const minAccessLevel = (clientSettings?.minAccessLevel as UserAccessLevel) ?? UserAccessLevel.banned;
+  const isAccessRestricted =
+    !!clientSettings && minAccessLevel !== UserAccessLevel.banned && !clientSettings.enablePreregistration;
 
   const updateClientSettings = useCallback(async () => {
     const response = await refetch();
@@ -45,8 +49,17 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
       maxForumPostImages,
       maxImageSize,
       photostreamUploadRateLimit,
+      isAccessRestricted,
+      minAccessLevel,
     }),
-    [updateClientSettings, maxForumPostImages, maxImageSize, photostreamUploadRateLimit],
+    [
+      updateClientSettings,
+      maxForumPostImages,
+      maxImageSize,
+      photostreamUploadRateLimit,
+      isAccessRestricted,
+      minAccessLevel,
+    ],
   );
 
   return <ClientSettingsContext.Provider value={value}>{children}</ClientSettingsContext.Provider>;
