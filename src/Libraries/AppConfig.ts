@@ -99,6 +99,7 @@ export interface AppConfig {
   forceShowTimezoneWarning: boolean;
   silenceTimezoneWarnings: boolean;
   dismissWelcomeAboard: boolean;
+  dismissMinAccessWarning: boolean;
   logLevel: LogLevel;
 }
 
@@ -198,6 +199,7 @@ export const defaultAppConfig: AppConfig = {
   forceShowTimezoneWarning: false,
   silenceTimezoneWarnings: false,
   dismissWelcomeAboard: false,
+  dismissMinAccessWarning: false,
   // logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
   logLevel: LogLevel.DEBUG,
 };
@@ -271,6 +273,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.dismissWelcomeAboard === undefined) {
     appConfig.dismissWelcomeAboard = false;
+  }
+  if (appConfig.dismissMinAccessWarning === undefined) {
+    appConfig.dismissMinAccessWarning = false;
   }
   if (appConfig.shipCode === undefined) {
     appConfig.shipCode = ShipCode.halEd;
