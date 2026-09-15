@@ -2,6 +2,7 @@ import FastImage, {type ImageStyle as FastImageStyle} from '@d11/react-native-fa
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {LayoutChangeEvent, ScrollView, StyleSheet, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -38,6 +39,18 @@ export const MapScreen = ({navigation, route}: Props) => {
   const {serverUrl} = useSwiftarrQueryClient();
   const {data: index, isLoading, isError, refetch, isRefetching} = useShipIndexQuery();
 
+  // Drive the pull-to-refresh spinner from local state set synchronously inside
+  // the gesture handler, rather than isRefetching alone: isRefetching only flips
+  // true once React Query's fetch actually starts, one render tick after the
+  // native gesture already released and closed its own spinner — which reads as
+  // a spin/stop/spin flicker. Setting this immediately keeps the spinner up
+  // continuously through that gap.
+  const [refreshing, setRefreshing] = useState(false);
+  const handleRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetch().finally(() => setRefreshing(false));
+  }, [refetch]);
+
   const [activeTarget, setActiveTarget] = useState<MapTarget | undefined>(undefined);
   // Set only by the deck menu. Manually switching decks is a "keep looking at
   // roughly the same part of the ship" gesture, so it deliberately does not
@@ -48,6 +61,7 @@ export const MapScreen = ({navigation, route}: Props) => {
   const [manualDeckNumber, setManualDeckNumber] = useState<number | undefined>(undefined);
   const [imageLayout, setImageLayout] = useState({width: 0, height: 0});
   const [searchVisible, setSearchVisible] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
 
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollContentRef = useRef<View | null>(null);
@@ -106,6 +120,13 @@ export const MapScreen = ({navigation, route}: Props) => {
   const imageUri = shipDeck ? buildShipAssetUrl(shipDeck.image) : undefined;
   const imageSource = useCachedImageSource(imageUri);
   const aspectRatio = index?.geometry.imagePx ? index.geometry.imagePx.w / index.geometry.imagePx.h : undefined;
+
+  // Keyed on the deck number (not imageSource.uri, which changes again once the
+  // disk cache lookup resolves) so the spinner doesn't flash back on for the
+  // same image, only when switching to a genuinely different deck.
+  useEffect(() => {
+    setImageLoading(true);
+  }, [shipDeck?.number]);
 
   const onSelectDeck = useCallback((deck: ShipDeck) => {
     setManualDeckNumber(deck.number);
@@ -174,10 +195,13 @@ export const MapScreen = ({navigation, route}: Props) => {
     });
   }, [activeTarget, shipDeck, imageLayout.height]);
 
-  // Once the current deck's image is on screen, warm the disk cache for the rest
+  // Once the current deck's image has actually finished loading (not just after
+  // a flat delay — on a slow connection the first image can easily take longer
+  // than imagePreloadDelaySeconds, and starting the low-priority preload early
+  // would just compete with it for bandwidth), warm the disk cache for the rest
   // of the ship so switching decks (or a later deep link) doesn't re-download.
   useEffect(() => {
-    if (preloadedRef.current || !index || !imageSource?.uri) {
+    if (preloadedRef.current || !index || !imageSource?.uri || imageLoading) {
       return;
     }
     const timer = setTimeout(() => {
@@ -186,7 +210,7 @@ export const MapScreen = ({navigation, route}: Props) => {
       FastImage.preload(others.map(d => ({uri: buildShipAssetUrl(d.image), priority: FastImage.priority.low})));
     }, appConfig.imagePreloadDelaySeconds * 1000);
     return () => clearTimeout(timer);
-  }, [index, imageSource?.uri, shipDeck?.number, buildShipAssetUrl, appConfig.imagePreloadDelaySeconds]);
+  }, [index, imageSource?.uri, imageLoading, shipDeck?.number, buildShipAssetUrl, appConfig.imagePreloadDelaySeconds]);
 
   const styles = StyleSheet.create({
     // Padding lives here, on the outer wrapper, so it does not throw off the
@@ -206,6 +230,20 @@ export const MapScreen = ({navigation, route}: Props) => {
       width: undefined,
       aspectRatio,
     },
+    // Absolutely positioned sibling of ScrollingContentView (like MapSearchBar
+    // below), not a child of imageWrap: imageWrap is as tall as the whole deck
+    // image, so centering within *it* can land the spinner far below the
+    // currently-scrolled viewport on a long deck. Covering the screen instead
+    // keeps it visible regardless of scroll position or image height.
+    imageLoadingOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+    },
   });
 
   if (isLoading) {
@@ -213,11 +251,11 @@ export const MapScreen = ({navigation, route}: Props) => {
   }
 
   if (isError || !index || index.decks.length === 0) {
-    return <ErrorView refreshing={isRefetching} onRefresh={refetch} />;
+    return <ErrorView refreshing={refreshing || isRefetching} onRefresh={handleRefresh} />;
   }
 
   if (!shipDeck) {
-    return <ErrorView refreshing={isRefetching} onRefresh={refetch} />;
+    return <ErrorView refreshing={refreshing || isRefetching} onRefresh={handleRefresh} />;
   }
 
   return (
@@ -225,7 +263,7 @@ export const MapScreen = ({navigation, route}: Props) => {
       <ScrollingContentView
         isStack={true}
         ref={scrollViewRef}
-        refreshControl={<AppRefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
+        refreshControl={<AppRefreshControl refreshing={refreshing || isRefetching} onRefresh={handleRefresh} />}>
         <View
           ref={ref => {
             scrollContentRef.current = ref;
@@ -243,7 +281,12 @@ export const MapScreen = ({navigation, route}: Props) => {
               }}
               onLayout={handleImageLayout}>
               {imageSource && (
-                <FastImage key={shipDeck.number} style={styles.image as FastImageStyle} source={imageSource} />
+                <FastImage
+                  key={shipDeck.number}
+                  style={styles.image as FastImageStyle}
+                  source={imageSource}
+                  onLoadEnd={() => setImageLoading(false)}
+                />
               )}
               <MapHighlightOverlay width={imageLayout.width} height={imageLayout.height} labels={highlightLabels} />
             </View>
@@ -251,6 +294,11 @@ export const MapScreen = ({navigation, route}: Props) => {
           <MapIndicatorView direction={'Aft'} />
         </View>
       </ScrollingContentView>
+      {imageLoading && (
+        <View style={styles.imageLoadingOverlay} pointerEvents={'none'}>
+          <ActivityIndicator />
+        </View>
+      )}
       {/* Deliberately outside ScrollingContentView: this must stay visible regardless
           of scroll position, or hitting search while looking at the aft of the ship
           appears to do nothing. */}

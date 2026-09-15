@@ -14,6 +14,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -36,11 +37,13 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
   const {theme} = useAppTheme();
   const queryClient = useQueryClient();
   const {appConfig, updateAppConfig} = useConfig();
+  const {setSnackbarPayload} = useSnackbar();
   const {errorCount, setErrorCount} = useSwiftarrQueryClient();
   const {refetch: refetchHealth, isFetching: isFetchingHealth} = useHealthQuery({
     enabled: false,
   });
   const [oldestCacheItem, setOldestCacheItem] = useState<Date>();
+  const [isClearingImageCache, setIsClearingImageCache] = useState(false);
 
   const bustQueryCache = () => {
     logger.debug('Busting query cache.');
@@ -57,8 +60,16 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
 
   const clearImageCache = async () => {
     logger.debug('Clearing image cache.');
-    await FastImage.clearMemoryCache();
-    await FastImage.clearDiskCache();
+    try {
+      setIsClearingImageCache(true);
+      await FastImage.clearMemoryCache();
+      await FastImage.clearDiskCache();
+      setSnackbarPayload({message: 'Image cache cleared.', messageType: 'success'});
+    } catch (error) {
+      setSnackbarPayload({message: `Could not clear image cache: ${error}`, messageType: 'error'});
+    } finally {
+      setIsClearingImageCache(false);
+    }
   };
 
   const triggerDisruption = () => {
@@ -145,6 +156,8 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
             testID={'clearImageCache-button'}
             buttonText={'Clear Image Cache'}
             onPress={clearImageCache}
+            disabled={isClearingImageCache}
+            isLoading={isClearingImageCache}
             buttonColor={theme.colors.twitarrNegativeButton}
             style={commonStyles.marginBottom}
           />
