@@ -81,7 +81,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
                 return queryClient.invalidateQueries({queryKey: key});
               })
               .concat(
-                EventData.getCacheKeys().map(key => {
+                EventData.getCacheKeys(route.params.eventID).map(key => {
                   return queryClient.invalidateQueries({queryKey: key});
                 }),
               );

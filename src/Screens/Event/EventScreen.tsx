@@ -6,6 +6,7 @@ import {View} from 'react-native';
 import {HeaderFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderFavoriteButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {EventScreenActionsMenu} from '#src/Components/Menus/Events/EventScreenActionsMenu';
+import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventQuery} from '#src/Queries/Events/EventQueries';
@@ -20,25 +21,28 @@ export const EventScreen = ({navigation, route}: Props) => {
   });
   const eventFavoriteMutation = useEventFavoriteMutation();
   const queryClient = useQueryClient();
+  const {updateFavorite} = useEventCacheReducer();
 
   const handleFavorite = useCallback(
     (event: EventData) => {
+      const newValue = !event.isFavorite;
       eventFavoriteMutation.mutate(
         {
           eventID: event.eventID,
-          action: event.isFavorite ? 'unfavorite' : 'favorite',
+          action: newValue ? 'favorite' : 'unfavorite',
         },
         {
           onSuccess: async () => {
-            const invalidations = UserNotificationData.getCacheKeys()
-              .concat(EventData.getCacheKeys(event.eventID))
-              .map(key => queryClient.invalidateQueries({queryKey: key}));
+            updateFavorite(event, newValue);
+            const invalidations = UserNotificationData.getCacheKeys().map(key =>
+              queryClient.invalidateQueries({queryKey: key}),
+            );
             await Promise.all(invalidations);
           },
         },
       );
     },
-    [eventFavoriteMutation, queryClient],
+    [eventFavoriteMutation, queryClient, updateFavorite],
   );
 
   const getNavButtons = useCallback(() => {

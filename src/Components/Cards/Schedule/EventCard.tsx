@@ -9,6 +9,7 @@ import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
@@ -22,7 +23,6 @@ interface EventCardProps {
   hideFavorite?: boolean;
   onLongPress?: () => void;
   titleHeader?: string;
-  onFavorite?: () => void;
 }
 
 interface EventCardRightIconsProps {
@@ -115,37 +115,38 @@ export const EventCard = ({
   titleHeader,
   showDay = false,
   hideFavorite = false,
-  onFavorite,
 }: EventCardProps) => {
   const {theme} = useAppTheme();
   const eventFavoriteMutation = useEventFavoriteMutation();
   const queryClient = useQueryClient();
+  const {updateFavorite, primeEventDetail} = useEventCacheReducer();
   const [refreshing, setRefreshing] = useState(false);
 
   const onFavoritePress = useCallback(() => {
     setRefreshing(true);
+    const newValue = !eventData.isFavorite;
     eventFavoriteMutation.mutate(
       {
         eventID: eventData.eventID,
-        action: eventData.isFavorite ? 'unfavorite' : 'favorite',
+        action: newValue ? 'favorite' : 'unfavorite',
       },
       {
         onSuccess: async () => {
-          // This is to enable triggering a refresh from the PerformerScreenBase where
-          // we don't hit the event endpoints directly. Eventually this will be removed since
-          // we can use a cache reducer to also hit any performers that have the eventID in
-          // their response.
-          onFavorite?.();
-          // If this is too slow to reload, a setQueryData here may be in order.
-          const invalidations = UserNotificationData.getCacheKeys()
-            .concat(EventData.getCacheKeys(eventData.eventID))
-            .map(key => queryClient.invalidateQueries({queryKey: key}));
+          updateFavorite(eventData, newValue);
+          const invalidations = UserNotificationData.getCacheKeys().map(key =>
+            queryClient.invalidateQueries({queryKey: key}),
+          );
           await Promise.all(invalidations);
         },
         onSettled: () => setRefreshing(false),
       },
     );
-  }, [eventData.eventID, eventData.isFavorite, eventFavoriteMutation, queryClient, onFavorite]);
+  }, [eventData, eventFavoriteMutation, queryClient, updateFavorite]);
+
+  const handlePress = useCallback(() => {
+    primeEventDetail(eventData);
+    onPress?.();
+  }, [eventData, onPress, primeEventDetail]);
 
   const cardStyleAndContentColor = useMemo(() => {
     const color = DayPlannerItem.getDayPlannerColor({
@@ -179,7 +180,7 @@ export const EventCard = ({
 
   return (
     <ScheduleItemCardBase
-      onPress={onPress}
+      onPress={handlePress}
       cardStyle={cardStyleAndContentColor.cardStyle}
       contentColor={cardStyleAndContentColor.contentColor}
       showMarkerBorder={cardStyleAndContentColor.showMarkerBorder}
