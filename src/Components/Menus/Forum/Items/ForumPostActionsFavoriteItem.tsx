@@ -26,7 +26,7 @@ export const ForumPostActionsFavoriteItem = ({forumPost, forumData, closeMenu}: 
       },
       {
         onSuccess: () => {
-          updatePostBookmark(forumPost.postID, forumData?.forumID, !forumPost.isBookmarked);
+          updatePostBookmark(forumPost, forumData?.forumID, !forumPost.isBookmarked);
         },
         onSettled: () => {
           closeMenu();
