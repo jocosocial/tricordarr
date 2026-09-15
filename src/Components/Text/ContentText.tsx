@@ -6,6 +6,7 @@ import {VariantProp} from 'react-native-paper/lib/typescript/components/Typograp
 import {Emoji} from '#src/Components/Icons/Emoji';
 import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {MarkdownText} from '#src/Components/Text/MarkdownText';
+import {stripObjectReplacementCharacters} from '#src/Components/Text/MarkdownUtils';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CustomEmoji} from '#src/Enums/Emoji';
@@ -139,9 +140,13 @@ export const ContentText = ({
     [hashtagOnPress, mentionOnPress, renderEmojiText],
   );
 
+  const sanitizedText = stripObjectReplacementCharacters(text);
+
   const markdownIdentifier = '<Markdown>';
-  if (forceMarkdown || text.startsWith(markdownIdentifier)) {
-    return <MarkdownText text={text} textStyle={textStyle} textVariant={textVariant} selectable={selectable} />;
+  if (forceMarkdown || sanitizedText.startsWith(markdownIdentifier)) {
+    return (
+      <MarkdownText text={sanitizedText} textStyle={textStyle} textVariant={textVariant} selectable={selectable} />
+    );
   }
 
   /**
@@ -151,7 +156,7 @@ export const ContentText = ({
   return (
     <HyperlinkText>
       <Text variant={textVariant} style={textStyle} selectable={selectable}>
-        {renderContentText(text)}
+        {renderContentText(sanitizedText)}
       </Text>
     </HyperlinkText>
   );
