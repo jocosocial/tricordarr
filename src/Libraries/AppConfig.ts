@@ -2,8 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment-timezone';
 
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
+import {ShipCode} from '#src/Enums/ShipCode';
+import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {LogLevel} from '#src/Libraries/Logger/types';
-import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from '#src/Libraries/Network/APIClient';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
 import {FezListEndpoints} from '#src/Types';
@@ -21,6 +22,12 @@ export interface APIClientConfig {
   staleTime: number;
   disruptionThreshold: number;
   requestTimeout: number;
+  /**
+   * Timeout for write requests (POST/DELETE). Deliberately longer than requestTimeout: a write
+   * that times out client-side may still have succeeded server-side, and the user retrying it is
+   * exactly how duplicate posts happen on the ship network. See #533.
+   */
+  mutationTimeout: number;
   imageStaleTime: number;
 }
 
@@ -32,6 +39,7 @@ export interface ScheduleConfig {
   defaultLfgList: FezListEndpoints;
   overlapExcludeDurationHours: number;
   compactThemeEvents: boolean;
+  timeZoneLabelMode: TimeZoneLabelMode;
 }
 
 export interface AccessibilityConfig {
@@ -49,6 +57,10 @@ export interface UserPreferences {
   defaultForumSortDirection: ForumSortDirection | undefined;
   highlightForumAlertWords: boolean;
   autosavePhotos: boolean;
+  autoCompressOversizedImages: boolean;
+  shareAppURI: boolean;
+  seamailIncludeLfgs: boolean;
+  seamailIncludePrivateEvents: boolean;
 }
 
 export interface AppConfig {
@@ -76,6 +88,9 @@ export interface AppConfig {
   skipThumbnails: boolean;
   imagePreloadDelaySeconds: number;
   schedBaseUrl: string;
+  // Which ship's deck maps to fetch from /public/ship/<code>/. Hardcoded client-side
+  // for now; should eventually come from the server via /client/settings.
+  shipCode: ShipCode;
   userPreferences: UserPreferences;
   markReadCancelPush: boolean;
   preRegistrationServerUrl: string;
@@ -84,8 +99,15 @@ export interface AppConfig {
   forceShowTimezoneWarning: boolean;
   silenceTimezoneWarnings: boolean;
   dismissWelcomeAboard: boolean;
+  dismissMinAccessWarning: boolean;
   logLevel: LogLevel;
 }
+
+// Live here (rather than APIClient.ts) so AppConfig.ts doesn't import APIClient.ts, which
+// would create a require cycle: Logger -> AppConfig -> APIClient -> QueryCacheStorage -> Logger.
+export const defaultCacheTime = 1000 * 60 * 60 * 24 * 30; // 30 days
+export const defaultStaleTime = 1000 * 60; // 60 seconds
+export const defaultImageStaleTime = 1000 * 60 * 60 * 24 * 30; // 30 days
 
 export const defaultAppConfig: AppConfig = {
   serverUrl: __DEV__ ? 'https://beta.twitarr.com' : 'https://twitarr.com',
@@ -134,6 +156,7 @@ export const defaultAppConfig: AppConfig = {
     defaultLfgList: 'open',
     overlapExcludeDurationHours: 4,
     compactThemeEvents: true,
+    timeZoneLabelMode: TimeZoneLabelMode.offset,
   },
   portTimeZoneID: 'America/New_York',
   apiClientConfig: {
@@ -145,6 +168,7 @@ export const defaultAppConfig: AppConfig = {
     staleTime: defaultStaleTime,
     disruptionThreshold: 10,
     requestTimeout: 10000,
+    mutationTimeout: 30000,
     imageStaleTime: defaultImageStaleTime,
   },
   enableEasterEgg: false,
@@ -155,6 +179,7 @@ export const defaultAppConfig: AppConfig = {
   skipThumbnails: true,
   imagePreloadDelaySeconds: 2,
   schedBaseUrl: '',
+  shipCode: ShipCode.halEd,
   userPreferences: {
     reverseSwipeOrientation: false,
     showScrollButton: true,
@@ -162,6 +187,10 @@ export const defaultAppConfig: AppConfig = {
     defaultForumSortOrder: undefined,
     highlightForumAlertWords: true,
     autosavePhotos: true,
+    autoCompressOversizedImages: true,
+    shareAppURI: false,
+    seamailIncludeLfgs: true,
+    seamailIncludePrivateEvents: true,
   },
   markReadCancelPush: true,
   preRegistrationServerUrl: 'https://start.twitarr.com',
@@ -170,6 +199,7 @@ export const defaultAppConfig: AppConfig = {
   forceShowTimezoneWarning: false,
   silenceTimezoneWarnings: false,
   dismissWelcomeAboard: false,
+  dismissMinAccessWarning: false,
   // logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
   logLevel: LogLevel.DEBUG,
 };
@@ -214,6 +244,9 @@ export const getAppConfig = async () => {
   if (appConfig.schedule.compactThemeEvents === undefined) {
     appConfig.schedule.compactThemeEvents = true;
   }
+  if (appConfig.schedule.timeZoneLabelMode === undefined) {
+    appConfig.schedule.timeZoneLabelMode = TimeZoneLabelMode.offset;
+  }
   if (appConfig.logLevel === undefined) {
     appConfig.logLevel = LogLevel.DEBUG;
   }
@@ -226,8 +259,29 @@ export const getAppConfig = async () => {
   if (appConfig.userPreferences.showScrollButton === undefined) {
     appConfig.userPreferences.showScrollButton = true;
   }
+  if (appConfig.userPreferences.autoCompressOversizedImages === undefined) {
+    appConfig.userPreferences.autoCompressOversizedImages = true;
+  }
+  if (appConfig.userPreferences.shareAppURI === undefined) {
+    appConfig.userPreferences.shareAppURI = false;
+  }
+  if (appConfig.userPreferences.seamailIncludeLfgs === undefined) {
+    appConfig.userPreferences.seamailIncludeLfgs = true;
+  }
+  if (appConfig.userPreferences.seamailIncludePrivateEvents === undefined) {
+    appConfig.userPreferences.seamailIncludePrivateEvents = true;
+  }
   if (appConfig.dismissWelcomeAboard === undefined) {
     appConfig.dismissWelcomeAboard = false;
+  }
+  if (appConfig.dismissMinAccessWarning === undefined) {
+    appConfig.dismissMinAccessWarning = false;
+  }
+  if (appConfig.shipCode === undefined) {
+    appConfig.shipCode = ShipCode.halEd;
+  }
+  if (appConfig.apiClientConfig.mutationTimeout === undefined) {
+    appConfig.apiClientConfig.mutationTimeout = defaultAppConfig.apiClientConfig.mutationTimeout;
   }
 
   // Ok now we're done

@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 
 import {EventCard} from '#src/Components/Cards/Schedule/EventCard';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventQuery} from '#src/Queries/Events/EventQueries';
 
 export const NextEventCard = ({eventID}: {eventID: string}) => {

@@ -1,15 +1,16 @@
 import {InfiniteData, QueryObserverResult} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
+import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {type TConversationListV2Ref} from '#src/Components/Lists/ConversationListV2';
 import {ForumConversationListV2} from '#src/Components/Lists/Forums/ForumConversationListV2';
 import {ForumThreadScreenActionsMenu} from '#src/Components/Menus/Forum/ForumThreadScreenActionsMenu';
@@ -19,24 +20,28 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
+import {ForumComposerProvider} from '#src/Context/Providers/ForumComposerProvider';
 import {AppIcons} from '#src/Enums/Icons';
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useForumData} from '#src/Hooks/Forum/useForumData';
-import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {paginatedHighWaterMark} from '#src/Libraries/CacheReduction';
 import {createLogger} from '#src/Libraries/Logger';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {ForumStackComponents} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
+import {useForumThreadPinnedPostsQuery} from '#src/Queries/Forum/ForumThreadQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
 
@@ -54,6 +59,18 @@ interface Props {
   hasPreviousPage?: boolean;
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
+  /**
+   * Unmasked title from a moderation View in Context. Public thread
+   * payloads replace quarantined titles with placeholder copy.
+   */
+  titleOverride?: string;
+  initialElevation?: keyof typeof PrivilegedUserAccounts;
+  /**
+   * True when this thread was opened from a specific post. `startPost` returns that
+   * post as the first item, so we must not treat a missing forumListData as fully-read
+   * and scroll to the end.
+   */
+  startFromPost?: boolean;
 }
 
 /**
@@ -62,9 +79,9 @@ interface Props {
  *
  * @TODO test that this doesn't jump around, especially with the "thread from post".
  */
-export const ForumThreadScreenBase = (props: Props) => {
+export const ForumThreadScreenBase = ({initialElevation, ...props}: Props) => {
   return (
-    <ElevationProvider>
+    <ElevationProvider initialElevation={initialElevation}>
       <ForumThreadScreenBaseInner {...props} />
     </ElevationProvider>
   );
@@ -82,15 +99,18 @@ const ForumThreadScreenBaseInner = ({
   hasPreviousPage,
   getListHeader,
   forumListData,
+  titleOverride,
+  startFromPost,
 }: Props) => {
   const navigation = useCommonStack();
   const {asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam} = useElevation();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
+  const postInputRef = useRef<TextInput | null>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const markReadMutation = useForumMarkReadMutation();
   const flatListRef = useRef<TConversationListV2Ref>(null);
   const {hasModerator} = usePrivilege();
-  const maxForumPostImages = useMaxForumPostImages();
+  const {maxForumPostImages} = useClientSettings();
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
@@ -101,6 +121,10 @@ const ForumThreadScreenBaseInner = ({
   // Derive unified ForumData from the React Query cache (no local state).
   const forumData = useForumData(data);
   const forumPosts = forumData?.posts ?? [];
+  const {data: pinnedPosts, refetch: refetchPinnedPosts} = useForumThreadPinnedPostsQuery(forumData?.forumID);
+  const pinnedPostCount = pinnedPosts?.length ?? 0;
+  const pinnedPostsSubtitle =
+    pinnedPostCount > 0 ? `${pinnedPostCount} pinned ${pluralize('post', pinnedPostCount)}` : undefined;
 
   // Cache reducer -- operates directly on queryClient.
   const {appendPost, markRead} = useForumCacheReducer();
@@ -108,27 +132,36 @@ const ForumThreadScreenBaseInner = ({
 
   // Mark forum as read in local caches when thread data loads.
   // Only mark as many posts read as have actually been fetched.
+  // Pass paginator.total so a stale list postCount is raised to the server
+  // value; otherwise readCount can exceed postCount and the unread badge
+  // goes negative (issue #515).
   useEffect(() => {
     if (forumData && data) {
-      if (forumListData && forumListData.readCount === forumListData.postCount) {
-        return;
-      }
       const fetchedUpTo = paginatedHighWaterMark(
         data,
         page => page.paginator.start,
         page => page.posts.length,
       );
-      markRead(forumData.forumID, forumData.categoryID, fetchedUpTo);
+      const serverPostCount = forumData.paginator.total;
+      if (
+        forumListData &&
+        forumListData.readCount === forumListData.postCount &&
+        forumListData.postCount >= serverPostCount &&
+        forumListData.readCount >= fetchedUpTo
+      ) {
+        return;
+      }
+      markRead(forumData.forumID, forumData.categoryID, fetchedUpTo, serverPostCount);
     }
   }, [forumData, forumListData, markRead, data]);
 
   const fullRefresh = useCallback(async () => {
-    await refetch();
+    await Promise.all([refetch(), refetchPinnedPosts()]);
     // After refetch, the server may report more posts than we have pages for
     // (e.g. optimistically-added posts that crossed a page boundary).
     // fetchNextPage is a no-op when getNextPageParam returns undefined.
     await fetchNextPage();
-  }, [refetch, fetchNextPage]);
+  }, [refetch, refetchPinnedPosts, fetchNextPage]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: fullRefresh,
   });
@@ -179,51 +212,60 @@ const ForumThreadScreenBaseInner = ({
     });
   }, [getNavButtons, navigation]);
 
-  const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
-    formikHelpers.setSubmitting(true);
+  /**
+   * Creates a forum post and resets the composer, keeping the current elevation flags.
+   *
+   * Awaits the mutation so Formik holds isSubmitting (and the submit button stays disabled)
+   * for the full round trip. See #533.
+   */
+  const onPostSubmit = async (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     if (!forumData) {
-      formikHelpers.setSubmitting(false);
       return;
     }
     values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
-    postCreateMutation.mutate(
-      {
+    try {
+      const response = await postCreateMutation.mutateAsync({
         forumID: forumData.forumID,
         postData: values,
-      },
-      {
-        onSuccess: response => {
-          formikHelpers.resetForm();
+      });
 
-          // Update React Query caches (instant, no network).
-          // This triggers a re-render via the derived useForumData.
-          appendPost(forumData.forumID, forumData.categoryID, response.data);
-
-          // Signal screens to scroll to the top when the user navigates back.
-          dispatchScrollToTop(
-            ForumStackComponents.forumCategoryScreen,
-            ForumStackComponents.forumPostSelfScreen,
-            ForumStackComponents.forumFavoritesScreen,
-            ForumStackComponents.forumMutesScreen,
-            ForumStackComponents.forumOwnedScreen,
-            ForumStackComponents.forumRecentScreen,
-          );
-
-          // Clear server unread status (fire-and-forget).
-          markReadMutation.mutate({forumID: forumData.forumID});
-
-          // Scroll to the new post.
-          // requestAnimationFrame(() => {
-          //   requestAnimationFrame(() => {
-          flatListRef.current?.scrollToEnd({animated: false});
-          //   });
-          // });
+      formikHelpers.resetForm({
+        values: {
+          text: '',
+          images: [],
+          postAsModerator: asModerator,
+          postAsTwitarrTeam: asTwitarrTeam,
         },
-        onSettled: () => {
-          formikHelpers.setSubmitting(false);
-        },
-      },
-    );
+      });
+
+      // Update React Query caches (instant, no network).
+      // This triggers a re-render via the derived useForumData.
+      appendPost(forumData.forumID, forumData.categoryID, response.data);
+
+      // Signal screens to scroll to the top when the user navigates back.
+      dispatchScrollToTop(
+        ForumStackComponents.forumCategoryScreen,
+        ForumStackComponents.forumPostSelfScreen,
+        ForumStackComponents.forumFavoritesScreen,
+        ForumStackComponents.forumMutesScreen,
+        ForumStackComponents.forumOwnedScreen,
+        ForumStackComponents.forumRecentScreen,
+      );
+
+      // Clear server unread status (fire-and-forget).
+      markReadMutation.mutate({forumID: forumData.forumID});
+
+      // Scroll to the new post.
+      // requestAnimationFrame(() => {
+      //   requestAnimationFrame(() => {
+      flatListRef.current?.scrollToEnd({animated: false});
+      //   });
+      // });
+    } catch (error) {
+      // The error snackbar is raised by useTokenAuthMutation's onError. Swallow here so the
+      // rejection doesn't escape into Formik's submit handling.
+      logger.error('Forum post create failed.', error);
+    }
   };
 
   const onReadyToShow = useCallback(() => {
@@ -236,6 +278,11 @@ const ForumThreadScreenBaseInner = ({
   }
 
   const getInitialScrollIndex = () => {
+    // startPost returns the selected post as the first item on the page. The
+    // fully-read path below would scroll to the last loaded post and hide it.
+    if (startFromPost) {
+      return forumPosts.length > 0 ? 0 : undefined;
+    }
     if (!forumListData || forumListData.readCount === forumListData.postCount) {
       // Fully read: scroll to the last post via initialScrollIndex.
       // We use this instead of scrollToEnd because scrollToEnd fires before
@@ -267,40 +314,48 @@ const ForumThreadScreenBaseInner = ({
   });
 
   return (
-    <AppView>
-      <PostAsUserBanner />
-      <ListTitleView title={forumData?.title ?? ''} />
-      {forumData?.isLocked && <ForumLockedView />}
-      <View style={commonStyles.flex}>
-        <ForumConversationListV2
-          postList={forumPosts}
-          handleLoadNext={handleLoadNext}
-          handleLoadPrevious={handleLoadPrevious}
-          refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
-          forumData={forumData}
-          hasPreviousPage={hasPreviousPage}
-          getListHeader={getListHeader}
-          listRef={flatListRef}
-          hasNextPage={hasNextPage}
-          forumListData={forumListData}
-          initialScrollIndex={getInitialScrollIndex()}
-          onReadyToShow={onReadyToShow}
+    <ForumComposerProvider formRef={postFormRef} inputRef={postInputRef} enabled={showForm}>
+      <AppView>
+        <PostAsUserWarningView />
+        <ListTitleView
+          title={titleOverride ?? forumData?.title ?? ''}
+          subtitle={pinnedPostsSubtitle}
+          icon={forumData?.isFavorite ? <AppIcon icon={AppIcons.favorite} small={true} /> : undefined}
         />
-        {!readyToShow && (
-          <View style={overlayStyles.overlay}>
-            <ActivityIndicator size={'large'} />
-          </View>
+        {forumData?.isLocked && <ForumLockedView />}
+        <View style={commonStyles.flex}>
+          <ForumConversationListV2
+            postList={forumPosts}
+            handleLoadNext={handleLoadNext}
+            handleLoadPrevious={handleLoadPrevious}
+            refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
+            forumData={forumData}
+            hasPreviousPage={hasPreviousPage}
+            getListHeader={getListHeader}
+            listRef={flatListRef}
+            hasNextPage={hasNextPage}
+            forumListData={forumListData}
+            initialScrollIndex={getInitialScrollIndex()}
+            onReadyToShow={onReadyToShow}
+            startFromPost={startFromPost}
+          />
+          {!readyToShow && (
+            <View style={overlayStyles.overlay}>
+              <ActivityIndicator size={'large'} />
+            </View>
+          )}
+        </View>
+        {showForm && (
+          <ContentPostForm
+            onSubmit={onPostSubmit}
+            formRef={postFormRef}
+            inputRef={postInputRef}
+            enablePhotos={true}
+            maxLength={2000}
+            maxPhotos={maxForumPostImages}
+          />
         )}
-      </View>
-      {showForm && (
-        <ContentPostForm
-          onSubmit={onPostSubmit}
-          formRef={postFormRef}
-          enablePhotos={true}
-          maxLength={2000}
-          maxPhotos={maxForumPostImages}
-        />
-      )}
-    </AppView>
+      </AppView>
+    </ForumComposerProvider>
   );
 };

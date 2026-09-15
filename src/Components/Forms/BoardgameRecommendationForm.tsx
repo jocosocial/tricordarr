@@ -58,6 +58,7 @@ export const BoardgameRecommendationForm = ({
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={buttonText}
+            testID={'boardgameRecommend-button'}
           />
         </View>
       )}

@@ -12,7 +12,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserNoteCreateMutation, useUserNoteDeleteMutation} from '#src/Queries/Users/UserNoteMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -85,6 +85,7 @@ const UserPrivateNoteScreenInner = ({route, navigation}: Props) => {
           <UserNoteForm initialValues={initialValues} onSubmit={onSubmit} />
           {route.params.user.note && (
             <PrimaryActionButton
+              testID={'delete-button'}
               buttonColor={theme.colors.twitarrNegativeButton}
               disabled={deleteMutation.isPending}
               isLoading={deleteMutation.isPending}

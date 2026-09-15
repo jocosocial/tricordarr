@@ -1,7 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
+import {File, Paths} from 'expo-file-system';
 import React, {useState} from 'react';
 // import {RefreshControl} from 'react-native';
-import RNFS from 'react-native-fs';
 import Video from 'react-native-video';
 // import VideoPlayer from 'react-native-video-controls';
 
@@ -13,7 +13,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {createLogger} from '#src/Libraries/Logger';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {useMicroKaraokeSongQuery} from '#src/Queries/MicroKaraoke/MicroKaraokeQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -46,7 +46,7 @@ const MicroKaraokeSongScreenInner = ({route}: Props) => {
     // Remove query parameters before extracting filename
     const urlWithoutQuery = url.split('?')[0];
     const fileName = urlWithoutQuery.split('/').pop();
-    return `${RNFS.DocumentDirectoryPath}/${fileName}`;
+    return new File(Paths.document, fileName ?? '').uri;
   });
 
   const handleEnd = () => {
@@ -84,8 +84,8 @@ const MicroKaraokeSongScreenInner = ({route}: Props) => {
       {/*  <SnippetListItem key={i} url={url} />*/}
       {/*))}*/}
       {/*</ScrollingContentView>*/}
-      <PrimaryActionButton buttonText={'Previous'} onPress={handlePrevious} />
-      <PrimaryActionButton buttonText={'Next'} onPress={handleEnd} />
+      <PrimaryActionButton testID={'previous-button'} buttonText={'Previous'} onPress={handlePrevious} />
+      <PrimaryActionButton testID={'next-button'} buttonText={'Next'} onPress={handleEnd} />
     </AppView>
   );
 };

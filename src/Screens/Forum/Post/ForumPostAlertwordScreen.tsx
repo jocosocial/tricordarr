@@ -11,7 +11,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
 import {PostData, UserNotificationData} from '#src/Structs/ControllerStructs';
 

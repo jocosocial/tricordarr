@@ -31,6 +31,8 @@ struct ScheduleConfig: Codable {
 	var enableLateDayFlip: Bool
 	var defaultLfgList: FezListEndpoints
 	var overlapExcludeDurationHours: Int
+	/// Offset, abbreviation, or hidden. JS display-only; optional for older configs.
+	var timeZoneLabelMode: String?
 }
 
 /// Accessibility configuration matching TypeScript AccessibilityConfig

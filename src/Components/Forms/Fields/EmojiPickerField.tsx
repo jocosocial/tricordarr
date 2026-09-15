@@ -37,6 +37,7 @@ export const EmojiPickerField = () => {
         .map((emoji, index) => {
           return (
             <IconButton
+              testID={`contentPostEmoji${emoji}-button`}
               key={index}
               onPress={() => handleEmojiPress(emoji)}
               icon={() => getEmojiIcon(emoji as keyof typeof CustomEmoji)}

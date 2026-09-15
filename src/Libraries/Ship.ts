@@ -1,57 +1,7 @@
-import {ImageRequireSource} from 'react-native';
-
 import {createLogger} from '#src/Libraries/Logger';
 import {ProfilePublicData} from '#src/Structs/ControllerStructs';
 
 const logger = createLogger('Ship');
-
-// @ts-ignore
-import deck1 from '#assets/map/deck1.png';
-// @ts-ignore
-import deck10 from '#assets/map/deck10.png';
-// @ts-ignore
-import deck11 from '#assets/map/deck11.png';
-// @ts-ignore
-import deck12 from '#assets/map/deck12.png';
-// @ts-ignore
-import deck2 from '#assets/map/deck2.png';
-// @ts-ignore
-import deck3 from '#assets/map/deck3.png';
-// @ts-ignore
-import deck4 from '#assets/map/deck4.png';
-// @ts-ignore
-import deck5 from '#assets/map/deck5.png';
-// @ts-ignore
-import deck6 from '#assets/map/deck6.png';
-// @ts-ignore
-import deck7 from '#assets/map/deck7.png';
-// @ts-ignore
-import deck8 from '#assets/map/deck8.png';
-// @ts-ignore
-import deck9 from '#assets/map/deck9.png';
-
-export interface DeckData {
-  number: number;
-  label: string;
-  roomStart?: number;
-  roomEnd?: number;
-  imageSource: ImageRequireSource;
-}
-
-export const ShipDecks: DeckData[] = [
-  {number: 1, label: 'Main', roomStart: 1001, roomEnd: 1130, imageSource: deck1},
-  {number: 2, label: 'Lower Promenade', imageSource: deck2},
-  {number: 3, label: 'Promenade', imageSource: deck3},
-  {number: 4, label: 'Upper Promenade', roomStart: 4001, roomEnd: 4189, imageSource: deck4},
-  {number: 5, label: 'Verandah', roomStart: 5001, roomEnd: 5193, imageSource: deck5},
-  {number: 6, label: 'Upper Verandah', roomStart: 6001, roomEnd: 6181, imageSource: deck6},
-  {number: 7, label: 'Rotterdam', roomStart: 7001, roomEnd: 7143, imageSource: deck7},
-  {number: 8, label: 'Navigation', roomStart: 8001, roomEnd: 8175, imageSource: deck8},
-  {number: 9, label: 'Lido', imageSource: deck9},
-  {number: 10, label: 'Panorama', roomStart: 10001, roomEnd: 10046, imageSource: deck10},
-  {number: 11, label: 'Observation', roomStart: 11001, roomEnd: 11010, imageSource: deck11},
-  {number: 12, label: 'Sun', imageSource: deck12},
-];
 
 /**
  * Guess the deck number from a location string.
@@ -80,6 +30,38 @@ export const guessDeckNumber = (location?: string): number | undefined => {
   }
   // No deck number found.
   return undefined;
+};
+
+/**
+ * Room name from a Sched-style location: text before the first comma or '('.
+ * Matches Swiftarr `GET /api/v3/admin/feedback/roomlist` (prefix until `,` or `(`).
+ * "Lower Main Dining Room, Deck 2, Aft" → "Lower Main Dining Room"
+ */
+export const getRoomName = (location?: string): string => {
+  if (!location) {
+    return '';
+  }
+  const match = /^[^,(]*/.exec(location);
+  return (match?.[0] ?? '').trim();
+};
+
+/**
+ * Unique room names from location strings, sorted alphabetically.
+ * Duplicate names that differ only by case are collapsed to the first spelling seen.
+ */
+export const getUniqueRoomNames = (locations: readonly string[]): string[] => {
+  const seen = new Map<string, string>();
+  for (const location of locations) {
+    const roomName = getRoomName(location);
+    if (!roomName) {
+      continue;
+    }
+    const key = roomName.toLowerCase();
+    if (!seen.has(key)) {
+      seen.set(key, roomName);
+    }
+  }
+  return [...seen.values()].sort((a, b) => a.localeCompare(b));
 };
 
 export const publicLocationSuggestions = [

@@ -38,15 +38,16 @@ export const ChangePasswordForm = ({onSubmit}: ChangePasswordFormProps) => {
       {({handleSubmit, values, isSubmitting}) => (
         <View>
           <DirtyDetectionField />
-          <SecureTextField name={'currentPassword'} label={'Password'} />
-          <SecureTextField name={'newPassword'} label={'New Password'} />
-          <SecureTextField name={'newPasswordVerify'} label={'Verify Password'} />
+          <SecureTextField name={'currentPassword'} testID={'changePasswordCurrent-input'} label={'Password'} />
+          <SecureTextField name={'newPassword'} testID={'changePasswordNew-input'} label={'New Password'} />
+          <SecureTextField name={'newPasswordVerify'} testID={'changePasswordVerify-input'} label={'Verify Password'} />
           <PrimaryActionButton
             disabled={!values.currentPassword || !values.newPassword || !values.newPasswordVerify || isSubmitting}
             isLoading={isSubmitting}
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={'Change Password'}
+            testID={'changePasswordSubmit-button'}
           />
         </View>
       )}

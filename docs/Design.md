@@ -26,6 +26,11 @@ Icons
 
 Library: https://pictogrammers.com/library/mdi/
 
+Colors
+------
+
+Check for accessibility. https://webaim.org/resources/contrastchecker/
+
 ## Long-Term Design TODOs
 
 - Post/message count UX should be consistent across Forums & Seamail list views

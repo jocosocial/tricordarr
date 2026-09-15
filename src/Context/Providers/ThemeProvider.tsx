@@ -1,6 +1,7 @@
 import {DefaultTheme} from '@react-navigation/native';
 import {PropsWithChildren, useCallback, useMemo} from 'react';
 import {useColorScheme} from 'react-native';
+import {SystemBars} from 'react-native-edge-to-edge';
 import {adaptNavigationTheme} from 'react-native-paper';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -32,13 +33,22 @@ export const ThemeProvider = ({children}: PropsWithChildren) => {
     return appConfig.accessibility.darkMode;
   }, [appConfig.accessibility.darkMode, appConfig.accessibility.useSystemTheme, colorScheme]);
 
+  const darkMode = isDarkMode();
+
   const theme = useMemo(() => {
-    return isDarkMode() ? twitarrThemeDark : twitarrTheme;
-  }, [isDarkMode]);
+    return darkMode ? twitarrThemeDark : twitarrTheme;
+  }, [darkMode]);
 
   const navTheme = useMemo(() => {
-    return isDarkMode() ? navDarkTheme : navLightTheme;
-  }, [isDarkMode]);
+    return darkMode ? navDarkTheme : navLightTheme;
+  }, [darkMode]);
 
-  return <ThemeContext.Provider value={{isDarkMode: isDarkMode(), theme, navTheme}}>{children}</ThemeContext.Provider>;
+  const contextValue = useMemo(() => ({isDarkMode: darkMode, theme, navTheme}), [darkMode, theme, navTheme]);
+
+  return (
+    <ThemeContext.Provider value={contextValue}>
+      <SystemBars style={darkMode ? 'light' : 'dark'} />
+      {children}
+    </ThemeContext.Provider>
+  );
 };

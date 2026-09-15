@@ -29,6 +29,7 @@ interface ArcadeButtonProps {
   onPressIn?: (e: GestureResponderEvent) => void;
   onPressOut?: (e: GestureResponderEvent) => void;
   onDisabledOut?: (e: GestureResponderEvent) => void;
+  testID: string;
 }
 
 const ArcadeButton = ({
@@ -38,6 +39,7 @@ const ArcadeButton = ({
   onPressIn,
   onPressOut,
   onDisabledOut,
+  testID,
 }: ArcadeButtonProps) => {
   const [down, setDown] = useState(false);
   const [amountDown] = useState(() => new Animated.Value(0));
@@ -140,7 +142,7 @@ const ArcadeButton = ({
         <Animated.View style={topDepressed}>
           <View style={[styles.topReflection, disabledStylesApplied && disabledStyles.topReflection]} />
 
-          <TouchableWithoutFeedback onPressIn={handlePressIn} onPressOut={handlePressOut}>
+          <TouchableWithoutFeedback testID={testID} onPressIn={handlePressIn} onPressOut={handlePressOut}>
             <View style={[styles.topFlat, topFlat, disabledStylesApplied && disabledStyles.topFlat]}>{children}</View>
           </TouchableWithoutFeedback>
         </Animated.View>

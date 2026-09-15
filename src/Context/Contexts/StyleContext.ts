@@ -1,14 +1,14 @@
 import {type StackNavigationOptions} from '@react-navigation/stack';
 import {createContext, useContext} from 'react';
 
-import {type StyleDefaults} from '#src/Styles';
+import type {CommonStyles, StyleDefaults} from '#src/Context/Providers/StyleProvider';
 
 interface StyleContextType {
-  commonStyles: any;
+  commonStyles: CommonStyles;
   styleDefaults: StyleDefaults;
   screenOptions: StackNavigationOptions;
 }
 
-export const StyleContext = createContext(<StyleContextType>{});
+export const StyleContext = createContext<StyleContextType>({} as StyleContextType);
 
 export const useStyles = () => useContext(StyleContext);

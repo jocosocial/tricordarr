@@ -1,6 +1,7 @@
 import {InfiniteData} from '@tanstack/react-query';
 import moment from 'moment-timezone';
 
+import {getTimePartsInTz} from '#src/Libraries/DateTime';
 import {EventData, FezListData} from '#src/Structs/ControllerStructs';
 import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
 
@@ -78,12 +79,15 @@ export const buildDayPlannerItems = (
   return dedupedItems.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 };
 
+/** Display duration for compacted "Theme:" events on the Day Planner timeline. */
+export const COMPACT_THEME_DURATION_MINUTES = 90;
+/** Minutes at the bottom of a compacted theme card that fade from opaque to transparent. */
+export const COMPACT_THEME_FADE_MINUTES = 30;
+
 /**
  * Clip an item's display times to the day boundaries and calculate display properties.
  * Returns null if the item doesn't intersect the display window.
  */
-const COMPACT_THEME_DURATION_MINUTES = 60;
-
 const adjustItemForDisplay = (
   item: DayPlannerItem,
   dayStart: Date,
@@ -104,6 +108,7 @@ const adjustItemForDisplay = (
     const actualDurationMs = item.endTime.getTime() - item.startTime.getTime();
     if (actualDurationMs > compactMs) {
       adjustedItem.endTime = new Date(item.startTime.getTime() + compactMs);
+      adjustedItem.compactedTheme = true;
     }
   }
 
@@ -306,16 +311,20 @@ export const getScrollOffsetForFirstItem = (items: {startTime: Date}[], dayStart
 const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
 
 /**
- * Minutes from day start for "now" for the now-line.
- * Uses device local time for "now" and boat timezone for "day start" so the line
- * matches the user's clock on the timeline (e.g. 10:36 device → line at 10:36 position).
+ * Minutes from day start for "now" for the now-line and scroll-to-now.
+ * Uses boat timezone for both "now" and "day start" so the line matches
+ * Schedule day Soon/Now markers (event/boat TZ), not device local time.
+ * Wall-clock mapping (not elapsed time) so scroll-to-now on other cruise days
+ * still jumps to "this time of day".
+ *
+ * @param timeZoneID IANA timezone of the boat for the viewed day
+ * @param dayStart Start of the viewed day's timeline (e.g. 3AM in boat TZ)
+ * @param now Current instant
+ * @returns Minutes from day start, or null if outside the 24-hour window
  */
 export const getMinutesFromDayStartForNow = (timeZoneID: string, dayStart: Date, now: Date): number | null => {
-  const nowH = now.getHours();
-  const nowM = now.getMinutes();
-  const startInTz = moment(dayStart).tz(timeZoneID);
-  const startH = startInTz.hours();
-  const startM = startInTz.minutes();
+  const {hours: nowH, minutes: nowM} = getTimePartsInTz(now, timeZoneID);
+  const {hours: startH, minutes: startM} = getTimePartsInTz(dayStart, timeZoneID);
   let minutesFromDayStart = (nowH - startH) * 60 + (nowM - startM);
 
   if (minutesFromDayStart < 0) {

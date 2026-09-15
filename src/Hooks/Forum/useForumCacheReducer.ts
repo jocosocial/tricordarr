@@ -1,8 +1,10 @@
 import {InfiniteData, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
+import {v4 as uuidv4} from 'uuid';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {
   filterItemsFromPages,
@@ -13,13 +15,24 @@ import {
   sortedInsertIntoPages,
   updateItemsInPages,
 } from '#src/Libraries/CacheReduction';
+import {publicForumTitle} from '#src/Libraries/Moderation/Content';
+import {
+  applyAppendedPostCounts,
+  applyDeletedPostCounts,
+  applyMarkReadCounts,
+  postReadCountsUnchanged,
+} from '#src/Libraries/UnreadCounts';
 import {
   CategoryData,
   ForumData,
+  ForumEditLogData,
   ForumListData,
+  ForumModerationData,
+  ForumPostModerationData,
   ForumSearchData,
   PostData,
   PostDetailData,
+  PostEditLogData,
   PostSearchData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
@@ -71,8 +84,7 @@ const updateForumListEntry = (entry: ForumListData, forumID: string, newPost: Po
   }
   return {
     ...entry,
-    postCount: entry.postCount + 1,
-    readCount: entry.readCount + 1,
+    ...applyAppendedPostCounts(entry.postCount, entry.readCount),
     lastPoster: newPost.author,
     lastPostAt: newPost.createdAt,
   };
@@ -574,15 +586,30 @@ export const useForumCacheReducer = () => {
    * When readCount is provided, sets readCount to the higher of the existing
    * value and the given count (partial read from fetched pages). When omitted,
    * marks the thread fully read (readCount = postCount).
+   * `serverPostCount` (typically ForumData.paginator.total) raises a stale list
+   * postCount so readCount cannot exceed it and produce a negative unread badge.
    * When the update was not a no-op, the thread is moved to the top of the
    * recent list.
    */
   const markRead = useCallback(
-    (forumID: string, categoryID?: string, readCount?: number) => {
-      const resolveReadCount = (entry: ForumListData) =>
-        readCount !== undefined ? Math.max(entry.readCount, readCount) : entry.postCount;
+    (forumID: string, categoryID?: string, readCount?: number, serverPostCount?: number) => {
+      /**
+       * Next post/read counts for a list entry after this mark-read.
+       */
+      const nextCounts = (entry: ForumListData) =>
+        applyMarkReadCounts(entry.postCount, entry.readCount, readCount, serverPostCount);
 
-      const updater = (entry: ForumListData): ForumListData => ({...entry, readCount: resolveReadCount(entry)});
+      /**
+       * Apply mark-read counts to a matching ForumListData, returning the same
+       * reference when the counts would not change.
+       */
+      const updater = (entry: ForumListData): ForumListData => {
+        const next = nextCounts(entry);
+        if (postReadCountsUnchanged(entry, next)) {
+          return entry;
+        }
+        return {...entry, ...next};
+      };
       updateForumListInAllCaches(forumID, categoryID, updater, ['/forum/recent']);
 
       const matchesForum = (t: ForumListData) => t.forumID === forumID;
@@ -595,18 +622,13 @@ export const useForumCacheReducer = () => {
           const firstPage = threadCacheEntries[0]?.[1]?.pages?.[0];
           if (firstPage) {
             const fallbackEntry = forumListDataFromForumData(firstPage);
-            return insertAtEdge(
-              oldData,
-              forumSearchAccessor,
-              {...fallbackEntry, readCount: resolveReadCount(fallbackEntry)},
-              edge,
-            );
+            return insertAtEdge(oldData, forumSearchAccessor, updater(fallbackEntry), edge);
           }
           return undefined;
         },
         onFound: (oldData, foundEntry, edge) => {
           const updatedEntry = updater(foundEntry);
-          if (foundEntry.readCount >= updatedEntry.readCount) {
+          if (foundEntry.readCount >= updatedEntry.readCount && foundEntry.postCount >= updatedEntry.postCount) {
             return updateItemsInPages(oldData, forumSearchAccessor, t => (matchesForum(t) ? updatedEntry : t));
           }
           return moveItemToEdge(oldData, forumSearchAccessor, matchesForum, updatedEntry, edge);
@@ -721,6 +743,45 @@ export const useForumCacheReducer = () => {
   );
 
   /**
+   * After a moderator-initiated forum rename, patch the forum moderation
+   * cache: update the cached title and insert a synthetic ForumEditLogData
+   * entry (the pre-edit snapshot). Uses the submitted title, not the public
+   * ForumData — quarantined threads return {@link FORUM_QUARANTINED_TITLE}.
+   * The server records the authoritative edit log entry; this keeps the
+   * moderation screen in sync until the next refetch.
+   */
+  const renameThreadModeration = useCallback(
+    (forumID: string, previousTitle: string, newTitle: string, editor: UserHeader) => {
+      const newEdit: ForumEditLogData = {
+        forumID,
+        editID: uuidv4(),
+        createdAt: new Date().toISOString(),
+        author: editor,
+        title: previousTitle,
+      };
+      queryClient.setQueriesData<ForumModerationData>({queryKey: [`/mod/forum/${forumID}`]}, oldData =>
+        oldData ? {...oldData, title: newTitle, edits: [...oldData.edits, newEdit]} : oldData,
+      );
+    },
+    [queryClient],
+  );
+
+  /**
+   * After Set State on a forum thread, patch public list and thread caches
+   * with the visible title (quarantine placeholder vs real) and isLocked.
+   * Does not touch `/mod/forum/{id}`, which keeps the unmasked title.
+   */
+  const updateThreadVisibility = useCallback(
+    (forumID: string, categoryID: string | undefined, status: ContentModerationStatus, realTitle: string) => {
+      const title = publicForumTitle(realTitle, status);
+      const isLocked = status === ContentModerationStatus.locked;
+      updateForumListInAllCaches(forumID, categoryID, entry => ({...entry, title, isLocked}));
+      updateForumThreadCache(forumID, page => ({...page, title, isLocked}));
+    },
+    [updateForumListInAllCaches, updateForumThreadCache],
+  );
+
+  /**
    * Toggle isPinned on a post across thread, search, and pinned posts caches.
    */
   const updatePostPin = useCallback(
@@ -784,6 +845,68 @@ export const useForumCacheReducer = () => {
     [queryClient, updatePostInThreadCaches, updatePostInSearchCaches],
   );
 
+  /** Replaces reaction metadata for one post across thread, search, and detail caches. */
+  const updatePostReactions = useCallback(
+    (updatedPost: PostData, forumID?: string) => {
+      const updater = (post: PostData): PostData => ({
+        ...post,
+        userLike: updatedPost.userLike,
+        likeCount: updatedPost.likeCount,
+        reactions: updatedPost.reactions,
+      });
+      updatePostInThreadCaches(updatedPost.postID, forumID, updater);
+      updatePostInSearchCaches(updatedPost.postID, updater);
+      queryClient.setQueriesData<PostDetailData>({queryKey: [`/forum/post/${updatedPost.postID}`]}, oldData =>
+        oldData
+          ? {
+              ...oldData,
+              userLike: updatedPost.userLike,
+              reactions: updatedPost.reactions,
+            }
+          : oldData,
+      );
+    },
+    [queryClient, updatePostInSearchCaches, updatePostInThreadCaches],
+  );
+
+  /**
+   * After a moderator-initiated post edit, patch the forum post moderation
+   * cache: update the cached PostDetailData's text/images and insert a
+   * synthetic PostEditLogData entry (the pre-edit snapshot). Uses the
+   * submitted content, not the public PostData — quarantined posts return
+   * placeholder copy such as "this forum post is under moderator review".
+   * The server records the authoritative edit log entry; this keeps the
+   * moderation screen in sync until the next refetch.
+   */
+  const updatePostModeration = useCallback(
+    (
+      postID: number,
+      previousPost: PostData,
+      nextText: string,
+      nextImages: string[] | undefined,
+      editor: UserHeader,
+    ) => {
+      const newEdit: PostEditLogData = {
+        postID,
+        editID: uuidv4(),
+        createdAt: new Date().toISOString(),
+        author: editor,
+        text: previousPost.text,
+        images: previousPost.images,
+      };
+      queryClient.setQueriesData<ForumPostModerationData>({queryKey: [`/mod/forumpost/${postID}`]}, oldData =>
+        oldData
+          ? {
+              ...oldData,
+              forumPost: {...oldData.forumPost, text: nextText, images: nextImages},
+              edits: [...oldData.edits, newEdit],
+            }
+          : oldData,
+      );
+    },
+    [queryClient],
+  );
+
   /**
    * Remove a post from thread, search, pinned posts, and post detail caches.
    * Decrements postCount in all forum list caches.
@@ -801,8 +924,7 @@ export const useForumCacheReducer = () => {
         );
         updateForumListInAllCaches(forumID, categoryID, entry => ({
           ...entry,
-          postCount: Math.max(0, entry.postCount - 1),
-          readCount: Math.min(entry.readCount, Math.max(0, entry.postCount - 1)),
+          ...applyDeletedPostCounts(entry.postCount, entry.readCount),
         }));
       }
       queryClient.setQueriesData<InfiniteData<PostSearchData>>({queryKey: ['/forum/post/search']}, oldData =>
@@ -816,18 +938,19 @@ export const useForumCacheReducer = () => {
   /**
    * Prepend a newly created forum thread to the category, recent, and owner
    * list caches. Also prepends the first post to the "your posts" cache.
+   * Uses the server-authored creator/lastPoster so privileged creates (TT/mod) stay correct.
    */
   const createThread = useCallback(
-    (createdForum: ForumData, authorHeader: UserHeader) => {
+    (createdForum: ForumData) => {
       const firstPost = createdForum.posts[0];
       const forumListData: ForumListData = {
         forumID: createdForum.forumID,
-        creator: authorHeader,
+        creator: createdForum.creator,
         title: createdForum.title,
         postCount: createdForum.posts.length,
         readCount: createdForum.posts.length,
         createdAt: firstPost?.createdAt ?? new Date().toISOString(),
-        lastPoster: authorHeader,
+        lastPoster: firstPost?.author ?? createdForum.creator,
         lastPostAt: firstPost?.createdAt,
         isLocked: createdForum.isLocked,
         isFavorite: createdForum.isFavorite,
@@ -910,11 +1033,15 @@ export const useForumCacheReducer = () => {
     deletePost,
     markRead,
     renameThread,
+    renameThreadModeration,
     updateFavorite,
     updateMute,
     updatePinned,
     updatePost,
     updatePostBookmark,
+    updatePostModeration,
     updatePostPin,
+    updatePostReactions,
+    updateThreadVisibility,
   };
 };

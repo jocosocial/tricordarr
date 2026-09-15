@@ -13,8 +13,8 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {useBoardgameRecommendMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -61,12 +61,10 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
   const guideMutation = useBoardgameRecommendMutation();
   const [games, setGames] = useState<BoardgameData[]>([]);
   const [fieldValues, setFieldValues] = useState<BoardgameRecommendationData>(defaultValues);
-  const [hasSearched, setHasSearched] = useState(false);
   const listRef = useRef<FlashListRef<BoardgameData>>(null);
 
   const onSubmit = (values: BoardgameRecommendationData, helpers: FormikHelpers<BoardgameRecommendationData>) => {
     setFieldValues(values);
-    setHasSearched(true);
     guideMutation.mutate(
       {
         recommendationData: values,
@@ -114,12 +112,7 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <BoardgameFlatList
-        ref={listRef}
-        items={games}
-        listHeader={getHeader}
-        showEmptyFooter={hasSearched && !guideMutation.isPending}
-      />
+      <BoardgameFlatList ref={listRef} items={games} listHeader={getHeader} />
     </AppView>
   );
 };

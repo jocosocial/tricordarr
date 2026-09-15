@@ -1,16 +1,18 @@
-import {useQueryClient} from '@tanstack/react-query';
 import React, {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
 
 import {FezPostActionsReactionItem} from '#src/Components/Menus/Fez/Items/FezPostActionsReactionItem';
 import {EmojiPickerModal} from '#src/Components/Reactions/EmojiPickerModal';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {ReportContentType} from '#src/Enums/ReportContentType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useFezPostReactionMutation} from '#src/Queries/Fez/FezPostReactionMutations';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData, FezPostData, ReactionData} from '#src/Structs/ControllerStructs';
 
 interface FezPostActionsMenuProps {
@@ -18,37 +20,39 @@ interface FezPostActionsMenuProps {
   closeMenu: () => void;
   anchor: ReactNode;
   fezPost: FezPostData;
-  fez: FezData;
+  fez?: FezData;
 }
 
+/**
+ * Overflow actions for a fez post. `fez` is optional; Report is hidden when it is omitted.
+ */
 export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: FezPostActionsMenuProps) => {
-  const {setModalContent, setModalVisible} = useModal();
   const {setString} = useClipboard();
-  const queryClient = useQueryClient();
+  const {currentUserID} = useSession();
+  const commonNavigation = useCommonStack();
+  const {hasModerator} = usePrivilege();
+  const {updatePostReactions} = useFezCacheReducer();
   const reactionMutation = useFezPostReactionMutation();
-  const {data: profilePublicData} = useUserProfileQuery();
   const [pickerOpen, setPickerOpen] = useState(false);
+  const bySelf = currentUserID === fezPost.author.userID;
 
   const handleReport = () => {
     closeMenu();
-    setModalContent(<ReportModalView fezPost={fezPost} />);
-    setModalVisible(true);
+    commonNavigation.push(CommonStackComponents.reportScreen, {
+      contentType: ReportContentType.fezPost,
+      contentID: fezPost.postID,
+    });
   };
 
-  const handleReaction = (emoji: string) => {
-    if (!profilePublicData) {
+  /** Adds or removes the selected reaction and applies the returned post to the chat cache. */
+  const handleReaction = (reaction: string) => {
+    if (!fez || !currentUserID) {
       return;
     }
-    const action = ReactionData.hasUserReacted(fezPost.reactions ?? [], profilePublicData.header.userID, emoji)
-      ? 'delete'
-      : 'create';
+    const action = ReactionData.hasUserReacted(fezPost.reactions ?? [], currentUserID, reaction) ? 'delete' : 'create';
     reactionMutation.mutate(
-      {fezPostID: fezPost.postID.toString(), emoji, action},
-      {
-        onSuccess: async () => {
-          await queryClient.invalidateQueries({queryKey: [`/fez/${fez.fezID}`]});
-        },
-      },
+      {fezPostID: fezPost.postID.toString(), reaction, action},
+      {onSuccess: response => updatePostReactions(fez.fezID, response.data.postID, response.data.reactions)},
     );
   };
 
@@ -65,7 +69,7 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
           }}
         />
         <FezPostActionsReactionItem
-          disabled={reactionMutation.isPending}
+          disabled={!fez || bySelf || reactionMutation.isPending}
           onPress={() => {
             closeMenu();
             setPickerOpen(true);
@@ -73,6 +77,17 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
         />
         {fez && fez.fezType !== FezType.closed && (
           <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
+        )}
+        {hasModerator && (
+          <Menu.Item
+            dense={false}
+            leadingIcon={AppIcons.moderator}
+            title={'Moderate'}
+            onPress={() => {
+              closeMenu();
+              pushModerateResource(commonNavigation, 'fezpost', fezPost.postID.toString());
+            }}
+          />
         )}
       </Menu>
       <EmojiPickerModal open={pickerOpen} onClose={() => setPickerOpen(false)} onEmojiSelected={handleReaction} />

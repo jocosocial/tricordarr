@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
-import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {CategoryData} from '#src/Structs/ControllerStructs';
 
 interface ForumFABProps {
@@ -20,6 +20,7 @@ export const ForumCategoryFAB = ({category, showLabel}: ForumFABProps) => {
       }
       label={'New Forum'}
       showLabel={showLabel}
+      testID={'forumCreate-fab'}
     />
   );
 };

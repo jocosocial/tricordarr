@@ -17,6 +17,7 @@ interface SwipeableButtonProps {
   iconStyle?: StyleProp<ViewStyle>;
   iconColor?: string;
   disabled?: boolean;
+  testID: string;
 }
 
 export const SwipeableButton = (props: SwipeableButtonProps) => {
@@ -39,7 +40,7 @@ export const SwipeableButton = (props: SwipeableButtonProps) => {
     },
   });
   return (
-    <RectButton style={styles.button} onPress={props.onPress} enabled={!props.disabled}>
+    <RectButton testID={props.testID} style={styles.button} onPress={props.onPress} enabled={!props.disabled}>
       {props.refreshing ? (
         <ActivityIndicator color={props.iconColor} />
       ) : (

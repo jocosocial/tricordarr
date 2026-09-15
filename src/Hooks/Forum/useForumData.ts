@@ -6,7 +6,8 @@ import {ForumData} from '#src/Structs/ControllerStructs';
 /**
  * Derives a unified ForumData from an InfiniteData<ForumData> returned by
  * React Query's infinite query. Metadata comes from the first page; posts
- * are flattened across all pages.
+ * are flattened across all pages. `paginator.total` is the max across pages
+ * so a later page's server total is not hidden by a stale first page.
  *
  * This is pure derivation -- no state, no copy, no sync. It recomputes only
  * when the React Query `data` reference changes.
@@ -43,7 +44,7 @@ export const useForumData = (data: InfiniteData<ForumData> | undefined): ForumDa
       isPinned: firstPage.isPinned,
       paginator: {
         start: firstPage.paginator.start,
-        total: firstPage.paginator.total,
+        total: Math.max(...data.pages.map(p => p.paginator.total)),
         limit: posts.length,
       },
       posts,

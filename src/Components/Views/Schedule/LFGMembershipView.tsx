@@ -3,16 +3,15 @@ import {StyleSheet, View} from 'react-native';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {LfgLeaveModal} from '#src/Components/Views/Modals/LfgLeaveModal';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
+import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/useFezData';
+import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
@@ -26,7 +25,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
   const {currentUserID} = useSession();
   const {isParticipant, isWaitlist, isFull} = useFezData({fezID: lfg.fezID});
   const {updateMembership} = useFezCacheReducer();
-  const {setModalVisible, setModalContent} = useModal();
+  const {confirmLeave} = useFezAlert(lfg);
   const [refreshing, setRefreshing] = useState(false);
   const membershipMutation = useFezMembershipMutation();
   const dispatchScrollToTop = useScrollToTopIntent();
@@ -36,8 +35,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
       return;
     }
     if (isParticipant || isWaitlist) {
-      setModalContent(<LfgLeaveModal fezData={lfg} />);
-      setModalVisible(true);
+      confirmLeave();
     } else {
       setRefreshing(true);
       membershipMutation.mutate(
@@ -61,8 +59,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
     membershipMutation,
     currentUserID,
     updateMembership,
-    setModalContent,
-    setModalVisible,
+    confirmLeave,
     dispatchScrollToTop,
     isParticipant,
     isWaitlist,
@@ -85,14 +82,16 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
         <PaddedContentView>
           {(isParticipant || isWaitlist) && (
             <PrimaryActionButton
+              testID={'lfgLeave-button'}
               buttonText={isWaitlist ? 'Leave the waitlist' : `Leave this ${lfgNoun}`}
               onPress={handleMembershipPress}
               buttonColor={theme.colors.twitarrNegativeButton}
               isLoading={refreshing}
             />
           )}
-          {!isParticipant && !isWaitlist && (
+          {!isParticipant && !isWaitlist && FezType.isLFGType(lfg.fezType) && (
             <PrimaryActionButton
+              testID={'lfgJoin-button'}
               buttonText={isFull ? 'Join the waitlist' : 'Join this LFG'}
               onPress={handleMembershipPress}
               buttonColor={theme.colors.twitarrPositiveButton}

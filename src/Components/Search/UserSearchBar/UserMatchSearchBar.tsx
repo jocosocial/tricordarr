@@ -18,6 +18,7 @@ export const UserMatchSearchBar = ({
   label = 'Search for users',
   autoSearch = true,
   excludeSelf = true,
+  testID,
 }: UserSearchBarProps) => {
   const {searchQuery, onChangeSearch, handlePress, onClear} = useUserSearchBar({
     onPress,
@@ -47,6 +48,7 @@ export const UserMatchSearchBar = ({
       label={label}
       autoSearch={autoSearch}
       excludeSelf={excludeSelf}
+      testID={testID}
     />
   );
 };

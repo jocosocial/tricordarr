@@ -1,5 +1,6 @@
+import {useBackHandler} from '@react-native-community/hooks';
 import * as React from 'react';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {FAB} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
@@ -18,6 +19,7 @@ interface BaseFABProps {
   openLabel?: string;
   icon?: IconSource;
   showLabel?: boolean;
+  testID: string;
 }
 
 export const BaseFABGroup = ({
@@ -27,6 +29,7 @@ export const BaseFABGroup = ({
   icon,
   actions = [],
   showLabel = true,
+  testID,
 }: BaseFABProps) => {
   const [state, setState] = useState({open: false});
   const {theme} = useAppTheme();
@@ -36,12 +39,29 @@ export const BaseFABGroup = ({
 
   const onStateChange = ({open}: {open: boolean}) => setState({open});
 
+  /**
+   * Close an open speed dial on Android Back. Paper's FAB.Group does not
+   * register a BackHandler of its own.
+   */
+  const handleFabGroupBackPress = useCallback(() => {
+    if (state.open) {
+      setState({open: false});
+      return true;
+    }
+    return false;
+  }, [state.open]);
+
+  useBackHandler(handleFabGroupBackPress);
+
   const styles = StyleSheet.create({
     button: {
       backgroundColor: backgroundColor ? backgroundColor : theme.colors.inverseSurface,
     },
     group: {
       // This is all fucking stupid.
+      // Paper's FAB.Group adds the bottom safe-area inset internally. When a tab
+      // bar already consumed that inset, this negative margin cancels Paper's
+      // extra offset so the FAB sits above the tab bar.
       marginBottom: -1 * insets.bottom,
       bottom: snackbarPayload ? styleDefaults.overScrollHeight * 0.75 : 0,
     },
@@ -49,6 +69,7 @@ export const BaseFABGroup = ({
 
   return (
     <FAB.Group
+      testID={testID}
       open={state.open}
       visible={true}
       icon={icon ? icon : AppIcons.menu}

@@ -185,6 +185,36 @@ import UserNotifications
 		return getForegroundPushProviderStatus().asDictionary
 	}
 
+	/**
+	 Gets the current status of the websocket connection, however it is being run (extension or in-app).
+	 Read from the shared App Group UserDefaults suite since `WebsocketNotifier` persists its status there,
+	 which works regardless of which process (extension or app) currently owns the socket.
+	 Called from the JavaScript side over the "bridge".
+
+	 - Returns: WebsocketStatus struct with optional state, lastHealthcheckAt, lastHealthcheckSuccess, lastError, and lastErrorAt
+	 */
+	static func getWebsocketStatus() -> WebsocketStatus {
+		let defaults = UserDefaults(suiteName: WebsocketNotifier.appGroupSuiteName)
+		return WebsocketStatus(
+			state: defaults?.string(forKey: "ws_state"),
+			lastHealthcheckAt: defaults?.string(forKey: "ws_last_healthcheck_at"),
+			lastHealthcheckSuccess: defaults?.object(forKey: "ws_last_healthcheck_success") as? Bool,
+			lastError: defaults?.string(forKey: "ws_last_error"),
+			lastErrorAt: defaults?.string(forKey: "ws_last_error_at")
+		)
+	}
+
+	/**
+	 Gets the current status of the websocket connection as a dictionary.
+	 Objective-C bridge method that converts WebsocketStatus to [String: Any].
+	 Called from the Objective-C bridge.
+
+	 - Returns: Dictionary with keys: "state", "lastHealthcheckAt", "lastHealthcheckSuccess", "lastError", "lastErrorAt" (each String/Bool or NSNull)
+	 */
+	@objc public static func getWebsocketStatusDictionary() -> [String: Any] {
+		return getWebsocketStatus().asDictionary
+	}
+
 	// MARK: - Notification Generation
 
 	/**
@@ -194,7 +224,7 @@ import UserNotifications
 	 app event handlers to trigger certain behavior.
 	
 	 - Parameters:
-	   - id: A unique identifier for the notification. Defaults to a new `UUID()` if not provided.
+	   - id: A unique identifier for the notification. Defaults to a new UUID string if not provided.
 	   - title: The title text displayed in the notification banner.
 	   - body: The body text displayed below the title in the notification.
 	   - type: String value of `src/Structs/SocketStructs.ts`.
@@ -202,7 +232,7 @@ import UserNotifications
 	   - markAsReadUrl: An optional URL string used to mark the content as read when acted upon.
 	 */
 	static func generateContentNotification(
-		_ id: UUID = UUID(),
+		_ id: String = UUID().uuidString,
 		title: String,
 		body: String,
 		type: NotificationTypeData,
@@ -220,7 +250,7 @@ import UserNotifications
 		content.userInfo = userInfo.asDictionary
 
 		// Send it
-		let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: nil)
+		let request = UNNotificationRequest(identifier: id, content: content, trigger: nil)
 		UNUserNotificationCenter.current()
 			.add(request) { error in
 				if let error = error {

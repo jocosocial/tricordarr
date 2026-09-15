@@ -1,7 +1,7 @@
 import React, {PropsWithChildren} from 'react';
 import {StyleProp, View, ViewStyle} from 'react-native';
 
-import {commonStyles} from '#src/Styles';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface PaddedContentViewProps {
   padSides?: boolean;
@@ -23,6 +23,7 @@ export const PaddedContentView = ({
   style = {},
   small = true,
 }: PropsWithChildren<PaddedContentViewProps>) => {
+  const {commonStyles} = useStyles();
   const paddedContentViewStyle = [
     ...[style],
     commonStyles.flex,

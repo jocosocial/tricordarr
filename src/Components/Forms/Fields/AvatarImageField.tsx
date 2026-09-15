@@ -6,27 +6,34 @@ import {PERMISSIONS, request as requestPermission} from 'react-native-permission
 
 import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
 import {APIImage} from '#src/Components/Images/APIImage';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {assertImageWithinSizeLimit, getImageCompressPickerOptions} from '#src/Libraries/ImageSize';
 import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
-import {styleDefaults} from '#src/Styles';
 
 const logger = createLogger('AvatarImageField.tsx');
 
 interface AvatarImageFieldProps<TFormData> {
   name: keyof TFormData;
+  testIDPrefix: string;
   imageData: ImageUploadData;
 }
 
 /**
  * Shares lot with UserProfileAvatar but not in a Form context.
  */
-export const AvatarImageField = <TFormData,>({imageData, name}: AvatarImageFieldProps<TFormData>) => {
-  const {commonStyles} = useStyles();
+export const AvatarImageField = <TFormData,>({imageData, name, testIDPrefix}: AvatarImageFieldProps<TFormData>) => {
+  const {commonStyles, styleDefaults} = useStyles();
   const {setSnackbarPayload} = useSnackbar();
   const [field, _2, helpers] = useField<ImageUploadData>(name as string);
+  const {maxImageSize} = useClientSettings();
+  const {appConfig} = useConfig();
+  const autoCompress = appConfig.userPreferences.autoCompressOversizedImages;
+  const compressOptions = getImageCompressPickerOptions(autoCompress, styleDefaults.imageSquareCropDimension);
 
   const styles = StyleSheet.create({
     image: {
@@ -46,6 +53,7 @@ export const AvatarImageField = <TFormData,>({imageData, name}: AvatarImageField
   };
 
   const processImage = async (image: Image) => {
+    assertImageWithinSizeLimit(image, maxImageSize);
     if (image.data) {
       await helpers.setValue({
         image: image.data,
@@ -64,6 +72,7 @@ export const AvatarImageField = <TFormData,>({imageData, name}: AvatarImageField
         height: styleDefaults.imageSquareCropDimension,
         includeBase64: true,
         mediaType: 'photo',
+        ...compressOptions,
       });
       await processImage(image);
     } catch (err: any) {
@@ -81,6 +90,7 @@ export const AvatarImageField = <TFormData,>({imageData, name}: AvatarImageField
         height: styleDefaults.imageSquareCropDimension,
         includeBase64: true,
         mediaType: 'photo',
+        ...compressOptions,
       });
       await processImage(image);
     } catch (err: any) {
@@ -105,6 +115,7 @@ export const AvatarImageField = <TFormData,>({imageData, name}: AvatarImageField
         )}
       </View>
       <ImageButtons
+        testIDPrefix={testIDPrefix}
         clearImage={clearImage}
         pickImage={pickImage}
         takeImage={takeImage}

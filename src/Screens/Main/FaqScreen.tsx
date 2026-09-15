@@ -3,7 +3,7 @@ import React from 'react';
 
 import {FaqScreenActionsMenu} from '#src/Components/Menus/Main/FaqScreenActionsMenu';
 import {MarkdownScreenBase} from '#src/Components/Screens/MarkdownScreenBase';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {useFaqQuery} from '#src/Queries/PublicQueries';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.faqScreen>;

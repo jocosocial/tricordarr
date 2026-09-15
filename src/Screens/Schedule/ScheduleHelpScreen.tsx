@@ -9,7 +9,7 @@ import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleV
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const ScheduleHelpScreen = () => {
   const {theme} = useAppTheme();
@@ -78,7 +78,7 @@ export const ScheduleHelpScreen = () => {
           />
           <DataFieldListItem
             title={'Overlapping Events'}
-            description={'View events, LFGs, and personal events that occur at the same time.'}
+            description={'View events, LFGs, and private events that occur at the same time.'}
             icon={AppIcons.calendarMultiple}
             onPress={() => commonNavigation.push(CommonStackComponents.scheduleOverlapHelpScreen)}
           />

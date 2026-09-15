@@ -1,4 +1,4 @@
-import React, {ReactNode, useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -11,15 +11,16 @@ import {PostAsModeratorMenuItem} from '#src/Components/Menus/Items/PostAsModerat
 import {PostAsTwitarrTeamMenuItem} from '#src/Components/Menus/Items/PostAsTwitarrTeamMenuItem';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {ShareContentType} from '#src/Enums/ShareContentType';
+import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {getShareLink, ShareContentType, ShareLinkMode} from '#src/Libraries/Sharing';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ForumData} from '#src/Structs/ControllerStructs';
@@ -42,20 +43,33 @@ export const ForumThreadScreenActionsMenu = ({
   toggleTwitarrTeam,
 }: ForumThreadActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {data: profilePublicData} = useUserProfileQuery();
   const {currentUserID} = useSession();
+  const {serverUrl} = useSwiftarrQueryClient();
   const commonNavigation = useCommonStack();
   const relationMutation = useForumRelationMutation();
   const [refreshing, setRefreshing] = useState(false);
   const {updateFavorite, updateMute} = useForumCacheReducer();
 
-  const handleModal = (content: ReactNode) => {
+  const handleCreateLfg = useCallback(() => {
     closeMenu();
-    setModalContent(content);
-    setModalVisible(true);
-  };
+    const threadLink = getShareLink({
+      mode: ShareLinkMode.web,
+      serverUrl,
+      contentType: ShareContentType.forum,
+      contentID: forumData.forumID,
+    });
+    commonNavigation.push(CommonStackComponents.lfgCreateScreen, {
+      title: forumData.title,
+      fezType: FezType.meetup,
+      maxCapacity: 0,
+      info: `Created from Forum thread (${threadLink})`,
+      // I'm deciding against passing initialUserHeaders because adding a bunch of random people
+      // to an LFG is a bit surprising and could be annoying. The expected flow is for someone to create
+      // the LFG then share the link back to the thread.
+    });
+  }, [closeMenu, commonNavigation, forumData.title, forumData.forumID, serverUrl]);
 
   const handleFavorite = useCallback(() => {
     if (forumData) {
@@ -112,6 +126,7 @@ export const ForumThreadScreenActionsMenu = ({
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
+      <Divider bold={true} />
       <FavoriteMenuItem
         onPress={handleFavorite}
         disabled={forumData.isMuted}
@@ -126,6 +141,7 @@ export const ForumThreadScreenActionsMenu = ({
           refreshing={refreshing}
         />
       )}
+      <Menu.Item dense={false} title={'Create LFG'} leadingIcon={AppIcons.lfgCreate} onPress={handleCreateLfg} />
       {forumData.creator.userID === currentUserID && (
         <>
           <Menu.Item
@@ -147,7 +163,13 @@ export const ForumThreadScreenActionsMenu = ({
             dense={false}
             leadingIcon={AppIcons.report}
             title={'Report'}
-            onPress={() => handleModal(<ReportModalView forum={forumData} />)}
+            onPress={() => {
+              closeMenu();
+              commonNavigation.push(CommonStackComponents.reportScreen, {
+                contentType: ReportContentType.forum,
+                contentID: forumData.forumID,
+              });
+            }}
           />
         </>
       )}

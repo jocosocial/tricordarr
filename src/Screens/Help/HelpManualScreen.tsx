@@ -5,7 +5,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const HelpManualScreen = () => {
   const commonNavigation = useCommonStack();
@@ -25,6 +25,12 @@ export const HelpManualScreen = () => {
             description={'Where to get assistance with the JoCo Cruise event and/or Twitarr.'}
             icon={AppIcons.faq}
             onPress={() => commonNavigation.push(CommonStackComponents.cruiseHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Report'}
+            description={'Report content or users to the Twitarr Moderation Team.'}
+            icon={AppIcons.report}
+            onPress={() => commonNavigation.push(CommonStackComponents.reportHelpScreen)}
           />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Major Features'} noMargin={true}>
@@ -120,7 +126,7 @@ export const HelpManualScreen = () => {
             title={'Puzzle Hunts'}
             description={'Challenge your brain with puzzle hunts.'}
             icon={AppIcons.hunts}
-            onPress={() => commonNavigation.push(CommonStackComponents.siteUIHelpScreen)}
+            onPress={() => commonNavigation.push(CommonStackComponents.huntHelpScreen)}
           />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Documentation'} noMargin={true}>
@@ -149,6 +155,36 @@ export const HelpManualScreen = () => {
             description={'App-specific guidance for moderators.'}
             icon={AppIcons.moderator}
             onPress={() => commonNavigation.push(CommonStackComponents.moderatorHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Server Admin'}
+            description={'TwitarrTeam, THO, and admin tools in the app.'}
+            icon={AppIcons.admin}
+            onPress={() => commonNavigation.push(CommonStackComponents.adminHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Announcements'}
+            description={'Create, edit, and delete system-wide announcements.'}
+            icon={AppIcons.announcement}
+            onPress={() => commonNavigation.push(CommonStackComponents.announcementHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Event Feedback'}
+            description={'View and submit reports after hosting a shadow event or workshop.'}
+            icon={AppIcons.feedback}
+            onPress={() => commonNavigation.push(CommonStackComponents.eventFeedbackHelpScreen, {})}
+          />
+          <DataFieldListItem
+            title={'Registration Codes'}
+            description={'Look up codes, unlock password recovery, and allocate Discord codes.'}
+            icon={AppIcons.registrationCode}
+            onPress={() => commonNavigation.push(CommonStackComponents.registrationCodeHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Server Settings'}
+            description={'Limits, notifications, Wi-Fi, and related server options.'}
+            icon={AppIcons.settings}
+            onPress={() => commonNavigation.push(CommonStackComponents.adminServerSettingsHelpScreen)}
           />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Advanced'} noMargin={true}>

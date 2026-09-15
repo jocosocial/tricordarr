@@ -2,8 +2,8 @@ import React from 'react';
 import {ColorValue, StyleProp, View, ViewStyle} from 'react-native';
 import {Divider, Text} from 'react-native-paper';
 
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {commonStyles} from '#src/Styles';
 
 interface LabelDividerProps {
   label?: string;
@@ -13,6 +13,7 @@ interface LabelDividerProps {
 }
 
 export const LabelDivider = ({label = 'New', color = undefined, wrapperStyle, dividerColor}: LabelDividerProps) => {
+  const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const styles = {
     wrapper: {

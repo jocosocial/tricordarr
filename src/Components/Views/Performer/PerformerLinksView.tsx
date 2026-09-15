@@ -24,11 +24,11 @@ export const PerformerLinksView = (props: Props) => {
   return (
     <PaddedContentView>
       <View style={props.style}>
-        <LinkIconButton link={props.data.website} icon={AppIcons.webview} />
-        <LinkIconButton link={props.data.xURL} icon={AppIcons.twitter} />
-        <LinkIconButton link={props.data.facebookURL} icon={AppIcons.facebook} />
-        <LinkIconButton link={props.data.instagramURL} icon={AppIcons.instagram} />
-        <LinkIconButton link={props.data.youtubeURL} icon={AppIcons.youtube} />
+        <LinkIconButton testID={'performerWebsite-button'} link={props.data.website} icon={AppIcons.webview} />
+        <LinkIconButton testID={'performerTwitter-button'} link={props.data.xURL} icon={AppIcons.twitter} />
+        <LinkIconButton testID={'performerFacebook-button'} link={props.data.facebookURL} icon={AppIcons.facebook} />
+        <LinkIconButton testID={'performerInstagram-button'} link={props.data.instagramURL} icon={AppIcons.instagram} />
+        <LinkIconButton testID={'performerYoutube-button'} link={props.data.youtubeURL} icon={AppIcons.youtube} />
       </View>
     </PaddedContentView>
   );

@@ -3,7 +3,7 @@ import {View} from 'react-native';
 
 import {FezCard} from '#src/Components/Cards/Schedule/FezCard';
 import {FezType} from '#src/Enums/FezType';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 
 export const NextLFGCard = ({lfgID}: {lfgID: string}) => {

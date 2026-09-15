@@ -1,7 +1,11 @@
 import {InfiniteData, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
+import notifee from 'react-native-notify-kit';
+import {v4 as uuidv4} from 'uuid';
 
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {FezType} from '#src/Enums/FezType';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {
@@ -15,7 +19,16 @@ import {
   updateItemsInPages,
 } from '#src/Libraries/CacheReduction';
 import {calcCruiseDayTime, swiftTimestampToISO} from '#src/Libraries/DateTime';
-import {FezData, FezListData, FezPostData} from '#src/Structs/ControllerStructs';
+import {publicFezField} from '#src/Libraries/Moderation/Content';
+import {applyAppendedPostCounts, applyMarkReadCounts, postReadCountsUnchanged} from '#src/Libraries/UnreadCounts';
+import {
+  FezData,
+  FezEditLogData,
+  FezListData,
+  FezModerationData,
+  FezPostData,
+  UserHeader,
+} from '#src/Structs/ControllerStructs';
 
 const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
   get: page => page.fezzes,
@@ -73,6 +86,7 @@ function listParamsIncludeFezType(params: Record<string, unknown> | undefined, f
  */
 export const useFezCacheReducer = () => {
   const queryClient = useQueryClient();
+  const {appConfig} = useConfig();
   const {startDate, endDate} = useCruise();
   const {tzAtTime} = useTimeZone();
 
@@ -152,7 +166,10 @@ export const useFezCacheReducer = () => {
 
   /**
    * Handles membership transitions that require moving a fez between list endpoints
-   * rather than only updating in-place.
+   * rather than only updating in-place. LFG join/leave moves between /fez/open and
+   * /fez/joined. Private-event leave removes the fez from all lists. Private-event
+   * and seamail join insert into matching /fez/joined caches when the fez is new
+   * to this user (e.g. addedTo socket events).
    */
   const updateMembershipInListCaches = useCallback(
     (fezID: string, updatedFez: FezData, action?: 'join' | 'unjoin'): {removeDetail: boolean} => {
@@ -229,7 +246,37 @@ export const useFezCacheReducer = () => {
         return {removeDetail: true};
       }
 
-      // No transition required (e.g. participant edits, seamail membership updates).
+      // Private event / seamail join (or in-place participant edits while still a member):
+      // insert into matching /fez/joined caches when the fez is new to this user.
+      if (isMember) {
+        const matchesFez = (f: FezData) => f.fezID === fezID;
+        queryClient.setQueriesData<InfiniteData<FezListData>>(
+          {queryKey: ['/fez/joined'], predicate: shouldInsertIntoQuery},
+          oldData => {
+            if (!oldData) return oldData;
+            if (findInPages(oldData, fezListAccessor, matchesFez)) {
+              const idUpdater = (entry: FezData) => (entry.fezID === fezID ? updatedFez : entry);
+              return sortItemsInPages(
+                updateItemsInPages(oldData, fezListAccessor, idUpdater),
+                fezListAccessor,
+                joinedSortComparator,
+              );
+            }
+            const inserted = insertAtEdge(oldData, fezListAccessor, updatedFez, 'start');
+            return sortItemsInPages(inserted, fezListAccessor, joinedSortComparator);
+          },
+        );
+
+        const idUpdater = (entry: FezData) => (entry.fezID === fezID ? updatedFez : entry);
+        for (const keyPrefix of ['/fez/owner', '/fez/former', '/fez/open'] as const) {
+          queryClient.setQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]}, oldData =>
+            oldData ? updateItemsInPages(oldData, fezListAccessor, idUpdater) : oldData,
+          );
+        }
+        return {removeDetail: false};
+      }
+
+      // No transition required (e.g. participant edits without membership data).
       updateFezInListCachesWithReorder(fezID, () => updatedFez);
       return {removeDetail: false};
     },
@@ -420,6 +467,66 @@ export const useFezCacheReducer = () => {
   );
 
   /**
+   * After a moderator-initiated fez edit, patch the fez moderation cache:
+   * update the cached title/info/location and insert a synthetic
+   * FezEditLogData entry (the pre-edit snapshot). The server records the
+   * authoritative edit log entry; this keeps the moderation screen in sync
+   * until the next refetch.
+   */
+  const updateFezModeration = useCallback(
+    (fezID: string, previousFez: FezData, updatedFez: FezData, editor: UserHeader) => {
+      const newEdit: FezEditLogData = {
+        fezID,
+        editID: uuidv4(),
+        createdAt: new Date().toISOString(),
+        author: editor,
+        title: previousFez.title,
+        info: previousFez.info,
+        location: previousFez.location ?? '',
+      };
+      queryClient.setQueriesData<FezModerationData>({queryKey: [`/mod/fez/${fezID}`]}, oldData =>
+        oldData
+          ? {
+              ...oldData,
+              fez: {
+                ...oldData.fez,
+                title: updatedFez.title,
+                info: updatedFez.info,
+                location: updatedFez.location,
+              },
+              edits: [...oldData.edits, newEdit],
+            }
+          : oldData,
+      );
+    },
+    [queryClient],
+  );
+
+  /**
+   * After Set State on a fez, patch public list and detail caches with the
+   * visible title/info/location (quarantine placeholder vs real). Does not
+   * touch `/mod/fez/{id}`, which keeps the unmasked fields.
+   */
+  const updateFezVisibility = useCallback(
+    (
+      fezID: string,
+      fezType: FezType,
+      status: ContentModerationStatus,
+      realTitle: string,
+      realInfo: string,
+      realLocation: string | undefined,
+    ) => {
+      const title = publicFezField(realTitle, status, fezType) ?? realTitle;
+      const info = publicFezField(realInfo, status, fezType) ?? realInfo;
+      const location = publicFezField(realLocation, status, fezType);
+      const updater = (fez: FezData): FezData => ({...fez, title, info, location});
+      updateFezInAllListCaches(fezID, updater);
+      updateFezDetailCache(fezID, updater);
+    },
+    [updateFezInAllListCaches, updateFezDetailCache],
+  );
+
+  /**
    * Remove a fez from all caches after deletion.
    */
   const deleteFez = useCallback(
@@ -447,6 +554,8 @@ export const useFezCacheReducer = () => {
    * The post mutation returns FezPostData (not the full FezData).
    * Socket payloads may send timestamp as a number: Swiftarr uses seconds since
    * 2001-01-01 (Swift Date reference). Normalize to ISO8601 string.
+   * Idempotent: if the postID is already in the detail cache (mutation and socket
+   * both delivering the same post), skip detail and list updates.
    */
   const appendPost = useCallback(
     (fezID: string, newPost: FezPostData) => {
@@ -454,6 +563,12 @@ export const useFezCacheReducer = () => {
       const rawTs = (newPost as {timestamp: string | number}).timestamp;
       const timestamp = swiftTimestampToISO(rawTs);
       const post: FezPostData = {...newPost, timestamp};
+      const alreadyInCache = queryClient
+        .getQueriesData<InfiniteData<FezData>>({queryKey: [`/fez/${fezID}`]})
+        .some(([, data]) => data?.pages.some(page => page.members?.posts?.some(p => p.postID === post.postID)));
+      if (alreadyInCache) {
+        return;
+      }
 
       // Add the new post only to the last page. updateFezDetailCache runs the updater on
       // every page, which would duplicate the post when fezPostsData is built from
@@ -470,15 +585,14 @@ export const useFezCacheReducer = () => {
               return page;
             }
             const isLastPage = index === lastIndex;
-            const alreadyExists = page.members.posts?.some(p => p.postID === post.postID);
-            const posts = isLastPage && !alreadyExists ? [...(page.members.posts ?? []), post] : page.members.posts;
+            const posts = isLastPage ? [...(page.members.posts ?? []), post] : page.members.posts;
+            const nextCounts = applyAppendedPostCounts(page.members.postCount, page.members.readCount);
             return {
               ...page,
               lastModificationTime: now,
               members: {
                 ...page.members,
-                postCount: page.members.postCount + 1,
-                readCount: page.members.readCount + 1,
+                ...nextCounts,
                 posts,
               },
             };
@@ -486,24 +600,47 @@ export const useFezCacheReducer = () => {
         };
       });
 
-      updateFezInListCachesWithReorder(fezID, fez => ({
-        ...fez,
-        lastModificationTime: now,
-        members: fez.members
-          ? {
-              ...fez.members,
-              postCount: fez.members.postCount + 1,
-              readCount: fez.members.readCount + 1,
-            }
-          : fez.members,
-      }));
+      updateFezInListCachesWithReorder(fezID, fez => {
+        if (!fez.members) {
+          return fez;
+        }
+        return {
+          ...fez,
+          lastModificationTime: now,
+          members: {
+            ...fez.members,
+            ...applyAppendedPostCounts(fez.members.postCount, fez.members.readCount),
+          },
+        };
+      });
     },
     [queryClient, updateFezInListCachesWithReorder],
+  );
+
+  /** Replaces one post after a reaction change without changing unread or post counts. */
+  const updatePostReactions = useCallback(
+    (fezID: string, postID: number, reactions: FezPostData['reactions']) => {
+      updateFezDetailCache(fezID, fez => {
+        if (!fez.members?.posts) {
+          return fez;
+        }
+        return {
+          ...fez,
+          members: {
+            ...fez.members,
+            posts: fez.members.posts.map(post => (post.postID === postID ? {...post, reactions} : post)),
+          },
+        };
+      });
+    },
+    [updateFezDetailCache],
   );
 
   /**
    * Replace FezData across all caches after a membership change (join, unjoin,
    * add participant, remove participant). These mutations return updated FezData.
+   * Seeds the detail cache when this user was just added and has no `/fez/{id}`
+   * query yet, matching createFez.
    */
   const updateMembership = useCallback(
     (fezID: string, updatedFez: FezData, action?: 'join' | 'unjoin') => {
@@ -513,6 +650,15 @@ export const useFezCacheReducer = () => {
         return;
       }
       updateFezDetailCache(fezID, () => updatedFez);
+      queryClient.setQueryData<InfiniteData<FezData>>([`/fez/${fezID}`], oldData => {
+        if (oldData) {
+          return oldData;
+        }
+        return {
+          pages: [updatedFez],
+          pageParams: [undefined],
+        };
+      });
     },
     [queryClient, updateMembershipInListCaches, updateFezDetailCache],
   );
@@ -551,31 +697,54 @@ export const useFezCacheReducer = () => {
 
   /**
    * Update readCount in all caches after viewing a fez. Local-only, no server call.
-   * Sets readCount = postCount (fully read).
+   * Sets readCount = postCount (fully read), clamped so unread cannot go negative.
+   * When markReadCancelPush is enabled, also dismisses any displayed notification
+   * whose ID is this fez (Seamail, LFG, and Private Event notifications all use fezID).
    */
   const markRead = useCallback(
     (fezID: string) => {
-      const readUpdater = (fez: FezData): FezData => ({
-        ...fez,
-        members: fez.members ? {...fez.members, readCount: fez.members.postCount} : fez.members,
-      });
+      /**
+       * Set members.readCount to postCount (fully read). Returns the same
+       * reference when the fez has no members or counts are already equal.
+       */
+      const readUpdater = (fez: FezData): FezData => {
+        if (!fez.members) {
+          return fez;
+        }
+        const next = applyMarkReadCounts(fez.members.postCount, fez.members.readCount);
+        if (postReadCountsUnchanged(fez.members, next)) {
+          return fez;
+        }
+        return {
+          ...fez,
+          members: {...fez.members, ...next},
+        };
+      };
       updateFezInAllListCaches(fezID, readUpdater);
       updateFezDetailCache(fezID, readUpdater);
+      if (appConfig.markReadCancelPush) {
+        notifee.cancelDisplayedNotification(fezID);
+      }
     },
-    [updateFezInAllListCaches, updateFezDetailCache],
+    [appConfig.markReadCancelPush, updateFezInAllListCaches, updateFezDetailCache],
   );
 
   /**
    * Invalidate a specific fez's detail cache and all list caches.
    * Use when a server-driven event (e.g. socket notification) tells us data
    * may be stale but we don't have the updated data locally.
+   * refetchType 'all' also refetches inactive observers so already-fetched
+   * screens (Day Planner, seamail/LFG lists) pick up addedTo/canceled events
+   * without a manual refresh.
    * TODO: derive the intended data from the socket payload.
    */
   const invalidateFez = useCallback(
     (fezID?: string) => {
-      const invalidations = fezListKeyPrefixes.map(key => queryClient.invalidateQueries({queryKey: [key]}));
+      const invalidations = fezListKeyPrefixes.map(key =>
+        queryClient.invalidateQueries({queryKey: [key], refetchType: 'all'}),
+      );
       if (fezID) {
-        invalidations.push(queryClient.invalidateQueries({queryKey: [`/fez/${fezID}`]}));
+        invalidations.push(queryClient.invalidateQueries({queryKey: [`/fez/${fezID}`], refetchType: 'all'}));
       }
       return Promise.all(invalidations);
     },
@@ -590,7 +759,10 @@ export const useFezCacheReducer = () => {
     invalidateFez,
     markRead,
     updateFez,
+    updateFezModeration,
+    updateFezVisibility,
     updateMembership,
     updateMute,
+    updatePostReactions,
   };
 };

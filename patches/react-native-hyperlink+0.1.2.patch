@@ -1,0 +1,154 @@
+diff --git a/node_modules/react-native-hyperlink/lib/module/Hyperlink.js b/node_modules/react-native-hyperlink/lib/module/Hyperlink.js
+index fcd3761..84a4e80 100644
+--- a/node_modules/react-native-hyperlink/lib/module/Hyperlink.js
++++ b/node_modules/react-native-hyperlink/lib/module/Hyperlink.js
+@@ -25,13 +25,17 @@ class Hyperlink extends Component {
+     };
+   }
+   render() {
+-    // Avoid spreading React special props such as `key` or `ref`
+-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+-    const {
+-      key: _key,
+-      ref: _ref,
+-      ...viewProps
+-    } = this.props;
++    // Avoid spreading React special props such as `key` or `ref`.
++    // Note: explicitly destructuring `key`/`ref` (e.g. `const {key} = props`)
++    // triggers React's dev-only "`key` is not a prop" warning because it
++    // forces a `[[Get]]` on those (non-enumerable) trap properties. Spreading
++    // into a plain object only copies own enumerable properties, so it never
++    // touches those traps and stays silent.
++    const viewProps = {
++      ...this.props
++    };
++    delete viewProps.key;
++    delete viewProps.ref;
+ 
+     // If no link handlers or styles, just render children as-is
+     if (!this.props.onPress && !this.props.onLongPress && !this.props.linkStyle) {
+@@ -74,12 +78,12 @@ class Hyperlink extends Component {
+     let elements = [];
+     let _lastIndex = 0;
+ 
+-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+-    const {
+-      ref: _ref,
+-      key: _key,
+-      ...componentProps
+-    } = component.props || {};
++    // See note in render() about why we spread+delete instead of destructuring.
++    const componentProps = {
++      ...component.props
++    };
++    delete componentProps.ref;
++    delete componentProps.key;
+     try {
+       this.state.linkifyIt.match(childrenString)?.forEach(({
+         index,
+@@ -132,12 +136,12 @@ class Hyperlink extends Component {
+     } = component || {};
+     if (!children) return component;
+ 
+-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+-    const {
+-      ref: _ref,
+-      key: _key,
+-      ...componentProps
+-    } = component.props || {};
++    // See note in render() about why we spread+delete instead of destructuring.
++    const componentProps = {
++      ...component.props
++    };
++    delete componentProps.ref;
++    delete componentProps.key;
+     return /*#__PURE__*/React.cloneElement(component, componentProps, React.Children.map(children, child => {
+       // Handle string children
+       if (typeof child === 'string' && this.state.linkifyIt.pretest(child)) {
+@@ -181,14 +185,13 @@ export default class extends Component {
+   }
+   render() {
+     const onPress = this.props.onPress ?? this.handleLink;
+-    // Do not forward `key`/`ref` to the inner `Hyperlink` to avoid
+-    // React warning about spreading a props object that contains `key`.
+-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+-    const {
+-      key: _key,
+-      ref: _ref,
+-      ...rest
+-    } = this.props;
++    // Do not forward `key`/`ref` to the inner `Hyperlink`.
++    // See note in Hyperlink.render() about why we spread+delete instead of destructuring.
++    const rest = {
++      ...this.props
++    };
++    delete rest.key;
++    delete rest.ref;
+     return this.props.linkDefault ? /*#__PURE__*/_jsx(Hyperlink, {
+       ...rest,
+       onPress: onPress
+diff --git a/node_modules/react-native-hyperlink/src/Hyperlink.tsx b/node_modules/react-native-hyperlink/src/Hyperlink.tsx
+index 9a951d8..42e2f96 100644
+--- a/node_modules/react-native-hyperlink/src/Hyperlink.tsx
++++ b/node_modules/react-native-hyperlink/src/Hyperlink.tsx
+@@ -32,9 +32,15 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
+ 	}
+ 
+ 	render() {
+-		// Avoid spreading React special props such as `key` or `ref`
+-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+-		const { key: _key, ref: _ref, ...viewProps } = this.props as any;
++		// Avoid spreading React special props such as `key` or `ref`.
++		// Note: explicitly destructuring `key`/`ref` (e.g. `const {key} = props`)
++		// triggers React's dev-only "`key` is not a prop" warning because it
++		// forces a `[[Get]]` on those (non-enumerable) trap properties. Spreading
++		// into a plain object only copies own enumerable properties, so it never
++		// touches those traps and stays silent.
++		const viewProps = { ...(this.props as any) };
++		delete viewProps.key;
++		delete viewProps.ref;
+ 
+ 		// If no link handlers or styles, just render children as-is
+ 		if (
+@@ -96,8 +102,10 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
+ 		let elements: Array<string | React.ReactElement> = [];
+ 		let _lastIndex = 0;
+ 
+-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+-		const { ref: _ref, key: _key, ...componentProps } = component.props || {};
++		// See note in render() about why we spread+delete instead of destructuring.
++		const componentProps = { ...(component.props || {}) } as any;
++		delete componentProps.ref;
++		delete componentProps.key;
+ 
+ 		try {
+ 			this.state.linkifyIt
+@@ -159,8 +167,10 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
+ 		let { props: { children } = { children: undefined } } = component || {};
+ 		if (!children) return component;
+ 
+-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+-		const { ref: _ref, key: _key, ...componentProps } = component.props || {};
++		// See note in render() about why we spread+delete instead of destructuring.
++		const componentProps = { ...(component.props || {}) } as any;
++		delete componentProps.ref;
++		delete componentProps.key;
+ 
+ 		return React.cloneElement(
+ 			component,
+@@ -213,10 +223,11 @@ export default class extends Component<HyperlinkProps> {
+ 
+ 	render() {
+ 		const onPress = this.props.onPress ?? this.handleLink;
+-		// Do not forward `key`/`ref` to the inner `Hyperlink` to avoid
+-		// React warning about spreading a props object that contains `key`.
+-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+-		const { key: _key, ref: _ref, ...rest } = this.props as any;
++		// Do not forward `key`/`ref` to the inner `Hyperlink`.
++		// See note in Hyperlink.render() about why we spread+delete instead of destructuring.
++		const rest = { ...(this.props as any) };
++		delete rest.key;
++		delete rest.ref;
+ 		return this.props.linkDefault ? (
+ 			<Hyperlink
+ 				{...rest}

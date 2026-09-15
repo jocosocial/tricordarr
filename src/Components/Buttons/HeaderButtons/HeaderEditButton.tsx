@@ -7,5 +7,5 @@ interface HeaderButtonProps {
 }
 
 export const HeaderEditButton = ({onPress, iconName}: HeaderButtonProps) => {
-  return <Item title={'Edit'} iconName={iconName} onPress={onPress} />;
+  return <Item title={'Edit'} iconName={iconName} onPress={onPress} testID={'headerEdit-headerButton'} />;
 };

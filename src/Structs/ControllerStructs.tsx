@@ -5,8 +5,12 @@ import pluralize from 'pluralize';
 import URLParse from 'url-parse';
 
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {FezType} from '#src/Enums/FezType';
+import {LikeType} from '#src/Enums/LikeType';
+import {ModeratorActionType} from '#src/Enums/ModeratorActionType';
+import {ReportType} from '#src/Enums/ReportType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {createLogger} from '#src/Libraries/Logger';
@@ -221,6 +225,11 @@ export namespace UserNotificationData {
     );
   };
 
+  /**
+   * Unread seamail threads plus chats the user was added to but has not yet viewed.
+   * Combined with LFG and private-event chat unreads for the Seamail bottom-tab badge
+   * (along with privileged-account counts).
+   */
   export const totalNewSeamail = (data?: UserNotificationData) => {
     if (!data) {
       return 0;
@@ -267,8 +276,30 @@ export interface FezPostData {
   timestamp: string;
   /// The image content of the fez post.
   image?: string;
-  /// Emoji reactions grouped by emoji.
-  reactions: ReactionData[];
+  /// Reactions grouped by Unicode emoji or custom emoji token.
+  reactions?: ReactionData[];
+}
+
+/** A reaction and the users who applied it to a post. */
+export interface ReactionData {
+  /// A Unicode emoji or a custom emoji token such as `:arr:`.
+  reaction: string;
+  users: UserHeader[];
+}
+
+export namespace ReactionData {
+  /** Returns whether a user applied a reaction, optionally restricted to one value. */
+  export const hasUserReacted = (reactions: ReactionData[], userID: string, reaction?: string): boolean => {
+    return reactions.some(
+      item => (reaction === undefined || item.reaction === reaction) && item.users.some(user => user.userID === userID),
+    );
+  };
+}
+
+/** Payload for adding or removing a post reaction. */
+export interface PostReactionData {
+  /// A Unicode emoji or a custom emoji token such as `:arr:`.
+  reaction: string;
 }
 
 export interface MembersOnlyData {
@@ -411,6 +442,12 @@ export interface AnnouncementData {
   isDeleted: boolean;
 }
 
+export namespace AnnouncementData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/notification/announcements']];
+  };
+}
+
 export interface DailyThemeData {
   /// The theme's ID Probably only useful for admins in order to edit or delete themes.
   themeID: string;
@@ -425,6 +462,10 @@ export interface DailyThemeData {
 }
 
 export namespace DailyThemeData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/notification/dailythemes']];
+  };
+
   export const getThemeForDay = (cruiseDayIndex: number, cruiseLength: number, dailyThemeData?: DailyThemeData[]) => {
     if (dailyThemeData) {
       let todaysTheme: DailyThemeData | undefined;
@@ -557,6 +598,137 @@ export namespace EventData {
   };
 }
 
+/**
+ * Body for `POST /api/v3/feedback`. Creates or updates the current user's report for an event.
+ */
+export interface EventFeedbackData {
+  /// Sched ICS UID of the event, not the Twitarr eventID. Required by the server today.
+  eventUID?: string;
+  /// Title of the event being reported on. Copied from the schedule Event.
+  eventTitle: string;
+  /// Where the event took place. Copied from Event.location; not a host-editable form field.
+  eventLocation: string;
+  /// Start time of the event. ISO8601.
+  eventTime: string;
+  /// Name of the shadow event host submitting this report.
+  hostName: string;
+  /// Host's estimate of attendance. Free text; do not treat as a number.
+  attendance: string;
+  /// The "How did everything go?" field.
+  recapString: string;
+  /// The "Any issues?" field.
+  issuesString: string;
+}
+
+export namespace EventFeedbackData {
+  export const getCacheKeys = (eventUID?: string, eventID?: string): QueryKey[] => {
+    const keys: QueryKey[] = [['/feedback/eventlist']];
+    if (eventUID) {
+      keys.push([`/feedback/uid/${encodeURIComponent(eventUID)}`]);
+    }
+    if (eventID) {
+      keys.push([`/feedback/id/${eventID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Event lists for the host feedback picker.
+ * Returned by `GET /api/v3/feedback/eventlist`.
+ */
+export interface EventFeedbackSelectionData {
+  /// Events the user has already given feedback on.
+  existingFeedback: EventData[];
+  /// If the user has a Performer record, events for that performer.
+  performerAttached: EventData[];
+  /// If the request included a room filter, events in that room.
+  matchingRoom: EventData[];
+  /// All events eligible for feedback (shadow/workshop that have started).
+  events: EventData[];
+}
+
+export namespace EventFeedbackSelectionData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/feedback/eventlist']];
+  };
+}
+
+/**
+ * Admin-only fields on an event feedback report. NULL for normal users.
+ * Nested in EventFeedbackReport from Swiftarr ControllerStructs.
+ */
+export interface EventFeedbackAdminFields {
+  /// TRUE if an admin has marked this feedback as containing something actionable.
+  actionable: boolean;
+  /// Number of users that have followed the event.
+  followCount: number;
+  /// Forum ID of the event's forum thread.
+  forumID?: string;
+  /// Number of forum posts about this event.
+  forumPostCount: number;
+}
+
+/**
+ * A shadow-event host feedback report.
+ * Returned by `GET /api/v3/admin/feedback/reports` and `GET /api/v3/admin/feedback/report/:report_id`.
+ */
+export interface EventFeedbackReport {
+  /// Database ID for this report. Nil when no report has been filed yet.
+  id?: string;
+  /// Twitarr user that wrote the report.
+  reportingUser: UserHeader;
+  /// Time of the most recent update to this report. ISO8601.
+  reportModDate?: string;
+  /// The event being reported on, when attached to the official schedule.
+  event?: EventData;
+  eventTitle: string;
+  eventLocation: string;
+  /// Start time of the event. ISO8601.
+  eventTime: string;
+  /// Self-reported name of the host from the form.
+  hostName: string;
+  /// Host's estimate of attendance. Free text; do not treat as a number.
+  attendance: string;
+  /// Host's notes on how the event went.
+  recapString: string;
+  /// Any issues the host chose to share.
+  issuesString: string;
+  /// Populated for TwitarrTeam and above.
+  adminFields?: EventFeedbackAdminFields;
+}
+
+export namespace EventFeedbackReport {
+  export const getCacheKeys = (feedbackID?: string): QueryKey[] => {
+    const keys: QueryKey[] = [['/admin/feedback/reports']];
+    if (feedbackID) {
+      keys.push([`/admin/feedback/report/${feedbackID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Statistics on shadow events and feedback reports.
+ * Returned by `GET /api/v3/admin/feedback/stats`.
+ */
+export interface EventFeedbackStats {
+  /// How many events of type shadow or workshop are on the schedule.
+  totalShadowEvents: number;
+  /// How many shadow events have completed.
+  completedShadowEvents: number;
+  /// How many feedback reports have been received. The same event may have multiple reports.
+  totalFeedbackReports: number;
+  /// How many shadow events have at least one report.
+  uniqueEventsWithFeedback: number;
+}
+
+export namespace EventFeedbackStats {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/admin/feedback/stats']];
+  };
+}
+
 export interface UserProfileUploadData {
   /// Basic info about the user--their ID, username, displayname, and avatar image. May be nil on POST.
   header?: UserHeader;
@@ -650,6 +822,23 @@ export interface RegistrationCodeUserData {
   users: UserHeader[];
   /// The registration code associated with this account. If this account doesn't have an associated regcode, will be the empty string.
   regCode: string;
+  /// TRUE if this reg code was created to get allocated to a Discord user for the purpose of creating an account on the pre-prod server.
+  isForDiscordUser: boolean;
+  /// If this reg code has been allocated to a Discord user, the name of the user. Nil if not a Discord regcode or if not yet allocated.
+  discordUsername?: string;
+  /// TRUE if this account already used its registration code for password recovery.
+  hasUsedRegCodeForPasswordRecovery: boolean;
+  /// Account creation time of the primary user. Nil if the code has not been used to create an account.
+  accountCreatedAt?: string;
+}
+
+export namespace RegistrationCodeUserData {
+  export const getCacheKeys = (userID?: string): QueryKey[] => {
+    if (userID) {
+      return [[`/admin/regcodes/findbyuser/${userID}`]];
+    }
+    return [['/admin/regcodes/findbyuser']];
+  };
 }
 
 export interface ImageUploadData {
@@ -741,28 +930,6 @@ export interface ForumData {
   isPinned?: boolean;
 }
 
-export interface ReactionData {
-  emoji: string;
-  users: UserHeader[];
-}
-
-export namespace ReactionData {
-  export const hasUserReacted = (reactions: ReactionData[], userID: string, emoji?: string): boolean => {
-    return reactions.some(reaction => {
-      if (emoji && reaction.emoji !== emoji) {
-        return false;
-      }
-      return reaction.users.some(user => user.userID === userID);
-    });
-  };
-
-  export const getUserEmojis = (reactions: ReactionData[], userID: string): string[] => {
-    return reactions
-      .filter(reaction => reaction.users.some(user => user.userID === userID))
-      .map(reaction => reaction.emoji);
-  };
-}
-
 export interface PostData {
   /// The ID of the post.
   postID: number;
@@ -776,8 +943,12 @@ export interface PostData {
   images?: string[];
   /// Whether the current user has bookmarked the post.
   isBookmarked: boolean;
-  /// Emoji reactions grouped by emoji.
-  reactions: ReactionData[];
+  /// The current user's `LikeType` reaction on the post.
+  userLike?: LikeType;
+  /// The total number of `LikeType` reactions on the post.
+  likeCount: number;
+  /// Reactions grouped by Unicode emoji or custom emoji token.
+  reactions?: ReactionData[];
   /// Whether the post has been pinned to the forum.
   isPinned?: boolean;
 }
@@ -804,7 +975,7 @@ export interface PostDetailData {
   /// The ID of the post.
   postID: number;
   /// The ID of the Forum containing the post.
-  forumID: number;
+  forumID: string;
   /// The timestamp of the post.
   createdAt: string;
   /// The post's author.
@@ -815,13 +986,31 @@ export interface PostDetailData {
   images?: string[];
   /// Whether the current user has bookmarked the post.
   isBookmarked: boolean;
-  /// Emoji reactions grouped by emoji.
-  reactions: ReactionData[];
+  /// The current user's `LikeType` reaction on the post.
+  userLike?: LikeType;
+  /// The users with "laugh" reactions on the post.
+  laughs: UserHeader[];
+  /// The users with "like" reactions on the post.
+  likes: UserHeader[];
+  /// The users with "love" reactions on the post.
+  loves: UserHeader[];
+  /// Reactions grouped by Unicode emoji or custom emoji token.
+  reactions?: ReactionData[];
 }
 
 export namespace PostDetailData {
-  export const hasUserReacted = (postData: PostDetailData, userHeader: UserHeader, emoji?: string) => {
-    return ReactionData.hasUserReacted(postData.reactions, userHeader.userID, emoji);
+  export const hasUserReacted = (postData: PostDetailData, userID: string, likeType?: LikeType) => {
+    if (!likeType) {
+      return !!postData.userLike;
+    }
+    switch (likeType) {
+      case LikeType.like:
+        return postData.likes.flatMap(uh => uh.userID).includes(userID);
+      case LikeType.laugh:
+        return postData.laughs.flatMap(uh => uh.userID).includes(userID);
+      case LikeType.love:
+        return postData.loves.flatMap(uh => uh.userID).includes(userID);
+    }
   };
 }
 
@@ -856,7 +1045,7 @@ export interface PhotostreamImageData {
   /// The schedule event this image was tagged with, if any. Stream photos will be tagged with either an event or a location.
   event?: EventData;
   /// The boat location this image was tagged with, if any. Value will be a raw string from  `PhotoStreamBoatLocation` or nil.  Stream photos will be tagged with either an event or a location.
-  location: string;
+  location?: string;
 }
 
 export namespace PhotostreamImageData {
@@ -1073,6 +1262,12 @@ export interface TimeZoneChangeData {
   currentOffsetSeconds: number;
 }
 
+export namespace TimeZoneChangeData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/admin/timezonechanges']];
+  };
+}
+
 /// Parameters for the game recommender engine. Pass these values in, get back a `BoardgameResponseData` with a
 /// list of games filtered to match the criteria, and sorted based on how well they match the criteria. The sort takes into account each games'
 /// overall rating from BGG, the recommended number of players (not just min and max allowed players), the average playtime,
@@ -1204,6 +1399,89 @@ export namespace BoardgameData {
   };
 }
 
+/// Used to return a list of hunts.
+/// We probably don't have enough of them to require a paginator for now.
+/// Returned by:
+/// * `GET /api/v3/hunts`
+export interface HuntListData {
+  hunts: HuntListItemData[];
+}
+
+export namespace HuntListData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/hunts']];
+  };
+}
+
+export interface HuntListItemData {
+  huntID: string;
+  title: string;
+  description: string;
+}
+
+/// Used to return a single hunt in as much detail as the caller can see.
+/// For example, it only includes the currently unlocked puzzles, and puzzles
+/// only have their answer field set if the user is logged in and has solved them.
+/// Returned by:
+/// * `GET /api/v3/hunts/:huntID`
+/// * `GET /api/v3/hunts/:huntID/admin`
+export interface HuntData {
+  huntID: string;
+  title: string;
+  description: string;
+  /// For solvers, only contains puzzles which are unlocked
+  puzzles: HuntPuzzleData[];
+  /// If any puzzles are locked, the time of the next one to unlock.
+  nextUnlockTime?: string;
+}
+
+export namespace HuntData {
+  export const getCacheKeys = (huntID?: string): QueryKey[] => {
+    const keys = HuntListData.getCacheKeys();
+    if (huntID) {
+      keys.push([`/hunts/${huntID}`]);
+      keys.push([`/hunts/${huntID}/admin`]);
+    }
+    return keys;
+  };
+}
+
+export interface HuntPuzzleData {
+  puzzleID: string;
+  title: string;
+  body: string;
+  /// The answer to this puzzle, if you have solved it or are using the admin interface.
+  answer?: string;
+  unlockTime?: string;
+  /// Only set if fetched via the admin interface
+  hints?: Record<string, string>;
+}
+
+/// A single puzzle, including (if you're logged in) all of your callin attempts on it.
+/// Returned by:
+/// * `GET /api/v3/hunts/puzzles/:puzzleID`
+export interface HuntPuzzleDetailData {
+  huntID: string;
+  huntTitle: string;
+  puzzleID: string;
+  title: string;
+  body: string;
+  /// Will be sorted in ascending order by creationTime.
+  /// The puzzle is solved if any of these have "correct" set.
+  callIns: HuntPuzzleCallInResultData[];
+}
+
+export interface HuntPuzzleCallInResultData {
+  /// ISO 8601 date string.
+  creationTime: string;
+  /// What the user called in, without normalization
+  rawSubmission: string;
+  /// If the callin was correct, this will be the canonical form of the answer.
+  correct?: string;
+  /// If the answer wasn't correct but matched a configured hint, this is the nudge.
+  hint?: string;
+}
+
 /// Used to create and update Performer models.
 ///
 /// Used by: `POST /api/v3/performer/forEvent/:event_id`
@@ -1265,6 +1543,10 @@ export interface ClientSettingsData {
   minAccessLevel: string;
   /// Maximum number of images allowed per forum post.
   maxForumPostImages: number;
+  /// Maximum size of a single uploaded image, in bytes.
+  maxImageSize: number;
+  /// Minimum seconds between photostream uploads. 0 disables the cooldown. Default 300.
+  photostreamUploadRateLimit?: number;
   /// Unique identifier for this Postgres database installation (from pg_control_system())
   installationID: string;
 }
@@ -1331,4 +1613,380 @@ export interface CurrentUserData {
   accessLevel: UserAccessLevel;
   /// A list of the user's roles
   roles: UserRoleType[];
+}
+
+export interface ReportModerationData {
+  /// The id of the report.
+  id: string;
+  /// The type of content being reported.
+  type: ReportType;
+  /// The ID of the reported entity. Could resolve to an Int or a UUID, depending on `type`.
+  reportedID: string;
+  /// The user that authored the content being reported.
+  reportedUser: UserHeader;
+  /// Text the report author wrote when submitting the report.
+  submitterMessage?: string;
+  /// The user that submitted the report, not the author of the reported content.
+  author: UserHeader;
+  /// The mod who handled (or closed) the report.
+  handledBy?: UserHeader;
+  /// TRUE if the report has been closed by moderators.
+  isClosed: boolean;
+  /// The time the submitter filed the report.
+  creationTime: string;
+  /// The last time the report has been modified.
+  updateTime: string;
+}
+
+export namespace ReportModerationData {
+  export const getCacheKeys = (): QueryKey[] => {
+    const keys: QueryKey[] = [['/mod/reports']];
+    return keys.concat(UserNotificationData.getCacheKeys());
+  };
+}
+
+/**
+ * Previous edit of a twarrt or forum post. The saved edit is the state BEFORE the editor changed it.
+ */
+export interface PostEditLogData {
+  /// The ID of the post. Depending on context, a twarrtID or a forumPostID.
+  postID: number;
+  /// The ID of the edit.
+  editID: string;
+  /// The timestamp of the edit.
+  createdAt: string;
+  /// Who initiated the edit. Usually the post author, but could be a moderator.
+  author: UserHeader;
+  /// The text of the post before this edit.
+  text: string;
+  /// The filenames of the post's optional images before this edit.
+  images?: string[];
+}
+
+/**
+ * Previous edit of a forum title or category.
+ */
+export interface ForumEditLogData {
+  /// The ID of the forum.
+  forumID: string;
+  /// The ID of the edit.
+  editID: string;
+  /// The timestamp of the edit.
+  createdAt: string;
+  /// Who initiated the edit.
+  author: UserHeader;
+  /// The title of the forum just BEFORE this edit.
+  title: string;
+  /// The category the forum was in just BEFORE this edit.
+  categoryID?: string;
+}
+
+/**
+ * Previous edit of a fez title, info, or location.
+ */
+export interface FezEditLogData {
+  /// The ID of the fez.
+  fezID: string;
+  /// The ID of the edit.
+  editID: string;
+  /// The timestamp of the edit.
+  createdAt: string;
+  /// Who initiated the edit.
+  author: UserHeader;
+  /// The title of the fez just before this edit.
+  title: string;
+  /// The info field just before this edit.
+  info: string;
+  /// The location field just before this edit.
+  location: string;
+}
+
+/**
+ * Previous edit of a user profile. Either `profileData` or `profileImage` is populated.
+ */
+export interface ProfileEditLogData {
+  editID: string;
+  createdAt: string;
+  author: UserHeader;
+  profileData?: UserProfileUploadData;
+  profileImage?: string;
+}
+
+/**
+ * Data a moderator needs to review a forum post.
+ * Returned by `GET /api/v3/mod/forumpost/:id`
+ */
+export interface ForumPostModerationData {
+  forumPost: PostDetailData;
+  isDeleted: boolean;
+  moderationStatus: ContentModerationStatus;
+  edits: PostEditLogData[];
+  reports: ReportModerationData[];
+}
+
+export namespace ForumPostModerationData {
+  export const getCacheKeys = (postID?: string, forumID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys();
+    if (postID) {
+      keys.push([`/mod/forumpost/${postID}`]);
+      keys.push([`/forum/post/${postID}`]);
+      keys.push([`/forum/post/${postID}/forum`]);
+    }
+    if (forumID) {
+      keys.push([`/forum/${forumID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Data a moderator needs to review a forum thread.
+ * Returned by `GET /api/v3/mod/forum/:id`
+ */
+export interface ForumModerationData {
+  forumID: string;
+  categoryID: string;
+  creator: UserHeader;
+  title: string;
+  createdAt: string;
+  moderationStatus: ContentModerationStatus;
+  isDeleted: boolean;
+  edits: ForumEditLogData[];
+  reports: ReportModerationData[];
+}
+
+export namespace ForumModerationData {
+  /**
+   * Query keys to invalidate after a forum-thread moderation mutation.
+   * Includes the category index and, when `categoryID` is set, the
+   * per-category thread list used by ForumCategoryScreen.
+   */
+  export const getCacheKeys = (forumID?: string, categoryID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys().concat([['/forum/categories']]);
+    if (forumID) {
+      keys.push([`/mod/forum/${forumID}`]);
+      keys.push([`/forum/${forumID}`]);
+    }
+    if (categoryID) {
+      keys.push([`/forum/categories/${categoryID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Data a moderator needs to review a fez (LFG or seamail).
+ * Returned by `GET /api/v3/mod/fez/:id`
+ */
+export interface FezModerationData {
+  /// The fez in question, with quarantine masking overridden so moderators see the real text.
+  fez: FezData;
+  isDeleted: boolean;
+  moderationStatus: ContentModerationStatus;
+  edits: FezEditLogData[];
+  reports: ReportModerationData[];
+}
+
+export namespace FezModerationData {
+  /**
+   * Query keys to invalidate after a fez moderation mutation.
+   * Includes the four fez list endpoints used by LFG, seamail, and
+   * private-event screens, matching `useFezCacheReducer` prefixes.
+   */
+  export const getCacheKeys = (fezID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys().concat([
+      ['/fez/joined'],
+      ['/fez/owner'],
+      ['/fez/open'],
+      ['/fez/former'],
+    ]);
+    if (fezID) {
+      keys.push([`/mod/fez/${fezID}`]);
+      keys.push([`/fez/${fezID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Data a moderator needs to review a fez post. Fez posts cannot be edited.
+ * Returned by `GET /api/v3/mod/fezpost/:id`
+ */
+export interface FezPostModerationData {
+  fezPost: FezPostData;
+  fezID: string;
+  fezType: FezType;
+  isDeleted: boolean;
+  moderationStatus: ContentModerationStatus;
+  reports: ReportModerationData[];
+}
+
+export namespace FezPostModerationData {
+  export const getCacheKeys = (postID?: string, fezID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys();
+    if (postID) {
+      keys.push([`/mod/fezpost/${postID}`]);
+    }
+    if (fezID) {
+      keys.push([`/fez/${fezID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Data a moderator needs to review a user profile.
+ * Returned by `GET /api/v3/mod/profile/:id`
+ */
+export interface ProfileModerationData {
+  profile: UserProfileUploadData;
+  moderationStatus: ContentModerationStatus;
+  edits: ProfileEditLogData[];
+  reports: ReportModerationData[];
+}
+
+export namespace ProfileModerationData {
+  export const getCacheKeys = (userID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys();
+    if (userID) {
+      keys.push([`/mod/profile/${userID}`]);
+      keys.push([`/users/${userID}/profile`]);
+    }
+    return keys.concat(UserHeader.getCacheKeys());
+  };
+}
+
+/**
+ * Data a moderator needs to review a user account (access level, temp ban, reports).
+ * Returned by `GET /api/v3/mod/user/:id`
+ */
+export interface UserModerationData {
+  header: UserHeader;
+  subAccounts: UserHeader[];
+  accessLevel: UserAccessLevel;
+  tempQuarantineEndTime?: string;
+  reports: ReportModerationData[];
+}
+
+export namespace UserModerationData {
+  export const getCacheKeys = (userID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys();
+    if (userID) {
+      keys.push([`/mod/user/${userID}`]);
+    }
+    return keys.concat(UserHeader.getCacheKeys());
+  };
+}
+
+/**
+ * Data a moderator needs to review a photostream photo.
+ * Returned by `GET /api/v3/mod/photostream/:id`
+ */
+export interface PhotostreamModerationData {
+  photo: PhotostreamImageData;
+  isDeleted: boolean;
+  moderationStatus: ContentModerationStatus;
+  reports: ReportModerationData[];
+}
+
+export namespace PhotostreamModerationData {
+  export const getCacheKeys = (photoID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys().concat(PhotostreamImageData.getCacheKeys());
+    if (photoID) {
+      keys.push([`/mod/photostream/${photoID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * Private event as returned by the moderation API.
+ * Returned inside `PersonalEventModerationData`.
+ */
+export interface PersonalEventData {
+  personalEventID: string;
+  title: string;
+  description?: string;
+  startTime: string;
+  endTime: string;
+  timeZone: string;
+  timeZoneID: string;
+  location?: string;
+  lastUpdateTime: string;
+  owner: UserHeader;
+  participants: UserHeader[];
+}
+
+/**
+ * Data a moderator needs to review a private event.
+ * Returned by `GET /api/v3/mod/privateevent/:id`
+ */
+export interface PersonalEventModerationData {
+  personalEvent: PersonalEventData;
+  isDeleted: boolean;
+  moderationStatus: ContentModerationStatus;
+  reports: ReportModerationData[];
+}
+
+export namespace PersonalEventModerationData {
+  export const getCacheKeys = (eventID?: string): QueryKey[] => {
+    const keys = ReportModerationData.getCacheKeys();
+    if (eventID) {
+      keys.push([`/mod/privateevent/${eventID}`]);
+      keys.push([`/fez/${eventID}`]);
+    }
+    return keys;
+  };
+}
+
+/**
+ * A Micro Karaoke clip as returned to moderators.
+ * Returned by `GET /api/v3/mod/microkaraoke/snippets/:song_id`
+ */
+export interface MicroKaraokeSnippetModeration {
+  snippetID: string;
+  songID: number;
+  snippetIndex: number;
+  user: UserHeader;
+  videoURL?: string;
+}
+
+export namespace MicroKaraokeCompletedSong {
+  export const getModerationCacheKeys = (songID?: number): QueryKey[] => {
+    const keys: QueryKey[] = [['/mod/microkaraoke/songlist']];
+    if (songID !== undefined) {
+      keys.push([`/mod/microkaraoke/song/${songID}`]);
+      keys.push([`/mod/microkaraoke/snippets/${songID}`]);
+    }
+    return keys.concat(ReportModerationData.getCacheKeys());
+  };
+}
+
+/**
+ * One logged use of moderator powers.
+ * Included in `ModeratorActionLogResponseData`.
+ */
+export interface ModeratorActionLogData {
+  id: string;
+  actionType: ModeratorActionType;
+  contentType: ReportType;
+  contentID: string;
+  timestamp: string;
+  moderator: UserHeader;
+  targetUser: UserHeader;
+}
+
+/**
+ * Paginated moderator action log.
+ * Returned by `GET /api/v3/mod/moderationlog`
+ */
+export interface ModeratorActionLogResponseData {
+  actions: ModeratorActionLogData[];
+  paginator: Paginator;
+}
+
+export namespace ModeratorActionLogResponseData {
+  export const getCacheKeys = (): QueryKey[] => {
+    return [['/mod/moderationlog']];
+  };
 }

@@ -87,6 +87,7 @@ export const FeatureSettingsScreen = () => {
               <View>
                 <BooleanField
                   name={'enableExperiments'}
+                  testID={'enableExperiments-switch'}
                   label={'Enable Experiments'}
                   helperText={
                     'Enable experimental features in this app that are not yet ready for general consumption. This will almost certainly void your non-existent warranty.'

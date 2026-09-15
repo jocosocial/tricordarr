@@ -2,9 +2,9 @@ import React from 'react';
 
 import {SecretHeaderTitle} from '#src/Components/Navigation/SecretHeaderTitle';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
-import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
-import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
-import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
+import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 
 export const OobeServerHeaderTitle = () => {
   const {oobeFinish} = useOobe();

@@ -114,7 +114,12 @@ const AppFlashListInner = <TItem,>(
         masonry={masonry}
       />
       {effectiveScrollButton && showScrollButton && (
-        <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} small={scrollButtonSmall} />
+        <FloatingScrollButton
+          testID={'flashListScroll-button'}
+          icon={AppIcons.scrollUp}
+          onPress={handleScrollButtonPress}
+          small={scrollButtonSmall}
+        />
       )}
     </View>
   );

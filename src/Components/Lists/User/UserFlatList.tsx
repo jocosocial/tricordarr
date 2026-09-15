@@ -1,13 +1,10 @@
 import React, {useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
-import {Divider} from 'react-native-paper';
 
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
-import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
-import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
-import {UserListItemSwipeable} from '#src/Components/Swipeables/UserListItemSwipeable';
+import {UserFlatListItem} from '#src/Components/Lists/Items/UserFlatListItem';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {type UserRelationMode} from '#src/Queries/Users/UserRelationConstants';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -31,53 +28,30 @@ export const UserFlatList = ({
   swipeableMode,
 }: UserFlatListProps) => {
   const {enableSelection, setEnableSelection, selectedItems} = useSelection();
-
-  const getListSeparator = useCallback(() => {
-    if (userHeaders.length > 0) {
-      return <Divider bold={true} />;
-    }
-    return <></>;
-  }, [userHeaders.length]);
+  const {getListSeparator, getListHeader: getDividerHeader, getListFooter} = useAppFlashList({data: userHeaders});
 
   const renderItem = useCallback(
-    ({item}: {item: UserHeader}) => {
-      const selected = selectedItems.some(s => s.id === item.userID);
-      const listItem = (
-        <UserListItem
-          userHeader={item}
-          onPress={() => onUserPress(item)}
-          enableSelection={enableSelection}
-          setEnableSelection={setEnableSelection}
-          selected={selected}
-        />
-      );
-      if (swipeableMode) {
-        return (
-          <UserListItemSwipeable userHeader={item} mode={swipeableMode} enabled={!enableSelection}>
-            {listItem}
-          </UserListItemSwipeable>
-        );
-      }
-      return listItem;
-    },
+    ({item}: {item: UserHeader}) => (
+      <UserFlatListItem
+        userHeader={item}
+        onPress={onUserPress}
+        swipeableMode={swipeableMode}
+        enableSelection={enableSelection}
+        setEnableSelection={setEnableSelection}
+        selected={selectedItems.some(s => s.id === item.userID)}
+      />
+    ),
     [onUserPress, swipeableMode, enableSelection, setEnableSelection, selectedItems],
   );
-
-  const getListFooter = useCallback(() => {
-    if (userHeaders.length > 0) {
-      return <EndResultsFooter />;
-    }
-    return <NoResultsFooter />;
-  }, [userHeaders.length]);
 
   const getListHeader = useCallback(() => {
     return (
       <>
         {renderListHeader()}
-        {userHeaders.length > 0 && <Divider bold={true} />}
+        {getDividerHeader()}
       </>
     );
-  }, [renderListHeader, userHeaders.length]);
+  }, [renderListHeader, getDividerHeader]);
 
   return (
     <AppFlashList<UserHeader>

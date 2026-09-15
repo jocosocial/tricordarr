@@ -1,4 +1,4 @@
-import notifee, {EventType, Notification, NotificationPressAction} from '@notifee/react-native';
+import notifee, {EventType, Notification, NotificationPressAction} from 'react-native-notify-kit';
 
 import {PressAction} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';
@@ -14,6 +14,8 @@ import {
   serviceChannel,
 } from '#src/Libraries/Notifications/Channels';
 import {generateContentNotification} from '#src/Libraries/Notifications/Content';
+import {getPath} from '#src/Libraries/RouteDefinitions';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('SocketNotification.ts');
@@ -130,14 +132,14 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
     case NotificationTypeData.personalEventStarting:
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
-      title = 'Personal Event Starting';
+      title = 'Private Event Starting';
       url = `/privateevent/${notificationData.contentID}`;
       break;
     case NotificationTypeData.addedToPrivateEvent:
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
       title = 'Added to Private Event';
-      url = `/privateevent/${notificationData.contentID}`;
+      url = `/privateevent/${notificationData.contentID}/chat`;
       break;
     case NotificationTypeData.addedToLFG:
       channel = lfgChannel;
@@ -167,7 +169,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
       title = 'New Private Event Message';
-      url = `/privateevent/${notificationData.contentID}`;
+      url = `/privateevent/${notificationData.contentID}/chat`;
       break;
     default:
       logger.warn(`Ignoring event of type ${notificationType}`);
@@ -226,7 +228,7 @@ export const getUrlForNotificationEvent = (
         return;
       }
       case PressAction.worker: {
-        return '/settings/serverconnectionsettingsscreen';
+        return `/${getPath(SettingsStackScreenComponents.backgroundConnectionSettings)}`;
       }
       case PressAction.contentSettings: {
         const baseUrl = '/settings/pushnotifications';

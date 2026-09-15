@@ -10,6 +10,15 @@ import NetworkExtension
 import os
 import UserNotifications
 
+/// Mirrors the states shown on the Android side's `WebSocketState` enum (`src/Libraries/Network/Websockets.ts`).
+enum WebsocketConnectionState: String {
+	case uninitialized = "Uninitialized"
+	case connecting = "Connecting"
+	case open = "Open"
+	case closing = "Closing"
+	case closed = "Closed"
+}
+
 public class WebsocketNotifier: NSObject {
 	public var pushProvider: NEAppPushProvider?  // NULL if notifier is being used in-app @TODO LocalPushProvider
 	var session: URLSession?
@@ -37,6 +46,37 @@ public class WebsocketNotifier: NSObject {
 
 	deinit {
     self.logger.log("[WebsocketNotifier.swift] de-init. inApp: \(self.isInApp)")
+	}
+
+	// MARK: - Socket Status Persistence
+
+	static let appGroupSuiteName = "group.com.grantcohoe.tricordarr"
+
+	private static let iso8601Formatter: ISO8601DateFormatter = {
+		let formatter = ISO8601DateFormatter()
+		formatter.formatOptions.insert(.withFractionalSeconds)
+		return formatter
+	}()
+
+	/// Persists the socket's connection state and/or healthcheck (ping) results to the shared App Group
+	/// `UserDefaults` suite so the main app process can read it regardless of whether the extension or the
+	/// in-app provider currently owns the socket. Only one `WebsocketNotifier` runs at a time, so a single
+	/// shared record of "current socket status" is sufficient.
+	private func persistSocketStatus(
+		state: WebsocketConnectionState? = nil, healthcheckSuccess: Bool? = nil, error: String? = nil
+	) {
+		guard let defaults = UserDefaults(suiteName: Self.appGroupSuiteName) else { return }
+		if let state = state {
+			defaults.set(state.rawValue, forKey: "ws_state")
+		}
+		if let healthcheckSuccess = healthcheckSuccess {
+			defaults.set(healthcheckSuccess, forKey: "ws_last_healthcheck_success")
+			defaults.set(Self.iso8601Formatter.string(from: Date()), forKey: "ws_last_healthcheck_at")
+		}
+		if let error = error {
+			defaults.set(error, forKey: "ws_last_error")
+			defaults.set(Self.iso8601Formatter.string(from: Date()), forKey: "ws_last_error_at")
+		}
 	}
 
 	/// Parses an ISO8601 date string (with or without fractional seconds) for mute-until. Returns nil if unparseable.
@@ -145,6 +185,7 @@ public class WebsocketNotifier: NSObject {
 		}
 
 		self.logger.log("[WebsocketNotifier.swift] Opening socket to \(twitarrURL.absoluteString, privacy: .public)")
+		persistSocketStatus(state: .connecting)
 		var request = URLRequest(url: twitarrURL, cachePolicy: .useProtocolCachePolicy)
 		request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
@@ -374,7 +415,7 @@ public class WebsocketNotifier: NSObject {
 
 		if sendNotification {
 			Notifications.generateContentNotification(
-				UUID(),
+				socketNotification.contentID,
 				title: title,
 				body: socketNotification.info,
 				type: socketNotification.type,
@@ -395,6 +436,7 @@ public class WebsocketNotifier: NSObject {
 					self.logger.error(
 						"[WebsocketNotifier.swift] Error during websocket receive: \(error.localizedDescription, privacy: .public)"
 					)
+					self.persistSocketStatus(state: .closed, error: error.localizedDescription)
 					socket.cancel(with: .goingAway, reason: nil)
 					self.socket = nil
 					self.session?.finishTasksAndInvalidate()
@@ -514,6 +556,7 @@ public class WebsocketNotifier: NSObject {
 				body: "In-app push provider has stopped."
 			)
 		}
+		persistSocketStatus(state: .closed)
 		socket?.cancel(with: .goingAway, reason: nil)
 		socket = nil
 		session?.finishTasksAndInvalidate()
@@ -557,9 +600,13 @@ public class WebsocketNotifier: NSObject {
 						.error(
 							"[WebsocketNotifier.swift] Error during ping to server: \(err.localizedDescription, privacy: .public)"
 						)
+					self?.persistSocketStatus(healthcheckSuccess: false, error: err.localizedDescription)
 					self?.socket?.cancel(with: .goingAway, reason: nil)
 					self?.socket = nil
 					self?.start()
+				}
+				else {
+					self?.persistSocketStatus(healthcheckSuccess: true)
 				}
 			}
 	}
@@ -615,6 +662,7 @@ extension WebsocketNotifier: URLSessionWebSocketDelegate {
     self.logger.log(
       "[WebsocketNotifier.swift] Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public) to \(debugUrl, privacy: .public)"
 		)
+		persistSocketStatus(state: .open)
 	}
 
 	public func urlSession(
@@ -624,6 +672,7 @@ extension WebsocketNotifier: URLSessionWebSocketDelegate {
 		reason: Data?
 	) {
     self.logger.log("[WebsocketNotifier.swift] Socket closed with code: \(didCloseWith.rawValue)")
+		persistSocketStatus(state: .closed)
 		socket?.cancel(with: .goingAway, reason: nil)
 		socket = nil
 	}

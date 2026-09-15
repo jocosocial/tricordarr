@@ -8,14 +8,16 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
+import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezForm} from '#src/Hooks/useFezForm';
+import {useFezForm} from '#src/Hooks/Fez/useFezForm';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
-import {HelpScreenComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {HelpScreenComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
@@ -29,14 +31,16 @@ interface FezEditScreenBaseProps {
   renderForm: (props: FezEditScreenBaseFormProps) => React.ReactNode;
   helpScreen?: HelpScreenComponents;
   screenTitle?: string;
+  intent?: 'moderate';
 }
 
-export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: FezEditScreenBaseProps) => {
+export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle, intent}: FezEditScreenBaseProps) => {
   const navigation = useCommonStack();
   const updateMutation = useFezUpdateMutation();
-  const {updateFez} = useFezCacheReducer();
+  const {updateFez, updateFezModeration} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
   const {getInitialValuesFromFez} = useFezForm();
+  const {data: profilePublicData} = useUserProfileQuery();
 
   const getNavButtons = useCallback(() => {
     if (helpScreen === undefined) return undefined;
@@ -60,6 +64,10 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
     navigation.setOptions(options);
   }, [navigation, screenTitle, helpScreen, getNavButtons]);
 
+  /**
+   * Submit the edited fez, then patch fez caches and (when launched from
+   * the moderate screen) the fez moderation cache before going back.
+   */
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     const {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);
 
@@ -81,6 +89,9 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
       {
         onSuccess: response => {
           updateFez(fez.fezID, response.data);
+          if (intent === 'moderate' && profilePublicData) {
+            updateFezModeration(fez.fezID, fez, response.data, profilePublicData.header);
+          }
           dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
           navigation.goBack();
         },
@@ -93,6 +104,7 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle}: Fe
 
   return (
     <AppView>
+      <TimezoneWarningView />
       <ScrollingContentView isStack={true}>
         {fez.cancelled && <FezCanceledView update={true} fezType={fez.fezType} />}
         <PaddedContentView padTop={true}>{renderForm({onSubmit, initialValues})}</PaddedContentView>

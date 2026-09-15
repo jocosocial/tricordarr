@@ -24,6 +24,7 @@ export const ScheduleHeaderDayButton = (props: ScheduleHeaderDayViewProps) => {
       primaryText={format(props.cruiseDay.date, 'EEE')}
       secondaryText={format(props.cruiseDay.date, 'MMM dd')}
       underlinePrimary={isToday}
+      testID={`scheduleHeaderDay${props.cruiseDay.cruiseDay}-button`}
     />
   );
 };

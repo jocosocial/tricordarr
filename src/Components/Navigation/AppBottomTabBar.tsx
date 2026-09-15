@@ -1,12 +1,25 @@
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
-import {CommonActions} from '@react-navigation/native';
+import {CommonActions, NavigationState} from '@react-navigation/native';
 import {View} from 'react-native';
 import {BottomNavigation} from 'react-native-paper';
 
 import {useLayout} from '#src/Context/Contexts/LayoutContext';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {createLogger} from '#src/Libraries/Logger';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 const logger = createLogger('AppBottomTabBar.tsx');
+
+/**
+ * Walk nested navigator state to the leaf route currently on screen.
+ */
+const getFocusedRouteName = (state: NavigationState): string => {
+  const route = state.routes[state.index];
+  if (route.state) {
+    return getFocusedRouteName(route.state as NavigationState);
+  }
+  return route.name;
+};
 
 /**
  * Holy fuck what a regression this was.
@@ -25,6 +38,7 @@ const logger = createLogger('AppBottomTabBar.tsx');
  */
 export const AppBottomTabBar = (props: BottomTabBarProps) => {
   const {footerHeight} = useLayout();
+  const {setSnackbarPayload} = useSnackbar();
 
   return (
     <View
@@ -38,6 +52,15 @@ export const AppBottomTabBar = (props: BottomTabBarProps) => {
         navigationState={props.state}
         safeAreaInsets={props.insets}
         onTabPress={({route, preventDefault}) => {
+          if (getFocusedRouteName(props.state) === CommonStackComponents.recoveryKeyScreen) {
+            preventDefault();
+            setSnackbarPayload({
+              message: 'Please acknowledge that you have saved your recovery key.',
+              messageType: 'info',
+            });
+            return;
+          }
+
           const event = props.navigation.emit({
             type: 'tabPress',
             target: route.key,

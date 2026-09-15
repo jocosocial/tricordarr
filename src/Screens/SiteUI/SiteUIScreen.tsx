@@ -2,7 +2,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {SiteUIScreenBase} from '#src/Screens/SiteUI/SiteUIScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.siteUIScreen>;

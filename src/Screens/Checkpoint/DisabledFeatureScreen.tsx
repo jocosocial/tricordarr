@@ -6,6 +6,7 @@ import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {isIOS} from '#src/Libraries/Platform/Detection';
+import {joinUrl} from '#src/Libraries/UrlParser';
 import {SiteUIScreenBase} from '#src/Screens/SiteUI/SiteUIScreenBase';
 
 interface Props extends PropsWithChildren {
@@ -45,7 +46,7 @@ export const DisabledFeatureScreen = (props: Props) => {
 
     // .tricordarr and not .swiftarr: return SiteUIScreenBase
     if (props.urlPath && isDisabledForTricordarr && !isDisabledForSwiftarr) {
-      return <SiteUIScreenBase initialUrl={`${serverUrl}/${props.urlPath}`} />;
+      return <SiteUIScreenBase initialUrl={joinUrl(serverUrl, props.urlPath)} />;
     }
 
     // .tricordarr and .swiftarr and not .kraken: return KrakenView

@@ -1,6 +1,5 @@
 import React, {PropsWithChildren, useCallback} from 'react';
 import {Linking} from 'react-native';
-import URLParse from 'url-parse';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
@@ -9,8 +8,8 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {createLogger} from '#src/Libraries/Logger';
 import {isNavigationReady, push} from '#src/Libraries/NavigationRef';
 import {isEmulator, isIOS} from '#src/Libraries/Platform/Detection';
-import {findRouteByScreen, pushableRoutes} from '#src/Libraries/RouteDefinitions';
-import {extractPathFromTricordarrUrl, parseDeepLinkUrl} from '#src/Libraries/UrlParser';
+import {findRouteByScreen, parseDeepLinkUrl, pushableRoutes} from '#src/Libraries/RouteDefinitions';
+import {appUrl, extractPathFromTricordarrUrl, extractPathFromWebUrl, isTwitarrUrl} from '#src/Libraries/UrlParser';
 
 const logger = createLogger('LinkingProvider.tsx');
 
@@ -27,9 +26,9 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
    * Falls back to Linking.openURL() if the URL can't be parsed or navigation isn't ready.
    */
   const openAppUrl = useCallback(
-    (appUrl: string, queryParams?: Record<string, string | number | boolean>) => {
+    (targetUrl: string, queryParams?: Record<string, string | number | boolean>) => {
       // Build URL with query parameters if provided
-      let finalUrl = appUrl;
+      let finalUrl = targetUrl;
       if (queryParams && Object.keys(queryParams).length > 0) {
         const queryString = Object.entries(queryParams)
           .map(([key, value]) => {
@@ -38,7 +37,7 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
             return `${encodeURIComponent(key)}=${encodeURIComponent(stringValue)}`;
           })
           .join('&');
-        finalUrl = `${appUrl}?${queryString}`;
+        finalUrl = `${targetUrl}?${queryString}`;
       }
 
       // Handle /fez -> /lfg translation
@@ -84,6 +83,7 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
 
   /**
    * Open a Twitarr URL. This handles:
+   * - App-scheme URLs (`tricordarr://puzzle/...`) already in deep-link form
    * - Relative URLs (starting with /) by converting to tricordarr:// deep links
    * - URLs matching the current server or canonical hostnames
    * - External URLs (opened directly)
@@ -97,24 +97,14 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
    */
   const openWebUrl = useCallback(
     (url: string) => {
-      // Handle relative URLs (e.g., /events/123)
-      if (url.startsWith('/')) {
-        // Remove leading slash since the deep link config doesn't expect it
-        const appUrl = `tricordarr://${url.substring(1)}`;
-        openAppUrl(appUrl);
+      const appPath = extractPathFromTricordarrUrl(url);
+      if (appPath !== undefined) {
+        openAppUrl(appUrl(appPath));
         return;
       }
 
-      // Handle absolute URLs
-      const linkUrlObject = new URLParse(url);
-      if (url.startsWith(serverUrl)) {
-        const appUrl = url.replace(serverUrl, 'tricordarr:/');
-        openAppUrl(appUrl);
-        return;
-      } else if (appConfig.apiClientConfig.canonicalHostnames.includes(linkUrlObject.hostname)) {
-        // Apparently protocol includes the colon.
-        const appUrl = url.replace(`${linkUrlObject.protocol}//${linkUrlObject.hostname}`, 'tricordarr:/');
-        openAppUrl(appUrl);
+      if (isTwitarrUrl(url, serverUrl, appConfig.apiClientConfig.canonicalHostnames)) {
+        openAppUrl(appUrl(extractPathFromWebUrl(url)));
         return;
       }
 

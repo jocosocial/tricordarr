@@ -16,6 +16,7 @@ interface BaseFABProps {
   onPress: () => void;
   label?: string;
   showLabel?: boolean;
+  testID: string;
 }
 
 export const BaseFAB = ({
@@ -26,6 +27,7 @@ export const BaseFAB = ({
   style,
   label,
   showLabel = true,
+  testID,
 }: BaseFABProps) => {
   const {theme} = useAppTheme();
   const {asPrivilegedUser} = useElevation();
@@ -52,6 +54,7 @@ export const BaseFAB = ({
 
   return (
     <FAB
+      testID={testID}
       icon={icon}
       style={[styles.fab, style]}
       onPress={onPress}

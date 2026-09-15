@@ -5,6 +5,8 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
+const oobeButtonTestID = (label: string) => `oobe${label.replace(/[^a-zA-Z0-9]/g, '')}-button`;
+
 interface OobeButtonsViewProps {
   leftText?: string;
   leftOnPress?: () => void;
@@ -71,6 +73,7 @@ export const OobeButtonsView = ({
             disabled={leftDisabled}
             textColor={leftButtonTextColor || theme.colors.onBackground}
             buttonColor={leftButtonColor}
+            testID={oobeButtonTestID(leftText)}
           />
         )}
       </View>
@@ -84,6 +87,7 @@ export const OobeButtonsView = ({
             disabled={rightDisabled}
             buttonColor={rightButtonColor}
             textColor={rightButtonTextColor || theme.colors.onTwitarrPositiveButton}
+            testID={oobeButtonTestID(rightText)}
           />
         )}
       </View>

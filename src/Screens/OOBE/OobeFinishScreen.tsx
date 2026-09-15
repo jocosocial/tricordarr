@@ -10,10 +10,10 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
-import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
-import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
+import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen>;

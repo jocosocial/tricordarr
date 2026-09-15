@@ -1,9 +1,10 @@
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
-import {ForumPostDeleteModalView} from '#src/Components/Views/Modals/ForumPostDeleteModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
+import {alertDeletePost} from '#src/Libraries/Alerts/ForumAlerts';
+import {useForumPostDeleteMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostActionsDeleteItemProps {
@@ -13,12 +14,23 @@ interface ForumPostActionsDeleteItemProps {
 }
 
 export const ForumPostActionsDeleteItem = ({forumPost, closeMenu, forumData}: ForumPostActionsDeleteItemProps) => {
-  const {setModalVisible, setModalContent} = useModal();
+  const deleteMutation = useForumPostDeleteMutation();
+  const {deletePost} = useForumCacheReducer();
 
   const onPress = () => {
-    closeMenu();
-    setModalContent(<ForumPostDeleteModalView postData={forumPost} forumData={forumData} />);
-    setModalVisible(true);
+    alertDeletePost(() => {
+      deleteMutation.mutate(
+        {
+          postID: forumPost.postID.toString(),
+        },
+        {
+          onSuccess: () => {
+            deletePost(forumPost.postID, forumData?.forumID, forumData?.categoryID);
+          },
+          onSettled: closeMenu,
+        },
+      );
+    }, closeMenu);
   };
 
   return <Menu.Item dense={false} leadingIcon={AppIcons.postRemove} title={'Delete'} onPress={onPress} />;

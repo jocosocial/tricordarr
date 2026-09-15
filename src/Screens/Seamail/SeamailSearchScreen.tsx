@@ -9,8 +9,8 @@ import {AppView} from '#src/Components/Views/AppView';
 import {NotImplementedView} from '#src/Components/Views/Static/NotImplementedView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 

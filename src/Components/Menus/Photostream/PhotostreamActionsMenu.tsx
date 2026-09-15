@@ -5,8 +5,8 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 
 export const PhotostreamActionsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();

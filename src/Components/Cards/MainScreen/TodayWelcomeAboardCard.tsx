@@ -8,8 +8,8 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 
 export const TodayWelcomeAboardCard = () => {
   const {commonStyles} = useStyles();

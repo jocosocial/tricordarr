@@ -1,20 +1,20 @@
 import {useQueryClient} from '@tanstack/react-query';
 import * as React from 'react';
-import {ReactNode} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
-import {BlockUserModalView} from '#src/Components/Views/Modals/BlockUserModalView';
-import {MuteUserModalView} from '#src/Components/Views/Modals/MuteUserModalView';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
+import {UserVCardDownloadMenuItem} from '#src/Components/Menus/User/UserVCardDownloadMenuItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {ShareContentType} from '#src/Enums/ShareContentType';
+import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {alertBlock, alertMute} from '#src/Libraries/Alerts/UserAlerts';
+import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
+import {ShareContentType} from '#src/Libraries/Sharing';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';
 import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
@@ -27,25 +27,27 @@ interface UserProfileActionsMenuProps {
 
 export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: UserProfileActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {setModalContent, setModalVisible} = useModal();
   const muteMutation = useUserMuteMutation();
   const blockMutation = useUserBlockMutation();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
+  const {hasAccountManager} = useRoles();
   const commonNavigation = useCommonStack();
   const queryClient = useQueryClient();
 
   const handleModerate = () => {
     closeMenu();
-    commonNavigation.push(CommonStackComponents.siteUIScreen, {
-      resource: 'userprofile',
-      id: profile.header.userID,
-      moderate: true,
-    });
+    pushModerateResource(commonNavigation, 'userprofile', profile.header.userID);
   };
-  const handleModal = (content: ReactNode) => {
+  const handleModerateUser = () => {
     closeMenu();
-    setModalContent(content);
-    setModalVisible(true);
+    pushModerateResource(commonNavigation, 'user', profile.header.userID);
+  };
+  const handleReport = () => {
+    closeMenu();
+    commonNavigation.push(CommonStackComponents.reportScreen, {
+      contentType: ReportContentType.users,
+      contentID: profile.header.userID,
+    });
   };
   const handleRegCode = () => {
     closeMenu();
@@ -58,68 +60,95 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
     commonNavigation.push(CommonStackComponents.userProfilesHelpScreen);
   };
 
+  const invalidateRelations = () => {
+    const invalidations = UserHeader.getRelationKeys().map(key => {
+      return queryClient.invalidateQueries({queryKey: key});
+    });
+    Promise.all(invalidations);
+  };
+
+  const handleBlock = () => {
+    if (isBlocked) {
+      blockMutation.mutate(
+        {userID: profile.header.userID, action: 'unblock'},
+        {
+          onSuccess: invalidateRelations,
+          onSettled: closeMenu,
+        },
+      );
+      return;
+    }
+    alertBlock(
+      hasModerator,
+      () => {
+        blockMutation.mutate(
+          {userID: profile.header.userID, action: 'block'},
+          {
+            onSuccess: invalidateRelations,
+            onSettled: closeMenu,
+          },
+        );
+      },
+      closeMenu,
+    );
+  };
+
+  const handleMute = () => {
+    if (isMuted) {
+      muteMutation.mutate(
+        {userID: profile.header.userID, action: 'unmute'},
+        {
+          onSuccess: invalidateRelations,
+          onSettled: closeMenu,
+        },
+      );
+      return;
+    }
+    alertMute(
+      hasModerator,
+      () => {
+        muteMutation.mutate(
+          {userID: profile.header.userID, action: 'mute'},
+          {
+            onSuccess: invalidateRelations,
+            onSettled: closeMenu,
+          },
+        );
+      },
+      closeMenu,
+    );
+  };
+
   return (
     <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <ShareMenuItem contentType={ShareContentType.user} contentID={profile.header.userID} closeMenu={closeMenu} />
+      <UserVCardDownloadMenuItem header={profile.header} closeMenu={closeMenu} />
       <Divider bold={true} />
       <Menu.Item
         leadingIcon={isBlocked ? AppIcons.unblock : AppIcons.block}
         title={isBlocked ? 'Unblock' : 'Block'}
-        onPress={() => {
-          if (isBlocked) {
-            blockMutation.mutate(
-              {userID: profile.header.userID, action: 'unblock'},
-              {
-                onSuccess: () => {
-                  const invalidations = UserHeader.getRelationKeys().map(key => {
-                    return queryClient.invalidateQueries({queryKey: key});
-                  });
-                  Promise.all(invalidations);
-                  closeMenu();
-                },
-              },
-            );
-          } else {
-            handleModal(<BlockUserModalView user={profile.header} />);
-          }
-        }}
+        onPress={handleBlock}
       />
       <Menu.Item
         leadingIcon={isMuted ? AppIcons.unmute : AppIcons.mute}
         title={isMuted ? 'Unmute' : 'Mute'}
-        onPress={() => {
-          if (isMuted) {
-            muteMutation.mutate(
-              {userID: profile.header.userID, action: 'unmute'},
-              {
-                onSuccess: () => {
-                  const invalidations = UserHeader.getRelationKeys().map(key => {
-                    return queryClient.invalidateQueries({queryKey: key});
-                  });
-                  Promise.all(invalidations);
-                  closeMenu();
-                },
-              },
-            );
-          } else {
-            handleModal(<MuteUserModalView user={profile.header} />);
-          }
-        }}
+        onPress={handleMute}
       />
-      <Menu.Item
-        leadingIcon={AppIcons.report}
-        title={'Report'}
-        onPress={() => handleModal(<ReportModalView profile={profile} />)}
-      />
-      {(hasModerator || hasTwitarrTeam) && (
+      <Menu.Item leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
+      {(hasModerator || hasTwitarrTeam || hasAccountManager) && (
         <>
           <Divider bold={true} />
-          {hasModerator && <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate'} onPress={handleModerate} />}
-          {hasTwitarrTeam && (
-            <Menu.Item leadingIcon={AppIcons.twitarteam} title={'Registration'} onPress={handleRegCode} />
+          {hasModerator && (
+            <>
+              <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate Profile'} onPress={handleModerate} />
+              <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate User'} onPress={handleModerateUser} />
+            </>
+          )}
+          {(hasTwitarrTeam || hasAccountManager) && (
+            <Menu.Item leadingIcon={AppIcons.registrationCode} title={'Registration'} onPress={handleRegCode} />
           )}
         </>
       )}

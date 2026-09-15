@@ -8,6 +8,7 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {SecureTextField} from '#src/Components/Forms/Fields/SecureTextField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {UsernameTextField} from '#src/Components/Forms/Fields/UsernameTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PasswordValidation, RecoveryKeyValidation, UsernameValidation} from '#src/Libraries/ValidationSchema';
@@ -47,26 +48,25 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
           <TextField
             viewStyle={styles.inputContainer}
             name={'verification'}
+            testID={'registerVerification-input'}
             label={'Registration Code'}
             left={<TextInput.Icon icon={AppIcons.registrationCode} />}
             autoCapitalize={'characters'}
+            autoCorrect={false}
+            spellCheck={false}
             maxLength={7}
             textContentType={'oneTimeCode'}
             autoComplete={'off'}
             showErrorWithoutTouch={false}
           />
-          <TextField
+          <UsernameTextField
             viewStyle={styles.inputContainer}
-            name={'username'}
-            label={'Username'}
-            left={<TextInput.Icon icon={AppIcons.user} />}
-            autoCapitalize={'none'}
-            textContentType={'username'}
-            autoComplete={'username-new'}
+            testID={'registerUsername-input'}
             showErrorWithoutTouch={false}
           />
           <SecureTextField
             name={'password'}
+            testID={'registerPassword-input'}
             label={'Password'}
             textContentType={'newPassword'}
             autoComplete={'password-new'}
@@ -74,6 +74,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
           />
           <SecureTextField
             name={'passwordVerify'}
+            testID={'registerPasswordVerify-input'}
             label={'Verify Password'}
             textContentType={'newPassword'}
             autoComplete={'password-new'}
@@ -92,6 +93,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={'Create'}
+            testID={'registerSubmit-button'}
           />
         </View>
       )}

@@ -15,6 +15,7 @@ interface SubmitIconButtonProps {
   iconColor?: string;
   containerColor?: string;
   withPrivilegeColors?: boolean;
+  testID: string;
 }
 
 export const SubmitIconButton = ({
@@ -25,6 +26,7 @@ export const SubmitIconButton = ({
   iconColor,
   containerColor,
   withPrivilegeColors,
+  testID,
 }: SubmitIconButtonProps) => {
   const {theme} = useAppTheme();
   const {styleDefaults} = useStyles();
@@ -36,6 +38,7 @@ export const SubmitIconButton = ({
 
   return (
     <IconButton
+      testID={testID}
       iconColor={iconColor ? iconColor : withPrivilegeColors ? buttonColor : undefined}
       containerColor={containerColor ? containerColor : withPrivilegeColors ? buttonContainerColor : undefined}
       onPress={onPress}

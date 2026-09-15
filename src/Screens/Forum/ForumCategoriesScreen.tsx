@@ -18,8 +18,8 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';

@@ -10,6 +10,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface SliderFieldProps {
   name: string;
+  testID: string;
   label: string;
   value: number;
   minimumValue: number;
@@ -41,6 +42,7 @@ export const SliderField = (props: SliderFieldProps) => {
         {props.label}: {props.value} {props.unit && pluralize(props.unit, props.value)}
       </Text>
       <Slider
+        testID={props.testID}
         minimumValue={props.minimumValue}
         maximumValue={props.maximumValue}
         value={props.value}

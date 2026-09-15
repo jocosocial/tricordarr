@@ -7,7 +7,7 @@ import {SwipeableButton} from '#src/Components/Buttons/SwipeableButton';
 import {BaseSwipeable} from '#src/Components/Swipeables/BaseSwipeable';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {useBoardgameFavoriteMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 
@@ -68,6 +68,7 @@ export const BoardgameListItemSwipeable = (props: BoardgameListItemSwipeableProp
     return (
       <>
         <SwipeableButton
+          testID={'boardgameFavorite-button'}
           text={props.boardgame.isFavorite ? 'Unfavorite' : 'Favorite'}
           iconName={props.boardgame.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
           onPress={() => handleFavorite(swipeable)}
@@ -75,6 +76,7 @@ export const BoardgameListItemSwipeable = (props: BoardgameListItemSwipeableProp
           style={{backgroundColor: theme.colors.elevation.level1}}
         />
         <SwipeableButton
+          testID={'boardgameLfg-button'}
           text={'LFG'}
           iconName={AppIcons.lfgCreate}
           onPress={() => handleLFG(swipeable)}

@@ -11,7 +11,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useSoundEffect} from '#src/Hooks/useSoundEffect';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.easterEggScreen>;
 
@@ -55,7 +55,7 @@ export const EasterEggScreen = ({navigation}: Props) => {
   return (
     <AppView>
       <View style={styles.container}>
-        <ArcadeButton color={theme.colors.twitarrYellow} onPressIn={playSound}>
+        <ArcadeButton testID={'easterEggYeah-button'} color={theme.colors.twitarrYellow} onPressIn={playSound}>
           <Text style={styles.text} variant={'displayMedium'}>
             YEAH
           </Text>

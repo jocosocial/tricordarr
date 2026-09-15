@@ -1,4 +1,3 @@
-import notifee from '@notifee/react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
@@ -7,21 +6,18 @@ import {Item} from 'react-navigation-header-buttons';
 import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEditButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PersonalEventScreenActionsMenu} from '#src/Components/Menus/PersonalEvents/PersonalEventScreenActionsMenu';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/useFezData';
-import {createLogger} from '#src/Libraries/Logger';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useFezData} from '#src/Hooks/Fez/useFezData';
+import {openFezChatScreen} from '#src/Libraries/Navigation';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
-
-const logger = createLogger('PersonalEventScreen.tsx');
 
 export const PersonalEventScreen = (props: Props) => {
   return (
@@ -34,7 +30,6 @@ export const PersonalEventScreen = (props: Props) => {
 };
 
 const PersonalEventScreenInner = ({navigation, route}: Props) => {
-  const {appConfig} = useConfig();
   const {
     fezData: eventData,
     isFetching,
@@ -59,12 +54,7 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
                 <Item
                   title={'Chat'}
                   iconName={AppIcons.chat}
-                  onPress={() =>
-                    navigation.push(CommonStackComponents.lfgChatScreen, {
-                      fezID: eventData.fezID,
-                      initialReadCount,
-                    })
-                  }
+                  onPress={() => openFezChatScreen(navigation, eventData.fezID, eventData.fezType, initialReadCount)}
                 />
               )}
               {isOwner && (
@@ -88,13 +78,9 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
-      title: eventData?.fezType === FezType.privateEvent ? 'Private Event' : 'Personal Event',
+      title: 'Private Event',
     });
-    if (appConfig.markReadCancelPush && eventData) {
-      logger.info('Auto canceling notifications.');
-      notifee.cancelDisplayedNotification(eventData.fezID);
-    }
-  }, [getNavButtons, navigation, eventData, appConfig.markReadCancelPush]);
+  }, [getNavButtons, navigation, eventData]);
 
   useEffect(() => {
     if (eventData) {

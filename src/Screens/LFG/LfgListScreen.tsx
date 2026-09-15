@@ -26,8 +26,12 @@ import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToNow} from '#src/Hooks/useScrollToNow';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {LfgStackComponents, LfgStackParamList, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {
+  LfgStackComponents,
+  LfgStackParamList,
+  useLFGStackNavigation,
+} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
@@ -247,8 +251,10 @@ const LfgListScreenInner = ({
   );
 };
 
-interface LfgListScreenWithEndpointProps
-  extends StackScreenProps<LfgStackParamList, LfgStackComponents.lfgListScreen> {}
+interface LfgListScreenWithEndpointProps extends StackScreenProps<
+  LfgStackParamList,
+  LfgStackComponents.lfgListScreen
+> {}
 
 /**
  * Middle component that handles route parameters and state management.

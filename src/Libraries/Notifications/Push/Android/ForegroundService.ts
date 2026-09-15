@@ -1,5 +1,5 @@
-import notifee from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import notifee from 'react-native-notify-kit';
 import {checkNotifications, RESULTS} from 'react-native-permissions';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import tinycolor from 'tinycolor2';
@@ -11,7 +11,7 @@ import {buildWebSocket, wsHealthcheck} from '#src/Libraries/Network/Websockets';
 import {serviceChannel} from '#src/Libraries/Notifications/Channels';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {StorageKeys} from '#src/Libraries/Storage';
-import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
+import {WebsocketDebugStatus} from '#src/Structs/SocketStructs';
 import {getTheme} from '#src/Styles/Theme';
 
 const logger = createLogger('ForegroundService.ts');
@@ -33,14 +33,14 @@ export let fgsFailedThreshold = 10;
 const fgsWorkerHealthcheck = async () => {
   logger.debug('Performing WebSocket Healthcheck');
   const ws = await getSharedWebSocket();
-  const healthcheckResult: SocketHealthcheckData = {
-    result: wsHealthcheck(ws),
-    timestamp: new Date().toISOString(),
+  const healthcheckResult: WebsocketDebugStatus = {
+    lastHealthcheckSuccess: wsHealthcheck(ws),
+    lastHealthcheckAt: new Date().toISOString(),
   };
 
   // Store the healthcheck data
   await AsyncStorage.setItem(StorageKeys.WS_HEALTHCHECK_DATA, JSON.stringify(healthcheckResult));
-  if (healthcheckResult.result) {
+  if (healthcheckResult.lastHealthcheckSuccess) {
     fgsFailedCounter = 0;
   } else {
     fgsFailedCounter += 1;
@@ -218,16 +218,19 @@ async function generateForegroundServiceNotification(
       android: {
         channelId: serviceChannel.id,
         asForegroundService: true,
+        ongoing: false,
         color: color,
         colorized: true,
         pressAction: {
           id: PressAction.home,
+          launchActivity: 'default',
         },
         actions: [
           {
             title: 'Settings',
             pressAction: {
               id: PressAction.worker,
+              launchActivity: 'default',
             },
           },
         ],
@@ -250,6 +253,7 @@ async function generateFgsShutdownNotification() {
       colorized: true,
       pressAction: {
         id: PressAction.worker,
+        launchActivity: 'default',
       },
       smallIcon: 'ic_notification',
     },

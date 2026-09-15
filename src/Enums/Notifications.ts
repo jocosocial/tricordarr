@@ -1,4 +1,4 @@
-import {AndroidAction} from '@notifee/react-native';
+import {AndroidAction} from 'react-native-notify-kit';
 
 export enum fgsWorkerNotificationIDs {
   worker = 'fgsWorkerNotificationID',
@@ -28,6 +28,7 @@ export const markAsReadPressAction: AndroidAction = {
   title: 'Mark as Read',
   pressAction: {
     id: PressAction.markAsRead,
+    launchActivity: 'default',
   },
 };
 
@@ -39,5 +40,6 @@ export const settingsPressAction: AndroidAction = {
   title: 'Settings',
   pressAction: {
     id: PressAction.contentSettings,
+    launchActivity: 'default',
   },
 };

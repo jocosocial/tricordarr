@@ -9,7 +9,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
 
 export const OobeSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -33,12 +33,13 @@ export const OobeSettingsScreen = () => {
         <DataFieldListItem title={'Expected'} description={String(appConfig.oobeExpectedVersion)} />
         <DataFieldListItem title={'Completed'} description={String(currentSession?.oobeCompletedVersion ?? 0)} />
         <PaddedContentView>
-          <PrimaryActionButton buttonText={'Reset'} onPress={resetOobeVersion} />
+          <PrimaryActionButton testID={'reset-button'} buttonText={'Reset'} onPress={resetOobeVersion} />
         </PaddedContentView>
         <ListSubheader>Welcome Card</ListSubheader>
         <DataFieldListItem title={'Dismissed'} description={String(appConfig.dismissWelcomeAboard)} />
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'reenableWelcomeCard-button'}
             buttonText={'Re-enable Welcome Card'}
             onPress={() => updateAppConfig({...appConfig, dismissWelcomeAboard: false})}
           />
@@ -46,6 +47,7 @@ export const OobeSettingsScreen = () => {
         <ListSubheader>Debugging</ListSubheader>
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
+            testID={'enterOOBE-button'}
             buttonText={'Enter OOBE'}
             buttonColor={theme.colors.twitarrNeutralButton}
             onPress={() => navigation.push(RootStackComponents.oobeNavigator)}

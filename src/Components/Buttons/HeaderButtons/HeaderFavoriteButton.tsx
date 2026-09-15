@@ -17,6 +17,7 @@ export const HeaderFavoriteButton = (props: HeaderFavoriteButtonProps) => {
       color={props.isFavorite ? theme.colors.twitarrYellow : undefined}
       iconName={props.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite}
       onPress={props.onPress}
+      testID={'headerFavorite-headerButton'}
     />
   );
 };

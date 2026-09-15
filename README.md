@@ -13,11 +13,11 @@ nvm use lts/jod
 npm clean-install
 
 # Android (Mac, Windows, Linux)
-npx react-native run-android
+npx expo run:android
 
 # iOS (Mac)
 npx pod-install
-npx react-native run-ios --scheme Development # or Production
+npx expo run:ios --scheme Development # or Production, --device "Simulator Name"
 ```
 
 See [Docs](./docs/) for more.

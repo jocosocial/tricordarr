@@ -7,9 +7,9 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
-import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 export const MainAccountMenu = () => {

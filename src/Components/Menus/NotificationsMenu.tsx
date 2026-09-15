@@ -7,13 +7,11 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {ForumStackComponents} from '#src/Navigation/Stacks/ForumStackNavigator';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
-import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
-import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
-import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
+import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
+import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {UserNotificationData} from '#src/Structs/ControllerStructs';
 
@@ -94,9 +92,9 @@ export const NotificationsMenu = () => {
           title={`Added to ${data?.addedToLFGCount} new ${pluralize('LFG', data?.addedToLFGCount)}`}
           leadingIcon={AppIcons.lfg}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.lfgTab, {
-              screen: LfgStackComponents.lfgListScreen,
-              params: {endpoint: 'joined', cruiseDay: 0, onlyNew: true, intent: `lfgAddedTo_${Date.now()}`},
+            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
+              screen: ChatStackScreenComponents.seamailListScreen,
+              params: {onlyNew: true},
             })
           }
         />
@@ -106,9 +104,9 @@ export const NotificationsMenu = () => {
           title={`${data?.newFezMessageCount} new ${pluralize('LFG', data?.newFezMessageCount)} messages`}
           leadingIcon={AppIcons.lfg}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.lfgTab, {
-              screen: LfgStackComponents.lfgListScreen,
-              params: {endpoint: 'joined', onlyNew: true, intent: `lfgMessage_${Date.now()}`, cruiseDay: 0},
+            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
+              screen: ChatStackScreenComponents.seamailListScreen,
+              params: {onlyNew: true},
             })
           }
         />
@@ -118,14 +116,9 @@ export const NotificationsMenu = () => {
           title={`Added to ${data?.addedToPrivateEventCount} new private ${pluralize('event', data?.addedToPrivateEventCount)}`}
           leadingIcon={AppIcons.personalEvent}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.scheduleTab, {
-              screen: CommonStackComponents.scheduleDayScreen,
-              params: {
-                cruiseDay: 0,
-                setPersonalFilter: true,
-                onlyNew: true,
-                intent: `personalEventAddedTo_${Date.now()}`,
-              },
+            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
+              screen: ChatStackScreenComponents.seamailListScreen,
+              params: {onlyNew: true},
             })
           }
         />
@@ -135,14 +128,9 @@ export const NotificationsMenu = () => {
           title={`${data?.newPrivateEventMessageCount} new private event ${pluralize('message', data?.newPrivateEventMessageCount)}`}
           leadingIcon={AppIcons.personalEvent}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.scheduleTab, {
-              screen: CommonStackComponents.scheduleDayScreen,
-              params: {
-                cruiseDay: 0,
-                setPersonalFilter: true,
-                onlyNew: true,
-                intent: `personalEventMessage_${Date.now()}`,
-              },
+            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
+              screen: ChatStackScreenComponents.seamailListScreen,
+              params: {onlyNew: true},
             })
           }
         />

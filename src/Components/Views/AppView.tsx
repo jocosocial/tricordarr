@@ -1,4 +1,5 @@
-import {useHeaderHeight} from '@react-navigation/elements';
+import {BottomTabBarHeightContext} from '@react-navigation/bottom-tabs';
+import {HeaderHeightContext} from '@react-navigation/elements';
 import {useFocusEffect} from '@react-navigation/native';
 import React, {PropsWithChildren, useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
@@ -7,11 +8,11 @@ import {Portal} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ErrorBanner} from '#src/Components/Banners/ErrorBanner';
-import {AppModal} from '#src/Components/Modals/AppModal';
 import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
-import {ConnectionDisruptedView} from '#src/Components/Views/Warnings/ConnectionDisruptedView';
+import {ConnectionDisruptedWarningView} from '#src/Components/Views/Warnings/ConnectionDisruptedWarningView';
+import {MinAccessLevelWarningView} from '#src/Components/Views/Warnings/MinAccessLevelWarningView';
 import {PreRegistrationWarningView} from '#src/Components/Views/Warnings/PreRegistrationWarningView';
-import {UnsavedChangesView} from '#src/Components/Views/Warnings/UnsavedChangesView';
+import {UnsavedChangesWarningView} from '#src/Components/Views/Warnings/UnsavedChangesWarningView';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useLayout} from '#src/Context/Contexts/LayoutContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
@@ -24,35 +25,39 @@ const logger = createLogger('AppView.tsx');
 
 interface AppViewProps extends PropsWithChildren {
   disablePreRegistrationWarning?: boolean;
+  disableMinAccessLevelWarning?: boolean;
 }
 
 /**
  * Highest level View container that contains app-specific components that
  * can be utilized by all children. For example, error messages.
  */
-export const AppView = ({children, disablePreRegistrationWarning = false}: AppViewProps) => {
+export const AppView = ({
+  children,
+  disablePreRegistrationWarning = false,
+  disableMinAccessLevelWarning = false,
+}: AppViewProps) => {
   const {commonStyles} = useStyles();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {hasUnsavedWork} = useErrorHandler();
   // https://reactnavigation.org/docs/6.x/handling-safe-area
   const insets = useSafeAreaInsets();
   const {preRegistrationMode} = usePreRegistration();
-  const {headerHeight, headerHeightValue, footerHeightValue} = useLayout();
-  const directHeaderHeight = useHeaderHeight();
-
-  // Log layout values for debugging
-  // console.log('[AppView.tsx] insets', insets);
-  // console.log(`[AppView.tsx] headerHeightValue: ${headerHeightValue}, footerHeightValue: ${footerHeightValue}`);
-  // console.log(`[AppView.tsx] headerHeight: ${directHeaderHeight}`);
+  const {headerHeight} = useLayout();
+  // Raw context (not useHeaderHeight / useBottomTabBarHeight) because those hooks throw
+  // when the provider is absent. Falsy/zero header height means no header above this
+  // screen; undefined tab bar height means we are not inside a tab navigator.
+  const navHeaderHeight = React.useContext(HeaderHeightContext);
+  const tabBarHeight = React.useContext(BottomTabBarHeightContext);
 
   const styles = StyleSheet.create({
     appView: {
       ...commonStyles.background,
       ...commonStyles.flex,
-      // Apply safe area insets only if header/footer heights are zero
-      // This ensures proper spacing when navigation bars aren't present
-      ...(headerHeightValue === 0 ? commonStyles.safePaddingTop : undefined),
-      ...(footerHeightValue === 0 ? commonStyles.safePaddingBottom : undefined),
+      // This does not use commonStyles.safePaddingTop/safePaddingBottom etc because
+      // those insets changing trigger re-renders.
+      ...(!navHeaderHeight ? {paddingTop: insets.top} : undefined),
+      ...(!tabBarHeight ? {paddingBottom: insets.bottom} : undefined),
     },
     keyboardView: {
       ...commonStyles.flex,
@@ -88,12 +93,13 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
   /**
    * Any time a screen is focused, set the header height. The value includes any
    * safe area insets since thats handled by React Navigation.
+   * CallOverlay (outside the navigator tree) still reads this measured height.
    */
   useFocusEffect(
     useCallback(() => {
-      logger.debug('useFocusEffect setting headerHeight', directHeaderHeight);
-      headerHeight.set(directHeaderHeight);
-    }, [directHeaderHeight, headerHeight]),
+      logger.debug('useFocusEffect setting headerHeight', navHeaderHeight);
+      headerHeight.set(navHeaderHeight ?? 0);
+    }, [navHeaderHeight, headerHeight]),
   );
 
   return (
@@ -104,13 +110,13 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
         keyboardVerticalOffset={keyboardVerticalOffset}>
         <Portal>
           <ErrorBanner />
-          <AppModal />
           <AppSnackbar />
         </Portal>
         {preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
-        {disruptionDetected && <ConnectionDisruptedView />}
+        {!disableMinAccessLevelWarning && <MinAccessLevelWarningView />}
+        {disruptionDetected && <ConnectionDisruptedWarningView />}
         {children}
-        <UnsavedChangesView isVisible={hasUnsavedWork} />
+        <UnsavedChangesWarningView isVisible={hasUnsavedWork} />
       </ModuleKeyboardAvoidingView>
     </View>
   );

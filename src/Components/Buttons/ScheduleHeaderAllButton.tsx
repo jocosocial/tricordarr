@@ -16,6 +16,7 @@ export const ScheduleHeaderAllButton = (props: ScheduleHeaderAllButtonProps) => 
       disabled={props.disabled}
       primaryText={'All'}
       secondaryText={'Days'}
+      testID={'scheduleHeaderAll-button'}
     />
   );
 };

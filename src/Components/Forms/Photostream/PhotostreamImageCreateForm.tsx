@@ -8,7 +8,9 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 import {PhotostreamImageSelectionView} from '#src/Components/Views/Photostream/PhotostreamImageSelectionView';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {formatSecondsToHumanReadable} from '#src/Libraries/DateTime';
 import {EventData} from '#src/Structs/ControllerStructs';
 import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
 
@@ -38,6 +40,11 @@ export const PhotostreamImageCreateForm = ({
   initialValues = {locationName: undefined, eventData: undefined, savePhoto: savePhoto},
 }: PhotostreamImageCreateFormProps) => {
   const {commonStyles} = useStyles();
+  const {photostreamUploadRateLimit} = useClientSettings();
+  const rateLimitCopy =
+    photostreamUploadRateLimit > 0
+      ? `You can only post one image every ${formatSecondsToHumanReadable(photostreamUploadRateLimit)}.`
+      : 'There is currently no wait between photostream posts.';
 
   const styles = StyleSheet.create({
     fieldWrapper: commonStyles.paddingBottom,
@@ -66,8 +73,8 @@ export const PhotostreamImageCreateForm = ({
         <View>
           <View style={styles.textWrapper}>
             <Text variant={'labelMedium'}>
-              You can only post one image every five minutes. It cannot be removed except by moderators. Any text will
-              be automatically blurred. Choose wisely!
+              {rateLimitCopy} It cannot be removed except by moderators. Any text will be automatically blurred. Choose
+              wisely!
             </Text>
           </View>
           <View style={styles.fieldWrapper}>
@@ -79,6 +86,7 @@ export const PhotostreamImageCreateForm = ({
           <View style={styles.fieldWrapper}>
             <PickerField<string>
               name={'locationName'}
+              testID={'photostreamLocation-button'}
               label={'Location'}
               choices={locations}
               value={values.locationName}
@@ -89,6 +97,7 @@ export const PhotostreamImageCreateForm = ({
           <View style={styles.fieldWrapper}>
             <PickerField<EventData>
               name={'eventData'}
+              testID={'photostreamEvent-button'}
               label={'Event'}
               choices={events}
               value={values.eventData}
@@ -96,13 +105,19 @@ export const PhotostreamImageCreateForm = ({
               addUndefinedOption={true}
             />
           </View>
-          <BooleanField name={'savePhoto'} label={'Save Photo to Device'} value={values.savePhoto} />
+          <BooleanField
+            name={'savePhoto'}
+            testID={'photostreamSavePhoto-switch'}
+            label={'Save Photo to Device'}
+            value={values.savePhoto}
+          />
           <PrimaryActionButton
             disabled={!(values.eventData || values.locationName) || isSubmitting || !isValid}
             isLoading={isSubmitting}
             viewStyle={styles.submitButton}
             onPress={handleSubmit}
             buttonText={'Post'}
+            testID={'photostreamPost-button'}
           />
         </View>
       )}

@@ -76,7 +76,6 @@ export const MarkdownScreenBase = ({
 
   const styles = StyleSheet.create({
     button: {
-      ...commonStyles.onSurfaceVariant,
       flexShrink: 0,
     },
     container: {
@@ -203,6 +202,7 @@ export const MarkdownScreenBase = ({
       {isSearchActive && enableSearch && (
         <>
           <SearchBarBase
+            testID={'markdownSearch-input'}
             searchQuery={searchQuery}
             onClear={handleClear}
             onSearch={handleSearch}

@@ -27,8 +27,8 @@ export const TodayHelpScreen = () => {
         </HelpTopicView>
         <DailyThemeHelpTopicView />
         <HelpTopicView title={'Next Appointment'}>
-          Your next scheduled event, personal event, or joined LFG will appear on the Today screen, making it easy to
-          see what's coming up next in your day.
+          Your next scheduled event, private event, or joined LFG will appear on the Today screen, making it easy to see
+          what's coming up next in your day.
         </HelpTopicView>
         <HelpTopicView title={'App Updates'}>
           If there's a new version of the app available, you'll see a notification at the bottom of the Today screen

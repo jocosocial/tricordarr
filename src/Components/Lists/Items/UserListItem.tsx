@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React, {Dispatch, memo, SetStateAction, useCallback, useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Checkbox, IconButton, List} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
@@ -17,17 +17,27 @@ interface UserListItemProps {
   userHeader: UserHeader;
   buttonOnPress?: (uh: UserHeader) => void;
   buttonIcon?: IconSource;
+  secondaryButtonOnPress?: (uh: UserHeader) => void;
+  secondaryButtonIcon?: IconSource;
   disabled?: boolean;
   enableSelection?: boolean;
   setEnableSelection?: Dispatch<SetStateAction<boolean>>;
   selected?: boolean;
 }
 
-export const UserListItem = ({
+/**
+ * Presentational user row used by relation lists, search, and participant pickers.
+ * Stays swipe-free; FlashList screens wrap it via UserFlatListItem.
+ * Optional trailing IconButtons: `buttonIcon` is the primary (rightmost) action;
+ * `secondaryButtonIcon` sits to its left when both are set.
+ */
+const UserListItemInternal = ({
   userHeader,
   onPress,
   buttonOnPress,
   buttonIcon,
+  secondaryButtonOnPress,
+  secondaryButtonIcon,
   disabled = false,
   enableSelection = false,
   setEnableSelection,
@@ -38,27 +48,35 @@ export const UserListItem = ({
   const {theme} = useAppTheme();
   const {dispatchSelectedItems} = useSelection();
 
-  const styles = StyleSheet.create({
-    item: {
-      ...commonStyles.paddingHorizontalSmall,
-      paddingVertical: 2,
-      backgroundColor: theme.colors.background,
-    },
-    avatar: {
-      ...commonStyles.justifyCenter,
-      ...(disabled ? commonStyles.disabled : {}),
-    },
-    titleStyle: {
-      ...(disabled ? commonStyles.disabled : {}),
-    },
-    descriptionStyle: {
-      ...(disabled ? commonStyles.disabled : {}),
-    },
-    checkboxContainer: {
-      ...commonStyles.flexColumn,
-      ...commonStyles.justifyCenter,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        item: {
+          ...commonStyles.paddingHorizontalSmall,
+          paddingVertical: 2,
+          backgroundColor: theme.colors.background,
+        },
+        avatar: {
+          ...commonStyles.justifyCenter,
+          ...(disabled ? commonStyles.disabled : {}),
+        },
+        titleStyle: {
+          ...(disabled ? commonStyles.disabled : {}),
+        },
+        descriptionStyle: {
+          ...(disabled ? commonStyles.disabled : {}),
+        },
+        checkboxContainer: {
+          ...commonStyles.flexColumn,
+          ...commonStyles.justifyCenter,
+        },
+        actions: {
+          ...commonStyles.flexRow,
+          ...commonStyles.alignItemsCenter,
+        },
+      }),
+    [commonStyles, disabled, theme],
+  );
 
   const handleSelection = () => {
     dispatchSelectedItems({
@@ -67,7 +85,7 @@ export const UserListItem = ({
     });
   };
 
-  const getAvatar = React.useCallback(
+  const getAvatar = useCallback(
     () => (
       <View style={styles.avatar}>
         <AvatarImage userHeader={userHeader} forceIdenticon={preRegistrationMode} />
@@ -82,18 +100,50 @@ export const UserListItem = ({
     </View>
   );
 
-  const getActionButton = React.useCallback(() => {
-    if (buttonOnPress && buttonIcon) {
-      return (
+  /**
+   * Renders the trailing IconButton(s). A lone button is returned as-is so existing
+   * single-action rows keep the same layout; two buttons sit in a horizontal row.
+   */
+  const getActionButton = useCallback(() => {
+    const primary =
+      buttonOnPress && buttonIcon ? (
         <IconButton
           mode={'outlined'}
           size={styleDefaults.avatarSizeSmall}
           icon={buttonIcon}
           onPress={() => buttonOnPress(userHeader)}
         />
+      ) : undefined;
+    const secondary =
+      secondaryButtonOnPress && secondaryButtonIcon ? (
+        <IconButton
+          mode={'outlined'}
+          size={styleDefaults.avatarSizeSmall}
+          icon={secondaryButtonIcon}
+          onPress={() => secondaryButtonOnPress(userHeader)}
+        />
+      ) : undefined;
+    if (!primary && !secondary) {
+      return undefined;
+    }
+    if (primary && secondary) {
+      return (
+        <View style={styles.actions}>
+          {secondary}
+          {primary}
+        </View>
       );
     }
-  }, [buttonOnPress, buttonIcon, userHeader, styleDefaults.avatarSizeSmall]);
+    return primary ?? secondary;
+  }, [
+    buttonOnPress,
+    buttonIcon,
+    secondaryButtonOnPress,
+    secondaryButtonIcon,
+    userHeader,
+    styleDefaults.avatarSizeSmall,
+    styles.actions,
+  ]);
 
   const onLongPress = () => {
     if (setEnableSelection) {
@@ -117,3 +167,5 @@ export const UserListItem = ({
     />
   );
 };
+
+export const UserListItem = memo(UserListItemInternal);

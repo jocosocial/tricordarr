@@ -13,10 +13,10 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
-import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
+import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 

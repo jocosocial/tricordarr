@@ -4,27 +4,28 @@ import {FormikHelpers} from 'formik';
 import React from 'react';
 import {Text} from 'react-native-paper';
 
-import {ChangeUsernameForm} from '#src/Components/Forms/User/ChangeUsernameForm';
-import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useUserUsernameMutation} from '#src/Queries/User/UserMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {ChangeUsernameScreenBase} from '#src/Screens/Settings/Account/ChangeUsernameScreenBase';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 import {ChangeUsernameFormValues} from '#src/Types/FormValues';
 
+/**
+ * Account-settings screen for changing the current user's own username.
+ */
 export const ChangeUsernameScreen = () => {
   const {data: profilePublicData} = useUserProfileQuery();
   const navigation = useNavigation();
-  const {serverUrl} = useSwiftarrQueryClient();
   const usernameMutation = useUserUsernameMutation();
   const queryClient = useQueryClient();
-
   const {setSnackbarPayload} = useSnackbar();
 
+  /**
+   * Submit a self-service username change and invalidate this user's profile caches.
+   */
   const onSubmit = (values: ChangeUsernameFormValues, helper: FormikHelpers<ChangeUsernameFormValues>) => {
     usernameMutation.mutate(
       {
@@ -51,20 +52,10 @@ export const ChangeUsernameScreen = () => {
   }
 
   return (
-    <AppView>
-      <ScrollingContentView>
-        <PaddedContentView>
-          <Text>
-            Changing username for user {profilePublicData.header.username} on server {serverUrl}.
-          </Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <Text>To prevent abuse, you're only allowed to change your username once per day. Choose wisely!</Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <ChangeUsernameForm onSubmit={onSubmit} />
-        </PaddedContentView>
-      </ScrollingContentView>
-    </AppView>
+    <ChangeUsernameScreenBase currentUsername={profilePublicData.header.username} onSubmit={onSubmit}>
+      <PaddedContentView>
+        <Text>To prevent abuse, you're only allowed to change your username once per day. Choose wisely!</Text>
+      </PaddedContentView>
+    </ChangeUsernameScreenBase>
   );
 };

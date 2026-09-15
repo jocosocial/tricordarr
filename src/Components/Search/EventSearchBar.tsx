@@ -36,7 +36,12 @@ export const EventSearchBar = () => {
 
   return (
     <>
-      <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} />
+      <SearchBarBase
+        testID={'eventSearch-input'}
+        searchQuery={searchQuery}
+        onSearch={onSearch}
+        onChangeSearch={onChangeSearch}
+      />
       <ScheduleFlatList
         listRef={listRef}
         listFooter={<TimeDivider label={'End of Results'} />}

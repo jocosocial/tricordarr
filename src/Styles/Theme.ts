@@ -20,6 +20,11 @@ const fontConfig = {
   },
 };
 
+/**
+ * Type for the app theme. Used for better IDE support.
+ */
+export type AppTheme = typeof twitarrTheme;
+
 export const twitarrTheme = {
   ...DefaultTheme,
   fonts: configureFonts({config: fontConfig}),
@@ -88,6 +93,9 @@ export const twitarrTheme = {
     constantBlack: 'rgb(0, 0, 0)',
     constantWhite: 'rgb(255, 255, 255)',
     constantAlphaBlack: 'rgba(0, 0, 0, 0.5)',
+    // Lifted from the Site UI's Bootstrap .alert-warning colors.
+    warningBannerBackground: 'rgb(255, 243, 205)',
+    onWarningBannerBackground: 'rgb(102, 77, 3)',
   },
 };
 
@@ -164,6 +172,9 @@ export const twitarrThemeDark = {
     constantBlack: 'rgb(0, 0, 0)',
     constantWhite: 'rgb(255, 255, 255)',
     constantAlphaBlack: 'rgba(0, 0, 0, 0.5)',
+    // Lifted from the Site UI's Bootstrap .alert-warning colors.
+    warningBannerBackground: 'rgb(51, 39, 1)',
+    onWarningBannerBackground: 'rgb(255, 218, 106)',
   },
 };
 

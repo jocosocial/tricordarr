@@ -12,7 +12,7 @@ export class ServerChoices {
     {name: 'Production', serverUrl: 'https://twitarr.com'},
     {name: 'Beta', serverUrl: 'https://beta.twitarr.com'},
     {name: 'Alpha', serverUrl: 'https://twitarr.apps.grantcohoe.com'},
-    {name: 'Emulator', serverUrl: isIOS ? 'http://127.0.0.1:5050' : 'http://10.0.2.2:5050'},
+    {name: 'Emulator', serverUrl: isIOS ? 'http://127.0.0.1:3050' : 'http://10.0.2.2:3050'},
     {name: 'Start', serverUrl: 'https://start.twitarr.com'},
     this.otherChoice,
   ];

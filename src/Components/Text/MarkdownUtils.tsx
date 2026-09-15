@@ -1,6 +1,12 @@
-import {ASTNode, RenderRules} from '@ronradtke/react-native-markdown-display';
+import {
+  ASTNode,
+  type MarkdownStyleMap,
+  OnLinkPress,
+  openUrl,
+  RenderRules,
+} from '@ronradtke/react-native-markdown-display';
 import {useCallback, useMemo} from 'react';
-import {StyleProp, StyleSheet, TextStyle} from 'react-native';
+import {Text as RNText, StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
@@ -32,13 +38,14 @@ export const useMarkdownStyles = (textStyle?: StyleProp<TextStyle>) => {
   const {commonStyles, styleDefaults} = useStyles();
 
   return useMemo(
-    () =>
+    (): MarkdownStyleMap =>
       StyleSheet.create({
         text: {
           ...commonStyles.onBackground,
           ...(textStyle as TextStyle),
         },
         body: {
+          ...commonStyles.onBackground,
           fontSize: styleDefaults.fontSize,
         },
         code_inline: {
@@ -53,7 +60,19 @@ export const useMarkdownStyles = (textStyle?: StyleProp<TextStyle>) => {
           ...commonStyles.background,
           ...commonStyles.onBackground,
         },
-      }),
+        bullet_list_icon: {
+          ...commonStyles.onBackground,
+        },
+        ordered_list_icon: {
+          ...commonStyles.onBackground,
+        },
+        // The library's default link style sets marginBottom: -4 to compensate for
+        // wrapping links in a Pressable (see createLinkRule below for why that's no
+        // longer needed here). Reset it so it doesn't shift the link text.
+        link: {
+          marginBottom: 0,
+        },
+      }) as MarkdownStyleMap,
     [commonStyles.onBackground, commonStyles.background, textStyle, styleDefaults.fontSize],
   );
 };
@@ -129,9 +148,45 @@ export const createTextgroupRule = (
 };
 
 /**
+ * Creates a link render rule for markdown.
+ *
+ * The library's default "link" rule wraps the link in a Pressable (a View). Since a
+ * View nested inside the paragraph's Text is treated as an inline attachment and
+ * positioned via a different (baseline-anchoring) mechanism than normal nested Text
+ * runs, this caused the underlined link text to render a few pixels off from the
+ * rest of the line. Rendering the link as a plain nested <Text onPress={...}>
+ * instead avoids the View-in-Text nesting entirely, since Text supports onPress
+ * natively, keeping it aligned with its sibling text nodes.
+ */
+export const createLinkRule = (): RenderRules['link'] => {
+  return (node, children, _parent, styles, onLinkPress) => {
+    const linkPressHandler = typeof onLinkPress === 'function' ? (onLinkPress as OnLinkPress) : undefined;
+    return (
+      <RNText
+        key={node.key}
+        style={styles.link as StyleProp<TextStyle>}
+        accessibilityRole={'link'}
+        onPress={() => openUrl(node.attributes.href, linkPressHandler)}>
+        {children}
+      </RNText>
+    );
+  };
+};
+
+/**
  * Strips the markdown identifier from text.
  */
 export const stripMarkdownIdentifier = (text: string): string => {
   const markdownIdentifier = '<Markdown>';
   return text.replace(markdownIdentifier, '').trim();
+};
+
+/**
+ * Strips Unicode Object Replacement Characters (U+FFFC). Some clients (e.g. iOS, via
+ * Genmoji or other inline attachments) leave this placeholder behind in submitted text
+ * after the actual embedded content is discarded, which otherwise renders as a broken
+ * "tofu" box. https://github.com/jocosocial/tricordarr/issues/545
+ */
+export const stripObjectReplacementCharacters = (text: string): string => {
+  return text.replace(/￼/g, '');
 };

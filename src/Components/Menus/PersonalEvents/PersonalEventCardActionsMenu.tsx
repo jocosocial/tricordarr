@@ -1,13 +1,12 @@
-import React, {Dispatch, ReactNode, SetStateAction} from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
-import {PersonalEventDeleteModal} from '#src/Components/Views/Modals/PersonalEventDeleteModal';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {ReportContentType} from '#src/Enums/ReportContentType';
+import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface PersonalEventCardActionsMenuProps {
@@ -19,17 +18,12 @@ interface PersonalEventCardActionsMenuProps {
 export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {currentUserID} = useSession();
-  const {setModalContent, setModalVisible} = useModal();
   const navigation = useCommonStack();
+  const {confirmDelete} = useFezAlert(props.eventData);
 
   const anchorWithMenu = React.cloneElement(props.anchor, {
     onLongPress: openMenu,
   });
-
-  const handleModal = (content: ReactNode) => {
-    setModalContent(content);
-    setModalVisible(true);
-  };
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchorWithMenu}>
@@ -52,9 +46,10 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
           <Menu.Item
             leadingIcon={AppIcons.delete}
             title={'Delete'}
-            onPress={() =>
-              handleModal(<PersonalEventDeleteModal personalEvent={props.eventData} handleNavigation={false} />)
-            }
+            onPress={() => {
+              closeMenu();
+              confirmDelete(false);
+            }}
           />
           <Divider bold={true} />
         </>
@@ -62,7 +57,12 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}
-        onPress={() => handleModal(<ReportModalView fez={props.eventData} />)}
+        onPress={() =>
+          navigation.push(CommonStackComponents.reportScreen, {
+            contentType: ReportContentType.fez,
+            contentID: props.eventData.fezID,
+          })
+        }
       />
     </Menu>
   );

@@ -18,6 +18,7 @@ const validationSchema = Yup.object().shape({
   staleTimeMinutes: Yup.number().required(),
   disruptionThreshold: Yup.number().required(),
   imageStaleTimeDays: Yup.number().required(),
+  mutationTimeoutSeconds: Yup.number().required(),
 });
 
 export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
@@ -32,6 +33,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={5}
             label={'Page Size'}
             name={'defaultPageSize'}
+            testID={'queryPageSize-slider'}
             helperText={'Number of results in each page of paginated responses.'}
             onSlidingComplete={() => props.onSubmit(values)}
           />
@@ -42,7 +44,8 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={1}
             label={'Retries'}
             name={'retry'}
-            helperText={'Number of retry attempts to make if a query fails.'}
+            testID={'queryRetry-slider'}
+            helperText={'Number of retry attempts to make if a query fails. Client errors (4XX) are never retried.'}
             onSlidingComplete={() => props.onSubmit(values)}
           />
           <SliderField
@@ -52,8 +55,9 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={1}
             label={'Disruption Threshold'}
             name={'disruptionThreshold'}
+            testID={'queryDisruptionThreshold-slider'}
             helperText={
-              'Number of failed query attempts before the server is considered disrupted, disabling future automatic queries.'
+              'Number of failed query attempts before the server is considered disrupted, disabling future automatic queries. Client errors (4XX) do not count.'
             }
             onSlidingComplete={() => props.onSubmit(values)}
           />
@@ -64,6 +68,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={1}
             label={'Stale Time'}
             name={'staleTimeMinutes'}
+            testID={'queryStaleTime-slider'}
             helperText={'Amount of time for query response data to be considered fresh before automatically refreshed.'}
             unit={'minute'}
             onSlidingComplete={() => props.onSubmit(values)}
@@ -75,6 +80,7 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={1}
             label={'Cache Time'}
             name={'cacheTimeDays'}
+            testID={'queryCacheTime-slider'}
             helperText={'Amount of time for query response data to be cached.'}
             unit={'day'}
             onSlidingComplete={() => props.onSubmit(values)}
@@ -86,8 +92,21 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             step={1}
             label={'Image Stale Time'}
             name={'imageStaleTimeDays'}
+            testID={'queryImageStaleTime-slider'}
             helperText={'Amount of time for image response data to be considered fresh before automatically refreshed.'}
             unit={'day'}
+            onSlidingComplete={() => props.onSubmit(values)}
+          />
+          <SliderField
+            value={values.mutationTimeoutSeconds}
+            maximumValue={60}
+            minimumValue={10}
+            step={5}
+            label={'Mutation Timeout'}
+            name={'mutationTimeoutSeconds'}
+            testID={'queryMutationTimeout-slider'}
+            helperText={'Amount of time to wait for a write request (post, edit, delete) to complete before giving up.'}
+            unit={'second'}
             onSlidingComplete={() => props.onSubmit(values)}
           />
         </View>

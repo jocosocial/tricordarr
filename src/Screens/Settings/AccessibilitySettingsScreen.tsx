@@ -77,6 +77,7 @@ export const AccessibilitySettingsScreen = () => {
           <View>
             <BooleanField
               name={'useSystemTheme'}
+              testID={'useSystemTheme-switch'}
               label={'Use System Theme'}
               onPress={toggleSystemTheme}
               value={useSystemTheme}
@@ -85,6 +86,7 @@ export const AccessibilitySettingsScreen = () => {
             />
             <BooleanField
               name={'darkMode'}
+              testID={'darkMode-switch'}
               label={'Dark Mode'}
               onPress={toggleDarkMode}
               value={darkMode}
@@ -101,6 +103,7 @@ export const AccessibilitySettingsScreen = () => {
           <View>
             <BooleanField
               name={'reverseSwipeOrientation'}
+              testID={'reverseSwipeOrientation-switch'}
               label={'Reverse Swipe Orientation'}
               onPress={handleOrientation}
               style={commonStyles.paddingHorizontalSmall}
@@ -111,6 +114,7 @@ export const AccessibilitySettingsScreen = () => {
             />
             <BooleanField
               name={'showScrollButton'}
+              testID={'showScrollButton-switch'}
               label={'Show scroll button'}
               onPress={handleShowScrollButton}
               value={showScrollButton}

@@ -4,12 +4,12 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
-import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {SeamailCreateForm} from '#src/Components/Forms/SeamailCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
@@ -19,8 +19,8 @@ import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -171,13 +171,14 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      <PostAsUserBanner />
+      <PostAsUserWarningView />
       <ScrollingContentView>
         <SeamailCreateForm
           formRef={seamailCreateFormRef}
           onSubmit={onFezSubmit}
           initialValues={initialFormValues}
           onValidationChange={setSeamailFormValid}
+          showPostAsOptions={false}
         />
       </ScrollingContentView>
       <ContentPostForm

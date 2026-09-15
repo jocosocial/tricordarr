@@ -11,21 +11,22 @@ import {
   View,
 } from 'react-native';
 import {Card} from 'react-native-paper';
+import {useAnimatedRef} from 'react-native-reanimated';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
-import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
+import {useLightboxControls} from '#src/Components/Lightbox/state';
+import {toLightboxImage} from '#src/Components/Lightbox/toLightboxImage';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {alertImagesDisabled} from '#src/Libraries/Alerts/ImageAlerts';
 import {createLogger} from '#src/Libraries/Logger';
 import {APIImageSizePaths} from '#src/Types/AppImageMetaData';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
@@ -50,7 +51,7 @@ interface APIImageV2Props {
  * feature is disabled. It will also include an image viewer that allows the user to see
  * the image in more detail.
  *
- * Setting your own onPress effectively disables the image viewer.
+ * Setting your own onPress disables the embedded image viewer.
  */
 export const APIImage = ({
   path,
@@ -62,14 +63,12 @@ export const APIImage = ({
   size,
 }: APIImageV2Props) => {
   const [viewerImages, setViewerImages] = useState<AppImageMetaData[]>([]);
-  const [isViewerVisible, setIsViewerVisible] = useState(false);
   const hasRequestedFullPreload = React.useRef(false);
   const fullPreloadTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const {commonStyles, styleDefaults} = useStyles();
   const avatarSize = size ?? styleDefaults.avatarSize;
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
-  const {setModalContent, setModalVisible} = useModal();
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
   const [imageSourceMetadata, setImageSourceMetadata] = useState<AppImageMetaData>(
@@ -81,6 +80,8 @@ export const APIImage = ({
   const {setSnackbarPayload} = useSnackbar();
   const [imageSource, setImageSource] = useState<FastImageSource | undefined>(undefined);
   const {theme} = useAppTheme();
+  const {openLightbox} = useLightboxControls();
+  const thumbRef = useAnimatedRef<View>();
 
   const styles = StyleSheet.create({
     disabledCard: {
@@ -127,15 +128,24 @@ export const APIImage = ({
   }, []);
 
   /**
-   * Callback that fires when the image is pressed. In our case this opens the image viewer.
+   * Callback that fires when the image is pressed. Opens the global lightbox.
    */
   const onPressDefault = useCallback(() => {
-    if (viewerImages.length !== 0) {
-      setIsViewerVisible(true);
+    if (viewerImages.length === 0) {
+      setErrorBanner('Error loading image');
       return;
     }
-    setErrorBanner('Error loading image');
-  }, [setIsViewerVisible, setErrorBanner, viewerImages]);
+    openLightbox({
+      images: viewerImages.map(metadata =>
+        toLightboxImage(metadata, {
+          thumbRef,
+          type: mode === 'avatar' ? 'circle-avi' : 'image',
+          thumbBorderRadius: mode === 'avatar' ? avatarSize / 2 : undefined,
+        }),
+      ),
+      index: 0,
+    });
+  }, [openLightbox, setErrorBanner, viewerImages, thumbRef, mode, avatarSize]);
 
   /**
    * Callback that fires when the image fails to load. This will display an error message
@@ -162,20 +172,6 @@ export const APIImage = ({
   }, []);
 
   /**
-   * Callback to show the disabled modal if we need to do that. See below.
-   */
-  const handleDisableModal = useCallback(() => {
-    setModalContent(
-      <HelpModalView
-        text={[
-          'Images have been disabled by the server admins. This could be for all clients or just Tricordarr. Check the forums, announcements, or Info Desk for more details.',
-        ]}
-      />,
-    );
-    setModalVisible(true);
-  }, [setModalContent, setModalVisible]);
-
-  /**
    * Preloads the full size image.
    */
   const requestFullPreload = useCallback(() => {
@@ -192,39 +188,6 @@ export const APIImage = ({
   const onLoad = useCallback(() => {
     setViewerImages([imageSourceMetadata]);
   }, [imageSourceMetadata]);
-
-  /**
-   * Checks if the full size image is cached and sets the image source accordingly.
-   */
-  const checkCacheAndSetThumbSource = useCallback(async () => {
-    if (!imageSourceMetadata.fullURI) {
-      if (!imageSourceMetadata.thumbURI) {
-        return;
-      }
-      const thumbSource = {uri: imageSourceMetadata.thumbURI};
-      setImageSource(thumbSource);
-      return;
-    }
-
-    let cachePath: string | null = null;
-    try {
-      cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI});
-    } catch (error) {
-      logger.warn('Failed to get full image cache path', error);
-    }
-    if (cachePath) {
-      const fullSource = getCachedFileSource(cachePath);
-      setImageSource(fullSource);
-      return;
-    }
-
-    if (!imageSourceMetadata.thumbURI) {
-      return;
-    }
-
-    const thumbSource = {uri: imageSourceMetadata.thumbURI};
-    setImageSource(thumbSource);
-  }, [getCachedFileSource, imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI]);
 
   /**
    * Effect to set the image source metadata on mount. This is used to display the image in
@@ -246,9 +209,15 @@ export const APIImage = ({
     }
   }, [imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI]);
 
+  /**
+   * Background-fetch the full image whenever a thumbnail is on screen.
+   * staticSize="thumb" still displays the thumb, but callers like PerformerHeaderCard
+   * need the full size cached before the detail screen opens. Avatars skip this so
+   * forum/chat lists do not pull full-size user photos.
+   */
   React.useEffect(() => {
     const shouldScheduleFullPreload =
-      !appConfig.skipThumbnails &&
+      mode !== 'avatar' &&
       !!imageSourceMetadata.thumbURI &&
       imageSource?.uri === imageSourceMetadata.thumbURI &&
       !hasRequestedFullPreload.current;
@@ -269,21 +238,20 @@ export const APIImage = ({
         fullPreloadTimer.current = null;
       }
     };
-  }, [
-    appConfig.imagePreloadDelaySeconds,
-    appConfig.skipThumbnails,
-    imageSource?.uri,
-    imageSourceMetadata.thumbURI,
-    requestFullPreload,
-  ]);
+  }, [appConfig.imagePreloadDelaySeconds, imageSource?.uri, imageSourceMetadata.thumbURI, mode, requestFullPreload]);
 
   /**
    * Sets the image source to the appropriate URI based on the initial size.
-   * Soon to also include if we have a cache path for the full size!
+   * staticSize="thumb" always displays the thumbnail even if the full image is
+   * already cached; skipThumbnails only applies to unlocked (non-staticSize) images.
    */
   React.useEffect(() => {
     if (staticSize === 'thumb') {
-      checkCacheAndSetThumbSource();
+      if (!imageSourceMetadata.thumbURI) {
+        return;
+      }
+      const thumbSource = {uri: imageSourceMetadata.thumbURI};
+      setImageSource(thumbSource);
       return;
     }
     if (staticSize === 'identicon') {
@@ -327,7 +295,6 @@ export const APIImage = ({
     imageSourceMetadata.fullURI,
     imageSourceMetadata.thumbURI,
     imageSourceMetadata.identiconURI,
-    checkCacheAndSetThumbSource,
   ]);
 
   /**
@@ -336,7 +303,7 @@ export const APIImage = ({
   if (isDisabled) {
     return (
       <Card.Content style={styles.disabledCard}>
-        <AppIcon icon={AppIcons.imageDisabled} onPress={handleDisableModal} />
+        <AppIcon icon={AppIcons.imageDisabled} onPress={alertImagesDisabled} />
       </Card.Content>
     );
   }
@@ -351,16 +318,12 @@ export const APIImage = ({
 
   const isThumbnail = imageSource.uri === imageSourceMetadata.thumbURI;
 
-  // disableTouch should also prevent even loading the AppImageViewer. Even if its never used
-  // just having it can trigger extra background processing that we do not need.
-  // AvatarImage always disables touch which is where I saw this.
+  // A custom onPress skips opening the lightbox so callers can own the gallery
+  // (ContentPostImages) or disable it. disableTouch is how AvatarImage opts out.
   return (
     <View>
-      {!disableTouch && (
-        <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
-      )}
       <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
-        <View style={styles.imageContainer}>
+        <View ref={thumbRef} collapsable={false} style={styles.imageContainer}>
           {mode === 'cardcover' && (
             <FastImage
               resizeMode={'cover'}
@@ -374,7 +337,7 @@ export const APIImage = ({
           {mode === 'image' && (
             <FastImage
               resizeMode={'cover'}
-              style={styles.image}
+              style={styles.image as FastImageStyle}
               source={imageSource}
               onLoad={onLoad}
               onError={onError}

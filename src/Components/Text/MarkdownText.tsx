@@ -4,6 +4,7 @@ import {StyleProp, TextStyle} from 'react-native';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
 import {
+  createLinkRule,
   createTextgroupRule,
   stripMarkdownIdentifier,
   useMarkdownLinkHandler,
@@ -28,6 +29,7 @@ export const MarkdownText = ({text, textStyle, textVariant, selectable = true}: 
   const markdownRules: RenderRules = useMemo(
     () => ({
       textgroup: createTextgroupRule(textVariant, selectable),
+      link: createLinkRule(),
     }),
     [selectable, textVariant],
   );

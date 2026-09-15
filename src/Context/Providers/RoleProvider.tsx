@@ -15,6 +15,7 @@ export const RoleProvider = ({children}: PropsWithChildren) => {
   const [hasShutternaut, setHasShutternaut] = useState(false);
   const [hasKaraokeAmbassador, setHasKaraokeAmbassador] = useState(false);
   const [hasPerformerSelfEditor, setHasPerformerSelfEditor] = useState(false);
+  const [hasAccountManager, setHasAccountManager] = useState(false);
 
   useEffect(() => {
     const userRoles = whoamiData?.roles || [];
@@ -24,6 +25,7 @@ export const RoleProvider = ({children}: PropsWithChildren) => {
     setHasShutternaut(userRoles.includes(UserRoleType.shutternaut));
     setHasKaraokeAmbassador(userRoles.includes(UserRoleType.karaokeambassador));
     setHasPerformerSelfEditor(userRoles.includes(UserRoleType.performerselfeditor));
+    setHasAccountManager(userRoles.includes(UserRoleType.accountmanager));
   }, [whoamiData]);
 
   const hasRole = useMemo(() => (role: UserRoleType) => roles.includes(role), [roles]);
@@ -44,6 +46,7 @@ export const RoleProvider = ({children}: PropsWithChildren) => {
         hasShutternaut,
         hasKaraokeAmbassador,
         hasPerformerSelfEditor,
+        hasAccountManager,
         hasRole,
         refetch,
       }}>

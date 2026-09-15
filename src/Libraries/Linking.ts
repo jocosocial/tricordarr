@@ -2,15 +2,16 @@ import type {PathConfig, PathConfigMap} from '@react-navigation/core';
 import {LinkingOptions} from '@react-navigation/native';
 
 import {getPath} from '#src/Libraries/RouteDefinitions';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
-import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
-import {OobeStackComponents} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {RootStackComponents, RootStackParamList} from '#src/Navigation/Stacks/RootStackNavigator';
-import {ScheduleStackParamList} from '#src/Navigation/Stacks/ScheduleStackNavigator';
-import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {appLinkPrefix} from '#src/Libraries/UrlParser';
+import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
+import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {OobeStackComponents} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
+import {RootStackComponents, RootStackParamList} from '#src/Navigation/Stacks/Root/RootStackComponents';
+import {ScheduleStackParamList} from '#src/Navigation/Stacks/Schedule/ScheduleStackComponents';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;
@@ -44,6 +45,9 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           screens: {
             MainScreen: getPath(MainStackComponents.mainScreen),
             HelpIndexScreen: getPath(CommonStackComponents.helpIndexScreen),
+            AdminScreen: getPath(CommonStackComponents.adminScreen),
+            EventFeedbackSelectScreen: getPath(CommonStackComponents.eventFeedbackSelectScreen),
+            EventFeedbackFormScreen: getPath(CommonStackComponents.eventFeedbackFormScreen),
             AboutTricordarrScreen: getPath(CommonStackComponents.aboutTricordarrScreen),
             AboutTwitarrScreen: getPath(CommonStackComponents.aboutTwitarrScreen),
             PrivacyScreen: getPath(CommonStackComponents.privacyScreen),
@@ -54,6 +58,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
               screens: {
                 SettingsScreen: getPath(SettingsStackScreenComponents.settings),
                 PushNotificationSettingsScreen: getPath(SettingsStackScreenComponents.pushNotificationSettings),
+                BackgroundConnectionSettingsScreen: getPath(SettingsStackScreenComponents.backgroundConnectionSettings),
                 LoginScreen: getPath(SettingsStackScreenComponents.login),
               },
             },
@@ -64,16 +69,41 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             MapScreen: getPath(CommonStackComponents.mapScreen),
             UserDirectoryScreen: getPath(MainStackComponents.userDirectoryScreen),
             MainConductScreen: getPath(MainStackComponents.conductScreen),
-            DailyThemesScreen: getPath(MainStackComponents.dailyThemesScreen),
+            DailyThemesScreen: getPath(CommonStackComponents.dailyThemesScreen),
             PhotostreamScreen: getPath(MainStackComponents.photostreamScreen),
             MicroKaraokeListScreen: getPath(MainStackComponents.microKaraokeListScreen),
             PerformerListScreen: getPath(MainStackComponents.performerListScreen),
             MainTimeZoneScreen: getPath(CommonStackComponents.mainTimeZoneScreen),
             BoardgameListScreen: getPath(MainStackComponents.boardgameListScreen),
+            HuntListScreen: getPath(MainStackComponents.huntListScreen),
+            HuntScreen: getPath(CommonStackComponents.huntScreen),
+            HuntPuzzleScreen: getPath(CommonStackComponents.huntPuzzleScreen),
             KaraokePerformanceListScreen: getPath(MainStackComponents.karaokePerformanceListScreen),
             KaraokeSearchScreen: getPath(MainStackComponents.karaokeSearchScreen),
             KaraokeFavoritesListScreen: getPath(MainStackComponents.karaokeFavoritesListScreen),
             KaraokeLogPerformanceScreen: getPath(MainStackComponents.karaokeLogPerformanceScreen),
+            ModeratorHomeScreen: getPath(CommonStackComponents.moderatorHomeScreen),
+            ModeratorReportsScreen: {
+              path: 'reports/:closed?',
+              parse: {
+                closed: (value?: string) => value === 'closed' || value === 'true',
+              },
+              stringify: {
+                closed: (value?: boolean) => (value ? 'closed' : undefined) as string,
+              },
+            },
+            ModeratorLogScreen: getPath(CommonStackComponents.moderatorLogScreen),
+            ModeratorGuideScreen: getPath(CommonStackComponents.moderatorGuideScreen),
+            ModerateForumPostScreen: getPath(CommonStackComponents.moderateForumPostScreen),
+            ModerateForumThreadScreen: getPath(CommonStackComponents.moderateForumThreadScreen),
+            ModerateLfgScreen: getPath(CommonStackComponents.moderateLfgScreen),
+            ModerateFezPostScreen: getPath(CommonStackComponents.moderateFezPostScreen),
+            ModerateProfileScreen: getPath(CommonStackComponents.moderateProfileScreen),
+            ModerateUserScreen: getPath(CommonStackComponents.moderateUserScreen),
+            ModeratePhotostreamScreen: getPath(CommonStackComponents.moderatePhotostreamScreen),
+            ModeratePrivateEventScreen: getPath(CommonStackComponents.moderatePrivateEventScreen),
+            ModerateMicroKaraokeSongsScreen: getPath(CommonStackComponents.moderateMicroKaraokeSongsScreen),
+            ModerateMicroKaraokeSongScreen: getPath(CommonStackComponents.moderateMicroKaraokeSongScreen),
           },
         }),
         SeamailTab: tabLinkConfig<ChatStackParamList>({
@@ -81,6 +111,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           screens: {
             SeamailListScreen: getPath(ChatStackScreenComponents.seamailListScreen),
             SeamailChatScreen: getPath(CommonStackComponents.seamailChatScreen),
+            PrivateEventChatScreen: getPath(CommonStackComponents.privateEventChatScreen),
             KrakenTalkReceiveScreen: getPath(ChatStackScreenComponents.krakenTalkReceiveScreen),
           },
         }),
@@ -140,6 +171,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
  * idk...
  */
 export const navigationLinking: LinkingOptions<RootStackParamList> = {
-  prefixes: ['tricordarr://'].filter(prefix => prefix !== undefined) as string[],
+  prefixes: [appLinkPrefix].filter(prefix => prefix !== undefined) as string[],
+  filter: url => !url.includes('expo-development-client'),
   config: deepLinksConf,
 };

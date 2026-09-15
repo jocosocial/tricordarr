@@ -30,6 +30,10 @@ export const ForumThreadHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Post Actions'}>
           <HelpTopicView>Long-press a post to access a menu of actions for that specific post.</HelpTopicView>
+          <HelpTopicView title={'Reply'} icon={AppIcons.reply}>
+            Adds an @mention of the post's author to the box at the bottom of the screen, so they are notified when you
+            post. Anything you have already typed is kept. Not shown on your own posts.
+          </HelpTopicView>
           <CopyButtonHelpTopicView />
           <ShareButtonHelpTopicView />
           <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
@@ -45,8 +49,9 @@ export const ForumThreadHelpScreen = () => {
             Pin or unpin this post to this thread. Pinned posts are accessed through the Pinned Posts action described
             above.
           </HelpTopicView>
-          <HelpTopicView>
-            You can also add reactions to this post using one of the three reaction buttons.
+          <HelpTopicView title={'React'}>
+            Choose React to add a unicode or custom emoji reaction to a post. Choose a reaction you have already added
+            to remove it. Tap a reaction badge below a post to see who reacted.
           </HelpTopicView>
           <ReportButtonHelpTopicView />
           <ModerateButtonHelpTopicView />
@@ -67,6 +72,9 @@ export const ForumThreadHelpScreen = () => {
           </HelpTopicView>
           <HelpTopicView title={'Mute'} icon={AppIcons.mute}>
             Mute or unmute this thread. Muted threads appear at the end of thread lists.
+          </HelpTopicView>
+          <HelpTopicView title={'Create LFG'} icon={AppIcons.lfgCreate}>
+            Create a Looking For Group with certain details pre-filled from this thread.
           </HelpTopicView>
           <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
             Edit the thread title. Only available if you created the thread.

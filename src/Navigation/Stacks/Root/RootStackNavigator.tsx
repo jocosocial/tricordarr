@@ -1,0 +1,91 @@
+import {useNavigation} from '@react-navigation/native';
+import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
+import React, {useEffect, useRef} from 'react';
+
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
+import {useLayout} from '#src/Context/Contexts/LayoutContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {createLogger} from '#src/Libraries/Logger';
+import {OobeStackNavigator} from '#src/Navigation/Stacks/Oobe/OobeStackNavigator';
+import {RootStackComponents, RootStackParamList} from '#src/Navigation/Stacks/Root/RootStackComponents';
+import {BottomTabNavigator} from '#src/Navigation/Tabs/Bottom/BottomTabNavigator';
+import {LighterScreen} from '#src/Screens/Main/LighterScreen';
+
+const logger = createLogger('RootStackNavigator.tsx');
+
+export const RootStackNavigator = () => {
+  const {screenOptions} = useStyles();
+  const Stack = createStackNavigator<RootStackParamList>();
+  const {appConfig} = useConfig();
+  const {currentSession, isLoading} = useSession();
+  const {setHasUnsavedWork} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
+  const {footerHeight} = useLayout();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  // Store the last known footer height so we can restore it when navigating back
+  const lastKnownFooterHeightRef = useRef<number>(0);
+  // Track the previous root-level route so we only clear the snackbar on root route changes
+  const previousRootRouteRef = useRef<string | undefined>(undefined);
+
+  // Clear or restore footerHeight based on current route
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('state', () => {
+      const state = navigation.getState();
+      const currentRoute = state?.routes[state.index];
+      if (currentRoute?.name !== RootStackComponents.rootContentScreen) {
+        // Navigating away - save current height and clear it
+        if (footerHeight.value > 0) {
+          lastKnownFooterHeightRef.current = footerHeight.value;
+          logger.debug('Saving footerHeight', lastKnownFooterHeightRef.current);
+        }
+        logger.debug('Navigating away from RootContentScreen, clearing footerHeight');
+        footerHeight.set(0);
+      } else {
+        // Navigating back to RootContentScreen - restore height
+        if (lastKnownFooterHeightRef.current > 0) {
+          logger.debug('Restoring footerHeight to', lastKnownFooterHeightRef.current);
+          footerHeight.set(lastKnownFooterHeightRef.current);
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, footerHeight]);
+
+  // Wait for session loading to complete before deciding initial route
+  if (isLoading) {
+    return null;
+  }
+
+  let initialRouteName = RootStackComponents.oobeNavigator;
+  if ((currentSession?.oobeCompletedVersion ?? 0) >= appConfig.oobeExpectedVersion) {
+    initialRouteName = RootStackComponents.rootContentScreen;
+  }
+
+  return (
+    <Stack.Navigator
+      initialRouteName={initialRouteName}
+      screenOptions={{...screenOptions, headerShown: false}}
+      screenListeners={{
+        state: () => {
+          logger.debug('navigation state change handler.');
+          setHasUnsavedWork(false);
+          // KrakenTalk call declined messages highlighted that this was previously
+          // clearing the snackbar too aggressively.
+          const state = navigation.getState();
+          const currentRootRoute = state?.routes[state.index]?.name;
+          if (previousRootRouteRef.current !== undefined && currentRootRoute !== previousRootRouteRef.current) {
+            setSnackbarPayload(undefined);
+          }
+          previousRootRouteRef.current = currentRootRoute;
+        },
+      }}>
+      <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />
+      <Stack.Screen name={RootStackComponents.rootContentScreen} component={BottomTabNavigator} />
+      <Stack.Screen name={RootStackComponents.lighterScreen} component={LighterScreen} />
+    </Stack.Navigator>
+  );
+};

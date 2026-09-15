@@ -10,8 +10,8 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -55,7 +55,9 @@ const UserDirectoryScreenInner = ({navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <UserMatchSearchBar
+            testID={'userDirectorySearch-input'}
             excludeHeaders={[]}
+            excludeSelf={false}
             onPress={user =>
               navigation.push(CommonStackComponents.userProfileScreen, {
                 userID: user.userID,

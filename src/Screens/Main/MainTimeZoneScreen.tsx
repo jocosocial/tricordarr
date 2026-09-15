@@ -14,7 +14,8 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useClipboard} from '#src/Hooks/useClipboard';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {appSiteUrl} from '#src/Libraries/UrlParser';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -88,8 +89,9 @@ const TimeZoneScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'checkDeviceTime-button'}
             buttonText={'Check Device Time'}
-            onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/time`)}
+            onPress={() => Linking.openURL(appSiteUrl('time'))}
           />
         </PaddedContentView>
         <ListSection>

@@ -1,4 +1,4 @@
-import notifee, {AndroidAction, AndroidChannelGroup} from '@notifee/react-native';
+import notifee, {AndroidAction, AndroidChannelGroup} from 'react-native-notify-kit';
 import removeMd from 'remove-markdown';
 
 import {markAsReadPressAction, PressAction, settingsPressAction} from '#src/Enums/Notifications';
@@ -171,6 +171,7 @@ export async function generateContentNotification(
       // https://notifee.app/react-native/docs/android/interaction
       pressAction: {
         id: pressActionID,
+        launchActivity: 'default',
       },
       smallIcon: 'ic_notification',
       actions: actions,

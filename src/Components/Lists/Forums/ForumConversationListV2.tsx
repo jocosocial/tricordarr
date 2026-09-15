@@ -29,6 +29,11 @@ interface ForumConversationListV2Props {
   initialScrollIndex?: number;
   /** Callback fired once the list has reached its initial scroll position. */
   onReadyToShow?: () => void;
+  /**
+   * True when opened from a specific post. The selected post is first in the
+   * loaded page, so do not align the list to the end as if the thread were fully read.
+   */
+  startFromPost?: boolean;
 }
 
 /**
@@ -52,13 +57,20 @@ export const ForumConversationListV2 = ({
   hasNextPage,
   initialScrollIndex,
   onReadyToShow,
+  startFromPost,
 }: ForumConversationListV2Props) => {
   const {commonStyles} = useStyles();
   const {currentUserID} = useSession();
   const {hasModerator} = usePrivilege();
 
-  // The thread is fully read when readCount equals postCount.
-  const isFullyRead = forumListData ? forumListData.readCount === forumListData.postCount : true;
+  // The thread is fully read when readCount equals postCount. A thread opened
+  // from a specific post has no forumListData, which would otherwise look fully
+  // read and pin the list to the last item — hiding the startPost.
+  const isFullyRead = startFromPost
+    ? false
+    : forumListData
+      ? forumListData.readCount === forumListData.postCount
+      : true;
 
   // Compute the divider index for the scroll button. Only set when the divider
   // is within the loaded data range.
@@ -141,6 +153,14 @@ export const ForumConversationListV2 = ({
       estimatedItemSize={120}
       onReadyToShow={onReadyToShow}
       newDividerIndex={newDividerIndex}
+      // renderItem's "New" divider placement is driven by isFullyRead/newDividerIndex,
+      // which live outside `data`. LegendList's recycled cells (recycleItems={true}) only
+      // redraw when `item`/`index` change or `extraData` changes identity, so without this
+      // a cell that already rendered a divider would keep showing it after posting (see
+      // the same fix in FezConversationListV2). Combine both so every visibility/position
+      // transition is distinguishable, including two different "hidden" states that would
+      // otherwise both be `undefined`.
+      extraData={`${isFullyRead}-${newDividerIndex}`}
       // Style is here rather than in the renderItem because the padding we use is
       // also needed for the dividers. It could be added to the divider function as
       // well but this is slightly simpler and covers cases I am not remembering.

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {SecretHeaderTitle} from '#src/Components/Navigation/SecretHeaderTitle';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const TodayHeaderTitle = () => {
   const navigation = useCommonStack();

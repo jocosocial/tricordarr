@@ -10,6 +10,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface TimePickerFieldProps {
   name: string;
+  testID: string;
 }
 
 interface TimePick {
@@ -17,7 +18,7 @@ interface TimePick {
   minutes: number;
 }
 
-export const TimePickerField = ({name}: TimePickerFieldProps) => {
+export const TimePickerField = ({name, testID}: TimePickerFieldProps) => {
   const [field, meta] = useField<TimePick>(name);
   const {setFieldValue} = useFormikContext();
   const [visible, setVisible] = React.useState(false);
@@ -67,6 +68,7 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
   return (
     <View>
       <Button
+        testID={testID}
         buttonColor={theme.colors.background}
         textColor={theme.colors.onBackground}
         labelStyle={styles.text}

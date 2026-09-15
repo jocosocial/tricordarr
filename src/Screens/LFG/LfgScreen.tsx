@@ -12,9 +12,10 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {useFezData} from '#src/Hooks/useFezData';
+import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {openFezChatScreen} from '#src/Libraries/Navigation';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
@@ -60,12 +61,7 @@ const LfgScreenInner = ({navigation, route}: Props) => {
             <Item
               title={'Chat'}
               iconName={AppIcons.chat}
-              onPress={() =>
-                navigation.push(CommonStackComponents.lfgChatScreen, {
-                  fezID: lfg.fezID,
-                  initialReadCount,
-                })
-              }
+              onPress={() => openFezChatScreen(navigation, lfg.fezID, lfg.fezType, initialReadCount)}
             />
           )}
           {lfg && isOwner && (

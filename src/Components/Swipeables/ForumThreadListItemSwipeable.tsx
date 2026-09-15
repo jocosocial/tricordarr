@@ -8,7 +8,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {useForumPinMutation} from '#src/Queries/Forum/ForumThreadPinMutations';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
@@ -130,6 +130,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
       <>
         {eventID && (
           <SwipeableButton
+            testID={'forumThreadEvent-button'}
             text={'Event'}
             iconName={AppIcons.events}
             onPress={() => {
@@ -145,6 +146,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
         )}
         {hasModerator && props.categoryID && (
           <SwipeableButton
+            testID={'forumThreadPin-button'}
             text={props.forumListData.isPinned ? 'Unpin' : 'Pin'}
             refreshing={pinRefreshing}
             onPress={() => handlePin(swipeable)}
@@ -164,6 +166,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
     return (
       <>
         <SwipeableButton
+          testID={'forumThreadMute-button'}
           text={props.forumListData.isMuted ? 'Unmute' : 'Mute'}
           iconName={props.forumListData.isMuted ? AppIcons.unmute : AppIcons.mute}
           style={{backgroundColor: theme.colors.elevation.level2}}
@@ -172,6 +175,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           disabled={props.forumListData.isFavorite}
         />
         <SwipeableButton
+          testID={'forumThreadFavorite-button'}
           text={props.forumListData.isFavorite ? 'Unfavorite' : 'Favorite'}
           iconName={props.forumListData.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
           onPress={() => handleFavorite(swipeable)}
@@ -180,6 +184,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           disabled={props.forumListData.isMuted}
         />
         <SwipeableButton
+          testID={'forumThreadRead-button'}
           text={'Read'}
           iconName={AppIcons.markAsRead}
           onPress={() => handleMarkAsRead(swipeable)}

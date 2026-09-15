@@ -1,4 +1,4 @@
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 /**
  * Lifted from https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Enumerations/FezType.swift
@@ -29,6 +29,12 @@ export enum FezType {
   /// A calendar event where the owner can add other users (like an open chat), but should display the event's location and time. No capacity.
   /// Unlike LFGs, there's no searching for events you don't belong to.
   privateEvent = 'privateEvent',
+}
+
+export enum FezChatCategory {
+  seamail = 'seamail',
+  privateEvent = 'privateEvent',
+  lfg = 'lfg',
 }
 
 export namespace FezType {
@@ -106,5 +112,73 @@ export namespace FezType {
     // Default is gonna be Seamail. MainHelp isn't part of Common and I'm not sure
     // yet if I want to do that just for this.
     return CommonStackComponents.seamailHelpScreen;
+  };
+
+  export const getChatScreen = (fezType: FezType) => {
+    if (FezType.isLFGType(fezType)) {
+      return CommonStackComponents.lfgChatScreen;
+    } else if (fezType === FezType.privateEvent) {
+      return CommonStackComponents.privateEventChatScreen;
+    }
+    return CommonStackComponents.seamailChatScreen;
+  };
+
+  /// Joined-chat types shown in the Seamail inbox. Personal Events have no chat.
+  export const chatTypes: FezType[] = [...seamailTypes, FezType.privateEvent, ...lfgTypes];
+
+  export const chatCategories: FezChatCategory[] = [
+    FezChatCategory.seamail,
+    FezChatCategory.privateEvent,
+    FezChatCategory.lfg,
+  ];
+
+  export const getChatCategoryLabel = (category: FezChatCategory) => {
+    switch (category) {
+      case FezChatCategory.seamail:
+        return 'Seamail';
+      case FezChatCategory.privateEvent:
+        return 'Private Event';
+      case FezChatCategory.lfg:
+        return 'LFG';
+    }
+  };
+
+  /**
+   * Chat categories that may appear in the Seamail list for the given include preferences.
+   */
+  export const allowedChatCategories = (includeLfgs: boolean, includePrivateEvents: boolean): FezChatCategory[] => {
+    return chatCategories.filter(category => {
+      switch (category) {
+        case FezChatCategory.lfg:
+          return includeLfgs;
+        case FezChatCategory.privateEvent:
+          return includePrivateEvents;
+        default:
+          return true;
+      }
+    });
+  };
+
+  /**
+   * Resolves Fez types to query for the Seamail list.
+   * An empty selection means all allowed categories. Categories not in `allowedCategories` are ignored.
+   */
+  export const fezTypesForChatCategories = (
+    categories: FezChatCategory[],
+    allowedCategories: FezChatCategory[] = chatCategories,
+  ): FezType[] => {
+    const selected = categories.length > 0 ? categories : allowedCategories;
+    const effective = selected.filter(c => allowedCategories.includes(c));
+    const types: FezType[] = [];
+    if (effective.includes(FezChatCategory.seamail)) {
+      types.push(...seamailTypes);
+    }
+    if (effective.includes(FezChatCategory.privateEvent)) {
+      types.push(FezType.privateEvent);
+    }
+    if (effective.includes(FezChatCategory.lfg)) {
+      types.push(...lfgTypes);
+    }
+    return types.length > 0 ? types : [...seamailTypes];
   };
 }

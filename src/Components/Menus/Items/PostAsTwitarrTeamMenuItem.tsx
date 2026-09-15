@@ -26,7 +26,7 @@ export const PostAsTwitarrTeamMenuItem = ({closeMenu, active, onPress}: PostAsTw
     <Menu.Item
       title={'Post as TwitarrTeam'}
       dense={false}
-      leadingIcon={AppIcons.twitarteam}
+      leadingIcon={AppIcons.twitarrteam}
       onPress={() => {
         handlePress();
         closeMenu();

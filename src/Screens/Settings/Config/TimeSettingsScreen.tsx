@@ -17,8 +17,11 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {TimeSettingsFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.timeSettingsScreen>;
@@ -103,6 +106,7 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
           <View>
             <BooleanField
               name={'silenceTimezoneWarnings'}
+              testID={'silenceTimezoneWarnings-switch'}
               label={'Silence Timezone Warnings'}
               onPress={toggleSilenceTimezoneWarnings}
               value={silenceTimezoneWarnings}
@@ -125,10 +129,13 @@ export const TimeSettingsScreen = ({navigation}: Props) => {
               <View>
                 <BooleanField
                   name={'forceShowTimezoneWarning'}
+                  testID={'forceShowTimezoneWarning-switch'}
                   label={'Force Show Timezone Warning'}
                   onPress={toggleForceShowTimezoneWarning}
                   value={forceShowTimezoneWarning}
-                  helperText={'Always show the timezone warning on the Today screen.'}
+                  helperText={
+                    'Always show the timezone warning throughout schedule, event, LFG, and private event screens.'
+                  }
                   disabled={appConfig.silenceTimezoneWarnings}
                   style={commonStyles.paddingHorizontalSmall}
                 />

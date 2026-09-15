@@ -1,35 +1,28 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Text} from 'react-native-paper';
-import {Item} from 'react-navigation-header-buttons';
+import {View} from 'react-native';
 
 import {BlockedOrMutedBanner} from '#src/Components/Banners/BlockedOrMutedBanner';
 import {UserProfileFABGroup} from '#src/Components/Buttons/FloatingActionButtons/UserProfileFABGroup';
 import {UserProfileSelfFAB} from '#src/Components/Buttons/FloatingActionButtons/UserProfileSelfFAB';
 import {HeaderProfileFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileFavoriteButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
-import {UserAboutCard} from '#src/Components/Cards/UserProfile/UserAboutCard';
 import {UserContentCard} from '#src/Components/Cards/UserProfile/UserContentCard';
 import {UserNoteCard} from '#src/Components/Cards/UserProfile/UserNoteCard';
-import {UserProfileCard} from '#src/Components/Cards/UserProfile/UserProfileCard';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {UserProfileScreenActionsMenu} from '#src/Components/Menus/User/UserProfileScreenActionsMenu';
 import {UserProfileSelfActionsMenu} from '#src/Components/Menus/User/UserProfileSelfActionsMenu';
-import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {UserProfileAvatar} from '#src/Components/Views/UserProfileAvatar';
+import {UserProfileView} from '#src/Components/Views/UserProfileView';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
@@ -57,7 +50,6 @@ export const UserProfileScreenBase = (props: Props) => {
  */
 const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const {currentUserID} = useSession();
-  const {commonStyles} = useStyles();
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const commonNavigation = useCommonStack();
@@ -68,12 +60,6 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const {preRegistrationMode} = usePreRegistration();
   const {oobeCompleted} = useOobe();
   const isSelf = data?.header.userID === currentUserID;
-  const onEditProfilePress = useCallback(() => {
-    if (!data) {
-      return;
-    }
-    commonNavigation.push(CommonStackComponents.userProfileEditScreen, {user: data});
-  }, [commonNavigation, data]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
       const refreshes = [
@@ -89,8 +75,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
       return (
         <View>
           <MaterialHeaderButtons left>
-            <Item title={'Edit'} iconName={AppIcons.edituser} onPress={onEditProfilePress} />
-            <UserProfileSelfActionsMenu userID={data.header.userID} />
+            <UserProfileSelfActionsMenu header={data.header} />
           </MaterialHeaderButtons>
         </View>
       );
@@ -107,7 +92,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [data, isSelf, isMuted, isBlocked, onEditProfilePress]);
+  }, [data, isSelf, isMuted, isBlocked]);
 
   useEffect(() => {
     commonNavigation.setOptions({
@@ -131,19 +116,6 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
     }
   }, [blocks, getNavButtons, mutes, commonNavigation, data]);
 
-  const styles = StyleSheet.create({
-    listContentCenter: {
-      ...commonStyles.flexRow,
-      ...commonStyles.justifyCenter,
-    },
-    button: {
-      ...commonStyles.marginHorizontalSmall,
-    },
-    titleText: {
-      ...commonStyles.textCenter,
-    },
-  });
-
   if (isLoading) {
     return <LoadingView />;
   }
@@ -158,19 +130,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
         isStack={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
-        {data.message && (
-          <PaddedContentView padTop={true} padBottom={false} style={styles.listContentCenter}>
-            <Text selectable={true}>{data.message}</Text>
-          </PaddedContentView>
-        )}
-        <PaddedContentView padTop={true} style={styles.listContentCenter}>
-          <UserProfileAvatar user={data} setRefreshing={setRefreshing} />
-        </PaddedContentView>
-        <PaddedContentView style={styles.listContentCenter}>
-          <Text selectable={true} variant={'headlineMedium'} style={styles.titleText}>
-            <UserBylineTag user={data.header} includePronoun={false} variant={'headlineMedium'} />
-          </Text>
-        </PaddedContentView>
+        <UserProfileView user={data} setRefreshing={setRefreshing} />
         {data.note && (
           <PaddedContentView>
             <UserNoteCard
@@ -182,14 +142,6 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
                 }
               }}
             />
-          </PaddedContentView>
-        )}
-        <PaddedContentView>
-          <UserProfileCard user={data} />
-        </PaddedContentView>
-        {data.about && (
-          <PaddedContentView>
-            <UserAboutCard user={data} />
           </PaddedContentView>
         )}
         {oobeCompleted && (

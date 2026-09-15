@@ -30,7 +30,8 @@ export const ScheduleDayHelpScreen = () => {
         <HelpChapterTitleView title={'Floating Action Button'}>
           <HelpFABView icon={AppIcons.dayPlanner} label={'Day Planner'} />
           <HelpTopicView>
-            Press the "Day Planner" button in the lower right to view your events in a calendar-style timeline view.
+            Press the "Day Planner" button in the lower right to view your events in a calendar-style timeline view. The
+            day you have selected is shared with the Day Planner, including when you go back.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
@@ -39,9 +40,10 @@ export const ScheduleDayHelpScreen = () => {
           <ScheduleSettingsHelpTopicView />
           <HelpButtonHelpTopicView />
           <HelpTopicView title={'Favorite/Follow'} icon={AppIcons.favorite}>
-            Favoriting an event adds it to a list of all of your favorites. Long press an event in the schedule or press
-            the icon at the top of the event details screen. You can see all of your favorite events with a filter or
-            with the floating action button. You will receive a push notification before any favorite event starts.
+            Favoriting an event adds it to a list of all of your favorites. Press the icon on an event in the schedule
+            or press the icon at the top of the event details screen. You can see all of your favorite events with a
+            filter or with the floating action button. You will receive a push notification before any favorite event
+            starts.
           </HelpTopicView>
           <HelpTopicView title={'Forums'} icon={AppIcons.forum}>
             All events are given a corresponding forum. You can use that to discuss the event by tapping the forum

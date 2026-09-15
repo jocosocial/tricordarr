@@ -1,16 +1,17 @@
 import React, {Dispatch, SetStateAction} from 'react';
-import {Alert, Linking} from 'react-native';
+import {Linking} from 'react-native';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
-import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
+import {alertClearCookies} from '#src/Libraries/Alerts/SiteUIAlerts';
 import {createLogger} from '#src/Libraries/Logger';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {ShareContentType} from '#src/Libraries/Sharing';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 const logger = createLogger('SiteUIScreenActionsMenu.tsx');
 
@@ -36,18 +37,11 @@ export const SiteUIScreenActionsMenu = ({onHome, getCurrentUrl, setKey}: SiteUIS
   };
 
   const handleClear = () => {
-    Alert.alert('Clear Cookies', 'Are you sure you want to clear all webview cookies? You may need to sign in again.', [
-      {text: 'Cancel', style: 'cancel', onPress: closeMenu},
-      {
-        text: 'Clear',
-        style: 'destructive',
-        onPress: async () => {
-          await clearCookies();
-          setKey(String(Date.now()));
-          closeMenu();
-        },
-      },
-    ]);
+    alertClearCookies(async () => {
+      await clearCookies();
+      setKey(String(Date.now()));
+      closeMenu();
+    }, closeMenu);
   };
 
   const handleOpenInBrowser = () => {

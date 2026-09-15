@@ -4,8 +4,8 @@ import {Card, Text} from 'react-native-paper';
 
 import {APIImage} from '#src/Components/Images/APIImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
 
 interface PerformerHeaderCardProps {

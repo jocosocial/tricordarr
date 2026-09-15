@@ -5,23 +5,23 @@ import {View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {Item} from 'react-navigation-header-buttons';
 
-import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {ForumCreateForm} from '#src/Components/Forms/Forum/ForumCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
+import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
-import {useMaxForumPostImages} from '#src/Hooks/useMaxForumPostImages';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {createLogger} from '#src/Libraries/Logger';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ForumCreateData, ForumData, PostContentData} from '#src/Structs/ControllerStructs';
@@ -48,21 +48,19 @@ export const ForumThreadCreateScreen = (props: Props) => {
 const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   const forumFormRef = useRef<FormikProps<ForumThreadValues>>(null);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
-  const [submitting, setSubmitting] = useState(false);
   const [forumFormValid, setForumFormValid] = useState(false);
   const forumCreateMutation = useForumCreateMutation();
-  const maxForumPostImages = useMaxForumPostImages();
+  const {maxForumPostImages} = useClientSettings();
   const {createThread} = useForumCacheReducer();
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {asPrivilegedUser} = useElevation();
   const dispatchScrollToTop = useScrollToTopIntent();
   // Use a ref to store the created forum data immediately (synchronously) to avoid race condition
   const createdForumRef = useRef<ForumData | null>(null);
 
   const onForumSubmit = (values: ForumThreadValues, formikHelpers: FormikHelpers<ForumThreadValues>) => {
-    setSubmitting(true);
     if (!postFormRef.current) {
       logger.error('Post form ref undefined.');
-      setSubmitting(false);
+      formikHelpers.setSubmitting(false);
       return;
     }
     // Whatever we picked in the Forum is what should be set in the Post.
@@ -89,12 +87,11 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
             dispatchScrollToTop(ForumStackComponents.forumCategoryScreen);
             navigation.replace(CommonStackComponents.forumThreadScreen, {
               forumID: createdForum.forumID,
+              asPrivilegedUser,
             });
           }
           // Update list caches asynchronously so navigation is not held up.
-          if (profilePublicData) {
-            createThread(response.data, profilePublicData.header);
-          }
+          createThread(response.data);
         },
         onSettled: () => formikHelpers.setSubmitting(false),
       },
@@ -107,7 +104,6 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
 
   // Handler to trigger the chain of events needed to complete this screen.
   const onSubmit = () => {
-    setSubmitting(true);
     forumFormRef.current?.submitForm();
   };
 
@@ -133,14 +129,14 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <PostAsUserBanner />
+      <PostAsUserWarningView />
       <ScrollingContentView>
         <ForumCreateForm onSubmit={onForumSubmit} formRef={forumFormRef} onValidationChange={setForumFormValid} />
       </ScrollingContentView>
       <ContentPostForm
         onSubmit={onPostSubmit}
         formRef={postFormRef}
-        overrideSubmitting={submitting}
+        overrideSubmitting={forumCreateMutation.isPending}
         onPress={onSubmit}
         enablePhotos={true}
         maxLength={2000}

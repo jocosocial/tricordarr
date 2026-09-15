@@ -32,6 +32,7 @@ export const ServerUrlSettingForm = (props: ServerUrlFormProps) => {
           <View style={[commonStyles.paddingBottom]}>
             <PickerField<ServerUrlChoice>
               name={'serverChoice'}
+              testID={'serverChoice-button'}
               label={'Server'}
               value={values.serverChoice}
               choices={ServerChoices.serverChoices}
@@ -44,6 +45,7 @@ export const ServerUrlSettingForm = (props: ServerUrlFormProps) => {
           </View>
           <UrlTextField
             name={'serverUrl'}
+            testID={'serverUrl-input'}
             label={'URL'}
             disabled={values.serverChoice.name !== 'Other'}
             onChangeText={v => {
@@ -57,6 +59,7 @@ export const ServerUrlSettingForm = (props: ServerUrlFormProps) => {
             viewStyle={commonStyles.marginTopSmall}
             onPress={handleSubmit}
             buttonText={'Save'}
+            testID={'serverUrlSave-button'}
           />
         </View>
       )}

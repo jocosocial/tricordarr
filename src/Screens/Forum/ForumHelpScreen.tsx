@@ -6,7 +6,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const ForumHelpScreen = () => {
   const commonNavigation = useCommonStack();
@@ -57,6 +57,12 @@ export const ForumHelpScreen = () => {
             description={'Search for forum posts by keyword.'}
             icon={AppIcons.search}
             onPress={() => commonNavigation.push(CommonStackComponents.forumPostSearchHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Mentions'}
+            description={'Posts that @mention you, including Moderator and TwitarrTeam inboxes.'}
+            icon={AppIcons.user}
+            onPress={() => commonNavigation.push(CommonStackComponents.forumPostMentionHelpScreen)}
           />
           <DataFieldListItem
             title={'Keywords'}

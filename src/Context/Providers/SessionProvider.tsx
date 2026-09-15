@@ -15,6 +15,10 @@ const logger = createLogger('SessionProvider.tsx');
  * SessionProvider refactored to use reducer pattern and useSyncExternalStore
  * for synchronous state access, eliminating race conditions.
  *
+ * Withholds children until sessions have loaded from storage (same pattern as
+ * ConfigProvider) so query clients never fire against AppConfig.serverUrl while
+ * a real session is still hydrating.
+ *
  * Architecture based on Bluesky's session management:
  * https://github.com/bluesky-social/social-app/blob/55806f10870128f7702714b5968c64a0e908281e/src/state/session/index.tsx
  */
@@ -301,6 +305,13 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       isLoggedIn,
     ],
   );
+
+  // Match ConfigProvider: do not mount children until storage has been read.
+  // https://github.com/jocosocial/tricordarr/issues/564
+  if (state.isLoading) {
+    logger.debug('Sessions are not ready.');
+    return null;
+  }
 
   return <SessionContext.Provider value={contextValue}>{children}</SessionContext.Provider>;
 };

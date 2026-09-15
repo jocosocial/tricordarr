@@ -1,7 +1,8 @@
 import React, {memo} from 'react';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
-import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
+import {ContentPostImages} from '#src/Components/Images/ContentPostImages';
+import {FezPostActionsMenu} from '#src/Components/Menus/Fez/FezPostActionsMenu';
 import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
 import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView';
@@ -9,23 +10,29 @@ import {MessageView} from '#src/Components/Views/MessageView';
 import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {useChatStack} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface FezPostListItemProps {
-  fez: FezData;
+  fez?: FezData;
   fezPost: FezPostData;
-  index: number;
+  index?: number;
+  fullWidth?: boolean;
 }
 
-const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
+/**
+ * Renders a fez post as a chat-style message row. `fez` is optional so the same
+ * item can preview a post on a moderate screen that only has FezPostData.
+ * `fullWidth` matches ForumPostListItem: avatar on the left, no side spacer, bubble stretched.
+ */
+const FezPostListItemInternal = ({fezPost, fez, fullWidth}: FezPostListItemProps) => {
   const {currentUserID} = useSession();
   const {asPrivilegedUser} = useElevation();
   const seamailNavigation = useChatStack();
 
-  let showAuthor = fez.participantCount > 2;
+  let showAuthor = fez ? fez.participantCount > 2 : true;
 
   // Do not show the author for the users own messages.
   if (fezPost.author.userID === currentUserID) {
@@ -37,7 +44,13 @@ const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
     showAuthor = true;
   }
 
-  const messageOnRight = fezPost.author.userID === currentUserID || fezPost.author.username === asPrivilegedUser;
+  if (fullWidth) {
+    showAuthor = true;
+  }
+
+  const messageOnRight = fullWidth
+    ? false
+    : fezPost.author.userID === currentUserID || fezPost.author.username === asPrivilegedUser;
 
   const onPress = () => {
     seamailNavigation.push(CommonStackComponents.userProfileScreen, {
@@ -54,10 +67,21 @@ const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
       )}
       {messageOnRight && <MessageSpacerView />}
       <MessageViewContainer>
-        <MessageView fez={fez} fezPost={fezPost} messageOnRight={messageOnRight} showAuthor={showAuthor} />
-        {fezPost.image && <ContentPostImage image={fezPost.image} messageOnRight={messageOnRight} />}
+        <MessageView
+          author={fezPost.author}
+          text={fezPost.text}
+          timestamp={new Date(fezPost.timestamp)}
+          messageOnRight={messageOnRight}
+          showAuthor={showAuthor}
+          fullWidth={fullWidth}
+          reactions={fezPost.reactions}
+          renderActionsMenu={({visible, closeMenu, anchor}) => (
+            <FezPostActionsMenu visible={visible} closeMenu={closeMenu} anchor={anchor} fezPost={fezPost} fez={fez} />
+          )}
+        />
+        <ContentPostImages images={fezPost.image ? [fezPost.image] : []} messageOnRight={messageOnRight} />
       </MessageViewContainer>
-      {!messageOnRight && <MessageSpacerView />}
+      {!messageOnRight && !fullWidth && <MessageSpacerView />}
     </FlatListItemContent>
   );
 };

@@ -13,7 +13,7 @@ import {
   generateTimeSlotLabels,
   getTimelineHeight,
 } from '#src/Libraries/DayPlanner';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
 
 interface DayPlannerTimelineViewProps {
@@ -140,7 +140,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         <View style={styles.emptyMessage}>
           <Text style={styles.emptyText}>No items in your Day Planner for this day.</Text>
           <Text style={styles.emptyText}>
-            Follow events on the schedule! Once you're on board, you can join LFGs or create personal events to see them
+            Follow events on the schedule! Once you're on board, you can join LFGs or create private events to see them
             here.
           </Text>
         </View>
@@ -148,7 +148,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     }
 
     return (
-      <ScrollView ref={ref} style={styles.container} contentContainerStyle={styles.scrollContent}>
+      <ScrollView ref={ref} style={styles.container} contentContainerStyle={styles.scrollContent} scrollsToTop={false}>
         <View style={[styles.timelineRow, {height: timelineHeight}]}>
           <DayPlannerNowDivider
             dayStart={dayStart}

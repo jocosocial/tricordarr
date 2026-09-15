@@ -43,6 +43,12 @@ export const BaseSwipeable = ({
   return (
     <Swipeable
       enabled={enabled}
+      dragOffsetFromLeft={20}
+      dragOffsetFromRight={-20}
+      // failOffsetY is a custom prop added after upgrade to RN 86. FlashList + Swipeable
+      // lists would "stick" when scrolling vertically. This provides a hint that
+      // the Swipeable should not activate.
+      failOffsetY={[-8, 8]}
       renderRightActions={appConfig.userPreferences.reverseSwipeOrientation ? renderLeftPanel : renderRightPanel}
       renderLeftActions={appConfig.userPreferences.reverseSwipeOrientation ? renderRightPanel : renderLeftPanel}
       overshootFriction={overshootFriction}

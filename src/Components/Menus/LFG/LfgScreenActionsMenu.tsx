@@ -1,19 +1,19 @@
-import React, {ReactNode} from 'react';
+import React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
-import {FezCancelModal} from '#src/Components/Views/Modals/FezCancelModal';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {ShareContentType} from '#src/Enums/ShareContentType';
+import {ReportContentType} from '#src/Enums/ReportContentType';
+import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
+import {ShareContentType} from '#src/Libraries/Sharing';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useLFGStackNavigation} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
@@ -21,16 +21,10 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   const navigation = useLFGStackNavigation();
   const commonNavigation = useCommonStack();
   const {hasModerator} = usePrivilege();
-  const {setModalContent, setModalVisible} = useModal();
   const {currentUserID} = useSession();
+  const {confirmCancel} = useFezAlert(fezData);
 
   const menuAnchor = <Item title={'LFG Menu'} iconName={AppIcons.menu} onPress={openMenu} />;
-
-  const handleModal = (content: ReactNode) => {
-    closeMenu();
-    setModalContent(content);
-    setModalVisible(true);
-  };
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
@@ -47,7 +41,10 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
         <Menu.Item
           leadingIcon={AppIcons.cancel}
           title={'Cancel'}
-          onPress={() => handleModal(<FezCancelModal fezData={fezData} />)}
+          onPress={() => {
+            closeMenu();
+            confirmCancel();
+          }}
           disabled={fezData.cancelled}
         />
       )}
@@ -55,18 +52,20 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}
-        onPress={() => handleModal(<ReportModalView fez={fezData} />)}
+        onPress={() => {
+          closeMenu();
+          commonNavigation.push(CommonStackComponents.reportScreen, {
+            contentType: ReportContentType.fez,
+            contentID: fezData.fezID,
+          });
+        }}
       />
       {hasModerator && (
         <Menu.Item
           leadingIcon={AppIcons.moderator}
           title={'Moderate'}
           onPress={() => {
-            navigation.push(CommonStackComponents.siteUIScreen, {
-              resource: 'lfg',
-              id: fezData.fezID,
-              moderate: true,
-            });
+            pushModerateResource(commonNavigation, 'lfg', fezData.fezID);
             closeMenu();
           }}
         />

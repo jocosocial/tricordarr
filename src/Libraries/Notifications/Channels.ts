@@ -1,4 +1,4 @@
-import notifee, {AndroidChannel} from '@notifee/react-native';
+import notifee, {AndroidChannel} from 'react-native-notify-kit';
 
 import {contentChannelGroup, setupChannelGroups, systemChannelGroup} from '#src/Libraries/Notifications/ChannelGroups';
 

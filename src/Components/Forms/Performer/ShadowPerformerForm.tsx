@@ -44,18 +44,42 @@ export const ShadowPerformerForm = ({initialValues, onSubmit, buttonText = 'Crea
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
-          <AvatarImageField<PerformerUploadData> name={'photo'} imageData={initialValues.photo} />
-          <TextField name={'name'} label={'Name'} autoCapitalize={'words'} />
-          <TextField name={'pronouns'} label={'Pronouns'} autoCapitalize={'none'} />
-          <TextField name={'organization'} label={'Organization'} autoCapitalize={'words'} />
-          <TextField name={'title'} label={'Title'} autoCapitalize={'words'} />
-          <TextField name={'bio'} label={'Bio'} autoCapitalize={'sentences'} numberOfLines={3} multiline={true} />
+          <AvatarImageField<PerformerUploadData>
+            name={'photo'}
+            testIDPrefix={'performer'}
+            imageData={initialValues.photo}
+          />
+          <TextField name={'name'} testID={'performerName-input'} label={'Name'} autoCapitalize={'words'} />
+          <TextField
+            name={'pronouns'}
+            testID={'performerPronouns-input'}
+            label={'Pronouns'}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            spellCheck={false}
+          />
+          <TextField
+            name={'organization'}
+            testID={'performerOrganization-input'}
+            label={'Organization'}
+            autoCapitalize={'words'}
+          />
+          <TextField name={'title'} testID={'performerTitle-input'} label={'Title'} autoCapitalize={'words'} />
+          <TextField
+            name={'bio'}
+            testID={'performerBio-input'}
+            label={'Bio'}
+            autoCapitalize={'sentences'}
+            numberOfLines={3}
+            multiline={true}
+          />
           <PrimaryActionButton
             disabled={isSubmitting || !isValid || !dirty}
             isLoading={isSubmitting}
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={buttonText}
+            testID={'performerSubmit-button'}
           />
         </View>
       )}

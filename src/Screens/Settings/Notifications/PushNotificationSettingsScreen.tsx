@@ -23,8 +23,10 @@ import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
-import {isAndroid} from '#src/Libraries/Platform/Detection';
-import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {SegmentedButtonType} from '#src/Types';
 
 const logger = createLogger('PushNotificationSettingsScreen.tsx');
@@ -115,9 +117,6 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
     });
   };
 
-  /**
-   * This is not supported on iOS. Notifications are automatically dusmissed on push.
-   */
   const toggleMarkReadCancelPush = () => {
     const newValue = !markReadCancelPush;
     updateAppConfig({
@@ -206,7 +205,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
       categories: ['microKaraokeSongReady'] as const,
     },
     {
-      title: 'Personal Events',
+      title: 'Private Events',
       categories: [
         'personalEventStarting',
         'addedToPrivateEvent',
@@ -234,6 +233,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
               )}
               {notificationPermissionStatus !== RESULTS.BLOCKED && (
                 <PrimaryActionButton
+                  testID={'pushAllowNotifications-button'}
                   buttonText={hasNotificationPermission ? 'Already Allowed' : 'Allow Push Notifications'}
                   onPress={handleEnable}
                   disabled={hasNotificationPermission}
@@ -252,6 +252,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
           </PaddedContentView>
           <PaddedContentView padTop={true}>
             <PrimaryActionButton
+              testID={'enableAllCategories-button'}
               buttonColor={theme.colors.twitarrPositiveButton}
               buttonText={'Enable All Categories'}
               onPress={() => setAllValue(true)}
@@ -260,6 +261,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
           </PaddedContentView>
           <PaddedContentView>
             <PrimaryActionButton
+              testID={'disableAllCategories-button'}
               buttonColor={theme.colors.twitarrNegativeButton}
               buttonText={'Disable All Categories'}
               onPress={() => setAllValue(false)}
@@ -299,6 +301,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
                             ]}>
                             <BooleanField
                               name={category.configKey}
+                              testID={`${category.configKey}-switch`}
                               label={category.title}
                               value={appConfig.pushNotifications[category.configKey]}
                               onPress={() => toggleValue(category.configKey)}
@@ -338,32 +341,36 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
             />
           </PaddedContentView>
           <PaddedContentView>
-            <PrimaryActionButton buttonText={'Resume'} onPress={resumeNotifications} disabled={!muteNotifications} />
+            <PrimaryActionButton
+              testID={'resume-button'}
+              buttonText={'Resume'}
+              onPress={resumeNotifications}
+              disabled={!muteNotifications}
+            />
           </PaddedContentView>
         </ListSection>
-        {isAndroid && (
-          <ListSection>
-            <ListSubheader>Auto Cancel</ListSubheader>
-            <PaddedContentView padTop={true}>
-              <Text variant={'bodyMedium'}>
-                Automatically dismiss push notifications for unread content when you have read the content. This can be
-                useful if you tend to navigate to content (such as a Seamail conversation) without tapping on the
-                notification and want the notification to go away.
-              </Text>
-              <Formik initialValues={{}} onSubmit={() => {}}>
-                <View>
-                  <BooleanField
-                    name={'markReadCancelPush'}
-                    label={'Dismiss Notifications on Read'}
-                    value={markReadCancelPush}
-                    onPress={toggleMarkReadCancelPush}
-                    helperText={'This setting only applies to Seamails and LFGs at this time.'}
-                  />
-                </View>
-              </Formik>
-            </PaddedContentView>
-          </ListSection>
-        )}
+        <ListSection>
+          <ListSubheader>Auto Cancel</ListSubheader>
+          <PaddedContentView padTop={true}>
+            <Text variant={'bodyMedium'}>
+              Automatically dismiss push notifications for unread content when you have read the content. This can be
+              useful if you tend to navigate to content (such as a Seamail conversation) without tapping on the
+              notification and want the notification to go away.
+            </Text>
+            <Formik initialValues={{}} onSubmit={() => {}}>
+              <View>
+                <BooleanField
+                  name={'markReadCancelPush'}
+                  testID={'markReadCancelPush-switch'}
+                  label={'Dismiss Notifications on Read'}
+                  value={markReadCancelPush}
+                  onPress={toggleMarkReadCancelPush}
+                  helperText={'Applies to Seamails, LFGs, and Private Events.'}
+                />
+              </View>
+            </Formik>
+          </PaddedContentView>
+        </ListSection>
       </ScrollingContentView>
     </AppView>
   );

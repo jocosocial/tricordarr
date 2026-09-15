@@ -25,18 +25,35 @@ export const FezChatHelpScreen = () => {
             chronological order, and you can scroll up to load older messages.
           </HelpTopicView>
           <HelpTopicView>
-            You can send text, unicode emojis, and our custom emojis. You cannot send pictures. This is intentional.
+            You can send text, unicode emojis, and our custom emojis. LFG and private event chats can attach one photo
+            per message. Seamail chats cannot include pictures.
+          </HelpTopicView>
+          <HelpTopicView title={'Insert'} icon={AppIcons.insert}>
+            Open the insert menu to add emoji to your post. In LFG and private event chats you can also attach one
+            photo. Press again to close the menu.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Post Actions'}>
           <HelpTopicView>Long-press on a message to access a menu of additional actions.</HelpTopicView>
+          <HelpTopicView title={'React'}>
+            Choose React to add a unicode or custom emoji reaction to another participant's message. Choose a reaction
+            you have already added to remove it. Tap a reaction badge below a message to see who reacted.
+          </HelpTopicView>
           <CopyButtonHelpTopicView />
           <ReportButtonHelpTopicView />
           <HelpTopicView>Messages made in Open seamails can be reported to the moderation team.</HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
+          <HelpTopicView title={'LFG'} icon={AppIcons.lfg}>
+            Open the LFG details screen for this chat. If you opened the chat from that LFG, this takes you back there
+            instead of opening a new copy. This button only appears for LFG chats.
+          </HelpTopicView>
+          <HelpTopicView title={'Event'} icon={AppIcons.personalEvent}>
+            Open the private event details screen for this chat. If you opened the chat from that event, this takes you
+            back there instead of opening a new copy. This button only appears for private event chats.
+          </HelpTopicView>
           <HelpTopicView title={'Create Event'} icon={AppIcons.eventCreate}>
-            Schedule a personal event with the users in this seamail conversation. This button only appears for seamail
+            Schedule a private event with the users in this seamail conversation. This button only appears for seamail
             conversations that have participants.
           </HelpTopicView>
           <ReloadButtonHelpTopicView />

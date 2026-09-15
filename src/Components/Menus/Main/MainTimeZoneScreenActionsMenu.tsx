@@ -5,9 +5,9 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
-import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 export const MainTimeZoneScreenActionsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();

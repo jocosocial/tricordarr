@@ -4,16 +4,20 @@ import {Keyboard} from 'react-native';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
+import {useSeamailFilter} from '#src/Context/Contexts/SeamailFilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useSafePagination} from '#src/Hooks/useSafePagination';
-import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
+import {useFezListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 export const SeamailSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [queryEnable, setQueryEnable] = useState(false);
-  const {data, refetch, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage} = useSeamailListQuery({
+  const {fezType} = useSeamailFilter();
+  const {data, refetch, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage} = useFezListQuery({
+    endpoint: 'joined',
+    fezType,
     search: searchQuery,
     options: {
       enabled: queryEnable,
@@ -66,6 +70,7 @@ export const SeamailSearchBar = () => {
   return (
     <>
       <SearchBarBase
+        testID={'seamailSearch-input'}
         placeholder={'Search seamail messages'}
         onSearch={onSearch}
         onChangeSearch={onChangeSearch}

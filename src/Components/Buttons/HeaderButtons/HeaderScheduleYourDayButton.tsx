@@ -58,6 +58,7 @@ export const HeaderScheduleYourDayButton = () => {
       color={yourDayActiveFilter ? theme.colors.twitarrNeutralButton : undefined}
       iconName={AppIcons.personalEvent}
       onPress={toggleYourDay}
+      testID={'headerYourDay-headerButton'}
     />
   );
 };

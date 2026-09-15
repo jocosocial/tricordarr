@@ -1,4 +1,4 @@
-import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list';
+import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list/react-native';
 import React, {useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
@@ -152,8 +152,11 @@ export const ConversationList = <TItem,>({
         onLayout={onLayout}
         initialScrollIndex={initialScrollIndex}
         style={style}
+        scrollsToTop={false}
       />
-      {effectiveScrollButton && showScrollButton && <FloatingScrollButton onPress={handleScrollButtonPress} />}
+      {effectiveScrollButton && showScrollButton && (
+        <FloatingScrollButton testID={'conversationScroll-button'} onPress={handleScrollButtonPress} />
+      )}
     </View>
   );
 };

@@ -19,7 +19,7 @@ import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';

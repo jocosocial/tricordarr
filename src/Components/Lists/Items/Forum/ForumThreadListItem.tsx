@@ -9,14 +9,16 @@ import {ListItem} from '#src/Components/Lists/ListItem';
 import {ForumThreadListItemSwipeable} from '#src/Components/Swipeables/ForumThreadListItemSwipeable';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {AppIcons} from '#src/Enums/Icons';
 import {getEventTimeString} from '#src/Libraries/DateTime';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 import {Selectable} from '#src/Types/Selectable';
 
@@ -40,6 +42,7 @@ const ForumThreadListInternal = ({
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const {dispatchSelectedItems} = useSelection();
+  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     item: {
@@ -64,7 +67,7 @@ const ForumThreadListInternal = ({
   });
 
   const getRight = () => {
-    const unreadCount = forumListData.postCount - forumListData.readCount;
+    const unreadCount = unreadPostCount(forumListData.postCount, forumListData.readCount);
     if (
       unreadCount ||
       forumListData.isFavorite ||
@@ -89,7 +92,9 @@ const ForumThreadListInternal = ({
   const getDescription = () => (
     <View>
       {forumListData.eventTime && (
-        <Text variant={'bodyMedium'}>{getEventTimeString(forumListData.eventTime, forumListData.timeZoneID)}</Text>
+        <Text variant={'bodyMedium'}>
+          {getEventTimeString(forumListData.eventTime, forumListData.timeZoneID, appConfig.schedule.timeZoneLabelMode)}
+        </Text>
       )}
       <Text variant={'bodyMedium'}>
         {forumListData.postCount} {pluralize('post', forumListData.postCount)}

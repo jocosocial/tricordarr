@@ -1,6 +1,6 @@
-import {Formik, FormikHelpers, FormikProps} from 'formik';
+import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
 import React, {useEffect} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import * as Yup from 'yup';
 
@@ -22,8 +22,42 @@ import {ImageQueryData} from '#src/Types';
 
 const logger = createLogger('ContentPostForm.tsx');
 
+/**
+ * Maps the current elevation account to the privilege flags the API expects on a post.
+ */
+const getPrivilegeFlags = (asPrivilegedUser?: keyof typeof PrivilegedUserAccounts) => ({
+  postAsModerator: asPrivilegedUser === PrivilegedUserAccounts.moderator,
+  postAsTwitarrTeam: asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam,
+});
+
+/**
+ * Copies current elevation into Formik privilege flags without reinitializing the form
+ * (which would wipe typed text and attached photos). See #152 / #525.
+ */
+const ElevationPrivilegeSync = () => {
+  const {setFieldValue} = useFormikContext<PostContentData>();
+  const {asPrivilegedUser} = useElevation();
+
+  useEffect(() => {
+    logger.debug('Updating privilege user Formik context.');
+    const flags = getPrivilegeFlags(asPrivilegedUser);
+    setFieldValue('postAsModerator', flags.postAsModerator);
+    setFieldValue('postAsTwitarrTeam', flags.postAsTwitarrTeam);
+  }, [asPrivilegedUser, setFieldValue]);
+
+  return null;
+};
+
 interface ContentPostFormProps {
-  onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
+  /**
+   * Handler for the submit action. This MUST return a promise that covers the network
+   * request (use `mutation.mutateAsync()`, not `mutation.mutate()`). Formik keeps
+   * `isSubmitting` true until the returned promise settles, which is what keeps the submit
+   * button spinning and disabled for the real lifetime of the request. Returning early
+   * (or firing a mutation and returning) re-enables the button while the post is still in
+   * flight, which produces duplicate posts on a laggy network. See #533.
+   */
+  onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void | Promise<void>;
   formRef?: React.RefObject<FormikProps<PostContentData> | null>;
   onPress?: () => void;
   overrideSubmitting?: boolean;
@@ -32,6 +66,8 @@ interface ContentPostFormProps {
   maxPhotos?: number;
   initialValues?: PostContentData;
   disabled?: boolean;
+  /** Receives the text input, so callers can focus it after writing into the form. */
+  inputRef?: React.MutableRefObject<TextInput | null>;
 }
 
 // https://formik.org/docs/guides/react-native
@@ -45,6 +81,7 @@ export const ContentPostForm = ({
   maxPhotos = 1,
   initialValues,
   disabled = false,
+  inputRef,
 }: ContentPostFormProps) => {
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = useElevation();
@@ -52,6 +89,14 @@ export const ContentPostForm = ({
   const [insertMenuVisible, setInsertMenuVisible] = React.useState(false);
   const [emojiPickerVisible, setEmojiPickerVisible] = React.useState(false);
 
+  /**
+   * Saves camera photos if needed, then submits with privilege flags taken from
+   * elevation rather than stale Formik state.
+   *
+   * The onSubmit result is awaited so that the promise this returns resolves only once the
+   * caller's network request has settled. Formik clears isSubmitting on that resolution, so
+   * failing to await here drops the spinner (and re-enables the button) mid-request. See #533.
+   */
   const handleSubmitWithPhotoSave = async (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => {
     // Save photos taken with camera to camera roll if enabled
     if (enablePhotos && appConfig.userPreferences.autosavePhotos) {
@@ -64,8 +109,13 @@ export const ContentPostForm = ({
       }
     }
 
-    // Call the original onSubmit handler
-    onSubmit(values, formikBag);
+    await onSubmit(
+      {
+        ...values,
+        ...getPrivilegeFlags(asPrivilegedUser),
+      },
+      formikBag,
+    );
   };
 
   const validationSchema = Yup.object().shape({
@@ -80,8 +130,7 @@ export const ContentPostForm = ({
 
   const defaultInitialValues: PostContentData = {
     images: [],
-    postAsModerator: asPrivilegedUser === PrivilegedUserAccounts.moderator,
-    postAsTwitarrTeam: asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam,
+    ...getPrivilegeFlags(asPrivilegedUser),
     text: '',
   };
 
@@ -129,17 +178,6 @@ export const ContentPostForm = ({
     setInsertMenuVisible(!insertMenuVisible);
   };
 
-  // #152 Used to use enableReinitialize={true} to reset the form
-  // if the asPrivilegedUser changed. But that wiped out anything
-  // the user had typed or attached.
-  useEffect(() => {
-    if (formRef?.current) {
-      logger.debug('Updating privilege user Formik context.');
-      formRef.current.values.postAsModerator = asPrivilegedUser === PrivilegedUserAccounts.moderator;
-      formRef.current.values.postAsTwitarrTeam = asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam;
-    }
-  }, [asPrivilegedUser, formRef]);
-
   // https://formik.org/docs/api/withFormik
   // https://www.programcreek.com/typescript/?api=formik.FormikHelpers
   // https://formik.org/docs/guides/react-native
@@ -155,7 +193,8 @@ export const ContentPostForm = ({
       validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, dirty, isValid}) => (
         <View style={styles.formOuterContainer}>
-          <ScrollView keyboardShouldPersistTaps={'always'} bounces={false}>
+          <ElevationPrivilegeSync />
+          <ScrollView keyboardShouldPersistTaps={'always'} bounces={false} scrollsToTop={false}>
             <View style={styles.formContainer}>
               {emojiPickerVisible && <EmojiPickerField />}
               <ContentInsertMenuView
@@ -168,12 +207,18 @@ export const ContentPostForm = ({
               <View style={styles.formView}>
                 <View style={styles.inputWrapperViewSide}>
                   <IconButton
+                    testID={'contentPostInsert-button'}
                     icon={emojiPickerVisible || insertMenuVisible ? AppIcons.insertClose : AppIcons.insert}
                     onPress={handleInsertPress}
                   />
                 </View>
                 <View style={styles.inputWrapperView}>
-                  <MentionTextField name={'text'} style={styles.input} />
+                  <MentionTextField
+                    name={'text'}
+                    testID={'contentPostText-input'}
+                    style={styles.input}
+                    inputRef={inputRef}
+                  />
                   <ContentInsertPhotosView />
                 </View>
                 <View style={styles.inputWrapperViewSide}>
@@ -182,6 +227,7 @@ export const ContentPostForm = ({
                     submitting={overrideSubmitting || isSubmitting}
                     onPress={onPress || handleSubmit}
                     withPrivilegeColors={true}
+                    testID={'contentPostSubmit-button'}
                   />
                 </View>
               </View>

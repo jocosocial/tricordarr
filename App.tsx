@@ -4,14 +4,14 @@
  */
 
 import React, {useEffect} from 'react';
-import {LogBox} from 'react-native';
+import {LogBox, StyleSheet} from 'react-native';
 // import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 // https://reactnavigation.org/docs/drawer-layout/
 import 'react-native-gesture-handler';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {KeyboardProvider} from 'react-native-keyboard-controller';
 import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {initialWindowMetrics, SafeAreaProvider} from 'react-native-safe-area-context';
 
 import {CallOverlay} from '#src/Components/Call/CallOverlay';
 import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
@@ -40,7 +40,7 @@ import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
 import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
-import {RootStackNavigator} from '#src/Navigation/Stacks/RootStackNavigator';
+import {RootStackNavigator} from '#src/Navigation/Stacks/Root/RootStackNavigator';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -94,8 +94,8 @@ function App(): React.JSX.Element {
    * SwiftarrQueryClientProvider needs SessionProvider for currentSession.
    */
   return (
-    <SafeAreaProvider>
-      <GestureHandlerRootView>
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <GestureHandlerRootView style={styles.root}>
         <ConfigProvider>
           <SessionProvider>
             <OobeProvider>
@@ -145,5 +145,15 @@ function App(): React.JSX.Element {
     </SafeAreaProvider>
   );
 }
+
+/**
+ * GestureHandlerRootView must fill the window (`flex: 1`). useStyles / commonStyles.flex
+ * are unavailable here because StyleProvider sits inside this view.
+ */
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+});
 
 export default App;

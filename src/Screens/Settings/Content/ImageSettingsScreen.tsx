@@ -16,6 +16,9 @@ export const ImageSettingsScreen = () => {
   const [loadFullFirst, setLoadFullFirst] = React.useState(appConfig.skipThumbnails);
   const [imagePreloadDelaySeconds, setImagePreloadDelaySeconds] = React.useState(appConfig.imagePreloadDelaySeconds);
   const [autosavePhotos, setAutosavePhotos] = React.useState(appConfig.userPreferences.autosavePhotos);
+  const [autoCompressOversizedImages, setAutoCompressOversizedImages] = React.useState(
+    appConfig.userPreferences.autoCompressOversizedImages,
+  );
 
   const handleLoadFullFirst = () => {
     const newvalue = !appConfig.skipThumbnails;
@@ -38,6 +41,18 @@ export const ImageSettingsScreen = () => {
     setAutosavePhotos(newvalue);
   };
 
+  const handleAutoCompressOversizedImages = () => {
+    const newvalue = !appConfig.userPreferences.autoCompressOversizedImages;
+    updateAppConfig({
+      ...appConfig,
+      userPreferences: {
+        ...appConfig.userPreferences,
+        autoCompressOversizedImages: newvalue,
+      },
+    });
+    setAutoCompressOversizedImages(newvalue);
+  };
+
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -46,6 +61,7 @@ export const ImageSettingsScreen = () => {
             <View>
               <BooleanField
                 name={'skipThumbnails'}
+                testID={'skipThumbnails-switch'}
                 label={'Load Full-Size Images First'}
                 onPress={handleLoadFullFirst}
                 style={commonStyles.paddingHorizontalSmall}
@@ -54,6 +70,7 @@ export const ImageSettingsScreen = () => {
               />
               <SliderField
                 name={'imagePreloadDelaySeconds'}
+                testID={'imagePreloadDelaySeconds-slider'}
                 label={'Full-Size Image Preload Delay'}
                 value={imagePreloadDelaySeconds}
                 minimumValue={0}
@@ -76,6 +93,7 @@ export const ImageSettingsScreen = () => {
               />
               <BooleanField
                 name={'autosavePhotos'}
+                testID={'autosavePhotos-switch'}
                 label={'Auto-Save Taken Photos'}
                 onPress={handleAutosavePhotos}
                 style={commonStyles.paddingHorizontalSmall}
@@ -83,6 +101,17 @@ export const ImageSettingsScreen = () => {
                   "Automatically save photos taken with the camera in this app to your device's photo library."
                 }
                 value={autosavePhotos}
+              />
+              <BooleanField
+                name={'autoCompressOversizedImages'}
+                testID={'autoCompressOversizedImages-switch'}
+                label={'Auto-Compress Oversized Images'}
+                onPress={handleAutoCompressOversizedImages}
+                style={commonStyles.paddingHorizontalSmall}
+                helperText={
+                  'Automatically resize photos that exceed the server image size limit. When off, oversized photos are rejected instead.'
+                }
+                value={autoCompressOversizedImages}
               />
             </View>
           </Formik>

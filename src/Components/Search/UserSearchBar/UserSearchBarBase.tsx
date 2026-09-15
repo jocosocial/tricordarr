@@ -47,6 +47,7 @@ interface UserSearchBarBaseProps {
    * It still shows up but is disabled.
    */
   excludeSelf?: boolean;
+  testID: string;
 }
 
 /**
@@ -64,16 +65,21 @@ export const UserSearchBarBaseComponent = ({
   label = 'Search for users',
   autoSearch = true,
   excludeSelf = false,
+  testID,
 }: UserSearchBarBaseProps) => {
   return (
     <View>
       <SearchBarBase
+        testID={testID}
         placeholder={label}
         searchQuery={searchQuery}
         onChangeSearch={onChangeSearch}
         onClear={onClear}
         minLength={2}
         autoSearch={autoSearch}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        spellCheck={false}
         onSearch={autoSearch ? undefined : refetch}
       />
       <UserSearchBarResults

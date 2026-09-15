@@ -9,8 +9,8 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PerformerScreenBase} from '#src/Screens/Performer/PerformerScreenBase';
@@ -46,7 +46,7 @@ const PerformerScreenInner = ({route, navigation}: Props) => {
               }
             />
           )}
-          <PerformerActionsMenu performerData={data} />
+          <PerformerActionsMenu performerData={data} performerID={route.params.id} />
         </MaterialHeaderButtons>
       </View>
     );

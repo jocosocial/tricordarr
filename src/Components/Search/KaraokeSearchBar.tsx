@@ -24,6 +24,7 @@ export const KaraokeSearchBar = ({
 }: KaraokeSearchBarProps) => {
   return (
     <SearchBarBase
+      testID={'karaokeSearch-input'}
       placeholder={placeholder}
       minLength={1}
       searchQuery={searchQuery}

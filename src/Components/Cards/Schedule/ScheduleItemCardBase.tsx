@@ -5,6 +5,7 @@ import {Card, Text, TouchableRipple} from 'react-native-paper';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {EventCardNowView} from '#src/Components/Views/Schedule/EventCardNowView';
 import {EventCardSoonView} from '#src/Components/Views/Schedule/EventCardSoonView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {getDurationString} from '#src/Libraries/DateTime';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
@@ -31,6 +32,7 @@ interface ScheduleItemCardBaseProps {
   titleHeader?: string;
   /** When true and marker is 'soon', the soon marker gets a 1px black right border (e.g. gold card contrast). */
   showMarkerBorder?: boolean;
+  disabled?: boolean;
 }
 
 export const ScheduleItemCardBase = ({
@@ -51,8 +53,10 @@ export const ScheduleItemCardBase = ({
   titleHeader,
   showDay = false,
   showMarkerBorder = false,
+  disabled = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     cardContent: {
@@ -110,11 +114,11 @@ export const ScheduleItemCardBase = ({
     },
   });
 
-  const duration = getDurationString(startTime, endTime, timeZoneID, showDay);
+  const duration = getDurationString(startTime, endTime, timeZoneID, showDay, appConfig.schedule.timeZoneLabelMode);
 
   return (
     <Card mode={'contained'} style={cardStyle}>
-      <TouchableRipple onPress={onPress} onLongPress={onLongPress}>
+      <TouchableRipple onPress={onPress} onLongPress={onLongPress} disabled={disabled}>
         <Card.Content style={styles.cardContent}>
           <View style={styles.contentView}>
             {marker === 'now' && <EventCardNowView />}

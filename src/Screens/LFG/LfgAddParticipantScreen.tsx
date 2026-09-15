@@ -11,8 +11,8 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/useFezData';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useFezData} from '#src/Hooks/Fez/useFezData';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -65,7 +65,11 @@ const LfgAddParticipantScreenInner = ({route, navigation}: Props) => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
-          <UserMatchSearchBar excludeHeaders={lfg.members.participants || []} onPress={onPress} />
+          <UserMatchSearchBar
+            testID={'lfgAddParticipant-input'}
+            excludeHeaders={lfg.members.participants || []}
+            onPress={onPress}
+          />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

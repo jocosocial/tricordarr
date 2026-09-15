@@ -1,9 +1,9 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef} from 'react';
 import {ScrollView, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
-import {SchedulePersonalEventCreateFAB} from '#src/Components/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB';
+import {ScheduleDayPlannerFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleDayPlannerFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
@@ -13,6 +13,7 @@ import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarnin
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
@@ -22,8 +23,8 @@ import {
   getScrollOffsetForFirstItem,
   getScrollOffsetForTimeOfDay,
 } from '#src/Libraries/DayPlanner';
-import {CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -41,16 +42,16 @@ export const ScheduleDayPlannerScreen = (props: Props) => {
   );
 };
 
-const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
+const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
   const {adjustedCruiseDayToday, startDate} = useCruise();
-  const cruiseDayParam = route.params?.cruiseDay;
-  // Day Planner doesn't support cruiseDay 0 (all days).
-  const [selectedCruiseDay, setSelectedCruiseDay] = useState(
-    cruiseDayParam === 0 || cruiseDayParam === undefined ? adjustedCruiseDayToday : cruiseDayParam,
-  );
+  const {selectedCruiseDay: contextCruiseDay, setSelectedCruiseDay} = useScheduleCruiseDay();
+  // Day Planner doesn't support cruiseDay 0 (All Days). Display today without writing
+  // back until the user picks a day, so All Days → Planner → Back stays on All Days.
+  const selectedCruiseDay = contextCruiseDay === 0 ? adjustedCruiseDayToday : contextCruiseDay;
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const scrollViewRef = useRef<ScrollView>(null);
+  const lastAutoScrolledCruiseDay = useRef<number | null>(null);
   const {preRegistrationMode} = usePreRegistration();
 
   // Fetch events with dayplanner=true (only favorited/following events)
@@ -90,6 +91,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
     refetch: refetchPersonalEvents,
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
+    hidePast: false,
     options: {
       enabled: !preRegistrationMode,
     },
@@ -196,18 +198,23 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   /**
-   * Auto-scroll on initial load. This used to scroll to current time for the current day,
-   * and the start of the list for other days. But that is somewhat inconsistent with
-   * other list behaviors.
+   * Auto-scroll to the first item on initial load and when switching cruise days.
+   * Gated by lastAutoScrolledCruiseDay so socket/refetch updates that rebuild
+   * dayPlannerItems (and thus scrollToFirstItem) do not jump the timeline.
    */
   useEffect(() => {
-    if (scrollViewRef.current && !showLoading) {
-      const rafId = requestAnimationFrame(() => {
-        scrollToFirstItem();
-      });
-      return () => cancelAnimationFrame(rafId);
+    if (showLoading || !scrollViewRef.current) {
+      return;
     }
-  }, [showLoading, scrollToFirstItem]);
+    if (lastAutoScrolledCruiseDay.current === selectedCruiseDay) {
+      return;
+    }
+    const rafId = requestAnimationFrame(() => {
+      scrollToFirstItem();
+      lastAutoScrolledCruiseDay.current = selectedCruiseDay;
+    });
+    return () => cancelAnimationFrame(rafId);
+  }, [showLoading, selectedCruiseDay, scrollToFirstItem]);
 
   return (
     <AppView>
@@ -233,7 +240,7 @@ const ScheduleDayPlannerScreenInner = ({route, navigation}: Props) => {
           />
         )}
       </View>
-      {!preRegistrationMode && <SchedulePersonalEventCreateFAB />}
+      {!preRegistrationMode && <ScheduleDayPlannerFAB cruiseDay={selectedCruiseDay} />}
     </AppView>
   );
 };

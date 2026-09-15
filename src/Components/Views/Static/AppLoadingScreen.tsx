@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ActivityIndicator, Text} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
@@ -11,25 +11,25 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
  */
 export const AppLoadingScreen = () => {
   const {commonStyles} = useStyles();
+  const insets = useSafeAreaInsets();
 
   const styles = StyleSheet.create({
-    safeArea: {
-      ...commonStyles.flex,
-      ...commonStyles.background,
-    },
     container: {
       ...commonStyles.flex,
+      ...commonStyles.background,
       ...commonStyles.justifyCenter,
       ...commonStyles.alignItemsCenter,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
     },
   });
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <ActivityIndicator size={'large'} />
-        <Text>Loading...</Text>
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <ActivityIndicator size={'large'} />
+      <Text>Loading...</Text>
+    </View>
   );
 };

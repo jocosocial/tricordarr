@@ -8,23 +8,20 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {usePerformerUpsertMutation} from '#src/Queries/Performer/PerformerMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {EventData, PerformerData, PerformerUploadData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.performerEditScreen>;
 
 export const PerformerEditScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.performerHelpScreen}>
-      <DisabledFeatureScreen
-        feature={SwiftarrFeature.performers}
-        urlPath={`/performer/shadow/addtoevent/${props.route.params.eventID}`}>
-        <PerformerEditScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.performers}
+      urlPath={`/performer/shadow/addtoevent/${props.route.params.eventID}`}>
+      <PerformerEditScreenInner {...props} />
+    </DisabledFeatureScreen>
   );
 };
 

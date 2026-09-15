@@ -11,6 +11,7 @@ interface FloatingScrollButtonProps {
   onPress: () => void;
   icon?: IconSource;
   small?: boolean;
+  testID: string;
 }
 
 /**
@@ -21,6 +22,7 @@ export const FloatingScrollButton = ({
   onPress,
   icon = AppIcons.scrollDown,
   small = false,
+  testID,
 }: FloatingScrollButtonProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const {appConfig} = useConfig();
@@ -39,7 +41,7 @@ export const FloatingScrollButton = ({
 
   return (
     <View style={styles.container} pointerEvents={'box-none'}>
-      <IconButton icon={icon} size={small ? 15 : 30} onPress={onPress} mode={'contained-tonal'} />
+      <IconButton testID={testID} icon={icon} size={small ? 15 : 30} onPress={onPress} mode={'contained-tonal'} />
     </View>
   );
 };

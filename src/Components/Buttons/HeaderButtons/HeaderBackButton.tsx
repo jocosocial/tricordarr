@@ -13,6 +13,7 @@ export const HeaderBackButton = ({onPress, title = 'Back'}: HeaderBackButtonProp
   // On Android, show only icon (matching default React Navigation behavior)
   // Using empty string on Android to satisfy type requirement while hiding text
   // showTitle is a custom prop. See MaterialHeaderButton.tsx for more details.
+  // prettier-ignore
   // @ts-ignore
-  return <Item title={isIOS ? title : ''} iconName={AppIcons.back} onPress={onPress} showTitle={isIOS} />;
+  return <Item title={isIOS ? title : ''} iconName={AppIcons.back} onPress={onPress} showTitle={isIOS} testID={'headerBack-headerButton'} />;
 };

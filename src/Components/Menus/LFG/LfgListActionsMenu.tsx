@@ -5,8 +5,8 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {FezListEndpoints} from '#src/Types';
 
 interface LfgListActionsMenuProps {

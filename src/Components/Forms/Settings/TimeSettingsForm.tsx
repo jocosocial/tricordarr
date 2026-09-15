@@ -37,6 +37,7 @@ export const TimeSettingsForm = (props: TimeSettingsFormProps) => {
           <DirtyDetectionField />
           <TextField
             name={'manualTimeOffset'}
+            testID={'timeSettingsOffset-input'}
             label={'Manual Time Zone Offset'}
             keyboardType={'number-pad'}
             infoText={
@@ -49,6 +50,7 @@ export const TimeSettingsForm = (props: TimeSettingsFormProps) => {
             viewStyle={commonStyles.marginTopSmall}
             onPress={handleSubmit}
             buttonText={'Save'}
+            testID={'timeSettingsSave-button'}
           />
         </View>
       )}

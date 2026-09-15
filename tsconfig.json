@@ -1,5 +1,6 @@
 {
-  "extends": "@react-native/typescript-config",
+  // "extends": "@react-native/typescript-config" is canonical but Cursor didnt like it.
+  "extends": "./node_modules/@react-native/typescript-config/tsconfig.json",
   "include": [
     "**/*.ts",
     "**/*.tsx"
@@ -9,7 +10,8 @@
     "**/Pods"
   ],
   "compilerOptions": {
-    "baseUrl": ".",
+    "jsx": "react-native",
+    "types": ["jest"],
     // https://github.com/vonovak/react-navigation-header-buttons/blob/master/INSTALL.md
     "module": "ESNext",
     "moduleResolution": "Bundler",

@@ -11,6 +11,7 @@ import {BackgroundConnectionSettingsForm} from '#src/Components/Forms/Settings/B
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -19,11 +20,12 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {buildWebsocketURL} from '#src/Libraries/Network/Websockets';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {commonStyles} from '#src/Styles';
+import {WebsocketDebugStatus} from '#src/Structs/SocketStructs';
 import {BackgroundConnectionSettingsFormValues} from '#src/Types/FormValues';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
@@ -44,6 +46,7 @@ interface ForegroundProviderStatus {
 }
 
 export const BackgroundConnectionSettingsIOSView = () => {
+  const {commonStyles} = useStyles();
   const {appConfig, updateAppConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
@@ -56,11 +59,12 @@ export const BackgroundConnectionSettingsIOSView = () => {
   const tokenData = currentSession?.tokenData || null;
   const [managerStatus, setManagerStatus] = useState<ManagerStatus | null>(null);
   const [foregroundProviderStatus, setForegroundProviderStatus] = useState<ForegroundProviderStatus | null>(null);
+  const [websocketStatus, setWebsocketStatus] = useState<WebsocketDebugStatus | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await Promise.all([refetch(), fetchManagerStatus(), fetchForegroundProviderStatus()]);
+    await Promise.all([refetch(), fetchManagerStatus(), fetchForegroundProviderStatus(), fetchWebsocketStatus()]);
     setRefreshing(false);
   }, [refetch]);
 
@@ -74,6 +78,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
     setTimeout(() => {
       fetchManagerStatus();
       fetchForegroundProviderStatus();
+      fetchWebsocketStatus();
     }, 1000);
   };
 
@@ -140,6 +145,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
       // Refresh status after recycling worker
       fetchManagerStatus();
       fetchForegroundProviderStatus();
+      fetchWebsocketStatus();
     } catch (error) {
       logger.error('Error getting socket URL:', error);
     }
@@ -189,6 +195,15 @@ export const BackgroundConnectionSettingsIOSView = () => {
     }
   };
 
+  const fetchWebsocketStatus = async () => {
+    try {
+      const status = await NativeTricordarrModule.getWebsocketStatus();
+      setWebsocketStatus(status);
+    } catch (error) {
+      logger.error('Failed to fetch websocket status:', error);
+    }
+  };
+
   const parseProviderConfiguration = (configJson?: string): Record<string, any> | null => {
     if (!configJson) {
       return null;
@@ -204,6 +219,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
   useEffect(() => {
     fetchManagerStatus();
     fetchForegroundProviderStatus();
+    fetchWebsocketStatus();
   }, []);
 
   return (
@@ -219,8 +235,8 @@ export const BackgroundConnectionSettingsIOSView = () => {
             The background worker extension is necessary to enable push notifications in an off-grid environment.
           </Text>
           <Text>
-            Apple Law™ allows the worker to start only when joined to certain WiFi networks. You can manage that list
-            of networks below.
+            Apple Law™ allows the worker to start only when joined to certain WiFi networks. You can manage that list of
+            networks below.
           </Text>
         </PaddedContentView>
         <ListSection>
@@ -231,6 +247,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
             <View>
               <BooleanField
                 name={'enableBackgroundWorker'}
+                testID={'enableBackgroundWorker-switch'}
                 label={'Enable Background Worker'}
                 onPress={handleEnable}
                 style={commonStyles.paddingHorizontalSmall}
@@ -240,6 +257,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
               />
               <SliderField
                 name={'fgsWorkerHealthTimer'}
+                testID={'fgsWorkerHealthTimer-slider'}
                 label={'Healthcheck Interval'}
                 value={fgsHealthTime}
                 minimumValue={10}
@@ -264,6 +282,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
             disabled={preRegistrationMode}
           />
           <PrimaryActionButton
+            testID={'resetToDefaultNetworks-button'}
             disabled={
               (appConfig.wifiNetworkNames?.length === 1 && appConfig.wifiNetworkNames[0] === data?.shipWifiSSID) ||
               preRegistrationMode
@@ -302,6 +321,48 @@ export const BackgroundConnectionSettingsIOSView = () => {
         <DataFieldListItem title={'Server Default Network'} description={data?.shipWifiSSID} />
 
         <ListSection>
+          <ListSubheader>Socket Status</ListSubheader>
+        </ListSection>
+        <PaddedContentView padTop={true} padSides={false} padBottom={false}>
+          <HelpTopicView>
+            The actual websocket connection may be run by either the background manager or the foreground provider
+            above, whichever is currently active. This reflects whichever of those most recently reported in.
+          </HelpTopicView>
+        </PaddedContentView>
+        <DataFieldListItem title={'Socket State'} description={websocketStatus?.state ?? 'Uninitialized'} />
+        <DataFieldListItem
+          title={'Last Healthcheck'}
+          description={
+            websocketStatus?.lastHealthcheckAt ? (
+              <RelativeTimeTag date={new Date(websocketStatus.lastHealthcheckAt)} />
+            ) : (
+              <Text>Unknown</Text>
+            )
+          }
+        />
+        {websocketStatus?.lastHealthcheckAt && (
+          <DataFieldListItem
+            title={'Last Healthcheck Result'}
+            description={websocketStatus.lastHealthcheckSuccess ? 'Success' : 'Failure'}
+          />
+        )}
+        {websocketStatus?.lastError && (
+          <>
+            <DataFieldListItem title={'Last Error'} description={websocketStatus.lastError} />
+            <DataFieldListItem
+              title={'Last Error At'}
+              description={
+                websocketStatus.lastErrorAt ? (
+                  <RelativeTimeTag date={new Date(websocketStatus.lastErrorAt)} />
+                ) : (
+                  <Text>Unknown</Text>
+                )
+              }
+            />
+          </>
+        )}
+
+        <ListSection>
           <ListSubheader>Background Provider Configuration</ListSubheader>
         </ListSection>
         {(() => {
@@ -323,6 +384,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
         })()}
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
+            testID={'reconfigureProvider-button'}
             buttonText={'Reconfigure Provider'}
             onPress={handleSetupManager}
             disabled={!tokenData || preRegistrationMode}
@@ -344,14 +406,12 @@ export const BackgroundConnectionSettingsIOSView = () => {
             <DataFieldListItem
               title={'Last Ping'}
               description={
-                foregroundProviderStatus.lastPing
-                  ? // <RelativeTimeTag date={new Date(foregroundProviderStatus.lastPing)} />
-                    foregroundProviderStatus.lastPing.toString()
-                  : 'Never'
+                foregroundProviderStatus.lastPing ? (
+                  <RelativeTimeTag date={new Date(foregroundProviderStatus.lastPing)} />
+                ) : (
+                  <Text>Never</Text>
+                )
               }
-              // description={
-              //   foregroundProviderStatus.lastPing ? new Date(foregroundProviderStatus.lastPing).toString() : 'Never'
-              // }
             />
             <DataFieldListItem
               title={'Provider Active'}

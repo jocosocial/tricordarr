@@ -7,8 +7,8 @@ import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useScheduleStackNavigation} from '#src/Navigation/Stacks/Schedule/ScheduleStackComponents';
 
 type ScheduleHelpScreen = CommonStackComponents.scheduleHelpScreen | CommonStackComponents.scheduleDayPlannerHelpScreen;
 

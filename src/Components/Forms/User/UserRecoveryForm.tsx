@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {SecureTextField} from '#src/Components/Forms/Fields/SecureTextField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {UsernameTextField} from '#src/Components/Forms/Fields/UsernameTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {AccountRecoveryValidation, PasswordValidation, UsernameValidation} from '#src/Libraries/ValidationSchema';
@@ -44,22 +45,19 @@ export const UserRecoveryForm = ({onSubmit}: UserCreateFormProps) => {
           <TextField
             viewStyle={styles.inputContainer}
             name={'verification'}
+            testID={'recoveryVerification-input'}
             label={'Verification'}
             left={<TextInput.Icon icon={AppIcons.registrationCode} />}
             autoCapitalize={'none'}
+            autoCorrect={false}
+            spellCheck={false}
             infoText={
               'Can be one of: Registration Code (mailed to you before the cruise), Recovery Key (displayed when you created your account), Current Password.'
             }
           />
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'username'}
-            label={'Username'}
-            left={<TextInput.Icon icon={AppIcons.user} />}
-            autoCapitalize={'none'}
-          />
-          <SecureTextField name={'password'} label={'New Password'} />
-          <SecureTextField name={'passwordVerify'} label={'Verify Password'} />
+          <UsernameTextField viewStyle={styles.inputContainer} testID={'recoveryUsername-input'} />
+          <SecureTextField name={'password'} testID={'recoveryPassword-input'} label={'New Password'} />
+          <SecureTextField name={'passwordVerify'} testID={'recoveryPasswordVerify-input'} label={'Verify Password'} />
           <PrimaryActionButton
             disabled={
               !values.username ||
@@ -73,6 +71,7 @@ export const UserRecoveryForm = ({onSubmit}: UserCreateFormProps) => {
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={'Reset'}
+            testID={'recoverySubmit-button'}
           />
         </View>
       )}

@@ -17,6 +17,7 @@ import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarnin
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
 import {useScheduleFilter} from '#src/Context/Contexts/ScheduleFilterContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -26,7 +27,7 @@ import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToNow} from '#src/Hooks/useScrollToNow';
 import {createLogger} from '#src/Libraries/Logger';
 import {buildScheduleList} from '#src/Libraries/Schedule';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -58,10 +59,13 @@ const ScheduleDayScreenActual = ({
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
 
+  const {selectedCruiseDay: contextCruiseDay, setSelectedCruiseDay: setContextCruiseDay} = useScheduleCruiseDay();
   const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
     listRef,
     clearList: useCallback(() => setScheduleList([]), []),
     defaultCruiseDay: cruiseDayInitial,
+    selectedCruiseDay: contextCruiseDay,
+    setSelectedCruiseDay: setContextCruiseDay,
   });
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();

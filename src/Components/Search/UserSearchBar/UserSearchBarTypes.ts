@@ -13,4 +13,5 @@ export interface UserSearchBarProps {
   favorers?: boolean;
   label?: string;
   autoSearch?: boolean;
+  testID: string;
 }

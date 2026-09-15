@@ -1,10 +1,12 @@
+import {useBackHandler} from '@react-native-community/hooks';
 import {useNavigation} from '@react-navigation/native';
 import * as React from 'react';
-import {PropsWithChildren, useEffect} from 'react';
+import {PropsWithChildren, useCallback, useEffect, useMemo} from 'react';
 import {Linking, ScrollView, StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Drawer} from 'react-native-drawer-layout';
 import {Badge, Drawer as PaperDrawer} from 'react-native-paper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
@@ -13,6 +15,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {appSiteUrl, appUrl} from '#src/Libraries/UrlParser';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
@@ -21,20 +24,26 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
-  const {hasShutternaut, hasShutternautManager} = useRoles();
+  const {hasShutternaut, hasShutternautManager, hasAccountManager} = useRoles();
   const {data: userNotificationData} = useUserNotificationDataQuery({
     enabled: oobeCompleted && !preRegistrationMode,
   });
   const {data: profilePublicData} = useUserProfileQuery({enabled: oobeCompleted});
   const {commonStyles} = useStyles();
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
-  const styles = StyleSheet.create({
-    drawer: {
-      ...commonStyles.background,
-      ...commonStyles.safePaddingVertical,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        drawer: {
+          ...commonStyles.background,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+        },
+      }),
+    [commonStyles.background, insets.bottom, insets.top],
+  );
 
   /**
    * Close drawer when navigation events occur. Previously this was a function
@@ -52,11 +61,37 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
     return unsubscribe;
   }, [navigation, drawerOpen, setDrawerOpen]);
 
+  /**
+   * Stable open/close handlers. react-native-drawer-layout restarts its
+   * spring whenever these identities change.
+   */
+  const onDrawerOpen = useCallback(() => {
+    setDrawerOpen(true);
+  }, [setDrawerOpen]);
+
+  const onDrawerClose = useCallback(() => {
+    setDrawerOpen(false);
+  }, [setDrawerOpen]);
+
+  /**
+   * Close the drawer on Android Back before navigation or the root exit guard.
+   */
+  const handleDrawerBackPress = useCallback(() => {
+    if (drawerOpen) {
+      setDrawerOpen(false);
+      return true;
+    }
+    return false;
+  }, [drawerOpen, setDrawerOpen]);
+
+  useBackHandler(handleDrawerBackPress);
+
   const getModBadge = () => {
     let count = 0;
     if (userNotificationData?.moderatorData) {
       count += userNotificationData.moderatorData.openReportCount;
       count += userNotificationData.moderatorData.newModeratorForumMentionCount;
+      count += userNotificationData.moderatorData.newModeratorSeamailMessageCount;
     }
     if (count) {
       return <Badge>{count}</Badge>;
@@ -77,36 +112,36 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
     <Drawer
       drawerStyle={styles.drawer}
       open={drawerOpen}
-      onOpen={() => setDrawerOpen(true)}
-      onClose={() => setDrawerOpen(false)}
+      onOpen={onDrawerOpen}
+      onClose={onDrawerClose}
       swipeEnabled={false}
       renderDrawerContent={() => {
         return (
-          <ScrollView>
+          <ScrollView scrollsToTop={false}>
             <PaperDrawer.Section title={'Community'} showDivider={false}>
               {hasVerified && (
                 <>
                   <PaperDrawer.Item
                     label={`Your Profile (${profilePublicData?.header.username})`}
                     icon={AppIcons.profile}
-                    onPress={() => Linking.openURL('tricordarr://profile')}
+                    onPress={() => Linking.openURL(appUrl('profile'))}
                   />
                   <PaperDrawer.Item
                     label={'Directory'}
                     icon={AppIcons.group}
-                    onPress={() => Linking.openURL('tricordarr://users')}
+                    onPress={() => Linking.openURL(appUrl('users'))}
                   />
                   <PaperDrawer.Item
                     label={'Favorite Users'}
                     icon={AppIcons.userFavorite}
-                    onPress={() => Linking.openURL('tricordarr://favorites')}
+                    onPress={() => Linking.openURL(appUrl('favorites'))}
                   />
                 </>
               )}
               <PaperDrawer.Item
                 label={'Performers'}
                 icon={AppIcons.performer}
-                onPress={() => Linking.openURL('tricordarr://performers')}
+                onPress={() => Linking.openURL(appUrl('performers'))}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
@@ -114,103 +149,99 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 <PaperDrawer.Item
                   label={'Photo Stream'}
                   icon={AppIcons.photostream}
-                  onPress={() => Linking.openURL('tricordarr://photostream')}
+                  onPress={() => Linking.openURL(appUrl('photostream'))}
                 />
               )}
               {hasVerified && (
                 <PaperDrawer.Item
                   label={'Micro Karaoke'}
                   icon={AppIcons.microKaraoke}
-                  onPress={() => Linking.openURL('tricordarr://microkaraoke')}
+                  onPress={() => Linking.openURL(appUrl('microkaraoke'))}
                 />
               )}
               <PaperDrawer.Item
                 label={'Board Games'}
                 icon={AppIcons.games}
-                onPress={() => Linking.openURL('tricordarr://boardgames')}
+                onPress={() => Linking.openURL(appUrl('boardgames'))}
               />
               <PaperDrawer.Item
                 label={'Karaoke'}
                 icon={AppIcons.karaoke}
-                onPress={() => Linking.openURL('tricordarr://karaoke')}
+                onPress={() => Linking.openURL(appUrl('karaoke'))}
               />
               <PaperDrawer.Item
                 label={'Lighter'}
                 icon={AppIcons.lighter}
-                onPress={() => Linking.openURL('tricordarr://lighter')}
+                onPress={() => Linking.openURL(appUrl('lighter'))}
               />
               <PaperDrawer.Item
                 label={'Daily Themes'}
                 icon={AppIcons.dailyTheme}
-                onPress={() => Linking.openURL('tricordarr://dailyThemes')}
+                onPress={() => Linking.openURL(appUrl('dailyThemes'))}
               />
               <PaperDrawer.Item
                 label={'Puzzle Hunts'}
                 icon={AppIcons.hunts}
-                onPress={() => Linking.openURL('tricordarr://hunts')}
+                onPress={() => Linking.openURL(appUrl('hunts'))}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Documentation'} showDivider={false}>
-              <PaperDrawer.Item
-                label={'Deck Map'}
-                icon={AppIcons.map}
-                onPress={() => Linking.openURL('tricordarr://map')}
-              />
+              <PaperDrawer.Item label={'Deck Map'} icon={AppIcons.map} onPress={() => Linking.openURL(appUrl('map'))} />
               <PaperDrawer.Item
                 label={'Time Zones'}
                 icon={AppIcons.time}
-                onPress={() => Linking.openURL('tricordarr://time')}
+                onPress={() => Linking.openURL(appUrl('time'))}
               />
               <PaperDrawer.Item
                 label={'JoCo Cruise FAQ'}
                 icon={AppIcons.faq}
-                onPress={() => Linking.openURL('tricordarr://faq')}
+                onPress={() => Linking.openURL(appUrl('faq'))}
               />
               <PaperDrawer.Item
                 label={'Code of Conduct'}
                 icon={AppIcons.codeofconduct}
-                onPress={() => Linking.openURL('tricordarr://codeOfConduct')}
+                onPress={() => Linking.openURL(appUrl('codeOfConduct'))}
               />
               <PaperDrawer.Item
                 label={'Help Manual'}
                 icon={AppIcons.help}
-                onPress={() => Linking.openURL('tricordarr://help')}
+                onPress={() => Linking.openURL(appUrl('help'))}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Special Roles'} showDivider={false}>
               <PaperDrawer.Item
                 label={'Shadow Event Host Form'}
                 icon={AppIcons.feedback}
-                onPress={() => Linking.openURL('tricordarr://eventfeedback')}
+                onPress={() => Linking.openURL(appUrl('eventfeedback'))}
               />
               {(hasShutternaut || hasShutternautManager || hasTwitarrTeam) && (
                 <PaperDrawer.Item
                   label={'Shutternaut Calendar'}
                   icon={AppIcons.shutternaut}
-                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/dayplanner/shutternauts`)}
+                  onPress={() => Linking.openURL(appSiteUrl('dayplanner', 'shutternauts'))}
                 />
               )}
-              {(hasShutternautManager || hasTwitarrTeam) && (
+              {hasShutternautManager && (
                 <PaperDrawer.Item
                   label={'Manage Shutternauts'}
                   icon={AppIcons.shutternautManager}
-                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/userrole/shutternaut/manage`)}
+                  onPress={() => Linking.openURL(appSiteUrl('userrole', 'shutternaut', 'manage'))}
                 />
               )}
               {hasModerator && (
                 <PaperDrawer.Item
                   label={'Moderator Actions'}
                   icon={AppIcons.moderator}
-                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/moderator`)}
+                  onPress={() => Linking.openURL(appUrl('moderator'))}
                   right={getModBadge}
                 />
               )}
-              {hasTwitarrTeam && (
+              {(hasTwitarrTeam || hasAccountManager) && (
                 <PaperDrawer.Item
                   label={'Server Admin'}
-                  icon={AppIcons.twitarteam}
-                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/admin`)}
-                  right={getTTBadge}
+                  icon={AppIcons.admin}
+                  onPress={() => Linking.openURL(appUrl('admin'))}
+                  right={hasTwitarrTeam ? getTTBadge : undefined}
                 />
               )}
             </PaperDrawer.Section>
@@ -218,12 +249,12 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'Settings'}
                 icon={AppIcons.settings}
-                onPress={() => Linking.openURL('tricordarr://settings')}
+                onPress={() => Linking.openURL(appUrl('settings'))}
               />
               <PaperDrawer.Item
                 label={'Twitarr Web UI'}
                 icon={AppIcons.webview}
-                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}`)}
+                onPress={() => Linking.openURL(appSiteUrl())}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={`Version ${DeviceInfo.getVersion()}`} showDivider={false}>

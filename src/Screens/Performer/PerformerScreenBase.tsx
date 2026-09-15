@@ -15,7 +15,7 @@ import {PerformerLinksView} from '#src/Components/Views/Performer/PerformerLinks
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {PerformerData} from '#src/Structs/ControllerStructs';
 
 interface Props {

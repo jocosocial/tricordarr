@@ -2,6 +2,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
@@ -31,6 +32,7 @@ interface CriticalErrorViewProps {
 export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
+  const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const [showStack, setShowStack] = React.useState(false);
   const [showSessions, setShowSessions] = React.useState(false);
@@ -43,8 +45,8 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const styles = StyleSheet.create({
     screen: {
       ...commonStyles.flex,
-      ...commonStyles.safePaddingTop,
-      ...commonStyles.safePaddingBottom,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
     },
     outerContainer: {
       ...commonStyles.flex,
@@ -113,6 +115,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         <HelpTopicView>You can try to recover using the buttons below.</HelpTopicView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'reload-button'}
             buttonColor={theme.colors.twitarrNeutralButton}
             buttonText={'Reload'}
             onPress={() => props.resetError()}
@@ -120,6 +123,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'clearQueryCache-button'}
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Clear Query Cache'}
             onPress={() => queryClient.clear()}
@@ -127,6 +131,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'signOut-button'}
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Sign Out'}
             onPress={async () => await signOut()}
@@ -134,6 +139,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'clearSessions-button'}
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Clear Sessions'}
             onPress={async () => await clearAllSessions()}
@@ -141,6 +147,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'resetConfig-button'}
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Reset Config'}
             onPress={resetAppConfig}
@@ -148,6 +155,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            testID={'showSessions-button'}
             buttonColor={theme.colors.twitarrNeutralButton}
             buttonText={'Show Sessions'}
             onPress={toggleShowSessions}

@@ -1,3 +1,4 @@
+import FastImage from '@d11/react-native-fast-image';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -13,12 +14,16 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
-import {commonStyles} from '#src/Styles';
 import {QuerySettingsFormValues} from '#src/Types/FormValues';
 
 const logger = createLogger('QuerySettingsScreen.tsx');
@@ -28,14 +33,17 @@ export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreen
 const generateNewCacheBuster = () => new Date().toString();
 
 export const QuerySettingsScreen = ({navigation}: Props) => {
+  const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const queryClient = useQueryClient();
   const {appConfig, updateAppConfig} = useConfig();
+  const {setSnackbarPayload} = useSnackbar();
   const {errorCount, setErrorCount} = useSwiftarrQueryClient();
   const {refetch: refetchHealth, isFetching: isFetchingHealth} = useHealthQuery({
     enabled: false,
   });
   const [oldestCacheItem, setOldestCacheItem] = useState<Date>();
+  const [isClearingImageCache, setIsClearingImageCache] = useState(false);
 
   const bustQueryCache = () => {
     logger.debug('Busting query cache.');
@@ -50,6 +58,20 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     refreshCacheStats();
   };
 
+  const clearImageCache = async () => {
+    logger.debug('Clearing image cache.');
+    try {
+      setIsClearingImageCache(true);
+      await FastImage.clearMemoryCache();
+      await FastImage.clearDiskCache();
+      setSnackbarPayload({message: 'Image cache cleared.', messageType: 'success'});
+    } catch (error) {
+      setSnackbarPayload({message: `Could not clear image cache: ${error}`, messageType: 'error'});
+    } finally {
+      setIsClearingImageCache(false);
+    }
+  };
+
   const triggerDisruption = () => {
     setErrorCount(appConfig.apiClientConfig.disruptionThreshold + 1);
   };
@@ -61,6 +83,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     staleTimeMinutes: appConfig.apiClientConfig.staleTime / 60 / 1000,
     disruptionThreshold: appConfig.apiClientConfig.disruptionThreshold,
     imageStaleTimeDays: appConfig.apiClientConfig.imageStaleTime / 24 / 60 / 60 / 1000,
+    mutationTimeoutSeconds: appConfig.apiClientConfig.mutationTimeout / 1000,
   };
 
   const onSubmit = (values: QuerySettingsFormValues) => {
@@ -75,6 +98,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         staleTime: values.staleTimeMinutes * 60 * 1000,
         disruptionThreshold: values.disruptionThreshold,
         imageStaleTime: values.imageStaleTimeDays * 24 * 60 * 60 * 1000,
+        mutationTimeout: values.mutationTimeoutSeconds * 1000,
         cacheBuster: bustCache ? generateNewCacheBuster() : appConfig.apiClientConfig.cacheBuster,
       },
     });
@@ -122,13 +146,24 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         />
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
+            testID={'clearQueryCache-button'}
             buttonText={'Clear Query Cache'}
             onPress={bustQueryCache}
             buttonColor={theme.colors.twitarrNegativeButton}
             style={commonStyles.marginBottom}
           />
+          <PrimaryActionButton
+            testID={'clearImageCache-button'}
+            buttonText={'Clear Image Cache'}
+            onPress={clearImageCache}
+            disabled={isClearingImageCache}
+            isLoading={isClearingImageCache}
+            buttonColor={theme.colors.twitarrNegativeButton}
+            style={commonStyles.marginBottom}
+          />
           {appConfig.enableDeveloperOptions && (
             <PrimaryActionButton
+              testID={'queryKeys-button'}
               buttonText={'Query Keys'}
               onPress={() => navigation.push(SettingsStackScreenComponents.queryKeysSettingsScreen)}
               buttonColor={theme.colors.twitarrNeutralButton}
@@ -142,12 +177,14 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
               <DataFieldListItem title={'Error Count'} description={errorCount.toString()} />
               <PaddedContentView padTop={true}>
                 <PrimaryActionButton
+                  testID={'triggerDisruption-button'}
                   buttonText={'Trigger Disruption'}
                   onPress={triggerDisruption}
                   buttonColor={theme.colors.twitarrNegativeButton}
                   style={commonStyles.marginBottom}
                 />
                 <PrimaryActionButton
+                  testID={'serverHealthCheck-button'}
                   buttonText={'Server Health Check'}
                   onPress={refetchHealth}
                   buttonColor={theme.colors.twitarrNeutralButton}

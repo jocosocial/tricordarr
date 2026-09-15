@@ -3,6 +3,7 @@ import React from 'react';
 import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {MarkdownText} from '#src/Components/Text/MarkdownText';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -56,8 +57,16 @@ export const AboutTricordarrScreen = () => {
             insight on software engineering and the mobile app world has been invaluable. He made the cool lighter video
             and most of the native-side code.
           </ContributorView>
+          <PaddedContentView padTop={false} padSides={false}>
+            <MarkdownText
+              text={
+                'Additionally, much of this app was inspired and/or forked from [Bluesky](https://github.com/bluesky-social/social-app) which uses many of the same underlying technologies.'
+              }
+            />
+          </PaddedContentView>
           <OobeNoteCard />
         </PaddedContentView>
+
         <ListSection>
           <ListSubheader>Source Code</ListSubheader>
         </ListSection>

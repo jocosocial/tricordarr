@@ -1,0 +1,765 @@
+diff --git a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageSource.java b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageSource.java
+index 86ee08e..3c2940c 100644
+--- a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageSource.java
++++ b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageSource.java
+@@ -104,6 +104,10 @@ public class FastImageSource {
+     }
+ 
+     public GlideUrl getGlideUrl() {
++        Uri uriVal = getUri();
++        if (Uri.EMPTY.equals(uriVal)) {
++            return null;
++        }
+         return new GlideUrl(getUri().toString(), getHeaders());
+     }
+ 
+diff --git a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
+index 5766a8e..a12a4f7 100644
+--- a/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
++++ b/node_modules/@d11/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewModuleImplementation.java
+@@ -11,6 +11,12 @@ import com.facebook.react.bridge.ReadableArray;
+ import com.facebook.react.bridge.ReadableMap;
+ import com.facebook.react.views.imagehelper.ImageSource;
+ import com.facebook.react.bridge.ReactApplicationContext;
++import androidx.annotation.Nullable;
++import com.bumptech.glide.load.DataSource;
++import com.bumptech.glide.load.engine.GlideException;
++import com.bumptech.glide.request.RequestListener;
++import com.bumptech.glide.request.target.Target;
++import java.io.File;
+ 
+ class FastImageViewModuleImplementation {
+     ReactApplicationContext reactContext;
+@@ -20,7 +26,6 @@ class FastImageViewModuleImplementation {
+     }
+ 
+     public static final String REACT_CLASS = "FastImageViewModule";
+-
+     private Activity getCurrentActivity(){
+         return reactContext.getCurrentActivity();
+     }
+@@ -82,4 +87,88 @@ class FastImageViewModuleImplementation {
+         Glide.get(activity.getApplicationContext()).clearDiskCache();
+         promise.resolve(null);
+     }
++
++    public void getCachePath(final ReadableMap source, final Promise promise) {
++        final Activity activity = getCurrentActivity();
++        if (activity == null) {
++            promise.resolve(null);
++            return;
++        }
++
++        activity.runOnUiThread(new Runnable() {
++            @Override
++            public void run() {
++                final FastImageSource imageSource = FastImageViewConverter.getImageSource(activity, source);
++                final GlideUrl glideUrl = imageSource.getGlideUrl();
++
++                if (glideUrl == null) {
++                    promise.resolve(null);
++                    return;
++                }
++
++                Glide
++                    .with(activity.getApplicationContext())
++                    .asFile()
++                    .load(glideUrl)
++                    .apply(FastImageViewConverter.getOptions(activity, imageSource, source, null).onlyRetrieveFromCache(true))
++                    .listener(new RequestListener<File>() {
++                        @Override
++                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<File> target, boolean isFirstResource) {
++                            promise.resolve(null);
++                            return true;
++                        }
++
++                        @Override
++                        public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
++                            if (resource != null && resource.exists()) {
++                                promise.resolve(resource.getAbsolutePath());
++                            } else {
++                                promise.resolve(null);
++                            }
++                            return true;
++                        }
++                    })
++                    .submit();
++            }
++        });
++    }
++
++    public void getOriginalSize(final ReadableMap source, final ReadableMap options, final Promise promise) {
++        final Activity activity = getCurrentActivity();
++        if (activity == null) {
++            promise.reject("failure", "No activity");
++            return;
++        }
++
++        activity.runOnUiThread(new Runnable() {
++            @Override
++            public void run() {
++                final FastImageSource imageSource = FastImageViewConverter.getImageSource(activity, source);
++
++                Glide.with(activity.getApplicationContext())
++                    .asBitmap()
++                    .load(imageSource.getSourceForLoad())
++                    .apply(new com.bumptech.glide.request.RequestOptions().onlyRetrieveFromCache(true))
++                    .into(new com.bumptech.glide.request.target.CustomTarget<android.graphics.Bitmap>() {
++                        @Override
++                        public void onResourceReady(@NonNull android.graphics.Bitmap resource, @androidx.annotation.Nullable com.bumptech.glide.request.transition.Transition<? super android.graphics.Bitmap> transition) {
++                            com.facebook.react.bridge.WritableMap result = com.facebook.react.bridge.Arguments.createMap();
++                            result.putInt("width", resource.getWidth());
++                            result.putInt("height", resource.getHeight());
++                            promise.resolve(result);
++                        }
++
++                        @Override
++                        public void onLoadCleared(@androidx.annotation.Nullable android.graphics.drawable.Drawable placeholder) {
++                            // Do nothing
++                        }
++
++                        @Override
++                        public void onLoadFailed(@androidx.annotation.Nullable android.graphics.drawable.Drawable errorDrawable) {
++                            promise.reject("not_cached", "Image not found in cache");
++                        }
++                    });
++            }
++        });
++    }
+ }
+diff --git a/node_modules/@d11/react-native-fast-image/android/src/newarch/java/com/FastImageViewModule.java b/node_modules/@d11/react-native-fast-image/android/src/newarch/java/com/FastImageViewModule.java
+index c55d4bb..214e19d 100644
+--- a/node_modules/@d11/react-native-fast-image/android/src/newarch/java/com/FastImageViewModule.java
++++ b/node_modules/@d11/react-native-fast-image/android/src/newarch/java/com/FastImageViewModule.java
+@@ -43,4 +43,14 @@ class FastImageViewModule extends NativeFastImageViewModuleSpec {
+     public void clearDiskCache(Promise promise) {
+         impl.clearDiskCache(promise);
+     }
++
++    @Override
++    public void getCachePath(final ReadableMap source, final Promise promise) {
++        impl.getCachePath(source, promise);
++    }
++
++    @Override
++    public void getOriginalSize(final ReadableMap source, final ReadableMap options, final Promise promise) {
++        impl.getOriginalSize(source, options, promise);
++    }
+ }
+diff --git a/node_modules/@d11/react-native-fast-image/android/src/oldarch/java/com/FastImageViewModule.java b/node_modules/@d11/react-native-fast-image/android/src/oldarch/java/com/FastImageViewModule.java
+index 2a59c61..8c2b899 100644
+--- a/node_modules/@d11/react-native-fast-image/android/src/oldarch/java/com/FastImageViewModule.java
++++ b/node_modules/@d11/react-native-fast-image/android/src/oldarch/java/com/FastImageViewModule.java
+@@ -43,4 +43,14 @@ class FastImageViewModule extends ReactContextBaseJavaModule {
+     public void clearDiskCache(Promise promise) {
+         impl.clearDiskCache(promise);
+     }
++
++    @ReactMethod
++    public void getCachePath(final ReadableMap source, final Promise promise) {
++        impl.getCachePath(source, promise);
++    }
++
++    @ReactMethod
++    public void getOriginalSize(final ReadableMap source, final ReadableMap options, final Promise promise) {
++        impl.getOriginalSize(source, options, promise);
++    }
+ }
+diff --git a/node_modules/@d11/react-native-fast-image/dist/index.d.ts b/node_modules/@d11/react-native-fast-image/dist/index.d.ts
+index 2332172..aaf7777 100644
+--- a/node_modules/@d11/react-native-fast-image/dist/index.d.ts
++++ b/node_modules/@d11/react-native-fast-image/dist/index.d.ts
+@@ -115,6 +115,9 @@ export interface FastImageStaticProperties {
+     preload: (sources: Source[]) => void;
+     clearMemoryCache: () => Promise<void>;
+     clearDiskCache: () => Promise<void>;
++    getCachePath: (source: Source) => Promise<string | null>;
++    getSize: (uri: string, success: (width: number, height: number) => void, failure?: (error: any) => void) => void;
++    getSizeWithHeaders: (uri: string, headers: { [key: string]: string }, success: (width: number, height: number) => void, failure?: (error: any) => void) => void;
+ }
+ declare const FastImage: React.ComponentType<FastImageProps> & FastImageStaticProperties;
+ export default FastImage;
+diff --git a/node_modules/@d11/react-native-fast-image/dist/index.d.ts.orig b/node_modules/@d11/react-native-fast-image/dist/index.d.ts.orig
+new file mode 100644
+index 0000000..2332172
+--- /dev/null
++++ b/node_modules/@d11/react-native-fast-image/dist/index.d.ts.orig
+@@ -0,0 +1,120 @@
++import React from 'react';
++import { FlexStyle, LayoutChangeEvent, ShadowStyleIOS, StyleProp, TransformsStyle, ImageRequireSource, AccessibilityProps, ViewProps, ColorValue } from 'react-native';
++export type ResizeMode = 'contain' | 'cover' | 'stretch' | 'center';
++declare const resizeMode: {
++    readonly contain: "contain";
++    readonly cover: "cover";
++    readonly stretch: "stretch";
++    readonly center: "center";
++};
++export type Priority = 'low' | 'normal' | 'high';
++declare const priority: {
++    readonly low: "low";
++    readonly normal: "normal";
++    readonly high: "high";
++};
++export type Transition = 'fade' | 'none';
++declare const transition: {
++    readonly fade: "fade";
++    readonly none: "none";
++};
++type Cache = 'immutable' | 'web' | 'cacheOnly';
++declare const cacheControl: {
++    readonly immutable: "immutable";
++    readonly web: "web";
++    readonly cacheOnly: "cacheOnly";
++};
++export type Source = {
++    uri?: string;
++    headers?: {
++        [key: string]: string;
++    };
++    priority?: Priority;
++    cache?: Cache;
++};
++export interface OnLoadEvent {
++    nativeEvent: {
++        width: number;
++        height: number;
++    };
++}
++export interface OnProgressEvent {
++    nativeEvent: {
++        loaded: number;
++        total: number;
++    };
++}
++export interface OnErrorEvent {
++    nativeEvent: {
++        error: string;
++    };
++}
++export interface ImageStyle extends FlexStyle, TransformsStyle, ShadowStyleIOS {
++    backfaceVisibility?: 'visible' | 'hidden';
++    borderBottomLeftRadius?: number;
++    borderBottomRightRadius?: number;
++    backgroundColor?: string;
++    borderColor?: string;
++    borderWidth?: number;
++    borderRadius?: number;
++    borderTopLeftRadius?: number;
++    borderTopRightRadius?: number;
++    overlayColor?: string;
++    opacity?: number;
++}
++export interface FastImageProps extends AccessibilityProps, ViewProps {
++    source?: Source | ImageRequireSource;
++    defaultSource?: ImageRequireSource;
++    resizeMode?: ResizeMode;
++    fallback?: boolean;
++    transition?: Transition;
++    onLoadStart?(): void;
++    onProgress?(event: OnProgressEvent): void;
++    onLoad?(event: OnLoadEvent): void;
++    onError?(event: OnErrorEvent): void;
++    onLoadEnd?(): void;
++    /**
++     * onLayout function
++     *
++     * Invoked on mount and layout changes with
++     *
++     * {nativeEvent: { layout: {x, y, width, height}}}.
++     */
++    onLayout?: (event: LayoutChangeEvent) => void;
++    /**
++     *
++     * Style
++     */
++    style?: StyleProp<ImageStyle>;
++    /**
++     * TintColor
++     *
++     * If supplied, changes the color of all the non-transparent pixels to the given color.
++     */
++    tintColor?: ColorValue;
++    /**
++     * BlurRadius
++     *
++     * The blur radius of the blur filter added to the image.
++     */
++    blurRadius?: number;
++    /**
++     * A unique identifier for this element to be used in UI Automation testing scripts.
++     */
++    testID?: string;
++    /**
++     * Render children within the image.
++     */
++    children?: React.ReactNode;
++}
++export interface FastImageStaticProperties {
++    resizeMode: typeof resizeMode;
++    priority: typeof priority;
++    cacheControl: typeof cacheControl;
++    transition: typeof transition;
++    preload: (sources: Source[]) => void;
++    clearMemoryCache: () => Promise<void>;
++    clearDiskCache: () => Promise<void>;
++}
++declare const FastImage: React.ComponentType<FastImageProps> & FastImageStaticProperties;
++export default FastImage;
+diff --git a/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm b/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
+index 554b190..1e384d8 100644
+--- a/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
++++ b/node_modules/@d11/react-native-fast-image/ios/FastImage/FFFastImageViewModule.mm
+@@ -35,6 +35,57 @@ @implementation FFFastImageViewModule
+         resolve(NULL);
+     }];
+ }
++
++RCT_EXPORT_METHOD(getCachePath:(JS::NativeFastImageViewModule::SpecGetCachePathSource &)source
++                      resolve:(RCTPromiseResolveBlock)resolve
++                       reject:(RCTPromiseRejectBlock)reject)
++{
++    NSURL *url = [NSURL URLWithString:source.uri()];
++    if (url == nil) {
++        resolve([NSNull null]);
++        return;
++    }
++
++    SDWebImageManager *imageManager = [SDWebImageManager sharedManager];
++    NSString *key = [imageManager cacheKeyForURL:url];
++    BOOL isCached = [[SDImageCache sharedImageCache] diskImageDataExistsWithKey:key];
++
++    if (isCached) {
++        NSString *cachePath = [[SDImageCache sharedImageCache] cachePathForKey:key];
++        if (cachePath != nil && [[NSFileManager defaultManager] fileExistsAtPath:cachePath]) {
++            resolve(cachePath);
++        } else {
++            resolve([NSNull null]);
++        }
++    } else {
++        resolve([NSNull null]);
++    }
++}
++
++RCT_EXPORT_METHOD(getOriginalSize:(JS::NativeFastImageViewModule::SpecGetOriginalSizeSource &)source
++                  options:(JS::NativeFastImageViewModule::SpecGetOriginalSizeOptions &)options
++                  resolve:(RCTPromiseResolveBlock)resolve
++                  reject:(RCTPromiseRejectBlock)reject)
++{
++    NSURL *url = [NSURL URLWithString:source.uri()];
++    if (url == nil) {
++        reject(@"failure", @"Invalid URL", nil);
++        return;
++    }
++
++    SDWebImageManager *imageManager = [SDWebImageManager sharedManager];
++    NSString *key = [imageManager cacheKeyForURL:url];
++    UIImage *cachedImage = [[SDImageCache sharedImageCache] imageFromCacheForKey:key];
++    if (cachedImage) {
++        resolve(@{
++            @"width": @(cachedImage.size.width),
++            @"height": @(cachedImage.size.height)
++        });
++    } else {
++        reject(@"not_cached", @"Image not found in cache", nil);
++    }
++}
++
+ #ifdef RCT_NEW_ARCH_ENABLED
+ - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+     (const facebook::react::ObjCTurboModule::InitParams &)params
+diff --git a/node_modules/@d11/react-native-fast-image/src/NativeFastImageViewModule.ts b/node_modules/@d11/react-native-fast-image/src/NativeFastImageViewModule.ts
+index d984e09..af85122 100644
+--- a/node_modules/@d11/react-native-fast-image/src/NativeFastImageViewModule.ts
++++ b/node_modules/@d11/react-native-fast-image/src/NativeFastImageViewModule.ts
+@@ -6,6 +6,18 @@ export interface Spec extends TurboModule {
+     preload: (sources: Source[]) => void
+     clearMemoryCache: () => Promise<void>
+     clearDiskCache: () => Promise<void>
++    getCachePath: (source: {
++        uri?: string
++        headers?: Readonly<{ [key: string]: string }>
++        priority?: string
++        cache?: string
++    }) => Promise<string | null>
++    getOriginalSize: (source: {
++        uri?: string
++        headers?: Readonly<{ [key: string]: string }>
++        priority?: string
++        cache?: string
++    }, options: { headers?: { [key: string]: string } }) => Promise<{ width: number; height: number }>
+ }
+ 
+ export default TurboModuleRegistry.getEnforcing<Spec>('FastImageViewModule')
+diff --git a/node_modules/@d11/react-native-fast-image/src/index.tsx b/node_modules/@d11/react-native-fast-image/src/index.tsx
+index 877b287..78d85f0 100644
+--- a/node_modules/@d11/react-native-fast-image/src/index.tsx
++++ b/node_modules/@d11/react-native-fast-image/src/index.tsx
+@@ -292,6 +292,9 @@ export interface FastImageStaticProperties {
+     preload: (sources: Source[]) => void
+     clearMemoryCache: () => Promise<void>
+     clearDiskCache: () => Promise<void>
++    getCachePath: (source: Source) => Promise<string | null>
++    getSize: (uri: string, success: (width: number, height: number) => void, failure?: (error: any) => void) => void
++    getSizeWithHeaders: (uri: string, headers: { [key: string]: string }, success: (width: number, height: number) => void, failure?: (error: any) => void) => void
+ }
+ 
+ const FastImage: React.ComponentType<FastImageProps> &
+@@ -311,6 +314,32 @@ FastImage.clearMemoryCache = () => FastImageViewModule.clearMemoryCache()
+ 
+ FastImage.clearDiskCache = () => FastImageViewModule.clearDiskCache()
+ 
++FastImage.getCachePath = (source: Source) => FastImageViewModule.getCachePath(source)
++
++FastImage.getSize = (uri: string, success: (width: number, height: number) => void, failure?: (error: any) => void) => {
++    FastImageViewModule.getOriginalSize({ uri }, {})
++        .then((result: { width: number; height: number }) => {
++            success(result.width, result.height)
++        })
++        .catch((error: any) => {
++            if (failure) {
++                failure(error)
++            }
++        })
++}
++
++FastImage.getSizeWithHeaders = (uri: string, headers: { [key: string]: string }, success: (width: number, height: number) => void, failure?: (error: any) => void) => {
++    FastImageViewModule.getOriginalSize({ uri, headers }, {})
++        .then((result: { width: number; height: number }) => {
++            success(result.width, result.height)
++        })
++        .catch((error: any) => {
++            if (failure) {
++                failure(error)
++            }
++        })
++}
++
+ const styles = StyleSheet.create({
+     imageContainer: {
+         overflow: 'hidden',
+diff --git a/node_modules/@d11/react-native-fast-image/src/index.tsx.orig b/node_modules/@d11/react-native-fast-image/src/index.tsx.orig
+new file mode 100644
+index 0000000..877b287
+--- /dev/null
++++ b/node_modules/@d11/react-native-fast-image/src/index.tsx.orig
+@@ -0,0 +1,320 @@
++import React, { forwardRef, memo } from 'react'
++import {
++    View,
++    Image,
++    NativeModules,
++    StyleSheet,
++    FlexStyle,
++    LayoutChangeEvent,
++    ShadowStyleIOS,
++    StyleProp,
++    TransformsStyle,
++    ImageRequireSource,
++    Platform,
++    AccessibilityProps,
++    ViewProps,
++    ColorValue,
++    ImageResolvedAssetSource,
++    requireNativeComponent,
++} from 'react-native'
++
++const isFabricEnabled = (global as any)?.nativeFabricUIManager != null
++const isTurboModuleEnabled = (global as any).__turboModuleProxy != null
++const FastImageViewModule = isTurboModuleEnabled
++    ? require('./NativeFastImageViewModule').default
++    : NativeModules.FastImageViewModule
++
++const FastImageView = isFabricEnabled
++    ? require('./FastImageViewNativeComponent').default
++    : requireNativeComponent('FastImageView')
++
++export type ResizeMode = 'contain' | 'cover' | 'stretch' | 'center'
++
++const resizeMode = {
++    contain: 'contain',
++    cover: 'cover',
++    stretch: 'stretch',
++    center: 'center',
++} as const
++
++export type Priority = 'low' | 'normal' | 'high'
++
++const priority = {
++    low: 'low',
++    normal: 'normal',
++    high: 'high',
++} as const
++
++export type Transition = 'fade' | 'none'
++
++const transition = {
++    fade: 'fade',
++    none: 'none',
++} as const
++
++type Cache = 'immutable' | 'web' | 'cacheOnly'
++
++const cacheControl = {
++    // Ignore headers, use uri as cache key, fetch only if not in cache.
++    immutable: 'immutable',
++    // Respect http headers, no aggressive caching.
++    web: 'web',
++    // Only load from cache.
++    cacheOnly: 'cacheOnly',
++} as const
++
++export type Source = {
++    uri?: string
++    headers?: { [key: string]: string }
++    priority?: Priority
++    cache?: Cache
++}
++
++export interface OnLoadEvent {
++    nativeEvent: {
++        width: number
++        height: number
++    }
++}
++
++export interface OnProgressEvent {
++    nativeEvent: {
++        loaded: number
++        total: number
++    }
++}
++
++export interface OnErrorEvent {
++    nativeEvent: {
++        error: string
++    }
++}
++
++export interface ImageStyle extends FlexStyle, TransformsStyle, ShadowStyleIOS {
++    backfaceVisibility?: 'visible' | 'hidden'
++    borderBottomLeftRadius?: number
++    borderBottomRightRadius?: number
++    backgroundColor?: string
++    borderColor?: string
++    borderWidth?: number
++    borderRadius?: number
++    borderTopLeftRadius?: number
++    borderTopRightRadius?: number
++    overlayColor?: string
++    opacity?: number
++}
++
++export interface FastImageProps extends AccessibilityProps, ViewProps {
++    source?: Source | ImageRequireSource
++    defaultSource?: ImageRequireSource
++    resizeMode?: ResizeMode
++    fallback?: boolean
++    transition?: Transition
++
++    onLoadStart?(): void
++
++    onProgress?(event: OnProgressEvent): void
++
++    onLoad?(event: OnLoadEvent): void
++
++    onError?(event: OnErrorEvent): void
++
++    onLoadEnd?(): void
++
++    /**
++     * onLayout function
++     *
++     * Invoked on mount and layout changes with
++     *
++     * {nativeEvent: { layout: {x, y, width, height}}}.
++     */
++    onLayout?: (event: LayoutChangeEvent) => void
++
++    /**
++     *
++     * Style
++     */
++    style?: StyleProp<ImageStyle>
++
++    /**
++     * TintColor
++     *
++     * If supplied, changes the color of all the non-transparent pixels to the given color.
++     */
++
++    tintColor?: ColorValue
++
++    /**
++     * BlurRadius
++     *
++     * The blur radius of the blur filter added to the image.
++     */
++    blurRadius?: number
++
++    /**
++     * A unique identifier for this element to be used in UI Automation testing scripts.
++     */
++    testID?: string
++
++    /**
++     * Render children within the image.
++     */
++    children?: React.ReactNode
++}
++
++const resolveDefaultSource = (
++    defaultSource?: ImageRequireSource,
++): string | number | null => {
++    if (!defaultSource) {
++        return null
++    }
++    if (Platform.OS === 'android') {
++        // Android receives a URI string, and resolves into a Drawable using RN's methods.
++        const resolved = Image.resolveAssetSource(
++            defaultSource as ImageRequireSource,
++        )
++
++        if (resolved) {
++            return resolved.uri
++        }
++
++        return null
++    }
++    // iOS or other number mapped assets
++    // In iOS the number is passed, and bridged automatically into a UIImage
++    return defaultSource
++}
++
++function FastImageBase({
++    source,
++    defaultSource,
++    tintColor,
++    blurRadius,
++    onLoadStart,
++    onProgress,
++    onLoad,
++    onError,
++    onLoadEnd,
++    style,
++    fallback,
++    children,
++    transition: transitionProp,
++    resizeMode: resizeModeProp = 'cover',
++    forwardedRef,
++    ...props
++}: FastImageProps & { forwardedRef: React.Ref<any> }) {
++    if (fallback) {
++        const cleanedSource = { ...(source as any) }
++        delete cleanedSource.cache
++        const resolvedSource = Image.resolveAssetSource(cleanedSource)
++
++        return (
++            <View style={[styles.imageContainer, style]} ref={forwardedRef}>
++                <Image
++                    {...props}
++                    style={[StyleSheet.absoluteFill, { tintColor }]}
++                    source={resolvedSource}
++                    defaultSource={defaultSource}
++                    onLoadStart={onLoadStart}
++                    onProgress={onProgress}
++                    onLoad={onLoad as any}
++                    onError={onError}
++                    onLoadEnd={onLoadEnd}
++                    resizeMode={resizeModeProp}
++                    blurRadius={blurRadius}
++                />
++                {children}
++            </View>
++        )
++    }
++
++    // @ts-ignore non-typed property
++    const FABRIC_ENABLED = !!global?.nativeFabricUIManager
++
++    // this type differs based on the `source` prop passed
++    const resolvedSource = Image.resolveAssetSource(
++        source as any,
++    ) as ImageResolvedAssetSource & { headers: any }
++    // resolvedSource would be frozen, we can't modify it
++    let modifiedSource = resolvedSource
++    if (
++        resolvedSource?.headers &&
++        (FABRIC_ENABLED || Platform.OS === 'android')
++    ) {
++        // we do it like that to trick codegen
++        const headersArray: { name: string; value: string }[] = []
++        Object.keys(resolvedSource.headers).forEach((key) => {
++            headersArray.push({ name: key, value: resolvedSource.headers[key] })
++        })
++        modifiedSource = { ...resolvedSource, headers: headersArray }
++    }
++    const resolvedDefaultSource = resolveDefaultSource(defaultSource)
++    const resolvedDefaultSourceAsString =
++        resolvedDefaultSource !== null ? String(resolvedDefaultSource) : null
++
++    return (
++        <View style={[styles.imageContainer, style]} ref={forwardedRef}>
++            <FastImageView
++                {...props}
++                tintColor={tintColor}
++                style={StyleSheet.absoluteFill}
++                source={modifiedSource}
++                defaultSource={resolvedDefaultSourceAsString}
++                onFastImageLoadStart={onLoadStart}
++                onFastImageProgress={onProgress}
++                onFastImageLoad={onLoad}
++                onFastImageError={onError}
++                onFastImageLoadEnd={onLoadEnd}
++                resizeMode={resizeModeProp}
++                transition={transitionProp}
++                blurRadius={blurRadius}
++            />
++            {children}
++        </View>
++    )
++}
++
++const FastImageMemo = memo(FastImageBase)
++
++const FastImageComponent: React.ComponentType<FastImageProps> = forwardRef(
++    (props: FastImageProps, ref: React.Ref<any>) => (
++        <FastImageMemo forwardedRef={ref} {...props} />
++    ),
++)
++
++FastImageComponent.displayName = 'FastImage'
++
++export interface FastImageStaticProperties {
++    resizeMode: typeof resizeMode
++    priority: typeof priority
++    cacheControl: typeof cacheControl
++    transition: typeof transition
++    preload: (sources: Source[]) => void
++    clearMemoryCache: () => Promise<void>
++    clearDiskCache: () => Promise<void>
++}
++
++const FastImage: React.ComponentType<FastImageProps> &
++    FastImageStaticProperties = FastImageComponent as any
++
++FastImage.resizeMode = resizeMode
++
++FastImage.cacheControl = cacheControl
++
++FastImage.priority = priority
++
++FastImage.transition = transition
++
++FastImage.preload = (sources: Source[]) => FastImageViewModule.preload(sources)
++
++FastImage.clearMemoryCache = () => FastImageViewModule.clearMemoryCache()
++
++FastImage.clearDiskCache = () => FastImageViewModule.clearDiskCache()
++
++const styles = StyleSheet.create({
++    imageContainer: {
++        overflow: 'hidden',
++    },
++})
++
++export default FastImage

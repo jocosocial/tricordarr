@@ -24,6 +24,9 @@ export enum UserAccessLevel {
   tho = 'tho',
   /// An Administrator account, unrestricted access.
   admin = 'admin',
+  /// A limited user, usually teens.
+  /// TODO: this is not implemented server-side yet.
+  limited = 'limited',
 }
 
 /**
@@ -39,20 +42,83 @@ export namespace UserAccessLevel {
         return 2;
       case UserAccessLevel.quarantined:
         return 3;
-      case UserAccessLevel.verified:
+      case UserAccessLevel.limited:
         return 4;
-      case UserAccessLevel.client:
+      case UserAccessLevel.verified:
         return 5;
-      case UserAccessLevel.moderator:
+      case UserAccessLevel.client:
         return 6;
-      case UserAccessLevel.twitarrteam:
+      case UserAccessLevel.moderator:
         return 7;
-      case UserAccessLevel.tho:
+      case UserAccessLevel.twitarrteam:
         return 8;
-      case UserAccessLevel.admin:
+      case UserAccessLevel.tho:
         return 9;
+      case UserAccessLevel.admin:
+        return 10;
     }
   }
+
+  /**
+   * Returns consumer-friendly case names.
+   * Equivalent to Swift's `.visibleName()` property.
+   */
+  export const getLabel = (accessLevel?: UserAccessLevel): string => {
+    switch (accessLevel) {
+      case UserAccessLevel.unverified:
+        return 'Unverified';
+      case UserAccessLevel.banned:
+        return 'Banned';
+      case UserAccessLevel.quarantined:
+        return 'Quarantined';
+      case UserAccessLevel.verified:
+        return 'Verified';
+      case UserAccessLevel.client:
+        return 'Client';
+      case UserAccessLevel.moderator:
+        return 'Moderator';
+      case UserAccessLevel.twitarrteam:
+        return 'TwitarrTeam';
+      case UserAccessLevel.tho:
+        return 'THO';
+      case UserAccessLevel.admin:
+        return 'Administrator';
+      case UserAccessLevel.limited:
+        return 'Limited';
+      default:
+        return accessLevel ?? 'Unknown';
+    }
+  };
+
+  /**
+   * Returns a user-facing description of what the access level means.
+   */
+  export const getDescription = (accessLevel?: UserAccessLevel): string => {
+    switch (accessLevel) {
+      case UserAccessLevel.unverified:
+        return 'Limited access';
+      case UserAccessLevel.banned:
+        return 'Forbidden';
+      case UserAccessLevel.quarantined:
+        return 'Under Moderator review';
+      case UserAccessLevel.limited:
+        return 'Limited features available';
+      case UserAccessLevel.verified:
+        return 'All features available';
+      case UserAccessLevel.client:
+        return 'API Client';
+      case UserAccessLevel.moderator:
+        return 'Thank you for your service';
+      case UserAccessLevel.twitarrteam:
+        return "'sup nerd";
+      case UserAccessLevel.tho:
+        return '"Schmincoln Center Stage"';
+      case UserAccessLevel.admin:
+        return 'With great power comes great responsibility';
+      default:
+        return 'Unknown access level.';
+    }
+  };
 
   /**
    * Test whether a source UserAccessLevel has access to a target UserAccessLevel.

@@ -22,7 +22,7 @@ module.exports = api => {
   // React Native Reanimated plugin must be the last plugin
   // plugins.push('react-native-reanimated/plugin');
   return {
-    presets: ['module:@react-native/babel-preset'],
+    presets: ['babel-preset-expo'],
     plugins: plugins,
   };
 };

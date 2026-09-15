@@ -2,6 +2,7 @@ import {Image, ImageRequireSource} from 'react-native';
 import {lookup as lookupMimeType} from 'react-native-mime-types';
 
 import {AppConfig} from '#src/Libraries/AppConfig';
+import {joinUrl} from '#src/Libraries/UrlParser';
 
 export enum AppImageMode {
   api = 'api',
@@ -35,6 +36,22 @@ export namespace AppImageMetaData {
     };
   };
 
+  /**
+   * Create an object for a file under a server's /public/ path (not the
+   * /api/v3/image/... family fromFileName builds) — e.g. deck-map images at
+   * /public/ship/<code>/deck1.png. No thumb/full split; these files are
+   * served as-is.
+   */
+  export const fromPublicPath = (path: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
+    const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;
+    return {
+      mode: AppImageMode.api,
+      fileName: path,
+      fullURI: joinUrl(resolvedServerUrl, path),
+      mimeType: lookupMimeType(path) || 'application/octet-stream',
+    };
+  };
+
   export const fromIdenticon = (userID: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
     const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;
     return {
@@ -48,7 +65,7 @@ export namespace AppImageMetaData {
   /**
    * Create an object from a base64 data string. This is used when the user takes a photo
    * and we insert its base64 data into a form field. We do this so that the preview can
-   * support the AppImageViewer component for inspection.
+   * support the Lightbox for inspection.
    */
   export const fromData = (base64Data: string, mimeType: string = 'image/jpeg'): AppImageMetaData => {
     const fileName = `tricordarr-${new Date().getTime()}.${mimeType.split('/')[1] || 'jpg'}`;

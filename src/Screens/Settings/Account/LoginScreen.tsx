@@ -12,14 +12,15 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
-import {commonStyles} from '#src/Styles';
 import {LoginFormValues} from '#src/Types/FormValues';
 
 export const LoginScreen = () => {
+  const {commonStyles} = useStyles();
   const navigation = useNavigation();
   const loginMutation = useLoginMutation();
   const {signIn} = useSession();

@@ -6,9 +6,10 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {ShareContentType} from '#src/Libraries/Sharing';
+import {joinUrl} from '#src/Libraries/UrlParser';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const MainConductScreenActionsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
@@ -16,7 +17,7 @@ export const MainConductScreenActionsMenu = () => {
   const commonNavigation = useCommonStack();
 
   const menuAnchor = <Item title={'Conduct Menu'} iconName={AppIcons.menu} onPress={openMenu} />;
-  const conductUrl = `${serverUrl}/public/codeofconduct.md`;
+  const conductUrl = joinUrl(serverUrl, 'public/codeofconduct.md');
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>

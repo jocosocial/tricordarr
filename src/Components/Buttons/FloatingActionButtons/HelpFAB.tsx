@@ -22,5 +22,14 @@ export const HelpFAB = ({icon, label}: HelpFABProps) => {
     },
   });
 
-  return <FAB visible={true} icon={icon} color={theme.colors.inverseOnSurface} style={styles.fab} label={label} />;
+  return (
+    <FAB
+      testID={'help-fab'}
+      visible={true}
+      icon={icon}
+      color={theme.colors.inverseOnSurface}
+      style={styles.fab}
+      label={label}
+    />
+  );
 };

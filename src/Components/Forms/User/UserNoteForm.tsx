@@ -31,6 +31,7 @@ export const UserNoteForm = ({onSubmit, initialValues}: UserNoteFormProps) => {
           <TextField
             viewStyle={styles.inputContainer}
             name={'note'}
+            testID={'userNote-input'}
             label={'Note'}
             autoCapitalize={'sentences'}
             multiline={true}
@@ -42,6 +43,7 @@ export const UserNoteForm = ({onSubmit, initialValues}: UserNoteFormProps) => {
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={'Save'}
+            testID={'userNoteSave-button'}
           />
         </View>
       )}

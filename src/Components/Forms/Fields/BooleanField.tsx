@@ -11,6 +11,7 @@ interface BooleanFieldProps {
   onPress?: () => void;
   value?: boolean;
   name: string;
+  testID: string;
   label: string;
   helperText?: string;
   icon?: string;
@@ -20,6 +21,7 @@ interface BooleanFieldProps {
 
 export const BooleanField = ({
   name,
+  testID,
   label,
   helperText,
   icon,
@@ -31,6 +33,7 @@ export const BooleanField = ({
   const {commonStyles, styleDefaults} = useStyles();
   const {theme} = useAppTheme();
   const [field, , helpers] = useField<boolean>(name);
+  const textColor = disabled ? theme.colors.onSurfaceDisabled : theme.colors.onBackground;
 
   const onPressDefault = () => {
     helpers.setValue(!field.value);
@@ -45,20 +48,27 @@ export const BooleanField = ({
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifySpaceBetween,
     },
+    label: {
+      color: textColor,
+    },
     helperText: {
-      color: theme.colors.onBackground,
+      color: textColor,
     },
   });
 
   return (
-    <TouchableRipple style={[styles.ripple, style]} onPress={onPress || onPressDefault} disabled={disabled}>
+    <TouchableRipple
+      testID={testID}
+      style={[styles.ripple, style]}
+      onPress={onPress || onPressDefault}
+      disabled={disabled}>
       <View>
         <View style={styles.wrapper}>
-          <Text>
+          <Text style={styles.label}>
             {icon && (
               // This is a bit hacky. I am not proud. View did weird aligning nonsense.
               <>
-                <AppIcon size={styleDefaults.fontSize} icon={icon} />
+                <AppIcon size={styleDefaults.fontSize} icon={icon} color={textColor} />
                 &nbsp;
               </>
             )}

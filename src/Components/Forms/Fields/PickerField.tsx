@@ -12,6 +12,7 @@ const logger = createLogger('PickerField.tsx');
 
 interface PickerFieldProps<TData> {
   name: string;
+  testID: string;
   label: string;
   value: TData | undefined;
   choices: TData[];
@@ -27,6 +28,7 @@ interface PickerFieldProps<TData> {
 // https://www.freecodecamp.org/news/typescript-generics-with-functional-react-components/
 export const PickerField = <TData,>({
   name,
+  testID,
   label,
   value,
   choices,
@@ -43,6 +45,12 @@ export const PickerField = <TData,>({
   const {theme} = useAppTheme();
   const {setFieldValue, isSubmitting} = useFormikContext();
   const [_, meta] = useField<TData>(name);
+  const isFieldDisabled = disabled || isSubmitting;
+  const textColor = meta.error
+    ? theme.colors.error
+    : isFieldDisabled
+      ? theme.colors.onSurfaceDisabled
+      : theme.colors.onBackground;
 
   const handleSelect = (newValue: TData | undefined) => {
     logger.debug('Selecting value', newValue);
@@ -65,7 +73,7 @@ export const PickerField = <TData,>({
       fontWeight: 'normal',
       ...commonStyles.fontFamilyNormal,
       ...(anchorButtonMode === 'outlined' ? {marginHorizontal: 14} : commonStyles.marginHorizontalSmall),
-      color: meta.error ? theme.colors.error : theme.colors.onBackground,
+      color: textColor,
     },
     content: {
       ...commonStyles.flexRow,
@@ -88,13 +96,14 @@ export const PickerField = <TData,>({
       anchor={
         <View style={viewStyle}>
           <Button
+            testID={testID}
             buttonColor={theme.colors.background}
-            textColor={theme.colors.onBackground}
+            textColor={textColor}
             labelStyle={styles.text}
             contentStyle={styles.content}
             style={styles.button}
             onPress={openMenu}
-            disabled={disabled || isSubmitting}
+            disabled={isFieldDisabled}
             mode={anchorButtonMode}>
             {label} ({getTitle(value)})
           </Button>

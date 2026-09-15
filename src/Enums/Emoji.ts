@@ -1,4 +1,5 @@
 export const CustomEmoji = {
+  ':arr:': {source: require('#assets/emoji/small/arr.png'), secret: false},
   ':back-deck-juice:': {source: require('#assets/emoji/small/back-deck-juice.png'), secret: false},
   ':buffet:': {source: require('#assets/emoji/small/buffet.png'), secret: false},
   ':die:': {source: require('#assets/emoji/small/die.png'), secret: false},

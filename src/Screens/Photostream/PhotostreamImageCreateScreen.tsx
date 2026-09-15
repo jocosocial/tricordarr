@@ -17,9 +17,10 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {createLogger} from '#src/Libraries/Logger';
 import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {usePhotostreamImageUploadMutation} from '#src/Queries/Photostream/PhotostreamMutations';
 import {usePhotostreamLocationDataQuery} from '#src/Queries/Photostream/PhotostreamQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -27,6 +28,8 @@ import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScre
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
 import {ImageQueryData} from '#src/Types';
 import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
+
+const logger = createLogger('PhotostreamImageCreateScreen.tsx');
 
 export type Props = StackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
 
@@ -64,29 +67,32 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
       await saveImageQueryToLocal(ImageQueryData.fromData(values.image));
     }
 
-    uploadMutation.mutate(
-      {
+    // Awaited so Formik holds isSubmitting (and the submit button stays disabled) for the full
+    // upload. Firing the mutation without awaiting re-enables the button mid-upload. See #533.
+    try {
+      await uploadMutation.mutateAsync({
         imageUploadData: payload,
-      },
-      {
-        onSuccess: async () => {
-          // Refetch only active photostream queries (more targeted than invalidation)
-          // @TODO https://github.com/jocosocial/swiftarr/issues/481
-          await queryClient.refetchQueries({
-            queryKey: ['/photostream'],
-            type: 'active',
-          });
+      });
 
-          // Signal photostream screens to scroll to top when user navigates back
-          dispatchScrollToTop(MainStackComponents.photostreamScreen, CommonStackComponents.photostreamEventScreen);
+      // Refetch only active photostream queries (more targeted than invalidation)
+      await queryClient.refetchQueries({
+        queryKey: ['/photostream'],
+        type: 'active',
+      });
 
-          navigation.goBack();
-        },
-        onSettled: () => {
-          helpers.setSubmitting(false);
-        },
-      },
-    );
+      // Signal photostream screens to scroll to top when user navigates back
+      dispatchScrollToTop(
+        MainStackComponents.photostreamScreen,
+        CommonStackComponents.photostreamEventScreen,
+        CommonStackComponents.photostreamUserScreen,
+      );
+
+      navigation.goBack();
+    } catch (error) {
+      // The error snackbar is raised by useTokenAuthMutation's onError. Swallow here so the
+      // rejection doesn't escape into Formik's submit handling.
+      logger.error('Photostream image upload failed.', error);
+    }
   };
 
   const getNavButtons = useCallback(() => {

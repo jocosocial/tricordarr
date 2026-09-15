@@ -9,7 +9,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {createLogger} from '#src/Libraries/Logger';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 const logger = createLogger('ScheduleImportScreenActionsMenu.tsx');
 

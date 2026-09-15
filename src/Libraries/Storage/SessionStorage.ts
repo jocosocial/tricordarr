@@ -1,4 +1,4 @@
-import EncryptedStorage from 'react-native-encrypted-storage';
+import * as SecureStore from 'expo-secure-store';
 
 import {createLogger} from '#src/Libraries/Logger';
 import {StorageKeys} from '#src/Libraries/Storage';
@@ -7,7 +7,7 @@ import {Session} from '#src/Structs/SessionStructs';
 const logger = createLogger('SessionStorage.ts');
 
 /**
- * Storage namespace for managing sessions in EncryptedStorage.
+ * Storage namespace for managing sessions in SecureStore.
  * All operations persist immediately to ensure data integrity.
  */
 export namespace SessionStorage {
@@ -16,7 +16,7 @@ export namespace SessionStorage {
    */
   export const getAll = async (): Promise<Session[]> => {
     try {
-      const data = await EncryptedStorage.getItem(StorageKeys.SESSIONS_DATA);
+      const data = await SecureStore.getItemAsync(StorageKeys.SESSIONS_DATA);
       if (!data) {
         return [];
       }
@@ -48,14 +48,14 @@ export namespace SessionStorage {
       sessions.push(session);
     }
 
-    await EncryptedStorage.setItem(StorageKeys.SESSIONS_DATA, JSON.stringify(sessions));
+    await SecureStore.setItemAsync(StorageKeys.SESSIONS_DATA, JSON.stringify(sessions));
   };
 
   /**
    * Save all sessions atomically, replacing the entire stored array.
    */
   export const saveAll = async (sessions: Session[]): Promise<void> => {
-    await EncryptedStorage.setItem(StorageKeys.SESSIONS_DATA, JSON.stringify(sessions));
+    await SecureStore.setItemAsync(StorageKeys.SESSIONS_DATA, JSON.stringify(sessions));
   };
 
   /**
@@ -64,7 +64,7 @@ export namespace SessionStorage {
   export const deleteSession = async (sessionID: string): Promise<void> => {
     const sessions = await getAll();
     const filtered = sessions.filter(s => s.sessionID !== sessionID);
-    await EncryptedStorage.setItem(StorageKeys.SESSIONS_DATA, JSON.stringify(filtered));
+    await SecureStore.setItemAsync(StorageKeys.SESSIONS_DATA, JSON.stringify(filtered));
   };
 
   /**
@@ -72,7 +72,7 @@ export namespace SessionStorage {
    */
   export const getLastSessionID = async (): Promise<string | null> => {
     try {
-      return await EncryptedStorage.getItem(StorageKeys.LAST_SESSION_ID);
+      return await SecureStore.getItemAsync(StorageKeys.LAST_SESSION_ID);
     } catch (error) {
       logger.error('Error loading last session ID:', error);
       return null;
@@ -81,9 +81,14 @@ export namespace SessionStorage {
 
   /**
    * Set the last active session ID.
+   * SecureStore rejects empty values, so an empty ID deletes the key instead.
    */
   export const setLastSessionID = async (sessionID: string): Promise<void> => {
-    await EncryptedStorage.setItem(StorageKeys.LAST_SESSION_ID, sessionID);
+    if (!sessionID) {
+      await SecureStore.deleteItemAsync(StorageKeys.LAST_SESSION_ID);
+      return;
+    }
+    await SecureStore.setItemAsync(StorageKeys.LAST_SESSION_ID, sessionID);
   };
 
   /**

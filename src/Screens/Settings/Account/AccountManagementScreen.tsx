@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useState} from 'react';
 
 import {MinorActionListItem} from '#src/Components/Lists/Items/MinorActionListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -7,29 +7,41 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {LogoutDeviceModalView} from '#src/Components/Views/Modals/LogoutModal';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {
   SettingsStackParamList,
   SettingsStackScreenComponents,
   useSettingsStack,
-} from '#src/Navigation/Stacks/SettingsStackNavigator';
+} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.accountManagement>;
+
+/**
+ * Account settings and logout. Do not wrap in LoggedInScreen: that checkpoint
+ * would swap to NotLoggedInView the moment the session clears, which is the
+ * flash we freeze past.
+ *
+ * `isLoggingOut` is set in onLogoutStart (before performSignOut) and never
+ * cleared — this screen unmounts on onLoggedOut goBack. Until then we keep
+ * rendering the account list even after `isLoggedIn` / `currentUserID` go
+ * false. goBack must wait until after teardown so Today (under this Settings
+ * stack when opened from MainAccountMenu) is already logged-out when revealed.
+ */
 export const AccountManagementScreen = ({navigation}: Props) => {
   const settingsNavigation = useSettingsStack();
   const {isLoggedIn, currentUserID} = useSession();
-  const {setModalContent, setModalVisible} = useModal();
+  const {confirmLogout} = useSignOut();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogoutModal = (allDevices = false) => {
-    setModalContent(<LogoutDeviceModalView allDevices={allDevices} />);
-    setModalVisible(true);
+  const logoutOptions = {
+    onLogoutStart: () => setIsLoggingOut(true),
+    onLoggedOut: () => navigation.goBack(),
   };
 
-  if (!isLoggedIn) {
+  if (!isLoggedIn && !isLoggingOut) {
     return <NotLoggedInView />;
   }
 
@@ -37,7 +49,7 @@ export const AccountManagementScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padSides={false}>
-          {currentUserID != null && (
+          {(currentUserID != null || isLoggingOut) && (
             <>
               <ListSection>
                 <ListSubheader>Manage Your Account</ListSubheader>
@@ -76,13 +88,13 @@ export const AccountManagementScreen = ({navigation}: Props) => {
             <MinorActionListItem
               title={'Logout this device'}
               icon={AppIcons.logout}
-              onPress={() => handleLogoutModal()}
+              onPress={() => confirmLogout(logoutOptions)}
             />
-            {currentUserID != null && (
+            {(currentUserID != null || isLoggingOut) && (
               <MinorActionListItem
                 title={'Logout all devices'}
                 icon={AppIcons.error}
-                onPress={() => handleLogoutModal(true)}
+                onPress={() => confirmLogout({...logoutOptions, allDevices: true})}
               />
             )}
           </ListSection>

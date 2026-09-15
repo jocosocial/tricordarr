@@ -7,6 +7,7 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
@@ -42,7 +43,7 @@ export const AccountInfoSettingsScreen = () => {
         <View>
           <ListSubheader>Token Auth Data</ListSubheader>
           <DataFieldListItem title={'UserID'} description={tokenData?.userID} />
-          <DataFieldListItem title={'Access Level'} description={tokenData?.accessLevel} />
+          <DataFieldListItem title={'Access Level'} description={UserAccessLevel.getLabel(tokenData?.accessLevel)} />
           <DataFieldListItem title={'Token'} description={tokenData?.token} sensitive={true} />
         </View>
         <View>

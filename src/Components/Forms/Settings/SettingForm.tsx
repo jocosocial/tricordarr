@@ -22,14 +22,16 @@ export const SettingForm = ({value, onSave, validationSchema, inputMode}: Settin
   };
   return (
     <Formik enableReinitialize initialValues={initialFormValues} onSubmit={onSave} validationSchema={validationSchema}>
-      {({values, handleSubmit}) => (
+      {({values, handleSubmit, isSubmitting}) => (
         <View>
-          <TextField name={'settingValue'} inputMode={inputMode} />
+          <TextField name={'settingValue'} testID={'settingValue-input'} inputMode={inputMode} />
           <PrimaryActionButton
             onPress={handleSubmit}
             buttonText={'Save'}
             style={[commonStyles.marginTopSmall]}
-            disabled={values.settingValue === initialFormValues.settingValue}
+            disabled={values.settingValue === initialFormValues.settingValue || isSubmitting}
+            isLoading={isSubmitting}
+            testID={'settingSave-button'}
           />
         </View>
       )}

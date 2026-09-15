@@ -11,6 +11,7 @@ import {UserHeader} from '#src/Structs/ControllerStructs';
 
 interface UserChipsFieldProps {
   name: string;
+  testID: string;
   allowRemoveSelf?: boolean;
   label?: string;
   searchFavorersOnly?: boolean;
@@ -21,6 +22,7 @@ interface UserChipsFieldProps {
 }
 export const UserChipsField = ({
   name,
+  testID,
   label,
   allowRemoveSelf = false,
   searchFavorersOnly = false,
@@ -65,6 +67,7 @@ export const UserChipsField = ({
         <View style={styles.parentContainer}>
           <View style={styles.searchBarContainer}>
             <UserMatchSearchBar
+              testID={testID}
               label={label}
               excludeHeaders={field.value}
               onPress={addUserHeader}

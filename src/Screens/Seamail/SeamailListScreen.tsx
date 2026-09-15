@@ -11,12 +11,14 @@ import {SeamailAccountButtons} from '#src/Components/Buttons/SegmentedButtons/Se
 import {SelectionButtons} from '#src/Components/Buttons/SegmentedButtons/SelectionButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
-import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
+import {SeamailFilterMenu} from '#src/Components/Menus/Seamail/SeamailFilterMenu';
 import {SeamailListScreenActionsMenu} from '#src/Components/Menus/Seamail/SeamailListScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSeamailFilter} from '#src/Context/Contexts/SeamailFilterContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
@@ -27,10 +29,10 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
+import {useFezListQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -44,7 +46,9 @@ export const SeamailListScreen = (props: Props) => {
     <LoggedInScreen>
       <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
-          <ElevationProvider>
+          <ElevationProvider
+            key={props.route.params?.asPrivilegedUser ?? 'self'}
+            initialElevation={props.route.params?.asPrivilegedUser}>
             <SelectionProvider>
               <SeamailListScreenInner {...props} />
             </SelectionProvider>
@@ -58,12 +62,13 @@ export const SeamailListScreen = (props: Props) => {
 const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   const {asPrivilegedUser} = useElevation();
-  // showUnreadOnly should almost never be false since that's not useful. The query will not
-  // pass undefined to the API.
-  const [showUnreadOnly, setShowUnreadOnly] = useState<boolean | undefined>(undefined);
-  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isFetching} = useSeamailListQuery({
+  const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
+  const {seamailOnlyNew, setSeamailOnlyNew, fezType} = useSeamailFilter();
+  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isFetching} = useFezListQuery({
+    endpoint: 'joined',
+    fezType,
     forUser: asPrivilegedUser,
-    onlyNew: showUnreadOnly,
+    onlyNew: seamailOnlyNew,
     // The refetch options here mimick what happens with UserNotificationData in
     // NotificationDataPoller. The NotificationDataListener will handle updating based
     // on socket events, but privileged user seamail actions do not get socket events.
@@ -119,12 +124,6 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
     return (
       <View>
         <MaterialHeaderButtons>
-          <MenuAnchor
-            active={showUnreadOnly}
-            title={'Filter Unread'}
-            iconName={AppIcons.seamailUnread}
-            onPress={() => setShowUnreadOnly(prev => (prev === true ? undefined : true))}
-          />
           <Item
             title={'Search'}
             iconName={AppIcons.search}
@@ -134,14 +133,16 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
               })
             }
           />
+          <SeamailFilterMenu />
           <SeamailListScreenActionsMenu />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableSelection, showUnreadOnly, asPrivilegedUser, navigation, setRefreshing, fezList, selectedItems]);
+  }, [enableSelection, asPrivilegedUser, navigation, setRefreshing, fezList, selectedItems]);
 
   useEffect(() => {
     navigation.setOptions({
+      headerLeft: route.params?.noDrawer ? getLeftBackHeaderButtons : getLeftMainHeaderButtons,
       headerRight: getNavButtons,
     });
     if (enableSelection) {
@@ -149,7 +150,17 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
     } else {
       navigation.setOptions({title: 'Seamail'});
     }
-  }, [isFocused, closeFezSocket, navigation, getNavButtons, enableSelection, selectedItems.length]);
+  }, [
+    isFocused,
+    closeFezSocket,
+    navigation,
+    getNavButtons,
+    enableSelection,
+    selectedItems.length,
+    route.params?.noDrawer,
+    getLeftBackHeaderButtons,
+    getLeftMainHeaderButtons,
+  ]);
 
   /**
    * This operates more like an intent than a state.
@@ -158,9 +169,9 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
    */
   useEffect(() => {
     if (route.params?.onlyNew !== undefined) {
-      setShowUnreadOnly(route.params.onlyNew);
+      setSeamailOnlyNew(route.params.onlyNew);
     }
-  }, [route.params]);
+  }, [route.params, setSeamailOnlyNew]);
 
   if (isLoading) {
     return <LoadingView />;

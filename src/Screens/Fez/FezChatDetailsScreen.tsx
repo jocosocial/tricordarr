@@ -15,12 +15,12 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/useFezData';
+import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.fezChatDetailsScreen>;
@@ -109,7 +109,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
                 onRemove={() => onParticipantRemove(fezData.fezID, u.userID)}
                 key={u.userID}
                 user={u}
-                fez={fezData}
+                owner={fezData.owner}
                 onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
               />
             ))}

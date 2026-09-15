@@ -3,7 +3,7 @@ import {AppIcons} from '#src/Enums/Icons';
 
 export const PostAsTwitarrTeamHelpTopicView = () => {
   return (
-    <HelpTopicView title={'Post as TwitarrTeam'} icon={AppIcons.twitarteam}>
+    <HelpTopicView title={'Post as TwitarrTeam'} icon={AppIcons.twitarrteam}>
       Toggle posting as TwitarrTeam. This option is only available if you have TwitarrTeam privileges.
     </HelpTopicView>
   );

@@ -63,6 +63,7 @@ export const SocketSettingsScreen = () => {
               <PaddedContentView padSides={false}>
                 <BooleanField
                   name={'enableNotificationSocket'}
+                  testID={'enableNotificationSocket-switch'}
                   label={'Enable'}
                   value={appConfig.enableNotificationSocket}
                   onPress={toggleNotificationSocket}
@@ -89,6 +90,7 @@ export const SocketSettingsScreen = () => {
               <PaddedContentView padSides={false}>
                 <BooleanField
                   name={'enableFezSocket'}
+                  testID={'enableFezSocket-switch'}
                   label={'Enable'}
                   value={appConfig.enableFezSocket}
                   onPress={toggleFezSocket}

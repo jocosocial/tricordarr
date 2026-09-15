@@ -1,4 +1,3 @@
-import notifee from '@notifee/react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -8,7 +7,6 @@ import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
@@ -20,9 +18,8 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {FezMutedView} from '#src/Components/Views/Static/FezMutedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -34,24 +31,25 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/useFezData';
+import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {createLogger} from '#src/Libraries/Logger';
+import {openFezParentScreen} from '#src/Libraries/Navigation';
 import {
   CommonStackComponents,
   CommonStackParamList,
   HelpScreenComponents,
   useCommonStack,
-} from '#src/Navigation/CommonScreens';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
+} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {type FezData, type FezPostData, type PostContentData} from '#src/Structs/ControllerStructs';
-import {SocketFezMemberChangeData, SocketFezPostData} from '#src/Structs/SocketStructs';
+import {SocketFezMemberChangeData, SocketFezPostData, SocketFezReactionData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('FezChatScreen.tsx');
 
@@ -139,12 +137,10 @@ const FezChatScreenInner = ({route}: Props) => {
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const fezPostMutation = useFezPostMutation();
   const {setSnackbarPayload} = useSnackbar();
-  const {currentUserID} = useSession();
   const {openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
-  const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
+  const {appendPost: appendPostToCache, markRead, updatePostReactions} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
-  const {appConfig} = useConfig();
   const flatListRef = useRef<TConversationListV2Ref>(null);
   const fezSocketWithHandlerRef = useRef<{
     ws: ReconnectingWebSocket;
@@ -166,10 +162,19 @@ const FezChatScreenInner = ({route}: Props) => {
     }
     const participants = fez.members?.participants;
     const canCreateEvent = FezType.isSeamailType(fez.fezType) && participants && participants.length > 0;
+    const isLfg = FezType.isLFGType(fez.fezType);
+    const isPrivateEvent = fez.fezType === FezType.privateEvent;
 
     return (
       <View>
         <MaterialHeaderButtons>
+          {(isLfg || isPrivateEvent) && (
+            <Item
+              title={isLfg ? 'LFG' : 'Event'}
+              iconName={isLfg ? AppIcons.lfg : AppIcons.personalEvent}
+              onPress={() => openFezParentScreen(navigation, fez)}
+            />
+          )}
           {canCreateEvent && (
             <Item
               title={'Create Event'}
@@ -198,7 +203,10 @@ const FezChatScreenInner = ({route}: Props) => {
     (event: WebSocketMessageEvent) => {
       logger.info('fezSocketMessageHandler responding event', event);
       const socketMessage = JSON.parse(event.data);
-      if ('joined' in socketMessage) {
+      if ('reactions' in socketMessage) {
+        const reactionData = socketMessage as SocketFezReactionData;
+        updatePostReactions(route.params.fezID, reactionData.postID, reactionData.reactions);
+      } else if ('joined' in socketMessage) {
         const memberChangeData = socketMessage as SocketFezMemberChangeData;
         const changeActionString = memberChangeData.joined ? 'joined' : 'left';
         const changeString = `User ${memberChangeData.user.username} has ${changeActionString} the chat.`;
@@ -209,12 +217,12 @@ const FezChatScreenInner = ({route}: Props) => {
           return;
         }
         lastProcessedPostIDRef.current = socketFezPostData.postID;
-        if (currentUserID != null && socketFezPostData.author.userID !== currentUserID) {
-          appendPostToCache(route.params.fezID, socketFezPostData);
-        }
+        // Include self-authored posts so other devices of the same user stay in
+        // sync. appendPost is idempotent, so the posting device does not double-apply.
+        appendPostToCache(route.params.fezID, socketFezPostData);
       }
     },
-    [appendPostToCache, currentUserID, route.params.fezID, setSnackbarPayload],
+    [appendPostToCache, route.params.fezID, setSnackbarPayload, updatePostReactions],
   );
   fezSocketMessageHandlerRef.current = fezSocketMessageHandler;
 
@@ -237,27 +245,52 @@ const FezChatScreenInner = ({route}: Props) => {
     }
   }, [hasNextPage, handleLoadNext]);
 
+  /**
+   * Posts to the fez and resets the composer, keeping the current elevation flags.
+   *
+   * Awaits the mutation so Formik holds isSubmitting (and the submit button stays disabled)
+   * for the full round trip. See #533.
+   */
   const onSubmit = useCallback(
-    (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
+    async (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
       values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
       // Mark as read if applicable.
       if (fez && fez.members) {
         markRead(fez.fezID);
       }
-      fezPostMutation.mutate(
-        {fezID: route.params.fezID, postContentData: values},
-        {
-          onSuccess: response => {
-            formikHelpers.resetForm();
-            appendPostToCache(route.params.fezID, response.data);
-            resetInitialReadCount();
-            dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+      try {
+        const response = await fezPostMutation.mutateAsync({
+          fezID: route.params.fezID,
+          postContentData: values,
+        });
+        formikHelpers.resetForm({
+          values: {
+            text: '',
+            images: [],
+            postAsModerator: asModerator,
+            postAsTwitarrTeam: asTwitarrTeam,
           },
-          onSettled: () => formikHelpers.setSubmitting(false),
-        },
-      );
+        });
+        appendPostToCache(route.params.fezID, response.data);
+        resetInitialReadCount();
+        dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+      } catch (error) {
+        // The error snackbar is raised by useTokenAuthMutation's onError. Swallow here so the
+        // rejection doesn't escape into Formik's submit handling.
+        logger.error('Fez post create failed.', error);
+      }
     },
-    [fez, markRead, fezPostMutation, route.params.fezID, appendPostToCache, resetInitialReadCount, dispatchScrollToTop],
+    [
+      fez,
+      markRead,
+      fezPostMutation,
+      route.params.fezID,
+      appendPostToCache,
+      resetInitialReadCount,
+      dispatchScrollToTop,
+      asModerator,
+      asTwitarrTeam,
+    ],
   );
 
   // Initial set useEffect
@@ -337,13 +370,9 @@ const FezChatScreenInner = ({route}: Props) => {
         // The UND drives the tab bar and seamail account buttons badge count
         // and we don't have a cache reducer for it yet.
         refetchUserNotificationData();
-        if (appConfig.markReadCancelPush) {
-          logger.debug('auto canceling notifications.');
-          notifee.cancelDisplayedNotification(fez.fezID);
-        }
       }
     }
-  }, [fez, markRead, initialReadCount, appConfig.markReadCancelPush, refetchUserNotificationData]);
+  }, [fez, markRead, initialReadCount, refetchUserNotificationData]);
 
   // Visible useEffect
   // 20260308 The query now refetches on mount by default so this is no longer needed.
@@ -401,7 +430,7 @@ const FezChatScreenInner = ({route}: Props) => {
   return (
     <AppView>
       <ListTitleView title={fez.title} />
-      <PostAsUserBanner />
+      <PostAsUserWarningView />
       {fez.members?.isMuted && <FezMutedView />}
       <View style={commonStyles.flex}>
         <FezConversationListV2
@@ -425,7 +454,7 @@ const FezChatScreenInner = ({route}: Props) => {
           </View>
         )}
       </View>
-      <ContentPostForm onSubmit={onSubmit} enablePhotos={false} />
+      <ContentPostForm onSubmit={onSubmit} enablePhotos={!FezType.isSeamailType(fez.fezType)} maxPhotos={1} />
     </AppView>
   );
 };

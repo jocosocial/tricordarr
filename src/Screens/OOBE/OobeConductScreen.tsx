@@ -4,7 +4,7 @@ import React from 'react';
 import {MarkdownScreenBase} from '#src/Components/Screens/MarkdownScreenBase';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {useConductQuery} from '#src/Queries/PublicQueries';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeConductScreen>;

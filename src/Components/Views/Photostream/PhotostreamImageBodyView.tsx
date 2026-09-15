@@ -5,9 +5,8 @@ import {Text} from 'react-native-paper';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {guessDeckNumber} from '#src/Libraries/Ship';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
 interface PhotostreamImageBodyViewProps {
@@ -27,9 +26,8 @@ export const PhotostreamImageBodyView = (props: PhotostreamImageBodyViewProps) =
   };
 
   const onLocationPress = () => {
-    const deck = guessDeckNumber(props.image.location);
     navigation.push(CommonStackComponents.mapScreen, {
-      deckNumber: deck,
+      location: props.image.location,
     });
   };
 

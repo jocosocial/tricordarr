@@ -8,6 +8,7 @@ interface EventsQueryOptions {
   time?: Date;
   eventType?: 'official' | 'shadow';
   search?: string;
+  location?: string;
   dayplanner?: boolean;
   options?: TokenAuthQueryOptionsType<EventData[]>;
 }
@@ -19,6 +20,7 @@ export const useEventsQuery = ({
   time,
   eventType,
   search,
+  location,
   dayplanner,
   options,
 }: EventsQueryOptions) => {
@@ -29,6 +31,7 @@ export const useEventsQuery = ({
     ...(time && {time: time.toISOString()}),
     ...(eventType && {type: eventType}),
     ...(search && {search: search}),
+    ...(location && {location: location}),
     ...(dayplanner && {dayplanner: true}),
   });
 };

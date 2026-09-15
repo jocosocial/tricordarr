@@ -1,5 +1,5 @@
 import {Query, QueryKey} from '@tanstack/react-query';
-import {PersistQueryClientProvider, persistQueryClientRestore} from '@tanstack/react-query-persist-client';
+import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import DeviceInfo from 'react-native-device-info';
@@ -11,6 +11,8 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrQueryClientContext} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {BadResponseFormatError, createQueryClient, createSessionPersister} from '#src/Libraries/Network/APIClient';
+import {isHttpClientError, shouldRetryQuery} from '#src/Libraries/Network/Retry';
+import {joinUrl} from '#src/Libraries/UrlParser';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
 const logger = createLogger('SwiftarrQueryClientProvider.tsx');
@@ -25,7 +27,9 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
 
   const serverUrl = useMemo(() => {
     if (!currentSession) {
-      return appConfig.serverUrl; // Fallback to default
+      // First-launch / no session only. Not a substitute while Session is hydrating;
+      // SessionProvider withholds children until load completes.
+      return appConfig.serverUrl;
     }
     return currentSession.serverUrl;
   }, [currentSession, appConfig.serverUrl]);
@@ -35,7 +39,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
    */
   const ServerQueryClient = useMemo(() => {
     const client = axios.create({
-      baseURL: `${serverUrl}${appConfig.urlPrefix}`,
+      baseURL: joinUrl(serverUrl, appConfig.urlPrefix),
       headers: {
         ...(isLoggedIn && tokenData ? {Authorization: `Bearer ${tokenData.token}`} : undefined),
         ...(isLoggedIn && tokenData ? {'X-Swiftarr-User': tokenData.userID} : undefined),
@@ -116,34 +120,6 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   // when session loads, ensuring it re-hydrates with the correct persister
   const persistKey = currentSession?.sessionID || '__pending_session__';
 
-  // Track if we've manually restored to avoid double-restoration
-  const hasManuallyRestoredRef = useRef(false);
-
-  // Manually restore cache when session loads (in addition to key-based remount)
-  useEffect(() => {
-    if (!currentSession || !queryClientRef.current || hasManuallyRestoredRef.current) {
-      return;
-    }
-
-    const restoreCache = async () => {
-      try {
-        const persister = createSessionPersister(currentSession.sessionID);
-        await persistQueryClientRestore({
-          queryClient: queryClientRef.current!,
-          persister,
-          maxAge: appConfig.apiClientConfig.cacheTime,
-          buster: appConfig.apiClientConfig.cacheBuster,
-        });
-
-        hasManuallyRestoredRef.current = true;
-      } catch (error) {
-        logger.error('Error manually restoring cache:', error);
-      }
-    };
-
-    restoreCache();
-  }, [currentSession, appConfig.apiClientConfig.cacheTime, appConfig.apiClientConfig.cacheBuster]);
-
   /**
    * Bonus data to inject into the clients query keys.
    * Includes sessionID as first element to ensure proper scoping.
@@ -163,7 +139,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       });
 
       // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
-      if (!response.headers['content-type'].startsWith('application/json')) {
+      const contentType = response.headers['content-type'];
+      if (typeof contentType !== 'string' || !contentType.startsWith('application/json')) {
         throw new BadResponseFormatError(response);
       }
 
@@ -172,26 +149,30 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     [ServerQueryClient],
   );
 
+  // Writes get a longer timeout budget than reads. Aborting a POST that the server actually
+  // processed leads the user to retry and duplicate it. Callers may still override. See #533.
   const apiPost = useCallback(
     async <TResponseData = void, TRequestData = void>(
       url: string,
       body?: TRequestData,
       config?: AxiosRequestConfig,
     ) => {
-      return await ServerQueryClient.post<TResponseData, AxiosResponse<TResponseData, TResponseData>>(
-        url,
-        body,
-        config,
-      );
+      return await ServerQueryClient.post<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url, body, {
+        timeout: appConfig.apiClientConfig.mutationTimeout,
+        ...config,
+      });
     },
-    [ServerQueryClient],
+    [ServerQueryClient, appConfig.apiClientConfig.mutationTimeout],
   );
 
   const apiDelete = useCallback(
-    async <TResponseData = void,>(url: string) => {
-      return await ServerQueryClient.delete<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url);
+    async <TResponseData = void,>(url: string, config?: AxiosRequestConfig) => {
+      return await ServerQueryClient.delete<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url, {
+        timeout: appConfig.apiClientConfig.mutationTimeout,
+        ...config,
+      });
     },
-    [ServerQueryClient],
+    [ServerQueryClient, appConfig.apiClientConfig.mutationTimeout],
   );
 
   const publicGet = useCallback(
@@ -210,13 +191,12 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       body?: TRequestData,
       config?: AxiosRequestConfig,
     ) => {
-      return await PublicQueryClient.post<TResponseData, AxiosResponse<TResponseData, TResponseData>>(
-        url,
-        body,
-        config,
-      );
+      return await PublicQueryClient.post<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url, body, {
+        timeout: appConfig.apiClientConfig.mutationTimeout,
+        ...config,
+      });
     },
-    [PublicQueryClient],
+    [PublicQueryClient, appConfig.apiClientConfig.mutationTimeout],
   );
 
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
@@ -251,7 +231,9 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         }
         logger.debug('Query error encountered via', query.queryKey);
         logger.debug('Error details:', error);
-        setErrorCount(prev => prev + 1);
+        if (!isHttpClientError(error)) {
+          setErrorCount(prev => prev + 1);
+        }
         if (!disruptionDetected) {
           setSnackbarPayload({message: errorString, messageType: 'error'});
         }
@@ -333,7 +315,15 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         ...currentOptions.queries,
         gcTime: appConfig.apiClientConfig.cacheTime,
         staleTime: appConfig.apiClientConfig.staleTime,
-        retry: appConfig.apiClientConfig.retry,
+        retry: shouldRetryQuery(appConfig.apiClientConfig.retry),
+      },
+      mutations: {
+        ...currentOptions.mutations,
+        // Deliberately the opposite of the query policy above. Replaying a GET is free;
+        // replaying a POST creates a second post. The server can't tell our retry apart from
+        // the user tapping twice, so we never retry writes automatically. See #533.
+        retry: 0,
+        networkMode: 'online',
       },
     });
   }, [appConfig.apiClientConfig.cacheTime, appConfig.apiClientConfig.retry, appConfig.apiClientConfig.staleTime]);

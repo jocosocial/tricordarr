@@ -8,7 +8,7 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useUserCacheReducer} from '#src/Hooks/User/useUserCacheReducer';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';
@@ -60,26 +60,44 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
     [mode, userHeader, removeRelation, favoriteMutation, muteMutation, blockMutation],
   );
 
-  const handleSeamail = (swipeable: SwipeableMethods) => {
-    swipeable.reset();
-    commonNavigation.push(CommonStackComponents.seamailCreateScreen, {
-      initialUserHeaders: [userHeader],
-    });
-  };
+  /**
+   * Close the swipeable and start a Seamail with this user.
+   */
+  const handleSeamail = useCallback(
+    (swipeable: SwipeableMethods) => {
+      swipeable.reset();
+      commonNavigation.push(CommonStackComponents.seamailCreateScreen, {
+        initialUserHeaders: [userHeader],
+      });
+    },
+    [commonNavigation, userHeader],
+  );
 
-  const handleCall = (swipeable: SwipeableMethods) => {
-    swipeable.reset();
-    commonNavigation.push(CommonStackComponents.krakenTalkCreateScreen, {
-      initialUserHeader: userHeader,
-    });
-  };
+  /**
+   * Close the swipeable and start a KrakenTalk call with this user.
+   */
+  const handleCall = useCallback(
+    (swipeable: SwipeableMethods) => {
+      swipeable.reset();
+      commonNavigation.push(CommonStackComponents.krakenTalkCreateScreen, {
+        initialUserHeader: userHeader,
+      });
+    },
+    [commonNavigation, userHeader],
+  );
 
-  const handleScheduleEvent = (swipeable: SwipeableMethods) => {
-    swipeable.reset();
-    commonNavigation.push(CommonStackComponents.personalEventCreateScreen, {
-      initialUserHeaders: [userHeader],
-    });
-  };
+  /**
+   * Close the swipeable and create a personal event inviting this user.
+   */
+  const handleScheduleEvent = useCallback(
+    (swipeable: SwipeableMethods) => {
+      swipeable.reset();
+      commonNavigation.push(CommonStackComponents.personalEventCreateScreen, {
+        initialUserHeaders: [userHeader],
+      });
+    },
+    [commonNavigation, userHeader],
+  );
 
   const renderRightPanel = (
     progressAnimatedValue: SharedValue<number>,
@@ -91,18 +109,21 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
         {mode === 'favorite' && !preRegistrationMode && (
           <>
             <SwipeableButton
+              testID={'userListSeamail-button'}
               text={'Seamail'}
               iconName={AppIcons.seamail}
               style={{backgroundColor: theme.colors.elevation.level1}}
               onPress={() => handleSeamail(swipeable)}
             />
             <SwipeableButton
+              testID={'userListCall-button'}
               text={'Call'}
               iconName={AppIcons.krakentalkCreate}
               style={{backgroundColor: theme.colors.elevation.level3}}
               onPress={() => handleCall(swipeable)}
             />
             <SwipeableButton
+              testID={'userListEvent-button'}
               text={'Event'}
               iconName={AppIcons.eventCreate}
               style={{backgroundColor: theme.colors.elevation.level4}}
@@ -111,6 +132,7 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
           </>
         )}
         <SwipeableButton
+          testID={'userListRemove-button'}
           text={'Remove'}
           iconName={AppIcons.delete}
           style={{backgroundColor: theme.colors.elevation.level2}}

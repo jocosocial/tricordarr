@@ -12,6 +12,7 @@ interface ScheduleHeaderButtonProps {
   primaryText: string;
   secondaryText: string;
   underlinePrimary?: boolean;
+  testID: string;
 }
 
 /**
@@ -46,6 +47,7 @@ export const ScheduleHeaderButton = (props: ScheduleHeaderButtonProps) => {
 
   return (
     <TouchableOpacity
+      testID={props.testID}
       style={styles.buttonContainer}
       onPress={props.onPress}
       disabled={props.disabled}

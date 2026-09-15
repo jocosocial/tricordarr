@@ -1,0 +1,17 @@
+{
+  "name": "Tricordarr",
+  "install": "npm ci",
+  "terminals": [
+    {
+      "name": "expo",
+      "command": "npx expo start",
+      "description": "Expo dev server (Metro JS bundler) on http://localhost:8081. Pairs with `npx expo run:android` / `npx expo run:ios`. Reachable from an Android emulator via 10.0.2.2 and an iOS simulator via 127.0.0.1."
+    }
+  ],
+  "ports": [
+    {
+      "name": "metro",
+      "port": 8081
+    }
+  ]
+}

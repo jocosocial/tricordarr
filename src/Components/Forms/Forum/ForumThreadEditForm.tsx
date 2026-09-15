@@ -30,13 +30,14 @@ export const ForumThreadEditForm = ({forumData, onSubmit}: ForumThreadEditFormPr
       {({handleSubmit, isSubmitting, isValid}) => (
         <View>
           <DirtyDetectionField />
-          <TextField name={'title'} label={'Title'} />
+          <TextField name={'title'} testID={'forumEditTitle-input'} label={'Title'} />
           <PrimaryActionButton
             disabled={isSubmitting || !isValid}
             isLoading={isSubmitting}
             viewStyle={[commonStyles.marginTopSmall]}
             onPress={handleSubmit}
             buttonText={'Save'}
+            testID={'forumEditSave-button'}
           />
         </View>
       )}

@@ -1,6 +1,7 @@
 import {FezType} from '#src/Enums/FezType';
+import {ShipCode} from '#src/Enums/ShipCode';
 import {ServerUrlChoice} from '#src/Libraries/Network/ServerChoices';
-import {EventData, UserHeader} from '#src/Structs/ControllerStructs';
+import {EventData, ImageUploadData, UserHeader} from '#src/Structs/ControllerStructs';
 
 export interface SettingFormValues {
   settingValue: string;
@@ -89,6 +90,7 @@ export interface CruiseSettingsFormValues {
   cruiseLength: string;
   portTimeZoneID: string;
   schedBaseUrl: string;
+  shipCode: ShipCode;
 }
 
 export interface TimeSettingsFormValues {
@@ -106,6 +108,7 @@ export interface QuerySettingsFormValues {
   staleTimeMinutes: number;
   disruptionThreshold: number;
   imageStaleTimeDays: number;
+  mutationTimeoutSeconds: number;
 }
 
 export interface NotificationPollingSettingsFormValues {
@@ -137,4 +140,43 @@ export interface SchedImportFormValues {
 
 export interface BackgroundConnectionSettingsFormValues {
   wifiNetworkNames: string[];
+}
+
+export interface AdminAnnouncementFormValues {
+  text: string;
+  displayUntilDate: Date;
+  displayUntilTime: StartTime;
+  postAsUser: string;
+}
+
+export interface AdminDailyThemeFormValues {
+  title: string;
+  info: string;
+  cruiseDay: string;
+  image: ImageUploadData;
+}
+
+export interface AdminHuntFormValues {
+  title: string;
+  description: string;
+  puzzlesJson: string;
+}
+
+export interface AdminHuntPuzzleFormValues {
+  title: string;
+  body: string;
+  answer: string;
+  unlockTimeDate?: Date;
+  unlockTimeTime: StartTime;
+  clearUnlockTime: boolean;
+  hintsJson: string;
+}
+
+export interface AdminScheduleApplyFormValues {
+  addForumPosts: boolean;
+  processDeletes: boolean;
+}
+
+export interface HuntPuzzleCallInFormValues {
+  puzzleAnswer: string;
 }

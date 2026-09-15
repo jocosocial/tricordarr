@@ -1,7 +1,7 @@
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
-import {StateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
+import {getStateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useForumPostBookmarkMutation} from '#src/Queries/Forum/ForumPostBookmarkMutations';
@@ -13,6 +13,7 @@ interface ForumPostActionsFavoriteItemProps {
   closeMenu: () => void;
 }
 
+/** Bookmark or unbookmark a forum post from the post actions menu. */
 export const ForumPostActionsFavoriteItem = ({forumPost, forumData, closeMenu}: ForumPostActionsFavoriteItemProps) => {
   const favoriteMutation = useForumPostBookmarkMutation();
   const {updatePostBookmark} = useForumCacheReducer();
@@ -34,20 +35,19 @@ export const ForumPostActionsFavoriteItem = ({forumPost, forumData, closeMenu}: 
     );
   };
 
-  const getIcon = () => (
-    <StateLoadingIcon
-      isLoading={favoriteMutation.isPending}
-      state={forumPost.isBookmarked}
-      iconTrue={AppIcons.unfavorite}
-      iconFalse={AppIcons.favorite}
-    />
-  );
-
   return (
     <Menu.Item
       title={forumPost.isBookmarked ? 'Unfavorite' : 'Favorite'}
       dense={false}
-      leadingIcon={getIcon}
+      leadingIcon={getStateLoadingIcon({
+        isLoading: favoriteMutation.isPending,
+        state: forumPost.isBookmarked,
+        iconTrue: AppIcons.unfavorite,
+        iconFalse: AppIcons.favorite,
+      })}
+      // Menus stay open until onSettled closes them, so a mutation in flight is still tappable.
+      // Without this a fast double-tap fires the toggle twice and can flip the state back. See #533.
+      disabled={favoriteMutation.isPending}
       onPress={handleFavorite}
     />
   );

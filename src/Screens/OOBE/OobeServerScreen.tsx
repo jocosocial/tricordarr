@@ -21,7 +21,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {ServerUrlFormValues} from '#src/Types/FormValues';
 

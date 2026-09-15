@@ -23,6 +23,7 @@ export const BoardgameAgePickerField = ({value}: {value: number}) => {
   return (
     <PickerField<number | undefined>
       name={'maxAge'}
+      testID={'boardgameMaxAge-button'}
       label={'Age Restriction'}
       value={value}
       choices={[0, 6, 9, 12, 15]}

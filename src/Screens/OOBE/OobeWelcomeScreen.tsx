@@ -15,7 +15,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 const logger = createLogger('OobeWelcomeScreen.tsx');

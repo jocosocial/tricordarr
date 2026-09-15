@@ -3,7 +3,7 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Badge, Text} from 'react-native-paper';
 
-import {commonStyles} from '#src/Styles';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const SeamailMessageCountIndicator = ({
   totalPostCount,
@@ -12,6 +12,7 @@ export const SeamailMessageCountIndicator = ({
   totalPostCount: number;
   badgeCount: number;
 }) => {
+  const {commonStyles} = useStyles();
   const styles = StyleSheet.create({
     container: {
       ...commonStyles.verticalContainer,

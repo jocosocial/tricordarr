@@ -18,6 +18,7 @@ import {RNInputModeOptions} from '#src/Types';
 
 export interface TextFieldProps {
   name: string;
+  testID: string;
   mode?: 'flat' | 'outlined' | undefined;
   multiline?: boolean;
   numberOfLines?: number;
@@ -28,6 +29,8 @@ export interface TextFieldProps {
   viewStyle?: StyleProp<ViewStyle>;
   inputMode?: RNInputModeOptions;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  autoCorrect?: boolean;
+  spellCheck?: boolean;
   maxLength?: number;
   onFocus?: () => void;
   keyboardType?: KeyboardTypeOptions;
@@ -111,6 +114,7 @@ export interface TextFieldProps {
 // @TODO make this type-generic
 export const TextField = ({
   name,
+  testID,
   mode = 'outlined',
   multiline = false,
   numberOfLines = 1,
@@ -121,6 +125,8 @@ export const TextField = ({
   viewStyle,
   inputMode,
   autoCapitalize,
+  autoCorrect,
+  spellCheck,
   maxLength,
   onFocus,
   keyboardType,
@@ -152,6 +158,7 @@ export const TextField = ({
   //   - Autofill can trigger blur before value syncs, causing false "field is empty" errors.
   //   - By requiring 'touched', we avoid showing stale errors during autofill.
   const shouldShowError = showErrorWithoutTouch ? !!meta.error : !!meta.error && meta.touched;
+  const isFieldDisabled = disabled || isSubmitting;
 
   const styles = StyleSheet.create({
     outline: {
@@ -159,6 +166,9 @@ export const TextField = ({
     },
     textInput: {
       minHeight: calculatedMinHeight,
+    },
+    helperText: {
+      color: theme.colors.onSurfaceDisabled,
     },
   });
 
@@ -204,8 +214,9 @@ export const TextField = ({
   return (
     <View style={viewStyle}>
       <TextInput
+        testID={testID}
         keyboardType={keyboardType}
-        textColor={disabled || isSubmitting ? theme.colors.onSurfaceDisabled : theme.colors.onBackground} // @TODO this isnt working
+        textColor={isFieldDisabled ? theme.colors.onSurfaceDisabled : theme.colors.onBackground} // @TODO this isnt working
         label={label}
         mode={mode}
         multiline={multiline}
@@ -214,12 +225,14 @@ export const TextField = ({
         value={field.value}
         error={shouldShowError}
         numberOfLines={numberOfLines}
-        disabled={disabled || isSubmitting}
+        disabled={isFieldDisabled}
         left={left}
         right={right}
         secureTextEntry={secureTextEntry}
         inputMode={inputMode}
         autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        spellCheck={spellCheck}
         maxLength={maxLength}
         onFocus={onFocus}
         style={[styles.textInput, innerTextStyle]}
@@ -228,9 +241,13 @@ export const TextField = ({
         textContentType={textContentType}
         autoComplete={autoComplete}
       />
-      {infoText && <HelperText type={'info'}>{infoText}</HelperText>}
+      {infoText && (
+        <HelperText type={'info'} style={isFieldDisabled ? styles.helperText : undefined}>
+          {infoText}
+        </HelperText>
+      )}
       <HelperText type={'error'} visible={shouldShowError}>
-        {meta.error}
+        {shouldShowError ? meta.error : undefined}
       </HelperText>
     </View>
   );

@@ -8,7 +8,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export const PerformerListActionsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
@@ -23,7 +23,7 @@ export const PerformerListActionsMenu = () => {
         anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
         <Menu.Item
           title={'Add Performer'}
-          leadingIcon={AppIcons.twitarteam}
+          leadingIcon={AppIcons.twitarrteam}
           onPress={() => {
             navigation.push(CommonStackComponents.siteUIScreen, {
               resource: 'performer/add',

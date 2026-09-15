@@ -12,6 +12,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
@@ -24,7 +25,11 @@ import {useMenu} from '#src/Hooks/useMenu';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {calcCruiseDayTime, eventsOverlap, getDurationString} from '#src/Libraries/DateTime';
-import {CommonStackComponents, CommonStackParamList, useCommonStack} from '#src/Navigation/CommonScreens';
+import {
+  CommonStackComponents,
+  CommonStackParamList,
+  useCommonStack,
+} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
@@ -288,10 +293,17 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  const durationString = getDurationString(eventData.startTime, eventData.endTime, eventData.timeZoneID, true);
+  const durationString = getDurationString(
+    eventData.startTime,
+    eventData.endTime,
+    eventData.timeZoneID,
+    true,
+    appConfig.schedule.timeZoneLabelMode,
+  );
 
   return (
     <AppView>
+      <TimezoneWarningView />
       <ListTitleView title={eventData.title} subtitle={durationString} />
       <View style={[commonStyles.flex]}>
         {isFetching && filteredItems.length === 0 ? (

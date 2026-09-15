@@ -1,10 +1,11 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {format} from 'date-fns';
-import React, {memo, useCallback} from 'react';
+import React, {memo, useCallback, useMemo} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {ActivityIndicator, List} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {KaraokeListItemSwipeable} from '#src/Components/Swipeables/KaraokeListItemSwipeable';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -28,9 +29,15 @@ interface KaraokeSongListItemProps {
   item: KaraokeSongListItemData;
   /** Optional press handler (e.g. navigate to log screen). */
   onPress?: () => void;
+  /** When true, wrap the row in KaraokeListItemSwipeable (Log for karaokemanager). */
+  swipeableEnabled?: boolean;
 }
 
-const KaraokeSongListItemInner = ({item, onPress}: KaraokeSongListItemProps) => {
+/**
+ * FlashList row for karaoke songs and performances. Owns the swipeable
+ * wrapper so KaraokeSongList renderItem stays a single component.
+ */
+const KaraokeSongListItemInner = ({item, onPress, swipeableEnabled = false}: KaraokeSongListItemProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const queryClient = useQueryClient();
@@ -64,37 +71,42 @@ const KaraokeSongListItemInner = ({item, onPress}: KaraokeSongListItemProps) => 
           })()
         : null;
 
-  const styles = StyleSheet.create({
-    item: {
-      backgroundColor: theme.colors.background,
-      ...commonStyles.paddingHorizontalSmall,
-    },
-    content: {
-      ...commonStyles.paddingLeftZero,
-    },
-    title: {
-      ...commonStyles.onBackground,
-      fontWeight: 'bold',
-    },
-    text: {
-      ...commonStyles.onBackground,
-    },
-    performerLine: {
-      fontStyle: 'italic',
-    },
-    rightContainer: {
-      ...commonStyles.marginLeftSmall,
-      flexDirection: 'row',
-      alignItems: 'center',
-      alignSelf: 'flex-start',
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        item: {
+          backgroundColor: theme.colors.background,
+          ...commonStyles.paddingHorizontalSmall,
+        },
+        content: {
+          ...commonStyles.paddingLeftZero,
+        },
+        title: {
+          ...commonStyles.onBackground,
+          fontWeight: 'bold',
+        },
+        text: {
+          ...commonStyles.onBackground,
+        },
+        performerLine: {
+          ...commonStyles.onBackground,
+          fontStyle: 'italic',
+        },
+        rightContainer: {
+          ...commonStyles.marginLeftSmall,
+          flexDirection: 'row',
+          alignItems: 'center',
+          alignSelf: 'flex-start',
+        },
+      }),
+    [commonStyles, theme],
+  );
 
   const description =
     performerLine != null ? (
       <View>
         <Text style={styles.text}>{item.artist}</Text>
-        <Text style={[styles.text, styles.performerLine]}>{performerLine}</Text>
+        <Text style={styles.performerLine}>{performerLine}</Text>
       </View>
     ) : (
       item.artist
@@ -118,7 +130,7 @@ const KaraokeSongListItemInner = ({item, onPress}: KaraokeSongListItemProps) => 
     [item, refreshing, onFavoritePress, styles.rightContainer, theme.colors.twitarrYellow],
   );
 
-  return (
+  const listItem = (
     <List.Item
       contentStyle={styles.content}
       style={styles.item}
@@ -131,6 +143,16 @@ const KaraokeSongListItemInner = ({item, onPress}: KaraokeSongListItemProps) => 
       right={rightContent}
     />
   );
+
+  if (swipeableEnabled) {
+    return (
+      <KaraokeListItemSwipeable song={item} showLogButton={true}>
+        {listItem}
+      </KaraokeListItemSwipeable>
+    );
+  }
+
+  return listItem;
 };
 
 export const KaraokeSongListItem = memo(KaraokeSongListItemInner);

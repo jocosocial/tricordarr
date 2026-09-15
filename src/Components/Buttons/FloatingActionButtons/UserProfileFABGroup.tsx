@@ -3,7 +3,7 @@ import * as React from 'react';
 import {BaseFABGroup} from '#src/Components/Buttons/FloatingActionButtons/BaseFABGroup';
 import {FabGroupAction} from '#src/Components/Buttons/FloatingActionButtons/FABGroupAction';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ProfilePublicData} from '#src/Structs/ControllerStructs';
 
 interface UserProfileFABGroupProps {
@@ -22,6 +22,7 @@ export const UserProfileFABGroup = ({profile, showLabel}: UserProfileFABGroupPro
         commonNavigation.push(CommonStackComponents.seamailCreateScreen, {
           initialUserHeaders: [profile.header],
         }),
+      testID: 'userProfileSeamail-fab',
     }),
     FabGroupAction({
       icon: AppIcons.krakentalkCreate,
@@ -30,6 +31,7 @@ export const UserProfileFABGroup = ({profile, showLabel}: UserProfileFABGroupPro
         commonNavigation.push(CommonStackComponents.krakenTalkCreateScreen, {
           initialUserHeader: profile.header,
         }),
+      testID: 'userProfileCall-fab',
     }),
     FabGroupAction({
       icon: AppIcons.eventCreate,
@@ -38,6 +40,7 @@ export const UserProfileFABGroup = ({profile, showLabel}: UserProfileFABGroupPro
         commonNavigation.push(CommonStackComponents.personalEventCreateScreen, {
           initialUserHeaders: [profile.header],
         }),
+      testID: 'userProfileEvent-fab',
     }),
     FabGroupAction({
       icon: AppIcons.privateNoteEdit,
@@ -46,8 +49,17 @@ export const UserProfileFABGroup = ({profile, showLabel}: UserProfileFABGroupPro
         commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {
           user: profile,
         }),
+      testID: 'userProfileNote-fab',
     }),
   ];
 
-  return <BaseFABGroup actions={actions} openLabel={'User Profile'} icon={AppIcons.user} showLabel={showLabel} />;
+  return (
+    <BaseFABGroup
+      actions={actions}
+      openLabel={'Chat'}
+      icon={AppIcons.new}
+      showLabel={showLabel}
+      testID={'userProfile-fab'}
+    />
+  );
 };

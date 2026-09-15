@@ -1,9 +1,10 @@
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Alert} from 'react-native';
-import RNFS from 'react-native-fs';
+import {View} from 'react-native';
 import {SegmentedButtons} from 'react-native-paper';
-import Share from 'react-native-share';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
@@ -13,18 +14,30 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useDownloadSheet} from '#src/Context/Contexts/DownloadSheetContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {alertClearLogs} from '#src/Libraries/Alerts/SettingsAlerts';
 import {clearAllLogs, flushLogs, getCurrentLogFile, getLogFileInfo, setLogLevel} from '#src/Libraries/Logger';
 import {LogLevel} from '#src/Libraries/Logger/types';
-import {isAndroid} from '#src/Libraries/Platform/Detection';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
-export const LoggingSettingsScreen = () => {
+const getExportFileName = () => `tricordarr-${Math.floor(Date.now() / 1000)}`;
+
+type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.loggingSettings>;
+
+export const LoggingSettingsScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
   const {setSnackbarPayload} = useSnackbar();
+  const {openDownloadSheet} = useDownloadSheet();
   const [logFileInfo, setLogFileInfo] = useState<{path: string; size: string; lastModified: string} | null>(null);
-  const [isExporting, setIsExporting] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
   const {theme} = useAppTheme();
 
@@ -39,6 +52,26 @@ export const LoggingSettingsScreen = () => {
     refreshLogFileInfo();
   }, [refreshLogFileInfo]);
 
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.loggingHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
+
   const handleLogLevelChange = (value: string) => {
     const newLevel = value as LogLevel;
     setLogLevel(newLevel);
@@ -48,101 +81,58 @@ export const LoggingSettingsScreen = () => {
     });
   };
 
-  const handleExport = async () => {
+  /**
+   * Flushes the log buffer and opens the download sheet for the current log file.
+   */
+  const handleDownload = async () => {
     try {
-      setIsExporting(true);
-      // Flush any buffered logs first
+      setIsDownloading(true);
       await flushLogs();
 
-      const logFilePath = getCurrentLogFile();
-
-      // Check if file exists
-      const exists = await RNFS.exists(logFilePath);
-      if (!exists) {
+      const logFile = getCurrentLogFile();
+      if (!logFile.exists) {
         setSnackbarPayload({message: 'No log files found to export.', messageType: 'info'});
         return;
       }
 
-      // Get file stats to check if empty
-      const stat = await RNFS.stat(logFilePath);
-      if (stat.size === 0) {
+      const info = logFile.info();
+      if (!info.size) {
         setSnackbarPayload({message: 'Log file is empty.', messageType: 'info'});
         return;
       }
 
-      // Create filename with epoch timestamp
-      const epochTime = Math.floor(Date.now() / 1000);
-      const downloadFileName = `tricordarr-${epochTime}.txt`;
-
-      if (isAndroid) {
-        // Android: Copy directly to Downloads folder
-        // Check if DownloadDirectoryPath exists
-        if (!RNFS.DownloadDirectoryPath) {
-          // Fallback to ExternalStorageDirectoryPath/Download
-          const downloadPath = `${RNFS.ExternalStorageDirectoryPath}/Download/${downloadFileName}`;
-          await RNFS.copyFile(logFilePath, downloadPath);
-        } else {
-          const downloadPath = `${RNFS.DownloadDirectoryPath}/${downloadFileName}`;
-          await RNFS.copyFile(logFilePath, downloadPath);
-        }
-
-        setSnackbarPayload({
-          message: `Log file saved to Downloads as ${downloadFileName}`,
-          messageType: 'success',
-        });
-      } else {
-        // iOS: Use share sheet
-        const shareResult = await Share.open({
-          url: `file://${logFilePath}`,
-          type: 'text/plain',
-          filename: downloadFileName,
-          failOnCancel: false,
-        });
-
-        // Only show success message if user actually shared (not cancelled)
-        if (shareResult.success || shareResult.message) {
-          setSnackbarPayload({
-            message: 'Log file shared successfully',
-            messageType: 'success',
-          });
-        }
-      }
+      openDownloadSheet({
+        title: 'Download Logs',
+        baseName: getExportFileName(),
+        mimeType: 'text/plain',
+        contents: await logFile.text(),
+      });
     } catch (error) {
       setSnackbarPayload({
-        message: `Could not export log file: ${error}`,
+        message: `Could not prepare log file: ${error}`,
         messageType: 'error',
       });
     } finally {
-      setIsExporting(false);
+      setIsDownloading(false);
     }
   };
 
   const handleClear = () => {
-    Alert.alert('Clear All Logs', 'Are you sure you want to delete all log files? This cannot be undone.', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            setIsClearing(true);
-            await clearAllLogs();
-            await refreshLogFileInfo();
-            setSnackbarPayload({message: 'All log files have been deleted.', messageType: 'success'});
-          } catch (error) {
-            setSnackbarPayload({
-              message: 'Could not delete log files. Please try again.',
-              messageType: 'error',
-            });
-          } finally {
-            setIsClearing(false);
-          }
-        },
-      },
-    ]);
+    alertClearLogs(async () => {
+      try {
+        setIsClearing(true);
+        await clearAllLogs();
+        await refreshLogFileInfo();
+        setSnackbarPayload({message: 'All log files have been deleted.', messageType: 'success'});
+      } catch {
+        setSnackbarPayload({
+          message: 'Could not delete log files. Please try again.',
+          messageType: 'error',
+        });
+      } finally {
+        setIsClearing(false);
+      }
+    });
   };
 
   return (
@@ -150,6 +140,40 @@ export const LoggingSettingsScreen = () => {
       <ScrollingContentView
         isStack={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <ListSection>
+          <ListSubheader>Actions</ListSubheader>
+          <PaddedContentView padTop={true}>
+            <PrimaryActionButton
+              testID={'viewLogs-button'}
+              icon={AppIcons.logView}
+              buttonText={'View Logs'}
+              onPress={() => navigation.navigate(SettingsStackScreenComponents.logViewerScreen)}
+              buttonColor={theme.colors.twitarrNeutralButton}
+            />
+          </PaddedContentView>
+          <PaddedContentView>
+            <PrimaryActionButton
+              testID={'downloadLogs-button'}
+              icon={AppIcons.download}
+              buttonText={'Download Logs'}
+              onPress={handleDownload}
+              disabled={!logFileInfo || isDownloading}
+              isLoading={isDownloading}
+            />
+          </PaddedContentView>
+          <PaddedContentView>
+            <PrimaryActionButton
+              testID={'clearAllLogs-button'}
+              icon={AppIcons.delete}
+              buttonText={'Clear All Logs'}
+              onPress={handleClear}
+              disabled={!logFileInfo || isClearing || isDownloading}
+              isLoading={isClearing}
+              buttonColor={theme.colors.twitarrNegativeButton}
+            />
+          </PaddedContentView>
+        </ListSection>
+
         <ListSection>
           <ListSubheader>Log Level</ListSubheader>
           <PaddedContentView padTop={true}>
@@ -183,27 +207,6 @@ export const LoggingSettingsScreen = () => {
           <DataFieldListItem title={'Current Log File'} description={logFileInfo ? logFileInfo.size : 'No logs yet'} />
           {logFileInfo && <DataFieldListItem title={'Last Modified'} description={logFileInfo.lastModified} />}
           <DataFieldListItem title={'Retention'} description={'7 days'} />
-        </ListSection>
-
-        <ListSection>
-          <ListSubheader>Actions</ListSubheader>
-          <PaddedContentView padTop={true}>
-            <PrimaryActionButton
-              buttonText={'Export Logs'}
-              onPress={handleExport}
-              disabled={!logFileInfo || isExporting}
-              isLoading={isExporting}
-            />
-          </PaddedContentView>
-          <PaddedContentView>
-            <PrimaryActionButton
-              buttonText={'Clear All Logs'}
-              onPress={handleClear}
-              disabled={!logFileInfo || isClearing}
-              isLoading={isClearing}
-              buttonColor={theme.colors.twitarrNegativeButton}
-            />
-          </PaddedContentView>
         </ListSection>
       </ScrollingContentView>
     </AppView>

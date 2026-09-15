@@ -8,6 +8,7 @@ import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionFi
 import {EmailTextField} from '#src/Components/Forms/Fields/EmailTextField';
 import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {UsernameTextField} from '#src/Components/Forms/Fields/UsernameTextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {EmailValidation, RoomNumberValidation} from '#src/Libraries/ValidationSchema';
@@ -46,53 +47,73 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
           <TextField
             viewStyle={styles.inputContainer}
             name={'displayName'}
+            testID={'userProfileDisplayName-input'}
             label={'Display Name'}
             autoCapitalize={'words'}
           />
-          <TextField viewStyle={styles.inputContainer} name={'realName'} label={'Real Name'} autoCapitalize={'words'} />
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'realName'}
+            testID={'userProfileRealName-input'}
+            label={'Real Name'}
+            autoCapitalize={'words'}
+          />
           <TextField
             viewStyle={styles.inputContainer}
             name={'preferredPronoun'}
+            testID={'userProfilePronouns-input'}
             label={'Pronouns'}
             autoCapitalize={'none'}
+            autoCorrect={false}
+            spellCheck={false}
           />
           <TextField
             viewStyle={styles.inputContainer}
             name={'homeLocation'}
+            testID={'userProfileHomeLocation-input'}
             label={'Home Location'}
             autoCapitalize={'words'}
           />
           <TextField
             viewStyle={styles.inputContainer}
             name={'roomNumber'}
+            testID={'userProfileCabin-input'}
             label={'Cabin Number'}
             autoCapitalize={'words'}
             keyboardType={'numeric'}
           />
-          <TextField
+          <UsernameTextField
             viewStyle={styles.inputContainer}
             name={'discordUsername'}
+            testID={'userProfileDiscord-input'}
             label={'Discord Username'}
-            autoCapitalize={'none'}
           />
           <PickerField
             viewStyle={styles.pickerContainer}
             name={'dinnerTeam'}
+            testID={'userProfileDinnerTeam-button'}
             label={'Dinner Team'}
             value={values.dinnerTeam}
             choices={['red', 'gold', 'sro', '']}
             getTitle={value => DinnerTeam.getLabel(value as DinnerTeam)}
           />
-          <EmailTextField viewStyle={styles.inputContainer} name={'email'} label={'Email'} />
+          <EmailTextField
+            viewStyle={styles.inputContainer}
+            name={'email'}
+            testID={'userProfileEmail-input'}
+            label={'Email'}
+          />
           <TextField
             viewStyle={styles.inputContainer}
             name={'message'}
+            testID={'userProfileWelcome-input'}
             label={'Welcome Message'}
             autoCapitalize={'sentences'}
           />
           <TextField
             viewStyle={styles.inputContainer}
             name={'about'}
+            testID={'userProfileAbout-input'}
             label={'About'}
             autoCapitalize={'sentences'}
             multiline={true}
@@ -104,6 +125,7 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={'Save'}
+            testID={'userProfileSave-button'}
           />
         </View>
       )}

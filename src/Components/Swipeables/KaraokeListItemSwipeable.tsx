@@ -7,7 +7,7 @@ import {BaseSwipeable} from '#src/Components/Swipeables/BaseSwipeable';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {KaraokePerformedSongsData, KaraokeSongData} from '#src/Structs/ControllerStructs';
 
 interface KaraokeListItemSwipeableProps extends PropsWithChildren {
@@ -49,6 +49,7 @@ export const KaraokeListItemSwipeable = ({
     if (!showLogButton) return null;
     return (
       <SwipeableButton
+        testID={'karaokeLog-button'}
         text={'Log'}
         iconName={AppIcons.karaokeLog}
         onPress={() => handleLog(swipeable)}

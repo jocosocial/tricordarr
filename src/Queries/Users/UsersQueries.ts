@@ -25,6 +25,9 @@ export const useUserMatchQuery = ({searchQuery, favorers, autoSearchLength = 2, 
   );
 };
 
+/**
+ * Lookup a user by exact username. A miss is an HTTP 404 and is not retried.
+ */
 export const useUserFindQuery = (username: string, options?: TokenAuthQueryOptionsType<UserHeader>) => {
   return useTokenAuthQuery<UserHeader>(`/users/find/${username}`, options);
 };

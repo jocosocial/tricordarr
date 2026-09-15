@@ -16,6 +16,7 @@ import pluralize from 'pluralize';
 import {useEffect, useRef, useState} from 'react';
 import {AppState} from 'react-native';
 
+import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {CruiseDayData, CruiseDayTime, StartEndTime} from '#src/Types';
 import {StartTime} from '#src/Types/FormValues';
 
@@ -69,7 +70,7 @@ function startOfThreshold(threshold: keyof typeof thresholdMap) {
  */
 export default function useDateTime(threshold: keyof typeof thresholdMap) {
   const [date, setDate] = useState(startOfThreshold(threshold));
-  const timer = useRef(0);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     if (threshold) {
@@ -234,15 +235,60 @@ export const calcCruiseDayTime: (
 };
 
 /**
+ * Returns a timezone suffix for an instant: GMT offset, localized abbreviation, or empty.
+ * Offset and abbreviation are computed at `instant` so DST matches the event, not "now".
+ * @param timeZoneID IANA timezone ID (such as "America/New_York").
+ * @param instant ISO time string or Date of the event.
+ * @param mode How to format the label. Defaults to GMT offset.
+ */
+export const getTimeZoneLabel = (
+  timeZoneID: string,
+  instant: string | Date,
+  mode: TimeZoneLabelMode = TimeZoneLabelMode.offset,
+): string => {
+  const resolvedMode = mode ?? TimeZoneLabelMode.offset;
+  if (resolvedMode === TimeZoneLabelMode.hidden) {
+    return '';
+  }
+  const zoned = moment(instant).tz(timeZoneID);
+  if (resolvedMode === TimeZoneLabelMode.abbreviation) {
+    return zoned.format('z') || zoned.zoneAbbr();
+  }
+  const minutes = zoned.utcOffset();
+  const sign = minutes >= 0 ? '+' : '-';
+  const abs = Math.abs(minutes);
+  const hours = Math.floor(abs / 60);
+  const remainder = abs % 60;
+  if (remainder === 0) {
+    return `GMT${sign}${hours}`;
+  }
+  return `GMT${sign}${hours}:${String(remainder).padStart(2, '0')}`;
+};
+
+/**
+ * Append a timezone label to a formatted time string, omitting the trailing space when hidden.
+ */
+const withTimeZoneLabel = (formattedTime: string, timeZoneID: string, instant: string, mode: TimeZoneLabelMode) => {
+  const label = getTimeZoneLabel(timeZoneID, instant, mode);
+  return label ? `${formattedTime} ${label}` : formattedTime;
+};
+
+/**
  * Returns a formatted string with the time and time zone.
  * @param dateTimeStr ISO time string.
  * @param timeZoneID The common ID string of a timezone (such as "America/New_York")
  * @param includeDay When false, omits the day of week (e.g. "Monday") for single-day views.
+ * @param labelMode How to show the timezone (offset, abbreviation, or hidden).
  */
-export const getTimeMarker = (dateTimeStr: string, timeZoneID: string, includeDay: boolean = true) => {
+export const getTimeMarker = (
+  dateTimeStr: string,
+  timeZoneID: string,
+  includeDay: boolean = true,
+  labelMode: TimeZoneLabelMode = TimeZoneLabelMode.offset,
+) => {
   const format = includeDay ? 'dddd hh:mm A' : 'hh:mm A';
   const formattedTime = getBoatTimeMoment(dateTimeStr, timeZoneID).format(format);
-  return `${formattedTime} ${moment.tz(timeZoneID).zoneAbbr()}`;
+  return withTimeZoneLabel(formattedTime, timeZoneID, dateTimeStr, labelMode);
 };
 
 /**
@@ -266,14 +312,16 @@ export const getDayMarker = (dateTimeStr?: string, timeZoneID?: string, includeD
  * do a False-y check on whether to render something or not.
  * @param startTimeStr Start ISO string.
  * @param endTimeStr End ISO string.
- * @param timeZoneID 3-letter abbreviation of the timezone.
+ * @param timeZoneID IANA timezone ID (such as "America/New_York").
  * @param includeDay Include the day in the formatted string.
+ * @param labelMode How to show the timezone (offset, abbreviation, or hidden).
  */
 export const getDurationString = (
   startTimeStr?: string,
   endTimeStr?: string,
   timeZoneID?: string,
   includeDay: boolean = false,
+  labelMode: TimeZoneLabelMode = TimeZoneLabelMode.offset,
 ) => {
   if (!startTimeStr || !endTimeStr || !timeZoneID) {
     return '';
@@ -284,17 +332,27 @@ export const getDurationString = (
   const endDate = moment(endTimeStr);
   const startText = startDate.tz(timeZoneID).format(startFormat);
   const endText = endDate.tz(timeZoneID).format(endFormat);
-  return `${startText} - ${endText} ${moment.tz(timeZoneID).zoneAbbr()}`;
+  return withTimeZoneLabel(`${startText} - ${endText}`, timeZoneID, startTimeStr, labelMode);
 };
 
-export const getEventTimeString = (startTimeStr?: string, timeZoneID?: string) => {
+/**
+ * Returns a formatted start time with timezone label for forum event threads.
+ * @param startTimeStr Start ISO string.
+ * @param timeZoneID IANA timezone ID (such as "America/New_York").
+ * @param labelMode How to show the timezone (offset, abbreviation, or hidden).
+ */
+export const getEventTimeString = (
+  startTimeStr?: string,
+  timeZoneID?: string,
+  labelMode: TimeZoneLabelMode = TimeZoneLabelMode.offset,
+) => {
   if (!startTimeStr || !timeZoneID) {
     return '';
   }
   const startFormat = 'ddd MMM D hh:mm A';
   const startDate = moment(startTimeStr);
   const text = startDate.tz(timeZoneID).format(startFormat);
-  return `${text} ${moment.tz(timeZoneID).zoneAbbr()}`;
+  return withTimeZoneLabel(text, timeZoneID, startTimeStr, labelMode);
 };
 
 export const getBoatTimeMoment = (dateTimeStr: string, timeZoneID: string) => {
@@ -361,6 +419,35 @@ export const formatMinutesToHumanReadable = (minutes: number) => {
 
   if (minutesRemainder > 0) {
     formattedString += ` ${minutesRemainder} ${pluralize('minute', minutesRemainder)}`;
+  }
+
+  return formattedString.trim();
+};
+
+/**
+ * Takes a number of seconds as input and returns a human-compatible string of that duration.
+ * For example: 30 -> 30 seconds, 90 -> 1 minute 30 seconds, 300 -> 5 minutes.
+ *
+ * @param seconds Number of seconds
+ */
+export const formatSecondsToHumanReadable = (seconds: number) => {
+  const duration = moment.duration(seconds, 'seconds');
+  const hours = duration.hours();
+  const minutes = duration.minutes();
+  const secondsRemainder = duration.seconds();
+
+  let formattedString = '';
+
+  if (hours > 0) {
+    formattedString += `${hours} ${pluralize('hour', hours)}`;
+  }
+
+  if (minutes > 0) {
+    formattedString += ` ${minutes} ${pluralize('minute', minutes)}`;
+  }
+
+  if (secondsRemainder > 0 || formattedString.length === 0) {
+    formattedString += ` ${secondsRemainder} ${pluralize('second', secondsRemainder)}`;
   }
 
   return formattedString.trim();

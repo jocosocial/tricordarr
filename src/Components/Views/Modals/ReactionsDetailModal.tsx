@@ -1,39 +1,48 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {Text} from 'react-native-paper';
+import {Button, Dialog, Portal} from 'react-native-paper';
 
-import {ModalCard} from '#src/Components/Cards/ModalCard';
+import {ReactionIcon} from '#src/Components/Reactions/ReactionIcon';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ReactionData} from '#src/Structs/ControllerStructs';
 
 interface ReactionsDetailModalProps {
   reactions: ReactionData[];
+  visible: boolean;
+  onDismiss: () => void;
 }
 
-const ReactionsDetailModalContent = ({reactions}: ReactionsDetailModalProps) => {
+const ReactionsDetailModalContent = ({reactions}: Pick<ReactionsDetailModalProps, 'reactions'>) => {
   const {commonStyles} = useStyles();
 
-  const styles = StyleSheet.create({
-    section: {
-      ...commonStyles.marginBottom,
-    },
-    header: {
-      ...commonStyles.bold,
-      ...commonStyles.marginBottomSmall,
-    },
-    user: {
-      ...commonStyles.marginBottomSmall,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        section: {
+          ...commonStyles.marginBottom,
+        },
+        header: {
+          ...commonStyles.flexRow,
+          ...commonStyles.alignItemsCenter,
+          ...commonStyles.marginBottomSmall,
+        },
+        user: {
+          ...commonStyles.marginBottomSmall,
+        },
+      }),
+    [commonStyles],
+  );
 
   return (
     <ScrollView>
       {reactions.map(reaction => (
-        <View key={reaction.emoji} style={styles.section}>
-          <Text style={styles.header}>{reaction.emoji}</Text>
+        <View key={reaction.reaction} style={styles.section}>
+          <View style={styles.header}>
+            <ReactionIcon reaction={reaction.reaction} size={26} />
+          </View>
           {reaction.users.map(user => (
-            <UserBylineTag key={`${reaction.emoji}-${user.userID}`} user={user} style={styles.user} />
+            <UserBylineTag key={`${reaction.reaction}-${user.userID}`} user={user} style={styles.user} />
           ))}
         </View>
       ))}
@@ -41,14 +50,19 @@ const ReactionsDetailModalContent = ({reactions}: ReactionsDetailModalProps) => 
   );
 };
 
-export const ReactionsDetailModal = ({reactions}: ReactionsDetailModalProps) => {
+/** Displays the users grouped under each reaction on a post. */
+export const ReactionsDetailModal = ({reactions, visible, onDismiss}: ReactionsDetailModalProps) => {
   return (
-    <View>
-      <ModalCard
-        title={'Reactions'}
-        closeButtonText={'Close'}
-        content={<ReactionsDetailModalContent reactions={reactions} />}
-      />
-    </View>
+    <Portal>
+      <Dialog visible={visible} onDismiss={onDismiss}>
+        <Dialog.Title>Reactions</Dialog.Title>
+        <Dialog.ScrollArea>
+          <ReactionsDetailModalContent reactions={reactions} />
+        </Dialog.ScrollArea>
+        <Dialog.Actions>
+          <Button onPress={onDismiss}>Close</Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
   );
 };

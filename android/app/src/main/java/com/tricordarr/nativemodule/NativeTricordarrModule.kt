@@ -62,6 +62,12 @@ class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTric
     promise.resolve(result)
   }
 
+  override fun getWebsocketStatus(promise: Promise) {
+    Log.d(NAME, "getWebsocketStatus is a no-op on Android")
+    val result: WritableMap = Arguments.createMap()
+    promise.resolve(result)
+  }
+
   override fun clearLocalPushManager() {
     Log.d(NAME, "clearLocalPushManager is a no-op on Android")
   }

@@ -19,6 +19,7 @@ export const BoardgameComplexityPickerField = ({value}: {value: number}) => {
   return (
     <PickerField<number | undefined>
       name={'complexity'}
+      testID={'boardgameComplexity-button'}
       label={'Complexity'}
       value={value}
       choices={[1, 3, 5]}

@@ -16,6 +16,7 @@ interface PrimaryActionButtonProps {
   isLoading?: boolean;
   viewStyle?: StyleProp<ViewStyle>;
   icon?: IconSource;
+  testID: string;
 }
 
 /**
@@ -32,6 +33,7 @@ export const PrimaryActionButton = ({
   isLoading = false,
   viewStyle,
   icon,
+  testID,
 }: PrimaryActionButtonProps) => {
   const {theme} = useAppTheme();
 
@@ -44,13 +46,16 @@ export const PrimaryActionButton = ({
   return (
     <View style={viewStyle}>
       <Button
+        testID={testID}
         buttonColor={mode === 'contained' ? buttonColor || theme.colors.twitarrPositiveButton : buttonColor}
         textColor={textColor || theme.colors.constantWhite}
         style={[buttonStyle, style]}
         mode={mode}
         onPress={onPress}
         icon={isLoading ? getLoadingIcon : icon}
-        disabled={disabled}>
+        // isLoading always implies disabled. A button that spins but still accepts taps
+        // produces duplicate submissions on a laggy network. See #533.
+        disabled={disabled || isLoading}>
         {buttonText}
       </Button>
     </View>

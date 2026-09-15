@@ -1,7 +1,7 @@
 import {useBackHandler} from '@react-native-community/hooks';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
-import {WebView, WebViewNavigation} from 'react-native-webview';
+import {WebView, WebViewNavigation, WebViewProps} from 'react-native-webview';
 import {Item} from 'react-navigation-header-buttons';
 
 import {HeaderBackButton} from '#src/Components/Buttons/HeaderButtons/HeaderBackButton';
@@ -13,7 +13,7 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {AppIcons} from '#src/Enums/Icons';
 import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
-import {useCommonStack} from '#src/Navigation/CommonScreens';
+import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 const logger = createLogger('SiteUIScreenBase.tsx');
 
@@ -25,7 +25,7 @@ interface Props {
 export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
   const {serverUrl} = useSwiftarrQueryClient();
   const [webviewUrl, setWebviewUrl] = React.useState(initialUrl);
-  const webViewRef = useRef<WebView>(null);
+  const webViewRef = useRef<WebView<WebViewProps>>(null);
   const currentUrlRef = useRef<string>(initialUrl);
   const [key, setKey] = useState(initialKey);
   const [handleGoBack, setHandleGoBack] = useState(false);
@@ -62,7 +62,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
     try {
       webViewRef.current?.goBack();
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
   }, [navigation, handleGoBack, serverUrl]);
@@ -120,12 +120,13 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: Props) => {
 
   return (
     <AppView disablePreRegistrationWarning={true}>
-      <WebView
+      <WebView<WebViewProps>
         source={{uri: webviewUrl}}
         key={key}
         ref={webViewRef}
         onNavigationStateChange={handleWebViewNavigationStateChange}
         sharedCookiesEnabled={isIOS}
+        pullToRefreshEnabled={isIOS}
       />
     </AppView>
   );

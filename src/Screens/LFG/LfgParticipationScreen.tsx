@@ -12,19 +12,18 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {LfgLeaveModal} from '#src/Components/Views/Modals/LfgLeaveModal';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/useFezData';
+import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -61,7 +60,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   });
   const participantMutation = useFezParticipantMutation();
   const {currentUserID} = useSession();
-  const {setModalContent, setModalVisible} = useModal();
+  const {confirmLeave} = useFezAlert(lfg);
   const membershipMutation = useFezMembershipMutation();
   const {updateMembership} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
@@ -69,8 +68,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   const onParticipantRemove = (fezData: FezData, userID: string) => {
     // Call the join/unjoin if you are working on yourself.
     if (userID === currentUserID) {
-      setModalContent(<LfgLeaveModal fezData={fezData} />);
-      setModalVisible(true);
+      confirmLeave();
       return;
     }
     // Call the add/remove if you are working on others.
@@ -111,8 +109,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
       return;
     }
     if (isParticipant) {
-      setModalContent(<LfgLeaveModal fezData={lfg} />);
-      setModalVisible(true);
+      confirmLeave();
     } else {
       setRefreshing(true);
       membershipMutation.mutate(
@@ -134,8 +131,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
     membershipMutation,
     isParticipant,
     updateMembership,
-    setModalContent,
-    setModalVisible,
+    confirmLeave,
     dispatchScrollToTop,
     setRefreshing,
     currentUserID,
@@ -168,7 +164,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
             })
           }
           user={lfg.owner}
-          fez={lfg}
+          owner={lfg.owner}
         />
         {FezType.isLFGType(lfg.fezType) && (
           <>
@@ -192,13 +188,15 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
                 }
               />
             )}
-            {!isMember && !isFull && <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />}
+            {!isMember && !isFull && FezType.isLFGType(lfg.fezType) && (
+              <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />
+            )}
             {lfg.members.participants.map(u => (
               <FezParticipantListItem
                 onRemove={() => onParticipantRemove(lfg, u.userID)}
                 key={u.userID}
                 user={u}
-                fez={lfg}
+                owner={lfg.owner}
                 onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
               />
             ))}
@@ -219,7 +217,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
                     }
                   />
                 )}
-                {!isMember && !isWaitlist && isFull && (
+                {!isMember && !isWaitlist && isFull && FezType.isLFGType(lfg.fezType) && (
                   <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />
                 )}
                 {lfg.members.waitingList.map(u => (
@@ -227,7 +225,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
                     onRemove={() => onParticipantRemove(lfg, u.userID)}
                     key={u.userID}
                     user={u}
-                    fez={lfg}
+                    owner={lfg.owner}
                     onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
                   />
                 ))}

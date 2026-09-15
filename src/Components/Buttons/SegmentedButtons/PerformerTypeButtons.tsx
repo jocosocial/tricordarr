@@ -12,8 +12,8 @@ interface PerformerTypeButtonsProps {
 
 export const PerformerTypeButtons = (props: PerformerTypeButtonsProps) => {
   const buttons: SegmentedButtonType[] = [
-    {value: 'official', label: 'Official', icon: AppIcons.official},
-    {value: 'shadow', label: 'Shadow'},
+    {value: 'official', label: 'Official', icon: AppIcons.official, testID: 'performerOfficial-button'},
+    {value: 'shadow', label: 'Shadow', testID: 'performerShadow-button'},
   ];
   const onChange = (value: string) => props.setPerformerType(value as PerformerType);
   return <SegmentedButtons buttons={buttons} value={props.performerType} onValueChange={onChange} />;

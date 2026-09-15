@@ -1,4 +1,3 @@
-import {useNavigation} from '@react-navigation/native';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, Text} from 'react-native-paper';
@@ -8,15 +7,14 @@ import {UserCreateForm} from '#src/Components/Forms/User/UserCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {UserRecoveryKeyModalView} from '#src/Components/Views/Modals/UserRecoveryKeyModalView';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {useUserCreateQuery} from '#src/Queries/User/UserMutations';
 import {LoginFormValues, UserRegistrationFormValues} from '#src/Types/FormValues';
@@ -25,8 +23,7 @@ export const RegisterScreen = () => {
   const createMutation = useUserCreateQuery();
   const loginMutation = useLoginMutation();
   const {signIn} = useSession();
-  const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
-  const navigation = useNavigation();
+  const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
   const {currentSession, findOrCreateSession} = useSession();
   const {appConfig} = useConfig();
@@ -49,15 +46,6 @@ export const RegisterScreen = () => {
     initializeSession();
   }, [currentSession, findOrCreateSession, appConfig.serverUrl]);
 
-  const onPress = useCallback(() => {
-    setModalVisible(false);
-  }, [setModalVisible]);
-
-  const onDismiss = useCallback(() => {
-    onPress();
-    navigation.goBack();
-  }, [navigation, onPress]);
-
   const onSubmit = useCallback(
     (formValues: UserRegistrationFormValues, formikHelpers: FormikHelpers<UserRegistrationFormValues>) => {
       setRefreshing(true);
@@ -69,11 +57,6 @@ export const RegisterScreen = () => {
           };
           loginMutation.mutate(loginValues, {
             onSuccess: async response => {
-              setModalOnDismiss(onDismiss);
-              setModalContent(
-                <UserRecoveryKeyModalView onPress={onPress} userRecoveryKey={userCreateResponse.data.recoveryKey} />,
-              );
-              setModalVisible(true);
               signInWebview(loginValues);
               await signIn(response.data);
               if (oobeCompleted) {
@@ -82,6 +65,10 @@ export const RegisterScreen = () => {
               setTimeout(async () => {
                 await Promise.all([updateClientSettings(), refetchRoles()]);
               }, 1000);
+              navigation.replace(CommonStackComponents.recoveryKeyScreen, {
+                recoveryKey: userCreateResponse.data.recoveryKey,
+                username: userCreateResponse.data.username,
+              });
             },
             onSettled: () => {
               formikHelpers.setSubmitting(false);
@@ -99,12 +86,8 @@ export const RegisterScreen = () => {
       createMutation,
       loginMutation,
       oobeCompleted,
-      onDismiss,
-      onPress,
+      navigation,
       refetchRoles,
-      setModalContent,
-      setModalOnDismiss,
-      setModalVisible,
       signIn,
       signInWebview,
       updateClientSettings,

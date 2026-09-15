@@ -5,7 +5,7 @@ import {UserChip} from '#src/Components/Chips/UserChip';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 interface EventPhotographerListItemProps {

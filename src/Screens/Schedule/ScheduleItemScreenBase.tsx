@@ -10,6 +10,7 @@ import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPer
 import {EventPhotographerListItem} from '#src/Components/Lists/Items/Event/EventPhotographerListItem';
 import {UserChipsListItem} from '#src/Components/Lists/Items/UserChipsListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {EventLocationActionsMenu} from '#src/Components/Menus/Events/EventLocationActionsMenu';
 import {ContentText} from '#src/Components/Text/ContentText';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
 import {AppView} from '#src/Components/Views/AppView';
@@ -18,13 +19,18 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LFGMembershipView} from '#src/Components/Views/Schedule/LFGMembershipView';
 import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {getParticipantLabel} from '#src/Hooks/useFezData';
-import {getDurationString} from '#src/Libraries/DateTime';
-import {guessDeckNumber} from '#src/Libraries/Ship';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {getParticipantLabel} from '#src/Hooks/Fez/useFezData';
+import {useTimeZone} from '#src/Hooks/useTimeZone';
+import {calcCruiseDayTime, getDurationString} from '#src/Libraries/DateTime';
+import {openFezChatScreen} from '#src/Libraries/Navigation';
+import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 interface Props {
@@ -33,6 +39,10 @@ interface Props {
   eventData?: FezData | EventData;
   showLfgChat?: boolean;
   initialReadCount?: number;
+  /**
+   * When true, Location uses the long-press room menu (Events In This Room).
+   */
+  showLocationActions?: boolean;
 }
 
 export const ScheduleItemScreenBase = ({
@@ -41,9 +51,13 @@ export const ScheduleItemScreenBase = ({
   eventData,
   showLfgChat = false,
   initialReadCount,
+  showLocationActions = false,
 }: Props) => {
   const navigation = useCommonStack();
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
+  const {startDate, endDate} = useCruise();
+  const {tzAtTime} = useTimeZone();
 
   const styles = StyleSheet.create({
     cancelContainer: {
@@ -62,9 +76,8 @@ export const ScheduleItemScreenBase = ({
     if (!eventData) {
       return;
     }
-    const deck = guessDeckNumber(eventData.location);
     navigation.push(CommonStackComponents.mapScreen, {
-      deckNumber: deck,
+      location: eventData.location,
     });
   };
 
@@ -73,7 +86,7 @@ export const ScheduleItemScreenBase = ({
       return;
     }
     const readCountForBadge = initialReadCount ?? eventData.members.readCount;
-    const unreadCount = eventData.members.postCount - readCountForBadge;
+    const unreadCount = unreadPostCount(eventData.members.postCount, readCountForBadge);
     return (
       <View style={styles.chatCountContainer}>
         <Text>
@@ -107,6 +120,7 @@ export const ScheduleItemScreenBase = ({
 
   return (
     <AppView>
+      <TimezoneWarningView />
       {'fezID' in eventData && eventData.cancelled && (
         <View style={styles.cancelContainer}>
           <FezCanceledView fezType={eventData.fezType} />
@@ -121,15 +135,29 @@ export const ScheduleItemScreenBase = ({
               <DataFieldListItem icon={AppIcons.events} description={eventData.title} title={'Title'} />
               <DataFieldListItem
                 icon={AppIcons.time}
-                description={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZoneID, true)}
+                description={getDurationString(
+                  eventData.startTime,
+                  eventData.endTime,
+                  eventData.timeZoneID,
+                  true,
+                  appConfig.schedule.timeZoneLabelMode,
+                )}
                 title={'Date'}
               />
-              <DataFieldListItem
-                icon={AppIcons.map}
-                description={eventData.location}
-                title={'Location'}
-                onPress={handleLocation}
-              />
+              {showLocationActions && 'eventID' in eventData ? (
+                <EventLocationActionsMenu
+                  location={eventData.location}
+                  cruiseDay={calcCruiseDayTime(new Date(eventData.startTime), startDate, endDate, tzAtTime).cruiseDay}
+                  onPress={handleLocation}
+                />
+              ) : (
+                <DataFieldListItem
+                  icon={AppIcons.map}
+                  description={eventData.location}
+                  title={'Location'}
+                  onPress={handleLocation}
+                />
+              )}
               {'eventID' in eventData && (
                 <>
                   <DataFieldListItem icon={AppIcons.type} description={eventData.eventType} title={'Type'} />
@@ -161,12 +189,7 @@ export const ScheduleItemScreenBase = ({
                       description={getChatDescription}
                       title={'Chat'}
                       onPress={() =>
-                        navigation.push(
-                          FezType.isPrivateEventType(eventData.fezType)
-                            ? CommonStackComponents.privateEventChatScreen
-                            : CommonStackComponents.lfgChatScreen,
-                          {fezID: eventData.fezID, initialReadCount},
-                        )
+                        openFezChatScreen(navigation, eventData.fezID, eventData.fezType, initialReadCount)
                       }
                     />
                   )}
