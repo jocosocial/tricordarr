@@ -160,6 +160,7 @@ import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecove
 import {RecoveryKeyScreen} from '#src/Screens/Settings/Account/RecoveryKeyScreen';
 import {ChatSettingsScreen} from '#src/Screens/Settings/ChatSettingsScreen';
 import {ConfigServerUrlScreen} from '#src/Screens/Settings/Config/ConfigServerUrlScreen';
+import {TimeSettingsScreen} from '#src/Screens/Settings/Config/TimeSettingsScreen';
 import {AlertKeywordsScreen} from '#src/Screens/Settings/Content/AlertKeywordsSettingsScreen';
 import {ForumSettingsScreen} from '#src/Screens/Settings/Content/ForumSettingsScreen';
 import {ImageSettingsScreen} from '#src/Screens/Settings/Content/ImageSettingsScreen';
@@ -730,6 +731,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.timeZoneHelpScreen}
         component={TimeZoneHelpScreen}
         options={{title: 'Time Zone Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.timeSettingsScreen}
+        component={TimeSettingsScreen}
+        options={{title: 'Time Settings'}}
       />
       <Stack.Screen
         name={CommonStackComponents.privateEventChatScreen}

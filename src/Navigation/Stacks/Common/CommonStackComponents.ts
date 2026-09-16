@@ -291,6 +291,7 @@ export type CommonStackParamList = {
   PersonalEventHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
   TimeZoneHelpScreen: undefined;
+  TimeSettingsScreen: undefined;
   PrivateEventChatScreen: {
     fezID: string;
     initialReadCount?: number;
@@ -527,6 +528,7 @@ export enum CommonStackComponents {
   personalEventHelpScreen = 'PersonalEventHelpScreen',
   mainTimeZoneScreen = 'MainTimeZoneScreen',
   timeZoneHelpScreen = 'TimeZoneHelpScreen',
+  timeSettingsScreen = 'TimeSettingsScreen',
   privateEventChatScreen = 'PrivateEventChatScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
   cruiseSettingsScreen = 'CruiseSettingsScreen',
