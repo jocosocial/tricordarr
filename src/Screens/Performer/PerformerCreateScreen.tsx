@@ -7,7 +7,6 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {usePerformerCacheReducer} from '#src/Hooks/Performer/usePerformerCacheReducer';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
@@ -29,8 +28,7 @@ export const PerformerCreateScreen = (props: Props) => {
 
 const PerformerCreateScreenInner = ({route, navigation}: Props) => {
   const performerMutation = usePerformerUpsertMutation();
-  const {upsertPerformerInEvent} = useEventCacheReducer();
-  const {setPerformerDetail, upsertPerformerInLists} = usePerformerCacheReducer();
+  const {upsertPerformer} = usePerformerCacheReducer();
 
   const onSubmit = (values: PerformerUploadData, helpers: FormikHelpers<PerformerUploadData>) => {
     performerMutation.mutate(
@@ -40,10 +38,7 @@ const PerformerCreateScreenInner = ({route, navigation}: Props) => {
       },
       {
         onSuccess: response => {
-          const createdPerformer = response.data;
-          setPerformerDetail(createdPerformer);
-          upsertPerformerInLists(createdPerformer.header);
-          upsertPerformerInEvent(route.params.eventID, createdPerformer.header);
+          upsertPerformer(response.data);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

@@ -11,7 +11,6 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {PerformerProfileWarningView} from '#src/Components/Views/Warnings/PerformerProfileWarningView';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {usePerformerCacheReducer} from '#src/Hooks/Performer/usePerformerCacheReducer';
 import {alertDeleteProfile} from '#src/Libraries/Alerts/PerformerAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -43,9 +42,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
   const performerRemoveMutation = usePerformerDeleteForEventMutation();
   const performerDeleteMutation = usePerformerDeleteMutation();
   const {theme} = useAppTheme();
-  const {removePerformerFromEvent, upsertPerformerInEvent} = useEventCacheReducer();
-  const {removePerformerDetail, removePerformerFromLists, setPerformerDetail, upsertPerformerInLists} =
-    usePerformerCacheReducer();
+  const {deletePerformer, upsertPerformer} = usePerformerCacheReducer();
 
   const onRefresh = async () => {
     await Promise.all([refetchEvent(), refetchPerformer()]);
@@ -77,11 +74,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
         {},
         {
           onSuccess: () => {
-            removePerformerDetail(deletedPerformer.header.id);
-            removePerformerFromLists(deletedPerformer.header.id);
-            deletedPerformer.events.forEach(event =>
-              removePerformerFromEvent(event.eventID, deletedPerformer.header.id),
-            );
+            deletePerformer(deletedPerformer);
           },
         },
       );
@@ -107,10 +100,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
       },
       {
         onSuccess: response => {
-          const attachedPerformer = response.data;
-          setPerformerDetail(attachedPerformer);
-          upsertPerformerInLists(attachedPerformer.header);
-          upsertPerformerInEvent(route.params.eventID, attachedPerformer.header);
+          upsertPerformer(response.data);
         },
       },
     );

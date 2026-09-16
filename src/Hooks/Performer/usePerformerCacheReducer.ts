@@ -2,6 +2,7 @@ import {InfiniteData, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {
   filterItemsFromPages,
   findInPages,
@@ -32,6 +33,7 @@ const listKeyForHeader = (header: PerformerHeaderData) =>
 export const usePerformerCacheReducer = () => {
   const queryClient = useQueryClient();
   const {queryKeyExtraData} = useSwiftarrQueryClient();
+  const {removePerformerFromEvent, upsertPerformerInEvent} = useEventCacheReducer();
 
   const performerDetailQueryKey = useCallback(
     (performerID: string) => [`/performer/${performerID}`, undefined, ...queryKeyExtraData],
@@ -108,10 +110,38 @@ export const usePerformerCacheReducer = () => {
     [queryClient],
   );
 
+  /**
+   * Apply a create/update mutation's response everywhere a performer can be
+   * cached: its own detail entries, the official/shadow list it belongs to,
+   * and the `performers` array of every event it's attached to. Consolidated
+   * here so callers can't apply the response to some caches but not others.
+   */
+  const upsertPerformer = useCallback(
+    (performer: PerformerData) => {
+      setPerformerDetail(performer);
+      upsertPerformerInLists(performer.header);
+      performer.events.forEach(event => upsertPerformerInEvent(event.eventID, performer.header));
+    },
+    [setPerformerDetail, upsertPerformerInLists, upsertPerformerInEvent],
+  );
+
+  /**
+   * Remove a deleted performer everywhere it can be cached: its own detail
+   * entries, the official/shadow list it belonged to, and the `performers`
+   * array of every event it was attached to. Consolidated here so callers
+   * can't forget one of the caches the delete implicitly affects.
+   */
+  const deletePerformer = useCallback(
+    (performer: PerformerData) => {
+      removePerformerDetail(performer.header.id);
+      removePerformerFromLists(performer.header.id);
+      performer.events.forEach(event => removePerformerFromEvent(event.eventID, performer.header.id));
+    },
+    [removePerformerDetail, removePerformerFromLists, removePerformerFromEvent],
+  );
+
   return {
-    removePerformerDetail,
-    removePerformerFromLists,
-    setPerformerDetail,
-    upsertPerformerInLists,
+    deletePerformer,
+    upsertPerformer,
   };
 };

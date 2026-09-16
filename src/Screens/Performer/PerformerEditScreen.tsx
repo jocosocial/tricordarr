@@ -7,7 +7,6 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {usePerformerCacheReducer} from '#src/Hooks/Performer/usePerformerCacheReducer';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {usePerformerUpsertMutation} from '#src/Queries/Performer/PerformerMutations';
@@ -28,8 +27,7 @@ export const PerformerEditScreen = (props: Props) => {
 
 const PerformerEditScreenInner = ({navigation, route}: Props) => {
   const performerMutation = usePerformerUpsertMutation();
-  const {upsertPerformerInEvent} = useEventCacheReducer();
-  const {setPerformerDetail, upsertPerformerInLists} = usePerformerCacheReducer();
+  const {upsertPerformer} = usePerformerCacheReducer();
 
   const onSubmit = (values: PerformerUploadData, helpers: FormikHelpers<PerformerUploadData>) => {
     performerMutation.mutate(
@@ -39,12 +37,7 @@ const PerformerEditScreenInner = ({navigation, route}: Props) => {
       },
       {
         onSuccess: response => {
-          const updatedPerformer = response.data;
-          setPerformerDetail(updatedPerformer);
-          upsertPerformerInLists(updatedPerformer.header);
-          // The header (name/photo) may have changed, so refresh it everywhere this
-          // performer is attached, not just the event this screen was opened from.
-          updatedPerformer.events.forEach(event => upsertPerformerInEvent(event.eventID, updatedPerformer.header));
+          upsertPerformer(response.data);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),
