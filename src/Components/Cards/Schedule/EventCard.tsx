@@ -33,14 +33,76 @@ interface EventCardRightIconsProps {
   contentColor?: string;
 }
 
+interface EventCardFavoriteIconProps {
+  isFavorite: boolean;
+  refreshing: boolean;
+  onPress: () => void;
+  /** When set (e.g. gold team), the icon uses this color for contrast. */
+  contentColor?: string;
+}
+
 // Layout stays icon-sized; the tap target is grown with hitSlop only. Up/right lean into the
 // card's own padding, so the target clears 44pt without overlapping the title or duration text.
 const favoriteHitSlop = {top: 16, right: 16, bottom: 12, left: 12};
 
 /**
+ * Favorite toggle for an event card. The tap target expands with hitSlop rather than growing
+ * the icon's layout size, and the spinner is stacked on top of the icon (rather than swapped
+ * in for it) inside a slot fixed to the icon's own footprint, so mounting/unmounting it while
+ * mutating never changes the row's layout size — which was previously pushing single-line
+ * titles onto two lines.
+ */
+const EventCardFavoriteIcon = ({isFavorite, refreshing, onPress, contentColor}: EventCardFavoriteIconProps) => {
+  const {theme} = useAppTheme();
+  const {styleDefaults} = useStyles();
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        slot: {
+          width: styleDefaults.iconSize,
+          height: styleDefaults.iconSize,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        hidden: {
+          opacity: 0,
+        },
+        spinnerOverlay: {
+          ...StyleSheet.absoluteFill,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+      }),
+    [styleDefaults.iconSize],
+  );
+
+  const iconColor = contentColor ?? theme.colors.twitarrYellow;
+
+  return (
+    <View style={styles.slot}>
+      <Pressable
+        onPress={onPress}
+        hitSlop={favoriteHitSlop}
+        disabled={refreshing}
+        style={refreshing && styles.hidden}
+        accessibilityRole={'button'}
+        accessibilityLabel={isFavorite ? 'Unfavorite event' : 'Favorite event'}
+        accessibilityState={{selected: isFavorite, busy: refreshing}}
+        testID={'eventCardFavorite-button'}>
+        <AppIcon icon={isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite} color={iconColor} />
+      </Pressable>
+      {refreshing && (
+        <View style={styles.spinnerOverlay}>
+          <ActivityIndicator size={'small'} />
+        </View>
+      )}
+    </View>
+  );
+};
+
+/**
  * Right-side icons for an event card (photographer markers and favorite toggle).
- * The favorite control expands its tap target with hitSlop so taps are not stolen by the parent
- * card press, without changing the icon's layout size.
  */
 const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentColor}: EventCardRightIconsProps) => {
   const {theme} = useAppTheme();
@@ -78,31 +140,16 @@ const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentCol
     return <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} />;
   }, [hasShutternaut, eventData.shutternautData?.userIsPhotographer, theme.colors.onTwitarrNegativeButton]);
 
-  const favoriteIconColor = contentColor ?? theme.colors.twitarrYellow;
-  const favoriteIcon = useMemo(() => {
-    return (
-      <Pressable
-        onPress={onFavoritePress}
-        hitSlop={favoriteHitSlop}
-        accessibilityRole={'button'}
-        accessibilityLabel={eventData.isFavorite ? 'Unfavorite event' : 'Favorite event'}
-        accessibilityState={{selected: eventData.isFavorite}}
-        testID={'eventCardFavorite-button'}>
-        <AppIcon icon={eventData.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite} color={favoriteIconColor} />
-      </Pressable>
-    );
-  }, [onFavoritePress, eventData.isFavorite, favoriteIconColor]);
-
   return (
     <View style={styles.iconContainer}>
-      {refreshing && <ActivityIndicator />}
-      {!refreshing && (
-        <>
-          {needsPhotographerIcon}
-          {photographerIcon}
-          {favoriteIcon}
-        </>
-      )}
+      {needsPhotographerIcon}
+      {photographerIcon}
+      <EventCardFavoriteIcon
+        isFavorite={eventData.isFavorite}
+        refreshing={refreshing}
+        onPress={onFavoritePress}
+        contentColor={contentColor}
+      />
     </View>
   );
 };
