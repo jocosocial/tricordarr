@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {createContext, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Dimensions,
   NativeScrollEvent,
@@ -21,6 +21,28 @@ export interface AppMenuProps extends MenuProps {
   header?: React.ReactElement | (() => React.ReactElement);
 }
 
+interface AppMenuItemLayout {
+  y: number;
+  height: number;
+  selected: boolean;
+}
+
+interface AppMenuScrollContextType {
+  registerItem: (id: string, layout: AppMenuItemLayout) => void;
+  unregisterItem: (id: string) => void;
+}
+
+/**
+ * Lets SelectableMenuItem report its layout up to the enclosing AppMenu so the menu can
+ * scroll to a selected item on open. No-op outside an AppMenu (e.g. a plain Paper Menu).
+ */
+export const AppMenuScrollContext = createContext<AppMenuScrollContextType>({
+  registerItem: () => {},
+  unregisterItem: () => {},
+});
+
+export const useAppMenuScroll = () => useContext(AppMenuScrollContext);
+
 /**
  * A generic wrapper around react-native-paper Menu that handles screen clipping issues
  * by calculating appropriate max heights and providing scroll indicators.
@@ -34,6 +56,8 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
   const [isAtBottom, setIsAtBottom] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const containerRef = useRef<View>(null);
+  const itemLayoutsRef = useRef(new Map<string, AppMenuItemLayout>());
+  const pendingAutoScrollRef = useRef(false);
 
   // Calculate max height as a percentage of screen height
   const calculateMaxHeight = () => {
@@ -43,24 +67,70 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
   const maxMenuHeight = calculateMaxHeight();
 
   const isScrollable = contentHeight > maxMenuHeight;
-  // Hide indicator when scrolled down OR when at bottom of content.
-  // The isAtBottom check is necessary because on small devices, the total scrollable distance
-  // may be less than 10 pixels. Without this check, the indicator would never hide.
+  // Bottom indicator: show while resting near the top and not already at the bottom.
+  // Top indicator: the mirror image, shown while resting near the bottom and not already at
+  // the top. Since menus can now open pre-scrolled (to reveal a selected item), the top
+  // indicator may be visible immediately on open, not just after the user scrolls down.
+  // The isAtBottom check (rather than a raw scrollY comparison) is necessary because on small
+  // devices, the total scrollable distance may be less than 10 pixels; without it, the bottom
+  // indicator would never hide, and the top indicator would never distinguish "at bottom" from
+  // "at top" on such short content.
   // Note: MenuScrollIndicator uses absolute positioning to prevent a flickering feedback loop.
   // If it were in the flex layout, showing/hiding it would change the ScrollView's available
   // height, which changes the scroll offset, which toggles the indicator again rapidly.
   //
   // This was all due to small iOS devices being weird with scrolling to the bottom.
-  const showIndicator = isScrollable && scrollY < 10 && !isAtBottom;
+  const isAtTop = scrollY < 10;
+  const showBottomIndicator = isScrollable && isAtTop && !isAtBottom;
+  const showTopIndicator = isScrollable && isAtBottom && !isAtTop;
 
-  // Reset scroll position when menu opens
+  // Reset scroll position when menu opens; applyAutoScroll (triggered by the resulting
+  // onContentSizeChange) then overrides it if a selected item needs to be brought into view.
   useEffect(() => {
     if (visible) {
       setScrollY(0);
       setIsAtBottom(false);
+      pendingAutoScrollRef.current = true;
       scrollViewRef.current?.scrollTo({y: 0, animated: false});
     }
   }, [visible]);
+
+  const registerItem = useCallback((id: string, layout: AppMenuItemLayout) => {
+    itemLayoutsRef.current.set(id, layout);
+  }, []);
+
+  const unregisterItem = useCallback((id: string) => {
+    itemLayoutsRef.current.delete(id);
+  }, []);
+
+  const scrollContextValue = useMemo(() => ({registerItem, unregisterItem}), [registerItem, unregisterItem]);
+
+  // Scroll so the topmost selected item is visible, if the menu opened with a selection
+  // that would otherwise be scrolled out of view.
+  const applyAutoScroll = (height: number) => {
+    if (!pendingAutoScrollRef.current) {
+      return;
+    }
+    pendingAutoScrollRef.current = false;
+    if (height <= maxMenuHeight) {
+      return;
+    }
+    let target: AppMenuItemLayout | undefined;
+    itemLayoutsRef.current.forEach(layout => {
+      if (layout.selected && (!target || layout.y < target.y)) {
+        target = layout;
+      }
+    });
+    if (!target) {
+      return;
+    }
+    const maxScrollY = height - maxMenuHeight;
+    const idealY = target.y + target.height / 2 - maxMenuHeight / 2;
+    const scrollTarget = Math.max(0, Math.min(idealY, maxScrollY));
+    scrollViewRef.current?.scrollTo({y: scrollTarget, animated: false});
+    setScrollY(scrollTarget);
+    setIsAtBottom(scrollTarget >= maxScrollY - 5);
+  };
 
   const styles = StyleSheet.create({
     menu: {
@@ -100,6 +170,10 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
     scrollViewRef.current?.scrollToEnd({animated: false});
   };
 
+  const scrollToTop = () => {
+    scrollViewRef.current?.scrollTo({y: 0, animated: false});
+  };
+
   // Render header component or call header function
   const renderHeader = () => {
     if (!header) return null;
@@ -115,21 +189,27 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
       statusBarHeight={0}
       keyboardShouldPersistTaps={menuProps.keyboardShouldPersistTaps || 'handled'}
       {...menuProps}>
-      <View ref={containerRef} style={styles.scrollViewContainer}>
-        {renderHeader()}
-        <ScrollView
-          ref={scrollViewRef}
-          style={styles.scrollView}
-          keyboardShouldPersistTaps={menuProps.keyboardShouldPersistTaps || 'handled'}
-          scrollEnabled={isScrollable}
-          onContentSizeChange={(_, height) => setContentHeight(height)}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          scrollsToTop={false}>
-          {children}
-        </ScrollView>
-        <MenuScrollIndicator visible={showIndicator} onPress={scrollToBottom} />
-      </View>
+      <AppMenuScrollContext.Provider value={scrollContextValue}>
+        <View ref={containerRef} style={styles.scrollViewContainer}>
+          {renderHeader()}
+          <ScrollView
+            ref={scrollViewRef}
+            style={styles.scrollView}
+            keyboardShouldPersistTaps={menuProps.keyboardShouldPersistTaps || 'handled'}
+            scrollEnabled={isScrollable}
+            onContentSizeChange={(_, height) => {
+              setContentHeight(height);
+              requestAnimationFrame(() => applyAutoScroll(height));
+            }}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            scrollsToTop={false}>
+            {children}
+          </ScrollView>
+          <MenuScrollIndicator visible={showTopIndicator} onPress={scrollToTop} direction={'up'} />
+          <MenuScrollIndicator visible={showBottomIndicator} onPress={scrollToBottom} direction={'down'} />
+        </View>
+      </AppMenuScrollContext.Provider>
     </Menu>
   );
 };

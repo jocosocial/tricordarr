@@ -8,20 +8,21 @@ import {AppIcons} from '#src/Enums/Icons';
 interface MenuScrollIndicatorProps {
   visible: boolean;
   onPress?: () => void;
+  direction?: 'up' | 'down';
 }
 
 /**
- * A scroll indicator that appears at the bottom of scrollable menus
- * to hint to users that they can scroll down. When onPress is provided,
- * pressing it scrolls the menu to the bottom.
+ * A scroll indicator that appears at the top or bottom of scrollable menus
+ * to hint to users that they can scroll further. When onPress is provided,
+ * pressing it scrolls the menu to that end.
  */
-export const MenuScrollIndicator = ({visible, onPress}: MenuScrollIndicatorProps) => {
+export const MenuScrollIndicator = ({visible, onPress, direction = 'down'}: MenuScrollIndicatorProps) => {
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
     scrollIndicator: {
       position: 'absolute',
-      bottom: 0,
+      ...(direction === 'down' ? {bottom: 0} : {top: 0}),
       left: 0,
       right: 0,
       ...commonStyles.paddingTopSmall,
@@ -38,7 +39,7 @@ export const MenuScrollIndicator = ({visible, onPress}: MenuScrollIndicatorProps
 
   return (
     <TouchableOpacity style={styles.scrollIndicator} onPress={onPress}>
-      <AppIcon icon={AppIcons.scrollDown} small />
+      <AppIcon icon={direction === 'down' ? AppIcons.scrollDown : AppIcons.scrollUp} small />
     </TouchableOpacity>
   );
 };
