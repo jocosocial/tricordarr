@@ -1,14 +1,16 @@
 import {InfiniteData, QueryClient, useQueryClient} from '@tanstack/react-query';
 import pluralize from 'pluralize';
-import {useCallback, useMemo, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useTime} from '#src/Context/Contexts/TimeContext';
 import {FezType} from '#src/Enums/FezType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {findInPages, PageItemAccessor} from '#src/Libraries/CacheReduction';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {TokenAuthPaginationQueryOptionsTypeV2} from '#src/Queries/TokenAuthQuery';
-import {FezData, FezListData} from '#src/Structs/ControllerStructs';
+import {FezData, FezListData, UserNotificationData} from '#src/Structs/ControllerStructs';
 
 const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/former'];
 const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
@@ -262,4 +264,35 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     refetch: () => refetch(),
     resetInitialReadCount,
   };
+};
+
+/**
+ * Marks a fez read as soon as it has anything left to clear: unread posts (per readCount vs.
+ * postCount, or the initialReadCount captured before the detail GET's own mark-as-read), or the
+ * "Added To" state from UserNotificationData. A chat/event the user was added to but that has no
+ * posts yet has readCount === postCount (often both 0), so the unread check alone can't clear the
+ * "Added To" badge -- addedTo has to be checked separately.
+ *
+ * Call this from a screen that represents "the user viewed this fez" (chat screens, the personal
+ * event detail screen). Screens that only reference a fez in passing (edit forms, action menus,
+ * participant lists) should not call this.
+ */
+export const useMarkFezReadEffect = (fez: FezData | undefined, initialReadCount: number | undefined): void => {
+  const {markRead} = useFezCacheReducer();
+  const {data: notificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+
+  useEffect(() => {
+    if (fez && fez.members) {
+      const hasUnread =
+        fez.members.readCount !== fez.members.postCount ||
+        (initialReadCount !== undefined && initialReadCount < fez.members.postCount);
+      const addedTo = UserNotificationData.isAddedTo(notificationData, fez);
+      if (hasUnread || addedTo) {
+        markRead(fez.fezID);
+        // The UND drives the tab bar, seamail account buttons, and Schedule Day "Added To"
+        // badge counts and we don't have a cache reducer for it yet.
+        refetchUserNotificationData();
+      }
+    }
+  }, [fez, initialReadCount, markRead, notificationData, refetchUserNotificationData]);
 };

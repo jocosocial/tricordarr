@@ -9,8 +9,7 @@ import {PersonalEventScreenActionsMenu} from '#src/Components/Menus/PersonalEven
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/Fez/useFezData';
+import {useFezData, useMarkFezReadEffect} from '#src/Hooks/Fez/useFezData';
 import {openFezChatScreen} from '#src/Libraries/Navigation';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -40,7 +39,7 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
   } = useFezData({
     fezID: route.params.eventID,
   });
-  const {markRead} = useFezCacheReducer();
+  useMarkFezReadEffect(eventData, initialReadCount);
 
   const showChat = eventData?.fezType === FezType.privateEvent && isParticipant;
 
@@ -81,12 +80,6 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
       title: 'Private Event',
     });
   }, [getNavButtons, navigation, eventData]);
-
-  useEffect(() => {
-    if (eventData) {
-      markRead(eventData.fezID);
-    }
-  }, [eventData, markRead]);
 
   return (
     <ScheduleItemScreenBase
