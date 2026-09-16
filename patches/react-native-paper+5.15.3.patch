@@ -1,8 +1,15 @@
 diff --git a/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts b/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts
-index d4d611a..8216cd3 100644
+index d4d611a..2ffcd54 100644
 --- a/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts
 +++ b/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts
-@@ -39,6 +39,10 @@ export type Props = {
+@@ -1,5 +1,5 @@
+ import * as React from 'react';
+-import { AccessibilityState, ColorValue, GestureResponderEvent, PressableAndroidRippleConfig, StyleProp, TextStyle, ViewStyle } from 'react-native';
++import { AccessibilityState, ColorValue, GestureResponderEvent, LayoutChangeEvent, PressableAndroidRippleConfig, StyleProp, TextStyle, ViewStyle } from 'react-native';
+ import type { ThemeProp } from '../../types';
+ import { IconSource } from '../Icon';
+ import { Props as TouchableRippleProps } from '../TouchableRipple/TouchableRipple';
+@@ -39,6 +39,14 @@ export type Props = {
       * Function to execute on press.
       */
      onPress?: (e: GestureResponderEvent) => void;
@@ -10,15 +17,19 @@ index d4d611a..8216cd3 100644
 +     * Function to execute on long press.
 +     */
 +    onLongPress?: (e: GestureResponderEvent) => void;
++    /**
++     * Function to execute on layout.
++     */
++    onLayout?: (e: LayoutChangeEvent) => void;
      /**
       * Specifies the largest possible scale a title font can reach.
       */
-@@ -108,7 +112,7 @@ export type Props = {
+@@ -108,7 +116,7 @@ export type Props = {
   * ```
   */
  declare const MenuItem: {
 -    ({ leadingIcon, trailingIcon, dense, title, disabled, background, onPress, style, containerStyle, contentStyle, titleStyle, rippleColor: customRippleColor, testID, accessibilityLabel, accessibilityState, theme: themeOverrides, titleMaxFontSizeMultiplier, hitSlop, }: Props): React.JSX.Element;
-+    ({ leadingIcon, trailingIcon, dense, title, disabled, background, onPress, onLongPress, style, containerStyle, contentStyle, titleStyle, rippleColor: customRippleColor, testID, accessibilityLabel, accessibilityState, theme: themeOverrides, titleMaxFontSizeMultiplier, hitSlop, }: Props): React.JSX.Element;
++    ({ leadingIcon, trailingIcon, dense, title, disabled, background, onPress, onLongPress, onLayout, style, containerStyle, contentStyle, titleStyle, rippleColor: customRippleColor, testID, accessibilityLabel, accessibilityState, theme: themeOverrides, titleMaxFontSizeMultiplier, hitSlop, }: Props): React.JSX.Element;
      displayName: string;
  };
  export default MenuItem;
@@ -182,10 +193,18 @@ index 669656c..a484fcf 100644
                      {children}
                    </ScrollView>
 diff --git a/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx b/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx
-index 4b8eb37..ff8d74a 100644
+index 4b8eb37..7887d7b 100644
 --- a/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx
 +++ b/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx
-@@ -61,6 +61,10 @@ export type Props = {
+@@ -3,6 +3,7 @@ import {
+   AccessibilityState,
+   ColorValue,
+   GestureResponderEvent,
++  LayoutChangeEvent,
+   PressableAndroidRippleConfig,
+   StyleProp,
+   StyleSheet,
+@@ -61,6 +62,14 @@ export type Props = {
     * Function to execute on press.
     */
    onPress?: (e: GestureResponderEvent) => void;
@@ -193,22 +212,28 @@ index 4b8eb37..ff8d74a 100644
 +   * Function to execute on long press.
 +   */
 +    onLongPress?: (e: GestureResponderEvent) => void;
++  /**
++   * Function to execute on layout.
++   */
++  onLayout?: (e: LayoutChangeEvent) => void;
    /**
     * Specifies the largest possible scale a title font can reach.
     */
-@@ -138,6 +142,7 @@ const MenuItem = ({
+@@ -138,6 +147,8 @@ const MenuItem = ({
    disabled,
    background,
    onPress,
 +  onLongPress,
++  onLayout,
    style,
    containerStyle,
    contentStyle,
-@@ -187,6 +192,7 @@ const MenuItem = ({
+@@ -187,6 +198,8 @@ const MenuItem = ({
          style,
        ]}
        onPress={onPress}
 +      onLongPress={onLongPress}
++      onLayout={onLayout}
        disabled={disabled}
        testID={testID}
        background={background}
