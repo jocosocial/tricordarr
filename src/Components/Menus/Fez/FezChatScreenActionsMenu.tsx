@@ -39,7 +39,8 @@ export const FezChatScreenActionsMenu = ({
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const muteMutation = useFezMuteMutation();
   const commonNavigation = useCommonStack();
-  const {updateMute} = useFezCacheReducer();
+  const {updateMute, invalidateFez} = useFezCacheReducer();
+  const [refreshing, setRefreshing] = React.useState(false);
 
   const detailsAction = () => {
     navigation.push(CommonStackComponents.fezChatDetailsScreen, {fezID: fezID});
@@ -52,17 +53,26 @@ export const FezChatScreenActionsMenu = ({
   };
 
   const handleMute = () => {
+    setRefreshing(true);
     const newMuted = !isMuted;
+    // Optimistic: flip the cache immediately so the icon is already correct by the time the
+    // spinner clears, instead of waiting on a (possibly slow) network round trip to do it.
+    // This brings the menu path in line with FezChatListItemSwipeable's swipe-to-mute.
+    updateMute(fezID, newMuted);
     muteMutation.mutate(
       {
-        action: isMuted ? 'unmute' : 'mute',
+        action: newMuted ? 'mute' : 'unmute',
         fezID: fezID,
       },
       {
-        onSuccess: () => {
-          updateMute(fezID, newMuted);
+        onError: () => {
+          updateMute(fezID, !newMuted);
+          invalidateFez(fezID);
         },
-        onSettled: () => closeMenu(),
+        onSettled: () => {
+          setRefreshing(false);
+          closeMenu();
+        },
       },
     );
   };
@@ -76,7 +86,9 @@ export const FezChatScreenActionsMenu = ({
       <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.details} onPress={detailsAction} title={'Details'} />
       {isChatEditable && <Menu.Item leadingIcon={AppIcons.edit} onPress={editAction} title={'Edit'} />}
-      {isParticipant && <MuteMenuItem onPress={handleMute} isMuted={isMuted} />}
+      {isParticipant && (
+        <MuteMenuItem onPress={handleMute} isMuted={isMuted} refreshing={refreshing} disabled={refreshing} />
+      )}
       {(hasModerator || hasTwitarrTeam) && (
         <>
           <Divider bold={true} />

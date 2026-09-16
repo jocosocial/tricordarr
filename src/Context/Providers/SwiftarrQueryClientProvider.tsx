@@ -258,10 +258,14 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   }, [disruptionDetected, errorCount, setSnackbarPayload]);
 
   const shouldDehydrateQuery = (query: Query) => {
-    // Don't dehydrate queries that are still pending or fetching.
-    // These queries will be cancelled when the app reloads, causing CancelledError on rehydration.
-    // Only dehydrate queries that have completed (success or error status).
-    if (query.state.status === 'pending' || query.state.fetchStatus === 'fetching') {
+    // Exclude queries that have never completed a fetch - there's no data to persist.
+    // A query that already has data (status 'success', possibly re-fetching in the
+    // background) should still be persisted using its last-known-good data even while
+    // fetchStatus is 'fetching' - react-query's hydrate() resets fetchStatus to 'idle' on
+    // restore, so this is safe, and excluding it was dropping cached data (forum
+    // categories/threads, seamails, etc.) whenever a background refetch on a slow/bad
+    // connection was in flight at the moment the cache got persisted. See #498.
+    if (query.state.status === 'pending') {
       return false;
     }
 

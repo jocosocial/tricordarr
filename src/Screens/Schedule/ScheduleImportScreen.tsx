@@ -15,12 +15,13 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {createLogger} from '#src/Libraries/Logger';
 import {getCalFeedFromUrl, getEventUid} from '#src/Libraries/Schedule';
 import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
-import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
+import {UserNotificationData} from '#src/Structs/ControllerStructs';
 import {SchedImportFormValues} from '#src/Types/FormValues';
 
 const logger = createLogger('ScheduleImportScreen.tsx');
@@ -30,6 +31,7 @@ export const ScheduleImportScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const {data: twitarrEvents, refetch} = useEventsQuery({});
   const eventFavoriteMutation = useEventFavoriteMutation();
+  const {updateFavorite} = useEventCacheReducer();
   const [log, setLog] = useState<string[]>([]);
   const {setSnackbarPayload} = useSnackbar();
   const queryClient = useQueryClient();
@@ -63,10 +65,6 @@ export const ScheduleImportScreen = () => {
       ...appConfig,
       schedBaseUrl: values.schedUrl,
     });
-    const invalidations = EventData.getCacheKeys()
-      .concat(UserNotificationData.getCacheKeys())
-      .map(key => queryClient.invalidateQueries({queryKey: key}));
-    await Promise.all(invalidations);
     let successCount = 0,
       skipCount = 0;
     await refetch();
@@ -99,14 +97,24 @@ export const ScheduleImportScreen = () => {
         continue;
       }
       mutations.push(
-        eventFavoriteMutation.mutateAsync({
-          eventID: twitarrEvent.eventID,
-          action: 'favorite',
-        }),
+        eventFavoriteMutation
+          .mutateAsync({
+            eventID: twitarrEvent.eventID,
+            action: 'favorite',
+          })
+          .then(() => updateFavorite(twitarrEvent, true)),
       );
     }
     await Promise.allSettled(mutations);
     successCount = mutations.length;
+    if (successCount > 0) {
+      // Favoriting changes server-side notification/countdown state that can't be derived
+      // locally, so this one still needs a refetch.
+      const invalidations = UserNotificationData.getCacheKeys().map(key =>
+        queryClient.invalidateQueries({queryKey: key}),
+      );
+      await Promise.all(invalidations);
+    }
     writeLog('');
     if (successCount === 0 && skipCount === 0) {
       writeLog('Found no events to import. Check username and prerequisites above.');
@@ -114,7 +122,6 @@ export const ScheduleImportScreen = () => {
       writeLog(`Successfully processed ${successCount} ${pluralize('event', successCount)}.`);
       writeLog(`Skipped ${skipCount} ${pluralize('event', skipCount)} already favorited.`);
     }
-    await queryClient.invalidateQueries({queryKey: ['/events']});
     helpers.setSubmitting(false);
   };
 

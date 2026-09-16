@@ -90,6 +90,9 @@ LoggedInScreen
     `disabled={mutation.isPending}`. A loading icon alone does not block a second tap.
   - Batch operations: track a local `busy` flag around the batch, separate from any
     `setRefreshing` call (that drives the parent list's pull-to-refresh, not this control)
+- For toggle-style controls backed by a cache reducer (favorite/mute/pin/etc.), the reducer
+  call goes BEFORE `mutation.mutate()`, with a rollback + invalidate in `onError` — see
+  `docs/Code Notes.md` under "Optimistic Cache Updates"
 
 ## Code Smells
 

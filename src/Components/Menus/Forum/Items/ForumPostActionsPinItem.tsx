@@ -16,17 +16,22 @@ interface ForumPostActionsPinItemProps {
 /** Moderator action to pin or unpin a post within its thread. */
 export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => {
   const pinMutation = useForumPostPinMutation();
-  const {updatePostPin} = useForumCacheReducer();
+  const {updatePostPin, invalidateForum} = useForumCacheReducer();
 
   const handleFavorite = () => {
+    const newValue = !props.forumPost.isPinned;
+    // Optimistic: flip the cache immediately so the icon is already correct by the time the
+    // spinner clears, instead of waiting on a (possibly slow) network round trip to do it.
+    updatePostPin(props.forumPost.postID, props.forumData?.forumID, newValue);
     pinMutation.mutate(
       {
         postID: props.forumPost.postID.toString(),
-        action: props.forumPost.isPinned ? 'unpin' : 'pin',
+        action: newValue ? 'pin' : 'unpin',
       },
       {
-        onSuccess: () => {
-          updatePostPin(props.forumPost.postID, props.forumData?.forumID, !props.forumPost.isPinned);
+        onError: () => {
+          updatePostPin(props.forumPost.postID, props.forumData?.forumID, !newValue);
+          invalidateForum(props.forumData?.forumID);
         },
         onSettled: () => {
           props.closeMenu();

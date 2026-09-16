@@ -155,6 +155,7 @@ export async function generateContentNotification(
   const data = {
     type: type,
     url: url,
+    contentID: id,
     ...(markAsReadUrl ? {markAsReadUrl: markAsReadUrl} : undefined),
   };
 
