@@ -49,6 +49,63 @@ Two failure shapes, two different fixes:
 
 `PrimaryActionButton`'s `isLoading` prop implies `disabled` (so passing one without the other can't happen); other buttons don't get this for free.
 
+See also "Optimistic Cache Updates (local-first reducer pattern)" below: that pattern adds a step *before* the mutation starts, but doesn't remove the requirement here to disable the control while it's in flight.
+
+## Optimistic Cache Updates (local-first reducer pattern)
+
+If you only update the cache after the server responds, any control whose *appearance* depends on that cache (a star, a checkmark, a mute icon) sits in the wrong state for the entire round trip — and on the ship's slow network (see "Mutation In-Flight State" above), that's long enough for the user to notice. The fix: for a toggle where you already know the new value the instant the user taps (a boolean flip, a field the user picked), call the reducer *before* calling `mutation.mutate(...)`, not inside `onSuccess`.
+
+Order of operations:
+
+1. Compute the new value (e.g. `const newValue = !current`).
+2. Call the reducer action with that new value — this updates the cache and the UI immediately, before any network request has even started.
+3. Call `mutation.mutate(...)`.
+4. In `onError`, call the same reducer action again with the *old* value to roll back, **and** invalidate the relevant keys so the server — not our captured stale copy — gets the last word (see "Rollback is a tiebreak, not a truth" below for why the rollback alone isn't enough).
+5. Keep everything already required by "Mutation In-Flight State" (disable the control while pending, `closeMenu()` in `onSettled` for menu items) — this pattern doesn't replace that, it's an addition.
+6. Only use `onSuccess` for something that genuinely can't be known until the server responds (see "When NOT to do this" below).
+
+**When NOT to do this:**
+
+- **The new state can't be computed locally.** `PhotographingMenuItem`'s `photographers` header list needs the server's `UserHeader` (name/photo), which the client doesn't have — that part stays a post-success refetch even though the boolean flip itself is optimistic. LFG join (`LFGMembershipView` → `updateMembership`) needs the server's full returned `FezData`, because only the server knows whether you landed in the group or on the waitlist.
+- **The action is destructive and confirmed.** Delete, cancel, leave-a-group: the user already confirmed through an alert; rolling back an optimistic delete on failure is a worse surprise than a half-second wait. Apply these in `onSuccess`.
+- **The result depends on the server and isn't a simple flip.** Bulk imports, admin diff apply, thread/message create-then-navigate flows: there's no single "new value" to show optimistically, or the screen navigates away before it would matter anyway.
+
+**Why this isn't `onMutate`.** A reader who knows TanStack Query will expect the canonical `onMutate` recipe, and will otherwise "fix" this later. The per-call options accepted by `mutation.mutate(vars, {...})` are only `onSuccess`/`onError`/`onSettled` — `onMutate` is not among them — and our mutation hooks are shared across many call sites, so a hook-level `onMutate` has no way to know which entity the user just tapped. Calling the reducer in the tap handler is the equivalent step, moved to the only place that has the context.
+
+**One-way actions with no rollback.** Some reducer actions have no inverse — `markRead` collapses `readCount` toward `postCount` and can't be un-applied without having captured the prior counts. For these, apply eagerly and say so: there is no `onError` rollback, and a failed request self-heals on the next refetch. Don't let the rule above imply otherwise.
+
+**Rollback is a tiebreak, not a truth.** Inverting the boolean restores the value we *captured at tap time*. If anything else changed the entity during the round trip (a websocket push, a concurrent refetch, the same entity toggled from another screen), the rollback writes stale data back. `updateFavorite` is the sharpest case: it also re-runs `primeEventDetail` with a whole stale `EventData`. Hence the invalidate in step 4.
+
+**The error snackbar still fires.** `useTokenAuthMutation` registers its own `onError` at the hook level (`src/Queries/TokenAuthMutation.ts`), and a per-call `onError` passed to `mutate()` runs *in addition to* it, not instead. So a rollback handler neither suppresses the snackbar nor needs to raise one itself — don't add a duplicate.
+
+A small before/after, from the real fix in `src/Components/Cards/Schedule/EventCard.tsx`:
+
+```ts
+// Before: cache only updates once the network call finishes -- the star sits stale
+// for the whole round trip.
+eventFavoriteMutation.mutate(
+  {eventID: eventData.eventID, action: newValue ? 'favorite' : 'unfavorite'},
+  {onSuccess: () => updateFavorite(eventData, newValue)},
+);
+
+// After: flip the cache the instant the user taps, roll back on failure.
+updateFavorite(eventData, newValue);
+eventFavoriteMutation.mutate(
+  {eventID: eventData.eventID, action: newValue ? 'favorite' : 'unfavorite'},
+  {onError: () => updateFavorite(eventData, !newValue)},
+);
+```
+
+**Menus keep closing on `onSettled`, not on tap.** This was considered and decided, not overlooked. An optimistic menu item still holds the menu open for the whole round trip, which means the visible win lands on the list underneath rather than in the menu itself. Closing on tap would be the larger UX win, and `AGENTS.md`'s "Toggle / Navigation items: NO `onClose`" line arguably already points that way for a favorite/mute item. We're staying with `onSettled` anyway, because:
+
+- the open menu is where a rollback is legible — the row the user tapped visibly reverts, instead of a snackbar appearing over a screen where something silently un-changed;
+- it's the only in-flight feedback these items have (`getStateLoadingIcon` on the row);
+- one unconditional rule ("mutating items close in `onSettled`") beats a rule with an "unless it's optimistic" carve-out that every future menu-item author has to evaluate.
+
+A mutating toggle (favorite/mute/pin) counts as a **mutating item** under `AGENTS.md`'s Menus section, not a toggle item — that ambiguity is what makes this worth stating. If we ever revisit, the follow-up order is: fix the in-flight `disabled` gaps first, then rewrite the Menus rules around "can you compute the new value locally", then convert — with verification aimed squarely at the forced-failure path.
+
+**`cancelQueries` before the optimistic write.** TanStack's optimistic-update recipe starts with `queryClient.cancelQueries(...)` for a reason: a refetch that was already in flight when the user tapped will resolve *after* our optimistic write and stomp it back to the stale value — the same flicker this pattern exists to remove, on the same slow network that makes the window wide. Rather than asking every call site to remember this, the cancel is folded into the reducer actions themselves (`updateFavorite`, `updateMute`, `updatePinned`, `updatePostPin`, `updatePostBookmark`), since they already know which query keys they touch. `cancelQueries` returns a promise; the reducers stay synchronous and fire it without awaiting (fire-and-forget) rather than becoming `async`, since callers already treat these as synchronous cache writes.
+
 ## Websocket Keepalive
 
 https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
