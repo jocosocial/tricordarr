@@ -125,6 +125,9 @@ export const EventCard = ({
   const onFavoritePress = useCallback(() => {
     setRefreshing(true);
     const newValue = !eventData.isFavorite;
+    // Optimistic: flip the cache immediately so the star is already correct by the time the
+    // spinner clears, instead of waiting on a (possibly slow) network round trip to do it.
+    updateFavorite(eventData, newValue);
     eventFavoriteMutation.mutate(
       {
         eventID: eventData.eventID,
@@ -132,11 +135,13 @@ export const EventCard = ({
       },
       {
         onSuccess: async () => {
-          updateFavorite(eventData, newValue);
           const invalidations = UserNotificationData.getCacheKeys().map(key =>
             queryClient.invalidateQueries({queryKey: key}),
           );
           await Promise.all(invalidations);
+        },
+        onError: () => {
+          updateFavorite(eventData, !newValue);
         },
         onSettled: () => setRefreshing(false),
       },

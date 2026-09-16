@@ -26,6 +26,8 @@ export const EventScreen = ({navigation, route}: Props) => {
   const handleFavorite = useCallback(
     (event: EventData) => {
       const newValue = !event.isFavorite;
+      // Optimistic: flip the cache immediately rather than waiting on the network round trip.
+      updateFavorite(event, newValue);
       eventFavoriteMutation.mutate(
         {
           eventID: event.eventID,
@@ -33,11 +35,13 @@ export const EventScreen = ({navigation, route}: Props) => {
         },
         {
           onSuccess: async () => {
-            updateFavorite(event, newValue);
             const invalidations = UserNotificationData.getCacheKeys().map(key =>
               queryClient.invalidateQueries({queryKey: key}),
             );
             await Promise.all(invalidations);
+          },
+          onError: () => {
+            updateFavorite(event, !newValue);
           },
         },
       );

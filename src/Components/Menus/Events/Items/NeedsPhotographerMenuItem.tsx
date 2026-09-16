@@ -21,14 +21,16 @@ export const NeedsPhotographerMenuItem = (props: NeedsPhotographerMenuItemProps)
       return;
     }
     const newValue = !props.shutternautData.needsPhotographer;
+    // Optimistic: flip the cache immediately rather than waiting on the network round trip.
+    updateNeedsPhotographer(props.eventID, newValue);
     needsPhotographerMutation.mutate(
       {
         eventID: props.eventID,
         action: newValue ? 'create' : 'delete',
       },
       {
-        onSuccess: () => {
-          updateNeedsPhotographer(props.eventID, newValue);
+        onError: () => {
+          updateNeedsPhotographer(props.eventID, !newValue);
         },
         onSettled: () => {
           props.closeMenu?.();

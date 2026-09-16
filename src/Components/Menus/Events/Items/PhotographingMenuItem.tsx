@@ -23,6 +23,8 @@ export const PhotographingMenuItem = (props: PhotographingMenuItemProps) => {
       return;
     }
     const newValue = !props.shutternautData.userIsPhotographer;
+    // Optimistic: flip the cache immediately rather than waiting on the network round trip.
+    updatePhotographer(props.eventID, newValue);
     photographerMutation.mutate(
       {
         eventID: props.eventID,
@@ -30,10 +32,12 @@ export const PhotographingMenuItem = (props: PhotographingMenuItemProps) => {
       },
       {
         onSuccess: async () => {
-          updatePhotographer(props.eventID, newValue);
           // The photographers header list (rendered only on the event detail screen) needs
           // the authoritative UserHeader from the server, so refetch just that one cache entry.
           await queryClient.invalidateQueries({queryKey: [`/events/${props.eventID}`]});
+        },
+        onError: () => {
+          updatePhotographer(props.eventID, !newValue);
         },
         onSettled: () => {
           props.closeMenu?.();
