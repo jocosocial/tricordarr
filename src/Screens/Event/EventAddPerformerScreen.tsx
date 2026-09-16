@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {Text} from 'react-native-paper';
 
@@ -12,6 +11,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {PerformerProfileWarningView} from '#src/Components/Views/Warnings/PerformerProfileWarningView';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {usePerformerCacheReducer} from '#src/Hooks/Performer/usePerformerCacheReducer';
 import {alertDeleteProfile} from '#src/Libraries/Alerts/PerformerAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventQuery} from '#src/Queries/Events/EventQueries';
@@ -21,7 +21,6 @@ import {
   usePerformerUpsertMutation,
 } from '#src/Queries/Performer/PerformerMutations';
 import {usePerformerSelfQuery} from '#src/Queries/Performer/PerformerQueries';
-import {EventData, PerformerData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.eventAddPerformerScreen>;
 
@@ -43,7 +42,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
   const performerRemoveMutation = usePerformerDeleteForEventMutation();
   const performerDeleteMutation = usePerformerDeleteMutation();
   const {theme} = useAppTheme();
-  const queryClient = useQueryClient();
+  const {deletePerformer, upsertPerformer} = usePerformerCacheReducer();
 
   const onRefresh = async () => {
     await Promise.all([refetchEvent(), refetchPerformer()]);
@@ -58,34 +57,24 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
   //       eventID: route.params.eventID,
   //     },
   //     {
-  //       onSuccess: async () => {
-  //         const invalidations = EventData.getCacheKeys(route.params.eventID)
-  //           .concat(PerformerData.getCacheKeys())
-  //           .map(key => {
-  //             return queryClient.invalidateQueries(key);
-  //           });
-  //         await Promise.all(invalidations);
+  //       onSuccess: () => {
+  //         removePerformerFromEvent(route.params.eventID, performerData.header.id);
   //       },
   //     },
   //   );
   // };
 
   const onDeleteProfile = () => {
+    if (!performerData) {
+      return;
+    }
+    const deletedPerformer = performerData;
     alertDeleteProfile(() => {
       performerDeleteMutation.mutate(
         {},
         {
-          onSuccess: async () => {
-            const invalidations = PerformerData.getCacheKeys()
-              .map(key => {
-                return queryClient.invalidateQueries({queryKey: key});
-              })
-              .concat(
-                EventData.getCacheKeys().map(key => {
-                  return queryClient.invalidateQueries({queryKey: key});
-                }),
-              );
-            await Promise.all(invalidations);
+          onSuccess: () => {
+            deletePerformer(deletedPerformer);
           },
         },
       );
@@ -110,13 +99,8 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
         eventID: route.params.eventID,
       },
       {
-        onSuccess: async () => {
-          const invalidations = EventData.getCacheKeys(route.params.eventID)
-            .concat(PerformerData.getCacheKeys())
-            .map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-          await Promise.all(invalidations);
+        onSuccess: response => {
+          upsertPerformer(response.data);
         },
       },
     );

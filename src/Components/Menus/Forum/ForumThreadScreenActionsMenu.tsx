@@ -50,7 +50,7 @@ export const ForumThreadScreenActionsMenu = ({
   const commonNavigation = useCommonStack();
   const relationMutation = useForumRelationMutation();
   const [refreshing, setRefreshing] = useState(false);
-  const {updateFavorite, updateMute} = useForumCacheReducer();
+  const {updateFavorite, updateMute, invalidateForum} = useForumCacheReducer();
 
   const handleCreateLfg = useCallback(() => {
     closeMenu();
@@ -74,15 +74,20 @@ export const ForumThreadScreenActionsMenu = ({
   const handleFavorite = useCallback(() => {
     if (forumData) {
       setRefreshing(true);
+      const newValue = !forumData.isFavorite;
+      // Optimistic: flip the cache immediately so the icon is already correct by the time the
+      // spinner clears, instead of waiting on a (possibly slow) network round trip to do it.
+      updateFavorite(forumData.forumID, forumData.categoryID, newValue);
       relationMutation.mutate(
         {
           forumID: forumData.forumID,
           relationType: 'favorite',
-          action: forumData.isFavorite ? 'delete' : 'create',
+          action: newValue ? 'create' : 'delete',
         },
         {
-          onSuccess: () => {
-            updateFavorite(forumData.forumID, forumData.categoryID, !forumData.isFavorite);
+          onError: () => {
+            updateFavorite(forumData.forumID, forumData.categoryID, !newValue);
+            invalidateForum(forumData.forumID, forumData.categoryID);
           },
           onSettled: () => {
             setRefreshing(false);
@@ -91,20 +96,23 @@ export const ForumThreadScreenActionsMenu = ({
         },
       );
     }
-  }, [forumData, updateFavorite, relationMutation, closeMenu]);
+  }, [forumData, updateFavorite, invalidateForum, relationMutation, closeMenu]);
 
   const handleMute = useCallback(() => {
     if (forumData) {
       setRefreshing(true);
+      const newValue = !forumData.isMuted;
+      updateMute(forumData.forumID, forumData.categoryID, newValue);
       relationMutation.mutate(
         {
           forumID: forumData.forumID,
           relationType: 'mute',
-          action: forumData.isMuted ? 'delete' : 'create',
+          action: newValue ? 'create' : 'delete',
         },
         {
-          onSuccess: () => {
-            updateMute(forumData.forumID, forumData.categoryID, !forumData.isMuted);
+          onError: () => {
+            updateMute(forumData.forumID, forumData.categoryID, !newValue);
+            invalidateForum(forumData.forumID, forumData.categoryID);
           },
           onSettled: () => {
             setRefreshing(false);
@@ -113,7 +121,7 @@ export const ForumThreadScreenActionsMenu = ({
         },
       );
     }
-  }, [forumData, updateMute, relationMutation, closeMenu]);
+  }, [forumData, updateMute, invalidateForum, relationMutation, closeMenu]);
 
   const handleHelp = () => {
     closeMenu();
@@ -129,14 +137,14 @@ export const ForumThreadScreenActionsMenu = ({
       <Divider bold={true} />
       <FavoriteMenuItem
         onPress={handleFavorite}
-        disabled={forumData.isMuted}
+        disabled={forumData.isMuted || refreshing}
         isFavorite={forumData.isFavorite}
         refreshing={refreshing}
       />
       {forumData.creator.userID !== currentUserID && (
         <MuteMenuItem
           onPress={handleMute}
-          disabled={forumData.isFavorite}
+          disabled={forumData.isFavorite || refreshing}
           isMuted={forumData.isMuted}
           refreshing={refreshing}
         />

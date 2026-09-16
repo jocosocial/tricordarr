@@ -1,6 +1,6 @@
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
-import {PerformerUploadData} from '#src/Structs/ControllerStructs';
+import {PerformerData, PerformerUploadData} from '#src/Structs/ControllerStructs';
 
 export const usePerformerUpsertMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
@@ -11,7 +11,10 @@ export const usePerformerUpsertMutation = () => {
   }
 
   const queryHandler = async (props: QueryHandlerProps) => {
-    return await apiPost(`/performer/forevent/${props.eventID}`, props.performerData);
+    return await apiPost<PerformerData, PerformerUploadData>(
+      `/performer/forevent/${props.eventID}`,
+      props.performerData,
+    );
   };
 
   return useTokenAuthMutation(queryHandler);

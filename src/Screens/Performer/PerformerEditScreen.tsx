@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React from 'react';
 
@@ -8,10 +7,11 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {usePerformerCacheReducer} from '#src/Hooks/Performer/usePerformerCacheReducer';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {usePerformerUpsertMutation} from '#src/Queries/Performer/PerformerMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
-import {EventData, PerformerData, PerformerUploadData} from '#src/Structs/ControllerStructs';
+import {PerformerUploadData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.performerEditScreen>;
 
@@ -27,7 +27,7 @@ export const PerformerEditScreen = (props: Props) => {
 
 const PerformerEditScreenInner = ({navigation, route}: Props) => {
   const performerMutation = usePerformerUpsertMutation();
-  const queryClient = useQueryClient();
+  const {upsertPerformer} = usePerformerCacheReducer();
 
   const onSubmit = (values: PerformerUploadData, helpers: FormikHelpers<PerformerUploadData>) => {
     performerMutation.mutate(
@@ -36,17 +36,8 @@ const PerformerEditScreenInner = ({navigation, route}: Props) => {
         eventID: route.params.eventID,
       },
       {
-        onSuccess: async () => {
-          const invalidations = PerformerData.getCacheKeys(route.params.performerData.header.id)
-            .map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            })
-            .concat(
-              EventData.getCacheKeys(route.params.eventID).map(key => {
-                return queryClient.invalidateQueries({queryKey: key});
-              }),
-            );
-          await Promise.all(invalidations);
+        onSuccess: response => {
+          upsertPerformer(response.data);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

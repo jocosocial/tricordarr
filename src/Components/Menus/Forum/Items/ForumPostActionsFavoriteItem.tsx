@@ -16,17 +16,22 @@ interface ForumPostActionsFavoriteItemProps {
 /** Bookmark or unbookmark a forum post from the post actions menu. */
 export const ForumPostActionsFavoriteItem = ({forumPost, forumData, closeMenu}: ForumPostActionsFavoriteItemProps) => {
   const favoriteMutation = useForumPostBookmarkMutation();
-  const {updatePostBookmark} = useForumCacheReducer();
+  const {updatePostBookmark, invalidateForum} = useForumCacheReducer();
 
   const handleFavorite = () => {
+    const newValue = !forumPost.isBookmarked;
+    // Optimistic: flip the cache immediately so the icon is already correct by the time the
+    // spinner clears, instead of waiting on a (possibly slow) network round trip to do it.
+    updatePostBookmark(forumPost, forumData?.forumID, newValue);
     favoriteMutation.mutate(
       {
         postID: forumPost.postID.toString(),
-        action: forumPost.isBookmarked ? 'delete' : 'create',
+        action: newValue ? 'create' : 'delete',
       },
       {
-        onSuccess: () => {
-          updatePostBookmark(forumPost, forumData?.forumID, !forumPost.isBookmarked);
+        onError: () => {
+          updatePostBookmark(forumPost, forumData?.forumID, !newValue);
+          invalidateForum(forumData?.forumID);
         },
         onSettled: () => {
           closeMenu();

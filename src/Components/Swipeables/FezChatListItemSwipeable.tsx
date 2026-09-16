@@ -23,7 +23,7 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
   const {theme} = useAppTheme();
   const muteMutation = useFezMuteMutation();
   const {refetch} = useFezQuery({fezID: props.fez.fezID, options: {enabled: false}});
-  const {updateMute, markRead} = useFezCacheReducer();
+  const {updateMute, markRead, invalidateFez} = useFezCacheReducer();
   const [muteRefreshing, setMuteRefreshing] = useState(false);
   const [readRefreshing, setReadRefreshing] = useState(false);
   const commonNavigation = useCommonStack();
@@ -46,6 +46,10 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
           fezID: props.fez.fezID,
         },
         {
+          onError: () => {
+            updateMute(props.fez.fezID, !newMuted);
+            invalidateFez(props.fez.fezID);
+          },
           onSettled: () => {
             setMuteRefreshing(false);
             swipeable.reset();
@@ -53,7 +57,7 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
         },
       );
     },
-    [muteMutation, props.fez.fezID, props.fez.members, updateMute],
+    [muteMutation, props.fez.fezID, props.fez.members, updateMute, invalidateFez],
   );
 
   const handleMarkAsRead = useCallback(
@@ -115,6 +119,7 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
           style={{backgroundColor: theme.colors.elevation.level2}}
           onPress={() => handleMute(swipeable)}
           refreshing={muteRefreshing}
+          disabled={muteRefreshing}
         />
         <SwipeableButton
           testID={'seamailRead-button'}
@@ -122,6 +127,7 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
           iconName={AppIcons.markAsRead}
           onPress={() => handleMarkAsRead(swipeable)}
           refreshing={readRefreshing}
+          disabled={readRefreshing}
           style={{backgroundColor: theme.colors.elevation.level3}}
         />
       </>

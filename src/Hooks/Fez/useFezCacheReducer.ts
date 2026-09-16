@@ -651,6 +651,10 @@ export const useFezCacheReducer = () => {
    */
   const updateMute = useCallback(
     (fezID: string, isMuted: boolean) => {
+      for (const keyPrefix of fezListKeyPrefixes) {
+        queryClient.cancelQueries({queryKey: [keyPrefix]});
+      }
+      queryClient.cancelQueries({queryKey: [`/fez/${fezID}`]});
       const muteUpdater = (fez: FezData): FezData => ({
         ...fez,
         members: fez.members ? {...fez.members, isMuted} : fez.members,
