@@ -40,6 +40,12 @@ export const BottomTabNavigator = () => {
     userNotificationData?.alertWords.map(alertData => {
       count += alertData.newForumMentionCount;
     });
+    if (userNotificationData?.moderatorData?.newModeratorForumMentionCount) {
+      count += userNotificationData.moderatorData.newModeratorForumMentionCount;
+    }
+    if (userNotificationData?.moderatorData?.newTTForumMentionCount) {
+      count += userNotificationData.moderatorData.newTTForumMentionCount;
+    }
     return count;
   }, [userNotificationData]);
 

@@ -227,7 +227,11 @@ export namespace UserNotificationData {
       valueOrZero(data.addedToSeamailCount) +
       // We have no way to list "new LFGs/PEs you've been added to" in the API.
       valueOrZero(data.addedToLFGCount) +
-      valueOrZero(data.addedToPrivateEventCount)
+      valueOrZero(data.addedToPrivateEventCount) +
+      valueOrZero(data.moderatorData?.newModeratorSeamailMessageCount) +
+      valueOrZero(data.moderatorData?.newTTSeamailMessageCount) +
+      valueOrZero(data.moderatorData?.newModeratorForumMentionCount) +
+      valueOrZero(data.moderatorData?.newTTForumMentionCount)
     );
   };
 
