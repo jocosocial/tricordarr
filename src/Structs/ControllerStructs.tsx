@@ -170,12 +170,18 @@ export interface UserNotificationData {
   /// The number of Seamail chats the user's been added to but not yet viewed. Does not include Seamails the user creates. Chats counted here will continue
   /// to be counted here and not in `newSeamailMessageCount` even if there are also new messages--until the user views the chat and clears the notification.
   addedToSeamailCount: number;
+  /// IDs of Seamail chats the user's been added to but not yet viewed. See `addedToSeamailCount`.
+  addedToSeamailIDs: string[];
   /// The number of LFGs the user's been added to but not yet viewed. Doesn't include LFGs the user created nor ones they Joined by their own action.
   /// If a chat the user was added to (but hasn't yet viewed) gets new messages, that chat is counted in this total and not in `newFezMessageCount`.
   addedToLFGCount: number;
+  /// IDs of LFGs the user's been added to but not yet viewed. See `addedToLFGCount`.
+  addedToLFGIDs: string[];
   /// The number of Private Events the user's been added to but not yet viewed. Doesn't include PEs the user created.
   /// If a chat the user was added to (but hasn't yet viewed) gets new messages, that chat is counted in this total and not in `newPrivateEventMessageCount`.
   addedToPrivateEventCount: number;
+  /// IDs of Private Events the user's been added to but not yet viewed. See `addedToPrivateEventCount`.
+  addedToPrivateEventIDs: string[];
   /// Count of # of Seamail threads with new messages. NOT total # of new messages-a single seamail thread with 10 new messages counts as 1. 0 if not logged in.
   newSeamailMessageCount?: number;
   /// Count of # of Fezzes with new messages. 0 if not logged in.
@@ -249,6 +255,25 @@ export namespace UserNotificationData {
       return 0;
     }
     return valueOrZero(data.newPrivateEventMessageCount) + valueOrZero(data.addedToPrivateEventCount);
+  };
+
+  /**
+   * Whether the given fez is one the user's been added to but hasn't yet viewed.
+   */
+  export const isAddedTo = (data: UserNotificationData | undefined, fez: FezData): boolean => {
+    if (!data) {
+      return false;
+    }
+    if (FezType.isSeamailType(fez.fezType)) {
+      return data.addedToSeamailIDs.includes(fez.fezID);
+    }
+    if (FezType.isLFGType(fez.fezType)) {
+      return data.addedToLFGIDs.includes(fez.fezID);
+    }
+    if (FezType.isPrivateEventType(fez.fezType)) {
+      return data.addedToPrivateEventIDs.includes(fez.fezID);
+    }
+    return false;
   };
 
   export const getCacheKeys = (): QueryKey[] => {

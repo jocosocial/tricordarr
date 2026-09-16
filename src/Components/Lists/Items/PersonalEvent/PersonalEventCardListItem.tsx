@@ -2,7 +2,8 @@ import React, {Dispatch, memo, SetStateAction} from 'react';
 
 import {FezCard} from '#src/Components/Cards/Schedule/FezCard';
 import {PersonalEventCardActionsMenu} from '#src/Components/Menus/PersonalEvents/PersonalEventCardActionsMenu';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
 
 interface PersonalEventCardListItemProps {
@@ -13,7 +14,11 @@ interface PersonalEventCardListItemProps {
 }
 
 const PersonalEventCardListItemInternal = (props: PersonalEventCardListItemProps) => {
-  const anchorContent = <FezCard fez={props.eventData} onPress={props.onPress} marker={props.marker} />;
+  const {data: notificationData} = useUserNotificationDataQuery();
+  const addedTo = UserNotificationData.isAddedTo(notificationData, props.eventData);
+  const anchorContent = (
+    <FezCard fez={props.eventData} onPress={props.onPress} marker={props.marker} addedTo={addedTo} />
+  );
 
   return (
     <PersonalEventCardActionsMenu
