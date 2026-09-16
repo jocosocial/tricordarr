@@ -564,16 +564,6 @@ export interface EventData {
   shutternautData?: ShutternautEventData;
 }
 
-export namespace EventData {
-  export const getCacheKeys = (eventID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [['/events']];
-    if (eventID) {
-      queryKeys.push([`/events/${eventID}`]);
-    }
-    return queryKeys;
-  };
-}
-
 /**
  * Body for `POST /api/v3/feedback`. Creates or updates the current user's report for an event.
  */
@@ -1202,16 +1192,6 @@ export interface PerformerData {
   /// Although we track the User who created a Performer model for their shadow event for moderation purposes, the User behind the Performer
   /// shouldn't be shown to everyone.
   user?: UserHeader;
-}
-
-export namespace PerformerData {
-  export const getCacheKeys = (performerID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [['/performer/official'], ['/performer/shadow'], ['/performer/self']];
-    if (performerID) {
-      queryKeys.push([`/performer/${performerID}`]);
-    }
-    return queryKeys;
-  };
 }
 
 export interface PerformerResponseData {

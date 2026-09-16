@@ -5,7 +5,7 @@ import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {calcCruiseDayTime} from '#src/Libraries/DateTime';
-import {EventData, PerformerData} from '#src/Structs/ControllerStructs';
+import {EventData, PerformerData, PerformerHeaderData} from '#src/Structs/ControllerStructs';
 
 /**
  * Insert an event into a sorted (by startTime ascending) array. Returns the
@@ -93,6 +93,36 @@ export const useEventCacheReducer = () => {
             return oldData;
           }
           return {...oldData, events: oldData.events.map(listUpdater)};
+        });
+      }
+    },
+    [queryClient, eventDetailQueryKey],
+  );
+
+  /**
+   * Remove an event (by eventID) from every `/events` list cache, every
+   * `/performer/*` detail cache's embedded `events` array, and evict its
+   * `/events/{eventID}` detail cache entirely. Unlike an in-place update,
+   * removal doesn't depend on knowing a query's filter params, so it's safe
+   * to apply universally.
+   */
+  const removeEventInAllCaches = useCallback(
+    (eventID: string) => {
+      queryClient.setQueriesData<EventData[]>({queryKey: ['/events']}, oldData =>
+        oldData ? removeByEventID(oldData, eventID) : oldData,
+      );
+
+      queryClient.removeQueries({queryKey: eventDetailQueryKey(eventID)});
+
+      for (const query of queryClient.getQueryCache().findAll({
+        predicate: q => typeof q.queryKey[0] === 'string' && (q.queryKey[0] as string).startsWith('/performer/'),
+      })) {
+        queryClient.setQueryData<PerformerData>(query.queryKey, oldData => {
+          if (!oldData?.events) {
+            return oldData;
+          }
+          const nextEvents = oldData.events.filter(e => e.eventID !== eventID);
+          return nextEvents.length === oldData.events.length ? oldData : {...oldData, events: nextEvents};
         });
       }
     },
@@ -198,11 +228,47 @@ export const useEventCacheReducer = () => {
     [updateEventInAllCaches],
   );
 
+  /** Remove an event from every cache it may appear in (list, detail, performer-embedded). */
+  const removeEvent = useCallback((eventID: string) => removeEventInAllCaches(eventID), [removeEventInAllCaches]);
+
+  /**
+   * Add (or replace, matching by id) a performer header in an event's
+   * `performers` list across all caches.
+   */
+  const upsertPerformerInEvent = useCallback(
+    (eventID: string, performer: PerformerHeaderData) => {
+      updateEventInAllCaches(eventID, event => {
+        const exists = event.performers.some(p => p.id === performer.id);
+        return {
+          ...event,
+          performers: exists
+            ? event.performers.map(p => (p.id === performer.id ? performer : p))
+            : [...event.performers, performer],
+        };
+      });
+    },
+    [updateEventInAllCaches],
+  );
+
+  /** Remove a performer (by id) from an event's `performers` list across all caches. */
+  const removePerformerFromEvent = useCallback(
+    (eventID: string, performerID: string | undefined) => {
+      updateEventInAllCaches(eventID, event => ({
+        ...event,
+        performers: event.performers.filter(p => p.id !== performerID),
+      }));
+    },
+    [updateEventInAllCaches],
+  );
+
   return {
     primeEventDetail,
+    removeEvent,
+    removePerformerFromEvent,
     updateEvent,
     updateFavorite,
     updateNeedsPhotographer,
     updatePhotographer,
+    upsertPerformerInEvent,
   };
 };
