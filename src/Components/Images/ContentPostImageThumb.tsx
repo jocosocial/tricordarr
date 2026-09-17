@@ -4,7 +4,7 @@ import {useAnimatedRef} from 'react-native-reanimated';
 
 import {APIImage} from '#src/Components/Images/APIImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
-import {toLightboxImage} from '#src/Components/Lightbox/toLightboxImage';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ContentPostImageThumbProps {
@@ -21,6 +21,7 @@ interface ContentPostImageThumbProps {
 export const ContentPostImageThumb = ({fileName, index, images, style}: ContentPostImageThumbProps) => {
   const {openLightbox} = useLightboxControls();
   const thumbRef = useAnimatedRef<View>();
+  const {toLightboxImage} = useAppImage();
 
   /**
    * Opens the shared lightbox at this image so the gallery starts on the photo that was tapped.
@@ -30,7 +31,7 @@ export const ContentPostImageThumb = ({fileName, index, images, style}: ContentP
       images: images.map((metadata, i) => toLightboxImage(metadata, i === index ? {thumbRef} : {})),
       index,
     });
-  }, [images, index, openLightbox, thumbRef]);
+  }, [images, index, openLightbox, thumbRef, toLightboxImage]);
 
   return (
     <View ref={thumbRef} collapsable={false} style={style.view}>

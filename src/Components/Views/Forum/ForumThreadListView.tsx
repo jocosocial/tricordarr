@@ -8,8 +8,8 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {usePagination} from '#src/Hooks/usePagination';
 import {SetRefreshing} from '#src/Hooks/useRefresh';
+import {useSelectable} from '#src/Hooks/useSelectable';
 import {CategoryData, ForumListData} from '#src/Structs/ControllerStructs';
-import {Selectable} from '#src/Types/Selectable';
 
 interface ForumThreadListViewProps {
   hasNextPage?: boolean;
@@ -47,6 +47,7 @@ export const ForumThreadListView = ({
   scrollToTopIntent,
 }: ForumThreadListViewProps) => {
   const {enableSelection} = useSelection();
+  const {fromForumListData} = useSelectable();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
 
@@ -63,7 +64,7 @@ export const ForumThreadListView = ({
   return (
     <>
       {enableSelection ? (
-        <SelectionButtons items={forumListData.map(Selectable.fromForumListData)} />
+        <SelectionButtons items={forumListData.map(fromForumListData)} />
       ) : (
         <ListTitleView title={title} subtitle={subtitle} />
       )}

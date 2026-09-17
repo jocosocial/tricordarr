@@ -6,8 +6,8 @@ import {APIImage} from '#src/Components/Images/APIImage';
 import {AppImage} from '#src/Components/Images/AppImage';
 import {ContentPostAttachment} from '#src/Components/Views/Content/ContentPostAttachment';
 import {AppIcons} from '#src/Enums/Icons';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ContentPostAttachedImageProps {
   imageData: ImageUploadData;
@@ -19,6 +19,7 @@ interface ContentPostAttachedImageProps {
 // Y'know, sometimes I wonder why I am the way I am. Why haven't I been doing the shorthand "props"
 // this entire time? No idea.
 export const ContentPostAttachedImage = (props: ContentPostAttachedImageProps) => {
+  const {fromData} = useAppImage();
   const styles = StyleSheet.create({
     image: {width: 64, height: 64},
   });
@@ -31,7 +32,7 @@ export const ContentPostAttachedImage = (props: ContentPostAttachedImageProps) =
         <AppImage
           onPress={props.onImagePress}
           mode={'image'}
-          image={AppImageMetaData.fromData(props.imageData.image)}
+          image={fromData(props.imageData.image)}
           style={styles.image}
         />
       </ContentPostAttachment>

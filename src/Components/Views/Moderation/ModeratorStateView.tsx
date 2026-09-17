@@ -10,8 +10,9 @@ import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
+import {useModerationState} from '#src/Hooks/Moderation/useModerationState';
 import {useMenu} from '#src/Hooks/useMenu';
-import {ModeratedContentData, ModerationStateContext} from '#src/Libraries/Moderation/ModerationStateContext';
+import {ModeratedContentData} from '#src/Libraries/Moderation/ModerationStateContext';
 
 interface ModeratorStateViewProps {
   data: ModeratedContentData;
@@ -23,7 +24,8 @@ interface ModeratorStateViewProps {
 export const ModeratorStateView = ({data}: ModeratorStateViewProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {theme} = useAppTheme();
-  const context = useMemo(() => ModerationStateContext.fromData(data), [data]);
+  const {fromData} = useModerationState();
+  const context = useMemo(() => fromData(data), [data, fromData]);
   const actions = useModerationContentActions(context.cacheKeys);
   const {updateThreadVisibility} = useForumCacheReducer();
   const {updateFezVisibility} = useFezCacheReducer();

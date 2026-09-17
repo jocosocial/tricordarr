@@ -6,9 +6,9 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ModerationReportsList} from '#src/Components/Lists/Moderation/ModerationReportsList';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useReportContentGroup} from '#src/Hooks/Moderation/useReportContentGroup';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {isClosedReportsParam} from '#src/Libraries/Moderation/ModerationStateContext';
-import {ReportContentGroup} from '#src/Libraries/Moderation/ReportContentGroup';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -25,6 +25,7 @@ const ModeratorReportsScreenInner = ({route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const getNavButtons = useModerationHeaderButtons();
   const showClosed = isClosedReportsParam(route.params.closed);
+  const {groupsFromReports, filterByClosed} = useReportContentGroup();
 
   useEffect(() => {
     navigation.setOptions({
@@ -36,8 +37,8 @@ const ModeratorReportsScreenInner = ({route}: Props) => {
     if (!data) {
       return [];
     }
-    return ReportContentGroup.filterByClosed(ReportContentGroup.groupsFromReports(data), showClosed);
-  }, [data, showClosed]);
+    return filterByClosed(groupsFromReports(data), showClosed);
+  }, [data, showClosed, filterByClosed, groupsFromReports]);
 
   if (isLoading || !data) {
     return (

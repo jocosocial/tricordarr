@@ -14,9 +14,9 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {createLogger} from '#src/Libraries/Logger';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 const logger = createLogger('OobeWelcomeScreen.tsx');
 
@@ -33,6 +33,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {appConfig} = useConfig();
   const {theme} = useAppTheme();
   const {oobeCompleted} = useOobe();
+  const {fromAsset} = useAppImage();
   const [versionTapCount, setVersionTapCount] = useState(0);
   const [fault, setFault] = useState(false);
 
@@ -111,7 +112,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
         <PaddedContentView>
           <AppImage
             mode={'scaledimage'}
-            image={AppImageMetaData.fromAsset(tricordarr, 'tricordarr.jpg')}
+            image={fromAsset(tricordarr, 'tricordarr.jpg')}
             style={styles.image}
             disableTouch={true}
           />

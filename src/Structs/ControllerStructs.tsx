@@ -1,8 +1,5 @@
 import {QueryKey} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
-import moment from 'moment-timezone';
-import pluralize from 'pluralize';
-import URLParse from 'url-parse';
 
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
@@ -13,9 +10,6 @@ import {ModeratorActionType} from '#src/Enums/ModeratorActionType';
 import {ReportType} from '#src/Enums/ReportType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {UserRoleType} from '#src/Enums/UserRoleType';
-import {createLogger} from '#src/Libraries/Logger';
-
-const logger = createLogger('ControllerStructs.tsx');
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -44,10 +38,6 @@ export interface UserHeader {
 }
 
 export namespace UserHeader {
-  export const contains = (headers: UserHeader[] = [], header: UserHeader) => {
-    return headers.map(h => h.userID).includes(header.userID);
-  };
-
   export const getCacheKeys = (header?: UserHeader): QueryKey[] => {
     let cacheKeys: QueryKey[] = [['/user/profile']];
     if (header) {
@@ -212,74 +202,6 @@ export interface UserNotificationData {
 }
 
 export namespace UserNotificationData {
-  const valueOrZero = (value?: number) => value || 0;
-  export const totalNewCount = (data?: UserNotificationData) => {
-    if (!data) {
-      return 0;
-    }
-    return (
-      valueOrZero(data.newAnnouncementCount) +
-      valueOrZero(data.newTwarrtMentionCount) +
-      valueOrZero(data.newForumMentionCount) +
-      valueOrZero(data.newSeamailMessageCount) +
-      valueOrZero(data.newFezMessageCount) +
-      valueOrZero(data.newPrivateEventMessageCount) +
-      valueOrZero(data.addedToSeamailCount) +
-      // We have no way to list "new LFGs/PEs you've been added to" in the API.
-      valueOrZero(data.addedToLFGCount) +
-      valueOrZero(data.addedToPrivateEventCount) +
-      valueOrZero(data.moderatorData?.newModeratorSeamailMessageCount) +
-      valueOrZero(data.moderatorData?.newTTSeamailMessageCount) +
-      valueOrZero(data.moderatorData?.newModeratorForumMentionCount) +
-      valueOrZero(data.moderatorData?.newTTForumMentionCount)
-    );
-  };
-
-  /**
-   * Unread seamail threads plus chats the user was added to but has not yet viewed.
-   * Combined with LFG and private-event chat unreads for the Seamail bottom-tab badge
-   * (along with privileged-account counts).
-   */
-  export const totalNewSeamail = (data?: UserNotificationData) => {
-    if (!data) {
-      return 0;
-    }
-    return valueOrZero(data.newSeamailMessageCount) + valueOrZero(data.addedToSeamailCount);
-  };
-
-  export const totalNewLFG = (data?: UserNotificationData) => {
-    if (!data) {
-      return 0;
-    }
-    return valueOrZero(data.newFezMessageCount) + valueOrZero(data.addedToLFGCount);
-  };
-
-  export const totalNewPrivateEvent = (data?: UserNotificationData) => {
-    if (!data) {
-      return 0;
-    }
-    return valueOrZero(data.newPrivateEventMessageCount) + valueOrZero(data.addedToPrivateEventCount);
-  };
-
-  /**
-   * Whether the given fez is one the user's been added to but hasn't yet viewed.
-   */
-  export const isAddedTo = (data: UserNotificationData | undefined, fez: FezData): boolean => {
-    if (!data) {
-      return false;
-    }
-    if (FezType.isSeamailType(fez.fezType)) {
-      return data.addedToSeamailIDs.includes(fez.fezID);
-    }
-    if (FezType.isLFGType(fez.fezType)) {
-      return data.addedToLFGIDs.includes(fez.fezID);
-    }
-    if (FezType.isPrivateEventType(fez.fezType)) {
-      return data.addedToPrivateEventIDs.includes(fez.fezID);
-    }
-    return false;
-  };
-
   export const getCacheKeys = (): QueryKey[] => {
     return [['/notification/global']];
   };
@@ -469,47 +391,6 @@ export interface DailyThemeData {
 export namespace DailyThemeData {
   export const getCacheKeys = (): QueryKey[] => {
     return [['/notification/dailythemes']];
-  };
-
-  export const getThemeForDay = (cruiseDayIndex: number, cruiseLength: number, dailyThemeData?: DailyThemeData[]) => {
-    if (dailyThemeData) {
-      let todaysTheme: DailyThemeData | undefined;
-      dailyThemeData.every(dt => {
-        if (dt.cruiseDay === cruiseDayIndex) {
-          todaysTheme = dt;
-        }
-        return true;
-      });
-      // Default Themes
-      if (!todaysTheme) {
-        if (cruiseDayIndex >= cruiseLength - 1) {
-          todaysTheme = {
-            themeID: 'default_theme_after',
-            title: `${cruiseDayIndex - cruiseLength + 1} ${pluralize(
-              'day',
-              cruiseDayIndex - cruiseLength + 1,
-            )} after boat`,
-            info: "JoCo Cruise has ended. Hope you're enjoying being back in the real world.",
-            cruiseDay: cruiseDayIndex,
-          };
-        } else if (cruiseDayIndex < 0) {
-          todaysTheme = {
-            themeID: 'default_theme_before',
-            title: `${Math.abs(cruiseDayIndex)} ${pluralize('day', Math.abs(cruiseDayIndex))} before boat!`,
-            info: 'Soon™',
-            cruiseDay: cruiseDayIndex,
-          };
-        } else {
-          todaysTheme = {
-            themeID: 'default_theme_before',
-            title: `Cruise Day ${cruiseDayIndex + 1}: No Theme Day`,
-            info: 'A wise man once said, "A day without a theme is like a guitar ever-so-slightly out of tune. You can play it however you want, and it will be great, but someone out there will know that if only there was a theme, everything would be in tune."',
-            cruiseDay: cruiseDayIndex,
-          };
-        }
-      }
-      return todaysTheme;
-    }
   };
 }
 
@@ -989,22 +870,6 @@ export interface PostDetailData {
   loves: UserHeader[];
 }
 
-export namespace PostDetailData {
-  export const hasUserReacted = (postData: PostDetailData, userID: string, likeType?: LikeType) => {
-    if (!likeType) {
-      return !!postData.userLike;
-    }
-    switch (likeType) {
-      case LikeType.like:
-        return postData.likes.flatMap(uh => uh.userID).includes(userID);
-      case LikeType.laugh:
-        return postData.laughs.flatMap(uh => uh.userID).includes(userID);
-      case LikeType.love:
-        return postData.loves.flatMap(uh => uh.userID).includes(userID);
-    }
-  };
-}
-
 export interface ForumCreateData {
   /// The forum's title.
   title: string;
@@ -1351,25 +1216,6 @@ export interface BoardgameData {
 }
 
 export namespace BoardgameData {
-  export const getPlayers = (boardgame: BoardgameData) => {
-    if (boardgame.minPlayers && boardgame.maxPlayers) {
-      if (boardgame.minPlayers < boardgame.maxPlayers) {
-        return `${boardgame.minPlayers}-${boardgame.maxPlayers} Players`;
-      } else {
-        return `${boardgame.minPlayers} Players`;
-      }
-    }
-  };
-
-  export const getPlayingTime = (boardgame: BoardgameData) => {
-    if (boardgame.minPlayingTime && boardgame.maxPlayingTime) {
-      if (boardgame.minPlayingTime < boardgame.maxPlayingTime) {
-        return `${boardgame.minPlayingTime}-${boardgame.maxPlayingTime} minutes`;
-      } else {
-        return `${boardgame.minPlayingTime} minutes`;
-      }
-    }
-  };
   export const getCacheKeys = (boardgameID?: string): QueryKey[] => {
     let queryKeys: QueryKey[] = [['/boardgames']];
     if (boardgameID) {
@@ -1530,52 +1376,6 @@ export interface ClientSettingsData {
   photostreamUploadRateLimit?: number;
   /// Unique identifier for this Postgres database installation (from pg_control_system())
   installationID: string;
-}
-
-export namespace ClientSettingsData {
-  /**
-   * Get the base URL from the payload scheduleUpdateURL.
-   * Example: https://jococruise2025.sched.com/all.ics -> https://jococruise2025.sched.com
-   */
-  export const parseScheduleUpdateURL = (url: string): string => {
-    try {
-      const urlObj = new URLParse(url);
-      // protocol includes the colon, so we need to add "//"
-      return `${urlObj.protocol}//${urlObj.host}`;
-    } catch (error) {
-      logger.warn('Error parsing URL:', error);
-      return url;
-    }
-  };
-
-  /**
-   * Extract a timezone-invariant date-only string from the server's cruiseStartDate.
-   *
-   * The server returns an ISO-8601 timestamp (e.g. "2025-03-02T05:00:00.000Z")
-   * representing midnight in the port timezone. We extract the UTC calendar date
-   * as a "YYYY-MM-DD" string so it survives JSON round-trips and timezone changes.
-   */
-  export const parseCruiseStartDate = (dateString: string): string => {
-    const parsed = new Date(dateString);
-    if (isNaN(parsed.getTime())) {
-      logger.warn('Unexpected date format for cruiseStartDate:', dateString);
-      return dateString;
-    }
-    const y = parsed.getUTCFullYear();
-    const m = String(parsed.getUTCMonth() + 1).padStart(2, '0');
-    const d = String(parsed.getUTCDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  };
-
-  /**
-   * Build a Date representing midnight in the port timezone for a date-only string.
-   *
-   * This produces a consistent absolute time regardless of the device's local timezone,
-   * preventing day-shift bugs when the device timezone differs from the port timezone.
-   */
-  export const buildCruiseStartDate = (dateStr: string, portTimeZoneID: string): Date => {
-    return moment.tz(dateStr, 'YYYY-MM-DD', portTimeZoneID).toDate();
-  };
 }
 
 /// Used to obtain the current user's ID, username and logged-in status.

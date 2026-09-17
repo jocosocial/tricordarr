@@ -15,10 +15,10 @@ import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
+import {useImageQueryData} from '#src/Hooks/Images/useImageQueryData';
 import {createLogger} from '#src/Libraries/Logger';
 import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {PostContentData} from '#src/Structs/ControllerStructs';
-import {ImageQueryData} from '#src/Types';
 
 const logger = createLogger('ContentPostForm.tsx');
 
@@ -88,6 +88,7 @@ export const ContentPostForm = ({
   const {appConfig} = useConfig();
   const [insertMenuVisible, setInsertMenuVisible] = React.useState(false);
   const [emojiPickerVisible, setEmojiPickerVisible] = React.useState(false);
+  const {fromData} = useImageQueryData();
 
   /**
    * Saves camera photos if needed, then submits with privilege flags taken from
@@ -104,7 +105,7 @@ export const ContentPostForm = ({
         // Only save images that were taken with the camera (_shouldSaveToRoll flag)
         // This avoids re-saving images picked from the gallery
         if (imageData.image && imageData._shouldSaveToRoll) {
-          await saveImageQueryToLocal(ImageQueryData.fromData(imageData.image));
+          await saveImageQueryToLocal(fromData(imageData.image));
         }
       }
     }

@@ -6,7 +6,7 @@ import {AppImage} from '#src/Components/Images/AppImage';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 
 // @ts-ignore
 import maintenance from '#assets/maintenance.jpg';
@@ -14,6 +14,7 @@ import maintenance from '#assets/maintenance.jpg';
 export const MaintenanceModeCard = () => {
   const {commonStyles} = useStyles();
   const {minAccessLevel} = useClientSettings();
+  const {fromAsset} = useAppImage();
 
   const styles = StyleSheet.create({
     card: {
@@ -40,7 +41,7 @@ export const MaintenanceModeCard = () => {
           may use this section of Twitarr right now.
         </Text>
       </Card.Content>
-      <AppImage image={AppImageMetaData.fromAsset(maintenance, 'maintenance.jpg')} mode={'cardcover'} />
+      <AppImage image={fromAsset(maintenance, 'maintenance.jpg')} mode={'cardcover'} />
     </Card>
   );
 };

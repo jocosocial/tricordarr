@@ -4,6 +4,7 @@ import React, {useCallback} from 'react';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppBottomTabBar} from '#src/Components/Navigation/AppBottomTabBar';
 import {AppIcons} from '#src/Enums/Icons';
+import {useUserNotificationData} from '#src/Hooks/User/useUserNotificationData';
 import {getBadgeDisplayValue} from '#src/Libraries/StringUtils';
 import {ChatStackNavigator} from '#src/Navigation/Stacks/Chat/ChatStackNavigator';
 import {ForumStackNavigator} from '#src/Navigation/Stacks/Forum/ForumStackNavigator';
@@ -12,10 +13,10 @@ import {MainStackNavigator} from '#src/Navigation/Stacks/Main/MainStackNavigator
 import {ScheduleStackNavigator} from '#src/Navigation/Stacks/Schedule/ScheduleStackNavigator';
 import {BottomTabComponents, BottomTabParamList} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {UserNotificationData} from '#src/Structs/ControllerStructs';
 
 export const BottomTabNavigator = () => {
   const {data: userNotificationData} = useUserNotificationDataQuery({enabled: false});
+  const {totalNewSeamail, totalNewLFG, totalNewPrivateEvent} = useUserNotificationData();
   const Tab = createBottomTabNavigator<BottomTabParamList>();
 
   const getIcon = useCallback((icon: string) => {
@@ -23,9 +24,9 @@ export const BottomTabNavigator = () => {
   }, []);
 
   const getChatBadgeCount = useCallback(() => {
-    let count = UserNotificationData.totalNewSeamail(userNotificationData);
-    count += UserNotificationData.totalNewLFG(userNotificationData);
-    count += UserNotificationData.totalNewPrivateEvent(userNotificationData);
+    let count = totalNewSeamail(userNotificationData);
+    count += totalNewLFG(userNotificationData);
+    count += totalNewPrivateEvent(userNotificationData);
     if (userNotificationData?.moderatorData?.newModeratorSeamailMessageCount) {
       count += userNotificationData.moderatorData.newModeratorSeamailMessageCount;
     }
@@ -33,7 +34,7 @@ export const BottomTabNavigator = () => {
       count += userNotificationData.moderatorData.newTTSeamailMessageCount;
     }
     return count;
-  }, [userNotificationData]);
+  }, [userNotificationData, totalNewSeamail, totalNewLFG, totalNewPrivateEvent]);
 
   const getForumBadgeCount = useCallback(() => {
     let count = userNotificationData?.newForumMentionCount || 0;

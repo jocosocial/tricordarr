@@ -2,7 +2,7 @@ import React from 'react';
 
 import {AppImage} from '#src/Components/Images/AppImage';
 import {useTime} from '#src/Context/Contexts/TimeContext';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 
 // @ts-ignore
 import DayImage from '#assets/mainview_day.jpg';
@@ -23,6 +23,7 @@ import SunsetImage from '#assets/mainview_sunset.jpg';
 export const MainImageCardCover = () => {
   // const {userNotificationData} = useUserNotificationData();
   const {hourlyUpdatingDate} = useTime();
+  const {fromAsset} = useAppImage();
 
   // Default to local, but override with the server offset.
   let currentHour = hourlyUpdatingDate.getHours();
@@ -63,20 +64,20 @@ export const MainImageCardCover = () => {
 
   const viewerImages = React.useMemo(
     () => [
-      AppImageMetaData.fromAsset(DayImage, 'mainview_day.jpg'),
-      AppImageMetaData.fromAsset(HappyHourImage, 'mainview_happy.jpg'),
-      AppImageMetaData.fromAsset(MainShowImage, 'mainview_mainshow.jpg'),
-      AppImageMetaData.fromAsset(SunsetImage, 'mainview_sunset.jpg'),
-      AppImageMetaData.fromAsset(LateShowImage, 'mainview_lateshow.jpg'),
-      AppImageMetaData.fromAsset(NightImage, 'mainview_night.jpg'),
+      fromAsset(DayImage, 'mainview_day.jpg'),
+      fromAsset(HappyHourImage, 'mainview_happy.jpg'),
+      fromAsset(MainShowImage, 'mainview_mainshow.jpg'),
+      fromAsset(SunsetImage, 'mainview_sunset.jpg'),
+      fromAsset(LateShowImage, 'mainview_lateshow.jpg'),
+      fromAsset(NightImage, 'mainview_night.jpg'),
     ],
-    [],
+    [fromAsset],
   );
 
   return (
     <AppImage
       mode={'cardcover'}
-      image={AppImageMetaData.fromAsset(sourceImage, 'current_image.jpg')}
+      image={fromAsset(sourceImage, 'current_image.jpg')}
       viewerImages={viewerImages}
       initialViewerIndex={viewerIndex}
     />

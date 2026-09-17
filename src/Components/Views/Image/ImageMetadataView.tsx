@@ -6,6 +6,7 @@ import {Text} from 'react-native-paper';
 import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {createLogger} from '#src/Libraries/Logger';
 import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 
@@ -17,6 +18,7 @@ interface ImageMetadataViewProps {
 
 export const ImageMetadataView = ({image}: ImageMetadataViewProps) => {
   const {commonStyles} = useStyles();
+  const {getSourceURI} = useAppImage();
   const [cachePath, setCachePath] = React.useState<string | null>(null);
 
   const styles = StyleSheet.create({
@@ -32,13 +34,13 @@ export const ImageMetadataView = ({image}: ImageMetadataViewProps) => {
   // Compute display URI synchronously when image changes
   const displayURI = useMemo(() => {
     if (!image) return '';
-    const imageURI = AppImageMetaData.getSourceURI(image);
+    const imageURI = getSourceURI(image);
     const displayLength = 200;
     if (imageURI.length > displayLength) {
       return `${imageURI.substring(0, displayLength)}...`;
     }
     return imageURI;
-  }, [image]);
+  }, [image, getSourceURI]);
 
   // Fetch cache path asynchronously when image changes
   useEffect(() => {
@@ -50,7 +52,7 @@ export const ImageMetadataView = ({image}: ImageMetadataViewProps) => {
     const fetchCachePath = async () => {
       if (image.mode === AppImageMode.api || image.mode === AppImageMode.identicon) {
         try {
-          const sourceURI = AppImageMetaData.getSourceURI(image);
+          const sourceURI = getSourceURI(image);
           const path = await FastImage.getCachePath({uri: sourceURI});
           setCachePath(path);
         } catch (error) {
@@ -63,7 +65,7 @@ export const ImageMetadataView = ({image}: ImageMetadataViewProps) => {
     };
 
     fetchCachePath();
-  }, [image]);
+  }, [image, getSourceURI]);
 
   return (
     <PaddedContentView padTop={true} style={styles.textContainer}>

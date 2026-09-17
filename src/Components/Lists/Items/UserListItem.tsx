@@ -9,8 +9,8 @@ import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
+import {useSelectable} from '#src/Hooks/useSelectable';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-import {Selectable} from '#src/Types/Selectable';
 
 interface UserListItemProps {
   onPress?: () => void;
@@ -47,6 +47,7 @@ const UserListItemInternal = ({
   const {preRegistrationMode} = usePreRegistration();
   const {theme} = useAppTheme();
   const {dispatchSelectedItems} = useSelection();
+  const {fromUserHeader} = useSelectable();
 
   const styles = useMemo(
     () =>
@@ -81,7 +82,7 @@ const UserListItemInternal = ({
   const handleSelection = () => {
     dispatchSelectedItems({
       type: SelectionActions.select,
-      item: Selectable.fromUserHeader(userHeader),
+      item: fromUserHeader(userHeader),
     });
   };
 

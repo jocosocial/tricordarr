@@ -9,12 +9,12 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {AppIcons} from '#src/Enums/Icons';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {
   CommonStackComponents,
   HelpScreenComponents,
   useCommonStack,
 } from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
 import preregistration from '#assets/preregistration.jpg';
@@ -27,6 +27,7 @@ export const PreRegistrationView = ({
   helpScreen = CommonStackComponents.preRegistrationHelpScreen,
 }: PreRegistrationViewProps) => {
   const commonNavigation = useCommonStack();
+  const {fromAsset} = useAppImage();
 
   /**
    * You can pass a custom help screen to help the user maintain context.
@@ -59,7 +60,7 @@ export const PreRegistrationView = ({
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
           {/* <OobePreRegistrationCompleteCard /> */}
-          <AppImage image={AppImageMetaData.fromAsset(preregistration, 'preregistration.jpg')} mode={'cardcover'} />
+          <AppImage image={fromAsset(preregistration, 'preregistration.jpg')} mode={'cardcover'} />
         </PaddedContentView>
         <PaddedContentView>
           <Text>

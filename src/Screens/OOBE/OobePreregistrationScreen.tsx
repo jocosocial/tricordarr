@@ -12,13 +12,13 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {createLogger} from '#src/Libraries/Logger';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
 import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 const logger = createLogger('OobePreregistrationScreen.tsx');
 
@@ -33,6 +33,7 @@ export const OobePreregistrationScreen = ({navigation, route}: Props) => {
   const rootNavigation = useRootStack();
   const {appConfig} = useConfig();
   const {oobeCompleted, setOnboarding} = useOobe();
+  const {fromAsset} = useAppImage();
   const [sessionServerURL, setSessionServerURL] = React.useState(appConfig.preRegistrationServerUrl);
   const [sessionTokenData, setSessionTokenData] = React.useState<TokenStringData | null>(null);
 
@@ -101,7 +102,7 @@ export const OobePreregistrationScreen = ({navigation, route}: Props) => {
         <PaddedContentView>
           <AppImage
             mode={'scaledimage'}
-            image={AppImageMetaData.fromAsset(tricordarr, 'tricordarr.jpg')}
+            image={fromAsset(tricordarr, 'tricordarr.jpg')}
             style={styles.image}
             disableTouch={true}
           />

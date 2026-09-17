@@ -6,12 +6,13 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ContributorView} from '#src/Components/Views/ContributorView';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 
 // @ts-ignore
 import Krakn from '#assets/Krakn.png';
 
 export const KrakenView = () => {
+  const {fromAsset} = useAppImage();
   return (
     <AppView>
       <ScrollingContentView isStack={false}>
@@ -24,7 +25,7 @@ export const KrakenView = () => {
         <PaddedContentView>
           <TouchableOpacity
             onPress={() => Linking.openURL('https://apps.apple.com/us/app/the-kraken-a-twitarr-client/id1496322373')}>
-            <ContributorView image={AppImageMetaData.fromAsset(Krakn, 'Krakn.png')}>
+            <ContributorView image={fromAsset(Krakn, 'Krakn.png')}>
               The Kraken is a social media app custom-built for JoCo Cruise by Chall Fry.
             </ContributorView>
           </TouchableOpacity>

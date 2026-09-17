@@ -7,6 +7,7 @@ import {BoardgameListItemSwipeable} from '#src/Components/Swipeables/BoardgameLi
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useBoardgameData} from '#src/Hooks/Boardgame/useBoardgameData';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 
@@ -52,6 +53,7 @@ const BoardgameListItemInternal = ({boardgame}: BoardgameListItemProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const navigation = useMainStack();
+  const {getPlayers, getPlayingTime} = useBoardgameData();
 
   const styles = StyleSheet.create({
     item: {
@@ -81,8 +83,8 @@ const BoardgameListItemInternal = ({boardgame}: BoardgameListItemProps) => {
     [navigation, boardgame],
   );
 
-  const players = BoardgameData.getPlayers(boardgame);
-  const playingTime = BoardgameData.getPlayingTime(boardgame);
+  const players = getPlayers(boardgame);
+  const playingTime = getPlayingTime(boardgame);
   const description = [players, playingTime].filter(Boolean).join('\n');
 
   return (

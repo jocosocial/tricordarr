@@ -16,6 +16,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useBoardgameData} from '#src/Hooks/Boardgame/useBoardgameData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
@@ -48,6 +49,7 @@ const BoardgameScreenInner = ({navigation, route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const favoriteMutation = useBoardgameFavoriteMutation();
   const queryClient = useQueryClient();
+  const {getPlayers, getPlayingTime} = useBoardgameData();
 
   const onFavorite = useCallback(() => {
     if (data) {
@@ -111,8 +113,8 @@ const BoardgameScreenInner = ({navigation, route}: Props) => {
     );
   }
 
-  const players = BoardgameData.getPlayers(data);
-  const playingTime = BoardgameData.getPlayingTime(data);
+  const players = getPlayers(data);
+  const playingTime = getPlayingTime(data);
 
   return (
     <AppView>
