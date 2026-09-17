@@ -6,13 +6,10 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
-import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 export const MainTimeZoneScreenActionsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
-  const mainNavigation = useMainStack();
 
   const menuAnchor = <Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />;
 
@@ -23,9 +20,7 @@ export const MainTimeZoneScreenActionsMenu = () => {
         leadingIcon={AppIcons.settings}
         onPress={() => {
           closeMenu();
-          mainNavigation.push(MainStackComponents.mainSettingsScreen, {
-            screen: SettingsStackScreenComponents.timeSettingsScreen,
-          });
+          commonNavigation.push(CommonStackComponents.timeSettingsScreen);
         }}
       />
       <Menu.Item

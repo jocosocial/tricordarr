@@ -1,4 +1,4 @@
-import {InfiniteData, useQueryClient} from '@tanstack/react-query';
+import {InfiniteData, InvalidateQueryFilters, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
 import notifee from 'react-native-notify-kit';
 import {v4 as uuidv4} from 'uuid';
@@ -720,16 +720,21 @@ export const useFezCacheReducer = () => {
    * may be stale but we don't have the updated data locally.
    * refetchType 'all' also refetches inactive observers so already-fetched
    * screens (Day Planner, seamail/LFG lists) pick up addedTo/canceled events
-   * without a manual refresh.
+   * without a manual refresh. The predicate excludes queries with no queryFn
+   * (persisted-cache entries whose screen hasn't been mounted this session)
+   * since react-query has nothing to refetch them with and throws otherwise.
    * TODO: derive the intended data from the socket payload.
    */
   const invalidateFez = useCallback(
     (fezID?: string) => {
+      const hasQueryFn: InvalidateQueryFilters['predicate'] = query => typeof query.options.queryFn === 'function';
       const invalidations = fezListKeyPrefixes.map(key =>
-        queryClient.invalidateQueries({queryKey: [key], refetchType: 'all'}),
+        queryClient.invalidateQueries({queryKey: [key], predicate: hasQueryFn, refetchType: 'all'}),
       );
       if (fezID) {
-        invalidations.push(queryClient.invalidateQueries({queryKey: [`/fez/${fezID}`], refetchType: 'all'}));
+        invalidations.push(
+          queryClient.invalidateQueries({queryKey: [`/fez/${fezID}`], predicate: hasQueryFn, refetchType: 'all'}),
+        );
       }
       return Promise.all(invalidations);
     },

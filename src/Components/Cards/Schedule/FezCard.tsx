@@ -32,6 +32,8 @@ interface FezCardProps {
   disabled?: boolean;
   /** When true, shows fez.info as the card description. Off by default so list cards stay compact. */
   showDescription?: boolean;
+  /** When true, shows an "Added To" badge instead of the unread-post-count badge. */
+  addedTo?: boolean;
 }
 
 const FezCardInternal = ({
@@ -46,6 +48,7 @@ const FezCardInternal = ({
   icon,
   disabled = false,
   showDescription = false,
+  addedTo = false,
 }: FezCardProps) => {
   const {theme} = useAppTheme();
   const unreadCount = fez.members ? unreadPostCount(fez.members.postCount, fez.members.readCount) : 0;
@@ -87,6 +90,9 @@ const FezCardInternal = ({
       // (is on a FezCard) instead I didn't like the contrast of the red on grey so I'm
       // making this white to match the text and other icons of this card style.
       return <AppIcon icon={AppIcons.mute} color={theme.colors.constantWhite} />;
+    }
+    if (addedTo) {
+      return <Badge style={styles.badge}>Added To</Badge>;
     }
     if (unreadCount) {
       return <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>;

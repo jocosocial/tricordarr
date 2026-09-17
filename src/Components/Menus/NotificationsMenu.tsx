@@ -63,6 +63,36 @@ export const NotificationsMenu = () => {
           <Divider bold={true} />
         </>
       )}
+      {!!data?.moderatorData?.newModeratorForumMentionCount && (
+        <>
+          <Menu.Item
+            title={`${data.moderatorData.newModeratorForumMentionCount} new @moderator forum ${pluralize('mention', data.moderatorData.newModeratorForumMentionCount)}`}
+            leadingIcon={AppIcons.forum}
+            onPress={() =>
+              bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
+                screen: ForumStackComponents.forumPostMentionScreen,
+                params: {asPrivilegedUser: 'moderator'},
+              })
+            }
+          />
+          <Divider bold={true} />
+        </>
+      )}
+      {!!data?.moderatorData?.newTTForumMentionCount && (
+        <>
+          <Menu.Item
+            title={`${data.moderatorData.newTTForumMentionCount} new @TwitarrTeam forum ${pluralize('mention', data.moderatorData.newTTForumMentionCount)}`}
+            leadingIcon={AppIcons.forum}
+            onPress={() =>
+              bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
+                screen: ForumStackComponents.forumPostMentionScreen,
+                params: {asPrivilegedUser: 'TwitarrTeam'},
+              })
+            }
+          />
+          <Divider bold={true} />
+        </>
+      )}
       {!!data?.addedToSeamailCount && (
         <Menu.Item
           title={`Added to ${data?.addedToSeamailCount} new ${pluralize('seamail', data?.addedToSeamailCount)}`}
@@ -83,6 +113,30 @@ export const NotificationsMenu = () => {
             bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
               screen: ChatStackScreenComponents.seamailListScreen,
               params: {onlyNew: true},
+            })
+          }
+        />
+      )}
+      {!!data?.moderatorData?.newModeratorSeamailMessageCount && (
+        <Menu.Item
+          title={`${data.moderatorData.newModeratorSeamailMessageCount} new @moderator ${pluralize('message', data.moderatorData.newModeratorSeamailMessageCount)}`}
+          leadingIcon={AppIcons.seamail}
+          onPress={() =>
+            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
+              screen: ChatStackScreenComponents.seamailListScreen,
+              params: {onlyNew: true, asPrivilegedUser: 'moderator'},
+            })
+          }
+        />
+      )}
+      {!!data?.moderatorData?.newTTSeamailMessageCount && (
+        <Menu.Item
+          title={`${data.moderatorData.newTTSeamailMessageCount} new @TwitarrTeam ${pluralize('message', data.moderatorData.newTTSeamailMessageCount)}`}
+          leadingIcon={AppIcons.seamail}
+          onPress={() =>
+            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
+              screen: ChatStackScreenComponents.seamailListScreen,
+              params: {onlyNew: true, asPrivilegedUser: 'TwitarrTeam'},
             })
           }
         />

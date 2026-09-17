@@ -31,7 +31,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/Fez/useFezData';
+import {useFezData, useMarkFezReadEffect} from '#src/Hooks/Fez/useFezData';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
@@ -135,6 +135,7 @@ const FezChatScreenInner = ({route}: Props) => {
     isFetching,
   } = useFezData({fezID: route.params.fezID, initialReadCountHint: route.params.initialReadCount});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  useMarkFezReadEffect(fez, initialReadCount);
   const fezPostMutation = useFezPostMutation();
   const {setSnackbarPayload} = useSnackbar();
   const {openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
@@ -352,24 +353,6 @@ const FezChatScreenInner = ({route}: Props) => {
       headerTitle: getFezHeaderTitle,
     });
   }, [getFezHeaderTitle, getNavButtons, navigation]);
-
-  // Mark as Read useEffect
-  // Fire when detail has unread, or when initialReadCount (from list cache) indicates unread
-  // even if the detail GET already marked as read on the server.
-  useEffect(() => {
-    logger.debug('Mark As Read useEffect');
-    if (fez && fez.members) {
-      const hasUnread =
-        fez.members.readCount !== fez.members.postCount ||
-        (initialReadCount !== undefined && initialReadCount < fez.members.postCount);
-      if (hasUnread) {
-        markRead(fez.fezID);
-        // The UND drives the tab bar and seamail account buttons badge count
-        // and we don't have a cache reducer for it yet.
-        refetchUserNotificationData();
-      }
-    }
-  }, [fez, markRead, initialReadCount, refetchUserNotificationData]);
 
   // Visible useEffect
   // 20260308 The query now refetches on mount by default so this is no longer needed.

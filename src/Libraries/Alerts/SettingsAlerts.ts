@@ -37,3 +37,17 @@ export const alertDismissMinAccessWarning = (onConfirm: () => void, onCancel?: (
     ],
   );
 };
+
+/**
+ * Confirms permanently silencing the time zone warnings.
+ */
+export const alertSilenceTimezoneWarnings = (onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert(
+    'Silence Time Zone Warnings',
+    'Permanently hide time zone warnings throughout the app? You can turn them back on later in Time Settings.',
+    [
+      {text: 'No', style: 'cancel', onPress: onCancel},
+      {text: 'Yes', onPress: onConfirm},
+    ],
+  );
+};
