@@ -6,8 +6,8 @@ import {useAnimatedRef} from 'react-native-reanimated';
 
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface AppImageProps {

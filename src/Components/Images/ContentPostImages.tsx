@@ -2,10 +2,10 @@ import React, {useMemo} from 'react';
 import {StyleSheet} from 'react-native';
 
 import {ContentPostImageThumb} from '#src/Components/Images/ContentPostImageThumb';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
 
 interface ContentPostImagesProps {
   images: string[];

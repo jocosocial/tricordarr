@@ -16,6 +16,7 @@ import {useAnimatedRef} from 'react-native-reanimated';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
@@ -25,7 +26,6 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {alertImagesDisabled} from '#src/Libraries/Alerts/ImageAlerts';
 import {createLogger} from '#src/Libraries/Logger';
 import {APIImageSizePaths, AppImageMetaData} from '#src/Types/AppImageMetaData';

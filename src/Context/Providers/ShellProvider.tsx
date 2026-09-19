@@ -3,6 +3,7 @@ import {Portal} from 'react-native-paper';
 
 import {Lightbox} from '#src/Components/Lightbox';
 import {LightboxProvider} from '#src/Components/Lightbox/state';
+import {AppImageProvider} from '#src/Context/Providers/AppImageProvider';
 import {BottomSheetProvider} from '#src/Context/Providers/BottomSheetProvider';
 import {DrawerProvider} from '#src/Context/Providers/DrawerProvider';
 import {LayoutProvider} from '#src/Context/Providers/LayoutProvider';
@@ -20,17 +21,19 @@ import {MenuProvider} from '#src/Context/Providers/MenuProvider';
  */
 export const ShellProvider = ({children}: PropsWithChildren) => {
   return (
-    <LayoutProvider>
-      <DrawerProvider>
-        <MenuProvider>
-          <LightboxProvider>
-            <BottomSheetProvider>
-              <Portal.Host>{children}</Portal.Host>
-              <Lightbox />
-            </BottomSheetProvider>
-          </LightboxProvider>
-        </MenuProvider>
-      </DrawerProvider>
-    </LayoutProvider>
+    <AppImageProvider>
+      <LayoutProvider>
+        <DrawerProvider>
+          <MenuProvider>
+            <LightboxProvider>
+              <BottomSheetProvider>
+                <Portal.Host>{children}</Portal.Host>
+                <Lightbox />
+              </BottomSheetProvider>
+            </LightboxProvider>
+          </MenuProvider>
+        </DrawerProvider>
+      </LayoutProvider>
+    </AppImageProvider>
   );
 };

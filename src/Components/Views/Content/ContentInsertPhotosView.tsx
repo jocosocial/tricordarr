@@ -4,8 +4,8 @@ import {StyleSheet, View} from 'react-native';
 
 import {ContentPostAttachedImage} from '#src/Components/Images/ContentPostAttachedImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {PostContentData} from '#src/Structs/ControllerStructs';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 

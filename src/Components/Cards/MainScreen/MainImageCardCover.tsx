@@ -1,8 +1,8 @@
 import React from 'react';
 
 import {AppImage} from '#src/Components/Images/AppImage';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useTime} from '#src/Context/Contexts/TimeContext';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
 
 // @ts-ignore
 import DayImage from '#assets/mainview_day.jpg';

@@ -8,8 +8,8 @@ import {AppImage} from '#src/Components/Images/AppImage';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {
   CommonStackComponents,
   HelpScreenComponents,

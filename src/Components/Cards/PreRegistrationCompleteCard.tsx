@@ -2,8 +2,8 @@ import React from 'react';
 import {Card, Text} from 'react-native-paper';
 
 import {AppImage} from '#src/Components/Images/AppImage';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
 
 // @ts-ignore
 import preregistration from '#assets/preregistration.jpg';
