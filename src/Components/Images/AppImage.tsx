@@ -6,8 +6,8 @@ import {useAnimatedRef} from 'react-native-reanimated';
 
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
-import {toLightboxImage} from '#src/Components/Lightbox/toLightboxImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface AppImageProps {
@@ -48,6 +48,7 @@ export const AppImage = ({
   const {commonStyles} = useStyles();
   const {openLightbox} = useLightboxControls();
   const thumbRef = useAnimatedRef<View>();
+  const {toLightboxImage, getSourceURI} = useAppImage();
 
   const handlePress = () => {
     const images = (viewerImages.length === 0 ? [image] : viewerImages).map((metadata, i) =>
@@ -62,8 +63,8 @@ export const AppImage = ({
   // Prefer the require() source for bundled assets. On Android Release,
   // resolveAssetSource() returns a scheme-less drawable name that RN Image
   // accepts as a resource, but require() is the supported API.
-  const imageSource = image.assetSource ?? {uri: AppImageMetaData.getSourceURI(image)};
-  const imageUriSource = {uri: AppImageMetaData.getSourceURI(image)};
+  const imageSource = image.assetSource ?? {uri: getSourceURI(image)};
+  const imageUriSource = {uri: getSourceURI(image)};
 
   return (
     <TouchableOpacity activeOpacity={1} onPress={onPress || handlePress} disabled={disableTouch}>

@@ -15,6 +15,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useImageQueryData} from '#src/Hooks/Images/useImageQueryData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {createLogger} from '#src/Libraries/Logger';
@@ -26,7 +27,6 @@ import {usePhotostreamLocationDataQuery} from '#src/Queries/Photostream/Photostr
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
-import {ImageQueryData} from '#src/Types';
 import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
 
 const logger = createLogger('PhotostreamImageCreateScreen.tsx');
@@ -50,6 +50,7 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
   const dispatchScrollToTop = useScrollToTopIntent();
+  const {fromData} = useImageQueryData();
 
   const onSubmit = async (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => {
     if (!values.image) {
@@ -64,7 +65,7 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
     };
 
     if (values.savePhoto) {
-      await saveImageQueryToLocal(ImageQueryData.fromData(values.image));
+      await saveImageQueryToLocal(fromData(values.image));
     }
 
     // Awaited so Formik holds isSubmitting (and the submit button stays disabled) for the full

@@ -7,21 +7,22 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
+import {useUserNotificationData} from '#src/Hooks/User/useUserNotificationData';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {UserNotificationData} from '#src/Structs/ControllerStructs';
 
 export const NotificationsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {preRegistrationMode} = usePreRegistration();
   const {data} = useUserNotificationDataQuery({enabled: !preRegistrationMode});
   const bottomTabNavigator = useBottomTabNavigator();
+  const {totalNewCount} = useUserNotificationData();
 
-  const anyNew = UserNotificationData.totalNewCount(data) !== 0;
+  const anyNew = totalNewCount(data) !== 0;
 
   return (
     <AppMenu

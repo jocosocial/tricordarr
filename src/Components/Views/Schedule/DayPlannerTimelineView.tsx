@@ -7,12 +7,7 @@ import {DayPlannerNowDivider} from '#src/Components/Views/Schedule/DayPlannerNow
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {
-  calculateItemLayout,
-  DAY_PLANNER_CONFIG,
-  generateTimeSlotLabels,
-  getTimelineHeight,
-} from '#src/Libraries/DayPlanner';
+import {DAY_PLANNER_CONFIG, useDayPlanner} from '#src/Hooks/DayPlanner/useDayPlanner';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
 
@@ -32,16 +27,17 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     const {commonStyles} = useStyles();
     const commonNavigation = useCommonStack();
     const {appConfig} = useConfig();
+    const {calculateItemLayout, generateTimeSlotLabels, getTimelineHeight} = useDayPlanner();
 
     // Calculate layout for all items
     const layoutItems = useMemo(() => {
       return calculateItemLayout(items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents);
-    }, [items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents]);
+    }, [items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents, calculateItemLayout]);
 
     // Generate time slot labels (in boat time when timeZoneID provided)
     const timeSlots = useMemo(() => {
       return generateTimeSlotLabels(dayStart, timeZoneID);
-    }, [dayStart, timeZoneID]);
+    }, [dayStart, timeZoneID, generateTimeSlotLabels]);
 
     const handleItemPress = useCallback(
       (item: DayPlannerItemWithLayout) => {

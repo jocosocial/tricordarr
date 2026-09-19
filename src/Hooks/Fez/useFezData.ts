@@ -6,11 +6,12 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useTime} from '#src/Context/Contexts/TimeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useUserNotificationData} from '#src/Hooks/User/useUserNotificationData';
 import {findInPages, PageItemAccessor} from '#src/Libraries/CacheReduction';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {TokenAuthPaginationQueryOptionsTypeV2} from '#src/Queries/TokenAuthQuery';
-import {FezData, FezListData, UserNotificationData} from '#src/Structs/ControllerStructs';
+import {FezData, FezListData} from '#src/Structs/ControllerStructs';
 
 const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/former'];
 const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
@@ -280,13 +281,14 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
 export const useMarkFezReadEffect = (fez: FezData | undefined, initialReadCount: number | undefined): void => {
   const {markRead} = useFezCacheReducer();
   const {data: notificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  const {isAddedTo} = useUserNotificationData();
 
   useEffect(() => {
     if (fez && fez.members) {
       const hasUnread =
         fez.members.readCount !== fez.members.postCount ||
         (initialReadCount !== undefined && initialReadCount < fez.members.postCount);
-      const addedTo = UserNotificationData.isAddedTo(notificationData, fez);
+      const addedTo = isAddedTo(notificationData, fez);
       if (hasUnread || addedTo) {
         markRead(fez.fezID);
         // The UND drives the tab bar, seamail account buttons, and Schedule Day "Added To"
@@ -294,5 +296,5 @@ export const useMarkFezReadEffect = (fez: FezData | undefined, initialReadCount:
         refetchUserNotificationData();
       }
     }
-  }, [fez, initialReadCount, markRead, notificationData, refetchUserNotificationData]);
+  }, [fez, initialReadCount, markRead, notificationData, refetchUserNotificationData, isAddedTo]);
 };

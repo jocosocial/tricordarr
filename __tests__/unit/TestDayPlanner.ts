@@ -4,9 +4,10 @@ jest.mock('#src/Enums/FezType', () => ({
 
 import moment from 'moment-timezone';
 
-import {DAY_PLANNER_CONFIG, getMinutesFromDayStartForNow} from '#src/Libraries/DayPlanner';
+import {DAY_PLANNER_CONFIG, useDayPlanner} from '#src/Hooks/DayPlanner/useDayPlanner';
 
 describe('getMinutesFromDayStartForNow', () => {
+  const {getMinutesFromDayStartForNow} = useDayPlanner();
   const boatTz = 'America/Lower_Princes';
   const dayStart = moment.tz('2025-03-06 03:00', boatTz).toDate();
   const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;

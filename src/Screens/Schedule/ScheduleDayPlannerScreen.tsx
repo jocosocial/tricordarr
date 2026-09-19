@@ -16,13 +16,8 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useDayPlanner} from '#src/Hooks/DayPlanner/useDayPlanner';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
-import {
-  buildDayPlannerItems,
-  getDayBoundaries,
-  getScrollOffsetForFirstItem,
-  getScrollOffsetForTimeOfDay,
-} from '#src/Libraries/DayPlanner';
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
@@ -53,6 +48,8 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const lastAutoScrolledCruiseDay = useRef<number | null>(null);
   const {preRegistrationMode} = usePreRegistration();
+  const {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForFirstItem, getScrollOffsetForTimeOfDay} =
+    useDayPlanner();
 
   // Fetch events with dayplanner=true (only favorited/following events)
   const {
@@ -118,7 +115,7 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
   // Build day planner items from all data sources
   const dayPlannerItems = useMemo(() => {
     return buildDayPlannerItems(eventData, lfgJoinedData, personalEventData);
-  }, [eventData, lfgJoinedData, personalEventData]);
+  }, [eventData, lfgJoinedData, personalEventData, buildDayPlannerItems]);
 
   const {tzAtTime} = useTimeZone();
 
@@ -131,7 +128,7 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
       appConfig.schedule.enableLateDayFlip,
       appConfig.portTimeZoneID,
     );
-  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, appConfig.portTimeZoneID]);
+  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, appConfig.portTimeZoneID, getDayBoundaries]);
 
   // Boat timezone for the selected day - determine from server's timezone change schedule
   // Check the timezone at the actual day start time (which accounts for late day flip)
@@ -143,7 +140,7 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
   // Recalculate day boundaries using the correct boat timezone
   const {dayStart, dayEnd} = useMemo(() => {
     return getDayBoundaries(startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID);
-  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID]);
+  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID, getDayBoundaries]);
 
   // Calculate loading state - only show loading spinner on initial fetch (when no cached data exists)
   // Using isLoading instead of isFetching avoids showing spinner on refetch
@@ -156,7 +153,7 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
     }
     const offset = getScrollOffsetForTimeOfDay(boatTimeZoneID, dayStart);
     scrollViewRef.current.scrollTo({y: offset, animated: true});
-  }, [boatTimeZoneID, dayStart]);
+  }, [boatTimeZoneID, dayStart, getScrollOffsetForTimeOfDay]);
 
   // Scroll to first item (for non-current days so list doesn't start at day start e.g. 3AM).
   const scrollToFirstItem = useCallback(() => {
@@ -165,7 +162,7 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
     }
     const offset = getScrollOffsetForFirstItem(dayPlannerItems, dayStart);
     scrollViewRef.current.scrollTo({y: offset, animated: true});
-  }, [dayPlannerItems, dayStart]);
+  }, [dayPlannerItems, dayStart, getScrollOffsetForFirstItem]);
 
   // Refresh all data
   const onRefresh = useCallback(async () => {

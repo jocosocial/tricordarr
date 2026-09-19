@@ -9,11 +9,11 @@ import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useDayPlanner} from '#src/Hooks/DayPlanner/useDayPlanner';
 import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
-import {DayPlannerItem} from '#src/Types/DayPlanner';
 
 interface EventCardProps {
   eventData: EventData;
@@ -167,6 +167,7 @@ export const EventCard = ({
   const eventFavoriteMutation = useEventFavoriteMutation();
   const queryClient = useQueryClient();
   const {updateFavorite, primeEventDetail} = useEventCacheReducer();
+  const {getDayPlannerColor, getBackgroundColor, getTextColor} = useDayPlanner();
   const [refreshing, setRefreshing] = useState(false);
 
   const onFavoritePress = useCallback(() => {
@@ -201,20 +202,20 @@ export const EventCard = ({
   }, [eventData, onPress, primeEventDetail]);
 
   const cardStyleAndContentColor = useMemo(() => {
-    const color = DayPlannerItem.getDayPlannerColor({
+    const color = getDayPlannerColor({
       type: 'event',
       title: eventData.title,
       eventType: eventData.eventType,
     });
-    const backgroundColor = DayPlannerItem.getBackgroundColor(color, theme.colors);
-    const contentColor = DayPlannerItem.getTextColor(color, theme.colors);
+    const backgroundColor = getBackgroundColor(color, theme.colors);
+    const contentColor = getTextColor(color, theme.colors);
     const showMarkerBorder = color === 'goldTeam';
     return {
       cardStyle: StyleSheet.create({card: {backgroundColor}}).card,
       contentColor,
       showMarkerBorder,
     };
-  }, [eventData.title, eventData.eventType, theme.colors]);
+  }, [eventData.title, eventData.eventType, theme.colors, getDayPlannerColor, getBackgroundColor, getTextColor]);
 
   const getRight = useCallback(() => {
     if (hideFavorite) {

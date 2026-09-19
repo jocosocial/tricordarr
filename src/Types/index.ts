@@ -1,14 +1,5 @@
 // https://www.reddit.com/r/typescript/comments/vdk8we/is_there_a_type_for_objects_with_arbitrary_keys/
-import {
-  Animated,
-  ColorValue,
-  GestureResponderEvent,
-  ImageSourcePropType,
-  ImageURISource,
-  StyleProp,
-  TextStyle,
-  ViewStyle,
-} from 'react-native';
+import {Animated, ColorValue, GestureResponderEvent, StyleProp, TextStyle, ViewStyle} from 'react-native';
 import Button from 'react-native-paper/lib/typescript/components/Button/Button';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import type {$RemoveChildren} from 'react-native-paper/lib/typescript/types';
@@ -62,29 +53,6 @@ export interface ImageQueryData {
   mimeType: string;
   dataURI: string;
   fileName: string;
-}
-
-/**
- * @deprecated Use APIImageV2Data instead.
- */
-export namespace ImageQueryData {
-  export const fromData = (data: string): ImageQueryData => {
-    return {
-      mimeType: 'image',
-      dataURI: `data:image;base64,${data}`,
-      // @TODO how do I guarantee this to be a JPG?
-      fileName: `tricordarr-${new Date().getTime()}.jpg`,
-      base64: data,
-    };
-  };
-
-  export const toImageSource = (queryData: ImageQueryData): ImageSourcePropType => {
-    return {uri: queryData.dataURI};
-  };
-
-  export const toImageURISource = (queryData: ImageQueryData): ImageURISource => {
-    return {uri: queryData.dataURI};
-  };
 }
 
 export interface SegmentedButtonType {

@@ -19,6 +19,7 @@ import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useSelectable} from '#src/Hooks/useSelectable';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
@@ -32,7 +33,6 @@ import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScre
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-import {Selectable} from '#src/Types/Selectable';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.usersList>;
 
@@ -61,6 +61,7 @@ const UsersListScreenInner = ({navigation, mode}: Props & {mode: UserRelationMod
   const {preRegistrationMode} = usePreRegistration();
   const {hasModerator} = usePrivilege();
   const {selectedItems, enableSelection} = useSelection();
+  const {fromUserHeader} = useSelectable();
   const favoriteQuery = useUserFavoritesQuery({enabled: mode === 'favorite'});
   const muteQuery = useUserMutesQuery({enabled: mode === 'mute'});
   const blockQuery = useUserBlocksQuery({enabled: mode === 'block'});
@@ -116,10 +117,10 @@ const UsersListScreenInner = ({navigation, mode}: Props & {mode: UserRelationMod
 
   const renderListHeader = useCallback(() => {
     if (enableSelection) {
-      return <SelectionButtons items={activeQuery.data?.map(Selectable.fromUserHeader)} />;
+      return <SelectionButtons items={activeQuery.data?.map(fromUserHeader)} />;
     }
     return <UserListHeader mode={mode} hasModerator={hasModerator} />;
-  }, [enableSelection, activeQuery.data, mode, hasModerator]);
+  }, [enableSelection, activeQuery.data, mode, hasModerator, fromUserHeader]);
 
   if (activeQuery.data === undefined) {
     return (

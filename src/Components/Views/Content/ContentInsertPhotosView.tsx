@@ -4,8 +4,8 @@ import {StyleSheet, View} from 'react-native';
 
 import {ContentPostAttachedImage} from '#src/Components/Images/ContentPostAttachedImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
-import {toLightboxImage} from '#src/Components/Lightbox/toLightboxImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {PostContentData} from '#src/Structs/ControllerStructs';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
@@ -14,6 +14,7 @@ export const ContentInsertPhotosView = () => {
   const {values, setFieldValue, isSubmitting} = useFormikContext<PostContentData>();
   const [viewerImages, setViewerImages] = useState<AppImageMetaData[]>([]);
   const {openLightbox} = useLightboxControls();
+  const {fromData, toLightboxImage} = useAppImage();
 
   const styles = StyleSheet.create({
     imageRow: {
@@ -29,10 +30,10 @@ export const ContentInsertPhotosView = () => {
       values.images
         .filter(img => img.image)
         .map(img => {
-          return AppImageMetaData.fromData(img.image!);
+          return fromData(img.image!);
         }),
     );
-  }, [values.images]);
+  }, [values.images, fromData]);
 
   /**
    * Opens the composer-attachment gallery. Saving is disabled because these
@@ -46,7 +47,7 @@ export const ContentInsertPhotosView = () => {
         allowSave: false,
       });
     },
-    [openLightbox, viewerImages],
+    [openLightbox, viewerImages, toLightboxImage],
   );
 
   if (values.images.length === 0) {

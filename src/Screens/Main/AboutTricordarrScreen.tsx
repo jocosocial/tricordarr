@@ -9,7 +9,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ContributorView} from '#src/Components/Views/ContributorView';
 import {SourceCodeView} from '#src/Components/Views/SourceCodeView';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 
 // @ts-ignore
 import cfry from '#assets/contributors/cfry.jpg';
@@ -23,6 +23,7 @@ import hendu from '#assets/contributors/hendu.jpg';
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 export const AboutTricordarrScreen = () => {
+  const {fromAsset} = useAppImage();
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -30,7 +31,7 @@ export const AboutTricordarrScreen = () => {
           <ListSubheader>Background</ListSubheader>
         </ListSection>
         <PaddedContentView padTop={true}>
-          <ContributorView image={AppImageMetaData.fromAsset(tricordarr, 'tricordarr.jpg')}>
+          <ContributorView image={fromAsset(tricordarr, 'tricordarr.jpg')}>
             Tricordarr started as a proof-of-concept in the weeks before JoCo Cruise 2023 and evolved into a
             fully-featured showcase project for JoCo Cruise 2024. It is proof that any idea can become a reality with
             determination, vision, an AI co-pilot, and a seemingly unlimited supply of time.
@@ -40,19 +41,19 @@ export const AboutTricordarrScreen = () => {
           <ListSubheader>Contributors</ListSubheader>
         </ListSection>
         <PaddedContentView padTop={true}>
-          <ContributorView image={AppImageMetaData.fromAsset(grant, 'grant.jpg')}>
+          <ContributorView image={fromAsset(grant, 'grant.jpg')}>
             Grant Cohoe (@grant) is the primary developer of this app. If you're looking for someone to shout at, it's
             him.
           </ContributorView>
-          <ContributorView image={AppImageMetaData.fromAsset(gowtam, 'gowtam.jpg')}>
+          <ContributorView image={fromAsset(gowtam, 'gowtam.jpg')}>
             Gowtam Lal (@baconmania) brought the day planner to the app and a whole lot of iOS support and general
             improvements. His greatest contribution is the recurring hackathons at the local pub.
           </ContributorView>
-          <ContributorView image={AppImageMetaData.fromAsset(hendu, 'hendu.jpg')}>
+          <ContributorView image={fromAsset(hendu, 'hendu.jpg')}>
             Dustin Hendrickson (@hendu) contributed the fantastic built-in webview integration, many bug fixes, and
             plenty of PR tests & reviews.
           </ContributorView>
-          <ContributorView image={AppImageMetaData.fromAsset(cfry, 'cfry.jpg')}>
+          <ContributorView image={fromAsset(cfry, 'cfry.jpg')}>
             Chall Fry (@cfry) is the lead architect of the Twitarr service and the iOS app The Kraken. His guidance and
             insight on software engineering and the mobile app world has been invaluable. He made the cool lighter video
             and most of the native-side code.

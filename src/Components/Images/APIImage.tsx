@@ -16,7 +16,6 @@ import {useAnimatedRef} from 'react-native-reanimated';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
-import {toLightboxImage} from '#src/Components/Lightbox/toLightboxImage';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
@@ -26,10 +25,10 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {alertImagesDisabled} from '#src/Libraries/Alerts/ImageAlerts';
 import {createLogger} from '#src/Libraries/Logger';
-import {APIImageSizePaths} from '#src/Types/AppImageMetaData';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+import {APIImageSizePaths, AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 const logger = createLogger('APIImage.tsx');
 
@@ -71,10 +70,9 @@ export const APIImage = ({
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
+  const {fromIdenticon, fromFileName, toLightboxImage} = useAppImage();
   const [imageSourceMetadata, setImageSourceMetadata] = useState<AppImageMetaData>(
-    staticSize === 'identicon'
-      ? AppImageMetaData.fromIdenticon(path, appConfig, serverUrl)
-      : AppImageMetaData.fromFileName(path, appConfig, serverUrl),
+    staticSize === 'identicon' ? fromIdenticon(path, appConfig, serverUrl) : fromFileName(path, appConfig, serverUrl),
   );
   const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
@@ -145,7 +143,7 @@ export const APIImage = ({
       ),
       index: 0,
     });
-  }, [openLightbox, setErrorBanner, viewerImages, thumbRef, mode, avatarSize]);
+  }, [openLightbox, setErrorBanner, viewerImages, thumbRef, mode, avatarSize, toLightboxImage]);
 
   /**
    * Callback that fires when the image fails to load. This will display an error message
@@ -195,11 +193,9 @@ export const APIImage = ({
    */
   React.useEffect(() => {
     const nextMetadata =
-      staticSize === 'identicon'
-        ? AppImageMetaData.fromIdenticon(path, appConfig, serverUrl)
-        : AppImageMetaData.fromFileName(path, appConfig, serverUrl);
+      staticSize === 'identicon' ? fromIdenticon(path, appConfig, serverUrl) : fromFileName(path, appConfig, serverUrl);
     setImageSourceMetadata(nextMetadata);
-  }, [appConfig, path, serverUrl, staticSize]);
+  }, [appConfig, path, serverUrl, staticSize, fromIdenticon, fromFileName]);
 
   React.useEffect(() => {
     hasRequestedFullPreload.current = false;

@@ -10,6 +10,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
+import {useUserHeader} from '#src/Hooks/User/useUserHeader';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -68,6 +69,7 @@ export const MessageView = ({
   const {visible: menuVisible, openMenu, closeMenu} = useMenu();
   const {theme} = useAppTheme();
   const {data: favorites} = useUserFavoritesQuery({enabled: !!showFavoriteAuthor});
+  const {contains} = useUserHeader();
 
   const styles = useMemo(
     () =>
@@ -137,7 +139,7 @@ export const MessageView = ({
             <View style={styles.authorNameContainer}>
               <UserBylineTag user={author} style={styles.messageTextHeader} selectable={false} />
             </View>
-            {showFavoriteAuthor && UserHeader.contains(favorites, author) && (
+            {showFavoriteAuthor && contains(favorites, author) && (
               <View style={styles.favoriteUserIconContainer}>
                 <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
               </View>

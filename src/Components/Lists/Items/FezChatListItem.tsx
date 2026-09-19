@@ -18,11 +18,11 @@ import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {getParticipantLabel} from '#src/Hooks/Fez/useFezData';
+import {useSelectable} from '#src/Hooks/useSelectable';
 import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
 import {useChatStack} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {Selectable} from '#src/Types/Selectable';
 
 interface FezChatListItemProps {
   fez: FezData;
@@ -38,6 +38,7 @@ const FezChatListItemInternal = ({fez, enableSelection, setEnableSelection, sele
   const {dispatchSelectedItems} = useSelection();
   const {asPrivilegedUser} = useElevation();
   const {theme} = useAppTheme();
+  const {fromFezData} = useSelectable();
 
   let badgeCount = 0;
   if (fez.members) {
@@ -112,7 +113,7 @@ const FezChatListItemInternal = ({fez, enableSelection, setEnableSelection, sele
   const handleSelection = () => {
     dispatchSelectedItems({
       type: SelectionActions.select,
-      item: Selectable.fromFezData(fez),
+      item: fromFezData(fez),
     });
   };
 

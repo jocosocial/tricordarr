@@ -12,6 +12,7 @@ import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {
   assertBase64WithinSizeLimit,
   assertImageWithinSizeLimit,
@@ -20,7 +21,6 @@ import {
 import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
@@ -33,6 +33,7 @@ export const PhotostreamImageSelectionView = () => {
   const [refreshing, setRefreshing] = React.useState(false);
   const {maxImageSize} = useClientSettings();
   const {appConfig} = useConfig();
+  const {fromData} = useAppImage();
   const autoCompress = appConfig.userPreferences.autoCompressOversizedImages;
   const compressOptions = getImageCompressPickerOptions(autoCompress, styleDefaults.imageSquareCropDimension);
 
@@ -108,7 +109,7 @@ export const PhotostreamImageSelectionView = () => {
     }
   };
 
-  const imageData = AppImageMetaData.fromData(values.image);
+  const imageData = fromData(values.image);
 
   return (
     <View>

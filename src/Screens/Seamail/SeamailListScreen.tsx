@@ -29,6 +29,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {useSelectable} from '#src/Hooks/useSelectable';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -37,7 +38,6 @@ import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScre
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {Selectable} from '#src/Types/Selectable';
 
 type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
@@ -88,6 +88,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const prevAsPrivilegedUserRef = useRef(asPrivilegedUser);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const {selectedItems, enableSelection} = useSelection();
+  const {fromFezData} = useSelectable();
   const {handleLoadNext} = usePagination({
     fetchNextPage,
     hasNextPage,
@@ -184,7 +185,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   return (
     <AppView>
       {enableSelection ? (
-        <SelectionButtons items={fezList.map(Selectable.fromFezData)} />
+        <SelectionButtons items={fezList.map(fromFezData)} />
       ) : (
         currentUserID != null &&
         (hasTwitarrTeam || hasModerator) && (

@@ -8,9 +8,10 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {LikeType} from '#src/Enums/LikeType';
+import {usePostDetailData} from '#src/Hooks/Forum/usePostDetailData';
 import {useForumPostReactionMutation} from '#src/Queries/Forum/ForumPostBookmarkMutations';
 import {useForumPostQuery} from '#src/Queries/Forum/ForumPostQueries';
-import {PostData, PostDetailData} from '#src/Structs/ControllerStructs';
+import {PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostActionsReactionItemProps {
   forumPost: PostData;
@@ -23,6 +24,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
   const bySelf = currentUserID === forumPost.author.userID;
   const {data, isLoading, refetch} = useForumPostQuery(forumPost.postID.toString());
   const {theme} = useAppTheme();
+  const {hasUserReacted} = usePostDetailData();
 
   const styles = StyleSheet.create({
     view: {
@@ -47,13 +49,13 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
     let hasReacted = false;
     switch (newReaction) {
       case LikeType.like:
-        hasReacted = PostDetailData.hasUserReacted(data, userID, LikeType.like);
+        hasReacted = hasUserReacted(data, userID, LikeType.like);
         break;
       case LikeType.laugh:
-        hasReacted = PostDetailData.hasUserReacted(data, userID, LikeType.laugh);
+        hasReacted = hasUserReacted(data, userID, LikeType.laugh);
         break;
       case LikeType.love:
-        hasReacted = PostDetailData.hasUserReacted(data, userID, LikeType.love);
+        hasReacted = hasUserReacted(data, userID, LikeType.love);
         break;
     }
     const action = hasReacted ? 'delete' : 'create';
@@ -81,7 +83,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
         submitting={reactionMutation.isPending}
         disabled={bySelf}
         containerColor={
-          currentUserID != null && PostDetailData.hasUserReacted(data, currentUserID, LikeType.like)
+          currentUserID != null && hasUserReacted(data, currentUserID, LikeType.like)
             ? theme.colors.secondaryContainer
             : undefined
         }
@@ -94,7 +96,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
         submitting={reactionMutation.isPending}
         disabled={bySelf}
         containerColor={
-          currentUserID != null && PostDetailData.hasUserReacted(data, currentUserID, LikeType.laugh)
+          currentUserID != null && hasUserReacted(data, currentUserID, LikeType.laugh)
             ? theme.colors.secondaryContainer
             : undefined
         }
@@ -107,7 +109,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
         submitting={reactionMutation.isPending}
         disabled={bySelf}
         containerColor={
-          currentUserID != null && PostDetailData.hasUserReacted(data, currentUserID, LikeType.love)
+          currentUserID != null && hasUserReacted(data, currentUserID, LikeType.love)
             ? theme.colors.secondaryContainer
             : undefined
         }

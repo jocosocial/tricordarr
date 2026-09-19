@@ -8,8 +8,12 @@ import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {COMPACT_THEME_DURATION_MINUTES, COMPACT_THEME_FADE_MINUTES} from '#src/Libraries/DayPlanner';
-import {DayPlannerItem, DayPlannerItemWithLayout} from '#src/Types/DayPlanner';
+import {
+  COMPACT_THEME_DURATION_MINUTES,
+  COMPACT_THEME_FADE_MINUTES,
+  useDayPlanner,
+} from '#src/Hooks/DayPlanner/useDayPlanner';
+import {DayPlannerItemWithLayout} from '#src/Types/DayPlanner';
 
 const COMPACT_THEME_FADE_START = 1 - COMPACT_THEME_FADE_MINUTES / COMPACT_THEME_DURATION_MINUTES;
 
@@ -66,6 +70,7 @@ const staticStyles = StyleSheet.create({
 export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
   const {theme} = useAppTheme();
   const {hasShutternaut, hasShutternautManager} = useRoles();
+  const {getBackgroundColor, getTextColor} = useDayPlanner();
 
   const showPhotographerIcon = useMemo(
     () =>
@@ -83,8 +88,8 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
 
   // Colors must be derived at render time because they depend on both the item's
   // color category (event type, LFG, personal, team events) and the current theme.
-  const backgroundColor = DayPlannerItem.getBackgroundColor(item.color, theme.colors);
-  const textColor = DayPlannerItem.getTextColor(item.color, theme.colors);
+  const backgroundColor = getBackgroundColor(item.color, theme.colors);
+  const textColor = getTextColor(item.color, theme.colors);
 
   // Calculate width based on column position
   const columnWidth = 100 / item.totalColumns;
