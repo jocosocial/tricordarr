@@ -2,7 +2,7 @@ import {FlashList, type FlashListRef, ListRenderItem} from '@shopify/flash-list'
 import React, {forwardRef, useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
-import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {FloatingScrollButtonsView} from '#src/Components/Buttons/FloatingScrollButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -30,12 +30,15 @@ interface AppFlashListProps<TItem> {
   extraData?: any;
   style?: ViewStyle;
   scrollButtonSmall?: boolean;
+  /** Anchor the scroll buttons above a bottom-right FAB. Set by screens that render one. */
+  scrollButtonRaised?: boolean;
   masonry?: boolean;
 }
 
 const AppFlashListInner = <TItem,>(
   {
     scrollButtonSmall,
+    scrollButtonRaised,
     onEndReachedThreshold = 1,
     keyExtractor,
     /** 0 == first item, undefined == start, including header */
@@ -61,7 +64,7 @@ const AppFlashListInner = <TItem,>(
   const {commonStyles, styleDefaults} = useStyles();
   const {appConfig} = useConfig();
   const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
-  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [scrollButtons, setScrollButtons] = useState({up: false, down: false});
 
   /**
    * Callback handler for when the scroll button is pressed.
@@ -74,19 +77,42 @@ const AppFlashListInner = <TItem,>(
     }
   }, [ref]);
 
+  /** Scroll to the final item in the list. */
+  const handleScrollToEnd = useCallback(() => {
+    if (ref && typeof ref !== 'function' && ref.current) {
+      ref.current.scrollToEnd({animated: true});
+    }
+  }, [ref]);
+
   /**
-   * Show the scroll button when a certain scroll threshold has been hit.
+   * Show the scroll buttons when a certain scroll threshold has been hit.
    * Allows for a callback to be triggered on that same threshold.
    */
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const scrollThresholdCondition = event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold;
-      setShowScrollButton(scrollThresholdCondition);
+      const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
+      const distanceFromTop = contentOffset.y;
+      const scrollableHeight = Math.max(0, contentSize.height - layoutMeasurement.height);
+      const distanceFromBottom = scrollableHeight - distanceFromTop;
+      /**
+       * Lists that cannot scroll past the default threshold would otherwise lose a
+       * direction's button while still scrollable, which makes the buttons vanish at
+       * the ends of shorter lists. Scale the threshold down instead.
+       */
+      const scrollThreshold = Math.min(
+        styleDefaults.listScrollThreshold,
+        Math.max(scrollableHeight / 3, styleDefaults.marginSize),
+      );
+      const scrollThresholdCondition = distanceFromTop > styleDefaults.listScrollThreshold;
+      setScrollButtons({
+        up: distanceFromTop > scrollThreshold,
+        down: distanceFromBottom > scrollThreshold,
+      });
       if (onScrollThreshold) {
         onScrollThreshold(scrollThresholdCondition);
       }
     },
-    [onScrollThreshold, styleDefaults.listScrollThreshold],
+    [onScrollThreshold, styleDefaults.listScrollThreshold, styleDefaults.marginSize],
   );
 
   // https://github.com/facebook/react-native/issues/25239
@@ -113,12 +139,18 @@ const AppFlashListInner = <TItem,>(
         // columnWrapperStyle is not supported in FlashList v2.
         masonry={masonry}
       />
-      {effectiveScrollButton && showScrollButton && (
-        <FloatingScrollButton
-          testID={'flashListScroll-button'}
-          icon={AppIcons.scrollUp}
-          onPress={handleScrollButtonPress}
+      {effectiveScrollButton && (scrollButtons.up || scrollButtons.down) && (
+        <FloatingScrollButtonsView
           small={scrollButtonSmall}
+          raised={scrollButtonRaised}
+          actions={[
+            ...(scrollButtons.up
+              ? [{testID: 'flashListScrollUp-button', icon: AppIcons.scrollUp, onPress: handleScrollButtonPress}]
+              : []),
+            ...(scrollButtons.down
+              ? [{testID: 'flashListScrollDown-button', icon: AppIcons.scrollDown, onPress: handleScrollToEnd}]
+              : []),
+          ]}
         />
       )}
     </View>

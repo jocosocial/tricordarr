@@ -115,6 +115,7 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        scrollButtonRaised
       />
       <BoardgameGuideFAB showLabel={true} />
     </AppView>

@@ -150,6 +150,7 @@ const KaraokePerformanceListScreenInner = ({navigation}: Props) => {
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         handleLoadNext={handleLoadNext}
+        scrollButtonRaised
       />
       <BaseFAB
         testID={'karaokeSearch-fab'}
