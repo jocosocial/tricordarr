@@ -13,140 +13,155 @@ interface ToLightboxImageOptions {
   type?: ImageSource['type'];
 }
 
+const fromFileName = (fileName: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
+  const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;
+  return {
+    mode: AppImageMode.api,
+    fileName: fileName,
+    thumbURI: `${resolvedServerUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.thumb}/${fileName}`,
+    fullURI: `${resolvedServerUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.full}/${fileName}`,
+    mimeType: lookupMimeType(fileName) || 'application/octet-stream',
+  };
+};
+
+/**
+ * Create an object for a file under a server's /public/ path (not the
+ * /api/v3/image/... family fromFileName builds) — e.g. deck-map images at
+ * /public/ship/<code>/deck1.png. No thumb/full split; these files are
+ * served as-is.
+ */
+const fromPublicPath = (path: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
+  const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;
+  return {
+    mode: AppImageMode.api,
+    fileName: path,
+    fullURI: joinUrl(resolvedServerUrl, path),
+    mimeType: lookupMimeType(path) || 'application/octet-stream',
+  };
+};
+
+const fromIdenticon = (userID: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
+  const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;
+  return {
+    mode: AppImageMode.identicon,
+    fileName: `${userID}.png`,
+    identiconURI: `${resolvedServerUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.identicon}/${userID}`,
+    mimeType: 'image/png', // This comes from Swiftarr ImageController.swift
+  };
+};
+
+/**
+ * Create an object from a base64 data string. This is used when the user takes a photo
+ * and we insert its base64 data into a form field. We do this so that the preview can
+ * support the Lightbox for inspection.
+ */
+const fromData = (base64Data: string, mimeType: string = 'image/jpeg'): AppImageMetaData => {
+  const fileName = `tricordarr-${new Date().getTime()}.${mimeType.split('/')[1] || 'jpg'}`;
+  return {
+    mode: AppImageMode.data,
+    fileName: fileName,
+    mimeType: mimeType,
+    dataURI: `data:${mimeType};base64,${base64Data}`,
+  };
+};
+
+/**
+ * Create an object from a directly imported image asset (ImageRequireSource).
+ * This function converts a local asset import like `import DayImage from '#assets/mainview_day.jpg'`
+ * into an AppImageMetaData object with proper URI, mimeType, fileName, and dimensions.
+ *
+ * Dimensions and the original ImageRequireSource are captured from resolveAssetSource
+ * so that consumers can render with RN Image (which handles all platform asset URI
+ * schemes) instead of FastImage, whose cache-based getSize fails for bundled assets
+ * on Android Release builds.
+ *
+ * @param imageAsset The imported image asset
+ * @param fileName The filename with extension (used to determine MIME type)
+ */
+const fromAsset = (imageAsset: ImageRequireSource, fileName: string): AppImageMetaData => {
+  const mimeType = lookupMimeType(fileName) || 'application/octet-stream';
+  const resolvedSource = Image.resolveAssetSource(imageAsset);
+
+  return {
+    mode: AppImageMode.asset,
+    fileName: fileName,
+    mimeType: mimeType,
+    assetURI: resolvedSource.uri,
+    assetSource: imageAsset,
+    assetWidth: resolvedSource.width,
+    assetHeight: resolvedSource.height,
+  };
+};
+
+const getSourceURI = (imageMetaData: AppImageMetaData): string => {
+  switch (imageMetaData.mode) {
+    case AppImageMode.api:
+      if (!imageMetaData.fullURI) {
+        throw new Error('Full URI is required for API images');
+      }
+      return imageMetaData.fullURI;
+    case AppImageMode.asset:
+      if (!imageMetaData.assetURI) {
+        throw new Error('Asset URI is required for asset images');
+      }
+      return imageMetaData.assetURI;
+    case AppImageMode.data:
+      if (!imageMetaData.dataURI) {
+        throw new Error('Data URI is required for data images');
+      }
+      return imageMetaData.dataURI;
+    case AppImageMode.identicon:
+      if (!imageMetaData.identiconURI) {
+        throw new Error('Identicon URI is required for identicon images');
+      }
+      return imageMetaData.identiconURI;
+  }
+};
+
+/**
+ * Maps app image metadata onto the Lightbox ImageSource shape.
+ *
+ * Bundled assets keep the original `require()` number in `source` so FastImage
+ * can render them on Android Release, where resolveAssetSource() is a
+ * scheme-less drawable name.
+ */
+const toLightboxImage = (metadata: AppImageMetaData, extras: ToLightboxImageOptions = {}): LightboxImage => {
+  const uri = getSourceURI(metadata);
+  const dimensions =
+    metadata.assetWidth && metadata.assetHeight ? {width: metadata.assetWidth, height: metadata.assetHeight} : null;
+  return {
+    uri,
+    source: metadata.assetSource ?? {uri},
+    dimensions,
+    thumbUri: metadata.thumbURI ?? uri,
+    thumbDimensions: dimensions,
+    thumbRect: null,
+    thumbRef: extras.thumbRef,
+    thumbBorderRadius: extras.thumbBorderRadius,
+    type: extras.type ?? 'image',
+    metadata,
+  };
+};
+
+const appImageFunctions = {
+  fromFileName,
+  fromPublicPath,
+  fromIdenticon,
+  fromData,
+  fromAsset,
+  getSourceURI,
+  toLightboxImage,
+};
+
 /**
  * Factory and derivation functions for `AppImageMetaData`, and its mapping onto the
  * Lightbox `LightboxImage` shape. All consumers are React components.
+ *
+ * None of these functions read component state — they're pure, parameterized by their
+ * arguments — so they're defined at module scope and returned as one stable object.
+ * Defining them inside the hook body instead gives every caller a new function identity
+ * on every render, which is fatal for any consumer (e.g. APIImage.tsx) that lists them
+ * in a useEffect/useCallback dependency array: the effect re-fires every render, and if
+ * it calls setState, that's an infinite render loop.
  */
-export const useAppImage = () => {
-  const fromFileName = (fileName: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
-    const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;
-    return {
-      mode: AppImageMode.api,
-      fileName: fileName,
-      thumbURI: `${resolvedServerUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.thumb}/${fileName}`,
-      fullURI: `${resolvedServerUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.full}/${fileName}`,
-      mimeType: lookupMimeType(fileName) || 'application/octet-stream',
-    };
-  };
-
-  /**
-   * Create an object for a file under a server's /public/ path (not the
-   * /api/v3/image/... family fromFileName builds) — e.g. deck-map images at
-   * /public/ship/<code>/deck1.png. No thumb/full split; these files are
-   * served as-is.
-   */
-  const fromPublicPath = (path: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
-    const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;
-    return {
-      mode: AppImageMode.api,
-      fileName: path,
-      fullURI: joinUrl(resolvedServerUrl, path),
-      mimeType: lookupMimeType(path) || 'application/octet-stream',
-    };
-  };
-
-  const fromIdenticon = (userID: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
-    const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;
-    return {
-      mode: AppImageMode.identicon,
-      fileName: `${userID}.png`,
-      identiconURI: `${resolvedServerUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.identicon}/${userID}`,
-      mimeType: 'image/png', // This comes from Swiftarr ImageController.swift
-    };
-  };
-
-  /**
-   * Create an object from a base64 data string. This is used when the user takes a photo
-   * and we insert its base64 data into a form field. We do this so that the preview can
-   * support the Lightbox for inspection.
-   */
-  const fromData = (base64Data: string, mimeType: string = 'image/jpeg'): AppImageMetaData => {
-    const fileName = `tricordarr-${new Date().getTime()}.${mimeType.split('/')[1] || 'jpg'}`;
-    return {
-      mode: AppImageMode.data,
-      fileName: fileName,
-      mimeType: mimeType,
-      dataURI: `data:${mimeType};base64,${base64Data}`,
-    };
-  };
-
-  /**
-   * Create an object from a directly imported image asset (ImageRequireSource).
-   * This function converts a local asset import like `import DayImage from '#assets/mainview_day.jpg'`
-   * into an AppImageMetaData object with proper URI, mimeType, fileName, and dimensions.
-   *
-   * Dimensions and the original ImageRequireSource are captured from resolveAssetSource
-   * so that consumers can render with RN Image (which handles all platform asset URI
-   * schemes) instead of FastImage, whose cache-based getSize fails for bundled assets
-   * on Android Release builds.
-   *
-   * @param imageAsset The imported image asset
-   * @param fileName The filename with extension (used to determine MIME type)
-   */
-  const fromAsset = (imageAsset: ImageRequireSource, fileName: string): AppImageMetaData => {
-    const mimeType = lookupMimeType(fileName) || 'application/octet-stream';
-    const resolvedSource = Image.resolveAssetSource(imageAsset);
-
-    return {
-      mode: AppImageMode.asset,
-      fileName: fileName,
-      mimeType: mimeType,
-      assetURI: resolvedSource.uri,
-      assetSource: imageAsset,
-      assetWidth: resolvedSource.width,
-      assetHeight: resolvedSource.height,
-    };
-  };
-
-  const getSourceURI = (imageMetaData: AppImageMetaData): string => {
-    switch (imageMetaData.mode) {
-      case AppImageMode.api:
-        if (!imageMetaData.fullURI) {
-          throw new Error('Full URI is required for API images');
-        }
-        return imageMetaData.fullURI;
-      case AppImageMode.asset:
-        if (!imageMetaData.assetURI) {
-          throw new Error('Asset URI is required for asset images');
-        }
-        return imageMetaData.assetURI;
-      case AppImageMode.data:
-        if (!imageMetaData.dataURI) {
-          throw new Error('Data URI is required for data images');
-        }
-        return imageMetaData.dataURI;
-      case AppImageMode.identicon:
-        if (!imageMetaData.identiconURI) {
-          throw new Error('Identicon URI is required for identicon images');
-        }
-        return imageMetaData.identiconURI;
-    }
-  };
-
-  /**
-   * Maps app image metadata onto the Lightbox ImageSource shape.
-   *
-   * Bundled assets keep the original `require()` number in `source` so FastImage
-   * can render them on Android Release, where resolveAssetSource() is a
-   * scheme-less drawable name.
-   */
-  const toLightboxImage = (metadata: AppImageMetaData, extras: ToLightboxImageOptions = {}): LightboxImage => {
-    const uri = getSourceURI(metadata);
-    const dimensions =
-      metadata.assetWidth && metadata.assetHeight ? {width: metadata.assetWidth, height: metadata.assetHeight} : null;
-    return {
-      uri,
-      source: metadata.assetSource ?? {uri},
-      dimensions,
-      thumbUri: metadata.thumbURI ?? uri,
-      thumbDimensions: dimensions,
-      thumbRect: null,
-      thumbRef: extras.thumbRef,
-      thumbBorderRadius: extras.thumbBorderRadius,
-      type: extras.type ?? 'image',
-      metadata,
-    };
-  };
-
-  return {fromFileName, fromPublicPath, fromIdenticon, fromData, fromAsset, getSourceURI, toLightboxImage};
-};
+export const useAppImage = () => appImageFunctions;

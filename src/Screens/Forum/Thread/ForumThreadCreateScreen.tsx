@@ -3,6 +3,7 @@ import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -13,10 +14,12 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
+import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -56,6 +59,8 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   const dispatchScrollToTop = useScrollToTopIntent();
   // Use a ref to store the created forum data immediately (synchronously) to avoid race condition
   const createdForumRef = useRef<ForumData | null>(null);
+  const {commonStyles} = useStyles();
+  const keyboardVerticalOffset = useKeyboardVerticalOffset();
 
   const onForumSubmit = (values: ForumThreadValues, formikHelpers: FormikHelpers<ForumThreadValues>) => {
     if (!postFormRef.current) {
@@ -130,19 +135,24 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   return (
     <AppView>
       <PostAsUserWarningView />
-      <ScrollingContentView>
-        <ForumCreateForm onSubmit={onForumSubmit} formRef={forumFormRef} onValidationChange={setForumFormValid} />
-      </ScrollingContentView>
-      <ContentPostForm
-        onSubmit={onPostSubmit}
-        formRef={postFormRef}
-        overrideSubmitting={forumCreateMutation.isPending}
-        onPress={onSubmit}
-        enablePhotos={true}
-        maxLength={2000}
-        maxPhotos={maxForumPostImages}
-        disabled={!forumFormValid}
-      />
+      <KeyboardAvoidingView
+        style={commonStyles.flex}
+        behavior={'padding'}
+        keyboardVerticalOffset={keyboardVerticalOffset}>
+        <ScrollingContentView>
+          <ForumCreateForm onSubmit={onForumSubmit} formRef={forumFormRef} onValidationChange={setForumFormValid} />
+        </ScrollingContentView>
+        <ContentPostForm
+          onSubmit={onPostSubmit}
+          formRef={postFormRef}
+          overrideSubmitting={forumCreateMutation.isPending}
+          onPress={onSubmit}
+          enablePhotos={true}
+          maxLength={2000}
+          maxPhotos={maxForumPostImages}
+          disabled={!forumFormValid}
+        />
+      </KeyboardAvoidingView>
     </AppView>
   );
 };

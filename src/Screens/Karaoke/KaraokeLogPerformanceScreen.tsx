@@ -5,6 +5,7 @@ import {Button, Text, TextInput} from 'react-native-paper';
 
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -60,26 +61,28 @@ const KaraokeLogPerformanceScreenInner = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      <PaddedContentView style={styles.section}>
-        <Text style={styles.label}>
-          {artist} – {songName}
-        </Text>
-      </PaddedContentView>
-      <PaddedContentView style={styles.section}>
-        <Text style={styles.label}>Performers</Text>
-        <TextInput
-          mode={'outlined'}
-          value={performers}
-          onChangeText={setPerformers}
-          placeholder={'Who performed?'}
-          maxLength={500}
-        />
-      </PaddedContentView>
-      <PaddedContentView>
-        <Button mode={'contained'} onPress={submit} loading={logMutation.isPending} disabled={!performers.trim()}>
-          Create Log Entry
-        </Button>
-      </PaddedContentView>
+      <ScrollingContentView>
+        <PaddedContentView style={styles.section}>
+          <Text style={styles.label}>
+            {artist} – {songName}
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView style={styles.section}>
+          <Text style={styles.label}>Performers</Text>
+          <TextInput
+            mode={'outlined'}
+            value={performers}
+            onChangeText={setPerformers}
+            placeholder={'Who performed?'}
+            maxLength={500}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <Button mode={'contained'} onPress={submit} loading={logMutation.isPending} disabled={!performers.trim()}>
+            Create Log Entry
+          </Button>
+        </PaddedContentView>
+      </ScrollingContentView>
     </AppView>
   );
 };
