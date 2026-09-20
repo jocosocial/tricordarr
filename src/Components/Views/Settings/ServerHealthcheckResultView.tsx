@@ -42,8 +42,8 @@ export const ServerHealthcheckResultView = ({serverHealthPassed}: ServerHealthch
       )}
       {!serverHealthPassed && (
         <Text>
-          Server check failed. Ensure your phone is on ship wifi, all VPNs and DNS interceptors are disabled, and the
-          server URL is correct. If the issue persists go to the JoCo Cruise Info Desk for assistance.
+          Server check failed. Press the Help button above for troubleshooting steps. If the issue persists, go to the
+          Twitarr or JoCo Cruise Info Desk for assistance.
         </Text>
       )}
       {updatedAt && (
