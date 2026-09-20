@@ -148,6 +148,10 @@ export const ConversationListV2 = <TItem,>({
   const [scrollButtonDirection, setScrollButtonDirection] = useState<'up' | 'down' | null>(null);
   const readyFiredRef = useRef(false);
   const prevDataLengthRef = useRef(data.length);
+  // Identifies the first item so growth from handleLoadPrevious (prepending older
+  // items at the start) can be told apart from growth at the end (new messages,
+  // handleLoadNext). Only end-growth should trigger the scroll-to-end correction below.
+  const prevFirstKeyRef = useRef<string | undefined>(data.length > 0 ? keyExtractor(data[0]) : undefined);
 
   // Track whether the user is near the bottom of the list. Used to decide whether
   // to auto-scroll when new items arrive. Updated in onScroll.
@@ -239,7 +243,19 @@ export const ConversationListV2 = <TItem,>({
   // When data grows and the user was near the bottom, explicitly scroll to the end.
   // LegendList's maintainScrollAtEnd is unreliable for dynamic appends, so we
   // supplement it with our own scroll-to-end call.
-  if (data.length > prevDataLengthRef.current && readyFiredRef.current) {
+  //
+  // Growth can come from either end: handleLoadNext appends new messages, but
+  // handleLoadPrevious prepends an older page at the start. Only the former should
+  // ever scroll to end -- scrolling to end right after a previous-page fetch would
+  // yank the view away from the content the user just scrolled up to see, and (since
+  // isNearBottomRef is based on distance-from-bottom, which stays small whenever the
+  // total content is short) this reliably happens with small page sizes, where a
+  // couple of loaded pages barely fill the viewport even when scrolled to the top.
+  // Detect the direction by comparing the first item's key: unchanged means the new
+  // items landed at the end; changed means they were prepended at the start.
+  const currentFirstKey = data.length > 0 ? keyExtractor(data[0]) : undefined;
+  const isPrepend = prevFirstKeyRef.current !== undefined && currentFirstKey !== prevFirstKeyRef.current;
+  if (data.length > prevDataLengthRef.current && readyFiredRef.current && !isPrepend) {
     if (effectiveMaintainScrollAtEnd && isNearBottomRef.current) {
       requestAnimationFrame(() => {
         listRef.current?.scrollToEnd({animated: true});
@@ -247,6 +263,7 @@ export const ConversationListV2 = <TItem,>({
     }
   }
   prevDataLengthRef.current = data.length;
+  prevFirstKeyRef.current = currentFirstKey;
 
   const fireReadyToShow = useCallback(() => {
     if (!readyFiredRef.current && onReadyToShow) {
