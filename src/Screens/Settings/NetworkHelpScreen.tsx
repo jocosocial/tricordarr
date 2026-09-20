@@ -41,8 +41,8 @@ export const NetworkHelpScreen = () => {
             must disable this setting.
           </HelpTopicView>
           <HelpTopicView title={'Local Network Access'}>
-            If you tapped "Don't Allow" when prompted for Local Network access, the app cannot reach the ship's
-            server. Open Settings, scroll down to this app, and turn on "Local Network".
+            If you tapped "Don't Allow" when prompted for Local Network access, the app cannot reach the ship's server.
+            Open Settings, scroll down to this app, and turn on "Local Network".
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Android'}>
