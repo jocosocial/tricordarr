@@ -3,7 +3,6 @@ import {HeaderHeightContext} from '@react-navigation/elements';
 import {useFocusEffect} from '@react-navigation/native';
 import React, {PropsWithChildren, useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {KeyboardAvoidingView as ModuleKeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {Portal} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -19,7 +18,6 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {isIOS} from '#src/Libraries/Platform/Detection';
 
 const logger = createLogger('AppView.tsx');
 
@@ -31,6 +29,13 @@ interface AppViewProps extends PropsWithChildren {
 /**
  * Highest level View container that contains app-specific components that
  * can be utilized by all children. For example, error messages.
+ *
+ * This used to also own a global KeyboardAvoidingView wrapping every screen —
+ * see issue #573. That caused more problems than it solved (a one-size offset
+ * heuristic, double keyboard compensation on form screens, and a scroll-correction
+ * loop in ConversationListV2 fighting the KAV's relayout). Keyboard handling is
+ * now per-surface: ScrollingContentView uses KeyboardAwareScrollView for forms,
+ * and chat screens use KeyboardAwareLegendList + KeyboardStickyView.
  */
 export const AppView = ({
   children,
@@ -59,36 +64,7 @@ export const AppView = ({
       ...(!navHeaderHeight ? {paddingTop: insets.top} : undefined),
       ...(!tabBarHeight ? {paddingBottom: insets.bottom} : undefined),
     },
-    keyboardView: {
-      ...commonStyles.flex,
-    },
   });
-
-  /**
-   * Holy fuck what an adventure the KeyboardAvoidingView is.
-   * This issue covers most of it: https://github.com/facebook/react-native/issues/52596
-   * And a comment in this one gave the first workable solution: https://github.com/facebook/react-native/issues/49759
-   *
-   * Some old references and docs:
-   * https://reactnative.dev/docs/keyboardavoidingview
-   * https://stackoverflow.com/questions/43854912/react-native-keyboardavoidingview-covers-last-text-input
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   *
-   * behavior='padding' is used instead of 'translate-with-padding' because
-   * the latter applies a translateY transform AND padding simultaneously
-   * during the keyboard animation. In screens with LegendList-based
-   * conversation lists (FezChatScreen, ForumThreadScreenBase), the translateY
-   * fights with maintainVisibleContentPosition and alignItemsAtEnd — the list
-   * tries to adjust scroll position in response to layout changes while the
-   * view is also being physically displaced by the transform. This causes the
-   * ListHeaderComponent to visibly jitter out of view during the animation
-   * and pop back when it settles. 'padding' only adjusts bottom padding,
-   * which the list handles as a natural layout change without conflict.
-   */
-  var keyboardVerticalOffset = insets.top + insets.bottom;
-  if (isIOS && insets.bottom === 0) {
-    keyboardVerticalOffset += 40;
-  }
 
   /**
    * Any time a screen is focused, set the header height. The value includes any
@@ -104,20 +80,18 @@ export const AppView = ({
 
   return (
     <View style={styles.appView}>
-      <ModuleKeyboardAvoidingView
-        style={styles.keyboardView}
-        behavior={'padding'}
-        keyboardVerticalOffset={keyboardVerticalOffset}>
-        <Portal>
-          <ErrorBanner />
-          <AppSnackbar />
-        </Portal>
-        {preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
-        {!disableMinAccessLevelWarning && <MinAccessLevelWarningView />}
-        {disruptionDetected && <ConnectionDisruptedWarningView />}
-        {children}
-        <UnsavedChangesWarningView isVisible={hasUnsavedWork} />
-      </ModuleKeyboardAvoidingView>
+      {/* Paper's Portal teleports to the PortalHost mounted in NavigationProvider, which
+          sits above KeyboardProvider in App.tsx — this renders outside any keyboard
+          handling regardless of where it's placed here. */}
+      <Portal>
+        <ErrorBanner />
+        <AppSnackbar />
+      </Portal>
+      {preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
+      {!disableMinAccessLevelWarning && <MinAccessLevelWarningView />}
+      {disruptionDetected && <ConnectionDisruptedWarningView />}
+      {children}
+      <UnsavedChangesWarningView isVisible={hasUnsavedWork} />
     </View>
   );
 };

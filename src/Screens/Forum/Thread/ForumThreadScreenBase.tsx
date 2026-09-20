@@ -4,6 +4,7 @@ import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -32,6 +33,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useForumData} from '#src/Hooks/Forum/useForumData';
+import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
@@ -117,6 +119,8 @@ const ForumThreadScreenBaseInner = ({
   const [readyToShow, setReadyToShow] = useState(false);
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
+
+  const keyboardVerticalOffset = useKeyboardVerticalOffset();
 
   // Derive unified ForumData from the React Query cache (no local state).
   const forumData = useForumData(data);
@@ -315,6 +319,9 @@ const ForumThreadScreenBaseInner = ({
       backgroundColor: theme.colors.background,
       zIndex: 1,
     },
+    keyboardView: {
+      ...commonStyles.flex,
+    },
   });
 
   return (
@@ -327,38 +334,43 @@ const ForumThreadScreenBaseInner = ({
           icon={forumData?.isFavorite ? <AppIcon icon={AppIcons.favorite} small={true} /> : undefined}
         />
         {forumData?.isLocked && <ForumLockedView />}
-        <View style={commonStyles.flex}>
-          <ForumConversationListV2
-            postList={forumPosts}
-            handleLoadNext={handleLoadNext}
-            handleLoadPrevious={handleLoadPrevious}
-            refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
-            forumData={forumData}
-            hasPreviousPage={hasPreviousPage}
-            getListHeader={getListHeader}
-            listRef={flatListRef}
-            hasNextPage={hasNextPage}
-            forumListData={forumListData}
-            initialScrollIndex={getInitialScrollIndex()}
-            onReadyToShow={onReadyToShow}
-            startFromPost={startFromPost}
-          />
-          {!readyToShow && (
-            <View style={overlayStyles.overlay}>
-              <ActivityIndicator size={'large'} />
-            </View>
+        <KeyboardAvoidingView
+          style={overlayStyles.keyboardView}
+          behavior={'padding'}
+          keyboardVerticalOffset={keyboardVerticalOffset}>
+          <View style={commonStyles.flex}>
+            <ForumConversationListV2
+              postList={forumPosts}
+              handleLoadNext={handleLoadNext}
+              handleLoadPrevious={handleLoadPrevious}
+              refreshControl={<AppRefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh} />}
+              forumData={forumData}
+              hasPreviousPage={hasPreviousPage}
+              getListHeader={getListHeader}
+              listRef={flatListRef}
+              hasNextPage={hasNextPage}
+              forumListData={forumListData}
+              initialScrollIndex={getInitialScrollIndex()}
+              onReadyToShow={onReadyToShow}
+              startFromPost={startFromPost}
+            />
+            {!readyToShow && (
+              <View style={overlayStyles.overlay}>
+                <ActivityIndicator size={'large'} />
+              </View>
+            )}
+          </View>
+          {showForm && (
+            <ContentPostForm
+              onSubmit={onPostSubmit}
+              formRef={postFormRef}
+              inputRef={postInputRef}
+              enablePhotos={true}
+              maxLength={2000}
+              maxPhotos={maxForumPostImages}
+            />
           )}
-        </View>
-        {showForm && (
-          <ContentPostForm
-            onSubmit={onPostSubmit}
-            formRef={postFormRef}
-            inputRef={postInputRef}
-            enablePhotos={true}
-            maxLength={2000}
-            maxPhotos={maxForumPostImages}
-          />
-        )}
+        </KeyboardAvoidingView>
       </AppView>
     </ForumComposerProvider>
   );

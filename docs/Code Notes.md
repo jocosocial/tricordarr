@@ -106,6 +106,37 @@ A mutating toggle (favorite/mute/pin) counts as a **mutating item** under `AGENT
 
 **`cancelQueries` before the optimistic write.** TanStack's optimistic-update recipe starts with `queryClient.cancelQueries(...)` for a reason: a refetch that was already in flight when the user tapped will resolve *after* our optimistic write and stomp it back to the stale value — the same flicker this pattern exists to remove, on the same slow network that makes the window wide. Rather than asking every call site to remember this, the cancel is folded into the reducer actions themselves (`updateFavorite`, `updateMute`, `updatePinned`, `updatePostPin`, `updatePostBookmark`), since they already know which query keys they touch. `cancelQueries` returns a promise; the reducers stay synchronous and fire it without awaiting (fire-and-forget) rather than becoming `async`, since callers already treat these as synchronous cache writes.
 
+## Keyboard Avoidance
+
+`AppView` no longer owns a global `KeyboardAvoidingView` (see issue #573) — it caused double compensation on form screens and fought `LegendList`'s `maintainVisibleContentPosition` on chat screens. Keyboard handling is per-screen now. Pick based on what the screen actually contains:
+
+**Plain scrollable form (no fixed bottom composer).** Nothing to do — `ScrollingContentView` already wraps `KeyboardAwareScrollView` internally and handles it. This is the common case (most Settings/create/edit screens).
+
+**A form/list with a fixed-height control pinned below it** (a `ContentPostForm` composer below a `ScrollingContentView`, or below a chat `ConversationListV2`/`FezConversationListV2`/`ForumConversationListV2`). Wrap both as flex siblings in a local `KeyboardAvoidingView`:
+
+```tsx
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
+import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
+
+const keyboardVerticalOffset = useKeyboardVerticalOffset();
+const {commonStyles} = useStyles();
+
+return (
+  <AppView>
+    <KeyboardAvoidingView style={commonStyles.flex} behavior={'padding'} keyboardVerticalOffset={keyboardVerticalOffset}>
+      <ScrollingContentView>...</ScrollingContentView>  {/* or the list, in its own flex:1 View + overlay */}
+      <ContentPostForm ... />
+    </KeyboardAvoidingView>
+  </AppView>
+);
+```
+
+Reference implementations: `FezChatScreen.tsx`, `ForumThreadScreenBase.tsx` (list + composer), `SeamailCreateScreen.tsx`, `ForumPostEditScreen.tsx`, `ForumThreadCreateScreen.tsx` (form + composer).
+
+**Do NOT use `react-native-keyboard-controller`'s `KeyboardStickyView` / `KeyboardAwareLegendList` / `useKeyboardChatComposerInset` for this.** They were tried for the chat composer and are broken for our layout: `KeyboardStickyView`'s `translateY` assumes the view's resting position is flush with the true screen bottom, but our composers sit above the bottom tab bar, so the computed shift falls short by roughly the tab bar's height and the composer ends up rendered behind the keyboard. Confirmed on-device (Android emulator, `uiautomator` bounds dump) before reverting to the plain `KeyboardAvoidingView` above. If you're tempted to reach for these components again, verify on a real device/emulator with the keyboard actually open — the bug does not show up in static review.
+
+`KeyboardAvoidingView`'s `keyboardVerticalOffset` is a heuristic (`insets.top + insets.bottom`, `+40` on home-button iPhones), not a true measurement — it approximates the distance from the top of the KAV to the top of the screen. It only works correctly when the KAV is mounted near the top of the screen's own render tree (directly inside `AppView`, not buried under several wrapper views) — see `useKeyboardVerticalOffset` (`src/Hooks/Keyboard/useKeyboardVerticalOffset.ts`) for the exact formula and rationale.
+
 ## Websocket Keepalive
 
 https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
