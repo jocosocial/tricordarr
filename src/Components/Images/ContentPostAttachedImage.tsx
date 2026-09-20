@@ -5,8 +5,8 @@ import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {AppImage} from '#src/Components/Images/AppImage';
 import {ContentPostAttachment} from '#src/Components/Views/Content/ContentPostAttachment';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
 
 interface ContentPostAttachedImageProps {

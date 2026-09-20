@@ -4,11 +4,11 @@ import {ActivityIndicator, Text} from 'react-native-paper';
 
 import {SubmitIconButton} from '#src/Components/Buttons/IconButtons/SubmitIconButton';
 import {LaughReaction, LikeReaction, LoveReaction} from '#src/Components/Text/Reactions';
+import {usePostDetailData} from '#src/Context/Contexts/PostDetailDataContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {LikeType} from '#src/Enums/LikeType';
-import {usePostDetailData} from '#src/Hooks/Forum/usePostDetailData';
 import {useForumPostReactionMutation} from '#src/Queries/Forum/ForumPostBookmarkMutations';
 import {useForumPostQuery} from '#src/Queries/Forum/ForumPostQueries';
 import {PostData} from '#src/Structs/ControllerStructs';

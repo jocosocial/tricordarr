@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {AppImage} from '#src/Components/Images/AppImage';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 
 // @ts-ignore
 import AllImage from '#assets/easteregg_all.jpg';

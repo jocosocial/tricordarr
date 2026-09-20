@@ -5,11 +5,11 @@ import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSelectable} from '#src/Context/Contexts/SelectableContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
-import {useSelectable} from '#src/Hooks/useSelectable';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 interface UserListItemProps {

@@ -1,17 +1,12 @@
-import {Image, type ImageRequireSource, type View} from 'react-native';
+import React, {PropsWithChildren} from 'react';
+import {Image, type ImageRequireSource} from 'react-native';
 import {lookup as lookupMimeType} from 'react-native-mime-types';
-import {type AnimatedRef} from 'react-native-reanimated';
 
-import {type ImageSource, type LightboxImage} from '#src/Components/Lightbox/types';
+import {type LightboxImage} from '#src/Components/Lightbox/types';
+import {AppImageContext, AppImageContextType, ToLightboxImageOptions} from '#src/Context/Contexts/AppImageContext';
 import {AppConfig} from '#src/Libraries/AppConfig';
 import {joinUrl} from '#src/Libraries/UrlParser';
 import {APIImageSizePaths, AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
-
-interface ToLightboxImageOptions {
-  thumbRef?: AnimatedRef<View> | null;
-  thumbBorderRadius?: number;
-  type?: ImageSource['type'];
-}
 
 const fromFileName = (fileName: string, appConfig: AppConfig, serverUrl?: string): AppImageMetaData => {
   const resolvedServerUrl = serverUrl ?? appConfig.serverUrl;
@@ -143,7 +138,13 @@ const toLightboxImage = (metadata: AppImageMetaData, extras: ToLightboxImageOpti
   };
 };
 
-const appImageFunctions = {
+/**
+ * These functions are pure (all inputs are explicit arguments), so they're defined
+ * once at module scope rather than inside the provider component. That keeps the
+ * context value's identity stable across every render/re-mount, which is the whole
+ * point of this being a context instead of a hook - see AppImageContext.ts.
+ */
+const appImageContextValue: AppImageContextType = {
   fromFileName,
   fromPublicPath,
   fromIdenticon,
@@ -153,15 +154,6 @@ const appImageFunctions = {
   toLightboxImage,
 };
 
-/**
- * Factory and derivation functions for `AppImageMetaData`, and its mapping onto the
- * Lightbox `LightboxImage` shape. All consumers are React components.
- *
- * None of these functions read component state — they're pure, parameterized by their
- * arguments — so they're defined at module scope and returned as one stable object.
- * Defining them inside the hook body instead gives every caller a new function identity
- * on every render, which is fatal for any consumer (e.g. APIImage.tsx) that lists them
- * in a useEffect/useCallback dependency array: the effect re-fires every render, and if
- * it calls setState, that's an infinite render loop.
- */
-export const useAppImage = () => appImageFunctions;
+export const AppImageProvider = ({children}: PropsWithChildren) => {
+  return <AppImageContext.Provider value={appImageContextValue}>{children}</AppImageContext.Provider>;
+};

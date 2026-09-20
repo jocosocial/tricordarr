@@ -5,8 +5,8 @@ import {Text} from 'react-native-paper';
 
 import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {createLogger} from '#src/Libraries/Logger';
 import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 

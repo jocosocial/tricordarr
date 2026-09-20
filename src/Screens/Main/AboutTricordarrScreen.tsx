@@ -9,7 +9,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ContributorView} from '#src/Components/Views/ContributorView';
 import {SourceCodeView} from '#src/Components/Views/SourceCodeView';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 
 // @ts-ignore
 import cfry from '#assets/contributors/cfry.jpg';

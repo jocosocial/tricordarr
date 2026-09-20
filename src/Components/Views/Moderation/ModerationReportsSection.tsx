@@ -6,7 +6,7 @@ import {ModerationReportGroupListItem} from '#src/Components/Lists/Items/Moderat
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {useReportContentGroup} from '#src/Hooks/Moderation/useReportContentGroup';
+import {useModeration} from '#src/Context/Contexts/ModerationContext';
 import {ReportModerationData} from '#src/Structs/ControllerStructs';
 
 interface ModerationReportsSectionProps {
@@ -21,7 +21,7 @@ export const ModerationReportsSection = ({
   reports,
   emptyMessage = "No reports against this user's content.",
 }: ModerationReportsSectionProps) => {
-  const {groupsFromReports} = useReportContentGroup();
+  const {groupsFromReports} = useModeration();
   const groups = useMemo(() => groupsFromReports(reports), [reports, groupsFromReports]);
 
   return (

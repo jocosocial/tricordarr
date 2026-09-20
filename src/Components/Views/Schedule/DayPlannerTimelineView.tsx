@@ -5,9 +5,9 @@ import {Text} from 'react-native-paper';
 import {DayPlannerCard} from '#src/Components/Cards/Schedule/DayPlannerCard';
 import {DayPlannerNowDivider} from '#src/Components/Views/Schedule/DayPlannerNowDivider';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {DAY_PLANNER_CONFIG, useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {DAY_PLANNER_CONFIG, useDayPlanner} from '#src/Hooks/DayPlanner/useDayPlanner';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
 

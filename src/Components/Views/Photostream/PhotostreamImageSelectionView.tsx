@@ -8,11 +8,11 @@ import {PERMISSIONS, request as requestPermission} from 'react-native-permission
 
 import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
 import {AppImage} from '#src/Components/Images/AppImage';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
 import {
   assertBase64WithinSizeLimit,
   assertImageWithinSizeLimit,

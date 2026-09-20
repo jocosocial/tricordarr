@@ -16,13 +16,10 @@ jest.mock('@react-navigation/stack', () => ({
   StackNavigationProp: {},
 }));
 
+import {isAddedTo, totalNewSeamail} from '#src/Context/Providers/UserNotificationDataProvider';
 import {FezType} from '#src/Enums/FezType';
-import {useUserNotificationData} from '#src/Hooks/User/useUserNotificationData';
 import {getBadgeDisplayValue} from '#src/Libraries/StringUtils';
 import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
-
-// eslint-disable-next-line react-hooks/rules-of-hooks -- pure functions, no internal hook state; safe at module scope in tests
-const {totalNewSeamail, isAddedTo} = useUserNotificationData();
 
 const notificationData = (overrides: Partial<UserNotificationData>): UserNotificationData =>
   ({

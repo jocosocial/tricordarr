@@ -17,4 +17,9 @@ export const SelectionContext = createContext(<SelectionContextType>{
   setEnableSelection: () => {},
 });
 
+/**
+ * Live selection UI state - not to be confused with SelectableContext, which holds pure
+ * factory functions for turning domain data into the `Selectable` shape this context's
+ * dispatchSelectedItems expects. See SelectionProvider.tsx for the full distinction.
+ */
 export const useSelection = () => useContext(SelectionContext);

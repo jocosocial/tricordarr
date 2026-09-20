@@ -3,10 +3,10 @@ import {StyleSheet} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 
 import {AppImage} from '#src/Components/Images/AppImage';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
 
 // @ts-ignore
 import maintenance from '#assets/maintenance.jpg';

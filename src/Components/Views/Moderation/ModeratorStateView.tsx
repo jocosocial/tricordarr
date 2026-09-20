@@ -5,12 +5,12 @@ import {Menu} from 'react-native-paper';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useModeration} from '#src/Context/Contexts/ModerationContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
-import {useModerationState} from '#src/Hooks/Moderation/useModerationState';
 import {useMenu} from '#src/Hooks/useMenu';
 import {ModeratedContentData} from '#src/Libraries/Moderation/ModerationStateContext';
 
@@ -24,7 +24,7 @@ interface ModeratorStateViewProps {
 export const ModeratorStateView = ({data}: ModeratorStateViewProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {theme} = useAppTheme();
-  const {fromData} = useModerationState();
+  const {fromData} = useModeration();
   const context = useMemo(() => fromData(data), [data, fromData]);
   const actions = useModerationContentActions(context.cacheKeys);
   const {updateThreadVisibility} = useForumCacheReducer();

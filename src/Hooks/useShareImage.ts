@@ -6,7 +6,7 @@ import {Image} from 'react-native';
 import * as mime from 'react-native-mime-types';
 import Share from 'react-native-share';
 
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 
