@@ -1,9 +1,14 @@
+import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ServerUrlSettingForm} from '#src/Components/Forms/Settings/ServerUrlSettingForm';
 import {AppView} from '#src/Components/Views/AppView';
@@ -16,9 +21,11 @@ import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {createLogger} from '#src/Libraries/Logger';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {ServerUrlFormValues} from '#src/Types/FormValues';
 
@@ -28,6 +35,7 @@ export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const {currentSession, updateSession} = useSession();
   const {commonStyles} = useStyles();
+  const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
   const queryClient = useQueryClient();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
@@ -78,6 +86,26 @@ export const ConfigServerUrlScreen = () => {
       setServerHealthPassed(false);
     }
   }, [serverHealthData]);
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.navigate(CommonStackComponents.networkHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>

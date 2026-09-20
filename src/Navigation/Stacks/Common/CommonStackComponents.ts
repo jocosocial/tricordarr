@@ -170,6 +170,7 @@ export type CommonStackParamList = {
     forumID: string;
   };
   ConfigServerUrlScreen: undefined;
+  NetworkHelpScreen: undefined;
   ForumPostHashtagScreen: {
     hashtag: string;
   };
@@ -467,6 +468,7 @@ export enum CommonStackComponents {
   forumPostMentionScreen = 'ForumPostMentionScreen',
   forumPostPinnedScreen = 'ForumPostPinnedScreen',
   configServerUrl = 'ConfigServerUrlScreen',
+  networkHelpScreen = 'NetworkHelpScreen',
   forumPostHashtagScreen = 'ForumPostHashtagScreen',
   seamailChatScreen = 'SeamailChatScreen',
   fezChatDetailsScreen = 'FezChatDetailsScreen',

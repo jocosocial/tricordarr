@@ -3,8 +3,11 @@ import {useQueryClient} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ServerUrlSettingForm} from '#src/Components/Forms/Settings/ServerUrlSettingForm';
 import {OobeServerHeaderTitle} from '#src/Components/Navigation/OobeServerHeaderTitle';
@@ -19,8 +22,10 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {createLogger} from '#src/Libraries/Logger';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {ServerUrlFormValues} from '#src/Types/FormValues';
@@ -87,6 +92,26 @@ export const OobeServerScreen = ({navigation}: Props) => {
       headerTitle: getHeaderTitle,
     });
   }, [getHeaderTitle, navigation]);
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.networkHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const {preRegistrationMode} = usePreRegistration();
 
