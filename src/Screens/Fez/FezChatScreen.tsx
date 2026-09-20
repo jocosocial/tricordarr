@@ -3,6 +3,7 @@ import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 import ReconnectingWebSocket from 'reconnecting-websocket';
@@ -32,6 +33,7 @@ import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezData, useMarkFezReadEffect} from '#src/Hooks/Fez/useFezData';
+import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
@@ -375,6 +377,8 @@ const FezChatScreenInner = ({route}: Props) => {
   const {theme} = useAppTheme();
   const frozenScrollIndexRef = useRef<number | null>(null);
 
+  const keyboardVerticalOffset = useKeyboardVerticalOffset();
+
   const onReadyToShow = useCallback(() => {
     logger.debug('Fez chat list ready to show');
     setReadyToShow(true);
@@ -409,6 +413,9 @@ const FezChatScreenInner = ({route}: Props) => {
       backgroundColor: theme.colors.background,
       zIndex: 1,
     },
+    keyboardView: {
+      ...commonStyles.flex,
+    },
   });
 
   return (
@@ -416,29 +423,34 @@ const FezChatScreenInner = ({route}: Props) => {
       <ListTitleView title={fez.title} />
       <PostAsUserWarningView />
       {fez.members?.isMuted && <FezMutedView />}
-      <View style={commonStyles.flex}>
-        <FezConversationListV2
-          key={listKey}
-          fez={fez}
-          fezPostData={fezPostsData}
-          listRef={flatListRef}
-          hasNextPage={hasNextPage}
-          hasPreviousPage={hasPreviousPage}
-          handleLoadNext={handleLoadNext}
-          handleLoadPrevious={handleLoadPrevious}
-          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
-          initialScrollIndex={initialScrollIndex}
-          initialReadCount={initialReadCount}
-          postDayCount={postDayCount}
-          onReadyToShow={onReadyToShow}
-        />
-        {!readyToShow && (
-          <View style={overlayStyles.overlay}>
-            <ActivityIndicator size={'large'} />
-          </View>
-        )}
-      </View>
-      <ContentPostForm onSubmit={onSubmit} enablePhotos={!FezType.isSeamailType(fez.fezType)} maxPhotos={1} />
+      <KeyboardAvoidingView
+        style={overlayStyles.keyboardView}
+        behavior={'padding'}
+        keyboardVerticalOffset={keyboardVerticalOffset}>
+        <View style={commonStyles.flex}>
+          <FezConversationListV2
+            key={listKey}
+            fez={fez}
+            fezPostData={fezPostsData}
+            listRef={flatListRef}
+            hasNextPage={hasNextPage}
+            hasPreviousPage={hasPreviousPage}
+            handleLoadNext={handleLoadNext}
+            handleLoadPrevious={handleLoadPrevious}
+            refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
+            initialScrollIndex={initialScrollIndex}
+            initialReadCount={initialReadCount}
+            postDayCount={postDayCount}
+            onReadyToShow={onReadyToShow}
+          />
+          {!readyToShow && (
+            <View style={overlayStyles.overlay}>
+              <ActivityIndicator size={'large'} />
+            </View>
+          )}
+        </View>
+        <ContentPostForm onSubmit={onSubmit} enablePhotos={!FezType.isSeamailType(fez.fezType)} maxPhotos={1} />
+      </KeyboardAvoidingView>
     </AppView>
   );
 };

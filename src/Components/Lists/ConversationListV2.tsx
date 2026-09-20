@@ -187,7 +187,13 @@ export const ConversationListV2 = <TItem,>({
   //
   // react-native-keyboard-controller's KeyboardProvider augments the standard
   // Keyboard API with cross-platform keyboardWillShow/keyboardWillHide events.
-  const keyboardVisibleRef = useRef(false);
+  //
+  // Tried replacing this with KeyboardAwareLegendList + KeyboardStickyView
+  // (issue #573) but KeyboardStickyView's translateY assumes the sticky view's
+  // resting position is flush with the true screen bottom; ours sits above the
+  // bottom tab bar, so it under-shifted the composer by roughly the tab bar's
+  // height and left it hidden behind the keyboard. Reverted to this KAV-based
+  // approach, confirmed working on device.
   const keyboardScrollRafRef = useRef<number | null>(null);
   useEffect(() => {
     const scrollToEndIfNeeded = () => {
@@ -212,14 +218,12 @@ export const ConversationListV2 = <TItem,>({
       keyboardScrollRafRef.current = requestAnimationFrame(tick);
     };
     const willShowSub = Keyboard.addListener('keyboardWillShow', () => {
-      keyboardVisibleRef.current = true;
       scrollToEndIfNeeded();
     });
     const didShowSub = Keyboard.addListener('keyboardDidShow', () => {
       scrollToEndIfNeeded();
     });
     const willHideSub = Keyboard.addListener('keyboardWillHide', () => {
-      keyboardVisibleRef.current = false;
       scrollToEndIfNeeded();
     });
     const didHideSub = Keyboard.addListener('keyboardDidHide', () => {
@@ -234,7 +238,7 @@ export const ConversationListV2 = <TItem,>({
         cancelAnimationFrame(keyboardScrollRafRef.current);
       }
     };
-  }, [effectiveMaintainScrollAtEnd, alignItemsAtEnd, listRef]);
+  }, [effectiveMaintainScrollAtEnd, listRef]);
 
   // When data grows and the user was near the bottom, explicitly scroll to the end.
   // LegendList's maintainScrollAtEnd is unreliable for dynamic appends, so we
