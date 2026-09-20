@@ -16,11 +16,11 @@ jest.mock('@react-navigation/stack', () => ({
   StackNavigationProp: {},
 }));
 
+import {filterByClosed, getStatusLabel, groupsFromReports} from '#src/Context/Providers/ModerationProvider';
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {FezType} from '#src/Enums/FezType';
 import {ModeratorActionType} from '#src/Enums/ModeratorActionType';
 import {ReportType} from '#src/Enums/ReportType';
-import {useReportContentGroup} from '#src/Hooks/Moderation/useReportContentGroup';
 import {
   FORUM_QUARANTINED_TITLE,
   forumDataFromModeration,
@@ -54,9 +54,6 @@ const report = (
     ...overrides,
   };
 };
-
-// eslint-disable-next-line react-hooks/rules-of-hooks -- pure functions, no internal hook state; safe at module scope in tests
-const {groupsFromReports, filterByClosed, getStatusLabel} = useReportContentGroup();
 
 describe('ReportContentGroup.groupsFromReports', () => {
   it('groups reports for the same content and keeps the earliest firstReport', () => {

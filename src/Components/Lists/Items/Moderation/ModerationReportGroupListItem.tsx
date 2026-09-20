@@ -4,9 +4,9 @@ import {Badge} from 'react-native-paper';
 
 import {ListItem} from '#src/Components/Lists/ListItem';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
+import {useModeration} from '#src/Context/Contexts/ModerationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ReportType} from '#src/Enums/ReportType';
-import {useReportContentGroup} from '#src/Hooks/Moderation/useReportContentGroup';
 import {ReportContentGroup} from '#src/Libraries/Moderation/ReportContentGroup';
 import {pushModerateScreen} from '#src/Libraries/ModerationNavigation';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -24,7 +24,7 @@ interface ModerationReportGroupListItemProps {
 export const ModerationReportGroupListItem = ({group, showUnread = false}: ModerationReportGroupListItemProps) => {
   const navigation = useCommonStack();
   const {commonStyles} = useStyles();
-  const {getStatusLabel} = useReportContentGroup();
+  const {getStatusLabel} = useModeration();
   const isNew = showUnread && !group.handledBy;
   const unhandledCount = group.reports.filter(report => !report.handledBy).length;
 

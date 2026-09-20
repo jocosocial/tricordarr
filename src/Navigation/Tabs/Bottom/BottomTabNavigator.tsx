@@ -3,8 +3,8 @@ import React, {useCallback} from 'react';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppBottomTabBar} from '#src/Components/Navigation/AppBottomTabBar';
+import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useUserNotificationData} from '#src/Hooks/User/useUserNotificationData';
 import {getBadgeDisplayValue} from '#src/Libraries/StringUtils';
 import {ChatStackNavigator} from '#src/Navigation/Stacks/Chat/ChatStackNavigator';
 import {ForumStackNavigator} from '#src/Navigation/Stacks/Forum/ForumStackNavigator';

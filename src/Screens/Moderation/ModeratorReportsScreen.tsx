@@ -6,7 +6,7 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ModerationReportsList} from '#src/Components/Lists/Moderation/ModerationReportsList';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useReportContentGroup} from '#src/Hooks/Moderation/useReportContentGroup';
+import {useModeration} from '#src/Context/Contexts/ModerationContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {isClosedReportsParam} from '#src/Libraries/Moderation/ModerationStateContext';
 import {
@@ -25,7 +25,7 @@ const ModeratorReportsScreenInner = ({route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const getNavButtons = useModerationHeaderButtons();
   const showClosed = isClosedReportsParam(route.params.closed);
-  const {groupsFromReports, filterByClosed} = useReportContentGroup();
+  const {groupsFromReports, filterByClosed} = useModeration();
 
   useEffect(() => {
     navigation.setOptions({

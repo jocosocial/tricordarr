@@ -2,8 +2,8 @@ import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {DAY_PLANNER_CONFIG, useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {DAY_PLANNER_CONFIG, useDayPlanner} from '#src/Hooks/DayPlanner/useDayPlanner';
 import useDateTime from '#src/Libraries/DateTime';
 
 interface DayPlannerNowDividerProps {

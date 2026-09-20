@@ -4,10 +4,10 @@ import {List} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {BoardgameListItemSwipeable} from '#src/Components/Swipeables/BoardgameListItemSwipeable';
+import {useBoardgameData} from '#src/Context/Contexts/BoardgameDataContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useBoardgameData} from '#src/Hooks/Boardgame/useBoardgameData';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 

@@ -12,10 +12,10 @@ import {ContentInsertPhotosView} from '#src/Components/Views/Content/ContentInse
 import {ContentPostLengthView} from '#src/Components/Views/Content/ContentPostLengthView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
+import {useImage} from '#src/Context/Contexts/ImageContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
-import {useImageQueryData} from '#src/Hooks/Images/useImageQueryData';
 import {createLogger} from '#src/Libraries/Logger';
 import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {PostContentData} from '#src/Structs/ControllerStructs';
@@ -88,7 +88,7 @@ export const ContentPostForm = ({
   const {appConfig} = useConfig();
   const [insertMenuVisible, setInsertMenuVisible] = React.useState(false);
   const [emojiPickerVisible, setEmojiPickerVisible] = React.useState(false);
-  const {fromData} = useImageQueryData();
+  const {fromData} = useImage();
 
   /**
    * Saves camera photos if needed, then submits with privilege flags taken from
