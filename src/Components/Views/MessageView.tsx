@@ -8,9 +8,9 @@ import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {useUserHeader} from '#src/Context/Contexts/UserHeaderContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {useUserHeader} from '#src/Hooks/User/useUserHeader';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 

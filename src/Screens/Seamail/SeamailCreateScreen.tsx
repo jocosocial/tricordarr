@@ -2,6 +2,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -12,12 +13,14 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -55,6 +58,8 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
   // Use a ref to store the created fez data immediately (synchronously) to avoid race condition
   const createdFezRef = useRef<FezData | null>(null);
   const {setSnackbarPayload} = useSnackbar();
+  const {commonStyles} = useStyles();
+  const keyboardVerticalOffset = useKeyboardVerticalOffset();
 
   // Helper to reset submitting state on both forms
   const resetSubmitting = useCallback(() => {
@@ -172,23 +177,28 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
   return (
     <AppView>
       <PostAsUserWarningView />
-      <ScrollingContentView>
-        <SeamailCreateForm
-          formRef={seamailCreateFormRef}
-          onSubmit={onFezSubmit}
-          initialValues={initialFormValues}
-          onValidationChange={setSeamailFormValid}
-          showPostAsOptions={false}
+      <KeyboardAvoidingView
+        style={commonStyles.flex}
+        behavior={'padding'}
+        keyboardVerticalOffset={keyboardVerticalOffset}>
+        <ScrollingContentView>
+          <SeamailCreateForm
+            formRef={seamailCreateFormRef}
+            onSubmit={onFezSubmit}
+            initialValues={initialFormValues}
+            onValidationChange={setSeamailFormValid}
+            showPostAsOptions={false}
+          />
+        </ScrollingContentView>
+        <ContentPostForm
+          formRef={seamailPostFormRef}
+          overrideSubmitting={fezMutation.isPending || fezPostMutation.isPending}
+          onPress={onSubmit}
+          onSubmit={onPostSubmit}
+          enablePhotos={false}
+          disabled={!seamailFormValid}
         />
-      </ScrollingContentView>
-      <ContentPostForm
-        formRef={seamailPostFormRef}
-        overrideSubmitting={fezMutation.isPending || fezPostMutation.isPending}
-        onPress={onSubmit}
-        onSubmit={onPostSubmit}
-        enablePhotos={false}
-        disabled={!seamailFormValid}
-      />
+      </KeyboardAvoidingView>
     </AppView>
   );
 };

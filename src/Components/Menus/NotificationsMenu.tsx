@@ -5,9 +5,9 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {useUserNotificationData} from '#src/Hooks/User/useUserNotificationData';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';

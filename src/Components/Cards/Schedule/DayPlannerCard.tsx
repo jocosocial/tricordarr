@@ -5,14 +5,14 @@ import {Text, TouchableRipple} from 'react-native-paper';
 
 import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {useRoles} from '#src/Context/Contexts/RoleContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {AppIcons} from '#src/Enums/Icons';
 import {
   COMPACT_THEME_DURATION_MINUTES,
   COMPACT_THEME_FADE_MINUTES,
   useDayPlanner,
-} from '#src/Hooks/DayPlanner/useDayPlanner';
+} from '#src/Context/Contexts/DayPlannerContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {DayPlannerItemWithLayout} from '#src/Types/DayPlanner';
 
 const COMPACT_THEME_FADE_START = 1 - COMPACT_THEME_FADE_MINUTES / COMPACT_THEME_DURATION_MINUTES;

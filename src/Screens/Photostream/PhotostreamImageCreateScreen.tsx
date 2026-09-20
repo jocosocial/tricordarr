@@ -13,9 +13,9 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useImage} from '#src/Context/Contexts/ImageContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {useImageQueryData} from '#src/Hooks/Images/useImageQueryData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {createLogger} from '#src/Libraries/Logger';
@@ -50,7 +50,7 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
   const dispatchScrollToTop = useScrollToTopIntent();
-  const {fromData} = useImageQueryData();
+  const {fromData} = useImage();
 
   const onSubmit = async (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => {
     if (!values.image) {

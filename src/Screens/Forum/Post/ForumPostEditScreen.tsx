@@ -2,13 +2,16 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
 import React from 'react';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
+import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
 import {createLogger} from '#src/Libraries/Logger';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumPostUpdateMutation} from '#src/Queries/Forum/ForumPostMutations';
@@ -38,6 +41,8 @@ const ForumPostEditScreenInner = ({route, navigation}: Props) => {
   const {updatePost, updatePostModeration} = useForumCacheReducer();
   const {maxForumPostImages} = useClientSettings();
   const {data: profilePublicData} = useUserProfileQuery();
+  const {commonStyles} = useStyles();
+  const keyboardVerticalOffset = useKeyboardVerticalOffset();
 
   /**
    * Submit the edited post, then patch forum caches and (when launched from
@@ -83,14 +88,19 @@ const ForumPostEditScreenInner = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={false} />
-      <ContentPostForm
-        onSubmit={onSubmit}
-        enablePhotos={true}
-        maxLength={2000}
-        maxPhotos={maxForumPostImages}
-        initialValues={initialValues}
-      />
+      <KeyboardAvoidingView
+        style={commonStyles.flex}
+        behavior={'padding'}
+        keyboardVerticalOffset={keyboardVerticalOffset}>
+        <ScrollingContentView isStack={false} />
+        <ContentPostForm
+          onSubmit={onSubmit}
+          enablePhotos={true}
+          maxLength={2000}
+          maxPhotos={maxForumPostImages}
+          initialValues={initialValues}
+        />
+      </KeyboardAvoidingView>
     </AppView>
   );
 };

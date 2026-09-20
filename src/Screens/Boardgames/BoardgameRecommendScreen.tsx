@@ -3,6 +3,7 @@ import {type FlashListRef} from '@shopify/flash-list';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {Divider} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -11,6 +12,7 @@ import {BoardgameRecommendationForm} from '#src/Components/Forms/BoardgameRecomm
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -58,6 +60,7 @@ export const BoardgameRecommendScreen = (props: Props) => {
 };
 
 const BoardgameRecommendScreenInner = ({navigation}: Props) => {
+  const {commonStyles} = useStyles();
   const guideMutation = useBoardgameRecommendMutation();
   const [games, setGames] = useState<BoardgameData[]>([]);
   const [fieldValues, setFieldValues] = useState<BoardgameRecommendationData>(defaultValues);
@@ -112,7 +115,13 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <BoardgameFlatList ref={listRef} items={games} listHeader={getHeader} />
+      {/* The recommendation form (with its own TextInputs) renders as this list's
+          ListHeaderComponent rather than above a ScrollingContentView, so neither the
+          form nor chat keyboard patterns apply here (issue #573). A scoped KAV resizing
+          the list is acceptable since the form lives in the list's own header. */}
+      <KeyboardAvoidingView style={commonStyles.flex} behavior={'padding'}>
+        <BoardgameFlatList ref={listRef} items={games} listHeader={getHeader} />
+      </KeyboardAvoidingView>
     </AppView>
   );
 };

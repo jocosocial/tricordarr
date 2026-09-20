@@ -4,7 +4,7 @@ import {useAnimatedRef} from 'react-native-reanimated';
 
 import {APIImage} from '#src/Components/Images/APIImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ContentPostImageThumbProps {

@@ -12,11 +12,11 @@ import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderV
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {useDayPlanner} from '#src/Hooks/DayPlanner/useDayPlanner';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';

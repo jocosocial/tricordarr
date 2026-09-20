@@ -4,9 +4,9 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useTime} from '#src/Context/Contexts/TimeContext';
+import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useUserNotificationData} from '#src/Hooks/User/useUserNotificationData';
 import {findInPages, PageItemAccessor} from '#src/Libraries/CacheReduction';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';

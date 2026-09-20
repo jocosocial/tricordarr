@@ -1,0 +1,111 @@
+diff --git a/node_modules/react-native-keyboard-controller/src/components/KeyboardChatScrollView/useChatKeyboard/index.ts b/node_modules/react-native-keyboard-controller/src/components/KeyboardChatScrollView/useChatKeyboard/index.ts
+index 48178d9..4817abc 100644
+--- a/node_modules/react-native-keyboard-controller/src/components/KeyboardChatScrollView/useChatKeyboard/index.ts
++++ b/node_modules/react-native-keyboard-controller/src/components/KeyboardChatScrollView/useChatKeyboard/index.ts
+@@ -17,6 +17,25 @@ import type { UseChatKeyboardOptions, UseChatKeyboardReturn } from "./types";
+ import type { AnimatedRef } from "react-native-reanimated";
+ import type Reanimated from "react-native-reanimated";
+ 
++function safeScrollTo(
++  scrollViewRef: AnimatedRef<Reanimated.ScrollView>,
++  x: number,
++  y: number,
++  animated: boolean,
++) {
++  "worklet";
++
++  // Guard against dispatching a scroll command to a view that has already
++  // unmounted mid keyboard-animation (e.g. the user navigated away while the
++  // keyboard was still closing). Without this, a detached animated ref can
++  // crash on Fabric.
++  if (!scrollViewRef()) {
++    return;
++  }
++
++  scrollTo(scrollViewRef, x, y, animated);
++}
++
+ /**
+  * Hook that manages keyboard-driven scrolling for chat-style scroll views.
+  * Calculates padding (extra scrollable space) and content shift values,
+@@ -73,7 +92,7 @@ function useChatKeyboard(
+     );
+ 
+     if (scroll.value > maxScroll) {
+-      scrollTo(scrollViewRef, 0, maxScroll, false);
++      safeScrollTo(scrollViewRef, 0, maxScroll, false);
+     }
+   };
+ 
+@@ -218,7 +237,7 @@ function useChatKeyboard(
+               return;
+             }
+ 
+-            scrollTo(scrollViewRef, 0, 0, false);
++            safeScrollTo(scrollViewRef, 0, 0, false);
+ 
+             return;
+           }
+@@ -247,7 +266,7 @@ function useChatKeyboard(
+               // When at end, allow scrolling back (snap to end + reduce padding)
+               if (wasAtEnd) {
+                 padding.value = effective;
+-                scrollTo(scrollViewRef, 0, 0, false);
++                safeScrollTo(scrollViewRef, 0, 0, false);
+               } else if (closing.value) {
+                 // Not at end: reduce padding to avoid gap
+                 padding.value = effective;
+@@ -261,7 +280,7 @@ function useChatKeyboard(
+           const target =
+             offsetBeforeScroll.value + padding.value - scrollEffective;
+ 
+-          scrollTo(scrollViewRef, 0, target, false);
++          safeScrollTo(scrollViewRef, 0, target, false);
+         } else {
+           const effective = getEffectiveHeight(
+             e.height,
+@@ -316,7 +335,7 @@ function useChatKeyboard(
+               0,
+             );
+ 
+-            scrollTo(scrollViewRef, 0, Math.min(keepAt, maxScroll), false);
++            safeScrollTo(scrollViewRef, 0, Math.min(keepAt, maxScroll), false);
+ 
+             return;
+           }
+@@ -329,7 +348,7 @@ function useChatKeyboard(
+             actualTotalPadding,
+           );
+ 
+-          scrollTo(scrollViewRef, 0, target, false);
++          safeScrollTo(scrollViewRef, 0, target, false);
+ 
+           // Track actual (clamped) displacement during open for symmetric close
+           if (!closing.value) {
+diff --git a/node_modules/react-native-keyboard-controller/src/components/KeyboardChatScrollView/useExtraContentPadding/index.ts b/node_modules/react-native-keyboard-controller/src/components/KeyboardChatScrollView/useExtraContentPadding/index.ts
+index 0f6d7c6..6317f3e 100644
+--- a/node_modules/react-native-keyboard-controller/src/components/KeyboardChatScrollView/useExtraContentPadding/index.ts
++++ b/node_modules/react-native-keyboard-controller/src/components/KeyboardChatScrollView/useExtraContentPadding/index.ts
+@@ -67,11 +67,20 @@ function useExtraContentPadding(options: UseExtraContentPaddingOptions): void {
+         contentOffsetY.value = target;
+       } else if (Platform.OS === "android") {
+         // Defer scrollTo so the animatedProps inset commit lands first;
+-        // otherwise the native ScrollView clamps to the old range.
++        // otherwise the native ScrollView clamps to the old range. Guard
++        // against the view having unmounted by the time this fires (e.g.
++        // the composer grew/shrank right as the screen was navigated away
++        // from), which would otherwise dispatch a command to a detached ref.
+         requestAnimationFrame(() => {
++          "worklet";
++
++          if (!scrollViewRef()) {
++            return;
++          }
++
+           scrollTo(scrollViewRef, 0, target, false);
+         });
+-      } else {
++      } else if (scrollViewRef()) {
+         scrollTo(scrollViewRef, 0, target, false);
+       }
+     },

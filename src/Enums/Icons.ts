@@ -165,4 +165,7 @@ export enum AppIcons {
   accessLevel = 'account-key',
   userRole = 'badge-account',
   seedReload = 'database-refresh',
+  airplaneMode = 'airplane',
+  wifi = 'wifi',
+  vpn = 'key',
 }

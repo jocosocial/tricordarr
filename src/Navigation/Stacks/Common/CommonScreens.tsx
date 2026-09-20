@@ -168,6 +168,7 @@ import {MuteKeywordsScreen} from '#src/Screens/Settings/Content/MuteKeywordsSett
 import {ShareSettingsScreen} from '#src/Screens/Settings/Content/ShareSettingsScreen';
 import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
 import {LoggingHelpScreen} from '#src/Screens/Settings/LoggingHelpScreen';
+import {NetworkHelpScreen} from '#src/Screens/Settings/NetworkHelpScreen';
 import {SiteUIHelpScreen} from '#src/Screens/SiteUI/SiteUIHelpScreen';
 import {SiteUILinkScreen} from '#src/Screens/SiteUI/SiteUILinkScreen';
 import {SiteUIScreen} from '#src/Screens/SiteUI/SiteUIScreen';
@@ -416,6 +417,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.configServerUrl}
         component={ConfigServerUrlScreen}
         options={{title: 'Server URL'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.networkHelpScreen}
+        component={NetworkHelpScreen}
+        options={{title: 'Network Troubleshooting'}}
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostHashtagScreen}

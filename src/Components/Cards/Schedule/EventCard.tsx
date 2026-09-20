@@ -5,11 +5,11 @@ import {ActivityIndicator} from 'react-native-paper';
 
 import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useDayPlanner} from '#src/Hooks/DayPlanner/useDayPlanner';
 import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';

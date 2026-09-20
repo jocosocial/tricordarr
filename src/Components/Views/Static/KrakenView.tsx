@@ -6,7 +6,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ContributorView} from '#src/Components/Views/ContributorView';
-import {useAppImage} from '#src/Hooks/Images/useAppImage';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 
 // @ts-ignore
 import Krakn from '#assets/Krakn.png';

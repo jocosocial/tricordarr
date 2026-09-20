@@ -10,6 +10,7 @@ import {SeamailMessageCountIndicator} from '#src/Components/Text/SeamailMessageC
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
+import {useSelectable} from '#src/Context/Contexts/SelectableContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -18,7 +19,6 @@ import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {getParticipantLabel} from '#src/Hooks/Fez/useFezData';
-import {useSelectable} from '#src/Hooks/useSelectable';
 import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
 import {useChatStack} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
