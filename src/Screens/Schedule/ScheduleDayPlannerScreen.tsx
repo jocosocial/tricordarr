@@ -2,9 +2,10 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View} from 'react-native';
 import PagerView, {
-  type PageScrollStateChangedNativeEvent,
   type PagerViewOnPageSelectedEvent,
+  type PageScrollStateChangedNativeEvent,
 } from 'react-native-pager-view';
+import Animated from 'react-native-reanimated';
 
 import {ScheduleDayPlannerFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleDayPlannerFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -22,10 +23,13 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {usePagerSelectedDay} from '#src/Hooks/usePagerSelectedDay';
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+
+const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayPlannerScreen>;
 
@@ -74,6 +78,21 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
     selectedCruiseDayRef.current = selectedCruiseDay;
     activeIndexRef.current = activeIndex;
   }, [selectedCruiseDay, activeIndex]);
+
+  /**
+   * Drives the header's day highlight from the pager drag on the UI thread, so it moves with the
+   * content instead of waiting for onPageSelected (which only fires once the swipe has fully
+   * settled). selectedCruiseDay itself still commits on settle - queries, the FAB and the scroll
+   * sync are all deliberately left behind the highlight.
+   */
+  const {liveSelectedDay, onPageScroll} = usePagerSelectedDay(selectedCruiseDay, totalDays);
+
+  // Fallback: keep the shared value honest from JS whenever the day actually commits. If the
+  // worklet handler ever fails to attach, the highlight degrades to the old settle-time timing
+  // rather than freezing on a stale day.
+  useEffect(() => {
+    liveSelectedDay.value = activeIndex + 1;
+  }, [activeIndex, liveSelectedDay]);
 
   /**
    * Staged query rollout: we're on a high-latency, low-bandwidth ship network, so every cruise
@@ -264,14 +283,16 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
         selectedCruiseDay={selectedCruiseDay}
         setCruiseDay={setSelectedCruiseDay}
         scrollToNow={scrollToNow}
+        liveSelectedDay={liveSelectedDay}
       />
-      <PagerView
+      <AnimatedPagerView
         ref={pagerRef}
         style={commonStyles.flex}
         initialPage={activeIndex}
         overdrag
         onPageSelected={handlePageSelected}
-        onPageScrollStateChanged={handlePageScrollStateChanged}>
+        onPageScrollStateChanged={handlePageScrollStateChanged}
+        onPageScroll={onPageScroll as never}>
         {allDays.map(day => (
           <View key={day} collapsable={false} style={commonStyles.flex}>
             <DayPlannerPage
@@ -287,7 +308,7 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
             />
           </View>
         ))}
-      </PagerView>
+      </AnimatedPagerView>
       {!preRegistrationMode && <ScheduleDayPlannerFAB cruiseDay={selectedCruiseDay} />}
     </AppView>
   );
