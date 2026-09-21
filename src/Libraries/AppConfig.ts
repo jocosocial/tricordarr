@@ -40,6 +40,7 @@ export interface ScheduleConfig {
   overlapExcludeDurationHours: number;
   compactThemeEvents: boolean;
   timeZoneLabelMode: TimeZoneLabelMode;
+  showMarkersOutsideCruiseWeek: boolean;
 }
 
 export interface AccessibilityConfig {
@@ -157,6 +158,7 @@ export const defaultAppConfig: AppConfig = {
     overlapExcludeDurationHours: 4,
     compactThemeEvents: true,
     timeZoneLabelMode: TimeZoneLabelMode.offset,
+    showMarkersOutsideCruiseWeek: false,
   },
   portTimeZoneID: 'America/New_York',
   apiClientConfig: {
@@ -246,6 +248,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.schedule.timeZoneLabelMode === undefined) {
     appConfig.schedule.timeZoneLabelMode = TimeZoneLabelMode.offset;
+  }
+  if (appConfig.schedule.showMarkersOutsideCruiseWeek === undefined) {
+    appConfig.schedule.showMarkersOutsideCruiseWeek = false;
   }
   if (appConfig.logLevel === undefined) {
     appConfig.logLevel = LogLevel.DEBUG;

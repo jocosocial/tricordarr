@@ -47,6 +47,9 @@ export const EventSettingsScreen = () => {
   const navigation = useSettingsStack();
   const [enableLateDayFlip, setEnableLateDayFlip] = useState(appConfig.schedule.enableLateDayFlip);
   const [compactThemeEvents, setCompactThemeEvents] = useState(appConfig.schedule.compactThemeEvents);
+  const [showMarkersOutsideCruiseWeek, setShowMarkersOutsideCruiseWeek] = useState(
+    appConfig.schedule.showMarkersOutsideCruiseWeek,
+  );
   const {commonStyles} = useStyles();
   const [joined, setJoined] = useState(appConfig.schedule.eventsShowJoinedLfgs);
   const [open, setOpen] = useState(appConfig.schedule.eventsShowOpenLfgs);
@@ -106,6 +109,17 @@ export const EventSettingsScreen = () => {
       },
     });
     setCompactThemeEvents(!appConfig.schedule.compactThemeEvents);
+  };
+
+  const handleShowMarkersOutsideCruiseWeek = () => {
+    updateAppConfig({
+      ...appConfig,
+      schedule: {
+        ...appConfig.schedule,
+        showMarkersOutsideCruiseWeek: !appConfig.schedule.showMarkersOutsideCruiseWeek,
+      },
+    });
+    setShowMarkersOutsideCruiseWeek(!appConfig.schedule.showMarkersOutsideCruiseWeek);
   };
 
   /**
@@ -179,6 +193,21 @@ export const EventSettingsScreen = () => {
                   }
                   onPress={handleCompactThemeEvents}
                   value={compactThemeEvents}
+                  style={commonStyles.paddingHorizontalSmall}
+                />
+                <BooleanField
+                  name={'showMarkersOutsideCruiseWeek'}
+                  testID={'showMarkersOutsideCruiseWeek-switch'}
+                  label={'Time Markers Outside Cruise Week'}
+                  helperText={
+                    'Show "Now" and "Soon" markers on schedule cards even when the current date is outside the cruise week (e.g. during Preregistration). When off, these markers only appear during the actual cruise.' +
+                    (appConfig.enableDeveloperOptions
+                      ? ' Developer Mode is enabled, so this setting is always treated as on.'
+                      : '')
+                  }
+                  onPress={handleShowMarkersOutsideCruiseWeek}
+                  value={showMarkersOutsideCruiseWeek}
+                  disabled={appConfig.enableDeveloperOptions}
                   style={commonStyles.paddingHorizontalSmall}
                 />
               </ListSection>
