@@ -1,27 +1,22 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useCallback, useEffect, useMemo, useRef} from 'react';
-import {ScrollView, View} from 'react-native';
-import {ActivityIndicator} from 'react-native-paper';
+import {View} from 'react-native';
+import PagerView, {type PagerViewOnPageSelectedEvent} from 'react-native-pager-view';
 
 import {ScheduleDayPlannerFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleDayPlannerFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
-import {DayPlannerTimelineView} from '#src/Components/Views/Schedule/DayPlannerTimelineView';
+import {DayPlannerPage, type DayPlannerPageControls} from '#src/Components/Views/Schedule/DayPlannerPage';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {useEventsQuery} from '#src/Queries/Events/EventQueries';
-import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 
@@ -38,140 +33,70 @@ export const ScheduleDayPlannerScreen = (props: Props) => {
 };
 
 const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
-  const {adjustedCruiseDayToday, startDate} = useCruise();
+  const {adjustedCruiseDayToday, cruiseDays} = useCruise();
   const {selectedCruiseDay: contextCruiseDay, setSelectedCruiseDay} = useScheduleCruiseDay();
   // Day Planner doesn't support cruiseDay 0 (All Days). Display today without writing
   // back until the user picks a day, so All Days → Planner → Back stays on All Days.
   const selectedCruiseDay = contextCruiseDay === 0 ? adjustedCruiseDayToday : contextCruiseDay;
-  const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
-  const scrollViewRef = useRef<ScrollView>(null);
-  const lastAutoScrolledCruiseDay = useRef<number | null>(null);
   const {preRegistrationMode} = usePreRegistration();
-  const {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForFirstItem, getScrollOffsetForTimeOfDay} =
-    useDayPlanner();
+  const pagerRef = useRef<PagerView>(null);
+  const activeControlsRef = useRef<DayPlannerPageControls | null>(null);
 
-  // Fetch events with dayplanner=true (only favorited/following events)
-  const {
-    data: eventData,
-    isLoading: isEventLoading,
-    refetch: refetchEvents,
-  } = useEventsQuery({
-    cruiseDay: selectedCruiseDay,
-    dayplanner: true,
-  });
+  const totalDays = cruiseDays?.length ?? 1;
+  const hasPrevDay = selectedCruiseDay > 1;
+  const hasNextDay = selectedCruiseDay < totalDays;
 
-  // Fetch joined LFGs (matches web app behavior)
-  const {
-    data: lfgJoinedData,
-    isLoading: isLfgJoinedLoading,
-    isFetchingNextPage: isLfgJoinedFetchingNextPage,
-    hasNextPage: joinedHasNextPage,
-    fetchNextPage: joinedFetchNextPage,
-    refetch: refetchLfgJoined,
-  } = useLfgListQuery({
-    cruiseDay: selectedCruiseDay - 1,
-    endpoint: 'joined',
-    hidePast: false,
-    options: {
-      enabled: !preRegistrationMode,
-    },
-  });
-
-  // Fetch personal/private events
-  const {
-    data: personalEventData,
-    isLoading: isPersonalEventLoading,
-    isFetchingNextPage: isPersonalEventFetchingNextPage,
-    hasNextPage: personalHasNextPage,
-    fetchNextPage: personalFetchNextPage,
-    refetch: refetchPersonalEvents,
-  } = usePersonalEventsQuery({
-    cruiseDay: selectedCruiseDay - 1,
-    hidePast: false,
-    options: {
-      enabled: !preRegistrationMode,
-    },
-  });
-
-  // Handle pagination for LFGs and personal events
-  // Automatically fetch all pages to show complete day schedule
-  useEffect(() => {
-    if (joinedHasNextPage && !isLfgJoinedFetchingNextPage) {
-      joinedFetchNextPage();
+  /**
+   * Window of pages around the selected day, omitting a neighbor entirely when it would
+   * fall outside the cruise. With no page to scroll to, PagerView has nowhere to carry a
+   * drag past the first/last day, instead of just landing back on the same content.
+   */
+  const windowDays = useMemo(() => {
+    const days: number[] = [];
+    if (hasPrevDay) {
+      days.push(selectedCruiseDay - 1);
     }
-    if (personalHasNextPage && !isPersonalEventFetchingNextPage) {
-      personalFetchNextPage();
+    days.push(selectedCruiseDay);
+    if (hasNextDay) {
+      days.push(selectedCruiseDay + 1);
     }
-  }, [
-    joinedFetchNextPage,
-    joinedHasNextPage,
-    isLfgJoinedFetchingNextPage,
-    personalFetchNextPage,
-    personalHasNextPage,
-    isPersonalEventFetchingNextPage,
-  ]);
+    return days;
+  }, [selectedCruiseDay, hasPrevDay, hasNextDay]);
 
-  // Build day planner items from all data sources
-  const dayPlannerItems = useMemo(() => {
-    return buildDayPlannerItems(eventData, lfgJoinedData, personalEventData);
-  }, [eventData, lfgJoinedData, personalEventData, buildDayPlannerItems]);
+  // Index of the selected day within windowDays - shifts to 0 when there's no previous-day page.
+  const activeIndex = hasPrevDay ? 1 : 0;
 
-  const {tzAtTime} = useTimeZone();
+  const handleActiveControlsChange = useCallback((controls: DayPlannerPageControls | null) => {
+    activeControlsRef.current = controls;
+  }, []);
 
-  // Calculate day boundaries first using port timezone as initial reference
-  // We need these boundaries to determine the actual time to check for the timezone
-  const preliminaryBoundaries = useMemo(() => {
-    return getDayBoundaries(
-      startDate,
-      selectedCruiseDay,
-      appConfig.schedule.enableLateDayFlip,
-      appConfig.portTimeZoneID,
-    );
-  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, appConfig.portTimeZoneID, getDayBoundaries]);
-
-  // Boat timezone for the selected day - determine from server's timezone change schedule
-  // Check the timezone at the actual day start time (which accounts for late day flip)
-  // This uses the authoritative timezone data rather than inferring from event timezones
-  const boatTimeZoneID = useMemo(() => {
-    return tzAtTime(preliminaryBoundaries.dayStart);
-  }, [preliminaryBoundaries.dayStart, tzAtTime]);
-
-  // Recalculate day boundaries using the correct boat timezone
-  const {dayStart, dayEnd} = useMemo(() => {
-    return getDayBoundaries(startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID);
-  }, [startDate, selectedCruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID, getDayBoundaries]);
-
-  // Calculate loading state - only show loading spinner on initial fetch (when no cached data exists)
-  // Using isLoading instead of isFetching avoids showing spinner on refetch
-  const showLoading = isEventLoading || isLfgJoinedLoading || isPersonalEventLoading;
-
-  // Scroll to current time-of-day position in the timeline (boat TZ). Position is consistent regardless of which cruise day is selected.
   const scrollToNow = useCallback(() => {
-    if (!scrollViewRef.current) {
-      return;
-    }
-    const offset = getScrollOffsetForTimeOfDay(boatTimeZoneID, dayStart);
-    scrollViewRef.current.scrollTo({y: offset, animated: true});
-  }, [boatTimeZoneID, dayStart, getScrollOffsetForTimeOfDay]);
+    activeControlsRef.current?.scrollToNow();
+  }, []);
 
-  // Scroll to first item (for non-current days so list doesn't start at day start e.g. 3AM).
-  const scrollToFirstItem = useCallback(() => {
-    if (!scrollViewRef.current) {
-      return;
-    }
-    const offset = getScrollOffsetForFirstItem(dayPlannerItems, dayStart);
-    scrollViewRef.current.scrollTo({y: offset, animated: true});
-  }, [dayPlannerItems, dayStart, getScrollOffsetForFirstItem]);
-
-  // Refresh all data
   const onRefresh = useCallback(async () => {
-    const refreshes: Promise<any>[] = [refetchEvents()];
-    if (!preRegistrationMode) {
-      refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
-    }
-    await Promise.all(refreshes);
-  }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents, preRegistrationMode]);
+    await activeControlsRef.current?.refresh();
+  }, []);
+
+  const handlePageSelected = useCallback(
+    (e: PagerViewOnPageSelectedEvent) => {
+      const position = e.nativeEvent.position;
+      if (position === activeIndex) {
+        return;
+      }
+      setSelectedCruiseDay(windowDays[position]);
+    },
+    [windowDays, activeIndex, setSelectedCruiseDay],
+  );
+
+  /**
+   * Once the window has recentered on selectedCruiseDay (from either a settled swipe
+   * or a header day-chip tap), make sure the pager is sitting on the active slot.
+   */
+  useEffect(() => {
+    pagerRef.current?.setPageWithoutAnimation(activeIndex);
+  }, [selectedCruiseDay, activeIndex]);
 
   // Header buttons
   const getNavButtons = useCallback(() => {
@@ -194,25 +119,6 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  /**
-   * Auto-scroll to the first item on initial load and when switching cruise days.
-   * Gated by lastAutoScrolledCruiseDay so socket/refetch updates that rebuild
-   * dayPlannerItems (and thus scrollToFirstItem) do not jump the timeline.
-   */
-  useEffect(() => {
-    if (showLoading || !scrollViewRef.current) {
-      return;
-    }
-    if (lastAutoScrolledCruiseDay.current === selectedCruiseDay) {
-      return;
-    }
-    const rafId = requestAnimationFrame(() => {
-      scrollToFirstItem();
-      lastAutoScrolledCruiseDay.current = selectedCruiseDay;
-    });
-    return () => cancelAnimationFrame(rafId);
-  }, [showLoading, selectedCruiseDay, scrollToFirstItem]);
-
   return (
     <AppView>
       <TimezoneWarningView />
@@ -221,22 +127,22 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
         setCruiseDay={setSelectedCruiseDay}
         scrollToNow={scrollToNow}
       />
-      <View style={commonStyles.flex}>
-        {showLoading ? (
-          <View style={commonStyles.loadingContainer}>
-            <ActivityIndicator size={'large'} />
+      <PagerView
+        ref={pagerRef}
+        style={commonStyles.flex}
+        initialPage={activeIndex}
+        overdrag
+        onPageSelected={handlePageSelected}>
+        {windowDays.map((day, idx) => (
+          <View key={idx} collapsable={false} style={commonStyles.flex}>
+            <DayPlannerPage
+              cruiseDay={day}
+              isActive={idx === activeIndex}
+              onActiveControlsChange={handleActiveControlsChange}
+            />
           </View>
-        ) : (
-          <DayPlannerTimelineView
-            ref={scrollViewRef}
-            items={dayPlannerItems}
-            dayStart={dayStart}
-            dayEnd={dayEnd}
-            timeZoneID={boatTimeZoneID}
-            selectedCruiseDay={selectedCruiseDay}
-          />
-        )}
-      </View>
+        ))}
+      </PagerView>
       {!preRegistrationMode && <ScheduleDayPlannerFAB cruiseDay={selectedCruiseDay} />}
     </AppView>
   );
