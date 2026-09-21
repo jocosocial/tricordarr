@@ -1,7 +1,7 @@
 import {FlashList, type FlashListRef} from '@shopify/flash-list';
 import React, {Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {runOnJS, type SharedValue, useAnimatedReaction, useSharedValue} from 'react-native-reanimated';
+import {type SharedValue, useSharedValue} from 'react-native-reanimated';
 
 import {ScheduleHeaderAllButton} from '#src/Components/Buttons/ScheduleHeaderAllButton';
 import {ScheduleHeaderDayButton} from '#src/Components/Buttons/ScheduleHeaderDayButton';
@@ -131,6 +131,11 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
    * Recenter whenever the selected day changes, including first layout and external
    * updates (shared ScheduleCruiseDayContext). First scroll is unanimated so the
    * header lands in place; later changes ease so a visible header still animates.
+   *
+   * Deliberately driven by the committed day rather than by liveSelectedDay: the highlight
+   * should flip mid-drag, but the strip should hold still until the pager has locked in.
+   * Recentering at the halfway crossing slides the chips out from under a finger that is still
+   * dragging, and thrashes if the drag crosses back and forth over the midpoint.
    */
   useEffect(() => {
     if (!headerListRef.current || !cruiseDays || cruiseDays.length === 0) {
@@ -145,24 +150,6 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
 
     return () => cancelAnimationFrame(rafId);
   }, [safeSelectedDay, cruiseDays, scrollHeaderToDay]);
-
-  /**
-   * With a pager driving the highlight, recentre the strip as soon as the drag crosses the
-   * halfway point rather than waiting for the day to commit - otherwise the highlight is instant
-   * but the strip it sits in still slides late. Fires once per crossing (one JS hop per swipe),
-   * and the commit-driven effect above stays as the backstop.
-   */
-  const hasPagerSelection = !!props.liveSelectedDay;
-  useAnimatedReaction(
-    () => liveSelectedDay.value,
-    (current, previous) => {
-      if (!hasPagerSelection || previous === null || current === previous) {
-        return;
-      }
-      runOnJS(scrollHeaderToDay)(current, true);
-    },
-    [hasPagerSelection, scrollHeaderToDay],
-  );
 
   const renderItem = useCallback(
     ({item}: {item: HeaderItem}) => {
