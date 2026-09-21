@@ -12,6 +12,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {getParticipantLabel} from '#src/Hooks/Fez/useFezData';
 import {useMenu} from '#src/Hooks/useMenu';
 import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
@@ -55,7 +56,13 @@ const FezCardInternal = ({
   const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
   const {visible: menuVisible, openMenu, closeMenu} = useMenu();
+  const {primeFezDetail} = useFezCacheReducer();
   const participantLabel = getParticipantLabel(fez);
+
+  const handlePress = useCallback(() => {
+    primeFezDetail(fez);
+    onPress?.();
+  }, [fez, onPress, primeFezDetail]);
 
   const styles = StyleSheet.create({
     badge: {
@@ -122,7 +129,7 @@ const FezCardInternal = ({
   const cardContent = (
     <ScheduleItemCardBase
       disabled={disabled}
-      onPress={enableReportOnly ? undefined : onPress}
+      onPress={enableReportOnly ? undefined : handlePress}
       onLongPress={handleLongPress}
       cardStyle={styles.card}
       title={fez.title}

@@ -5,6 +5,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {FezType} from '#src/Enums/FezType';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
@@ -89,6 +90,29 @@ export const useFezCacheReducer = () => {
   const {appConfig} = useConfig();
   const {startDate, endDate} = useCruise();
   const {tzAtTime} = useTimeZone();
+  const {queryKeyExtraData} = useSwiftarrQueryClient();
+
+  /** Matches the real cache key useFezQuery builds for the single-fez detail query. */
+  const fezDetailQueryKey = useCallback(
+    (fezID: string) => [`/fez/${fezID}`, undefined, ...queryKeyExtraData],
+    [queryKeyExtraData],
+  );
+
+  /**
+   * Seed the single-fez detail cache from a FezData already in hand (e.g. a list item), so the
+   * detail screen renders instantly instead of spinning on a redundant fetch. Only seeds when the
+   * cache is empty - list data is missing `members.posts` (and sometimes `members` entirely), so
+   * an existing, fuller cache entry must never be overwritten with it. `useFezQuery`'s default
+   * `refetchOnMount: 'always'` still runs afterward to fill in the missing fields.
+   */
+  const primeFezDetail = useCallback(
+    (fez: FezData) => {
+      queryClient.setQueryData<InfiniteData<FezData>>(fezDetailQueryKey(fez.fezID), oldData =>
+        oldData ? oldData : {pages: [fez], pageParams: [undefined]},
+      );
+    },
+    [queryClient, fezDetailQueryKey],
+  );
 
   /**
    * Update a FezData entry (matched by fezID) across all four list endpoint
@@ -453,7 +477,7 @@ export const useFezCacheReducer = () => {
           },
         );
       }
-      queryClient.setQueryData<InfiniteData<FezData>>([`/fez/${fezData.fezID}`], oldData => {
+      queryClient.setQueryData<InfiniteData<FezData>>(fezDetailQueryKey(fezData.fezID), oldData => {
         if (oldData) {
           return oldData;
         }
@@ -463,7 +487,7 @@ export const useFezCacheReducer = () => {
         };
       });
     },
-    [queryClient, computeCruiseDay],
+    [queryClient, computeCruiseDay, fezDetailQueryKey],
   );
 
   /**
@@ -631,7 +655,7 @@ export const useFezCacheReducer = () => {
         return;
       }
       updateFezDetailCache(fezID, () => updatedFez);
-      queryClient.setQueryData<InfiniteData<FezData>>([`/fez/${fezID}`], oldData => {
+      queryClient.setQueryData<InfiniteData<FezData>>(fezDetailQueryKey(fezID), oldData => {
         if (oldData) {
           return oldData;
         }
@@ -641,7 +665,7 @@ export const useFezCacheReducer = () => {
         };
       });
     },
-    [queryClient, updateMembershipInListCaches, updateFezDetailCache],
+    [queryClient, updateMembershipInListCaches, updateFezDetailCache, fezDetailQueryKey],
   );
 
   /**
@@ -748,6 +772,7 @@ export const useFezCacheReducer = () => {
     deleteFez,
     invalidateFez,
     markRead,
+    primeFezDetail,
     updateFez,
     updateFezModeration,
     updateFezVisibility,
