@@ -57,7 +57,14 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
         item.startTime && item.timeZoneID
           ? getTimeZoneOffset(tzAtTime(minutelyUpdatingDate), item.timeZoneID, item.startTime)
           : 0;
-      const marker = getScheduleItemMarker(item, tzOffset, minutelyUpdatingDate, startDate, endDate);
+      const marker = getScheduleItemMarker(
+        item,
+        tzOffset,
+        minutelyUpdatingDate,
+        startDate,
+        endDate,
+        appConfig.enableDeveloperOptions || appConfig.schedule.showMarkersOutsideCruiseWeek,
+      );
       if ('fezID' in item) {
         if (FezType.isLFGType(item.fezType)) {
           return (
@@ -93,7 +100,16 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
       }
       return <></>;
     },
-    [tzAtTime, minutelyUpdatingDate, startDate, endDate, commonNavigation, setRefreshing],
+    [
+      tzAtTime,
+      minutelyUpdatingDate,
+      startDate,
+      endDate,
+      appConfig.enableDeveloperOptions,
+      appConfig.schedule.showMarkersOutsideCruiseWeek,
+      commonNavigation,
+      setRefreshing,
+    ],
   );
 
   const keyExtractor = (item: TItem) => {
