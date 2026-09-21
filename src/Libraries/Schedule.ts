@@ -222,6 +222,7 @@ export const getScheduleScrollIndex = (
  * @param nowDate Current date/time
  * @param startDate Start Date() of the cruise, typically midnight in the port TZ.
  * @param endDate End Date() of the cruise, typically midnight in the port TZ.
+ * @param showMarkersOutsideCruiseWeek When false, markers are suppressed unless nowDate falls within [startDate, endDate).
  */
 export const getScheduleItemMarker = (
   item: EventData | FezData,
@@ -229,8 +230,12 @@ export const getScheduleItemMarker = (
   nowDate: Date,
   startDate: Date,
   endDate: Date,
+  showMarkersOutsideCruiseWeek: boolean,
 ): ScheduleCardMarkerType => {
   if (!item.startTime || !item.endTime || !item.timeZoneID) {
+    return;
+  }
+  if (!showMarkersOutsideCruiseWeek && (nowDate < startDate || nowDate >= endDate)) {
     return;
   }
   const itemStartTime = parseISO(item.startTime);
