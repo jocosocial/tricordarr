@@ -9,6 +9,7 @@ import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {DAY_PLANNER_CONFIG, useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
 
@@ -36,6 +37,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     const {appConfig} = useConfig();
     const {adjustedCruiseDayToday} = useCruise();
     const {calculateItemLayout, generateTimeSlotLabels, getTimelineHeight} = useDayPlanner();
+    const {primeEventDetail} = useEventCacheReducer();
 
     // Calculate layout for all items
     const layoutItems = useMemo(() => {
@@ -50,6 +52,9 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     const handleItemPress = useCallback(
       (item: DayPlannerItemWithLayout) => {
         if (item.eventData) {
+          // Seed the detail cache from the data already in hand so EventScreen opens instantly
+          // instead of spinning on a redundant fetch, mirroring EventCard's onPress.
+          primeEventDetail(item.eventData);
           commonNavigation.push(CommonStackComponents.eventScreen, {eventID: item.eventData.eventID});
         } else if (item.fezData) {
           if (item.type === 'lfg') {
@@ -59,7 +64,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
           }
         }
       },
-      [commonNavigation],
+      [commonNavigation, primeEventDetail],
     );
 
     // Helper to get grid line style based on slot type
