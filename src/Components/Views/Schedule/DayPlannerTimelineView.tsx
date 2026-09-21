@@ -10,6 +10,7 @@ import {DAY_PLANNER_CONFIG, useDayPlanner} from '#src/Context/Contexts/DayPlanne
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
 
@@ -38,6 +39,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     const {adjustedCruiseDayToday} = useCruise();
     const {calculateItemLayout, generateTimeSlotLabels, getTimelineHeight} = useDayPlanner();
     const {primeEventDetail} = useEventCacheReducer();
+    const {primeFezDetail} = useFezCacheReducer();
 
     // Calculate layout for all items
     const layoutItems = useMemo(() => {
@@ -57,6 +59,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
           primeEventDetail(item.eventData);
           commonNavigation.push(CommonStackComponents.eventScreen, {eventID: item.eventData.eventID});
         } else if (item.fezData) {
+          primeFezDetail(item.fezData);
           if (item.type === 'lfg') {
             commonNavigation.push(CommonStackComponents.lfgScreen, {fezID: item.fezData.fezID});
           } else {
@@ -64,7 +67,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
           }
         }
       },
-      [commonNavigation, primeEventDetail],
+      [commonNavigation, primeEventDetail, primeFezDetail],
     );
 
     // Helper to get grid line style based on slot type
