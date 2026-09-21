@@ -57,20 +57,24 @@ export const DayPlannerNowDivider = ({dayStart, selectedCruiseDay, boatTimeZoneI
     getMinutesFromDayStartForNow,
   ]);
 
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        nowLine: {
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          height: 2,
+          backgroundColor: theme.colors.error,
+          zIndex: 0,
+        },
+      }),
+    [theme.colors.error],
+  );
+
   if (nowLineOffset === null) {
     return null;
   }
-
-  const styles = StyleSheet.create({
-    nowLine: {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      height: 2,
-      backgroundColor: theme.colors.error,
-      zIndex: 0,
-    },
-  });
 
   return <View style={[styles.nowLine, {top: nowLineOffset}]} />;
 };

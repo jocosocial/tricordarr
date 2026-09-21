@@ -1,7 +1,10 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View} from 'react-native';
-import PagerView, {type PagerViewOnPageSelectedEvent} from 'react-native-pager-view';
+import PagerView, {
+  type PageScrollStateChangedNativeEvent,
+  type PagerViewOnPageSelectedEvent,
+} from 'react-native-pager-view';
 
 import {ScheduleDayPlannerFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleDayPlannerFAB';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -63,6 +66,15 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
   const allDays = useMemo(() => Array.from({length: totalDays}, (_, i) => i + 1), [totalDays]);
   const activeIndex = Math.min(Math.max(selectedCruiseDay - 1, 0), totalDays - 1);
 
+  // Mirrors of the current day/index for use inside event handlers, so those handlers can keep a
+  // stable identity instead of re-creating (and re-rendering all pages) on every day change.
+  const selectedCruiseDayRef = useRef(selectedCruiseDay);
+  const activeIndexRef = useRef(activeIndex);
+  useEffect(() => {
+    selectedCruiseDayRef.current = selectedCruiseDay;
+    activeIndexRef.current = activeIndex;
+  }, [selectedCruiseDay, activeIndex]);
+
   /**
    * Staged query rollout: we're on a high-latency, low-bandwidth ship network, so every cruise
    * day cannot fire its queries at once. Start with only the initially-viewed day enabled; each
@@ -71,10 +83,29 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
    */
   const [enabledDays, setEnabledDays] = useState<Set<number>>(() => new Set([selectedCruiseDay]));
 
-  // Whichever day becomes active must load immediately regardless of how far the rollout has
-  // radiated - e.g. a header tap to a distant day, or swiping ahead of the preload wave.
+  /**
+   * Which days may build their (~200-view) timeline. A high-water mark, never shrunk: a day is
+   * added once it is viewed or adjacent to the viewed day, and keeps its timeline from then on.
+   * Cold open therefore builds three timelines instead of all eight, days you never visit build
+   * none, and no swipe ever mounts or tears one down mid-gesture.
+   */
+  const [renderedDays, setRenderedDays] = useState<Set<number>>(
+    () => new Set([selectedCruiseDay - 1, selectedCruiseDay, selectedCruiseDay + 1]),
+  );
+
+  // Whichever day becomes active must load and render immediately regardless of how far the
+  // rollout has radiated - e.g. a header tap to a distant day, or swiping ahead of the wave.
   useEffect(() => {
     setEnabledDays(prev => (prev.has(selectedCruiseDay) ? prev : new Set(prev).add(selectedCruiseDay)));
+    setRenderedDays(prev => {
+      const additions = [selectedCruiseDay - 1, selectedCruiseDay, selectedCruiseDay + 1].filter(d => !prev.has(d));
+      if (additions.length === 0) {
+        return prev;
+      }
+      const next = new Set(prev);
+      additions.forEach(d => next.add(d));
+      return next;
+    });
   }, [selectedCruiseDay]);
 
   const handleDayLoaded = useCallback(
@@ -113,19 +144,45 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
   );
 
   /**
-   * Mirror the active day's vertical scroll position onto every other mounted day, so
-   * whichever day a swipe lands on is already sitting at the same time of day.
+   * Record where the active day's scroll gesture came to rest. Only the offset is stored here;
+   * pushing it onto the other days happens at the moments it can matter (a swipe starting, or a
+   * jump from the header), not on every scroll frame.
    */
-  const handleActiveScroll = useCallback(
-    (offsetY: number) => {
-      scrollOffsetRef.current = offsetY;
-      scrollControllersRef.current.forEach((controller, day) => {
-        if (day !== selectedCruiseDay) {
-          controller.scrollTo(offsetY);
-        }
-      });
+  const handleScrollSettled = useCallback((offsetY: number) => {
+    scrollOffsetRef.current = offsetY;
+  }, []);
+
+  /** Read by each page when it first mounts its ScrollView, so it opens at the shared time of day. */
+  const getSharedOffset = useCallback(() => scrollOffsetRef.current, []);
+
+  /**
+   * Align every other mounted day with the shared offset so whichever day comes into view is
+   * already sitting at the same time of day. Called once per day-change gesture rather than per
+   * frame - pages already at the right offset are unaffected by a repeat scrollTo.
+   */
+  const alignOtherPages = useCallback(() => {
+    const offsetY = scrollOffsetRef.current;
+    if (offsetY === null) {
+      return;
+    }
+    scrollControllersRef.current.forEach((controller, day) => {
+      if (day !== selectedCruiseDayRef.current) {
+        controller.scrollTo(offsetY);
+      }
+    });
+  }, []);
+
+  /**
+   * A swipe is starting (or settling): make sure the neighbours are positioned before they slide
+   * into view. This is the replacement for mirroring on every scroll frame.
+   */
+  const handlePageScrollStateChanged = useCallback(
+    (e: PageScrollStateChangedNativeEvent) => {
+      if (e.nativeEvent.pageScrollState === 'dragging') {
+        alignOtherPages();
+      }
     },
-    [selectedCruiseDay],
+    [alignOtherPages],
   );
 
   const scrollToNow = useCallback(() => {
@@ -136,24 +193,48 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
     await activeControlsRef.current?.refresh();
   }, []);
 
+  // Index the pager has actually told us it is on. Seeded with the mount index because
+  // `initialPage` already puts it there, so the sync effect below no-ops on first run.
+  const lastReportedIndexRef = useRef(activeIndex);
+  const hasReceivedPageSelectedRef = useRef(false);
+
   const handlePageSelected = useCallback(
     (e: PagerViewOnPageSelectedEvent) => {
-      const newDay = e.nativeEvent.position + 1;
-      if (newDay !== selectedCruiseDay) {
+      const position = e.nativeEvent.position;
+      if (!hasReceivedPageSelectedRef.current) {
+        hasReceivedPageSelectedRef.current = true;
+        // Android can emit an initial onPageSelected(0) before `initialPage` has been applied.
+        // Letting that through would write day 1 into the shared schedule day context - including
+        // overwriting "All Days", which this screen deliberately avoids touching. Re-assert the
+        // page we actually want instead.
+        if (position !== activeIndexRef.current) {
+          pagerRef.current?.setPageWithoutAnimation(activeIndexRef.current);
+          return;
+        }
+      }
+      lastReportedIndexRef.current = position;
+      const newDay = position + 1;
+      if (newDay !== selectedCruiseDayRef.current) {
         setSelectedCruiseDay(newDay);
       }
     },
-    [selectedCruiseDay, setSelectedCruiseDay],
+    [setSelectedCruiseDay],
   );
 
   /**
-   * Keep the pager on the active day when it changes from outside a swipe (header day-chip
-   * tap, or a distant jump). A no-op when the change came from a swipe settling, since the
-   * pager is already sitting on that exact index.
+   * Keep the pager on the active day when it changes from outside a swipe (header day-chip tap,
+   * or a distant jump). Skipped when the pager already reported this index - i.e. a swipe that
+   * just settled - so a gesture doesn't trigger a redundant native page set back onto itself.
    */
   useEffect(() => {
+    if (lastReportedIndexRef.current === activeIndex) {
+      return;
+    }
+    lastReportedIndexRef.current = activeIndex;
+    // Position the destination before jumping to it, so it doesn't appear at a stale offset.
+    alignOtherPages();
     pagerRef.current?.setPageWithoutAnimation(activeIndex);
-  }, [activeIndex]);
+  }, [activeIndex, alignOtherPages]);
 
   // Header buttons
   const getNavButtons = useCallback(() => {
@@ -189,18 +270,20 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
         style={commonStyles.flex}
         initialPage={activeIndex}
         overdrag
-        onPageSelected={handlePageSelected}>
+        onPageSelected={handlePageSelected}
+        onPageScrollStateChanged={handlePageScrollStateChanged}>
         {allDays.map(day => (
           <View key={day} collapsable={false} style={commonStyles.flex}>
             <DayPlannerPage
               cruiseDay={day}
               isActive={day === selectedCruiseDay}
               enabled={enabledDays.has(day)}
+              renderTimeline={renderedDays.has(day)}
               onLoaded={handleDayLoaded}
               onActiveControlsChange={handleActiveControlsChange}
               onRegisterScrollController={registerScrollControllerCallbacks[day - 1]}
-              onActiveScroll={handleActiveScroll}
-              initialScrollOffset={scrollOffsetRef.current}
+              onScrollSettled={handleScrollSettled}
+              getSharedOffset={getSharedOffset}
             />
           </View>
         ))}
