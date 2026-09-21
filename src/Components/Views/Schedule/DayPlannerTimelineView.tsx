@@ -1,5 +1,5 @@
 import React, {forwardRef, useCallback, useMemo} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {DayPlannerCard} from '#src/Components/Cards/Schedule/DayPlannerCard';
@@ -19,10 +19,11 @@ interface DayPlannerTimelineViewProps {
   timeZoneID?: string;
   /** The cruise day being viewed (1-indexed). Used by DayPlannerNowDivider to show "now" when viewing today. */
   selectedCruiseDay?: number;
+  onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 }
 
 export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineViewProps>(
-  ({items, dayStart, dayEnd, timeZoneID, selectedCruiseDay}, ref) => {
+  ({items, dayStart, dayEnd, timeZoneID, selectedCruiseDay, onScroll}, ref) => {
     const {theme} = useAppTheme();
     const {commonStyles} = useStyles();
     const commonNavigation = useCommonStack();
@@ -144,7 +145,14 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     }
 
     return (
-      <ScrollView ref={ref} style={styles.container} contentContainerStyle={styles.scrollContent} scrollsToTop={false}>
+      <ScrollView
+        ref={ref}
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+        scrollsToTop={false}
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={onScroll ? 16 : undefined}>
         <View style={[styles.timelineRow, {height: timelineHeight}]}>
           <DayPlannerNowDivider
             dayStart={dayStart}

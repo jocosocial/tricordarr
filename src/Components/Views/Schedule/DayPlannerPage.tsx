@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
-import {ScrollView, View} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, ScrollView, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
 import {DayPlannerTimelineView} from '#src/Components/Views/Schedule/DayPlannerTimelineView';
@@ -17,18 +17,52 @@ export interface DayPlannerPageControls {
   refresh: () => Promise<void>;
 }
 
+/** Imperative handle so the parent can keep this page's scroll position in lockstep with the active page. */
+export interface DayPlannerScrollController {
+  scrollTo: (offsetY: number) => void;
+}
+
 interface DayPlannerPageProps {
   cruiseDay: number;
   isActive: boolean;
+  /**
+   * Whether this day is allowed to fetch yet. False keeps every query disabled (page shows the
+   * loading spinner) until the parent's staged rollout reaches it - we're on a high-latency,
+   * low-bandwidth network, so every cruise day firing its queries at once isn't acceptable.
+   */
+  enabled: boolean;
+  /** Fires once this page's queries have finished, so the parent can enable this day's neighbors next. */
+  onLoaded: (cruiseDay: number) => void;
   onActiveControlsChange: (controls: DayPlannerPageControls | null) => void;
+  /** Registered regardless of active state, so the parent can sync this page's scroll position from outside. */
+  onRegisterScrollController: (controller: DayPlannerScrollController | null) => void;
+  /** Called only while active, so the parent can mirror the vertical scroll position onto the other pages. */
+  onActiveScroll: (offsetY: number) => void;
+  /**
+   * Shared scroll offset from whichever page was last active, captured at the moment this slot's
+   * cruiseDay changes. Used instead of the smart scrollToFirstItem/scrollToNow default so switching
+   * days (by swipe or header tap) keeps you looking at the same time of day, not a fresh position.
+   * Null only before any page has ever been scrolled (very first load).
+   */
+  initialScrollOffset: number | null;
 }
 
 /**
  * One day's worth of Day Planner content: its own queries, boundary calc, and timeline.
- * Rendered 3-up (prev/current/next) inside a PagerView so adjacent days are pre-fetched
- * and ready by the time a swipe lands on them.
+ * Mounted permanently for every cruise day inside a PagerView, but only fetches once `enabled` -
+ * the parent stages rollout outward from the initially-viewed day so we don't fire every day's
+ * queries at once on a slow ship network.
  */
-export const DayPlannerPage = ({cruiseDay, isActive, onActiveControlsChange}: DayPlannerPageProps) => {
+export const DayPlannerPage = ({
+  cruiseDay,
+  isActive,
+  enabled,
+  onLoaded,
+  onActiveControlsChange,
+  onRegisterScrollController,
+  onActiveScroll,
+  initialScrollOffset,
+}: DayPlannerPageProps) => {
   const {startDate} = useCruise();
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
@@ -45,6 +79,9 @@ export const DayPlannerPage = ({cruiseDay, isActive, onActiveControlsChange}: Da
   } = useEventsQuery({
     cruiseDay: cruiseDay,
     dayplanner: true,
+    options: {
+      enabled,
+    },
   });
 
   const {
@@ -59,7 +96,7 @@ export const DayPlannerPage = ({cruiseDay, isActive, onActiveControlsChange}: Da
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: !preRegistrationMode,
+      enabled: enabled && !preRegistrationMode,
     },
   });
 
@@ -74,7 +111,7 @@ export const DayPlannerPage = ({cruiseDay, isActive, onActiveControlsChange}: Da
     cruiseDay: cruiseDay - 1,
     hidePast: false,
     options: {
-      enabled: !preRegistrationMode,
+      enabled: enabled && !preRegistrationMode,
     },
   });
 
@@ -112,7 +149,10 @@ export const DayPlannerPage = ({cruiseDay, isActive, onActiveControlsChange}: Da
     return getDayBoundaries(startDate, cruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID);
   }, [startDate, cruiseDay, appConfig.schedule.enableLateDayFlip, boatTimeZoneID, getDayBoundaries]);
 
-  const showLoading = isEventLoading || isLfgJoinedLoading || isPersonalEventLoading;
+  // Not-yet-enabled queries report isLoading=false (they're inactive, not loading), so treat
+  // "not enabled yet" as loading too - otherwise a not-yet-staged day would flash as a
+  // legitimately empty day instead of "still waiting its turn to load".
+  const showLoading = !enabled || isEventLoading || isLfgJoinedLoading || isPersonalEventLoading;
 
   const scrollToNow = useCallback(() => {
     if (!scrollViewRef.current) {
@@ -139,9 +179,11 @@ export const DayPlannerPage = ({cruiseDay, isActive, onActiveControlsChange}: Da
   }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents, preRegistrationMode]);
 
   /**
-   * Auto-scroll to the first item on initial load and when this slot's cruiseDay changes.
-   * Gated by lastAutoScrolledCruiseDay so socket/refetch updates that rebuild
-   * dayPlannerItems (and thus scrollToFirstItem) do not jump the timeline.
+   * Position this slot when it starts showing a new cruiseDay: carry over whatever scroll
+   * offset the previously-active day was at (so switching days keeps the same time of day
+   * in view), falling back to the smart scrollToFirstItem default only before any page has
+   * ever been scrolled. Gated by lastAutoScrolledCruiseDay so socket/refetch updates that
+   * rebuild dayPlannerItems do not jump the timeline mid-view.
    */
   useEffect(() => {
     if (showLoading || !scrollViewRef.current) {
@@ -151,11 +193,25 @@ export const DayPlannerPage = ({cruiseDay, isActive, onActiveControlsChange}: Da
       return;
     }
     const rafId = requestAnimationFrame(() => {
-      scrollToFirstItem();
+      if (initialScrollOffset !== null) {
+        scrollViewRef.current?.scrollTo({y: initialScrollOffset, animated: false});
+      } else {
+        scrollToFirstItem();
+      }
       lastAutoScrolledCruiseDay.current = cruiseDay;
     });
     return () => cancelAnimationFrame(rafId);
-  }, [showLoading, cruiseDay, scrollToFirstItem]);
+  }, [showLoading, cruiseDay, initialScrollOffset, scrollToFirstItem]);
+
+  /**
+   * Tell the parent once this day's queries have actually finished, so it can advance the
+   * staged rollout to this day's immediate neighbors next.
+   */
+  useEffect(() => {
+    if (enabled && !showLoading) {
+      onLoaded(cruiseDay);
+    }
+  }, [enabled, showLoading, cruiseDay, onLoaded]);
 
   /**
    * Only the centered/active page should answer the header's "scroll to now" tap
@@ -168,6 +224,28 @@ export const DayPlannerPage = ({cruiseDay, isActive, onActiveControlsChange}: Da
     onActiveControlsChange({scrollToNow, refresh});
     return () => onActiveControlsChange(null);
   }, [isActive, scrollToNow, refresh, onActiveControlsChange]);
+
+  /**
+   * Expose an imperative scrollTo regardless of active state, so the parent can keep this
+   * page's vertical position mirrored to the active page even while it's off-screen -
+   * ready the instant a swipe lands on it.
+   */
+  useEffect(() => {
+    onRegisterScrollController({
+      scrollTo: offsetY => scrollViewRef.current?.scrollTo({y: offsetY, animated: false}),
+    });
+    return () => onRegisterScrollController(null);
+  }, [onRegisterScrollController]);
+
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      if (!isActive) {
+        return;
+      }
+      onActiveScroll(event.nativeEvent.contentOffset.y);
+    },
+    [isActive, onActiveScroll],
+  );
 
   return (
     <View style={commonStyles.flex}>
@@ -183,6 +261,7 @@ export const DayPlannerPage = ({cruiseDay, isActive, onActiveControlsChange}: Da
           dayEnd={dayEnd}
           timeZoneID={boatTimeZoneID}
           selectedCruiseDay={cruiseDay}
+          onScroll={handleScroll}
         />
       )}
     </View>
