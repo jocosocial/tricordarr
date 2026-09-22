@@ -6,6 +6,7 @@ import {ActivityIndicator} from 'react-native-paper';
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {UserMatchSort} from '#src/Enums/UserMatchSort';
 import {useUserMatchQuery} from '#src/Queries/Users/UsersQueries';
 
 /**
@@ -13,7 +14,7 @@ import {useUserMatchQuery} from '#src/Queries/Users/UsersQueries';
  * Each match displays the user's avatar beside their byline.
  */
 export const ContentPostMentionSuggestionsView: FC<SuggestionsProvidedProps> = ({keyword, onSelect}) => {
-  const {data, isFetching} = useUserMatchQuery({searchQuery: keyword || ''});
+  const {data, isFetching} = useUserMatchQuery({searchQuery: keyword || '', sort: UserMatchSort.favorites});
   const {commonStyles} = useStyles();
 
   const styles = useMemo(
