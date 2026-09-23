@@ -10,6 +10,7 @@ export const LfgFilterProvider = ({children}: PropsWithChildren) => {
   const [lfgTypeFilter, setLfgTypeFilter] = useState<FezType | undefined>();
   const [lfgHidePastFilter, setLfgHidePastFilter] = useState(appConfig.schedule.hidePastLfgs);
   const [lfgOnlyNew, setLfgOnlyNew] = useState<boolean | undefined>(undefined);
+  const [lfgFavoriteFilter, setLfgFavoriteFilter] = useState<boolean | undefined>(undefined);
 
   return (
     <LfgFilterContext.Provider
@@ -22,6 +23,8 @@ export const LfgFilterProvider = ({children}: PropsWithChildren) => {
         setLfgHidePastFilter,
         lfgOnlyNew,
         setLfgOnlyNew,
+        lfgFavoriteFilter,
+        setLfgFavoriteFilter,
       }}>
       {children}
     </LfgFilterContext.Provider>

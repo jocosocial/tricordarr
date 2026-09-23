@@ -10,11 +10,22 @@ import {useMenu} from '#src/Hooks/useMenu';
 
 export const SeamailFilterMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {seamailChatCategories, setSeamailChatCategories, seamailOnlyNew, setSeamailOnlyNew, allowedChatCategories} =
-    useSeamailFilter();
+  const {
+    seamailChatCategories,
+    setSeamailChatCategories,
+    seamailOnlyNew,
+    setSeamailOnlyNew,
+    seamailFavorite,
+    setSeamailFavorite,
+    allowedChatCategories,
+  } = useSeamailFilter();
 
   const handleUnreadOnly = () => {
     setSeamailOnlyNew(prev => (prev === true ? undefined : true));
+  };
+
+  const handleFavoriteOnly = () => {
+    setSeamailFavorite(prev => (prev === true ? undefined : true));
   };
 
   const handleCategoryToggle = (category: FezChatCategory) => {
@@ -32,14 +43,16 @@ export const SeamailFilterMenu = () => {
   const clearFilters = () => {
     setSeamailChatCategories([]);
     setSeamailOnlyNew(undefined);
+    setSeamailFavorite(undefined);
   };
 
-  const anyActiveFilter = seamailChatCategories.length > 0 || seamailOnlyNew === true;
+  const anyActiveFilter = seamailChatCategories.length > 0 || seamailOnlyNew === true || seamailFavorite === true;
 
   const menuAnchor = <FilterMenuAnchor active={anyActiveFilter} onPress={openMenu} onLongPress={clearFilters} />;
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+      <SelectableMenuItem title={'Favorites'} onPress={handleFavoriteOnly} selected={seamailFavorite} />
       <SelectableMenuItem title={'Unread'} onPress={handleUnreadOnly} selected={seamailOnlyNew} />
       <Divider bold={true} />
       {FezType.chatCategories.map(category => (

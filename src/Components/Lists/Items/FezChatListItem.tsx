@@ -165,8 +165,11 @@ const FezChatListItemInternal = ({fez, enableSelection, setEnableSelection, sele
       );
     }
 
+    // Unlike mute, the star sits alongside the unread count rather than replacing it: a favorited
+    // chat is one you care about, so hiding its unread count would be exactly backwards.
     return (
       <View style={styles.rightContainer}>
+        {fez.members?.isFavorite && <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />}
         <SeamailMessageCountIndicator badgeCount={badgeCount} totalPostCount={totalPostCount} />
         {showParticipation && (
           <Text variant={'bodyMedium'} style={styles.participantStyle}>

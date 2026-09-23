@@ -246,6 +246,8 @@ export interface MembersOnlyData {
   posts?: FezPostData[];
   /// Whether user has muted the fez.
   isMuted: boolean;
+  /// Whether user has favorited the fez.
+  isFavorite: boolean;
 }
 
 export interface FezData {

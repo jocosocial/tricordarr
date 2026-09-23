@@ -38,6 +38,8 @@ const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
 
 const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/former'];
 const otherListKeyPrefixes = ['/fez/owner', '/fez/open', '/fez/former'];
+// Only /fez/joined and /fez/owner accept ?favorite=true upstream.
+const favoriteFilterableKeyPrefixes = ['/fez/joined', '/fez/owner'];
 
 const startTimeAscComparator = (a: FezData, b: FezData) => (a.startTime ?? '').localeCompare(b.startTime ?? '');
 
@@ -77,6 +79,14 @@ function listParamsIncludeFezType(params: Record<string, unknown> | undefined, f
     }
   }
   return true;
+}
+
+/** True if the list cache (query params) is a favorites-only cache (?favorite=true). */
+function listParamsAreFavoritesOnly(params: Record<string, unknown> | undefined): boolean {
+  if (!params || typeof params !== 'object') {
+    return false;
+  }
+  return params.favorite === true || params.favorite === 'true';
 }
 
 /**
@@ -210,7 +220,9 @@ export const useFezCacheReducer = () => {
         const cruiseDayParam = params?.cruiseday as number | string | undefined;
         const cruiseDayMatch =
           cruiseDayParam === undefined || fezCruiseDay === undefined || Number(cruiseDayParam) + 1 === fezCruiseDay;
-        return typeMatch && cruiseDayMatch;
+        // A favorites-only cache must not receive a fez the user hasn't favorited.
+        const favoriteMatch = !listParamsAreFavoritesOnly(params) || !!updatedFez.members?.isFavorite;
+        return typeMatch && cruiseDayMatch && favoriteMatch;
       };
 
       // LFG join: move from /fez/open to /fez/joined, preserving endpoint sort behavior.
@@ -669,6 +681,50 @@ export const useFezCacheReducer = () => {
   );
 
   /**
+   * Toggle isFavorite on a fez in all caches. The favorite mutation returns void,
+   * so we optimistically flip the flag. Unlike mute, no endpoint sorts by favorite,
+   * so every list cache gets a plain in-place update.
+   *
+   * Favoriting also changes *membership* of any favorites-only cache (?favorite=true
+   * on /fez/joined or /fez/owner), not just a field. Unfavoriting removes the fez from
+   * those caches; favoriting invalidates them instead of guessing an insert position,
+   * since the two endpoints sort differently and neither sorts by favorite.
+   */
+  const updateFavorite = useCallback(
+    (fezID: string, isFavorite: boolean) => {
+      for (const keyPrefix of fezListKeyPrefixes) {
+        queryClient.cancelQueries({queryKey: [keyPrefix]});
+      }
+      queryClient.cancelQueries({queryKey: [`/fez/${fezID}`]});
+
+      const favoriteUpdater = (fez: FezData): FezData => ({
+        ...fez,
+        members: fez.members ? {...fez.members, isFavorite} : fez.members,
+      });
+
+      updateFezInAllListCaches(fezID, favoriteUpdater);
+      updateFezDetailCache(fezID, favoriteUpdater);
+
+      for (const keyPrefix of favoriteFilterableKeyPrefixes) {
+        const favoriteQueries = queryClient
+          .getQueryCache()
+          .findAll({queryKey: [keyPrefix]})
+          .filter(query => listParamsAreFavoritesOnly(query.queryKey[1] as Record<string, unknown> | undefined));
+        for (const query of favoriteQueries) {
+          if (isFavorite) {
+            queryClient.invalidateQueries({queryKey: query.queryKey});
+            continue;
+          }
+          queryClient.setQueryData<InfiniteData<FezListData>>(query.queryKey, oldData =>
+            oldData ? filterItemsFromPages(oldData, fezListAccessor, entry => entry.fezID !== fezID) : oldData,
+          );
+        }
+      }
+    },
+    [queryClient, updateFezInAllListCaches, updateFezDetailCache],
+  );
+
+  /**
    * Toggle isMuted on a fez in all caches. The mute mutation returns void,
    * so we optimistically flip the flag. Re-sorts /fez/joined: unmuted first,
    * muted last, then lastModificationTime desc to match the API.
@@ -773,6 +829,7 @@ export const useFezCacheReducer = () => {
     invalidateFez,
     markRead,
     primeFezDetail,
+    updateFavorite,
     updateFez,
     updateFezModeration,
     updateFezVisibility,

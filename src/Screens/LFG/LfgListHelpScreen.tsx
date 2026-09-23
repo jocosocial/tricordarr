@@ -41,9 +41,10 @@ export const LfgListHelpScreen = () => {
             Search for LFGs by title or description.
           </HelpTopicView>
           <HelpTopicView title={'Filter'} icon={AppIcons.filter}>
-            Filter LFGs by type (Gaming, Dining, Shore, Activity, Music, Other) or by unread messages. You can also
-            toggle to hide past LFGs. A filter is active if the menu icon is blue and the item in the list is slightly
-            highlighted. Long press the filter button to clear all active filters.
+            Filter LFGs by type (Gaming, Dining, Shore, Activity, Music, Other), by unread messages, or down to just
+            your favorites. You can also toggle to hide past LFGs. The Favorites filter only appears on the Joined and
+            Owned lists, since favoriting requires being a member. A filter is active if the menu icon is blue and the
+            item in the list is slightly highlighted. Long press the filter button to clear all active filters.
           </HelpTopicView>
           <HelpTopicView title={'Former LFGs'} icon={AppIcons.lfgFormer}>
             View LFGs, Private Events, and Seamails that you were previously a member of, but have since left or been

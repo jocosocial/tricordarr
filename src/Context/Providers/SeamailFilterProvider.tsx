@@ -8,6 +8,7 @@ export const SeamailFilterProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const [seamailChatCategories, setSeamailChatCategories] = useState<FezChatCategory[]>([]);
   const [seamailOnlyNew, setSeamailOnlyNew] = useState<boolean | undefined>(undefined);
+  const [seamailFavorite, setSeamailFavorite] = useState<boolean | undefined>(undefined);
   const includeLfgs = appConfig.userPreferences.seamailIncludeLfgs ?? true;
   const includePrivateEvents = appConfig.userPreferences.seamailIncludePrivateEvents ?? true;
 
@@ -55,6 +56,8 @@ export const SeamailFilterProvider = ({children}: PropsWithChildren) => {
         setSeamailChatCategories,
         seamailOnlyNew,
         setSeamailOnlyNew,
+        seamailFavorite,
+        setSeamailFavorite,
         fezType,
         allowedChatCategories: allowedCategories,
       }}>
