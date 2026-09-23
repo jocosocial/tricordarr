@@ -23,6 +23,11 @@ export const PersonalEventHelpScreen = () => {
           event without guests, you cannot add users later; you'll need to create a new private event and invite them at
           creation. If the event already has guests, you can add or remove users later.
         </HelpTopicView>
+        <HelpTopicView title={'Visibility'} icon={AppIcons.locked}>
+          Private events are Private by default: only the people you invite can see them. An event can instead be
+          Unlisted, which lets anyone holding a link to it view and join the event. Unlisted events are never listed or
+          searchable. The event screen shows which of the two applies.
+        </HelpTopicView>
         <EventLocationHelpChapterView />
         <HelpChapterTitleView title={'Actions'} />
         <OverlappingHelpTopicView />

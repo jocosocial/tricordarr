@@ -74,6 +74,7 @@ const ModeratePrivateEventScreenInner = ({route}: Props) => {
     fezID: event.personalEventID,
     owner: event.owner,
     fezType: FezType.privateEvent,
+    visibility: event.visibility,
     title: event.title,
     info: event.description ?? '',
     startTime: event.startTime,

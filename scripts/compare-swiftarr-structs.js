@@ -26,6 +26,7 @@ const STRUCT_PATHS = [
 
 const ENUM_PATHS = [
   'Sources/swiftarr/Enumerations/FezType.swift',
+  'Sources/swiftarr/Enumerations/FezVisibility.swift',
   'Sources/swiftarr/Enumerations/UserAccessLevel.swift',
   'Sources/swiftarr/Enumerations/UserRoleType.swift',
   'Sources/swiftarr/Enumerations/DinnerTeam.swift',
@@ -42,6 +43,7 @@ const LOCAL_STRUCT_FILES = [
 
 const LOCAL_ENUM_FILES = [
   path.join(ROOT, 'src/Enums/FezType.ts'),
+  path.join(ROOT, 'src/Enums/FezVisibility.ts'),
   path.join(ROOT, 'src/Enums/UserAccessLevel.ts'),
   path.join(ROOT, 'src/Enums/UserRoleType.ts'),
   path.join(ROOT, 'src/Enums/DinnerTeam.ts'),
@@ -89,6 +91,7 @@ const SWIFT_TO_TS_PRIMITIVES = {
 
 const ENUM_TYPE_NAMES = new Set([
   'FezType',
+  'FezVisibility',
   'UserAccessLevel',
   'UserRoleType',
   'DinnerTeam',
@@ -318,7 +321,8 @@ function parseEnumCases(trimmed) {
   }
   return cases
     .map(part => {
-      const nameMatch = part.match(/^(\w+)/);
+      // Swift escapes reserved words as `private` / `public`; the case name is the identifier inside.
+      const nameMatch = part.match(/^`?(\w+)`?/);
       if (!nameMatch) {
         return null;
       }
