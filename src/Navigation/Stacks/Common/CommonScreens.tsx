@@ -158,6 +158,7 @@ import {SeamailSearchScreen} from '#src/Screens/Seamail/SeamailSearchScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
 import {RecoveryKeyScreen} from '#src/Screens/Settings/Account/RecoveryKeyScreen';
+import {UsernameLookupScreen} from '#src/Screens/Settings/Account/UsernameLookupScreen';
 import {ChatSettingsScreen} from '#src/Screens/Settings/ChatSettingsScreen';
 import {ConfigServerUrlScreen} from '#src/Screens/Settings/Config/ConfigServerUrlScreen';
 import {TimeSettingsScreen} from '#src/Screens/Settings/Config/TimeSettingsScreen';
@@ -244,6 +245,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.accountRecoveryScreen}
         component={AccountRecoveryScreen}
         options={{title: 'Recovery'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.usernameLookupScreen}
+        component={UsernameLookupScreen}
+        options={{title: 'Find Username'}}
       />
       <Stack.Screen
         name={CommonStackComponents.recoveryKeyScreen}

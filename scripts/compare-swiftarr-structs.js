@@ -67,6 +67,17 @@ const IOS_KIT_TYPES = new Set([
 
 const LOCAL_ONLY_TYPES = new Set(['SocketHealthcheckData', 'AdminAccessLevelListData', 'AdminUserRoleListData']);
 
+/**
+ * Upstream type names we deliberately spell differently in TypeScript, mapped to our name so the
+ * diff doesn't report them as drift.
+ *   - `Record`: swiftarr nests the TimeZoneChangeData row type as `Record`, which is a TypeScript
+ *     builtin utility type. Declaring `interface Record` in ControllerStructs.tsx would shadow it
+ *     and break every `Record<K, V>` in that file, so we keep the name `TimeZoneChangeRecord`.
+ */
+const SWIFT_TO_TS_TYPE_ALIASES = {
+  Record: 'TimeZoneChangeRecord',
+};
+
 const SWIFT_TO_TS_PRIMITIVES = {
   UUID: 'string',
   Date: 'string',
@@ -469,12 +480,19 @@ function swiftToTs(swiftType) {
     const inner = swiftToTs(core.slice(1, -1));
     return {type: `${inner.type}[]`, optional, original: swiftType};
   }
+  // `ExplicitNull<T>` is a Swift-side wrapper, not a wire type: absent key means "leave unchanged",
+  // an explicit null means "unset", and a value means "set". That is exactly a TS `T | null` on an
+  // optional key, so compare it as an optional T. See ExplicitNull in AdminControllerStructs.swift.
+  const explicitNull = core.match(/^ExplicitNull\s*<(.+)>$/);
+  if (explicitNull) {
+    return {type: swiftToTs(explicitNull[1].trim()).type, optional: true, original: swiftType};
+  }
   const generic = core.match(/^(\w+)\s*<(.+)>$/);
   if (generic) {
     const inner = generic[2].split(',').map(part => swiftToTs(part.trim()).type);
     return {type: `${generic[1]}<${inner.join(', ')}>`, optional, original: swiftType};
   }
-  const mapped = SWIFT_TO_TS_PRIMITIVES[core];
+  const mapped = SWIFT_TO_TS_PRIMITIVES[core] || SWIFT_TO_TS_TYPE_ALIASES[core];
   return {type: mapped || core, optional, original: swiftType};
 }
 
@@ -641,8 +659,10 @@ function diffAgainstTs(upstream, local) {
     }
   };
 
+  const aliasedLocalNames = new Set(Object.values(SWIFT_TO_TS_TYPE_ALIASES));
+
   for (const [name, upType] of Object.entries(upstream)) {
-    const loc = local[name];
+    const loc = local[SWIFT_TO_TS_TYPE_ALIASES[name] || name];
     if (!loc || loc.localOnly) {
       consider.push(missingTypeLine(upType));
       for (const f of upType.fields || []) {
@@ -710,6 +730,9 @@ function diffAgainstTs(upstream, local) {
   for (const [name, loc] of Object.entries(local)) {
     if (LOCAL_ONLY_TYPES.has(name) || loc.localOnly) {
       localOnly.push(`${name} (intentional)`);
+      continue;
+    }
+    if (aliasedLocalNames.has(name)) {
       continue;
     }
     if (!upstream[name]) {

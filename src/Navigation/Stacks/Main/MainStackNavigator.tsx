@@ -22,6 +22,7 @@ import {TodayScreen} from '#src/Screens/Main/TodayScreen';
 import {MicroKaraokeListScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeListScreen';
 import {MicroKaraokeSongScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeSongScreen';
 import {PerformerListScreen} from '#src/Screens/Performer/PerformerListScreen';
+import {PerformerSearchScreen} from '#src/Screens/Performer/PerformerSearchScreen';
 import {PhotostreamImageCreateScreen} from '#src/Screens/Photostream/PhotostreamImageCreateScreen';
 import {PhotostreamScreen} from '#src/Screens/Photostream/PhotostreamScreen';
 import {UserDirectoryScreen} from '#src/Screens/User/UserDirectoryScreen';
@@ -74,6 +75,11 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.performerListScreen}
         component={PerformerListScreen}
         options={{title: 'Performers'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.performerSearchScreen}
+        component={PerformerSearchScreen}
+        options={{title: 'Search Performers'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameListScreen}

@@ -17,6 +17,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ModerationDeletedWarningView} from '#src/Components/Views/Warnings/ModerationDeletedWarningView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useModerationContentActions} from '#src/Hooks/Moderation/useModerationContentActions';
+import {usePhotostreamCacheReducer} from '#src/Hooks/Photostream/usePhotostreamCacheReducer';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDeleteModeratedContent} from '#src/Libraries/Alerts/ModerationAlerts';
 import {ShareContentType} from '#src/Libraries/Sharing';
@@ -40,6 +41,7 @@ const ModeratePhotostreamScreenInner = ({route}: Props) => {
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const actions = useModerationContentActions(PhotostreamModerationData.getCacheKeys(id));
   const deleteMutation = usePhotostreamModerationDeleteMutation();
+  const {removeImage} = usePhotostreamCacheReducer();
   const getNavButtons = useModerationHeaderButtons({
     moderateType: ShareContentType.photostreamModerate,
     moderateID: id,
@@ -65,6 +67,10 @@ const ModeratePhotostreamScreenInner = ({route}: Props) => {
         {photoID: id},
         {
           onSuccess: async () => {
+            // The stream lists are patched locally rather than invalidated (#622); the
+            // invalidate below still covers the reports, action log and this screen's own
+            // /mod/photostream query, which has to refetch for isDeleted to flip.
+            removeImage(data.photo.postID);
             await actions.invalidate();
             setSnackbarPayload({message: 'Photo deleted.', messageType: 'info'});
           },

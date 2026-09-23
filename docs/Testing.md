@@ -99,6 +99,7 @@ Checklist of manual QA cases not yet covered by automated tests.
 * Create account
 * Login
 * Forgot password
+* Forgot username
 
 #### Self Profile
 * Edit
@@ -173,6 +174,16 @@ Checklist of manual QA cases not yet covered by automated tests.
 ### Schedule
 * favorite event (should also update UND)
 * unfavorite event (should also update UND)
+
+### LFG
+* favorite / unfavorite
+* Favorites filter on the Joined and Owned lists returns the starred set
+* unfavoriting with the Favorites filter active removes the row from the list
+* favorite is unavailable while muted, and mute is unavailable while favorited
+
+### Seamail
+* favorite / unfavorite a conversation via the list swipe
+* Favorites filter returns the starred set
 
 ### Socket Events
 * new announcement generates notification

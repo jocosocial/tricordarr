@@ -107,6 +107,7 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
         onSearch={onSearch}
         onChangeSearch={onChangeSearch}
         onClear={onClear}
+        loading={isFetching && !isFetchingNextPage}
       />
       <View style={[commonStyles.flex]}>
         <ForumPostList

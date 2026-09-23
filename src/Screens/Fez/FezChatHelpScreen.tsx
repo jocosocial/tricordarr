@@ -5,6 +5,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {CopyButtonHelpTopicView} from '#src/Components/Views/Help/Common/CopyButtonHelpTopicView';
 import {DetailsButtonHelpTopicView} from '#src/Components/Views/Help/Common/DetailsButtonHelpTopicView';
 import {EditButtonHelpTopicView} from '#src/Components/Views/Help/Common/EditButtonHelpTopicView';
+import {FavoriteChatHelpTopicView} from '#src/Components/Views/Help/Common/FavoriteChatHelpTopicView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {MuteButtonHelpTopicView} from '#src/Components/Views/Help/Common/MuteButtonHelpTopicView';
 import {PostAsModeratorHelpTopicView} from '#src/Components/Views/Help/Common/PostAsModeratorHelpTopicView';
@@ -55,6 +56,7 @@ export const FezChatHelpScreen = () => {
           <ReloadButtonHelpTopicView />
           <DetailsButtonHelpTopicView />
           <EditButtonHelpTopicView />
+          <FavoriteChatHelpTopicView />
           <MuteButtonHelpTopicView />
           <PostAsModeratorHelpTopicView />
           <PostAsTwitarrTeamHelpTopicView />

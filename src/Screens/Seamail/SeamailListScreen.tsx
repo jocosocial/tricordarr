@@ -63,12 +63,13 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   const {asPrivilegedUser} = useElevation();
   const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
-  const {seamailOnlyNew, setSeamailOnlyNew, fezType} = useSeamailFilter();
+  const {seamailOnlyNew, setSeamailOnlyNew, seamailFavorite, fezType} = useSeamailFilter();
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isFetching} = useFezListQuery({
     endpoint: 'joined',
     fezType,
     forUser: asPrivilegedUser,
     onlyNew: seamailOnlyNew,
+    favorite: seamailFavorite,
     // The refetch options here mimick what happens with UserNotificationData in
     // NotificationDataPoller. The NotificationDataListener will handle updating based
     // on socket events, but privileged user seamail actions do not get socket events.

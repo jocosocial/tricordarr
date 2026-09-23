@@ -60,6 +60,7 @@ interface UseFezDataReturn {
   isWaitlist: boolean;
   isChatEditable: boolean;
   isMuted: boolean;
+  isFavorite: boolean;
   isFull: boolean;
   participantLabel: string | undefined;
   getParticipantLabel: (fez: FezData) => string;
@@ -231,6 +232,16 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     return fezData.members.isMuted;
   }, [fezData]);
 
+  /**
+   * Check if this chat is favorited.
+   */
+  const isFavorite = useMemo(() => {
+    if (!fezData?.members) {
+      return false;
+    }
+    return fezData.members.isFavorite;
+  }, [fezData]);
+
   const isFull = useMemo(() => {
     if (!fezData || fezData.maxParticipants === 0 || !fezData.members) {
       return false;
@@ -258,6 +269,7 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     isParticipant,
     isWaitlist,
     isMuted,
+    isFavorite,
     isChatEditable,
     isFull,
     participantLabel,

@@ -11,6 +11,8 @@ interface LfgFilterContextType {
   setLfgHidePastFilter: Dispatch<SetStateAction<boolean>>;
   lfgOnlyNew: boolean | undefined;
   setLfgOnlyNew: Dispatch<SetStateAction<boolean | undefined>>;
+  lfgFavoriteFilter: boolean | undefined;
+  setLfgFavoriteFilter: Dispatch<SetStateAction<boolean | undefined>>;
 }
 
 export const LfgFilterContext = createContext(<LfgFilterContextType>{});

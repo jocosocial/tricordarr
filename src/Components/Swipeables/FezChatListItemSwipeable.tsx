@@ -10,8 +10,9 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {openFezParentScreen} from '#src/Libraries/Navigation';
 import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useFezFavoriteMutation} from '#src/Queries/Fez/FezFavoriteMutations';
+import {useFezMarkReadMutation} from '#src/Queries/Fez/FezMutations';
 import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface FezChatListItemSwipeableProps extends PropsWithChildren {
@@ -22,9 +23,11 @@ interface FezChatListItemSwipeableProps extends PropsWithChildren {
 export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) => {
   const {theme} = useAppTheme();
   const muteMutation = useFezMuteMutation();
-  const {refetch} = useFezQuery({fezID: props.fez.fezID, options: {enabled: false}});
-  const {updateMute, markRead, invalidateFez} = useFezCacheReducer();
+  const favoriteMutation = useFezFavoriteMutation();
+  const markReadMutation = useFezMarkReadMutation();
+  const {updateMute, updateFavorite, markRead, invalidateFez} = useFezCacheReducer();
   const [muteRefreshing, setMuteRefreshing] = useState(false);
+  const [favoriteRefreshing, setFavoriteRefreshing] = useState(false);
   const [readRefreshing, setReadRefreshing] = useState(false);
   const commonNavigation = useCommonStack();
   const isLfg = FezType.isLFGType(props.fez.fezType);
@@ -60,16 +63,60 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
     [muteMutation, props.fez.fezID, props.fez.members, updateMute, invalidateFez],
   );
 
+  /**
+   * Toggle the favorite flag on this chat. Optimistic: flip the cache before the request, roll
+   * back and invalidate on failure. Swiftarr rejects favoriting a muted chat, hence the disabled
+   * state on the button.
+   */
+  const handleFavorite = useCallback(
+    (swipeable: SwipeableMethods) => {
+      if (!props.fez.members) {
+        return;
+      }
+      const newFavorite = !props.fez.members.isFavorite;
+      updateFavorite(props.fez.fezID, newFavorite);
+      setFavoriteRefreshing(true);
+      favoriteMutation.mutate(
+        {
+          action: newFavorite ? 'favorite' : 'unfavorite',
+          fezID: props.fez.fezID,
+        },
+        {
+          onError: () => {
+            updateFavorite(props.fez.fezID, !newFavorite);
+            invalidateFez(props.fez.fezID);
+          },
+          onSettled: () => {
+            setFavoriteRefreshing(false);
+            swipeable.reset();
+          },
+        },
+      );
+    },
+    [favoriteMutation, props.fez.fezID, props.fez.members, updateFavorite, invalidateFez],
+  );
+
   const handleMarkAsRead = useCallback(
-    async (swipeable: SwipeableMethods) => {
+    (swipeable: SwipeableMethods) => {
       swipeable.reset();
       setReadRefreshing(true);
-      await refetch();
+      // Applied eagerly with no rollback: markRead collapses readCount toward postCount and
+      // can't be un-applied without capturing the prior counts. A failed request self-heals
+      // on the next refetch.
       markRead(props.fez.fezID);
-      setReadRefreshing(false);
-      swipeable.reset();
+      markReadMutation.mutate(
+        {
+          fezID: props.fez.fezID,
+        },
+        {
+          onSettled: () => {
+            setReadRefreshing(false);
+            swipeable.reset();
+          },
+        },
+      );
     },
-    [refetch, markRead, props.fez.fezID],
+    [markRead, markReadMutation, props.fez.fezID],
   );
 
   /**
@@ -119,7 +166,16 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
           style={{backgroundColor: theme.colors.elevation.level2}}
           onPress={() => handleMute(swipeable)}
           refreshing={muteRefreshing}
-          disabled={muteRefreshing}
+          disabled={!!props.fez.members?.isFavorite || muteRefreshing}
+        />
+        <SwipeableButton
+          testID={'seamailFavorite-button'}
+          text={props.fez.members?.isFavorite ? 'Unfavorite' : 'Favorite'}
+          iconName={props.fez.members?.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
+          style={{backgroundColor: theme.colors.elevation.level4}}
+          onPress={() => handleFavorite(swipeable)}
+          refreshing={favoriteRefreshing}
+          disabled={!!props.fez.members?.isMuted || favoriteRefreshing}
         />
         <SwipeableButton
           testID={'seamailRead-button'}
@@ -136,7 +192,7 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
 
   return (
     <BaseSwipeable
-      key={`${props.fez.fezID}-${props.fez.members?.isMuted}`}
+      key={`${props.fez.fezID}-${props.fez.members?.isMuted}-${props.fez.members?.isFavorite}`}
       enabled={props.enabled !== undefined ? props.enabled && !!props.fez.members : !!props.fez.members}
       renderLeftPanel={showParentScreen ? renderLeftPanel : undefined}
       renderRightPanel={renderRightPanel}>

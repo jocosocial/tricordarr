@@ -12,6 +12,11 @@ export interface LoginFormValues {
   password: string;
 }
 
+export interface UsernameLookupFormValues {
+  registrationCode: string;
+  recoveryKey: string;
+}
+
 export interface UserRegistrationFormValues {
   username: string;
   password: string;

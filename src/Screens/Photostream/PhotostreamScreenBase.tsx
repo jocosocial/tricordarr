@@ -88,6 +88,11 @@ export const PhotostreamScreenBase = ({
         handleLoadNext={handleLoadNext}
         keyExtractor={keyExtractor}
         renderListFooter={EndResultsFooter}
+        // FlashList v2 enables maintainVisibleContentPosition by default, which holds the
+        // user's scroll position when content is added at the top. An upload prepends into
+        // this list (usePhotostreamCacheReducer), so that default would park the new photo
+        // just above the viewport and undo the scrollToTopIntent effect above.
+        maintainVisibleContentPosition={{disabled: true}}
       />
       {showFAB && <PhotostreamFAB showLabel={true} />}
     </AppView>

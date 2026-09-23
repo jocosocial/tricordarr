@@ -27,7 +27,7 @@ const BoardgameSearchScreenInner = () => {
   const {commonStyles} = useStyles();
   const [queryEnable, setQueryEnable] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
-  const {data, hasNextPage, fetchNextPage, isFetching, refetch} = useBoardgamesQuery({
+  const {data, hasNextPage, fetchNextPage, isFetching, isFetchingNextPage, refetch} = useBoardgamesQuery({
     search: searchQuery,
     options: {
       enabled: queryEnable,
@@ -75,6 +75,7 @@ const BoardgameSearchScreenInner = () => {
         onSearch={onSearch}
         onChangeSearch={onChangeSearch}
         style={commonStyles.marginBottom}
+        loading={isFetching && !isFetchingNextPage}
       />
       <BoardgameFlatList
         items={items}

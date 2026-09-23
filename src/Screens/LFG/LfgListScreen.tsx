@@ -67,7 +67,9 @@ const LfgListScreenInner = ({
   cruiseDayInitial,
   scrollToTopIntent,
 }: LfgListScreenInnerProps) => {
-  const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} = useLfgFilter();
+  const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew, lfgFavoriteFilter} = useLfgFilter();
+  // Only /fez/joined and /fez/owner accept ?favorite=true; don't leak the filter onto the others.
+  const supportsFavorite = endpoint === 'joined' || endpoint === 'owner';
   const {commonStyles} = useStyles();
   const [fezList, setFezList] = useState<FezData[]>([]);
   const listRef = useRef<FlashListRef<FezData>>(null);
@@ -88,6 +90,7 @@ const LfgListScreenInner = ({
       cruiseDay: endpoint === 'former' || selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
       hidePast: lfgHidePastFilter,
       onlyNew: lfgOnlyNew,
+      favorite: supportsFavorite ? lfgFavoriteFilter : undefined,
     });
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const {handleLoadNext} = usePagination({
@@ -129,14 +132,14 @@ const LfgListScreenInner = ({
                   })
                 }
               />
-              <LfgFilterMenu enableUnread={endpoint === 'joined'} />
+              <LfgFilterMenu enableUnread={endpoint === 'joined'} enableFavorite={supportsFavorite} />
             </>
           )}
           <LfgListActionsMenu endpoint={endpoint} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableFilters, endpoint, navigation]);
+  }, [enableFilters, endpoint, navigation, supportsFavorite]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
