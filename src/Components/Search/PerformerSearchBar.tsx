@@ -81,6 +81,7 @@ export const PerformerSearchBar = ({performerType}: PerformerSearchBarProps) => 
         onSearch={onSearch}
         onChangeSearch={onChangeSearch}
         onClear={onClear}
+        loading={isFetching && !isFetchingNextPage}
       />
       <PerformerFlashList
         ref={listRef}

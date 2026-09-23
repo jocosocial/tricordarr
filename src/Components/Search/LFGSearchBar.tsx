@@ -77,6 +77,7 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
         searchQuery={searchQuery}
         onSearch={onSearch}
         onChangeSearch={onChangeSearch}
+        loading={isFetching && !isFetchingNextPage}
       />
       <ScheduleFlatList
         listRef={listRef}
