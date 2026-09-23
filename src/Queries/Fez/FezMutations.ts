@@ -31,6 +31,20 @@ export const useFezUpdateMutation = () => {
   return useTokenAuthMutation(fezUpdateQueryHandler);
 };
 
+/**
+ * Marks all posts in a chat as read without fetching them.
+ * POST /api/v3/fez/:fez_ID/markRead
+ */
+export const useFezMarkReadMutation = () => {
+  const {apiPost} = useSwiftarrQueryClient();
+
+  const fezMarkReadQueryHandler = async ({fezID}: WithFezID) => {
+    return await apiPost(`/fez/${fezID}/markRead`);
+  };
+
+  return useTokenAuthMutation(fezMarkReadQueryHandler);
+};
+
 export const useFezCancelMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
 
