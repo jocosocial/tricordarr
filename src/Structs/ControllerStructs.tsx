@@ -891,6 +891,10 @@ export interface UserRecoveryData {
 /// Returns info about a single Photo from the Photostream.
 ///
 /// Incorporated into `PhotostreamListData`, which is returned by: `GET /api/v3/photostream`
+///
+/// Intentionally has no `getCacheKeys()`: the `/photostream` caches are patched in place by
+/// `usePhotostreamCacheReducer` (upload prepends, moderator delete removes) rather than
+/// invalidated, so the stream never refetches after a write. See #622.
 export interface PhotostreamImageData {
   /// The ID of the photostream record (NOT the id of the image)..
   postID: number;
@@ -904,12 +908,6 @@ export interface PhotostreamImageData {
   event?: EventData;
   /// The boat location this image was tagged with, if any. Value will be a raw string from  `PhotoStreamBoatLocation` or nil.  Stream photos will be tagged with either an event or a location.
   location?: string;
-}
-
-export namespace PhotostreamImageData {
-  export const getCacheKeys = (): QueryKey[] => {
-    return [['/photostream'], ['/photostream/placenames']];
-  };
 }
 
 /// Returns paginated data on photos in the photo stream. Non-Mods should only have access to the most recent photos, with no pagination.
@@ -1689,8 +1687,13 @@ export interface PhotostreamModerationData {
 }
 
 export namespace PhotostreamModerationData {
+  /**
+   * The `/photostream` list caches are deliberately absent: they are patched in place by
+   * `usePhotostreamCacheReducer` rather than invalidated (#622). Only the moderation-side
+   * caches belong here.
+   */
   export const getCacheKeys = (photoID?: string): QueryKey[] => {
-    const keys = ReportModerationData.getCacheKeys().concat(PhotostreamImageData.getCacheKeys());
+    const keys = ReportModerationData.getCacheKeys();
     if (photoID) {
       keys.push([`/mod/photostream/${photoID}`]);
     }

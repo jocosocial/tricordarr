@@ -1,6 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -14,7 +13,6 @@ import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScre
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {PhotostreamScreenBase} from '#src/Screens/Photostream/PhotostreamScreenBase';
-import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
 export type Props = StackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
 
@@ -33,7 +31,9 @@ export const PhotostreamScreen = (props: Props) => {
 const PhotostreamScreenInner = ({navigation, route}: Props) => {
   const [locationName, setLocationName] = useState<string | undefined>(undefined);
   const queryResult = usePhotostreamQuery({locationName});
-  const flashListRef = useRef<FlashListRef<PhotostreamImageData>>(null);
+  // Only read and forwarded here -- PhotostreamScreenBase owns the effect that acts on it,
+  // the same as the event and user screens. This screen used to duplicate that effect against
+  // a FlashList ref it passed down, which meant two scrollToOffset calls on the same list.
   const {scrollToTopIntent} = route.params || {};
 
   const getNavButtons = useCallback(() => {
@@ -57,19 +57,11 @@ const PhotostreamScreenInner = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  // Scroll to top when intent is dispatched (e.g., after uploading a photo)
-  useEffect(() => {
-    if (scrollToTopIntent) {
-      flashListRef.current?.scrollToOffset({offset: 0, animated: false});
-    }
-  }, [scrollToTopIntent]);
-
   return (
     <PhotostreamScreenBase
       queryResult={queryResult}
       showFAB={true}
       onScrollThreshold={onScrollThreshold}
-      flashListRef={flashListRef}
       scrollToTopIntent={scrollToTopIntent}
     />
   );
