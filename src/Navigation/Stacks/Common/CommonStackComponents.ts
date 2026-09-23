@@ -66,6 +66,7 @@ export type CommonStackParamList = {
     location?: string;
   };
   AccountRecoveryScreen: undefined;
+  UsernameLookupScreen: undefined;
   RecoveryKeyScreen: {
     recoveryKey: string;
     username: string;
@@ -433,6 +434,7 @@ export enum CommonStackComponents {
   siteUIScreen = 'SiteUIScreen',
   mapScreen = 'MapScreen',
   accountRecoveryScreen = 'AccountRecoveryScreen',
+  usernameLookupScreen = 'UsernameLookupScreen',
   recoveryKeyScreen = 'RecoveryKeyScreen',
   reportScreen = 'ReportScreen',
   reportHelpScreen = 'ReportHelpScreen',

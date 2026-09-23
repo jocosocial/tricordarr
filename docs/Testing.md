@@ -99,6 +99,7 @@ Checklist of manual QA cases not yet covered by automated tests.
 * Create account
 * Login
 * Forgot password
+* Forgot username
 
 #### Self Profile
 * Edit

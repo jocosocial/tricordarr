@@ -893,6 +893,16 @@ export interface UserRecoveryData {
   newPassword: string;
 }
 
+/// Used to look up a forgotten username.
+///
+/// Required by: `POST /api/v3/auth/username`
+export interface UserUsernameLookupData {
+  /// The registration code mailed to the user by THO before the cruise.
+  registrationCode: string;
+  /// The string to use – either the account password or the recovery key.
+  recoveryKey: string;
+}
+
 /// Returns info about a single Photo from the Photostream.
 ///
 /// Incorporated into `PhotostreamListData`, which is returned by: `GET /api/v3/photostream`
