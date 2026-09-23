@@ -33,7 +33,12 @@ jest.mock('react-native', () => ({
 jest.mock('react-native-paper', () => ({IconButton: 'IconButton'}));
 
 jest.mock('#src/Components/Forms/Fields/EmojiPickerField', () => ({EmojiPickerField: () => null}));
-jest.mock('#src/Components/Forms/Fields/MentionTextField', () => ({MentionTextField: () => null}));
+// The provider must pass its children through: the submit button this test drives lives inside it.
+jest.mock('#src/Components/Forms/Fields/MentionTextField', () => ({
+  MentionTextFieldProvider: ({children}: {children: React.ReactNode}) => children,
+  MentionTextFieldSuggestions: () => null,
+  MentionTextField: () => null,
+}));
 jest.mock('#src/Components/Views/Content/ContentInsertMenuView', () => ({ContentInsertMenuView: () => null}));
 jest.mock('#src/Components/Views/Content/ContentInsertPhotosView', () => ({ContentInsertPhotosView: () => null}));
 jest.mock('#src/Components/Views/Content/ContentPostLengthView', () => ({ContentPostLengthView: () => null}));
