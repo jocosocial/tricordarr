@@ -138,6 +138,7 @@ const UsersListScreenInner = ({navigation, mode}: Props & {mode: UserRelationMod
         renderListHeader={renderListHeader}
         onUserPress={handleUserPress}
         swipeableMode={mode}
+        scrollButtonRaised={!enableSelection}
       />
       {!enableSelection && (
         <UserListFAB

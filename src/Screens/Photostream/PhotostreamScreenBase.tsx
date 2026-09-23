@@ -88,6 +88,7 @@ export const PhotostreamScreenBase = ({
         handleLoadNext={handleLoadNext}
         keyExtractor={keyExtractor}
         renderListFooter={EndResultsFooter}
+        scrollButtonRaised={showFAB}
       />
       {showFAB && <PhotostreamFAB showLabel={true} />}
     </AppView>

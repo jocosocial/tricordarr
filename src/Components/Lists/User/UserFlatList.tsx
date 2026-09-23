@@ -14,6 +14,8 @@ interface UserFlatListProps {
   renderListHeader: () => React.ReactNode;
   onUserPress: (userHeader: UserHeader) => void;
   swipeableMode?: UserRelationMode;
+  /** When true, anchor the scroll buttons above a bottom-right FAB. */
+  scrollButtonRaised?: boolean;
 }
 
 /**
@@ -26,6 +28,7 @@ export const UserFlatList = ({
   renderListHeader,
   onUserPress,
   swipeableMode,
+  scrollButtonRaised,
 }: UserFlatListProps) => {
   const {enableSelection, setEnableSelection, selectedItems} = useSelection();
   const {getListSeparator, getListHeader: getDividerHeader, getListFooter} = useAppFlashList({data: userHeaders});
@@ -62,6 +65,7 @@ export const UserFlatList = ({
       renderItemSeparator={getListSeparator}
       renderListHeader={getListHeader}
       renderListFooter={getListFooter}
+      scrollButtonRaised={scrollButtonRaised}
       maintainVisibleContentPosition={{disabled: true}}
     />
   );
