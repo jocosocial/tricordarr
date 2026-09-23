@@ -35,6 +35,12 @@ const useMentionTextFieldContext = () => {
 interface MentionTextFieldProviderProps {
   name: string;
   /**
+   * Configures the '@' trigger. When false no suggestions are offered and no mention markup can
+   * be produced, leaving anything the user types starting with '@' as plain text. Required
+   * rather than defaulted so each composer states which it wants.
+   */
+  enableMentions: boolean;
+  /**
    * Receives the underlying TextInput so callers can focus it or move the caret. Needed
    * when something outside the form writes into the field, since the user is otherwise
    * left with text they cannot type after.
@@ -52,7 +58,7 @@ interface MentionTextFieldProviderProps {
  * input sits in a row flanked by the insert and submit buttons. The hooks here need Formik
  * context, so this has to be a component inside <Formik>, not a hook the form itself calls.
  */
-export const MentionTextFieldProvider = ({name, inputRef, children}: MentionTextFieldProviderProps) => {
+export const MentionTextFieldProvider = ({name, enableMentions, inputRef, children}: MentionTextFieldProviderProps) => {
   const {commonStyles} = useStyles();
   const [field, _, helpers] = useField<string>(name);
   const textInputRef = useRef<TextInput | null>(null);
@@ -74,20 +80,25 @@ export const MentionTextFieldProvider = ({name, inputRef, children}: MentionText
     [callerInputRef],
   );
 
-  const triggersConfig: TriggersConfig<'mention' | 'hashtag'> = useMemo(
-    () => ({
-      mention: {
-        trigger: '@',
-        textStyle: commonStyles.bold,
-      },
+  const triggersConfig: TriggersConfig<'mention' | 'hashtag'> = useMemo(() => {
+    const config: Partial<TriggersConfig<'mention' | 'hashtag'>> = {
       hashtag: {
         trigger: '#',
         allowedSpacesCount: 0,
         textStyle: commonStyles.bold,
       },
-    }),
-    [commonStyles.bold],
-  );
+    };
+    if (enableMentions) {
+      config.mention = {
+        trigger: '@',
+        textStyle: commonStyles.bold,
+      };
+    }
+    // The library types a trigger config as a complete Record, but only populates triggers.<name>
+    // while that trigger is actually active, so consumers already treat the entries as optional
+    // (see the triggers.mention checks below). Omitting one here is what turns the trigger off.
+    return config as TriggersConfig<'mention' | 'hashtag'>;
+  }, [commonStyles.bold, enableMentions]);
 
   const patternsConfig: PatternsConfig = useMemo(
     () => ({

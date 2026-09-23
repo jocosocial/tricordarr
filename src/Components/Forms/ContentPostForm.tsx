@@ -66,6 +66,12 @@ interface ContentPostFormProps {
   onPress?: () => void;
   overrideSubmitting?: boolean;
   enablePhotos?: boolean;
+  /**
+   * Offer @mention suggestions and insert mention markup. Defaults to false because a mention
+   * only does anything in a forum post; in a chat the markup is inert, so a composer that has
+   * not opted in leaves '@' as plain text.
+   */
+  enableMentions?: boolean;
   maxLength?: number;
   maxPhotos?: number;
   initialValues?: PostContentData;
@@ -81,6 +87,7 @@ export const ContentPostForm = ({
   onPress,
   overrideSubmitting,
   enablePhotos = true,
+  enableMentions = false,
   maxLength = 500,
   maxPhotos = 1,
   initialValues,
@@ -200,7 +207,7 @@ export const ContentPostForm = ({
         <View style={styles.formOuterContainer}>
           <ElevationPrivilegeSync />
           <ScrollView keyboardShouldPersistTaps={'always'} bounces={false} scrollsToTop={false}>
-            <MentionTextFieldProvider name={'text'} inputRef={inputRef}>
+            <MentionTextFieldProvider name={'text'} enableMentions={enableMentions} inputRef={inputRef}>
               <View style={styles.formContainer}>
                 {emojiPickerVisible && <EmojiPickerField />}
                 <ContentInsertMenuView
