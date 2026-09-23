@@ -3,6 +3,7 @@ import React from 'react';
 import {UserSearchBarBaseComponent} from '#src/Components/Search/UserSearchBar/UserSearchBarBase';
 import {UserSearchBarProps} from '#src/Components/Search/UserSearchBar/UserSearchBarTypes';
 import {useUserSearchBar} from '#src/Components/Search/UserSearchBar/useUserSearchBar';
+import {UserMatchSort} from '#src/Enums/UserMatchSort';
 import {useUserMatchQuery} from '#src/Queries/Users/UsersQueries';
 
 /**
@@ -15,6 +16,7 @@ export const UserMatchSearchBar = ({
   onPress,
   clearOnPress = false,
   favorers = false,
+  sort = UserMatchSort.favorites,
   label = 'Search for users',
   autoSearch = true,
   excludeSelf = true,
@@ -27,9 +29,10 @@ export const UserMatchSearchBar = ({
 
   // autoSearchLength should be undefined, but the important part is setting
   // enabled: false when we disable autoSearch (autoSearch: false).
-  const {data, refetch} = useUserMatchQuery({
+  const {data, refetch, isFetching} = useUserMatchQuery({
     searchQuery: searchQuery,
     favorers: favorers,
+    sort: sort,
     autoSearchLength: autoSearch ? 2 : undefined,
     options: {
       ...(autoSearch ? {} : {enabled: false}),
@@ -48,6 +51,7 @@ export const UserMatchSearchBar = ({
       label={label}
       autoSearch={autoSearch}
       excludeSelf={excludeSelf}
+      loading={isFetching}
       testID={testID}
     />
   );

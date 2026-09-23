@@ -7,6 +7,14 @@ import {
 import {FezType} from '#src/Enums/FezType';
 import {FezData, UserNotificationData} from '#src/Structs/ControllerStructs';
 
+/**
+ * Coerce a count to a number for summing.
+ *
+ * The top-level UserNotificationData counts are all declared required now (issue #623), so this is
+ * no longer a type-driven guard for those. It stays because these structs are compile-time
+ * assertions over raw JSON with no runtime validation: one absent field would otherwise turn the
+ * whole sum into NaN and render "NaN" in a tab badge. `moderatorData` is genuinely optional.
+ */
 const valueOrZero = (value?: number) => value || 0;
 
 const totalNewCount = (data?: UserNotificationData) => {

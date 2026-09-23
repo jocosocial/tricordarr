@@ -148,6 +148,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
           overrideSubmitting={forumCreateMutation.isPending}
           onPress={onSubmit}
           enablePhotos={true}
+          enableMentions={true}
           maxLength={2000}
           maxPhotos={maxForumPostImages}
           disabled={!forumFormValid}

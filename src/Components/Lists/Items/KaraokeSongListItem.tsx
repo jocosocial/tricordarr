@@ -45,7 +45,7 @@ const KaraokeSongListItemInner = ({item, onPress, swipeableEnabled = false}: Kar
   const {refreshing, setRefreshing} = useRefresh({});
 
   const onFavoritePress = useCallback(() => {
-    if (!item.songID || item.isFavorite === undefined) return;
+    if (!item.songID) return;
     setRefreshing(true);
     favoriteMutation.mutate(
       {songID: item.songID, action: item.isFavorite ? 'unfavorite' : 'favorite'},
@@ -117,7 +117,7 @@ const KaraokeSongListItemInner = ({item, onPress, swipeableEnabled = false}: Kar
       <View style={styles.rightContainer}>
         {refreshing && <ActivityIndicator />}
         {!refreshing && (
-          <TouchableOpacity onPress={onFavoritePress}>
+          <TouchableOpacity onPress={onFavoritePress} disabled={favoriteMutation.isPending}>
             {item.isFavorite ? (
               <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
             ) : (
@@ -127,7 +127,7 @@ const KaraokeSongListItemInner = ({item, onPress, swipeableEnabled = false}: Kar
         )}
       </View>
     ),
-    [item, refreshing, onFavoritePress, styles.rightContainer, theme.colors.twitarrYellow],
+    [item, refreshing, onFavoritePress, favoriteMutation.isPending, styles.rightContainer, theme.colors.twitarrYellow],
   );
 
   const listItem = (

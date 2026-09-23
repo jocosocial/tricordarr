@@ -29,6 +29,8 @@ export enum UserRoleType {
   performerselfeditor = 'performerselfeditor',
   /// Account Managers can look up accounts by registration code and re-enable one-time password recovery.
   accountmanager = 'accountmanager',
+  /// Hunt Managers can create and modify Puzzle Hunts.
+  huntmanager = 'huntmanager',
 }
 
 export namespace UserRoleType {
@@ -50,6 +52,8 @@ export namespace UserRoleType {
         return 'Shadow Event Performer Editor';
       case UserRoleType.accountmanager:
         return 'Account Manager';
+      case UserRoleType.huntmanager:
+        return 'Hunt Manager';
     }
   };
 

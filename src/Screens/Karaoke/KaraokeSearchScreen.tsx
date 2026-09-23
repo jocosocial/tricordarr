@@ -40,7 +40,7 @@ const KaraokeSearchScreenInner = (_props: Props) => {
   const trimmedSubmitted = submittedQuery.trim();
   const canSearch = trimmedSubmitted.length >= 3 || trimmedSubmitted.length === 1 || trimmedSubmitted === '#';
 
-  const {data, refetch, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage} = useKaraokeSongsQuery({
+  const {data, refetch, isLoading, isFetching, hasNextPage, fetchNextPage, isFetchingNextPage} = useKaraokeSongsQuery({
     search: canSearch ? submittedQuery : undefined,
   });
 
@@ -75,6 +75,7 @@ const KaraokeSearchScreenInner = (_props: Props) => {
           setSearchQuery('');
           setSubmittedQuery('');
         }}
+        loading={isFetching && !isFetchingNextPage}
       />
       <KaraokeSongList
         ref={listRef}
