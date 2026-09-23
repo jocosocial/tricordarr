@@ -340,6 +340,9 @@ export interface FezContentData {
   createdByModerator?: boolean;
   /// If TRUE, the Fez will be created by user @TwitarrTeam instead of the current user. Current user must be a TT member.
   createdByTwitarrTeam?: boolean;
+  /// If set, creates the fez's opening post at creation time instead of requiring a separate call.
+  /// Not valid for personal events, which don't have posts. Seamail types must have zero images.
+  firstPost?: PostContentData;
 }
 
 export interface ReportData {
