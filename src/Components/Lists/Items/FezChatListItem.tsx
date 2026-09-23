@@ -72,6 +72,13 @@ const FezChatListItemInternal = ({fez, enableSelection, setEnableSelection, sele
           ...commonStyles.alignItemsEnd,
           ...commonStyles.paddingLeftSmall,
         },
+        rightRow: {
+          ...commonStyles.flexRow,
+          alignItems: 'flex-start',
+        },
+        favoriteContainer: {
+          ...commonStyles.paddingLeftSmall,
+        },
         avatar: {
           ...commonStyles.paddingLeftSmall,
           ...commonStyles.justifyCenter,
@@ -165,17 +172,33 @@ const FezChatListItemInternal = ({fez, enableSelection, setEnableSelection, sele
       );
     }
 
+    // Unlike mute, the star does not replace the unread count: a favorited chat is one you care
+    // about, so hiding its count would be exactly backwards. It gets its own column to the right
+    // instead of a line of its own in the stack, so the count and timestamp stay aligned with
+    // each other and merely shift left to make room for it. It sits at the top of that row,
+    // level with the message count.
     return (
-      <View style={styles.rightContainer}>
-        <SeamailMessageCountIndicator badgeCount={badgeCount} totalPostCount={totalPostCount} />
-        {showParticipation && (
-          <Text variant={'bodyMedium'} style={styles.participantStyle}>
-            {getParticipantLabel(fez)}
-          </Text>
-        )}
-        <View>
-          <RelativeTimeTag date={new Date(fez.lastModificationTime)} variant={'bodyMedium'} style={styles.timeStyle} />
+      <View style={styles.rightRow}>
+        <View style={styles.rightContainer}>
+          <SeamailMessageCountIndicator badgeCount={badgeCount} totalPostCount={totalPostCount} />
+          {showParticipation && (
+            <Text variant={'bodyMedium'} style={styles.participantStyle}>
+              {getParticipantLabel(fez)}
+            </Text>
+          )}
+          <View>
+            <RelativeTimeTag
+              date={new Date(fez.lastModificationTime)}
+              variant={'bodyMedium'}
+              style={styles.timeStyle}
+            />
+          </View>
         </View>
+        {fez.members?.isFavorite && (
+          <View style={styles.favoriteContainer}>
+            <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
+          </View>
+        )}
       </View>
     );
   };
