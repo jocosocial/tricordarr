@@ -6,7 +6,11 @@ import * as Yup from 'yup';
 
 import {SubmitIconButton} from '#src/Components/Buttons/IconButtons/SubmitIconButton';
 import {EmojiPickerField} from '#src/Components/Forms/Fields/EmojiPickerField';
-import {MentionTextField} from '#src/Components/Forms/Fields/MentionTextField';
+import {
+  MentionTextField,
+  MentionTextFieldProvider,
+  MentionTextFieldSuggestions,
+} from '#src/Components/Forms/Fields/MentionTextField';
 import {ContentInsertMenuView} from '#src/Components/Views/Content/ContentInsertMenuView';
 import {ContentInsertPhotosView} from '#src/Components/Views/Content/ContentInsertPhotosView';
 import {ContentPostLengthView} from '#src/Components/Views/Content/ContentPostLengthView';
@@ -196,44 +200,43 @@ export const ContentPostForm = ({
         <View style={styles.formOuterContainer}>
           <ElevationPrivilegeSync />
           <ScrollView keyboardShouldPersistTaps={'always'} bounces={false} scrollsToTop={false}>
-            <View style={styles.formContainer}>
-              {emojiPickerVisible && <EmojiPickerField />}
-              <ContentInsertMenuView
-                enablePhotos={enablePhotos}
-                visible={insertMenuVisible}
-                setVisible={setInsertMenuVisible}
-                setEmojiVisible={setEmojiPickerVisible}
-                maxPhotos={maxPhotos}
-              />
-              <View style={styles.formView}>
-                <View style={styles.inputWrapperViewSide}>
-                  <IconButton
-                    testID={'contentPostInsert-button'}
-                    icon={emojiPickerVisible || insertMenuVisible ? AppIcons.insertClose : AppIcons.insert}
-                    onPress={handleInsertPress}
-                  />
+            <MentionTextFieldProvider name={'text'} inputRef={inputRef}>
+              <View style={styles.formContainer}>
+                {emojiPickerVisible && <EmojiPickerField />}
+                <ContentInsertMenuView
+                  enablePhotos={enablePhotos}
+                  visible={insertMenuVisible}
+                  setVisible={setInsertMenuVisible}
+                  setEmojiVisible={setEmojiPickerVisible}
+                  maxPhotos={maxPhotos}
+                />
+                {/* Above the row, not inside it, so the suggestions get the composer's full width. */}
+                <MentionTextFieldSuggestions />
+                <View style={styles.formView}>
+                  <View style={styles.inputWrapperViewSide}>
+                    <IconButton
+                      testID={'contentPostInsert-button'}
+                      icon={emojiPickerVisible || insertMenuVisible ? AppIcons.insertClose : AppIcons.insert}
+                      onPress={handleInsertPress}
+                    />
+                  </View>
+                  <View style={styles.inputWrapperView}>
+                    <MentionTextField testID={'contentPostText-input'} style={styles.input} />
+                    <ContentInsertPhotosView />
+                  </View>
+                  <View style={styles.inputWrapperViewSide}>
+                    <SubmitIconButton
+                      disabled={disabled || !values.text || !isValid}
+                      submitting={overrideSubmitting || isSubmitting}
+                      onPress={onPress || handleSubmit}
+                      withPrivilegeColors={true}
+                      testID={'contentPostSubmit-button'}
+                    />
+                  </View>
                 </View>
-                <View style={styles.inputWrapperView}>
-                  <MentionTextField
-                    name={'text'}
-                    testID={'contentPostText-input'}
-                    style={styles.input}
-                    inputRef={inputRef}
-                  />
-                  <ContentInsertPhotosView />
-                </View>
-                <View style={styles.inputWrapperViewSide}>
-                  <SubmitIconButton
-                    disabled={disabled || !values.text || !isValid}
-                    submitting={overrideSubmitting || isSubmitting}
-                    onPress={onPress || handleSubmit}
-                    withPrivilegeColors={true}
-                    testID={'contentPostSubmit-button'}
-                  />
-                </View>
+                {dirty && <ContentPostLengthView content={values.text} maxChars={maxLength} />}
               </View>
-              {dirty && <ContentPostLengthView content={values.text} maxChars={maxLength} />}
-            </View>
+            </MentionTextFieldProvider>
           </ScrollView>
         </View>
       )}

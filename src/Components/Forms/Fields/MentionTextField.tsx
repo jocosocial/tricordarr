@@ -1,5 +1,5 @@
 import {useField} from 'formik';
-import React, {useCallback, useMemo, useRef} from 'react';
+import React, {createContext, useCallback, useContext, useMemo, useRef} from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
 import {TextInput} from 'react-native';
 import {PatternsConfig, TriggersConfig, useMentions} from 'react-native-controlled-mentions';
@@ -7,21 +7,54 @@ import {PatternsConfig, TriggersConfig, useMentions} from 'react-native-controll
 import {ContentPostMentionSuggestionsView} from '#src/Components/Views/Content/ContentPostMentionSuggestionsView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
-interface MentionTextFieldProps {
+type MentionTriggerProps = React.ComponentProps<typeof ContentPostMentionSuggestionsView>;
+
+interface MentionTextFieldContextType {
+  /** Props from useMentions that drive the TextInput (onChangeText, onSelectionChange, children). */
+  textInputProps: ReturnType<typeof useMentions>['textInputProps'];
+  /** Undefined while no @mention is being typed. */
+  mentionTriggerProps?: MentionTriggerProps;
+  setInputRefs: (node: TextInput | null) => void;
+  onBlur: () => void;
+}
+
+const MentionTextFieldContext = createContext<MentionTextFieldContextType | undefined>(undefined);
+
+/**
+ * Reads the mention wiring published by MentionTextFieldProvider. Throws rather than degrading
+ * silently, since a field rendered outside the provider would look fine but never suggest.
+ */
+const useMentionTextFieldContext = () => {
+  const context = useContext(MentionTextFieldContext);
+  if (!context) {
+    throw new Error('MentionTextField components must be rendered inside a MentionTextFieldProvider.');
+  }
+  return context;
+};
+
+interface MentionTextFieldProviderProps {
   name: string;
-  testID: string;
-  style?: StyleProp<ViewStyle>;
   /**
    * Receives the underlying TextInput so callers can focus it or move the caret. Needed
    * when something outside the form writes into the field, since the user is otherwise
    * left with text they cannot type after.
    */
   inputRef?: React.MutableRefObject<TextInput | null>;
+  children: React.ReactNode;
 }
 
-export const MentionTextField = (props: MentionTextFieldProps) => {
+/**
+ * Owns the @mention/#hashtag wiring for a Formik text field and publishes it to
+ * MentionTextFieldSuggestions and MentionTextField below it.
+ *
+ * These are split rather than rendered as one unit because the suggestion list and the input
+ * belong at different places in the layout: the list needs the composer's full width, while the
+ * input sits in a row flanked by the insert and submit buttons. The hooks here need Formik
+ * context, so this has to be a component inside <Formik>, not a hook the form itself calls.
+ */
+export const MentionTextFieldProvider = ({name, inputRef, children}: MentionTextFieldProviderProps) => {
   const {commonStyles} = useStyles();
-  const [field, _, helpers] = useField<string>(props.name);
+  const [field, _, helpers] = useField<string>(name);
   const textInputRef = useRef<TextInput | null>(null);
   const pendingMentionInsertionRef = useRef<boolean>(false);
 
@@ -30,7 +63,7 @@ export const MentionTextField = (props: MentionTextFieldProps) => {
    * doesn't detach and reattach it on every render, which would leave the caller's ref
    * momentarily null.
    */
-  const callerInputRef = props.inputRef;
+  const callerInputRef = inputRef;
   const setInputRefs = useCallback(
     (node: TextInput | null) => {
       textInputRef.current = node;
@@ -125,19 +158,51 @@ export const MentionTextField = (props: MentionTextFieldProps) => {
     };
   }, [triggers.mention, wrappedOnSelect]);
 
+  const onBlur = useCallback(() => helpers.setTouched(true, true), [helpers]);
+
+  const contextValue = useMemo(
+    () => ({textInputProps, mentionTriggerProps, setInputRefs, onBlur}),
+    [textInputProps, mentionTriggerProps, setInputRefs, onBlur],
+  );
+
+  return <MentionTextFieldContext.Provider value={contextValue}>{children}</MentionTextFieldContext.Provider>;
+};
+
+/**
+ * The @mention suggestion list for the enclosing provider's field. Renders nothing unless a
+ * mention is being typed. Place this where it can occupy the composer's full width.
+ */
+export const MentionTextFieldSuggestions = () => {
+  const {mentionTriggerProps} = useMentionTextFieldContext();
+
+  if (!mentionTriggerProps) {
+    return null;
+  }
+
+  return <ContentPostMentionSuggestionsView {...mentionTriggerProps} />;
+};
+
+interface MentionTextFieldProps {
+  testID: string;
+  style?: StyleProp<ViewStyle>;
+}
+
+/**
+ * The text input for the enclosing provider's field.
+ */
+export const MentionTextField = ({testID, style}: MentionTextFieldProps) => {
+  const {textInputProps, setInputRefs, onBlur} = useMentionTextFieldContext();
+
   return (
-    <>
-      {mentionTriggerProps && <ContentPostMentionSuggestionsView {...mentionTriggerProps} />}
-      <TextInput
-        testID={props.testID}
-        ref={setInputRefs}
-        // The textInputProps provides onChangeText and onSelectionChange.
-        {...textInputProps}
-        style={props.style}
-        onBlur={() => helpers.setTouched(true, true)}
-        multiline={true}
-        underlineColorAndroid={'transparent'}
-      />
-    </>
+    <TextInput
+      testID={testID}
+      ref={setInputRefs}
+      // The textInputProps provides onChangeText and onSelectionChange.
+      {...textInputProps}
+      style={style}
+      onBlur={onBlur}
+      multiline={true}
+      underlineColorAndroid={'transparent'}
+    />
   );
 };
