@@ -24,6 +24,11 @@ interface SearchBarBaseProps {
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   autoCorrect?: boolean;
   spellCheck?: boolean;
+  /**
+   * Shows a spinner in place of the clear icon while a search request is in flight. Callers
+   * that render their results in a list with its own refresh indicator don't need this.
+   */
+  loading?: boolean;
   testID: string;
 }
 
@@ -39,6 +44,7 @@ export const SearchBarBase = ({
   autoCapitalize = 'none',
   autoCorrect,
   spellCheck,
+  loading = false,
   testID,
 }: SearchBarBaseProps) => {
   const {commonStyles} = useStyles();
@@ -170,6 +176,7 @@ export const SearchBarBase = ({
         autoCapitalize={autoCapitalize}
         autoCorrect={autoCorrect}
         spellCheck={spellCheck}
+        loading={loading}
       />
       {showHelp && <HelperText type={'error'}>{`Must enter >${minLength - 1} characters to search`}</HelperText>}
     </>

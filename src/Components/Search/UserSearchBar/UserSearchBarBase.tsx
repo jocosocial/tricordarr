@@ -47,6 +47,8 @@ interface UserSearchBarBaseProps {
    * It still shows up but is disabled.
    */
   excludeSelf?: boolean;
+  /** True while the search request is in flight. */
+  loading?: boolean;
   testID: string;
 }
 
@@ -65,6 +67,7 @@ export const UserSearchBarBaseComponent = ({
   label = 'Search for users',
   autoSearch = true,
   excludeSelf = false,
+  loading = false,
   testID,
 }: UserSearchBarBaseProps) => {
   return (
@@ -81,6 +84,7 @@ export const UserSearchBarBaseComponent = ({
         autoCorrect={false}
         spellCheck={false}
         onSearch={autoSearch ? undefined : refetch}
+        loading={loading}
       />
       <UserSearchBarResults
         data={data}
