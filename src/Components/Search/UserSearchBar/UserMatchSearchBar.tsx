@@ -29,7 +29,7 @@ export const UserMatchSearchBar = ({
 
   // autoSearchLength should be undefined, but the important part is setting
   // enabled: false when we disable autoSearch (autoSearch: false).
-  const {data, refetch} = useUserMatchQuery({
+  const {data, refetch, isFetching} = useUserMatchQuery({
     searchQuery: searchQuery,
     favorers: favorers,
     sort: sort,
@@ -51,6 +51,7 @@ export const UserMatchSearchBar = ({
       label={label}
       autoSearch={autoSearch}
       excludeSelf={excludeSelf}
+      loading={isFetching}
       testID={testID}
     />
   );
