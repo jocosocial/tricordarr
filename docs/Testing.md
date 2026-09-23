@@ -175,8 +175,7 @@ Checklist of manual QA cases not yet covered by automated tests.
 * unfavorite event (should also update UND)
 
 ### LFG
-* favorite / unfavorite an LFG from the LFG actions menu
-* favorite / unfavorite a chat from the chat actions menu and from the list swipe
+* favorite / unfavorite
 * Favorites filter on the Joined and Owned lists returns the starred set
 * unfavoriting with the Favorites filter active removes the row from the list
 * favorite is unavailable while muted, and mute is unavailable while favorited

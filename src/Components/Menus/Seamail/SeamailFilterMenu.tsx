@@ -22,10 +22,12 @@ export const SeamailFilterMenu = () => {
 
   const handleUnreadOnly = () => {
     setSeamailOnlyNew(prev => (prev === true ? undefined : true));
+    closeMenu();
   };
 
   const handleFavoriteOnly = () => {
     setSeamailFavorite(prev => (prev === true ? undefined : true));
+    closeMenu();
   };
 
   const handleCategoryToggle = (category: FezChatCategory) => {
@@ -38,6 +40,7 @@ export const SeamailFilterMenu = () => {
       }
       return [...prev, category];
     });
+    closeMenu();
   };
 
   const clearFilters = () => {
