@@ -10,8 +10,8 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {openFezParentScreen} from '#src/Libraries/Navigation';
 import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useFezMarkReadMutation} from '#src/Queries/Fez/FezMutations';
 import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 interface FezChatListItemSwipeableProps extends PropsWithChildren {
@@ -22,7 +22,7 @@ interface FezChatListItemSwipeableProps extends PropsWithChildren {
 export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) => {
   const {theme} = useAppTheme();
   const muteMutation = useFezMuteMutation();
-  const {refetch} = useFezQuery({fezID: props.fez.fezID, options: {enabled: false}});
+  const markReadMutation = useFezMarkReadMutation();
   const {updateMute, markRead, invalidateFez} = useFezCacheReducer();
   const [muteRefreshing, setMuteRefreshing] = useState(false);
   const [readRefreshing, setReadRefreshing] = useState(false);
@@ -61,15 +61,26 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
   );
 
   const handleMarkAsRead = useCallback(
-    async (swipeable: SwipeableMethods) => {
+    (swipeable: SwipeableMethods) => {
       swipeable.reset();
       setReadRefreshing(true);
-      await refetch();
+      // Applied eagerly with no rollback: markRead collapses readCount toward postCount and
+      // can't be un-applied without capturing the prior counts. A failed request self-heals
+      // on the next refetch.
       markRead(props.fez.fezID);
-      setReadRefreshing(false);
-      swipeable.reset();
+      markReadMutation.mutate(
+        {
+          fezID: props.fez.fezID,
+        },
+        {
+          onSettled: () => {
+            setReadRefreshing(false);
+            swipeable.reset();
+          },
+        },
+      );
     },
-    [refetch, markRead, props.fez.fezID],
+    [markRead, markReadMutation, props.fez.fezID],
   );
 
   /**
