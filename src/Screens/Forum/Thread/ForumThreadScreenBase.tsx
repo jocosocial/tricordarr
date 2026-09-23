@@ -366,6 +366,7 @@ const ForumThreadScreenBaseInner = ({
               formRef={postFormRef}
               inputRef={postInputRef}
               enablePhotos={true}
+              enableMentions={true}
               maxLength={2000}
               maxPhotos={maxForumPostImages}
             />

@@ -60,7 +60,7 @@ const getInitialScrollIndex = (fez: FezData, fezPostsData: FezPostData[], initia
   if (!fez.members || readCount === undefined || readCount === fez.members.postCount) {
     return fezPostsData.length > 0 ? fezPostsData.length - 1 : undefined;
   }
-  const loadedStart = fez.members.paginator.start;
+  const loadedStart = fez.members.paginator?.start ?? 0;
   const idx = Math.max(readCount - loadedStart, 0);
   // Clamp to the loaded data range. readCount can exceed the loaded page
   // when only a subset of posts have been fetched.

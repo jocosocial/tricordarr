@@ -24,6 +24,22 @@ const listKeyForHeader = (header: PerformerHeaderData) =>
   header.isOfficialPerformer ? '/performer/official' : '/performer/shadow';
 
 /**
+ * True for the search-scoped copies of a performer list cache. Query keys are
+ * [endpoint, queryParams, ...extra], and the performer search screen adds a
+ * `search` queryParam, so a prefix match on the endpoint also finds those. We
+ * must not splice a performer into results it may not match; those caches are
+ * transient (SearchBarBase evicts them on unmount) and the server owns them.
+ */
+const isSearchScopedListKey = (queryKey: readonly unknown[]) => {
+  const queryParams = queryKey[1];
+  if (typeof queryParams !== 'object' || queryParams === null) {
+    return false;
+  }
+  const {search} = queryParams as {search?: unknown};
+  return typeof search === 'string' && search !== '';
+};
+
+/**
  * Hook that exposes discrete actions for optimistically updating React Query
  * caches after performer mutations (self-service create/edit/delete of a
  * Shadow Event Organizer's performer profile). Each action calls
@@ -80,6 +96,9 @@ export const usePerformerCacheReducer = () => {
     (header: PerformerHeaderData) => {
       const listKey = listKeyForHeader(header);
       for (const query of queryClient.getQueryCache().findAll({queryKey: [listKey]})) {
+        if (isSearchScopedListKey(query.queryKey)) {
+          continue;
+        }
         queryClient.setQueryData<InfiniteData<PerformerResponseData>>(query.queryKey, oldData => {
           if (!oldData) {
             return oldData;
