@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {FormikProps} from 'formik';
+import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
@@ -12,7 +12,6 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
-import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -22,16 +21,18 @@ import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {createLogger} from '#src/Libraries/Logger';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
-import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {FezContentData, FezData, PostContentData} from '#src/Structs/ControllerStructs';
+import {FezContentData, PostContentData} from '#src/Structs/ControllerStructs';
 import {SeamailFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamailCreateScreen>;
+
+const logger = createLogger('SeamailCreateScreen.tsx');
 
 export const SeamailCreateScreen = (props: Props) => {
   return (
@@ -50,22 +51,12 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
   const seamailCreateFormRef = useRef<FormikProps<SeamailFormValues>>(null);
   const seamailPostFormRef = useRef<FormikProps<PostContentData>>(null);
   const fezMutation = useFezCreateMutation();
-  const fezPostMutation = useFezPostMutation();
   const [seamailFormValid, setSeamailFormValid] = useState(false);
-  const {createFez, appendPost} = useFezCacheReducer();
+  const {createFez} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
   const {asPrivilegedUser} = useElevation();
-  // Use a ref to store the created fez data immediately (synchronously) to avoid race condition
-  const createdFezRef = useRef<FezData | null>(null);
-  const {setSnackbarPayload} = useSnackbar();
   const {commonStyles} = useStyles();
   const keyboardVerticalOffset = useKeyboardVerticalOffset();
-
-  // Helper to reset submitting state on both forms
-  const resetSubmitting = useCallback(() => {
-    seamailPostFormRef.current?.setSubmitting(false);
-    seamailCreateFormRef.current?.setSubmitting(false);
-  }, []);
 
   const initialFormValues: SeamailFormValues = {
     fezType: FezType.open,
@@ -78,76 +69,58 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
     createdByModerator: asPrivilegedUser === PrivilegedUserAccounts.moderator,
   };
 
-  // Handler for creating the Fez.
+  /**
+   * Creates the seamail and its opening message in a single request. Swiftarr's
+   * FezContentData.firstPost builds both server-side, so a lossy connection can no longer
+   * leave behind an empty conversation the way the old create-then-post pair could (#533).
+   */
   const onFezSubmit = useCallback(
-    (values: SeamailFormValues) => {
+    async (values: SeamailFormValues) => {
+      const postValues = seamailPostFormRef.current?.values;
+      if (!postValues) {
+        logger.error('Post form ref undefined.');
+        return;
+      }
       const contentData: FezContentData = {
         ...values,
         initialUsers: values.initialUsers.map(u => u.userID),
-      };
-      fezMutation.mutate(
-        {fezContentData: contentData},
-        {
-          onSuccess: response => {
-            createdFezRef.current = response.data;
-            const forUser = values.createdByTwitarrTeam
-              ? 'TwitarrTeam'
-              : values.createdByModerator
-                ? 'moderator'
-                : undefined;
-            createFez(response.data, forUser);
-            // Whatever we picked in the SeamailCreate is what should be set in the Post.
-            seamailPostFormRef.current?.setFieldValue('postAsModerator', values.createdByModerator);
-            seamailPostFormRef.current?.setFieldValue('postAsTwitarrTeam', values.createdByTwitarrTeam);
-            seamailPostFormRef.current?.submitForm();
-          },
-          onSettled: () => {
-            resetSubmitting();
-          },
+        firstPost: {
+          ...postValues,
+          // Whatever we picked in the SeamailCreate is what should be set in the Post.
+          postAsModerator: values.createdByModerator,
+          postAsTwitarrTeam: values.createdByTwitarrTeam,
         },
-      );
-    },
-    [fezMutation, resetSubmitting, createFez],
-  );
-
-  // Handler for pushing the FezPost submit button.
-  const onPostSubmit = useCallback(
-    (values: PostContentData) => {
-      // Use ref instead of state to avoid race condition - ref is set synchronously
-      const fezData = createdFezRef.current;
-      if (fezData) {
-        fezPostMutation.mutate(
-          {fezID: fezData.fezID, postContentData: values},
-          {
-            onSuccess: response => {
-              appendPost(fezData.fezID, response.data);
-              resetSubmitting();
-              dispatchScrollToTop(ChatStackScreenComponents.seamailListScreen);
-              navigation.replace(CommonStackComponents.seamailChatScreen, {
-                fezID: fezData.fezID,
-                asPrivilegedUser,
-              });
-            },
-            onError: () => {
-              resetSubmitting();
-            },
-          },
-        );
-      } else {
-        setSnackbarPayload({message: 'Seamail is empty?', messageType: 'error'});
-        resetSubmitting();
+      };
+      try {
+        const response = await fezMutation.mutateAsync({fezContentData: contentData});
+        const forUser = values.createdByTwitarrTeam
+          ? 'TwitarrTeam'
+          : values.createdByModerator
+            ? 'moderator'
+            : undefined;
+        // The create response already carries the opening post in members.posts, so priming
+        // the detail cache here is enough -- no appendPost, which would double the counts.
+        createFez(response.data, forUser);
+        dispatchScrollToTop(ChatStackScreenComponents.seamailListScreen);
+        navigation.replace(CommonStackComponents.seamailChatScreen, {
+          fezID: response.data.fezID,
+          asPrivilegedUser,
+        });
+      } catch {
+        // useTokenAuthMutation raises the error snackbar at the hook level. Swallow the
+        // rejection so it doesn't escape into Formik's submit handling.
       }
     },
-    [
-      fezPostMutation,
-      navigation,
-      resetSubmitting,
-      appendPost,
-      dispatchScrollToTop,
-      asPrivilegedUser,
-      setSnackbarPayload,
-    ],
+    [fezMutation, createFez, dispatchScrollToTop, navigation, asPrivilegedUser],
   );
+
+  /**
+   * The composer's own Formik never submits: its button triggers the seamail form instead,
+   * which owns the single create request. This only releases the submitting flag.
+   */
+  const onPostSubmit = useCallback(async (_values: PostContentData, formikBag: FormikHelpers<PostContentData>) => {
+    formikBag.setSubmitting(false);
+  }, []);
 
   // Handler to trigger the chain of events needed to complete this screen.
   const onSubmit = useCallback(() => {
@@ -192,7 +165,7 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
         </ScrollingContentView>
         <ContentPostForm
           formRef={seamailPostFormRef}
-          overrideSubmitting={fezMutation.isPending || fezPostMutation.isPending}
+          overrideSubmitting={fezMutation.isPending}
           onPress={onSubmit}
           onSubmit={onPostSubmit}
           enablePhotos={false}
