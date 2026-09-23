@@ -5,6 +5,7 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
+import {useRefresh} from '#src/Hooks/useRefresh';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {EventData} from '#src/Structs/ControllerStructs';
 
@@ -18,6 +19,7 @@ export const EventSearchBar = () => {
     },
   });
   const listRef = useRef<FlashListRef<EventData>>(null);
+  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
 
   const onChangeSearch = (query: string) => {
     if (query !== searchQuery) {
@@ -41,12 +43,13 @@ export const EventSearchBar = () => {
         searchQuery={searchQuery}
         onSearch={onSearch}
         onChangeSearch={onChangeSearch}
+        loading={isFetching}
       />
       <ScheduleFlatList
         listRef={listRef}
         listFooter={<TimeDivider label={'End of Results'} />}
         items={eventList}
-        refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} enabled={!!searchQuery} />}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />}
         separator={'day'}
       />
     </>

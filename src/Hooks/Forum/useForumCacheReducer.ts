@@ -101,6 +101,7 @@ const forumListDataFromForumData = (page: ForumData): ForumListData => {
   const postCount = page.paginator?.total ?? posts.length;
   return {
     forumID: page.forumID,
+    categoryID: page.categoryID,
     creator: page.creator,
     title: page.title,
     postCount,
@@ -1003,6 +1004,7 @@ export const useForumCacheReducer = () => {
       const firstPost = createdForum.posts[0];
       const forumListData: ForumListData = {
         forumID: createdForum.forumID,
+        categoryID: createdForum.categoryID,
         creator: createdForum.creator,
         title: createdForum.title,
         postCount: createdForum.posts.length,

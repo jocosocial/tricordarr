@@ -148,15 +148,15 @@ export interface UserNotificationData {
   /// All fields below this line will be 0 or null if called when not logged in.
 
   /// Count of announcements the user has not yet seen. 0 if not logged in.
-  newAnnouncementCount?: number;
+  newAnnouncementCount: number;
   /// Number of twarrts that @mention the user. 0 if not logged in.
-  twarrtMentionCount?: number;
+  twarrtMentionCount: number;
   /// Number of twarrt @mentions that the user has not read (by visiting the twarrt mentions endpoint; reading twarrts in the regular feed doesn't count). 0 if not logged in.
-  newTwarrtMentionCount?: number;
+  newTwarrtMentionCount: number;
   /// Number of forum posts that @mention the user. 0 if not logged in.
-  forumMentionCount?: number;
+  forumMentionCount: number;
   /// Number of forum post @mentions the user has not read. 0 if not logged in.
-  newForumMentionCount?: number;
+  newForumMentionCount: number;
   /// The number of Seamail chats the user's been added to but not yet viewed. Does not include Seamails the user creates. Chats counted here will continue
   /// to be counted here and not in `newSeamailMessageCount` even if there are also new messages--until the user views the chat and clears the notification.
   addedToSeamailCount: number;
@@ -173,7 +173,7 @@ export interface UserNotificationData {
   /// IDs of Private Events the user's been added to but not yet viewed. See `addedToPrivateEventCount`.
   addedToPrivateEventIDs: string[];
   /// Count of # of Seamail threads with new messages. NOT total # of new messages-a single seamail thread with 10 new messages counts as 1. 0 if not logged in.
-  newSeamailMessageCount?: number;
+  newSeamailMessageCount: number;
   /// Count of # of Fezzes with new messages. 0 if not logged in.
   newFezMessageCount: number;
   /// Count of # of Private Events with new messages. 0 if not logged in.
@@ -185,7 +185,7 @@ export interface UserNotificationData {
   nextFollowedEventID?: string;
 
   /// The number of Micro Karaoke songs the user has contributed to and can now view.
-  microKaraokeFinishedSongCount?: number;
+  microKaraokeFinishedSongCount: number;
 
   /// The start time of the earliest LFG that the user has joined with a start time > now. nil if not logged in or no matching LFG.
   nextJoinedLFGTime?: string;
@@ -241,7 +241,8 @@ export interface MembersOnlyData {
   /// to the first unread message.ReadCount does not include posts from blocked/muted users.
   readCount: number;
   /// Paginates the array in posts--gives the start and limit of the returned posts array relative to all the posts in the thread.
-  paginator: Paginator;
+  /// Nil for responses that don't return the posts array (fez lists, member add/remove).
+  paginator?: Paginator;
   /// The FezPosts in the fez discussion. Methods that return arrays of Fezzes, or that add or remove users, do not populate this field (it will be nil).
   posts?: FezPostData[];
   /// Whether user has muted the fez.
@@ -301,7 +302,7 @@ export interface ErrorResponse {
   reason: string;
   /// Optional dictionary of field errors; mostly used for input JSON validation failures. A request with JSON content that fails validation may have field-level errors here,
   /// keyed by the keypath to the fields that failed validation.
-  fieldErrors?: string | string[];
+  fieldErrors?: Record<string, string>;
 }
 
 export interface PostContentData {
@@ -342,6 +343,9 @@ export interface FezContentData {
   createdByModerator?: boolean;
   /// If TRUE, the Fez will be created by user @TwitarrTeam instead of the current user. Current user must be a TT member.
   createdByTwitarrTeam?: boolean;
+  /// If set, creates the fez's opening post at creation time instead of requiring a separate call.
+  /// Not valid for personal events, which don't have posts. Seamail types must have zero images.
+  firstPost?: PostContentData;
 }
 
 export interface ReportData {
@@ -534,9 +538,9 @@ export namespace EventFeedbackSelectionData {
 
 /**
  * Admin-only fields on an event feedback report. NULL for normal users.
- * Nested in EventFeedbackReport from Swiftarr ControllerStructs.
+ * Nested in EventFeedbackReport from Swiftarr ControllerStructs, where it is named `AdminFields`.
  */
-export interface EventFeedbackAdminFields {
+export interface AdminFields {
   /// TRUE if an admin has marked this feedback as containing something actionable.
   actionable: boolean;
   /// Number of users that have followed the event.
@@ -573,7 +577,7 @@ export interface EventFeedbackReport {
   /// Any issues the host chose to share.
   issuesString: string;
   /// Populated for TwitarrTeam and above.
-  adminFields?: EventFeedbackAdminFields;
+  adminFields?: AdminFields;
 }
 
 export namespace EventFeedbackReport {
@@ -611,21 +615,21 @@ export interface UserProfileUploadData {
   /// Basic info about the user--their ID, username, displayname, and avatar image. May be nil on POST.
   header?: UserHeader;
   /// The displayName, again. Will be equal to header.displayName in results. When POSTing, set this field to update displayName.
-  displayName: string;
+  displayName?: string;
   /// An optional real name of the user.
-  realName: string;
+  realName?: string;
   /// An optional preferred form of address.
   preferredPronoun?: string;
   /// An optional home location (e.g. city).
-  homeLocation: string;
+  homeLocation?: string;
   /// An optional ship cabin number.
-  roomNumber: string;
+  roomNumber?: string;
   /// An optional email address.
-  email: string;
+  email?: string;
   /// An optional short greeting/message to visitors of the profile.
-  message: string;
+  message?: string;
   /// An optional blurb about the user.
-  about: string;
+  about?: string;
   /// An optional dinner team assignment.
   dinnerTeam?: DinnerTeam;
   /// An optional Discord username.
@@ -633,7 +637,6 @@ export interface UserProfileUploadData {
 }
 
 /// Karaoke performance row. Returned by GET /api/v3/karaoke/latest and inside KaraokeSongData.performances.
-/// Includes songID; isFavorite may be present when returned by the backend.
 export interface KaraokePerformedSongsData {
   songID: string;
   artist: string;
@@ -641,7 +644,7 @@ export interface KaraokePerformedSongsData {
   performers: string;
   /// ISO 8601 date string.
   time: string;
-  isFavorite?: boolean;
+  isFavorite: boolean;
 }
 
 /// Single karaoke song from GET /api/v3/karaoke or GET /api/v3/karaoke/:song_id.
@@ -733,6 +736,8 @@ export interface ImageUploadData {
 export interface ForumListData {
   /// The forum's ID.
   forumID: string;
+  /// The ID of the category the forum is in.
+  categoryID: string;
   /// The forum's creator.
   creator: UserHeader;
   /// The forum's title.
@@ -891,6 +896,10 @@ export interface UserRecoveryData {
 /// Returns info about a single Photo from the Photostream.
 ///
 /// Incorporated into `PhotostreamListData`, which is returned by: `GET /api/v3/photostream`
+///
+/// Intentionally has no `getCacheKeys()`: the `/photostream` caches are patched in place by
+/// `usePhotostreamCacheReducer` (upload prepends, moderator delete removes) rather than
+/// invalidated, so the stream never refetches after a write. See #622.
 export interface PhotostreamImageData {
   /// The ID of the photostream record (NOT the id of the image)..
   postID: number;
@@ -904,12 +913,6 @@ export interface PhotostreamImageData {
   event?: EventData;
   /// The boat location this image was tagged with, if any. Value will be a raw string from  `PhotoStreamBoatLocation` or nil.  Stream photos will be tagged with either an event or a location.
   location?: string;
-}
-
-export namespace PhotostreamImageData {
-  export const getCacheKeys = (): QueryKey[] => {
-    return [['/photostream'], ['/photostream/placenames']];
-  };
 }
 
 /// Returns paginated data on photos in the photo stream. Non-Mods should only have access to the most recent photos, with no pagination.
@@ -1059,9 +1062,21 @@ export interface PerformerHeaderData {
   isOfficialPerformer: boolean;
 }
 
+/// An event reference scraped from the performer's own schedule listing, which may not
+/// correspond to an Event on the official schedule.
+export interface ScrapedPerformerEventReferenceData {
+  /// The event UID from the ICS file spec, if the scraped event could be matched to one.
+  uid?: string;
+  title: string;
+  /// ISO 8601 date string.
+  startTime: string;
+}
+
 export interface PerformerData {
   /// ID, name, photo -- used to create a title card
   header: PerformerHeaderData;
+  /// Other names this performer is known by, e.g. a stage name alongside a legal name.
+  alternativeNames?: string[];
   /// For Shadow Event Organizers, the Performer links to their User, but don't use the user's pronoun field when referring to them as a Performer.
   pronouns?: string;
   /// Bio may contain Markdown.
@@ -1084,6 +1099,8 @@ export interface PerformerData {
   yearsAttended: number[];
   /// The events this performer is going to be performing at.
   events: EventData[];
+  /// Events scraped from the performer's schedule listing that aren't on the official schedule.
+  scrapedEventRefs: ScrapedPerformerEventReferenceData[];
   /// The user who  created this Performer. Only applies to Shadow Event organizers, and is only returned if the requester is a Moderator or higher.
   /// Although we track the User who created a Performer model for their shadow event for moderation purposes, the User behind the Performer
   /// shouldn't be shown to everyone.
@@ -1320,6 +1337,8 @@ export interface PerformerUploadData {
   performerID?: string;
   /// The name of the performer. Required.
   name: string;
+  /// Other names this performer is known by, e.g. a stage name alongside a legal name.
+  alternativeNames?: string[];
   pronouns?: string;
   /// Bio can contain Markdown.
   bio?: string;
@@ -1375,7 +1394,7 @@ export interface ClientSettingsData {
   /// Maximum size of a single uploaded image, in bytes.
   maxImageSize: number;
   /// Minimum seconds between photostream uploads. 0 disables the cooldown. Default 300.
-  photostreamUploadRateLimit?: number;
+  photostreamUploadRateLimit: number;
   /// Unique identifier for this Postgres database installation (from pg_control_system())
   installationID: string;
 }
@@ -1673,8 +1692,13 @@ export interface PhotostreamModerationData {
 }
 
 export namespace PhotostreamModerationData {
+  /**
+   * The `/photostream` list caches are deliberately absent: they are patched in place by
+   * `usePhotostreamCacheReducer` rather than invalidated (#622). Only the moderation-side
+   * caches belong here.
+   */
   export const getCacheKeys = (photoID?: string): QueryKey[] => {
-    const keys = ReportModerationData.getCacheKeys().concat(PhotostreamImageData.getCacheKeys());
+    const keys = ReportModerationData.getCacheKeys();
     if (photoID) {
       keys.push([`/mod/photostream/${photoID}`]);
     }
