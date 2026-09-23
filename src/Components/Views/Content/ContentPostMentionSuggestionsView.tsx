@@ -11,11 +11,16 @@ import {
 import {SuggestionsProvidedProps} from 'react-native-controlled-mentions';
 import {ActivityIndicator} from 'react-native-paper';
 
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {MenuScrollIndicator} from '#src/Components/Views/MenuScrollIndicator';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {useUserHeader} from '#src/Context/Contexts/UserHeaderContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {UserMatchSort} from '#src/Enums/UserMatchSort';
+import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {useUserMatchQuery} from '#src/Queries/Users/UsersQueries';
 
 /**
@@ -36,6 +41,11 @@ import {useUserMatchQuery} from '#src/Queries/Users/UsersQueries';
 export const ContentPostMentionSuggestionsView: FC<SuggestionsProvidedProps> = ({keyword, onSelect}) => {
   const {data, isFetching} = useUserMatchQuery({searchQuery: keyword || '', sort: UserMatchSort.favorites});
   const {commonStyles} = useStyles();
+  const {theme} = useAppTheme();
+  // Queried once for the whole list rather than per row; the cached favorites list is what
+  // marks the stars, the same way MessageView marks a favorited post author.
+  const {data: favorites} = useUserFavoritesQuery();
+  const {contains} = useUserHeader();
   const scrollViewRef = useRef<ScrollView>(null);
   const [contentHeight, setContentHeight] = useState(0);
   const [scrollY, setScrollY] = useState(0);
@@ -71,6 +81,9 @@ export const ContentPostMentionSuggestionsView: FC<SuggestionsProvidedProps> = (
         byline: {
           ...commonStyles.marginLeftSmall,
           ...commonStyles.flex,
+        },
+        favoriteIcon: {
+          ...commonStyles.flex0,
         },
         loading: {
           ...commonStyles.marginVertical,
@@ -149,6 +162,11 @@ export const ContentPostMentionSuggestionsView: FC<SuggestionsProvidedProps> = (
             <View style={styles.byline}>
               <UserBylineTag user={one} />
             </View>
+            {contains(favorites, one) && (
+              <View style={styles.favoriteIcon}>
+                <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
+              </View>
+            )}
           </Pressable>
         ))}
       </ScrollView>
