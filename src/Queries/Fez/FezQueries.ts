@@ -31,6 +31,8 @@ interface FezListQueryOptions {
   options?: TokenAuthPaginationQueryOptionsTypeV2<FezListData>;
   lfgTypesOnly?: boolean;
   onlyNew?: boolean;
+  /** Only valid for the 'joined' and 'owner' endpoints; swiftarr ignores it elsewhere. */
+  favorite?: boolean;
   search?: string;
   matchID?: string;
   forUser?: keyof typeof PrivilegedUserAccounts;
@@ -44,6 +46,7 @@ export const useFezListQuery = ({
   excludeFezType,
   options = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'},
   onlyNew,
+  favorite,
   search,
   matchID,
   forUser,
@@ -59,6 +62,7 @@ export const useFezListQuery = ({
     // lfgtypes is mutually exclusive with type.
     ...(lfgTypesOnly && {lfgtypes: lfgTypesOnly}),
     ...(onlyNew !== undefined && {onlynew: onlyNew}),
+    ...(favorite !== undefined && {favorite: favorite}),
     ...(search && {search: search}),
     ...(matchID && {matchID: matchID}),
     ...(forUser !== undefined && {foruser: forUser.toLowerCase()}),
@@ -73,6 +77,7 @@ export const useLfgListQuery = ({
   endpoint = 'open',
   options = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'},
   onlyNew,
+  favorite,
   search,
   matchID,
 }: FezListQueryOptions) => {
@@ -86,6 +91,7 @@ export const useLfgListQuery = ({
     // Only use lfgTypesOnly when no specific type is selected, since they're mutually exclusive
     lfgTypesOnly: fezType ? undefined : true,
     onlyNew,
+    favorite,
     search,
     matchID,
   });

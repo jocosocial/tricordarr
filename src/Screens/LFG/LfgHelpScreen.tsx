@@ -3,6 +3,7 @@ import React from 'react';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {FavoriteChatHelpTopicView} from '#src/Components/Views/Help/Common/FavoriteChatHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -36,6 +37,12 @@ export const LfgHelpScreen = () => {
           <HelpTopicView>
             People of all ages read Twitt-Arr and LFGs are a public forum like the rest of Twitt-Arr. Please use the
             usual discretion and keep the Code of Conduct in mind.
+          </HelpTopicView>
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Actions'}>
+          <FavoriteChatHelpTopicView />
+          <HelpTopicView title={'Overlapping'} icon={AppIcons.calendarMultiple}>
+            See what else on your schedule overlaps with this LFG.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Screens'} noMargin={true}>

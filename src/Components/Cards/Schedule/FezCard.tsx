@@ -98,16 +98,39 @@ const FezCardInternal = ({
       // making this white to match the text and other icons of this card style.
       return <AppIcon icon={AppIcons.mute} color={theme.colors.constantWhite} />;
     }
+    // Unlike mute, the star does not take the slot on its own: a favorited LFG is one you care
+    // about, so hiding its unread count or "Added To" badge would be exactly backwards. White
+    // rather than the usual yellow star, for the same contrast reason as the mute icon above.
+    const favoriteIcon = fez.members?.isFavorite ? (
+      <AppIcon icon={AppIcons.favorite} color={theme.colors.constantWhite} />
+    ) : undefined;
+
     if (addedTo) {
-      return <Badge style={styles.badge}>Added To</Badge>;
+      return (
+        <>
+          {favoriteIcon}
+          <Badge style={styles.badge}>Added To</Badge>
+        </>
+      );
     }
     if (unreadCount) {
-      return <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>;
+      return (
+        <>
+          {favoriteIcon}
+          <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>
+        </>
+      );
     }
     if (showIcon) {
       const outputIcon = icon ? icon : FezType.isLFGType(fez.fezType) ? AppIcons.lfg : AppIcons.personalEvent;
-      return <AppIcon color={theme.colors.constantWhite} icon={outputIcon} />;
+      return (
+        <>
+          {favoriteIcon}
+          <AppIcon color={theme.colors.constantWhite} icon={outputIcon} />
+        </>
+      );
     }
+    return favoriteIcon;
   };
 
   /**

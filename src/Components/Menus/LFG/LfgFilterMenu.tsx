@@ -12,16 +12,31 @@ import {useMenu} from '#src/Hooks/useMenu';
 interface LfgFilterMenuProps {
   showTypes?: boolean;
   enableUnread?: boolean;
+  /** Only the 'joined' and 'owner' endpoints support ?favorite=true upstream. */
+  enableFavorite?: boolean;
 }
 
-export const LfgFilterMenu = ({showTypes = true, enableUnread = false}: LfgFilterMenuProps) => {
+export const LfgFilterMenu = ({showTypes = true, enableUnread = false, enableFavorite = false}: LfgFilterMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew} =
-    useLfgFilter();
+  const {
+    lfgTypeFilter,
+    setLfgTypeFilter,
+    lfgHidePastFilter,
+    setLfgHidePastFilter,
+    lfgOnlyNew,
+    setLfgOnlyNew,
+    lfgFavoriteFilter,
+    setLfgFavoriteFilter,
+  } = useLfgFilter();
   const {appConfig} = useConfig();
 
   const handleUnreadOnly = () => {
     setLfgOnlyNew(prev => (prev === true ? undefined : true));
+    closeMenu();
+  };
+
+  const handleFavoriteOnly = () => {
+    setLfgFavoriteFilter(prev => (prev === true ? undefined : true));
     closeMenu();
   };
 
@@ -43,14 +58,18 @@ export const LfgFilterMenu = ({showTypes = true, enableUnread = false}: LfgFilte
     setLfgTypeFilter(undefined);
     setLfgHidePastFilter(appConfig.schedule.hidePastLfgs);
     setLfgOnlyNew(undefined);
+    setLfgFavoriteFilter(undefined);
   };
 
-  const anyActiveFilter = lfgTypeFilter || lfgHidePastFilter || lfgOnlyNew === true;
+  const anyActiveFilter = lfgTypeFilter || lfgHidePastFilter || lfgOnlyNew === true || lfgFavoriteFilter === true;
 
   const menuAnchor = <FilterMenuAnchor active={!!anyActiveFilter} onPress={openMenu} onLongPress={clearFilters} />;
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+      {enableFavorite && (
+        <SelectableMenuItem title={'Favorites'} onPress={handleFavoriteOnly} selected={lfgFavoriteFilter} />
+      )}
       {enableUnread && <SelectableMenuItem title={'Unread'} onPress={handleUnreadOnly} selected={lfgOnlyNew} />}
       <SelectableMenuItem title={'Hide Past'} onPress={handleHidePast} selected={lfgHidePastFilter} />
       {showTypes && (
