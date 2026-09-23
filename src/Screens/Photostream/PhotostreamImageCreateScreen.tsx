@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
@@ -16,6 +15,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useImage} from '#src/Context/Contexts/ImageContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {usePhotostreamCacheReducer} from '#src/Hooks/Photostream/usePhotostreamCacheReducer';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {createLogger} from '#src/Libraries/Logger';
@@ -47,10 +47,10 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
   const {data: locationData, refetch: refetchLocationData, isFetching} = usePhotostreamLocationDataQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetchLocationData, isRefreshing: isFetching});
   const uploadMutation = usePhotostreamImageUploadMutation();
-  const queryClient = useQueryClient();
   const {appConfig} = useConfig();
   const dispatchScrollToTop = useScrollToTopIntent();
   const {fromData} = useImage();
+  const {prependImage} = usePhotostreamCacheReducer();
 
   const onSubmit = async (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => {
     if (!values.image) {
@@ -71,15 +71,13 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
     // Awaited so Formik holds isSubmitting (and the submit button stays disabled) for the full
     // upload. Firing the mutation without awaiting re-enables the button mid-upload. See #533.
     try {
-      await uploadMutation.mutateAsync({
+      const response = await uploadMutation.mutateAsync({
         imageUploadData: payload,
       });
 
-      // Refetch only active photostream queries (more targeted than invalidation)
-      await queryClient.refetchQueries({
-        queryKey: ['/photostream'],
-        type: 'active',
-      });
+      // The upload response is the created image, so the stream caches can be updated
+      // locally instead of paying for a full refetch on the ship network.
+      prependImage(response.data);
 
       // Signal photostream screens to scroll to top when user navigates back
       dispatchScrollToTop(
