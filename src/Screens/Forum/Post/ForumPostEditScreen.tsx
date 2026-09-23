@@ -96,6 +96,7 @@ const ForumPostEditScreenInner = ({route, navigation}: Props) => {
         <ContentPostForm
           onSubmit={onSubmit}
           enablePhotos={true}
+          enableMentions={true}
           maxLength={2000}
           maxPhotos={maxForumPostImages}
           initialValues={initialValues}

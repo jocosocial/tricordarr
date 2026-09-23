@@ -3,6 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {Checkbox, IconButton, List} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSelectable} from '#src/Context/Contexts/SelectableContext';
@@ -10,6 +11,7 @@ import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SelectionActions} from '#src/Context/Reducers/SelectionReducer';
+import {AppIcons} from '#src/Enums/Icons';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 interface UserListItemProps {
@@ -23,6 +25,11 @@ interface UserListItemProps {
   enableSelection?: boolean;
   setEnableSelection?: Dispatch<SetStateAction<boolean>>;
   selected?: boolean;
+  /**
+   * Shows a star to the left of any trailing action buttons. Resolved by the caller (from the
+   * favorites query) rather than here, so a list queries once instead of once per row.
+   */
+  isFavorite?: boolean;
 }
 
 /**
@@ -42,6 +49,7 @@ const UserListItemInternal = ({
   enableSelection = false,
   setEnableSelection,
   selected = false,
+  isFavorite = false,
 }: UserListItemProps) => {
   const {styleDefaults, commonStyles} = useStyles();
   const {preRegistrationMode} = usePreRegistration();
@@ -74,6 +82,10 @@ const UserListItemInternal = ({
         actions: {
           ...commonStyles.flexRow,
           ...commonStyles.alignItemsCenter,
+        },
+        favoriteIcon: {
+          ...commonStyles.flexColumn,
+          ...commonStyles.justifyCenter,
         },
       }),
     [commonStyles, disabled, theme],
@@ -146,6 +158,31 @@ const UserListItemInternal = ({
     styles.actions,
   ]);
 
+  /**
+   * Prefixes the trailing action buttons with the favorite star. Rows without a star are
+   * returned untouched so existing single-action layouts are unchanged.
+   */
+  const getRight = useCallback(() => {
+    const actionButton = getActionButton();
+    if (!isFavorite) {
+      return actionButton;
+    }
+    const star = (
+      <View style={styles.favoriteIcon}>
+        <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
+      </View>
+    );
+    if (!actionButton) {
+      return star;
+    }
+    return (
+      <View style={styles.actions}>
+        {star}
+        {actionButton}
+      </View>
+    );
+  }, [getActionButton, isFavorite, styles.favoriteIcon, styles.actions, theme]);
+
   const onLongPress = () => {
     if (setEnableSelection) {
       setEnableSelection(true);
@@ -162,7 +199,7 @@ const UserListItemInternal = ({
       descriptionStyle={styles.descriptionStyle}
       onPress={enableSelection ? handleSelection : onPress}
       left={enableSelection ? getCheckbox : getAvatar}
-      right={enableSelection ? undefined : getActionButton}
+      right={enableSelection ? undefined : getRight}
       disabled={disabled}
       onLongPress={setEnableSelection ? onLongPress : undefined}
     />

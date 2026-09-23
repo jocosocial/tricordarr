@@ -77,6 +77,10 @@ export const APIImage = ({
   const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const [imageSource, setImageSource] = useState<FastImageSource | undefined>(undefined);
+  // True from the moment a source URI is handed to FastImage until it loads or errors.
+  // The `!imageSource` spinner below only covers resolving the URI (a local, near-instant
+  // step); without this the image area is blank for the whole download.
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const {theme} = useAppTheme();
   const {openLightbox} = useLightboxControls();
   const thumbRef = useAnimatedRef<View>();
@@ -94,6 +98,15 @@ export const APIImage = ({
     },
     imageContainer: {
       position: 'relative',
+    },
+    imageLoadingOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
     },
     imageDebugIcon: {
       position: 'absolute',
@@ -151,6 +164,7 @@ export const APIImage = ({
    */
   const onError = useCallback(
     (event: OnErrorEvent) => {
+      setIsImageLoading(false);
       const message = String(event.nativeEvent.error);
       // Native image load cancellation (e.g. scroll/cell reuse) should not surface as user error.
       const isCancellation = /cancell(ed|ation)/i.test(message) || /operation cancelled/i.test(message);
@@ -184,6 +198,7 @@ export const APIImage = ({
    * to the image viewer.
    */
   const onLoad = useCallback(() => {
+    setIsImageLoading(false);
     setViewerImages([imageSourceMetadata]);
   }, [imageSourceMetadata]);
 
@@ -196,6 +211,13 @@ export const APIImage = ({
       staticSize === 'identicon' ? fromIdenticon(path, appConfig, serverUrl) : fromFileName(path, appConfig, serverUrl);
     setImageSourceMetadata(nextMetadata);
   }, [appConfig, path, serverUrl, staticSize, fromIdenticon, fromFileName]);
+
+  /**
+   * A new URI means a new download, so show the spinner again until it lands.
+   */
+  React.useEffect(() => {
+    setIsImageLoading(true);
+  }, [imageSource?.uri]);
 
   React.useEffect(() => {
     hasRequestedFullPreload.current = false;
@@ -357,6 +379,14 @@ export const APIImage = ({
               onError={onError}
               onProgress={onProgress}
             />
+          )}
+          {/* scaledimage has its own placeholder + spinner in AppScaledImage. Avatars are
+              excluded on purpose: they are small, usually cached, and appear dozens at a
+              time in chat and forum lists, where a spinner per row is noise, not feedback. */}
+          {isImageLoading && (mode === 'image' || mode === 'cardcover') && (
+            <View style={styles.imageLoadingOverlay} pointerEvents={'none'}>
+              <ActivityIndicator />
+            </View>
           )}
           {appConfig.enableDeveloperOptions && mode !== 'avatar' && (
             <View style={styles.imageDebugIcon}>
