@@ -1,4 +1,5 @@
 import {FezType} from '#src/Enums/FezType';
+import {FezVisibility} from '#src/Enums/FezVisibility';
 import {ShipCode} from '#src/Enums/ShipCode';
 import {ServerUrlChoice} from '#src/Libraries/Network/ServerChoices';
 import {EventData, ImageUploadData, UserHeader} from '#src/Structs/ControllerStructs';
@@ -57,6 +58,8 @@ export interface ChangeUsernameFormValues {
 
 export interface FezFormValues {
   title: string;
+  /// Only settable for private events; every other type has a fixed visibility.
+  visibility: FezVisibility;
   // The site UI requires location, but the API does not.
   location?: string;
   fezType: FezType;

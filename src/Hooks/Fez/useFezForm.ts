@@ -3,6 +3,7 @@ import {useCallback} from 'react';
 
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {FezType} from '#src/Enums/FezType';
+import {FezVisibility} from '#src/Enums/FezVisibility';
 import {getApparentCruiseDate} from '#src/Libraries/DateTime';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
@@ -18,6 +19,8 @@ export interface UseFezFormParams {
   minCapacity?: number | string;
   maxCapacity?: number | string;
   initialUsers?: UserHeader[];
+  /** Defaults to the type's default visibility when undefined. */
+  visibility?: FezVisibility;
 }
 
 const defaultStartTime = () => ({
@@ -50,12 +53,14 @@ export const useFezForm = (): UseFezFormReturn => {
         minCapacity = 0,
         maxCapacity = 0,
         initialUsers = [],
+        visibility = FezVisibility.getDefault(fezType),
       } = params;
       const effectiveCruiseDay = cruiseDay !== undefined ? cruiseDay : adjustedCruiseDayToday;
       return {
         title,
         location,
         fezType,
+        visibility,
         startDate: getApparentCruiseDate(startDate, effectiveCruiseDay),
         duration: String(duration),
         minCapacity: String(minCapacity),
@@ -76,6 +81,7 @@ export const useFezForm = (): UseFezFormReturn => {
       title: fez.title,
       location: fez.location,
       fezType: fez.fezType,
+      visibility: fez.visibility,
       startDate: fezStartDate,
       duration: durationMinutes.toString(),
       minCapacity: fez.minParticipants.toString(),

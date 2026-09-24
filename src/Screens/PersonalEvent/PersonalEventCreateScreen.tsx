@@ -4,6 +4,7 @@ import React from 'react';
 import {PersonalEventForm} from '#src/Components/Forms/PersonalEventForm';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
+import {FezVisibility} from '#src/Enums/FezVisibility';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/Fez/useFezForm';
 import {
@@ -52,7 +53,13 @@ const PersonalEventCreateScreenInner = ({route}: Props) => {
         minCapacity: 0,
         maxCapacity: 0,
         initialUsers: values.initialUsers.map(u => u.userID),
-        fezType: values.initialUsers.length > 0 ? FezType.privateEvent : FezType.personalEvent,
+        visibility: values.visibility,
+        // An unlisted event must be a privateEvent: the server rejects any visibility other than
+        // the type default on a personalEvent, and only a privateEvent can be self-joined by link.
+        fezType:
+          values.initialUsers.length > 0 || values.visibility === FezVisibility.unlisted
+            ? FezType.privateEvent
+            : FezType.personalEvent,
       })}
       onSuccess={response => {
         createFez(response);

@@ -5,6 +5,7 @@ import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {FezType} from '#src/Enums/FezType';
+import {FezVisibility} from '#src/Enums/FezVisibility';
 import {LikeType} from '#src/Enums/LikeType';
 import {ModeratorActionType} from '#src/Enums/ModeratorActionType';
 import {ReportType} from '#src/Enums/ReportType';
@@ -258,6 +259,9 @@ export interface FezData {
   owner: UserHeader;
   /// The `FezType` .label of the fez.
   fezType: FezType;
+  /// Who besides the fez's members can view (and, for `privateEvent`, join) the fez. Only meaningful for
+  /// `privateEvent` fezzes; other fez types have a fixed value clients shouldn't surface in most UIs.
+  visibility: FezVisibility;
   /// The title of the fez.
   title: string;
   /// A description of the fez.
@@ -323,6 +327,11 @@ export interface PostContentData {
 export interface FezContentData {
   /// The `FezType` .label of the fez.
   fezType: FezType;
+  /// Who besides the fez's members can view (and, for `privateEvent`, join) the fez. Only settable for
+  /// `privateEvent` fezzes (may be `private` or `unlisted`); every other fez type has a fixed visibility
+  /// and setting this to anything but that fixed value is a 400. Omit to leave visibility unchanged on update,
+  /// or to use the type's default on create.
+  visibility?: FezVisibility;
   /// The title for the FriendlyFez.
   title: string;
   /// A description of the fez.
@@ -955,35 +964,6 @@ export interface PhotostreamUploadData {
   /// Where the picture was taken. Valid values come from `/api/v3/photostream/placenames` and are transient. Names include titles of events currently happening..
   locationName?: string;
 }
-
-// export interface PersonalEventData {
-//   personalEventID: string;
-//   title: string;
-//   description?: string;
-//   startTime: string;
-//   endTime: string;
-//   timeZone: string;
-//   timeZoneID: string;
-//   location?: string;
-//   lastUpdateTime: string;
-//   owner: UserHeader;
-//   participants: UserHeader[];
-// }
-//
-// export interface PersonalEventContentData {
-//   /// The title for the PersonalEvent.
-//   title: string;
-//   /// A description of the PersonalEvent.
-//   description?: string;
-//   /// The starting time for the PersonalEvent.
-//   startTime: string;
-//   /// The ending time for the PersonalEvent.
-//   endTime: string;
-//   /// The location for the PersonalEvent.
-//   location?: string;
-//   /// Users to invite to this PersonalEvent.
-//   participants: string[];
-// }
 
 interface SwiftarrClientConfigV2 {
   latestVersion: string;
@@ -1722,6 +1702,8 @@ export namespace PhotostreamModerationData {
  */
 export interface PersonalEventData {
   personalEventID: string;
+  /// Who besides invited participants can view and join this event. See `PersonalEventContentData.visibility`.
+  visibility: FezVisibility;
   title: string;
   description?: string;
   startTime: string;
@@ -1732,6 +1714,30 @@ export interface PersonalEventData {
   lastUpdateTime: string;
   owner: UserHeader;
   participants: UserHeader[];
+}
+
+/**
+ * Used for creating and editing a private event.
+ * Contains all of the fields that a user can modify.
+ */
+export interface PersonalEventContentData {
+  /// The title for the PersonalEvent.
+  title: string;
+  /// Who besides invited participants can view and join this event. May be `private` (default; invite-only)
+  /// or `unlisted` (viewable and self-joinable via direct link, but never listed/searchable). Omit to leave
+  /// unchanged on update, or to default to `private` on create.
+  visibility?: FezVisibility;
+  /// A description of the PersonalEvent.
+  description?: string;
+  /// The starting time for the PersonalEvent.
+  startTime: string;
+  /// The ending time for the PersonalEvent.
+  endTime: string;
+  /// The location for the PersonalEvent.
+  location?: string;
+  /// Users that have been invited to this PersonalEvent.
+  /// Should not contain the owner.
+  participants: string[];
 }
 
 /**

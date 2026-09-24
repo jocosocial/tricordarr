@@ -81,6 +81,9 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle, int
           endTime: endTime.toISOString(),
           location: values.location,
           fezType: values.fezType,
+          // Seeded from the fez, so an unchanged value is a no-op server-side. Only the personal
+          // event form can actually change it; every other type rejects a change.
+          visibility: values.visibility,
           minCapacity: Number(values.minCapacity),
           maxCapacity: Number(values.maxCapacity),
           initialUsers: [],
