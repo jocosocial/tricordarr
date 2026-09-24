@@ -8,17 +8,22 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAdminRollupQuery} from '#src/Queries/Admin/RollupQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {ServerRollupCountType} from '#src/Structs/AdminControllerStructs';
 
 export const AdminRollupScreen = () => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminRollupScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+        <AdminRollupScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

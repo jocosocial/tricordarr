@@ -7,19 +7,24 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useRegCodeStatsQuery} from '#src/Queries/Admin/RegCodeQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 /**
  * Registration-code usage counts. Opened from the Registration Codes header Stats button.
  */
 export const AdminRegCodeStatsScreen = () => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'accountmanager'}>
-      <AdminRegCodeStatsScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('accountmanager')}>
+        <AdminRegCodeStatsScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

@@ -14,6 +14,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertApplyBulkUser} from '#src/Libraries/Alerts/AdminAlerts';
 import {createLogger} from '#src/Libraries/Logger';
@@ -25,7 +26,8 @@ import {
   useBulkUserUploadMutation,
 } from '#src/Queries/Admin/BulkUserMutations';
 import {useBulkUserVerifyQuery} from '#src/Queries/Admin/BulkUserQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {BulkUserUpdateCounts, BulkUserUpdateVerificationData} from '#src/Structs/AdminControllerStructs';
 
 const logger = createLogger('AdminBulkUserScreen.tsx');
@@ -33,10 +35,13 @@ const logger = createLogger('AdminBulkUserScreen.tsx');
 const isPickerCancelled = (error: unknown) => error instanceof Error && /cancell?ed/i.test(error.message);
 
 export const AdminBulkUserScreen = () => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'admin'}>
-      <AdminBulkUserScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('admin')}>
+        <AdminBulkUserScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

@@ -14,21 +14,26 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {parseHuntPuzzlesJson} from '#src/Libraries/Admin/HuntPuzzles';
 import {alertDeleteHunt} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useCreateHuntMutation, useDeleteHuntMutation, usePatchHuntMutation} from '#src/Queries/Admin/HuntMutations';
 import {useHuntAdminQuery} from '#src/Queries/Admin/HuntQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {AdminHuntFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminHuntEditScreen>;
 
 export const AdminHuntEditScreen = (props: Props) => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminHuntEditScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+        <AdminHuntEditScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

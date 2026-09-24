@@ -20,7 +20,8 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stack
 import {useScheduleReloadMutation, useScheduleUploadMutation} from '#src/Queries/Admin/ScheduleMutations';
 import {useScheduleLogQuery} from '#src/Queries/Admin/ScheduleQueries';
 import {useReloadNotificationsMutation} from '#src/Queries/Admin/SeedMutations';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminScheduleScreen>;
 
@@ -29,10 +30,13 @@ interface UploadForm {
 }
 
 export const AdminScheduleScreen = (props: Props) => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminScheduleScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+        <AdminScheduleScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

@@ -13,18 +13,23 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {displayString} from '#src/Libraries/RegistrationCode';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAllocateDiscordRegCodeMutation} from '#src/Queries/Admin/DiscordRegCodeMutations';
 import {useRegCodeStatsQuery} from '#src/Queries/Admin/RegCodeQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {RegistrationCodeUserData} from '#src/Structs/ControllerStructs';
 
 export const AdminDiscordRegCodeScreen = () => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminDiscordRegCodeScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+        <AdminDiscordRegCodeScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

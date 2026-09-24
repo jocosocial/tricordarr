@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
@@ -9,7 +9,6 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ShutternautReportList} from '#src/Components/Lists/Schedule/ShutternautReportList';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
-import {NotShutternautManagerView} from '#src/Components/Views/Static/NotShutternautManagerView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -21,39 +20,32 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stack
 import {useEventPhotographerReportQuery} from '#src/Queries/Events/EventPhotographerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {ShutternautScheduleReportData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.shutternautReportScreen>;
 
 /**
- * Checkpoint matching Swiftarr's `requirePhotographerReportAccess`: the report is for
- * Shutternaut Managers and TwitarrTeam and above. Everyone else would get a 403.
- */
-const ShutternautReportGate = ({children}: PropsWithChildren) => {
-  const {hasShutternautManager} = useRoles();
-  const {hasTwitarrTeam} = usePrivilege();
-
-  if (!hasShutternautManager && !hasTwitarrTeam) {
-    return <NotShutternautManagerView />;
-  }
-  return children;
-};
-
-/**
  * Cruise-wide photography-coverage report for Shutternaut Managers. Native counterpart to
  * Swiftarr's `/events/photographerreport`.
+ *
+ * The access checkpoint matches Swiftarr's `requirePhotographerReportAccess`: the report is for
+ * Shutternaut Managers and TwitarrTeam and above. Everyone else would get a 403.
  *
  * No PreRegistrationScreen checkpoint: both report endpoints are marked
  * `setUsedForPreregistration()` in Swiftarr's EventController, so they stay reachable while the
  * server is in pre-registration mode. Matches ScheduleDayScreen and EventLocationScreen.
  */
 export const ShutternautReportScreen = (props: Props) => {
+  const {hasShutternautManager} = useRoles();
+  const {hasTwitarrTeam} = usePrivilege();
+
   return (
     <LoggedInScreen>
       <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events/photographerreport'}>
-        <ShutternautReportGate>
+        <NoAccessScreen hasAccess={hasShutternautManager || hasTwitarrTeam}>
           <ShutternautReportScreenInner {...props} />
-        </ShutternautReportGate>
+        </NoAccessScreen>
       </DisabledFeatureScreen>
     </LoggedInScreen>
   );

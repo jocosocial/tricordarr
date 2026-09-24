@@ -17,13 +17,17 @@ import {alertReloadTimeZones} from '#src/Libraries/Alerts/AdminAlerts';
 import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useReloadTimeZoneDataMutation} from '#src/Queries/Admin/TimeZoneMutations';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 export const AdminTimeZonesScreen = () => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminTimeZonesScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+        <AdminTimeZonesScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

@@ -8,16 +8,21 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {alertReloadSeed} from '#src/Libraries/Alerts/AdminAlerts';
 import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useReloadKaraokeMutation} from '#src/Queries/Admin/SeedMutations';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 export const AdminKaraokeScreen = () => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'admin'}>
-      <AdminKaraokeScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('admin')}>
+        <AdminKaraokeScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

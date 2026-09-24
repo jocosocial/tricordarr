@@ -20,14 +20,18 @@ import {
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAdminSettingsUpdateMutation} from '#src/Queries/Admin/SettingsMutations';
 import {useAdminSettingsQuery} from '#src/Queries/Admin/SettingsQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {SettingsAppFeaturePair} from '#src/Structs/AdminControllerStructs';
 
 export const AdminFeaturesScreen = () => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminFeaturesScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+        <AdminFeaturesScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

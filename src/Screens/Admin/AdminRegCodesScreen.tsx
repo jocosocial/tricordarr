@@ -17,11 +17,13 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {AppIcons} from '#src/Enums/Icons';
+import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {isWellFormed, normalized} from '#src/Libraries/RegistrationCode';
 import {RegistrationCodeValidation} from '#src/Libraries/ValidationSchema';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserForRegCodeQuery} from '#src/Queries/Admin/RegCodeQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminRegCodesScreen>;
 
@@ -37,10 +39,13 @@ const validationSchema = Yup.object().shape({
  * Account-manager lookup for registration codes: find by code or search by username.
  */
 export const AdminRegCodesScreen = (props: Props) => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'accountmanager'}>
-      <AdminRegCodesScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('accountmanager')}>
+        <AdminRegCodesScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

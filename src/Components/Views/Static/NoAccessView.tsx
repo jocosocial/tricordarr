@@ -7,12 +7,20 @@ import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
+interface NoAccessViewProps {
+  message?: string;
+  testID?: string;
+}
+
 /**
- * Shown when a user without the Shutternaut Manager role (or TwitarrTeam access) reaches the
- * photographer coverage report. Mirrors the server's own gate on
- * `GET /api/v3/events/photographerreport`.
+ * Shown when the current user lacks the privilege or role a screen requires. Generic by
+ * design: the message is the same regardless of which gate rejected them. Rendered by
+ * NoAccessScreen rather than used directly.
  */
-export const NotShutternautManagerView = () => {
+export const NoAccessView = ({
+  message = 'You do not have permission to view this screen.',
+  testID = 'noAccessBack-button',
+}: NoAccessViewProps) => {
   const {commonStyles} = useStyles();
   const navigation = useCommonStack();
 
@@ -40,14 +48,10 @@ export const NotShutternautManagerView = () => {
       <View style={styles.outerContainer}>
         <View style={styles.innerContainer}>
           <View style={styles.contentContainer}>
-            <Text>Shutternaut Manager access is required for this screen.</Text>
+            <Text>{message}</Text>
           </View>
           <View style={styles.contentContainer}>
-            <PrimaryActionButton
-              testID={'notShutternautManagerBack-button'}
-              buttonText={'Go Back'}
-              onPress={() => navigation.goBack()}
-            />
+            <PrimaryActionButton testID={testID} buttonText={'Go Back'} onPress={() => navigation.goBack()} />
           </View>
         </View>
       </View>

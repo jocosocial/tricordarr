@@ -14,12 +14,14 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertApplySchedule} from '#src/Libraries/Alerts/AdminAlerts';
 import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useScheduleApplyMutation} from '#src/Queries/Admin/ScheduleMutations';
 import {useScheduleVerifyQuery} from '#src/Queries/Admin/ScheduleQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {EventData} from '#src/Structs/ControllerStructs';
 import {AdminScheduleApplyFormValues} from '#src/Types/FormValues';
 
@@ -44,10 +46,13 @@ const EventChangeList = ({title, events}: {title: string; events: EventData[]}) 
 };
 
 export const AdminScheduleVerifyScreen = () => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminScheduleVerifyScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+        <AdminScheduleVerifyScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

@@ -11,13 +11,17 @@ import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 export const AdminScreen = () => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'accountmanager'}>
-      <AdminScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('accountmanager')}>
+        <AdminScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

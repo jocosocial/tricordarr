@@ -14,12 +14,14 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {UserRoleType} from '#src/Enums/UserRoleType';
+import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertPromoteUser, alertRemoveRole} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAddUserRoleMutation, useRemoveUserRoleMutation} from '#src/Queries/Admin/UserRoleMutations';
 import {useUsersWithRoleQuery} from '#src/Queries/Admin/UserRoleQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminUserRolesScreen>;
@@ -34,10 +36,13 @@ const MANAGED_ROLES: UserRoleType[] = [
 ];
 
 export const AdminUserRolesScreen = (props: Props) => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'tho'}>
-      <AdminUserRolesScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('tho')}>
+        <AdminUserRolesScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
