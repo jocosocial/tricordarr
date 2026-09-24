@@ -39,11 +39,11 @@ export namespace FezVisibility {
   export const getDescription = (visibility?: FezVisibility): string | undefined => {
     switch (visibility) {
       case FezVisibility.private:
-        return 'Private. Only people you invite can see this event.';
+        return 'Only people you invite can see this event.';
       case FezVisibility.public:
-        return 'Public. Anyone can find and view this.';
+        return 'Anyone can find and view this.';
       case FezVisibility.unlisted:
-        return 'Unlisted. Anyone with a link can view and join this event, but it is never listed or searchable.';
+        return 'Only people with the link can view and join this event. Never listed or searchable.';
       default:
         return undefined;
     }
@@ -62,6 +62,13 @@ export namespace FezVisibility {
         return AppIcons.locked;
     }
   };
+
+  /**
+   * The visibility a fez of the given type gets unless explicitly overridden.
+   * Mirrors FezVisibility.defaultVisibility(for:) upstream.
+   */
+  export const getDefault = (fezType: FezType): FezVisibility =>
+    FezType.isLFGType(fezType) ? FezVisibility.public : FezVisibility.private;
 
   /**
    * TRUE when visibility is user-meaningful for this Fez type. Every type other than

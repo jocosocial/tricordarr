@@ -402,7 +402,13 @@ export const useFezCacheReducer = () => {
             const params = query.queryKey[1] as Record<string, unknown> | undefined;
             const cruiseDayParam = params?.cruiseday as number | string | undefined;
             if (cruiseDayParam === undefined) return false;
-            return Number(cruiseDayParam) + 1 === fezCruiseDay;
+            // A matching day is not enough to earn an insert. These list caches are also scoped by
+            // fez type (the LFG lists exclude private events and vice versa) and by ?favorite=true,
+            // so a private event would otherwise appear in the owned-LFG list for its day until the
+            // next refetch. Removal (wrongDayPredicate) stays day-only: dropping an entry from a
+            // cache that should never have held it is correct either way.
+            const favoriteMatch = !listParamsAreFavoritesOnly(params) || !!updatedFez.members?.isFavorite;
+            return listParamsIncludeFez(params, updatedFez, fezCruiseDay) && favoriteMatch;
           };
 
           queryClient.setQueriesData<InfiniteData<FezListData>>(
