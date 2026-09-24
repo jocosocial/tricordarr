@@ -18,6 +18,8 @@ import {SessionDetailsScreen} from '#src/Screens/Settings/Account/SessionDetails
 import {SessionSettingsScreen} from '#src/Screens/Settings/Account/SessionSettingsScreen';
 import {TimeSettingsScreen} from '#src/Screens/Settings/Config/TimeSettingsScreen';
 import {AccountInfoSettingsScreen} from '#src/Screens/Settings/Developer/AccountInfoSettingsScreen';
+import {CheckpointPreviewSettingScreen} from '#src/Screens/Settings/Developer/CheckpointPreviewSettingScreen';
+import {CheckpointSettingScreen} from '#src/Screens/Settings/Developer/CheckpointSettingScreen';
 import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
 import {FeatureSettingsScreen} from '#src/Screens/Settings/Developer/FeatureSettingsScreen';
 import {LoadingSettingScreen} from '#src/Screens/Settings/Developer/LoadingSettingScreen';
@@ -114,6 +116,16 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.notificationPollerSettingsScreen}
         component={NotificationPollerSettingsScreen}
         options={{title: 'Notification Polling'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.checkpointSettingScreen}
+        component={CheckpointSettingScreen}
+        options={{title: 'Checkpoints'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.checkpointPreviewSettingScreen}
+        component={CheckpointPreviewSettingScreen}
+        options={{title: 'Checkpoint Preview'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.loadingSettingScreen}

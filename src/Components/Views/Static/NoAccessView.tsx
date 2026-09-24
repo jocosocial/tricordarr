@@ -18,7 +18,7 @@ interface NoAccessViewProps {
  * NoAccessScreen rather than used directly.
  */
 export const NoAccessView = ({
-  message = 'You do not have permission to view this screen.',
+  message = 'You do not have permission to view this content.',
   testID = 'noAccessBack-button',
 }: NoAccessViewProps) => {
   const {commonStyles} = useStyles();

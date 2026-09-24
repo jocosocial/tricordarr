@@ -29,38 +29,44 @@ On iPad, tapping the navigation header is treated as a status-bar tap. That fire
 
 Android ignores the prop. `AppFlashList` and a few raw settings `ScrollView`s still use the default.
 
+## Checkpoints
+
+Checkpoints are feature gates that block screen content on certain conditions. Used to gate preregistration, not logged in, etc.
+
+A new checkpoint screen (`src/Screens/Checkpoint`) must also be added to `CheckpointPreview` (`src/Enums/CheckpointPreview.ts`). That drives Settings > Developers > Checkpoints, which previews the blocked view of every checkpoint without arranging the state that would normally trigger it.
+
 ## Mutation In-Flight State (double-submit prevention)
 
 The app runs on a cruise-ship network: high latency, jitter, occasional packet loss. Any window where a Post/Send/Save control is tappable while its write is still in flight becomes a duplicate write on that network, because the user reasonably assumes a non-spinning button means nothing happened. See #533 ("Forum/Fez Posting Stopped Spinning Too Early") for the incident that prompted this.
 
 Two failure shapes, two different fixes:
 
-**Formik forms.** Formik only lets the *consumer* own `isSubmitting` when `onSubmit` returns `undefined`. If `onSubmit` is `async`, it always returns a Promise, and Formik clears `isSubmitting` itself as soon as that Promise resolves — not when the network request completes. `ContentPostForm`'s wrapper was `async` but fired `mutation.mutate()` without awaiting it, so the returned promise resolved a microtask after the mutation was merely *started*, re-enabling the button mid-request.
+**Formik forms.** Formik only lets the _consumer_ own `isSubmitting` when `onSubmit` returns `undefined`. If `onSubmit` is `async`, it always returns a Promise, and Formik clears `isSubmitting` itself as soon as that Promise resolves — not when the network request completes. `ContentPostForm`'s wrapper was `async` but fired `mutation.mutate()` without awaiting it, so the returned promise resolved a microtask after the mutation was merely _started_, re-enabling the button mid-request.
 
-  - If your submit handler is `async` (or calls one), it MUST `await mutation.mutateAsync(...)`, not call `mutation.mutate(...)` and return.
-  - Prefer this over `mutation.mutate()` + `onSettled: () => setSubmitting(false)`. That pattern only works if the handler is fully synchronous; it silently breaks the moment someone adds an `await` above the mutation call (e.g. to save a photo first), and nothing catches the regression short of tapping the button on a slow network.
-  - Catch mutation rejections inside the handler (`useTokenAuthMutation`/`usePublicMutation` already raise the error snackbar via `onError`) so the rejection doesn't escape into Formik's submit handling.
+- If your submit handler is `async` (or calls one), it MUST `await mutation.mutateAsync(...)`, not call `mutation.mutate(...)` and return.
+- Prefer this over `mutation.mutate()` + `onSettled: () => setSubmitting(false)`. That pattern only works if the handler is fully synchronous; it silently breaks the moment someone adds an `await` above the mutation call (e.g. to save a photo first), and nothing catches the regression short of tapping the button on a slow network.
+- Catch mutation rejections inside the handler (`useTokenAuthMutation`/`usePublicMutation` already raise the error snackbar via `onError`) so the rejection doesn't escape into Formik's submit handling.
 
 **Non-Formik controls** (menu items, swipeables, header buttons, anything driving `mutation.mutate()` directly). Formik isn't involved, so there's no default protection at all — you must explicitly disable the control while the mutation is in flight:
 
-  - Single mutation: `disabled={mutation.isPending}` on the pressable (`Menu.Item`, `PrimaryActionButton`, etc). `SubmitIconButton` already does this internally via its `submitting` prop.
-  - Menus specifically: a `Menu.Item`'s parent menu stays open until `onSettled` calls `closeMenu()` (per the Menus convention above), so the item itself needs `disabled`, not just a loading icon — a loading icon alone (`getStateLoadingIcon`) is decorative and does not block a second tap.
-  - Batch operations (`Promise.allSettled` over several `mutateAsync` calls) aren't covered by any single mutation's `isPending`: track a local `busy` boolean set before the batch starts and cleared after it settles, and fold it into the button's `disabled`. Don't reuse `setRefreshing` for this — that drives the pull-to-refresh spinner on a parent list, not this control's own tappability.
+- Single mutation: `disabled={mutation.isPending}` on the pressable (`Menu.Item`, `PrimaryActionButton`, etc). `SubmitIconButton` already does this internally via its `submitting` prop.
+- Menus specifically: a `Menu.Item`'s parent menu stays open until `onSettled` calls `closeMenu()` (per the Menus convention above), so the item itself needs `disabled`, not just a loading icon — a loading icon alone (`getStateLoadingIcon`) is decorative and does not block a second tap.
+- Batch operations (`Promise.allSettled` over several `mutateAsync` calls) aren't covered by any single mutation's `isPending`: track a local `busy` boolean set before the batch starts and cleared after it settles, and fold it into the button's `disabled`. Don't reuse `setRefreshing` for this — that drives the pull-to-refresh spinner on a parent list, not this control's own tappability.
 
 `PrimaryActionButton`'s `isLoading` prop implies `disabled` (so passing one without the other can't happen); other buttons don't get this for free.
 
-See also "Optimistic Cache Updates (local-first reducer pattern)" below: that pattern adds a step *before* the mutation starts, but doesn't remove the requirement here to disable the control while it's in flight.
+See also "Optimistic Cache Updates (local-first reducer pattern)" below: that pattern adds a step _before_ the mutation starts, but doesn't remove the requirement here to disable the control while it's in flight.
 
 ## Optimistic Cache Updates (local-first reducer pattern)
 
-If you only update the cache after the server responds, any control whose *appearance* depends on that cache (a star, a checkmark, a mute icon) sits in the wrong state for the entire round trip — and on the ship's slow network (see "Mutation In-Flight State" above), that's long enough for the user to notice. The fix: for a toggle where you already know the new value the instant the user taps (a boolean flip, a field the user picked), call the reducer *before* calling `mutation.mutate(...)`, not inside `onSuccess`.
+If you only update the cache after the server responds, any control whose _appearance_ depends on that cache (a star, a checkmark, a mute icon) sits in the wrong state for the entire round trip — and on the ship's slow network (see "Mutation In-Flight State" above), that's long enough for the user to notice. The fix: for a toggle where you already know the new value the instant the user taps (a boolean flip, a field the user picked), call the reducer _before_ calling `mutation.mutate(...)`, not inside `onSuccess`.
 
 Order of operations:
 
 1. Compute the new value (e.g. `const newValue = !current`).
 2. Call the reducer action with that new value — this updates the cache and the UI immediately, before any network request has even started.
 3. Call `mutation.mutate(...)`.
-4. In `onError`, call the same reducer action again with the *old* value to roll back, **and** invalidate the relevant keys so the server — not our captured stale copy — gets the last word (see "Rollback is a tiebreak, not a truth" below for why the rollback alone isn't enough).
+4. In `onError`, call the same reducer action again with the _old_ value to roll back, **and** invalidate the relevant keys so the server — not our captured stale copy — gets the last word (see "Rollback is a tiebreak, not a truth" below for why the rollback alone isn't enough).
 5. Keep everything already required by "Mutation In-Flight State" (disable the control while pending, `closeMenu()` in `onSettled` for menu items) — this pattern doesn't replace that, it's an addition.
 6. Only use `onSuccess` for something that genuinely can't be known until the server responds (see "When NOT to do this" below).
 
@@ -74,9 +80,9 @@ Order of operations:
 
 **One-way actions with no rollback.** Some reducer actions have no inverse — `markRead` collapses `readCount` toward `postCount` and can't be un-applied without having captured the prior counts. For these, apply eagerly and say so: there is no `onError` rollback, and a failed request self-heals on the next refetch. Don't let the rule above imply otherwise.
 
-**Rollback is a tiebreak, not a truth.** Inverting the boolean restores the value we *captured at tap time*. If anything else changed the entity during the round trip (a websocket push, a concurrent refetch, the same entity toggled from another screen), the rollback writes stale data back. `updateFavorite` is the sharpest case: it also re-runs `primeEventDetail` with a whole stale `EventData`. Hence the invalidate in step 4.
+**Rollback is a tiebreak, not a truth.** Inverting the boolean restores the value we _captured at tap time_. If anything else changed the entity during the round trip (a websocket push, a concurrent refetch, the same entity toggled from another screen), the rollback writes stale data back. `updateFavorite` is the sharpest case: it also re-runs `primeEventDetail` with a whole stale `EventData`. Hence the invalidate in step 4.
 
-**The error snackbar still fires.** `useTokenAuthMutation` registers its own `onError` at the hook level (`src/Queries/TokenAuthMutation.ts`), and a per-call `onError` passed to `mutate()` runs *in addition to* it, not instead. So a rollback handler neither suppresses the snackbar nor needs to raise one itself — don't add a duplicate.
+**The error snackbar still fires.** `useTokenAuthMutation` registers its own `onError` at the hook level (`src/Queries/TokenAuthMutation.ts`), and a per-call `onError` passed to `mutate()` runs _in addition to_ it, not instead. So a rollback handler neither suppresses the snackbar nor needs to raise one itself — don't add a duplicate.
 
 A small before/after, from the real fix in `src/Components/Cards/Schedule/EventCard.tsx`:
 
@@ -104,7 +110,7 @@ eventFavoriteMutation.mutate(
 
 A mutating toggle (favorite/mute/pin) counts as a **mutating item** under `AGENTS.md`'s Menus section, not a toggle item — that ambiguity is what makes this worth stating. If we ever revisit, the follow-up order is: fix the in-flight `disabled` gaps first, then rewrite the Menus rules around "can you compute the new value locally", then convert — with verification aimed squarely at the forced-failure path.
 
-**`cancelQueries` before the optimistic write.** TanStack's optimistic-update recipe starts with `queryClient.cancelQueries(...)` for a reason: a refetch that was already in flight when the user tapped will resolve *after* our optimistic write and stomp it back to the stale value — the same flicker this pattern exists to remove, on the same slow network that makes the window wide. Rather than asking every call site to remember this, the cancel is folded into the reducer actions themselves (`updateFavorite`, `updateMute`, `updatePinned`, `updatePostPin`, `updatePostBookmark`), since they already know which query keys they touch. `cancelQueries` returns a promise; the reducers stay synchronous and fire it without awaiting (fire-and-forget) rather than becoming `async`, since callers already treat these as synchronous cache writes.
+**`cancelQueries` before the optimistic write.** TanStack's optimistic-update recipe starts with `queryClient.cancelQueries(...)` for a reason: a refetch that was already in flight when the user tapped will resolve _after_ our optimistic write and stomp it back to the stale value — the same flicker this pattern exists to remove, on the same slow network that makes the window wide. Rather than asking every call site to remember this, the cancel is folded into the reducer actions themselves (`updateFavorite`, `updateMute`, `updatePinned`, `updatePostPin`, `updatePostBookmark`), since they already know which query keys they touch. `cancelQueries` returns a promise; the reducers stay synchronous and fire it without awaiting (fire-and-forget) rather than becoming `async`, since callers already treat these as synchronous cache writes.
 
 ## Keyboard Avoidance
 
