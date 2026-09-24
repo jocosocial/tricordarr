@@ -14,7 +14,6 @@ import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {KaraokeSearchBar} from '#src/Components/Search/KaraokeSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -24,20 +23,20 @@ import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackCo
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {useKaraokeLatestQuery} from '#src/Queries/Karaoke/KaraokeQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
-import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.karaokePerformanceListScreen>;
 
 export const KaraokePerformanceListScreen = (props: Props) => {
   return (
-    <LoggedInScreen>
+    <MaintenanceModeScreen>
       <PreRegistrationScreen helpScreen={CommonStackComponents.karaokeHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.karaoke} urlPath={'/karaoke'}>
           <KaraokePerformanceListScreenInner {...props} />
         </DisabledFeatureScreen>
       </PreRegistrationScreen>
-    </LoggedInScreen>
+    </MaintenanceModeScreen>
   );
 };
 
@@ -52,7 +51,7 @@ const KaraokePerformanceListScreenInner = ({navigation}: Props) => {
   const trimmedSubmitted = submittedQuery.trim();
   const canSearch = trimmedSubmitted.length >= 3 || trimmedSubmitted.length === 1 || trimmedSubmitted === '#';
 
-  const {data, refetch, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage} = useKaraokeLatestQuery({
+  const {data, refetch, isFetching, hasNextPage, fetchNextPage, isFetchingNextPage} = useKaraokeLatestQuery({
     search: searchHistoryVisible && canSearch ? submittedQuery : undefined,
   });
 
@@ -117,14 +116,6 @@ const KaraokePerformanceListScreenInner = ({navigation}: Props) => {
     navigation.setOptions({headerRight: getNavButtons});
   }, [getNavButtons, navigation]);
 
-  if (isLoading) {
-    return (
-      <AppView>
-        <LoadingView />
-      </AppView>
-    );
-  }
-
   const items = data?.pages.flatMap(p => p.songs) ?? [];
 
   return (
@@ -140,12 +131,12 @@ const KaraokePerformanceListScreenInner = ({navigation}: Props) => {
             setSubmittedQuery('');
           }}
           placeholder={'Search History'}
+          loading={isFetching && !isFetchingNextPage}
         />
       )}
       <KaraokeSongList
         ref={listRef}
         items={items}
-        showFavoriteButton={true}
         swipeableEnabled={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}

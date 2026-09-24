@@ -1,16 +1,11 @@
-import {useQueryClient} from '@tanstack/react-query';
 import {format} from 'date-fns';
-import React, {memo, useCallback, useMemo} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {ActivityIndicator, List} from 'react-native-paper';
+import React, {memo, useMemo} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {List} from 'react-native-paper';
 
-import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {KaraokeListItemSwipeable} from '#src/Components/Swipeables/KaraokeListItemSwipeable';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {AppIcons} from '#src/Enums/Icons';
-import {useRefresh} from '#src/Hooks/useRefresh';
-import {useKaraokeFavoriteMutation} from '#src/Queries/Karaoke/KaraokeMutations';
 import {KaraokePerformedSongsData, KaraokeSongData} from '#src/Structs/ControllerStructs';
 
 /** Display item: performance row (latest list) or full song (search/favorites). */
@@ -29,7 +24,7 @@ interface KaraokeSongListItemProps {
   item: KaraokeSongListItemData;
   /** Optional press handler (e.g. navigate to log screen). */
   onPress?: () => void;
-  /** When true, wrap the row in KaraokeListItemSwipeable (Log for karaokemanager). */
+  /** When true, wrap the row in KaraokeListItemSwipeable (Favorite; Log for karaokemanager). */
   swipeableEnabled?: boolean;
 }
 
@@ -40,25 +35,6 @@ interface KaraokeSongListItemProps {
 const KaraokeSongListItemInner = ({item, onPress, swipeableEnabled = false}: KaraokeSongListItemProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
-  const queryClient = useQueryClient();
-  const favoriteMutation = useKaraokeFavoriteMutation();
-  const {refreshing, setRefreshing} = useRefresh({});
-
-  const onFavoritePress = useCallback(() => {
-    if (!item.songID) return;
-    setRefreshing(true);
-    favoriteMutation.mutate(
-      {songID: item.songID, action: item.isFavorite ? 'unfavorite' : 'favorite'},
-      {
-        onSuccess: async () => {
-          const {KaraokeSongData: K} = await import('#src/Structs/ControllerStructs');
-          const keys = K.getCacheKeys(item.songID);
-          await Promise.all(keys.map(key => queryClient.invalidateQueries({queryKey: key})));
-        },
-        onSettled: () => setRefreshing(false),
-      },
-    );
-  }, [item, favoriteMutation, queryClient, setRefreshing]);
 
   const title = item.songName;
   const performerLine =
@@ -92,12 +68,6 @@ const KaraokeSongListItemInner = ({item, onPress, swipeableEnabled = false}: Kar
           ...commonStyles.onBackground,
           fontStyle: 'italic',
         },
-        rightContainer: {
-          ...commonStyles.marginLeftSmall,
-          flexDirection: 'row',
-          alignItems: 'center',
-          alignSelf: 'flex-start',
-        },
       }),
     [commonStyles, theme],
   );
@@ -112,24 +82,6 @@ const KaraokeSongListItemInner = ({item, onPress, swipeableEnabled = false}: Kar
       item.artist
     );
 
-  const rightContent = useCallback(
-    () => (
-      <View style={styles.rightContainer}>
-        {refreshing && <ActivityIndicator />}
-        {!refreshing && (
-          <TouchableOpacity onPress={onFavoritePress} disabled={favoriteMutation.isPending}>
-            {item.isFavorite ? (
-              <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
-            ) : (
-              <AppIcon icon={AppIcons.toggleFavorite} />
-            )}
-          </TouchableOpacity>
-        )}
-      </View>
-    ),
-    [item, refreshing, onFavoritePress, favoriteMutation.isPending, styles.rightContainer, theme.colors.twitarrYellow],
-  );
-
   const listItem = (
     <List.Item
       contentStyle={styles.content}
@@ -140,7 +92,6 @@ const KaraokeSongListItemInner = ({item, onPress, swipeableEnabled = false}: Kar
       descriptionStyle={styles.text}
       titleStyle={styles.title}
       onPress={onPress}
-      right={rightContent}
     />
   );
 

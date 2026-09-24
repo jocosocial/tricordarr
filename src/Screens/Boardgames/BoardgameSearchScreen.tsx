@@ -11,15 +11,18 @@ import {useSafePagination} from '#src/Hooks/useSafePagination';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 export const BoardgameSearchScreen = () => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
-      <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
-        <BoardgameSearchScreenInner />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <MaintenanceModeScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
+          <BoardgameSearchScreenInner />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </MaintenanceModeScreen>
   );
 };
 

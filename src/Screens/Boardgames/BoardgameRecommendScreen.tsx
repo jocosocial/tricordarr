@@ -19,6 +19,7 @@ import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackCo
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {useBoardgameRecommendMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {BoardgameData, BoardgameRecommendationData} from '#src/Structs/ControllerStructs';
 
@@ -51,11 +52,13 @@ type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameR
 
 export const BoardgameRecommendScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
-      <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames/guide'}>
-        <BoardgameRecommendScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <MaintenanceModeScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames/guide'}>
+          <BoardgameRecommendScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </MaintenanceModeScreen>
   );
 };
 
@@ -66,28 +69,23 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
   const [fieldValues, setFieldValues] = useState<BoardgameRecommendationData>(defaultValues);
   const listRef = useRef<FlashListRef<BoardgameData>>(null);
 
-  const onSubmit = (values: BoardgameRecommendationData, helpers: FormikHelpers<BoardgameRecommendationData>) => {
+  const onSubmit = async (values: BoardgameRecommendationData, helpers: FormikHelpers<BoardgameRecommendationData>) => {
     setFieldValues(values);
-    guideMutation.mutate(
-      {
-        recommendationData: values,
-      },
-      {
-        onSuccess: response => {
-          setGames(response.data.gameArray);
-          // Animate scroll to top to show results
-          requestAnimationFrame(() => {
-            try {
-              listRef.current?.scrollToIndex({index: 0, animated: true});
-            } catch {
-              // If scrollToIndex fails (e.g., list not fully rendered), use scrollToOffset as fallback
-              listRef.current?.scrollToOffset({offset: 0, animated: true});
-            }
-          });
-        },
-        onSettled: () => helpers.setSubmitting(false),
-      },
-    );
+    try {
+      const response = await guideMutation.mutateAsync({recommendationData: values});
+      setGames(response.data.gameArray);
+      // Animate scroll to top to show results
+      requestAnimationFrame(() => {
+        try {
+          listRef.current?.scrollToIndex({index: 0, animated: true});
+        } catch {
+          // If scrollToIndex fails (e.g., list not fully rendered), use scrollToOffset as fallback
+          listRef.current?.scrollToOffset({offset: 0, animated: true});
+        }
+      });
+    } finally {
+      helpers.setSubmitting(false);
+    }
   };
 
   const getHeader = () => <ListHeader onSubmit={onSubmit} initialValues={fieldValues} games={games} />;

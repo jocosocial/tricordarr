@@ -21,6 +21,26 @@ Checkpoints are feature gates that block screen content on certain conditions. U
 
 A new checkpoint screen (`src/Screens/Checkpoint`) must also be added to `CheckpointPreview` (`src/Enums/CheckpointPreview.ts`). That drives Settings > Developers > Checkpoints, which previews the blocked view of every checkpoint without arranging the state that would normally trigger it.
 
+### Ordering
+
+Outermost to innermost, checkpoints compose as:
+
+```tsx
+<MaintenanceModeScreen>
+  <LoggedInScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.exampleHelpScreen}>
+      <DisabledFeatureScreen feature={SwiftarrFeature.example} urlPath={'/example'}>
+        <ExampleScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
+  </LoggedInScreen>
+</MaintenanceModeScreen>
+```
+
+`MaintenanceModeScreen` goes outermost: if the server is restricting access at all, nothing else about the screen (login state, pre-reg, feature flag) matters yet. `LoggedInScreen` is next, since the rest of the checks are meaningless without a session; omit it for a screen that's genuinely usable while logged out — Swiftarr's `flexRoutes` endpoints (performers, hunts, boardgames, karaoke browsing/search) are readable anonymously, so those screens skip `LoggedInScreen` and go straight from `MaintenanceModeScreen` to `PreRegistrationScreen`. `PreRegistrationScreen` and `DisabledFeatureScreen` keep their existing relative order from the default screen-wrapping pattern.
+
+A screen that's viewable while logged out must still hide (not just query-gate) any control that only makes sense for a logged-in user — e.g. `BoardgameListScreen`'s Favorites toggle is hidden via `isLoggedIn` rather than relying on the query to reject an anonymous `favorite` filter. And a screen that's inherently per-user even though its feature area is otherwise open (e.g. `KaraokeFavoritesListScreen`) keeps `LoggedInScreen` rather than dropping it just because sibling screens in the same feature do.
+
 ## Keyboard Avoidance
 
 `AppView` no longer owns a global `KeyboardAvoidingView` (see issue #573) — it caused double compensation on form screens and fought `LegendList`'s `maintainVisibleContentPosition` on chat screens. Keyboard handling is per-screen now. Pick based on what the screen actually contains:

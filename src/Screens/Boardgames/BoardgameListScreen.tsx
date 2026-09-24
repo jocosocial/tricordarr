@@ -11,6 +11,7 @@ import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {usePagination} from '#src/Hooks/usePagination';
@@ -19,24 +20,25 @@ import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackCo
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
-import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameListScreen>;
 
 export const BoardgameListScreen = (props: Props) => {
   return (
-    <LoggedInScreen>
+    <MaintenanceModeScreen>
       <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
         <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
           <BoardgameListScreenInner {...props} />
         </DisabledFeatureScreen>
       </PreRegistrationScreen>
-    </LoggedInScreen>
+    </MaintenanceModeScreen>
   );
 };
 
 const BoardgameListScreenInner = ({navigation}: Props) => {
+  const {isLoggedIn} = useSession();
   const [favorites, setFavorites] = useState(false);
   const {
     data,
@@ -72,12 +74,14 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
             iconName={AppIcons.search}
             onPress={() => navigation.push(MainStackComponents.boardgameSearchScreen)}
           />
-          <MenuAnchor
-            title={'Favorites'}
-            iconName={AppIcons.favorite}
-            onPress={() => setFavorites(!favorites)}
-            active={favorites}
-          />
+          {isLoggedIn && (
+            <MenuAnchor
+              title={'Favorites'}
+              iconName={AppIcons.favorite}
+              onPress={() => setFavorites(!favorites)}
+              active={favorites}
+            />
+          )}
           <Item
             title={'Help'}
             iconName={AppIcons.help}
@@ -86,7 +90,7 @@ const BoardgameListScreenInner = ({navigation}: Props) => {
         </MaterialHeaderButtons>
       </View>
     ),
-    [favorites, navigation],
+    [favorites, isLoggedIn, navigation],
   );
 
   useEffect(() => {

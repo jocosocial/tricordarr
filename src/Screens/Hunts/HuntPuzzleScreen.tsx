@@ -28,6 +28,7 @@ import {appUrl} from '#src/Libraries/UrlParser';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useHuntPuzzleCallInMutation} from '#src/Queries/Hunts/HuntMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 import {HuntPuzzleCallInFormValues} from '#src/Types/FormValues';
@@ -39,11 +40,13 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.huntPu
  */
 export const HuntPuzzleScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
-      <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={`/puzzle/${props.route.params.puzzleID}`}>
-        <HuntPuzzleScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <MaintenanceModeScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={`/puzzle/${props.route.params.puzzleID}`}>
+          <HuntPuzzleScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </MaintenanceModeScreen>
   );
 };
 

@@ -14,15 +14,18 @@ import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackCo
 import {MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PerformerScreenBase} from '#src/Screens/Performer/PerformerScreenBase';
 
 type Props = StackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
 
 export const PerformerScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={`/performer/${props.route.params.id}`}>
-      <PerformerScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <MaintenanceModeScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={`/performer/${props.route.params.id}`}>
+        <PerformerScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </MaintenanceModeScreen>
   );
 };
 
