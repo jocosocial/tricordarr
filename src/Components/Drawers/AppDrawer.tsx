@@ -26,7 +26,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
-  const {hasShutternaut, hasShutternautManager, hasAccountManager} = useRoles();
+  const {hasShutternaut, hasShutternautManager, hasAccountManager, hasHuntManager} = useRoles();
   const {data: userNotificationData} = useUserNotificationDataQuery({
     enabled: oobeCompleted && !preRegistrationMode,
   });
@@ -235,6 +235,13 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   label={'Photographer Report'}
                   icon={AppIcons.photographer}
                   onPress={() => push(CommonStackComponents.shutternautReportScreen)}
+                />
+              )}
+              {(hasHuntManager || hasTwitarrTeam) && (
+                <PaperDrawer.Item
+                  label={'Manage Puzzle Hunts'}
+                  icon={AppIcons.hunts}
+                  onPress={() => push(CommonStackComponents.huntManageScreen)}
                 />
               )}
               {hasModerator && (

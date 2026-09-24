@@ -173,14 +173,6 @@ const AdminScreenInner = () => {
                 navComponent={CommonStackComponents.siteUIScreen}
                 params={{resource: 'performer/root', admin: true}}
               />
-              {access.canManageHunts && (
-                <NavigationListItem
-                  title={'Puzzle Hunts'}
-                  description={'Create and edit puzzle hunts.'}
-                  navComponent={CommonStackComponents.siteUIScreen}
-                  params={{resource: 'hunts', admin: true}}
-                />
-              )}
               {access.canBulkUser && (
                 <>
                   <NavigationListItem

@@ -58,6 +58,14 @@ export namespace UserRoleType {
   };
 
   /**
+   * Every role case, in declaration order. Equivalent to Swift's `CaseIterable.allCases`.
+   * The `typeof` filter is required: this namespace merges with the enum of the same name, so
+   * `Object.values(UserRoleType)` also yields the functions declared here.
+   */
+  export const allCases = (): UserRoleType[] =>
+    Object.values(UserRoleType).filter((value): value is UserRoleType => typeof value === 'string');
+
+  /**
    * This gives us a bit more control than direct enum access. Since the strings for UserRoleType are part of the API
    * (specifically, they're URL query values), they should be somewhat abstracted from internal representation.
    * This fn provides lazy abstraction, making it easy for API strings to get re-mapped to enum values, in the future.

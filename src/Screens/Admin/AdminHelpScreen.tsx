@@ -17,7 +17,8 @@ export const AdminHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
-            Server Admin is accessible to TwitarrTeam and above but many bits only available via the Admin user.
+            Server Admin is accessible to TwitarrTeam and above but many bits only available via the Admin user. The
+            Account Manager role also opens Server Admin, showing only the sections that role covers.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Screens'} noMargin={true}>

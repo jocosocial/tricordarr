@@ -26,7 +26,6 @@ export interface AdminAccess {
   canBulkUser: boolean;
   canReloadTimeZones: boolean;
   canReloadSeeds: boolean;
-  canManageHunts: boolean;
   hasMinAccess: (minAccess: AdminMinAccess) => boolean;
 }
 
@@ -69,7 +68,6 @@ export const useAdminAccess = (): AdminAccess => {
       canBulkUser: hasAdmin,
       canReloadTimeZones: hasAdmin,
       canReloadSeeds: hasAdmin,
-      canManageHunts: hasTwitarrTeam,
       hasMinAccess,
     };
   }, [hasAccountManager, hasAdmin, hasTHO, hasTwitarrTeam]);

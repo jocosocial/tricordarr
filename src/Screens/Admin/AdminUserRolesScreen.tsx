@@ -26,14 +26,10 @@ import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminUserRolesScreen>;
 
-const MANAGED_ROLES: UserRoleType[] = [
-  UserRoleType.accountmanager,
-  UserRoleType.karaokemanager,
-  UserRoleType.karaokeambassador,
-  UserRoleType.shutternaut,
-  UserRoleType.shutternautmanager,
-  UserRoleType.performerselfeditor,
-];
+/**
+ * Every role THO can assign, derived from the enum so new roles appear without a code change here.
+ */
+const MANAGED_ROLES: UserRoleType[] = UserRoleType.allCases();
 
 export const AdminUserRolesScreen = (props: Props) => {
   const {hasMinAccess} = useAdminAccess();
