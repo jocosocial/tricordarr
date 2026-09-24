@@ -12,9 +12,9 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {UserRoleType} from '#src/Enums/UserRoleType';
-import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertPromoteUser, alertRemoveRole} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -32,10 +32,10 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminU
 const MANAGED_ROLES: UserRoleType[] = UserRoleType.allCases();
 
 export const AdminUserRolesScreen = (props: Props) => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTHO} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('tho')}>
+      <NoAccessScreen hasAccess={hasTHO}>
         <AdminUserRolesScreenInner {...props} />
       </NoAccessScreen>
     </LoggedInScreen>

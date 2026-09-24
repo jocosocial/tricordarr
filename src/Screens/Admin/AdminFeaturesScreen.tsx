@@ -9,6 +9,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ServerSettingsReadOnlyWarningView} from '#src/Components/Views/Warnings/ServerSettingsReadOnlyWarningView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -25,10 +26,10 @@ import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {SettingsAppFeaturePair} from '#src/Structs/AdminControllerStructs';
 
 export const AdminFeaturesScreen = () => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTwitarrTeam} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
         <AdminFeaturesScreenInner />
       </NoAccessScreen>
     </LoggedInScreen>

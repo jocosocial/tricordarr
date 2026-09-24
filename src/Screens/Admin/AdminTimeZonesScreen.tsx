@@ -10,6 +10,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -21,10 +22,10 @@ import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 export const AdminTimeZonesScreen = () => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTwitarrTeam} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
         <AdminTimeZonesScreenInner />
       </NoAccessScreen>
     </LoggedInScreen>

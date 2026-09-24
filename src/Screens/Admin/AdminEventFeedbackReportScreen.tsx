@@ -17,9 +17,9 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {calcCruiseDayTime, getEventTimeString} from '#src/Libraries/DateTime';
@@ -35,10 +35,10 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminE
  * Full details of a single shadow event feedback report.
  */
 export const AdminEventFeedbackReportScreen = (props: Props) => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTwitarrTeam} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
         <AdminEventFeedbackReportScreenInner {...props} />
       </NoAccessScreen>
     </LoggedInScreen>

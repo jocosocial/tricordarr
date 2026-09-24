@@ -7,6 +7,7 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -15,10 +16,10 @@ import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 export const AdminScreen = () => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTwitarrTeam} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
         <AdminScreenInner />
       </NoAccessScreen>
     </LoggedInScreen>

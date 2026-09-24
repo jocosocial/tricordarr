@@ -2,13 +2,6 @@ import {useMemo} from 'react';
 
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 
-/**
- * Minimum privilege required to open an admin screen.
- * Role-gated features (Account Manager, Hunt Manager) live outside Server Admin and check their
- * role directly, so every level here is a plain UserAccessLevel.
- */
-export type AdminMinAccess = 'twitarrteam' | 'tho' | 'admin';
-
 export interface AdminAccess {
   canManageAnnouncements: boolean;
   canManageThemes: boolean;
@@ -24,28 +17,18 @@ export interface AdminAccess {
   canBulkUser: boolean;
   canReloadTimeZones: boolean;
   canReloadSeeds: boolean;
-  hasMinAccess: (minAccess: AdminMinAccess) => boolean;
 }
 
 /**
- * Privilege flags for server-admin UI, matching Swiftarr AdminController and SiteAdminController.
+ * Per-capability privilege flags for the Server Admin UI, matching Swiftarr's AdminController and
+ * SiteAdminController. Screen-level checkpoints read `usePrivilege` directly; this hook is for the
+ * finer-grained "can this user do X" questions within a screen.
  * TwitarrTeam includes THO and Admin via UserAccessLevel.hasAccess.
  */
 export const useAdminAccess = (): AdminAccess => {
   const {hasTwitarrTeam, hasTHO, hasAdmin} = usePrivilege();
 
   return useMemo(() => {
-    const hasMinAccess = (minAccess: AdminMinAccess): boolean => {
-      switch (minAccess) {
-        case 'twitarrteam':
-          return hasTwitarrTeam;
-        case 'tho':
-          return hasTHO;
-        case 'admin':
-          return hasAdmin;
-      }
-    };
-
     return {
       canManageAnnouncements: hasTwitarrTeam,
       canManageThemes: hasTHO,
@@ -61,7 +44,6 @@ export const useAdminAccess = (): AdminAccess => {
       canBulkUser: hasAdmin,
       canReloadTimeZones: hasAdmin,
       canReloadSeeds: hasAdmin,
-      hasMinAccess,
     };
   }, [hasAdmin, hasTHO, hasTwitarrTeam]);
 };

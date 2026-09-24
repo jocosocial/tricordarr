@@ -15,8 +15,8 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
@@ -36,10 +36,10 @@ type EventFeedbackReportWithId = EventFeedbackReport & {id: string};
  * Admin list of shadow event feedback reports.
  */
 export const AdminEventFeedbackReportsScreen = (props: Props) => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTwitarrTeam} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
         <AdminEventFeedbackReportsScreenInner {...props} />
       </NoAccessScreen>
     </LoggedInScreen>

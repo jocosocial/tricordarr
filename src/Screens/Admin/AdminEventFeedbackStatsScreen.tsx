@@ -7,7 +7,7 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {getEventFeedbackResponseRate} from '#src/Libraries/Admin/EventFeedbackCsv';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -19,10 +19,10 @@ import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
  * Shadow event and feedback response statistics for TwitarrTeam.
  */
 export const AdminEventFeedbackStatsScreen = () => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTwitarrTeam} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
         <AdminEventFeedbackStatsScreenInner />
       </NoAccessScreen>
     </LoggedInScreen>
