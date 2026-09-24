@@ -38,7 +38,7 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
     // mutateAsync calls means a rollback would need to be keyed to which promise rejected --
     // more machinery than this screen warrants. Instead, apply optimistically up front and
     // reconcile with a single invalidate once the whole batch has settled (see
-    // "Optimistic Cache Updates" in docs/Code Notes.md).
+    // "Optimistic Cache Updates" in docs/Cache and State.md).
     const mutations: Promise<AxiosResponse<void, any>>[] = [];
     props.selectedItems.forEach(selectedItem => {
       const sourceItem = props.items?.find(item => item.forumID === selectedItem.id);

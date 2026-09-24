@@ -7,20 +7,30 @@ import {FezType} from '#src/Enums/FezType';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {LfgCreateScreenBase} from '#src/Screens/LFG/LfgCreateScreenBase';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameCreateLfgScreen>;
 
+/**
+ * Pure write action (creates an LFG under the current user), so this stays behind
+ * LoggedInScreen even though the rest of Boardgames is viewable while logged out.
+ */
 export const BoardgameCreateLfgScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
-      <DisabledFeatureScreen
-        feature={SwiftarrFeature.gameslist}
-        urlPath={`/boardgames/${props.route.params.boardgame.gameID}/createfez`}>
-        <BoardgameCreateLfgScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <MaintenanceModeScreen>
+      <LoggedInScreen>
+        <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
+          <DisabledFeatureScreen
+            feature={SwiftarrFeature.gameslist}
+            urlPath={`/boardgames/${props.route.params.boardgame.gameID}/createfez`}>
+            <BoardgameCreateLfgScreenInner {...props} />
+          </DisabledFeatureScreen>
+        </PreRegistrationScreen>
+      </LoggedInScreen>
+    </MaintenanceModeScreen>
   );
 };
 

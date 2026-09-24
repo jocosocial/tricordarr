@@ -5,6 +5,7 @@ import {SharedValue} from 'react-native-reanimated';
 
 import {SwipeableButton} from '#src/Components/Buttons/SwipeableButton';
 import {BaseSwipeable} from '#src/Components/Swipeables/BaseSwipeable';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
@@ -16,8 +17,13 @@ interface BoardgameListItemSwipeableProps extends PropsWithChildren {
   enabled?: boolean;
 }
 
+/**
+ * Favorite and Create LFG both require a token, so swiping is disabled entirely while
+ * logged out rather than surfacing buttons that would 401.
+ */
 export const BoardgameListItemSwipeable = (props: BoardgameListItemSwipeableProps) => {
   const {theme} = useAppTheme();
+  const {isLoggedIn} = useSession();
   const favoriteMutation = useBoardgameFavoriteMutation();
   const queryClient = useQueryClient();
   const navigation = useMainStack();
@@ -87,7 +93,10 @@ export const BoardgameListItemSwipeable = (props: BoardgameListItemSwipeableProp
   };
 
   return (
-    <BaseSwipeable key={props.boardgame.gameID} enabled={props.enabled} renderRightPanel={renderRightPanel}>
+    <BaseSwipeable
+      key={props.boardgame.gameID}
+      enabled={(props.enabled ?? true) && isLoggedIn}
+      renderRightPanel={renderRightPanel}>
       {props.children}
     </BaseSwipeable>
   );

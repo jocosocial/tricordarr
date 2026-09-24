@@ -16,14 +16,14 @@ import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackCo
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {useBoardgameExpansionsQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
-import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameExpansionsScreen>;
 
 export const BoardgameExpansionsScreen = (props: Props) => {
   return (
-    <LoggedInScreen>
+    <MaintenanceModeScreen>
       <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
         <DisabledFeatureScreen
           feature={SwiftarrFeature.gameslist}
@@ -31,7 +31,7 @@ export const BoardgameExpansionsScreen = (props: Props) => {
           <BoardgameExpansionsScreenInner {...props} />
         </DisabledFeatureScreen>
       </PreRegistrationScreen>
-    </LoggedInScreen>
+    </MaintenanceModeScreen>
   );
 };
 

@@ -15,19 +15,26 @@ import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Ma
 import {useKaraokeSongsQuery} from '#src/Queries/Karaoke/KaraokeQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.karaokeFavoritesListScreen>;
 
+/**
+ * Favorites are inherently per-user, so this stays behind LoggedInScreen even though the rest
+ * of Karaoke is viewable while logged out.
+ */
 export const KaraokeFavoritesListScreen = (props: Props) => {
   return (
-    <LoggedInScreen>
-      <PreRegistrationScreen helpScreen={CommonStackComponents.karaokeHelpScreen}>
-        <DisabledFeatureScreen feature={SwiftarrFeature.karaoke} urlPath={'/karaoke/favorites'}>
-          <KaraokeFavoritesListScreenInner {...props} />
-        </DisabledFeatureScreen>
-      </PreRegistrationScreen>
-    </LoggedInScreen>
+    <MaintenanceModeScreen>
+      <LoggedInScreen>
+        <PreRegistrationScreen helpScreen={CommonStackComponents.karaokeHelpScreen}>
+          <DisabledFeatureScreen feature={SwiftarrFeature.karaoke} urlPath={'/karaoke/favorites'}>
+            <KaraokeFavoritesListScreenInner {...props} />
+          </DisabledFeatureScreen>
+        </PreRegistrationScreen>
+      </LoggedInScreen>
+    </MaintenanceModeScreen>
   );
 };
 
@@ -60,7 +67,6 @@ const KaraokeFavoritesListScreenInner = (_props: Props) => {
       <KaraokeSongList
         ref={listRef}
         items={items}
-        showFavoriteButton={true}
         swipeableEnabled={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}

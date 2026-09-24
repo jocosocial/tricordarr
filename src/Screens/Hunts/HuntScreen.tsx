@@ -25,6 +25,7 @@ import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useHuntQuery} from '#src/Queries/Hunts/HuntQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
@@ -38,11 +39,13 @@ const MIN_UNLOCK_REFETCH_MS = 30_000;
  */
 export const HuntScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
-      <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={`/hunt/${props.route.params.huntID}`}>
-        <HuntScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <MaintenanceModeScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={`/hunt/${props.route.params.huntID}`}>
+          <HuntScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </MaintenanceModeScreen>
   );
 };
 

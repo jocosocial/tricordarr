@@ -19,15 +19,18 @@ import {useRefresh} from '#src/Hooks/useRefresh';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
 
 export const PerformerListScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={'/performers'}>
-      <PerformerListScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <MaintenanceModeScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={'/performers'}>
+        <PerformerListScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </MaintenanceModeScreen>
   );
 };
 

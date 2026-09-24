@@ -13,20 +13,27 @@ import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Ma
 import {useKaraokeLogPerformanceMutation} from '#src/Queries/Karaoke/KaraokeMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {NoteCreateData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.karaokeLogPerformanceScreen>;
 
+/**
+ * Pure write action (logs a performance under the current user), so this stays behind
+ * LoggedInScreen even though the rest of Karaoke is viewable while logged out.
+ */
 export const KaraokeLogPerformanceScreen = (props: Props) => {
   return (
-    <LoggedInScreen>
-      <PreRegistrationScreen helpScreen={CommonStackComponents.karaokeHelpScreen}>
-        <DisabledFeatureScreen feature={SwiftarrFeature.karaoke} urlPath={'/karaoke/log'}>
-          <KaraokeLogPerformanceScreenInner {...props} />
-        </DisabledFeatureScreen>
-      </PreRegistrationScreen>
-    </LoggedInScreen>
+    <MaintenanceModeScreen>
+      <LoggedInScreen>
+        <PreRegistrationScreen helpScreen={CommonStackComponents.karaokeHelpScreen}>
+          <DisabledFeatureScreen feature={SwiftarrFeature.karaoke} urlPath={'/karaoke/log'}>
+            <KaraokeLogPerformanceScreenInner {...props} />
+          </DisabledFeatureScreen>
+        </PreRegistrationScreen>
+      </LoggedInScreen>
+    </MaintenanceModeScreen>
   );
 };
 

@@ -14,14 +14,17 @@ import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackCo
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.performerSearchScreen>;
 
 export const PerformerSearchScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={'/performers'}>
-      <PerformerSearchScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <MaintenanceModeScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={'/performers'}>
+        <PerformerSearchScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </MaintenanceModeScreen>
   );
 };
 
