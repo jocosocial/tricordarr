@@ -1,6 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
+import {CheckpointPreview} from '#src/Enums/CheckpointPreview';
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 export type SettingsStackParamList = CommonStackParamList & {
@@ -35,6 +36,10 @@ export type SettingsStackParamList = CommonStackParamList & {
     sessionID: string;
   };
   LoggingSettingsScreen: undefined;
+  CheckpointSettingScreen: undefined;
+  CheckpointPreviewSettingScreen: {
+    preview: CheckpointPreview;
+  };
   LogViewerScreen: undefined;
 };
 
@@ -64,6 +69,8 @@ export enum SettingsStackScreenComponents {
   sessionSettings = 'SessionSettingsScreen',
   sessionDetails = 'SessionDetailsScreen',
   loggingSettings = 'LoggingSettingsScreen',
+  checkpointSettingScreen = 'CheckpointSettingScreen',
+  checkpointPreviewSettingScreen = 'CheckpointPreviewSettingScreen',
   logViewerScreen = 'LogViewerScreen',
 }
 

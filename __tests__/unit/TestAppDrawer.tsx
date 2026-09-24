@@ -23,6 +23,7 @@ jest.mock('react-native', () => ({
   StyleSheet: {create: (styles: object) => styles},
 }));
 
+jest.mock('#src/Libraries/NavigationRef', () => ({push: jest.fn()}));
 jest.mock('react-native-device-info', () => ({getVersion: () => 'test'}));
 jest.mock('react-native-drawer-layout', () => ({Drawer: 'Drawer'}));
 jest.mock('react-native-paper', () => ({
@@ -99,6 +100,30 @@ describe('AppDrawer Shutternaut management access', () => {
     mockHasShutternautManager = true;
 
     expect(getDrawerLabels()).toContain('Manage Shutternauts');
+  });
+});
+
+describe('AppDrawer photographer coverage report access', () => {
+  beforeEach(() => {
+    mockHasTwitarrTeam = false;
+    mockHasShutternautManager = false;
+    mockHasAccountManager = false;
+  });
+
+  it('does not offer Photographer Report to users without the manager role or TwitarrTeam', () => {
+    expect(getDrawerLabels()).not.toContain('Photographer Report');
+  });
+
+  it('offers Photographer Report to Shutternaut Managers', () => {
+    mockHasShutternautManager = true;
+
+    expect(getDrawerLabels()).toContain('Photographer Report');
+  });
+
+  it('offers Photographer Report to TwitarrTeam', () => {
+    mockHasTwitarrTeam = true;
+
+    expect(getDrawerLabels()).toContain('Photographer Report');
   });
 });
 

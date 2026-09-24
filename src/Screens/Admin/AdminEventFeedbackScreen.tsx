@@ -8,6 +8,7 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useDownloadSheet} from '#src/Context/Contexts/DownloadSheetContext';
+import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {
   buildEventFeedbackCsv,
   EVENT_FEEDBACK_CSV_BASENAME,
@@ -15,16 +16,20 @@ import {
 } from '#src/Libraries/Admin/EventFeedbackCsv';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventFeedbackDownloadMutation} from '#src/Queries/Admin/EventFeedbackMutations';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 /**
  * Shadow Event Feedback admin hub, matching Swiftarr's `/admin/eventfeedback`.
  */
 export const AdminEventFeedbackScreen = () => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminEventFeedbackScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+        <AdminEventFeedbackScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

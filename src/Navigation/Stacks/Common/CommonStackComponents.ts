@@ -124,6 +124,7 @@ export type CommonStackParamList = {
   EventScreen: {
     eventID: string;
   };
+  ShutternautReportScreen: undefined;
   PhotostreamEventScreen: WithScrollToTopIntent<{
     eventID: string;
   }>;
@@ -441,6 +442,7 @@ export enum CommonStackComponents {
   moderatorHomeScreen = 'ModeratorHomeScreen',
   moderatorReportsScreen = 'ModeratorReportsScreen',
   moderatorLogScreen = 'ModeratorLogScreen',
+  shutternautReportScreen = 'ShutternautReportScreen',
   moderatorGuideScreen = 'ModeratorGuideScreen',
   moderateForumPostScreen = 'ModerateForumPostScreen',
   moderateForumThreadScreen = 'ModerateForumThreadScreen',

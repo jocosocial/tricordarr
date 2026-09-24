@@ -9,6 +9,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {alertDeleteDailyTheme} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {
@@ -16,17 +17,21 @@ import {
   useDeleteDailyThemeMutation,
   useEditDailyThemeMutation,
 } from '#src/Queries/Admin/DailyThemeMutations';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {DailyThemeUploadData} from '#src/Structs/AdminControllerStructs';
 import {AdminDailyThemeFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminDailyThemeEditScreen>;
 
 export const AdminDailyThemeEditScreen = (props: Props) => {
+  const {hasMinAccess} = useAdminAccess();
   return (
-    <AdminAccessScreen minAccess={'tho'}>
-      <AdminDailyThemeEditScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={() => hasMinAccess('tho')}>
+        <AdminDailyThemeEditScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

@@ -47,6 +47,7 @@ import {EventLocationScreen} from '#src/Screens/Event/EventLocationScreen';
 import {EventScreen} from '#src/Screens/Event/EventScreen';
 import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
+import {ShutternautReportScreen} from '#src/Screens/Event/ShutternautReportScreen';
 import {EventFeedbackFormScreen} from '#src/Screens/EventFeedback/EventFeedbackFormScreen';
 import {EventFeedbackSelectScreen} from '#src/Screens/EventFeedback/EventFeedbackSelectScreen';
 import {FezChatDetailsHelpScreen} from '#src/Screens/Fez/FezChatDetailsHelpScreen';
@@ -278,6 +279,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.moderatorLogScreen}
         component={ModeratorLogScreen}
         options={{title: 'Moderator Log'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.shutternautReportScreen}
+        component={ShutternautReportScreen}
+        options={{title: 'Photographer Report'}}
       />
       <Stack.Screen
         name={CommonStackComponents.moderatorGuideScreen}

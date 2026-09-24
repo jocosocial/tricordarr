@@ -456,6 +456,37 @@ export interface ShutternautEventData {
   userIsPhotographer: boolean;
 }
 
+/// One row of the Shutternaut Manager photography-coverage report. A row is an event that was
+/// flagged as needing a photographer, that has at least one Shutternaut assigned, or both.
+/// Returned inside `ShutternautScheduleReportResponseData` by `GET /api/v3/events/photographerreport`.
+export interface ShutternautScheduleReportData {
+  /// The event's Swiftarr database ID.
+  eventID: string;
+  /// The event's title.
+  title: string;
+  /// Starting time of the event, converted to display time.
+  startTime: string;
+  /// Ending time of the event, converted to display time.
+  endTime: string;
+  /// Timezone abbreviation at the event start, e.g. "EST". Not an IANA ID; resolve one with
+  /// `useTimeZone().tzAtTime()` when formatting.
+  timeZone: string;
+  /// The location of the event.
+  location: string;
+  /// TRUE if a Shutternaut Manager flagged this event as needing a photographer.
+  needsPhotographer: boolean;
+  /// Shutternauts who have signed up to photograph this event. Empty if the event was flagged
+  /// but never assigned.
+  photographers: UserHeader[];
+}
+
+/// Paginated envelope for the photography-coverage report. Swiftarr returns this as
+/// `Paginated<ShutternautScheduleReportData>` from `GET /api/v3/events/photographerreport`.
+export interface ShutternautScheduleReportResponseData {
+  items: ShutternautScheduleReportData[];
+  paginator: Paginator;
+}
+
 export interface EventData {
   /// The event's ID. This is the Swiftarr database record for this event.
   eventID: string;

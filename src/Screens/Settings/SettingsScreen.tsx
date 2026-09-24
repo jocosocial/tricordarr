@@ -167,6 +167,11 @@ export const SettingsScreen = ({navigation}: Props) => {
                   navComponent={SettingsStackScreenComponents.socketSettings}
                 />
                 <NavigationListItem
+                  title={'Checkpoints'}
+                  description={'Preview each of the checkpoint screens.'}
+                  navComponent={SettingsStackScreenComponents.checkpointSettingScreen}
+                />
+                <NavigationListItem
                   title={'Out-of-box Experience'}
                   description={'Internal OOBE information.'}
                   navComponent={SettingsStackScreenComponents.oobeSettings}
