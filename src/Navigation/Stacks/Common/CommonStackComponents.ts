@@ -376,8 +376,8 @@ export type CommonStackParamList = {
   AdminScheduleLogScreen: {
     logID: number;
   };
-  AdminRegCodesScreen: undefined;
-  AdminRegCodeStatsScreen: undefined;
+  RegCodeManageScreen: undefined;
+  RegCodeStatsScreen: undefined;
   AdminDiscordRegCodeScreen: undefined;
   AdminUserRolesScreen: {
     role?: UserRoleType;
@@ -587,8 +587,8 @@ export enum CommonStackComponents {
   adminScheduleScreen = 'AdminScheduleScreen',
   adminScheduleVerifyScreen = 'AdminScheduleVerifyScreen',
   adminScheduleLogScreen = 'AdminScheduleLogScreen',
-  adminRegCodesScreen = 'AdminRegCodesScreen',
-  adminRegCodeStatsScreen = 'AdminRegCodeStatsScreen',
+  regCodeManageScreen = 'RegCodeManageScreen',
+  regCodeStatsScreen = 'RegCodeStatsScreen',
   adminDiscordRegCodeScreen = 'AdminDiscordRegCodeScreen',
   adminUserRolesScreen = 'AdminUserRolesScreen',
   adminAccessLevelsScreen = 'AdminAccessLevelsScreen',

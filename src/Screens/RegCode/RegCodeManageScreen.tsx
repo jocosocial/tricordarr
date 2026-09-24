@@ -16,8 +16,9 @@ import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatch
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {isWellFormed, normalized} from '#src/Libraries/RegistrationCode';
 import {RegistrationCodeValidation} from '#src/Libraries/ValidationSchema';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -25,7 +26,7 @@ import {useUserForRegCodeQuery} from '#src/Queries/Admin/RegCodeQueries';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
-type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminRegCodesScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.regCodeManageScreen>;
 
 interface FindByCodeFormValues {
   regCode: string;
@@ -38,12 +39,14 @@ const validationSchema = Yup.object().shape({
 /**
  * Account-manager lookup for registration codes: find by code or search by username.
  */
-export const AdminRegCodesScreen = (props: Props) => {
-  const {hasMinAccess} = useAdminAccess();
+export const RegCodeManageScreen = (props: Props) => {
+  const {hasAccountManager} = useRoles();
+  const {hasTwitarrTeam} = usePrivilege();
+
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('accountmanager')}>
-        <AdminRegCodesScreenInner {...props} />
+      <NoAccessScreen hasAccess={hasAccountManager || hasTwitarrTeam}>
+        <RegCodeManageScreenInner {...props} />
       </NoAccessScreen>
     </LoggedInScreen>
   );
@@ -52,7 +55,7 @@ export const AdminRegCodesScreen = (props: Props) => {
 /**
  * Find-by-code and search-by-user lookup. Stats are on a separate screen.
  */
-const AdminRegCodesScreenInner = ({navigation}: Props) => {
+const RegCodeManageScreenInner = ({navigation}: Props) => {
   const [submittedCode, setSubmittedCode] = useState('');
   const {
     data: users,
@@ -82,7 +85,7 @@ const AdminRegCodesScreenInner = ({navigation}: Props) => {
           <Item
             title={'Stats'}
             iconName={AppIcons.statistics}
-            onPress={() => navigation.push(CommonStackComponents.adminRegCodeStatsScreen)}
+            onPress={() => navigation.push(CommonStackComponents.regCodeStatsScreen)}
           />
           <Item
             title={'Help'}

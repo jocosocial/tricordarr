@@ -17,8 +17,7 @@ export const AdminHelpScreen = () => {
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView>
-            Server Admin is accessible to TwitarrTeam and above but many bits only available via the Admin user. The
-            Account Manager role also opens Server Admin, showing only the sections that role covers.
+            Server Admin is accessible to TwitarrTeam and above but many bits only available via the Admin user.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Screens'} noMargin={true}>
@@ -48,7 +47,7 @@ export const AdminHelpScreen = () => {
           />
           <DataFieldListItem
             title={'Registration Codes'}
-            description={'Look up codes by user or code, unlock password recovery, and allocate Discord codes.'}
+            description={'Allocate Discord codes. Code lookup and recovery are in the drawer.'}
             icon={AppIcons.registrationCode}
             onPress={() => commonNavigation.push(CommonStackComponents.registrationCodeHelpScreen)}
           />

@@ -10,6 +10,8 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useClipboard} from '#src/Hooks/useClipboard';
@@ -18,17 +20,28 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stack
 import {useUnlockRegCodeMutation} from '#src/Queries/Admin/RegCodeMutations';
 import {useRegCodeForUserQuery} from '#src/Queries/Admin/RegCodeQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userRegCodeScreen>;
 
+/**
+ * Per-user registration code detail. The checkpoint matches Swiftarr's `guardCanManageAccounts`
+ * on the `regcodes/findbyuser` and `regcodes/unlock` endpoints this screen calls: TwitarrTeam and
+ * above, or the Account Manager role. Everyone else would get a 403.
+ */
 export const UserRegCodeScreen = (props: Props) => {
+  const {hasAccountManager} = useRoles();
+  const {hasTwitarrTeam} = usePrivilege();
+
   return (
     <PreRegistrationScreen helpScreen={CommonStackComponents.registrationCodeHelpScreen}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.users}
         urlPath={`/admin/regcodes/showuser/${props.route.params.userID}`}>
-        <UserRegCodeScreenInner {...props} />
+        <NoAccessScreen hasAccess={hasAccountManager || hasTwitarrTeam}>
+          <UserRegCodeScreenInner {...props} />
+        </NoAccessScreen>
       </DisabledFeatureScreen>
     </PreRegistrationScreen>
   );

@@ -22,7 +22,8 @@ export const RegistrationCodeHelpScreen = () => {
           <HelpTopicView>Codes are stored and matched without spaces or capitalization.</HelpTopicView>
           <HelpTopicView>
             TwitarrTeam and Account Managers can look up a code or a user, see related alt accounts, and unlock password
-            recovery. Discord allocation is a pre-production tool and does not apply on the boat.
+            recovery. Registration Codes is in the Special Roles section of the app drawer. Discord allocation is a
+            pre-production tool for TwitarrTeam only, and stays in Server Admin; it does not apply on the boat.
           </HelpTopicView>
           <HelpTopicView>Guests who lose their code can get a new one from the Info Desk.</HelpTopicView>
         </HelpChapterTitleView>

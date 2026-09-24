@@ -18,7 +18,7 @@ export const AdminScreen = () => {
   const {hasMinAccess} = useAdminAccess();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('accountmanager')}>
+      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
         <AdminScreenInner />
       </NoAccessScreen>
     </LoggedInScreen>
@@ -95,36 +95,25 @@ const AdminScreenInner = () => {
             </ListSection>
           </>
         )}
-        {(access.canViewSettings || access.canManageRegCodes) && (
+        {access.canViewSettings && (
           <>
             <Divider bold={true} />
             <ListSection>
               <ListSubheader>Configuration</ListSubheader>
-              {access.canViewSettings && (
-                <>
-                  <NavigationListItem
-                    title={'Server Settings'}
-                    description={
-                      access.canEditSettings
-                        ? 'Limits, notifications, Wi-Fi, and related server options.'
-                        : 'View server settings. Only the admin account can change them.'
-                    }
-                    navComponent={CommonStackComponents.adminServerSettingsScreen}
-                  />
-                  <NavigationListItem
-                    title={'Disabled Features'}
-                    description={'Enable or disable features per client. Disabling for All Clients turns the API off.'}
-                    navComponent={CommonStackComponents.adminFeaturesScreen}
-                  />
-                </>
-              )}
-              {access.canManageRegCodes && (
-                <NavigationListItem
-                  title={'Registration Codes'}
-                  description={'Look up codes, view usage stats, and unlock password recovery.'}
-                  navComponent={CommonStackComponents.adminRegCodesScreen}
-                />
-              )}
+              <NavigationListItem
+                title={'Server Settings'}
+                description={
+                  access.canEditSettings
+                    ? 'Limits, notifications, Wi-Fi, and related server options.'
+                    : 'View server settings. Only the admin account can change them.'
+                }
+                navComponent={CommonStackComponents.adminServerSettingsScreen}
+              />
+              <NavigationListItem
+                title={'Disabled Features'}
+                description={'Enable or disable features per client. Disabling for All Clients turns the API off.'}
+                navComponent={CommonStackComponents.adminFeaturesScreen}
+              />
               {access.canAssignDiscordRegCodes && (
                 <NavigationListItem
                   title={'Assign Reg Code'}

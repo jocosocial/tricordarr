@@ -237,6 +237,13 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   onPress={() => push(CommonStackComponents.shutternautReportScreen)}
                 />
               )}
+              {(hasAccountManager || hasTwitarrTeam) && (
+                <PaperDrawer.Item
+                  label={'Registration Codes'}
+                  icon={AppIcons.registrationCode}
+                  onPress={() => push(CommonStackComponents.regCodeManageScreen)}
+                />
+              )}
               {(hasHuntManager || hasTwitarrTeam) && (
                 <PaperDrawer.Item
                   label={'Manage Puzzle Hunts'}
@@ -252,12 +259,12 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   right={getModBadge}
                 />
               )}
-              {(hasTwitarrTeam || hasAccountManager) && (
+              {hasTwitarrTeam && (
                 <PaperDrawer.Item
                   label={'Server Admin'}
                   icon={AppIcons.admin}
                   onPress={() => Linking.openURL(appUrl('admin'))}
-                  right={hasTwitarrTeam ? getTTBadge : undefined}
+                  right={getTTBadge}
                 />
               )}
             </PaperDrawer.Section>

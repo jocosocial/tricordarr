@@ -1,16 +1,15 @@
 import {useMemo} from 'react';
 
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useRoles} from '#src/Context/Contexts/RoleContext';
 
 /**
  * Minimum privilege required to open an admin screen.
- * `accountmanager` is a UserRole, not an access level; TwitarrTeam and above also qualify.
+ * Role-gated features (Account Manager, Hunt Manager) live outside Server Admin and check their
+ * role directly, so every level here is a plain UserAccessLevel.
  */
-export type AdminMinAccess = 'accountmanager' | 'twitarrteam' | 'tho' | 'admin';
+export type AdminMinAccess = 'twitarrteam' | 'tho' | 'admin';
 
 export interface AdminAccess {
-  canOpenAdmin: boolean;
   canManageAnnouncements: boolean;
   canManageThemes: boolean;
   canViewSettings: boolean;
@@ -18,7 +17,6 @@ export interface AdminAccess {
   canViewRollup: boolean;
   canManageSchedule: boolean;
   canReloadNotifications: boolean;
-  canManageRegCodes: boolean;
   canAssignDiscordRegCodes: boolean;
   canManageRoles: boolean;
   canManageAccessLevels: boolean;
@@ -35,13 +33,10 @@ export interface AdminAccess {
  */
 export const useAdminAccess = (): AdminAccess => {
   const {hasTwitarrTeam, hasTHO, hasAdmin} = usePrivilege();
-  const {hasAccountManager} = useRoles();
 
   return useMemo(() => {
     const hasMinAccess = (minAccess: AdminMinAccess): boolean => {
       switch (minAccess) {
-        case 'accountmanager':
-          return hasTwitarrTeam || hasAccountManager;
         case 'twitarrteam':
           return hasTwitarrTeam;
         case 'tho':
@@ -52,7 +47,6 @@ export const useAdminAccess = (): AdminAccess => {
     };
 
     return {
-      canOpenAdmin: hasTwitarrTeam || hasAccountManager,
       canManageAnnouncements: hasTwitarrTeam,
       canManageThemes: hasTHO,
       canViewSettings: hasTwitarrTeam,
@@ -60,7 +54,6 @@ export const useAdminAccess = (): AdminAccess => {
       canViewRollup: hasTwitarrTeam,
       canManageSchedule: hasTwitarrTeam,
       canReloadNotifications: hasTwitarrTeam,
-      canManageRegCodes: hasTwitarrTeam || hasAccountManager,
       canAssignDiscordRegCodes: hasTwitarrTeam,
       canManageRoles: hasTHO,
       canManageAccessLevels: hasTHO,
@@ -70,5 +63,5 @@ export const useAdminAccess = (): AdminAccess => {
       canReloadSeeds: hasAdmin,
       hasMinAccess,
     };
-  }, [hasAccountManager, hasAdmin, hasTHO, hasTwitarrTeam]);
+  }, [hasAdmin, hasTHO, hasTwitarrTeam]);
 };

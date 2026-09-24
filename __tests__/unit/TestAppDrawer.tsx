@@ -139,7 +139,7 @@ describe('AppDrawer Server Admin access', () => {
     mockHasHuntManager = false;
   });
 
-  it('does not offer Server Admin to users without TwitarrTeam or Account Manager', () => {
+  it('does not offer Server Admin to users without TwitarrTeam', () => {
     expect(getDrawerLabels()).not.toContain('Server Admin');
   });
 
@@ -149,10 +149,35 @@ describe('AppDrawer Server Admin access', () => {
     expect(getDrawerLabels()).toContain('Server Admin');
   });
 
-  it('offers Server Admin to Account Managers', () => {
+  it('no longer offers Server Admin to Account Managers, whose tools moved to Special Roles', () => {
     mockHasAccountManager = true;
 
-    expect(getDrawerLabels()).toContain('Server Admin');
+    expect(getDrawerLabels()).not.toContain('Server Admin');
+  });
+});
+
+describe('AppDrawer registration code access', () => {
+  beforeEach(() => {
+    mockHasTwitarrTeam = false;
+    mockHasShutternautManager = false;
+    mockHasAccountManager = false;
+    mockHasHuntManager = false;
+  });
+
+  it('does not offer Registration Codes to users without the role or TwitarrTeam', () => {
+    expect(getDrawerLabels()).not.toContain('Registration Codes');
+  });
+
+  it('offers Registration Codes to Account Managers', () => {
+    mockHasAccountManager = true;
+
+    expect(getDrawerLabels()).toContain('Registration Codes');
+  });
+
+  it('offers Registration Codes to TwitarrTeam', () => {
+    mockHasTwitarrTeam = true;
+
+    expect(getDrawerLabels()).toContain('Registration Codes');
   });
 });
 

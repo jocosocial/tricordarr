@@ -22,8 +22,6 @@ import {AdminEventFeedbackStatsScreen} from '#src/Screens/Admin/AdminEventFeedba
 import {AdminFeaturesScreen} from '#src/Screens/Admin/AdminFeaturesScreen';
 import {AdminHelpScreen} from '#src/Screens/Admin/AdminHelpScreen';
 import {AdminKaraokeScreen} from '#src/Screens/Admin/AdminKaraokeScreen';
-import {AdminRegCodesScreen} from '#src/Screens/Admin/AdminRegCodesScreen';
-import {AdminRegCodeStatsScreen} from '#src/Screens/Admin/AdminRegCodeStatsScreen';
 import {AdminRollupScreen} from '#src/Screens/Admin/AdminRollupScreen';
 import {AdminScheduleLogScreen} from '#src/Screens/Admin/AdminScheduleLogScreen';
 import {AdminScheduleScreen} from '#src/Screens/Admin/AdminScheduleScreen';
@@ -137,6 +135,8 @@ import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScree
 import {PhotostreamEventScreen} from '#src/Screens/Photostream/PhotostreamEventScreen';
 import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
 import {PhotostreamUserScreen} from '#src/Screens/Photostream/PhotostreamUserScreen';
+import {RegCodeManageScreen} from '#src/Screens/RegCode/RegCodeManageScreen';
+import {RegCodeStatsScreen} from '#src/Screens/RegCode/RegCodeStatsScreen';
 import {EventHelpScreen} from '#src/Screens/Schedule/EventHelpScreen';
 import {PersonalEventHelpScreen} from '#src/Screens/Schedule/PersonalEventHelpScreen';
 import {ScheduleDayHelpScreen} from '#src/Screens/Schedule/ScheduleDayHelpScreen';
@@ -1012,13 +1012,13 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Schedule Log'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.adminRegCodesScreen}
-        component={AdminRegCodesScreen}
+        name={CommonStackComponents.regCodeManageScreen}
+        component={RegCodeManageScreen}
         options={{title: 'Registration Codes'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.adminRegCodeStatsScreen}
-        component={AdminRegCodeStatsScreen}
+        name={CommonStackComponents.regCodeStatsScreen}
+        component={RegCodeStatsScreen}
         options={{title: 'Registration Stats'}}
       />
       <Stack.Screen
