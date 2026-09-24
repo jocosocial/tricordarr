@@ -1,5 +1,4 @@
 import {FezType} from '#src/Enums/FezType';
-import {AppIcons} from '#src/Enums/Icons';
 
 /**
  * Lifted from https://github.com/jocosocial/swiftarr/blob/master/Sources/swiftarr/Enumerations/FezVisibility.swift
@@ -30,36 +29,6 @@ export namespace FezVisibility {
         return 'Unlisted';
       default:
         return undefined;
-    }
-  };
-
-  /**
-   * One-line explanation of who can see (and join) the fez, for display under the label.
-   */
-  export const getDescription = (visibility?: FezVisibility): string | undefined => {
-    switch (visibility) {
-      case FezVisibility.private:
-        return 'Only people you invite can see this event.';
-      case FezVisibility.public:
-        return 'Anyone can find and view this.';
-      case FezVisibility.unlisted:
-        return 'Only people with the link can view and join this event. Never listed or searchable.';
-      default:
-        return undefined;
-    }
-  };
-
-  /**
-   * Icon representing a visibility value.
-   */
-  export const getIcon = (visibility?: FezVisibility): string => {
-    switch (visibility) {
-      case FezVisibility.public:
-        return AppIcons.show;
-      case FezVisibility.unlisted:
-        return AppIcons.hide;
-      default:
-        return AppIcons.locked;
     }
   };
 

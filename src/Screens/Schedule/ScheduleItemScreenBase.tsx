@@ -227,8 +227,8 @@ export const ScheduleItemScreenBase = ({
                   />
                   {FezVisibility.isMeaningful(eventData.fezType) && FezVisibility.getLabel(eventData.visibility) && (
                     <DataFieldListItem
-                      icon={FezVisibility.getIcon(eventData.visibility)}
-                      description={FezVisibility.getDescription(eventData.visibility)}
+                      icon={AppIcons.hide}
+                      description={FezVisibility.getLabel(eventData.visibility)}
                       title={'Visibility'}
                     />
                   )}
