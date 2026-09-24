@@ -7,6 +7,7 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -15,10 +16,10 @@ import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 export const AdminScreen = () => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTwitarrTeam} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('accountmanager')}>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
         <AdminScreenInner />
       </NoAccessScreen>
     </LoggedInScreen>
@@ -95,36 +96,25 @@ const AdminScreenInner = () => {
             </ListSection>
           </>
         )}
-        {(access.canViewSettings || access.canManageRegCodes) && (
+        {access.canViewSettings && (
           <>
             <Divider bold={true} />
             <ListSection>
               <ListSubheader>Configuration</ListSubheader>
-              {access.canViewSettings && (
-                <>
-                  <NavigationListItem
-                    title={'Server Settings'}
-                    description={
-                      access.canEditSettings
-                        ? 'Limits, notifications, Wi-Fi, and related server options.'
-                        : 'View server settings. Only the admin account can change them.'
-                    }
-                    navComponent={CommonStackComponents.adminServerSettingsScreen}
-                  />
-                  <NavigationListItem
-                    title={'Disabled Features'}
-                    description={'Enable or disable features per client. Disabling for All Clients turns the API off.'}
-                    navComponent={CommonStackComponents.adminFeaturesScreen}
-                  />
-                </>
-              )}
-              {access.canManageRegCodes && (
-                <NavigationListItem
-                  title={'Registration Codes'}
-                  description={'Look up codes, view usage stats, and unlock password recovery.'}
-                  navComponent={CommonStackComponents.adminRegCodesScreen}
-                />
-              )}
+              <NavigationListItem
+                title={'Server Settings'}
+                description={
+                  access.canEditSettings
+                    ? 'Limits, notifications, Wi-Fi, and related server options.'
+                    : 'View server settings. Only the admin account can change them.'
+                }
+                navComponent={CommonStackComponents.adminServerSettingsScreen}
+              />
+              <NavigationListItem
+                title={'Disabled Features'}
+                description={'Enable or disable features per client. Disabling for All Clients turns the API off.'}
+                navComponent={CommonStackComponents.adminFeaturesScreen}
+              />
               {access.canAssignDiscordRegCodes && (
                 <NavigationListItem
                   title={'Assign Reg Code'}
@@ -173,14 +163,6 @@ const AdminScreenInner = () => {
                 navComponent={CommonStackComponents.siteUIScreen}
                 params={{resource: 'performer/root', admin: true}}
               />
-              {access.canManageHunts && (
-                <NavigationListItem
-                  title={'Puzzle Hunts'}
-                  description={'Create and edit puzzle hunts.'}
-                  navComponent={CommonStackComponents.siteUIScreen}
-                  params={{resource: 'hunts', admin: true}}
-                />
-              )}
               {access.canBulkUser && (
                 <>
                   <NavigationListItem

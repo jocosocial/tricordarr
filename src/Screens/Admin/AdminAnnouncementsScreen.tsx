@@ -10,8 +10,8 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
@@ -21,10 +21,10 @@ import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminAnnouncementsScreen>;
 
 export const AdminAnnouncementsScreen = (props: Props) => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTwitarrTeam} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
         <AdminAnnouncementsScreenInner {...props} />
       </NoAccessScreen>
     </LoggedInScreen>

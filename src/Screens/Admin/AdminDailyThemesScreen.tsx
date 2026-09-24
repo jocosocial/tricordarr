@@ -12,7 +12,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
@@ -22,10 +22,10 @@ import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminDailyThemesScreen>;
 
 export const AdminDailyThemesScreen = (props: Props) => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTHO} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('tho')}>
+      <NoAccessScreen hasAccess={hasTHO}>
         <AdminDailyThemesScreenInner {...props} />
       </NoAccessScreen>
     </LoggedInScreen>

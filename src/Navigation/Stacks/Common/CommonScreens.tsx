@@ -21,12 +21,7 @@ import {AdminEventFeedbackScreen} from '#src/Screens/Admin/AdminEventFeedbackScr
 import {AdminEventFeedbackStatsScreen} from '#src/Screens/Admin/AdminEventFeedbackStatsScreen';
 import {AdminFeaturesScreen} from '#src/Screens/Admin/AdminFeaturesScreen';
 import {AdminHelpScreen} from '#src/Screens/Admin/AdminHelpScreen';
-import {AdminHuntEditScreen} from '#src/Screens/Admin/AdminHuntEditScreen';
-import {AdminHuntsScreen} from '#src/Screens/Admin/AdminHuntsScreen';
 import {AdminKaraokeScreen} from '#src/Screens/Admin/AdminKaraokeScreen';
-import {AdminPuzzleEditScreen} from '#src/Screens/Admin/AdminPuzzleEditScreen';
-import {AdminRegCodesScreen} from '#src/Screens/Admin/AdminRegCodesScreen';
-import {AdminRegCodeStatsScreen} from '#src/Screens/Admin/AdminRegCodeStatsScreen';
 import {AdminRollupScreen} from '#src/Screens/Admin/AdminRollupScreen';
 import {AdminScheduleLogScreen} from '#src/Screens/Admin/AdminScheduleLogScreen';
 import {AdminScheduleScreen} from '#src/Screens/Admin/AdminScheduleScreen';
@@ -76,7 +71,11 @@ import {ForumThreadUserScreen} from '#src/Screens/Forum/Thread/ForumThreadUserSc
 import {HelpManualScreen} from '#src/Screens/Help/HelpManualScreen';
 import {ModeratorHelpScreen} from '#src/Screens/Help/ModeratorHelpScreen';
 import {ShutternautHelpScreen} from '#src/Screens/Help/ShutternautHelpScreen';
+import {HuntEditScreen} from '#src/Screens/Hunts/HuntEditScreen';
 import {HuntHelpScreen} from '#src/Screens/Hunts/HuntHelpScreen';
+import {HuntManageHelpScreen} from '#src/Screens/Hunts/HuntManageHelpScreen';
+import {HuntManageScreen} from '#src/Screens/Hunts/HuntManageScreen';
+import {HuntPuzzleEditScreen} from '#src/Screens/Hunts/HuntPuzzleEditScreen';
 import {HuntPuzzleScreen} from '#src/Screens/Hunts/HuntPuzzleScreen';
 import {HuntScreen} from '#src/Screens/Hunts/HuntScreen';
 import {KaraokeHelpScreen} from '#src/Screens/Karaoke/KaraokeHelpScreen';
@@ -136,6 +135,8 @@ import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScree
 import {PhotostreamEventScreen} from '#src/Screens/Photostream/PhotostreamEventScreen';
 import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
 import {PhotostreamUserScreen} from '#src/Screens/Photostream/PhotostreamUserScreen';
+import {RegCodeManageScreen} from '#src/Screens/RegCode/RegCodeManageScreen';
+import {RegCodeStatsScreen} from '#src/Screens/RegCode/RegCodeStatsScreen';
 import {EventHelpScreen} from '#src/Screens/Schedule/EventHelpScreen';
 import {PersonalEventHelpScreen} from '#src/Screens/Schedule/PersonalEventHelpScreen';
 import {ScheduleDayHelpScreen} from '#src/Screens/Schedule/ScheduleDayHelpScreen';
@@ -1011,13 +1012,13 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Schedule Log'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.adminRegCodesScreen}
-        component={AdminRegCodesScreen}
+        name={CommonStackComponents.regCodeManageScreen}
+        component={RegCodeManageScreen}
         options={{title: 'Registration Codes'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.adminRegCodeStatsScreen}
-        component={AdminRegCodeStatsScreen}
+        name={CommonStackComponents.regCodeStatsScreen}
+        component={RegCodeStatsScreen}
         options={{title: 'Registration Stats'}}
       />
       <Stack.Screen
@@ -1051,19 +1052,20 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Board Game Catalog'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.adminHuntsScreen}
-        component={AdminHuntsScreen}
-        options={{title: 'Puzzle Hunts'}}
+        name={CommonStackComponents.huntManageScreen}
+        component={HuntManageScreen}
+        options={{title: 'Manage Puzzle Hunts'}}
       />
+      <Stack.Screen name={CommonStackComponents.huntEditScreen} component={HuntEditScreen} options={{title: 'Hunt'}} />
       <Stack.Screen
-        name={CommonStackComponents.adminHuntEditScreen}
-        component={AdminHuntEditScreen}
-        options={{title: 'Hunt'}}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.adminPuzzleEditScreen}
-        component={AdminPuzzleEditScreen}
+        name={CommonStackComponents.huntPuzzleEditScreen}
+        component={HuntPuzzleEditScreen}
         options={{title: 'Puzzle'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.huntManageHelpScreen}
+        component={HuntManageHelpScreen}
+        options={{title: 'Manage Puzzle Hunts Help'}}
       />
       <Stack.Screen name={CommonStackComponents.huntScreen} component={HuntScreen} options={{title: 'Puzzle Hunt'}} />
       <Stack.Screen

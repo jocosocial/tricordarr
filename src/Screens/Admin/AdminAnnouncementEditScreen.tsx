@@ -8,9 +8,9 @@ import {AdminAnnouncementForm} from '#src/Components/Forms/Admin/AdminAnnounceme
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {combineDateAndTime, splitIsoDateTime} from '#src/Libraries/Admin/AdminDateTime';
 import {alertDeleteAnnouncement} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -26,10 +26,10 @@ import {AdminAnnouncementFormValues} from '#src/Types/FormValues';
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminAnnouncementEditScreen>;
 
 export const AdminAnnouncementEditScreen = (props: Props) => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTwitarrTeam} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
         <AdminAnnouncementEditScreenInner {...props} />
       </NoAccessScreen>
     </LoggedInScreen>

@@ -6,9 +6,9 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {alertReloadSeed} from '#src/Libraries/Alerts/AdminAlerts';
 import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useReloadKaraokeMutation} from '#src/Queries/Admin/SeedMutations';
@@ -16,10 +16,10 @@ import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 export const AdminKaraokeScreen = () => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasAdmin} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('admin')}>
+      <NoAccessScreen hasAccess={hasAdmin}>
         <AdminKaraokeScreenInner />
       </NoAccessScreen>
     </LoggedInScreen>

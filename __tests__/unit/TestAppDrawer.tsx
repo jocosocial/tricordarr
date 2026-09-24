@@ -5,6 +5,7 @@ import {AppDrawer} from '#src/Components/Drawers/AppDrawer';
 let mockHasTwitarrTeam = false;
 let mockHasShutternautManager = false;
 let mockHasAccountManager = false;
+let mockHasHuntManager = false;
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
@@ -46,6 +47,7 @@ jest.mock('#src/Context/Contexts/RoleContext', () => ({
     hasShutternaut: false,
     hasShutternautManager: mockHasShutternautManager,
     hasAccountManager: mockHasAccountManager,
+    hasHuntManager: mockHasHuntManager,
   }),
 }));
 jest.mock('#src/Context/Contexts/StyleContext', () => ({
@@ -88,6 +90,7 @@ describe('AppDrawer Shutternaut management access', () => {
     mockHasTwitarrTeam = false;
     mockHasShutternautManager = false;
     mockHasAccountManager = false;
+    mockHasHuntManager = false;
   });
 
   it('does not offer Manage Shutternauts to TwitarrTeam alone', () => {
@@ -108,6 +111,7 @@ describe('AppDrawer photographer coverage report access', () => {
     mockHasTwitarrTeam = false;
     mockHasShutternautManager = false;
     mockHasAccountManager = false;
+    mockHasHuntManager = false;
   });
 
   it('does not offer Photographer Report to users without the manager role or TwitarrTeam', () => {
@@ -132,9 +136,10 @@ describe('AppDrawer Server Admin access', () => {
     mockHasTwitarrTeam = false;
     mockHasShutternautManager = false;
     mockHasAccountManager = false;
+    mockHasHuntManager = false;
   });
 
-  it('does not offer Server Admin to users without TwitarrTeam or Account Manager', () => {
+  it('does not offer Server Admin to users without TwitarrTeam', () => {
     expect(getDrawerLabels()).not.toContain('Server Admin');
   });
 
@@ -144,9 +149,65 @@ describe('AppDrawer Server Admin access', () => {
     expect(getDrawerLabels()).toContain('Server Admin');
   });
 
-  it('offers Server Admin to Account Managers', () => {
+  it('no longer offers Server Admin to Account Managers, whose tools moved to Special Roles', () => {
     mockHasAccountManager = true;
 
-    expect(getDrawerLabels()).toContain('Server Admin');
+    expect(getDrawerLabels()).not.toContain('Server Admin');
+  });
+});
+
+describe('AppDrawer registration code access', () => {
+  beforeEach(() => {
+    mockHasTwitarrTeam = false;
+    mockHasShutternautManager = false;
+    mockHasAccountManager = false;
+    mockHasHuntManager = false;
+  });
+
+  it('does not offer Registration Codes to users without the role or TwitarrTeam', () => {
+    expect(getDrawerLabels()).not.toContain('Registration Codes');
+  });
+
+  it('offers Registration Codes to Account Managers', () => {
+    mockHasAccountManager = true;
+
+    expect(getDrawerLabels()).toContain('Registration Codes');
+  });
+
+  it('offers Registration Codes to TwitarrTeam', () => {
+    mockHasTwitarrTeam = true;
+
+    expect(getDrawerLabels()).toContain('Registration Codes');
+  });
+});
+
+describe('AppDrawer puzzle hunt management access', () => {
+  beforeEach(() => {
+    mockHasTwitarrTeam = false;
+    mockHasShutternautManager = false;
+    mockHasAccountManager = false;
+    mockHasHuntManager = false;
+  });
+
+  it('does not offer Manage Puzzle Hunts to users without the manager role or TwitarrTeam', () => {
+    expect(getDrawerLabels()).not.toContain('Manage Puzzle Hunts');
+  });
+
+  it('offers Manage Puzzle Hunts to Hunt Managers', () => {
+    mockHasHuntManager = true;
+
+    expect(getDrawerLabels()).toContain('Manage Puzzle Hunts');
+  });
+
+  it('offers Manage Puzzle Hunts to TwitarrTeam', () => {
+    mockHasTwitarrTeam = true;
+
+    expect(getDrawerLabels()).toContain('Manage Puzzle Hunts');
+  });
+
+  it('does not offer Server Admin to Hunt Managers, whose hunt tools are no longer in it', () => {
+    mockHasHuntManager = true;
+
+    expect(getDrawerLabels()).not.toContain('Server Admin');
   });
 });

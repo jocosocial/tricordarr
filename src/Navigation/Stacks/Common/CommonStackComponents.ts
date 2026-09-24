@@ -376,8 +376,8 @@ export type CommonStackParamList = {
   AdminScheduleLogScreen: {
     logID: number;
   };
-  AdminRegCodesScreen: undefined;
-  AdminRegCodeStatsScreen: undefined;
+  RegCodeManageScreen: undefined;
+  RegCodeStatsScreen: undefined;
   AdminDiscordRegCodeScreen: undefined;
   AdminUserRolesScreen: {
     role?: UserRoleType;
@@ -388,14 +388,15 @@ export type CommonStackParamList = {
   AdminBulkUserScreen: undefined;
   AdminKaraokeScreen: undefined;
   AdminBoardgamesScreen: undefined;
-  AdminHuntsScreen: undefined;
-  AdminHuntEditScreen: {
+  HuntManageScreen: undefined;
+  HuntEditScreen: {
     huntID?: string;
   };
-  AdminPuzzleEditScreen: {
+  HuntPuzzleEditScreen: {
     huntID: string;
     puzzleID: string;
   };
+  HuntManageHelpScreen: undefined;
   HuntScreen: {
     huntID: string;
   };
@@ -586,17 +587,18 @@ export enum CommonStackComponents {
   adminScheduleScreen = 'AdminScheduleScreen',
   adminScheduleVerifyScreen = 'AdminScheduleVerifyScreen',
   adminScheduleLogScreen = 'AdminScheduleLogScreen',
-  adminRegCodesScreen = 'AdminRegCodesScreen',
-  adminRegCodeStatsScreen = 'AdminRegCodeStatsScreen',
+  regCodeManageScreen = 'RegCodeManageScreen',
+  regCodeStatsScreen = 'RegCodeStatsScreen',
   adminDiscordRegCodeScreen = 'AdminDiscordRegCodeScreen',
   adminUserRolesScreen = 'AdminUserRolesScreen',
   adminAccessLevelsScreen = 'AdminAccessLevelsScreen',
   adminBulkUserScreen = 'AdminBulkUserScreen',
   adminKaraokeScreen = 'AdminKaraokeScreen',
   adminBoardgamesScreen = 'AdminBoardgamesScreen',
-  adminHuntsScreen = 'AdminHuntsScreen',
-  adminHuntEditScreen = 'AdminHuntEditScreen',
-  adminPuzzleEditScreen = 'AdminPuzzleEditScreen',
+  huntManageScreen = 'HuntManageScreen',
+  huntEditScreen = 'HuntEditScreen',
+  huntPuzzleEditScreen = 'HuntPuzzleEditScreen',
+  huntManageHelpScreen = 'HuntManageHelpScreen',
   huntScreen = 'HuntScreen',
   huntPuzzleScreen = 'HuntPuzzleScreen',
   huntHelpScreen = 'HuntHelpScreen',
@@ -670,6 +672,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.announcementHelpScreen
   | CommonStackComponents.registrationCodeHelpScreen
   | CommonStackComponents.adminServerSettingsHelpScreen
+  | CommonStackComponents.huntManageHelpScreen
   | CommonStackComponents.huntHelpScreen
   | CommonStackComponents.eventFeedbackHelpScreen
   | CommonStackComponents.loggingHelpScreen;

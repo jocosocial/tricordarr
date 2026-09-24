@@ -187,6 +187,12 @@ export const HelpManualScreen = () => {
             onPress={() => commonNavigation.push(CommonStackComponents.registrationCodeHelpScreen)}
           />
           <DataFieldListItem
+            title={'Manage Puzzle Hunts'}
+            description={'Create and edit puzzle hunts and their puzzles.'}
+            icon={AppIcons.hunts}
+            onPress={() => commonNavigation.push(CommonStackComponents.huntManageHelpScreen)}
+          />
+          <DataFieldListItem
             title={'Server Settings'}
             description={'Limits, notifications, Wi-Fi, and related server options.'}
             icon={AppIcons.settings}

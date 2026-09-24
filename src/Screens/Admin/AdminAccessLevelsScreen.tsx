@@ -11,6 +11,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
@@ -26,10 +27,10 @@ import {UserHeader} from '#src/Structs/ControllerStructs';
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminAccessLevelsScreen>;
 
 export const AdminAccessLevelsScreen = (props: Props) => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTHO} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('tho')}>
+      <NoAccessScreen hasAccess={hasTHO}>
         <AdminAccessLevelsScreenInner {...props} />
       </NoAccessScreen>
     </LoggedInScreen>

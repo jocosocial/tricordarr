@@ -9,7 +9,7 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {
   CommonStackComponents,
@@ -44,10 +44,10 @@ const EventChangeList = ({title, events}: {title: string; events: EventData[]}) 
 };
 
 export const AdminScheduleLogScreen = (props: Props) => {
-  const {hasMinAccess} = useAdminAccess();
+  const {hasTwitarrTeam} = usePrivilege();
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
         <AdminScheduleLogScreenInner {...props} />
       </NoAccessScreen>
     </LoggedInScreen>

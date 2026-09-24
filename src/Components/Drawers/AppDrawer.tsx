@@ -26,7 +26,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
-  const {hasShutternaut, hasShutternautManager, hasAccountManager} = useRoles();
+  const {hasShutternaut, hasShutternautManager, hasAccountManager, hasHuntManager} = useRoles();
   const {data: userNotificationData} = useUserNotificationDataQuery({
     enabled: oobeCompleted && !preRegistrationMode,
   });
@@ -237,6 +237,20 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   onPress={() => push(CommonStackComponents.shutternautReportScreen)}
                 />
               )}
+              {(hasAccountManager || hasTwitarrTeam) && (
+                <PaperDrawer.Item
+                  label={'Registration Codes'}
+                  icon={AppIcons.registrationCode}
+                  onPress={() => push(CommonStackComponents.regCodeManageScreen)}
+                />
+              )}
+              {(hasHuntManager || hasTwitarrTeam) && (
+                <PaperDrawer.Item
+                  label={'Manage Puzzle Hunts'}
+                  icon={AppIcons.hunts}
+                  onPress={() => push(CommonStackComponents.huntManageScreen)}
+                />
+              )}
               {hasModerator && (
                 <PaperDrawer.Item
                   label={'Moderator Actions'}
@@ -245,12 +259,12 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   right={getModBadge}
                 />
               )}
-              {(hasTwitarrTeam || hasAccountManager) && (
+              {hasTwitarrTeam && (
                 <PaperDrawer.Item
                   label={'Server Admin'}
                   icon={AppIcons.admin}
                   onPress={() => Linking.openURL(appUrl('admin'))}
-                  right={hasTwitarrTeam ? getTTBadge : undefined}
+                  right={getTTBadge}
                 />
               )}
             </PaperDrawer.Section>

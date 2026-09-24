@@ -12,9 +12,10 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {parseHuntPuzzlesJson} from '#src/Libraries/Admin/HuntPuzzles';
 import {alertDeleteHunt} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -24,20 +25,26 @@ import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {AdminHuntFormValues} from '#src/Types/FormValues';
 
-type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminHuntEditScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.huntEditScreen>;
 
-export const AdminHuntEditScreen = (props: Props) => {
-  const {hasMinAccess} = useAdminAccess();
+/**
+ * Creates a hunt, or edits an existing one and lists its puzzles. Same Hunt Manager or TwitarrTeam
+ * checkpoint as HuntManageScreen.
+ */
+export const HuntEditScreen = (props: Props) => {
+  const {hasHuntManager} = useRoles();
+  const {hasTwitarrTeam} = usePrivilege();
+
   return (
     <LoggedInScreen>
-      <NoAccessScreen hasAccess={() => hasMinAccess('twitarrteam')}>
-        <AdminHuntEditScreenInner {...props} />
+      <NoAccessScreen hasAccess={hasHuntManager || hasTwitarrTeam}>
+        <HuntEditScreenInner {...props} />
       </NoAccessScreen>
     </LoggedInScreen>
   );
 };
 
-const AdminHuntEditScreenInner = ({route, navigation}: Props) => {
+const HuntEditScreenInner = ({route, navigation}: Props) => {
   const huntID = route.params.huntID;
   const {data, isLoading} = useHuntAdminQuery({huntID: huntID ?? ''}, {enabled: !!huntID});
   const createMutation = useCreateHuntMutation();
@@ -45,7 +52,7 @@ const AdminHuntEditScreenInner = ({route, navigation}: Props) => {
   const deleteMutation = useDeleteHuntMutation();
   const {setSnackbarPayload} = useSnackbar();
   const {theme} = useAppTheme();
-  const getNavButtons = useAdminHeaderButtons();
+  const getNavButtons = useAdminHeaderButtons(CommonStackComponents.huntManageHelpScreen);
 
   useEffect(() => {
     navigation.setOptions({
@@ -121,7 +128,7 @@ const AdminHuntEditScreenInner = ({route, navigation}: Props) => {
                 title={puzzle.title}
                 description={puzzle.answer ?? puzzle.body}
                 onPress={() =>
-                  navigation.push(CommonStackComponents.adminPuzzleEditScreen, {
+                  navigation.push(CommonStackComponents.huntPuzzleEditScreen, {
                     huntID: data.huntID,
                     puzzleID: puzzle.puzzleID,
                   })

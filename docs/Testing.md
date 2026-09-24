@@ -1,8 +1,9 @@
 Testing
 =======
 
-There is no CI for tests yet — lint runs on push, but unit and end-to-end tests only run
-where you run them. Please exercise both locally before opening a PR.
+There is no CI for tests yet — typecheck and lint run on pull requests, but unit and
+end-to-end tests only run where you run them. Please exercise both locally before opening
+a PR.
 
 ```bash
 npm test        # unit tests (Jest)
@@ -13,6 +14,32 @@ npm run lint
 Note that `npm test` is not currently green on a clean checkout: `TestDateTime`,
 `TestNewDayMinuteCalculator` and `TestScheduleMarker` fail (5 tests), apparently
 timezone-dependent. Compare against a clean tree before assuming you caused a failure.
+
+For agents
+----------
+
+Generated code is not finished until it passes the same checks CI runs. `.github/workflows/lint.yml`
+runs on every pull request and gates on exactly two things — a project-wide typecheck, and eslint
+over the changed `.ts`/`.tsx`/`.js`/`.jsx` files. Reproduce both locally before reporting work
+complete:
+
+```bash
+npm run typecheck
+npm run lint
+```
+
+`npm run lint` is `eslint .`, a superset of CI's `npx eslint <changed files>`, so passing locally
+means passing in CI.
+
+Use `npm run typecheck` rather than a bare `npx tsc --noEmit`. The script behind it
+(`scripts/tsc-errors-by-src-dir.sh`) runs tsc across the whole project but only reports — and only
+fails on — errors under `src/`. A bare tsc additionally surfaces errors from `node_modules` and
+`__tests__/` that CI does not gate on, including a pre-existing type error in
+`__tests__/unit/TestScheduleMarker.ts`. Don't attribute those to your change, and don't edit
+unrelated code to silence them.
+
+`npm test` is not run by CI at all. Run it anyway, and check any failure against a clean tree
+before assuming you caused it — see the note above about the 5 that already fail.
 
 End-to-end
 ----------

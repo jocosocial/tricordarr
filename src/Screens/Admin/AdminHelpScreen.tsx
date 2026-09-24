@@ -47,7 +47,7 @@ export const AdminHelpScreen = () => {
           />
           <DataFieldListItem
             title={'Registration Codes'}
-            description={'Look up codes by user or code, unlock password recovery, and allocate Discord codes.'}
+            description={'Allocate Discord codes. Code lookup and recovery are in the drawer.'}
             icon={AppIcons.registrationCode}
             onPress={() => commonNavigation.push(CommonStackComponents.registrationCodeHelpScreen)}
           />
