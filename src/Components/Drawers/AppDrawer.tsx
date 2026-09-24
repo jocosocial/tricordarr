@@ -15,7 +15,9 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {push} from '#src/Libraries/NavigationRef';
 import {appSiteUrl, appUrl} from '#src/Libraries/UrlParser';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
@@ -226,6 +228,13 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   label={'Manage Shutternauts'}
                   icon={AppIcons.shutternautManager}
                   onPress={() => Linking.openURL(appSiteUrl('userrole', 'shutternaut', 'manage'))}
+                />
+              )}
+              {(hasShutternautManager || hasTwitarrTeam) && (
+                <PaperDrawer.Item
+                  label={'Photographer Report'}
+                  icon={AppIcons.photographer}
+                  onPress={() => push(CommonStackComponents.shutternautReportScreen)}
                 />
               )}
               {hasModerator && (

@@ -50,7 +50,13 @@ export const ShutternautHelpScreen = () => {
           <HelpTopicView>
             You can post up to eight (8) images in a single forum post. There is a file size limit of 20MB per photo.
           </HelpTopicView>
-          <HelpTopicView />
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Coverage Report'}>
+          <HelpTopicView>
+            Shutternaut Managers can view a cruise-wide photography coverage report. It lists every event that has been
+            marked as needing a photographer, that already has a Shutternaut assigned, or both. Events nobody has marked
+            are left out.
+          </HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>
