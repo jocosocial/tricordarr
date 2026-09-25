@@ -15,6 +15,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSignOut} from '#src/Context/Contexts/SignOutContext';
@@ -37,12 +38,13 @@ export const ConfigServerUrlScreen = () => {
   const {commonStyles} = useStyles();
   const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
   const queryClient = useQueryClient();
-  const {disruptionDetected} = useSwiftarrQueryClient();
+  const {disruptionDetected, setServerSwitchInProgress} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const {hasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const {performSignOut} = useSignOut();
+  const {updateClientSettings} = useClientSettings();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     if (!currentSession) {
@@ -52,30 +54,50 @@ export const ConfigServerUrlScreen = () => {
 
     const oldServerUrl = currentSession.serverUrl;
     const serverUrlChanging = oldServerUrl !== values.serverUrl;
-    await queryClient.cancelQueries({queryKey: ['/client/health']});
 
     if (serverUrlChanging) {
-      const sessionID = currentSession.sessionID;
-      // Perform sign-out first so FGS is stopped and notifications disabled before any re-render.
-      // Otherwise updateSession(serverUrl) triggers signOut() and a re-render with isLoggedIn=false
-      // but enableUserNotifications still true, so PushNotificationService starts the FGS worker
-      // which then calls buildWebSocket() with no token.
-      await performSignOut();
-      // Update session serverUrl only (token already cleared by performSignOut; updateSession will not call signOut again).
-      await updateSession(sessionID, {serverUrl: values.serverUrl});
-    } else {
-      // Update session serverUrl - persists immediately
-      await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
+      // Suppress the generic error Snackbar for the duration of the swap: mounted screens'
+      // queries will refire against the new server immediately (query keys embed serverUrl)
+      // and may 401 with "maintenance mode" before we've confirmed that state ourselves.
+      setServerSwitchInProgress(true);
     }
 
-    refetch().finally(() =>
-      formikHelpers.resetForm({
-        values: {
-          serverChoice: ServerChoices.fromUrl(values.serverUrl),
-          serverUrl: values.serverUrl,
-        },
-      }),
-    );
+    // Cancel in-flight requests before anything changes, to shrink (not eliminate - mounted
+    // queries key off serverUrl and will still auto-refetch) the race window against the old
+    // server/baseURL.
+    await queryClient.cancelQueries();
+
+    try {
+      if (serverUrlChanging) {
+        const sessionID = currentSession.sessionID;
+        // Perform sign-out first so FGS is stopped and notifications disabled before any re-render.
+        // Otherwise updateSession(serverUrl) triggers signOut() and a re-render with isLoggedIn=false
+        // but enableUserNotifications still true, so PushNotificationService starts the FGS worker
+        // which then calls buildWebSocket() with no token.
+        await performSignOut();
+        // Update session serverUrl only (token already cleared by performSignOut; updateSession will not call signOut again).
+        await updateSession(sessionID, {serverUrl: values.serverUrl});
+        // Resolve maintenance-mode state deterministically as part of the swap, rather than
+        // relying on the client-settings query incidentally refetching due to its key changing.
+        await updateClientSettings();
+      } else {
+        // Update session serverUrl - persists immediately
+        await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
+      }
+
+      await refetch().finally(() =>
+        formikHelpers.resetForm({
+          values: {
+            serverChoice: ServerChoices.fromUrl(values.serverUrl),
+            serverUrl: values.serverUrl,
+          },
+        }),
+      );
+    } finally {
+      if (serverUrlChanging) {
+        setServerSwitchInProgress(false);
+      }
+    }
     setSnackbarPayload(undefined);
   };
 
