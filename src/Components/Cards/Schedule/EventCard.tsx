@@ -7,6 +7,7 @@ import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemC
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -164,6 +165,7 @@ export const EventCard = ({
   hideFavorite = false,
 }: EventCardProps) => {
   const {theme} = useAppTheme();
+  const {isLoggedIn} = useSession();
   const eventFavoriteMutation = useEventFavoriteMutation();
   const queryClient = useQueryClient();
   const {updateFavorite, primeEventDetail} = useEventCacheReducer();
@@ -218,7 +220,8 @@ export const EventCard = ({
   }, [eventData.title, eventData.eventType, theme.colors, getDayPlannerColor, getBackgroundColor, getTextColor]);
 
   const getRight = useCallback(() => {
-    if (hideFavorite) {
+    // Favoriting requires an account; hide the toggle entirely rather than let it fail on tap.
+    if (hideFavorite || !isLoggedIn) {
       return null;
     }
     return (
@@ -229,7 +232,7 @@ export const EventCard = ({
         contentColor={cardStyleAndContentColor.contentColor}
       />
     );
-  }, [eventData, refreshing, hideFavorite, onFavoritePress, cardStyleAndContentColor.contentColor]);
+  }, [eventData, refreshing, hideFavorite, isLoggedIn, onFavoritePress, cardStyleAndContentColor.contentColor]);
 
   return (
     <ScheduleItemCardBase

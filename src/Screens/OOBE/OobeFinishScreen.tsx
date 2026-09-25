@@ -9,6 +9,7 @@ import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
@@ -22,8 +23,12 @@ export const OobeFinishScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
   const {oobeFinish} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
+  const {isLoggedIn} = useSession();
+  // Both the SSID lookup and push registration need a token; a user who proceeded through OOBE
+  // without an account has nothing to gain from either here (they can log in later from Settings,
+  // which starts push itself - see LoginScreen).
   const {data: userNotificationData} = useUserNotificationDataQuery({
-    enabled: !preRegistrationMode,
+    enabled: !preRegistrationMode && isLoggedIn,
   });
   const rootNavigation = useRootStack();
 
@@ -37,7 +42,7 @@ export const OobeFinishScreen = ({navigation}: Props) => {
         wifiNetworkNames: [userNotificationData.shipWifiSSID],
       });
     }
-    if (!preRegistrationMode) {
+    if (!preRegistrationMode && isLoggedIn) {
       startPushProvider();
     }
     rootNavigation.replace(RootStackComponents.rootContentScreen, {

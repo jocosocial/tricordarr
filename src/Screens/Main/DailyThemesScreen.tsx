@@ -15,7 +15,7 @@ import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
-import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.dailyThemesScreen>;
@@ -42,11 +42,11 @@ export const DailyThemesScreen = ({navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   return (
-    <LoggedInScreen>
+    <MaintenanceModeScreen>
       <PreRegistrationScreen>
         <DailyThemesScreenInner />
       </PreRegistrationScreen>
-    </LoggedInScreen>
+    </MaintenanceModeScreen>
   );
 };
 

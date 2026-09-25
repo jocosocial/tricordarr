@@ -1,0 +1,29 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    file: ../SetupApp.yaml
+- tapOn:
+    id: "oobeNext-button"
+- tapOn:
+    id: "serverChoice-button"
+    retryTapIfNoChange: true
+- tapOn: "Emulator"
+- tapOn:
+    id: "serverUrlSave-button"
+- tapOn:
+    id: "oobeNext-button"
+- repeat:
+    times: 7
+    commands:
+      - scroll
+- tapOn:
+    id: "oobeIAgree-button"
+- tapOn:
+    id: "oobeProceedWithoutAccount-button"
+# Begin Permissions
+# lol
+# End Permissions
+- tapOn:
+    id: "oobeNext-button"
+- tapOn:
+    id: "oobeFinish-button"
