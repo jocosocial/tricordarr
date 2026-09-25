@@ -168,4 +168,5 @@ export enum AppIcons {
   airplaneMode = 'airplane',
   wifi = 'wifi',
   vpn = 'key',
+  connection = 'server-network',
 }

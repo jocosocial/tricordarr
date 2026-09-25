@@ -1,3 +1,4 @@
+import MaterialCommunityIcons from '@react-native-vector-icons/material-design-icons';
 import pluralize from 'pluralize';
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
@@ -5,8 +6,10 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useBackgroundConnectionStatus} from '#src/Hooks/useBackgroundConnectionStatus';
 import {useMenu} from '#src/Hooks/useMenu';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
@@ -15,14 +18,36 @@ import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/Set
 import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
+const backgroundConnectionStatusLabels = {
+  connected: 'Connected',
+  warning: 'Warning',
+  error: 'Error',
+} as const;
+
+/**
+ * Builds a `leadingIcon` render prop for Menu.Item that draws a solid circle in the given
+ * color, used to color-code the background connection status menu item.
+ */
+const renderBackgroundConnectionStatusIcon =
+  (color: string) =>
+  ({size}: {size: number}) => <MaterialCommunityIcons name={AppIcons.connection} size={size} color={color} />;
+
 export const NotificationsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {preRegistrationMode} = usePreRegistration();
   const {data} = useUserNotificationDataQuery({enabled: !preRegistrationMode});
   const bottomTabNavigator = useBottomTabNavigator();
   const {totalNewCount} = useUserNotificationData();
+  const {theme} = useAppTheme();
+  const backgroundConnectionStatus = useBackgroundConnectionStatus();
 
   const anyNew = totalNewCount(data) !== 0;
+
+  const backgroundConnectionStatusColor = {
+    connected: theme.colors.twitarrPositiveButton,
+    warning: theme.colors.twitarrYellow,
+    error: theme.colors.twitarrNegativeButton,
+  }[backgroundConnectionStatus as 'connected' | 'warning' | 'error'];
 
   return (
     <AppMenu
@@ -191,6 +216,20 @@ export const NotificationsMenu = () => {
         />
       )}
       <Divider bold={true} />
+      {backgroundConnectionStatus !== 'disabled' && (
+        <Menu.Item
+          title={backgroundConnectionStatusLabels[backgroundConnectionStatus]}
+          leadingIcon={renderBackgroundConnectionStatusIcon(backgroundConnectionStatusColor)}
+          onPress={() =>
+            bottomTabNavigator.navigate(BottomTabComponents.homeTab, {
+              screen: MainStackComponents.mainSettingsScreen,
+              params: {
+                screen: SettingsStackScreenComponents.backgroundConnectionSettings,
+              },
+            })
+          }
+        />
+      )}
       <Menu.Item
         title={'Notification Settings'}
         leadingIcon={AppIcons.settings}
