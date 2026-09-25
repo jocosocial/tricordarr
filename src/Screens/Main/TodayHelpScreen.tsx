@@ -37,7 +37,8 @@ export const TodayHelpScreen = () => {
         <HelpChapterTitleView title={'Actions'} />
         <HelpTopicView title={'Notifications'} icon={AppIcons.notificationShow}>
           If you're logged in, you'll see a notifications icon in the top right. Tap it to view your notifications and
-          alerts.
+          alerts. If the background notification worker is enabled, the menu also has an entry showing its current
+          connection status (Connected, Warning, or Error) with a colored dot. Tap it for details and settings.
         </HelpTopicView>
         <HelpTopicView title={'Account Menu'} icon={AppIcons.user}>
           The account menu in the top right corner provides quick access to your profile, account settings, and help
