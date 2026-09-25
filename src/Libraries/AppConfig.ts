@@ -29,6 +29,13 @@ export interface APIClientConfig {
    */
   mutationTimeout: number;
   imageStaleTime: number;
+  /**
+   * How long (ms) to suppress the generic error Snackbar after a server URL switch begins,
+   * to give the maintenance-mode check a chance to resolve before other mounted queries'
+   * transient 401s surface as scary errors. Cleared earlier once the swap settles; this is
+   * just the fallback ceiling.
+   */
+  serverSwitchGracePeriod: number;
 }
 
 export interface ScheduleConfig {
@@ -172,6 +179,7 @@ export const defaultAppConfig: AppConfig = {
     requestTimeout: 10000,
     mutationTimeout: 30000,
     imageStaleTime: defaultImageStaleTime,
+    serverSwitchGracePeriod: 10000,
   },
   enableEasterEgg: false,
   accessibility: {
@@ -287,6 +295,9 @@ export const getAppConfig = async () => {
   }
   if (appConfig.apiClientConfig.mutationTimeout === undefined) {
     appConfig.apiClientConfig.mutationTimeout = defaultAppConfig.apiClientConfig.mutationTimeout;
+  }
+  if (appConfig.apiClientConfig.serverSwitchGracePeriod === undefined) {
+    appConfig.apiClientConfig.serverSwitchGracePeriod = defaultAppConfig.apiClientConfig.serverSwitchGracePeriod;
   }
 
   // Ok now we're done
