@@ -22,6 +22,11 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {oobeCompleted} = useOobe();
   const {currentSession, isLoggedIn} = useSession();
   const [errorCount, setErrorCount] = useState(0);
+  // TRUE while ConfigServerUrlScreen is mid-swap to a new server, before maintenance-mode
+  // status is known. Suppresses the generic error Snackbar so a transient 401 from some other
+  // already-mounted screen's query doesn't scare the user before the real maintenance-mode UI
+  // has a chance to resolve.
+  const [serverSwitchInProgress, setServerSwitchInProgress] = useState(false);
   const {setSnackbarPayload} = useSnackbar();
   const tokenData = currentSession?.tokenData || null;
 
@@ -214,6 +219,18 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   // Eeeek. I don't love this. But LoadingView uses AppView which is where we do the Disruption banner.
   const disruptionDetected = oobeCompleted && errorCount >= appConfig.apiClientConfig.disruptionThreshold;
 
+  // Bounded fallback: if the post-swap health/client-settings check never resolves (hang,
+  // backgrounded app, etc.), stop suppressing errors after a fixed window rather than staying
+  // silent forever.
+  useEffect(() => {
+    if (!serverSwitchInProgress) return;
+    const timer = setTimeout(() => {
+      logger.warn('Server switch suppression window expired; resuming normal error handling.');
+      setServerSwitchInProgress(false);
+    }, appConfig.apiClientConfig.serverSwitchGracePeriod);
+    return () => clearTimeout(timer);
+  }, [serverSwitchInProgress, appConfig.apiClientConfig.serverSwitchGracePeriod]);
+
   // Configure query cache error/success handlers
   useEffect(() => {
     if (!queryClientRef.current) return;
@@ -234,7 +251,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         if (!isHttpClientError(error)) {
           setErrorCount(prev => prev + 1);
         }
-        if (!disruptionDetected) {
+        if (!disruptionDetected && !serverSwitchInProgress) {
           setSnackbarPayload({message: errorString, messageType: 'error'});
         }
       },
@@ -255,7 +272,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         }
       },
     };
-  }, [disruptionDetected, errorCount, setSnackbarPayload]);
+  }, [disruptionDetected, serverSwitchInProgress, errorCount, setSnackbarPayload]);
 
   const shouldDehydrateQuery = (query: Query) => {
     // Exclude queries that have never completed a fetch - there's no data to persist.
@@ -339,6 +356,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         errorCount,
         setErrorCount,
         disruptionDetected: disruptionDetected,
+        serverSwitchInProgress,
+        setServerSwitchInProgress,
         apiGet,
         apiPost,
         apiDelete,
