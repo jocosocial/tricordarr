@@ -48,7 +48,7 @@ export const BoardgameListItemSwipeable = (props: BoardgameListItemSwipeableProp
           },
           onSettled: () => {
             setFavoriteRefreshing(false);
-            swipeable.reset();
+            swipeable.close();
           },
         },
       );
@@ -58,7 +58,7 @@ export const BoardgameListItemSwipeable = (props: BoardgameListItemSwipeableProp
 
   const handleLFG = useCallback(
     (swipeable: SwipeableMethods) => {
-      swipeable.reset();
+      swipeable.close();
       navigation.push(MainStackComponents.boardgameCreateLfgScreen, {
         boardgame: props.boardgame,
       });

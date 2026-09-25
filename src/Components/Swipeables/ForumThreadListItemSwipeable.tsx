@@ -36,7 +36,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
 
   const handleMarkAsRead = useCallback(
     async (swipeable: SwipeableMethods) => {
-      swipeable.reset();
+      swipeable.close();
       setReadRefreshing(true);
       // Applied eagerly with no rollback: markRead collapses readCount toward postCount and
       // can't be un-applied without capturing the prior counts. A failed request self-heals
@@ -49,7 +49,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
         {
           onSettled: () => {
             setReadRefreshing(false);
-            swipeable.reset();
+            swipeable.close();
           },
         },
       );
@@ -77,7 +77,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           },
           onSettled: () => {
             setFavoriteRefreshing(false);
-            swipeable.reset();
+            swipeable.close();
           },
         },
       );
@@ -110,7 +110,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           },
           onSettled: () => {
             setMuteRefreshing(false);
-            swipeable.reset();
+            swipeable.close();
           },
         },
       );
@@ -141,7 +141,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
         },
         onSettled: () => {
           setPinRefreshing(false);
-          swipeable.reset();
+          swipeable.close();
         },
       },
     );
@@ -160,7 +160,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
             text={'Event'}
             iconName={AppIcons.events}
             onPress={() => {
-              swipeable.reset();
+              swipeable.close();
               commonNavigation.push(CommonStackComponents.eventScreen, {
                 eventID: eventID,
               });

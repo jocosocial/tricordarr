@@ -10,6 +10,7 @@ export const BlockedUsersHelpTopicView = ({forListScreen = true}: BlockedUsersHe
     <HelpTopicView title={forListScreen ? 'Blocked Users' : 'Block User'} icon={AppIcons.block}>
       {forListScreen && 'View and manage your list of blocked users. '}
       Blocking a user will hide all that user's content from you, and also hide all your content from them.
+      {forListScreen && ' Swipe right on a user to Remove them from your blocks.'}
     </HelpTopicView>
   );
 };

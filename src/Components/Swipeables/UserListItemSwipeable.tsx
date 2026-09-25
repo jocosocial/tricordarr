@@ -1,4 +1,5 @@
-import React, {PropsWithChildren, useCallback, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useMemo, useState} from 'react';
+import {StyleSheet} from 'react-native';
 import {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SharedValue} from 'react-native-reanimated';
 
@@ -31,14 +32,31 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
   const blockMutation = useUserBlockMutation();
   const [removeRefreshing, setRemoveRefreshing] = useState(false);
 
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        // level1/3/5 rather than adjacent levels: Paper's tonal elevation steps are subtle,
+        // and adjacent levels (e.g. 3 and 4) read as the same color side by side.
+        seamail: {backgroundColor: theme.colors.elevation.level1},
+        call: {backgroundColor: theme.colors.elevation.level3},
+        event: {backgroundColor: theme.colors.elevation.level5},
+        remove: {backgroundColor: theme.colors.twitarrNegativeButton},
+        removeText: {color: theme.colors.onTwitarrNegativeButton},
+      }),
+    [theme],
+  );
+
+  /**
+   * Close the swipeable and remove the user from this relation list (favorite/mute/block).
+   * Closes before mutating: onSuccess drops the row from the cache via removeRelation, which
+   * unmounts this swipeable, so an onSettled close would act on a torn-down view.
+   */
   const handleRemoveRelation = useCallback(
     (swipeable: SwipeableMethods) => {
       setRemoveRefreshing(true);
+      swipeable.close();
       const onSuccess = () => removeRelation(mode, userHeader);
-      const onSettled = () => {
-        setRemoveRefreshing(false);
-        swipeable.reset();
-      };
+      const onSettled = () => setRemoveRefreshing(false);
 
       if (mode === 'favorite') {
         favoriteMutation.mutate(
@@ -61,90 +79,118 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
   );
 
   /**
-   * Close the swipeable and start a Seamail with this user.
+   * Start a Seamail with this user, then close the swipeable. Navigating first so the screen
+   * push isn't competing with the swipeable's own close animation; the row is still closed by
+   * the time the user navigates back.
    */
   const handleSeamail = useCallback(
     (swipeable: SwipeableMethods) => {
-      swipeable.reset();
       commonNavigation.push(CommonStackComponents.seamailCreateScreen, {
         initialUserHeaders: [userHeader],
       });
+      swipeable.close();
     },
     [commonNavigation, userHeader],
   );
 
   /**
-   * Close the swipeable and start a KrakenTalk call with this user.
+   * Start a KrakenTalk call with this user, then close the swipeable. See handleSeamail for why
+   * navigation comes first.
    */
   const handleCall = useCallback(
     (swipeable: SwipeableMethods) => {
-      swipeable.reset();
       commonNavigation.push(CommonStackComponents.krakenTalkCreateScreen, {
         initialUserHeader: userHeader,
       });
+      swipeable.close();
     },
     [commonNavigation, userHeader],
   );
 
   /**
-   * Close the swipeable and create a personal event inviting this user.
+   * Create a personal event inviting this user, then close the swipeable. See handleSeamail for
+   * why navigation comes first.
    */
   const handleScheduleEvent = useCallback(
     (swipeable: SwipeableMethods) => {
-      swipeable.reset();
       commonNavigation.push(CommonStackComponents.personalEventCreateScreen, {
         initialUserHeaders: [userHeader],
       });
+      swipeable.close();
     },
     [commonNavigation, userHeader],
   );
 
-  const renderRightPanel = (
-    progressAnimatedValue: SharedValue<number>,
-    dragAnimatedValue: SharedValue<number>,
-    swipeable: SwipeableMethods,
-  ) => {
-    return (
+  /**
+   * Seamail/Call/Event, favorites list only. Undefined (rather than an empty fragment) for
+   * mute/block so BaseSwipeable doesn't stand up an empty right panel.
+   */
+  const renderRightPanel = useCallback(
+    (
+      progressAnimatedValue: SharedValue<number>,
+      dragAnimatedValue: SharedValue<number>,
+      swipeable: SwipeableMethods,
+    ) => (
       <>
-        {mode === 'favorite' && !preRegistrationMode && (
-          <>
-            <SwipeableButton
-              testID={'userListSeamail-button'}
-              text={'Seamail'}
-              iconName={AppIcons.seamail}
-              style={{backgroundColor: theme.colors.elevation.level1}}
-              onPress={() => handleSeamail(swipeable)}
-            />
-            <SwipeableButton
-              testID={'userListCall-button'}
-              text={'Call'}
-              iconName={AppIcons.krakentalkCreate}
-              style={{backgroundColor: theme.colors.elevation.level3}}
-              onPress={() => handleCall(swipeable)}
-            />
-            <SwipeableButton
-              testID={'userListEvent-button'}
-              text={'Event'}
-              iconName={AppIcons.eventCreate}
-              style={{backgroundColor: theme.colors.elevation.level4}}
-              onPress={() => handleScheduleEvent(swipeable)}
-            />
-          </>
-        )}
         <SwipeableButton
-          testID={'userListRemove-button'}
-          text={'Remove'}
-          iconName={AppIcons.delete}
-          style={{backgroundColor: theme.colors.elevation.level2}}
-          onPress={() => handleRemoveRelation(swipeable)}
-          refreshing={removeRefreshing}
+          testID={'userListSeamail-button'}
+          text={'Seamail'}
+          iconName={AppIcons.seamail}
+          style={styles.seamail}
+          onPress={() => handleSeamail(swipeable)}
+        />
+        <SwipeableButton
+          testID={'userListCall-button'}
+          text={'Call'}
+          iconName={AppIcons.krakentalkCreate}
+          style={styles.call}
+          onPress={() => handleCall(swipeable)}
+        />
+        <SwipeableButton
+          testID={'userListEvent-button'}
+          text={'Event'}
+          iconName={AppIcons.eventCreate}
+          style={styles.event}
+          onPress={() => handleScheduleEvent(swipeable)}
         />
       </>
-    );
-  };
+    ),
+    [styles, handleSeamail, handleCall, handleScheduleEvent],
+  );
+
+  /**
+   * Remove, all three relation modes. Opposite side from renderRightPanel so the destructive
+   * action never shares a swipe direction with Seamail/Call/Event.
+   */
+  const renderLeftPanel = useCallback(
+    (
+      progressAnimatedValue: SharedValue<number>,
+      dragAnimatedValue: SharedValue<number>,
+      swipeable: SwipeableMethods,
+    ) => (
+      <SwipeableButton
+        testID={'userListRemove-button'}
+        text={'Remove'}
+        iconName={AppIcons.delete}
+        style={styles.remove}
+        textStyle={styles.removeText}
+        iconColor={theme.colors.onTwitarrNegativeButton}
+        onPress={() => handleRemoveRelation(swipeable)}
+        refreshing={removeRefreshing}
+        disabled={removeRefreshing}
+      />
+    ),
+    [styles, theme, handleRemoveRelation, removeRefreshing],
+  );
+
+  const showRightPanel = mode === 'favorite' && !preRegistrationMode;
 
   return (
-    <BaseSwipeable key={`${userHeader.userID}-${mode}`} enabled={enabled} renderRightPanel={renderRightPanel}>
+    <BaseSwipeable
+      key={`${userHeader.userID}-${mode}`}
+      enabled={enabled}
+      renderLeftPanel={renderLeftPanel}
+      renderRightPanel={showRightPanel ? renderRightPanel : undefined}>
       {children}
     </BaseSwipeable>
   );
