@@ -5,9 +5,10 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useScheduleFilter} from '#src/Context/Contexts/ScheduleFilterContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {EventType} from '#src/Enums/EventType';
 import {useMenu} from '#src/Hooks/useMenu';
 
@@ -32,8 +33,12 @@ export const ScheduleEventFilterMenu = () => {
     setEventPersonalUnreadFilter,
   } = useScheduleFilter();
   const {appConfig} = useConfig();
-  const {oobeCompleted} = useOobe();
+  const {isLoggedIn} = useSession();
+  const {preRegistrationMode} = usePreRegistration();
   const {hasShutternaut, hasShutternautManager} = useRoles();
+  // LFGs and Private Events are unavailable during pre-registration regardless of login state -
+  // see the matching query gates in ScheduleDayScreen.tsx.
+  const disableLfgAndPersonalFilters = !isLoggedIn || preRegistrationMode;
 
   // This also shows joined LFGs, hopefully that's not too surprising
   const handleFavoriteSelection = () => {
@@ -113,7 +118,12 @@ export const ScheduleEventFilterMenu = () => {
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <SelectableMenuItem title={'Favorite Events'} onPress={handleFavoriteSelection} selected={eventFavoriteFilter} />
+      <SelectableMenuItem
+        title={'Favorite Events'}
+        onPress={handleFavoriteSelection}
+        selected={eventFavoriteFilter}
+        disabled={!isLoggedIn}
+      />
       <Divider bold={true} />
       {Object.keys(EventType).map(eventType => {
         return (
@@ -130,33 +140,33 @@ export const ScheduleEventFilterMenu = () => {
         title={'Private Events'}
         onPress={handlePersonalSelection}
         selected={eventPersonalFilter}
-        disabled={!oobeCompleted}
+        disabled={disableLfgAndPersonalFilters}
       />
       <SelectableMenuItem
         title={'Unread Private Events'}
         onPress={handlePersonalUnreadSelection}
         selected={eventPersonalUnreadFilter}
-        disabled={!oobeCompleted}
+        disabled={disableLfgAndPersonalFilters}
       />
       <Divider bold={true} />
       <SelectableMenuItem
         title={'Joined LFGs'}
         onPress={handleLfgJoinedSelection}
         selected={eventLfgJoinedFilter}
-        disabled={!oobeCompleted}
+        disabled={disableLfgAndPersonalFilters}
       />
       <SelectableMenuItem
         title={'Your LFGs'}
         onPress={handleLfgOwnedSelection}
         selected={eventLfgOwnedFilter}
-        disabled={!oobeCompleted}
+        disabled={disableLfgAndPersonalFilters}
       />
       {appConfig.schedule.eventsShowOpenLfgs && (
         <SelectableMenuItem
           title={'Open LFGs'}
           onPress={handleLfgOpenSelection}
           selected={eventLfgOpenFilter}
-          disabled={!oobeCompleted}
+          disabled={disableLfgAndPersonalFilters}
         />
       )}
       {(hasShutternaut || hasShutternautManager) && (

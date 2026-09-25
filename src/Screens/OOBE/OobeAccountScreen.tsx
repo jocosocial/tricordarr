@@ -63,6 +63,20 @@ export const OobeAccountScreen = ({navigation}: Props) => {
               onPress={() => navigation.push(OobeStackComponents.oobeLoginScreen)}
             />
           </PaddedContentView>
+          <PaddedContentView>
+            <Text>
+              You can also use some areas of Twitarr without creating an account now or ever.
+            </Text>
+          </PaddedContentView>
+          <PaddedContentView>
+            <PrimaryActionButton
+              testID={'oobeProceedWithoutAccount-button'}
+              buttonColor={theme.colors.twitarrNegativeButton}
+              textColor={theme.colors.onTwitarrNegativeButton}
+              buttonText={'Proceed Without an Account'}
+              onPress={() => navigation.push(OobeStackComponents.oobePermissionsScreen)}
+            />
+          </PaddedContentView>
         </ScrollingContentView>
       )}
       {isLoggedIn && profilePublicData && (

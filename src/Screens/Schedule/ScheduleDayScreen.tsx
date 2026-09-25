@@ -19,6 +19,7 @@ import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
 import {useScheduleFilter} from '#src/Context/Contexts/ScheduleFilterContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
@@ -31,7 +32,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stack
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
-import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 const logger = createLogger('ScheduleDayScreen.tsx');
@@ -47,7 +48,8 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.schedu
 
 /**
  * Inner component containing the actual schedule day logic.
- * This assumes LoggedIn and Disabled checkpoints have been handled.
+ * This assumes MaintenanceMode and Disabled checkpoints have been handled. LFGs, personal events,
+ * and the Day Planner FAB require an account and are gated on isLoggedIn individually below.
  */
 const ScheduleDayScreenActual = ({
   navigation,
@@ -69,6 +71,7 @@ const ScheduleDayScreenActual = ({
   });
   const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
+  const {isLoggedIn} = useSession();
   const {scheduleFilterSettings, setEventPersonalFilter, setEventPersonalUnreadFilter} = useScheduleFilter();
 
   const {
@@ -91,7 +94,7 @@ const ScheduleDayScreenActual = ({
     endpoint: 'open',
     hidePast: false,
     options: {
-      enabled: appConfig.schedule.eventsShowOpenLfgs && !preRegistrationMode,
+      enabled: appConfig.schedule.eventsShowOpenLfgs && !preRegistrationMode && isLoggedIn,
     },
   });
   const {
@@ -106,7 +109,7 @@ const ScheduleDayScreenActual = ({
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: appConfig.schedule.eventsShowJoinedLfgs && !preRegistrationMode,
+      enabled: appConfig.schedule.eventsShowJoinedLfgs && !preRegistrationMode && isLoggedIn,
     },
   });
   const {
@@ -121,7 +124,7 @@ const ScheduleDayScreenActual = ({
     endpoint: 'owner',
     hidePast: false,
     options: {
-      enabled: !preRegistrationMode,
+      enabled: !preRegistrationMode && isLoggedIn,
     },
   });
   const {
@@ -146,7 +149,7 @@ const ScheduleDayScreenActual = ({
         ? true
         : undefined,
     options: {
-      enabled: !preRegistrationMode,
+      enabled: !preRegistrationMode && isLoggedIn,
     },
   });
 
@@ -156,7 +159,8 @@ const ScheduleDayScreenActual = ({
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
       let refreshes: Promise<any>[] = [refetchEvents()];
-      if (!preRegistrationMode) {
+      // LFGs and personal events require an account; skip refetching them entirely while logged out.
+      if (!preRegistrationMode && isLoggedIn) {
         refreshes.push(refetchLfgJoined(), refetchLfgOwned(), refetchPersonalEvents());
         if (appConfig.schedule.eventsShowOpenLfgs) {
           refreshes.push(refetchLfgOpen());
@@ -170,6 +174,7 @@ const ScheduleDayScreenActual = ({
       refetchLfgOpen,
       refetchPersonalEvents,
       preRegistrationMode,
+      isLoggedIn,
       appConfig.schedule.eventsShowOpenLfgs,
     ]),
     isRefreshing: isFetching,
@@ -298,7 +303,8 @@ const ScheduleDayScreenActual = ({
           />
         )}
       </View>
-      <DayPlannerFAB selectedDay={selectedCruiseDay} />
+      {/* Day Planner is personal-event based and requires an account. */}
+      {isLoggedIn && <DayPlannerFAB selectedDay={selectedCruiseDay} />}
     </AppView>
   );
 };
@@ -331,10 +337,10 @@ export const ScheduleDayScreen = (props: Props) => {
   }, [getLeftMainHeaderButtons, getLeftBackHeaderButtons, props.navigation, props.route.params?.noDrawer]);
 
   return (
-    <LoggedInScreen>
+    <MaintenanceModeScreen>
       <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events'}>
         <ScheduleDayScreenInner {...props} />
       </DisabledFeatureScreen>
-    </LoggedInScreen>
+    </MaintenanceModeScreen>
   );
 };
