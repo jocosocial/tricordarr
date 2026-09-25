@@ -64,9 +64,7 @@ export const OobeAccountScreen = ({navigation}: Props) => {
             />
           </PaddedContentView>
           <PaddedContentView>
-            <Text>
-              You can also use some areas of Twitarr without creating an account now or ever.
-            </Text>
+            <Text>You can also use some areas of Twitarr without creating an account now or ever.</Text>
           </PaddedContentView>
           <PaddedContentView>
             <PrimaryActionButton
