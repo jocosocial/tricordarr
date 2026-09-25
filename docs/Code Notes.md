@@ -72,6 +72,23 @@ Reference implementations: `FezChatScreen.tsx`, `ForumThreadScreenBase.tsx` (lis
 
 `KeyboardAvoidingView`'s `keyboardVerticalOffset` is a heuristic (`insets.top + insets.bottom`, `+40` on home-button iPhones), not a true measurement — it approximates the distance from the top of the KAV to the top of the screen. It only works correctly when the KAV is mounted near the top of the screen's own render tree (directly inside `AppView`, not buried under several wrapper views) — see `useKeyboardVerticalOffset` (`src/Hooks/Keyboard/useKeyboardVerticalOffset.ts`) for the exact formula and rationale.
 
+## Swipeables
+
+Always call `swipeable.close()`, never `swipeable.reset()`. In gesture-handler v3
+`reset()` doesn't clear `shouldEnableTap` (the tap-to-close gesture) or `showRightProgress`, and
+unlike `close()`/`openLeft()`/`openRight()` it isn't scheduled onto the UI thread — from a JS
+`onPress` its shared-value writes can land across frames. Net effect: a permanently armed tap
+gesture over the row (swallows the next tap; can cancel a fresh pan) and rows that visibly jump
+open/closed. `close()` routes through the library's own `animateRow` and doesn't have these bugs.
+
+For a navigation action (push a screen), navigate first, then `close()` after — not before. Closing
+first races the swipe-close animation against the screen transition. The row is still closed by
+the time the user navigates back either way.
+
+For a destructive/mutating action, `close()` before calling `mutate()`, not in `onSettled`: if
+`onSuccess` drops the row from the cache (e.g. via a cache reducer), `onSettled` fires against an
+already-unmounted swipeable.
+
 ## Websocket Keepalive
 
 https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104

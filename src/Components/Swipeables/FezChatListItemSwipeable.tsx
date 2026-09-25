@@ -55,7 +55,7 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
           },
           onSettled: () => {
             setMuteRefreshing(false);
-            swipeable.reset();
+            swipeable.close();
           },
         },
       );
@@ -88,7 +88,7 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
           },
           onSettled: () => {
             setFavoriteRefreshing(false);
-            swipeable.reset();
+            swipeable.close();
           },
         },
       );
@@ -98,7 +98,7 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
 
   const handleMarkAsRead = useCallback(
     (swipeable: SwipeableMethods) => {
-      swipeable.reset();
+      swipeable.close();
       setReadRefreshing(true);
       // Applied eagerly with no rollback: markRead collapses readCount toward postCount and
       // can't be un-applied without capturing the prior counts. A failed request self-heals
@@ -111,7 +111,7 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
         {
           onSettled: () => {
             setReadRefreshing(false);
-            swipeable.reset();
+            swipeable.close();
           },
         },
       );
@@ -124,7 +124,7 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
    */
   const handleOpenParent = useCallback(
     (swipeable: SwipeableMethods) => {
-      swipeable.reset();
+      swipeable.close();
       openFezParentScreen(commonNavigation, props.fez);
     },
     [commonNavigation, props.fez],

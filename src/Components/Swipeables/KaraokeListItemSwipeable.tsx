@@ -47,7 +47,7 @@ export const KaraokeListItemSwipeable = ({
         {
           onSettled: () => {
             setFavoriteRefreshing(false);
-            swipeable.reset();
+            swipeable.close();
           },
         },
       );
@@ -57,7 +57,7 @@ export const KaraokeListItemSwipeable = ({
 
   const handleLog = useCallback(
     (swipeable: SwipeableMethods) => {
-      swipeable.reset();
+      swipeable.close();
       navigation.push(MainStackComponents.karaokeLogPerformanceScreen, {
         songID: song.songID,
         artist: song.artist,
