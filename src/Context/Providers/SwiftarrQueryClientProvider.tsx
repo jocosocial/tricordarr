@@ -15,6 +15,8 @@ import {isHttpClientError, shouldRetryQuery} from '#src/Libraries/Network/Retry'
 import {joinUrl} from '#src/Libraries/UrlParser';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
+
 const logger = createLogger('SwiftarrQueryClientProvider.tsx');
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
@@ -66,6 +68,22 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     });
     return client;
   }, [appConfig.apiClientConfig.requestTimeout, serverUrl, appConfig.urlPrefix, isLoggedIn, tokenData]);
+
+  /**
+   * Mirror the API base URL and token into native storage.
+   *
+   * Android handles the Decline button on a KrakenTalk call notification in Kotlin rather than by
+   * waking a headless JS context, because declining from the lock screen has to work when the app
+   * has been swiped away. That native path needs its own copy of the credentials. A no-op on iOS,
+   * where CallKit delivers the decline action to the app itself.
+   */
+  useEffect(() => {
+    if (isLoggedIn && tokenData) {
+      NativeTricordarrModule.setCallCredentials(joinUrl(serverUrl, appConfig.urlPrefix), tokenData.token);
+    } else {
+      NativeTricordarrModule.clearCallCredentials();
+    }
+  }, [isLoggedIn, tokenData, serverUrl, appConfig.urlPrefix]);
 
   /**
    * Raw

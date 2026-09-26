@@ -2,11 +2,10 @@ import notifee, {EventType, Notification, NotificationPressAction} from 'react-n
 
 import {PressAction} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';
+import {NativeAudioEngine} from '#src/Libraries/Audio/NativeAudioEngine';
 import {createLogger} from '#src/Libraries/Logger';
 import {
   announcementsChannel,
-  callMgmtChannel,
-  callsChannel,
   eventChannel,
   forumChannel,
   lfgChannel,
@@ -37,6 +36,34 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
   let autoCancel = false;
   let ongoing = false;
   let markAsReadUrl: string | undefined;
+
+  // A resolved call must clear its notification regardless of user preferences, so this is handled
+  // before the category and mute gates below. Leaving it after them is what made a stuck "Incoming
+  // Call" notification permanent for anyone who had disabled the "Call Ended" category.
+  if (
+    notificationType === NotificationTypeData.phoneCallAnswered ||
+    notificationType === NotificationTypeData.phoneCallEnded
+  ) {
+    logger.info(`Clearing call notification for ${notificationData.contentID} (${notificationType})`);
+    NativeAudioEngine.dismissCallNotification();
+    return;
+  }
+
+  // The ringing notification is built natively on Android so that it can use CallStyle and a
+  // full-screen intent. See NotificationDataListener and CallNotifications.kt.
+  if (notificationType === NotificationTypeData.incomingPhoneCall) {
+    const caller = notificationData.caller;
+    if (!caller) {
+      logger.warn('No caller info in incoming phone call notification');
+      return;
+    }
+    if (!appConfig.pushNotifications[notificationType]) {
+      logger.debug('user has disabled category', notificationType);
+      return;
+    }
+    NativeAudioEngine.showIncomingCall(notificationData.contentID, caller.username, String(caller.userID));
+    return;
+  }
 
   // Do not generate a notification if the user has disabled that category.
   if (!appConfig.pushNotifications[notificationType]) {
@@ -104,19 +131,6 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       pressActionID = PressAction.forum;
       title = 'Moderator Forum Mention';
       break;
-    case NotificationTypeData.incomingPhoneCall:
-      channel = callsChannel;
-      pressActionID = PressAction.krakentalk;
-      url = `/phonecall/${notificationData.contentID}/from/${notificationData.caller?.userID}/${notificationData.caller?.username}`;
-      title = 'Incoming Call';
-      autoCancel = false;
-      ongoing = true;
-      break;
-    case NotificationTypeData.phoneCallEnded:
-      channel = callMgmtChannel;
-      pressActionID = PressAction.krakentalk;
-      title = 'Call Ended';
-      break;
     case NotificationTypeData.followedEventStarting:
       channel = eventChannel;
       pressActionID = PressAction.event;
@@ -173,8 +187,10 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       markAsReadUrl = `/fez/${notificationData.contentID}`;
       break;
     default:
+      // Return rather than break: falling through used to post a generic "From Tricordarr"
+      // notification on the service channel for any type without an explicit case.
       logger.warn(`Ignoring event of type ${notificationType}`);
-      break;
+      return;
   }
 
   logger.info(`Calling generateContentNotification() for type ${notificationType}`);
@@ -260,8 +276,12 @@ export const getUrlForNotificationEvent = (
         }
         return;
       }
+      // KrakenTalk call notifications are built natively now, so this only fires for a
+      // notification left over from a previous version of the app. Cancelling is what makes those
+      // dismissable: they were posted with ongoing:true and nothing ever cleared them.
       case PressAction.krakentalk: {
         if (notification.id && notification.data) {
+          notifee.cancelNotification(notification.id);
           return `${notification.data.url}`;
         }
         return;

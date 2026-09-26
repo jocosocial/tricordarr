@@ -40,7 +40,18 @@ export const KrakenTalkActiveCallScreen = (props: Props) => {
 };
 
 const KrakenTalkActiveCallScreenInner = ({navigation}: Props) => {
-  const {currentCall, callState, callDuration, isMuted, isSpeakerOn, toggleMute, toggleSpeaker, endCall} = useCall();
+  const {
+    currentCall,
+    callState,
+    callDuration,
+    isMuted,
+    isSpeakerOn,
+    isMutePending,
+    isSpeakerPending,
+    toggleMute,
+    toggleSpeaker,
+    endCall,
+  } = useCall();
   const {theme} = useAppTheme();
   const {setSnackbarPayload} = useSnackbar();
   const endedByUserRef = useRef(false);
@@ -100,6 +111,7 @@ const KrakenTalkActiveCallScreenInner = ({navigation}: Props) => {
                 mode={'contained'}
                 selected={isMuted}
                 containerColor={isMuted ? theme.colors.errorContainer : theme.colors.surfaceVariant}
+                disabled={isMutePending}
                 onPress={toggleMute}
               />
               <Text variant={'labelSmall'} style={styles.controlLabel}>
@@ -114,6 +126,7 @@ const KrakenTalkActiveCallScreenInner = ({navigation}: Props) => {
                 mode={'contained'}
                 selected={isSpeakerOn}
                 containerColor={isSpeakerOn ? theme.colors.primaryContainer : theme.colors.surfaceVariant}
+                disabled={isSpeakerPending}
                 onPress={toggleSpeaker}
               />
               <Text variant={'labelSmall'} style={styles.controlLabel}>

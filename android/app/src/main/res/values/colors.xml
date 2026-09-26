@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="splash_background">#FFFFFF</color>
+    <!-- Matches twitarrPrimary in src/Styles/Theme.ts, used to colorize call notifications. -->
+    <color name="krakentalk_notification">#063953</color>
 </resources>

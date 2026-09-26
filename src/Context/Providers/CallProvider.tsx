@@ -1,5 +1,4 @@
-import {useAppState} from '@react-native-community/hooks';
-import React, {PropsWithChildren, useCallback, useEffect, useReducer, useRef} from 'react';
+import React, {PropsWithChildren, useCallback, useEffect, useReducer, useRef, useState} from 'react';
 import {Platform} from 'react-native';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import {v4 as uuidv4} from 'uuid';
@@ -9,11 +8,6 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {decodeAudioPacket, encodeAudioPacket} from '#src/Libraries/Audio/AudioCodec';
 import {AudioJitterBuffer} from '#src/Libraries/Audio/AudioJitterBuffer';
 import {NativeAudioEngine} from '#src/Libraries/Audio/NativeAudioEngine';
-import {
-  dismissCallForegroundNotification,
-  showCallForegroundNotification,
-  updateCallForegroundNotification,
-} from '#src/Libraries/Call/CallForegroundService';
 import {CallEndReason, CallKitService} from '#src/Libraries/Call/CallKitService';
 import {createLogger} from '#src/Libraries/Logger';
 import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
@@ -28,18 +22,33 @@ const logger = createLogger('CallProvider.tsx');
 
 export const CallProvider = ({children}: PropsWithChildren) => {
   const [state, dispatch] = useReducer(callReducer, initialCallState);
+  // Surfaced through CallContext so the call controls can disable themselves while a change is
+  // being applied. The refs above are the actual guards; these only drive the UI.
+  const [isSpeakerPending, setSpeakerPending] = useState(false);
+  const [isMutePending, setMutePending] = useState(false);
   const durationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const notificationUpdateIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Remote username, mirrored into a ref so startAudioStreaming can label the Android in-call
+  // notification without depending on the state object (see phoneSocketRef below for why).
+  const remoteUsernameRef = useRef<string>('Unknown');
   const audioEngineRef = useRef<NativeAudioEngine | null>(null);
   const jitterBufferRef = useRef<AudioJitterBuffer | null>(null);
   const playbackIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const callStateRef = useRef<CallState>(state.state);
   const speakerStateRef = useRef<boolean>(state.isSpeakerOn);
+  // Guards against overlapping route/mute changes. A second tap while a change is in flight used
+  // to start a second audio-route reconfiguration on top of the first, which is what made the
+  // speaker toggle drop the stream.
+  const speakerChangeInFlightRef = useRef<boolean>(false);
+  const muteChangeInFlightRef = useRef<boolean>(false);
   const callKitInitializedRef = useRef<boolean>(false);
   // Track current call ID for CallKit handlers (avoids stale closure issues)
   const currentCallIDRef = useRef<string | undefined>(undefined);
   // Track if user answered via CallKit UI to prevent double-answering
   const answeredViaCallKitRef = useRef<boolean>(false);
+  // The callID this device answered, if any. The server sends phoneCallAnswered to every one of
+  // the callee's notification sockets including the one that just answered, so without this the
+  // answering device tears down its own call the instant it connects.
+  const locallyAnsweredCallIDRef = useRef<string | undefined>(undefined);
   // Track if current call uses CallKit (only incoming calls use CallKit)
   const callUsesCallKitRef = useRef<boolean>(false);
   // Track CallKit audio-session state to avoid starting call audio before iOS is ready.
@@ -54,7 +63,6 @@ export const CallProvider = ({children}: PropsWithChildren) => {
   // (due to duration timer updating state), cascading through CallContext
   // consumers and thrashing the NotificationDataListener WebSocket handler.
   const phoneSocketRef = useRef<ReconnectingWebSocket | null>(null);
-  const appState = useAppState();
   const {setSnackbarPayload} = useSnackbar();
 
   // Keep refs in sync with state
@@ -79,6 +87,12 @@ export const CallProvider = ({children}: PropsWithChildren) => {
   useEffect(() => {
     phoneSocketRef.current = state.currentCall?.phoneSocket ?? null;
   }, [state.currentCall?.phoneSocket]);
+
+  useEffect(() => {
+    if (state.currentCall?.remoteUser.username) {
+      remoteUsernameRef.current = state.currentCall.remoteUser.username;
+    }
+  }, [state.currentCall?.remoteUser.username]);
 
   // Initialize CallKit on iOS
   useEffect(() => {
@@ -188,8 +202,9 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           }
         });
 
-        // Start audio engine
-        await audioEngine.start();
+        // Start audio engine. On Android this also starts the call's foreground service, which is
+        // what keeps the microphone alive in the background and owns the in-call notification.
+        await audioEngine.start(currentCallIDRef.current ?? '', remoteUsernameRef.current, Date.now());
         logger.debug('[CallProvider] Audio engine started');
 
         // Set initial speaker state to match the current state
@@ -631,6 +646,14 @@ export const CallProvider = ({children}: PropsWithChildren) => {
         return;
       }
 
+      // Clear the ringing notification immediately; the in-call notification replaces it once the
+      // foreground service starts. Nothing else cancels this, so every resolution path must.
+      NativeAudioEngine.dismissCallNotification();
+
+      // Mark before any await: the server's phoneCallAnswered broadcast can come back to us before
+      // answerCall() finishes, and it must not be mistaken for another device answering.
+      locallyAnsweredCallIDRef.current = callID;
+
       dispatch({type: CallActions.ANSWER, payload: {callID}});
 
       try {
@@ -949,6 +972,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
 
   const declineCall = useCallback(
     async (callID: string) => {
+      NativeAudioEngine.dismissCallNotification();
       try {
         await declineMutation.mutateAsync({callID});
       } catch (error) {
@@ -1003,6 +1027,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     }
 
     // Reset CallKit flag
+    locallyAnsweredCallIDRef.current = undefined;
     callUsesCallKitRef.current = false;
     callKitAudioSessionActiveRef.current = false;
     pendingAudioStartSocketRef.current = null;
@@ -1010,10 +1035,10 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     // Stop audio streaming
     await stopAudioStreaming();
 
-    // Dismiss foreground notification on Android
-    if (Platform.OS === 'android') {
-      await dismissCallForegroundNotification();
-    }
+    // Clear any call notification. stopAudioStreaming() above already stopped the Android
+    // foreground service, which cancels its own notification, but a call that ended while still
+    // ringing never had a service to stop.
+    NativeAudioEngine.dismissCallNotification();
 
     dispatch({type: CallActions.END});
     // State accessed via refs (currentCallIDRef, callStateRef, phoneSocketRef)
@@ -1022,131 +1047,166 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     // to NotificationDataListener and thrashing its WebSocket handler.
   }, [declineMutation, stopAudioStreaming]);
 
+  /**
+   * Tear down this device's call state in response to the server telling us the call is already
+   * resolved -- answered on another device, or ended.
+   *
+   * Deliberately does NOT reuse endCall(), which POSTs /phone/decline/{callID}: on an
+   * answered-elsewhere event that POST would hang up the call that was just answered, and on an
+   * ended event it is a pointless round-trip telling the server what it just told us.
+   *
+   * @param callID The call the server's event refers to.
+   * @param reason CXCallEndedReason reported to CallKit so iOS logs the call correctly.
+   */
+  const dismissCallLocally = useCallback(
+    async (callID: string, reason: CallEndReason) => {
+      const currentCallID = currentCallIDRef.current;
+
+      // Ignore events for a call we are not on. Without this a late phoneCallEnded for a previous
+      // call would tear down a newer one that had already started.
+      if (!currentCallID || currentCallID.toLowerCase() !== callID.toLowerCase()) {
+        logger.debug('[CallProvider] Ignoring remote resolution for non-current call:', callID);
+        return;
+      }
+
+      // The server broadcasts phoneCallAnswered to ALL of the callee's notification sockets,
+      // including the device that did the answering. For that device this event means "you
+      // answered", not "someone else did", and acting on it would disconnect the call the user
+      // just picked up.
+      if (
+        reason === CallEndReason.AnsweredElsewhere &&
+        locallyAnsweredCallIDRef.current?.toLowerCase() === callID.toLowerCase()
+      ) {
+        logger.debug('[CallProvider] Ignoring phoneCallAnswered for the call we answered ourselves');
+        return;
+      }
+
+      const usesCallKit = callUsesCallKitRef.current;
+      const phoneSocket = phoneSocketRef.current;
+      logger.debug('[CallProvider] dismissCallLocally() - callID:', callID, 'reason:', reason);
+
+      if (phoneSocket) {
+        phoneSocket.close();
+      }
+
+      // Dismiss the native incoming-call UI. reportEndCallWithReason is what removes the CallKit
+      // screen for a call this device never answered; endCall() is for one it did.
+      if (Platform.OS === 'ios' && usesCallKit) {
+        CallKitService.reportEndCallWithReason(callID, reason);
+      }
+
+      callUsesCallKitRef.current = false;
+      callKitAudioSessionActiveRef.current = false;
+      pendingAudioStartSocketRef.current = null;
+      locallyAnsweredCallIDRef.current = undefined;
+
+      await stopAudioStreaming();
+      NativeAudioEngine.dismissCallNotification();
+
+      dispatch({type: CallActions.END});
+    },
+    [stopAudioStreaming],
+  );
+
   const toggleMute = useCallback(async () => {
+    if (muteChangeInFlightRef.current) {
+      logger.debug('[CallProvider] toggleMute ignored - change already in flight');
+      return;
+    }
     const newMutedState = !state.isMuted;
     const fromCallKit = muteChangeFromCallKitRef.current;
     logger.debug('[CallProvider] toggleMute called - newMutedState:', newMutedState, 'fromCallKit:', fromCallKit);
+
+    muteChangeInFlightRef.current = true;
+    setMutePending(true);
 
     // Update ref synchronously BEFORE dispatch and CallKit sync
     // This ensures that when CallKit fires its callback, the ref already has the new value
     // and we can correctly detect that the state matches (preventing feedback loop)
     isMutedRef.current = newMutedState;
 
-    dispatch({type: CallActions.TOGGLE_MUTE});
-
-    // Update native audio engine
-    if (audioEngineRef.current) {
-      try {
+    try {
+      // Apply to the native engine first: if it rejects, we leave the UI showing the state the
+      // hardware is actually in rather than a state it never reached.
+      if (audioEngineRef.current) {
         await audioEngineRef.current.setMuted(newMutedState);
-      } catch (error) {
-        logger.error('[CallProvider] Failed to toggle mute:', error);
       }
-    }
 
-    // Sync mute state with CallKit on iOS, but only if change didn't originate from CallKit
-    // This prevents a feedback loop: CallKit -> app -> CallKit -> app...
-    if (Platform.OS === 'ios' && state.currentCall?.callID && !fromCallKit) {
-      logger.debug('[CallProvider] Syncing mute state to CallKit:', newMutedState);
-      CallKitService.setMuted(state.currentCall.callID, newMutedState);
-    }
+      dispatch({type: CallActions.TOGGLE_MUTE});
 
-    // Reset the flag after processing
-    muteChangeFromCallKitRef.current = false;
+      // Sync mute state with CallKit on iOS, but only if change didn't originate from CallKit
+      // This prevents a feedback loop: CallKit -> app -> CallKit -> app...
+      if (Platform.OS === 'ios' && state.currentCall?.callID && !fromCallKit) {
+        logger.debug('[CallProvider] Syncing mute state to CallKit:', newMutedState);
+        CallKitService.setMuted(state.currentCall.callID, newMutedState);
+      }
+    } catch (error) {
+      logger.error('[CallProvider] Failed to toggle mute:', error);
+      // Roll the ref back so it keeps matching what the hardware is doing.
+      isMutedRef.current = !newMutedState;
+    } finally {
+      muteChangeFromCallKitRef.current = false;
+      muteChangeInFlightRef.current = false;
+      setMutePending(false);
+    }
   }, [state.isMuted, state.currentCall]);
 
   const toggleSpeaker = useCallback(async () => {
+    // Re-entrancy guard. Without this a double-tap starts a second audio-route reconfiguration on
+    // top of the first, which on both platforms can tear down the audio graph mid-rebuild.
+    if (speakerChangeInFlightRef.current) {
+      logger.debug('[CallProvider] toggleSpeaker ignored - change already in flight');
+      return;
+    }
     const newSpeakerState = !state.isSpeakerOn;
-    dispatch({type: CallActions.TOGGLE_SPEAKER});
+    speakerChangeInFlightRef.current = true;
+    setSpeakerPending(true);
 
-    // Update native audio engine
-    if (audioEngineRef.current) {
-      try {
+    try {
+      // Only reflect the new route in the UI once the native side has accepted it. The previous
+      // implementation dispatched first and swallowed the error, so a failed route change left
+      // the button showing a state the hardware was not in, with no way back except toggling
+      // again.
+      if (audioEngineRef.current) {
         await audioEngineRef.current.setSpeakerOn(newSpeakerState);
-      } catch (error) {
-        logger.error('[CallProvider] Failed to toggle speaker:', error);
       }
+      speakerStateRef.current = newSpeakerState;
+      dispatch({type: CallActions.TOGGLE_SPEAKER});
+    } catch (error) {
+      logger.error('[CallProvider] Failed to toggle speaker:', error);
+    } finally {
+      speakerChangeInFlightRef.current = false;
+      setSpeakerPending(false);
     }
   }, [state.isSpeakerOn]);
 
-  // Duration timer and foreground notification updates
+  // Duration timer driving the in-app UI.
+  //
+  // Keyed on the call identity rather than on state.duration: this effect dispatches
+  // UPDATE_DURATION from inside its own interval, so depending on the duration would tear down and
+  // recreate the timer on every tick. The Android notification is not updated here at all -- the
+  // native notification uses a system chronometer seeded with the call start time, so it counts up
+  // on its own without the app re-posting it (which is what used to re-trigger the vibration).
+  const callStartTimeMs = state.currentCall?.startTime?.getTime();
   useEffect(() => {
-    if (state.state === CallState.ACTIVE && state.currentCall) {
-      // Start duration timer
-      durationIntervalRef.current = setInterval(() => {
-        if (state.currentCall?.startTime) {
-          const duration = Math.floor((Date.now() - state.currentCall.startTime.getTime()) / 1000);
-          dispatch({type: CallActions.UPDATE_DURATION, payload: duration});
-        }
-      }, 1000);
-
-      // Show foreground notification on Android when call becomes active
-      if (Platform.OS === 'android') {
-        showCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(error => {
-          logger.error('[CallProvider] Failed to show call foreground notification:', error);
-        });
-
-        // Update notification every second with current duration and mute state
-        notificationUpdateIntervalRef.current = setInterval(() => {
-          if (state.currentCall) {
-            updateCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(
-              error => {
-                logger.error('[CallProvider] Failed to update call foreground notification:', error);
-              },
-            );
-          }
-        }, 1000);
-      }
-    } else {
-      // Clean up intervals
-      if (durationIntervalRef.current) {
-        clearInterval(durationIntervalRef.current);
-        durationIntervalRef.current = null;
-      }
-      if (notificationUpdateIntervalRef.current) {
-        clearInterval(notificationUpdateIntervalRef.current);
-        notificationUpdateIntervalRef.current = null;
-      }
-
-      // Dismiss notification when call ends
-      if (state.state === CallState.ENDED && Platform.OS === 'android') {
-        dismissCallForegroundNotification().catch(error => {
-          logger.error('[CallProvider] Failed to dismiss call foreground notification:', error);
-        });
-      }
+    if (state.state !== CallState.ACTIVE || !callStartTimeMs) {
+      return;
     }
+
+    durationIntervalRef.current = setInterval(() => {
+      dispatch({
+        type: CallActions.UPDATE_DURATION,
+        payload: Math.floor((Date.now() - callStartTimeMs) / 1000),
+      });
+    }, 1000);
 
     return () => {
       if (durationIntervalRef.current) {
         clearInterval(durationIntervalRef.current);
-      }
-      if (notificationUpdateIntervalRef.current) {
-        clearInterval(notificationUpdateIntervalRef.current);
+        durationIntervalRef.current = null;
       }
     };
-  }, [state.state, state.currentCall, state.duration, state.isMuted]);
-
-  // Update notification when mute state changes
-  useEffect(() => {
-    if (state.state === CallState.ACTIVE && state.currentCall && Platform.OS === 'android') {
-      updateCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(error => {
-        logger.error('[CallProvider] Failed to update call foreground notification after mute change:', error);
-      });
-    }
-  }, [state.isMuted, state.state, state.currentCall, state.duration]);
-
-  // Handle app state changes (background/foreground)
-  useEffect(() => {
-    if (state.state === CallState.ACTIVE && state.currentCall) {
-      if (appState === 'background' || appState === 'inactive') {
-        // App is backgrounded - ensure foreground notification is showing
-        if (Platform.OS === 'android') {
-          showCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(error => {
-            logger.error('[CallProvider] Failed to show call foreground notification in background:', error);
-          });
-        }
-      }
-    }
-  }, [appState, state.state, state.currentCall, state.duration, state.isMuted]);
+  }, [state.state, callStartTimeMs]);
 
   // Sync call state with CallKit on iOS
   useEffect(() => {
@@ -1286,12 +1346,15 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     callState: state.state,
     isMuted: state.isMuted,
     isSpeakerOn: state.isSpeakerOn,
+    isMutePending,
+    isSpeakerPending,
     callDuration: state.duration,
     initiateCall,
     receiveCall,
     answerCall,
     declineCall,
     endCall,
+    dismissCallLocally,
     toggleMute,
     toggleSpeaker,
   };

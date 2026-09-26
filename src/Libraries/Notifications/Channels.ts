@@ -80,30 +80,14 @@ export const forumChannel: AndroidChannel = {
   sound: 'default',
 };
 
-/**
- * Notification channel for KrakenTalk calls.
+/*
+ * KrakenTalk's call channels are deliberately absent here. They are created natively in
+ * CallNotifications.ensureChannels() so that the ringing channel can be IMPORTANCE_HIGH (required
+ * for a full-screen intent) and the in-call channel silent. That code also deletes the legacy
+ * 'krakentalkcalls' and 'krakentalkmgmt' channels this file used to create -- channel settings are
+ * immutable once created on a device, so the replacements had to take new ids. Do not recreate
+ * them here or the delete will be undone on the next launch.
  */
-export const callsChannel: AndroidChannel = {
-  id: 'krakentalkcalls',
-  name: 'KrakenTalk Calls',
-  groupId: contentChannelGroup.id,
-  description: 'KrakenTalk calls through Twitarr.',
-  vibration: true,
-  // https://www.ny-engineers.com/blog/temporal-3-fire-alarm-systems
-  // https://notifee.app/react-native/docs/android/behaviour#vibration
-  // The 1's are needed because it seems the docs have it backwards and it goes delay-vibrate
-  // not vibrate-delay. They can't be 0's.
-  vibrationPattern: [1, 500, 500, 500, 500, 500, 1500, 500, 500, 500, 500, 500, 1500, 1],
-  sound: 'default',
-};
-
-export const callMgmtChannel: AndroidChannel = {
-  id: 'krakentalkmgmt',
-  name: 'KrakenTalk Call Management',
-  groupId: contentChannelGroup.id,
-  description: 'Signalling messages for KrakenTalk.',
-  sound: 'default',
-};
 
 /**
  * Notification channel for Event reminders.
@@ -127,7 +111,5 @@ export async function setupChannels() {
   await notifee.createChannel(lfgChannel);
   await notifee.createChannel(announcementsChannel);
   await notifee.createChannel(forumChannel);
-  await notifee.createChannel(callsChannel);
-  await notifee.createChannel(callMgmtChannel);
   await notifee.createChannel(eventChannel);
 }

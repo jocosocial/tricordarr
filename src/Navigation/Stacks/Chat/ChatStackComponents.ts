@@ -19,6 +19,12 @@ export type ChatStackParamList = CommonStackParamList & {
     callID: string;
     callerUserID: string;
     callerUsername: string;
+    /**
+     * Answer as soon as the screen mounts. Set by the Answer action on the Android call
+     * notification, so that button answers the call rather than just opening the app to a second
+     * Answer button. Arrives as the string 'true' when it comes in through a deep link.
+     */
+    autoAnswer?: boolean | string;
   };
 };
 

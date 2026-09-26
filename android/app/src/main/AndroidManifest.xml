@@ -18,6 +18,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"/>
     <!--
+    KrakenTalk calls run their own foreground service (see CallService) so that microphone capture
+    survives backgrounding. Android 14+ only permits RECORD_AUDIO in the background while an FGS
+    of type microphone (or phoneCall) is running. This is a normal permission, granted at install.
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+    <!--
     Camera permission for taking pictures to upload to the service. Is non-essential.
     -->
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -42,10 +48,11 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <!--
-    I don't do anything with fullscreen yet. But this permission showed up anyway when targeting Android 15.
-    https://github.com/invertase/notifee/issues/1027
+    Needed so an incoming KrakenTalk call can present a full-screen UI over the lock screen.
+    On Android 14+ this is only auto-granted to calling/alarm category apps; otherwise the user
+    grants it in system settings and the notification falls back to a heads-up presentation.
     -->
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" tools:node="remove" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <application
       android:name=".MainApplication"
@@ -83,5 +90,22 @@
       https://notifee.app/react-native/docs/android/foreground-service
       -->
       <service android:name="app.notifee.core.ForegroundService" android:foregroundServiceType="remoteMessaging" tools:replace="android:foregroundServiceType" />
+
+      <!--
+      KrakenTalk's own foreground service. Deliberately separate from the notifee service above:
+      that one is shared process-wide and only tracks a single foreground notification, so a call
+      posted through it was dropped whenever the background socket worker got there first. Giving
+      calls their own service also lets it be typed `microphone` without forcing that type onto
+      the socket worker, which must not hold the microphone.
+      -->
+      <service
+        android:name="com.tricordarr.call.CallService"
+        android:exported="false"
+        android:foregroundServiceType="microphone" />
+
+      <!-- Handles the Decline / Hang Up buttons on the call notification without waking JS. -->
+      <receiver
+        android:name="com.tricordarr.call.CallActionReceiver"
+        android:exported="false" />
     </application>
 </manifest>

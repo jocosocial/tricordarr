@@ -24,6 +24,16 @@ export interface Spec extends TurboModule {
     lastErrorAt?: string;
   }>;
   clearLocalPushManager(): void;
+  /**
+   * Store the server base URL and auth token so native code can act on a KrakenTalk call
+   * notification (currently Decline) while the JS runtime is not running. Android-only;
+   * a no-op on iOS, where CallKit owns the incoming-call UI.
+   */
+  setCallCredentials(serverUrl: string, token: string): void;
+  /**
+   * Forget any credentials stored by setCallCredentials. Called on logout/session change.
+   */
+  clearCallCredentials(): void;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('NativeTricordarrModule');
