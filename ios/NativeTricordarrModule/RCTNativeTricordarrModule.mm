@@ -74,4 +74,15 @@
   [Notifications clearSettings];
 }
 
+// No-op on iOS. These exist so that Android can decline a KrakenTalk call from the notification
+// shade while the JS runtime is stopped. On iOS the incoming-call UI is CallKit, and CallKit
+// delivers the decline action to the app itself, so native never needs its own credentials.
+- (void)setCallCredentials:(NSString *)serverUrl token:(NSString *)token {
+  NSLog(@"[NativeTricordarrModule] setCallCredentials is a no-op on iOS");
+}
+
+- (void)clearCallCredentials {
+  NSLog(@"[NativeTricordarrModule] clearCallCredentials is a no-op on iOS");
+}
+
 @end

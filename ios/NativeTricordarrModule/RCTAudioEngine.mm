@@ -36,8 +36,14 @@
 
 #pragma mark - NativeAudioEngineSpec
 
-- (void)start:(RCTPromiseResolveBlock)resolve
-       reject:(RCTPromiseRejectBlock)reject {
+// The call metadata is Android-only: there it identifies the call for the foreground service and
+// the in-call notification. On iOS CallKit owns the incoming-call UI and the call identity, so the
+// arguments are accepted and ignored.
+- (void)start:(NSString *)callID
+    callerName:(NSString *)callerName
+   startTimeMs:(double)startTimeMs
+       resolve:(RCTPromiseResolveBlock)resolve
+        reject:(RCTPromiseRejectBlock)reject {
   [self.engine start:resolve rejecter:reject];
 }
 
@@ -60,6 +66,17 @@
 
 - (void)playAudio:(NSArray *)audioData {
   [self.engine playAudio:audioData];
+}
+
+// No-ops on iOS. Incoming calls are presented by CallKit, not by a notification the app builds.
+- (void)showIncomingCall:(NSString *)callID
+              callerName:(NSString *)callerName
+            callerUserID:(NSString *)callerUserID {
+  NSLog(@"[AudioEngine] showIncomingCall is a no-op on iOS; CallKit presents incoming calls");
+}
+
+- (void)dismissCallNotification {
+  NSLog(@"[AudioEngine] dismissCallNotification is a no-op on iOS");
 }
 
 - (void)addListener:(NSString *)eventName {

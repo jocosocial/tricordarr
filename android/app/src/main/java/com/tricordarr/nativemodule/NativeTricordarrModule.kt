@@ -12,6 +12,7 @@ import android.util.Log
 
 // This get codegen'd from specs/NativeTricordarrModule.ts.
 import com.tricordarr.nativemodule.NativeTricordarrModuleSpec
+import com.tricordarr.call.CallCredentials
 
 /*
  * This is a monolithic module for any native code that is needed in the app. Since patterns of multiple
@@ -70,6 +71,17 @@ class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTric
 
   override fun clearLocalPushManager() {
     Log.d(NAME, "clearLocalPushManager is a no-op on Android")
+  }
+
+  // Persist the server URL and token so that CallActionReceiver can decline a call from the
+  // notification shade even when the JS runtime is not running. See CallCredentials.
+  override fun setCallCredentials(serverUrl: String, token: String) {
+    CallCredentials.set(reactApplicationContext, serverUrl, token)
+  }
+
+  // Forget the credentials stored by setCallCredentials(). Called on logout / session change.
+  override fun clearCallCredentials() {
+    CallCredentials.clear(reactApplicationContext)
   }
 
   // Kotlin doesn't have "static" like Java so this does a similar thing of making class members.

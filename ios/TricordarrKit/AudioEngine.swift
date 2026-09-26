@@ -22,6 +22,17 @@ public class AudioEngine: NSObject {
 	private var isRunning = false
 	private var isMuted = false
 
+	// Graph-repair bookkeeping. Main queue only.
+	private var isReconfiguring = false
+	private var pendingRebuild: DispatchWorkItem?
+	private var pendingSessionReactivation = false
+	private var speakerOn = false
+
+	// playAudio() runs on the JS thread while rebuilds run on the main queue, so the graph handles
+	// they both touch are guarded. Scheduling a buffer whose format does not match the one the
+	// player node was connected with is a crash, not a glitch.
+	private let graphLock = NSLock()
+
 	// Audio configuration matching server requirements
 	private let sampleRate: Double = 16000.0
 	private let channelCount: AVAudioChannelCount = 1
@@ -41,8 +52,8 @@ public class AudioEngine: NSObject {
 	// MARK: - Audio Session Setup
 
 	private func setupConfigurationChangeObserver() {
-		// Listen for audio engine configuration changes (e.g., when output route changes)
-		// This happens when speaker/earpiece is toggled
+		// AVAudioEngineConfigurationChange is the authoritative "your graph is no longer valid"
+		// signal and is posted whenever the hardware format changes underneath us.
 		NotificationCenter.default.addObserver(
 			self,
 			selector: #selector(handleConfigurationChange),
@@ -50,140 +61,125 @@ public class AudioEngine: NSObject {
 			object: nil
 		)
 
-		// Also listen for audio session route changes
+		// Route changes usually also produce a configuration change, but not always: overriding the
+		// output port to the speaker on a route whose hardware format is unchanged posts only this.
+		// Both feed the same coalesced repair, so handling both is cheap and missing either is not.
 		NotificationCenter.default.addObserver(
 			self,
 			selector: #selector(handleRouteChange),
 			name: AVAudioSession.routeChangeNotification,
 			object: nil
 		)
+
+		// Without these two the engine simply dies. A phone call, Siri, or a media services reset
+		// stops the engine and nothing was listening, so the call stayed up with no audio until the
+		// user hung up.
+		NotificationCenter.default.addObserver(
+			self,
+			selector: #selector(handleInterruption),
+			name: AVAudioSession.interruptionNotification,
+			object: nil
+		)
+		NotificationCenter.default.addObserver(
+			self,
+			selector: #selector(handleMediaServicesReset),
+			name: AVAudioSession.mediaServicesWereResetNotification,
+			object: nil
+		)
 	}
 
-	@objc private func handleConfigurationChange(notification: Notification) {
-		guard let audioEngine = audioEngine, isRunning else {
-			print("[AudioEngine] Configuration change ignored - engine not running")
-			return
-		}
+	// MARK: - Graph repair
+	//
+	// Everything that mutates the engine graph funnels through scheduleRebuild() so that it happens
+	// on the main queue, one at a time, and at most once per burst of notifications. The previous
+	// implementation had four independent repair paths -- two dispatched timers plus two observers,
+	// none of which hopped to the main queue -- so a single speaker toggle could tear down and
+	// rebuild the graph from several threads at once. That race is what dropped the audio stream.
 
-		// Audio engine configuration changed (e.g., output route changed)
-		// We need to restart the engine to continue playback
-		print("[AudioEngine] Configuration changed, restarting audio engine")
-		restartAudioEngineIfNeeded()
+	@objc private func handleConfigurationChange(notification: Notification) {
+		print("[AudioEngine] Configuration changed")
+		scheduleRebuild()
 	}
 
 	@objc private func handleRouteChange(notification: Notification) {
-		guard let audioEngine = audioEngine, isRunning else {
-			return
-		}
-
-		// Audio route changed (e.g., speaker/earpiece toggle)
-		// Restart the engine to ensure playback continues
 		if let userInfo = notification.userInfo,
-			let reasonValue = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt,
-			let reason = AVAudioSession.RouteChangeReason(rawValue: reasonValue)
+			let reasonValue = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt
 		{
-			print("[AudioEngine] Route changed, reason: \(reason.rawValue)")
-
-			// overrideOutputAudioPort has rawValue 8, but may not be available as enum case
-			// So we check both the enum cases and the raw value
-			let shouldRestart =
-				reason == .newDeviceAvailable || reason == .oldDeviceUnavailable || reason == .categoryChange
-				|| reasonValue == 8
-
-			if shouldRestart {
-				print("[AudioEngine] Route change requires engine restart")
-				restartAudioEngineIfNeeded()
-			}
+			print("[AudioEngine] Route changed, reason: \(reasonValue)")
 		}
-		else {
-			print("[AudioEngine] Route changed (unknown reason), restarting engine")
-			restartAudioEngineIfNeeded()
-		}
+		scheduleRebuild()
 	}
 
-	private func restartAudioEngineIfNeeded() {
-		guard let audioEngine = audioEngine, isRunning else {
-			print("[AudioEngine] Cannot restart - engine not initialized or not running")
+	@objc private func handleInterruption(notification: Notification) {
+		guard let userInfo = notification.userInfo,
+			let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+			let type = AVAudioSession.InterruptionType(rawValue: typeValue)
+		else {
 			return
 		}
 
-		print(
-			"[AudioEngine] Checking if restart needed - engine running: \(audioEngine.isRunning), player playing: \(playerNode?.isPlaying ?? false)"
-		)
-
-		// Check if engine actually stopped
-		if !audioEngine.isRunning {
-			print("[AudioEngine] Engine stopped, restarting...")
-			do {
-				try audioEngine.start()
-				print("[AudioEngine] Audio engine restarted successfully")
+		switch type {
+		case .began:
+			// The system has already stopped our engine. Nothing to do but note it; the call's socket
+			// stays open so audio resumes if and when we are allowed back.
+			print("[AudioEngine] Interruption began")
+		case .ended:
+			let options = (userInfo[AVAudioSessionInterruptionOptionKey] as? UInt).map {
+				AVAudioSession.InterruptionOptions(rawValue: $0)
 			}
-			catch {
-				print("[AudioEngine] Failed to restart audio engine: \(error)")
-				print("[AudioEngine] Attempting full audio graph rebuild for new hardware format")
-				rebuildAudioGraph()
-				return
-			}
-		}
-
-		// Always ensure player node is playing after route change
-		// Even if the engine was still running, the player node might have stopped
-		// We'll always call play() to ensure it's playing, even if isPlaying returns true
-		// This is safe because calling play() on an already-playing node is a no-op
-		if let playerNode = playerNode {
-			// Always call play() - it's safe to call even if already playing
-			playerNode.play()
-			print("[AudioEngine] Ensured player node is playing (was playing: \(playerNode.isPlaying))")
-		}
-		else {
-			print("[AudioEngine] Warning: No player node available to restart")
+			print("[AudioEngine] Interruption ended, shouldResume: \(options?.contains(.shouldResume) ?? false)")
+			// Rebuild regardless of shouldResume: this is a call, and the user expects it back.
+			scheduleRebuild(reactivateSession: true)
+		@unknown default:
+			break
 		}
 	}
 
-	/// Tears down and rebuilds the input tap and player node connections
-	/// using the current hardware format. Called when audioEngine.start() fails
-	/// due to a format mismatch (e.g. sample rate changed from 44100 to 48000 Hz
-	/// after a speaker toggle).
-	private func rebuildAudioGraph() {
-		guard let audioEngine = audioEngine else { return }
+	@objc private func handleMediaServicesReset(notification: Notification) {
+		// Every audio object is invalid after this, including the session configuration.
+		print("[AudioEngine] Media services were reset")
+		scheduleRebuild(reactivateSession: true)
+	}
 
-		// Remove the stale input tap
-		if let inputNode = inputNode {
-			inputNode.removeTap(onBus: 0)
+	/// Coalesce a burst of notifications into one rebuild on the main queue.
+	private func scheduleRebuild(reactivateSession: Bool = false) {
+		if reactivateSession {
+			pendingSessionReactivation = true
 		}
 
-		// Re-query the input node (same object, but its format has changed)
-		inputNode = audioEngine.inputNode
-		guard let inputNode = inputNode else {
-			print("[AudioEngine] Rebuild failed - no input node available")
-			return
+		DispatchQueue.main.async { [weak self] in
+			guard let self = self, self.isRunning else { return }
+
+			self.pendingRebuild?.cancel()
+			let work = DispatchWorkItem { [weak self] in
+				self?.performRebuild()
+			}
+			self.pendingRebuild = work
+			// A route change and a configuration change for the same event arrive milliseconds apart.
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: work)
+		}
+	}
+
+	/// Tear the engine down and build a fresh one. Main queue only.
+	private func performRebuild() {
+		guard isRunning, !isReconfiguring else { return }
+		isReconfiguring = true
+		defer { isReconfiguring = false }
+
+		if pendingSessionReactivation {
+			pendingSessionReactivation = false
+			setupAudioSession()
 		}
 
-		let newInputFormat = inputNode.outputFormat(forBus: 0)
-		print("[AudioEngine] Rebuilding audio graph with new input format: \(newInputFormat)")
-
-		// Reinstall the tap with the current hardware format
-		inputNode.installTap(onBus: 0, bufferSize: 1024, format: newInputFormat) { [weak self] (buffer, time) in
-			self?.processMicrophoneBuffer(buffer, format: newInputFormat)
-		}
-
-		// Reconnect the player node — the mixer format may have changed too
-		if let playerNode = playerNode {
-			let newMixerFormat = audioEngine.mainMixerNode.inputFormat(forBus: 0)
-			audioEngine.disconnectNodeOutput(playerNode)
-			audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: newMixerFormat)
-			mixerFormat = newMixerFormat
-		}
-
-		audioEngine.prepare()
+		print("[AudioEngine] Rebuilding audio engine")
+		teardownEngine()
 
 		do {
-			try audioEngine.start()
-			playerNode?.play()
-			print("[AudioEngine] Audio graph rebuilt and engine restarted successfully")
+			try buildAndStartEngine()
+			print("[AudioEngine] Rebuild complete")
 		}
 		catch {
-			print("[AudioEngine] Failed to start after audio graph rebuild: \(error)")
+			print("[AudioEngine] Rebuild failed: \(error)")
 		}
 	}
 
@@ -192,17 +188,30 @@ public class AudioEngine: NSObject {
 		do {
 			let desiredCategory = AVAudioSession.Category.playAndRecord
 			let desiredMode = AVAudioSession.Mode.voiceChat
+			// Deliberately not .allowBluetoothA2DP: on a playAndRecord session that routes output to
+			// A2DP while input stays on the built-in mic, which is an echo source.
+			let desiredOptions: AVAudioSession.CategoryOptions = [.allowBluetooth]
 
-			// Keep category/mode updates idempotent to avoid unnecessary churn.
-			if audioSession.category != desiredCategory || audioSession.mode != desiredMode {
+			// Keep category/mode updates idempotent to avoid unnecessary churn. The options have to be
+			// part of that comparison: without it, the first call in a process wins and every later
+			// change to the options is silently skipped because the category and mode already match.
+			if audioSession.category != desiredCategory || audioSession.mode != desiredMode
+				|| audioSession.categoryOptions != desiredOptions
+			{
 				// Don't use .defaultToSpeaker - let the app control speaker/earpiece explicitly
 				// This allows the user to choose between speaker and earpiece
 				try audioSession.setCategory(
-					.playAndRecord,
-					mode: .voiceChat,
-					options: [.allowBluetooth]
+					desiredCategory,
+					mode: desiredMode,
+					options: desiredOptions
 				)
 			}
+
+			// Pin the rate so the built-in routes stop flipping between 44.1k and 48k, which is what
+			// forced a full graph rebuild on an ordinary speaker toggle. This is only a preference:
+			// Bluetooth HFP is locked to 8/16k, so rebuilds still happen and must still work.
+			try? audioSession.setPreferredSampleRate(48000.0)
+			try? audioSession.setPreferredIOBufferDuration(0.005)
 
 			try audioSession.setActive(true)
 			print("[AudioEngine] Audio session configured for voice chat")
@@ -259,48 +268,24 @@ public class AudioEngine: NSObject {
 				return
 			}
 
+			self.speakerOn = speakerOn
+
 			guard self.isRunning else {
-				print("[AudioEngine] Speaker mode change ignored - engine not running")
+				// Remembered above; applied by startAudioEngine() once the engine exists.
+				print("[AudioEngine] Speaker mode recorded while engine stopped: \(speakerOn)")
 				resolve(true)
 				return
 			}
 
-			let audioSession = AVAudioSession.sharedInstance()
 			do {
-				// Change the output port
-				if speakerOn {
-					try audioSession.overrideOutputAudioPort(.speaker)
-				}
-				else {
-					try audioSession.overrideOutputAudioPort(.none)
-				}
-
-				// Reactivate the audio session to ensure it's active after the route change
-				// This is important - overrideOutputAudioPort can deactivate the session
-				try audioSession.setActive(true, options: [])
-
-				print("[AudioEngine] Speaker mode: \(speakerOn), audio session reactivated")
-
-				// overrideOutputAudioPort may cause the audio engine to stop
-				// We need to ensure the engine and player node continue running
-				// Do this immediately and also after a delay to catch any delayed changes
-
-				// First, ensure player node is playing before the route change
-				// This helps maintain continuity
-				if let playerNode = self.playerNode, self.isRunning {
-					playerNode.play()
-				}
-
-				// Then check and restart after a brief delay to allow route change to complete
-				DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-					self?.restartAudioEngineIfNeeded()
-				}
-
-				// Also check again after a longer delay to catch any delayed configuration changes
-				DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-					self?.restartAudioEngineIfNeeded()
-				}
-
+				// Just move the port. Notably absent compared to the previous implementation:
+				//   - setActive(true): overrideOutputAudioPort does not deactivate the session, so this
+				//     was never needed, and re-activating mid-call emits another route-change
+				//     notification that fed the restart cascade.
+				//   - two asyncAfter restarts at +0.1s and +0.3s: any repair the route change actually
+				//     requires now arrives through scheduleRebuild(), once, on the main queue.
+				try AVAudioSession.sharedInstance().overrideOutputAudioPort(speakerOn ? .speaker : .none)
+				print("[AudioEngine] Speaker mode: \(speakerOn)")
 				resolve(true)
 			}
 			catch {
@@ -310,9 +295,16 @@ public class AudioEngine: NSObject {
 	}
 
 	@objc public func playAudio(_ audioData: [NSNumber]) {
-		guard let playerNode = self.playerNode,
-			let audioFormat = self.audioFormat
-		else {
+		// Called on the JS thread every 20ms while rebuilds run on the main queue. Take a consistent
+		// snapshot of the graph rather than reading the properties one at a time: pairing a player
+		// node with the format from a different graph generation is a crash, not a glitch.
+		graphLock.lock()
+		let playerNode = self.playerNode
+		let audioFormat = self.audioFormat
+		let snapshotMixerFormat = self.mixerFormat
+		graphLock.unlock()
+
+		guard let playerNode = playerNode, let audioFormat = audioFormat else {
 			print("[AudioEngine] Cannot play audio - engine not initialized")
 			return
 		}
@@ -323,8 +315,7 @@ public class AudioEngine: NSObject {
 
 		// Use the mixer format if available, otherwise use our format
 		// When connected with mixer format, we need to convert our Int16 samples
-		// mixerFormat is optional, audioFormat is already unwrapped, so result is optional
-		let bufferFormat = mixerFormat ?? audioFormat
+		let bufferFormat = snapshotMixerFormat ?? audioFormat
 
 		// Calculate sample rate ratio for upsampling/downsampling
 		let sampleRateRatio = bufferFormat.sampleRate / audioFormat.sampleRate
@@ -413,36 +404,39 @@ public class AudioEngine: NSObject {
 		// does not interrupt music/podcasts from other apps.
 		setupAudioSession()
 
-		// Create audio engine
-		audioEngine = AVAudioEngine()
-		guard let audioEngine = audioEngine else {
-			throw NSError(
-				domain: "AudioEngine",
-				code: 1,
-				userInfo: [NSLocalizedDescriptionKey: "Failed to create AVAudioEngine"]
-			)
+		try buildAndStartEngine()
+		isRunning = true
+
+		// Apply whatever route the UI asked for before the engine existed.
+		if speakerOn {
+			try? AVAudioSession.sharedInstance().overrideOutputAudioPort(.speaker)
 		}
 
-		// Configure input node for microphone capture
-		inputNode = audioEngine.inputNode
-		guard let inputNode = inputNode else {
-			throw NSError(
-				domain: "AudioEngine",
-				code: 2,
-				userInfo: [NSLocalizedDescriptionKey: "No input node available"]
-			)
-		}
+		print("[AudioEngine] Started successfully at \(sampleRate)Hz, \(channelCount) channel(s)")
+	}
+
+	/// Build the node graph against the *current* hardware format and start it.
+	///
+	/// Split out of startAudioEngine() so that a rebuild can construct a brand new AVAudioEngine
+	/// rather than patching the existing one's taps and connections in place. Reusing an engine
+	/// across a hardware format change is the fragile path; the native reference client discards
+	/// and recreates its engine for the same reason.
+	private func buildAndStartEngine() throws {
+		let engine = AVAudioEngine()
+
+		let input = engine.inputNode
 
 		// Create 16kHz mono format
 		// Note: interleaved:false means non-interleaved (planar) format
 		// Some audio nodes may not support non-interleaved Int16, so we use interleaved:true
-		audioFormat = AVAudioFormat(
-			commonFormat: .pcmFormatInt16,
-			sampleRate: sampleRate,
-			channels: channelCount,
-			interleaved: true
-		)
-		guard let audioFormat = audioFormat else {
+		guard
+			let targetFormat = AVAudioFormat(
+				commonFormat: .pcmFormatInt16,
+				sampleRate: sampleRate,
+				channels: channelCount,
+				interleaved: true
+			)
+		else {
 			throw NSError(
 				domain: "AudioEngine",
 				code: 3,
@@ -451,59 +445,64 @@ public class AudioEngine: NSObject {
 		}
 
 		// Get input format (device native)
-		let inputFormat = inputNode.outputFormat(forBus: 0)
+		let inputFormat = input.outputFormat(forBus: 0)
 
 		// Install tap to capture microphone audio
-		inputNode.installTap(onBus: 0, bufferSize: 1024, format: inputFormat) { [weak self] (buffer, time) in
+		input.installTap(onBus: 0, bufferSize: 1024, format: inputFormat) { [weak self] (buffer, time) in
 			self?.processMicrophoneBuffer(buffer, format: inputFormat)
 		}
 
-		// Create player node for audio playback
-		playerNode = AVAudioPlayerNode()
-		guard let playerNode = playerNode else {
-			throw NSError(
-				domain: "AudioEngine",
-				code: 4,
-				userInfo: [NSLocalizedDescriptionKey: "Failed to create player node"]
-			)
-		}
+		let player = AVAudioPlayerNode()
+		engine.attach(player)
 
-		audioEngine.attach(playerNode)
+		// Connect player node to mixer.
+		// IMPORTANT: AVAudioEngine primarily supports Float32 format, not Int16. Connecting with Int16
+		// format can cause crashes. We must connect with the mixer's format (Float32) and convert our
+		// Int16 samples to Float32 when creating buffers.
+		let newMixerFormat = engine.mainMixerNode.inputFormat(forBus: 0)
+		engine.connect(player, to: engine.mainMixerNode, format: newMixerFormat)
 
-		// Get mixer format for connection (typically Float32 at 48kHz)
-		mixerFormat = audioEngine.mainMixerNode.inputFormat(forBus: 0)
+		engine.prepare()
+		try engine.start()
+		player.play()
 
-		// Connect player node to mixer
-		// IMPORTANT: AVAudioEngine primarily supports Float32 format, not Int16.
-		// Connecting with Int16 format can cause crashes. We must connect with
-		// the mixer's format (Float32) and convert our Int16 samples to Float32
-		// when creating buffers.
-		audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: mixerFormat)
+		// Publish the new graph to playAudio() atomically. It reads these from the JS thread.
+		graphLock.lock()
+		audioEngine = engine
+		inputNode = input
+		playerNode = player
+		audioFormat = targetFormat
+		mixerFormat = newMixerFormat
+		graphLock.unlock()
+	}
 
-		// Prepare the engine before starting
-		audioEngine.prepare()
+	/// Stop and discard the current graph. Main queue only.
+	private func teardownEngine() {
+		graphLock.lock()
+		let engine = audioEngine
+		let input = inputNode
+		let player = playerNode
+		audioEngine = nil
+		inputNode = nil
+		playerNode = nil
+		graphLock.unlock()
 
-		// Start engine - this may throw if the connection format is incompatible
-		try audioEngine.start()
-
-		// Start playing on the player node
-		playerNode.play()
-
-		isRunning = true
-		print("[AudioEngine] Started successfully at \(sampleRate)Hz, \(channelCount) channel(s)")
+		input?.removeTap(onBus: 0)
+		player?.stop()
+		engine?.stop()
 	}
 
 	private func stopAudioEngine() {
-		guard isRunning, let audioEngine = audioEngine else {
+		guard isRunning else {
 			return
 		}
 
-		if let inputNode = inputNode {
-			inputNode.removeTap(onBus: 0)
-		}
+		// Drop any coalesced rebuild so it cannot resurrect the graph after teardown.
+		pendingRebuild?.cancel()
+		pendingRebuild = nil
+		pendingSessionReactivation = false
 
-		playerNode?.stop()
-		audioEngine.stop()
+		teardownEngine()
 		do {
 			// Tell iOS we are done with call audio so interrupted apps can resume.
 			try AVAudioSession.sharedInstance().setActive(false, options: [.notifyOthersOnDeactivation])
@@ -514,6 +513,7 @@ public class AudioEngine: NSObject {
 		}
 
 		isRunning = false
+		speakerOn = false
 		print("[AudioEngine] Stopped")
 	}
 

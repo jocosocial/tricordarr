@@ -32,19 +32,59 @@ export class NativeAudioEngine {
   private eventSubscription: any = null;
 
   /**
-   * Start the audio engine (microphone capture and playback)
+   * Start the audio engine (microphone capture and playback).
+   *
+   * On Android this starts the call's foreground service, which is what permits microphone
+   * capture while backgrounded and owns the in-call notification -- hence the call metadata.
+   * On iOS the metadata is ignored because CallKit owns the call identity.
+   *
+   * @param callID Server-issued call identifier.
+   * @param callerName Display name shown in the Android in-call notification.
+   * @param startTimeMs Epoch milliseconds the call connected, used for the notification timer.
    */
-  async start(): Promise<void> {
+  async start(callID: string, callerName: string, startTimeMs: number): Promise<void> {
     if (!AudioEngine) {
       throw new Error('AudioEngine native module not available');
     }
 
     try {
-      await AudioEngine.start();
+      await AudioEngine.start(callID, callerName, startTimeMs);
       logger.info('Started successfully');
     } catch (error) {
       logger.error('Failed to start', error);
       throw error;
+    }
+  }
+
+  /**
+   * Show the ringing call notification. Android only; a no-op on iOS, where CallKit presents
+   * incoming calls.
+   */
+  static showIncomingCall(callID: string, callerName: string, callerUserID: string): void {
+    if (!AudioEngine) {
+      return;
+    }
+
+    try {
+      AudioEngine.showIncomingCall(callID, callerName, callerUserID);
+    } catch (error) {
+      logger.error('Failed to show incoming call notification', error);
+    }
+  }
+
+  /**
+   * Dismiss whichever call notification is currently showing. Android only; a no-op on iOS.
+   * Safe to call when nothing is showing.
+   */
+  static dismissCallNotification(): void {
+    if (!AudioEngine) {
+      return;
+    }
+
+    try {
+      AudioEngine.dismissCallNotification();
+    } catch (error) {
+      logger.error('Failed to dismiss call notification', error);
     }
   }
 

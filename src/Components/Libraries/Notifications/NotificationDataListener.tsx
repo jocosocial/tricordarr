@@ -8,9 +8,10 @@ import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {NativeAudioEngine} from '#src/Libraries/Audio/NativeAudioEngine';
+import {CallEndReason} from '#src/Libraries/Call/CallKitService';
 import {createLogger} from '#src/Libraries/Logger';
 import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
-import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {isEmulator, isIOS} from '#src/Libraries/Platform/Detection';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
@@ -36,7 +37,7 @@ export const NotificationDataListener = () => {
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
-  const {receiveCall, endCall} = useCall();
+  const {receiveCall, dismissCallLocally} = useCall();
   const {invalidateFez} = useFezCacheReducer();
 
   const wsMessageHandler = useCallback(
@@ -51,8 +52,23 @@ export const NotificationDataListener = () => {
       // Some kinds of socket events should update other areas of the state.
       switch (notificationType) {
         case NotificationTypeData.phoneCallEnded: {
-          // Initiator receives this when receiver declines or call ends - sync local call state
-          endCall();
+          // The far end hung up, declined, or cancelled while ringing. The server has already torn
+          // the call down, so tear down locally without POSTing a decline back at it.
+          dismissCallLocally(notificationData.contentID, CallEndReason.RemoteEnded);
+          break;
+        }
+        case NotificationTypeData.phoneCallAnswered: {
+          // The call was answered, possibly on another of this user's devices -- the server
+          // broadcasts this to every callee socket, including the one that answered.
+          //
+          // This has to clear the whole call state, not just the notification: leaving the state at
+          // RINGING left the incoming-call screen (and the CallKit UI on iOS) up on the other
+          // device forever. And it has to go through dismissCallLocally rather than endCall,
+          // because endCall POSTs a decline, which would hang up the call that was just answered.
+          //
+          // Note this fires on the answering device too -- the server sends it to every one of the
+          // callee's sockets. dismissCallLocally filters that case out.
+          dismissCallLocally(notificationData.contentID, CallEndReason.AnsweredElsewhere);
           break;
         }
         case NotificationTypeData.announcement: {
@@ -93,11 +109,25 @@ export const NotificationDataListener = () => {
               logger.warn('No caller info in phone call notification');
             }
           } else {
-            // On Android, use push notification
-            logger.debug('Generating push notification for incoming call');
-            generatePushNotificationFromEvent(event).catch(error => {
-              logger.error('Failed to generate push notification for incoming call:', error);
-            });
+            // On Android the ringing notification is built natively so it can use CallStyle and a
+            // full-screen intent, and so its Answer/Decline actions are handled in Kotlin rather
+            // than by waking a headless JS context on the lock screen.
+            //
+            // Deliberately NOT generatePushNotificationFromEvent(): the foreground-service socket
+            // handler already calls that for this event, and both sockets are live while the app
+            // is foregrounded, so doing it here too posted the notification twice and re-triggered
+            // the vibration pattern.
+            const androidCaller = notificationData.caller;
+            if (androidCaller) {
+              logger.debug('Showing native incoming call notification');
+              NativeAudioEngine.showIncomingCall(
+                notificationData.contentID,
+                androidCaller.username,
+                String(androidCaller.userID),
+              );
+            } else {
+              logger.warn('No caller info in phone call notification');
+            }
           }
           break;
         }
@@ -116,7 +146,7 @@ export const NotificationDataListener = () => {
         }
       }
     },
-    [invalidateFez, refetchAnnouncements, refetchUserNotificationData, receiveCall, endCall],
+    [invalidateFez, refetchAnnouncements, refetchUserNotificationData, receiveCall, dismissCallLocally],
   );
 
   const addHandler = useCallback(() => {

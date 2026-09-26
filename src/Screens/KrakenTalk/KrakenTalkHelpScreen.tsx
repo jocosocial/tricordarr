@@ -47,7 +47,26 @@ export const KrakenTalkHelpScreen = () => {
             actively connected to WiFi.
           </HelpTopicView>
         </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Notifications'}>
+          <HelpTopicView>
+            On Android an incoming call arrives as a call notification with Answer and Decline buttons, and can take
+            over the lock screen so you can respond without unlocking. Declining from the notification works even if
+            Tricordarr is not running.
+          </HelpTopicView>
+          <HelpTopicView>
+            While a call is connected, an ongoing notification shows who you are talking to and how long you have been
+            talking. It stays until the call ends and cannot be swiped away, because it is what keeps the microphone
+            running while you use other apps.
+          </HelpTopicView>
+          <HelpTopicView>If you answer on another device, this device stops ringing on its own.</HelpTopicView>
+        </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
+          <HelpTopicView>Mute: Stop sending your microphone audio. The other person stays audible.</HelpTopicView>
+          <HelpTopicView>
+            Speaker: Switch between the earpiece and the speakerphone. The button is briefly unavailable while the
+            switch is being applied, so give it a moment rather than tapping repeatedly.
+          </HelpTopicView>
+          <HelpTopicView>Hang Up: End the call. Also available from the call notification.</HelpTopicView>
           <HelpButtonHelpTopicView />
         </HelpChapterTitleView>
       </ScrollingContentView>

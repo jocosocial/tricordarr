@@ -74,7 +74,7 @@ export const allRoutes: RouteDefinition[] = [
   {screen: CommonStackComponents.privateEventChatScreen, path: 'privateevent/:fezID/chat'},
   {
     screen: ChatStackScreenComponents.krakenTalkReceiveScreen,
-    path: 'phonecall/:callID/from/:callerUserID/:callerUsername',
+    path: 'phonecall/:callID/from/:callerUserID/:callerUsername/:autoAnswer?',
   },
 
   // ==================== LFG Tab Routes ====================
