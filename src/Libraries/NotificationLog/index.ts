@@ -1,6 +1,5 @@
 import {Directory, EncodingType, File, Paths} from 'expo-file-system';
 
-import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 import {createLogger} from '#src/Libraries/Logger';
 import {
   applyRetentionAndDedup,
@@ -12,6 +11,8 @@ import {
 import {NotificationLogEntry, NotificationLogSource} from '#src/Libraries/NotificationLog/types';
 import {isIOS} from '#src/Libraries/Platform/Detection';
 import {SocketNotificationData} from '#src/Structs/SocketStructs';
+
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
 // Deliberately does not import APIClient (or anything that does) to avoid the
 // Logger -> AppConfig -> APIClient -> QueryCacheStorage -> Logger require cycle documented

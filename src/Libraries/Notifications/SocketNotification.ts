@@ -25,8 +25,7 @@ import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketS
 const logger = createLogger('SocketNotification.ts');
 
 export type NotificationEventDestination =
-  | {tab: BottomTabComponents; screen: string; params?: object}
-  | {screen: keyof CommonStackParamList; params?: object};
+  {tab: BottomTabComponents; screen: string; params?: object} | {screen: keyof CommonStackParamList; params?: object};
 
 /**
  * Where tapping content for a notification event should navigate (notification log, etc.).
