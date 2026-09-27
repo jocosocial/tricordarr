@@ -10,6 +10,7 @@ import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {createLogger} from '#src/Libraries/Logger';
 import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
+import {recordNotificationEvent} from '#src/Libraries/NotificationLog';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {isEmulator, isIOS} from '#src/Libraries/Platform/Detection';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
@@ -42,6 +43,7 @@ export const NotificationDataListener = () => {
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       logger.debug('wsMessageHandler received data from server:', event.data);
+      recordNotificationEvent(event.data, 'app');
       const notificationData = JSON.parse(event.data) as SocketNotificationData;
       const notificationType = SocketNotificationData.getType(notificationData);
       logger.debug(`Notification type: ${notificationType}`);

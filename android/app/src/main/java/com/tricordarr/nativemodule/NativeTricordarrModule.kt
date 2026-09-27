@@ -72,6 +72,18 @@ class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTric
     Log.d(NAME, "clearLocalPushManager is a no-op on Android")
   }
 
+  // The notification log lives entirely on the JS side on Android (see
+  // src/Libraries/NotificationLog/index.ts), since the notification socket is always a JS
+  // ReconnectingWebSocket on this platform. These are no-ops matching the iOS-only native log.
+  override fun getNotificationLog(promise: Promise) {
+    Log.d(NAME, "getNotificationLog is a no-op on Android")
+    promise.resolve("")
+  }
+
+  override fun clearNotificationLog() {
+    Log.d(NAME, "clearNotificationLog is a no-op on Android")
+  }
+
   // Kotlin doesn't have "static" like Java so this does a similar thing of making class members.
   // The name needs to match what gets registered in the JavaScript spec side.
   companion object {

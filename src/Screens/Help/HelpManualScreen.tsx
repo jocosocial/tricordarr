@@ -38,6 +38,14 @@ export const HelpManualScreen = () => {
             icon={AppIcons.help}
             onPress={() => commonNavigation.push(CommonStackComponents.networkHelpScreen)}
           />
+          <DataFieldListItem
+            title={'Notification Log'}
+            description={
+              'A record of every notification event this device received, even ones that did not produce a push notification.'
+            }
+            icon={AppIcons.logView}
+            onPress={() => commonNavigation.push(CommonStackComponents.notificationLogHelpScreen)}
+          />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Major Features'} noMargin={true}>
           <DataFieldListItem

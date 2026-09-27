@@ -72,6 +72,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Configure periodic notification updates that happen while the app is running.'}
               navComponent={SettingsStackScreenComponents.notificationPollerSettingsScreen}
             />
+            <NavigationListItem
+              title={'Notification Log'}
+              description={'A record of every event this device received from the Twitarr server.'}
+              navComponent={CommonStackComponents.notificationLogScreen}
+            />
           </ListSection>
           <Divider bold={true} />
           <ListSection>

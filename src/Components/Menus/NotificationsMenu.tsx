@@ -12,6 +12,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useBackgroundConnectionStatus} from '#src/Hooks/useBackgroundConnectionStatus';
 import {useMenu} from '#src/Hooks/useMenu';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
@@ -37,6 +38,7 @@ export const NotificationsMenu = () => {
   const {preRegistrationMode} = usePreRegistration();
   const {data} = useUserNotificationDataQuery({enabled: !preRegistrationMode});
   const bottomTabNavigator = useBottomTabNavigator();
+  const commonNavigation = useCommonStack();
   const {totalNewCount} = useUserNotificationData();
   const {theme} = useAppTheme();
   const backgroundConnectionStatus = useBackgroundConnectionStatus();
@@ -230,6 +232,11 @@ export const NotificationsMenu = () => {
           }
         />
       )}
+      <Menu.Item
+        title={'Notification Log'}
+        leadingIcon={AppIcons.logView}
+        onPress={() => commonNavigation.push(CommonStackComponents.notificationLogScreen)}
+      />
       <Menu.Item
         title={'Notification Settings'}
         leadingIcon={AppIcons.settings}
