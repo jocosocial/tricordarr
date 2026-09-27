@@ -15,9 +15,7 @@ import {
 } from '#src/Libraries/Notifications/Channels';
 import {generateContentNotification} from '#src/Libraries/Notifications/Content';
 import {getPath} from '#src/Libraries/RouteDefinitions';
-import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
@@ -29,9 +27,9 @@ const logger = createLogger('SocketNotification.ts');
 /**
  * Maps a notification type and its socket payload to the in-app URL that tapping content for
  * that event should open. `caller` is only meaningful (and only present) for incomingPhoneCall.
- * Shared by generatePushNotificationFromEvent (what URL to embed in the push notification) and
- * NotificationLogListItem (what to open when the log entry itself is tapped), so the two stay
- * in sync. Returns undefined for types with no dedicated destination.
+ * Used to build the URL embedded in a generated push notification (resolved via `linkTo` /
+ * `Linking.openURL` when that notification is tapped - see AppEventHandler.tsx). Returns
+ * undefined for types with no dedicated destination.
  */
 export const getNotificationEventUrl = (
   type: keyof typeof NotificationTypeData,
@@ -72,88 +70,50 @@ export const getNotificationEventUrl = (
 };
 
 /**
- * A nested-navigate target: which bottom tab owns the screen, the screen itself, and its
- * params. Passed to NavigationRef's `navigate(tab, {screen, params})` (see
- * docs/Navigation.md - "code that is not inside a nested stack").
- */
-export interface NotificationEventDestination {
-  tab: BottomTabComponents;
-  screen: string;
-  params?: object;
-}
-
-/**
- * Maps a notification type and its socket payload to where tapping content for that event
- * should navigate, for use from anywhere in the app (not just the tab that owns the content).
+ * Where tapping content for a notification event should navigate, for use by
+ * NotificationLogListItem. Almost every destination is a Common Stack screen - registered in
+ * every tab's own stack (see CommonScreens.tsx) - so pushing it stays on whatever stack the
+ * caller is already in, meaning "back" returns to wherever that push happened from (e.g. the
+ * notification log itself), instead of a fresh cross-tab stack with nothing underneath it.
  *
- * Deliberately not derived from getNotificationEventUrl + parseDeepLinkUrl: that path is
- * designed for react-navigation's linking config (used for actual notification taps and
- * external links), which resolves a URL against the *global* navigation state and can reset
- * a tab's history in the process. A tap on a NotificationLogScreen row is regular in-app
- * browsing - it should land the user on the right tab without disturbing where they were
- * (NotificationLogScreen is a Common Stack screen, reachable from Settings or the
- * notification bell menu on any tab), the same way NotificationDataListener.tsx already
- * navigates for an incoming call. Returns undefined for types with no dedicated destination.
+ * `tab` is only set for the one type with no Common Stack equivalent (a tab's own root
+ * screen) and therefore genuinely needs to switch tabs; treat "back" from that the same as any
+ * other tab switch. Returns undefined for types with no dedicated destination - including
+ * incomingPhoneCall/phoneCallEnded, which have no content of their own to open (the call itself
+ * is handled live via CallKit/receiveCall, not from the log after the fact).
  */
 export const getNotificationEventDestination = (
   type: keyof typeof NotificationTypeData,
   contentID: string,
-  caller?: UserHeader,
-): NotificationEventDestination | undefined => {
+): {tab?: BottomTabComponents; screen: string; params?: object} | undefined => {
   switch (type) {
     case NotificationTypeData.seamailUnreadMsg:
     case NotificationTypeData.addedToSeamail:
-      return {
-        tab: BottomTabComponents.seamailTab,
-        screen: CommonStackComponents.seamailChatScreen,
-        params: {fezID: contentID},
-      };
+      return {screen: CommonStackComponents.seamailChatScreen, params: {fezID: contentID}};
     case NotificationTypeData.fezUnreadMsg:
-      return {tab: BottomTabComponents.lfgTab, screen: CommonStackComponents.lfgChatScreen, params: {fezID: contentID}};
+      return {screen: CommonStackComponents.lfgChatScreen, params: {fezID: contentID}};
     case NotificationTypeData.announcement:
+      // MainScreen is the home tab's own root screen, not a Common Stack screen, so this one
+      // genuinely has to switch tabs.
       return {tab: BottomTabComponents.homeTab, screen: MainStackComponents.mainScreen};
     case NotificationTypeData.alertwordPost:
     case NotificationTypeData.twitarrTeamForumMention:
     case NotificationTypeData.moderatorForumMention:
-      return {
-        tab: BottomTabComponents.forumsTab,
-        screen: CommonStackComponents.forumThreadPostScreen,
-        params: {postID: contentID},
-      };
+      return {screen: CommonStackComponents.forumThreadPostScreen, params: {postID: contentID}};
     case NotificationTypeData.forumMention:
-      return {tab: BottomTabComponents.forumsTab, screen: ForumStackComponents.forumPostMentionScreen};
-    case NotificationTypeData.incomingPhoneCall:
-      return caller
-        ? {
-            tab: BottomTabComponents.seamailTab,
-            screen: ChatStackScreenComponents.krakenTalkReceiveScreen,
-            params: {callID: contentID, callerUserID: caller.userID, callerUsername: caller.username},
-          }
-        : undefined;
+      return {screen: CommonStackComponents.forumPostMentionScreen};
     case NotificationTypeData.followedEventStarting:
-      return {
-        tab: BottomTabComponents.scheduleTab,
-        screen: CommonStackComponents.eventScreen,
-        params: {eventID: contentID},
-      };
+      return {screen: CommonStackComponents.eventScreen, params: {eventID: contentID}};
     case NotificationTypeData.joinedLFGStarting:
     case NotificationTypeData.addedToLFG:
     case NotificationTypeData.lfgCanceled:
-      return {tab: BottomTabComponents.lfgTab, screen: CommonStackComponents.lfgScreen, params: {fezID: contentID}};
+      return {screen: CommonStackComponents.lfgScreen, params: {fezID: contentID}};
     case NotificationTypeData.personalEventStarting:
     case NotificationTypeData.privateEventCanceled:
-      return {
-        tab: BottomTabComponents.scheduleTab,
-        screen: CommonStackComponents.personalEventScreen,
-        params: {eventID: contentID},
-      };
+      return {screen: CommonStackComponents.personalEventScreen, params: {eventID: contentID}};
     case NotificationTypeData.addedToPrivateEvent:
     case NotificationTypeData.privateEventUnreadMsg:
-      return {
-        tab: BottomTabComponents.scheduleTab,
-        screen: CommonStackComponents.privateEventChatScreen,
-        params: {fezID: contentID},
-      };
+      return {screen: CommonStackComponents.privateEventChatScreen, params: {fezID: contentID}};
     default:
       return undefined;
   }

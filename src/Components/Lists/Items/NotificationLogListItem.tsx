@@ -9,7 +9,8 @@ import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
 import {NotificationLogEntry} from '#src/Libraries/NotificationLog/types';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {getNotificationEventDestination} from '#src/Libraries/Notifications/SocketNotification';
-import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
+import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 interface NotificationLogListItemProps {
   entry: NotificationLogEntry;
@@ -27,21 +28,12 @@ const getTypeTitle = (type: string): string => {
 
 /**
  * Where tapping this entry should navigate, mirroring what tapping the equivalent push
- * notification would do (see getNotificationEventDestination). incomingPhoneCall is the only
- * type that needs the caller, which isn't its own NotificationLogEntry field, so it's pulled
- * from the raw socket payload. Returns undefined for types with no destination (e.g.
- * phoneCallEnded).
+ * notification would do (see getNotificationEventDestination). Returns undefined for types
+ * with no destination (e.g. incomingPhoneCall/phoneCallEnded, which have no content of their
+ * own to open).
  */
 const getEntryDestination = (entry: NotificationLogEntry) => {
-  let caller: SocketNotificationData['caller'];
-  if (entry.type === NotificationTypeData.incomingPhoneCall) {
-    try {
-      caller = (JSON.parse(entry.raw) as SocketNotificationData).caller;
-    } catch {
-      // Raw payload wasn't parseable JSON; fall through with no caller.
-    }
-  }
-  return getNotificationEventDestination(entry.type as keyof typeof NotificationTypeData, entry.contentID, caller);
+  return getNotificationEventDestination(entry.type as keyof typeof NotificationTypeData, entry.contentID);
 };
 
 /**
@@ -50,26 +42,29 @@ const getEntryDestination = (entry: NotificationLogEntry) => {
  * payload via the download sheet. Tapping opens the same content tapping the original push
  * notification would have, when that content still has a destination.
  *
- * Uses NavigationRef's global `navigate` (nested tab navigate), not useLinkTo/deep-linking:
- * NotificationLogScreen is a Common Stack screen, so wherever it was pushed from (Settings,
- * or the notification bell menu on another tab), that stack doesn't host every content screen
- * - e.g. Seamail or LFG chat live on their own tabs - and a linking-config-resolved navigation
- * can reset a tab's history in the process of getting there. A plain cross-tab navigate
- * switches to the right tab without disturbing the current stack's own back stack, so
- * returning (via the tab bar or system back) lands right back on this list. See
- * docs/Navigation.md.
+ * Almost every destination is a Common Stack screen, so it's pushed on the *current* stack
+ * (`useCommonStack()`) - whatever tab NotificationLogScreen itself is mounted on - rather than
+ * switching tabs. That's what makes the back button return to the log: NotificationLogScreen
+ * stays underneath on that same stack. Only the one destination with no Common Stack
+ * equivalent (announcement, whose destination is the home tab's own root screen) falls back to
+ * NavigationRef's cross-tab `navigate` - "back" there behaves like any other tab switch.
  */
 export const NotificationLogListItem = ({entry}: NotificationLogListItemProps) => {
   const {commonStyles} = useStyles();
   const {openDownloadSheet} = useDownloadSheet();
   const {setSnackbarPayload} = useSnackbar();
+  const commonNavigation = useCommonStack();
 
   const handlePress = () => {
     const destination = getEntryDestination(entry);
-    if (destination) {
+    if (!destination) {
+      setSnackbarPayload({message: 'Nothing to open for this event.', messageType: 'info'});
+      return;
+    }
+    if (destination.tab) {
       navigationNavigate(destination.tab, {screen: destination.screen, params: destination.params});
     } else {
-      setSnackbarPayload({message: 'Nothing to open for this event.', messageType: 'info'});
+      (commonNavigation.push as (name: string, params?: object) => void)(destination.screen, destination.params);
     }
   };
 
