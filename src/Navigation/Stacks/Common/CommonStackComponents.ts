@@ -424,6 +424,8 @@ export type CommonStackParamList = {
         mode?: 'admin';
       }
     | undefined;
+  NotificationLogScreen: undefined;
+  NotificationLogHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -609,6 +611,8 @@ export enum CommonStackComponents {
   adminEventFeedbackStatsScreen = 'AdminEventFeedbackStatsScreen',
   adminEventFeedbackReportScreen = 'AdminEventFeedbackReportScreen',
   eventFeedbackHelpScreen = 'EventFeedbackHelpScreen',
+  notificationLogScreen = 'NotificationLogScreen',
+  notificationLogHelpScreen = 'NotificationLogHelpScreen',
 }
 
 /**
@@ -675,7 +679,8 @@ export type HelpScreenComponents =
   | CommonStackComponents.huntManageHelpScreen
   | CommonStackComponents.huntHelpScreen
   | CommonStackComponents.eventFeedbackHelpScreen
-  | CommonStackComponents.loggingHelpScreen;
+  | CommonStackComponents.loggingHelpScreen
+  | CommonStackComponents.notificationLogHelpScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 
