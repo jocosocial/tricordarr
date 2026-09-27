@@ -60,8 +60,8 @@ export const getNotificationEventUrl = (
       return `/lfg/${contentID}`;
     case NotificationTypeData.personalEventStarting:
     case NotificationTypeData.privateEventCanceled:
-      return `/privateevent/${contentID}`;
     case NotificationTypeData.addedToPrivateEvent:
+      return `/privateevent/${contentID}`;
     case NotificationTypeData.privateEventUnreadMsg:
       return `/privateevent/${contentID}/chat`;
     default:
@@ -110,8 +110,8 @@ export const getNotificationEventDestination = (
       return {screen: CommonStackComponents.lfgScreen, params: {fezID: contentID}};
     case NotificationTypeData.personalEventStarting:
     case NotificationTypeData.privateEventCanceled:
-      return {screen: CommonStackComponents.personalEventScreen, params: {eventID: contentID}};
     case NotificationTypeData.addedToPrivateEvent:
+      return {screen: CommonStackComponents.personalEventScreen, params: {eventID: contentID}};
     case NotificationTypeData.privateEventUnreadMsg:
       return {screen: CommonStackComponents.privateEventChatScreen, params: {fezID: contentID}};
     default:
