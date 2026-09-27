@@ -172,6 +172,8 @@ import {ShareSettingsScreen} from '#src/Screens/Settings/Content/ShareSettingsSc
 import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
 import {LoggingHelpScreen} from '#src/Screens/Settings/LoggingHelpScreen';
 import {NetworkHelpScreen} from '#src/Screens/Settings/NetworkHelpScreen';
+import {NotificationLogHelpScreen} from '#src/Screens/Settings/Notifications/NotificationLogHelpScreen';
+import {NotificationLogScreen} from '#src/Screens/Settings/Notifications/NotificationLogScreen';
 import {SiteUIHelpScreen} from '#src/Screens/SiteUI/SiteUIHelpScreen';
 import {SiteUILinkScreen} from '#src/Screens/SiteUI/SiteUILinkScreen';
 import {SiteUIScreen} from '#src/Screens/SiteUI/SiteUIScreen';
@@ -1112,6 +1114,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.eventFeedbackHelpScreen}
         component={EventFeedbackHelpScreen}
         options={{title: 'Event Feedback Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.notificationLogScreen}
+        component={NotificationLogScreen}
+        options={{title: 'Notification Log'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.notificationLogHelpScreen}
+        component={NotificationLogHelpScreen}
+        options={{title: 'Notification Log Help'}}
       />
     </>
   );

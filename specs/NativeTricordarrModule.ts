@@ -24,6 +24,15 @@ export interface Spec extends TurboModule {
     lastErrorAt?: string;
   }>;
   clearLocalPushManager(): void;
+  /**
+   * Reads the native-side notification log (iOS only; see NotificationLog.swift). Returns
+   * the raw JSONL contents, one entry per line, newest-last. Empty string if there is none.
+   */
+  getNotificationLog(): Promise<string>;
+  /**
+   * Clears the native-side notification log (iOS only).
+   */
+  clearNotificationLog(): void;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('NativeTricordarrModule');

@@ -14,11 +14,61 @@ import {
   serviceChannel,
 } from '#src/Libraries/Notifications/Channels';
 import {generateContentNotification} from '#src/Libraries/Notifications/Content';
+import {notificationEventTitles} from '#src/Libraries/Notifications/NotificationEventTitles';
 import {getPath} from '#src/Libraries/RouteDefinitions';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
+import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('SocketNotification.ts');
+
+export type NotificationEventDestination =
+  {tab: BottomTabComponents; screen: string; params?: object} | {screen: keyof CommonStackParamList; params?: object};
+
+/**
+ * Where tapping content for a notification event should navigate (notification log, etc.).
+ * Most destinations are Common Stack screens pushed on the caller's current stack so back
+ * returns to the log. `tab` is set only when the destination is a tab root (announcement).
+ * Returns undefined for types with no in-app destination (e.g. phone call lifecycle events).
+ */
+export const getNotificationEventDestination = (
+  type: string,
+  contentID: string,
+): NotificationEventDestination | undefined => {
+  switch (type as keyof typeof NotificationTypeData) {
+    case NotificationTypeData.seamailUnreadMsg:
+    case NotificationTypeData.addedToSeamail:
+      return {screen: CommonStackComponents.seamailChatScreen, params: {fezID: contentID}};
+    case NotificationTypeData.fezUnreadMsg:
+      return {screen: CommonStackComponents.lfgChatScreen, params: {fezID: contentID}};
+    case NotificationTypeData.announcement:
+      // MainScreen is the home tab's own root screen, not a Common Stack screen, so this one
+      // genuinely has to switch tabs.
+      return {tab: BottomTabComponents.homeTab, screen: MainStackComponents.mainScreen};
+    case NotificationTypeData.alertwordPost:
+    case NotificationTypeData.twitarrTeamForumMention:
+    case NotificationTypeData.moderatorForumMention:
+      return {screen: CommonStackComponents.forumThreadPostScreen, params: {postID: contentID}};
+    case NotificationTypeData.forumMention:
+      return {screen: CommonStackComponents.forumPostMentionScreen};
+    case NotificationTypeData.followedEventStarting:
+      return {screen: CommonStackComponents.eventScreen, params: {eventID: contentID}};
+    case NotificationTypeData.joinedLFGStarting:
+    case NotificationTypeData.addedToLFG:
+    case NotificationTypeData.lfgCanceled:
+      return {screen: CommonStackComponents.lfgScreen, params: {fezID: contentID}};
+    case NotificationTypeData.personalEventStarting:
+    case NotificationTypeData.privateEventCanceled:
+    case NotificationTypeData.addedToPrivateEvent:
+      return {screen: CommonStackComponents.personalEventScreen, params: {eventID: contentID}};
+    case NotificationTypeData.privateEventUnreadMsg:
+      return {screen: CommonStackComponents.privateEventChatScreen, params: {fezID: contentID}};
+    default:
+      return undefined;
+  }
+};
 
 /**
  * Generate a Notifee notification from a WebSocket event. This usually means that something
@@ -62,21 +112,21 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       channel = seamailChannel;
       url = `/seamail/${notificationData.contentID}`;
       pressActionID = PressAction.seamail;
-      title = 'New Seamail';
+      title = notificationEventTitles[notificationType] ?? title;
       markAsReadUrl = `/fez/${notificationData.contentID}`;
       break;
     case NotificationTypeData.fezUnreadMsg:
       channel = lfgChannel;
       url = `/lfg/${notificationData.contentID}/chat`;
       pressActionID = PressAction.lfg;
-      title = 'New LFG Message';
+      title = notificationEventTitles[notificationType] ?? title;
       markAsReadUrl = `/fez/${notificationData.contentID}`;
       break;
     case NotificationTypeData.announcement:
       channel = announcementsChannel;
       url = '/home';
       pressActionID = PressAction.home;
-      title = 'Announcement';
+      title = notificationEventTitles[notificationType] ?? title;
       markAsReadUrl = '/notification/global';
       autoCancel = true;
       break;
@@ -84,91 +134,93 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       channel = forumChannel;
       url = `/forum/containingpost/${notificationData.contentID}`;
       pressActionID = PressAction.forum;
-      title = 'Forum Alert Word';
+      title = notificationEventTitles[notificationType] ?? title;
       break;
     case NotificationTypeData.forumMention:
       channel = forumChannel;
       url = '/forumpost/mentions';
       pressActionID = PressAction.forum;
-      title = 'Forum Mention';
+      title = notificationEventTitles[notificationType] ?? title;
       break;
     case NotificationTypeData.twitarrTeamForumMention:
       channel = forumChannel;
       url = `/forum/containingpost/${notificationData.contentID}`;
       pressActionID = PressAction.forum;
-      title = 'TwitarrTeam Forum Mention';
+      title = notificationEventTitles[notificationType] ?? title;
       break;
     case NotificationTypeData.moderatorForumMention:
       channel = forumChannel;
       url = `/forum/containingpost/${notificationData.contentID}`;
       pressActionID = PressAction.forum;
-      title = 'Moderator Forum Mention';
+      title = notificationEventTitles[notificationType] ?? title;
       break;
     case NotificationTypeData.incomingPhoneCall:
       channel = callsChannel;
       pressActionID = PressAction.krakentalk;
-      url = `/phonecall/${notificationData.contentID}/from/${notificationData.caller?.userID}/${notificationData.caller?.username}`;
-      title = 'Incoming Call';
+      url = notificationData.caller
+        ? `/phonecall/${notificationData.contentID}/from/${notificationData.caller.userID}/${notificationData.caller.username}`
+        : '';
+      title = notificationEventTitles[notificationType] ?? title;
       autoCancel = false;
       ongoing = true;
       break;
     case NotificationTypeData.phoneCallEnded:
       channel = callMgmtChannel;
       pressActionID = PressAction.krakentalk;
-      title = 'Call Ended';
+      title = notificationEventTitles[notificationType] ?? title;
       break;
     case NotificationTypeData.followedEventStarting:
       channel = eventChannel;
       pressActionID = PressAction.event;
-      title = 'Followed Event Starting';
+      title = notificationEventTitles[notificationType] ?? title;
       url = `/events/${notificationData.contentID}`;
       break;
     case NotificationTypeData.joinedLFGStarting:
       channel = lfgChannel;
       pressActionID = PressAction.lfg;
-      title = 'Joined LFG Starting';
+      title = notificationEventTitles[notificationType] ?? title;
       url = `/lfg/${notificationData.contentID}`;
       break;
     case NotificationTypeData.personalEventStarting:
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
-      title = 'Private Event Starting';
+      title = notificationEventTitles[notificationType] ?? title;
       url = `/privateevent/${notificationData.contentID}`;
       break;
     case NotificationTypeData.addedToPrivateEvent:
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
-      title = 'Added to Private Event';
-      url = `/privateevent/${notificationData.contentID}/chat`;
+      title = notificationEventTitles[notificationType] ?? title;
+      url = `/privateevent/${notificationData.contentID}`;
       break;
     case NotificationTypeData.addedToLFG:
       channel = lfgChannel;
       pressActionID = PressAction.lfg;
-      title = 'Added to LFG';
+      title = notificationEventTitles[notificationType] ?? title;
       url = `/lfg/${notificationData.contentID}`;
       break;
     case NotificationTypeData.addedToSeamail:
       channel = seamailChannel;
       pressActionID = PressAction.seamail;
-      title = 'Added to Seamail';
+      title = notificationEventTitles[notificationType] ?? title;
       url = `/seamail/${notificationData.contentID}`;
       break;
     case NotificationTypeData.privateEventCanceled:
       channel = eventChannel;
       pressActionID = PressAction.event;
-      title = 'Private Event Canceled';
+      title = notificationEventTitles[notificationType] ?? title;
       url = `/privateevent/${notificationData.contentID}`;
       break;
     case NotificationTypeData.lfgCanceled:
       channel = lfgChannel;
       pressActionID = PressAction.lfg;
-      title = 'LFG Canceled';
+      title = notificationEventTitles[notificationType] ?? title;
       url = `/lfg/${notificationData.contentID}`;
       break;
     case NotificationTypeData.privateEventUnreadMsg:
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
-      title = 'New Private Event Message';
+      title = notificationEventTitles[notificationType] ?? title;
       url = `/privateevent/${notificationData.contentID}/chat`;
       markAsReadUrl = `/fez/${notificationData.contentID}`;
       break;

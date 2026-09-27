@@ -11,6 +11,20 @@ export const alertClearLogs = (onConfirm: () => void, onCancel?: () => void): vo
 };
 
 /**
+ * Confirms permanently deleting the notification log.
+ */
+export const alertClearNotificationLog = (onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert(
+    'Clear Notification Log',
+    'Are you sure you want to delete the notification log? This cannot be undone.',
+    [
+      {text: 'Close', style: 'cancel', onPress: onCancel},
+      {text: 'Delete', style: 'destructive', onPress: onConfirm},
+    ],
+  );
+};
+
+/**
  * Warns that disabling pre-registration mode may cause unexpected behavior.
  */
 export const alertDisablePreRegistration = (onConfirm: () => void, onCancel?: () => void): void => {

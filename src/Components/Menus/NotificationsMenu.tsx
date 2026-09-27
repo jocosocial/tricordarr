@@ -11,8 +11,7 @@ import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDat
 import {AppIcons} from '#src/Enums/Icons';
 import {useBackgroundConnectionStatus} from '#src/Hooks/useBackgroundConnectionStatus';
 import {useMenu} from '#src/Hooks/useMenu';
-import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
-import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
@@ -32,11 +31,13 @@ const renderBackgroundConnectionStatusIcon =
   (color: string) =>
   ({size}: {size: number}) => <MaterialCommunityIcons name={AppIcons.connection} size={size} color={color} />;
 
+/** Header menu summarizing unread notification counts, with a shortcut to each destination. */
 export const NotificationsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {preRegistrationMode} = usePreRegistration();
   const {data} = useUserNotificationDataQuery({enabled: !preRegistrationMode});
   const bottomTabNavigator = useBottomTabNavigator();
+  const commonNavigation = useCommonStack();
   const {totalNewCount} = useUserNotificationData();
   const {theme} = useAppTheme();
   const backgroundConnectionStatus = useBackgroundConnectionStatus();
@@ -65,6 +66,7 @@ export const NotificationsMenu = () => {
         <>
           <Menu.Item
             title={`${data?.newAnnouncementCount} new ${pluralize('announcement', data?.newAnnouncementCount)}`}
+            titleNumberOfLines={0}
             leadingIcon={AppIcons.notificationShow}
             onPress={() =>
               bottomTabNavigator.navigate(BottomTabComponents.homeTab, {
@@ -79,12 +81,9 @@ export const NotificationsMenu = () => {
         <>
           <Menu.Item
             title={`${data?.newForumMentionCount} new forum ${pluralize('mention', data?.newForumMentionCount)}`}
+            titleNumberOfLines={0}
             leadingIcon={AppIcons.forum}
-            onPress={() =>
-              bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
-                screen: ForumStackComponents.forumPostMentionScreen,
-              })
-            }
+            onPress={() => commonNavigation.push(CommonStackComponents.forumPostMentionScreen)}
           />
           <Divider bold={true} />
         </>
@@ -93,12 +92,10 @@ export const NotificationsMenu = () => {
         <>
           <Menu.Item
             title={`${data.moderatorData.newModeratorForumMentionCount} new @moderator forum ${pluralize('mention', data.moderatorData.newModeratorForumMentionCount)}`}
-            leadingIcon={AppIcons.forum}
+            titleNumberOfLines={0}
+            leadingIcon={AppIcons.moderator}
             onPress={() =>
-              bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
-                screen: ForumStackComponents.forumPostMentionScreen,
-                params: {asPrivilegedUser: 'moderator'},
-              })
+              commonNavigation.push(CommonStackComponents.forumPostMentionScreen, {asPrivilegedUser: 'moderator'})
             }
           />
           <Divider bold={true} />
@@ -108,12 +105,10 @@ export const NotificationsMenu = () => {
         <>
           <Menu.Item
             title={`${data.moderatorData.newTTForumMentionCount} new @TwitarrTeam forum ${pluralize('mention', data.moderatorData.newTTForumMentionCount)}`}
-            leadingIcon={AppIcons.forum}
+            titleNumberOfLines={0}
+            leadingIcon={AppIcons.twitarrteam}
             onPress={() =>
-              bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
-                screen: ForumStackComponents.forumPostMentionScreen,
-                params: {asPrivilegedUser: 'TwitarrTeam'},
-              })
+              commonNavigation.push(CommonStackComponents.forumPostMentionScreen, {asPrivilegedUser: 'TwitarrTeam'})
             }
           />
           <Divider bold={true} />
@@ -122,35 +117,33 @@ export const NotificationsMenu = () => {
       {!!data?.addedToSeamailCount && (
         <Menu.Item
           title={`Added to ${data?.addedToSeamailCount} new ${pluralize('seamail', data?.addedToSeamailCount)}`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.seamail}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
       {!!data?.newSeamailMessageCount && (
         <Menu.Item
           title={`${data?.newSeamailMessageCount} new seamail ${pluralize('message', data?.newSeamailMessageCount)}`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.seamail}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
       {!!data?.moderatorData?.newModeratorSeamailMessageCount && (
         <Menu.Item
           title={`${data.moderatorData.newModeratorSeamailMessageCount} new @moderator ${pluralize('message', data.moderatorData.newModeratorSeamailMessageCount)}`}
-          leadingIcon={AppIcons.seamail}
+          titleNumberOfLines={0}
+          leadingIcon={AppIcons.moderator}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true, asPrivilegedUser: 'moderator'},
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {
+              onlyNew: true,
+              asPrivilegedUser: 'moderator',
+              noDrawer: true,
             })
           }
         />
@@ -158,11 +151,13 @@ export const NotificationsMenu = () => {
       {!!data?.moderatorData?.newTTSeamailMessageCount && (
         <Menu.Item
           title={`${data.moderatorData.newTTSeamailMessageCount} new @TwitarrTeam ${pluralize('message', data.moderatorData.newTTSeamailMessageCount)}`}
-          leadingIcon={AppIcons.seamail}
+          titleNumberOfLines={0}
+          leadingIcon={AppIcons.twitarrteam}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true, asPrivilegedUser: 'TwitarrTeam'},
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {
+              onlyNew: true,
+              asPrivilegedUser: 'TwitarrTeam',
+              noDrawer: true,
             })
           }
         />
@@ -170,48 +165,40 @@ export const NotificationsMenu = () => {
       {!!data?.addedToLFGCount && (
         <Menu.Item
           title={`Added to ${data?.addedToLFGCount} new ${pluralize('LFG', data?.addedToLFGCount)}`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.lfg}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
       {!!data?.newFezMessageCount && (
         <Menu.Item
           title={`${data?.newFezMessageCount} new ${pluralize('LFG', data?.newFezMessageCount)} messages`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.lfg}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
       {!!data?.addedToPrivateEventCount && (
         <Menu.Item
           title={`Added to ${data?.addedToPrivateEventCount} new private ${pluralize('event', data?.addedToPrivateEventCount)}`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.personalEvent}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
       {!!data?.newPrivateEventMessageCount && (
         <Menu.Item
           title={`${data?.newPrivateEventMessageCount} new private event ${pluralize('message', data?.newPrivateEventMessageCount)}`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.personalEvent}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
@@ -230,6 +217,11 @@ export const NotificationsMenu = () => {
           }
         />
       )}
+      <Menu.Item
+        title={'Notification Log'}
+        leadingIcon={AppIcons.logView}
+        onPress={() => commonNavigation.push(CommonStackComponents.notificationLogScreen)}
+      />
       <Menu.Item
         title={'Notification Settings'}
         leadingIcon={AppIcons.settings}
