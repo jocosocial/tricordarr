@@ -20,7 +20,6 @@ import Foundation
 @objc public final class NotificationLog: NSObject {
 
 	private static let fileName = "notification-log.jsonl"
-	private static let retentionDays = 7
 	private static let maxEntries = 1000
 	private static let queue = DispatchQueue(label: "com.grantcohoe.tricordarr.notificationlog")
 	private static let logger = Logging.getLogger("NotificationLog")
@@ -109,25 +108,13 @@ import Foundation
 		try? newText.write(to: url, atomically: true, encoding: .utf8)
 	}
 
-	/// Returns the raw JSONL contents of the log, filtered to entries within `retentionDays`.
-	/// Called from the native module for the JS-side NotificationLogScreen.
+	/// Returns the raw JSONL contents of the log. Retention is applied in JS (`applyRetentionAndDedup`).
 	@objc public static func read() -> String {
 		queue.sync {
 			guard let url = logFileURL, let text = try? String(contentsOf: url, encoding: .utf8) else {
 				return ""
 			}
-			let cutoff = Date().addingTimeInterval(-Double(retentionDays) * 24 * 60 * 60)
-			let lines = text.split(separator: "\n", omittingEmptySubsequences: true)
-			let kept = lines.filter { line in
-				guard let data = line.data(using: .utf8),
-					let entry = try? JSONDecoder().decode(StoredEntry.self, from: data),
-					let date = iso8601Formatter.date(from: entry.timestamp)
-				else {
-					return false
-				}
-				return date >= cutoff
-			}
-			return kept.joined(separator: "\n")
+			return text
 		}
 	}
 

@@ -30,7 +30,7 @@ const parseLine = (line: string): NotificationLogEntry | null => {
     }
     return {
       timestamp,
-      type: parsed.type,
+      type: parsed.type as NotificationLogEntry['type'],
       contentID: parsed.contentID,
       info: parsed.info,
       source: parsed.source,

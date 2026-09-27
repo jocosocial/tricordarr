@@ -1,5 +1,6 @@
 import {Directory, EncodingType, File, Paths} from 'expo-file-system';
 
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 import {createLogger} from '#src/Libraries/Logger';
 import {
   applyRetentionAndDedup,
@@ -10,7 +11,7 @@ import {
 } from '#src/Libraries/NotificationLog/parsing';
 import {NotificationLogEntry, NotificationLogSource} from '#src/Libraries/NotificationLog/types';
 import {isIOS} from '#src/Libraries/Platform/Detection';
-import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
+import {SocketNotificationData} from '#src/Structs/SocketStructs';
 
 // Deliberately does not import APIClient (or anything that does) to avoid the
 // Logger -> AppConfig -> APIClient -> QueryCacheStorage -> Logger require cycle documented
@@ -23,15 +24,10 @@ const NOTIFICATION_LOG_FILE = new File(NOTIFICATION_LOG_DIR, 'notification-log.j
 
 type NotificationLogListener = () => void;
 
-// In-process pub/sub so a mounted NotificationLogScreen can refetch as soon as a new event
-// arrives, instead of only on pull-to-refresh. Deliberately not React Query: the notification
-// log isn't server data (it's a local file/native store with no API endpoint), so there's no
-// natural query key for it, and this only ever has one subscriber (the screen) at a time.
 const listeners = new Set<NotificationLogListener>();
 
 /**
  * Subscribes to "a notification event was recorded" signals. Returns an unsubscribe function.
- * NotificationLogScreen uses this to refetch (re-applying its current filters) while mounted.
  */
 export const subscribeToNotificationLog = (listener: NotificationLogListener): (() => void) => {
   listeners.add(listener);
@@ -92,21 +88,19 @@ const pruneIfNeeded = async (): Promise<void> => {
  * On iOS the actual write is a no-op: the notification socket that matters (background
  * delivery) lives entirely in native Swift (see WebsocketNotifier.swift), and the in-app JS
  * socket only ever duplicates what the native side already recorded via the App Group-backed
- * native log. See docs/Code Notes.md for the full rationale. Listeners are still notified on
- * iOS, since this is called from the same JS socket message arrival that means the native
- * side just recorded (or is about to record) the same event.
+ * native log. See docs/Code Notes.md for the full rationale.
  */
 export const recordNotificationEvent = async (rawData: string, source: NotificationLogSource): Promise<void> => {
-  notifyNotificationLogListeners();
   if (isIOS) {
+    notifyNotificationLogListeners();
     return;
   }
   try {
     const notificationData = JSON.parse(rawData) as SocketNotificationData;
-    const type = SocketNotificationData.getType(notificationData) as unknown as keyof typeof NotificationTypeData;
+    const type = SocketNotificationData.getType(notificationData);
     const entry: StoredNotificationLogEntry = {
       timestamp: new Date().toISOString(),
-      type: type ?? 'unknown',
+      type,
       contentID: notificationData.contentID ?? '',
       info: notificationData.info ?? '',
       source,
@@ -118,6 +112,7 @@ export const recordNotificationEvent = async (rawData: string, source: Notificat
     }
     NOTIFICATION_LOG_FILE.write(serializeEntry(entry) + '\n', {encoding: EncodingType.UTF8, append: true});
     await pruneIfNeeded();
+    notifyNotificationLogListeners();
   } catch (error) {
     logger.error('Failed to record notification event', error);
   }
@@ -133,9 +128,6 @@ export const getNotificationLogEntries = async (): Promise<NotificationLogEntry[
 
   if (isIOS) {
     try {
-      // Lazy import to avoid a hard dependency on the native module at module-load time,
-      // matching the pattern used elsewhere for optional native calls.
-      const {default: NativeTricordarrModule} = await import('#specs/NativeTricordarrModule');
       const jsonl = await NativeTricordarrModule.getNotificationLog();
       entries.push(...parseJsonl(jsonl));
     } catch (error) {
@@ -160,7 +152,6 @@ export const getNotificationLogEntries = async (): Promise<NotificationLogEntry[
 export const clearNotificationLog = async (): Promise<void> => {
   if (isIOS) {
     try {
-      const {default: NativeTricordarrModule} = await import('#specs/NativeTricordarrModule');
       NativeTricordarrModule.clearNotificationLog();
     } catch (error) {
       logger.error('Failed to clear native notification log', error);

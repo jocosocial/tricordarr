@@ -13,11 +13,7 @@ interface NotificationLogActionsMenuProps {
   onHelp: () => void;
 }
 
-/**
- * Actions menu for NotificationLogScreen's header: Save, Clear, and Help. Kept separate from
- * NotificationLogFilterMenu since filter and actions are distinct header controls (see
- * CLAUDE.md: three-dots menu, filter, search, ordered from the right).
- */
+/** Actions menu for NotificationLogScreen's header: Save, Clear, and Help. */
 export const NotificationLogActionsMenu = ({onSave, onClear, isClearing, onHelp}: NotificationLogActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
 

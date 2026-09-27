@@ -1,3 +1,5 @@
+import {NotificationTypeData} from '#src/Structs/SocketStructs';
+
 /**
  * The origin socket/process that recorded a NotificationLogEntry. Useful for debugging
  * duplicate or missing entries, since the notification socket can be owned by more than
@@ -13,7 +15,7 @@ export type NotificationLogSource = 'app' | 'fgs' | 'ios-native';
 export interface NotificationLogEntry {
   timestamp: Date;
   /// The NotificationTypeData key, or 'unknown' if it couldn't be determined.
-  type: string;
+  type: keyof typeof NotificationTypeData | 'unknown';
   contentID: string;
   info: string;
   source: NotificationLogSource;

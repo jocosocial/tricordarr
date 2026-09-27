@@ -6,7 +6,6 @@ import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {useMenu} from '#src/Hooks/useMenu';
 
-export type NotificationLogTypeFilter = string | 'all';
 export type NotificationLogTimeFilter = 'all' | '1h' | '24h';
 
 interface NotificationLogTypeOption {
@@ -15,8 +14,8 @@ interface NotificationLogTypeOption {
 }
 
 interface NotificationLogFilterMenuProps {
-  typeFilter: NotificationLogTypeFilter;
-  setTypeFilter: (value: NotificationLogTypeFilter) => void;
+  typeFilter?: string;
+  setTypeFilter: (value: string | undefined) => void;
   timeFilter: NotificationLogTimeFilter;
   setTimeFilter: (value: NotificationLogTimeFilter) => void;
   /** Type options actually present in the loaded entries, sorted by display label. */
@@ -47,12 +46,12 @@ export const NotificationLogFilterMenu = ({
   const {visible, openMenu, closeMenu} = useMenu();
 
   const clearFilters = () => {
-    setTypeFilter('all');
+    setTypeFilter(undefined);
     setTimeFilter('all');
   };
 
   const handleTypeSelection = (value: string) => {
-    setTypeFilter(value === typeFilter ? 'all' : value);
+    setTypeFilter(value === typeFilter ? undefined : value);
     closeMenu();
   };
 
@@ -61,7 +60,7 @@ export const NotificationLogFilterMenu = ({
     closeMenu();
   };
 
-  const anyActiveFilter = typeFilter !== 'all' || timeFilter !== 'all';
+  const anyActiveFilter = typeFilter !== undefined || timeFilter !== 'all';
 
   const menuAnchor = <FilterMenuAnchor active={anyActiveFilter} onPress={openMenu} onLongPress={clearFilters} />;
 

@@ -9,11 +9,6 @@ import {AppIcons} from '#src/Enums/Icons';
 
 // Static: doesn't depend on commonStyles, theme, or props.
 const styles = StyleSheet.create({
-  // Menu.Item's row otherwise packs leading icon/title/trailing icon tightly from the left, so
-  // the trailing checkmark sits right after the title instead of at the item's right edge - its
-  // horizontal position would drift with every item's title length. space-between pushes it to
-  // the far edge of the row without touching the title's own (natural-width) sizing, which a
-  // flex/flexBasis approach on the content wrapper would - that clips long titles instead.
   container: {
     justifyContent: 'space-between',
   },

@@ -14,79 +14,31 @@ import {
   serviceChannel,
 } from '#src/Libraries/Notifications/Channels';
 import {generateContentNotification} from '#src/Libraries/Notifications/Content';
+import {notificationEventTitles} from '#src/Libraries/Notifications/NotificationEventTitles';
 import {getPath} from '#src/Libraries/RouteDefinitions';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
-import {UserHeader} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('SocketNotification.ts');
 
-/**
- * Maps a notification type and its socket payload to the in-app URL that tapping content for
- * that event should open. `caller` is only meaningful (and only present) for incomingPhoneCall.
- * Used to build the URL embedded in a generated push notification (resolved via `linkTo` /
- * `Linking.openURL` when that notification is tapped - see AppEventHandler.tsx). Returns
- * undefined for types with no dedicated destination.
- */
-export const getNotificationEventUrl = (
-  type: keyof typeof NotificationTypeData,
-  contentID: string,
-  caller?: UserHeader,
-): string | undefined => {
-  switch (type) {
-    case NotificationTypeData.seamailUnreadMsg:
-    case NotificationTypeData.addedToSeamail:
-      return `/seamail/${contentID}`;
-    case NotificationTypeData.fezUnreadMsg:
-      return `/lfg/${contentID}/chat`;
-    case NotificationTypeData.announcement:
-      return '/home';
-    case NotificationTypeData.alertwordPost:
-    case NotificationTypeData.twitarrTeamForumMention:
-    case NotificationTypeData.moderatorForumMention:
-      return `/forum/containingpost/${contentID}`;
-    case NotificationTypeData.forumMention:
-      return '/forumpost/mentions';
-    case NotificationTypeData.incomingPhoneCall:
-      return caller ? `/phonecall/${contentID}/from/${caller.userID}/${caller.username}` : undefined;
-    case NotificationTypeData.followedEventStarting:
-      return `/events/${contentID}`;
-    case NotificationTypeData.joinedLFGStarting:
-    case NotificationTypeData.addedToLFG:
-    case NotificationTypeData.lfgCanceled:
-      return `/lfg/${contentID}`;
-    case NotificationTypeData.personalEventStarting:
-    case NotificationTypeData.privateEventCanceled:
-    case NotificationTypeData.addedToPrivateEvent:
-      return `/privateevent/${contentID}`;
-    case NotificationTypeData.privateEventUnreadMsg:
-      return `/privateevent/${contentID}/chat`;
-    default:
-      return undefined;
-  }
-};
+export type NotificationEventDestination =
+  | {tab: BottomTabComponents; screen: string; params?: object}
+  | {screen: keyof CommonStackParamList; params?: object};
 
 /**
- * Where tapping content for a notification event should navigate, for use by
- * NotificationLogListItem. Almost every destination is a Common Stack screen - registered in
- * every tab's own stack (see CommonScreens.tsx) - so pushing it stays on whatever stack the
- * caller is already in, meaning "back" returns to wherever that push happened from (e.g. the
- * notification log itself), instead of a fresh cross-tab stack with nothing underneath it.
- *
- * `tab` is only set for the one type with no Common Stack equivalent (a tab's own root
- * screen) and therefore genuinely needs to switch tabs; treat "back" from that the same as any
- * other tab switch. Returns undefined for types with no dedicated destination - including
- * incomingPhoneCall/phoneCallEnded, which have no content of their own to open (the call itself
- * is handled live via CallKit/receiveCall, not from the log after the fact).
+ * Where tapping content for a notification event should navigate (notification log, etc.).
+ * Most destinations are Common Stack screens pushed on the caller's current stack so back
+ * returns to the log. `tab` is set only when the destination is a tab root (announcement).
+ * Returns undefined for types with no in-app destination (e.g. phone call lifecycle events).
  */
 export const getNotificationEventDestination = (
-  type: keyof typeof NotificationTypeData,
+  type: string,
   contentID: string,
-): {tab?: BottomTabComponents; screen: string; params?: object} | undefined => {
-  switch (type) {
+): NotificationEventDestination | undefined => {
+  switch (type as keyof typeof NotificationTypeData) {
     case NotificationTypeData.seamailUnreadMsg:
     case NotificationTypeData.addedToSeamail:
       return {screen: CommonStackComponents.seamailChatScreen, params: {fezID: contentID}};
@@ -159,116 +111,118 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
   switch (notificationType) {
     case NotificationTypeData.seamailUnreadMsg:
       channel = seamailChannel;
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      url = `/seamail/${notificationData.contentID}`;
       pressActionID = PressAction.seamail;
-      title = 'New Seamail';
+      title = notificationEventTitles[notificationType] ?? title;
       markAsReadUrl = `/fez/${notificationData.contentID}`;
       break;
     case NotificationTypeData.fezUnreadMsg:
       channel = lfgChannel;
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      url = `/lfg/${notificationData.contentID}/chat`;
       pressActionID = PressAction.lfg;
-      title = 'New LFG Message';
+      title = notificationEventTitles[notificationType] ?? title;
       markAsReadUrl = `/fez/${notificationData.contentID}`;
       break;
     case NotificationTypeData.announcement:
       channel = announcementsChannel;
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      url = '/home';
       pressActionID = PressAction.home;
-      title = 'Announcement';
+      title = notificationEventTitles[notificationType] ?? title;
       markAsReadUrl = '/notification/global';
       autoCancel = true;
       break;
     case NotificationTypeData.alertwordPost:
       channel = forumChannel;
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      url = `/forum/containingpost/${notificationData.contentID}`;
       pressActionID = PressAction.forum;
-      title = 'Forum Alert Word';
+      title = notificationEventTitles[notificationType] ?? title;
       break;
     case NotificationTypeData.forumMention:
       channel = forumChannel;
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      url = '/forumpost/mentions';
       pressActionID = PressAction.forum;
-      title = 'Forum Mention';
+      title = notificationEventTitles[notificationType] ?? title;
       break;
     case NotificationTypeData.twitarrTeamForumMention:
       channel = forumChannel;
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      url = `/forum/containingpost/${notificationData.contentID}`;
       pressActionID = PressAction.forum;
-      title = 'TwitarrTeam Forum Mention';
+      title = notificationEventTitles[notificationType] ?? title;
       break;
     case NotificationTypeData.moderatorForumMention:
       channel = forumChannel;
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      url = `/forum/containingpost/${notificationData.contentID}`;
       pressActionID = PressAction.forum;
-      title = 'Moderator Forum Mention';
+      title = notificationEventTitles[notificationType] ?? title;
       break;
     case NotificationTypeData.incomingPhoneCall:
       channel = callsChannel;
       pressActionID = PressAction.krakentalk;
-      url = getNotificationEventUrl(notificationType, notificationData.contentID, notificationData.caller) ?? '';
-      title = 'Incoming Call';
+      url = notificationData.caller
+        ? `/phonecall/${notificationData.contentID}/from/${notificationData.caller.userID}/${notificationData.caller.username}`
+        : '';
+      title = notificationEventTitles[notificationType] ?? title;
       autoCancel = false;
       ongoing = true;
       break;
     case NotificationTypeData.phoneCallEnded:
       channel = callMgmtChannel;
       pressActionID = PressAction.krakentalk;
-      title = 'Call Ended';
+      title = notificationEventTitles[notificationType] ?? title;
       break;
     case NotificationTypeData.followedEventStarting:
       channel = eventChannel;
       pressActionID = PressAction.event;
-      title = 'Followed Event Starting';
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      title = notificationEventTitles[notificationType] ?? title;
+      url = `/events/${notificationData.contentID}`;
       break;
     case NotificationTypeData.joinedLFGStarting:
       channel = lfgChannel;
       pressActionID = PressAction.lfg;
-      title = 'Joined LFG Starting';
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      title = notificationEventTitles[notificationType] ?? title;
+      url = `/lfg/${notificationData.contentID}`;
       break;
     case NotificationTypeData.personalEventStarting:
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
-      title = 'Private Event Starting';
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      title = notificationEventTitles[notificationType] ?? title;
+      url = `/privateevent/${notificationData.contentID}`;
       break;
     case NotificationTypeData.addedToPrivateEvent:
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
-      title = 'Added to Private Event';
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      title = notificationEventTitles[notificationType] ?? title;
+      url = `/privateevent/${notificationData.contentID}`;
       break;
     case NotificationTypeData.addedToLFG:
       channel = lfgChannel;
       pressActionID = PressAction.lfg;
-      title = 'Added to LFG';
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      title = notificationEventTitles[notificationType] ?? title;
+      url = `/lfg/${notificationData.contentID}`;
       break;
     case NotificationTypeData.addedToSeamail:
       channel = seamailChannel;
       pressActionID = PressAction.seamail;
-      title = 'Added to Seamail';
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      title = notificationEventTitles[notificationType] ?? title;
+      url = `/seamail/${notificationData.contentID}`;
       break;
     case NotificationTypeData.privateEventCanceled:
       channel = eventChannel;
       pressActionID = PressAction.event;
-      title = 'Private Event Canceled';
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      title = notificationEventTitles[notificationType] ?? title;
+      url = `/privateevent/${notificationData.contentID}`;
       break;
     case NotificationTypeData.lfgCanceled:
       channel = lfgChannel;
       pressActionID = PressAction.lfg;
-      title = 'LFG Canceled';
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      title = notificationEventTitles[notificationType] ?? title;
+      url = `/lfg/${notificationData.contentID}`;
       break;
     case NotificationTypeData.privateEventUnreadMsg:
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
-      title = 'New Private Event Message';
-      url = getNotificationEventUrl(notificationType, notificationData.contentID) ?? '';
+      title = notificationEventTitles[notificationType] ?? title;
+      url = `/privateevent/${notificationData.contentID}/chat`;
       markAsReadUrl = `/fez/${notificationData.contentID}`;
       break;
     default:

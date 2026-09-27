@@ -11,7 +11,6 @@ import {NotificationLogActionsMenu} from '#src/Components/Menus/Settings/Notific
 import {
   NotificationLogFilterMenu,
   NotificationLogTimeFilter,
-  NotificationLogTypeFilter,
 } from '#src/Components/Menus/Settings/NotificationLogFilterMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -25,7 +24,7 @@ import {
   subscribeToNotificationLog,
 } from '#src/Libraries/NotificationLog';
 import {NotificationLogEntry} from '#src/Libraries/NotificationLog/types';
-import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
+import {getNotificationTypeTitle} from '#src/Libraries/Notifications/NotificationEventTitles';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 const TIME_FILTER_MS: Record<Exclude<NotificationLogTimeFilter, 'all'>, number> = {
@@ -34,9 +33,6 @@ const TIME_FILTER_MS: Record<Exclude<NotificationLogTimeFilter, 'all'>, number> 
 };
 
 const getExportBaseName = () => `tricordarr-notifications-filtered-${Math.floor(Date.now() / 1000)}`;
-
-const getTypeTitle = (type: string): string =>
-  contentNotificationCategories[type as keyof typeof contentNotificationCategories]?.title ?? type;
 
 interface NotificationLogSearchHeaderProps {
   onSearch: (query: string) => void;
@@ -84,7 +80,7 @@ export const NotificationLogScreen = () => {
   const {setSnackbarPayload} = useSnackbar();
   const [entries, setEntries] = useState<NotificationLogEntry[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter, setTypeFilter] = useState<NotificationLogTypeFilter>('all');
+  const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
   const [timeFilter, setTimeFilter] = useState<NotificationLogTimeFilter>('all');
   const [isClearing, setIsClearing] = useState(false);
 
@@ -98,13 +94,6 @@ export const NotificationLogScreen = () => {
     refresh();
   }, [refresh]);
 
-  // Live-update while mounted: a new notification-socket event (recorded from
-  // NotificationDataListener.tsx, foreground on both platforms) refetches so it shows up
-  // without waiting for a manual pull-to-refresh. Re-fetching (rather than prepending the raw
-  // socket payload) reuses the same read path — parsing, retention, and dedup — as the initial
-  // load, so a freshly-arrived entry is subject to the exact same rules. The refetch itself
-  // doesn't touch `refreshing`, so it doesn't spin the pull-to-refresh indicator; existing
-  // filters and search stay applied since they're derived from `entries` via useMemo below.
   useEffect(() => {
     return subscribeToNotificationLog(() => {
       refresh();
@@ -114,7 +103,7 @@ export const NotificationLogScreen = () => {
   const typeOptions = useMemo(() => {
     const types = new Set(entries.map(entry => entry.type));
     return Array.from(types)
-      .map(type => ({value: type, label: getTypeTitle(type)}))
+      .map(type => ({value: type, label: getNotificationTypeTitle(type)}))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [entries]);
 
@@ -123,7 +112,7 @@ export const NotificationLogScreen = () => {
     const cutoff = timeFilter === 'all' ? undefined : Date.now() - TIME_FILTER_MS[timeFilter];
 
     return entries.filter(entry => {
-      if (typeFilter !== 'all' && entry.type !== typeFilter) {
+      if (typeFilter !== undefined && entry.type !== typeFilter) {
         return false;
       }
       if (cutoff !== undefined && entry.timestamp.getTime() < cutoff) {

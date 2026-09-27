@@ -31,19 +31,7 @@ const renderBackgroundConnectionStatusIcon =
   (color: string) =>
   ({size}: {size: number}) => <MaterialCommunityIcons name={AppIcons.connection} size={size} color={color} />;
 
-/**
- * The header menu summarizing unread notification counts, with a shortcut to each destination.
- *
- * Mirrors the destination logic in getNotificationEventDestination / NotificationLogListItem:
- * most of these destinations (seamail list, forum mentions) are Common Stack screens -
- * registered in every tab's own stack - so they're pushed on the *current* stack
- * (`useCommonStack()`), whatever tab this menu happens to be opened from. That keeps "back"
- * returning to wherever the menu was opened, instead of switching tabs and leaving a fresh
- * stack (with nothing meaningful underneath) that grows a little deeper every time the item is
- * tapped again. Only destinations with no Common Stack equivalent - the home tab's own root
- * screen (announcement) and screens nested under it (background connection / notification
- * settings) - genuinely need to switch tabs, so those still use `bottomTabNavigator.navigate`.
- */
+/** Header menu summarizing unread notification counts, with a shortcut to each destination. */
 export const NotificationsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {preRegistrationMode} = usePreRegistration();
