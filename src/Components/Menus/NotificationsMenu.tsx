@@ -11,9 +11,7 @@ import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDat
 import {AppIcons} from '#src/Enums/Icons';
 import {useBackgroundConnectionStatus} from '#src/Hooks/useBackgroundConnectionStatus';
 import {useMenu} from '#src/Hooks/useMenu';
-import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {BottomTabComponents, useBottomTabNavigator} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
@@ -33,6 +31,19 @@ const renderBackgroundConnectionStatusIcon =
   (color: string) =>
   ({size}: {size: number}) => <MaterialCommunityIcons name={AppIcons.connection} size={size} color={color} />;
 
+/**
+ * The header menu summarizing unread notification counts, with a shortcut to each destination.
+ *
+ * Mirrors the destination logic in getNotificationEventDestination / NotificationLogListItem:
+ * most of these destinations (seamail list, forum mentions) are Common Stack screens -
+ * registered in every tab's own stack - so they're pushed on the *current* stack
+ * (`useCommonStack()`), whatever tab this menu happens to be opened from. That keeps "back"
+ * returning to wherever the menu was opened, instead of switching tabs and leaving a fresh
+ * stack (with nothing meaningful underneath) that grows a little deeper every time the item is
+ * tapped again. Only destinations with no Common Stack equivalent - the home tab's own root
+ * screen (announcement) and screens nested under it (background connection / notification
+ * settings) - genuinely need to switch tabs, so those still use `bottomTabNavigator.navigate`.
+ */
 export const NotificationsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {preRegistrationMode} = usePreRegistration();
@@ -84,11 +95,7 @@ export const NotificationsMenu = () => {
             title={`${data?.newForumMentionCount} new forum ${pluralize('mention', data?.newForumMentionCount)}`}
             titleNumberOfLines={0}
             leadingIcon={AppIcons.forum}
-            onPress={() =>
-              bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
-                screen: ForumStackComponents.forumPostMentionScreen,
-              })
-            }
+            onPress={() => commonNavigation.push(CommonStackComponents.forumPostMentionScreen)}
           />
           <Divider bold={true} />
         </>
@@ -100,10 +107,7 @@ export const NotificationsMenu = () => {
             titleNumberOfLines={0}
             leadingIcon={AppIcons.moderator}
             onPress={() =>
-              bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
-                screen: ForumStackComponents.forumPostMentionScreen,
-                params: {asPrivilegedUser: 'moderator'},
-              })
+              commonNavigation.push(CommonStackComponents.forumPostMentionScreen, {asPrivilegedUser: 'moderator'})
             }
           />
           <Divider bold={true} />
@@ -116,10 +120,7 @@ export const NotificationsMenu = () => {
             titleNumberOfLines={0}
             leadingIcon={AppIcons.twitarrteam}
             onPress={() =>
-              bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
-                screen: ForumStackComponents.forumPostMentionScreen,
-                params: {asPrivilegedUser: 'TwitarrTeam'},
-              })
+              commonNavigation.push(CommonStackComponents.forumPostMentionScreen, {asPrivilegedUser: 'TwitarrTeam'})
             }
           />
           <Divider bold={true} />
@@ -131,10 +132,7 @@ export const NotificationsMenu = () => {
           titleNumberOfLines={0}
           leadingIcon={AppIcons.seamail}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
@@ -144,10 +142,7 @@ export const NotificationsMenu = () => {
           titleNumberOfLines={0}
           leadingIcon={AppIcons.seamail}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
@@ -157,9 +152,10 @@ export const NotificationsMenu = () => {
           titleNumberOfLines={0}
           leadingIcon={AppIcons.moderator}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true, asPrivilegedUser: 'moderator'},
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {
+              onlyNew: true,
+              asPrivilegedUser: 'moderator',
+              noDrawer: true,
             })
           }
         />
@@ -170,9 +166,10 @@ export const NotificationsMenu = () => {
           titleNumberOfLines={0}
           leadingIcon={AppIcons.twitarrteam}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true, asPrivilegedUser: 'TwitarrTeam'},
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {
+              onlyNew: true,
+              asPrivilegedUser: 'TwitarrTeam',
+              noDrawer: true,
             })
           }
         />
@@ -183,10 +180,7 @@ export const NotificationsMenu = () => {
           titleNumberOfLines={0}
           leadingIcon={AppIcons.lfg}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
@@ -196,10 +190,7 @@ export const NotificationsMenu = () => {
           titleNumberOfLines={0}
           leadingIcon={AppIcons.lfg}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
@@ -209,10 +200,7 @@ export const NotificationsMenu = () => {
           titleNumberOfLines={0}
           leadingIcon={AppIcons.personalEvent}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
@@ -222,10 +210,7 @@ export const NotificationsMenu = () => {
           titleNumberOfLines={0}
           leadingIcon={AppIcons.personalEvent}
           onPress={() =>
-            bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
-              screen: ChatStackScreenComponents.seamailListScreen,
-              params: {onlyNew: true},
-            })
+            commonNavigation.push(CommonStackComponents.seamailListScreen, {onlyNew: true, noDrawer: true})
           }
         />
       )}
