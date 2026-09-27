@@ -67,6 +67,7 @@ export const NotificationsMenu = () => {
         <>
           <Menu.Item
             title={`${data?.newAnnouncementCount} new ${pluralize('announcement', data?.newAnnouncementCount)}`}
+            titleNumberOfLines={0}
             leadingIcon={AppIcons.notificationShow}
             onPress={() =>
               bottomTabNavigator.navigate(BottomTabComponents.homeTab, {
@@ -81,6 +82,7 @@ export const NotificationsMenu = () => {
         <>
           <Menu.Item
             title={`${data?.newForumMentionCount} new forum ${pluralize('mention', data?.newForumMentionCount)}`}
+            titleNumberOfLines={0}
             leadingIcon={AppIcons.forum}
             onPress={() =>
               bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
@@ -95,7 +97,8 @@ export const NotificationsMenu = () => {
         <>
           <Menu.Item
             title={`${data.moderatorData.newModeratorForumMentionCount} new @moderator forum ${pluralize('mention', data.moderatorData.newModeratorForumMentionCount)}`}
-            leadingIcon={AppIcons.forum}
+            titleNumberOfLines={0}
+            leadingIcon={AppIcons.moderator}
             onPress={() =>
               bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
                 screen: ForumStackComponents.forumPostMentionScreen,
@@ -110,7 +113,8 @@ export const NotificationsMenu = () => {
         <>
           <Menu.Item
             title={`${data.moderatorData.newTTForumMentionCount} new @TwitarrTeam forum ${pluralize('mention', data.moderatorData.newTTForumMentionCount)}`}
-            leadingIcon={AppIcons.forum}
+            titleNumberOfLines={0}
+            leadingIcon={AppIcons.twitarrteam}
             onPress={() =>
               bottomTabNavigator.navigate(BottomTabComponents.forumsTab, {
                 screen: ForumStackComponents.forumPostMentionScreen,
@@ -124,6 +128,7 @@ export const NotificationsMenu = () => {
       {!!data?.addedToSeamailCount && (
         <Menu.Item
           title={`Added to ${data?.addedToSeamailCount} new ${pluralize('seamail', data?.addedToSeamailCount)}`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.seamail}
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
@@ -136,6 +141,7 @@ export const NotificationsMenu = () => {
       {!!data?.newSeamailMessageCount && (
         <Menu.Item
           title={`${data?.newSeamailMessageCount} new seamail ${pluralize('message', data?.newSeamailMessageCount)}`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.seamail}
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
@@ -148,7 +154,8 @@ export const NotificationsMenu = () => {
       {!!data?.moderatorData?.newModeratorSeamailMessageCount && (
         <Menu.Item
           title={`${data.moderatorData.newModeratorSeamailMessageCount} new @moderator ${pluralize('message', data.moderatorData.newModeratorSeamailMessageCount)}`}
-          leadingIcon={AppIcons.seamail}
+          titleNumberOfLines={0}
+          leadingIcon={AppIcons.moderator}
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
               screen: ChatStackScreenComponents.seamailListScreen,
@@ -160,7 +167,8 @@ export const NotificationsMenu = () => {
       {!!data?.moderatorData?.newTTSeamailMessageCount && (
         <Menu.Item
           title={`${data.moderatorData.newTTSeamailMessageCount} new @TwitarrTeam ${pluralize('message', data.moderatorData.newTTSeamailMessageCount)}`}
-          leadingIcon={AppIcons.seamail}
+          titleNumberOfLines={0}
+          leadingIcon={AppIcons.twitarrteam}
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
               screen: ChatStackScreenComponents.seamailListScreen,
@@ -172,6 +180,7 @@ export const NotificationsMenu = () => {
       {!!data?.addedToLFGCount && (
         <Menu.Item
           title={`Added to ${data?.addedToLFGCount} new ${pluralize('LFG', data?.addedToLFGCount)}`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.lfg}
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
@@ -184,6 +193,7 @@ export const NotificationsMenu = () => {
       {!!data?.newFezMessageCount && (
         <Menu.Item
           title={`${data?.newFezMessageCount} new ${pluralize('LFG', data?.newFezMessageCount)} messages`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.lfg}
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
@@ -196,6 +206,7 @@ export const NotificationsMenu = () => {
       {!!data?.addedToPrivateEventCount && (
         <Menu.Item
           title={`Added to ${data?.addedToPrivateEventCount} new private ${pluralize('event', data?.addedToPrivateEventCount)}`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.personalEvent}
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
@@ -208,6 +219,7 @@ export const NotificationsMenu = () => {
       {!!data?.newPrivateEventMessageCount && (
         <Menu.Item
           title={`${data?.newPrivateEventMessageCount} new private event ${pluralize('message', data?.newPrivateEventMessageCount)}`}
+          titleNumberOfLines={0}
           leadingIcon={AppIcons.personalEvent}
           onPress={() =>
             bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {

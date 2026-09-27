@@ -62,7 +62,11 @@ export const MainAccountMenu = () => {
       onDismiss={closeMenu}>
       {isLoggedIn ? (
         <>
-          <Menu.Item leadingIcon={getAvatarImage} title={`Current User: ${profilePublicData?.header.username}`} />
+          <Menu.Item
+            leadingIcon={getAvatarImage}
+            title={`Current User: ${profilePublicData?.header.username}`}
+            titleNumberOfLines={0}
+          />
           <Divider bold={true} />
           <Menu.Item leadingIcon={AppIcons.profile} title={'Your Profile'} onPress={handleProfile} />
           <Menu.Item leadingIcon={AppIcons.user} title={'Manage Account'} onPress={handleManage} />
