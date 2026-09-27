@@ -13,6 +13,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {OobeLocation} from '#src/Enums/OobeLocation';
 import {createLogger} from '#src/Libraries/Logger';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
@@ -65,7 +66,7 @@ export const OobePreregistrationScreen = ({navigation, route}: Props) => {
     if (useOnboardingServerUrl) {
       setOnboarding(true);
     }
-    navigation.push(OobeStackComponents.oobeServerScreen);
+    navigation.push(OobeStackComponents.oobeServerScreen, {location: OobeLocation.ship});
   };
 
   const onBackPress = async () => {

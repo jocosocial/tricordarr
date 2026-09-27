@@ -11,14 +11,9 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {createLogger} from '#src/Libraries/Logger';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
-
-const logger = createLogger('OobeWelcomeScreen.tsx');
 
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
@@ -29,10 +24,8 @@ const VERSION_TAPS_TO_FAULT = 10;
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {currentSession, findOrCreateSession, updateSession} = useSession();
+  const {currentSession, findOrCreateSession} = useSession();
   const {appConfig} = useConfig();
-  const {theme} = useAppTheme();
-  const {oobeCompleted} = useOobe();
   const {fromAsset} = useAppImage();
   const [versionTapCount, setVersionTapCount] = useState(0);
   const [fault, setFault] = useState(false);
@@ -58,30 +51,8 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
 
   const isInitializing = !currentSession;
 
-  const onPreRegistrationPress = async () => {
-    if (!currentSession) {
-      logger.warn('Cannot update session: no current session');
-      return;
-    }
-    await updateSession(currentSession.sessionID, {
-      // Preserve existing server URL when re-running OOBE after completion
-      ...(oobeCompleted ? {} : {serverUrl: appConfig.preRegistrationServerUrl}),
-      preRegistrationMode: true,
-    });
-    navigation.push(OobeStackComponents.oobeServerScreen);
-  };
-
-  const onPress = async () => {
-    if (!currentSession) {
-      logger.warn('Cannot update session: no current session');
-      return;
-    }
-    await updateSession(currentSession.sessionID, {
-      // Preserve existing server URL when re-running OOBE after completion
-      ...(oobeCompleted ? {} : {serverUrl: appConfig.serverUrl}),
-      preRegistrationMode: false,
-    });
-    navigation.push(OobeStackComponents.oobeServerScreen);
+  const onPress = () => {
+    navigation.push(OobeStackComponents.oobeLocationScreen);
   };
 
   const onVersionPress = () => {
@@ -92,10 +63,9 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
     }
   };
 
-  // This used to have a useFocusEffect that would disable preregistration mode
-  // which caught if you entered prereg and then changed your mind. This actually
-  // sucks as a pattern so I'm turning it off and making that happen depending on
-  // how you proceed.
+  // preRegistrationMode is no longer set from this screen. It's derived on OobeServerScreen
+  // from the server's own ClientSettingsData.enablePreregistration once a server URL is
+  // chosen, rather than from which button the user tapped here.
 
   // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
   return (
@@ -126,15 +96,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
           </Pressable>
         </PaddedContentView>
       </ScrollingContentView>
-      <OobeButtonsView
-        rightOnPress={onPress}
-        leftOnPress={onPreRegistrationPress}
-        leftButtonColor={theme.colors.twitarrNeutralButton}
-        leftText={'Pre-Registration'}
-        leftButtonTextColor={theme.colors.onTwitarrNeutralButton}
-        rightDisabled={isInitializing}
-        leftDisabled={isInitializing}
-      />
+      <OobeButtonsView rightOnPress={onPress} rightDisabled={isInitializing} />
     </AppView>
   );
 };

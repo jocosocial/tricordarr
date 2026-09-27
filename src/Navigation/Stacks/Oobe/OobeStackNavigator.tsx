@@ -7,6 +7,7 @@ import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oo
 import {OobeAccountScreen} from '#src/Screens/OOBE/OobeAccountScreen';
 import {OobeConductScreen} from '#src/Screens/OOBE/OobeConductScreen';
 import {OobeFinishScreen} from '#src/Screens/OOBE/OobeFinishScreen';
+import {OobeLocationScreen} from '#src/Screens/OOBE/OobeLocationScreen';
 import {OobePermissionsScreen} from '#src/Screens/OOBE/OobePermissionsScreen';
 import {OobePreregistrationScreen} from '#src/Screens/OOBE/OobePreregistrationScreen';
 import {OobeServerScreen} from '#src/Screens/OOBE/OobeServerScreen';
@@ -26,6 +27,11 @@ export const OobeStackNavigator = () => {
         name={OobeStackComponents.oobeWelcomeScreen}
         component={OobeWelcomeScreen}
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={OobeStackComponents.oobeLocationScreen}
+        component={OobeLocationScreen}
+        options={{title: 'Location'}}
       />
       <Stack.Screen
         name={OobeStackComponents.oobeServerScreen}

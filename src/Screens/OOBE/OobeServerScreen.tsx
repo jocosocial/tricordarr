@@ -16,34 +16,46 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
+import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
-import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {OobeLocation} from '#src/Enums/OobeLocation';
 import {createLogger} from '#src/Libraries/Logger';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
-import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
+import {useClientSettingsQuery, useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {ServerUrlFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
 
 const logger = createLogger('OobeServerScreen.tsx');
 
-export const OobeServerScreen = ({navigation}: Props) => {
+export const OobeServerScreen = ({navigation, route}: Props) => {
+  const location = route.params?.location ?? OobeLocation.ship;
   const {currentSession, updateSession} = useSession();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
+  const [busy, setBusy] = useState(false);
   const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
   const {hasUnsavedWork} = useErrorHandler();
   const {serverUrl} = useSwiftarrQueryClient();
   const queryClient = useQueryClient();
   const {setSnackbarPayload} = useSnackbar();
   const {performSignOut} = useSignOut();
+  const {updateClientSettings} = useClientSettings();
+  // Prefetch client settings once the healthcheck passes so pressing Next only writes
+  // already-loaded state rather than fetching on tap. Never relies on stale data: this
+  // query is disabled until a fresh healthcheck pass and refetches on every mount.
+  const {data: clientSettingsData, isFetching: isFetchingClientSettings} = useClientSettingsQuery({
+    enabled: serverHealthPassed,
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     if (!currentSession) {
@@ -77,6 +89,26 @@ export const OobeServerScreen = ({navigation}: Props) => {
 
   const onBackPress = () => {
     navigation.goBack();
+  };
+
+  const onNextPress = async () => {
+    if (!currentSession || !clientSettingsData) {
+      logger.warn('Cannot proceed: no current session or client settings not loaded');
+      return;
+    }
+    setBusy(true);
+    try {
+      // The server's own ClientSettingsData is the source of truth for pre-registration
+      // mode, not which location card the user tapped. This lets the URL entered here
+      // (whether or not it matches the card that got us here) win.
+      await updateSession(currentSession.sessionID, {
+        preRegistrationMode: clientSettingsData.enablePreregistration,
+      });
+      await updateClientSettings(clientSettingsData);
+      navigation.push(OobeStackComponents.oobeConductScreen);
+    } finally {
+      setBusy(false);
+    }
   };
 
   useEffect(() => {
@@ -113,12 +145,12 @@ export const OobeServerScreen = ({navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  const {preRegistrationMode} = usePreRegistration();
+  const isLand = location === OobeLocation.land;
 
   return (
     <AppView>
       <ScrollingContentView refreshControl={<AppRefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-        {!preRegistrationMode && (
+        {!isLand && (
           <PaddedContentView>
             <Text>
               Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs, private DNS, or
@@ -129,7 +161,7 @@ export const OobeServerScreen = ({navigation}: Props) => {
         <PaddedContentView>
           <Text>
             Do not change this unless instructed to do so by the Twitarr Dev Team or THO.
-            {preRegistrationMode ? (
+            {isLand ? (
               <Text> Should be set to Start during pre-registration.</Text>
             ) : (
               <Text> Should be set to Production when on-board.</Text>
@@ -153,8 +185,10 @@ export const OobeServerScreen = ({navigation}: Props) => {
       </ScrollingContentView>
       <OobeButtonsView
         leftOnPress={onBackPress}
-        rightOnPress={() => navigation.push(OobeStackComponents.oobeConductScreen)}
-        rightDisabled={!serverHealthPassed || isFetching || hasUnsavedWork}
+        rightOnPress={onNextPress}
+        rightDisabled={
+          !serverHealthPassed || isFetching || isFetchingClientSettings || !clientSettingsData || hasUnsavedWork || busy
+        }
       />
     </AppView>
   );

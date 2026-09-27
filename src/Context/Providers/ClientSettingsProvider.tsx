@@ -14,6 +14,7 @@ import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {createLogger} from '#src/Libraries/Logger';
 import {useClientSettingsQuery} from '#src/Queries/Client/ClientQueries';
+import {ClientSettingsData} from '#src/Structs/ControllerStructs';
 
 const logger = createLogger('ClientSettingsProvider.tsx');
 
@@ -76,20 +77,23 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
   const isAccessRestricted =
     !!clientSettings && minAccessLevel !== UserAccessLevel.banned && !clientSettings.enablePreregistration;
 
-  const updateClientSettings = useCallback(async () => {
-    const response = await refetch();
-    if (response.data) {
-      const dateStr = parseCruiseStartDate(response.data.cruiseStartDate);
-      updateAppConfig({
-        ...appConfig,
-        cruiseLength: response.data.cruiseLengthInDays,
-        cruiseStartDateStr: dateStr,
-        cruiseStartDate: buildCruiseStartDate(dateStr, response.data.portTimeZoneID),
-        portTimeZoneID: response.data.portTimeZoneID,
-        schedBaseUrl: parseScheduleUpdateURL(response.data.scheduleUpdateURL),
-      });
-    }
-  }, [appConfig, refetch, updateAppConfig]);
+  const updateClientSettings = useCallback(
+    async (data?: ClientSettingsData) => {
+      const settings = data ?? (await refetch()).data;
+      if (settings) {
+        const dateStr = parseCruiseStartDate(settings.cruiseStartDate);
+        updateAppConfig({
+          ...appConfig,
+          cruiseLength: settings.cruiseLengthInDays,
+          cruiseStartDateStr: dateStr,
+          cruiseStartDate: buildCruiseStartDate(dateStr, settings.portTimeZoneID),
+          portTimeZoneID: settings.portTimeZoneID,
+          schedBaseUrl: parseScheduleUpdateURL(settings.scheduleUpdateURL),
+        });
+      }
+    },
+    [appConfig, refetch, updateAppConfig],
+  );
 
   const value = useMemo(
     () => ({
