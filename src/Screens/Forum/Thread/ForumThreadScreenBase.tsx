@@ -23,6 +23,7 @@ import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {PostAsUserWarningView} from '#src/Components/Views/Warnings/PostAsUserWarningView';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -39,6 +40,7 @@ import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {paginatedHighWaterMark} from '#src/Libraries/CacheReduction';
 import {createLogger} from '#src/Libraries/Logger';
+import {cancelSecondaryNotifications} from '#src/Libraries/Notifications/Content';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ForumStackComponents} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
@@ -113,6 +115,7 @@ const ForumThreadScreenBaseInner = ({
   const flatListRef = useRef<TConversationListV2Ref>(null);
   const {hasModerator} = usePrivilege();
   const {maxForumPostImages} = useClientSettings();
+  const {appConfig} = useConfig();
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
@@ -158,6 +161,14 @@ const ForumThreadScreenBaseInner = ({
       markRead(forumData.forumID, forumData.categoryID, fetchedUpTo, serverPostCount);
     }
   }, [forumData, forumListData, markRead, data]);
+
+  // Viewing the thread dismisses any displayed mention/alertword notifications for it, like opening a seamail does.
+  const forumID = forumData?.forumID;
+  useEffect(() => {
+    if (forumID && appConfig.markReadCancelPush) {
+      cancelSecondaryNotifications(forumID);
+    }
+  }, [forumID, appConfig.markReadCancelPush]);
 
   const fullRefresh = useCallback(async () => {
     await Promise.all([refetch(), refetchPinnedPosts()]);
