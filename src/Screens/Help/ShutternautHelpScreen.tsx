@@ -23,8 +23,9 @@ export const ShutternautHelpScreen = () => {
         <HelpChapterTitleView title={'How to Use'}>
           <HelpTopicView title={'Filters'} icon={AppIcons.filter}>
             In the Schedule screen you can filter events based on whether they need a photographer. You can also view
-            what events you are photographing. Filters are mutually exclusive so you can only have one active
-            Shutternaut filter at a time.
+            what events you are photographing. Photographer filters are mutually exclusive with each other, but combine
+            with the event type and favorites filters to narrow the Events source further, e.g. "Gaming" + "Needs
+            Photographer" shows only gaming events that still need one.
           </HelpTopicView>
           <HelpTopicView icon={AppIcons.shutternaut}>
             Long-press an event or open the event details screen to mark yourself as a photographer for the event.
