@@ -2,9 +2,10 @@ import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/l
 import React, {useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
-import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {FloatingScrollButtonsView} from '#src/Components/Buttons/FloatingScrollButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {createLogger} from '#src/Libraries/Logger';
 import {RNFlatListSeparatorComponent} from '#src/Types';
 
@@ -57,7 +58,7 @@ export const ConversationList = <TItem,>({
   const {commonStyles, styleDefaults} = useStyles();
   const {appConfig} = useConfig();
   const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
-  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [scrollButtons, setScrollButtons] = useState({up: false, down: false});
   const [init, setInit] = useState(true);
   const [hasLayout, setHasLayout] = useState(false);
 
@@ -72,6 +73,11 @@ export const ConversationList = <TItem,>({
    */
   const handleScrollButtonPress = useCallback(() => {
     listRef.current?.scrollToEnd({animated: true});
+  }, [listRef]);
+
+  /** Scroll to the first item in the conversation. */
+  const handleScrollToStart = useCallback(() => {
+    listRef.current?.scrollToIndex({index: 0, animated: true});
   }, [listRef]);
 
   /**
@@ -91,7 +97,10 @@ export const ConversationList = <TItem,>({
         event.nativeEvent.layoutMeasurement.height -
         event.nativeEvent.contentOffset.y;
       const scrollThresholdCondition = distanceFromBottom > styleDefaults.listScrollThreshold;
-      setShowScrollButton(scrollThresholdCondition);
+      setScrollButtons({
+        up: event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold,
+        down: scrollThresholdCondition,
+      });
       if (onScrollThreshold) {
         onScrollThreshold(scrollThresholdCondition);
       }
@@ -154,8 +163,17 @@ export const ConversationList = <TItem,>({
         style={style}
         scrollsToTop={false}
       />
-      {effectiveScrollButton && showScrollButton && (
-        <FloatingScrollButton testID={'conversationScroll-button'} onPress={handleScrollButtonPress} />
+      {effectiveScrollButton && (scrollButtons.up || scrollButtons.down) && (
+        <FloatingScrollButtonsView
+          actions={[
+            ...(scrollButtons.up
+              ? [{testID: 'conversationScrollUp-button', icon: AppIcons.scrollUp, onPress: handleScrollToStart}]
+              : []),
+            ...(scrollButtons.down
+              ? [{testID: 'conversationScrollDown-button', icon: AppIcons.scrollDown, onPress: handleScrollButtonPress}]
+              : []),
+          ]}
+        />
       )}
     </View>
   );

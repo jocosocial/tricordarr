@@ -16,6 +16,8 @@ interface SeamailFlatListProps {
   hasNextPage?: boolean;
   handleLoadNext?: () => void;
   scrollToTopIntent?: number;
+  /** When true, anchor the scroll buttons above a bottom-right FAB. */
+  scrollButtonRaised?: boolean;
 }
 
 /**
@@ -65,6 +67,7 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
       renderListFooter={getListFooter}
       onScrollThreshold={props.onScrollThreshold}
       handleLoadNext={props.handleLoadNext}
+      scrollButtonRaised={props.scrollButtonRaised}
       // This is because FlashListV2 uses the first item for some internal anchoring.
       maintainVisibleContentPosition={{disabled: true}}
     />

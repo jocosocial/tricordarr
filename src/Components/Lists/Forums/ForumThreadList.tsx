@@ -19,6 +19,8 @@ interface ForumThreadListProps {
   keyExtractor?: (item: ForumListData) => string;
   onScrollThreshold?: (value: boolean) => void;
   scrollToTopIntent?: number;
+  /** When true, anchor the scroll buttons above a bottom-right FAB. */
+  scrollButtonRaised?: boolean;
 }
 
 /**
@@ -34,6 +36,7 @@ export const ForumThreadList = ({
   keyExtractor = (item: ForumListData) => item.forumID,
   onScrollThreshold,
   scrollToTopIntent,
+  scrollButtonRaised,
 }: ForumThreadListProps) => {
   const listRef = useRef<FlashListRef<ForumListData>>(null);
   const {enableSelection, setEnableSelection, selectedItems} = useSelection();
@@ -76,6 +79,7 @@ export const ForumThreadList = ({
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       renderItemSeparator={getListSeparator}
+      scrollButtonRaised={scrollButtonRaised}
     />
   );
 };
