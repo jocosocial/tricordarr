@@ -30,20 +30,21 @@ interface FloatingScrollButtonsViewProps {
  *
  * Pass raised when the screen also renders a bottom-right FAB, so the stack
  * clears it instead of collapsing into the FAB's footprint at the list ends.
+ * Ignored in left-handed mode, where the stack is on the opposite side from the FAB.
  */
 export const FloatingScrollButtonsView = ({actions, small = false, raised = false}: FloatingScrollButtonsViewProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const {appConfig} = useConfig();
 
+  const leftHanded = appConfig.userPreferences.reverseSwipeOrientation;
+  // The FAB sits on the right, so left-handed mode moves the stack to the left and no extra clearance is needed.
   const styles = StyleSheet.create({
     container: {
       ...commonStyles.flexColumn,
       ...commonStyles.backgroundTransparent,
       ...commonStyles.positionAbsolute,
-      bottom: raised ? styleDefaults.marginSize * 4 : styleDefaults.marginSize,
-      ...(appConfig.userPreferences.reverseSwipeOrientation
-        ? {left: styleDefaults.marginSize / 2}
-        : {right: styleDefaults.marginSize / 2}),
+      bottom: raised && !leftHanded ? styleDefaults.marginSize * 4 : styleDefaults.marginSize,
+      ...(leftHanded ? {left: styleDefaults.marginSize / 2} : {right: styleDefaults.marginSize / 2}),
     },
   });
 

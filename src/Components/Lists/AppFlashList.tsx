@@ -64,7 +64,7 @@ const AppFlashListInner = <TItem,>(
   const {commonStyles, styleDefaults} = useStyles();
   const {appConfig} = useConfig();
   const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
-  const [scrollButtons, setScrollButtons] = useState({up: false, down: false});
+  const [showScrollButtons, setShowScrollButtons] = useState(false);
 
   /**
    * Callback handler for when the scroll button is pressed.
@@ -93,7 +93,6 @@ const AppFlashListInner = <TItem,>(
       const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
       const distanceFromTop = contentOffset.y;
       const scrollableHeight = Math.max(0, contentSize.height - layoutMeasurement.height);
-      const distanceFromBottom = scrollableHeight - distanceFromTop;
       /**
        * Lists that cannot scroll past the default threshold would otherwise lose a
        * direction's button while still scrollable, which makes the buttons vanish at
@@ -104,10 +103,8 @@ const AppFlashListInner = <TItem,>(
         Math.max(scrollableHeight / 3, styleDefaults.marginSize),
       );
       const scrollThresholdCondition = distanceFromTop > styleDefaults.listScrollThreshold;
-      setScrollButtons({
-        up: distanceFromTop > scrollThreshold,
-        down: distanceFromBottom > scrollThreshold,
-      });
+      // Both buttons share the hidden range near the top and stay put near the bottom, as on inverted lists.
+      setShowScrollButtons(distanceFromTop > scrollThreshold);
       if (onScrollThreshold) {
         onScrollThreshold(scrollThresholdCondition);
       }
@@ -139,17 +136,13 @@ const AppFlashListInner = <TItem,>(
         // columnWrapperStyle is not supported in FlashList v2.
         masonry={masonry}
       />
-      {effectiveScrollButton && (scrollButtons.up || scrollButtons.down) && (
+      {effectiveScrollButton && showScrollButtons && (
         <FloatingScrollButtonsView
           small={scrollButtonSmall}
           raised={scrollButtonRaised}
           actions={[
-            ...(scrollButtons.up
-              ? [{testID: 'flashListScrollUp-button', icon: AppIcons.scrollUp, onPress: handleScrollButtonPress}]
-              : []),
-            ...(scrollButtons.down
-              ? [{testID: 'flashListScrollDown-button', icon: AppIcons.scrollDown, onPress: handleScrollToEnd}]
-              : []),
+            {testID: 'flashListScrollUp-button', icon: AppIcons.scrollUp, onPress: handleScrollButtonPress},
+            {testID: 'flashListScrollDown-button', icon: AppIcons.scrollDown, onPress: handleScrollToEnd},
           ]}
         />
       )}
