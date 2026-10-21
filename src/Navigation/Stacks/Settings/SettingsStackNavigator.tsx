@@ -32,6 +32,7 @@ import {TestNotificationScreen} from '#src/Screens/Settings/Developer/TestNotifi
 import {LoggingSettingsScreen} from '#src/Screens/Settings/LoggingSettingsScreen';
 import {LogViewerScreen} from '#src/Screens/Settings/LogViewerScreen';
 import {BackgroundConnectionSettingsScreen} from '#src/Screens/Settings/Notifications/BackgroundConnectionSettingsScreen';
+import {NotificationLogScreen} from '#src/Screens/Settings/Notifications/NotificationLogScreen';
 import {NotificationPollerSettingsScreen} from '#src/Screens/Settings/Notifications/NotificationPollerSettingsScreen';
 import {PushNotificationSettingsScreen} from '#src/Screens/Settings/Notifications/PushNotificationSettingsScreen';
 import {SettingsScreen} from '#src/Screens/Settings/SettingsScreen';
@@ -186,6 +187,11 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.logViewerScreen}
         component={LogViewerScreen}
         options={{title: 'View Logs'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.notificationLogScreen}
+        component={NotificationLogScreen}
+        options={{title: 'Notification Log'}}
       />
     </Stack.Navigator>
   );

@@ -1,5 +1,157 @@
+diff --git a/node_modules/react-native-paper/lib/commonjs/components/Menu/MenuItem.js b/node_modules/react-native-paper/lib/commonjs/components/Menu/MenuItem.js
+index d8695dd..cedc992 100644
+--- a/node_modules/react-native-paper/lib/commonjs/components/Menu/MenuItem.js
++++ b/node_modules/react-native-paper/lib/commonjs/components/Menu/MenuItem.js
+@@ -53,6 +53,7 @@ const MenuItem = ({
+   accessibilityState,
+   theme: themeOverrides,
+   titleMaxFontSizeMultiplier = 1.5,
++  titleNumberOfLines = 1,
+   hitSlop
+ }) => {
+   const theme = (0, _theming.useInternalTheme)(themeOverrides);
+@@ -88,7 +89,7 @@ const MenuItem = ({
+   return /*#__PURE__*/React.createElement(_TouchableRipple.default, {
+     style: [styles.container, {
+       paddingHorizontal: containerPadding
+-    }, dense && styles.md3DenseContainer, style],
++    }, dense && styles.md3DenseContainer, titleNumberOfLines !== 1 && styles.wrappingContainer, style],
+     onPress: onPress,
+     disabled: disabled,
+     testID: testID,
+@@ -99,7 +100,7 @@ const MenuItem = ({
+     rippleColor: rippleColor,
+     hitSlop: hitSlop
+   }, /*#__PURE__*/React.createElement(_reactNative.View, {
+-    style: [styles.row, containerStyle]
++    style: [styles.row, titleNumberOfLines !== 1 && styles.wrappingRow, containerStyle]
+   }, leadingIcon ? /*#__PURE__*/React.createElement(_reactNative.View, {
+     style: [!isV3 && styles.item, {
+       width: iconWidth
+@@ -113,12 +114,12 @@ const MenuItem = ({
+     style: [!isV3 && styles.item, styles.content, {
+       minWidth,
+       maxWidth
+-    }, isV3 && (leadingIcon ? styles.md3LeadingIcon : styles.md3WithoutLeadingIcon), contentStyle],
++    }, isV3 && (leadingIcon ? styles.md3LeadingIcon : styles.md3WithoutLeadingIcon), titleNumberOfLines !== 1 && styles.wrappingContent, contentStyle],
+     pointerEvents: "none"
+   }, /*#__PURE__*/React.createElement(_Text.default, {
+     variant: "bodyLarge",
+     selectable: false,
+-    numberOfLines: 1,
++    numberOfLines: titleNumberOfLines,
+     testID: `${testID}-title`,
+     style: [!isV3 && styles.title, titleTextStyle, titleStyle],
+     maxFontSizeMultiplier: titleMaxFontSizeMultiplier
+@@ -141,12 +142,20 @@ const styles = _reactNative.StyleSheet.create({
+     height: 48,
+     justifyContent: 'center'
+   },
++  wrappingContainer: {
++    height: undefined,
++    minHeight: 48,
++    paddingVertical: 8
++  },
+   md3DenseContainer: {
+     height: 32
+   },
+   row: {
+     flexDirection: 'row'
+   },
++  wrappingRow: {
++    alignItems: 'center'
++  },
+   title: {
+     fontSize: 16
+   },
+@@ -156,6 +165,9 @@ const styles = _reactNative.StyleSheet.create({
+   content: {
+     justifyContent: 'center'
+   },
++  wrappingContent: {
++    paddingRight: 8
++  },
+   md3LeadingIcon: {
+     marginLeft: 12
+   },
+diff --git a/node_modules/react-native-paper/lib/module/components/Menu/MenuItem.js b/node_modules/react-native-paper/lib/module/components/Menu/MenuItem.js
+index 0158113..5472793 100644
+--- a/node_modules/react-native-paper/lib/module/components/Menu/MenuItem.js
++++ b/node_modules/react-native-paper/lib/module/components/Menu/MenuItem.js
+@@ -45,6 +45,7 @@ const MenuItem = ({
+   accessibilityState,
+   theme: themeOverrides,
+   titleMaxFontSizeMultiplier = 1.5,
++  titleNumberOfLines = 1,
+   hitSlop
+ }) => {
+   const theme = useInternalTheme(themeOverrides);
+@@ -80,7 +81,7 @@ const MenuItem = ({
+   return /*#__PURE__*/React.createElement(TouchableRipple, {
+     style: [styles.container, {
+       paddingHorizontal: containerPadding
+-    }, dense && styles.md3DenseContainer, style],
++    }, dense && styles.md3DenseContainer, titleNumberOfLines !== 1 && styles.wrappingContainer, style],
+     onPress: onPress,
+     disabled: disabled,
+     testID: testID,
+@@ -91,7 +92,7 @@ const MenuItem = ({
+     rippleColor: rippleColor,
+     hitSlop: hitSlop
+   }, /*#__PURE__*/React.createElement(View, {
+-    style: [styles.row, containerStyle]
++    style: [styles.row, titleNumberOfLines !== 1 && styles.wrappingRow, containerStyle]
+   }, leadingIcon ? /*#__PURE__*/React.createElement(View, {
+     style: [!isV3 && styles.item, {
+       width: iconWidth
+@@ -105,12 +106,12 @@ const MenuItem = ({
+     style: [!isV3 && styles.item, styles.content, {
+       minWidth,
+       maxWidth
+-    }, isV3 && (leadingIcon ? styles.md3LeadingIcon : styles.md3WithoutLeadingIcon), contentStyle],
++    }, isV3 && (leadingIcon ? styles.md3LeadingIcon : styles.md3WithoutLeadingIcon), titleNumberOfLines !== 1 && styles.wrappingContent, contentStyle],
+     pointerEvents: "none"
+   }, /*#__PURE__*/React.createElement(Text, {
+     variant: "bodyLarge",
+     selectable: false,
+-    numberOfLines: 1,
++    numberOfLines: titleNumberOfLines,
+     testID: `${testID}-title`,
+     style: [!isV3 && styles.title, titleTextStyle, titleStyle],
+     maxFontSizeMultiplier: titleMaxFontSizeMultiplier
+@@ -133,12 +134,20 @@ const styles = StyleSheet.create({
+     height: 48,
+     justifyContent: 'center'
+   },
++  wrappingContainer: {
++    height: undefined,
++    minHeight: 48,
++    paddingVertical: 8
++  },
+   md3DenseContainer: {
+     height: 32
+   },
+   row: {
+     flexDirection: 'row'
+   },
++  wrappingRow: {
++    alignItems: 'center'
++  },
+   title: {
+     fontSize: 16
+   },
+@@ -148,6 +157,9 @@ const styles = StyleSheet.create({
+   content: {
+     justifyContent: 'center'
+   },
++  wrappingContent: {
++    paddingRight: 8
++  },
+   md3LeadingIcon: {
+     marginLeft: 12
+   },
 diff --git a/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts b/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts
-index d4d611a..2ffcd54 100644
+index d4d611a..eecd00e 100644
 --- a/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts
 +++ b/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts
 @@ -1,5 +1,5 @@
@@ -9,7 +161,7 @@ index d4d611a..2ffcd54 100644
  import type { ThemeProp } from '../../types';
  import { IconSource } from '../Icon';
  import { Props as TouchableRippleProps } from '../TouchableRipple/TouchableRipple';
-@@ -39,6 +39,14 @@ export type Props = {
+@@ -39,10 +39,23 @@ export type Props = {
       * Function to execute on press.
       */
      onPress?: (e: GestureResponderEvent) => void;
@@ -24,12 +176,21 @@ index d4d611a..2ffcd54 100644
      /**
       * Specifies the largest possible scale a title font can reach.
       */
-@@ -108,7 +116,7 @@ export type Props = {
+     titleMaxFontSizeMultiplier?: number;
++    /**
++     * Truncates the title after a given number of lines. Use `0` for an unlimited number of
++     * lines, letting long titles wrap instead of being clipped with an ellipsis.
++     */
++    titleNumberOfLines?: number;
+     /**
+      * Style that is passed to the root TouchableRipple container.
+      * @optional
+@@ -108,7 +121,7 @@ export type Props = {
   * ```
   */
  declare const MenuItem: {
 -    ({ leadingIcon, trailingIcon, dense, title, disabled, background, onPress, style, containerStyle, contentStyle, titleStyle, rippleColor: customRippleColor, testID, accessibilityLabel, accessibilityState, theme: themeOverrides, titleMaxFontSizeMultiplier, hitSlop, }: Props): React.JSX.Element;
-+    ({ leadingIcon, trailingIcon, dense, title, disabled, background, onPress, onLongPress, onLayout, style, containerStyle, contentStyle, titleStyle, rippleColor: customRippleColor, testID, accessibilityLabel, accessibilityState, theme: themeOverrides, titleMaxFontSizeMultiplier, hitSlop, }: Props): React.JSX.Element;
++    ({ leadingIcon, trailingIcon, dense, title, disabled, background, onPress, onLongPress, onLayout, style, containerStyle, contentStyle, titleStyle, rippleColor: customRippleColor, testID, accessibilityLabel, accessibilityState, theme: themeOverrides, titleMaxFontSizeMultiplier, titleNumberOfLines, hitSlop, }: Props): React.JSX.Element;
      displayName: string;
  };
  export default MenuItem;
@@ -193,7 +354,7 @@ index 669656c..a484fcf 100644
                      {children}
                    </ScrollView>
 diff --git a/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx b/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx
-index 4b8eb37..7887d7b 100644
+index 4b8eb37..8326c71 100644
 --- a/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx
 +++ b/node_modules/react-native-paper/src/components/Menu/MenuItem.tsx
 @@ -3,6 +3,7 @@ import {
@@ -204,7 +365,7 @@ index 4b8eb37..7887d7b 100644
    PressableAndroidRippleConfig,
    StyleProp,
    StyleSheet,
-@@ -61,6 +62,14 @@ export type Props = {
+@@ -61,10 +62,23 @@ export type Props = {
     * Function to execute on press.
     */
    onPress?: (e: GestureResponderEvent) => void;
@@ -219,7 +380,16 @@ index 4b8eb37..7887d7b 100644
    /**
     * Specifies the largest possible scale a title font can reach.
     */
-@@ -138,6 +147,8 @@ const MenuItem = ({
+   titleMaxFontSizeMultiplier?: number;
++  /**
++   * Truncates the title after a given number of lines. Use `0` for an unlimited number of
++   * lines, letting long titles wrap instead of being clipped with an ellipsis.
++   */
++  titleNumberOfLines?: number;
+   /**
+    * Style that is passed to the root TouchableRipple container.
+    * @optional
+@@ -138,6 +152,8 @@ const MenuItem = ({
    disabled,
    background,
    onPress,
@@ -228,7 +398,19 @@ index 4b8eb37..7887d7b 100644
    style,
    containerStyle,
    contentStyle,
-@@ -187,6 +198,8 @@ const MenuItem = ({
+@@ -148,6 +164,7 @@ const MenuItem = ({
+   accessibilityState,
+   theme: themeOverrides,
+   titleMaxFontSizeMultiplier = 1.5,
++  titleNumberOfLines = 1,
+   hitSlop,
+ }: Props) => {
+   const theme = useInternalTheme(themeOverrides);
+@@ -184,9 +201,12 @@ const MenuItem = ({
+         styles.container,
+         { paddingHorizontal: containerPadding },
+         dense && styles.md3DenseContainer,
++        titleNumberOfLines !== 1 && styles.wrappingContainer,
          style,
        ]}
        onPress={onPress}
@@ -237,3 +419,70 @@ index 4b8eb37..7887d7b 100644
        disabled={disabled}
        testID={testID}
        background={background}
+@@ -196,7 +216,9 @@ const MenuItem = ({
+       rippleColor={rippleColor}
+       hitSlop={hitSlop}
+     >
+-      <View style={[styles.row, containerStyle]}>
++      <View
++        style={[styles.row, titleNumberOfLines !== 1 && styles.wrappingRow, containerStyle]}
++      >
+         {leadingIcon ? (
+           <View
+             style={[!isV3 && styles.item, { width: iconWidth }]}
+@@ -214,6 +236,7 @@ const MenuItem = ({
+               (leadingIcon
+                 ? styles.md3LeadingIcon
+                 : styles.md3WithoutLeadingIcon),
++            titleNumberOfLines !== 1 && styles.wrappingContent,
+             contentStyle,
+           ]}
+           pointerEvents="none"
+@@ -221,7 +244,7 @@ const MenuItem = ({
+           <Text
+             variant="bodyLarge"
+             selectable={false}
+-            numberOfLines={1}
++            numberOfLines={titleNumberOfLines}
+             testID={`${testID}-title`}
+             style={[!isV3 && styles.title, titleTextStyle, titleStyle]}
+             maxFontSizeMultiplier={titleMaxFontSizeMultiplier}
+@@ -251,12 +274,24 @@ const styles = StyleSheet.create({
+     height: 48,
+     justifyContent: 'center',
+   },
++  // Overrides the fixed single-line `height` with a `minHeight` plus vertical breathing room,
++  // letting the container grow to fit a title wrapped across multiple lines.
++  wrappingContainer: {
++    height: undefined,
++    minHeight: 48,
++    paddingVertical: 8,
++  },
+   md3DenseContainer: {
+     height: 32,
+   },
+   row: {
+     flexDirection: 'row',
+   },
++  // Centers the leading/trailing icons against a title that has wrapped to multiple lines,
++  // instead of stretching to match the row's cross-axis (the default for `flexDirection: 'row'`).
++  wrappingRow: {
++    alignItems: 'center',
++  },
+   title: {
+     fontSize: 16,
+   },
+@@ -266,6 +301,13 @@ const styles = StyleSheet.create({
+   content: {
+     justifyContent: 'center',
+   },
++  // getContentMaxWidth() sizes the content view to span the full width left over after the
++  // container's own horizontal padding and any icons, with no margin of its own. That's fine
++  // for a single truncated line (the ellipsis reads as a gap), but a wrapped line of text can
++  // run flush to the container's edge, so reserve a little breathing room on the right.
++  wrappingContent: {
++    paddingRight: 8,
++  },
+   md3LeadingIcon: {
+     marginLeft: 12,
+   },
