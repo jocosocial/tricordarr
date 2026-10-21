@@ -420,7 +420,8 @@ public class WebsocketNotifier: NSObject {
 				body: socketNotification.info,
 				type: socketNotification.type,
 				url: url,
-				markAsReadUrl: markAsReadUrl
+				markAsReadUrl: markAsReadUrl,
+				secondaryContentID: socketNotification.secondaryContentID
 			)
 		}
 	}
@@ -462,6 +463,9 @@ public class WebsocketNotifier: NSObject {
 					if let msgData = msgData,
 						let socketNotification = try? JSONDecoder().decode(SocketNotificationData.self, from: msgData)
 					{
+						// Record before generating the push notification so the log reflects every
+						// event the socket delivered, including ones suppressed by mute/category settings.
+						NotificationLog.append(socketNotification, raw: msgData)
 						self.generatePushNotificationFromEvent(socketNotification)
 					}
 					else {

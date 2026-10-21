@@ -1,11 +1,18 @@
 import React, {useEffect, useId, useRef} from 'react';
-import {LayoutChangeEvent} from 'react-native';
+import {LayoutChangeEvent, StyleSheet} from 'react-native';
 import {Menu} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/src/components/Icon';
 
 import {useAppMenuScroll} from '#src/Components/Menus/AppMenu';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+
+// Static: doesn't depend on commonStyles, theme, or props.
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'space-between',
+  },
+});
 
 interface SelectableMenuItemProps {
   selected?: boolean;
@@ -43,6 +50,7 @@ export const SelectableMenuItem = (props: SelectableMenuItemProps) => {
     <Menu.Item
       title={props.title}
       style={props.selected ? commonStyles.surfaceVariant : undefined}
+      containerStyle={styles.container}
       trailingIcon={props.selected ? AppIcons.check : undefined}
       onPress={props.onPress}
       leadingIcon={props.leadingIcon}
