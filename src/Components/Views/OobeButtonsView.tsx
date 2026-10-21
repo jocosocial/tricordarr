@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
+import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -16,9 +17,16 @@ interface OobeButtonsViewProps {
   rightOnPress?: () => void;
   rightMode?: 'contained' | 'text' | 'outlined' | 'elevated' | 'contained-tonal';
   rightDisabled?: boolean;
+  middleText?: string;
+  middleOnPress?: () => void;
+  middleMode?: 'contained' | 'text' | 'outlined' | 'elevated' | 'contained-tonal';
+  middleDisabled?: boolean;
+  middleIcon?: IconSource;
   leftButtonColor?: string;
+  middleButtonColor?: string;
   rightButtonColor?: string;
   leftButtonTextColor?: string;
+  middleButtonTextColor?: string;
   rightButtonTextColor?: string;
 }
 
@@ -31,9 +39,16 @@ export const OobeButtonsView = ({
   rightMode = 'contained',
   leftDisabled = false,
   rightDisabled = false,
+  middleText,
+  middleOnPress,
+  middleMode = 'contained',
+  middleDisabled = false,
+  middleIcon,
   leftButtonColor,
+  middleButtonColor,
   rightButtonColor,
   leftButtonTextColor,
+  middleButtonTextColor,
   rightButtonTextColor,
 }: OobeButtonsViewProps) => {
   const {commonStyles} = useStyles();
@@ -42,7 +57,6 @@ export const OobeButtonsView = ({
   const styles = StyleSheet.create({
     buttonContainer: {
       ...commonStyles.flexRow,
-      ...commonStyles.justifySpaceBetween,
       ...commonStyles.paddingHorizontal,
       ...commonStyles.paddingVertical,
       ...commonStyles.alignItemsCenter,
@@ -52,6 +66,10 @@ export const OobeButtonsView = ({
     },
     leftButton: {
       ...commonStyles.flexStart,
+    },
+    middleButtonContainer: {
+      ...commonStyles.flex,
+      ...commonStyles.alignItemsCenter,
     },
     rightButtonContainer: {
       ...commonStyles.flex0,
@@ -74,6 +92,20 @@ export const OobeButtonsView = ({
             textColor={leftButtonTextColor || theme.colors.onBackground}
             buttonColor={leftButtonColor}
             testID={oobeButtonTestID(leftText)}
+          />
+        )}
+      </View>
+      <View style={styles.middleButtonContainer}>
+        {middleText && middleOnPress && (
+          <PrimaryActionButton
+            buttonText={middleText}
+            onPress={middleOnPress}
+            mode={middleMode}
+            disabled={middleDisabled}
+            icon={middleIcon}
+            buttonColor={middleButtonColor}
+            textColor={middleButtonTextColor}
+            testID={oobeButtonTestID(middleText)}
           />
         )}
       </View>

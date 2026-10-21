@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 
 import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
+import {useSecretTrigger} from '#src/Hooks/useSecretTrigger';
 
 interface SecretHeaderTitleProps {
   title: string;
@@ -8,17 +9,8 @@ interface SecretHeaderTitleProps {
   triggerCount?: number;
 }
 
-export const SecretHeaderTitle = ({title, onReveal, triggerCount = 5}: SecretHeaderTitleProps) => {
-  const [pressCount, setPressCount] = useState(0);
+export const SecretHeaderTitle = ({title, onReveal, triggerCount}: SecretHeaderTitleProps) => {
+  const {onPress} = useSecretTrigger({onTrigger: onReveal, triggerCount});
 
-  const handleTitlePress = () => {
-    // Needs to be separate var because the state hasn't updated in time.
-    const newPressCount = pressCount + 1;
-    setPressCount(newPressCount);
-    if (newPressCount % triggerCount === 0) {
-      onReveal();
-    }
-  };
-
-  return <NavHeaderTitle title={title} onPress={handleTitlePress} />;
+  return <NavHeaderTitle title={title} onPress={onPress} />;
 };
