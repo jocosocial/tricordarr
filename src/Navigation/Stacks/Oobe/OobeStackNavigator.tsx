@@ -31,38 +31,38 @@ export const OobeStackNavigator = () => {
       <Stack.Screen
         name={OobeStackComponents.oobeLocationScreen}
         component={OobeLocationScreen}
-        options={{title: 'Location'}}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name={OobeStackComponents.oobeServerScreen}
         component={OobeServerScreen}
-        options={{title: 'Server URL'}}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name={OobeStackComponents.oobeConductScreen}
         component={OobeConductScreen}
-        options={{title: 'Code of Conduct'}}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name={OobeStackComponents.oobeAccountScreen}
         component={OobeAccountScreen}
-        options={{title: 'Account'}}
+        options={{headerShown: false}}
       />
-      <Stack.Screen name={OobeStackComponents.oobeLoginScreen} component={LoginScreen} options={{title: 'Login'}} />
+      <Stack.Screen name={OobeStackComponents.oobeLoginScreen} component={LoginScreen} options={{headerShown: false}} />
       <Stack.Screen
         name={OobeStackComponents.oobeRegisterScreen}
         component={RegisterScreen}
-        options={{title: 'Register'}}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name={OobeStackComponents.oobePermissionsScreen}
         component={OobePermissionsScreen}
-        options={{title: 'Permissions'}}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name={OobeStackComponents.oobeFinishScreen}
         component={OobeFinishScreen}
-        options={{title: 'Finish'}}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name={OobeStackComponents.oobePreregistrationScreen}

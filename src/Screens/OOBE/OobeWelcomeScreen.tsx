@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Pressable, StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Text} from 'react-native-paper';
@@ -11,28 +11,27 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useSecretTrigger} from '#src/Hooks/useSecretTrigger';
+import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
+import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
 
-const VERSION_TAPS_TO_FAULT = 10;
-
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
   const {currentSession, findOrCreateSession} = useSession();
   const {appConfig} = useConfig();
+  const {oobeFinish} = useOobe();
   const {fromAsset} = useAppImage();
-  const [versionTapCount, setVersionTapCount] = useState(0);
-  const [fault, setFault] = useState(false);
-
-  if (fault) {
-    throw Error("Intentional critical fault. I hope you know what you're doing.");
-  }
+  const rootNavigation = useRootStack();
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
@@ -55,13 +54,21 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
     navigation.push(OobeStackComponents.oobeLocationScreen);
   };
 
-  const onVersionPress = () => {
-    const next = versionTapCount + 1;
-    setVersionTapCount(next);
-    if (next >= VERSION_TAPS_TO_FAULT) {
-      setFault(true);
-    }
-  };
+  // Secret escape hatch, formerly a tap-the-header-title secret (via SecretHeaderTitle) on
+  // OobeServerScreen. Relocated here onto the version/build text, via the same hook, since
+  // this screen no longer has a header to hang it on. Its own tap count is independent of
+  // versionTapCount below, so the two secrets never interfere with each other.
+  const {onPress: onVersionPress} = useSecretTrigger({
+    onTrigger: () => {
+      oobeFinish();
+      rootNavigation.replace(RootStackComponents.rootContentScreen, {
+        screen: BottomTabComponents.homeTab,
+        params: {
+          screen: MainStackComponents.mainScreen,
+        },
+      });
+    },
+  });
 
   // preRegistrationMode is no longer set from this screen. It's derived on OobeServerScreen
   // from the server's own ClientSettingsData.enablePreregistration once a server URL is

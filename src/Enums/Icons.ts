@@ -169,4 +169,6 @@ export enum AppIcons {
   wifi = 'wifi',
   vpn = 'key',
   connection = 'server-network',
+  cardSelected = 'checkbox-marked-circle',
+  cardUnselected = 'checkbox-blank-circle-outline',
 }

@@ -2,15 +2,11 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
-import React, {useCallback, useEffect, useState} from 'react';
-import {View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
-import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ServerUrlSettingForm} from '#src/Components/Forms/Settings/ServerUrlSettingForm';
-import {OobeServerHeaderTitle} from '#src/Components/Navigation/OobeServerHeaderTitle';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -22,6 +18,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {OobeLocation} from '#src/Enums/OobeLocation';
 import {createLogger} from '#src/Libraries/Logger';
@@ -41,7 +38,7 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const [busy, setBusy] = useState(false);
-  const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
+  const {theme} = useAppTheme();
   const {hasUnsavedWork} = useErrorHandler();
   const {serverUrl} = useSwiftarrQueryClient();
   const queryClient = useQueryClient();
@@ -119,31 +116,9 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
     }
   }, [serverHealthData]);
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: getHeaderTitle,
-    });
-  }, [getHeaderTitle, navigation]);
-
-  const getNavButtons = useCallback(() => {
-    return (
-      <View>
-        <MaterialHeaderButtons>
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.networkHelpScreen)}
-          />
-        </MaterialHeaderButtons>
-      </View>
-    );
-  }, [navigation]);
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: getNavButtons,
-    });
-  }, [getNavButtons, navigation]);
+  const onHelpPress = () => {
+    navigation.push(CommonStackComponents.networkHelpScreen);
+  };
 
   const isLand = location === OobeLocation.land;
 
@@ -185,6 +160,10 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
       </ScrollingContentView>
       <OobeButtonsView
         leftOnPress={onBackPress}
+        middleText={'Help'}
+        middleOnPress={onHelpPress}
+        middleIcon={AppIcons.help}
+        middleButtonColor={theme.colors.twitarrNegativeButton}
         rightOnPress={onNextPress}
         rightDisabled={
           !serverHealthPassed || isFetching || isFetchingClientSettings || !clientSettingsData || hasUnsavedWork || busy
