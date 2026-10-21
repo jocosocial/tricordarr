@@ -11,6 +11,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
@@ -19,16 +20,20 @@ import {alertDemoteUser, alertPromoteUser} from '#src/Libraries/Alerts/AdminAler
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useDemoteUserAccessMutation, usePromoteUserAccessMutation} from '#src/Queries/Admin/UserAccessMutations';
 import {useModeratorsQuery, useTHOQuery, useTwitarrTeamQuery} from '#src/Queries/Admin/UserAccessQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminAccessLevelsScreen>;
 
 export const AdminAccessLevelsScreen = (props: Props) => {
+  const {hasTHO} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'tho'}>
-      <AdminAccessLevelsScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTHO}>
+        <AdminAccessLevelsScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -84,7 +89,11 @@ const AdminAccessLevelsScreenInner = ({navigation}: Props) => {
   };
 
   if ((loadingMods || loadingTeam || loadingTho) && !moderators && !twitarrTeam && !tho) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

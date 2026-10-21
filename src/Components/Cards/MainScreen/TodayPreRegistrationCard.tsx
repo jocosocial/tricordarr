@@ -4,6 +4,7 @@ import {Card, Text} from 'react-native-paper';
 
 import {PreRegistrationListItem} from '#src/Components/Lists/Items/PreRegistrationListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -14,6 +15,7 @@ export const TodayPreRegistrationCard = () => {
   const {commonStyles} = useStyles();
   const mainNavigation = useMainStack();
   const bottomTabNavigation = useBottomTabNavigator();
+  const {isLoggedIn} = useSession();
 
   const styles = StyleSheet.create({
     card: {
@@ -40,11 +42,13 @@ export const TodayPreRegistrationCard = () => {
           suggested actions that you can do to get you started:
         </Text>
         <ListSection>
-          <PreRegistrationListItem
-            title={'Setup Your Profile'}
-            iconName={AppIcons.profile}
-            onPress={() => mainNavigation.push(CommonStackComponents.userSelfProfileScreen)}
-          />
+          {isLoggedIn && (
+            <PreRegistrationListItem
+              title={'Setup Your Profile'}
+              iconName={AppIcons.profile}
+              onPress={() => mainNavigation.push(CommonStackComponents.userSelfProfileScreen)}
+            />
+          )}
           <PreRegistrationListItem
             title={'View the Schedule'}
             iconName={AppIcons.events}
@@ -60,11 +64,13 @@ export const TodayPreRegistrationCard = () => {
             iconName={AppIcons.performer}
             onPress={() => mainNavigation.push(MainStackComponents.performerListScreen, {})}
           />
-          <PreRegistrationListItem
-            title={'Favorite Users'}
-            iconName={AppIcons.userFavorite}
-            onPress={() => mainNavigation.push(CommonStackComponents.usersList, {mode: 'favorite'})}
-          />
+          {isLoggedIn && (
+            <PreRegistrationListItem
+              title={'Favorite Users'}
+              iconName={AppIcons.userFavorite}
+              onPress={() => mainNavigation.push(CommonStackComponents.usersList, {mode: 'favorite'})}
+            />
+          )}
 
           <PreRegistrationListItem
             title={'Help Manual'}

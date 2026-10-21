@@ -9,6 +9,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ServerSettingsReadOnlyWarningView} from '#src/Components/Views/Warnings/ServerSettingsReadOnlyWarningView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -20,14 +21,18 @@ import {
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAdminSettingsUpdateMutation} from '#src/Queries/Admin/SettingsMutations';
 import {useAdminSettingsQuery} from '#src/Queries/Admin/SettingsQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {SettingsAppFeaturePair} from '#src/Structs/AdminControllerStructs';
 
 export const AdminFeaturesScreen = () => {
+  const {hasTwitarrTeam} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminFeaturesScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
+        <AdminFeaturesScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -70,7 +75,11 @@ const AdminFeaturesScreenInner = () => {
   };
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const deltas = data

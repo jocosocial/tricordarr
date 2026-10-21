@@ -15,9 +15,12 @@ export const useHealthQuery = (options = {}) => {
     retry: false,
     gcTime: 0,
     staleTime: 0,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: 'always',
-    refetchOnReconnect: 'always',
+    // A failed healthcheck (timeout, 404, etc.) must not re-run on its own. Only an explicit
+    // refetch() may retry it; the automatic triggers below apply to non-error state only.
+    retryOnMount: false,
+    refetchOnMount: query => (query.state.status === 'error' ? false : 'always'),
+    refetchOnWindowFocus: query => (query.state.status === 'error' ? false : 'always'),
+    refetchOnReconnect: query => (query.state.status === 'error' ? false : 'always'),
     queryFn: async (): Promise<HealthResponse> => {
       try {
         const response = await apiGet<HealthResponse, undefined>('/client/health');

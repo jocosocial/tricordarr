@@ -1,21 +1,16 @@
 import {QueryKey} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
-import moment from 'moment-timezone';
-import pluralize from 'pluralize';
-import URLParse from 'url-parse';
 
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {FezType} from '#src/Enums/FezType';
+import {FezVisibility} from '#src/Enums/FezVisibility';
 import {LikeType} from '#src/Enums/LikeType';
 import {ModeratorActionType} from '#src/Enums/ModeratorActionType';
 import {ReportType} from '#src/Enums/ReportType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {UserRoleType} from '#src/Enums/UserRoleType';
-import {createLogger} from '#src/Libraries/Logger';
-
-const logger = createLogger('ControllerStructs.tsx');
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -44,10 +39,6 @@ export interface UserHeader {
 }
 
 export namespace UserHeader {
-  export const contains = (headers: UserHeader[] = [], header: UserHeader) => {
-    return headers.map(h => h.userID).includes(header.userID);
-  };
-
   export const getCacheKeys = (header?: UserHeader): QueryKey[] => {
     let cacheKeys: QueryKey[] = [['/user/profile']];
     if (header) {
@@ -158,26 +149,32 @@ export interface UserNotificationData {
   /// All fields below this line will be 0 or null if called when not logged in.
 
   /// Count of announcements the user has not yet seen. 0 if not logged in.
-  newAnnouncementCount?: number;
+  newAnnouncementCount: number;
   /// Number of twarrts that @mention the user. 0 if not logged in.
-  twarrtMentionCount?: number;
+  twarrtMentionCount: number;
   /// Number of twarrt @mentions that the user has not read (by visiting the twarrt mentions endpoint; reading twarrts in the regular feed doesn't count). 0 if not logged in.
-  newTwarrtMentionCount?: number;
+  newTwarrtMentionCount: number;
   /// Number of forum posts that @mention the user. 0 if not logged in.
-  forumMentionCount?: number;
+  forumMentionCount: number;
   /// Number of forum post @mentions the user has not read. 0 if not logged in.
-  newForumMentionCount?: number;
+  newForumMentionCount: number;
   /// The number of Seamail chats the user's been added to but not yet viewed. Does not include Seamails the user creates. Chats counted here will continue
   /// to be counted here and not in `newSeamailMessageCount` even if there are also new messages--until the user views the chat and clears the notification.
   addedToSeamailCount: number;
+  /// IDs of Seamail chats the user's been added to but not yet viewed. See `addedToSeamailCount`.
+  addedToSeamailIDs: string[];
   /// The number of LFGs the user's been added to but not yet viewed. Doesn't include LFGs the user created nor ones they Joined by their own action.
   /// If a chat the user was added to (but hasn't yet viewed) gets new messages, that chat is counted in this total and not in `newFezMessageCount`.
   addedToLFGCount: number;
+  /// IDs of LFGs the user's been added to but not yet viewed. See `addedToLFGCount`.
+  addedToLFGIDs: string[];
   /// The number of Private Events the user's been added to but not yet viewed. Doesn't include PEs the user created.
   /// If a chat the user was added to (but hasn't yet viewed) gets new messages, that chat is counted in this total and not in `newPrivateEventMessageCount`.
   addedToPrivateEventCount: number;
+  /// IDs of Private Events the user's been added to but not yet viewed. See `addedToPrivateEventCount`.
+  addedToPrivateEventIDs: string[];
   /// Count of # of Seamail threads with new messages. NOT total # of new messages-a single seamail thread with 10 new messages counts as 1. 0 if not logged in.
-  newSeamailMessageCount?: number;
+  newSeamailMessageCount: number;
   /// Count of # of Fezzes with new messages. 0 if not logged in.
   newFezMessageCount: number;
   /// Count of # of Private Events with new messages. 0 if not logged in.
@@ -189,7 +186,7 @@ export interface UserNotificationData {
   nextFollowedEventID?: string;
 
   /// The number of Micro Karaoke songs the user has contributed to and can now view.
-  microKaraokeFinishedSongCount?: number;
+  microKaraokeFinishedSongCount: number;
 
   /// The start time of the earliest LFG that the user has joined with a start time > now. nil if not logged in or no matching LFG.
   nextJoinedLFGTime?: string;
@@ -206,51 +203,6 @@ export interface UserNotificationData {
 }
 
 export namespace UserNotificationData {
-  const valueOrZero = (value?: number) => value || 0;
-  export const totalNewCount = (data?: UserNotificationData) => {
-    if (!data) {
-      return 0;
-    }
-    return (
-      valueOrZero(data.newAnnouncementCount) +
-      valueOrZero(data.newTwarrtMentionCount) +
-      valueOrZero(data.newForumMentionCount) +
-      valueOrZero(data.newSeamailMessageCount) +
-      valueOrZero(data.newFezMessageCount) +
-      valueOrZero(data.newPrivateEventMessageCount) +
-      valueOrZero(data.addedToSeamailCount) +
-      // We have no way to list "new LFGs/PEs you've been added to" in the API.
-      valueOrZero(data.addedToLFGCount) +
-      valueOrZero(data.addedToPrivateEventCount)
-    );
-  };
-
-  /**
-   * Unread seamail threads plus chats the user was added to but has not yet viewed.
-   * Combined with LFG and private-event chat unreads for the Seamail bottom-tab badge
-   * (along with privileged-account counts).
-   */
-  export const totalNewSeamail = (data?: UserNotificationData) => {
-    if (!data) {
-      return 0;
-    }
-    return valueOrZero(data.newSeamailMessageCount) + valueOrZero(data.addedToSeamailCount);
-  };
-
-  export const totalNewLFG = (data?: UserNotificationData) => {
-    if (!data) {
-      return 0;
-    }
-    return valueOrZero(data.newFezMessageCount) + valueOrZero(data.addedToLFGCount);
-  };
-
-  export const totalNewPrivateEvent = (data?: UserNotificationData) => {
-    if (!data) {
-      return 0;
-    }
-    return valueOrZero(data.newPrivateEventMessageCount) + valueOrZero(data.addedToPrivateEventCount);
-  };
-
   export const getCacheKeys = (): QueryKey[] => {
     return [['/notification/global']];
   };
@@ -290,11 +242,14 @@ export interface MembersOnlyData {
   /// to the first unread message.ReadCount does not include posts from blocked/muted users.
   readCount: number;
   /// Paginates the array in posts--gives the start and limit of the returned posts array relative to all the posts in the thread.
-  paginator: Paginator;
+  /// Nil for responses that don't return the posts array (fez lists, member add/remove).
+  paginator?: Paginator;
   /// The FezPosts in the fez discussion. Methods that return arrays of Fezzes, or that add or remove users, do not populate this field (it will be nil).
   posts?: FezPostData[];
   /// Whether user has muted the fez.
   isMuted: boolean;
+  /// Whether user has favorited the fez.
+  isFavorite: boolean;
 }
 
 export interface FezData {
@@ -304,6 +259,9 @@ export interface FezData {
   owner: UserHeader;
   /// The `FezType` .label of the fez.
   fezType: FezType;
+  /// Who besides the fez's members can view (and, for `privateEvent`, join) the fez. Only meaningful for
+  /// `privateEvent` fezzes; other fez types have a fixed value clients shouldn't surface in most UIs.
+  visibility: FezVisibility;
   /// The title of the fez.
   title: string;
   /// A description of the fez.
@@ -348,7 +306,7 @@ export interface ErrorResponse {
   reason: string;
   /// Optional dictionary of field errors; mostly used for input JSON validation failures. A request with JSON content that fails validation may have field-level errors here,
   /// keyed by the keypath to the fields that failed validation.
-  fieldErrors?: string | string[];
+  fieldErrors?: Record<string, string>;
 }
 
 export interface PostContentData {
@@ -369,6 +327,11 @@ export interface PostContentData {
 export interface FezContentData {
   /// The `FezType` .label of the fez.
   fezType: FezType;
+  /// Who besides the fez's members can view (and, for `privateEvent`, join) the fez. Only settable for
+  /// `privateEvent` fezzes (may be `private` or `unlisted`); every other fez type has a fixed visibility
+  /// and setting this to anything but that fixed value is a 400. Omit to leave visibility unchanged on update,
+  /// or to use the type's default on create.
+  visibility?: FezVisibility;
   /// The title for the FriendlyFez.
   title: string;
   /// A description of the fez.
@@ -389,6 +352,9 @@ export interface FezContentData {
   createdByModerator?: boolean;
   /// If TRUE, the Fez will be created by user @TwitarrTeam instead of the current user. Current user must be a TT member.
   createdByTwitarrTeam?: boolean;
+  /// If set, creates the fez's opening post at creation time instead of requiring a separate call.
+  /// Not valid for personal events, which don't have posts. Seamail types must have zero images.
+  firstPost?: PostContentData;
 }
 
 export interface ReportData {
@@ -441,47 +407,6 @@ export namespace DailyThemeData {
   export const getCacheKeys = (): QueryKey[] => {
     return [['/notification/dailythemes']];
   };
-
-  export const getThemeForDay = (cruiseDayIndex: number, cruiseLength: number, dailyThemeData?: DailyThemeData[]) => {
-    if (dailyThemeData) {
-      let todaysTheme: DailyThemeData | undefined;
-      dailyThemeData.every(dt => {
-        if (dt.cruiseDay === cruiseDayIndex) {
-          todaysTheme = dt;
-        }
-        return true;
-      });
-      // Default Themes
-      if (!todaysTheme) {
-        if (cruiseDayIndex >= cruiseLength - 1) {
-          todaysTheme = {
-            themeID: 'default_theme_after',
-            title: `${cruiseDayIndex - cruiseLength + 1} ${pluralize(
-              'day',
-              cruiseDayIndex - cruiseLength + 1,
-            )} after boat`,
-            info: "JoCo Cruise has ended. Hope you're enjoying being back in the real world.",
-            cruiseDay: cruiseDayIndex,
-          };
-        } else if (cruiseDayIndex < 0) {
-          todaysTheme = {
-            themeID: 'default_theme_before',
-            title: `${Math.abs(cruiseDayIndex)} ${pluralize('day', Math.abs(cruiseDayIndex))} before boat!`,
-            info: 'Soon™',
-            cruiseDay: cruiseDayIndex,
-          };
-        } else {
-          todaysTheme = {
-            themeID: 'default_theme_before',
-            title: `Cruise Day ${cruiseDayIndex + 1}: No Theme Day`,
-            info: 'A wise man once said, "A day without a theme is like a guitar ever-so-slightly out of tune. You can play it however you want, and it will be great, but someone out there will know that if only there was a theme, everything would be in tune."',
-            cruiseDay: cruiseDayIndex,
-          };
-        }
-      }
-      return todaysTheme;
-    }
-  };
 }
 
 export interface UserPasswordData {
@@ -531,6 +456,37 @@ export interface ShutternautEventData {
   userIsPhotographer: boolean;
 }
 
+/// One row of the Shutternaut Manager photography-coverage report. A row is an event that was
+/// flagged as needing a photographer, that has at least one Shutternaut assigned, or both.
+/// Returned inside `ShutternautScheduleReportResponseData` by `GET /api/v3/events/photographerreport`.
+export interface ShutternautScheduleReportData {
+  /// The event's Swiftarr database ID.
+  eventID: string;
+  /// The event's title.
+  title: string;
+  /// Starting time of the event, converted to display time.
+  startTime: string;
+  /// Ending time of the event, converted to display time.
+  endTime: string;
+  /// Timezone abbreviation at the event start, e.g. "EST". Not an IANA ID; resolve one with
+  /// `useTimeZone().tzAtTime()` when formatting.
+  timeZone: string;
+  /// The location of the event.
+  location: string;
+  /// TRUE if a Shutternaut Manager flagged this event as needing a photographer.
+  needsPhotographer: boolean;
+  /// Shutternauts who have signed up to photograph this event. Empty if the event was flagged
+  /// but never assigned.
+  photographers: UserHeader[];
+}
+
+/// Paginated envelope for the photography-coverage report. Swiftarr returns this as
+/// `Paginated<ShutternautScheduleReportData>` from `GET /api/v3/events/photographerreport`.
+export interface ShutternautScheduleReportResponseData {
+  items: ShutternautScheduleReportData[];
+  paginator: Paginator;
+}
+
 export interface EventData {
   /// The event's ID. This is the Swiftarr database record for this event.
   eventID: string;
@@ -562,16 +518,6 @@ export interface EventData {
   performers: PerformerHeaderData[];
   /// Optional data returned if the requestor is a member of the Shutternauts group. NULL for all other users.
   shutternautData?: ShutternautEventData;
-}
-
-export namespace EventData {
-  export const getCacheKeys = (eventID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [['/events'], ['/events/favorites']];
-    if (eventID) {
-      queryKeys.push([`/events/${eventID}`]);
-    }
-    return queryKeys;
-  };
 }
 
 /**
@@ -632,9 +578,9 @@ export namespace EventFeedbackSelectionData {
 
 /**
  * Admin-only fields on an event feedback report. NULL for normal users.
- * Nested in EventFeedbackReport from Swiftarr ControllerStructs.
+ * Nested in EventFeedbackReport from Swiftarr ControllerStructs, where it is named `AdminFields`.
  */
-export interface EventFeedbackAdminFields {
+export interface AdminFields {
   /// TRUE if an admin has marked this feedback as containing something actionable.
   actionable: boolean;
   /// Number of users that have followed the event.
@@ -671,7 +617,7 @@ export interface EventFeedbackReport {
   /// Any issues the host chose to share.
   issuesString: string;
   /// Populated for TwitarrTeam and above.
-  adminFields?: EventFeedbackAdminFields;
+  adminFields?: AdminFields;
 }
 
 export namespace EventFeedbackReport {
@@ -709,21 +655,21 @@ export interface UserProfileUploadData {
   /// Basic info about the user--their ID, username, displayname, and avatar image. May be nil on POST.
   header?: UserHeader;
   /// The displayName, again. Will be equal to header.displayName in results. When POSTing, set this field to update displayName.
-  displayName: string;
+  displayName?: string;
   /// An optional real name of the user.
-  realName: string;
+  realName?: string;
   /// An optional preferred form of address.
   preferredPronoun?: string;
   /// An optional home location (e.g. city).
-  homeLocation: string;
+  homeLocation?: string;
   /// An optional ship cabin number.
-  roomNumber: string;
+  roomNumber?: string;
   /// An optional email address.
-  email: string;
+  email?: string;
   /// An optional short greeting/message to visitors of the profile.
-  message: string;
+  message?: string;
   /// An optional blurb about the user.
-  about: string;
+  about?: string;
   /// An optional dinner team assignment.
   dinnerTeam?: DinnerTeam;
   /// An optional Discord username.
@@ -731,7 +677,6 @@ export interface UserProfileUploadData {
 }
 
 /// Karaoke performance row. Returned by GET /api/v3/karaoke/latest and inside KaraokeSongData.performances.
-/// Includes songID; isFavorite may be present when returned by the backend.
 export interface KaraokePerformedSongsData {
   songID: string;
   artist: string;
@@ -739,7 +684,7 @@ export interface KaraokePerformedSongsData {
   performers: string;
   /// ISO 8601 date string.
   time: string;
-  isFavorite?: boolean;
+  isFavorite: boolean;
 }
 
 /// Single karaoke song from GET /api/v3/karaoke or GET /api/v3/karaoke/:song_id.
@@ -831,6 +776,8 @@ export interface ImageUploadData {
 export interface ForumListData {
   /// The forum's ID.
   forumID: string;
+  /// The ID of the category the forum is in.
+  categoryID: string;
   /// The forum's creator.
   creator: UserHeader;
   /// The forum's title.
@@ -970,22 +917,6 @@ export interface PostDetailData {
   loves: UserHeader[];
 }
 
-export namespace PostDetailData {
-  export const hasUserReacted = (postData: PostDetailData, userID: string, likeType?: LikeType) => {
-    if (!likeType) {
-      return !!postData.userLike;
-    }
-    switch (likeType) {
-      case LikeType.like:
-        return postData.likes.flatMap(uh => uh.userID).includes(userID);
-      case LikeType.laugh:
-        return postData.laughs.flatMap(uh => uh.userID).includes(userID);
-      case LikeType.love:
-        return postData.loves.flatMap(uh => uh.userID).includes(userID);
-    }
-  };
-}
-
 export interface ForumCreateData {
   /// The forum's title.
   title: string;
@@ -1002,9 +933,23 @@ export interface UserRecoveryData {
   newPassword: string;
 }
 
+/// Used to look up a forgotten username.
+///
+/// Required by: `POST /api/v3/auth/username`
+export interface UserUsernameLookupData {
+  /// The registration code mailed to the user by THO before the cruise.
+  registrationCode: string;
+  /// The string to use – either the account password or the recovery key.
+  recoveryKey: string;
+}
+
 /// Returns info about a single Photo from the Photostream.
 ///
 /// Incorporated into `PhotostreamListData`, which is returned by: `GET /api/v3/photostream`
+///
+/// Intentionally has no `getCacheKeys()`: the `/photostream` caches are patched in place by
+/// `usePhotostreamCacheReducer` (upload prepends, moderator delete removes) rather than
+/// invalidated, so the stream never refetches after a write. See #622.
 export interface PhotostreamImageData {
   /// The ID of the photostream record (NOT the id of the image)..
   postID: number;
@@ -1018,12 +963,6 @@ export interface PhotostreamImageData {
   event?: EventData;
   /// The boat location this image was tagged with, if any. Value will be a raw string from  `PhotoStreamBoatLocation` or nil.  Stream photos will be tagged with either an event or a location.
   location?: string;
-}
-
-export namespace PhotostreamImageData {
-  export const getCacheKeys = (): QueryKey[] => {
-    return [['/photostream'], ['/photostream/placenames']];
-  };
 }
 
 /// Returns paginated data on photos in the photo stream. Non-Mods should only have access to the most recent photos, with no pagination.
@@ -1056,35 +995,6 @@ export interface PhotostreamUploadData {
   /// Where the picture was taken. Valid values come from `/api/v3/photostream/placenames` and are transient. Names include titles of events currently happening..
   locationName?: string;
 }
-
-// export interface PersonalEventData {
-//   personalEventID: string;
-//   title: string;
-//   description?: string;
-//   startTime: string;
-//   endTime: string;
-//   timeZone: string;
-//   timeZoneID: string;
-//   location?: string;
-//   lastUpdateTime: string;
-//   owner: UserHeader;
-//   participants: UserHeader[];
-// }
-//
-// export interface PersonalEventContentData {
-//   /// The title for the PersonalEvent.
-//   title: string;
-//   /// A description of the PersonalEvent.
-//   description?: string;
-//   /// The starting time for the PersonalEvent.
-//   startTime: string;
-//   /// The ending time for the PersonalEvent.
-//   endTime: string;
-//   /// The location for the PersonalEvent.
-//   location?: string;
-//   /// Users to invite to this PersonalEvent.
-//   participants: string[];
-// }
 
 interface SwiftarrClientConfigV2 {
   latestVersion: string;
@@ -1173,9 +1083,21 @@ export interface PerformerHeaderData {
   isOfficialPerformer: boolean;
 }
 
+/// An event reference scraped from the performer's own schedule listing, which may not
+/// correspond to an Event on the official schedule.
+export interface ScrapedPerformerEventReferenceData {
+  /// The event UID from the ICS file spec, if the scraped event could be matched to one.
+  uid?: string;
+  title: string;
+  /// ISO 8601 date string.
+  startTime: string;
+}
+
 export interface PerformerData {
   /// ID, name, photo -- used to create a title card
   header: PerformerHeaderData;
+  /// Other names this performer is known by, e.g. a stage name alongside a legal name.
+  alternativeNames?: string[];
   /// For Shadow Event Organizers, the Performer links to their User, but don't use the user's pronoun field when referring to them as a Performer.
   pronouns?: string;
   /// Bio may contain Markdown.
@@ -1198,20 +1120,12 @@ export interface PerformerData {
   yearsAttended: number[];
   /// The events this performer is going to be performing at.
   events: EventData[];
+  /// Events scraped from the performer's schedule listing that aren't on the official schedule.
+  scrapedEventRefs: ScrapedPerformerEventReferenceData[];
   /// The user who  created this Performer. Only applies to Shadow Event organizers, and is only returned if the requester is a Moderator or higher.
   /// Although we track the User who created a Performer model for their shadow event for moderation purposes, the User behind the Performer
   /// shouldn't be shown to everyone.
   user?: UserHeader;
-}
-
-export namespace PerformerData {
-  export const getCacheKeys = (performerID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [['/performer/official'], ['/performer/shadow'], ['/performer/self']];
-    if (performerID) {
-      queryKeys.push([`/performer/${performerID}`]);
-    }
-    return queryKeys;
-  };
 }
 
 export interface PerformerResponseData {
@@ -1342,25 +1256,6 @@ export interface BoardgameData {
 }
 
 export namespace BoardgameData {
-  export const getPlayers = (boardgame: BoardgameData) => {
-    if (boardgame.minPlayers && boardgame.maxPlayers) {
-      if (boardgame.minPlayers < boardgame.maxPlayers) {
-        return `${boardgame.minPlayers}-${boardgame.maxPlayers} Players`;
-      } else {
-        return `${boardgame.minPlayers} Players`;
-      }
-    }
-  };
-
-  export const getPlayingTime = (boardgame: BoardgameData) => {
-    if (boardgame.minPlayingTime && boardgame.maxPlayingTime) {
-      if (boardgame.minPlayingTime < boardgame.maxPlayingTime) {
-        return `${boardgame.minPlayingTime}-${boardgame.maxPlayingTime} minutes`;
-      } else {
-        return `${boardgame.minPlayingTime} minutes`;
-      }
-    }
-  };
   export const getCacheKeys = (boardgameID?: string): QueryKey[] => {
     let queryKeys: QueryKey[] = [['/boardgames']];
     if (boardgameID) {
@@ -1463,6 +1358,8 @@ export interface PerformerUploadData {
   performerID?: string;
   /// The name of the performer. Required.
   name: string;
+  /// Other names this performer is known by, e.g. a stage name alongside a legal name.
+  alternativeNames?: string[];
   pronouns?: string;
   /// Bio can contain Markdown.
   bio?: string;
@@ -1518,55 +1415,9 @@ export interface ClientSettingsData {
   /// Maximum size of a single uploaded image, in bytes.
   maxImageSize: number;
   /// Minimum seconds between photostream uploads. 0 disables the cooldown. Default 300.
-  photostreamUploadRateLimit?: number;
+  photostreamUploadRateLimit: number;
   /// Unique identifier for this Postgres database installation (from pg_control_system())
   installationID: string;
-}
-
-export namespace ClientSettingsData {
-  /**
-   * Get the base URL from the payload scheduleUpdateURL.
-   * Example: https://jococruise2025.sched.com/all.ics -> https://jococruise2025.sched.com
-   */
-  export const parseScheduleUpdateURL = (url: string): string => {
-    try {
-      const urlObj = new URLParse(url);
-      // protocol includes the colon, so we need to add "//"
-      return `${urlObj.protocol}//${urlObj.host}`;
-    } catch (error) {
-      logger.warn('Error parsing URL:', error);
-      return url;
-    }
-  };
-
-  /**
-   * Extract a timezone-invariant date-only string from the server's cruiseStartDate.
-   *
-   * The server returns an ISO-8601 timestamp (e.g. "2025-03-02T05:00:00.000Z")
-   * representing midnight in the port timezone. We extract the UTC calendar date
-   * as a "YYYY-MM-DD" string so it survives JSON round-trips and timezone changes.
-   */
-  export const parseCruiseStartDate = (dateString: string): string => {
-    const parsed = new Date(dateString);
-    if (isNaN(parsed.getTime())) {
-      logger.warn('Unexpected date format for cruiseStartDate:', dateString);
-      return dateString;
-    }
-    const y = parsed.getUTCFullYear();
-    const m = String(parsed.getUTCMonth() + 1).padStart(2, '0');
-    const d = String(parsed.getUTCDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  };
-
-  /**
-   * Build a Date representing midnight in the port timezone for a date-only string.
-   *
-   * This produces a consistent absolute time regardless of the device's local timezone,
-   * preventing day-shift bugs when the device timezone differs from the port timezone.
-   */
-  export const buildCruiseStartDate = (dateStr: string, portTimeZoneID: string): Date => {
-    return moment.tz(dateStr, 'YYYY-MM-DD', portTimeZoneID).toDate();
-  };
 }
 
 /// Used to obtain the current user's ID, username and logged-in status.
@@ -1862,8 +1713,13 @@ export interface PhotostreamModerationData {
 }
 
 export namespace PhotostreamModerationData {
+  /**
+   * The `/photostream` list caches are deliberately absent: they are patched in place by
+   * `usePhotostreamCacheReducer` rather than invalidated (#622). Only the moderation-side
+   * caches belong here.
+   */
   export const getCacheKeys = (photoID?: string): QueryKey[] => {
-    const keys = ReportModerationData.getCacheKeys().concat(PhotostreamImageData.getCacheKeys());
+    const keys = ReportModerationData.getCacheKeys();
     if (photoID) {
       keys.push([`/mod/photostream/${photoID}`]);
     }
@@ -1877,6 +1733,8 @@ export namespace PhotostreamModerationData {
  */
 export interface PersonalEventData {
   personalEventID: string;
+  /// Who besides invited participants can view and join this event. See `PersonalEventContentData.visibility`.
+  visibility: FezVisibility;
   title: string;
   description?: string;
   startTime: string;
@@ -1887,6 +1745,30 @@ export interface PersonalEventData {
   lastUpdateTime: string;
   owner: UserHeader;
   participants: UserHeader[];
+}
+
+/**
+ * Used for creating and editing a private event.
+ * Contains all of the fields that a user can modify.
+ */
+export interface PersonalEventContentData {
+  /// The title for the PersonalEvent.
+  title: string;
+  /// Who besides invited participants can view and join this event. May be `private` (default; invite-only)
+  /// or `unlisted` (viewable and self-joinable via direct link, but never listed/searchable). Omit to leave
+  /// unchanged on update, or to default to `private` on create.
+  visibility?: FezVisibility;
+  /// A description of the PersonalEvent.
+  description?: string;
+  /// The starting time for the PersonalEvent.
+  startTime: string;
+  /// The ending time for the PersonalEvent.
+  endTime: string;
+  /// The location for the PersonalEvent.
+  location?: string;
+  /// Users that have been invited to this PersonalEvent.
+  /// Should not contain the owner.
+  participants: string[];
 }
 
 /**

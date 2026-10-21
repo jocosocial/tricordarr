@@ -16,7 +16,7 @@ import {useAnimatedRef} from 'react-native-reanimated';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
-import {toLightboxImage} from '#src/Components/Lightbox/toLightboxImage';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
@@ -28,8 +28,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {alertImagesDisabled} from '#src/Libraries/Alerts/ImageAlerts';
 import {createLogger} from '#src/Libraries/Logger';
-import {APIImageSizePaths} from '#src/Types/AppImageMetaData';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+import {APIImageSizePaths, AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 const logger = createLogger('APIImage.tsx');
 
@@ -71,14 +70,17 @@ export const APIImage = ({
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
+  const {fromIdenticon, fromFileName, toLightboxImage} = useAppImage();
   const [imageSourceMetadata, setImageSourceMetadata] = useState<AppImageMetaData>(
-    staticSize === 'identicon'
-      ? AppImageMetaData.fromIdenticon(path, appConfig, serverUrl)
-      : AppImageMetaData.fromFileName(path, appConfig, serverUrl),
+    staticSize === 'identicon' ? fromIdenticon(path, appConfig, serverUrl) : fromFileName(path, appConfig, serverUrl),
   );
   const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const [imageSource, setImageSource] = useState<FastImageSource | undefined>(undefined);
+  // True from the moment a source URI is handed to FastImage until it loads or errors.
+  // The `!imageSource` spinner below only covers resolving the URI (a local, near-instant
+  // step); without this the image area is blank for the whole download.
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const {theme} = useAppTheme();
   const {openLightbox} = useLightboxControls();
   const thumbRef = useAnimatedRef<View>();
@@ -96,6 +98,15 @@ export const APIImage = ({
     },
     imageContainer: {
       position: 'relative',
+    },
+    imageLoadingOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
     },
     imageDebugIcon: {
       position: 'absolute',
@@ -145,7 +156,7 @@ export const APIImage = ({
       ),
       index: 0,
     });
-  }, [openLightbox, setErrorBanner, viewerImages, thumbRef, mode, avatarSize]);
+  }, [openLightbox, setErrorBanner, viewerImages, thumbRef, mode, avatarSize, toLightboxImage]);
 
   /**
    * Callback that fires when the image fails to load. This will display an error message
@@ -153,6 +164,7 @@ export const APIImage = ({
    */
   const onError = useCallback(
     (event: OnErrorEvent) => {
+      setIsImageLoading(false);
       const message = String(event.nativeEvent.error);
       // Native image load cancellation (e.g. scroll/cell reuse) should not surface as user error.
       const isCancellation = /cancell(ed|ation)/i.test(message) || /operation cancelled/i.test(message);
@@ -186,6 +198,7 @@ export const APIImage = ({
    * to the image viewer.
    */
   const onLoad = useCallback(() => {
+    setIsImageLoading(false);
     setViewerImages([imageSourceMetadata]);
   }, [imageSourceMetadata]);
 
@@ -195,11 +208,16 @@ export const APIImage = ({
    */
   React.useEffect(() => {
     const nextMetadata =
-      staticSize === 'identicon'
-        ? AppImageMetaData.fromIdenticon(path, appConfig, serverUrl)
-        : AppImageMetaData.fromFileName(path, appConfig, serverUrl);
+      staticSize === 'identicon' ? fromIdenticon(path, appConfig, serverUrl) : fromFileName(path, appConfig, serverUrl);
     setImageSourceMetadata(nextMetadata);
-  }, [appConfig, path, serverUrl, staticSize]);
+  }, [appConfig, path, serverUrl, staticSize, fromIdenticon, fromFileName]);
+
+  /**
+   * A new URI means a new download, so show the spinner again until it lands.
+   */
+  React.useEffect(() => {
+    setIsImageLoading(true);
+  }, [imageSource?.uri]);
 
   React.useEffect(() => {
     hasRequestedFullPreload.current = false;
@@ -361,6 +379,14 @@ export const APIImage = ({
               onError={onError}
               onProgress={onProgress}
             />
+          )}
+          {/* scaledimage has its own placeholder + spinner in AppScaledImage. Avatars are
+              excluded on purpose: they are small, usually cached, and appear dozens at a
+              time in chat and forum lists, where a spinner per row is noise, not feedback. */}
+          {isImageLoading && (mode === 'image' || mode === 'cardcover') && (
+            <View style={styles.imageLoadingOverlay} pointerEvents={'none'}>
+              <ActivityIndicator />
+            </View>
           )}
           {appConfig.enableDeveloperOptions && mode !== 'avatar' && (
             <View style={styles.imageDebugIcon}>

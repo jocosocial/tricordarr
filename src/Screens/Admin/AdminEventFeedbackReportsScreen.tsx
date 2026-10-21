@@ -15,6 +15,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -23,7 +24,8 @@ import {calcCruiseDayTime} from '#src/Libraries/DateTime';
 import {getRoomName, getUniqueRoomNames} from '#src/Libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventFeedbackReportsQuery} from '#src/Queries/Admin/EventFeedbackQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {EventFeedbackReport} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminEventFeedbackReportsScreen>;
@@ -34,10 +36,13 @@ type EventFeedbackReportWithId = EventFeedbackReport & {id: string};
  * Admin list of shadow event feedback reports.
  */
 export const AdminEventFeedbackReportsScreen = (props: Props) => {
+  const {hasTwitarrTeam} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminEventFeedbackReportsScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
+        <AdminEventFeedbackReportsScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -138,7 +143,11 @@ const AdminEventFeedbackReportsScreenInner = ({navigation, route}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading && !reports) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

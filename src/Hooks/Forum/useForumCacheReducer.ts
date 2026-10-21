@@ -101,6 +101,7 @@ const forumListDataFromForumData = (page: ForumData): ForumListData => {
   const postCount = page.paginator?.total ?? posts.length;
   return {
     forumID: page.forumID,
+    categoryID: page.categoryID,
     creator: page.creator,
     title: page.title,
     postCount,
@@ -639,6 +640,45 @@ export const useForumCacheReducer = () => {
   );
 
   /**
+   * Cancel in-flight queries that a forum toggle reducer is about to write over.
+   * Without this, a refetch already in flight when the user taps can resolve after
+   * our optimistic write and stomp it back to the stale value.
+   */
+  const cancelForumQueries = useCallback(
+    (forumID: string, categoryID?: string) => {
+      for (const keyPrefix of forumSearchDataKeys) {
+        queryClient.cancelQueries({queryKey: [keyPrefix]});
+      }
+      queryClient.cancelQueries({queryKey: [`/forum/${forumID}`]});
+      if (categoryID) {
+        queryClient.cancelQueries({queryKey: [`/forum/categories/${categoryID}`]});
+      }
+    },
+    [queryClient],
+  );
+
+  /**
+   * Invalidate the forum list and thread caches for a forum. Use after an optimistic
+   * reducer call rolls back on `onError`, so the server -- not our captured stale copy --
+   * gets the last word.
+   */
+  const invalidateForum = useCallback(
+    (forumID?: string, categoryID?: string) => {
+      const invalidations = forumSearchDataKeys.map(keyPrefix =>
+        queryClient.invalidateQueries({queryKey: [keyPrefix]}),
+      );
+      if (forumID) {
+        invalidations.push(queryClient.invalidateQueries({queryKey: [`/forum/${forumID}`]}));
+      }
+      if (categoryID) {
+        invalidations.push(queryClient.invalidateQueries({queryKey: [`/forum/categories/${categoryID}`]}));
+      }
+      return Promise.all(invalidations);
+    },
+    [queryClient],
+  );
+
+  /**
    * Toggle a boolean field (isFavorite or isMuted) for a forum across all caches.
    * When toggling on, the entry is inserted into the target list cache in sorted order.
    * When toggling off, the entry is removed from the target list cache.
@@ -651,6 +691,7 @@ export const useForumCacheReducer = () => {
       field: 'isFavorite' | 'isMuted',
       targetKeyPrefix: string,
     ) => {
+      cancelForumQueries(forumID, categoryID);
       if (newValue) {
         updateForumListInAllCaches(forumID, categoryID, entry => ({...entry, [field]: true}), [targetKeyPrefix]);
 
@@ -687,6 +728,7 @@ export const useForumCacheReducer = () => {
     },
     [
       queryClient,
+      cancelForumQueries,
       findForumListEntry,
       updateForumListInAllCaches,
       updateForumThreadCache,
@@ -722,13 +764,14 @@ export const useForumCacheReducer = () => {
    */
   const updatePinned = useCallback(
     (forumID: string, categoryID: string | undefined, newValue: boolean) => {
+      cancelForumQueries(forumID, categoryID);
       updateForumListInAllCaches(forumID, categoryID, entry => ({
         ...entry,
         isPinned: newValue,
       }));
       updateForumThreadCache(forumID, page => ({...page, isPinned: newValue}));
     },
-    [updateForumListInAllCaches, updateForumThreadCache],
+    [cancelForumQueries, updateForumListInAllCaches, updateForumThreadCache],
   );
 
   /**
@@ -786,6 +829,11 @@ export const useForumCacheReducer = () => {
    */
   const updatePostPin = useCallback(
     (postID: number, forumID: string | undefined, newValue: boolean) => {
+      queryClient.cancelQueries({queryKey: [`/forum/post/search`]});
+      if (forumID) {
+        queryClient.cancelQueries({queryKey: [`/forum/${forumID}`]});
+        queryClient.cancelQueries({queryKey: [`/forum/${forumID}/pinnedposts`]});
+      }
       const updater = (post: PostData): PostData => ({...post, isPinned: newValue});
       updatePostInThreadCaches(postID, forumID, updater);
       updatePostInSearchCaches(postID, updater);
@@ -817,15 +865,50 @@ export const useForumCacheReducer = () => {
 
   /**
    * Toggle isBookmarked on a post across thread, search, and post detail caches.
+   * Also inserts into (or removes from) the dedicated bookmarked-posts search
+   * caches (`/forum/post/search` queries with `bookmarked: true`), which back
+   * the Favorite Posts screen -- those are filtered lists, so a post not
+   * already present in them won't be reached by the generic in-place update
+   * above. The server sorts postSearchHandler results by postID descending
+   * (newest post first, regardless of when it was bookmarked), so insertion
+   * uses that same order rather than always prepending -- otherwise a
+   * freshly-favorited older post would visibly jump position on next refetch.
    */
   const updatePostBookmark = useCallback(
-    (postID: number, forumID: string | undefined, newValue: boolean) => {
-      const updater = (post: PostData): PostData => ({...post, isBookmarked: newValue});
+    (post: PostData, forumID: string | undefined, newValue: boolean) => {
+      const postID = post.postID;
+      queryClient.cancelQueries({queryKey: [`/forum/post/search`]});
+      queryClient.cancelQueries({queryKey: [`/forum/post/${postID}`]});
+      if (forumID) {
+        queryClient.cancelQueries({queryKey: [`/forum/${forumID}`]});
+      }
+      const updater = (p: PostData): PostData => ({...p, isBookmarked: newValue});
       updatePostInThreadCaches(postID, forumID, updater);
       updatePostInSearchCaches(postID, updater);
       queryClient.setQueriesData<PostDetailData>({queryKey: [`/forum/post/${postID}`]}, oldData =>
         oldData ? {...oldData, isBookmarked: newValue} : oldData,
       );
+
+      const updatedPost = updater(post);
+      const byPostIDDescending = (a: PostData, b: PostData) => b.postID - a.postID;
+      for (const query of queryClient.getQueryCache().findAll({queryKey: ['/forum/post/search']})) {
+        const params = query.queryKey[1] as Record<string, unknown> | undefined;
+        if (!params?.bookmarked) {
+          continue;
+        }
+        queryClient.setQueryData<InfiniteData<PostSearchData>>(query.queryKey, oldData => {
+          if (!oldData) {
+            return oldData;
+          }
+          if (newValue) {
+            const alreadyExists = oldData.pages.some(page => page.posts.some(item => item.postID === postID));
+            return alreadyExists
+              ? oldData
+              : sortedInsertIntoPages(oldData, postSearchAccessor, updatedPost, byPostIDDescending);
+          }
+          return filterItemsFromPages(oldData, postSearchAccessor, item => item.postID !== postID);
+        });
+      }
     },
     [queryClient, updatePostInThreadCaches, updatePostInSearchCaches],
   );
@@ -921,6 +1004,7 @@ export const useForumCacheReducer = () => {
       const firstPost = createdForum.posts[0];
       const forumListData: ForumListData = {
         forumID: createdForum.forumID,
+        categoryID: createdForum.categoryID,
         creator: createdForum.creator,
         title: createdForum.title,
         postCount: createdForum.posts.length,
@@ -1007,6 +1091,7 @@ export const useForumCacheReducer = () => {
     appendPost,
     createThread,
     deletePost,
+    invalidateForum,
     markRead,
     renameThread,
     renameThreadModeration,

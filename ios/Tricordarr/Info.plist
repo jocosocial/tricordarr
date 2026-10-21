@@ -48,6 +48,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>We need access to your camera to take photos.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Tricordarr needs to access devices on your local network to connect to the Twitarr server aboard the ship.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>

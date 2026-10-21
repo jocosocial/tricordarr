@@ -6,6 +6,9 @@ interface SwiftarrQueryClientContextType {
   errorCount: number;
   setErrorCount: Dispatch<SetStateAction<number>>;
   disruptionDetected: boolean;
+  /** TRUE while a server URL switch is in progress; suppresses the generic error Snackbar. */
+  serverSwitchInProgress: boolean;
+  setServerSwitchInProgress: Dispatch<SetStateAction<boolean>>;
   ServerQueryClient: AxiosInstance;
   PublicQueryClient: AxiosInstance;
   apiGet: <TData, TQueryParams>(

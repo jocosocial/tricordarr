@@ -2,14 +2,15 @@ import React from 'react';
 import {Card, Text} from 'react-native-paper';
 
 import {AppImage} from '#src/Components/Images/AppImage';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
 import preregistration from '#assets/preregistration.jpg';
 
 export const PreRegistrationCompleteCard = () => {
   const {commonStyles} = useStyles();
+  const {fromAsset} = useAppImage();
   return (
     <Card>
       <Card.Title title={'Pre-Registration Complete!'} titleVariant={'bodyLarge'} titleStyle={[commonStyles.bold]} />
@@ -23,7 +24,7 @@ export const PreRegistrationCompleteCard = () => {
           screen to connect to Twitarr on-board.
         </Text>
       </Card.Content>
-      <AppImage image={AppImageMetaData.fromAsset(preregistration, 'preregistration.jpg')} mode={'cardcover'} />
+      <AppImage image={fromAsset(preregistration, 'preregistration.jpg')} mode={'cardcover'} />
     </Card>
   );
 };

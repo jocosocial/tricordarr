@@ -81,12 +81,12 @@ export const profilePublicDataFromUpload = (profile: UserProfileUploadData): Pro
   }
   return {
     header: profile.header,
-    realName: profile.realName,
-    homeLocation: profile.homeLocation,
-    roomNumber: profile.roomNumber,
-    email: profile.email,
-    about: profile.about,
-    message: profile.message,
+    realName: profile.realName ?? '',
+    homeLocation: profile.homeLocation ?? '',
+    roomNumber: profile.roomNumber ?? '',
+    email: profile.email ?? '',
+    about: profile.about ?? '',
+    message: profile.message ?? '',
     dinnerTeam: profile.dinnerTeam,
     discordUsername: profile.discordUsername,
     isFavorite: false,

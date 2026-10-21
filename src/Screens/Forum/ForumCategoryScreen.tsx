@@ -117,7 +117,11 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
   }, [isFocused, getNavButtons, navigation, enableSelection, selectedItems.length]);
 
   if (isLoading || !data || !category) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   if (category.paginator.total === 0 && forumListData.length === 0) {

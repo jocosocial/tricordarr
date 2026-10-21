@@ -1,63 +1,85 @@
-import React from 'react';
+import React, {useMemo} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useScheduleFilter} from '#src/Context/Contexts/ScheduleFilterContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {EventType} from '#src/Enums/EventType';
+import {ScheduleSource, ScheduleSourceKey} from '#src/Enums/ScheduleSource';
+import {ShutternautFilter, ShutternautFilterKey} from '#src/Enums/ShutternautFilter';
 import {useMenu} from '#src/Hooks/useMenu';
 
+// Paper's Menu pads the top and bottom of its surface by this much (Menu.tsx shadowMenuContainer).
+const MENU_VERTICAL_PADDING = 8;
+
+/**
+ * Filter menu for the schedule day screen. Split into two tiers (see #458):
+ *  - Sources: which lists contribute items to the schedule. Multi-select, additive (OR).
+ *  - Refinements: narrow a single source (event type/favorite/photographer narrow Official
+ *    Events; unread narrows Private Events). Combined with AND, and selecting one implies its
+ *    source so a refinement is never silently inert.
+ */
 export const ScheduleEventFilterMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {
+    eventSources,
+    toggleEventSource,
     eventTypeFilter,
     setEventTypeFilter,
     eventFavoriteFilter,
     setEventFavoriteFilter,
-    eventPersonalFilter,
-    setEventPersonalFilter,
-    eventLfgJoinedFilter,
-    setEventLfgJoinedFilter,
-    eventLfgOwnedFilter,
-    setEventLfgOwnedFilter,
-    eventLfgOpenFilter,
-    setEventLfgOpenFilter,
     eventShutternautFilter,
     setEventShutternautFilter,
     eventPersonalUnreadFilter,
     setEventPersonalUnreadFilter,
+    anyScheduleFilterActive,
+    clearScheduleFilters,
   } = useScheduleFilter();
   const {appConfig} = useConfig();
-  const {oobeCompleted} = useOobe();
+  const {theme} = useAppTheme();
+  const {commonStyles} = useStyles();
+  const {isLoggedIn} = useSession();
+  const {preRegistrationMode} = usePreRegistration();
   const {hasShutternaut, hasShutternautManager} = useRoles();
+  // LFGs and Private Events are unavailable during pre-registration regardless of login state -
+  // see the matching query gates in ScheduleDayScreen.tsx.
+  const disablePersonalSources = !isLoggedIn || preRegistrationMode;
 
-  // This also shows joined LFGs, hopefully that's not too surprising
+  // The first header sits on surfaceVariant, but Paper pads the top of every menu with 8dp of the
+  // plain menu surface, which shows as a seam above it. Zero that padding on the menu and
+  // draw the same 8dp as a surfaceVariant strip (rounded to match the menu's corners) so the
+  // corner zone blends into the header. The bottom padding is left alone: the last row isn't
+  // a header, so it already matches.
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        content: {paddingTop: 0},
+        topStrip: {
+          ...commonStyles.surfaceVariant,
+          height: MENU_VERTICAL_PADDING,
+          borderTopLeftRadius: theme.roundness,
+          borderTopRightRadius: theme.roundness,
+        },
+      }),
+    [commonStyles.surfaceVariant, theme.roundness],
+  );
+
+  const handleSourceSelection = (source: ScheduleSourceKey) => {
+    toggleEventSource(source);
+    closeMenu();
+  };
+
   const handleFavoriteSelection = () => {
     setEventFavoriteFilter(!eventFavoriteFilter);
-    closeMenu();
-  };
-
-  const handlePersonalSelection = () => {
-    setEventPersonalFilter(!eventPersonalFilter);
-    closeMenu();
-  };
-
-  const handleLfgJoinedSelection = () => {
-    setEventLfgJoinedFilter(!eventLfgJoinedFilter);
-    closeMenu();
-  };
-
-  const handleLfgOwnedSelection = () => {
-    setEventLfgOwnedFilter(!eventLfgOwnedFilter);
-    closeMenu();
-  };
-
-  const handleLfgOpenSelection = () => {
-    setEventLfgOpenFilter(!eventLfgOpenFilter);
     closeMenu();
   };
 
@@ -71,119 +93,95 @@ export const ScheduleEventFilterMenu = () => {
    * rather than passing through to the API. Some day we may want to do that. Lets
    * see how it goes in 2026 first.
    */
-  const handleShutternautFilterSelection = (filterValue: string) => {
-    if (eventShutternautFilter === filterValue) {
-      setEventShutternautFilter(undefined);
-    } else {
-      setEventShutternautFilter(filterValue);
-    }
+  const handleShutternautFilterSelection = (filterValue: ShutternautFilterKey) => {
+    setEventShutternautFilter(prev => (prev === filterValue ? undefined : filterValue));
     closeMenu();
   };
 
-  const handleFilterSelection = (newEventTypeFilter: string) => {
-    if (newEventTypeFilter === eventTypeFilter) {
-      setEventTypeFilter('');
-    } else {
-      setEventTypeFilter(newEventTypeFilter);
-    }
+  const handleTypeFilterSelection = (newEventTypeFilter: string) => {
+    setEventTypeFilter(prev => (prev === newEventTypeFilter ? '' : newEventTypeFilter));
     closeMenu();
   };
 
-  const clearFilters = () => {
-    setEventTypeFilter('');
-    setEventFavoriteFilter(false);
-    setEventLfgJoinedFilter(false);
-    setEventLfgOwnedFilter(false);
-    setEventLfgOpenFilter(false);
-    setEventPersonalFilter(false);
-    setEventShutternautFilter(undefined);
-  };
-
-  const anyActiveFilter =
-    eventFavoriteFilter ||
-    eventTypeFilter ||
-    eventPersonalFilter ||
-    eventLfgJoinedFilter ||
-    eventLfgOwnedFilter ||
-    eventLfgOpenFilter ||
-    eventShutternautFilter !== undefined ||
-    eventPersonalUnreadFilter;
-
-  const menuAnchor = <FilterMenuAnchor active={!!anyActiveFilter} onPress={openMenu} onLongPress={clearFilters} />;
+  const menuAnchor = (
+    <FilterMenuAnchor active={anyScheduleFilterActive} onPress={openMenu} onLongPress={clearScheduleFilters} />
+  );
 
   return (
-    <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <SelectableMenuItem title={'Favorite Events'} onPress={handleFavoriteSelection} selected={eventFavoriteFilter} />
+    <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor} contentStyle={styles.content}>
+      <View style={styles.topStrip} />
+      <ListSubheader>Sources</ListSubheader>
+      <SelectableMenuItem
+        title={ScheduleSource.officialEvents}
+        onPress={() => handleSourceSelection('officialEvents')}
+        selected={eventSources.includes('officialEvents')}
+      />
+      <SelectableMenuItem
+        title={ScheduleSource.privateEvents}
+        onPress={() => handleSourceSelection('privateEvents')}
+        selected={eventSources.includes('privateEvents')}
+        disabled={disablePersonalSources}
+      />
+      <SelectableMenuItem
+        title={ScheduleSource.lfgJoined}
+        onPress={() => handleSourceSelection('lfgJoined')}
+        selected={eventSources.includes('lfgJoined')}
+        disabled={disablePersonalSources}
+      />
+      <SelectableMenuItem
+        title={ScheduleSource.lfgOwned}
+        onPress={() => handleSourceSelection('lfgOwned')}
+        selected={eventSources.includes('lfgOwned')}
+        disabled={disablePersonalSources}
+      />
+      <SelectableMenuItem
+        title={ScheduleSource.lfgOpen}
+        onPress={() => handleSourceSelection('lfgOpen')}
+        selected={eventSources.includes('lfgOpen')}
+        disabled={disablePersonalSources || !appConfig.schedule.eventsShowOpenLfgs}
+      />
       <Divider bold={true} />
+      <ListSubheader>Events</ListSubheader>
+      <SelectableMenuItem
+        title={'Favorites'}
+        onPress={handleFavoriteSelection}
+        selected={eventFavoriteFilter}
+        disabled={!isLoggedIn}
+      />
       {Object.keys(EventType).map(eventType => {
         return (
           <SelectableMenuItem
             key={eventType}
             title={EventType[eventType as keyof typeof EventType]}
-            onPress={() => handleFilterSelection(eventType)}
+            onPress={() => handleTypeFilterSelection(eventType)}
             selected={eventTypeFilter === eventType}
           />
         );
       })}
-      <Divider bold={true} />
-      <SelectableMenuItem
-        title={'Private Events'}
-        onPress={handlePersonalSelection}
-        selected={eventPersonalFilter}
-        disabled={!oobeCompleted}
-      />
-      <SelectableMenuItem
-        title={'Unread Private Events'}
-        onPress={handlePersonalUnreadSelection}
-        selected={eventPersonalUnreadFilter}
-        disabled={!oobeCompleted}
-      />
-      <Divider bold={true} />
-      <SelectableMenuItem
-        title={'Joined LFGs'}
-        onPress={handleLfgJoinedSelection}
-        selected={eventLfgJoinedFilter}
-        disabled={!oobeCompleted}
-      />
-      <SelectableMenuItem
-        title={'Your LFGs'}
-        onPress={handleLfgOwnedSelection}
-        selected={eventLfgOwnedFilter}
-        disabled={!oobeCompleted}
-      />
-      {appConfig.schedule.eventsShowOpenLfgs && (
-        <SelectableMenuItem
-          title={'Open LFGs'}
-          onPress={handleLfgOpenSelection}
-          selected={eventLfgOpenFilter}
-          disabled={!oobeCompleted}
-        />
-      )}
       {(hasShutternaut || hasShutternautManager) && (
         <>
-          <Divider bold={true} />
-          <SelectableMenuItem
-            title={"You're Photographing"}
-            onPress={() => handleShutternautFilterSelection('imphotographer')}
-            selected={eventShutternautFilter === 'imphotographer'}
-          />
-          <SelectableMenuItem
-            title={'No Photographer'}
-            onPress={() => handleShutternautFilterSelection('nophotographer')}
-            selected={eventShutternautFilter === 'nophotographer'}
-          />
-          <SelectableMenuItem
-            title={'Has Photographer'}
-            onPress={() => handleShutternautFilterSelection('hasphotographer')}
-            selected={eventShutternautFilter === 'hasphotographer'}
-          />
-          <SelectableMenuItem
-            title={'Needs Photographer'}
-            onPress={() => handleShutternautFilterSelection('needsPhotographer')}
-            selected={eventShutternautFilter === 'needsPhotographer'}
-          />
+          <Divider />
+          {Object.keys(ShutternautFilter).map(filterKey => {
+            const key = filterKey as ShutternautFilterKey;
+            return (
+              <SelectableMenuItem
+                key={key}
+                title={ShutternautFilter[key]}
+                onPress={() => handleShutternautFilterSelection(key)}
+                selected={eventShutternautFilter === key}
+              />
+            );
+          })}
         </>
       )}
+      <Divider bold={true} />
+      <ListSubheader>Private Events</ListSubheader>
+      <SelectableMenuItem
+        title={'Unread'}
+        onPress={handlePersonalUnreadSelection}
+        selected={eventPersonalUnreadFilter}
+        disabled={disablePersonalSources}
+      />
     </AppMenu>
   );
 };

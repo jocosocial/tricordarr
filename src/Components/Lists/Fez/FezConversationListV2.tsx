@@ -74,13 +74,32 @@ export const FezConversationListV2 = ({
     [fezPostData, getAdjustedMoment],
   );
 
-  // Lock initial read state on mount. Use initialReadCount when provided (e.g. from list cache)
-  // so the "New" divider shows correctly on subsequent visits when detail cache is already marked read.
+  // Lock initial read state, refreshed only when initialReadCount actually changes value
+  // (e.g. after resetInitialReadCount runs following a send). Use initialReadCount when
+  // provided (e.g. from list cache) so the "New" divider shows correctly on subsequent
+  // visits when detail cache is already marked read.
   const effectiveReadCount = initialReadCount ?? fez.members?.readCount ?? 0;
   const initialReadStateRef = useRef({
     readCount: effectiveReadCount,
     paginatorStart: fez.members?.paginator?.start ?? 0,
   });
+  // initialReadStateRef must stay frozen across ordinary re-renders (new posts arriving,
+  // props changing shape, etc.) so the divider doesn't drift while the user is reading —
+  // but it also must not stay frozen forever, or a stale readCount/paginatorStart pins the
+  // "New" divider at the wrong index permanently once resetInitialReadCount changes
+  // initialReadCount upstream (e.g. right after this user sends a post). A useEffect would
+  // fix that only after an extra render (a visible flash of the divider in the wrong spot);
+  // comparing against lastInitialReadCountRef during render — the "derived state from
+  // props" ref pattern — re-seeds initialReadStateRef synchronously, in the same render
+  // that the new prop value arrives, and only on renders where it actually changed.
+  const lastInitialReadCountRef = useRef(initialReadCount);
+  if (initialReadCount !== lastInitialReadCountRef.current) {
+    lastInitialReadCountRef.current = initialReadCount;
+    initialReadStateRef.current = {
+      readCount: effectiveReadCount,
+      paginatorStart: fez.members?.paginator?.start ?? 0,
+    };
+  }
 
   // alignItemsAtEnd is a layout concern — once set false (unreads detected) it must
   // not flip back to true or the list layout will jump. Locked via one-way ref.
@@ -163,6 +182,14 @@ export const FezConversationListV2 = ({
       estimatedItemSize={100}
       onReadyToShow={onReadyToShow}
       newDividerIndex={newDividerIndex}
+      // renderItem's "New" divider placement is driven by isFullyRead/initialReadStateRef,
+      // which live outside `data`. LegendList's recycled cells (recycleItems={true}) only
+      // redraw when `item`/`index` change or `extraData` changes identity, so without this
+      // a cell that already rendered a divider keeps showing it forever — e.g. sending two
+      // messages in a row left a stale "New" divider stuck above each one. Combine both
+      // isFullyRead and the index so every visibility/position transition is distinguishable,
+      // including two different "hidden" states that would otherwise both be `undefined`.
+      extraData={`${isFullyRead}-${newDividerIndex}`}
       // Style is here rather than in the renderItem because the padding we use is
       // also needed for the dividers. It could be added to the divider function as
       // well but this is slightly simpler and covers cases I am not remembering.

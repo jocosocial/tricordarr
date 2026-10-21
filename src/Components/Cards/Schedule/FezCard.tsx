@@ -12,6 +12,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
+import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {getParticipantLabel} from '#src/Hooks/Fez/useFezData';
 import {useMenu} from '#src/Hooks/useMenu';
 import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
@@ -32,6 +33,8 @@ interface FezCardProps {
   disabled?: boolean;
   /** When true, shows fez.info as the card description. Off by default so list cards stay compact. */
   showDescription?: boolean;
+  /** When true, shows an "Added To" badge instead of the unread-post-count badge. */
+  addedTo?: boolean;
 }
 
 const FezCardInternal = ({
@@ -46,13 +49,20 @@ const FezCardInternal = ({
   icon,
   disabled = false,
   showDescription = false,
+  addedTo = false,
 }: FezCardProps) => {
   const {theme} = useAppTheme();
   const unreadCount = fez.members ? unreadPostCount(fez.members.postCount, fez.members.readCount) : 0;
   const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
   const {visible: menuVisible, openMenu, closeMenu} = useMenu();
+  const {primeFezDetail} = useFezCacheReducer();
   const participantLabel = getParticipantLabel(fez);
+
+  const handlePress = useCallback(() => {
+    primeFezDetail(fez);
+    onPress?.();
+  }, [fez, onPress, primeFezDetail]);
 
   const styles = StyleSheet.create({
     badge: {
@@ -88,13 +98,39 @@ const FezCardInternal = ({
       // making this white to match the text and other icons of this card style.
       return <AppIcon icon={AppIcons.mute} color={theme.colors.constantWhite} />;
     }
+    // Unlike mute, the star does not take the slot on its own: a favorited LFG is one you care
+    // about, so hiding its unread count or "Added To" badge would be exactly backwards. White
+    // rather than the usual yellow star, for the same contrast reason as the mute icon above.
+    const favoriteIcon = fez.members?.isFavorite ? (
+      <AppIcon icon={AppIcons.favorite} color={theme.colors.constantWhite} />
+    ) : undefined;
+
+    if (addedTo) {
+      return (
+        <>
+          {favoriteIcon}
+          <Badge style={styles.badge}>Added To</Badge>
+        </>
+      );
+    }
     if (unreadCount) {
-      return <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>;
+      return (
+        <>
+          {favoriteIcon}
+          <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>
+        </>
+      );
     }
     if (showIcon) {
       const outputIcon = icon ? icon : FezType.isLFGType(fez.fezType) ? AppIcons.lfg : AppIcons.personalEvent;
-      return <AppIcon color={theme.colors.constantWhite} icon={outputIcon} />;
+      return (
+        <>
+          {favoriteIcon}
+          <AppIcon color={theme.colors.constantWhite} icon={outputIcon} />
+        </>
+      );
     }
+    return favoriteIcon;
   };
 
   /**
@@ -116,7 +152,7 @@ const FezCardInternal = ({
   const cardContent = (
     <ScheduleItemCardBase
       disabled={disabled}
-      onPress={enableReportOnly ? undefined : onPress}
+      onPress={enableReportOnly ? undefined : handlePress}
       onLongPress={handleLongPress}
       cardStyle={styles.card}
       title={fez.title}

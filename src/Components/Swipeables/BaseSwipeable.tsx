@@ -35,6 +35,8 @@ export const BaseSwipeable = ({
   overshootLeft = false,
   leftThreshold,
   rightThreshold,
+  // Only takes effect when overshootLeft/overshootRight is true; both default to false below
+  // and no current caller overrides them, so this friction value is currently inert.
   overshootFriction = 8,
   onSwipeableWillOpen,
   friction = 1,

@@ -12,6 +12,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -19,25 +20,25 @@ import {alertPromoteUser, alertRemoveRole} from '#src/Libraries/Alerts/AdminAler
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAddUserRoleMutation, useRemoveUserRoleMutation} from '#src/Queries/Admin/UserRoleMutations';
 import {useUsersWithRoleQuery} from '#src/Queries/Admin/UserRoleQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminUserRolesScreen>;
 
-const MANAGED_ROLES: UserRoleType[] = [
-  UserRoleType.accountmanager,
-  UserRoleType.karaokemanager,
-  UserRoleType.karaokeambassador,
-  UserRoleType.shutternaut,
-  UserRoleType.shutternautmanager,
-  UserRoleType.performerselfeditor,
-];
+/**
+ * Every role THO can assign, derived from the enum so new roles appear without a code change here.
+ */
+const MANAGED_ROLES: UserRoleType[] = UserRoleType.allCases();
 
 export const AdminUserRolesScreen = (props: Props) => {
+  const {hasTHO} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'tho'}>
-      <AdminUserRolesScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTHO}>
+        <AdminUserRolesScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -130,7 +131,11 @@ const AdminUserRoleDetail = ({role, navigation}: AdminUserRoleDetailProps) => {
   };
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

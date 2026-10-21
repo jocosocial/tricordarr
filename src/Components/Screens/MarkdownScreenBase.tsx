@@ -194,7 +194,11 @@ export const MarkdownScreenBase = ({
   }, [getNavButtons, navigation, enableSearch, actionsMenu]);
 
   if (!data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

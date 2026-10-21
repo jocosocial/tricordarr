@@ -2,7 +2,10 @@ import React from 'react';
 
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useUserHeader} from '#src/Context/Contexts/UserHeaderContext';
+import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 /**
@@ -44,6 +47,11 @@ export const UserSearchBarResults = ({
   excludeSelf = false,
 }: UserSearchBarResultsProps) => {
   const {currentUserID} = useSession();
+  const {preRegistrationMode} = usePreRegistration();
+  // Queried once for the whole list rather than per row. Favorites are not a pre-registration
+  // concept, so the request is skipped in that mode.
+  const {data: favorites} = useUserFavoritesQuery({enabled: !preRegistrationMode});
+  const {contains} = useUserHeader();
 
   return (
     <ListSection>
@@ -56,6 +64,7 @@ export const UserSearchBarResults = ({
               userHeader={user}
               onPress={excluded ? undefined : () => handlePress(user)}
               disabled={excluded}
+              isFavorite={contains(favorites, user)}
             />
           );
         })}

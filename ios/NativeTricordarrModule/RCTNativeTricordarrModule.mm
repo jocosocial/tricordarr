@@ -74,4 +74,14 @@
   [Notifications clearSettings];
 }
 
+- (void)getNotificationLog:(RCTPromiseResolveBlock)resolve
+                     reject:(RCTPromiseRejectBlock)reject {
+  NSString *log = [NotificationLog read];
+  resolve(log);
+}
+
+- (void)clearNotificationLog {
+  [NotificationLog clear];
+}
+
 @end

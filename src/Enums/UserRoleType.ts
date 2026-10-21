@@ -29,6 +29,8 @@ export enum UserRoleType {
   performerselfeditor = 'performerselfeditor',
   /// Account Managers can look up accounts by registration code and re-enable one-time password recovery.
   accountmanager = 'accountmanager',
+  /// Hunt Managers can create and modify Puzzle Hunts.
+  huntmanager = 'huntmanager',
 }
 
 export namespace UserRoleType {
@@ -50,8 +52,18 @@ export namespace UserRoleType {
         return 'Shadow Event Performer Editor';
       case UserRoleType.accountmanager:
         return 'Account Manager';
+      case UserRoleType.huntmanager:
+        return 'Hunt Manager';
     }
   };
+
+  /**
+   * Every role case, in declaration order. Equivalent to Swift's `CaseIterable.allCases`.
+   * The `typeof` filter is required: this namespace merges with the enum of the same name, so
+   * `Object.values(UserRoleType)` also yields the functions declared here.
+   */
+  export const allCases = (): UserRoleType[] =>
+    Object.values(UserRoleType).filter((value): value is UserRoleType => typeof value === 'string');
 
   /**
    * This gives us a bit more control than direct enum access. Since the strings for UserRoleType are part of the API

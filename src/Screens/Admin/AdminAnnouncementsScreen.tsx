@@ -10,19 +10,24 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminAnnouncementsScreen>;
 
 export const AdminAnnouncementsScreen = (props: Props) => {
+  const {hasTwitarrTeam} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminAnnouncementsScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
+        <AdminAnnouncementsScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -42,7 +47,11 @@ const AdminAnnouncementsScreenInner = ({navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

@@ -1,4 +1,3 @@
-import {StackScreenProps} from '@react-navigation/stack';
 import {Formik, FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
@@ -17,16 +16,16 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {
-  SettingsStackParamList,
-  SettingsStackScreenComponents,
-} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {TimeSettingsFormValues} from '#src/Types/FormValues';
 
-type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.timeSettingsScreen>;
-
-export const TimeSettingsScreen = ({navigation}: Props) => {
+/**
+ * Registered both under SettingsStackNavigator (Account > Settings > Time) and directly
+ * under CommonScreens (pushed in-place from wherever a time zone warning is shown), so this
+ * intentionally avoids a navigation prop typed to either specific stack's param list.
+ */
+export const TimeSettingsScreen = () => {
+  const navigation = useCommonStack();
   const {appConfig, updateAppConfig} = useConfig();
   const {commonStyles} = useStyles();
   const [forceShowTimezoneWarning, setForceShowTimezoneWarning] = useState(appConfig.forceShowTimezoneWarning);

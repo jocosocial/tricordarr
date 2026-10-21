@@ -32,6 +32,20 @@ export const HelpManualScreen = () => {
             icon={AppIcons.report}
             onPress={() => commonNavigation.push(CommonStackComponents.reportHelpScreen)}
           />
+          <DataFieldListItem
+            title={'Network Troubleshooting'}
+            description={'Fixing on-board connectivity issues to the Twitarr server.'}
+            icon={AppIcons.help}
+            onPress={() => commonNavigation.push(CommonStackComponents.networkHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Notification Log'}
+            description={
+              'A record of every notification event this device received, even ones that did not produce a push notification.'
+            }
+            icon={AppIcons.logView}
+            onPress={() => commonNavigation.push(CommonStackComponents.notificationLogHelpScreen)}
+          />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Major Features'} noMargin={true}>
           <DataFieldListItem
@@ -179,6 +193,12 @@ export const HelpManualScreen = () => {
             description={'Look up codes, unlock password recovery, and allocate Discord codes.'}
             icon={AppIcons.registrationCode}
             onPress={() => commonNavigation.push(CommonStackComponents.registrationCodeHelpScreen)}
+          />
+          <DataFieldListItem
+            title={'Manage Puzzle Hunts'}
+            description={'Create and edit puzzle hunts and their puzzles.'}
+            icon={AppIcons.hunts}
+            onPress={() => commonNavigation.push(CommonStackComponents.huntManageHelpScreen)}
           />
           <DataFieldListItem
             title={'Server Settings'}

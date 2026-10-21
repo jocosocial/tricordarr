@@ -12,18 +12,23 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminDailyThemesScreen>;
 
 export const AdminDailyThemesScreen = (props: Props) => {
+  const {hasTHO} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'tho'}>
-      <AdminDailyThemesScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTHO}>
+        <AdminDailyThemesScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -39,7 +44,11 @@ const AdminDailyThemesScreenInner = ({navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

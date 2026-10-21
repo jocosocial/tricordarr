@@ -23,6 +23,10 @@ export const PersonalEventHelpScreen = () => {
           event without guests, you cannot add users later; you'll need to create a new private event and invite them at
           creation. If the event already has guests, you can add or remove users later.
         </HelpTopicView>
+        <HelpTopicView title={'Visibility'} icon={AppIcons.hide}>
+          You can make a private event unlisted, which allows anyone with a link to view and join the event. By default
+          only the people you add can view the event.
+        </HelpTopicView>
         <EventLocationHelpChapterView />
         <HelpChapterTitleView title={'Actions'} />
         <OverlappingHelpTopicView />
@@ -38,6 +42,10 @@ export const PersonalEventHelpScreen = () => {
         <HelpTopicView title={'Leave'} icon={AppIcons.leave}>
           Leave this private event. This option only appears if you were invited and are not the owner, and appears on
           the event screen rather than the actions menu. After leaving, you return to the previous screen.
+        </HelpTopicView>
+        <HelpTopicView title={'Share'} icon={AppIcons.share}>
+          Share a link to this private event. Anyone you send it to can open it, but only an Unlisted event lets a
+          non-participant actually view and join it.
         </HelpTopicView>
         <HelpTopicView title={'Report'} icon={AppIcons.report}>
           Report this private event to the moderation team if it violates the Code of Conduct.

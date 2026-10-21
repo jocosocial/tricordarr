@@ -1,5 +1,7 @@
-import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
+import {useOpenQuery} from '#src/Queries/OpenQuery';
 import {EventData} from '#src/Structs/ControllerStructs';
+
+type EventsQueryOpenOptions = Parameters<typeof useOpenQuery<EventData[]>>[1];
 
 interface EventsQueryOptions {
   cruiseDay?: number;
@@ -10,9 +12,15 @@ interface EventsQueryOptions {
   search?: string;
   location?: string;
   dayplanner?: boolean;
-  options?: TokenAuthQueryOptionsType<EventData[]>;
+  options?: EventsQueryOpenOptions;
 }
 
+/**
+ * List/search the public schedule. Swiftarr GETs are flex routes (optional auth), so this uses
+ * `useOpenQuery`. `isFavorite` on each result is `false` for a logged-out request, and the
+ * `dayplanner` param's personalized fields require a token; callers must hide/gate the UI that
+ * would need those while logged out (see ScheduleDayScreen's LFG/personal-event/day-planner bits).
+ */
 export const useEventsQuery = ({
   cruiseDay,
   day,
@@ -24,7 +32,7 @@ export const useEventsQuery = ({
   dayplanner,
   options,
 }: EventsQueryOptions) => {
-  return useTokenAuthQuery<EventData[]>('/events', options, {
+  return useOpenQuery<EventData[]>('/events', options, {
     ...(cruiseDay !== undefined && {cruiseday: cruiseDay}),
     ...(day && {day: day}),
     ...(date && {date: date.toISOString()}),
@@ -36,6 +44,9 @@ export const useEventsQuery = ({
   });
 };
 
+/**
+ * Single event. Flex auth, same as useEventsQuery.
+ */
 export const useEventQuery = ({eventID}: {eventID: string}) => {
-  return useTokenAuthQuery<EventData>(`/events/${eventID}`);
+  return useOpenQuery<EventData>(`/events/${eventID}`);
 };

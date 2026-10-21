@@ -8,6 +8,8 @@ interface KaraokeSearchBarProps {
   onSearch?: () => void;
   onClear?: () => void;
   placeholder?: string;
+  /** True while the search request is in flight. */
+  loading?: boolean;
 }
 
 /**
@@ -21,6 +23,7 @@ export const KaraokeSearchBar = ({
   onSearch,
   onClear,
   placeholder = 'Search Song Library',
+  loading = false,
 }: KaraokeSearchBarProps) => {
   return (
     <SearchBarBase
@@ -32,6 +35,7 @@ export const KaraokeSearchBar = ({
       onSearch={onSearch}
       onClear={onClear}
       autoSearch={false}
+      loading={loading}
     />
   );
 };

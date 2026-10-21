@@ -17,6 +17,9 @@ import {MenuProvider} from '#src/Context/Providers/MenuProvider';
  * Lightbox renders after Portal.Host so the image viewer covers Paper menus and dialogs.
  * It also owns its own snackbar: SnackBarBase renders Paper's Snackbar inline rather than
  * through a Portal, so one owned by SnackbarProvider would paint underneath the overlay.
+ *
+ * Stateless helper contexts (pure derivation/factory functions) live in HelperProvider,
+ * not here - this provider is for UI-primitive state only.
  */
 export const ShellProvider = ({children}: PropsWithChildren) => {
   return (

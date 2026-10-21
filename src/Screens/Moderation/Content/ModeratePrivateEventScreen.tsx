@@ -57,7 +57,11 @@ const ModeratePrivateEventScreenInner = ({route}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading || !data) {
-    return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
+    return (
+      <AppView>
+        <LoadingView refreshing={refreshing} onRefresh={onRefresh} />
+      </AppView>
+    );
   }
 
   const event = data.personalEvent;
@@ -70,6 +74,7 @@ const ModeratePrivateEventScreenInner = ({route}: Props) => {
     fezID: event.personalEventID,
     owner: event.owner,
     fezType: FezType.privateEvent,
+    visibility: event.visibility,
     title: event.title,
     info: event.description ?? '',
     startTime: event.startTime,

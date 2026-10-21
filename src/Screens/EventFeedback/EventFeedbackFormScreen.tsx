@@ -103,7 +103,11 @@ const EventFeedbackFormScreenInner = ({navigation, route}: Props) => {
   };
 
   if (isLoading || !initialValues) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

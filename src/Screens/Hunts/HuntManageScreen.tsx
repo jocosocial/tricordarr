@@ -12,25 +12,38 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useHuntsQuery} from '#src/Queries/Admin/HuntQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
-type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminHuntsScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.huntManageScreen>;
 
-export const AdminHuntsScreen = (props: Props) => {
+/**
+ * Lists every hunt for editing. Reached from the drawer's Special Roles section, not Server Admin:
+ * the access checkpoint matches Swiftarr, which opened the hunt admin endpoints to the Hunt Manager
+ * role as well as TwitarrTeam and above. Everyone else would get a 403.
+ */
+export const HuntManageScreen = (props: Props) => {
+  const {hasHuntManager} = useRoles();
+  const {hasTwitarrTeam} = usePrivilege();
+
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminHuntsScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasHuntManager || hasTwitarrTeam}>
+        <HuntManageScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
-const AdminHuntsScreenInner = ({navigation}: Props) => {
+const HuntManageScreenInner = ({navigation}: Props) => {
   const {data, refetch, isLoading} = useHuntsQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
-  const getNavButtons = useAdminHeaderButtons();
+  const getNavButtons = useAdminHeaderButtons(CommonStackComponents.huntManageHelpScreen);
 
   useEffect(() => {
     navigation.setOptions({
@@ -39,7 +52,11 @@ const AdminHuntsScreenInner = ({navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (
@@ -61,14 +78,14 @@ const AdminHuntsScreenInner = ({navigation}: Props) => {
             key={hunt.huntID}
             title={hunt.title}
             description={hunt.description}
-            onPress={() => navigation.push(CommonStackComponents.adminHuntEditScreen, {huntID: hunt.huntID})}
+            onPress={() => navigation.push(CommonStackComponents.huntEditScreen, {huntID: hunt.huntID})}
           />
         ))}
       </ScrollingContentView>
       <BaseFAB
         testID={'huntCreate-fab'}
         label={'New Hunt'}
-        onPress={() => navigation.push(CommonStackComponents.adminHuntEditScreen, {})}
+        onPress={() => navigation.push(CommonStackComponents.huntEditScreen, {})}
       />
     </AppView>
   );

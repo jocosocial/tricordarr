@@ -4,7 +4,8 @@ jest.mock('#src/Enums/FezType', () => ({
 
 import moment from 'moment-timezone';
 
-import {DAY_PLANNER_CONFIG, getMinutesFromDayStartForNow} from '#src/Libraries/DayPlanner';
+import {DAY_PLANNER_CONFIG} from '#src/Context/Contexts/DayPlannerContext';
+import {getMinutesFromDayStartForNow} from '#src/Context/Providers/DayPlannerProvider';
 
 describe('getMinutesFromDayStartForNow', () => {
   const boatTz = 'America/Lower_Princes';

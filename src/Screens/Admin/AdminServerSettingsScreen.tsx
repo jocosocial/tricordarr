@@ -1,5 +1,6 @@
 import {Formik, FormikHelpers} from 'formik';
 import React, {useEffect} from 'react';
+import {Text} from 'react-native-paper';
 import * as Yup from 'yup';
 
 import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
@@ -14,6 +15,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {ServerSettingsReadOnlyWarningView} from '#src/Components/Views/Warnings/ServerSettingsReadOnlyWarningView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {EventNotificationSetting} from '#src/Enums/EventNotificationSetting';
@@ -24,7 +26,8 @@ import {IntegerValidation} from '#src/Libraries/ValidationSchema';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAdminSettingsUpdateMutation} from '#src/Queries/Admin/SettingsMutations';
 import {useAdminSettingsQuery} from '#src/Queries/Admin/SettingsQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {SettingsAdminData, SettingsUpdateData} from '#src/Structs/AdminControllerStructs';
 
 const MIN_ACCESS_CHOICES = [
@@ -94,10 +97,13 @@ const toFormValues = (data: SettingsAdminData): SettingsFormValues => ({
 });
 
 export const AdminServerSettingsScreen = () => {
+  const {hasTwitarrTeam} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminServerSettingsScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
+        <AdminServerSettingsScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -151,10 +157,22 @@ const AdminServerSettingsScreenInner = () => {
   };
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
   if (!data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          <PaddedContentView padTop={true}>
+            <Text style={commonStyles.onBackground}>Unable to load server settings. Pull to retry.</Text>
+          </PaddedContentView>
+        </ScrollingContentView>
+      </AppView>
+    );
   }
 
   return (

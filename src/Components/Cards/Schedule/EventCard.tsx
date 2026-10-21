@@ -5,14 +5,16 @@ import {ActivityIndicator} from 'react-native-paper';
 
 import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {EventData, UserNotificationData} from '#src/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '#src/Types';
-import {DayPlannerItem} from '#src/Types/DayPlanner';
 
 interface EventCardProps {
   eventData: EventData;
@@ -22,7 +24,6 @@ interface EventCardProps {
   hideFavorite?: boolean;
   onLongPress?: () => void;
   titleHeader?: string;
-  onFavorite?: () => void;
 }
 
 interface EventCardRightIconsProps {
@@ -33,14 +34,76 @@ interface EventCardRightIconsProps {
   contentColor?: string;
 }
 
+interface EventCardFavoriteIconProps {
+  isFavorite: boolean;
+  refreshing: boolean;
+  onPress: () => void;
+  /** When set (e.g. gold team), the icon uses this color for contrast. */
+  contentColor?: string;
+}
+
 // Layout stays icon-sized; the tap target is grown with hitSlop only. Up/right lean into the
 // card's own padding, so the target clears 44pt without overlapping the title or duration text.
 const favoriteHitSlop = {top: 16, right: 16, bottom: 12, left: 12};
 
 /**
+ * Favorite toggle for an event card. The tap target expands with hitSlop rather than growing
+ * the icon's layout size, and the spinner is stacked on top of the icon (rather than swapped
+ * in for it) inside a slot fixed to the icon's own footprint, so mounting/unmounting it while
+ * mutating never changes the row's layout size — which was previously pushing single-line
+ * titles onto two lines.
+ */
+const EventCardFavoriteIcon = ({isFavorite, refreshing, onPress, contentColor}: EventCardFavoriteIconProps) => {
+  const {theme} = useAppTheme();
+  const {styleDefaults} = useStyles();
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        slot: {
+          width: styleDefaults.iconSize,
+          height: styleDefaults.iconSize,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        hidden: {
+          opacity: 0,
+        },
+        spinnerOverlay: {
+          ...StyleSheet.absoluteFill,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+      }),
+    [styleDefaults.iconSize],
+  );
+
+  const iconColor = contentColor ?? theme.colors.twitarrYellow;
+
+  return (
+    <View style={styles.slot}>
+      <Pressable
+        onPress={onPress}
+        hitSlop={favoriteHitSlop}
+        disabled={refreshing}
+        style={refreshing && styles.hidden}
+        accessibilityRole={'button'}
+        accessibilityLabel={isFavorite ? 'Unfavorite event' : 'Favorite event'}
+        accessibilityState={{selected: isFavorite, busy: refreshing}}
+        testID={'eventCardFavorite-button'}>
+        <AppIcon icon={isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite} color={iconColor} />
+      </Pressable>
+      {refreshing && (
+        <View style={styles.spinnerOverlay}>
+          <ActivityIndicator size={'small'} />
+        </View>
+      )}
+    </View>
+  );
+};
+
+/**
  * Right-side icons for an event card (photographer markers and favorite toggle).
- * The favorite control expands its tap target with hitSlop so taps are not stolen by the parent
- * card press, without changing the icon's layout size.
  */
 const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentColor}: EventCardRightIconsProps) => {
   const {theme} = useAppTheme();
@@ -78,31 +141,16 @@ const EventCardRightIcons = ({eventData, refreshing, onFavoritePress, contentCol
     return <AppIcon icon={AppIcons.shutternaut} color={theme.colors.onTwitarrNegativeButton} />;
   }, [hasShutternaut, eventData.shutternautData?.userIsPhotographer, theme.colors.onTwitarrNegativeButton]);
 
-  const favoriteIconColor = contentColor ?? theme.colors.twitarrYellow;
-  const favoriteIcon = useMemo(() => {
-    return (
-      <Pressable
-        onPress={onFavoritePress}
-        hitSlop={favoriteHitSlop}
-        accessibilityRole={'button'}
-        accessibilityLabel={eventData.isFavorite ? 'Unfavorite event' : 'Favorite event'}
-        accessibilityState={{selected: eventData.isFavorite}}
-        testID={'eventCardFavorite-button'}>
-        <AppIcon icon={eventData.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite} color={favoriteIconColor} />
-      </Pressable>
-    );
-  }, [onFavoritePress, eventData.isFavorite, favoriteIconColor]);
-
   return (
     <View style={styles.iconContainer}>
-      {refreshing && <ActivityIndicator />}
-      {!refreshing && (
-        <>
-          {needsPhotographerIcon}
-          {photographerIcon}
-          {favoriteIcon}
-        </>
-      )}
+      {needsPhotographerIcon}
+      {photographerIcon}
+      <EventCardFavoriteIcon
+        isFavorite={eventData.isFavorite}
+        refreshing={refreshing}
+        onPress={onFavoritePress}
+        contentColor={contentColor}
+      />
     </View>
   );
 };
@@ -115,56 +163,65 @@ export const EventCard = ({
   titleHeader,
   showDay = false,
   hideFavorite = false,
-  onFavorite,
 }: EventCardProps) => {
   const {theme} = useAppTheme();
+  const {isLoggedIn} = useSession();
   const eventFavoriteMutation = useEventFavoriteMutation();
   const queryClient = useQueryClient();
+  const {updateFavorite, primeEventDetail} = useEventCacheReducer();
+  const {getDayPlannerColor, getBackgroundColor, getTextColor} = useDayPlanner();
   const [refreshing, setRefreshing] = useState(false);
 
   const onFavoritePress = useCallback(() => {
     setRefreshing(true);
+    const newValue = !eventData.isFavorite;
+    // Optimistic: flip the cache immediately so the star is already correct by the time the
+    // spinner clears, instead of waiting on a (possibly slow) network round trip to do it.
+    updateFavorite(eventData, newValue);
     eventFavoriteMutation.mutate(
       {
         eventID: eventData.eventID,
-        action: eventData.isFavorite ? 'unfavorite' : 'favorite',
+        action: newValue ? 'favorite' : 'unfavorite',
       },
       {
         onSuccess: async () => {
-          // This is to enable triggering a refresh from the PerformerScreenBase where
-          // we don't hit the event endpoints directly. Eventually this will be removed since
-          // we can use a cache reducer to also hit any performers that have the eventID in
-          // their response.
-          onFavorite?.();
-          // If this is too slow to reload, a setQueryData here may be in order.
-          const invalidations = UserNotificationData.getCacheKeys()
-            .concat(EventData.getCacheKeys(eventData.eventID))
-            .map(key => queryClient.invalidateQueries({queryKey: key}));
+          const invalidations = UserNotificationData.getCacheKeys().map(key =>
+            queryClient.invalidateQueries({queryKey: key}),
+          );
           await Promise.all(invalidations);
+        },
+        onError: () => {
+          updateFavorite(eventData, !newValue);
         },
         onSettled: () => setRefreshing(false),
       },
     );
-  }, [eventData.eventID, eventData.isFavorite, eventFavoriteMutation, queryClient, onFavorite]);
+  }, [eventData, eventFavoriteMutation, queryClient, updateFavorite]);
+
+  const handlePress = useCallback(() => {
+    primeEventDetail(eventData);
+    onPress?.();
+  }, [eventData, onPress, primeEventDetail]);
 
   const cardStyleAndContentColor = useMemo(() => {
-    const color = DayPlannerItem.getDayPlannerColor({
+    const color = getDayPlannerColor({
       type: 'event',
       title: eventData.title,
       eventType: eventData.eventType,
     });
-    const backgroundColor = DayPlannerItem.getBackgroundColor(color, theme.colors);
-    const contentColor = DayPlannerItem.getTextColor(color, theme.colors);
+    const backgroundColor = getBackgroundColor(color, theme.colors);
+    const contentColor = getTextColor(color, theme.colors);
     const showMarkerBorder = color === 'goldTeam';
     return {
       cardStyle: StyleSheet.create({card: {backgroundColor}}).card,
       contentColor,
       showMarkerBorder,
     };
-  }, [eventData.title, eventData.eventType, theme.colors]);
+  }, [eventData.title, eventData.eventType, theme.colors, getDayPlannerColor, getBackgroundColor, getTextColor]);
 
   const getRight = useCallback(() => {
-    if (hideFavorite) {
+    // Favoriting requires an account; hide the toggle entirely rather than let it fail on tap.
+    if (hideFavorite || !isLoggedIn) {
       return null;
     }
     return (
@@ -175,11 +232,11 @@ export const EventCard = ({
         contentColor={cardStyleAndContentColor.contentColor}
       />
     );
-  }, [eventData, refreshing, hideFavorite, onFavoritePress, cardStyleAndContentColor.contentColor]);
+  }, [eventData, refreshing, hideFavorite, isLoggedIn, onFavoritePress, cardStyleAndContentColor.contentColor]);
 
   return (
     <ScheduleItemCardBase
-      onPress={onPress}
+      onPress={handlePress}
       cardStyle={cardStyleAndContentColor.cardStyle}
       contentColor={cardStyleAndContentColor.contentColor}
       showMarkerBorder={cardStyleAndContentColor.showMarkerBorder}

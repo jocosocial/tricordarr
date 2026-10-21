@@ -10,6 +10,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -17,13 +18,17 @@ import {alertReloadTimeZones} from '#src/Libraries/Alerts/AdminAlerts';
 import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useReloadTimeZoneDataMutation} from '#src/Queries/Admin/TimeZoneMutations';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 export const AdminTimeZonesScreen = () => {
+  const {hasTwitarrTeam} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminTimeZonesScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
+        <AdminTimeZonesScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -43,7 +48,11 @@ const AdminTimeZonesScreenInner = () => {
   }, [getNavButtons, navigation]);
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

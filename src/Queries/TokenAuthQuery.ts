@@ -1,5 +1,4 @@
 import {
-  type GetNextPageParamFunction,
   InfiniteData,
   QueryKey,
   useInfiniteQuery,
@@ -19,6 +18,7 @@ import {
   getNextPageParam,
   getPreviousPageParam,
   // PageParam,
+  PaginationQueryOptionsType,
   PaginationQueryParams,
   WithPaginator,
 } from '#src/Queries/Pagination';
@@ -156,30 +156,16 @@ export type TokenAuthPaginationQueryOptionsType<
   enabled?: boolean;
 };
 
+/**
+ * Options for `useTokenAuthPaginationQuery`. Alias of the shared `PaginationQueryOptionsType`
+ * in `#src/Queries/Pagination`, which `useOpenPaginationQuery` uses too.
+ */
 export type TokenAuthPaginationQueryOptionsTypeV2<
   TQueryFnData,
   TError extends Error = AxiosError<ErrorResponse>,
   TData = InfiniteData<TQueryFnData, PaginationQueryParams>,
   TQueryKey extends QueryKey = QueryKey,
-> = Omit<
-  UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, PaginationQueryParams>,
-  'initialData' | 'queryKey' | 'onError' | 'enabled' | 'getNextPageParam' | 'initialPageParam'
-> & {
-  /**
-   * Your query function gets a `pageParam` object containing { start?, limit? }.
-   */
-  // queryFn?: (ctx: {
-  //   pageParam: PaginationQueryParams;
-  //   queryKey: TQueryKey;
-  //   signal?: AbortSignal;
-  //   meta?: any;
-  // }) => Promise<TQueryFnData>;
-  // React Query v5 allows for enabled to be a function. We are disabling that
-  // for now to maintain simplicity in the query wrappers.
-  enabled?: boolean;
-  getNextPageParam?: GetNextPageParamFunction<PaginationQueryParams, TQueryFnData>;
-  initialPageParam?: PaginationQueryParams;
-};
+> = PaginationQueryOptionsType<TQueryFnData, TError, TData, TQueryKey>;
 
 /**
  * Wrapper around useInfiniteQuery with a default query function signature.

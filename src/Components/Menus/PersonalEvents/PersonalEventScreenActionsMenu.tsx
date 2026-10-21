@@ -3,6 +3,7 @@ import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {FezType} from '#src/Enums/FezType';
@@ -11,6 +12,7 @@ import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useMenu} from '#src/Hooks/useMenu';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
+import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useScheduleStackNavigation} from '#src/Navigation/Stacks/Schedule/ScheduleStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -65,6 +67,7 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
           )}
         </>
       )}
+      <ShareMenuItem contentType={ShareContentType.privateEvent} contentID={props.event.fezID} closeMenu={closeMenu} />
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}

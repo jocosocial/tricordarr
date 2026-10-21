@@ -129,7 +129,11 @@ const EventFeedbackSelectScreenInner = ({navigation, route}: Props) => {
   const keyExtractor = useCallback((item: EventData) => item.eventID, []);
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

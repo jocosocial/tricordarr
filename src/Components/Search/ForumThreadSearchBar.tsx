@@ -125,6 +125,7 @@ export const ForumThreadSearchBar = (props: Props) => {
         onSearch={onSearch}
         onChangeSearch={onChangeSearch}
         onClear={onClear}
+        loading={isFetching && !isFetchingNextPage && !isFetchingPreviousPage}
       />
       <View style={[commonStyles.flex]}>
         <ForumThreadList

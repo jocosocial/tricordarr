@@ -29,7 +29,11 @@ const ForumPostSearchScreenInner = ({route}: Props) => {
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
 
   if (isLoadingFavorites) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

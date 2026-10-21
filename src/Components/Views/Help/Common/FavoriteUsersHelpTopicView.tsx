@@ -9,7 +9,9 @@ export const FavoriteUsersHelpTopicView = ({forListScreen = true}: FavoriteUsers
   return (
     <HelpTopicView title={forListScreen ? 'Favorite Users' : 'Favorite User'} icon={AppIcons.userFavorite}>
       {forListScreen && 'View and manage your list of favorite users. '}
-      Favoriting a user allows them to call you with KrakenTalk™. You can swipe on each user to see additional actions.
+      Favoriting a user allows them to call you with KrakenTalk™.
+      {forListScreen &&
+        ' Swipe left on a user to Seamail, Call, or schedule an Event with them. Swipe right to Remove them from your favorites.'}{' '}
       Long-press to select multiple users.
     </HelpTopicView>
   );

@@ -28,6 +28,7 @@ import {appUrl} from '#src/Libraries/UrlParser';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useHuntPuzzleCallInMutation} from '#src/Queries/Hunts/HuntMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 import {HuntPuzzleCallInFormValues} from '#src/Types/FormValues';
@@ -39,11 +40,13 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.huntPu
  */
 export const HuntPuzzleScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
-      <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={`/puzzle/${props.route.params.puzzleID}`}>
-        <HuntPuzzleScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <MaintenanceModeScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={`/puzzle/${props.route.params.puzzleID}`}>
+          <HuntPuzzleScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </MaintenanceModeScreen>
   );
 };
 
@@ -51,7 +54,7 @@ export const HuntPuzzleScreen = (props: Props) => {
  * Puzzle body, call-in form, and prior submissions for one puzzle.
  */
 const HuntPuzzleScreenInner = ({navigation, route}: Props) => {
-  const {puzzle, isLoading, isError, error, isSolved, callInsNewestFirst, refetch} = useHuntPuzzleData({
+  const {puzzle, isLoading, error, isSolved, callInsNewestFirst, refetch} = useHuntPuzzleData({
     puzzleID: route.params.puzzleID,
   });
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
@@ -109,22 +112,21 @@ const HuntPuzzleScreenInner = ({navigation, route}: Props) => {
   );
 
   if (isLoading) {
-    return <LoadingView />;
-  }
-
-  if (isError && !puzzle) {
-    const status = (error as AxiosError<ErrorResponse>)?.response?.status;
     return (
-      <HuntLoadErrorView
-        resource={'puzzle'}
-        status={status}
-        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      />
+      <AppView>
+        <LoadingView />
+      </AppView>
     );
   }
 
   if (!puzzle) {
-    return <LoadingView />;
+    return (
+      <HuntLoadErrorView
+        resource={'puzzle'}
+        status={(error as AxiosError<ErrorResponse>)?.response?.status}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      />
+    );
   }
 
   return (

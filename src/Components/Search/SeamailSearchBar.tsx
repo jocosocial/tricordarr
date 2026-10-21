@@ -77,6 +77,7 @@ export const SeamailSearchBar = () => {
         searchQuery={searchQuery}
         onClear={onClear}
         style={commonStyles.marginBottom}
+        loading={isFetching && !isFetchingNextPage}
       />
       <SeamailFlatList
         fezList={fezList}

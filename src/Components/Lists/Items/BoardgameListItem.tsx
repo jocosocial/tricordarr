@@ -4,6 +4,7 @@ import {List} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {BoardgameListItemSwipeable} from '#src/Components/Swipeables/BoardgameListItemSwipeable';
+import {useBoardgameData} from '#src/Context/Contexts/BoardgameDataContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -52,6 +53,7 @@ const BoardgameListItemInternal = ({boardgame}: BoardgameListItemProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const navigation = useMainStack();
+  const {getPlayers, getPlayingTime} = useBoardgameData();
 
   const styles = StyleSheet.create({
     item: {
@@ -81,8 +83,8 @@ const BoardgameListItemInternal = ({boardgame}: BoardgameListItemProps) => {
     [navigation, boardgame],
   );
 
-  const players = BoardgameData.getPlayers(boardgame);
-  const playingTime = BoardgameData.getPlayingTime(boardgame);
+  const players = getPlayers(boardgame);
+  const playingTime = getPlayingTime(boardgame);
   const description = [players, playingTime].filter(Boolean).join('\n');
 
   return (

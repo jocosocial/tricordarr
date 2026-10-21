@@ -2,9 +2,9 @@ import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {DAY_PLANNER_CONFIG, useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import useDateTime from '#src/Libraries/DateTime';
-import {DAY_PLANNER_CONFIG, getMinutesFromDayStartForNow} from '#src/Libraries/DayPlanner';
 
 interface DayPlannerNowDividerProps {
   /** Start of the displayed day (for pixel offset calculation) */
@@ -23,6 +23,7 @@ interface DayPlannerNowDividerProps {
 export const DayPlannerNowDivider = ({dayStart, selectedCruiseDay, boatTimeZoneID}: DayPlannerNowDividerProps) => {
   const {theme} = useAppTheme();
   const {startDate, endDate, adjustedCruiseDayToday} = useCruise();
+  const {getMinutesFromDayStartForNow} = useDayPlanner();
 
   const minutelyUpdatingDate = useDateTime('minute');
 
@@ -45,22 +46,35 @@ export const DayPlannerNowDivider = ({dayStart, selectedCruiseDay, boatTimeZoneI
     }
 
     return (minutesFromDayStart / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
-  }, [minutelyUpdatingDate, selectedCruiseDay, adjustedCruiseDayToday, startDate, endDate, dayStart, boatTimeZoneID]);
+  }, [
+    minutelyUpdatingDate,
+    selectedCruiseDay,
+    adjustedCruiseDayToday,
+    startDate,
+    endDate,
+    dayStart,
+    boatTimeZoneID,
+    getMinutesFromDayStartForNow,
+  ]);
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        nowLine: {
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          height: 2,
+          backgroundColor: theme.colors.error,
+          zIndex: 0,
+        },
+      }),
+    [theme.colors.error],
+  );
 
   if (nowLineOffset === null) {
     return null;
   }
-
-  const styles = StyleSheet.create({
-    nowLine: {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      height: 2,
-      backgroundColor: theme.colors.error,
-      zIndex: 0,
-    },
-  });
 
   return <View style={[styles.nowLine, {top: nowLineOffset}]} />;
 };

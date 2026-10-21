@@ -25,6 +25,7 @@ import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useHuntQuery} from '#src/Queries/Hunts/HuntQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
@@ -38,11 +39,13 @@ const MIN_UNLOCK_REFETCH_MS = 30_000;
  */
 export const HuntScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
-      <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={`/hunt/${props.route.params.huntID}`}>
-        <HuntScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <MaintenanceModeScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={`/hunt/${props.route.params.huntID}`}>
+          <HuntScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </MaintenanceModeScreen>
   );
 };
 
@@ -51,7 +54,7 @@ export const HuntScreen = (props: Props) => {
  */
 const HuntScreenInner = ({navigation, route}: Props) => {
   const isFocused = useIsFocused();
-  const {data, isLoading, isError, error, refetch} = useHuntQuery({
+  const {data, isLoading, error, refetch} = useHuntQuery({
     huntID: route.params.huntID,
     options: {
       // Schedule the next fetch so newly unlocked puzzles appear without pull-to-refresh.
@@ -100,10 +103,14 @@ const HuntScreenInner = ({navigation, route}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
-  if (isError && !data) {
+  if (!data) {
     return (
       <HuntLoadErrorView
         resource={'hunt'}
@@ -111,10 +118,6 @@ const HuntScreenInner = ({navigation, route}: Props) => {
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
     );
-  }
-
-  if (!data) {
-    return <LoadingView />;
   }
 
   const nextUnlockLabel = data.nextUnlockTime

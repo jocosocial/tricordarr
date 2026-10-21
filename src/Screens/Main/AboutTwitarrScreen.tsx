@@ -11,7 +11,11 @@ import {useHelpTextQuery} from '#src/Queries/PublicQueries';
 export const AboutTwitarrScreen = () => {
   const {data, refetch, isFetching} = useHelpTextQuery();
   if (!data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
   return (
     <AppView>

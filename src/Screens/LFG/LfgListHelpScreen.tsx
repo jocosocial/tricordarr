@@ -20,30 +20,36 @@ export const LfgListHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Floating Action Button'}>
-          <HelpFABView icon={AppIcons.lfg} label={'Looking For Group'} />
+          <HelpFABView icon={AppIcons.new} label={'New LFG'} />
           <HelpTopicView title={'New LFG'} icon={AppIcons.new}>
             Press this to create a new LFG event.
-          </HelpTopicView>
-          <HelpTopicView title={'Find'} icon={AppIcons.lfgFind}>
-            Also referred to as Open. Switch to view LFGs created by others that you can join. This does not include
-            LFGs that you created. These are sorted by start time.
-          </HelpTopicView>
-          <HelpTopicView title={'Joined'} icon={AppIcons.lfgJoined}>
-            Switch to view LFGs that you have joined. This also includes any LFGs that you created. These are sorted by
-            last modification time.
-          </HelpTopicView>
-          <HelpTopicView title={'Owned'} icon={AppIcons.lfgOwned}>
-            Switch to view LFGs that you have created. These are sorted by creation time.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
           <HelpTopicView title={'Search'} icon={AppIcons.search}>
-            Search for LFGs by title or description.
+            Search for LFGs by title or description. Defaults to searching whichever list (Find, Joined, Owned) you're
+            currently viewing.
           </HelpTopicView>
           <HelpTopicView title={'Filter'} icon={AppIcons.filter}>
-            Filter LFGs by type (Gaming, Dining, Shore, Activity, Music, Other) or by unread messages. You can also
-            toggle to hide past LFGs. A filter is active if the menu icon is blue and the item in the list is slightly
-            highlighted. Long press the filter button to clear all active filters.
+            The top of the filter menu picks which list you're viewing:
+          </HelpTopicView>
+          <HelpTopicView title={'Find'} icon={AppIcons.lfgFind}>
+            Also referred to as Open. View LFGs created by others that you can join. This does not include LFGs that you
+            created. These are sorted by start time.
+          </HelpTopicView>
+          <HelpTopicView title={'Joined'} icon={AppIcons.lfgJoined}>
+            View LFGs that you have joined. This also includes any LFGs that you created. These are sorted by last
+            modification time.
+          </HelpTopicView>
+          <HelpTopicView title={'Owned'} icon={AppIcons.lfgOwned}>
+            View LFGs that you have created. These are sorted by creation time.
+          </HelpTopicView>
+          <HelpTopicView>
+            Below the list selection, everything else narrows whatever list is selected: type (Gaming, Dining, Shore,
+            Activity, Music, Other), unread messages, or down to just your favorites. You can also toggle to hide past
+            LFGs. Favorites and Unread require being a member, so both are disabled while viewing Find and switching to
+            Find clears them. A filter is active if the menu icon is blue and the item in the list is slightly
+            highlighted. Long press the filter button to clear all active filters, which also returns you to Find.
           </HelpTopicView>
           <HelpTopicView title={'Former LFGs'} icon={AppIcons.lfgFormer}>
             View LFGs, Private Events, and Seamails that you were previously a member of, but have since left or been
@@ -51,8 +57,7 @@ export const LfgListHelpScreen = () => {
             to directly view the content.
           </HelpTopicView>
           <HelpTopicView title={'Settings'} icon={AppIcons.settings}>
-            Configure your LFG preferences, including the default LFG screen (Find, Joined, Owned) and whether to hide
-            past LFGs by default.
+            Configure your LFG preferences, including whether to hide past LFGs by default.
           </HelpTopicView>
           <OverlappingHelpTopicView />
           <HelpButtonHelpTopicView />

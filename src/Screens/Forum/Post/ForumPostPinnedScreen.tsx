@@ -24,7 +24,11 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
   const flatListRef = useRef<FlashListRef<PostData>>(null);
 
   if (data === undefined) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   if (data.length === 0) {

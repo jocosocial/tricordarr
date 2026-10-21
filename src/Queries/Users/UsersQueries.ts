@@ -1,3 +1,4 @@
+import {UserMatchSort} from '#src/Enums/UserMatchSort';
 import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -7,12 +8,24 @@ export const useUsersProfileQuery = (userID: string, options?: TokenAuthQueryOpt
 
 interface UserMatchQueryProps {
   searchQuery: string;
+  /** Restrict results to users who have favorited you. Distinct from sorting. */
   favorers?: boolean;
+  /** Ordering of the results. Omitted from the request when undefined, leaving the server default. */
+  sort?: UserMatchSort;
   autoSearchLength?: number;
   options?: TokenAuthQueryOptionsType<UserHeader[]>;
 }
 
-export const useUserMatchQuery = ({searchQuery, favorers, autoSearchLength = 2, options}: UserMatchQueryProps) => {
+/**
+ * Search for users by a partial match against any of their names.
+ */
+export const useUserMatchQuery = ({
+  searchQuery,
+  favorers,
+  sort,
+  autoSearchLength = 2,
+  options,
+}: UserMatchQueryProps) => {
   return useTokenAuthQuery<UserHeader[]>(
     `/users/match/allnames/${searchQuery}`,
     {
@@ -21,6 +34,7 @@ export const useUserMatchQuery = ({searchQuery, favorers, autoSearchLength = 2, 
     },
     {
       ...(favorers !== undefined && {favorers: favorers}),
+      ...(sort !== undefined && {sort: sort}),
     },
   );
 };

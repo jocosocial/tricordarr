@@ -24,6 +24,7 @@ import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvide
 import {EnableUserNotificationProvider} from '#src/Context/Providers/EnableUserNotificationProvider';
 import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
+import {HelperProvider} from '#src/Context/Providers/HelperProvider';
 import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
 import {NavigationProvider} from '#src/Context/Providers/NavigationProvider';
 import {OobeProvider} from '#src/Context/Providers/OobeProvider';
@@ -114,15 +115,17 @@ function App(): React.JSX.Element {
                                       <EnableUserNotificationProvider>
                                         <FilterProvider>
                                           <SignOutProvider>
-                                            <ShellProvider>
-                                              <AppEventHandler />
-                                              <AppFocusHandler />
-                                              <PushNotificationService />
-                                              <NotificationDataListener />
-                                              <NotificationDataPoller />
-                                              <RootStackNavigator />
-                                              <CallOverlay />
-                                            </ShellProvider>
+                                            <HelperProvider>
+                                              <ShellProvider>
+                                                <AppEventHandler />
+                                                <AppFocusHandler />
+                                                <PushNotificationService />
+                                                <NotificationDataListener />
+                                                <NotificationDataPoller />
+                                                <RootStackNavigator />
+                                                <CallOverlay />
+                                              </ShellProvider>
+                                            </HelperProvider>
                                           </SignOutProvider>
                                         </FilterProvider>
                                       </EnableUserNotificationProvider>

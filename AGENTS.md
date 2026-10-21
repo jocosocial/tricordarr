@@ -71,7 +71,10 @@ LoggedInScreen
 - Visibility: `useMenu`
 - Anchor: `MenuAnchor`
 - Mutating items: call `onClose` in mutation `onSettled`
-- Toggle / Navigation items: NO `onClose`
+- Filter items: call `onClose` on tap. Picking a filter dismisses the menu, multi-select rows
+  (e.g. the Seamail chat categories) included. This may become a user preference later; until it
+  is, closing is the behavior.
+- Navigation items: NO `onClose`
 - Action items (e.g. Share): MUST provide `onClose`
 - Order (from right): three-dots menu, filter, search, any other special actions
 
@@ -82,7 +85,7 @@ LoggedInScreen
 - Every control that triggers a mutation must be disabled while it is in flight. This is a
   reliability requirement, not polish: the app runs on a high-latency, lossy ship network,
   and a re-tappable button during a write produces duplicate posts/messages (see #533,
-  details in `docs/Code Notes.md` under "Mutation In-Flight State")
+  details in `docs/Cache and State.md` under "Mutation In-Flight State")
   - Formik forms: submit handler MUST `await mutation.mutateAsync(...)` if it's `async`.
     An `async` handler that fires `mutation.mutate()` without awaiting it hands `isSubmitting`
     back to Formik on the wrong tick and re-enables the button mid-request
@@ -90,6 +93,14 @@ LoggedInScreen
     `disabled={mutation.isPending}`. A loading icon alone does not block a second tap.
   - Batch operations: track a local `busy` flag around the batch, separate from any
     `setRefreshing` call (that drives the parent list's pull-to-refresh, not this control)
+- For toggle-style controls backed by a cache reducer (favorite/mute/pin/etc.), the reducer
+  call goes BEFORE `mutation.mutate()`, with a rollback + invalidate in `onError` — see
+  `docs/Cache and State.md` under "Optimistic Cache Updates"
+
+## Keyboard Avoidance
+
+- `AppView` has no global keyboard handling (removed, see issue #573). A plain scrollable form needs nothing — `ScrollingContentView` already handles it. A screen with a fixed composer/button below a form or list (`ContentPostForm` below `ScrollingContentView` or a chat `ConversationListV2`) needs a local `KeyboardAvoidingView` (`behavior='padding'`, offset from `useKeyboardVerticalOffset`) wrapping both as flex siblings — see `docs/Code Notes.md` under "Keyboard Avoidance" for the pattern and reference screens.
+- Do NOT use `KeyboardStickyView` / `KeyboardAwareLegendList` / `useKeyboardChatComposerInset` for a composer pinned above the bottom tab bar — confirmed broken for that layout (details in `docs/Code Notes.md`).
 
 ## Code Smells
 
@@ -108,6 +119,11 @@ Use `createLogger` rather than `console.log`
 ## Reducers
 
 - Never mutate state within a reducer
+- Cache reducers (`src/Hooks/<Domain>/use<Domain>CacheReducer.ts`) are how a mutation's effect
+  reaches the UI. Use the page helpers in `src/Libraries/CacheReduction.ts`; judge every cached
+  query on its own `queryKey[1]` params before writing to it; treat a filter param like
+  `?favorite=true` as defining membership, not just a field. See `docs/Cache and State.md`
+- Invalidation is an escape hatch for rollback and desync, never a success path
 
 ## Components
 

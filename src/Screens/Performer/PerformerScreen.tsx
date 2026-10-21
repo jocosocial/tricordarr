@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PerformerActionsMenu} from '#src/Components/Menus/Performer/PerformerActionsMenu';
+import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -13,15 +14,18 @@ import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackCo
 import {MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PerformerScreenBase} from '#src/Screens/Performer/PerformerScreenBase';
 
 type Props = StackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
 
 export const PerformerScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={`/performer/${props.route.params.id}`}>
-      <PerformerScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <MaintenanceModeScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={`/performer/${props.route.params.id}`}>
+        <PerformerScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </MaintenanceModeScreen>
   );
 };
 
@@ -63,7 +67,11 @@ const PerformerScreenInner = ({route, navigation}: Props) => {
   }, [navigation, getHeaderButtons]);
 
   if (!data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return <PerformerScreenBase performerData={data} onRefresh={onRefresh} isFetching={isFetching} />;

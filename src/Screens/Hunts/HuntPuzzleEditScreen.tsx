@@ -9,32 +9,43 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {combineDateAndTime, splitIsoDateTime} from '#src/Libraries/Admin/AdminDateTime';
 import {hintsToJson, parseHintsJson} from '#src/Libraries/Admin/HuntPuzzles';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {usePatchHuntPuzzleMutation} from '#src/Queries/Admin/HuntMutations';
 import {useHuntAdminQuery} from '#src/Queries/Admin/HuntQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {HuntPuzzlePatchData} from '#src/Structs/AdminControllerStructs';
 import {AdminHuntPuzzleFormValues} from '#src/Types/FormValues';
 
-type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminPuzzleEditScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.huntPuzzleEditScreen>;
 
-export const AdminPuzzleEditScreen = (props: Props) => {
+/**
+ * Edits one puzzle within a hunt. Same Hunt Manager or TwitarrTeam checkpoint as HuntManageScreen.
+ */
+export const HuntPuzzleEditScreen = (props: Props) => {
+  const {hasHuntManager} = useRoles();
+  const {hasTwitarrTeam} = usePrivilege();
+
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminPuzzleEditScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasHuntManager || hasTwitarrTeam}>
+        <HuntPuzzleEditScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
-const AdminPuzzleEditScreenInner = ({route, navigation}: Props) => {
+const HuntPuzzleEditScreenInner = ({route, navigation}: Props) => {
   const {huntID, puzzleID} = route.params;
   const {data, isLoading} = useHuntAdminQuery({huntID});
   const mutation = usePatchHuntPuzzleMutation();
   const {setSnackbarPayload} = useSnackbar();
-  const getNavButtons = useAdminHeaderButtons();
+  const getNavButtons = useAdminHeaderButtons(CommonStackComponents.huntManageHelpScreen);
 
   useEffect(() => {
     navigation.setOptions({
@@ -83,7 +94,11 @@ const AdminPuzzleEditScreenInner = ({route, navigation}: Props) => {
   };
 
   if (isLoading && !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   if (!puzzle) {

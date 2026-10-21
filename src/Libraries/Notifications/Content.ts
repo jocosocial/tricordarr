@@ -133,6 +133,10 @@ export const contentNotificationCategories: ContentNotificationCategories = {
   },
 };
 
+/**
+ * Display a notification for a content event. The notification ID is the content ID.
+ * @param secondaryContentID Optional related parent ID (the forum ID for forum posts), stored in the notification data.
+ */
 export async function generateContentNotification(
   id: string,
   title: string,
@@ -144,6 +148,7 @@ export async function generateContentNotification(
   autoCancel: boolean = false,
   ongoing: boolean = false,
   markAsReadUrl?: string,
+  secondaryContentID?: string,
 ) {
   logger.debug('Displaying notification with pressID', pressActionID);
 
@@ -155,7 +160,9 @@ export async function generateContentNotification(
   const data = {
     type: type,
     url: url,
+    contentID: id,
     ...(markAsReadUrl ? {markAsReadUrl: markAsReadUrl} : undefined),
+    ...(secondaryContentID ? {secondaryContentID: secondaryContentID} : undefined),
   };
 
   await notifee.displayNotification({
@@ -177,4 +184,25 @@ export async function generateContentNotification(
       actions: actions,
     },
   });
+}
+
+/**
+ * Dismiss any displayed notifications that belong to the given secondary object (e.g. a forum).
+ * Some notifications are keyed by their own content ID (e.g. a post ID), so they are matched on the
+ * `secondaryContentID` (the parent ID) that the server includes in the socket event.
+ * @param secondaryContentID The parent object ID whose notifications should be cancelled.
+ */
+export async function cancelSecondaryNotifications(secondaryContentID: string) {
+  try {
+    const displayed = await notifee.getDisplayedNotifications();
+    const ids = displayed
+      .filter(n => n.id && n.notification.data?.secondaryContentID === secondaryContentID)
+      .map(n => n.id as string);
+    if (ids.length > 0) {
+      logger.debug(`Cancelling ${ids.length} notification(s) for secondary content ${secondaryContentID}`);
+      await notifee.cancelDisplayedNotifications(ids);
+    }
+  } catch (error) {
+    logger.error('Failed to cancel secondary notifications', error);
+  }
 }

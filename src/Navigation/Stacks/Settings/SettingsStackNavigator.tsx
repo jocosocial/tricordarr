@@ -18,6 +18,8 @@ import {SessionDetailsScreen} from '#src/Screens/Settings/Account/SessionDetails
 import {SessionSettingsScreen} from '#src/Screens/Settings/Account/SessionSettingsScreen';
 import {TimeSettingsScreen} from '#src/Screens/Settings/Config/TimeSettingsScreen';
 import {AccountInfoSettingsScreen} from '#src/Screens/Settings/Developer/AccountInfoSettingsScreen';
+import {CheckpointPreviewSettingScreen} from '#src/Screens/Settings/Developer/CheckpointPreviewSettingScreen';
+import {CheckpointSettingScreen} from '#src/Screens/Settings/Developer/CheckpointSettingScreen';
 import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
 import {FeatureSettingsScreen} from '#src/Screens/Settings/Developer/FeatureSettingsScreen';
 import {LoadingSettingScreen} from '#src/Screens/Settings/Developer/LoadingSettingScreen';
@@ -30,6 +32,7 @@ import {TestNotificationScreen} from '#src/Screens/Settings/Developer/TestNotifi
 import {LoggingSettingsScreen} from '#src/Screens/Settings/LoggingSettingsScreen';
 import {LogViewerScreen} from '#src/Screens/Settings/LogViewerScreen';
 import {BackgroundConnectionSettingsScreen} from '#src/Screens/Settings/Notifications/BackgroundConnectionSettingsScreen';
+import {NotificationLogScreen} from '#src/Screens/Settings/Notifications/NotificationLogScreen';
 import {NotificationPollerSettingsScreen} from '#src/Screens/Settings/Notifications/NotificationPollerSettingsScreen';
 import {PushNotificationSettingsScreen} from '#src/Screens/Settings/Notifications/PushNotificationSettingsScreen';
 import {SettingsScreen} from '#src/Screens/Settings/SettingsScreen';
@@ -116,6 +119,16 @@ export const SettingsStackNavigator = () => {
         options={{title: 'Notification Polling'}}
       />
       <Stack.Screen
+        name={SettingsStackScreenComponents.checkpointSettingScreen}
+        component={CheckpointSettingScreen}
+        options={{title: 'Checkpoints'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.checkpointPreviewSettingScreen}
+        component={CheckpointPreviewSettingScreen}
+        options={{title: 'Checkpoint Preview'}}
+      />
+      <Stack.Screen
         name={SettingsStackScreenComponents.loadingSettingScreen}
         component={LoadingSettingScreen}
         options={{title: 'Loading'}}
@@ -174,6 +187,11 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.logViewerScreen}
         component={LogViewerScreen}
         options={{title: 'View Logs'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.notificationLogScreen}
+        component={NotificationLogScreen}
+        options={{title: 'Notification Log'}}
       />
     </Stack.Navigator>
   );

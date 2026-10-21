@@ -66,6 +66,7 @@ export type CommonStackParamList = {
     location?: string;
   };
   AccountRecoveryScreen: undefined;
+  UsernameLookupScreen: undefined;
   RecoveryKeyScreen: {
     recoveryKey: string;
     username: string;
@@ -123,6 +124,7 @@ export type CommonStackParamList = {
   EventScreen: {
     eventID: string;
   };
+  ShutternautReportScreen: undefined;
   PhotostreamEventScreen: WithScrollToTopIntent<{
     eventID: string;
   }>;
@@ -170,6 +172,7 @@ export type CommonStackParamList = {
     forumID: string;
   };
   ConfigServerUrlScreen: undefined;
+  NetworkHelpScreen: undefined;
   ForumPostHashtagScreen: {
     hashtag: string;
   };
@@ -291,6 +294,7 @@ export type CommonStackParamList = {
   PersonalEventHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
   TimeZoneHelpScreen: undefined;
+  TimeSettingsScreen: undefined;
   PrivateEventChatScreen: {
     fezID: string;
     initialReadCount?: number;
@@ -372,8 +376,8 @@ export type CommonStackParamList = {
   AdminScheduleLogScreen: {
     logID: number;
   };
-  AdminRegCodesScreen: undefined;
-  AdminRegCodeStatsScreen: undefined;
+  RegCodeManageScreen: undefined;
+  RegCodeStatsScreen: undefined;
   AdminDiscordRegCodeScreen: undefined;
   AdminUserRolesScreen: {
     role?: UserRoleType;
@@ -384,14 +388,15 @@ export type CommonStackParamList = {
   AdminBulkUserScreen: undefined;
   AdminKaraokeScreen: undefined;
   AdminBoardgamesScreen: undefined;
-  AdminHuntsScreen: undefined;
-  AdminHuntEditScreen: {
+  HuntManageScreen: undefined;
+  HuntEditScreen: {
     huntID?: string;
   };
-  AdminPuzzleEditScreen: {
+  HuntPuzzleEditScreen: {
     huntID: string;
     puzzleID: string;
   };
+  HuntManageHelpScreen: undefined;
   HuntScreen: {
     huntID: string;
   };
@@ -419,6 +424,8 @@ export type CommonStackParamList = {
         mode?: 'admin';
       }
     | undefined;
+  NotificationLogScreen: undefined;
+  NotificationLogHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -431,12 +438,14 @@ export enum CommonStackComponents {
   siteUIScreen = 'SiteUIScreen',
   mapScreen = 'MapScreen',
   accountRecoveryScreen = 'AccountRecoveryScreen',
+  usernameLookupScreen = 'UsernameLookupScreen',
   recoveryKeyScreen = 'RecoveryKeyScreen',
   reportScreen = 'ReportScreen',
   reportHelpScreen = 'ReportHelpScreen',
   moderatorHomeScreen = 'ModeratorHomeScreen',
   moderatorReportsScreen = 'ModeratorReportsScreen',
   moderatorLogScreen = 'ModeratorLogScreen',
+  shutternautReportScreen = 'ShutternautReportScreen',
   moderatorGuideScreen = 'ModeratorGuideScreen',
   moderateForumPostScreen = 'ModerateForumPostScreen',
   moderateForumThreadScreen = 'ModerateForumThreadScreen',
@@ -466,6 +475,7 @@ export enum CommonStackComponents {
   forumPostMentionScreen = 'ForumPostMentionScreen',
   forumPostPinnedScreen = 'ForumPostPinnedScreen',
   configServerUrl = 'ConfigServerUrlScreen',
+  networkHelpScreen = 'NetworkHelpScreen',
   forumPostHashtagScreen = 'ForumPostHashtagScreen',
   seamailChatScreen = 'SeamailChatScreen',
   fezChatDetailsScreen = 'FezChatDetailsScreen',
@@ -527,6 +537,7 @@ export enum CommonStackComponents {
   personalEventHelpScreen = 'PersonalEventHelpScreen',
   mainTimeZoneScreen = 'MainTimeZoneScreen',
   timeZoneHelpScreen = 'TimeZoneHelpScreen',
+  timeSettingsScreen = 'TimeSettingsScreen',
   privateEventChatScreen = 'PrivateEventChatScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
   cruiseSettingsScreen = 'CruiseSettingsScreen',
@@ -578,17 +589,18 @@ export enum CommonStackComponents {
   adminScheduleScreen = 'AdminScheduleScreen',
   adminScheduleVerifyScreen = 'AdminScheduleVerifyScreen',
   adminScheduleLogScreen = 'AdminScheduleLogScreen',
-  adminRegCodesScreen = 'AdminRegCodesScreen',
-  adminRegCodeStatsScreen = 'AdminRegCodeStatsScreen',
+  regCodeManageScreen = 'RegCodeManageScreen',
+  regCodeStatsScreen = 'RegCodeStatsScreen',
   adminDiscordRegCodeScreen = 'AdminDiscordRegCodeScreen',
   adminUserRolesScreen = 'AdminUserRolesScreen',
   adminAccessLevelsScreen = 'AdminAccessLevelsScreen',
   adminBulkUserScreen = 'AdminBulkUserScreen',
   adminKaraokeScreen = 'AdminKaraokeScreen',
   adminBoardgamesScreen = 'AdminBoardgamesScreen',
-  adminHuntsScreen = 'AdminHuntsScreen',
-  adminHuntEditScreen = 'AdminHuntEditScreen',
-  adminPuzzleEditScreen = 'AdminPuzzleEditScreen',
+  huntManageScreen = 'HuntManageScreen',
+  huntEditScreen = 'HuntEditScreen',
+  huntPuzzleEditScreen = 'HuntPuzzleEditScreen',
+  huntManageHelpScreen = 'HuntManageHelpScreen',
   huntScreen = 'HuntScreen',
   huntPuzzleScreen = 'HuntPuzzleScreen',
   huntHelpScreen = 'HuntHelpScreen',
@@ -599,6 +611,8 @@ export enum CommonStackComponents {
   adminEventFeedbackStatsScreen = 'AdminEventFeedbackStatsScreen',
   adminEventFeedbackReportScreen = 'AdminEventFeedbackReportScreen',
   eventFeedbackHelpScreen = 'EventFeedbackHelpScreen',
+  notificationLogScreen = 'NotificationLogScreen',
+  notificationLogHelpScreen = 'NotificationLogHelpScreen',
 }
 
 /**
@@ -662,9 +676,11 @@ export type HelpScreenComponents =
   | CommonStackComponents.announcementHelpScreen
   | CommonStackComponents.registrationCodeHelpScreen
   | CommonStackComponents.adminServerSettingsHelpScreen
+  | CommonStackComponents.huntManageHelpScreen
   | CommonStackComponents.huntHelpScreen
   | CommonStackComponents.eventFeedbackHelpScreen
-  | CommonStackComponents.loggingHelpScreen;
+  | CommonStackComponents.loggingHelpScreen
+  | CommonStackComponents.notificationLogHelpScreen;
 
 export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 

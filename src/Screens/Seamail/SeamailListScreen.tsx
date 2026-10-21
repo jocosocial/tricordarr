@@ -19,6 +19,7 @@ import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSeamailFilter} from '#src/Context/Contexts/SeamailFilterContext';
+import {useSelectable} from '#src/Context/Contexts/SelectableContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
@@ -37,11 +38,22 @@ import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScre
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {Selectable} from '#src/Types/Selectable';
 
 type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
 export const SeamailListScreen = (props: Props) => {
+  const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
+
+  // This has to live here rather than in SeamailListScreenInner: LoggedInScreen renders
+  // NotLoggedInView instead of the inner component while logged out, which would otherwise leave
+  // the header without a drawer/back button and strand the user. See LfgListScreen for the same
+  // pattern.
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerLeft: props.route.params?.noDrawer ? getLeftBackHeaderButtons : getLeftMainHeaderButtons,
+    });
+  }, [getLeftMainHeaderButtons, getLeftBackHeaderButtons, props.navigation, props.route.params?.noDrawer]);
+
   return (
     <LoggedInScreen>
       <PreRegistrationScreen helpScreen={CommonStackComponents.seamailHelpScreen}>
@@ -62,13 +74,13 @@ export const SeamailListScreen = (props: Props) => {
 const SeamailListScreenInner = ({navigation, route}: Props) => {
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   const {asPrivilegedUser} = useElevation();
-  const {getLeftMainHeaderButtons, getLeftBackHeaderButtons} = useDrawer();
-  const {seamailOnlyNew, setSeamailOnlyNew, fezType} = useSeamailFilter();
+  const {seamailOnlyNew, setSeamailOnlyNew, seamailFavorite, fezType} = useSeamailFilter();
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isLoading, isFetching} = useFezListQuery({
     endpoint: 'joined',
     fezType,
     forUser: asPrivilegedUser,
     onlyNew: seamailOnlyNew,
+    favorite: seamailFavorite,
     // The refetch options here mimick what happens with UserNotificationData in
     // NotificationDataPoller. The NotificationDataListener will handle updating based
     // on socket events, but privileged user seamail actions do not get socket events.
@@ -88,6 +100,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   const prevAsPrivilegedUserRef = useRef(asPrivilegedUser);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const {selectedItems, enableSelection} = useSelection();
+  const {fromFezData} = useSelectable();
   const {handleLoadNext} = usePagination({
     fetchNextPage,
     hasNextPage,
@@ -142,7 +155,6 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: route.params?.noDrawer ? getLeftBackHeaderButtons : getLeftMainHeaderButtons,
       headerRight: getNavButtons,
     });
     if (enableSelection) {
@@ -150,17 +162,7 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
     } else {
       navigation.setOptions({title: 'Seamail'});
     }
-  }, [
-    isFocused,
-    closeFezSocket,
-    navigation,
-    getNavButtons,
-    enableSelection,
-    selectedItems.length,
-    route.params?.noDrawer,
-    getLeftBackHeaderButtons,
-    getLeftMainHeaderButtons,
-  ]);
+  }, [isFocused, closeFezSocket, navigation, getNavButtons, enableSelection, selectedItems.length]);
 
   /**
    * This operates more like an intent than a state.
@@ -174,13 +176,17 @@ const SeamailListScreenInner = ({navigation, route}: Props) => {
   }, [route.params, setSeamailOnlyNew]);
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (
     <AppView>
       {enableSelection ? (
-        <SelectionButtons items={fezList.map(Selectable.fromFezData)} />
+        <SelectionButtons items={fezList.map(fromFezData)} />
       ) : (
         currentUserID != null &&
         (hasTwitarrTeam || hasModerator) && (

@@ -2,22 +2,8 @@
 
 Many of these have been moved to [cursorrules](../.cursorrules)
 
-## Query
-
-A useful debugging snippet:
-
-```ts
-const allJoinedQueries = queryClient
-  .getQueryCache()
-  .getAll()
-  .filter(q => Array.isArray(q.queryKey) && q.queryKey[0] === '/fez/joined');
-
-console.log('[PersonalEvents] total /fez/joined queries:', allJoinedQueries.length);
-allJoinedQueries.forEach((q, i) => {
-  console.log(`[PersonalEvents] query ${i} key:`, JSON.stringify(q.queryKey));
-  console.log(`[PersonalEvents] query ${i} dataUpdatedAt:`, new Date(q.state.dataUpdatedAt).toISOString());
-});
-```
+Query cache, cache reducers, optimistic updates, mutation in-flight state and invalidation now
+live in [Cache and State](<Cache and State.md>).
 
 ## iPad `scrollsToTop`
 
@@ -29,25 +15,79 @@ On iPad, tapping the navigation header is treated as a status-bar tap. That fire
 
 Android ignores the prop. `AppFlashList` and a few raw settings `ScrollView`s still use the default.
 
-## Mutation In-Flight State (double-submit prevention)
+## Checkpoints
 
-The app runs on a cruise-ship network: high latency, jitter, occasional packet loss. Any window where a Post/Send/Save control is tappable while its write is still in flight becomes a duplicate write on that network, because the user reasonably assumes a non-spinning button means nothing happened. See #533 ("Forum/Fez Posting Stopped Spinning Too Early") for the incident that prompted this.
+Checkpoints are feature gates that block screen content on certain conditions. Used to gate preregistration, not logged in, etc.
 
-Two failure shapes, two different fixes:
+A new checkpoint screen (`src/Screens/Checkpoint`) must also be added to `CheckpointPreview` (`src/Enums/CheckpointPreview.ts`). That drives Settings > Developers > Checkpoints, which previews the blocked view of every checkpoint without arranging the state that would normally trigger it.
 
-**Formik forms.** Formik only lets the *consumer* own `isSubmitting` when `onSubmit` returns `undefined`. If `onSubmit` is `async`, it always returns a Promise, and Formik clears `isSubmitting` itself as soon as that Promise resolves — not when the network request completes. `ContentPostForm`'s wrapper was `async` but fired `mutation.mutate()` without awaiting it, so the returned promise resolved a microtask after the mutation was merely *started*, re-enabling the button mid-request.
+### Ordering
 
-  - If your submit handler is `async` (or calls one), it MUST `await mutation.mutateAsync(...)`, not call `mutation.mutate(...)` and return.
-  - Prefer this over `mutation.mutate()` + `onSettled: () => setSubmitting(false)`. That pattern only works if the handler is fully synchronous; it silently breaks the moment someone adds an `await` above the mutation call (e.g. to save a photo first), and nothing catches the regression short of tapping the button on a slow network.
-  - Catch mutation rejections inside the handler (`useTokenAuthMutation`/`usePublicMutation` already raise the error snackbar via `onError`) so the rejection doesn't escape into Formik's submit handling.
+Outermost to innermost, checkpoints compose as:
 
-**Non-Formik controls** (menu items, swipeables, header buttons, anything driving `mutation.mutate()` directly). Formik isn't involved, so there's no default protection at all — you must explicitly disable the control while the mutation is in flight:
+```tsx
+<MaintenanceModeScreen>
+  <LoggedInScreen>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.exampleHelpScreen}>
+      <DisabledFeatureScreen feature={SwiftarrFeature.example} urlPath={'/example'}>
+        <ExampleScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
+  </LoggedInScreen>
+</MaintenanceModeScreen>
+```
 
-  - Single mutation: `disabled={mutation.isPending}` on the pressable (`Menu.Item`, `PrimaryActionButton`, etc). `SubmitIconButton` already does this internally via its `submitting` prop.
-  - Menus specifically: a `Menu.Item`'s parent menu stays open until `onSettled` calls `closeMenu()` (per the Menus convention above), so the item itself needs `disabled`, not just a loading icon — a loading icon alone (`getStateLoadingIcon`) is decorative and does not block a second tap.
-  - Batch operations (`Promise.allSettled` over several `mutateAsync` calls) aren't covered by any single mutation's `isPending`: track a local `busy` boolean set before the batch starts and cleared after it settles, and fold it into the button's `disabled`. Don't reuse `setRefreshing` for this — that drives the pull-to-refresh spinner on a parent list, not this control's own tappability.
+`MaintenanceModeScreen` goes outermost: if the server is restricting access at all, nothing else about the screen (login state, pre-reg, feature flag) matters yet. `LoggedInScreen` is next, since the rest of the checks are meaningless without a session; omit it for a screen that's genuinely usable while logged out — Swiftarr's `flexRoutes` endpoints (performers, hunts, boardgames, karaoke browsing/search) are readable anonymously, so those screens skip `LoggedInScreen` and go straight from `MaintenanceModeScreen` to `PreRegistrationScreen`. `PreRegistrationScreen` and `DisabledFeatureScreen` keep their existing relative order from the default screen-wrapping pattern.
 
-`PrimaryActionButton`'s `isLoading` prop implies `disabled` (so passing one without the other can't happen); other buttons don't get this for free.
+A screen that's viewable while logged out must still hide (not just query-gate) any control that only makes sense for a logged-in user — e.g. `BoardgameListScreen`'s Favorites toggle is hidden via `isLoggedIn` rather than relying on the query to reject an anonymous `favorite` filter. And a screen that's inherently per-user even though its feature area is otherwise open (e.g. `KaraokeFavoritesListScreen`) keeps `LoggedInScreen` rather than dropping it just because sibling screens in the same feature do.
+
+## Keyboard Avoidance
+
+`AppView` no longer owns a global `KeyboardAvoidingView` (see issue #573) — it caused double compensation on form screens and fought `LegendList`'s `maintainVisibleContentPosition` on chat screens. Keyboard handling is per-screen now. Pick based on what the screen actually contains:
+
+**Plain scrollable form (no fixed bottom composer).** Nothing to do — `ScrollingContentView` already wraps `KeyboardAwareScrollView` internally and handles it. This is the common case (most Settings/create/edit screens).
+
+**A form/list with a fixed-height control pinned below it** (a `ContentPostForm` composer below a `ScrollingContentView`, or below a chat `ConversationListV2`/`FezConversationListV2`/`ForumConversationListV2`). Wrap both as flex siblings in a local `KeyboardAvoidingView`:
+
+```tsx
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
+import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
+
+const keyboardVerticalOffset = useKeyboardVerticalOffset();
+const {commonStyles} = useStyles();
+
+return (
+  <AppView>
+    <KeyboardAvoidingView style={commonStyles.flex} behavior={'padding'} keyboardVerticalOffset={keyboardVerticalOffset}>
+      <ScrollingContentView>...</ScrollingContentView>  {/* or the list, in its own flex:1 View + overlay */}
+      <ContentPostForm ... />
+    </KeyboardAvoidingView>
+  </AppView>
+);
+```
+
+Reference implementations: `FezChatScreen.tsx`, `ForumThreadScreenBase.tsx` (list + composer), `SeamailCreateScreen.tsx`, `ForumPostEditScreen.tsx`, `ForumThreadCreateScreen.tsx` (form + composer).
+
+**Do NOT use `react-native-keyboard-controller`'s `KeyboardStickyView` / `KeyboardAwareLegendList` / `useKeyboardChatComposerInset` for this.** They were tried for the chat composer and are broken for our layout: `KeyboardStickyView`'s `translateY` assumes the view's resting position is flush with the true screen bottom, but our composers sit above the bottom tab bar, so the computed shift falls short by roughly the tab bar's height and the composer ends up rendered behind the keyboard. Confirmed on-device (Android emulator, `uiautomator` bounds dump) before reverting to the plain `KeyboardAvoidingView` above. If you're tempted to reach for these components again, verify on a real device/emulator with the keyboard actually open — the bug does not show up in static review.
+
+`KeyboardAvoidingView`'s `keyboardVerticalOffset` is a heuristic (`insets.top + insets.bottom`, `+40` on home-button iPhones), not a true measurement — it approximates the distance from the top of the KAV to the top of the screen. It only works correctly when the KAV is mounted near the top of the screen's own render tree (directly inside `AppView`, not buried under several wrapper views) — see `useKeyboardVerticalOffset` (`src/Hooks/Keyboard/useKeyboardVerticalOffset.ts`) for the exact formula and rationale.
+
+## Swipeables
+
+Always call `swipeable.close()`, never `swipeable.reset()`. In gesture-handler v3
+`reset()` doesn't clear `shouldEnableTap` (the tap-to-close gesture) or `showRightProgress`, and
+unlike `close()`/`openLeft()`/`openRight()` it isn't scheduled onto the UI thread — from a JS
+`onPress` its shared-value writes can land across frames. Net effect: a permanently armed tap
+gesture over the row (swallows the next tap; can cancel a fresh pan) and rows that visibly jump
+open/closed. `close()` routes through the library's own `animateRow` and doesn't have these bugs.
+
+For a navigation action (push a screen), navigate first, then `close()` after — not before. Closing
+first races the swipe-close animation against the screen transition. The row is still closed by
+the time the user navigates back either way.
+
+For a destructive/mutating action, `close()` before calling `mutate()`, not in `onSettled`: if
+`onSuccess` drops the row from the cache (e.g. via a cache reducer), `onSettled` fires against an
+already-unmounted swipeable.
 
 ## Websocket Keepalive
 

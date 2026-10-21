@@ -4,6 +4,7 @@ import {FormikHelpers} from 'formik';
 import React from 'react';
 import {Text} from 'react-native-paper';
 
+import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
@@ -48,7 +49,11 @@ export const ChangeUsernameScreen = () => {
   };
 
   if (!profilePublicData) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

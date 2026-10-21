@@ -14,6 +14,8 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useBoardgameData} from '#src/Context/Contexts/BoardgameDataContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -22,6 +24,7 @@ import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Ma
 import {useBoardgameFavoriteMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {useBoardgameQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 
@@ -35,19 +38,23 @@ const decodeHtml = (html?: string) => {
 
 export const BoardgameScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
-      <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
-        <BoardgameScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <MaintenanceModeScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.boardgameHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
+          <BoardgameScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </MaintenanceModeScreen>
   );
 };
 
 const BoardgameScreenInner = ({navigation, route}: Props) => {
+  const {isLoggedIn} = useSession();
   const {data, isFetching, isLoading, refetch} = useBoardgameQuery({boardgameID: route.params.boardgame.gameID});
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const favoriteMutation = useBoardgameFavoriteMutation();
   const queryClient = useQueryClient();
+  const {getPlayers, getPlayingTime} = useBoardgameData();
 
   const onFavorite = useCallback(() => {
     if (data) {
@@ -80,7 +87,7 @@ const BoardgameScreenInner = ({navigation, route}: Props) => {
     () => (
       <View>
         <MaterialHeaderButtons left>
-          {data && (
+          {data && isLoggedIn && (
             <>
               <Item title={'Create LFG'} iconName={AppIcons.lfgCreate} onPress={onCreate} />
               <HeaderFavoriteButton isFavorite={data.isFavorite} onPress={onFavorite} />
@@ -94,7 +101,7 @@ const BoardgameScreenInner = ({navigation, route}: Props) => {
         </MaterialHeaderButtons>
       </View>
     ),
-    [data, navigation, onCreate, onFavorite],
+    [data, isLoggedIn, navigation, onCreate, onFavorite],
   );
 
   useEffect(() => {
@@ -104,11 +111,15 @@ const BoardgameScreenInner = ({navigation, route}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading || !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
-  const players = BoardgameData.getPlayers(data);
-  const playingTime = BoardgameData.getPlayingTime(data);
+  const players = getPlayers(data);
+  const playingTime = getPlayingTime(data);
 
   return (
     <AppView>

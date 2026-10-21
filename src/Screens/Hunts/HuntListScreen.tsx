@@ -19,6 +19,7 @@ import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackCo
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {useHuntsQuery} from '#src/Queries/Hunts/HuntQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
+import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
@@ -29,11 +30,13 @@ type Props = StackScreenProps<MainStackParamList, MainStackComponents.huntListSc
  */
 export const HuntListScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
-      <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={'/hunts'}>
-        <HuntListScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <MaintenanceModeScreen>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.huntHelpScreen}>
+        <DisabledFeatureScreen feature={SwiftarrFeature.hunts} urlPath={'/hunts'}>
+          <HuntListScreenInner {...props} />
+        </DisabledFeatureScreen>
+      </PreRegistrationScreen>
+    </MaintenanceModeScreen>
   );
 };
 
@@ -41,7 +44,7 @@ export const HuntListScreen = (props: Props) => {
  * Hunt catalog list with pull-to-refresh.
  */
 const HuntListScreenInner = ({navigation}: Props) => {
-  const {data, isLoading, isError, error, refetch} = useHuntsQuery();
+  const {data, isLoading, error, refetch} = useHuntsQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const {commonStyles} = useStyles();
 
@@ -57,10 +60,14 @@ const HuntListScreenInner = ({navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
-  if (isError && !data) {
+  if (!data) {
     return (
       <HuntLoadErrorView
         resource={'hunts'}
@@ -68,10 +75,6 @@ const HuntListScreenInner = ({navigation}: Props) => {
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
     );
-  }
-
-  if (!data) {
-    return <LoadingView />;
   }
 
   const hunts = data.hunts;

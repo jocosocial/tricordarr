@@ -1,20 +1,12 @@
 // https://www.reddit.com/r/typescript/comments/vdk8we/is_there_a_type_for_objects_with_arbitrary_keys/
-import {
-  Animated,
-  ColorValue,
-  GestureResponderEvent,
-  ImageSourcePropType,
-  ImageURISource,
-  StyleProp,
-  TextStyle,
-  ViewStyle,
-} from 'react-native';
+import {Animated, ColorValue, GestureResponderEvent, StyleProp, TextStyle, ViewStyle} from 'react-native';
 import Button from 'react-native-paper/lib/typescript/components/Button/Button';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import type {$RemoveChildren} from 'react-native-paper/lib/typescript/types';
 
 import {EventType} from '#src/Enums/EventType';
-import {FezType} from '#src/Enums/FezType';
+import {ScheduleSourceKey} from '#src/Enums/ScheduleSource';
+import {ShutternautFilterKey} from '#src/Enums/ShutternautFilter';
 
 export type StringOrError = string | Error | undefined;
 
@@ -39,17 +31,14 @@ export type CruiseDayTime = {
 };
 
 export type ScheduleFilterSettings = {
+  /** Sources to include. Empty = no restriction; resolveScheduleSources() falls back to config. */
+  eventSources: ScheduleSourceKey[];
   eventTypeFilter?: keyof typeof EventType;
-  eventFavoriteFilter?: boolean;
-  lfgTypeFilter?: keyof typeof FezType;
-  showJoinedLfgs?: boolean;
-  showOpenLfgs?: boolean;
-  eventPersonalFilter?: boolean;
-  eventLfgJoinedFilter?: boolean;
-  eventLfgOwnedFilter?: boolean;
-  eventLfgOpenFilter?: boolean;
-  eventShutternautFilter?: string;
+  eventFavoriteFilter: boolean;
+  eventShutternautFilter?: ShutternautFilterKey;
   eventPersonalUnreadFilter: boolean;
+  showJoinedLfgs: boolean;
+  showOpenLfgs: boolean;
 };
 
 export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;
@@ -62,29 +51,6 @@ export interface ImageQueryData {
   mimeType: string;
   dataURI: string;
   fileName: string;
-}
-
-/**
- * @deprecated Use APIImageV2Data instead.
- */
-export namespace ImageQueryData {
-  export const fromData = (data: string): ImageQueryData => {
-    return {
-      mimeType: 'image',
-      dataURI: `data:image;base64,${data}`,
-      // @TODO how do I guarantee this to be a JPG?
-      fileName: `tricordarr-${new Date().getTime()}.jpg`,
-      base64: data,
-    };
-  };
-
-  export const toImageSource = (queryData: ImageQueryData): ImageSourcePropType => {
-    return {uri: queryData.dataURI};
-  };
-
-  export const toImageURISource = (queryData: ImageQueryData): ImageURISource => {
-    return {uri: queryData.dataURI};
-  };
 }
 
 export interface SegmentedButtonType {
@@ -133,6 +99,9 @@ export interface FlatListSeparatorProps<TItem> {
 export type ScheduleFlatListSeparator = 'day' | 'time' | 'none';
 
 export type FezListEndpoints = 'open' | 'joined' | 'owner' | 'former';
+
+/** The LFG list sources a user can pick between in the filter menu. 'former' is a separate screen. */
+export type LfgListSource = Exclude<FezListEndpoints, 'former'>;
 
 export interface WithFezID {
   fezID: string;

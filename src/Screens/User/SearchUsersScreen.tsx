@@ -143,7 +143,11 @@ const SearchUsersScreenInner = ({navigation, route}: Props) => {
   };
 
   if (activeQuery.data === undefined) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

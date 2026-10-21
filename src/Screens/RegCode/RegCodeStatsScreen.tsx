@@ -7,23 +7,31 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useRegCodeStatsQuery} from '#src/Queries/Admin/RegCodeQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 /**
  * Registration-code usage counts. Opened from the Registration Codes header Stats button.
  */
-export const AdminRegCodeStatsScreen = () => {
+export const RegCodeStatsScreen = () => {
+  const {hasAccountManager} = useRoles();
+  const {hasTwitarrTeam} = usePrivilege();
+
   return (
-    <AdminAccessScreen minAccess={'accountmanager'}>
-      <AdminRegCodeStatsScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasAccountManager || hasTwitarrTeam}>
+        <RegCodeStatsScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
-const AdminRegCodeStatsScreenInner = () => {
+const RegCodeStatsScreenInner = () => {
   const navigation = useCommonStack();
   const {data: stats, refetch, isLoading} = useRegCodeStatsQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
@@ -36,7 +44,11 @@ const AdminRegCodeStatsScreenInner = () => {
   }, [getNavButtons, navigation]);
 
   if (isLoading && !stats) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

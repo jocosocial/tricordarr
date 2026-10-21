@@ -12,19 +12,24 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {displayString} from '#src/Libraries/RegistrationCode';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAllocateDiscordRegCodeMutation} from '#src/Queries/Admin/DiscordRegCodeMutations';
 import {useRegCodeStatsQuery} from '#src/Queries/Admin/RegCodeQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {RegistrationCodeUserData} from '#src/Structs/ControllerStructs';
 
 export const AdminDiscordRegCodeScreen = () => {
+  const {hasTwitarrTeam} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminDiscordRegCodeScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
+        <AdminDiscordRegCodeScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

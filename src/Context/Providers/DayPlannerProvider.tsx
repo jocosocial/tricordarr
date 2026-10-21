@@ -1,33 +1,128 @@
 import {InfiniteData} from '@tanstack/react-query';
+import {parseISO} from 'date-fns';
 import moment from 'moment-timezone';
+import React, {PropsWithChildren} from 'react';
 
+import {
+  COMPACT_THEME_DURATION_MINUTES,
+  DAY_PLANNER_CONFIG,
+  DayPlannerContext,
+  DayPlannerContextType,
+} from '#src/Context/Contexts/DayPlannerContext';
+import {EventType} from '#src/Enums/EventType';
+import {FezType} from '#src/Enums/FezType';
 import {getTimePartsInTz} from '#src/Libraries/DateTime';
-import {EventData, FezListData} from '#src/Structs/ControllerStructs';
-import {DayPlannerItem, DayPlannerItemWithLayout, TimeSlotType} from '#src/Types/DayPlanner';
+import {EventData, FezData, FezListData} from '#src/Structs/ControllerStructs';
+import {DayPlannerColor, DayPlannerItem, DayPlannerItemWithLayout, DayPlannerThemeColors} from '#src/Types/DayPlanner';
+
+const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
 
 /**
- * Configuration for the Day Planner timeline.
+ * Determine the color for a Day Planner item based on its type, title, and eventType.
+ * Matches the color scheme used in ScheduleDayScreen, with special cases for red/gold team events.
  */
-export const DAY_PLANNER_CONFIG = {
-  // Each row represents 15 minutes
-  MINUTES_PER_ROW: 15,
-  // Height of each 15-minute row in pixels
-  ROW_HEIGHT: 25,
-  // Total hours displayed (24 hours, always)
-  TOTAL_HOURS: 24,
-  // Minimum event height to ensure visibility of short events
-  MIN_EVENT_HEIGHT: 40,
-  // Minimum event duration in minutes (events shorter than this will be extended for display)
-  MIN_EVENT_DURATION_MINUTES: 15,
-  // Slots per hour (60 / MINUTES_PER_ROW)
-  SLOTS_PER_HOUR: 4,
-} as const;
+const getDayPlannerColor = (item: {
+  type: 'event' | 'lfg' | 'personalEvent';
+  title: string;
+  eventType?: string;
+}): DayPlannerColor => {
+  if (item.type === 'event') {
+    // Check for shadow events first (matches EventCard behavior)
+    if (item.eventType === EventType.shadow) {
+      return 'shadow';
+    }
+    // Check for team events by title matching (special case kept from web app)
+    if (item.title.toLowerCase().includes('gold team')) {
+      return 'goldTeam';
+    }
+    if (item.title.toLowerCase().includes('red team')) {
+      return 'redTeam';
+    }
+    return 'schedule';
+  }
+  if (item.type === 'lfg') {
+    return 'lfg';
+  }
+  return 'personalEvent';
+};
+
+/**
+ * Get the background color for a Day Planner card based on its color type.
+ * Matches the color scheme used in ScheduleDayScreen (EventCard and FezCard).
+ */
+const getBackgroundColor = (color: DayPlannerColor, colors: DayPlannerThemeColors): string => {
+  switch (color) {
+    case 'redTeam':
+      return colors.jocoRed;
+    case 'goldTeam':
+      return colors.twitarrYellow;
+    case 'shadow':
+      return colors.jocoPurple;
+    case 'schedule':
+      return colors.twitarrNeutralButton;
+    case 'lfg':
+      return colors.outline;
+    case 'personalEvent':
+      return colors.twitarrOrange;
+  }
+};
+
+/**
+ * Get the text color for a Day Planner card based on its color type.
+ * Gold team needs dark text for contrast; all others use white.
+ */
+const getTextColor = (color: DayPlannerColor, colors: DayPlannerThemeColors): string => {
+  switch (color) {
+    case 'goldTeam':
+      return colors.onTwitarrYellow;
+    default:
+      return colors.constantWhite;
+  }
+};
+
+/**
+ * Convert an EventData to a DayPlannerItem.
+ */
+const fromEvent = (event: EventData): DayPlannerItem => {
+  const type = 'event';
+  return {
+    id: event.eventID,
+    title: event.title,
+    startTime: parseISO(event.startTime),
+    endTime: parseISO(event.endTime),
+    type,
+    color: getDayPlannerColor({type, title: event.title, eventType: event.eventType}),
+    location: event.location,
+    eventData: event,
+  };
+};
+
+/**
+ * Convert a FezData to a DayPlannerItem.
+ */
+const fromFez = (fez: FezData): DayPlannerItem | null => {
+  if (!fez.startTime || !fez.endTime) {
+    return null;
+  }
+  const type = FezType.isLFGType(fez.fezType) ? 'lfg' : 'personalEvent';
+  return {
+    id: fez.fezID,
+    title: fez.title,
+    startTime: parseISO(fez.startTime),
+    endTime: parseISO(fez.endTime),
+    type,
+    color: getDayPlannerColor({type, title: fez.title}),
+    cancelled: fez.cancelled,
+    location: fez.location,
+    fezData: fez,
+  };
+};
 
 /**
  * Build a list of DayPlannerItems from various data sources.
  * Combines events, LFGs, and personal events into a single sorted list.
  */
-export const buildDayPlannerItems = (
+const buildDayPlannerItems = (
   eventData?: EventData[],
   lfgData?: InfiniteData<FezListData>,
   personalEventData?: InfiniteData<FezListData>,
@@ -37,7 +132,7 @@ export const buildDayPlannerItems = (
   // Add events
   if (eventData) {
     eventData.forEach(event => {
-      items.push(DayPlannerItem.fromEvent(event));
+      items.push(fromEvent(event));
     });
   }
 
@@ -45,7 +140,7 @@ export const buildDayPlannerItems = (
   if (lfgData?.pages) {
     lfgData.pages.forEach(page => {
       page.fezzes.forEach(fez => {
-        const item = DayPlannerItem.fromFez(fez);
+        const item = fromFez(fez);
         if (item) {
           items.push(item);
         }
@@ -57,7 +152,7 @@ export const buildDayPlannerItems = (
   if (personalEventData?.pages) {
     personalEventData.pages.forEach(page => {
       page.fezzes.forEach(fez => {
-        const item = DayPlannerItem.fromFez(fez);
+        const item = fromFez(fez);
         if (item) {
           items.push(item);
         }
@@ -78,11 +173,6 @@ export const buildDayPlannerItems = (
   // Sort by start time
   return dedupedItems.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 };
-
-/** Display duration for compacted "Theme:" events on the Day Planner timeline. */
-export const COMPACT_THEME_DURATION_MINUTES = 90;
-/** Minutes at the bottom of a compacted theme card that fade from opaque to transparent. */
-export const COMPACT_THEME_FADE_MINUTES = 30;
 
 /**
  * Clip an item's display times to the day boundaries and calculate display properties.
@@ -135,7 +225,7 @@ const adjustItemForDisplay = (
  * Groups overlapping items and assigns column positions.
  * Ported from SitePrivateEventController.swift lines 290-340.
  */
-export const calculateItemLayout = (
+const calculateItemLayout = (
   items: DayPlannerItem[],
   dayStart: Date,
   dayEnd: Date,
@@ -212,11 +302,8 @@ export const calculateItemLayout = (
  * Timeline always shows 24 hours starting from dayStart.
  * When timeZoneID is provided, labels show the hour in that timezone (boat time); otherwise device local.
  */
-export const generateTimeSlotLabels = (
-  dayStart: Date,
-  timeZoneID?: string,
-): {time: Date; label: string; slotType: TimeSlotType}[] => {
-  const slots: {time: Date; label: string; slotType: TimeSlotType}[] = [];
+const generateTimeSlotLabels: DayPlannerContextType['generateTimeSlotLabels'] = (dayStart, timeZoneID) => {
+  const slots: ReturnType<DayPlannerContextType['generateTimeSlotLabels']> = [];
   const totalSlots = DAY_PLANNER_CONFIG.TOTAL_HOURS * DAY_PLANNER_CONFIG.SLOTS_PER_HOUR;
 
   for (let i = 0; i < totalSlots; i++) {
@@ -225,7 +312,7 @@ export const generateTimeSlotLabels = (
     const slotInHour = i % DAY_PLANNER_CONFIG.SLOTS_PER_HOUR;
 
     // Determine slot type based on position within the hour
-    let slotType: TimeSlotType;
+    let slotType: (typeof slots)[number]['slotType'];
     if (slotInHour === 0) {
       slotType = 'hour';
     } else if (slotInHour === 2) {
@@ -260,7 +347,7 @@ export const generateTimeSlotLabels = (
  * @param enableLateDayFlip - If true, day runs from 3AM to 3AM. If false, midnight to midnight.
  * @param timeZoneID - IANA timezone for the boat (e.g. America/New_York).
  */
-export const getDayBoundaries = (
+const getDayBoundaries = (
   cruiseStartDate: Date,
   cruiseDay: number,
   enableLateDayFlip: boolean,
@@ -286,7 +373,7 @@ export const getDayBoundaries = (
 /**
  * Get the total height of the timeline in pixels.
  */
-export const getTimelineHeight = (): number => {
+const getTimelineHeight = (): number => {
   return DAY_PLANNER_CONFIG.TOTAL_HOURS * DAY_PLANNER_CONFIG.SLOTS_PER_HOUR * DAY_PLANNER_CONFIG.ROW_HEIGHT;
 };
 
@@ -298,7 +385,7 @@ export const getTimelineHeight = (): number => {
  * @param dayStart The start of the viewed day's timeline
  * @returns The scroll offset in pixels (0 if no items)
  */
-export const getScrollOffsetForFirstItem = (items: {startTime: Date}[], dayStart: Date): number => {
+const getScrollOffsetForFirstItem = (items: {startTime: Date}[], dayStart: Date): number => {
   if (items.length === 0) return 0;
   // Use first item that starts on or after dayStart (items before day boundary yield negative offset and clamp to 0).
   const firstOnOrAfterDayStart = items.find(item => item.startTime >= dayStart) ?? items[0];
@@ -307,8 +394,6 @@ export const getScrollOffsetForFirstItem = (items: {startTime: Date}[], dayStart
   const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2;
   return Math.max(0, offset - viewOffset);
 };
-
-const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
 
 /**
  * Minutes from day start for "now" for the now-line and scroll-to-now.
@@ -345,7 +430,7 @@ export const getMinutesFromDayStartForNow = (timeZoneID: string, dayStart: Date,
  * @param dayStart The start of the viewed day's timeline (hour in TZ defines start, e.g. 3AM)
  * @returns The scroll offset in pixels
  */
-export const getScrollOffsetForTimeOfDay = (timeZoneID: string, dayStart: Date): number => {
+const getScrollOffsetForTimeOfDay = (timeZoneID: string, dayStart: Date): number => {
   const minutesFromDayStart = getMinutesFromDayStartForNow(timeZoneID, dayStart, new Date());
   const clamped = minutesFromDayStart === null ? 0 : Math.min(minutesFromDayStart, dayMinutesMax);
 
@@ -354,24 +439,22 @@ export const getScrollOffsetForTimeOfDay = (timeZoneID: string, dayStart: Date):
   return Math.max(0, offset - viewOffset);
 };
 
-/**
- * Calculate the scroll offset in pixels for a given time relative to dayStart.
- * The timeline always shows 24 hours starting from dayStart.
- * Returns 0 when now is outside the displayed day (e.g. viewing a past/future cruise day).
- *
- * @param now The current date/time to calculate offset for
- * @param dayStart The start of the viewed day's timeline (either midnight or 3AM depending on late day flip)
- * @returns The scroll offset in pixels
- */
-// export const getScrollOffsetForTime = (now: Date, dayStart: Date): number => {
-//   const minutesFromDayStart = (now.getTime() - dayStart.getTime()) / (1000 * 60);
+const dayPlannerContextValue: DayPlannerContextType = {
+  getDayPlannerColor,
+  getBackgroundColor,
+  getTextColor,
+  fromEvent,
+  fromFez,
+  buildDayPlannerItems,
+  calculateItemLayout,
+  generateTimeSlotLabels,
+  getDayBoundaries,
+  getTimelineHeight,
+  getScrollOffsetForFirstItem,
+  getMinutesFromDayStartForNow,
+  getScrollOffsetForTimeOfDay,
+};
 
-//   const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
-//   if (minutesFromDayStart < 0 || minutesFromDayStart > dayMinutesMax) {
-//     return 0;
-//   }
-
-//   const offset = (minutesFromDayStart / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
-//   const viewOffset = DAY_PLANNER_CONFIG.ROW_HEIGHT * 2;
-//   return Math.max(0, offset - viewOffset);
-// };
+export const DayPlannerProvider = ({children}: PropsWithChildren) => {
+  return <DayPlannerContext.Provider value={dayPlannerContextValue}>{children}</DayPlannerContext.Provider>;
+};

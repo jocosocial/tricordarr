@@ -6,6 +6,8 @@ import {View} from 'react-native';
 import {HeaderFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderFavoriteButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {EventScreenActionsMenu} from '#src/Components/Menus/Events/EventScreenActionsMenu';
+import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventQuery} from '#src/Queries/Events/EventQueries';
@@ -18,27 +20,35 @@ export const EventScreen = ({navigation, route}: Props) => {
   const {data: eventData, refetch} = useEventQuery({
     eventID: route.params.eventID,
   });
+  const {isLoggedIn} = useSession();
   const eventFavoriteMutation = useEventFavoriteMutation();
   const queryClient = useQueryClient();
+  const {updateFavorite} = useEventCacheReducer();
 
   const handleFavorite = useCallback(
     (event: EventData) => {
+      const newValue = !event.isFavorite;
+      // Optimistic: flip the cache immediately rather than waiting on the network round trip.
+      updateFavorite(event, newValue);
       eventFavoriteMutation.mutate(
         {
           eventID: event.eventID,
-          action: event.isFavorite ? 'unfavorite' : 'favorite',
+          action: newValue ? 'favorite' : 'unfavorite',
         },
         {
           onSuccess: async () => {
-            const invalidations = UserNotificationData.getCacheKeys()
-              .concat(EventData.getCacheKeys(event.eventID))
-              .map(key => queryClient.invalidateQueries({queryKey: key}));
+            const invalidations = UserNotificationData.getCacheKeys().map(key =>
+              queryClient.invalidateQueries({queryKey: key}),
+            );
             await Promise.all(invalidations);
+          },
+          onError: () => {
+            updateFavorite(event, !newValue);
           },
         },
       );
     },
-    [eventFavoriteMutation, queryClient],
+    [eventFavoriteMutation, queryClient, updateFavorite],
   );
 
   const getNavButtons = useCallback(() => {
@@ -47,14 +57,16 @@ export const EventScreen = ({navigation, route}: Props) => {
         <MaterialHeaderButtons left>
           {eventData && (
             <>
-              <HeaderFavoriteButton isFavorite={eventData.isFavorite} onPress={() => handleFavorite(eventData)} />
+              {isLoggedIn && (
+                <HeaderFavoriteButton isFavorite={eventData.isFavorite} onPress={() => handleFavorite(eventData)} />
+              )}
               <EventScreenActionsMenu event={eventData} />
             </>
           )}
         </MaterialHeaderButtons>
       </View>
     );
-  }, [eventData, handleFavorite]);
+  }, [eventData, handleFavorite, isLoggedIn]);
 
   useEffect(() => {
     navigation.setOptions({

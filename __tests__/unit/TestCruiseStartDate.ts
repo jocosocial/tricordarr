@@ -19,47 +19,47 @@ jest.mock('#src/Libraries/Storage', () => ({
 
 import moment from 'moment-timezone';
 
+import {buildCruiseStartDate, parseCruiseStartDate} from '#src/Context/Providers/ClientSettingsProvider';
 import {calcCruiseDayTime} from '#src/Libraries/DateTime';
-import {ClientSettingsData} from '#src/Structs/ControllerStructs';
 
 describe('parseCruiseStartDate', () => {
   it('extracts the correct date-only string from a UTC ISO timestamp', () => {
-    const result = ClientSettingsData.parseCruiseStartDate('2025-03-02T05:00:00.000Z');
+    const result = parseCruiseStartDate('2025-03-02T05:00:00.000Z');
     expect(result).toBe('2025-03-02');
   });
 
   it('extracts the UTC date even when UTC hours are late in the day', () => {
-    const result = ClientSettingsData.parseCruiseStartDate('2025-03-02T08:00:00.000Z');
+    const result = parseCruiseStartDate('2025-03-02T08:00:00.000Z');
     expect(result).toBe('2025-03-02');
   });
 
   it('extracts the UTC date for midnight UTC', () => {
-    const result = ClientSettingsData.parseCruiseStartDate('2025-03-02T00:00:00.000Z');
+    const result = parseCruiseStartDate('2025-03-02T00:00:00.000Z');
     expect(result).toBe('2025-03-02');
   });
 
   it('returns the original string for invalid dates', () => {
-    const result = ClientSettingsData.parseCruiseStartDate('not-a-date');
+    const result = parseCruiseStartDate('not-a-date');
     expect(result).toBe('not-a-date');
   });
 });
 
 describe('buildCruiseStartDate', () => {
   it('creates midnight in EST for a date-only string', () => {
-    const date = ClientSettingsData.buildCruiseStartDate('2025-03-02', 'America/New_York');
+    const date = buildCruiseStartDate('2025-03-02', 'America/New_York');
     // March 2 00:00 EST = March 2 05:00 UTC
     expect(date.toISOString()).toBe('2025-03-02T05:00:00.000Z');
   });
 
   it('creates midnight in AST for a date-only string', () => {
-    const date = ClientSettingsData.buildCruiseStartDate('2025-03-02', 'America/Puerto_Rico');
+    const date = buildCruiseStartDate('2025-03-02', 'America/Puerto_Rico');
     // March 2 00:00 AST = March 2 04:00 UTC
     expect(date.toISOString()).toBe('2025-03-02T04:00:00.000Z');
   });
 
   it('produces a consistent absolute time for a given port timezone', () => {
-    const date1 = ClientSettingsData.buildCruiseStartDate('2025-03-02', 'America/New_York');
-    const date2 = ClientSettingsData.buildCruiseStartDate('2025-03-02', 'America/New_York');
+    const date1 = buildCruiseStartDate('2025-03-02', 'America/New_York');
+    const date2 = buildCruiseStartDate('2025-03-02', 'America/New_York');
     expect(date1.getTime()).toBe(date2.getTime());
     expect(date1.toISOString()).toBe('2025-03-02T05:00:00.000Z');
   });
@@ -70,8 +70,8 @@ describe('parseCruiseStartDate + buildCruiseStartDate round-trip', () => {
     const serverTimestamp = '2025-03-02T05:00:00.000Z';
     const portTZ = 'America/New_York';
 
-    const dateStr = ClientSettingsData.parseCruiseStartDate(serverTimestamp);
-    const date = ClientSettingsData.buildCruiseStartDate(dateStr, portTZ);
+    const dateStr = parseCruiseStartDate(serverTimestamp);
+    const date = buildCruiseStartDate(dateStr, portTZ);
 
     expect(date.toISOString()).toBe('2025-03-02T05:00:00.000Z');
   });
@@ -80,8 +80,8 @@ describe('parseCruiseStartDate + buildCruiseStartDate round-trip', () => {
     const serverTimestamp = '2025-03-02T05:00:00.000Z';
     const portTZ = 'America/New_York';
 
-    const dateStr = ClientSettingsData.parseCruiseStartDate(serverTimestamp);
-    const date = ClientSettingsData.buildCruiseStartDate(dateStr, portTZ);
+    const dateStr = parseCruiseStartDate(serverTimestamp);
+    const date = buildCruiseStartDate(dateStr, portTZ);
 
     // Simulate JSON.stringify + JSON.parse (as AsyncStorage does)
     const stored = JSON.stringify({cruiseStartDateStr: dateStr, cruiseStartDate: date});
@@ -90,7 +90,7 @@ describe('parseCruiseStartDate + buildCruiseStartDate round-trip', () => {
     expect(loaded.cruiseStartDateStr).toBe('2025-03-02');
 
     // Reconstruct from the date-only string (as getAppConfig does)
-    const reconstructed = ClientSettingsData.buildCruiseStartDate(loaded.cruiseStartDateStr, portTZ);
+    const reconstructed = buildCruiseStartDate(loaded.cruiseStartDateStr, portTZ);
     expect(reconstructed.toISOString()).toBe('2025-03-02T05:00:00.000Z');
   });
 });
@@ -98,7 +98,7 @@ describe('parseCruiseStartDate + buildCruiseStartDate round-trip', () => {
 describe('calcCruiseDayTime TZ-aware path with port-TZ midnight start date', () => {
   // Use buildCruiseStartDate to create the correct absolute time (midnight EST)
   const portTZ = 'America/New_York';
-  const cruiseStartDate = ClientSettingsData.buildCruiseStartDate('2025-03-02', portTZ);
+  const cruiseStartDate = buildCruiseStartDate('2025-03-02', portTZ);
   const cruiseEndDate = moment.tz('2025-03-09', 'YYYY-MM-DD', portTZ).toDate();
 
   const getBoatTzEST = () => 'America/New_York';

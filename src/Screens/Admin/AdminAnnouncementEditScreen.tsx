@@ -8,6 +8,7 @@ import {AdminAnnouncementForm} from '#src/Components/Forms/Admin/AdminAnnounceme
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {combineDateAndTime, splitIsoDateTime} from '#src/Libraries/Admin/AdminDateTime';
@@ -18,16 +19,20 @@ import {
   useDeleteAnnouncementMutation,
   useEditAnnouncementMutation,
 } from '#src/Queries/Admin/AnnouncementMutations';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {AdminAnnouncementFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminAnnouncementEditScreen>;
 
 export const AdminAnnouncementEditScreen = (props: Props) => {
+  const {hasTwitarrTeam} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminAnnouncementEditScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
+        <AdminAnnouncementEditScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

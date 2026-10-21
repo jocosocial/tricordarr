@@ -18,17 +18,23 @@ interface ForumThreadPinItemProps {
 /** Moderator action to pin or unpin a forum thread in its category. */
 export const ForumThreadPinItem = (props: ForumThreadPinItemProps) => {
   const pinMutation = useForumPinMutation();
-  const {updatePinned} = useForumCacheReducer();
+  const {updatePinned, invalidateForum} = useForumCacheReducer();
 
   const handlePin = () => {
+    props.setRefreshing(true);
+    const newValue = !props.isPinned;
+    // Optimistic: flip the cache immediately so the icon is already correct by the time the
+    // spinner clears, instead of waiting on a (possibly slow) network round trip to do it.
+    updatePinned(props.forumID, props.categoryID, newValue);
     pinMutation.mutate(
       {
         forumID: props.forumID,
-        action: props.isPinned ? 'unpin' : 'pin',
+        action: newValue ? 'pin' : 'unpin',
       },
       {
-        onSuccess: () => {
-          updatePinned(props.forumID, props.categoryID, !props.isPinned);
+        onError: () => {
+          updatePinned(props.forumID, props.categoryID, !newValue);
+          invalidateForum(props.forumID, props.categoryID);
         },
         onSettled: () => {
           props.setRefreshing(false);
@@ -47,6 +53,9 @@ export const ForumThreadPinItem = (props: ForumThreadPinItemProps) => {
         state: props.isPinned,
         isLoading: props.refreshing,
       })}
+      // Menus stay open until onSettled closes them, so a mutation in flight is still tappable.
+      // Without this a fast double-tap fires the toggle twice and can flip the state back. See #533.
+      disabled={props.refreshing}
       onPress={handlePin}
     />
   );

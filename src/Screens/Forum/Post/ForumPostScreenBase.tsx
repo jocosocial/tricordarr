@@ -137,7 +137,11 @@ export const ForumPostScreenBase = ({
   }, [scrollToTopIntent]);
 
   if (isLoading || isLoadingFavorites || !data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

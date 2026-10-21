@@ -47,7 +47,11 @@ export const PerformerScreenBase = ({performerData, onRefresh, isFetching = fals
   });
 
   if (!performerData) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (
@@ -105,8 +109,6 @@ export const PerformerScreenBase = ({performerData, onRefresh, isFetching = fals
                     eventData={event}
                     showDay={true}
                     onPress={() => navigation.push(CommonStackComponents.eventScreen, {eventID: event.eventID})}
-                    // This is a workaround until we have an event cache reducer.
-                    onFavorite={onRefresh}
                   />
                 </View>
               ))}

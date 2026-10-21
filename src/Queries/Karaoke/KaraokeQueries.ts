@@ -3,13 +3,9 @@ import {type QueryFunctionContext, useInfiniteQuery} from '@tanstack/react-query
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {shouldQueryEnable} from '#src/Libraries/Network/APIClient';
+import {useOpenPaginationQuery, useOpenQuery} from '#src/Queries/OpenQuery';
 import {getNextPageParam, getPreviousPageParam, PaginationQueryParams} from '#src/Queries/Pagination';
-import {
-  type TokenAuthPaginationQueryOptionsTypeV2,
-  useTokenAuthPaginationQuery,
-  useTokenAuthQuery,
-} from '#src/Queries/TokenAuthQuery';
+import {type TokenAuthPaginationQueryOptionsTypeV2} from '#src/Queries/TokenAuthQuery';
 import {KaraokePerformedSongsResult, KaraokeSongData, KaraokeSongResponseData} from '#src/Structs/ControllerStructs';
 
 /** Params for GET /api/v3/karaoke/latest. */
@@ -29,18 +25,17 @@ interface KaraokeSongResponseWithPaginator extends KaraokeSongResponseData {
 }
 
 /**
- * GET /api/v3/karaoke/latest – recent performances.
- * Use when logged in; endpoint is flex auth.
+ * GET /api/v3/karaoke/latest – recent performances. Swiftarr GETs are flex routes (optional
+ * auth), so this uses `useOpenPaginationQuery`. `isFavorite` on each result is `false` for a
+ * logged-out request.
  */
 export const useKaraokeLatestQuery = (
   params: {search?: string; options?: TokenAuthPaginationQueryOptionsTypeV2<KaraokePerformedSongsResult>} = {},
 ) => {
   const {search, options} = params;
-  return useTokenAuthPaginationQuery<KaraokePerformedSongsResult, KaraokeLatestQueryParams>(
-    '/karaoke/latest',
-    options,
-    {...(search && search.trim() && {search: search.trim()})},
-  );
+  return useOpenPaginationQuery<KaraokePerformedSongsResult, KaraokeLatestQueryParams>('/karaoke/latest', options, {
+    ...(search && search.trim() && {search: search.trim()}),
+  });
 };
 
 async function fetchKaraokeSongsPage(
@@ -60,7 +55,11 @@ async function fetchKaraokeSongsPage(
 }
 
 /**
- * GET /api/v3/karaoke – search and favorites.
+ * GET /api/v3/karaoke – search and favorites. Swiftarr GETs are flex routes (optional auth), so
+ * this is disabled only by session hydration / connectivity, not login state. `isFavorite` on
+ * each result is `false` for a logged-out request. `favorite` filtering requires a token;
+ * callers must hide the UI that would request it while logged out (see
+ * KaraokeFavoritesListScreen, which stays behind LoggedInScreen).
  * Only run when search (≥3 chars, or single letter, or #) or favorite === true.
  */
 export const useKaraokeSongsQuery = (params: {
@@ -69,11 +68,11 @@ export const useKaraokeSongsQuery = (params: {
   options?: TokenAuthPaginationQueryOptionsTypeV2<KaraokeSongResponseWithPaginator>;
 }) => {
   const {search, favorite, options} = params;
+  const {isLoading} = useSession();
   const trimmedSearch = search?.trim() ?? '';
   const searchAllowed = trimmedSearch.length >= 3 || trimmedSearch.length === 1 || trimmedSearch === '#';
   const enabled = options?.enabled !== false && (searchAllowed || favorite === true);
 
-  const {isLoggedIn} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
   const {appConfig} = useConfig();
 
@@ -90,16 +89,15 @@ export const useKaraokeSongsQuery = (params: {
     initialPageParam: {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize} as PaginationQueryParams,
     getNextPageParam: (lastPage: KaraokeSongResponseWithPaginator) => getNextPageParam(lastPage),
     getPreviousPageParam: (firstPage: KaraokeSongResponseWithPaginator) => getPreviousPageParam(firstPage),
-    enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, enabled),
+    enabled: !isLoading && !disruptionDetected && enabled,
   });
 };
 
 /**
- * GET /api/v3/karaoke/:song_id – single song.
- * Flex auth.
+ * GET /api/v3/karaoke/:song_id – single song. Flex auth.
  */
 export const useKaraokeSongQuery = (songID: string, options?: {enabled?: boolean}) => {
-  return useTokenAuthQuery<KaraokeSongData>(`/karaoke/${songID}`, {
+  return useOpenQuery<KaraokeSongData>(`/karaoke/${songID}`, {
     ...options,
     enabled: options?.enabled !== false && !!songID,
   });

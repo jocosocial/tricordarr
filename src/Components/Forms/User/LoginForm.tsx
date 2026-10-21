@@ -1,6 +1,6 @@
 import {Formik, FormikHelpers} from 'formik';
-import React from 'react';
-import {View} from 'react-native';
+import React, {useMemo} from 'react';
+import {StyleSheet, View} from 'react-native';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
@@ -29,22 +29,25 @@ const initialValues: LoginFormValues = {
 // https://formik.org/docs/guides/react-native
 export const LoginForm = ({onSubmit}: LoginFormProps) => {
   const {commonStyles} = useStyles();
-  const styles = {
-    inputContainer: [],
-    buttonContainer: [commonStyles.marginTopSmall, commonStyles.marginBottom],
-  };
   const {theme} = useAppTheme();
   const commonNavigation = useCommonStack();
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        buttonContainer: {
+          ...commonStyles.marginTopSmall,
+          ...commonStyles.marginBottom,
+        },
+      }),
+    [commonStyles],
+  );
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting}) => (
         <View>
-          <UsernameTextField
-            viewStyle={styles.inputContainer}
-            testID={'loginUsername-input'}
-            showErrorWithoutTouch={false}
-          />
+          <UsernameTextField testID={'loginUsername-input'} showErrorWithoutTouch={false} />
           <SecureTextField
             name={'password'}
             testID={'loginPassword-input'}
@@ -65,6 +68,13 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
             testID={'loginForgotPassword-button'}
             buttonText={'Forgot Password'}
             onPress={() => commonNavigation.push(CommonStackComponents.accountRecoveryScreen)}
+            viewStyle={styles.buttonContainer}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+          <PrimaryActionButton
+            testID={'loginForgotUsername-button'}
+            buttonText={'Forgot Username'}
+            onPress={() => commonNavigation.push(CommonStackComponents.usernameLookupScreen)}
             viewStyle={styles.buttonContainer}
             buttonColor={theme.colors.twitarrNeutralButton}
           />

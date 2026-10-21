@@ -3,6 +3,7 @@ import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 import ReconnectingWebSocket from 'reconnecting-websocket';
@@ -31,7 +32,8 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {useFezData} from '#src/Hooks/Fez/useFezData';
+import {useFezData, useMarkFezReadEffect} from '#src/Hooks/Fez/useFezData';
+import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
@@ -58,7 +60,7 @@ const getInitialScrollIndex = (fez: FezData, fezPostsData: FezPostData[], initia
   if (!fez.members || readCount === undefined || readCount === fez.members.postCount) {
     return fezPostsData.length > 0 ? fezPostsData.length - 1 : undefined;
   }
-  const loadedStart = fez.members.paginator.start;
+  const loadedStart = fez.members.paginator?.start ?? 0;
   const idx = Math.max(readCount - loadedStart, 0);
   // Clamp to the loaded data range. readCount can exceed the loaded page
   // when only a subset of posts have been fetched.
@@ -135,6 +137,7 @@ const FezChatScreenInner = ({route}: Props) => {
     isFetching,
   } = useFezData({fezID: route.params.fezID, initialReadCountHint: route.params.initialReadCount});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  useMarkFezReadEffect(fez, initialReadCount);
   const fezPostMutation = useFezPostMutation();
   const {setSnackbarPayload} = useSnackbar();
   const {openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
@@ -353,24 +356,6 @@ const FezChatScreenInner = ({route}: Props) => {
     });
   }, [getFezHeaderTitle, getNavButtons, navigation]);
 
-  // Mark as Read useEffect
-  // Fire when detail has unread, or when initialReadCount (from list cache) indicates unread
-  // even if the detail GET already marked as read on the server.
-  useEffect(() => {
-    logger.debug('Mark As Read useEffect');
-    if (fez && fez.members) {
-      const hasUnread =
-        fez.members.readCount !== fez.members.postCount ||
-        (initialReadCount !== undefined && initialReadCount < fez.members.postCount);
-      if (hasUnread) {
-        markRead(fez.fezID);
-        // The UND drives the tab bar and seamail account buttons badge count
-        // and we don't have a cache reducer for it yet.
-        refetchUserNotificationData();
-      }
-    }
-  }, [fez, markRead, initialReadCount, refetchUserNotificationData]);
-
   // Visible useEffect
   // 20260308 The query now refetches on mount by default so this is no longer needed.
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background
@@ -392,6 +377,8 @@ const FezChatScreenInner = ({route}: Props) => {
   const {theme} = useAppTheme();
   const frozenScrollIndexRef = useRef<number | null>(null);
 
+  const keyboardVerticalOffset = useKeyboardVerticalOffset();
+
   const onReadyToShow = useCallback(() => {
     logger.debug('Fez chat list ready to show');
     setReadyToShow(true);
@@ -399,7 +386,11 @@ const FezChatScreenInner = ({route}: Props) => {
 
   // This is kinda hax for the fezPostData below
   if (!fez) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const computedScrollIndex = getInitialScrollIndex(fez, fezPostsData, initialReadCount);
@@ -422,6 +413,9 @@ const FezChatScreenInner = ({route}: Props) => {
       backgroundColor: theme.colors.background,
       zIndex: 1,
     },
+    keyboardView: {
+      ...commonStyles.flex,
+    },
   });
 
   return (
@@ -429,29 +423,34 @@ const FezChatScreenInner = ({route}: Props) => {
       <ListTitleView title={fez.title} />
       <PostAsUserWarningView />
       {fez.members?.isMuted && <FezMutedView />}
-      <View style={commonStyles.flex}>
-        <FezConversationListV2
-          key={listKey}
-          fez={fez}
-          fezPostData={fezPostsData}
-          listRef={flatListRef}
-          hasNextPage={hasNextPage}
-          hasPreviousPage={hasPreviousPage}
-          handleLoadNext={handleLoadNext}
-          handleLoadPrevious={handleLoadPrevious}
-          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
-          initialScrollIndex={initialScrollIndex}
-          initialReadCount={initialReadCount}
-          postDayCount={postDayCount}
-          onReadyToShow={onReadyToShow}
-        />
-        {!readyToShow && (
-          <View style={overlayStyles.overlay}>
-            <ActivityIndicator size={'large'} />
-          </View>
-        )}
-      </View>
-      <ContentPostForm onSubmit={onSubmit} enablePhotos={!FezType.isSeamailType(fez.fezType)} maxPhotos={1} />
+      <KeyboardAvoidingView
+        style={overlayStyles.keyboardView}
+        behavior={'padding'}
+        keyboardVerticalOffset={keyboardVerticalOffset}>
+        <View style={commonStyles.flex}>
+          <FezConversationListV2
+            key={listKey}
+            fez={fez}
+            fezPostData={fezPostsData}
+            listRef={flatListRef}
+            hasNextPage={hasNextPage}
+            hasPreviousPage={hasPreviousPage}
+            handleLoadNext={handleLoadNext}
+            handleLoadPrevious={handleLoadPrevious}
+            refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
+            initialScrollIndex={initialScrollIndex}
+            initialReadCount={initialReadCount}
+            postDayCount={postDayCount}
+            onReadyToShow={onReadyToShow}
+          />
+          {!readyToShow && (
+            <View style={overlayStyles.overlay}>
+              <ActivityIndicator size={'large'} />
+            </View>
+          )}
+        </View>
+        <ContentPostForm onSubmit={onSubmit} enablePhotos={!FezType.isSeamailType(fez.fezType)} maxPhotos={1} />
+      </KeyboardAvoidingView>
     </AppView>
   );
 };

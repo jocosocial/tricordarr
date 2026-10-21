@@ -8,6 +8,7 @@ import {AdminDailyThemeForm} from '#src/Components/Forms/Admin/AdminDailyThemeFo
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {alertDeleteDailyTheme} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -16,17 +17,21 @@ import {
   useDeleteDailyThemeMutation,
   useEditDailyThemeMutation,
 } from '#src/Queries/Admin/DailyThemeMutations';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {DailyThemeUploadData} from '#src/Structs/AdminControllerStructs';
 import {AdminDailyThemeFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminDailyThemeEditScreen>;
 
 export const AdminDailyThemeEditScreen = (props: Props) => {
+  const {hasTHO} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'tho'}>
-      <AdminDailyThemeEditScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTHO}>
+        <AdminDailyThemeEditScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

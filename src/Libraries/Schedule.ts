@@ -3,13 +3,41 @@ import {parseISO} from 'date-fns';
 import ical, {VEvent} from 'node-ical';
 
 import {EventType} from '#src/Enums/EventType';
+import {ScheduleSourceKey} from '#src/Enums/ScheduleSource';
 import {calcCruiseDayTime, getTimeZoneOffset} from '#src/Libraries/DateTime';
 import {EventData, FezData, FezListData} from '#src/Structs/ControllerStructs';
 import {CruiseDayTime, ScheduleCardMarkerType, ScheduleFilterSettings} from '#src/Types';
 
 /**
+ * Resolves which schedule sources should be included, falling back to the config-driven
+ * default set when no source is explicitly selected. Used by both the query-enablement logic
+ * in ScheduleDayScreen and buildScheduleList below, so the two can't drift apart.
+ *
+ * Owned LFGs are intentionally excluded from the default set: they already arrive via the
+ * Joined LFGs list, so including them by default would be redundant, not additive.
+ * @param filterSettings
+ */
+export const resolveScheduleSources = (filterSettings: ScheduleFilterSettings): Set<ScheduleSourceKey> => {
+  if (filterSettings.eventSources.length) {
+    return new Set(filterSettings.eventSources);
+  }
+  const defaults: ScheduleSourceKey[] = ['officialEvents', 'privateEvents'];
+  if (filterSettings.showJoinedLfgs) {
+    defaults.push('lfgJoined');
+  }
+  if (filterSettings.showOpenLfgs) {
+    defaults.push('lfgOpen');
+  }
+  return new Set(defaults);
+};
+
+/**
  * Assemble an array containing all items to display in a schedule list.
  * This array should be ordered by start time.
+ *
+ * Sources (which lists contribute items) are additive/OR. Refinements (event type, favorite,
+ * shutternaut status, unread) narrow the source they belong to and are combined with AND. See
+ * resolveScheduleSources() and #458.
  * @param filterSettings
  * @param lfgJoinedData
  * @param lfgOwnedData
@@ -25,87 +53,61 @@ export const buildScheduleList = (
   eventData?: EventData[],
   personalEventData?: InfiniteData<FezListData>,
 ): (FezData | EventData)[] => {
-  const anyFilter = !!(
-    filterSettings.eventTypeFilter ||
-    filterSettings.eventFavoriteFilter ||
-    filterSettings.eventPersonalFilter ||
-    filterSettings.eventPersonalUnreadFilter ||
-    filterSettings.eventLfgJoinedFilter ||
-    filterSettings.eventLfgOwnedFilter ||
-    filterSettings.eventLfgOpenFilter ||
-    filterSettings.eventShutternautFilter
-  );
+  const sources = resolveScheduleSources(filterSettings);
 
   let lfgList: FezData[] = [];
   let eventList: EventData[] = [];
   let personalEventList: FezData[] = [];
 
-  if (!anyFilter) {
-    // Default: all events, default LFGs per config, all personal events
-    if (filterSettings.showJoinedLfgs && lfgJoinedData) {
-      lfgJoinedData.pages.forEach(page => (lfgList = lfgList.concat(page.fezzes)));
-    }
-    if (filterSettings.showOpenLfgs && lfgOpenData) {
-      lfgOpenData.pages.forEach(page => (lfgList = lfgList.concat(page.fezzes)));
-    }
-    eventData?.forEach(event => eventList.push(event));
-    if (personalEventData?.pages) {
-      personalEventData.pages.forEach(page => (personalEventList = personalEventList.concat(page.fezzes)));
-    }
-  } else {
-    // Restrictive: show only items matching at least one active filter (OR across filter types)
-    if (filterSettings.eventLfgJoinedFilter && filterSettings.showJoinedLfgs && lfgJoinedData) {
-      lfgJoinedData.pages.forEach(page => (lfgList = lfgList.concat(page.fezzes)));
-    }
-    if (filterSettings.eventLfgOwnedFilter && lfgOwnedData) {
-      lfgOwnedData.pages.forEach(page => (lfgList = lfgList.concat(page.fezzes)));
-    }
-    if (filterSettings.eventLfgOpenFilter && filterSettings.showOpenLfgs && lfgOpenData) {
-      lfgOpenData.pages.forEach(page => (lfgList = lfgList.concat(page.fezzes)));
-    }
+  if (sources.has('lfgJoined') && lfgJoinedData) {
+    lfgList = lfgList.concat(lfgJoinedData.pages.flatMap(page => page.fezzes));
+  }
+  if (sources.has('lfgOwned') && lfgOwnedData) {
+    lfgList = lfgList.concat(lfgOwnedData.pages.flatMap(page => page.fezzes));
+  }
+  if (sources.has('lfgOpen') && lfgOpenData) {
+    lfgList = lfgList.concat(lfgOpenData.pages.flatMap(page => page.fezzes));
+  }
 
-    const eventFilterOn =
-      !!filterSettings.eventTypeFilter ||
-      !!filterSettings.eventFavoriteFilter ||
-      !!filterSettings.eventShutternautFilter;
-    if (eventFilterOn && eventData) {
-      eventData.forEach(event => {
-        const matchesType = filterSettings.eventTypeFilter
-          ? event.eventType === EventType[filterSettings.eventTypeFilter]
-          : false;
-        const matchesFavorite = filterSettings.eventFavoriteFilter ? event.isFavorite : false;
-        let matchesShutternaut = false;
-        if (filterSettings.eventShutternautFilter && event.shutternautData) {
-          const sf = filterSettings.eventShutternautFilter;
-          switch (sf) {
+  if (sources.has('officialEvents') && eventData) {
+    eventData.forEach(event => {
+      const matchesType = filterSettings.eventTypeFilter
+        ? event.eventType === EventType[filterSettings.eventTypeFilter]
+        : true;
+      const matchesFavorite = filterSettings.eventFavoriteFilter ? event.isFavorite : true;
+      let matchesShutternaut = true;
+      if (filterSettings.eventShutternautFilter) {
+        matchesShutternaut = false;
+        if (event.shutternautData) {
+          switch (filterSettings.eventShutternautFilter) {
             case 'needsPhotographer':
               matchesShutternaut =
                 event.shutternautData.needsPhotographer === true && event.shutternautData.photographers.length === 0;
               break;
-            case 'hasphotographer':
+            case 'hasPhotographer':
               matchesShutternaut = event.shutternautData.photographers.length > 0;
               break;
-            case 'nophotographer':
+            case 'noPhotographer':
               matchesShutternaut = event.shutternautData.photographers.length === 0;
               break;
-            case 'imphotographer':
+            case 'imPhotographer':
               matchesShutternaut = event.shutternautData.userIsPhotographer === true;
               break;
           }
         }
-        if (matchesType || matchesFavorite || matchesShutternaut) {
-          eventList.push(event);
-        }
-      });
-    }
-
-    // Shutternaut + personal: only show personal events if a personal filter is also active
-    const personalFilterOn = !!filterSettings.eventPersonalFilter || !!filterSettings.eventPersonalUnreadFilter;
-    if (!filterSettings.eventShutternautFilter || personalFilterOn) {
-      if (personalFilterOn && personalEventData?.pages) {
-        personalEventData.pages.forEach(page => (personalEventList = personalEventList.concat(page.fezzes)));
       }
-    }
+      // Refinements narrow (AND), not widen (OR) — a filtered view should only ever be a
+      // subset of the unfiltered one. See #458.
+      if (matchesType && matchesFavorite && matchesShutternaut) {
+        eventList.push(event);
+      }
+    });
+  }
+
+  if (sources.has('privateEvents') && personalEventData?.pages) {
+    // Unread is applied server-side via the `onlyNew` query param (see ScheduleDayScreen), so
+    // there's no client-side predicate to apply here.
+    personalEventList = personalEventData.pages.flatMap(page => page.fezzes);
   }
 
   // The order of the combinedList is important. In the event of a tie for start time, personalEvents should
@@ -222,6 +224,7 @@ export const getScheduleScrollIndex = (
  * @param nowDate Current date/time
  * @param startDate Start Date() of the cruise, typically midnight in the port TZ.
  * @param endDate End Date() of the cruise, typically midnight in the port TZ.
+ * @param showMarkersOutsideCruiseWeek When false, markers are suppressed unless nowDate falls within [startDate, endDate).
  */
 export const getScheduleItemMarker = (
   item: EventData | FezData,
@@ -229,8 +232,12 @@ export const getScheduleItemMarker = (
   nowDate: Date,
   startDate: Date,
   endDate: Date,
+  showMarkersOutsideCruiseWeek: boolean,
 ): ScheduleCardMarkerType => {
   if (!item.startTime || !item.endTime || !item.timeZoneID) {
+    return;
+  }
+  if (!showMarkersOutsideCruiseWeek && (nowDate < startDate || nowDate >= endDate)) {
     return;
   }
   const itemStartTime = parseISO(item.startTime);

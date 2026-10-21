@@ -10,6 +10,7 @@ export const MutedUsersHelpTopicView = ({forListScreen = true}: MutedUsersHelpTo
     <HelpTopicView title={forListScreen ? 'Muted Users' : 'Mute User'} icon={AppIcons.mute}>
       {forListScreen && 'View and manage your list of muted users. '}
       Muting a user will hide all that user's content from you.
+      {forListScreen && ' Swipe right on a user to Remove them from your mutes.'}
     </HelpTopicView>
   );
 };

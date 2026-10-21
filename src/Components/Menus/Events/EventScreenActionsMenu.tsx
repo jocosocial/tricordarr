@@ -11,6 +11,7 @@ import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrgani
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -26,6 +27,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
   const {preRegistrationMode} = usePreRegistration();
+  const {isLoggedIn} = useSession();
   const {hasPerformerSelfEditor, hasShutternaut, hasShutternautManager} = useRoles();
 
   const handleHelp = () => {
@@ -42,7 +44,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      {props.event.forum && (
+      {isLoggedIn && props.event.forum && (
         <Menu.Item
           title={'Forum'}
           leadingIcon={AppIcons.forum}
@@ -64,16 +66,18 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
           commonNavigation.push(CommonStackComponents.scheduleOverlapScreen, {eventData: props.event});
         }}
       />
-      <Menu.Item
-        title={'Photostream'}
-        leadingIcon={AppIcons.photostream}
-        onPress={() => {
-          closeMenu();
-          commonNavigation.push(CommonStackComponents.photostreamEventScreen, {
-            eventID: props.event.eventID,
-          });
-        }}
-      />
+      {isLoggedIn && (
+        <Menu.Item
+          title={'Photostream'}
+          leadingIcon={AppIcons.photostream}
+          onPress={() => {
+            closeMenu();
+            commonNavigation.push(CommonStackComponents.photostreamEventScreen, {
+              eventID: props.event.eventID,
+            });
+          }}
+        />
+      )}
       <Divider bold={true} />
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.event.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />

@@ -7,7 +7,6 @@ import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {LogLevel} from '#src/Libraries/Logger/types';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
-import {FezListEndpoints} from '#src/Types';
 
 export type PushNotificationConfig = {
   [_key in keyof typeof NotificationTypeData]: boolean;
@@ -29,6 +28,13 @@ export interface APIClientConfig {
    */
   mutationTimeout: number;
   imageStaleTime: number;
+  /**
+   * How long (ms) to suppress the generic error Snackbar after a server URL switch begins,
+   * to give the maintenance-mode check a chance to resolve before other mounted queries'
+   * transient 401s surface as scary errors. Cleared earlier once the swap settles; this is
+   * just the fallback ceiling.
+   */
+  serverSwitchGracePeriod: number;
 }
 
 export interface ScheduleConfig {
@@ -36,10 +42,10 @@ export interface ScheduleConfig {
   eventsShowOpenLfgs: boolean;
   hidePastLfgs: boolean;
   enableLateDayFlip: boolean;
-  defaultLfgList: FezListEndpoints;
   overlapExcludeDurationHours: number;
   compactThemeEvents: boolean;
   timeZoneLabelMode: TimeZoneLabelMode;
+  showMarkersOutsideCruiseWeek: boolean;
 }
 
 export interface AccessibilityConfig {
@@ -99,6 +105,7 @@ export interface AppConfig {
   forceShowTimezoneWarning: boolean;
   silenceTimezoneWarnings: boolean;
   dismissWelcomeAboard: boolean;
+  dismissMinAccessWarning: boolean;
   logLevel: LogLevel;
 }
 
@@ -152,10 +159,10 @@ export const defaultAppConfig: AppConfig = {
     enableLateDayFlip: true,
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
-    defaultLfgList: 'open',
     overlapExcludeDurationHours: 4,
     compactThemeEvents: true,
     timeZoneLabelMode: TimeZoneLabelMode.offset,
+    showMarkersOutsideCruiseWeek: false,
   },
   portTimeZoneID: 'America/New_York',
   apiClientConfig: {
@@ -169,6 +176,7 @@ export const defaultAppConfig: AppConfig = {
     requestTimeout: 10000,
     mutationTimeout: 30000,
     imageStaleTime: defaultImageStaleTime,
+    serverSwitchGracePeriod: 10000,
   },
   enableEasterEgg: false,
   accessibility: {
@@ -198,6 +206,7 @@ export const defaultAppConfig: AppConfig = {
   forceShowTimezoneWarning: false,
   silenceTimezoneWarnings: false,
   dismissWelcomeAboard: false,
+  dismissMinAccessWarning: false,
   // logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
   logLevel: LogLevel.DEBUG,
 };
@@ -245,6 +254,9 @@ export const getAppConfig = async () => {
   if (appConfig.schedule.timeZoneLabelMode === undefined) {
     appConfig.schedule.timeZoneLabelMode = TimeZoneLabelMode.offset;
   }
+  if (appConfig.schedule.showMarkersOutsideCruiseWeek === undefined) {
+    appConfig.schedule.showMarkersOutsideCruiseWeek = false;
+  }
   if (appConfig.logLevel === undefined) {
     appConfig.logLevel = LogLevel.DEBUG;
   }
@@ -272,11 +284,17 @@ export const getAppConfig = async () => {
   if (appConfig.dismissWelcomeAboard === undefined) {
     appConfig.dismissWelcomeAboard = false;
   }
+  if (appConfig.dismissMinAccessWarning === undefined) {
+    appConfig.dismissMinAccessWarning = false;
+  }
   if (appConfig.shipCode === undefined) {
     appConfig.shipCode = ShipCode.halEd;
   }
   if (appConfig.apiClientConfig.mutationTimeout === undefined) {
     appConfig.apiClientConfig.mutationTimeout = defaultAppConfig.apiClientConfig.mutationTimeout;
+  }
+  if (appConfig.apiClientConfig.serverSwitchGracePeriod === undefined) {
+    appConfig.apiClientConfig.serverSwitchGracePeriod = defaultAppConfig.apiClientConfig.serverSwitchGracePeriod;
   }
 
   // Ok now we're done

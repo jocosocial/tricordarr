@@ -24,7 +24,7 @@ export const UserFindSearchBar = ({
   });
 
   // Manual search only.
-  const {data, refetch} = useUserFindQuery(searchQuery, {enabled: false});
+  const {data, refetch, isFetching} = useUserFindQuery(searchQuery, {enabled: false});
 
   return (
     <UserSearchBarBaseComponent
@@ -38,6 +38,7 @@ export const UserFindSearchBar = ({
       label={label}
       autoSearch={false}
       excludeSelf={excludeSelf}
+      loading={isFetching}
       testID={testID}
     />
   );

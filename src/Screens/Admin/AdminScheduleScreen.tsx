@@ -13,6 +13,7 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -20,7 +21,8 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stack
 import {useScheduleReloadMutation, useScheduleUploadMutation} from '#src/Queries/Admin/ScheduleMutations';
 import {useScheduleLogQuery} from '#src/Queries/Admin/ScheduleQueries';
 import {useReloadNotificationsMutation} from '#src/Queries/Admin/SeedMutations';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminScheduleScreen>;
 
@@ -29,10 +31,13 @@ interface UploadForm {
 }
 
 export const AdminScheduleScreen = (props: Props) => {
+  const {hasTwitarrTeam} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminScheduleScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
+        <AdminScheduleScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

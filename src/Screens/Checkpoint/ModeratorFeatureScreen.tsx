@@ -1,9 +1,9 @@
 import {PropsWithChildren} from 'react';
 
-import {NotModeratorView} from '#src/Components/Views/Static/NotModeratorView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
 /**
@@ -24,8 +24,9 @@ export const ModeratorFeatureScreen = ({children}: PropsWithChildren) => {
  */
 const ModeratorFeatureScreenInner = ({children}: PropsWithChildren) => {
   const {hasModerator} = usePrivilege();
-  if (!hasModerator) {
-    return <NotModeratorView />;
-  }
-  return children;
+  return (
+    <NoAccessScreen hasAccess={hasModerator} testID={'not-moderator-back-button'}>
+      {children}
+    </NoAccessScreen>
+  );
 };

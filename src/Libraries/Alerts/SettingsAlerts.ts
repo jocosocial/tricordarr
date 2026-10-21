@@ -11,6 +11,20 @@ export const alertClearLogs = (onConfirm: () => void, onCancel?: () => void): vo
 };
 
 /**
+ * Confirms permanently deleting the notification log.
+ */
+export const alertClearNotificationLog = (onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert(
+    'Clear Notification Log',
+    'Are you sure you want to delete the notification log? This cannot be undone.',
+    [
+      {text: 'Close', style: 'cancel', onPress: onCancel},
+      {text: 'Delete', style: 'destructive', onPress: onConfirm},
+    ],
+  );
+};
+
+/**
  * Warns that disabling pre-registration mode may cause unexpected behavior.
  */
 export const alertDisablePreRegistration = (onConfirm: () => void, onCancel?: () => void): void => {
@@ -20,6 +34,34 @@ export const alertDisablePreRegistration = (onConfirm: () => void, onCancel?: ()
     [
       {text: 'Close', style: 'cancel', onPress: onCancel},
       {text: 'Disable', onPress: onConfirm},
+    ],
+  );
+};
+
+/**
+ * Confirms permanently hiding the Maintenance Mode warning banner.
+ */
+export const alertDismissMinAccessWarning = (onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert(
+    'Hide Maintenance Mode Warning',
+    'Permanently hide this warning? You can turn it back on later in Cruise Settings.',
+    [
+      {text: 'No', style: 'cancel', onPress: onCancel},
+      {text: 'Yes', onPress: onConfirm},
+    ],
+  );
+};
+
+/**
+ * Confirms permanently silencing the time zone warnings.
+ */
+export const alertSilenceTimezoneWarnings = (onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert(
+    'Silence Time Zone Warnings',
+    'Permanently hide time zone warnings throughout the app? You can turn them back on later in Time Settings.',
+    [
+      {text: 'No', style: 'cancel', onPress: onCancel},
+      {text: 'Yes', onPress: onConfirm},
     ],
   );
 };

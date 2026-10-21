@@ -1,4 +1,7 @@
-import {FezData, Paginator} from '#src/Structs/ControllerStructs';
+import {type GetNextPageParamFunction, InfiniteData, QueryKey, UseInfiniteQueryOptions} from '@tanstack/react-query';
+import {AxiosError} from 'axios';
+
+import {ErrorResponse, FezData, Paginator} from '#src/Structs/ControllerStructs';
 
 /**
  * Tells useInfiniteQuery if there's a next page.
@@ -56,3 +59,27 @@ export interface PaginationQueryParams {
 export interface PageParam extends PaginationQueryParams {
   [key: string]: unknown;
 }
+
+/**
+ * Options accepted by our paginated query wrappers. Shared by the token-auth wrapper
+ * (`useTokenAuthPaginationQuery`) and the optional-auth one (`useOpenPaginationQuery`),
+ * since the only thing that differs between them is how `enabled` is derived.
+ */
+export type PaginationQueryOptionsType<
+  TQueryFnData,
+  TError extends Error = AxiosError<ErrorResponse>,
+  TData = InfiniteData<TQueryFnData, PaginationQueryParams>,
+  TQueryKey extends QueryKey = QueryKey,
+> = Omit<
+  UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, PaginationQueryParams>,
+  'initialData' | 'queryKey' | 'onError' | 'enabled' | 'getNextPageParam' | 'initialPageParam'
+> & {
+  /**
+   * Your query function gets a `pageParam` object containing { start?, limit? }.
+   */
+  // React Query v5 allows for enabled to be a function. We are disabling that
+  // for now to maintain simplicity in the query wrappers.
+  enabled?: boolean;
+  getNextPageParam?: GetNextPageParamFunction<PaginationQueryParams, TQueryFnData>;
+  initialPageParam?: PaginationQueryParams;
+};

@@ -153,6 +153,14 @@ export const ForumConversationListV2 = ({
       estimatedItemSize={120}
       onReadyToShow={onReadyToShow}
       newDividerIndex={newDividerIndex}
+      // renderItem's "New" divider placement is driven by isFullyRead/newDividerIndex,
+      // which live outside `data`. LegendList's recycled cells (recycleItems={true}) only
+      // redraw when `item`/`index` change or `extraData` changes identity, so without this
+      // a cell that already rendered a divider would keep showing it after posting (see
+      // the same fix in FezConversationListV2). Combine both so every visibility/position
+      // transition is distinguishable, including two different "hidden" states that would
+      // otherwise both be `undefined`.
+      extraData={`${isFullyRead}-${newDividerIndex}`}
       // Style is here rather than in the renderItem because the padding we use is
       // also needed for the dividers. It could be added to the divider function as
       // well but this is slightly simpler and covers cases I am not remembering.

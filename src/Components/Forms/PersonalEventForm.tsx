@@ -4,6 +4,7 @@ import {View} from 'react-native';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {DurationPickerField} from '#src/Components/Forms/Fields/DurationPickerField';
@@ -12,6 +13,7 @@ import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
 import {UserChipsField} from '#src/Components/Forms/Fields/UserChipsField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {FezVisibility} from '#src/Enums/FezVisibility';
 import {getUserSuggestedLocations} from '#src/Libraries/Ship';
 import {DateValidation, InfoStringValidation} from '#src/Libraries/ValidationSchema';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
@@ -22,6 +24,13 @@ interface PersonalEventFormProps {
   initialValues: FezFormValues;
   buttonText?: string;
   create?: boolean;
+  /**
+   * Show the Unlisted switch. Defaults to `create`, since a new event can always pick its
+   * visibility. On edit only the owner of an existing privateEvent may change it: the server
+   * refuses a visibility change on any other type, and an event created without guests is a
+   * personalEvent that can never become unlisted.
+   */
+  showVisibility?: boolean;
 }
 
 const validationSchema = Yup.object().shape({
@@ -36,6 +45,7 @@ export const PersonalEventForm = ({
   initialValues,
   buttonText = 'Save',
   create = true,
+  showVisibility = create,
 }: PersonalEventFormProps) => {
   const {commonStyles} = useStyles();
   const styles = {
@@ -46,7 +56,7 @@ export const PersonalEventForm = ({
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({handleSubmit, values, isSubmitting, isValid, dirty}) => (
+      {({handleSubmit, values, isSubmitting, isValid, dirty, setFieldValue}) => (
         <View>
           <DirtyDetectionField />
           <TextField
@@ -86,13 +96,26 @@ export const PersonalEventForm = ({
             />
           </View>
           {create && (
-            <View style={[commonStyles.paddingBottom]}>
-              <UserChipsField
-                name={'initialUsers'}
-                testID={'personalEventParticipants-input'}
-                label={'Participants (Optional)'}
-              />
-            </View>
+            <UserChipsField
+              name={'initialUsers'}
+              testID={'personalEventParticipants-input'}
+              label={'Participants (Optional)'}
+            />
+          )}
+          {showVisibility && (
+            <BooleanField
+              name={'visibility'}
+              testID={'personalEventUnlisted-switch'}
+              label={'Unlisted'}
+              helperText={'Lets anyone with the link view and join this event.'}
+              onPress={() =>
+                setFieldValue(
+                  'visibility',
+                  values.visibility === FezVisibility.unlisted ? FezVisibility.private : FezVisibility.unlisted,
+                )
+              }
+              value={values.visibility === FezVisibility.unlisted}
+            />
           )}
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid || !dirty}

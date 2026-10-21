@@ -40,7 +40,11 @@ export const ChangePasswordScreen = () => {
   };
 
   if (!profilePublicData) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

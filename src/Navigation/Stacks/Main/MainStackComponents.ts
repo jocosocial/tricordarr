@@ -22,6 +22,9 @@ export type MainStackParamList = CommonStackParamList & {
   PerformerListScreen: {
     performerType?: PerformerType;
   };
+  PerformerSearchScreen: {
+    performerType?: PerformerType;
+  };
   BoardgameListScreen: undefined;
   BoardgameScreen: {
     boardgame: BoardgameData;
@@ -56,6 +59,7 @@ export enum MainStackComponents {
   microKaraokeListScreen = 'MicroKaraokeListScreen',
   microKaraokeSongScreen = 'MicroKaraokeSongScreen',
   performerListScreen = 'PerformerListScreen',
+  performerSearchScreen = 'PerformerSearchScreen',
   boardgameListScreen = 'BoardgameListScreen',
   boardgameScreen = 'BoardgameScreen',
   boardgameRecommendScreen = 'BoardgameRecommendScreen',

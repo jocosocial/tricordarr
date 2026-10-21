@@ -1,6 +1,9 @@
 import {QueryKey} from '@tanstack/react-query';
 
+import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {EventNotificationSetting} from '#src/Enums/EventNotificationSetting';
+import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
+import {UserRoleType} from '#src/Enums/UserRoleType';
 import {
   EventData,
   ImageUploadData,
@@ -56,6 +59,10 @@ export interface BulkUserUpdateVerificationData {
   performerCounts: BulkUserUpdateCounts;
   /// Counts for Events that were marked as needing photographers by the Shutternaut Manager.
   needsPhotographerCounts: BulkUserUpdateCounts;
+  /// Counts for Daily Theme import.
+  dailyThemeCounts: BulkUserUpdateCounts;
+  /// Counts for Hunt import.
+  huntCounts: BulkUserUpdateCounts;
   /// Cases where the server has a registered user with the same regcode as the update file, but the usernames differ.
   regCodeConflicts: string[];
   /// Cases where a username already exists on the server, tied to a different regcode.
@@ -297,6 +304,45 @@ export interface SaveRestoreData {
   performers: PerformerUploadData[];
   /// Array of event UIDs that need photographers.
   needsPhotographer: string[];
+  /// Array of Daily Themes to save and restore.
+  dailyThemes: DailyThemeSaveRestoreData[];
+  /// Array of Hunts (with their Puzzles) to save and restore.
+  hunts: HuntSaveRestoreData[];
+}
+
+/**
+ * Used during bulk export/import to save and restore `DailyTheme` records. Unlike `DailyThemeData`
+ * (the API-facing DTO), this is only ever used for Admin-to-Admin server transfer, so it carries the
+ * raw image filename rather than an upload/URL.
+ */
+export interface DailyThemeSaveRestoreData {
+  title: string;
+  info: string;
+  image?: string;
+  cruiseDay: number;
+}
+
+/**
+ * Used during bulk export/import to save and restore a `Hunt` and its child `Puzzle`s as a single unit.
+ */
+export interface HuntSaveRestoreData {
+  title: string;
+  description: string;
+  puzzles: HuntPuzzleSaveRestoreData[];
+}
+
+/**
+ * Used during bulk export/import to save and restore a `Puzzle`, including its answer and hints.
+ * Purposefully full-fidelity, unlike the redacted `HuntPuzzleData` returned by the public API,
+ * since this is only ever used for Admin-to-Admin server transfer.
+ */
+export interface HuntPuzzleSaveRestoreData {
+  title: string;
+  body: string;
+  answer: string;
+  hints: Record<string, string>;
+  /// ISO8601.
+  unlockTime?: string;
 }
 
 /**
@@ -312,7 +358,7 @@ export interface UserSaveRestoreData {
   recoveryKey: string;
   /// Registration code - 6 letters, lowercased
   verification: string;
-  accessLevel: string;
+  accessLevel: UserAccessLevel;
   userImage?: string;
   about?: string;
   email?: string;
@@ -320,10 +366,10 @@ export interface UserSaveRestoreData {
   message?: string;
   preferredPronoun?: string;
   roomNumber?: string;
-  dinnerTeam?: string;
+  dinnerTeam?: DinnerTeam;
   discordUsername?: string;
   parentUsername?: string;
-  roles: string[];
+  roles: UserRoleType[];
   /// Event UIDs, the thing in the ICS file spec--NOT database IDs.
   favoriteEvents: string[];
   /// Event UIDs the user has signed up to photograph

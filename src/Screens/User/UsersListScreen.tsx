@@ -14,6 +14,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSelectable} from '#src/Context/Contexts/SelectableContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -32,7 +33,6 @@ import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScre
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-import {Selectable} from '#src/Types/Selectable';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.usersList>;
 
@@ -61,6 +61,7 @@ const UsersListScreenInner = ({navigation, mode}: Props & {mode: UserRelationMod
   const {preRegistrationMode} = usePreRegistration();
   const {hasModerator} = usePrivilege();
   const {selectedItems, enableSelection} = useSelection();
+  const {fromUserHeader} = useSelectable();
   const favoriteQuery = useUserFavoritesQuery({enabled: mode === 'favorite'});
   const muteQuery = useUserMutesQuery({enabled: mode === 'mute'});
   const blockQuery = useUserBlocksQuery({enabled: mode === 'block'});
@@ -116,13 +117,17 @@ const UsersListScreenInner = ({navigation, mode}: Props & {mode: UserRelationMod
 
   const renderListHeader = useCallback(() => {
     if (enableSelection) {
-      return <SelectionButtons items={activeQuery.data?.map(Selectable.fromUserHeader)} />;
+      return <SelectionButtons items={activeQuery.data?.map(fromUserHeader)} />;
     }
     return <UserListHeader mode={mode} hasModerator={hasModerator} />;
-  }, [enableSelection, activeQuery.data, mode, hasModerator]);
+  }, [enableSelection, activeQuery.data, mode, hasModerator, fromUserHeader]);
 
   if (activeQuery.data === undefined) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   return (

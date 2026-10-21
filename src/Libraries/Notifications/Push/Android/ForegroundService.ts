@@ -8,6 +8,7 @@ import {fgsWorkerNotificationIDs, PressAction} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {buildWebSocket, wsHealthcheck} from '#src/Libraries/Network/Websockets';
+import {recordNotificationEvent} from '#src/Libraries/NotificationLog';
 import {serviceChannel} from '#src/Libraries/Notifications/Channels';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {StorageKeys} from '#src/Libraries/Storage';
@@ -62,6 +63,7 @@ const fgsWorkerHealthcheck = async () => {
  */
 const fgsEventHandler = (event: WebSocketMessageEvent) => {
   logger.debug('responding to event', event);
+  recordNotificationEvent(event.data, 'fgs');
   generatePushNotificationFromEvent(event).catch(err => logger.error('Error generating push notification:', err));
 };
 

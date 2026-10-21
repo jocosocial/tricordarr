@@ -47,7 +47,11 @@ const ModerateMicroKaraokeSongsScreenInner = () => {
   );
 
   if (isLoading || !data) {
-    return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
+    return (
+      <AppView>
+        <LoadingView refreshing={refreshing} onRefresh={onRefresh} />
+      </AppView>
+    );
   }
 
   return (

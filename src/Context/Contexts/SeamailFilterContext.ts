@@ -7,6 +7,8 @@ interface SeamailFilterContextType {
   setSeamailChatCategories: Dispatch<SetStateAction<FezChatCategory[]>>;
   seamailOnlyNew: boolean | undefined;
   setSeamailOnlyNew: Dispatch<SetStateAction<boolean | undefined>>;
+  seamailFavorite: boolean | undefined;
+  setSeamailFavorite: Dispatch<SetStateAction<boolean | undefined>>;
   fezType: FezType[];
   allowedChatCategories: FezChatCategory[];
 }

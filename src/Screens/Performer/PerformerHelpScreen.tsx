@@ -4,6 +4,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {OfficialPerformersHelpTopicView} from '#src/Components/Views/Help/Common/OfficialPerformersHelpTopicView';
+import {SearchBarHelpTopicView} from '#src/Components/Views/Help/Common/SearchBarHelpTopicView';
 import {ShadowPerformerProfilesHelpTopicView} from '#src/Components/Views/Help/Common/ShadowPerformerProfilesHelpTopicView';
 import {ShareButtonHelpTopicView} from '#src/Components/Views/Help/Common/ShareButtonHelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
@@ -23,6 +24,11 @@ export const PerformerHelpScreen = () => {
         </HelpChapterTitleView>
         <ShadowPerformerProfilesHelpTopicView />
         <HelpChapterTitleView title={'Actions'}>
+          <HelpTopicView title={'Search'} icon={AppIcons.search}>
+            Search for a performer by name. Official and Shadow performers are searched separately, so use the buttons
+            at the top of the search screen to switch between them.
+          </HelpTopicView>
+          <SearchBarHelpTopicView />
           <ShareButtonHelpTopicView />
           <HelpButtonHelpTopicView />
         </HelpChapterTitleView>

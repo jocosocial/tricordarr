@@ -1,10 +1,11 @@
-import {InfiniteData, useQueryClient} from '@tanstack/react-query';
+import {InfiniteData, InvalidateQueryFilters, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
 import notifee from 'react-native-notify-kit';
 import {v4 as uuidv4} from 'uuid';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {FezType} from '#src/Enums/FezType';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
@@ -37,6 +38,8 @@ const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
 
 const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/former'];
 const otherListKeyPrefixes = ['/fez/owner', '/fez/open', '/fez/former'];
+// Only /fez/joined and /fez/owner accept ?favorite=true upstream.
+const favoriteFilterableKeyPrefixes = ['/fez/joined', '/fez/owner'];
 
 const startTimeAscComparator = (a: FezData, b: FezData) => (a.startTime ?? '').localeCompare(b.startTime ?? '');
 
@@ -79,6 +82,31 @@ function listParamsIncludeFezType(params: Record<string, unknown> | undefined, f
 }
 
 /**
+ * True if a list cache (query params) is intended to contain this fez, by type and cruise day.
+ * Fez list queries use a 0-based "cruiseday" param while calcCruiseDayTime returns a 1-based
+ * cruiseDay, so they are aligned before comparing.
+ */
+function listParamsIncludeFez(
+  params: Record<string, unknown> | undefined,
+  fez: FezData,
+  fezCruiseDay: number | undefined,
+): boolean {
+  if (!listParamsIncludeFezType(params, fez.fezType)) {
+    return false;
+  }
+  const cruiseDayParam = params?.cruiseday as number | string | undefined;
+  return cruiseDayParam === undefined || fezCruiseDay === undefined || Number(cruiseDayParam) + 1 === fezCruiseDay;
+}
+
+/** True if the list cache (query params) is a favorites-only cache (?favorite=true). */
+function listParamsAreFavoritesOnly(params: Record<string, unknown> | undefined): boolean {
+  if (!params || typeof params !== 'object') {
+    return false;
+  }
+  return params.favorite === true || params.favorite === 'true';
+}
+
+/**
  * Hook that exposes discrete actions for optimistically updating React Query
  * caches after fez mutations (Seamail, LFG, PersonalEvent). Each action calls
  * setQueryData / setQueriesData and always returns new objects so React Query
@@ -89,6 +117,29 @@ export const useFezCacheReducer = () => {
   const {appConfig} = useConfig();
   const {startDate, endDate} = useCruise();
   const {tzAtTime} = useTimeZone();
+  const {queryKeyExtraData} = useSwiftarrQueryClient();
+
+  /** Matches the real cache key useFezQuery builds for the single-fez detail query. */
+  const fezDetailQueryKey = useCallback(
+    (fezID: string) => [`/fez/${fezID}`, undefined, ...queryKeyExtraData],
+    [queryKeyExtraData],
+  );
+
+  /**
+   * Seed the single-fez detail cache from a FezData already in hand (e.g. a list item), so the
+   * detail screen renders instantly instead of spinning on a redundant fetch. Only seeds when the
+   * cache is empty - list data is missing `members.posts` (and sometimes `members` entirely), so
+   * an existing, fuller cache entry must never be overwritten with it. `useFezQuery`'s default
+   * `refetchOnMount: 'always'` still runs afterward to fill in the missing fields.
+   */
+  const primeFezDetail = useCallback(
+    (fez: FezData) => {
+      queryClient.setQueryData<InfiniteData<FezData>>(fezDetailQueryKey(fez.fezID), oldData =>
+        oldData ? oldData : {pages: [fez], pageParams: [undefined]},
+      );
+    },
+    [queryClient, fezDetailQueryKey],
+  );
 
   /**
    * Update a FezData entry (matched by fezID) across all four list endpoint
@@ -182,11 +233,9 @@ export const useFezCacheReducer = () => {
 
       const shouldInsertIntoQuery = (query: {queryKey: readonly unknown[]}) => {
         const params = query.queryKey[1] as Record<string, unknown> | undefined;
-        const typeMatch = listParamsIncludeFezType(params, updatedFez.fezType);
-        const cruiseDayParam = params?.cruiseday as number | string | undefined;
-        const cruiseDayMatch =
-          cruiseDayParam === undefined || fezCruiseDay === undefined || Number(cruiseDayParam) + 1 === fezCruiseDay;
-        return typeMatch && cruiseDayMatch;
+        // A favorites-only cache must not receive a fez the user hasn't favorited.
+        const favoriteMatch = !listParamsAreFavoritesOnly(params) || !!updatedFez.members?.isFavorite;
+        return listParamsIncludeFez(params, updatedFez, fezCruiseDay) && favoriteMatch;
       };
 
       // LFG join: move from /fez/open to /fez/joined, preserving endpoint sort behavior.
@@ -353,7 +402,13 @@ export const useFezCacheReducer = () => {
             const params = query.queryKey[1] as Record<string, unknown> | undefined;
             const cruiseDayParam = params?.cruiseday as number | string | undefined;
             if (cruiseDayParam === undefined) return false;
-            return Number(cruiseDayParam) + 1 === fezCruiseDay;
+            // A matching day is not enough to earn an insert. These list caches are also scoped by
+            // fez type (the LFG lists exclude private events and vice versa) and by ?favorite=true,
+            // so a private event would otherwise appear in the owned-LFG list for its day until the
+            // next refetch. Removal (wrongDayPredicate) stays day-only: dropping an entry from a
+            // cache that should never have held it is correct either way.
+            const favoriteMatch = !listParamsAreFavoritesOnly(params) || !!updatedFez.members?.isFavorite;
+            return listParamsIncludeFez(params, updatedFez, fezCruiseDay) && favoriteMatch;
           };
 
           queryClient.setQueriesData<InfiniteData<FezListData>>(
@@ -453,7 +508,7 @@ export const useFezCacheReducer = () => {
           },
         );
       }
-      queryClient.setQueryData<InfiniteData<FezData>>([`/fez/${fezData.fezID}`], oldData => {
+      queryClient.setQueryData<InfiniteData<FezData>>(fezDetailQueryKey(fezData.fezID), oldData => {
         if (oldData) {
           return oldData;
         }
@@ -463,7 +518,7 @@ export const useFezCacheReducer = () => {
         };
       });
     },
-    [queryClient, computeCruiseDay],
+    [queryClient, computeCruiseDay, fezDetailQueryKey],
   );
 
   /**
@@ -631,7 +686,7 @@ export const useFezCacheReducer = () => {
         return;
       }
       updateFezDetailCache(fezID, () => updatedFez);
-      queryClient.setQueryData<InfiniteData<FezData>>([`/fez/${fezID}`], oldData => {
+      queryClient.setQueryData<InfiniteData<FezData>>(fezDetailQueryKey(fezID), oldData => {
         if (oldData) {
           return oldData;
         }
@@ -641,7 +696,109 @@ export const useFezCacheReducer = () => {
         };
       });
     },
-    [queryClient, updateMembershipInListCaches, updateFezDetailCache],
+    [queryClient, updateMembershipInListCaches, updateFezDetailCache, fezDetailQueryKey],
+  );
+
+  /**
+   * Find a list-shaped FezData for this fez in the caches, for inserting into a list cache.
+   * Prefers list caches (already list-shaped) over the detail cache, and strips members.posts
+   * from a detail copy so list caches stay light. Undefined when the fez isn't cached at all.
+   */
+  const findCachedListFez = useCallback(
+    (fezID: string): FezData | undefined => {
+      const matchesFez = (f: FezData) => f.fezID === fezID;
+      for (const keyPrefix of fezListKeyPrefixes) {
+        for (const [, data] of queryClient.getQueriesData<InfiniteData<FezListData>>({queryKey: [keyPrefix]})) {
+          const found = data ? findInPages(data, fezListAccessor, matchesFez) : undefined;
+          if (found) {
+            return found;
+          }
+        }
+      }
+      for (const [, data] of queryClient.getQueriesData<InfiniteData<FezData>>({queryKey: [`/fez/${fezID}`]})) {
+        const detailFez = data?.pages[0];
+        if (detailFez) {
+          return detailFez.members?.posts
+            ? {...detailFez, members: {...detailFez.members, posts: undefined}}
+            : detailFez;
+        }
+      }
+      return undefined;
+    },
+    [queryClient],
+  );
+
+  /**
+   * Toggle isFavorite on a fez in all caches. The favorite mutation returns void,
+   * so we optimistically flip the flag. Unlike mute, no endpoint sorts by favorite,
+   * so every list cache gets a plain in-place update.
+   *
+   * Favoriting also changes *membership* of any favorites-only cache (?favorite=true on
+   * /fez/joined or /fez/owner), not just a field: the fez has to be added to or removed from
+   * those lists. Both directions are done locally from the copy we already hold, so no refetch
+   * is needed. This mirrors how useForumCacheReducer's updateToggleListCache maintains
+   * /forum/favorites.
+   *
+   * Favoriting does NOT move the fez within any list: swiftarr's favoriteAddHandler saves only
+   * the FezParticipant pivot, never the FriendlyFez, so updatedAt is untouched and no endpoint
+   * sorts on isFavorite. The insert below is therefore placement by the fez's existing sort key,
+   * not a re-sort. /fez/joined is updatedAt-descending, which lastModificationTime mirrors, so a
+   * sorted insert lands where the server would put it. /fez/owner is createdAt-descending, which
+   * FezData cannot express, so it prepends -- the same concession createFez documents.
+   */
+  const updateFavorite = useCallback(
+    (fezID: string, isFavorite: boolean) => {
+      for (const keyPrefix of fezListKeyPrefixes) {
+        queryClient.cancelQueries({queryKey: [keyPrefix]});
+      }
+      queryClient.cancelQueries({queryKey: [`/fez/${fezID}`]});
+
+      const favoriteUpdater = (fez: FezData): FezData => ({
+        ...fez,
+        members: fez.members ? {...fez.members, isFavorite} : fez.members,
+      });
+
+      updateFezInAllListCaches(fezID, favoriteUpdater);
+      updateFezDetailCache(fezID, favoriteUpdater);
+
+      // Read the fez back only when favoriting, and after the updates above so the copy we
+      // insert already carries isFavorite: true.
+      const cachedFez = isFavorite ? findCachedListFez(fezID) : undefined;
+      const insertFez = cachedFez ? favoriteUpdater(cachedFez) : undefined;
+      const insertCruiseDay = insertFez ? computeCruiseDay(insertFez.startTime) : undefined;
+
+      for (const keyPrefix of favoriteFilterableKeyPrefixes) {
+        queryClient.setQueriesData<InfiniteData<FezListData>>(
+          {
+            queryKey: [keyPrefix],
+            predicate: query => {
+              const params = query.queryKey[1] as Record<string, unknown> | undefined;
+              if (!listParamsAreFavoritesOnly(params)) {
+                return false;
+              }
+              // Removal applies to every favorites-only cache; insertion only to the ones
+              // whose other filters (type, cruise day) this fez also satisfies.
+              return !isFavorite || (!!insertFez && listParamsIncludeFez(params, insertFez, insertCruiseDay));
+            },
+          },
+          oldData => {
+            if (!oldData) {
+              return oldData;
+            }
+            if (!isFavorite) {
+              return filterItemsFromPages(oldData, fezListAccessor, entry => entry.fezID !== fezID);
+            }
+            if (!insertFez || findInPages(oldData, fezListAccessor, f => f.fezID === fezID)) {
+              return oldData;
+            }
+            return keyPrefix === '/fez/joined'
+              ? sortedInsertIntoPages(oldData, fezListAccessor, insertFez, joinedSortComparator)
+              : insertAtEdge(oldData, fezListAccessor, insertFez, 'start');
+          },
+        );
+      }
+    },
+    [queryClient, updateFezInAllListCaches, updateFezDetailCache, findCachedListFez, computeCruiseDay],
   );
 
   /**
@@ -651,6 +808,10 @@ export const useFezCacheReducer = () => {
    */
   const updateMute = useCallback(
     (fezID: string, isMuted: boolean) => {
+      for (const keyPrefix of fezListKeyPrefixes) {
+        queryClient.cancelQueries({queryKey: [keyPrefix]});
+      }
+      queryClient.cancelQueries({queryKey: [`/fez/${fezID}`]});
       const muteUpdater = (fez: FezData): FezData => ({
         ...fez,
         members: fez.members ? {...fez.members, isMuted} : fez.members,
@@ -716,16 +877,21 @@ export const useFezCacheReducer = () => {
    * may be stale but we don't have the updated data locally.
    * refetchType 'all' also refetches inactive observers so already-fetched
    * screens (Day Planner, seamail/LFG lists) pick up addedTo/canceled events
-   * without a manual refresh.
+   * without a manual refresh. The predicate excludes queries with no queryFn
+   * (persisted-cache entries whose screen hasn't been mounted this session)
+   * since react-query has nothing to refetch them with and throws otherwise.
    * TODO: derive the intended data from the socket payload.
    */
   const invalidateFez = useCallback(
     (fezID?: string) => {
+      const hasQueryFn: InvalidateQueryFilters['predicate'] = query => typeof query.options.queryFn === 'function';
       const invalidations = fezListKeyPrefixes.map(key =>
-        queryClient.invalidateQueries({queryKey: [key], refetchType: 'all'}),
+        queryClient.invalidateQueries({queryKey: [key], predicate: hasQueryFn, refetchType: 'all'}),
       );
       if (fezID) {
-        invalidations.push(queryClient.invalidateQueries({queryKey: [`/fez/${fezID}`], refetchType: 'all'}));
+        invalidations.push(
+          queryClient.invalidateQueries({queryKey: [`/fez/${fezID}`], predicate: hasQueryFn, refetchType: 'all'}),
+        );
       }
       return Promise.all(invalidations);
     },
@@ -739,6 +905,8 @@ export const useFezCacheReducer = () => {
     deleteFez,
     invalidateFez,
     markRead,
+    primeFezDetail,
+    updateFavorite,
     updateFez,
     updateFezModeration,
     updateFezVisibility,

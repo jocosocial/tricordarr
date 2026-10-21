@@ -17,6 +17,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useRefresh} from '#src/Hooks/useRefresh';
@@ -25,7 +26,8 @@ import {calcCruiseDayTime, getEventTimeString} from '#src/Libraries/DateTime';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventFeedbackMarkMutation} from '#src/Queries/Admin/EventFeedbackMutations';
 import {useEventFeedbackReportQuery} from '#src/Queries/Admin/EventFeedbackQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminEventFeedbackReportScreen>;
 
@@ -33,10 +35,13 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminE
  * Full details of a single shadow event feedback report.
  */
 export const AdminEventFeedbackReportScreen = (props: Props) => {
+  const {hasTwitarrTeam} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'twitarrteam'}>
-      <AdminEventFeedbackReportScreenInner {...props} />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasTwitarrTeam}>
+        <AdminEventFeedbackReportScreenInner {...props} />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 
@@ -88,7 +93,11 @@ const AdminEventFeedbackReportScreenInner = ({navigation, route}: Props) => {
   }, [getNavButtons, navigation]);
 
   if (isLoading && !report) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   if (!report) {

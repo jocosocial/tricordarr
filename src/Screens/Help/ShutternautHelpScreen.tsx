@@ -23,8 +23,9 @@ export const ShutternautHelpScreen = () => {
         <HelpChapterTitleView title={'How to Use'}>
           <HelpTopicView title={'Filters'} icon={AppIcons.filter}>
             In the Schedule screen you can filter events based on whether they need a photographer. You can also view
-            what events you are photographing. Filters are mutually exclusive so you can only have one active
-            Shutternaut filter at a time.
+            what events you are photographing. Photographer filters are mutually exclusive with each other, but combine
+            with the event type and favorites filters to narrow the Events source further, e.g. "Gaming" + "Needs
+            Photographer" shows only gaming events that still need one.
           </HelpTopicView>
           <HelpTopicView icon={AppIcons.shutternaut}>
             Long-press an event or open the event details screen to mark yourself as a photographer for the event.
@@ -50,7 +51,13 @@ export const ShutternautHelpScreen = () => {
           <HelpTopicView>
             You can post up to eight (8) images in a single forum post. There is a file size limit of 20MB per photo.
           </HelpTopicView>
-          <HelpTopicView />
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Coverage Report'}>
+          <HelpTopicView>
+            Shutternaut Managers can view a cruise-wide photography coverage report. It lists every event that has been
+            marked as needing a photographer, that already has a Shutternaut assigned, or both. Events nobody has marked
+            are left out.
+          </HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>

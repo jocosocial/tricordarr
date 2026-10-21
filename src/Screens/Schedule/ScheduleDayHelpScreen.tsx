@@ -25,6 +25,17 @@ export const ScheduleDayHelpScreen = () => {
             If the icon is in blue a filter is applied. Long-press to clear any applied filters, or press once to open
             the menu and select/deselect the filter you wish to apply.
           </HelpTopicView>
+          <HelpTopicView title={'Sources'}>
+            The top section of the filter menu picks which lists contribute to the schedule: Events, Private Events, and
+            any LFGs you've joined, own, or that are open to you. Selecting more than one adds them together, e.g.
+            Private Events + Joined LFGs shows both.
+          </HelpTopicView>
+          <HelpTopicView>
+            The sections below narrow a single source instead of adding to the list: Favorites, event type, and
+            photographer status all narrow Events, while Unread narrows Private Events. Picking a narrowing filter
+            automatically selects the source it applies to, and these combine with each other, e.g. Favorites + "Shadow
+            Event" shows only favorited shadow events.
+          </HelpTopicView>
           <ScheduleDayButtonHelpTopicView />
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Floating Action Button'}>

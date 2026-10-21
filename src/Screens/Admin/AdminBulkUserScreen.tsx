@@ -13,6 +13,7 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertApplyBulkUser} from '#src/Libraries/Alerts/AdminAlerts';
@@ -25,7 +26,8 @@ import {
   useBulkUserUploadMutation,
 } from '#src/Queries/Admin/BulkUserMutations';
 import {useBulkUserVerifyQuery} from '#src/Queries/Admin/BulkUserQueries';
-import {AdminAccessScreen} from '#src/Screens/Checkpoint/AdminAccessScreen';
+import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
+import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
 import {BulkUserUpdateCounts, BulkUserUpdateVerificationData} from '#src/Structs/AdminControllerStructs';
 
 const logger = createLogger('AdminBulkUserScreen.tsx');
@@ -33,10 +35,13 @@ const logger = createLogger('AdminBulkUserScreen.tsx');
 const isPickerCancelled = (error: unknown) => error instanceof Error && /cancell?ed/i.test(error.message);
 
 export const AdminBulkUserScreen = () => {
+  const {hasAdmin} = usePrivilege();
   return (
-    <AdminAccessScreen minAccess={'admin'}>
-      <AdminBulkUserScreenInner />
-    </AdminAccessScreen>
+    <LoggedInScreen>
+      <NoAccessScreen hasAccess={hasAdmin}>
+        <AdminBulkUserScreenInner />
+      </NoAccessScreen>
+    </LoggedInScreen>
   );
 };
 

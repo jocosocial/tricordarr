@@ -39,7 +39,11 @@ const ModeratorLogScreenInner = () => {
   const actions = useMemo(() => data?.pages.flatMap(page => page.actions) ?? [], [data]);
 
   if (isLoading || !data) {
-    return <LoadingView refreshing={refreshing} onRefresh={onRefresh} />;
+    return (
+      <AppView>
+        <LoadingView refreshing={refreshing} onRefresh={onRefresh} />
+      </AppView>
+    );
   }
 
   return (

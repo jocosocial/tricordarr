@@ -72,6 +72,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Configure periodic notification updates that happen while the app is running.'}
               navComponent={SettingsStackScreenComponents.notificationPollerSettingsScreen}
             />
+            <NavigationListItem
+              title={'Notification Log'}
+              description={'A record of every event this device received from the Twitarr server.'}
+              navComponent={CommonStackComponents.notificationLogScreen}
+            />
           </ListSection>
           <Divider bold={true} />
           <ListSection>
@@ -165,6 +170,11 @@ export const SettingsScreen = ({navigation}: Props) => {
                   title={'Sockets'}
                   description={'Manage websocket internals.'}
                   navComponent={SettingsStackScreenComponents.socketSettings}
+                />
+                <NavigationListItem
+                  title={'Checkpoints'}
+                  description={'Preview each of the checkpoint screens.'}
+                  navComponent={SettingsStackScreenComponents.checkpointSettingScreen}
                 />
                 <NavigationListItem
                   title={'Out-of-box Experience'}

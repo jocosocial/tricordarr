@@ -17,6 +17,8 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {defaultAppConfig} from '#src/Libraries/AppConfig';
+import {flushLogs, getCurrentLogFile} from '#src/Libraries/Logger';
+import {saveTextToPickedDirectory} from '#src/Libraries/Storage/saveTextToPickedDirectory';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
 
 interface CriticalErrorViewProps {
@@ -38,6 +40,8 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const [showSessions, setShowSessions] = React.useState(false);
   const [sessionsJson, setSessionsJson] = React.useState<string | null>(null);
   const [isLoadingSessions, setIsLoadingSessions] = React.useState(false);
+  const [isSavingLogs, setIsSavingLogs] = React.useState(false);
+  const [saveLogsMessage, setSaveLogsMessage] = React.useState<string | null>(null);
   const {signOut, clearAllSessions} = useSession();
   const {updateAppConfig} = useConfig();
   const {setString: copyToClipboard} = useClipboard();
@@ -45,6 +49,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const styles = StyleSheet.create({
     screen: {
       ...commonStyles.flex,
+      backgroundColor: theme.colors.background,
       paddingTop: insets.top,
       paddingBottom: insets.bottom,
     },
@@ -99,6 +104,38 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
     updateAppConfig(defaultAppConfig);
   };
 
+  /**
+   * Saves the current log file directly, bypassing the download bottom sheet:
+   * its BottomSheetModalProvider lives inside ShellProvider, which is a child of
+   * the error boundary this view is a fallback for, so that context is unavailable here.
+   */
+  const handleSaveLogs = async () => {
+    setIsSavingLogs(true);
+    setSaveLogsMessage(null);
+    try {
+      await flushLogs();
+
+      const logFile = getCurrentLogFile();
+      if (!logFile.exists || !logFile.info().size) {
+        setSaveLogsMessage('No log files found to export.');
+        return;
+      }
+
+      const result = await saveTextToPickedDirectory({
+        baseName: `tricordarr-${Math.floor(Date.now() / 1000)}`,
+        mimeType: 'text/plain',
+        contents: await logFile.text(),
+      });
+      if (result === 'saved') {
+        setSaveLogsMessage('Log file saved.');
+      }
+    } catch (error) {
+      setSaveLogsMessage(`Could not prepare log file: ${error}`);
+    } finally {
+      setIsSavingLogs(false);
+    }
+  };
+
   return (
     <View style={styles.screen}>
       <ScrollingContentView isStack={true} overScroll={true}>
@@ -121,6 +158,20 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
             onPress={() => props.resetError()}
           />
         </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton
+            testID={'saveLogs-button'}
+            buttonColor={theme.colors.twitarrNeutralButton}
+            buttonText={'Save Logs'}
+            onPress={handleSaveLogs}
+            isLoading={isSavingLogs}
+          />
+        </PaddedContentView>
+        {saveLogsMessage && (
+          <PaddedContentView>
+            <Text variant={'labelSmall'}>{saveLogsMessage}</Text>
+          </PaddedContentView>
+        )}
         <PaddedContentView>
           <PrimaryActionButton
             testID={'clearQueryCache-button'}

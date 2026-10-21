@@ -2,10 +2,10 @@ import React, {useMemo} from 'react';
 import {StyleSheet} from 'react-native';
 
 import {ContentPostImageThumb} from '#src/Components/Images/ContentPostImageThumb';
+import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ContentPostImagesProps {
   images: string[];
@@ -21,10 +21,11 @@ export const ContentPostImages = ({images, messageOnRight}: ContentPostImagesPro
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
+  const {fromFileName} = useAppImage();
 
   const viewerImages = useMemo(
-    () => images.map(fileName => AppImageMetaData.fromFileName(fileName, appConfig, serverUrl)),
-    [images, appConfig, serverUrl],
+    () => images.map(fileName => fromFileName(fileName, appConfig, serverUrl)),
+    [images, appConfig, serverUrl, fromFileName],
   );
 
   const styles = useMemo(

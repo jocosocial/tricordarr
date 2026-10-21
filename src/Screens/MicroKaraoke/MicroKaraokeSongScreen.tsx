@@ -39,7 +39,11 @@ const MicroKaraokeSongScreenInner = ({route}: Props) => {
   const {commonStyles} = useStyles();
 
   if (!data) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const filePaths = data.snippetVideoURLs.map((url: string) => {

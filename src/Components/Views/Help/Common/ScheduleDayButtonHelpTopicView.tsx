@@ -1,9 +1,14 @@
-import React from 'react';
+import React, {useCallback} from 'react';
+import {useSharedValue} from 'react-native-reanimated';
 
 import {ScheduleHeaderDayButton} from '#src/Components/Buttons/ScheduleHeaderDayButton';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 
 export const ScheduleDayButtonHelpTopicView = () => {
+  // Illustrative only - the button is disabled, and day 0 keeps it in its unselected colours.
+  const liveSelectedDay = useSharedValue(-1);
+  const onSelect = useCallback(() => {}, []);
+
   return (
     <HelpTopicView
       title={'Now™'}
@@ -13,7 +18,8 @@ export const ScheduleDayButtonHelpTopicView = () => {
             date: new Date(),
             cruiseDay: 0,
           }}
-          onPress={() => {}}
+          liveSelectedDay={liveSelectedDay}
+          onSelect={onSelect}
           disabled={true}
         />
       }>

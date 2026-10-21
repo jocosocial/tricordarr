@@ -24,6 +24,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
+import {FezVisibility} from '#src/Enums/FezVisibility';
 import {AppIcons} from '#src/Enums/Icons';
 import {getParticipantLabel} from '#src/Hooks/Fez/useFezData';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
@@ -106,7 +107,11 @@ export const ScheduleItemScreenBase = ({
   };
 
   if (!eventData) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const getInfoContent = () => {
@@ -220,6 +225,13 @@ export const ScheduleItemScreenBase = ({
                     description={FezType.getLabel(eventData.fezType)}
                     title={'Type'}
                   />
+                  {FezVisibility.isMeaningful(eventData.fezType) && FezVisibility.getLabel(eventData.visibility) && (
+                    <DataFieldListItem
+                      icon={AppIcons.hide}
+                      description={FezVisibility.getLabel(eventData.visibility)}
+                      title={'Visibility'}
+                    />
+                  )}
                   {eventData.fezType !== FezType.personalEvent && (
                     <DataFieldListItem
                       title={'Hosted By'}

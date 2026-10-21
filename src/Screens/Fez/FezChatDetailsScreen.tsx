@@ -75,7 +75,11 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   }, [getHeaderRight, navigation]);
 
   if (!fezData) {
-    return <LoadingView />;
+    return (
+      <AppView>
+        <LoadingView />
+      </AppView>
+    );
   }
 
   const manageUsers = fezData.fezType === FezType.open && isOwner;

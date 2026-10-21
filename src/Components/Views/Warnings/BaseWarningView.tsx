@@ -1,9 +1,10 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle} from 'react-native';
-import {Text} from 'react-native-paper';
+import {IconButton, Text} from 'react-native-paper';
 import {MD3TypescaleKey} from 'react-native-paper/src/types';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 
 export type WarningViewVariant = 'error' | 'negative' | 'neutral';
 
@@ -19,6 +20,10 @@ interface BaseWarningViewProps {
   containerStyle?: ViewStyle;
   titleStyle?: TextStyle;
   messageStyle?: TextStyle;
+  /** When provided, renders a dismiss ("X") button in the top-right corner that calls this on press. */
+  onDismiss?: () => void;
+  /** Color of the dismiss icon. Defaults to the resolved title/message text color. */
+  dismissIconColor?: string;
 }
 
 /**
@@ -37,6 +42,8 @@ export const BaseWarningView = ({
   containerStyle,
   titleStyle,
   messageStyle,
+  onDismiss,
+  dismissIconColor,
 }: BaseWarningViewProps) => {
   const {commonStyles} = useStyles();
 
@@ -55,6 +62,7 @@ export const BaseWarningView = ({
         ...commonStyles.alignItemsCenter,
         ...commonStyles.paddingVerticalSmall,
         ...containerStyle,
+        position: 'relative',
       },
       title: {
         ...textStyle,
@@ -68,6 +76,12 @@ export const BaseWarningView = ({
         ...commonStyles.textCenter,
         ...commonStyles.fullWidth,
         ...messageStyle,
+      },
+      dismissButton: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        margin: 0,
       },
     });
   }, [commonStyles, containerStyle, messageStyle, titleStyle, variant]);
@@ -85,9 +99,23 @@ export const BaseWarningView = ({
       <Text variant={resolvedMessageVariant} style={styles.message}>
         {message}
       </Text>
+      {onDismiss ? (
+        <IconButton
+          icon={AppIcons.dismissCard}
+          size={18}
+          style={styles.dismissButton}
+          iconColor={dismissIconColor ?? (styles.message.color as string | undefined)}
+          onPress={onDismiss}
+        />
+      ) : null}
     </>
   );
 
+  // Only wrap in TouchableOpacity when there's an actual onPress/onLongPress to serve.
+  // Doing this unconditionally would give purely informational banners (e.g. ones that
+  // only set onDismiss) a misleading press-opacity animation, expose them to screen
+  // readers as tappable when they aren't, and add a second, functionless touch target
+  // competing with the nested dismiss IconButton.
   if (isPressable) {
     return (
       <TouchableOpacity disabled={disabled} style={styles.container} onPress={onPress} onLongPress={onLongPress}>
