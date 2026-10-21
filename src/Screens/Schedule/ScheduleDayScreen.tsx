@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -14,7 +14,6 @@ import {ScheduleEventFilterMenu} from '#src/Components/Menus/Schedule/ScheduleEv
 import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
@@ -27,7 +26,7 @@ import {useCruiseDayPicker} from '#src/Hooks/useCruiseDayPicker';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToNow} from '#src/Hooks/useScrollToNow';
 import {createLogger} from '#src/Libraries/Logger';
-import {buildScheduleList} from '#src/Libraries/Schedule';
+import {buildScheduleList, resolveScheduleSources} from '#src/Libraries/Schedule';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
@@ -69,10 +68,10 @@ const ScheduleDayScreenActual = ({
     selectedCruiseDay: contextCruiseDay,
     setSelectedCruiseDay: setContextCruiseDay,
   });
-  const {appConfig} = useConfig();
   const {preRegistrationMode} = usePreRegistration();
   const {isLoggedIn} = useSession();
-  const {scheduleFilterSettings, setEventPersonalFilter, setEventPersonalUnreadFilter} = useScheduleFilter();
+  const {scheduleFilterSettings, setEventSources, setEventPersonalUnreadFilter} = useScheduleFilter();
+  const scheduleSources = useMemo(() => resolveScheduleSources(scheduleFilterSettings), [scheduleFilterSettings]);
 
   const {
     data: eventData,
@@ -94,7 +93,7 @@ const ScheduleDayScreenActual = ({
     endpoint: 'open',
     hidePast: false,
     options: {
-      enabled: appConfig.schedule.eventsShowOpenLfgs && !preRegistrationMode && isLoggedIn,
+      enabled: scheduleSources.has('lfgOpen') && !preRegistrationMode && isLoggedIn,
     },
   });
   const {
@@ -109,7 +108,7 @@ const ScheduleDayScreenActual = ({
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: appConfig.schedule.eventsShowJoinedLfgs && !preRegistrationMode && isLoggedIn,
+      enabled: scheduleSources.has('lfgJoined') && !preRegistrationMode && isLoggedIn,
     },
   });
   const {
@@ -124,7 +123,7 @@ const ScheduleDayScreenActual = ({
     endpoint: 'owner',
     hidePast: false,
     options: {
-      enabled: !preRegistrationMode && isLoggedIn,
+      enabled: scheduleSources.has('lfgOwned') && !preRegistrationMode && isLoggedIn,
     },
   });
   const {
@@ -144,12 +143,9 @@ const ScheduleDayScreenActual = ({
     // and subject to correct refetching.
     // https://github.com/jocosocial/tricordarr/issues/253
     hidePast: false,
-    onlyNew:
-      scheduleFilterSettings.eventPersonalUnreadFilter && !scheduleFilterSettings.eventPersonalFilter
-        ? true
-        : undefined,
+    onlyNew: scheduleFilterSettings.eventPersonalUnreadFilter ? true : undefined,
     options: {
-      enabled: !preRegistrationMode && isLoggedIn,
+      enabled: scheduleSources.has('privateEvents') && !preRegistrationMode && isLoggedIn,
     },
   });
 
@@ -159,10 +155,19 @@ const ScheduleDayScreenActual = ({
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
       let refreshes: Promise<any>[] = [refetchEvents()];
-      // LFGs and personal events require an account; skip refetching them entirely while logged out.
+      // LFGs and personal events require an account; skip refetching a source entirely while
+      // it isn't enabled, mirroring the query `enabled` gates above.
       if (!preRegistrationMode && isLoggedIn) {
-        refreshes.push(refetchLfgJoined(), refetchLfgOwned(), refetchPersonalEvents());
-        if (appConfig.schedule.eventsShowOpenLfgs) {
+        if (scheduleSources.has('lfgJoined')) {
+          refreshes.push(refetchLfgJoined());
+        }
+        if (scheduleSources.has('lfgOwned')) {
+          refreshes.push(refetchLfgOwned());
+        }
+        if (scheduleSources.has('privateEvents')) {
+          refreshes.push(refetchPersonalEvents());
+        }
+        if (scheduleSources.has('lfgOpen')) {
           refreshes.push(refetchLfgOpen());
         }
       }
@@ -175,7 +180,7 @@ const ScheduleDayScreenActual = ({
       refetchPersonalEvents,
       preRegistrationMode,
       isLoggedIn,
-      appConfig.schedule.eventsShowOpenLfgs,
+      scheduleSources,
     ]),
     isRefreshing: isFetching,
   });
@@ -215,9 +220,9 @@ const ScheduleDayScreenActual = ({
    */
   useEffect(() => {
     if (setPersonalFilterInitial !== undefined) {
-      setEventPersonalFilter(setPersonalFilterInitial);
+      setEventSources(setPersonalFilterInitial ? ['privateEvents'] : []);
     }
-  }, [setPersonalFilterInitial, setEventPersonalFilter]);
+  }, [setPersonalFilterInitial, setEventSources]);
 
   /**
    * This operates more like an intent than a state.
@@ -226,9 +231,12 @@ const ScheduleDayScreenActual = ({
    */
   useEffect(() => {
     if (onlyNewInitial !== undefined) {
+      // Reset to an explicit Private Events source first; setEventPersonalUnreadFilter(true)
+      // then adds it back via the same rule the filter menu uses, keeping this one code path.
+      setEventSources([]);
       setEventPersonalUnreadFilter(onlyNewInitial);
     }
-  }, [onlyNewInitial, setEventPersonalUnreadFilter]);
+  }, [onlyNewInitial, setEventSources, setEventPersonalUnreadFilter]);
 
   useEffect(() => {
     logger.debug('Starting buildScheduleList useEffect.');
@@ -254,7 +262,7 @@ const ScheduleDayScreenActual = ({
 
   useEffect(() => {
     logger.debug('Firing pagination useEffect');
-    if (appConfig.schedule.eventsShowOpenLfgs && openHasNextPage) {
+    if (scheduleSources.has('lfgOpen') && openHasNextPage) {
       openFetchNextPage();
     }
     if (joinedHasNextPage) {
@@ -267,7 +275,7 @@ const ScheduleDayScreenActual = ({
       personalFetchNextPage();
     }
   }, [
-    appConfig.schedule.eventsShowOpenLfgs,
+    scheduleSources,
     joinedFetchNextPage,
     joinedHasNextPage,
     openFetchNextPage,
