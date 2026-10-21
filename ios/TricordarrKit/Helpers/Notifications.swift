@@ -230,6 +230,7 @@ import UserNotifications
 	   - type: String value of `src/Structs/SocketStructs.ts`.
 	   - url: A URL string associated with the content. This is typically used for deep linking.
 	   - markAsReadUrl: An optional URL string used to mark the content as read when acted upon.
+	   - secondaryContentID: An optional ID of a related parent object (the Forum ID for forum post notifications), used to dismiss related notifications.
 	 */
 	static func generateContentNotification(
 		_ id: String = UUID().uuidString,
@@ -237,10 +238,16 @@ import UserNotifications
 		body: String,
 		type: NotificationTypeData,
 		url: String,
-		markAsReadUrl: String? = nil
+		markAsReadUrl: String? = nil,
+		secondaryContentID: String? = nil
 	) {
 		// `userInfo` is the equivant of `data` in Notifee
-		let userInfo = UserInfoData(type: type, url: url, markAsReadUrl: markAsReadUrl)
+		let userInfo = UserInfoData(
+			type: type,
+			url: url,
+			markAsReadUrl: markAsReadUrl,
+			secondaryContentID: secondaryContentID
+		)
 
 		// Construct the notification payload
 		let content = UNMutableNotificationContent()

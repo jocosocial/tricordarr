@@ -5,7 +5,8 @@ import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import type {$RemoveChildren} from 'react-native-paper/lib/typescript/types';
 
 import {EventType} from '#src/Enums/EventType';
-import {FezType} from '#src/Enums/FezType';
+import {ScheduleSourceKey} from '#src/Enums/ScheduleSource';
+import {ShutternautFilterKey} from '#src/Enums/ShutternautFilter';
 
 export type StringOrError = string | Error | undefined;
 
@@ -30,17 +31,14 @@ export type CruiseDayTime = {
 };
 
 export type ScheduleFilterSettings = {
+  /** Sources to include. Empty = no restriction; resolveScheduleSources() falls back to config. */
+  eventSources: ScheduleSourceKey[];
   eventTypeFilter?: keyof typeof EventType;
-  eventFavoriteFilter?: boolean;
-  lfgTypeFilter?: keyof typeof FezType;
-  showJoinedLfgs?: boolean;
-  showOpenLfgs?: boolean;
-  eventPersonalFilter?: boolean;
-  eventLfgJoinedFilter?: boolean;
-  eventLfgOwnedFilter?: boolean;
-  eventLfgOpenFilter?: boolean;
-  eventShutternautFilter?: string;
+  eventFavoriteFilter: boolean;
+  eventShutternautFilter?: ShutternautFilterKey;
   eventPersonalUnreadFilter: boolean;
+  showJoinedLfgs: boolean;
+  showOpenLfgs: boolean;
 };
 
 export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;
@@ -101,6 +99,9 @@ export interface FlatListSeparatorProps<TItem> {
 export type ScheduleFlatListSeparator = 'day' | 'time' | 'none';
 
 export type FezListEndpoints = 'open' | 'joined' | 'owner' | 'former';
+
+/** The LFG list sources a user can pick between in the filter menu. 'former' is a separate screen. */
+export type LfgListSource = Exclude<FezListEndpoints, 'former'>;
 
 export interface WithFezID {
   fezID: string;

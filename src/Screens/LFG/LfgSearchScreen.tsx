@@ -13,8 +13,17 @@ import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackCo
 import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
+import {FezListEndpoints} from '#src/Types';
 
 type Props = StackScreenProps<LfgStackParamList, LfgStackComponents.lfgSearchScreen>;
+
+// Matches the labels in LfgFilterMenu's source group.
+const sourceLabels: Record<FezListEndpoints, string> = {
+  open: 'Find',
+  joined: 'Joined',
+  owner: 'Owned',
+  former: 'Former',
+};
 
 export const LfgSearchScreen = (props: Props) => {
   return (
@@ -29,8 +38,7 @@ export const LfgSearchScreen = (props: Props) => {
 const LfgSearchScreenInner = ({navigation, route}: Props) => {
   const getTitle = () => {
     if (route.params.endpoint) {
-      const title = route.params.endpoint.charAt(0).toUpperCase() + route.params.endpoint.slice(1);
-      return `Search ${title} LFGs`;
+      return `Search ${sourceLabels[route.params.endpoint]} LFGs`;
     }
     return 'Search LFGs';
   };
