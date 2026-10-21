@@ -7,7 +7,6 @@ import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {LogLevel} from '#src/Libraries/Logger/types';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
-import {FezListEndpoints} from '#src/Types';
 
 export type PushNotificationConfig = {
   [_key in keyof typeof NotificationTypeData]: boolean;
@@ -43,7 +42,6 @@ export interface ScheduleConfig {
   eventsShowOpenLfgs: boolean;
   hidePastLfgs: boolean;
   enableLateDayFlip: boolean;
-  defaultLfgList: FezListEndpoints;
   overlapExcludeDurationHours: number;
   compactThemeEvents: boolean;
   timeZoneLabelMode: TimeZoneLabelMode;
@@ -161,7 +159,6 @@ export const defaultAppConfig: AppConfig = {
     enableLateDayFlip: true,
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
-    defaultLfgList: 'open',
     overlapExcludeDurationHours: 4,
     compactThemeEvents: true,
     timeZoneLabelMode: TimeZoneLabelMode.offset,

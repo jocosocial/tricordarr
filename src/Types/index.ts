@@ -102,6 +102,9 @@ export type ScheduleFlatListSeparator = 'day' | 'time' | 'none';
 
 export type FezListEndpoints = 'open' | 'joined' | 'owner' | 'former';
 
+/** The LFG list sources a user can pick between in the filter menu. 'former' is a separate screen. */
+export type LfgListSource = Exclude<FezListEndpoints, 'former'>;
+
 export interface WithFezID {
   fezID: string;
 }

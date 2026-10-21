@@ -30,6 +30,7 @@ interface FezListQueryOptions {
   excludeFezType?: FezType | FezType[];
   options?: TokenAuthPaginationQueryOptionsTypeV2<FezListData>;
   lfgTypesOnly?: boolean;
+  /** Only valid for the 'joined' and 'owner' endpoints; swiftarr ignores it elsewhere. */
   onlyNew?: boolean;
   /** Only valid for the 'joined' and 'owner' endpoints; swiftarr ignores it elsewhere. */
   favorite?: boolean;
