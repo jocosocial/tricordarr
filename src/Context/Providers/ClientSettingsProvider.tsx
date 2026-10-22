@@ -1,5 +1,5 @@
 import moment from 'moment-timezone';
-import React, {PropsWithChildren, useCallback, useMemo} from 'react';
+import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 import URLParse from 'url-parse';
 
 import {
@@ -11,6 +11,8 @@ import {
 } from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {createLogger} from '#src/Libraries/Logger';
 import {useClientSettingsQuery} from '#src/Queries/Client/ClientQueries';
@@ -64,8 +66,14 @@ export const buildCruiseStartDate = (dateStr: string, portTimeZoneID: string): D
 
 export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
   const {appConfig, updateAppConfig} = useConfig();
-  const {data: clientSettings, refetch} = useClientSettingsQuery();
+  const {data: clientSettings, refetch, isFetching} = useClientSettingsQuery();
   const {hasShutternaut} = useRoles();
+  const {currentSession, updateSession} = useSession();
+  const {serverUrl, setServerSwitchInProgress} = useSwiftarrQueryClient();
+  // The server URL a switch is moving to, pending application of its client settings. A target
+  // URL rather than a boolean: renders between sign-out and the URL change are still keyed to the
+  // old server and must not complete the switch.
+  const [serverSwitchTarget, setServerSwitchTarget] = useState<string>();
 
   const maxForumPostImages = hasShutternaut
     ? SHUTTERNAUT_MAX_FORUM_POST_IMAGES
@@ -95,9 +103,62 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
     [appConfig, refetch, updateAppConfig],
   );
 
+  /**
+   * Applies server-driven client settings to app state. The server's enablePreregistration is the
+   * source of truth for the session's preRegistrationMode.
+   */
+  const applyClientSettings = useCallback(
+    async (data: ClientSettingsData) => {
+      if (currentSession) {
+        await updateSession(currentSession.sessionID, {preRegistrationMode: data.enablePreregistration});
+      }
+      await updateClientSettings(data);
+    },
+    [currentSession, updateSession, updateClientSettings],
+  );
+
+  /**
+   * Starts a server switch to serverUrl. Suppresses the generic error Snackbar until the new
+   * server's client settings are applied (or SwiftarrQueryClientProvider's grace period ends it).
+   */
+  const beginServerSwitch = useCallback(
+    (url: string) => {
+      setServerSwitchTarget(url);
+      setServerSwitchInProgress(true);
+    },
+    [setServerSwitchInProgress],
+  );
+
+  /**
+   * Abandons a pending server switch and ends the error suppression.
+   */
+  const cancelServerSwitch = useCallback(() => {
+    setServerSwitchTarget(undefined);
+    setServerSwitchInProgress(false);
+  }, [setServerSwitchInProgress]);
+
+  // Completes a server switch once this provider's own query has the new server's data. The API
+  // client and query keys are React state, so the caller can't fetch the new server's settings
+  // itself; the query re-keys on the render where serverUrl changes. No placeholderData and the
+  // sign-out before every switch clears the cache, so in a render where serverUrl is the target
+  // and the query is settled, clientSettings is a fresh fetch from the target. The target is
+  // cleared before awaiting so re-renders (including the AppConfig update) can't apply twice.
+  useEffect(() => {
+    if (!serverSwitchTarget || serverUrl !== serverSwitchTarget || !clientSettings || isFetching) {
+      return;
+    }
+    setServerSwitchTarget(undefined);
+    applyClientSettings(clientSettings)
+      .catch(error => logger.error('Failed to apply client settings after server switch:', error))
+      .finally(() => setServerSwitchInProgress(false));
+  }, [applyClientSettings, clientSettings, isFetching, serverSwitchTarget, serverUrl, setServerSwitchInProgress]);
+
   const value = useMemo(
     () => ({
       updateClientSettings,
+      applyClientSettings,
+      beginServerSwitch,
+      cancelServerSwitch,
       maxForumPostImages,
       maxImageSize,
       photostreamUploadRateLimit,
@@ -106,6 +167,9 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
     }),
     [
       updateClientSettings,
+      applyClientSettings,
+      beginServerSwitch,
+      cancelServerSwitch,
       maxForumPostImages,
       maxImageSize,
       photostreamUploadRateLimit,

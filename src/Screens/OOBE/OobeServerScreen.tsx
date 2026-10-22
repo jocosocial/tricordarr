@@ -44,7 +44,7 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
   const queryClient = useQueryClient();
   const {setSnackbarPayload} = useSnackbar();
   const {performSignOut} = useSignOut();
-  const {updateClientSettings} = useClientSettings();
+  const {applyClientSettings} = useClientSettings();
   // Prefetch client settings once the healthcheck passes so pressing Next only writes
   // already-loaded state rather than fetching on tap. Never relies on stale data: this
   // query is disabled until a fresh healthcheck pass and refetches on every mount.
@@ -69,18 +69,24 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
       // Perform sign-out first so FGS is stopped and notifications disabled before any re-render.
       await performSignOut();
       await updateSession(sessionID, {serverUrl: values.serverUrl});
+      // No healthcheck refetch() here: the API client and query keys are derived from React state,
+      // so until the next render a refetch would re-run the OLD server's query. The health query's
+      // key changes on re-render and, with gcTime/staleTime 0, fetches against the new server on
+      // its own. Client settings are likewise not applied here but from onNextPress, a later
+      // render whose clientSettingsData is already the new server's.
     } else {
       await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
+      // Same URL, so the current query key is correct. This is how a failed healthcheck gets
+      // retried, since the health query never re-runs an error on its own.
+      refetch();
     }
 
-    refetch().finally(() =>
-      formikHelpers.resetForm({
-        values: {
-          serverChoice: ServerChoices.fromUrl(values.serverUrl),
-          serverUrl: values.serverUrl,
-        },
-      }),
-    );
+    formikHelpers.resetForm({
+      values: {
+        serverChoice: ServerChoices.fromUrl(values.serverUrl),
+        serverUrl: values.serverUrl,
+      },
+    });
     setSnackbarPayload(undefined);
   };
 
@@ -98,10 +104,7 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
       // The server's own ClientSettingsData is the source of truth for pre-registration
       // mode, not which location card the user tapped. This lets the URL entered here
       // (whether or not it matches the card that got us here) win.
-      await updateSession(currentSession.sessionID, {
-        preRegistrationMode: clientSettingsData.enablePreregistration,
-      });
-      await updateClientSettings(clientSettingsData);
+      await applyClientSettings(clientSettingsData);
       navigation.push(OobeStackComponents.oobeConductScreen);
     } finally {
       setBusy(false);

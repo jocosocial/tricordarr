@@ -38,13 +38,13 @@ export const ConfigServerUrlScreen = () => {
   const {commonStyles} = useStyles();
   const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
   const queryClient = useQueryClient();
-  const {disruptionDetected, setServerSwitchInProgress} = useSwiftarrQueryClient();
+  const {disruptionDetected} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const {hasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const {performSignOut} = useSignOut();
-  const {updateClientSettings} = useClientSettings();
+  const {beginServerSwitch, cancelServerSwitch} = useClientSettings();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     if (!currentSession) {
@@ -59,7 +59,8 @@ export const ConfigServerUrlScreen = () => {
       // Suppress the generic error Snackbar for the duration of the swap: mounted screens'
       // queries will refire against the new server immediately (query keys embed serverUrl)
       // and may 401 with "maintenance mode" before we've confirmed that state ourselves.
-      setServerSwitchInProgress(true);
+      // ClientSettingsProvider ends it once the new server's client settings are applied.
+      beginServerSwitch(values.serverUrl);
     }
 
     // Cancel in-flight requests before anything changes, to shrink (not eliminate - mounted
@@ -77,26 +78,31 @@ export const ConfigServerUrlScreen = () => {
         await performSignOut();
         // Update session serverUrl only (token already cleared by performSignOut; updateSession will not call signOut again).
         await updateSession(sessionID, {serverUrl: values.serverUrl});
-        // Resolve maintenance-mode state deterministically as part of the swap, rather than
-        // relying on the client-settings query incidentally refetching due to its key changing.
-        await updateClientSettings();
+        // No refetch() or updateClientSettings() here: the API client and query keys are derived
+        // from React state, so until the next render they would hit the OLD server. The health
+        // query's key changes on re-render and, with gcTime/staleTime 0, fetches against the new
+        // server on its own. ClientSettingsProvider applies the new server's client settings
+        // (pre-registration mode, cruise config) once its query re-keys and loads.
       } else {
         // Update session serverUrl - persists immediately
         await updateSession(currentSession.sessionID, {serverUrl: values.serverUrl});
+        // Same URL, so the current query key is correct. This is how a failed healthcheck gets
+        // retried, since the health query never re-runs an error on its own.
+        await refetch();
       }
-
-      await refetch().finally(() =>
-        formikHelpers.resetForm({
-          values: {
-            serverChoice: ServerChoices.fromUrl(values.serverUrl),
-            serverUrl: values.serverUrl,
-          },
-        }),
-      );
-    } finally {
+    } catch (error) {
+      // The swap didn't happen, so nothing will arrive to end the suppression or apply settings.
       if (serverUrlChanging) {
-        setServerSwitchInProgress(false);
+        cancelServerSwitch();
       }
+      throw error;
+    } finally {
+      formikHelpers.resetForm({
+        values: {
+          serverChoice: ServerChoices.fromUrl(values.serverUrl),
+          serverUrl: values.serverUrl,
+        },
+      });
     }
     setSnackbarPayload(undefined);
   };

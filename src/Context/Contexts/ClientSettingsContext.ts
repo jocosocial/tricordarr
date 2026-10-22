@@ -15,6 +15,21 @@ interface ClientSettingsContextType {
    * directly instead of firing a redundant refetch.
    */
   updateClientSettings: (data?: ClientSettingsData) => Promise<void>;
+  /**
+   * Applies server-driven client settings to app state: mirrors the cruise fields into AppConfig
+   * (via updateClientSettings) and sets the current session's preRegistrationMode from the
+   * server's enablePreregistration. Callers that change servers or already hold fresh data
+   * (OOBE, Config > Server URL) invoke it explicitly.
+   */
+  applyClientSettings: (data: ClientSettingsData) => Promise<void>;
+  /**
+   * Declares a server switch to serverUrl and suppresses the generic error Snackbar for its
+   * duration. Once the client settings query has loaded data for that URL, the provider applies it
+   * (applyClientSettings) and ends the suppression. Call before signing out / changing the URL.
+   */
+  beginServerSwitch: (serverUrl: string) => void;
+  /** Abandons a switch started with beginServerSwitch, e.g. when persisting the new URL failed. */
+  cancelServerSwitch: () => void;
   /** Maximum number of images allowed on a forum post. Shutternauts get 8; everyone else uses server settings (default 4). */
   maxForumPostImages: number;
   /** Maximum size of a single uploaded image, in bytes. Falls back to 20 MiB. */
@@ -29,6 +44,9 @@ interface ClientSettingsContextType {
 
 export const ClientSettingsContext = createContext<ClientSettingsContextType>({
   updateClientSettings: async () => {},
+  applyClientSettings: async () => {},
+  beginServerSwitch: () => {},
+  cancelServerSwitch: () => {},
   maxForumPostImages: DEFAULT_MAX_FORUM_POST_IMAGES,
   maxImageSize: DEFAULT_MAX_IMAGE_SIZE,
   photostreamUploadRateLimit: DEFAULT_PHOTOSTREAM_UPLOAD_RATE_LIMIT,
