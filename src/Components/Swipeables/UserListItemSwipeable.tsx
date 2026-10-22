@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, useCallback, useMemo, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useMemo} from 'react';
 import {StyleSheet} from 'react-native';
 import {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SharedValue} from 'react-native-reanimated';
@@ -30,7 +30,13 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
   const favoriteMutation = useUserFavoriteMutation();
   const muteMutation = useUserMuteMutation();
   const blockMutation = useUserBlockMutation();
-  const [removeRefreshing, setRemoveRefreshing] = useState(false);
+  // Derived from the mutations' variables rather than local state so a recycled cell showing a
+  // different user never inherits another user's spinner.
+  const userID = userHeader.userID;
+  const removeRefreshing =
+    (favoriteMutation.isPending && favoriteMutation.variables?.userID === userID) ||
+    (muteMutation.isPending && muteMutation.variables?.userID === userID) ||
+    (blockMutation.isPending && blockMutation.variables?.userID === userID);
 
   const styles = useMemo(
     () =>
@@ -53,25 +59,23 @@ export const UserListItemSwipeable = ({userHeader, mode, children, enabled = tru
    */
   const handleRemoveRelation = useCallback(
     (swipeable: SwipeableMethods) => {
-      setRemoveRefreshing(true);
       swipeable.close();
       const onSuccess = () => removeRelation(mode, userHeader);
-      const onSettled = () => setRemoveRefreshing(false);
 
       if (mode === 'favorite') {
         favoriteMutation.mutate(
           {action: USER_RELATION_ACTIONS[mode].remove as 'unfavorite', userID: userHeader.userID},
-          {onSuccess, onSettled},
+          {onSuccess},
         );
       } else if (mode === 'mute') {
         muteMutation.mutate(
           {action: USER_RELATION_ACTIONS[mode].remove as 'unmute', userID: userHeader.userID},
-          {onSuccess, onSettled},
+          {onSuccess},
         );
       } else {
         blockMutation.mutate(
           {action: USER_RELATION_ACTIONS[mode].remove as 'unblock', userID: userHeader.userID},
-          {onSuccess, onSettled},
+          {onSuccess},
         );
       }
     },

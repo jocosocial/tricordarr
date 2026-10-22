@@ -1,6 +1,5 @@
 import React, {PropsWithChildren} from 'react';
-import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import {SwipeableMethods} from 'react-native-gesture-handler/src/components/ReanimatedSwipeable';
+import Swipeable, {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SharedValue} from 'react-native-reanimated';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -15,52 +14,25 @@ export interface BaseSwipeableProps extends PropsWithChildren {
   enabled?: boolean;
   renderLeftPanel?: RenderPanelFunction;
   renderRightPanel?: RenderPanelFunction;
-  onSwipeableOpen?: (direction: 'left' | 'right') => void;
-  onSwipeableWillOpen?: (direction: 'left' | 'right') => void;
-  overshootRight?: boolean;
-  overshootLeft?: boolean;
-  leftThreshold?: number;
-  rightThreshold?: number;
-  overshootFriction?: number;
-  friction?: number;
 }
 
-export const BaseSwipeable = ({
-  enabled = true,
-  children,
-  renderRightPanel,
-  renderLeftPanel,
-  onSwipeableOpen,
-  overshootRight = false,
-  overshootLeft = false,
-  leftThreshold,
-  rightThreshold,
-  // Only takes effect when overshootLeft/overshootRight is true; both default to false below
-  // and no current caller overrides them, so this friction value is currently inert.
-  overshootFriction = 8,
-  onSwipeableWillOpen,
-  friction = 1,
-}: BaseSwipeableProps) => {
+/**
+ * Shared wrapper around RNGH's ReanimatedSwipeable for list rows. Swaps the left and right panels
+ * when the reverse swipe orientation preference is set and disables overshoot. Implementors must
+ * pass a `key` (the item id) so a recycled list cell remounts closed instead of showing the
+ * previous item's open state.
+ */
+export const BaseSwipeable = ({enabled = true, children, renderRightPanel, renderLeftPanel}: BaseSwipeableProps) => {
   const {appConfig} = useConfig();
   return (
     <Swipeable
       enabled={enabled}
       dragOffsetFromLeft={20}
       dragOffsetFromRight={-20}
-      // failOffsetY is a custom prop added after upgrade to RN 86. FlashList + Swipeable
-      // lists would "stick" when scrolling vertically. This provides a hint that
-      // the Swipeable should not activate.
-      failOffsetY={[-8, 8]}
       renderRightActions={appConfig.userPreferences.reverseSwipeOrientation ? renderLeftPanel : renderRightPanel}
       renderLeftActions={appConfig.userPreferences.reverseSwipeOrientation ? renderRightPanel : renderLeftPanel}
-      overshootFriction={overshootFriction}
-      onSwipeableOpen={onSwipeableOpen}
-      leftThreshold={leftThreshold}
-      rightThreshold={rightThreshold}
-      onSwipeableWillOpen={onSwipeableWillOpen}
-      friction={friction}
-      overshootRight={overshootRight}
-      overshootLeft={overshootLeft}>
+      overshootRight={false}
+      overshootLeft={false}>
       {children}
     </Swipeable>
   );

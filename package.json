@@ -67,7 +67,7 @@
     "react-native-drawer-layout": "^4.2.0",
     "react-native-edge-to-edge": "^1.7.0",
     "react-native-error-boundary": "^3.1.0",
-    "react-native-gesture-handler": "^3.0.1",
+    "react-native-gesture-handler": "^3.4.0",
     "react-native-get-random-values": "^2.0.0",
     "react-native-hyperlink": "^0.1.2",
     "react-native-image-crop-picker": "^0.51.1",

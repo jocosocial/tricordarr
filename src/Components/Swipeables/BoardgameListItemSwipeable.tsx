@@ -1,5 +1,6 @@
 import {useQueryClient} from '@tanstack/react-query';
-import React, {PropsWithChildren, useCallback, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useMemo} from 'react';
+import {StyleSheet} from 'react-native';
 import {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SharedValue} from 'react-native-reanimated';
 
@@ -19,7 +20,8 @@ interface BoardgameListItemSwipeableProps extends PropsWithChildren {
 
 /**
  * Favorite and Create LFG both require a token, so swiping is disabled entirely while
- * logged out rather than surfacing buttons that would 401.
+ * logged out rather than surfacing buttons that would 401. The favorite pending flag is derived
+ * from the mutation's variables so a recycled cell never inherits another game's spinner.
  */
 export const BoardgameListItemSwipeable = (props: BoardgameListItemSwipeableProps) => {
   const {theme} = useAppTheme();
@@ -27,35 +29,42 @@ export const BoardgameListItemSwipeable = (props: BoardgameListItemSwipeableProp
   const favoriteMutation = useBoardgameFavoriteMutation();
   const queryClient = useQueryClient();
   const navigation = useMainStack();
-  const [favoriteRefreshing, setFavoriteRefreshing] = useState(false);
+  const {gameID, isFavorite} = props.boardgame;
 
-  const invalidationQueryKeys = BoardgameData.getCacheKeys(props.boardgame.gameID);
+  const favoriteRefreshing = favoriteMutation.isPending && favoriteMutation.variables?.boardgameID === gameID;
 
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        favorite: {backgroundColor: theme.colors.elevation.level1},
+        lfg: {backgroundColor: theme.colors.elevation.level2},
+      }),
+    [theme],
+  );
+
+  /** Toggle favorite, then refetch the boardgame caches. Disabled in the panel while in flight. */
   const handleFavorite = useCallback(
     (swipeable: SwipeableMethods) => {
-      setFavoriteRefreshing(true);
       favoriteMutation.mutate(
         {
-          boardgameID: props.boardgame.gameID,
-          action: props.boardgame.isFavorite ? 'unfavorite' : 'favorite',
+          boardgameID: gameID,
+          action: isFavorite ? 'unfavorite' : 'favorite',
         },
         {
           onSuccess: async () => {
-            const invalidations = invalidationQueryKeys.map(key => {
+            const invalidations = BoardgameData.getCacheKeys(gameID).map(key => {
               return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
           },
-          onSettled: () => {
-            setFavoriteRefreshing(false);
-            swipeable.close();
-          },
+          onSettled: () => swipeable.close(),
         },
       );
     },
-    [favoriteMutation, props.boardgame.gameID, props.boardgame.isFavorite, invalidationQueryKeys, queryClient],
+    [favoriteMutation, gameID, isFavorite, queryClient],
   );
 
+  /** Open the create-LFG screen for this game, then close the swipeable. */
   const handleLFG = useCallback(
     (swipeable: SwipeableMethods) => {
       swipeable.close();
@@ -66,37 +75,37 @@ export const BoardgameListItemSwipeable = (props: BoardgameListItemSwipeableProp
     [navigation, props.boardgame],
   );
 
-  const renderRightPanel = (
-    progressAnimatedValue: SharedValue<number>,
-    dragAnimatedValue: SharedValue<number>,
-    swipeable: SwipeableMethods,
-  ) => {
-    return (
+  /** Favorite and LFG. */
+  const renderRightPanel = useCallback(
+    (
+      _progressAnimatedValue: SharedValue<number>,
+      _dragAnimatedValue: SharedValue<number>,
+      swipeable: SwipeableMethods,
+    ) => (
       <>
         <SwipeableButton
           testID={'boardgameFavorite-button'}
-          text={props.boardgame.isFavorite ? 'Unfavorite' : 'Favorite'}
-          iconName={props.boardgame.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
+          text={isFavorite ? 'Unfavorite' : 'Favorite'}
+          iconName={isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
           onPress={() => handleFavorite(swipeable)}
           refreshing={favoriteRefreshing}
-          style={{backgroundColor: theme.colors.elevation.level1}}
+          disabled={favoriteRefreshing}
+          style={styles.favorite}
         />
         <SwipeableButton
           testID={'boardgameLfg-button'}
           text={'LFG'}
           iconName={AppIcons.lfgCreate}
           onPress={() => handleLFG(swipeable)}
-          style={{backgroundColor: theme.colors.elevation.level2}}
+          style={styles.lfg}
         />
       </>
-    );
-  };
+    ),
+    [isFavorite, favoriteRefreshing, styles, handleFavorite, handleLFG],
+  );
 
   return (
-    <BaseSwipeable
-      key={props.boardgame.gameID}
-      enabled={(props.enabled ?? true) && isLoggedIn}
-      renderRightPanel={renderRightPanel}>
+    <BaseSwipeable key={gameID} enabled={(props.enabled ?? true) && isLoggedIn} renderRightPanel={renderRightPanel}>
       {props.children}
     </BaseSwipeable>
   );

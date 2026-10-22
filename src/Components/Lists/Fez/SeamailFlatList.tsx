@@ -38,12 +38,6 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
   const renderItem = useCallback(
     ({item}: {item: FezData}) => (
       <FezChatListItem
-        // I don't remember why we needed the mute state in the key.
-        // I have a suspicion it was with all the panel background crap
-        // that boiled down to having the wrong backgroundColor set.
-        // Also isn't this what keyExtractor is for?
-        // key={`${item.fezID}-${item.members?.isMuted ?? false}`}
-        // key={item.fezID}
         fez={item}
         enableSelection={enableSelection}
         setEnableSelection={setEnableSelection}

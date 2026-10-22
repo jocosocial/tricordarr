@@ -23,7 +23,7 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
   const relationMutation = useForumRelationMutation();
   const {commonStyles} = useStyles();
   const markReadMutation = useForumMarkReadMutation();
-  const {markRead, updateFavorite, updateMute, invalidateForum} = useForumCacheReducer();
+  const {markRead, invalidateForum} = useForumCacheReducer();
   // Tracks the batch mutation separately from props.setRefreshing: that drives the pull-to-refresh
   // spinner on the parent list, not this button's own tappability. Without it a fast repeat tap
   // re-fires the whole batch and can flip a relation back off before the first pass lands. See #533.
@@ -34,10 +34,8 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
     props.setRefreshing(true);
 
     // https://stackoverflow.com/questions/70771324/how-to-handle-multiple-mutations-in-parallel-with-react-query
-    // Bulk operation: apply eagerly, no per-item rollback. Promise.allSettled over several
-    // mutateAsync calls means a rollback would need to be keyed to which promise rejected --
-    // more machinery than this screen warrants. Instead, apply optimistically up front and
-    // reconcile with a single invalidate once the whole batch has settled (see
+    // Bulk operation: the mutation hook applies each item optimistically and rolls back its own
+    // failures; one invalidate once the whole batch has settled reconciles the rest (see
     // "Optimistic Cache Updates" in docs/Cache and State.md).
     const mutations: Promise<AxiosResponse<void, any>>[] = [];
     props.selectedItems.forEach(selectedItem => {
@@ -45,13 +43,9 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
       if (!sourceItem) return;
       const relationStatus = relation === 'favorite' ? sourceItem.isFavorite : sourceItem.isMuted;
       const newValue = !relationStatus;
-      if (relation === 'favorite') {
-        updateFavorite(sourceItem.forumID, props.categoryID, newValue);
-      } else {
-        updateMute(sourceItem.forumID, props.categoryID, newValue);
-      }
       const mutation = relationMutation.mutateAsync({
         forumID: sourceItem.forumID,
+        categoryID: props.categoryID,
         relationType: relation,
         action: newValue ? 'create' : 'delete',
       });
