@@ -1,5 +1,5 @@
 import moment from 'moment-timezone';
-import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import URLParse from 'url-parse';
 
 import {
@@ -66,14 +66,16 @@ export const buildCruiseStartDate = (dateStr: string, portTimeZoneID: string): D
 
 export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
   const {appConfig, updateAppConfig} = useConfig();
-  const {data: clientSettings, refetch, isFetching} = useClientSettingsQuery();
+  const {data: clientSettings, refetch} = useClientSettingsQuery();
   const {hasShutternaut} = useRoles();
   const {currentSession, updateSession} = useSession();
   const {serverUrl, setServerSwitchInProgress} = useSwiftarrQueryClient();
-  // The server URL a switch is moving to, pending application of its client settings. A target
-  // URL rather than a boolean: renders between sign-out and the URL change are still keyed to the
-  // old server and must not complete the switch.
+  // The server URL a switch is moving to, pending application of its pre-registration mode. A
+  // target URL rather than a boolean: renders between sign-out and the URL change are still keyed
+  // to the old server and must not complete the switch.
   const [serverSwitchTarget, setServerSwitchTarget] = useState<string>();
+  // The clientSettings reference last mirrored into AppConfig. See the mirror effect below.
+  const mirroredClientSettings = useRef<ClientSettingsData | undefined>(undefined);
 
   const maxForumPostImages = hasShutternaut
     ? SHUTTERNAUT_MAX_FORUM_POST_IMAGES
@@ -117,9 +119,22 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
     [currentSession, updateSession, updateClientSettings],
   );
 
+  // Mirrors the server's cruise fields into AppConfig whenever the query's data changes: a fetch
+  // returning different content, or a re-key (server switch, sign-in/out, session change). Keyed on
+  // the data reference only, not on updateClientSettings, which changes with every AppConfig
+  // update; otherwise any AppConfig write (including a Developer > Cruise Settings save) would
+  // immediately re-mirror over it.
+  useEffect(() => {
+    if (!clientSettings || clientSettings === mirroredClientSettings.current) {
+      return;
+    }
+    mirroredClientSettings.current = clientSettings;
+    updateClientSettings(clientSettings).catch(error => logger.error('Failed to mirror client settings:', error));
+  }, [clientSettings, updateClientSettings]);
+
   /**
    * Starts a server switch to serverUrl. Suppresses the generic error Snackbar until the new
-   * server's client settings are applied (or SwiftarrQueryClientProvider's grace period ends it).
+   * server's client settings are applied.
    */
   const beginServerSwitch = useCallback(
     (url: string) => {
@@ -137,21 +152,30 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
     setServerSwitchInProgress(false);
   }, [setServerSwitchInProgress]);
 
-  // Completes a server switch once this provider's own query has the new server's data. The API
-  // client and query keys are React state, so the caller can't fetch the new server's settings
-  // itself; the query re-keys on the render where serverUrl changes. No placeholderData and the
-  // sign-out before every switch clears the cache, so in a render where serverUrl is the target
-  // and the query is settled, clientSettings is a fresh fetch from the target. The target is
-  // cleared before awaiting so re-renders (including the AppConfig update) can't apply twice.
+  // Completes a server switch once this provider's query is keyed to the new server. The API client
+  // and query keys are React state, so the caller can't fetch the new server's settings itself;
+  // the query re-keys on a later render. In a render where serverUrl is the target, refetch() runs
+  // against the target's key: the query hook's options effect is declared earlier in this
+  // component, so it has already run. cancelRefetch: false joins the fetch the key change already
+  // started rather than sending a second request. Pre-registration mode is only ever taken from the
+  // server here (and OOBE's Next), never on ordinary data changes, so the developer toggle holds.
+  // The target is cleared before awaiting so re-renders can't apply twice.
   useEffect(() => {
-    if (!serverSwitchTarget || serverUrl !== serverSwitchTarget || !clientSettings || isFetching) {
+    if (!serverSwitchTarget || serverUrl !== serverSwitchTarget) {
       return;
     }
     setServerSwitchTarget(undefined);
-    applyClientSettings(clientSettings)
+    refetch({cancelRefetch: false})
+      .then(async ({data}) => {
+        if (!data) {
+          logger.warn('No client settings loaded for', serverSwitchTarget);
+          return;
+        }
+        await applyClientSettings(data);
+      })
       .catch(error => logger.error('Failed to apply client settings after server switch:', error))
       .finally(() => setServerSwitchInProgress(false));
-  }, [applyClientSettings, clientSettings, isFetching, serverSwitchTarget, serverUrl, setServerSwitchInProgress]);
+  }, [applyClientSettings, refetch, serverSwitchTarget, serverUrl, setServerSwitchInProgress]);
 
   const value = useMemo(
     () => ({

@@ -12,7 +12,8 @@ interface ClientSettingsContextType {
   /**
    * Refetches /client/settings and mirrors cruise fields into AppConfig. If `data` is
    * provided (e.g. from a caller that already prefetched the query), that data is used
-   * directly instead of firing a redundant refetch.
+   * directly instead of firing a redundant refetch. The provider also does this on its own
+   * whenever the query's data changes, so callers only need it to force a fresh fetch.
    */
   updateClientSettings: (data?: ClientSettingsData) => Promise<void>;
   /**
@@ -24,8 +25,8 @@ interface ClientSettingsContextType {
   applyClientSettings: (data: ClientSettingsData) => Promise<void>;
   /**
    * Declares a server switch to serverUrl and suppresses the generic error Snackbar for its
-   * duration. Once the client settings query has loaded data for that URL, the provider applies it
-   * (applyClientSettings) and ends the suppression. Call before signing out / changing the URL.
+   * duration. Once the client settings query re-keys to that URL, the provider fetches and applies
+   * it (applyClientSettings) and ends the suppression. Call before signing out / changing the URL.
    */
   beginServerSwitch: (serverUrl: string) => void;
   /** Abandons a switch started with beginServerSwitch, e.g. when persisting the new URL failed. */
