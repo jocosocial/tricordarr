@@ -74,6 +74,7 @@ const FezPostListItemInternal = ({fezPost, fez, fullWidth}: FezPostListItemProps
           messageOnRight={messageOnRight}
           showAuthor={showAuthor}
           fullWidth={fullWidth}
+          reactions={fezPost.reactions}
           renderActionsMenu={({visible, closeMenu, anchor}) => (
             <FezPostActionsMenu visible={visible} closeMenu={closeMenu} anchor={anchor} fezPost={fezPost} fez={fez} />
           )}
