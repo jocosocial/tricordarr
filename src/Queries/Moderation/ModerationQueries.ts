@@ -1,3 +1,4 @@
+import {getQuartermasterModerationEndpoint} from '#src/Queries/Quartermaster/QuartermasterCacheKeys';
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 import {
   FezModerationData,
@@ -10,6 +11,7 @@ import {
   PersonalEventModerationData,
   PhotostreamModerationData,
   ProfileModerationData,
+  QuartermasterModerationData,
   ReportModerationData,
   UserModerationData,
 } from '#src/Structs/ControllerStructs';
@@ -75,6 +77,13 @@ export const useUserModerationQuery = (userID: string) => {
  */
 export const usePhotostreamModerationQuery = (photoID: string) => {
   return useTokenAuthQuery<PhotostreamModerationData>(`/mod/photostream/${photoID}`);
+};
+
+/**
+ * Moderation payload for a Quartermastarr item. Works if deleted, and always includes the owner.
+ */
+export const useQuartermasterModerationQuery = (itemID: string) => {
+  return useTokenAuthQuery<QuartermasterModerationData>(getQuartermasterModerationEndpoint(itemID));
 };
 
 /**

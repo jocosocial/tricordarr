@@ -145,6 +145,11 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.performer}
                 onPress={() => Linking.openURL(appUrl('performers'))}
               />
+              <PaperDrawer.Item
+                label={'Quartermastarr'}
+                icon={AppIcons.quartermaster}
+                onPress={() => Linking.openURL(appUrl('quartermaster'))}
+              />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
               {hasVerified && (
