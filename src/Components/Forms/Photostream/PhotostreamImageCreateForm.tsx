@@ -73,7 +73,7 @@ export const PhotostreamImageCreateForm = ({
         <View>
           <View style={styles.textWrapper}>
             <Text variant={'labelMedium'}>
-              {rateLimitCopy} It cannot be removed except by moderators. Any text will be automatically blurred. Choose
+              {rateLimitCopy} Posts cannot be removed except by moderators. Any text will be automatically blurred. Choose
               wisely!
             </Text>
           </View>
