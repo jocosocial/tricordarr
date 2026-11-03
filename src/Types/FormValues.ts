@@ -128,6 +128,8 @@ export interface PhotostreamCreateFormValues {
   eventData?: EventData;
   locationName?: string;
   image?: string;
+  /** ISO8601 time the image was taken. */
+  capturedAt?: string;
   savePhoto?: boolean;
 }
 
