@@ -4,16 +4,19 @@ import {Card, Text} from 'react-native-paper';
 
 import {APIImage} from '#src/Components/Images/APIImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
 
 interface PerformerHeaderCardProps {
   header: PerformerHeaderData;
+  /** Called with this card's header when tapped. Should be a stable reference (the card is memoized). */
+  onPress: (header: PerformerHeaderData) => void;
 }
-const PerformerHeaderCardInternal = ({header}: PerformerHeaderCardProps) => {
+
+/**
+ * Name and photo card for a performer. What a tap does is up to the caller.
+ */
+const PerformerHeaderCardInternal = ({header, onPress}: PerformerHeaderCardProps) => {
   const {commonStyles} = useStyles();
-  const navigation = useMainStack();
 
   const styles = StyleSheet.create({
     cardContent: {
@@ -39,16 +42,8 @@ const PerformerHeaderCardInternal = ({header}: PerformerHeaderCardProps) => {
     },
   });
 
-  const onPress = () => {
-    if (header.id) {
-      navigation.push(CommonStackComponents.performerScreen, {
-        id: header.id,
-      });
-    }
-  };
-
   return (
-    <Card style={styles.card} onPress={onPress}>
+    <Card style={styles.card} onPress={() => onPress(header)}>
       <Card.Content style={styles.cardContent}>
         <Text style={styles.title}>{header.name}</Text>
         {header.photo && (

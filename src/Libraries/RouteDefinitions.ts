@@ -45,6 +45,7 @@ export const allRoutes: RouteDefinition[] = [
   {screen: MainStackComponents.karaokeFavoritesListScreen, path: 'karaoke/favorites'},
   {screen: MainStackComponents.karaokeLogPerformanceScreen, path: 'karaoke/log/:songID'},
   {screen: MainStackComponents.performerListScreen, path: 'performers'},
+  {screen: CommonStackComponents.performerSelfScreen, path: 'performer/shadow/self'},
   {screen: CommonStackComponents.performerScreen, path: 'performer/:id'},
   {screen: CommonStackComponents.mainTimeZoneScreen, path: 'time'},
   {screen: MainStackComponents.boardgameListScreen, path: 'boardgames'},
@@ -141,6 +142,7 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.mapScreen,
     // Performer routes
     CommonStackComponents.performerScreen,
+    CommonStackComponents.performerSelfScreen,
     // Hunt routes
     CommonStackComponents.huntScreen,
     CommonStackComponents.huntPuzzleScreen,
