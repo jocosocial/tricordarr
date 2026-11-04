@@ -54,10 +54,11 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const [isBlocked, setIsBlocked] = useState(false);
   const commonNavigation = useCommonStack();
   const {setString} = useClipboard();
-  const {refetch: refetchFavorites} = useUserFavoritesQuery();
-  const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
-  const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
   const {preRegistrationMode} = usePreRegistration();
+  // Swiftarr doesn't allow these lists during pre-registration.
+  const {refetch: refetchFavorites} = useUserFavoritesQuery({enabled: !preRegistrationMode});
+  const {data: mutes, refetch: refetchMutes} = useUserMutesQuery({enabled: !preRegistrationMode});
+  const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery({enabled: !preRegistrationMode});
   const {oobeCompleted} = useOobe();
   const isSelf = data?.header.userID === currentUserID;
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
@@ -139,7 +140,12 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
           <PaddedContentView>
             <UserNoteCard
               user={data}
-              onPress={() => commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {user: data})}
+              // Notes can't be edited in pre-registration mode. Long press to copy still works.
+              onPress={
+                preRegistrationMode
+                  ? undefined
+                  : () => commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {user: data})
+              }
               onLongPress={() => {
                 if (data.note !== undefined) {
                   setString(data.note);

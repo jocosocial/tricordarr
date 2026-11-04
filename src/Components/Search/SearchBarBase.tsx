@@ -29,6 +29,8 @@ interface SearchBarBaseProps {
    * that render their results in a list with its own refresh indicator don't need this.
    */
   loading?: boolean;
+  /** Makes the search bar read-only and ignores icon presses. */
+  disabled?: boolean;
   testID: string;
 }
 
@@ -45,6 +47,7 @@ export const SearchBarBase = ({
   autoCorrect,
   spellCheck,
   loading = false,
+  disabled = false,
   testID,
 }: SearchBarBaseProps) => {
   const {commonStyles} = useStyles();
@@ -165,7 +168,7 @@ export const SearchBarBase = ({
       <Searchbar
         testID={testID}
         placeholder={placeholder}
-        onIconPress={autoSearch ? undefined : onIconPress}
+        onIconPress={autoSearch || disabled ? undefined : onIconPress}
         onChangeText={onChangeSearch}
         value={searchQuery}
         onSubmitEditing={() => {
@@ -177,6 +180,7 @@ export const SearchBarBase = ({
         autoCorrect={autoCorrect}
         spellCheck={spellCheck}
         loading={loading}
+        editable={!disabled}
       />
       {showHelp && <HelperText type={'error'}>{`Must enter >${minLength - 1} characters to search`}</HelperText>}
     </>

@@ -15,11 +15,17 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.person
 export const PersonalEventEditScreen = (props: Props) => {
   const fez = props.route.params.personalEvent;
   const {currentUserID} = useSession();
-  // Only the owner of an existing privateEvent may change visibility. Moderators reach this
-  // screen too, but the server refuses a visibility change from anyone but the owner.
-  const showVisibility = fez.fezType === FezType.privateEvent && fez.owner.userID === currentUserID;
+  const isOwner = fez.owner.userID === currentUserID;
+  // Only the owner may change visibility. Moderators reach this screen too, but the server refuses
+  // a visibility change from anyone but the owner. On a personalEvent, making it unlisted is a
+  // one-way conversion into a privateEvent.
+  const showVisibility = isOwner;
+  // Adding participants to a personalEvent converts it into a privateEvent. An existing
+  // privateEvent manages its participants from the participation screen instead. In
+  // pre-registration mode the form shows the field disabled.
+  const showParticipants = isOwner && fez.fezType === FezType.personalEvent;
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.personalEventHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.personalEventHelpScreen} allowed={true}>
       <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={`/privateevent/${fez.fezID}/update`}>
         <FezEditScreenBase
           fez={fez}
@@ -32,6 +38,7 @@ export const PersonalEventEditScreen = (props: Props) => {
               initialValues={initialValues}
               create={false}
               showVisibility={showVisibility}
+              showParticipants={showParticipants}
             />
           )}
         />

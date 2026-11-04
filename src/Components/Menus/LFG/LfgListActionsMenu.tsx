@@ -3,6 +3,7 @@ import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -16,12 +17,14 @@ interface LfgListActionsMenuProps {
 export const LfgListActionsMenu = ({endpoint}: LfgListActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const navigation = useLFGStackNavigation();
+  const {preRegistrationMode} = usePreRegistration();
 
   const menuAnchor = <Item title={'Schedule Options'} iconName={AppIcons.menu} onPress={openMenu} />;
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      {endpoint !== 'former' && (
+      {/* Former LFGs aren't available to pre-registration users. */}
+      {endpoint !== 'former' && !preRegistrationMode && (
         <>
           <Menu.Item
             leadingIcon={AppIcons.lfgFormer}

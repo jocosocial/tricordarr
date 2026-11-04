@@ -14,9 +14,11 @@ import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
+import {LfgPreRegistrationEmptyView} from '#src/Components/Views/Static/LfgPreRegistrationEmptyView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useLfgFilter} from '#src/Context/Contexts/LfgFilterContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -71,6 +73,7 @@ const LfgListScreenInner = ({
   // and will start narrowing once that lands, with no client change needed.
   const supportsMemberFilters = endpoint === 'joined' || endpoint === 'owner';
   const {commonStyles} = useStyles();
+  const {preRegistrationMode} = usePreRegistration();
   const [fezList, setFezList] = useState<FezData[]>([]);
   const listRef = useRef<FlashListRef<FezData>>(null);
   // const processedIntentRef = useRef<string | null>(null);
@@ -121,15 +124,18 @@ const LfgListScreenInner = ({
         <MaterialHeaderButtons>
           {enableFilters && (
             <>
-              <Item
-                title={'Search'}
-                iconName={AppIcons.search}
-                onPress={() =>
-                  navigation.push(LfgStackComponents.lfgSearchScreen, {
-                    endpoint: endpoint,
-                  })
-                }
-              />
+              {/* Search isn't available to pre-registration users. */}
+              {!preRegistrationMode && (
+                <Item
+                  title={'Search'}
+                  iconName={AppIcons.search}
+                  onPress={() =>
+                    navigation.push(LfgStackComponents.lfgSearchScreen, {
+                      endpoint: endpoint,
+                    })
+                  }
+                />
+              )}
               <LfgFilterMenu />
             </>
           )}
@@ -137,7 +143,7 @@ const LfgListScreenInner = ({
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableFilters, endpoint, navigation]);
+  }, [enableFilters, endpoint, navigation, preRegistrationMode]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -239,7 +245,7 @@ const LfgListScreenInner = ({
             hasNextPage={hasNextPage}
             enableReportOnly={enableReportOnly}
             showDayInCard={true}
-            listHeader={listHeader}
+            listHeader={preRegistrationMode && fezList.length === 0 ? <LfgPreRegistrationEmptyView /> : listHeader}
             overScroll={true}
           />
         )}
@@ -266,6 +272,8 @@ interface LfgListScreenWithEndpointProps extends StackScreenProps<
 const LfgListScreenWithEndpoint = ({route, navigation}: LfgListScreenWithEndpointProps) => {
   const {lfgSourceFilter, setLfgSourceFilter} = useLfgFilter();
   const isFormer = route.params.endpoint === 'former';
+  // In pre-registration mode LfgFilterProvider holds the source on Owned, so this (and the
+  // route param and title it syncs to) follows the source like any other selection.
   const endpoint: FezListEndpoints = isFormer ? 'former' : lfgSourceFilter;
 
   // Tracks the last value written by either direction, so the two effects below don't fight.
@@ -335,7 +343,9 @@ export const LfgListScreen = (props: Props) => {
 
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen}>
+      <PreRegistrationScreen
+        helpScreen={CommonStackComponents.lfgHelpScreen}
+        allowed={props.route.params.endpoint !== 'former'}>
         <LfgListScreenWithEndpoint {...props} />
       </PreRegistrationScreen>
     </LoggedInScreen>

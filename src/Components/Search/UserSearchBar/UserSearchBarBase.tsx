@@ -49,6 +49,8 @@ interface UserSearchBarBaseProps {
   excludeSelf?: boolean;
   /** True while the search request is in flight. */
   loading?: boolean;
+  /** Makes the search bar read-only. */
+  disabled?: boolean;
   testID: string;
 }
 
@@ -68,6 +70,7 @@ export const UserSearchBarBaseComponent = ({
   autoSearch = true,
   excludeSelf = false,
   loading = false,
+  disabled = false,
   testID,
 }: UserSearchBarBaseProps) => {
   return (
@@ -85,6 +88,7 @@ export const UserSearchBarBaseComponent = ({
         spellCheck={false}
         onSearch={autoSearch ? undefined : refetch}
         loading={loading}
+        disabled={disabled}
       />
       <UserSearchBarResults
         data={data}

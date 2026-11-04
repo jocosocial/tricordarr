@@ -9,6 +9,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {FezCanceledView} from '#src/Components/Views/Static/FezCanceledView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
+import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezForm} from '#src/Hooks/Fez/useFezForm';
@@ -17,12 +18,13 @@ import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {HelpScreenComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
+import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
 export interface FezEditScreenBaseFormProps {
-  onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
+  onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void | Promise<void>;
   initialValues: FezFormValues;
 }
 
@@ -37,9 +39,10 @@ interface FezEditScreenBaseProps {
 export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle, intent}: FezEditScreenBaseProps) => {
   const navigation = useCommonStack();
   const updateMutation = useFezUpdateMutation();
-  const {updateFez, updateFezModeration} = useFezCacheReducer();
+  const participantMutation = useFezParticipantMutation();
+  const {updateFez, updateFezModeration, updateMembership, invalidateFez} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
-  const {getInitialValuesFromFez} = useFezForm();
+  const {getInitialValuesFromFez, personalEventRequiresPrivate} = useFezForm();
   const {data: profilePublicData} = useUserProfileQuery();
 
   const getNavButtons = useCallback(() => {
@@ -67,12 +70,19 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle, int
   /**
    * Submit the edited fez, then patch fez caches and (when launched from
    * the moderate screen) the fez moderation cache before going back.
+   *
+   * A personalEvent that gains participants or is made unlisted is converted into a privateEvent.
+   * The conversion is one-way and uses the same personalEventRequiresPrivate rule as creating one.
+   * Swiftarr's update ignores `initialUsers`, so any invitees are added one at a time after the
+   * conversion succeeds.
    */
-  const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
+  const onSubmit = async (values: FezFormValues) => {
     const {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);
+    const convertToPrivate = fez.fezType === FezType.personalEvent && personalEventRequiresPrivate(values);
 
-    updateMutation.mutate(
-      {
+    let updatedFez;
+    try {
+      const response = await updateMutation.mutateAsync({
         fezID: fez.fezID,
         fezContentData: {
           title: values.title,
@@ -80,7 +90,7 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle, int
           startTime: startTime.toISOString(),
           endTime: endTime.toISOString(),
           location: values.location,
-          fezType: values.fezType,
+          fezType: convertToPrivate ? FezType.privateEvent : values.fezType,
           // Seeded from the fez, so an unchanged value is a no-op server-side. Only the personal
           // event form can actually change it; every other type rejects a change.
           visibility: values.visibility,
@@ -88,19 +98,37 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle, int
           maxCapacity: Number(values.maxCapacity),
           initialUsers: [],
         },
-      },
-      {
-        onSuccess: response => {
-          updateFez(fez.fezID, response.data);
-          if (intent === 'moderate' && profilePublicData) {
-            updateFezModeration(fez.fezID, fez, response.data, profilePublicData.header);
-          }
-          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
-          navigation.goBack();
-        },
-        onSettled: () => helpers.setSubmitting(false),
-      },
-    );
+      });
+      updatedFez = response.data;
+    } catch {
+      // useTokenAuthMutation surfaces the error in a snackbar.
+      return;
+    }
+    updateFez(fez.fezID, updatedFez);
+    if (intent === 'moderate' && profilePublicData) {
+      updateFezModeration(fez.fezID, fez, updatedFez, profilePublicData.header);
+    }
+
+    if (convertToPrivate && values.initialUsers.length > 0) {
+      try {
+        for (const user of values.initialUsers) {
+          const response = await participantMutation.mutateAsync({
+            fezID: fez.fezID,
+            userID: user.userID,
+            action: 'add',
+          });
+          updatedFez = response.data;
+        }
+        updateMembership(fez.fezID, updatedFez);
+      } catch {
+        // The conversion landed but not every invitee did. Resync rather than guess at what the
+        // server has; the error itself is surfaced in a snackbar.
+        invalidateFez(fez.fezID);
+      }
+    }
+
+    dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+    navigation.goBack();
   };
 
   const initialValues = getInitialValuesFromFez(fez);
