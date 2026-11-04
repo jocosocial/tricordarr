@@ -4,6 +4,7 @@ import {Keyboard, StyleSheet, ViewStyle} from 'react-native';
 import {HelperText, Searchbar} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
 
 const logger = createLogger('SearchBarBase.tsx');
@@ -29,7 +30,7 @@ interface SearchBarBaseProps {
    * that render their results in a list with its own refresh indicator don't need this.
    */
   loading?: boolean;
-  /** Makes the search bar read-only and ignores icon presses. */
+  /** Makes the search bar read-only and faded, and ignores icon presses. */
   disabled?: boolean;
   testID: string;
 }
@@ -51,6 +52,7 @@ export const SearchBarBase = ({
   testID,
 }: SearchBarBaseProps) => {
   const {commonStyles} = useStyles();
+  const {theme} = useAppTheme();
   const queryClient = useQueryClient();
   const [showHelp, setShowHelp] = React.useState(false);
 
@@ -59,6 +61,9 @@ export const SearchBarBase = ({
       ...commonStyles.marginTopSmall,
       ...commonStyles.marginHorizontalSmall,
       ...style,
+    },
+    disabledInput: {
+      color: theme.colors.onSurfaceDisabled,
     },
   });
 
@@ -181,6 +186,10 @@ export const SearchBarBase = ({
         spellCheck={spellCheck}
         loading={loading}
         editable={!disabled}
+        iconColor={disabled ? theme.colors.onSurfaceDisabled : undefined}
+        inputStyle={disabled ? styles.disabledInput : undefined}
+        // Searchbar spreads its remaining props over its own default, so this can't be passed as undefined.
+        {...(disabled ? {placeholderTextColor: theme.colors.onSurfaceDisabled} : {})}
       />
       {showHelp && <HelperText type={'error'}>{`Must enter >${minLength - 1} characters to search`}</HelperText>}
     </>
