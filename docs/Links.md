@@ -39,13 +39,16 @@ decides what happens:
 
 - Links are dropped until OOBE is complete, since a link's initial state would otherwise skip it.
 - A link on the session's server, or on a canonical host like `twitarr.com`, opens on the session's server.
-- Any other claimed host shows the alert from `ForeignLinkHandler` and doesn't navigate.
+- Any other claimed host shows the alert from `ForeignLinkHandler`, which offers to open it in a browser, and doesn't navigate.
 
 A path with no native route falls through to `SiteUILinkScreen`. ID params only match UUIDs, so pages like `/forum/search`
 reach it too.
 
-Claiming every path has known gaps. Downloads like `.ics` files and vCards load in the WebView, a link to `/` opens the app
-without navigating, and `Linking.openURL` on a claimed URL can come back to the app rather than reaching a browser.
+Claiming every path has known gaps. Downloads like `.ics` files and vCards load in the WebView, and a link to `/` opens the app
+without navigating.
+
+To leave the app, use `openInBrowser` in `src/Libraries/Browser.ts`. `Linking.openURL` on a claimed URL comes straight back to the
+app, and so does a Custom Tab that doesn't name a browser.
 
 ## Checking What Devices See
 

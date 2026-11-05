@@ -1,6 +1,6 @@
 import LinkifyIt from 'linkify-it';
 import React, {type ReactElement, type ReactNode} from 'react';
-import {Linking, type TextProps, type ViewProps} from 'react-native';
+import {type TextProps, type ViewProps} from 'react-native';
 import {Hyperlink} from 'react-native-hyperlink';
 
 import {LinkPillText} from '#src/Components/Text/LinkPillText';
@@ -10,6 +10,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {openInBrowser} from '#src/Libraries/Browser';
 import {createLogger} from '#src/Libraries/Logger';
 import {appLinkPrefix, isTwitarrUrl} from '#src/Libraries/UrlParser';
 
@@ -66,7 +67,7 @@ export const HyperlinkText = ({children, disableLinkInterpolation = false}: Hype
       logger.debug(`Opening link to ${linkUrl}`);
       if (disableLinkInterpolation) {
         // Open externally, not using the openWebUrl function.
-        Linking.openURL(linkUrl);
+        openInBrowser(linkUrl).catch(err => logger.error('Failed to open URL in browser:', err));
       } else {
         openWebUrl(linkUrl);
       }

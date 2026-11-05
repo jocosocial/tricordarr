@@ -1,7 +1,7 @@
 import {BottomSheetBackdrop, type BottomSheetBackdropProps, BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useBackHandler} from '@react-native-community/hooks';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Linking, StyleSheet, Switch, View} from 'react-native';
+import {StyleSheet, Switch, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Share from 'react-native-share';
@@ -20,6 +20,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {styleDefaults} from '#src/Context/Providers/StyleProvider';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {openInBrowser} from '#src/Libraries/Browser';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
 import {
   buildShareMessage,
@@ -221,7 +222,7 @@ export const ShareBottomSheet = ({
    * actions remain available when the user returns to the app.
    */
   const handleOpenInBrowser = snackbarTry(() => {
-    return Linking.openURL(webUrl);
+    return openInBrowser(webUrl);
   });
 
   /**
