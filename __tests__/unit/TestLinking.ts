@@ -76,8 +76,16 @@ describe('incoming link routes', () => {
     [`/privateevent/${uuid}`, 'PersonalEventScreen'],
     [`/hunt/${uuid}`, 'HuntScreen'],
     [`/puzzle/${uuid}`, 'HuntPuzzleScreen'],
+    ['/clients?platform=ios', 'SiteUILinkScreen'],
+    ['/lfg?x=1', 'LfgListScreen'],
+    ['/settings/pushnotifications?notificationType=seamailUnreadMsg', 'PushNotificationSettingsScreen'],
   ])('%s opens %s', (path, screen) => {
     expect(screenForPath(path)).toBe(screen);
+  });
+
+  it('decodes query params into route params', () => {
+    const state = JSON.stringify(getStateFromPath('/clients?platform=a%20b', navigationLinking.config));
+    expect(state).toContain('"platform":"a b"');
   });
 
   it('passes a known LFG endpoint through as a param', () => {
