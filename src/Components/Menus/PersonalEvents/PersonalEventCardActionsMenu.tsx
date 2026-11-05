@@ -1,6 +1,7 @@
 import React, {Dispatch, SetStateAction} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
@@ -20,6 +21,7 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
   const {currentUserID} = useSession();
   const navigation = useCommonStack();
   const {confirmDelete} = useFezAlert(props.eventData);
+  const {preRegistrationMode} = usePreRegistration();
 
   const anchorWithMenu = React.cloneElement(props.anchor, {
     onLongPress: openMenu,
@@ -54,16 +56,19 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
           <Divider bold={true} />
         </>
       )}
-      <Menu.Item
-        leadingIcon={AppIcons.report}
-        title={'Report'}
-        onPress={() =>
-          navigation.push(CommonStackComponents.reportScreen, {
-            contentType: ReportContentType.fez,
-            contentID: props.eventData.fezID,
-          })
-        }
-      />
+      {/* Reporting isn't available to pre-registration users. */}
+      {!preRegistrationMode && (
+        <Menu.Item
+          leadingIcon={AppIcons.report}
+          title={'Report'}
+          onPress={() =>
+            navigation.push(CommonStackComponents.reportScreen, {
+              contentType: ReportContentType.fez,
+              contentID: props.eventData.fezID,
+            })
+          }
+        />
+      )}
     </Menu>
   );
 };

@@ -8,6 +8,8 @@ import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEdit
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {LfgScreenActionsMenu} from '#src/Components/Menus/LFG/LfgScreenActionsMenu';
 import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
+import {PreRegistrationView} from '#src/Components/Views/Static/PreRegistrationView';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -15,6 +17,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {openFezChatScreen} from '#src/Libraries/Navigation';
+import {isHttpNotFoundError} from '#src/Libraries/Network/Retry';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -26,7 +29,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgScr
 
 export const LfgScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen} allowed={true}>
       <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={`/lfg/${props.route.params.fezID}`}>
         <LfgScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -34,10 +37,15 @@ export const LfgScreen = (props: Props) => {
   );
 };
 
+/**
+ * LFG detail content. In pre-registration mode Swiftarr returns a 404 for any LFG the user doesn't
+ * own, so that shows the PreRegistrationView rather than waiting forever on data that won't come.
+ */
 const LfgScreenInner = ({navigation, route}: Props) => {
-  const {fezData, isOwner, isParticipant, isWaitlist, refetch, initialReadCount, resetInitialReadCount} = useFezData({
-    fezID: route.params.fezID,
-  });
+  const {fezData, error, isOwner, isParticipant, isWaitlist, refetch, initialReadCount, resetInitialReadCount} =
+    useFezData({
+      fezID: route.params.fezID,
+    });
   const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const [lfg, setLfg] = useState<FezData>();
   const {notificationSocket} = useSocket();
@@ -51,7 +59,10 @@ const LfgScreenInner = ({navigation, route}: Props) => {
     wasFocusedRef.current = isFocused;
   }, [isFocused, resetInitialReadCount]);
   const {hasModerator} = usePrivilege();
-  const showChat = hasModerator || isParticipant || isWaitlist;
+  const {preRegistrationMode} = usePreRegistration();
+  // Chat and participation aren't available to pre-registration users.
+  const showChat = !preRegistrationMode && (hasModerator || isParticipant || isWaitlist);
+  const showPreRegistrationView = preRegistrationMode && !lfg && isHttpNotFoundError(error);
 
   const getNavButtons = useCallback(() => {
     return (
@@ -86,16 +97,17 @@ const LfgScreenInner = ({navigation, route}: Props) => {
         fezID: route.params.fezID,
       });
     if (lfg) {
-      return <NavHeaderTitle title={'Looking For Group'} onPress={onPress} />;
+      return <NavHeaderTitle title={'Looking For Group'} onPress={preRegistrationMode ? undefined : onPress} />;
     }
-  }, [lfg, navigation, route.params.fezID]);
+  }, [lfg, navigation, route.params.fezID, preRegistrationMode]);
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: getNavButtons,
+      // PreRegistrationView sets its own help button, and child effects run before this one.
+      ...(showPreRegistrationView ? undefined : {headerRight: getNavButtons}),
       headerTitle: getHeaderTitle,
     });
-  }, [getNavButtons, lfg, navigation, getHeaderTitle]);
+  }, [getNavButtons, lfg, navigation, getHeaderTitle, showPreRegistrationView]);
 
   useEffect(() => {
     if (fezData) {
@@ -133,6 +145,10 @@ const LfgScreenInner = ({navigation, route}: Props) => {
       }
     };
   }, [isFocused, notificationHandler, notificationSocket]);
+
+  if (showPreRegistrationView) {
+    return <PreRegistrationView helpScreen={CommonStackComponents.lfgHelpScreen} />;
+  }
 
   return (
     <ScheduleItemScreenBase

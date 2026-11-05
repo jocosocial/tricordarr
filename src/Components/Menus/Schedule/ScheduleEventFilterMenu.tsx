@@ -50,9 +50,11 @@ export const ScheduleEventFilterMenu = () => {
   const {isLoggedIn} = useSession();
   const {preRegistrationMode} = usePreRegistration();
   const {hasShutternaut, hasShutternautManager} = useRoles();
-  // LFGs and Private Events are unavailable during pre-registration regardless of login state -
-  // see the matching query gates in ScheduleDayScreen.tsx.
-  const disablePersonalSources = !isLoggedIn || preRegistrationMode;
+  // LFGs and Private Events require an account. During pre-registration only the ones the user owns
+  // are available, and there's nothing joined or unread - see the matching query gates in
+  // ScheduleDayScreen.tsx.
+  const disableOwnedSources = !isLoggedIn;
+  const disableMemberSources = !isLoggedIn || preRegistrationMode;
 
   // The first header sits on surfaceVariant, but Paper pads the top of every menu with 8dp of the
   // plain menu surface, which shows as a seam above it. Zero that padding on the menu and
@@ -120,25 +122,25 @@ export const ScheduleEventFilterMenu = () => {
         title={ScheduleSource.privateEvents}
         onPress={() => handleSourceSelection('privateEvents')}
         selected={eventSources.includes('privateEvents')}
-        disabled={disablePersonalSources}
+        disabled={disableOwnedSources}
       />
       <SelectableMenuItem
         title={ScheduleSource.lfgJoined}
         onPress={() => handleSourceSelection('lfgJoined')}
         selected={eventSources.includes('lfgJoined')}
-        disabled={disablePersonalSources}
+        disabled={disableMemberSources}
       />
       <SelectableMenuItem
         title={ScheduleSource.lfgOwned}
         onPress={() => handleSourceSelection('lfgOwned')}
         selected={eventSources.includes('lfgOwned')}
-        disabled={disablePersonalSources}
+        disabled={disableOwnedSources}
       />
       <SelectableMenuItem
         title={ScheduleSource.lfgOpen}
         onPress={() => handleSourceSelection('lfgOpen')}
         selected={eventSources.includes('lfgOpen')}
-        disabled={disablePersonalSources || !appConfig.schedule.eventsShowOpenLfgs}
+        disabled={disableMemberSources || !appConfig.schedule.eventsShowOpenLfgs}
       />
       <Divider bold={true} />
       <ListSubheader>Events</ListSubheader>
@@ -180,7 +182,7 @@ export const ScheduleEventFilterMenu = () => {
         title={'Unread'}
         onPress={handlePersonalUnreadSelection}
         selected={eventPersonalUnreadFilter}
-        disabled={disablePersonalSources}
+        disabled={disableMemberSources}
       />
     </AppMenu>
   );

@@ -25,6 +25,13 @@ export const LfgHelpScreen = () => {
             that sounds fun, and join up.
           </HelpTopicView>
         </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Pre-Registration'}>
+          <HelpTopicView>
+            Before the cruise you can create, edit, and cancel your own LFGs, and list them under Owned. Nobody else can
+            see or join them until we're all on board. Use Share to get a link you can hand out ahead of time. Finding,
+            joining, chat, favorites, and reporting become available once we're on board.
+          </HelpTopicView>
+        </HelpChapterTitleView>
         <HelpChapterTitleView title={'Limitations'}>
           <HelpTopicView>
             LFGs are meant for small groups doing an activity together. All of the event rooms on the ship are for

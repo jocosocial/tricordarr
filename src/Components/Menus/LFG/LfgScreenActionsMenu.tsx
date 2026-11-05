@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FavoriteMenuItem} from '#src/Components/Menus/Items/FavoriteMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -29,6 +30,7 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   const favoriteMutation = useFezFavoriteMutation();
   const {updateFavorite, invalidateFez} = useFezCacheReducer();
   const [favoriteRefreshing, setFavoriteRefreshing] = useState(false);
+  const {preRegistrationMode} = usePreRegistration();
 
   const isMember = !!fezData.members;
   const isFavorite = !!fezData.members?.isFavorite;
@@ -74,7 +76,8 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
         }}
       />
       <Divider bold={true} />
-      {isMember && (
+      {/* Favoriting and reporting aren't available to pre-registration users. */}
+      {isMember && !preRegistrationMode && (
         <FavoriteMenuItem
           onPress={handleFavorite}
           isFavorite={isFavorite}
@@ -94,17 +97,19 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
         />
       )}
       <ShareMenuItem contentType={ShareContentType.lfg} contentID={fezData.fezID} closeMenu={closeMenu} />
-      <Menu.Item
-        leadingIcon={AppIcons.report}
-        title={'Report'}
-        onPress={() => {
-          closeMenu();
-          commonNavigation.push(CommonStackComponents.reportScreen, {
-            contentType: ReportContentType.fez,
-            contentID: fezData.fezID,
-          });
-        }}
-      />
+      {!preRegistrationMode && (
+        <Menu.Item
+          leadingIcon={AppIcons.report}
+          title={'Report'}
+          onPress={() => {
+            closeMenu();
+            commonNavigation.push(CommonStackComponents.reportScreen, {
+              contentType: ReportContentType.fez,
+              contentID: fezData.fezID,
+            });
+          }}
+        />
+      )}
       {hasModerator && (
         <Menu.Item
           leadingIcon={AppIcons.moderator}

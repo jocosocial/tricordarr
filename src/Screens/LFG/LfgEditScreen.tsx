@@ -12,7 +12,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgEdi
 
 export const LfgEditScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen} allowed={true}>
       <DisabledFeatureScreen
         feature={SwiftarrFeature.friendlyfez}
         urlPath={`/lfg/${props.route.params.fez.fezID}/update`}>
