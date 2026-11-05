@@ -94,6 +94,7 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Tricordarr/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Tricordarr/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		930542E92EECD1B6002EFA6E /* Tricordarr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Tricordarr.entitlements; path = Tricordarr/Tricordarr.entitlements; sourceTree = "<group>"; };
+		930542EA2EECD1B6002EFA6E /* Tricordarr.Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Tricordarr.Debug.entitlements; path = Tricordarr/Tricordarr.Debug.entitlements; sourceTree = "<group>"; };
 		93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tricordarr-Bridging-Header.h"; sourceTree = "<group>"; };
 		93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTNativeTricordarrModule.h; sourceTree = "<group>"; };
 		93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTNativeTricordarrModule.mm; sourceTree = "<group>"; };
@@ -174,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				930542E92EECD1B6002EFA6E /* Tricordarr.entitlements */,
+				930542EA2EECD1B6002EFA6E /* Tricordarr.Debug.entitlements */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -364,10 +366,14 @@
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1640;
+						DevelopmentTeam = "67V85M2YSV";
+						ProvisioningStyle = Automatic;
 					};
 					93ADBFFA2F074E0700C698D2 = {
 						CreatedOnToolsVersion = 16.4;
 						LastSwiftMigration = 1640;
+						DevelopmentTeam = "67V85M2YSV";
+						ProvisioningStyle = Automatic;
 					};
 					93ADC07A2F07749D00C698D2 = {
 						CreatedOnToolsVersion = 16.4;
@@ -467,7 +473,7 @@
 			inputPaths = (
 				"$(SRCROOT)/.xcode.env",
 				"$(SRCROOT)/.xcode.env.local",
-				"$(SRCROOT)/Tricordarr/Tricordarr.entitlements",
+				"$(SRCROOT)/Tricordarr/Tricordarr.Debug.entitlements",
 				"$(SRCROOT)/Pods/Target Support Files/Pods-Tricordarr/expo-configure-project.sh",
 			);
 			name = "[Expo] Configure project";
@@ -574,7 +580,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Tricordarr/Tricordarr.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Tricordarr/Tricordarr.Debug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 50;
@@ -605,6 +611,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+				DEVELOPMENT_TEAM = "67V85M2YSV";
 			};
 			name = Debug;
 		};
@@ -643,6 +650,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+				DEVELOPMENT_TEAM = "67V85M2YSV";
 			};
 			name = Release;
 		};
@@ -853,6 +861,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				DEVELOPMENT_TEAM = "67V85M2YSV";
 			};
 			name = Debug;
 		};
@@ -901,6 +910,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				DEVELOPMENT_TEAM = "67V85M2YSV";
 			};
 			name = Release;
 		};

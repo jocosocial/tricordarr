@@ -88,10 +88,10 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
    * - URLs matching the current server or canonical hostnames
    * - External URLs (opened directly)
    *
-   * This would normally get covered by Android App Links
-   * https://developer.android.com/training/app-links but verifying a non-public
-   * server is a problem, and it's a lot of work. Plus I want to translate certain URLs
-   * until we fix the upstream. So this exists.
+   * This only covers links tapped inside the app. Links from outside it arrive through iOS
+   * Universal Links and Android App Links, which can't cover non-public servers and only claim
+   * the hosts in `universalLinkHosts`. I also want to translate certain URLs until we fix the
+   * upstream. So this exists.
    *
    * https://github.com/jocosocial/tricordarr/issues/252
    */
