@@ -146,6 +146,3 @@ Use `createLogger` rather than `console.log`
 - Regenerate with `npx patch-package <package>`
 - Before regenerating, remove build artifacts from the package in `node_modules` (e.g. `android/{.gradle,build}`) or the patch will include binaries
 
-## Building
-
-- Ask the user before running builds in the agent within a local IDE. Running builds in an autonomous/cloud agent unprompted is fine.
