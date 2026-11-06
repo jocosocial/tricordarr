@@ -6,7 +6,7 @@ export const ScheduleSettingsHelpTopicView = () => {
     <>
       <HelpTopicView title={'Settings'} icon={AppIcons.settings}>
         Configure schedule-related settings including late-night day flip, LFG integration, overlap exclusions, default
-        view (list or Timeline), and default filter, timezone labels, and notification preferences.
+        view (list or Timeline), default filter, timezone labels, and notification preferences.
       </HelpTopicView>
       <HelpTopicView title={'Timezone Labels'}>
         Schedule times can show GMT offsets (the default, for example GMT-7), localized abbreviations (for example EST),

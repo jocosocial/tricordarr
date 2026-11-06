@@ -1,8 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View} from 'react-native';
-import {ActivityIndicator, Menu} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
+import {ActivityIndicator, Menu, Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -18,7 +18,9 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
@@ -43,6 +45,8 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {startDate, endDate} = useCruise();
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
+  const {theme} = useAppTheme();
+  const {isLoggedIn} = useSession();
   const [viewMode, setViewMode] = useState(appConfig.schedule.overlapViewMode);
   const {tzAtTime} = useTimeZone();
   const {getIsDisabled} = useFeature();
@@ -50,7 +54,10 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   // Pre-registration users can't list what they've joined, only what they own.
   const fezEndpoint = preRegistrationMode ? 'owner' : 'joined';
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
-  const [onlyYourEvents, setOnlyYourEvents] = useState(appConfig.schedule.overlapOnlyYourEvents);
+  // Logged-out users have no favorites (isFavorite is always false, see the note in
+  // src/Queries/Events/EventQueries.ts) and can't favorite, so they start on all events.
+  const defaultOnlyYourEvents = isLoggedIn && appConfig.schedule.overlapOnlyYourEvents;
+  const [onlyYourEvents, setOnlyYourEvents] = useState(defaultOnlyYourEvents);
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
 
@@ -117,14 +124,14 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     },
   });
 
+  // Get the ID of the route's eventData to ensure it's always included
+  const routeEventId = 'fezID' in eventData ? eventData.fezID : eventData.eventID;
+
   // Combine and filter all items
   const filteredItems = useMemo(() => {
     if (!inputStartTime || !inputEndTime) {
       return [];
     }
-
-    // Get the ID of the route's eventData to ensure it's always included
-    const routeEventId = 'fezID' in eventData ? eventData.fezID : eventData.eventID;
 
     const allItems: (EventData | FezData)[] = [];
 
@@ -150,6 +157,13 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       personalEventData.pages.forEach(page => {
         allItems.push(...page.fezzes);
       });
+    }
+
+    // The opened item may be in no query result, e.g. an unjoined LFG, since the open LFG query is excluded under
+    // the Only Your Events filter or by the setting. Gated on eventDataQuery so the loading spinner, which relies on
+    // an empty filteredItems, still shows on first load.
+    if (eventDataQuery && !allItems.some(item => ('fezID' in item ? item.fezID : item.eventID) === routeEventId)) {
+      allItems.push(eventData);
     }
 
     // Filter by time overlap
@@ -194,9 +208,12 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       return true;
     });
 
-    // Filter by "only your events" if enabled
+    // Only your events: keep joined/personal items, favorited events, and always the opened item itself.
     if (onlyYourEvents) {
       const userFilteredItems = featureFilteredItems.filter(item => {
+        if (('fezID' in item ? item.fezID : item.eventID) === routeEventId) {
+          return true;
+        }
         if ('fezID' in item) {
           return true; // already from joined/personal queries
         }
@@ -224,6 +241,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     inputStartTime,
     inputEndTime,
     eventData,
+    routeEventId,
     eventDataQuery,
     lfgOpenData,
     lfgJoinedData,
@@ -233,6 +251,21 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     appConfig.schedule.eventsShowOpenLfgs,
     getIsDisabled,
   ]);
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        hint: {
+          ...commonStyles.paddingVertical,
+          ...commonStyles.paddingHorizontal,
+        },
+        hintText: {
+          textAlign: 'center',
+          color: theme.colors.onSurfaceVariant,
+        },
+      }),
+    [commonStyles, theme.colors.onSurfaceVariant],
+  );
 
   const isFetching = isEventFetching || isLfgOpenFetching || isLfgJoinedFetching || isPersonalEventFetching;
 
@@ -254,13 +287,16 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     isRefreshing: isFetching,
   });
 
-  // Changing the defaults in Settings (reachable from this screen's Actions menu) applies when you come back; the
-  // effects only fire when a setting's value changes, so they never undo a toggle otherwise.
+  // Nothing but the opened item is left, so point at the filter. `every` is also true for an empty list.
+  const showFilterHint =
+    onlyYourEvents &&
+    !isFetching &&
+    filteredItems.every(item => ('fezID' in item ? item.fezID : item.eventID) === routeEventId);
+
+  // Changing the defaults in Settings (reachable from this screen's Actions menu) or logging in applies when you come
+  // back; the effects only fire when a default's value changes, so they never undo a toggle otherwise.
   useEffect(() => setViewMode(appConfig.schedule.overlapViewMode), [appConfig.schedule.overlapViewMode]);
-  useEffect(
-    () => setOnlyYourEvents(appConfig.schedule.overlapOnlyYourEvents),
-    [appConfig.schedule.overlapOnlyYourEvents],
-  );
+  useEffect(() => setOnlyYourEvents(defaultOnlyYourEvents), [defaultOnlyYourEvents]);
 
   /** Flip between the list and Timeline views for this visit only; the saved default is not changed. */
   const handleToggleViewMode = useCallback(() => {
@@ -329,6 +365,14 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     <AppView>
       <TimezoneWarningView />
       <ListTitleView title={eventData.title} subtitle={durationString} />
+      {showFilterHint && (
+        <View style={styles.hint}>
+          <Text style={styles.hintText}>
+            No other events of yours overlap this one. Turn off the Only Your Events filter (person icon) in the header
+            to see all events.
+          </Text>
+        </View>
+      )}
       <View style={[commonStyles.flex]}>
         {isFetching && filteredItems.length === 0 ? (
           <View style={commonStyles.loadingContainer}>
