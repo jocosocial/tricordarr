@@ -1,5 +1,5 @@
 import React, {forwardRef, useCallback, useMemo} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, ScrollView, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {DayPlannerCard} from '#src/Components/Cards/Schedule/DayPlannerCard';
@@ -29,10 +29,12 @@ interface DayPlannerTimelineViewProps {
    * would cost a callback per frame for the same information.
    */
   onScrollSettled?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  /** Optional pull-to-refresh control passed through to the ScrollView. The Day Planner pager does not use it. */
+  refreshControl?: React.ReactElement<RefreshControlProps>;
 }
 
 export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineViewProps>(
-  ({items, dayStart, dayEnd, timeZoneID, selectedCruiseDay, onScrollSettled}, ref) => {
+  ({items, dayStart, dayEnd, timeZoneID, selectedCruiseDay, onScrollSettled, refreshControl}, ref) => {
     const {theme} = useAppTheme();
     const {commonStyles} = useStyles();
     const commonNavigation = useCommonStack();
@@ -177,6 +179,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         style={styles.container}
         contentContainerStyle={styles.scrollContent}
         scrollsToTop={false}
+        refreshControl={refreshControl}
         showsVerticalScrollIndicator={false}
         onScrollEndDrag={onScrollSettled}
         onMomentumScrollEnd={onScrollSettled}>

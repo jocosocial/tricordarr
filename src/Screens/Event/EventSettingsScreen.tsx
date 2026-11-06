@@ -16,6 +16,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {ScheduleOverlapViewMode} from '#src/Enums/ScheduleOverlapViewMode';
 import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
@@ -38,6 +39,19 @@ const timeZoneLabelButtons: SegmentedButtonType[] = [
     value: TimeZoneLabelMode.hidden,
     label: TimeZoneLabelMode.getLabel(TimeZoneLabelMode.hidden),
     testID: 'timeZoneLabelHidden-button',
+  },
+];
+
+const overlapViewModeButtons: SegmentedButtonType[] = [
+  {
+    value: ScheduleOverlapViewMode.list,
+    label: ScheduleOverlapViewMode.getLabel(ScheduleOverlapViewMode.list),
+    testID: 'overlapViewModeList-button',
+  },
+  {
+    value: ScheduleOverlapViewMode.dayPlanner,
+    label: ScheduleOverlapViewMode.getLabel(ScheduleOverlapViewMode.dayPlanner),
+    testID: 'overlapViewModeDayPlanner-button',
   },
 ];
 
@@ -131,6 +145,19 @@ export const EventSettingsScreen = () => {
       schedule: {
         ...appConfig.schedule,
         timeZoneLabelMode: value as TimeZoneLabelMode,
+      },
+    });
+  };
+
+  /**
+   * Persist whether the Overlapping Events screen shows a list or a Day Planner timeline.
+   */
+  const handleOverlapViewMode = (value: string) => {
+    updateAppConfig({
+      ...appConfig,
+      schedule: {
+        ...appConfig.schedule,
+        overlapViewMode: value as ScheduleOverlapViewMode,
       },
     });
   };
@@ -285,6 +312,23 @@ export const EventSettingsScreen = () => {
                   style={[commonStyles.paddingHorizontalSmall, commonStyles.paddingTopSmall]}
                 />
               </ListSection>
+            </View>
+          </Formik>
+        </PaddedContentView>
+        <PaddedContentView>
+          <SegmentedButtons
+            buttons={overlapViewModeButtons}
+            value={appConfig.schedule.overlapViewMode}
+            onValueChange={handleOverlapViewMode}
+          />
+          <Text variant={'bodySmall'} style={styles.helperText}>
+            Choose how the Overlapping Events screen shows overlapping events: a list, or a Day Planner timeline that
+            places them side by side by time.
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView padSides={false}>
+          <Formik initialValues={{}} onSubmit={() => {}}>
+            <View>
               <ListSection>
                 <ListSubheader>Push Notifications</ListSubheader>
                 <BooleanField

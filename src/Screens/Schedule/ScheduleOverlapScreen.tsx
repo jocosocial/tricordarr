@@ -12,6 +12,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {ScheduleOverlapDayPlannerView} from '#src/Components/Views/Schedule/ScheduleOverlapDayPlannerView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
@@ -21,6 +22,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {ScheduleOverlapViewMode} from '#src/Enums/ScheduleOverlapViewMode';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
@@ -310,6 +312,14 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
           <View style={commonStyles.loadingContainer}>
             <ActivityIndicator size={'large'} />
           </View>
+        ) : appConfig.schedule.overlapViewMode === ScheduleOverlapViewMode.dayPlanner &&
+          cruiseDay !== undefined &&
+          filteredItems.length > 0 ? (
+          <ScheduleOverlapDayPlannerView
+            items={filteredItems}
+            cruiseDay={cruiseDay}
+            refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          />
         ) : (
           <ScheduleFlatList
             items={filteredItems}
