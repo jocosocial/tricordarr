@@ -119,9 +119,9 @@ const forumListDataFromForumData = (page: ForumData): ForumListData => {
 /**
  * Returns the API's default sort for an endpoint when no explicit sort param is provided.
  */
-const getApiDefaultSort = (endpoint: string, isEventCategory?: boolean): ForumSort => {
+const getApiDefaultSort = (endpoint: string, isEventCategory?: boolean, defaultSort?: ForumSort): ForumSort => {
   if (endpoint.startsWith('/forum/categories/')) {
-    return isEventCategory ? ForumSort.event : ForumSort.update;
+    return defaultSort ?? (isEventCategory ? ForumSort.event : ForumSort.update);
   }
   switch (endpoint) {
     case '/forum/owner':
@@ -217,9 +217,11 @@ const extractSortParams = (
   endpoint: string,
   defaults: {sort?: ForumSort; direction?: ForumSortDirection},
   isEventCategory?: boolean,
+  defaultSort?: ForumSort,
 ): {sort: ForumSort; direction: ForumSortDirection} => {
   const params = queryKey[1] as Record<string, string> | undefined;
-  const sort = (params?.sort as ForumSort) ?? defaults.sort ?? getApiDefaultSort(endpoint, isEventCategory);
+  const sort =
+    (params?.sort as ForumSort) ?? defaults.sort ?? getApiDefaultSort(endpoint, isEventCategory, defaultSort);
   const direction = getEffectiveDirection(sort, (params?.order as ForumSortDirection) ?? defaults.direction);
   return {sort, direction};
 };
@@ -402,12 +404,13 @@ export const useForumCacheReducer = () => {
           if (!entry) {
             return oldData;
           }
-          const isEventCategory = oldData.pages[0]?.isEventCategory ?? false;
+          const firstPage = oldData.pages[0];
           const {sort, direction} = extractSortParams(
             query.queryKey,
             query.queryKey[0] as string,
             {sort: defaultForumSortOrder, direction: defaultForumSortDirection},
-            isEventCategory,
+            firstPage?.isEventCategory,
+            firstPage?.defaultSort,
           );
           const compareFn = (a: ForumListData, b: ForumListData) => compareCategoryForumListData(a, b, sort, direction);
           const base = filterPredicate ? filterItemsFromPages(oldData, categoryAccessor, filterPredicate) : oldData;

@@ -6,6 +6,7 @@ import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {FezType} from '#src/Enums/FezType';
 import {FezVisibility} from '#src/Enums/FezVisibility';
+import type {ForumSort} from '#src/Enums/ForumSortFilter';
 import {LikeType} from '#src/Enums/LikeType';
 import {ModeratorActionType} from '#src/Enums/ModeratorActionType';
 import {ReportType} from '#src/Enums/ReportType';
@@ -822,6 +823,8 @@ export interface CategoryData {
   isRestricted: boolean;
   /// if TRUE, this category is for Event Forums, and is prepopulated with forum threads for each Schedule Event.
   isEventCategory: boolean;
+  /// The default thread sort for this category when the user has not selected a sort preference.
+  defaultSort?: ForumSort;
   /// The threads in the category. Only populated for /categories/ID.
   forumThreads?: ForumListData[];
   /// Pagination of the results

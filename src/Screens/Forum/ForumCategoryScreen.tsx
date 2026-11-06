@@ -26,7 +26,7 @@ import {useForumListData} from '#src/Hooks/Forum/useForumListData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
-import {useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
+import {useForumCategoriesQuery, useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -57,6 +57,10 @@ export const ForumCategoryScreen = (props: Props) => {
 const ForumCategoryScreenInner = ({route, navigation}: Props) => {
   const {forumFilter, forumSortOrder, forumSortDirection} = useForumFilter();
   const isFocused = useIsFocused();
+  const {data: categories} = useForumCategoriesQuery();
+  const categoryMetadata = categories?.find(category => category.categoryID === route.params.categoryID);
+  const categoryDefaultSort = categoryMetadata?.defaultSort;
+  const effectiveSort = forumSortOrder ?? categoryDefaultSort;
   const {
     data,
     refetch,
@@ -69,7 +73,7 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
     isLoading,
     isFetching,
   } = useForumCategoryQuery(route.params.categoryID, {
-    ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
+    ...(effectiveSort ? {sort: effectiveSort} : undefined),
     ...(forumSortDirection ? {order: forumSortDirection} : undefined),
   });
   const {forumListData, isUserRestricted} = useForumListData(data);
@@ -97,13 +101,21 @@ const ForumCategoryScreenInner = ({route, navigation}: Props) => {
       <View>
         <MaterialHeaderButtons>
           {category && <ForumCategoryScreenSearchMenu category={category} />}
-          <ForumThreadScreenSortMenu category={category} />
+          <ForumThreadScreenSortMenu category={category} defaultSort={categoryDefaultSort ?? category?.defaultSort} />
           <ForumThreadScreenFilterMenu />
           <ForumCategoryScreenActionsMenu />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableSelection, route.params.categoryID, category, forumListData, selectedItems, setRefreshing]);
+  }, [
+    enableSelection,
+    route.params.categoryID,
+    category,
+    categoryDefaultSort,
+    forumListData,
+    selectedItems,
+    setRefreshing,
+  ]);
 
   useEffect(() => {
     navigation.setOptions({

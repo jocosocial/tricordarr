@@ -15,6 +15,7 @@ export interface ForumCategoryQueryParams {
   order?: ForumSortDirection;
 }
 
+/** Fetches paginated threads for the specified forum category. */
 export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCategoryQueryParams = {}) => {
   return useTokenAuthPaginationQuery<CategoryData, ForumCategoryQueryParams>(
     `/forum/categories/${categoryId}`,
