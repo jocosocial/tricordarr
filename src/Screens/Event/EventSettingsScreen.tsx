@@ -150,7 +150,7 @@ export const EventSettingsScreen = () => {
   };
 
   /**
-   * Persist whether the Overlapping Events screen shows a list or a Day Planner timeline.
+   * Persist the default view (list or Day Planner timeline) the Overlapping Events screen opens in.
    */
   const handleOverlapViewMode = (value: string) => {
     updateAppConfig({
@@ -322,8 +322,8 @@ export const EventSettingsScreen = () => {
             onValueChange={handleOverlapViewMode}
           />
           <Text variant={'bodySmall'} style={styles.helperText}>
-            Choose how the Overlapping Events screen shows overlapping events: a list, or a Day Planner timeline that
-            places them side by side by time.
+            Choose which view the Overlapping Events screen opens in: a list, or a Day Planner timeline that places
+            events side by side by time. You can switch views from that screen's header.
           </Text>
         </PaddedContentView>
         <PaddedContentView padSides={false}>

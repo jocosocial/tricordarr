@@ -1,9 +1,8 @@
-import React, {useEffect, useMemo, useRef} from 'react';
-import {RefreshControlProps, ScrollView, View} from 'react-native';
+import React, {useMemo} from 'react';
+import {RefreshControlProps, View} from 'react-native';
 
 import {DayPlannerTimelineView} from '#src/Components/Views/Schedule/DayPlannerTimelineView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
@@ -21,20 +20,18 @@ interface ScheduleOverlapDayPlannerViewProps {
 
 /**
  * Day Planner timeline of just the overlapping items for the Overlapping Events screen. Reuses
- * the Day Planner timeline for one cruise day, scrolled once on mount to the first item.
+ * the Day Planner timeline, but the window spans only the hours of the items (first item at the
+ * top) rather than a full day.
  */
 export const ScheduleOverlapDayPlannerView = ({
   items,
   cruiseDay,
   refreshControl,
 }: ScheduleOverlapDayPlannerViewProps) => {
-  const {startDate} = useCruise();
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const {tzAtTime} = useTimeZone();
-  const {fromEvent, fromFez, getDayBoundaries, getScrollOffsetForFirstItem} = useDayPlanner();
-  const scrollViewRef = useRef<ScrollView>(null);
-  const hasPositioned = useRef(false);
+  const {fromEvent, fromFez, getItemsTimelineWindow} = useDayPlanner();
 
   // Convert, dedupe by id (the open and joined LFG queries can return the same fez), and sort by start time.
   const plannerItems = useMemo(() => {
@@ -50,40 +47,26 @@ export const ScheduleOverlapDayPlannerView = ({
     return converted.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
   }, [items, fromEvent, fromFez]);
 
-  // The screen derives cruiseDay from calcCruiseDayTime, which hardcodes a 3AM day start regardless of the
-  // enableLateDayFlip setting. Always use the 3AM-to-3AM window here: a midnight window would drop a 1:30AM
-  // event (which belongs to the prior cruise day) and items just past midnight off the timeline entirely.
-  const preliminaryBoundaries = useMemo(() => {
-    return getDayBoundaries(startDate, cruiseDay, true, appConfig.portTimeZoneID);
-  }, [startDate, cruiseDay, appConfig.portTimeZoneID, getDayBoundaries]);
-
   const boatTimeZoneID = useMemo(() => {
-    return tzAtTime(preliminaryBoundaries.dayStart);
-  }, [preliminaryBoundaries.dayStart, tzAtTime]);
+    return plannerItems.length > 0 ? tzAtTime(plannerItems[0].startTime) : appConfig.portTimeZoneID;
+  }, [plannerItems, tzAtTime, appConfig.portTimeZoneID]);
 
-  const {dayStart, dayEnd} = useMemo(() => {
-    return getDayBoundaries(startDate, cruiseDay, true, boatTimeZoneID);
-  }, [startDate, cruiseDay, boatTimeZoneID, getDayBoundaries]);
+  const timelineWindow = useMemo(() => {
+    return getItemsTimelineWindow(plannerItems, boatTimeZoneID, appConfig.schedule.compactThemeEvents);
+  }, [plannerItems, boatTimeZoneID, appConfig.schedule.compactThemeEvents, getItemsTimelineWindow]);
 
-  /**
-   * Position once on mount so the overlapping block is in view immediately. hasPositioned keeps
-   * refetches that rebuild the items from yanking the scroll position away from the user.
-   */
-  useEffect(() => {
-    if (hasPositioned.current || !scrollViewRef.current) {
-      return;
-    }
-    const rafId = requestAnimationFrame(() => {
-      scrollViewRef.current?.scrollTo({y: getScrollOffsetForFirstItem(plannerItems, dayStart), animated: false});
-      hasPositioned.current = true;
-    });
-    return () => cancelAnimationFrame(rafId);
-  }, [plannerItems, dayStart, getScrollOffsetForFirstItem]);
+  if (!timelineWindow) {
+    return null;
+  }
+
+  const {dayStart, dayEnd} = timelineWindow;
 
   return (
     <View style={commonStyles.flex}>
+      {/* A changed window (e.g. after a filter) restarts at the top rather than keeping a scroll offset that now
+          means a different time; refetches that keep the window keep the scroll position. */}
       <DayPlannerTimelineView
-        ref={scrollViewRef}
+        key={`${dayStart.getTime()}-${dayEnd.getTime()}`}
         items={plannerItems}
         dayStart={dayStart}
         dayEnd={dayEnd}

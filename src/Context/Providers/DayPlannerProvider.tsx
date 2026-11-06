@@ -299,12 +299,15 @@ const calculateItemLayout = (
 /**
  * Generate time slot labels for the Day Planner timeline.
  * Returns an array of time slots with labels only on the hour marks.
- * Timeline always shows 24 hours starting from dayStart.
+ * By default the timeline is the full-day one (TOTAL_HOURS starting from dayStart); pass totalSlots for a shorter window.
  * When timeZoneID is provided, labels show the hour in that timezone (boat time); otherwise device local.
  */
-const generateTimeSlotLabels: DayPlannerContextType['generateTimeSlotLabels'] = (dayStart, timeZoneID) => {
+const generateTimeSlotLabels: DayPlannerContextType['generateTimeSlotLabels'] = (
+  dayStart,
+  timeZoneID,
+  totalSlots = DAY_PLANNER_CONFIG.TOTAL_HOURS * DAY_PLANNER_CONFIG.SLOTS_PER_HOUR,
+) => {
   const slots: ReturnType<DayPlannerContextType['generateTimeSlotLabels']> = [];
-  const totalSlots = DAY_PLANNER_CONFIG.TOTAL_HOURS * DAY_PLANNER_CONFIG.SLOTS_PER_HOUR;
 
   for (let i = 0; i < totalSlots; i++) {
     const slotTime = new Date(dayStart.getTime() + i * DAY_PLANNER_CONFIG.MINUTES_PER_ROW * 60 * 1000);
@@ -372,9 +375,54 @@ const getDayBoundaries = (
 
 /**
  * Get the total height of the timeline in pixels.
+ * @param totalSlots - Number of rows in the timeline. Defaults to the full-day timeline.
  */
-const getTimelineHeight = (): number => {
-  return DAY_PLANNER_CONFIG.TOTAL_HOURS * DAY_PLANNER_CONFIG.SLOTS_PER_HOUR * DAY_PLANNER_CONFIG.ROW_HEIGHT;
+const getTimelineHeight = (
+  totalSlots: number = DAY_PLANNER_CONFIG.TOTAL_HOURS * DAY_PLANNER_CONFIG.SLOTS_PER_HOUR,
+): number => {
+  return totalSlots * DAY_PLANNER_CONFIG.ROW_HEIGHT;
+};
+
+/**
+ * Compute a timeline window that fits just the given items, using their displayed times (so compact
+ * Theme events and the minimum-duration extension are respected). Returns null when there are no items.
+ * dayEnd also leaves room for the minimum card height, since a short last card must not overflow the timeline.
+ *
+ * @param items - Items to fit.
+ * @param timeZoneID - IANA timezone used to floor the start to the hour.
+ * @param compactThemeEvents - Whether long Theme events are measured at their compact duration.
+ */
+export const getItemsTimelineWindow = (
+  items: DayPlannerItem[],
+  timeZoneID: string,
+  compactThemeEvents?: boolean,
+): {dayStart: Date; dayEnd: Date} | null => {
+  const unboundedStart = new Date(-8.64e15);
+  const unboundedEnd = new Date(8.64e15);
+  const displayed = items
+    .map(item => adjustItemForDisplay(item, unboundedStart, unboundedEnd, compactThemeEvents))
+    .filter((item): item is DayPlannerItem => item !== null);
+  if (displayed.length === 0) {
+    return null;
+  }
+
+  const earliestStartMs = Math.min(...displayed.map(item => item.startTime.getTime()));
+  // Must be on the hour: generateTimeSlotLabels derives hour labels from the slot index relative to
+  // dayStart, so this guarantees the top row has an hour label.
+  const dayStart = moment(earliestStartMs).tz(timeZoneID).startOf('hour').toDate();
+
+  const minCardMs =
+    (DAY_PLANNER_CONFIG.MIN_EVENT_HEIGHT / DAY_PLANNER_CONFIG.ROW_HEIGHT) *
+    DAY_PLANNER_CONFIG.MINUTES_PER_ROW *
+    60 *
+    1000;
+  const latestEndMs = Math.max(
+    ...displayed.map(item => Math.max(item.endTime.getTime(), item.startTime.getTime() + minCardMs)),
+  );
+  const rowMs = DAY_PLANNER_CONFIG.MINUTES_PER_ROW * 60 * 1000;
+  const rows = Math.ceil((latestEndMs - dayStart.getTime()) / rowMs);
+
+  return {dayStart, dayEnd: new Date(dayStart.getTime() + rows * rowMs)};
 };
 
 /**
@@ -450,6 +498,7 @@ const dayPlannerContextValue: DayPlannerContextType = {
   generateTimeSlotLabels,
   getDayBoundaries,
   getTimelineHeight,
+  getItemsTimelineWindow,
   getScrollOffsetForFirstItem,
   getMinutesFromDayStartForNow,
   getScrollOffsetForTimeOfDay,

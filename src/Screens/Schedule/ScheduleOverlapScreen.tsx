@@ -43,6 +43,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {startDate, endDate} = useCruise();
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
+  const [viewMode, setViewMode] = useState(appConfig.schedule.overlapViewMode);
   const {tzAtTime} = useTimeZone();
   const {getIsDisabled} = useFeature();
   const {preRegistrationMode} = usePreRegistration();
@@ -253,10 +254,29 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     isRefreshing: isFetching,
   });
 
+  // Changing the default in Settings (reachable from this screen's Actions menu) applies when you come back; the
+  // effect only fires when the setting's value changes, so it never undoes a toggle otherwise.
+  useEffect(() => setViewMode(appConfig.schedule.overlapViewMode), [appConfig.schedule.overlapViewMode]);
+
+  /** Flip between the list and Day Planner views for this visit only; the saved default is not changed. */
+  const handleToggleViewMode = useCallback(() => {
+    setViewMode(current =>
+      current === ScheduleOverlapViewMode.dayPlanner
+        ? ScheduleOverlapViewMode.list
+        : ScheduleOverlapViewMode.dayPlanner,
+    );
+  }, []);
+
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <MaterialHeaderButtons>
+          <MenuAnchor
+            title={'Day Planner View'}
+            active={viewMode === ScheduleOverlapViewMode.dayPlanner}
+            onPress={handleToggleViewMode}
+            iconName={AppIcons.dayPlanner}
+          />
           <MenuAnchor
             title={'Only Your Events'}
             active={onlyYourEvents}
@@ -287,7 +307,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [onlyYourEvents, visible, openMenu, closeMenu, commonNavigation]);
+  }, [onlyYourEvents, visible, openMenu, closeMenu, commonNavigation, viewMode, handleToggleViewMode]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -312,9 +332,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
           <View style={commonStyles.loadingContainer}>
             <ActivityIndicator size={'large'} />
           </View>
-        ) : appConfig.schedule.overlapViewMode === ScheduleOverlapViewMode.dayPlanner &&
-          cruiseDay !== undefined &&
-          filteredItems.length > 0 ? (
+        ) : viewMode === ScheduleOverlapViewMode.dayPlanner && cruiseDay !== undefined && filteredItems.length > 0 ? (
           <ScheduleOverlapDayPlannerView
             items={filteredItems}
             cruiseDay={cruiseDay}

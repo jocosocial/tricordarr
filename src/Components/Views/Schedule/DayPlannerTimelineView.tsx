@@ -50,10 +50,17 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
       return calculateItemLayout(items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents);
     }, [items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents, calculateItemLayout]);
 
+    // Rows in the window. The real Day Planner's window is exactly 24h (getDayBoundaries adds absolute
+    // hours from the same base), so this stays 96 there; the overlap view passes a shorter window.
+    const totalSlots = useMemo(
+      () => Math.round((dayEnd.getTime() - dayStart.getTime()) / (DAY_PLANNER_CONFIG.MINUTES_PER_ROW * 60 * 1000)),
+      [dayStart, dayEnd],
+    );
+
     // Generate time slot labels (in boat time when timeZoneID provided)
     const timeSlots = useMemo(() => {
-      return generateTimeSlotLabels(dayStart, timeZoneID);
-    }, [dayStart, timeZoneID, generateTimeSlotLabels]);
+      return generateTimeSlotLabels(dayStart, timeZoneID, totalSlots);
+    }, [dayStart, timeZoneID, totalSlots, generateTimeSlotLabels]);
 
     const handleItemPress = useCallback(
       (item: DayPlannerItemWithLayout) => {
@@ -152,7 +159,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         }),
       [theme, commonStyles],
     );
-    const timelineHeight = getTimelineHeight();
+    const timelineHeight = getTimelineHeight(totalSlots);
 
     if (items.length === 0) {
       return (
@@ -188,6 +195,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
           {selectedCruiseDay === adjustedCruiseDayToday && (
             <DayPlannerNowDivider
               dayStart={dayStart}
+              timelineHeight={timelineHeight}
               selectedCruiseDay={selectedCruiseDay}
               boatTimeZoneID={timeZoneID ?? appConfig.portTimeZoneID}
             />
