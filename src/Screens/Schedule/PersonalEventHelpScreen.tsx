@@ -37,9 +37,6 @@ export const PersonalEventHelpScreen = () => {
         </HelpTopicView>
         <EventLocationHelpChapterView />
         <HelpChapterTitleView title={'Actions'} />
-        <HelpTopicView title={'Description'} icon={AppIcons.description}>
-          Long press the description to copy it to your clipboard.
-        </HelpTopicView>
         <OverlappingHelpTopicView />
         <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
           Edit the details of this private event. This option only appears if you are the owner of the event.

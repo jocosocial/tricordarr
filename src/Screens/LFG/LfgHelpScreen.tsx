@@ -47,9 +47,6 @@ export const LfgHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
-          <HelpTopicView title={'Description'} icon={AppIcons.description}>
-            Long press the description to copy it to your clipboard.
-          </HelpTopicView>
           <FavoriteChatHelpTopicView />
           <HelpTopicView title={'Overlapping'} icon={AppIcons.calendarMultiple}>
             See what else on your schedule overlaps with this LFG.
