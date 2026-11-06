@@ -12,7 +12,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
-import {ScheduleOverlapDayPlannerView} from '#src/Components/Views/Schedule/ScheduleOverlapDayPlannerView';
+import {ScheduleOverlapTimelineView} from '#src/Components/Views/Schedule/ScheduleOverlapTimelineView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
@@ -50,7 +50,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   // Pre-registration users can't list what they've joined, only what they own.
   const fezEndpoint = preRegistrationMode ? 'owner' : 'joined';
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
-  const [onlyYourEvents, setOnlyYourEvents] = useState(false);
+  const [onlyYourEvents, setOnlyYourEvents] = useState(appConfig.schedule.overlapOnlyYourEvents);
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
 
@@ -254,16 +254,18 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     isRefreshing: isFetching,
   });
 
-  // Changing the default in Settings (reachable from this screen's Actions menu) applies when you come back; the
-  // effect only fires when the setting's value changes, so it never undoes a toggle otherwise.
+  // Changing the defaults in Settings (reachable from this screen's Actions menu) applies when you come back; the
+  // effects only fire when a setting's value changes, so they never undo a toggle otherwise.
   useEffect(() => setViewMode(appConfig.schedule.overlapViewMode), [appConfig.schedule.overlapViewMode]);
+  useEffect(
+    () => setOnlyYourEvents(appConfig.schedule.overlapOnlyYourEvents),
+    [appConfig.schedule.overlapOnlyYourEvents],
+  );
 
-  /** Flip between the list and Day Planner views for this visit only; the saved default is not changed. */
+  /** Flip between the list and Timeline views for this visit only; the saved default is not changed. */
   const handleToggleViewMode = useCallback(() => {
     setViewMode(current =>
-      current === ScheduleOverlapViewMode.dayPlanner
-        ? ScheduleOverlapViewMode.list
-        : ScheduleOverlapViewMode.dayPlanner,
+      current === ScheduleOverlapViewMode.timeline ? ScheduleOverlapViewMode.list : ScheduleOverlapViewMode.timeline,
     );
   }, []);
 
@@ -272,8 +274,8 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       <View>
         <MaterialHeaderButtons>
           <MenuAnchor
-            title={'Day Planner View'}
-            active={viewMode === ScheduleOverlapViewMode.dayPlanner}
+            title={'Timeline View'}
+            active={viewMode === ScheduleOverlapViewMode.timeline}
             onPress={handleToggleViewMode}
             iconName={AppIcons.dayPlanner}
           />
@@ -332,8 +334,8 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
           <View style={commonStyles.loadingContainer}>
             <ActivityIndicator size={'large'} />
           </View>
-        ) : viewMode === ScheduleOverlapViewMode.dayPlanner && cruiseDay !== undefined && filteredItems.length > 0 ? (
-          <ScheduleOverlapDayPlannerView
+        ) : viewMode === ScheduleOverlapViewMode.timeline && cruiseDay !== undefined && filteredItems.length > 0 ? (
+          <ScheduleOverlapTimelineView
             items={filteredItems}
             cruiseDay={cruiseDay}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

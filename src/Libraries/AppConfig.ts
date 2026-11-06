@@ -45,6 +45,7 @@ export interface ScheduleConfig {
   enableLateDayFlip: boolean;
   overlapExcludeDurationHours: number;
   overlapViewMode: ScheduleOverlapViewMode;
+  overlapOnlyYourEvents: boolean;
   compactThemeEvents: boolean;
   timeZoneLabelMode: TimeZoneLabelMode;
   showMarkersOutsideCruiseWeek: boolean;
@@ -162,7 +163,8 @@ export const defaultAppConfig: AppConfig = {
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
     overlapExcludeDurationHours: 4,
-    overlapViewMode: ScheduleOverlapViewMode.list,
+    overlapViewMode: ScheduleOverlapViewMode.timeline,
+    overlapOnlyYourEvents: true,
     compactThemeEvents: true,
     timeZoneLabelMode: TimeZoneLabelMode.offset,
     showMarkersOutsideCruiseWeek: false,
@@ -258,7 +260,10 @@ export const getAppConfig = async () => {
     appConfig.schedule.timeZoneLabelMode = TimeZoneLabelMode.offset;
   }
   if (appConfig.schedule.overlapViewMode === undefined) {
-    appConfig.schedule.overlapViewMode = ScheduleOverlapViewMode.list;
+    appConfig.schedule.overlapViewMode = ScheduleOverlapViewMode.timeline;
+  }
+  if (appConfig.schedule.overlapOnlyYourEvents === undefined) {
+    appConfig.schedule.overlapOnlyYourEvents = true;
   }
   if (appConfig.schedule.showMarkersOutsideCruiseWeek === undefined) {
     appConfig.schedule.showMarkersOutsideCruiseWeek = false;

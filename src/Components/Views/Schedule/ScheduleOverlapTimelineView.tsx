@@ -9,7 +9,7 @@ import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 import {DayPlannerItem} from '#src/Types/DayPlanner';
 
-interface ScheduleOverlapDayPlannerViewProps {
+interface ScheduleOverlapTimelineViewProps {
   /** The already-filtered overlapping events and fezzes to place on the timeline. */
   items: (EventData | FezData)[];
   /** The cruise day (1-indexed) the overlapping items belong to. */
@@ -19,15 +19,11 @@ interface ScheduleOverlapDayPlannerViewProps {
 }
 
 /**
- * Day Planner timeline of just the overlapping items for the Overlapping Events screen. Reuses
+ * Timeline of just the overlapping items for the Overlapping Events screen. Reuses
  * the Day Planner timeline, but the window spans only the hours of the items (first item at the
  * top) rather than a full day.
  */
-export const ScheduleOverlapDayPlannerView = ({
-  items,
-  cruiseDay,
-  refreshControl,
-}: ScheduleOverlapDayPlannerViewProps) => {
+export const ScheduleOverlapTimelineView = ({items, cruiseDay, refreshControl}: ScheduleOverlapTimelineViewProps) => {
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const {tzAtTime} = useTimeZone();

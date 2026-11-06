@@ -3,7 +3,7 @@
  */
 export enum ScheduleOverlapViewMode {
   list = 'list',
-  dayPlanner = 'dayPlanner',
+  timeline = 'timeline',
 }
 
 export namespace ScheduleOverlapViewMode {
@@ -14,8 +14,8 @@ export namespace ScheduleOverlapViewMode {
     switch (mode) {
       case ScheduleOverlapViewMode.list:
         return 'List';
-      case ScheduleOverlapViewMode.dayPlanner:
-        return 'Day Planner';
+      case ScheduleOverlapViewMode.timeline:
+        return 'Timeline';
       default:
         return 'List';
     }

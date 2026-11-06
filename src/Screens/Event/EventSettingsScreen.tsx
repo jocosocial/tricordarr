@@ -49,9 +49,9 @@ const overlapViewModeButtons: SegmentedButtonType[] = [
     testID: 'overlapViewModeList-button',
   },
   {
-    value: ScheduleOverlapViewMode.dayPlanner,
-    label: ScheduleOverlapViewMode.getLabel(ScheduleOverlapViewMode.dayPlanner),
-    testID: 'overlapViewModeDayPlanner-button',
+    value: ScheduleOverlapViewMode.timeline,
+    label: ScheduleOverlapViewMode.getLabel(ScheduleOverlapViewMode.timeline),
+    testID: 'overlapViewModeTimeline-button',
   },
 ];
 
@@ -67,6 +67,7 @@ export const EventSettingsScreen = () => {
   const {commonStyles} = useStyles();
   const [joined, setJoined] = useState(appConfig.schedule.eventsShowJoinedLfgs);
   const [open, setOpen] = useState(appConfig.schedule.eventsShowOpenLfgs);
+  const [overlapOnlyYourEvents, setOverlapOnlyYourEvents] = useState(appConfig.schedule.overlapOnlyYourEvents);
   const [overlapExcludeDurationHours, setOverlapExcludeDurationHours] = useState(
     appConfig.schedule.overlapExcludeDurationHours,
   );
@@ -125,6 +126,20 @@ export const EventSettingsScreen = () => {
     setCompactThemeEvents(!appConfig.schedule.compactThemeEvents);
   };
 
+  /**
+   * Toggle and persist whether the Overlapping Events screen opens showing only the user's events.
+   */
+  const handleOverlapOnlyYourEvents = () => {
+    updateAppConfig({
+      ...appConfig,
+      schedule: {
+        ...appConfig.schedule,
+        overlapOnlyYourEvents: !appConfig.schedule.overlapOnlyYourEvents,
+      },
+    });
+    setOverlapOnlyYourEvents(!appConfig.schedule.overlapOnlyYourEvents);
+  };
+
   const handleShowMarkersOutsideCruiseWeek = () => {
     updateAppConfig({
       ...appConfig,
@@ -150,7 +165,7 @@ export const EventSettingsScreen = () => {
   };
 
   /**
-   * Persist the default view (list or Day Planner timeline) the Overlapping Events screen opens in.
+   * Persist the default view (list or Timeline) the Overlapping Events screen opens in.
    */
   const handleOverlapViewMode = (value: string) => {
     updateAppConfig({
@@ -311,19 +326,31 @@ export const EventSettingsScreen = () => {
                   }}
                   style={[commonStyles.paddingHorizontalSmall, commonStyles.paddingTopSmall]}
                 />
+                <BooleanField
+                  name={'overlapOnlyYourEvents'}
+                  testID={'overlapOnlyYourEvents-switch'}
+                  label={'Default to Only Your Events'}
+                  helperText={
+                    "Start the Overlapping Events screen showing only events you are participating in, events you own, or events you have favorited. You can switch to all events from that screen's header."
+                  }
+                  onPress={handleOverlapOnlyYourEvents}
+                  value={overlapOnlyYourEvents}
+                  style={commonStyles.paddingHorizontalSmall}
+                />
               </ListSection>
             </View>
           </Formik>
         </PaddedContentView>
         <PaddedContentView>
+          <Text style={commonStyles.marginBottomSmall}>Default Overlapping View</Text>
           <SegmentedButtons
             buttons={overlapViewModeButtons}
             value={appConfig.schedule.overlapViewMode}
             onValueChange={handleOverlapViewMode}
           />
           <Text variant={'bodySmall'} style={styles.helperText}>
-            Choose which view the Overlapping Events screen opens in: a list, or a Day Planner timeline that places
-            events side by side by time. You can switch views from that screen's header.
+            List shows events in time order. Timeline places them side by side by time. You can switch views from the
+            Overlapping Events screen's header.
           </Text>
         </PaddedContentView>
         <PaddedContentView padSides={false}>
