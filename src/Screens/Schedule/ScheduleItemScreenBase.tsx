@@ -12,6 +12,7 @@ import {UserChipsListItem} from '#src/Components/Lists/Items/UserChipsListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {EventLocationActionsMenu} from '#src/Components/Menus/Events/EventLocationActionsMenu';
 import {ContentText} from '#src/Components/Text/ContentText';
+import {stripMarkdownIdentifier, stripObjectReplacementCharacters} from '#src/Components/Text/MarkdownUtils';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -28,6 +29,7 @@ import {FezType} from '#src/Enums/FezType';
 import {FezVisibility} from '#src/Enums/FezVisibility';
 import {AppIcons} from '#src/Enums/Icons';
 import {getParticipantLabel} from '#src/Hooks/Fez/useFezData';
+import {useClipboard} from '#src/Hooks/useClipboard';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {calcCruiseDayTime, getDurationString} from '#src/Libraries/DateTime';
 import {openFezChatScreen} from '#src/Libraries/Navigation';
@@ -61,6 +63,7 @@ export const ScheduleItemScreenBase = ({
   const {startDate, endDate} = useCruise();
   const {preRegistrationMode} = usePreRegistration();
   const {tzAtTime} = useTimeZone();
+  const {setString} = useClipboard();
 
   const styles = StyleSheet.create({
     cancelContainer: {
@@ -116,13 +119,34 @@ export const ScheduleItemScreenBase = ({
     );
   }
 
-  const getInfoContent = () => {
+  /**
+   * Description text for the event (description) or fez (info), or undefined for neither.
+   */
+  const getInfoText = () => {
     if ('fezID' in eventData) {
-      return <ContentText text={eventData.info} />;
+      return eventData.info;
     } else if ('eventID' in eventData) {
-      return <ContentText text={eventData.description} />;
+      return eventData.description;
     }
-    return null;
+    return undefined;
+  };
+
+  /**
+   * Renders the description. Not selectable so the row's long press (copy) isn't swallowed by native text selection.
+   */
+  const getInfoContent = () => {
+    const text = getInfoText();
+    return text === undefined ? null : <ContentText text={text} selectable={false} />;
+  };
+
+  /**
+   * Copies the description to the clipboard, minus the Markdown marker and object replacement characters.
+   */
+  const copyInfo = () => {
+    const text = getInfoText();
+    if (text) {
+      setString(stripMarkdownIdentifier(stripObjectReplacementCharacters(text)));
+    }
   };
 
   return (
@@ -169,7 +193,12 @@ export const ScheduleItemScreenBase = ({
                 <>
                   <DataFieldListItem icon={AppIcons.type} description={eventData.eventType} title={'Type'} />
                   {eventData.description && (
-                    <DataFieldListItem icon={AppIcons.description} description={getInfoContent} title={'Description'} />
+                    <DataFieldListItem
+                      icon={AppIcons.description}
+                      description={getInfoContent}
+                      title={'Description'}
+                      onLongPress={copyInfo}
+                    />
                   )}
                   {eventData.performers.length !== 0 && <EventPerformerListItem performers={eventData.performers} />}
                   {eventData.shutternautData?.photographers && eventData.shutternautData.photographers.length !== 0 && (
@@ -200,7 +229,12 @@ export const ScheduleItemScreenBase = ({
                       }
                     />
                   )}
-                  <DataFieldListItem icon={AppIcons.description} description={getInfoContent} title={'Description'} />
+                  <DataFieldListItem
+                    icon={AppIcons.description}
+                    description={getInfoContent}
+                    title={'Description'}
+                    onLongPress={copyInfo}
+                  />
                   {eventData.fezType === FezType.privateEvent && (
                     <UserChipsListItem
                       users={eventData.members?.participants}

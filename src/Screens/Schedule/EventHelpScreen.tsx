@@ -52,6 +52,9 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
           </HelpChapterTitleView>
         )}
         <HelpChapterTitleView title={'Actions'} />
+        <HelpTopicView title={'Description'} icon={AppIcons.description}>
+          Long press the description to copy it to your clipboard.
+        </HelpTopicView>
         <HelpTopicView title={'Location'} icon={AppIcons.map}>
           Tap Location to open the deck map. Long press Location for additional actions.
         </HelpTopicView>
