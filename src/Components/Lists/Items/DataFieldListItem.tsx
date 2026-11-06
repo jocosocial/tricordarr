@@ -98,6 +98,11 @@ export const DataFieldListItem = ({
     return resolvedDescription as ListItemDescription;
   }, [description, sensitive, showSensitive]);
 
+  // Only plain text gets the default copy. Any touch handler enables List.Item's touchable, which would then
+  // take touches away from selectable or pressable content rendered by a description function or element.
+  const copyDescription =
+    typeof displayDescription === 'string' && displayDescription ? () => setString(displayDescription) : undefined;
+
   return (
     <List.Item
       left={left || getIcon}
@@ -108,13 +113,7 @@ export const DataFieldListItem = ({
       descriptionNumberOfLines={0}
       title={title}
       onPress={sensitive || onPress ? handlePress : undefined}
-      onLongPress={
-        onLongPress ||
-        (() =>
-          displayDescription && (typeof displayDescription === 'string' || typeof displayDescription === 'number')
-            ? setString(displayDescription.toString())
-            : undefined)
-      }
+      onLongPress={onLongPress || copyDescription}
       contentStyle={styles.content}
     />
   );
