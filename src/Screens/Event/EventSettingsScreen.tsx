@@ -165,7 +165,7 @@ export const EventSettingsScreen = () => {
   };
 
   /**
-   * Persist the default view (list or Timeline) the Overlapping Events screen opens in.
+   * Persist the view (list or Planner) the Overlapping Events screen uses.
    */
   const handleOverlapViewMode = (value: string) => {
     updateAppConfig({
@@ -329,9 +329,9 @@ export const EventSettingsScreen = () => {
                 <BooleanField
                   name={'overlapOnlyYourEvents'}
                   testID={'overlapOnlyYourEvents-switch'}
-                  label={'Default to Only Your Events'}
+                  label={'Show Only Your Events by Default'}
                   helperText={
-                    "Start the Overlapping Events screen showing only events you are participating in, events you own, or events you have favorited. You can switch to all events from that screen's header."
+                    'Start the Overlapping Events screen showing only events you have joined, own, or favorited. A temporary toggle is available in the header.'
                   }
                   onPress={handleOverlapOnlyYourEvents}
                   value={overlapOnlyYourEvents}
@@ -342,15 +342,14 @@ export const EventSettingsScreen = () => {
           </Formik>
         </PaddedContentView>
         <PaddedContentView>
-          <Text style={commonStyles.marginBottomSmall}>Default Overlapping View</Text>
+          <Text style={commonStyles.marginBottomSmall}>Overlapping View</Text>
           <SegmentedButtons
             buttons={overlapViewModeButtons}
             value={appConfig.schedule.overlapViewMode}
             onValueChange={handleOverlapViewMode}
           />
           <Text variant={'bodySmall'} style={styles.helperText}>
-            List shows events in time order. Timeline places them side by side by time. You can switch views from the
-            Overlapping Events screen's header.
+            List shows events in time order. Planner places them side by side by time.
           </Text>
         </PaddedContentView>
         <PaddedContentView padSides={false}>

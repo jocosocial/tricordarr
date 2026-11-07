@@ -15,7 +15,7 @@ export namespace ScheduleOverlapViewMode {
       case ScheduleOverlapViewMode.list:
         return 'List';
       case ScheduleOverlapViewMode.timeline:
-        return 'Timeline';
+        return 'Planner';
       default:
         return 'List';
     }

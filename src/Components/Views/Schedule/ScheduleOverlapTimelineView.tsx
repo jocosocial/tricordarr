@@ -16,6 +16,8 @@ interface ScheduleOverlapTimelineViewProps {
   cruiseDay: number;
   /** Pull-to-refresh control for the timeline's scroll view. */
   refreshControl: React.ReactElement<RefreshControlProps>;
+  /** ID of the item being compared against, kept in the first column and highlighted. */
+  pinnedItemId: string;
 }
 
 /**
@@ -23,7 +25,12 @@ interface ScheduleOverlapTimelineViewProps {
  * the Day Planner timeline, but the window spans only the hours of the items (first item at the
  * top) rather than a full day.
  */
-export const ScheduleOverlapTimelineView = ({items, cruiseDay, refreshControl}: ScheduleOverlapTimelineViewProps) => {
+export const ScheduleOverlapTimelineView = ({
+  items,
+  cruiseDay,
+  refreshControl,
+  pinnedItemId,
+}: ScheduleOverlapTimelineViewProps) => {
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const {tzAtTime} = useTimeZone();
@@ -69,6 +76,8 @@ export const ScheduleOverlapTimelineView = ({items, cruiseDay, refreshControl}: 
         timeZoneID={boatTimeZoneID}
         selectedCruiseDay={cruiseDay}
         refreshControl={refreshControl}
+        showEndLabel={true}
+        pinnedItemId={pinnedItemId}
       />
     </View>
   );

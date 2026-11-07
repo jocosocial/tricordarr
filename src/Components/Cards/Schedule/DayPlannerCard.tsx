@@ -5,6 +5,7 @@ import {Text, TouchableRipple} from 'react-native-paper';
 
 import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {ScheduleItemHighlightView} from '#src/Components/Views/Schedule/ScheduleItemHighlightView';
 import {
   COMPACT_THEME_DURATION_MINUTES,
   COMPACT_THEME_FADE_MINUTES,
@@ -34,6 +35,8 @@ type DayPlannerCardContentLevel = 'titleOnly' | 'titleAndLocation';
 interface DayPlannerCardProps {
   item: DayPlannerItemWithLayout;
   onPress?: () => void;
+  /** Draws a red border around the card, matching the ship map's location highlight. */
+  highlighted?: boolean;
 }
 
 // Layout constants for the day planner card
@@ -67,7 +70,7 @@ const staticStyles = StyleSheet.create({
   },
 });
 
-export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
+export const DayPlannerCard = ({item, onPress, highlighted}: DayPlannerCardProps) => {
   const {theme} = useAppTheme();
   const {hasShutternaut, hasShutternautManager} = useRoles();
   const {getBackgroundColor, getTextColor} = useDayPlanner();
@@ -216,6 +219,7 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
               </Text>
             )}
           </View>
+          {highlighted && <ScheduleItemHighlightView borderRadius={3} />}
         </View>
       </TouchableRipple>
     </View>

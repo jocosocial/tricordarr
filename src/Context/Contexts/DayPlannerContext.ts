@@ -53,6 +53,7 @@ export interface DayPlannerContextType {
     dayStart: Date,
     dayEnd: Date,
     compactThemeEvents?: boolean,
+    pinnedItemId?: string,
   ) => DayPlannerItemWithLayout[];
   generateTimeSlotLabels: (
     dayStart: Date,

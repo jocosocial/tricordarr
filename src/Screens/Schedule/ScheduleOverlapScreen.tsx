@@ -11,7 +11,6 @@ import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList'
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
-import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ScheduleOverlapTimelineView} from '#src/Components/Views/Schedule/ScheduleOverlapTimelineView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -28,7 +27,7 @@ import {ScheduleOverlapViewMode} from '#src/Enums/ScheduleOverlapViewMode';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
-import {calcCruiseDayTime, eventsOverlap, getDurationString} from '#src/Libraries/DateTime';
+import {calcCruiseDayTime, eventsOverlap} from '#src/Libraries/DateTime';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -47,7 +46,6 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {appConfig} = useConfig();
   const {theme} = useAppTheme();
   const {isLoggedIn} = useSession();
-  const [viewMode, setViewMode] = useState(appConfig.schedule.overlapViewMode);
   const {tzAtTime} = useTimeZone();
   const {getIsDisabled} = useFeature();
   const {preRegistrationMode} = usePreRegistration();
@@ -256,7 +254,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     () =>
       StyleSheet.create({
         hint: {
-          ...commonStyles.paddingVertical,
+          ...commonStyles.paddingVerticalSmall,
           ...commonStyles.paddingHorizontal,
         },
         hintText: {
@@ -293,28 +291,14 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     !isFetching &&
     filteredItems.every(item => ('fezID' in item ? item.fezID : item.eventID) === routeEventId);
 
-  // Changing the defaults in Settings (reachable from this screen's Actions menu) or logging in applies when you come
-  // back; the effects only fire when a default's value changes, so they never undo a toggle otherwise.
-  useEffect(() => setViewMode(appConfig.schedule.overlapViewMode), [appConfig.schedule.overlapViewMode]);
+  // Changing the default in Settings (reachable from this screen's Actions menu) or logging in applies when you come
+  // back; the effect only fires when the default's value changes, so it never undoes a toggle otherwise.
   useEffect(() => setOnlyYourEvents(defaultOnlyYourEvents), [defaultOnlyYourEvents]);
-
-  /** Flip between the list and Timeline views for this visit only; the saved default is not changed. */
-  const handleToggleViewMode = useCallback(() => {
-    setViewMode(current =>
-      current === ScheduleOverlapViewMode.timeline ? ScheduleOverlapViewMode.list : ScheduleOverlapViewMode.timeline,
-    );
-  }, []);
 
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <MaterialHeaderButtons>
-          <MenuAnchor
-            title={'Timeline View'}
-            active={viewMode === ScheduleOverlapViewMode.timeline}
-            onPress={handleToggleViewMode}
-            iconName={AppIcons.dayPlanner}
-          />
           <MenuAnchor
             title={'Only Your Events'}
             active={onlyYourEvents}
@@ -345,7 +329,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [onlyYourEvents, visible, openMenu, closeMenu, commonNavigation, viewMode, handleToggleViewMode]);
+  }, [onlyYourEvents, visible, openMenu, closeMenu, commonNavigation]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -353,23 +337,14 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  const durationString = getDurationString(
-    eventData.startTime,
-    eventData.endTime,
-    eventData.timeZoneID,
-    true,
-    appConfig.schedule.timeZoneLabelMode,
-  );
-
   return (
     <AppView>
       <TimezoneWarningView />
-      <ListTitleView title={eventData.title} subtitle={durationString} />
       {showFilterHint && (
         <View style={styles.hint}>
           <Text style={styles.hintText}>
-            No other events of yours overlap this one. Turn off the Only Your Events filter (person icon) in the header
-            to see all events.
+            No other events of yours overlap with this one. Turn off the Only Your Events filter in the header above to
+            see all events.
           </Text>
         </View>
       )}
@@ -378,11 +353,14 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
           <View style={commonStyles.loadingContainer}>
             <ActivityIndicator size={'large'} />
           </View>
-        ) : viewMode === ScheduleOverlapViewMode.timeline && cruiseDay !== undefined && filteredItems.length > 0 ? (
+        ) : appConfig.schedule.overlapViewMode === ScheduleOverlapViewMode.timeline &&
+          cruiseDay !== undefined &&
+          filteredItems.length > 0 ? (
           <ScheduleOverlapTimelineView
             items={filteredItems}
             cruiseDay={cruiseDay}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            pinnedItemId={routeEventId}
           />
         ) : (
           <ScheduleFlatList
@@ -390,6 +368,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
             listRef={listRef}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             separator={'time'}
+            highlightedItemId={routeEventId}
           />
         )}
       </View>

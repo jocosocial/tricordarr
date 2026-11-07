@@ -224,12 +224,16 @@ const adjustItemForDisplay = (
  * Calculate layout information for overlapping items.
  * Groups overlapping items and assigns column positions.
  * Ported from SitePrivateEventController.swift lines 290-340.
+ *
+ * @param pinnedItemId - Item to keep in the first column. Items overlapping it move to later columns; the rest are
+ * assigned as usual.
  */
-const calculateItemLayout = (
+export const calculateItemLayout = (
   items: DayPlannerItem[],
   dayStart: Date,
   dayEnd: Date,
   compactThemeEvents?: boolean,
+  pinnedItemId?: string,
 ): DayPlannerItemWithLayout[] => {
   // Adjust items for display and filter out non-intersecting ones
   const adjustedItems = items
@@ -243,6 +247,7 @@ const calculateItemLayout = (
   let columnEndTimes: Date[] = [];
   let groupEndTime = new Date(0);
   const itemColumnMap = new Map<string, number>();
+  const pinnedItem = sorted.find(item => item.id === pinnedItemId);
 
   for (const item of sorted) {
     // Check if this item starts after the current group ends - reset columns
@@ -251,8 +256,20 @@ const calculateItemLayout = (
       groupEndTime = new Date(0);
     }
 
+    // Items overlapping the pinned item must leave the first column free for it, even if they start before it.
+    const yieldsFirstColumn =
+      pinnedItem !== undefined &&
+      item.id !== pinnedItem.id &&
+      item.startTime < pinnedItem.endTime &&
+      item.endTime > pinnedItem.startTime;
+    if (yieldsFirstColumn && columnEndTimes.length === 0) {
+      columnEndTimes.push(new Date(0));
+    }
+
     // Find an available column or create a new one
-    let columnIndex = columnEndTimes.findIndex(endTime => endTime <= item.startTime);
+    let columnIndex = columnEndTimes.findIndex(
+      (endTime, index) => endTime <= item.startTime && !(yieldsFirstColumn && index === 0),
+    );
     if (columnIndex === -1) {
       // Need a new column
       columnIndex = columnEndTimes.length;
@@ -386,7 +403,8 @@ const getTimelineHeight = (
 /**
  * Compute a timeline window that fits just the given items, using their displayed times (so compact
  * Theme events and the minimum-duration extension are respected). Returns null when there are no items.
- * dayEnd also leaves room for the minimum card height, since a short last card must not overflow the timeline.
+ * dayEnd is on a whole hour, and also leaves room for the minimum card height, since a short last card must not
+ * overflow the timeline.
  *
  * @param items - Items to fit.
  * @param timeZoneID - IANA timezone used to floor the start to the hour.
@@ -419,10 +437,10 @@ export const getItemsTimelineWindow = (
   const latestEndMs = Math.max(
     ...displayed.map(item => Math.max(item.endTime.getTime(), item.startTime.getTime() + minCardMs)),
   );
-  const rowMs = DAY_PLANNER_CONFIG.MINUTES_PER_ROW * 60 * 1000;
-  const rows = Math.ceil((latestEndMs - dayStart.getTime()) / rowMs);
+  const hourMs = 60 * 60 * 1000;
+  const hours = Math.ceil((latestEndMs - dayStart.getTime()) / hourMs);
 
-  return {dayStart, dayEnd: new Date(dayStart.getTime() + rows * rowMs)};
+  return {dayStart, dayEnd: new Date(dayStart.getTime() + hours * hourMs)};
 };
 
 /**

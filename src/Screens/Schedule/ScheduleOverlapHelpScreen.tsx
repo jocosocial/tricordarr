@@ -24,10 +24,6 @@ export const ScheduleOverlapHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
-          <HelpTopicView title={'Timeline View'} icon={AppIcons.dayPlanner}>
-            Switch between the list and a timeline of these events. When active, the button appears in blue. Schedule
-            Settings sets which view opens by default.
-          </HelpTopicView>
           <ReloadButtonHelpTopicView />
           <ScheduleSettingsHelpTopicView />
           <HelpButtonHelpTopicView />
