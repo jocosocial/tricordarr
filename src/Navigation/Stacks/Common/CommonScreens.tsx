@@ -119,6 +119,7 @@ import {ModerateMicroKaraokeSongsScreen} from '#src/Screens/Moderation/Content/M
 import {ModeratePhotostreamScreen} from '#src/Screens/Moderation/Content/ModeratePhotostreamScreen';
 import {ModeratePrivateEventScreen} from '#src/Screens/Moderation/Content/ModeratePrivateEventScreen';
 import {ModerateProfileScreen} from '#src/Screens/Moderation/Content/ModerateProfileScreen';
+import {ModerateQuartermasterScreen} from '#src/Screens/Moderation/Content/ModerateQuartermasterScreen';
 import {ModerateUserScreen} from '#src/Screens/Moderation/Content/ModerateUserScreen';
 import {ModeratorGuideScreen} from '#src/Screens/Moderation/ModeratorGuideScreen';
 import {ModeratorHomeScreen} from '#src/Screens/Moderation/ModeratorHomeScreen';
@@ -137,6 +138,10 @@ import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScree
 import {PhotostreamEventScreen} from '#src/Screens/Photostream/PhotostreamEventScreen';
 import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
 import {PhotostreamUserScreen} from '#src/Screens/Photostream/PhotostreamUserScreen';
+import {QuartermasterCreateScreen} from '#src/Screens/Quartermaster/QuartermasterCreateScreen';
+import {QuartermasterEditScreen} from '#src/Screens/Quartermaster/QuartermasterEditScreen';
+import {QuartermasterHelpScreen} from '#src/Screens/Quartermaster/QuartermasterHelpScreen';
+import {QuartermasterItemScreen} from '#src/Screens/Quartermaster/QuartermasterItemScreen';
 import {RegCodeManageScreen} from '#src/Screens/RegCode/RegCodeManageScreen';
 import {RegCodeStatsScreen} from '#src/Screens/RegCode/RegCodeStatsScreen';
 import {EventHelpScreen} from '#src/Screens/Schedule/EventHelpScreen';
@@ -334,6 +339,31 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.moderatePhotostreamScreen}
         component={ModeratePhotostreamScreen}
         options={{title: 'Moderate Photo'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateQuartermasterScreen}
+        component={ModerateQuartermasterScreen}
+        options={{title: 'Moderate Item'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.quartermasterItemScreen}
+        component={QuartermasterItemScreen}
+        options={{title: 'Quartermastarr Item'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.quartermasterCreateScreen}
+        component={QuartermasterCreateScreen}
+        options={{title: 'New Item'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.quartermasterEditScreen}
+        component={QuartermasterEditScreen}
+        options={{title: 'Edit Item'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.quartermasterHelpScreen}
+        component={QuartermasterHelpScreen}
+        options={{title: 'Quartermastarr Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.moderatePrivateEventScreen}
