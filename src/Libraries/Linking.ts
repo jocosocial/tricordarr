@@ -94,7 +94,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
                 mine: (value?: string) => value === 'true',
               },
             },
-            QuartermasterItemScreen: getPath(CommonStackComponents.quartermasterItemScreen),
+            QuartermasterItemScreen: uuidPath(getPath(CommonStackComponents.quartermasterItemScreen)),
             MainTimeZoneScreen: getPath(CommonStackComponents.mainTimeZoneScreen),
             BoardgameListScreen: getPath(MainStackComponents.boardgameListScreen),
             HuntListScreen: getPath(MainStackComponents.huntListScreen),
