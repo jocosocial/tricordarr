@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface ScheduleItemHighlightViewProps {
@@ -8,15 +9,13 @@ interface ScheduleItemHighlightViewProps {
   borderRadius?: number;
 }
 
-// Half the width of the ship map's location highlight (BOX_BORDER_WIDTH in MapHighlightOverlay).
-const HIGHLIGHT_BORDER_WIDTH = 2;
-
 /**
  * Red border drawn over a schedule card to mark it, in the ship map location highlight's color. An overlay rather
  * than the card's own border, so it takes no space from the card's content. The parent must fit the card exactly.
  */
 export const ScheduleItemHighlightView = ({borderRadius}: ScheduleItemHighlightViewProps) => {
   const {theme} = useAppTheme();
+  const {styleDefaults} = useStyles();
 
   const styles = useMemo(
     () =>
@@ -28,11 +27,11 @@ export const ScheduleItemHighlightView = ({borderRadius}: ScheduleItemHighlightV
           right: 0,
           bottom: 0,
           borderRadius: borderRadius ?? theme.roundness * 3,
-          borderWidth: HIGHLIGHT_BORDER_WIDTH,
+          borderWidth: styleDefaults.highlightBorderWidth,
           borderColor: theme.colors.twitarrNegativeButton,
         },
       }),
-    [borderRadius, theme.roundness, theme.colors.twitarrNegativeButton],
+    [borderRadius, styleDefaults.highlightBorderWidth, theme.roundness, theme.colors.twitarrNegativeButton],
   );
 
   return <View style={styles.highlight} pointerEvents={'none'} />;
