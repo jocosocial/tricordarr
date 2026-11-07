@@ -47,6 +47,13 @@ export const allRoutes: RouteDefinition[] = [
   {screen: MainStackComponents.performerListScreen, path: 'performers'},
   {screen: CommonStackComponents.performerSelfScreen, path: 'performer/shadow/self'},
   {screen: CommonStackComponents.performerScreen, path: 'performer/:id'},
+  {screen: MainStackComponents.quartermasterListScreen, path: 'quartermaster'},
+  // The website's Need / Owned / About pages. They open the board; category and mine can be
+  // requested with query params (quartermaster?category=need&mine=true).
+  {screen: MainStackComponents.quartermasterListScreen, path: 'quartermaster/need'},
+  {screen: MainStackComponents.quartermasterListScreen, path: 'quartermaster/owned'},
+  {screen: MainStackComponents.quartermasterListScreen, path: 'quartermaster/about'},
+  {screen: CommonStackComponents.quartermasterItemScreen, path: 'quartermaster/:itemID'},
   {screen: CommonStackComponents.mainTimeZoneScreen, path: 'time'},
   {screen: MainStackComponents.boardgameListScreen, path: 'boardgames'},
   {screen: MainStackComponents.huntListScreen, path: 'hunts'},
@@ -109,6 +116,7 @@ export const allRoutes: RouteDefinition[] = [
   {screen: CommonStackComponents.moderateUserScreen, path: 'moderate/user/:id'},
   {screen: CommonStackComponents.moderatePhotostreamScreen, path: 'moderate/photostream/:id'},
   {screen: CommonStackComponents.moderatePrivateEventScreen, path: 'moderate/personalevent/:id'},
+  {screen: CommonStackComponents.moderateQuartermasterScreen, path: 'moderate/quartermaster/:id'},
   {screen: CommonStackComponents.moderatorLogScreen, path: 'moderator/log'},
   {screen: CommonStackComponents.moderatorGuideScreen, path: 'moderator/guide'},
   {screen: CommonStackComponents.moderatorReportsScreen, path: 'reports/:closed?'},
@@ -143,6 +151,8 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     // Performer routes
     CommonStackComponents.performerScreen,
     CommonStackComponents.performerSelfScreen,
+    // Quartermastarr routes
+    CommonStackComponents.quartermasterItemScreen,
     // Hunt routes
     CommonStackComponents.huntScreen,
     CommonStackComponents.huntPuzzleScreen,
@@ -161,6 +171,7 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.moderateUserScreen,
     CommonStackComponents.moderatePhotostreamScreen,
     CommonStackComponents.moderatePrivateEventScreen,
+    CommonStackComponents.moderateQuartermasterScreen,
     CommonStackComponents.moderateMicroKaraokeSongsScreen,
     CommonStackComponents.moderateMicroKaraokeSongScreen,
   ].includes(route.screen as CommonStackComponents),

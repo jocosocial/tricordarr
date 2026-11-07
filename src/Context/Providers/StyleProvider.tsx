@@ -23,6 +23,8 @@ export const styleDefaults = {
   // Used for square crops in User Avatar and Photostream
   imageSquareCropDimension: 2048,
   overScrollHeight: 100, // marginSize * 5
+  // Border marking the current thing, such as a ship map location or the event being compared in Overlapping Events.
+  highlightBorderWidth: 2,
 };
 
 export type StyleDefaults = typeof styleDefaults;

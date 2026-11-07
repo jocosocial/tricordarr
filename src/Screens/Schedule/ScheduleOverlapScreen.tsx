@@ -1,8 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View} from 'react-native';
-import {ActivityIndicator, Menu} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
+import {ActivityIndicator, Menu, Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -11,20 +11,23 @@ import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList'
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
-import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {ScheduleOverlapTimelineView} from '#src/Components/Views/Schedule/ScheduleOverlapTimelineView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {ScheduleOverlapViewMode} from '#src/Enums/ScheduleOverlapViewMode';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
-import {calcCruiseDayTime, eventsOverlap, getDurationString} from '#src/Libraries/DateTime';
+import {calcCruiseDayTime, eventsOverlap} from '#src/Libraries/DateTime';
 import {
   CommonStackComponents,
   CommonStackParamList,
@@ -41,13 +44,18 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {startDate, endDate} = useCruise();
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
+  const {theme} = useAppTheme();
+  const {isLoggedIn} = useSession();
   const {tzAtTime} = useTimeZone();
   const {getIsDisabled} = useFeature();
   const {preRegistrationMode} = usePreRegistration();
   // Pre-registration users can't list what they've joined, only what they own.
   const fezEndpoint = preRegistrationMode ? 'owner' : 'joined';
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
-  const [onlyYourEvents, setOnlyYourEvents] = useState(false);
+  // Logged-out users have no favorites (isFavorite is always false, see the note in
+  // src/Queries/Events/EventQueries.ts) and can't favorite, so they start on all events.
+  const defaultOnlyYourEvents = isLoggedIn && appConfig.schedule.overlapOnlyYourEvents;
+  const [onlyYourEvents, setOnlyYourEvents] = useState(defaultOnlyYourEvents);
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
 
@@ -114,14 +122,14 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     },
   });
 
+  // Get the ID of the route's eventData to ensure it's always included
+  const routeEventId = 'fezID' in eventData ? eventData.fezID : eventData.eventID;
+
   // Combine and filter all items
   const filteredItems = useMemo(() => {
     if (!inputStartTime || !inputEndTime) {
       return [];
     }
-
-    // Get the ID of the route's eventData to ensure it's always included
-    const routeEventId = 'fezID' in eventData ? eventData.fezID : eventData.eventID;
 
     const allItems: (EventData | FezData)[] = [];
 
@@ -147,6 +155,13 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       personalEventData.pages.forEach(page => {
         allItems.push(...page.fezzes);
       });
+    }
+
+    // The opened item may be in no query result, e.g. an unjoined LFG, since the open LFG query is excluded under
+    // the Only Your Events filter or by the setting. Gated on eventDataQuery so the loading spinner, which relies on
+    // an empty filteredItems, still shows on first load.
+    if (eventDataQuery && !allItems.some(item => ('fezID' in item ? item.fezID : item.eventID) === routeEventId)) {
+      allItems.push(eventData);
     }
 
     // Filter by time overlap
@@ -191,9 +206,12 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       return true;
     });
 
-    // Filter by "only your events" if enabled
+    // Only your events: keep joined/personal items, favorited events, and always the opened item itself.
     if (onlyYourEvents) {
       const userFilteredItems = featureFilteredItems.filter(item => {
+        if (('fezID' in item ? item.fezID : item.eventID) === routeEventId) {
+          return true;
+        }
         if ('fezID' in item) {
           return true; // already from joined/personal queries
         }
@@ -221,6 +239,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     inputStartTime,
     inputEndTime,
     eventData,
+    routeEventId,
     eventDataQuery,
     lfgOpenData,
     lfgJoinedData,
@@ -230,6 +249,21 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     appConfig.schedule.eventsShowOpenLfgs,
     getIsDisabled,
   ]);
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        hint: {
+          ...commonStyles.paddingVerticalSmall,
+          ...commonStyles.paddingHorizontal,
+        },
+        hintText: {
+          textAlign: 'center',
+          color: theme.colors.onSurfaceVariant,
+        },
+      }),
+    [commonStyles, theme.colors.onSurfaceVariant],
+  );
 
   const isFetching = isEventFetching || isLfgOpenFetching || isLfgJoinedFetching || isPersonalEventFetching;
 
@@ -250,6 +284,16 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     ]),
     isRefreshing: isFetching,
   });
+
+  // Nothing but the opened item is left, so point at the filter. `every` is also true for an empty list.
+  const showFilterHint =
+    onlyYourEvents &&
+    !isFetching &&
+    filteredItems.every(item => ('fezID' in item ? item.fezID : item.eventID) === routeEventId);
+
+  // Changing the default in Settings (reachable from this screen's Actions menu) or logging in applies when you come
+  // back; the effect only fires when the default's value changes, so it never undoes a toggle otherwise.
+  useEffect(() => setOnlyYourEvents(defaultOnlyYourEvents), [defaultOnlyYourEvents]);
 
   const getNavButtons = useCallback(() => {
     return (
@@ -293,29 +337,38 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  const durationString = getDurationString(
-    eventData.startTime,
-    eventData.endTime,
-    eventData.timeZoneID,
-    true,
-    appConfig.schedule.timeZoneLabelMode,
-  );
-
   return (
     <AppView>
       <TimezoneWarningView />
-      <ListTitleView title={eventData.title} subtitle={durationString} />
+      {showFilterHint && (
+        <View style={styles.hint}>
+          <Text style={styles.hintText}>
+            No other events of yours overlap with this one. Turn off the Only Your Events filter in the header above to
+            see all events.
+          </Text>
+        </View>
+      )}
       <View style={[commonStyles.flex]}>
         {isFetching && filteredItems.length === 0 ? (
           <View style={commonStyles.loadingContainer}>
             <ActivityIndicator size={'large'} />
           </View>
+        ) : appConfig.schedule.overlapViewMode === ScheduleOverlapViewMode.timeline &&
+          cruiseDay !== undefined &&
+          filteredItems.length > 0 ? (
+          <ScheduleOverlapTimelineView
+            items={filteredItems}
+            cruiseDay={cruiseDay}
+            refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            pinnedItemId={routeEventId}
+          />
         ) : (
           <ScheduleFlatList
             items={filteredItems}
             listRef={listRef}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             separator={'time'}
+            highlightedItemId={routeEventId}
           />
         )}
       </View>

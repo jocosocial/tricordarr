@@ -86,6 +86,15 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             PerformerListScreen: getPath(MainStackComponents.performerListScreen),
             PerformerSelfScreen: getPath(CommonStackComponents.performerSelfScreen),
             PerformerScreen: uuidPath(getPath(CommonStackComponents.performerScreen)),
+            QuartermasterListScreen: {
+              path: getPath(MainStackComponents.quartermasterListScreen),
+              alias: ['quartermaster/need', 'quartermaster/owned', 'quartermaster/about'],
+              parse: {
+                // Query-string values arrive as strings.
+                mine: (value?: string) => value === 'true',
+              },
+            },
+            QuartermasterItemScreen: getPath(CommonStackComponents.quartermasterItemScreen),
             MainTimeZoneScreen: getPath(CommonStackComponents.mainTimeZoneScreen),
             BoardgameListScreen: getPath(MainStackComponents.boardgameListScreen),
             HuntListScreen: getPath(MainStackComponents.huntListScreen),
@@ -115,6 +124,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             ModerateUserScreen: getPath(CommonStackComponents.moderateUserScreen),
             ModeratePhotostreamScreen: getPath(CommonStackComponents.moderatePhotostreamScreen),
             ModeratePrivateEventScreen: getPath(CommonStackComponents.moderatePrivateEventScreen),
+            ModerateQuartermasterScreen: getPath(CommonStackComponents.moderateQuartermasterScreen),
             ModerateMicroKaraokeSongsScreen: getPath(CommonStackComponents.moderateMicroKaraokeSongsScreen),
             ModerateMicroKaraokeSongScreen: getPath(CommonStackComponents.moderateMicroKaraokeSongScreen),
           },
