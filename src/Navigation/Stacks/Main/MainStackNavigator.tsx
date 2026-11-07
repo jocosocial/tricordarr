@@ -25,6 +25,7 @@ import {PerformerListScreen} from '#src/Screens/Performer/PerformerListScreen';
 import {PerformerSearchScreen} from '#src/Screens/Performer/PerformerSearchScreen';
 import {PhotostreamImageCreateScreen} from '#src/Screens/Photostream/PhotostreamImageCreateScreen';
 import {PhotostreamScreen} from '#src/Screens/Photostream/PhotostreamScreen';
+import {QuartermasterListScreen} from '#src/Screens/Quartermaster/QuartermasterListScreen';
 import {UserDirectoryScreen} from '#src/Screens/User/UserDirectoryScreen';
 
 export const MainStack = createStackNavigator<MainStackParamList>();
@@ -55,6 +56,11 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.photostreamScreen}
         component={PhotostreamScreen}
         options={{title: 'Photo Stream'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.quartermasterListScreen}
+        component={QuartermasterListScreen}
+        options={{title: 'Quartermastarr'}}
       />
       <MainStack.Screen
         name={MainStackComponents.photostreamImageCreateScreen}

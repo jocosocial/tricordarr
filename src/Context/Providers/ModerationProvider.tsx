@@ -6,6 +6,7 @@ import {
   ModerationStateContext as ModerationStateData,
 } from '#src/Libraries/Moderation/ModerationStateContext';
 import {ReportContentGroup} from '#src/Libraries/Moderation/ReportContentGroup';
+import {getQuartermasterCacheKeys} from '#src/Queries/Quartermaster/QuartermasterCacheKeys';
 import {
   FezModerationData,
   FezPostModerationData,
@@ -19,6 +20,14 @@ import {
  * Derives set-state path, content ID, and cache keys from moderate-screen data.
  */
 const fromData = (data: ModeratedContentData): ModerationStateData => {
+  if ('item' in data) {
+    return {
+      path: 'quartermaster',
+      contentID: data.item.itemID,
+      cacheKeys: getQuartermasterCacheKeys({itemID: data.item.itemID}).concat(ReportModerationData.getCacheKeys()),
+      isDeleted: data.isDeleted,
+    };
+  }
   if ('forumPost' in data) {
     const contentID = String(data.forumPost.postID);
     return {

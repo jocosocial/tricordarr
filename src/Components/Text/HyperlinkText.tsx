@@ -47,6 +47,11 @@ const urlPathLabelMappings = [
   {pattern: /\/hunts.*/, label: 'Puzzle Hunts Link', icon: AppIcons.hunts},
   {pattern: /\/hunt.*/, label: 'Puzzle Hunt Link', icon: AppIcons.hunts},
   {pattern: /\/puzzle.*/, label: 'Puzzle Link', icon: AppIcons.hunts},
+  {pattern: /\/quartermaster\/need/, label: 'Quartermastarr Need Link', icon: AppIcons.quartermaster},
+  {pattern: /\/quartermaster\/owned/, label: 'Your Quartermastarr Items Link', icon: AppIcons.quartermaster},
+  {pattern: /\/quartermaster\/about/, label: 'Quartermastarr Info Link', icon: AppIcons.quartermaster},
+  {pattern: /\/quartermaster\/[^/?#]+/, label: 'Quartermastarr Item Link', icon: AppIcons.quartermaster},
+  {pattern: /\/quartermaster.*/, label: 'Quartermastarr Have Link', icon: AppIcons.quartermaster},
 ];
 
 interface HyperlinkTextProps {

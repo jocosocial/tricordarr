@@ -64,7 +64,7 @@ const SeamailCreateScreenInner = ({navigation, route}: Props) => {
     initialUsers: route.params?.initialUserHeaders || [],
     maxCapacity: 0,
     minCapacity: 0,
-    title: '',
+    title: route.params?.initialTitle ?? '',
     createdByTwitarrTeam: asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam,
     createdByModerator: asPrivilegedUser === PrivilegedUserAccounts.moderator,
   };
