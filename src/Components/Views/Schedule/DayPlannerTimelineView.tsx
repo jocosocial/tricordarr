@@ -1,5 +1,5 @@
 import React, {forwardRef, useCallback, useMemo} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, ScrollView, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {DayPlannerCard} from '#src/Components/Cards/Schedule/DayPlannerCard';
@@ -29,10 +29,32 @@ interface DayPlannerTimelineViewProps {
    * would cost a callback per frame for the same information.
    */
   onScrollSettled?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  /** Optional pull-to-refresh control passed through to the ScrollView. The Day Planner pager does not use it. */
+  refreshControl?: React.ReactElement<RefreshControlProps>;
+  /**
+   * Adds a row after dayEnd so its line gets an hour label. dayEnd must be on the hour. The Day Planner pager does
+   * not use it.
+   */
+  showEndLabel?: boolean;
+  /** Item to keep in the first column and highlight. The Day Planner pager does not use it. */
+  pinnedItemId?: string;
 }
 
 export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineViewProps>(
-  ({items, dayStart, dayEnd, timeZoneID, selectedCruiseDay, onScrollSettled}, ref) => {
+  (
+    {
+      items,
+      dayStart,
+      dayEnd,
+      timeZoneID,
+      selectedCruiseDay,
+      onScrollSettled,
+      refreshControl,
+      showEndLabel,
+      pinnedItemId,
+    },
+    ref,
+  ) => {
     const {theme} = useAppTheme();
     const {commonStyles} = useStyles();
     const commonNavigation = useCommonStack();
@@ -45,13 +67,22 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
 
     // Calculate layout for all items
     const layoutItems = useMemo(() => {
-      return calculateItemLayout(items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents);
-    }, [items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents, calculateItemLayout]);
+      return calculateItemLayout(items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents, pinnedItemId);
+    }, [items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents, calculateItemLayout, pinnedItemId]);
+
+    // Rows in the window. The real Day Planner's window is exactly 24h (getDayBoundaries adds absolute
+    // hours from the same base), so this stays 96 there; the overlap view passes a shorter window.
+    const totalSlots = useMemo(
+      () => Math.round((dayEnd.getTime() - dayStart.getTime()) / (DAY_PLANNER_CONFIG.MINUTES_PER_ROW * 60 * 1000)),
+      [dayStart, dayEnd],
+    );
+
+    const displaySlots = showEndLabel ? totalSlots + 1 : totalSlots;
 
     // Generate time slot labels (in boat time when timeZoneID provided)
     const timeSlots = useMemo(() => {
-      return generateTimeSlotLabels(dayStart, timeZoneID);
-    }, [dayStart, timeZoneID, generateTimeSlotLabels]);
+      return generateTimeSlotLabels(dayStart, timeZoneID, displaySlots);
+    }, [dayStart, timeZoneID, displaySlots, generateTimeSlotLabels]);
 
     const handleItemPress = useCallback(
       (item: DayPlannerItemWithLayout) => {
@@ -150,7 +181,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         }),
       [theme, commonStyles],
     );
-    const timelineHeight = getTimelineHeight();
+    const timelineHeight = getTimelineHeight(displaySlots);
 
     if (items.length === 0) {
       return (
@@ -177,6 +208,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         style={styles.container}
         contentContainerStyle={styles.scrollContent}
         scrollsToTop={false}
+        refreshControl={refreshControl}
         showsVerticalScrollIndicator={false}
         onScrollEndDrag={onScrollSettled}
         onMomentumScrollEnd={onScrollSettled}>
@@ -185,6 +217,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
           {selectedCruiseDay === adjustedCruiseDayToday && (
             <DayPlannerNowDivider
               dayStart={dayStart}
+              timelineHeight={getTimelineHeight(totalSlots)}
               selectedCruiseDay={selectedCruiseDay}
               boatTimeZoneID={timeZoneID ?? appConfig.portTimeZoneID}
             />
@@ -215,7 +248,12 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
             {/* Event cards */}
             <View style={styles.eventsContainer}>
               {layoutItems.map(item => (
-                <DayPlannerCard key={item.id} item={item} onPress={() => handleItemPress(item)} />
+                <DayPlannerCard
+                  key={item.id}
+                  item={item}
+                  onPress={() => handleItemPress(item)}
+                  highlighted={item.id === pinnedItemId}
+                />
               ))}
             </View>
           </View>
