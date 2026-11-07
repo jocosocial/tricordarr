@@ -141,6 +141,7 @@ export enum AppIcons {
   instagram = 'instagram',
   performer = 'piano',
   official = 'shield-check',
+  performerUnlink = 'link-variant-off',
   archive = 'archive',
   hunts = 'puzzle',
   thumbnail = 'image-size-select-small',

@@ -14,6 +14,11 @@ export const ShadowPerformerProfilesHelpTopicView = () => {
         Schedule screen and select Set Organizer to fill out the form. If you wish to create one while on board contact
         the TwitarrTeam for assistance. All profile content is subject to moderator review.
       </HelpTopicView>
+      <HelpTopicView>
+        If you have the Shadow Event Performer role you can also create a profile without an event from Shadow Performer
+        Bio in the Special Roles section of the drawer. The TwitarrTeam can link it to the events you'll be running. If
+        you need this, contact the TwitarrTeam.
+      </HelpTopicView>
     </HelpChapterTitleView>
   );
 };

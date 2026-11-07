@@ -3,6 +3,7 @@ import React from 'react';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
+import {ManagePerformersHelpTopicView} from '#src/Components/Views/Help/Common/ManagePerformersHelpTopicView';
 import {OfficialPerformersHelpTopicView} from '#src/Components/Views/Help/Common/OfficialPerformersHelpTopicView';
 import {SearchBarHelpTopicView} from '#src/Components/Views/Help/Common/SearchBarHelpTopicView';
 import {ShadowPerformerProfilesHelpTopicView} from '#src/Components/Views/Help/Common/ShadowPerformerProfilesHelpTopicView';
@@ -29,6 +30,9 @@ export const PerformerHelpScreen = () => {
             at the top of the search screen to switch between them.
           </HelpTopicView>
           <SearchBarHelpTopicView />
+          <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
+            Edit your own performer profile. Only shown on a profile you created.
+          </HelpTopicView>
           <ShareButtonHelpTopicView />
           <HelpButtonHelpTopicView />
         </HelpChapterTitleView>
@@ -43,6 +47,11 @@ export const PerformerHelpScreen = () => {
           <HelpTopicView title={'Edit Performer'} icon={AppIcons.twitarrteam}>
             Edit the performer's profile.
           </HelpTopicView>
+          <HelpTopicView title={'Shadow Performer Bio'} icon={AppIcons.performer}>
+            Users with the Shadow Event Performer role can create a performer profile for themselves without attaching
+            it to an event. The TwitarrTeam can then link it to events.
+          </HelpTopicView>
+          <ManagePerformersHelpTopicView />
         </HelpChapterTitleView>
       </ScrollingContentView>
     </AppView>

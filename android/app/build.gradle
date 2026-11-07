@@ -121,12 +121,8 @@ android {
         versionName "2027.0.0"
     }
     signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
+        // The debug config is intentionally not customized. The Android Gradle Plugin
+        // creates and uses a per-machine ~/.android/debug.keystore.
         release {
             def keystorePropertiesFile = rootProject.file("../local.properties")
             if (keystorePropertiesFile.exists()) {
@@ -137,13 +133,9 @@ android {
                 storePassword keystoreProperties['TRICORDARR_UPLOAD_STORE_PASSWORD']
                 keyAlias keystoreProperties['TRICORDARR_UPLOAD_KEY_ALIAS']
                 keyPassword keystoreProperties['TRICORDARR_UPLOAD_KEY_PASSWORD']
-            } else {
-                // Fallback to debug keystore if local.properties doesn't exist
-                storeFile file('debug.keystore')
-                storePassword 'android'
-                keyAlias 'androiddebugkey'
-                keyPassword 'android'
             }
+            // Without local.properties this config has no keystore, so a local release build
+            // cannot be signed. Do not fall back to a debug key here: its private key is public.
         }
     }
     buildTypes {

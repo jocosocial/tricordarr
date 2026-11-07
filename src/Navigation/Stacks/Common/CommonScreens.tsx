@@ -39,6 +39,7 @@ import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
 import {PreRegistrationHelpScreen} from '#src/Screens/Disabled/PreRegistrationHelpScreen';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
 import {EventLocationScreen} from '#src/Screens/Event/EventLocationScreen';
+import {EventPerformersManageScreen} from '#src/Screens/Event/EventPerformersManageScreen';
 import {EventScreen} from '#src/Screens/Event/EventScreen';
 import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
@@ -130,6 +131,7 @@ import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScree
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {PerformerHelpScreen} from '#src/Screens/Performer/PerformerHelpScreen';
 import {PerformerScreen} from '#src/Screens/Performer/PerformerScreen';
+import {PerformerSelfScreen} from '#src/Screens/Performer/PerformerSelfScreen';
 import {PersonalEventCreateScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateScreen';
 import {PersonalEventEditScreen} from '#src/Screens/PersonalEvent/PersonalEventEditScreen';
 import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScreen';
@@ -827,6 +829,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.performerEditScreen}
         component={PerformerEditScreen}
         options={{title: 'Edit Performer'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.performerSelfScreen}
+        component={PerformerSelfScreen}
+        options={{title: 'Performer Bio'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventPerformersManageScreen}
+        component={EventPerformersManageScreen}
+        options={{title: 'Manage Performers'}}
       />
       <Stack.Screen
         name={CommonStackComponents.eventSettingsScreen}

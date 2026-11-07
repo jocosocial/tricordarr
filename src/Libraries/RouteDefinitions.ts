@@ -45,6 +45,7 @@ export const allRoutes: RouteDefinition[] = [
   {screen: MainStackComponents.karaokeFavoritesListScreen, path: 'karaoke/favorites'},
   {screen: MainStackComponents.karaokeLogPerformanceScreen, path: 'karaoke/log/:songID'},
   {screen: MainStackComponents.performerListScreen, path: 'performers'},
+  {screen: CommonStackComponents.performerSelfScreen, path: 'performer/shadow/self'},
   {screen: CommonStackComponents.performerScreen, path: 'performer/:id'},
   {screen: MainStackComponents.quartermasterListScreen, path: 'quartermaster'},
   // The website's Need / Owned / About pages. They open the board; category and mine can be
@@ -149,6 +150,7 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.mapScreen,
     // Performer routes
     CommonStackComponents.performerScreen,
+    CommonStackComponents.performerSelfScreen,
     // Quartermastarr routes
     CommonStackComponents.quartermasterItemScreen,
     // Hunt routes

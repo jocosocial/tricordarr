@@ -1,15 +1,15 @@
-Releasing
-=========
+# Releasing
 
-Versioning
-----------
+## Versioning
 
 Version number plan:
-* Major = Cruise Year (2023, 2024, etc)
-* Minor = Release number to App Store. Moves in lockstep with `versionCode`.
 
-Android
--------
+- Major = Cruise Year (2023, 2024, etc)
+- Minor = Release number to App Store. Moves in lockstep with `versionCode`.
+
+## Android
+
+TODO: This needs adapted for Expo App Services (EAS) builds!
 
 ### Setup
 
@@ -22,7 +22,9 @@ TRICORDARR_UPLOAD_KEY_ALIAS=tricordarr-upload
 TRICORDARR_UPLOAD_KEY_PASSWORD=redacted
 ```
 
-Then put the keystore there too.
+Then put the keystore there too. Git worktrees need their own copy of both, since neither is
+tracked. Without `local.properties`, local release builds fail: APKs with a missing `storeFile` error, AABs
+with a `NullPointerException` in `signReleaseBundle`.
 
 ### Build Release
 
@@ -37,9 +39,8 @@ npm run build-android-apk # For an APK to install directly.
 adb -s device-name-here install ~/Projects/jocosocial/tricordarr/android/app/build/outputs/apk/release/app-release.apk
 ```
 
-iOS
----
+## iOS
 
 Set the version info in Xcode. Click the target `Tricordarr` then in the `General` tab under `Identity`.
 
-https://stackoverflow.com/questions/51022884/ios-testflight-no-build-available-for-external-testers
+[https://stackoverflow.com/questions/51022884/ios-testflight-no-build-available-for-external-testers](https://stackoverflow.com/questions/51022884/ios-testflight-no-build-available-for-external-testers)

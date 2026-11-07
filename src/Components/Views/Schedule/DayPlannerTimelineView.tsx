@@ -7,6 +7,7 @@ import {DayPlannerNowDivider} from '#src/Components/Views/Schedule/DayPlannerNow
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {DAY_PLANNER_CONFIG, useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
@@ -37,6 +38,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     const commonNavigation = useCommonStack();
     const {appConfig} = useConfig();
     const {adjustedCruiseDayToday} = useCruise();
+    const {preRegistrationMode} = usePreRegistration();
     const {calculateItemLayout, generateTimeSlotLabels, getTimelineHeight} = useDayPlanner();
     const {primeEventDetail} = useEventCacheReducer();
     const {primeFezDetail} = useFezCacheReducer();
@@ -154,10 +156,17 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
       return (
         <View style={styles.emptyMessage}>
           <Text style={styles.emptyText}>No items in your Day Planner for this day.</Text>
-          <Text style={styles.emptyText}>
-            Follow events on the schedule! Once you're on board, you can join LFGs or create private events to see them
-            here.
-          </Text>
+          {preRegistrationMode ? (
+            <Text style={styles.emptyText}>
+              Follow events on the schedule, or use the New button to create your own LFGs and private events. You'll be
+              able to join other LFGs and Private Events once on board.
+            </Text>
+          ) : (
+            <Text style={styles.emptyText}>
+              Follow events on the schedule, join LFGs, or use the New button to create your own LFGs and private
+              events.
+            </Text>
+          )}
         </View>
       );
     }

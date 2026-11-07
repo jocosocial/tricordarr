@@ -4,6 +4,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {FezType} from '#src/Enums/FezType';
@@ -28,6 +29,7 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
   const commonNavigation = useCommonStack();
   const {hasModerator} = usePrivilege();
   const {confirmCancel, confirmDelete} = useFezAlert(props.event);
+  const {preRegistrationMode} = usePreRegistration();
 
   return (
     <AppMenu
@@ -68,17 +70,20 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
         </>
       )}
       <ShareMenuItem contentType={ShareContentType.privateEvent} contentID={props.event.fezID} closeMenu={closeMenu} />
-      <Menu.Item
-        leadingIcon={AppIcons.report}
-        title={'Report'}
-        onPress={() => {
-          closeMenu();
-          navigation.push(CommonStackComponents.reportScreen, {
-            contentType: ReportContentType.fez,
-            contentID: props.event.fezID,
-          });
-        }}
-      />
+      {/* Reporting isn't available to pre-registration users. */}
+      {!preRegistrationMode && (
+        <Menu.Item
+          leadingIcon={AppIcons.report}
+          title={'Report'}
+          onPress={() => {
+            closeMenu();
+            navigation.push(CommonStackComponents.reportScreen, {
+              contentType: ReportContentType.fez,
+              contentID: props.event.fezID,
+            });
+          }}
+        />
+      )}
       {hasModerator && (
         <Menu.Item
           leadingIcon={AppIcons.moderator}

@@ -328,14 +328,18 @@ export type CommonStackParamList = {
   EventAddPerformerScreen: {
     eventID: string;
   };
+  EventPerformersManageScreen: {
+    eventID: string;
+  };
   PerformerCreateScreen: {
     performerType: PerformerType;
-    eventID: string;
+    eventID?: string;
   };
   PerformerEditScreen: {
     performerData: PerformerData;
-    eventID: string;
+    eventID?: string;
   };
+  PerformerSelfScreen: undefined;
   EventSettingsScreen: undefined;
   ScheduleDayScreen: ScheduleDayParams & Optional<NoDrawerParams>;
   ScheduleDayPlannerScreen: {
@@ -570,6 +574,8 @@ export enum CommonStackComponents {
   eventAddPerformerScreen = 'EventAddPerformerScreen',
   performerCreateScreen = 'PerformerCreateScreen',
   performerEditScreen = 'PerformerEditScreen',
+  performerSelfScreen = 'PerformerSelfScreen',
+  eventPerformersManageScreen = 'EventPerformersManageScreen',
   eventSettingsScreen = 'EventSettingsScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleDayPlannerScreen = 'ScheduleDayPlannerScreen',

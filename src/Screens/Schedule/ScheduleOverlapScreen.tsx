@@ -44,6 +44,8 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {tzAtTime} = useTimeZone();
   const {getIsDisabled} = useFeature();
   const {preRegistrationMode} = usePreRegistration();
+  // Pre-registration users can't list what they've joined, only what they own.
+  const fezEndpoint = preRegistrationMode ? 'owner' : 'joined';
   const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [onlyYourEvents, setOnlyYourEvents] = useState(false);
   const {visible, openMenu, closeMenu} = useMenu();
@@ -92,10 +94,10 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     refetch: refetchLfgJoined,
   } = useLfgListQuery({
     cruiseDay: cruiseDay !== undefined ? cruiseDay - 1 : undefined,
-    endpoint: 'joined',
+    endpoint: fezEndpoint,
     hidePast: false,
     options: {
-      enabled: cruiseDay !== undefined && !preRegistrationMode,
+      enabled: cruiseDay !== undefined,
     },
   });
 
@@ -106,8 +108,9 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   } = usePersonalEventsQuery({
     cruiseDay: cruiseDay !== undefined ? cruiseDay - 1 : undefined,
     hidePast: false,
+    endpoint: fezEndpoint,
     options: {
-      enabled: cruiseDay !== undefined && !preRegistrationMode,
+      enabled: cruiseDay !== undefined,
     },
   });
 
@@ -167,19 +170,20 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       return true;
     });
 
-    // Filter by feature flags and preregistration mode
+    // Filter by feature flags. Preregistration needs no filtering here: the open LFG query is off
+    // and the others only return the user's own LFGs and events.
     const featureFilteredItems = overlappingItems.filter(item => {
       // Only filter FezData items (LFGs and personal events)
       if ('fezID' in item) {
-        // Exclude LFGs if feature is disabled or in preregistration mode
+        // Exclude LFGs if feature is disabled
         if (FezType.isLFGType(item.fezType)) {
-          if (getIsDisabled(SwiftarrFeature.friendlyfez) || preRegistrationMode) {
+          if (getIsDisabled(SwiftarrFeature.friendlyfez)) {
             return false;
           }
         }
-        // Exclude personal events if feature is disabled or in preregistration mode
+        // Exclude personal events if feature is disabled
         if (item.fezType === FezType.personalEvent) {
-          if (getIsDisabled(SwiftarrFeature.personalevents) || preRegistrationMode) {
+          if (getIsDisabled(SwiftarrFeature.personalevents)) {
             return false;
           }
         }
@@ -225,19 +229,15 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     appConfig.schedule.overlapExcludeDurationHours,
     appConfig.schedule.eventsShowOpenLfgs,
     getIsDisabled,
-    preRegistrationMode,
   ]);
 
   const isFetching = isEventFetching || isLfgOpenFetching || isLfgJoinedFetching || isPersonalEventFetching;
 
   const {refreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
-      const refreshes: Promise<any>[] = [refetchEvents()];
-      if (!preRegistrationMode) {
-        if (appConfig.schedule.eventsShowOpenLfgs) {
-          refreshes.push(refetchLfgOpen());
-        }
-        refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
+      const refreshes: Promise<any>[] = [refetchEvents(), refetchLfgJoined(), refetchPersonalEvents()];
+      if (!preRegistrationMode && appConfig.schedule.eventsShowOpenLfgs) {
+        refreshes.push(refetchLfgOpen());
       }
       await Promise.all(refreshes);
     }, [
