@@ -80,6 +80,9 @@ export const QuartermasterForm = ({
   const styles = useMemo(
     () =>
       StyleSheet.create({
+        picker: {
+          ...commonStyles.paddingBottom,
+        },
         buttons: {
           ...commonStyles.marginTopSmall,
           ...commonStyles.gapSmall,
@@ -120,6 +123,7 @@ export const QuartermasterForm = ({
             value={values.category}
             choices={QuartermasterCategory.all}
             getTitle={category => (category ? QuartermasterCategory.getDescription(category) : 'Select')}
+            viewStyle={styles.picker}
           />
           <TextField
             name={'itemName'}

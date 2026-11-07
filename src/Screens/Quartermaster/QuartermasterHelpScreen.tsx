@@ -3,7 +3,6 @@ import React from 'react';
 import {HelpFABView} from '#src/Components/Buttons/FloatingActionButtons/HelpFABView';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {EditButtonHelpTopicView} from '#src/Components/Views/Help/Common/EditButtonHelpTopicView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {ModerateButtonHelpTopicView} from '#src/Components/Views/Help/Common/ModerateButtonHelpTopicView';
 import {ReloadButtonHelpTopicView} from '#src/Components/Views/Help/Common/ReloadButtonHelpTopicView';
@@ -25,9 +24,11 @@ export const QuartermasterHelpScreen = () => {
             Quartermastarr is a have/need board for the ship. Post something you have to offer, or something you are
             looking for, and other people can find it and get in touch.
           </HelpTopicView>
-          <HelpTopicView title={'Have and Need'} icon={AppIcons.quartermaster}>
-            Use the Have and Need buttons at the top to switch between things people are offering and things people are
-            looking for.
+          <HelpTopicView title={'Have'} icon={AppIcons.quartermasterHave}>
+            The Have button at the top shows things people are offering.
+          </HelpTopicView>
+          <HelpTopicView title={'Need'} icon={AppIcons.quartermasterNeed}>
+            The Need button at the top shows things people are looking for.
           </HelpTopicView>
           <HelpTopicView title={'Search'} icon={AppIcons.search}>
             Search looks through item names, descriptions, and locations within Have or Need. Enter at least three
@@ -68,12 +69,15 @@ export const QuartermasterHelpScreen = () => {
             blue. Long press the filter menu button to clear any active filters.
           </HelpTopicView>
           <ReloadButtonHelpTopicView />
-          <EditButtonHelpTopicView />
           <HelpTopicView title={'Send Seamail'} icon={AppIcons.seamail}>
-            On an item, starts a Seamail with the person who posted it, with the item name as the subject.
+            On an item, starts a Seamail with the person who posted it, with the item name as the subject. This is not
+            available for your own items or anonymous items.
+          </HelpTopicView>
+          <HelpTopicView title={'Edit'} icon={AppIcons.edit}>
+            In the item menu, edits your own item unless a moderator has locked or quarantined it.
           </HelpTopicView>
           <HelpTopicView title={'Delete'} icon={AppIcons.delete}>
-            Removes an item. You can delete your own items unless a moderator has locked or quarantined them.
+            In the item menu, removes your own item unless a moderator has locked or quarantined it.
           </HelpTopicView>
           <ShareButtonHelpTopicView />
           <ReportButtonHelpTopicView />
@@ -82,7 +86,7 @@ export const QuartermasterHelpScreen = () => {
         <HelpChapterTitleView title={'Privileged Actions'}>
           <ModerateButtonHelpTopicView />
           <HelpTopicView title={'Edit and Delete'}>
-            Moderators can edit and delete any item, including quarantined and locked ones.
+            Moderators can edit and delete any item, including quarantined and locked ones, from the moderation screen.
           </HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>

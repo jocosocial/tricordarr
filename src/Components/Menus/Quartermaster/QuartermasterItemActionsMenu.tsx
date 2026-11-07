@@ -20,8 +20,8 @@ interface QuartermasterItemActionsMenuProps {
 }
 
 /**
- * Three-dots menu on the Quartermastarr item screen: Share, Report (not your own item),
- * Delete (owner or moderator), and Moderate (moderators).
+ * Three-dots menu on the Quartermastarr item screen: Share, Edit and Delete (your own item only;
+ * moderators use the moderation screen), Report (not your own item), and Moderate (moderators).
  */
 export const QuartermasterItemActionsMenu = ({item}: QuartermasterItemActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
@@ -30,7 +30,12 @@ export const QuartermasterItemActionsMenu = ({item}: QuartermasterItemActionsMen
   const {confirmAndDelete, isPending: isDeleting} = useQuartermasterDelete();
 
   const isOwn = isOwnQuartermasterItem(item, viewer);
-  const canDelete = canModifyQuartermasterItem(item, viewer);
+  // Moderators edit and delete other people's items from the moderation screen instead.
+  const canModify = isOwn && canModifyQuartermasterItem(item, viewer);
+
+  const handleEdit = () => {
+    navigation.push(CommonStackComponents.quartermasterEditScreen, {item});
+  };
 
   const handleReport = () => {
     navigation.push(CommonStackComponents.reportScreen, {
@@ -52,8 +57,9 @@ export const QuartermasterItemActionsMenu = ({item}: QuartermasterItemActionsMen
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <ShareMenuItem contentType={ShareContentType.quartermaster} contentID={item.itemID} closeMenu={closeMenu} />
+      {canModify && <Menu.Item dense={false} leadingIcon={AppIcons.edit} title={'Edit'} onPress={handleEdit} />}
       {!isOwn && <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />}
-      {canDelete && (
+      {canModify && (
         <Menu.Item
           dense={false}
           leadingIcon={AppIcons.delete}

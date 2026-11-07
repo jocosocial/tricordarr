@@ -2,11 +2,10 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {formatDistanceToNow} from 'date-fns';
 import React, {useCallback, useEffect, useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Chip, Text} from 'react-native-paper';
+import {Chip, List, Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
@@ -26,10 +25,10 @@ import {useRefresh} from '#src/Hooks/useRefresh';
 import {
   canInteractWithQuartermasterItem,
   canMessageQuartermasterOwner,
-  canModifyQuartermasterItem,
   getQuartermasterSeamailSubject,
   isRestrictedQuartermasterItem,
 } from '#src/Libraries/Quartermaster/QuartermasterAccess';
+import {guessDeckNumber} from '#src/Libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useQuartermasterItemQuery} from '#src/Queries/Quartermaster/QuartermasterQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -56,8 +55,8 @@ export const QuartermasterItemScreen = (props: Props) => {
 };
 
 /**
- * Detail view of one item: name, category, photo, description, location, owner, and a button to
- * Seamail the owner. Edit and the actions menu are in the header.
+ * Detail view of one item: name, category, photo, description, location, and owner. A Seamail
+ * button for the owner and the actions menu (Edit/Delete for your own items) are in the header.
  */
 const QuartermasterItemScreenInner = ({navigation, route}: Props) => {
   const {itemID} = route.params;
@@ -74,10 +73,6 @@ const QuartermasterItemScreenInner = ({navigation, route}: Props) => {
           ...commonStyles.alignItemsCenter,
           ...commonStyles.gapSmall,
         },
-        title: {
-          ...commonStyles.flex,
-          ...commonStyles.bold,
-        },
         photo: {
           ...commonStyles.marginVerticalSmall,
         },
@@ -85,8 +80,12 @@ const QuartermasterItemScreenInner = ({navigation, route}: Props) => {
     [commonStyles],
   );
 
-  const canEdit = !!item && canModifyQuartermasterItem(item, viewer);
+  const canMessage =
+    !!item && canMessageQuartermasterOwner(item, viewer) && canInteractWithQuartermasterItem(item, viewer);
 
+  /**
+   * Header buttons: Seamail the owner (when allowed), then the actions menu.
+   */
   const getNavButtons = useCallback(() => {
     if (!item) {
       return null;
@@ -94,18 +93,23 @@ const QuartermasterItemScreenInner = ({navigation, route}: Props) => {
     return (
       <View>
         <MaterialHeaderButtons>
-          {canEdit && (
+          {canMessage && item.owner && (
             <Item
-              title={'Edit'}
-              iconName={AppIcons.edit}
-              onPress={() => navigation.push(CommonStackComponents.quartermasterEditScreen, {item})}
+              title={'Send Seamail'}
+              iconName={AppIcons.seamail}
+              onPress={() =>
+                navigation.push(CommonStackComponents.seamailCreateScreen, {
+                  initialUserHeaders: [item.owner!],
+                  initialTitle: getQuartermasterSeamailSubject(item),
+                })
+              }
             />
           )}
           <QuartermasterItemActionsMenu item={item} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [item, canEdit, navigation]);
+  }, [item, canMessage, navigation]);
 
   useEffect(() => {
     navigation.setOptions({headerRight: getNavButtons});
@@ -119,9 +123,13 @@ const QuartermasterItemScreenInner = ({navigation, route}: Props) => {
     );
   }
 
+  // Only items with a location the ship map can place get a map link.
+  const onLocationPress =
+    item.location && guessDeckNumber(item.location) !== undefined
+      ? () => navigation.push(CommonStackComponents.mapScreen, {location: item.location})
+      : undefined;
   const restricted = isRestrictedQuartermasterItem(item);
   const locked = item.moderationStatus === ContentModerationStatus.locked;
-  const canMessage = canMessageQuartermasterOwner(item, viewer) && canInteractWithQuartermasterItem(item, viewer);
 
   return (
     <AppView>
@@ -131,9 +139,6 @@ const QuartermasterItemScreenInner = ({navigation, route}: Props) => {
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
           <View style={styles.header}>
-            <Text variant={'titleLarge'} style={styles.title}>
-              {item.itemName}
-            </Text>
             <Chip compact={true}>{QuartermasterCategory.getLabel(item.category)}</Chip>
             {locked && (
               <Chip compact={true} icon={AppIcons.locked}>
@@ -144,39 +149,33 @@ const QuartermasterItemScreenInner = ({navigation, route}: Props) => {
           {restricted && !locked && (
             <Text variant={'labelMedium'}>{ContentModerationStatus.getLabel(item.moderationStatus)}</Text>
           )}
-          <Text variant={'labelMedium'}>
-            Updated {formatDistanceToNow(new Date(item.lastModificationTime), {addSuffix: true})}
-          </Text>
         </PaddedContentView>
         {item.image && (
           <View style={styles.photo}>
             <APIImage path={item.image} mode={'scaledimage'} />
           </View>
         )}
+        <DataFieldListItem title={'Name'} description={item.itemName} />
         {item.itemDescription ? <DataFieldListItem title={'Description'} description={item.itemDescription} /> : null}
-        <DataFieldListItem title={'Location'} description={item.location || 'Not specified'} />
+        <DataFieldListItem
+          title={'Location'}
+          description={item.location || 'Not specified'}
+          onPress={onLocationPress}
+        />
+        <DataFieldListItem
+          title={'Updated At'}
+          description={formatDistanceToNow(new Date(item.lastModificationTime), {addSuffix: true})}
+        />
         {item.owner ? (
-          <UserListItem
-            userHeader={item.owner}
-            onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: item.owner!.userID})}
-          />
+          <>
+            <List.Subheader>Posted by</List.Subheader>
+            <UserListItem
+              userHeader={item.owner}
+              onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: item.owner!.userID})}
+            />
+          </>
         ) : (
           <DataFieldListItem title={'Posted by'} description={'Anonymous -- use the location to find them.'} />
-        )}
-        {canMessage && item.owner && (
-          <PaddedContentView padTop={true}>
-            <PrimaryActionButton
-              buttonText={'Send Seamail'}
-              icon={AppIcons.seamail}
-              testID={'quartermasterSeamail-button'}
-              onPress={() =>
-                navigation.push(CommonStackComponents.seamailCreateScreen, {
-                  initialUserHeaders: [item.owner!],
-                  initialTitle: getQuartermasterSeamailSubject(item),
-                })
-              }
-            />
-          </PaddedContentView>
         )}
       </ScrollingContentView>
     </AppView>
