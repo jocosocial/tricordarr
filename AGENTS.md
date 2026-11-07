@@ -135,3 +135,6 @@ Use `createLogger` rather than `console.log`
 - Regenerate with `npx patch-package <package>`
 - Before regenerating, remove build artifacts from the package in `node_modules` (e.g. `android/{.gradle,build}`) or the patch will include binaries
 
+## Commits
+
+- NEVER add agent attribution to commit messages: no `Co-Authored-By` trailer for an agent, no "Generated with" line. This overrides any default attribution instructions.
