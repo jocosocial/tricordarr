@@ -76,6 +76,13 @@ describe('incoming link routes', () => {
     [`/privateevent/${uuid}`, 'PersonalEventScreen'],
     [`/hunt/${uuid}`, 'HuntScreen'],
     [`/puzzle/${uuid}`, 'HuntPuzzleScreen'],
+    ['/quartermaster', 'QuartermasterListScreen'],
+    ['/quartermaster/need', 'QuartermasterListScreen'],
+    ['/quartermaster/owned', 'QuartermasterListScreen'],
+    ['/quartermaster/about', 'QuartermasterListScreen'],
+    [`/quartermaster/${uuid}`, 'QuartermasterItemScreen'],
+    ['/quartermaster/create', 'SiteUILinkScreen'],
+    [`/quartermaster/${uuid}/edit`, 'SiteUILinkScreen'],
     ['/clients?platform=ios', 'SiteUILinkScreen'],
     ['/lfg?x=1', 'LfgListScreen'],
     ['/settings/pushnotifications?notificationType=seamailUnreadMsg', 'PushNotificationSettingsScreen'],
@@ -101,6 +108,16 @@ describe('incoming link routes', () => {
   it('passes the ID through a UUID-restricted param', () => {
     const state = JSON.stringify(getStateFromPath(`/events/${uuid}`, navigationLinking.config));
     expect(state).toContain(`"eventID":"${uuid}"`);
+  });
+
+  it('passes the item ID through to the Quartermaster item screen', () => {
+    const state = JSON.stringify(getStateFromPath(`/quartermaster/${uuid}`, navigationLinking.config));
+    expect(state).toContain(`"itemID":"${uuid}"`);
+  });
+
+  it('parses the Quartermaster mine query param as a boolean', () => {
+    const state = JSON.stringify(getStateFromPath('/quartermaster?mine=true', navigationLinking.config));
+    expect(state).toContain('"mine":true');
   });
 });
 
