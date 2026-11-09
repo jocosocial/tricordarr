@@ -25,24 +25,29 @@ const getEventIcsBaseName = (title: string): string => {
 export const EventDownloadMenuItem = ({closeMenu, event}: EventDownloadMenuItemProps) => {
   const {openDownloadSheet} = useDownloadSheet();
   const {snackbarTry} = useSnackbar();
-  const {mutate, isPending} = useEventIcsDownloadMutation();
+  const {mutateAsync, isPending} = useEventIcsDownloadMutation();
 
   /**
    * Closes the parent actions menu, fetches the ICS, then presents the download sheet.
+   * Awaits mutateAsync rather than passing onSuccess to mutate(): closing the menu unmounts this
+   * item, and TanStack drops a mutate() call's callbacks once its component unmounts.
    */
-  const handlePress = React.useCallback(() => {
+  const handlePress = React.useCallback(async () => {
     closeMenu();
-    mutate(event.eventID, {
-      onSuccess: ics => {
-        openDownloadSheet({
-          title: 'Download Event',
-          baseName: getEventIcsBaseName(event.title),
-          mimeType: 'text/calendar',
-          contents: ics,
-        });
-      },
+    let ics: string;
+    try {
+      ics = await mutateAsync(event.eventID);
+    } catch {
+      // useTokenAuthMutation already shows the error.
+      return;
+    }
+    openDownloadSheet({
+      title: 'Download Event',
+      baseName: getEventIcsBaseName(event.title),
+      mimeType: 'text/calendar',
+      contents: ics,
     });
-  }, [closeMenu, event.eventID, event.title, mutate, openDownloadSheet]);
+  }, [closeMenu, event.eventID, event.title, mutateAsync, openDownloadSheet]);
 
   return (
     <Menu.Item

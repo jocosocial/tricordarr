@@ -60,6 +60,10 @@ LoggedInScreen
 - Visibility: `useMenu`
 - Anchor: `MenuAnchor`
 - Mutating items: call `onClose` in mutation `onSettled`
+- An item that closes its menu before its mutation finishes (e.g. to open a sheet with the result)
+  MUST `await mutateAsync(...)` and act after the `await`. Closing unmounts the item, and TanStack
+  drops callbacks passed to `mutate()` once the caller unmounts. See `docs/Cache and State.md`,
+  "Callbacks passed to `mutate()` die with the component"
 - Filter items: call `onClose` on tap. Picking a filter dismisses the menu, multi-select rows
   (e.g. the Seamail chat categories) included. This may become a user preference later; until it
   is, closing is the behavior.
