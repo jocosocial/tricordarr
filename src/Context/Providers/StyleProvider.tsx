@@ -23,6 +23,9 @@ export const styleDefaults = {
   // Used for square crops in User Avatar and Photostream
   imageSquareCropDimension: 2048,
   overScrollHeight: 100, // marginSize * 5
+  // Floor for a swipe action button's width. Roughly the height of a two-line list row (a typical
+  // Seamail), so a short icon+word button is about square there and stays that width on taller rows.
+  swipeableButtonMinWidth: 68,
 };
 
 export type StyleDefaults = typeof styleDefaults;
