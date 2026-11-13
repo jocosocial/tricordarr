@@ -281,7 +281,8 @@ const LfgListScreenWithEndpoint = ({route, navigation}: LfgListScreenWithEndpoin
 
   // Adopt an externally-set route param (initial mount, deep link) into the context.
   useEffect(() => {
-    const param = route.params.endpoint;
+    // A link to /lfg replaces the params without one, and initialParams only applies on first mount.
+    const param = route.params.endpoint ?? 'open';
     if (param !== 'former' && param !== lastSyncedRef.current) {
       lastSyncedRef.current = param;
       setLfgSourceFilter(param);

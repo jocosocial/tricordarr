@@ -26,6 +26,8 @@ interface ScheduleFlatListProps<TItem> {
   showDayInDividers?: boolean;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
+  /** Content above the first time divider that scrolls and refreshes with the list. */
+  headerContent?: ReactElement;
   initialScrollIndex?: number;
   setRefreshing?: (value: boolean) => void;
   onScrollThreshold?: (condition: boolean) => void;
@@ -46,6 +48,7 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
   separator = 'time',
   showDayInDividers = true,
   listRef,
+  headerContent,
   setRefreshing,
   onScrollThreshold,
   handleLoadNext,
@@ -147,6 +150,7 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
       renderItem={renderItem}
       separator={separator}
       showDayInDividers={showDayInDividers}
+      headerContent={headerContent}
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
       handleLoadNext={handleLoadNext}

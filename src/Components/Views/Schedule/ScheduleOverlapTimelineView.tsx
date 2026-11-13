@@ -18,6 +18,8 @@ interface ScheduleOverlapTimelineViewProps {
   refreshControl: React.ReactElement<RefreshControlProps>;
   /** ID of the item being compared against, kept in the first column and highlighted. */
   pinnedItemId: string;
+  /** Content above the timeline that scrolls and refreshes with it. */
+  header?: React.ReactNode;
 }
 
 /**
@@ -30,6 +32,7 @@ export const ScheduleOverlapTimelineView = ({
   cruiseDay,
   refreshControl,
   pinnedItemId,
+  header,
 }: ScheduleOverlapTimelineViewProps) => {
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
@@ -78,6 +81,7 @@ export const ScheduleOverlapTimelineView = ({
         refreshControl={refreshControl}
         showEndLabel={true}
         pinnedItemId={pinnedItemId}
+        header={header}
       />
     </View>
   );

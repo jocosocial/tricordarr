@@ -75,6 +75,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {
     data: eventDataQuery,
     isFetching: isEventFetching,
+    isLoading: isEventLoading,
     refetch: refetchEvents,
   } = useEventsQuery({
     cruiseDay: cruiseDay,
@@ -86,6 +87,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {
     data: lfgOpenData,
     isFetching: isLfgOpenFetching,
+    isLoading: isLfgOpenLoading,
     refetch: refetchLfgOpen,
   } = useLfgListQuery({
     cruiseDay: cruiseDay !== undefined ? cruiseDay - 1 : undefined,
@@ -99,6 +101,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {
     data: lfgJoinedData,
     isFetching: isLfgJoinedFetching,
+    isLoading: isLfgJoinedLoading,
     refetch: refetchLfgJoined,
   } = useLfgListQuery({
     cruiseDay: cruiseDay !== undefined ? cruiseDay - 1 : undefined,
@@ -112,6 +115,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   const {
     data: personalEventData,
     isFetching: isPersonalEventFetching,
+    isLoading: isPersonalEventLoading,
     refetch: refetchPersonalEvents,
   } = usePersonalEventsQuery({
     cruiseDay: cruiseDay !== undefined ? cruiseDay - 1 : undefined,
@@ -285,11 +289,24 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
     isRefreshing: isFetching,
   });
 
+  const isLoading = isEventLoading || isLfgOpenLoading || isLfgJoinedLoading || isPersonalEventLoading;
+
   // Nothing but the opened item is left, so point at the filter. `every` is also true for an empty list.
+  // Gated on the first load, not on fetching, so the hint stays put through a pull-to-refresh.
   const showFilterHint =
     onlyYourEvents &&
-    !isFetching &&
+    !isLoading &&
     filteredItems.every(item => ('fezID' in item ? item.fezID : item.eventID) === routeEventId);
+
+  // Rendered inside the timeline or list rather than above it, so it scrolls and refreshes with the content.
+  const filterHint = showFilterHint ? (
+    <View style={styles.hint}>
+      <Text style={styles.hintText}>
+        No other events of yours overlap with this one. Turn off the Only Your Events filter in the header above to see
+        all events.
+      </Text>
+    </View>
+  ) : undefined;
 
   // Changing the default in Settings (reachable from this screen's Actions menu) or logging in applies when you come
   // back; the effect only fires when the default's value changes, so it never undoes a toggle otherwise.
@@ -340,14 +357,6 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   return (
     <AppView>
       <TimezoneWarningView />
-      {showFilterHint && (
-        <View style={styles.hint}>
-          <Text style={styles.hintText}>
-            No other events of yours overlap with this one. Turn off the Only Your Events filter in the header above to
-            see all events.
-          </Text>
-        </View>
-      )}
       <View style={[commonStyles.flex]}>
         {isFetching && filteredItems.length === 0 ? (
           <View style={commonStyles.loadingContainer}>
@@ -361,6 +370,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
             cruiseDay={cruiseDay}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             pinnedItemId={routeEventId}
+            header={filterHint}
           />
         ) : (
           <ScheduleFlatList
@@ -369,6 +379,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             separator={'time'}
             highlightedItemId={routeEventId}
+            headerContent={filterHint}
           />
         )}
       </View>

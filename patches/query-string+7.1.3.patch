@@ -6,7 +6,7 @@ index d45e67d..264808f 100644
  'use strict';
  const strictUriEncode = require('strict-uri-encode');
 -const decodeComponent = require('decode-uri-component');
-+// decode-uri-component 0.5.0 (pinned by an npm override for a DoS advisory) is ESM-only, so
++// decode-uri-component 0.5.1 (pinned by an npm override for a DoS advisory) is ESM-only, so
 +// require() returns a module namespace with the function on `default` rather than the function.
 +const decodeUriComponentModule = require('decode-uri-component');
 +const decodeComponent = decodeUriComponentModule.default || decodeUriComponentModule;

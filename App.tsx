@@ -16,6 +16,7 @@ import {initialWindowMetrics, SafeAreaProvider} from 'react-native-safe-area-con
 import {CallOverlay} from '#src/Components/Call/CallOverlay';
 import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
 import {AppFocusHandler} from '#src/Components/Libraries/AppFocusHandler';
+import {ForeignLinkHandler} from '#src/Components/Libraries/ForeignLinkHandler';
 import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
 import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
 import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
@@ -119,6 +120,7 @@ function App(): React.JSX.Element {
                                               <ShellProvider>
                                                 <AppEventHandler />
                                                 <AppFocusHandler />
+                                                <ForeignLinkHandler />
                                                 <PushNotificationService />
                                                 <NotificationDataListener />
                                                 <NotificationDataPoller />

@@ -21,24 +21,29 @@ export const UserVCardDownloadMenuItem = ({closeMenu, header}: UserVCardDownload
   const {openDownloadSheet} = useDownloadSheet();
   const {snackbarTry} = useSnackbar();
   const {preRegistrationMode} = usePreRegistration();
-  const {mutate, isPending} = useUserVCardDownloadMutation();
+  const {mutateAsync, isPending} = useUserVCardDownloadMutation();
 
   /**
    * Closes the parent actions menu, fetches the vCard, then presents the download sheet.
+   * Awaits mutateAsync rather than passing onSuccess to mutate(): closing the menu unmounts this
+   * item, and TanStack drops a mutate() call's callbacks once its component unmounts.
    */
-  const handlePress = React.useCallback(() => {
+  const handlePress = React.useCallback(async () => {
     closeMenu();
-    mutate(header.userID, {
-      onSuccess: vcard => {
-        openDownloadSheet({
-          title: 'Save Contact',
-          baseName: header.username,
-          mimeType: 'text/vcard',
-          contents: vcard,
-        });
-      },
+    let vcard: string;
+    try {
+      vcard = await mutateAsync(header.userID);
+    } catch {
+      // useTokenAuthMutation already shows the error.
+      return;
+    }
+    openDownloadSheet({
+      title: 'Save Contact',
+      baseName: header.username,
+      mimeType: 'text/vcard',
+      contents: vcard,
     });
-  }, [closeMenu, header.userID, header.username, mutate, openDownloadSheet]);
+  }, [closeMenu, header.userID, header.username, mutateAsync, openDownloadSheet]);
 
   return (
     <Menu.Item

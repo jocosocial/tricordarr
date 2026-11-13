@@ -50,6 +50,7 @@
     "expo-dev-client": "~57.0.13",
     "expo-file-system": "~57.0.5",
     "expo-secure-store": "~57.0.1",
+    "expo-web-browser": "~57.0.3",
     "formik": "^2.4.6",
     "html-entities": "^2.6.0",
     "javascript-time-ago": "^2.6.2",
@@ -160,7 +161,7 @@
   "overrides": {
     "diff": "5.2.2",
     "markdown-it": "14.3.0",
-    "decode-uri-component": "0.5.0",
+    "decode-uri-component": "0.5.1",
     "xcode": {
       "uuid": "11.1.1"
     },

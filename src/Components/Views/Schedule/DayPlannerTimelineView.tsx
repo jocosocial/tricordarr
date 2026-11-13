@@ -38,6 +38,11 @@ interface DayPlannerTimelineViewProps {
   showEndLabel?: boolean;
   /** Item to keep in the first column and highlight. The Day Planner pager does not use it. */
   pinnedItemId?: string;
+  /**
+   * Content above the timeline, inside the scroll view so it scrolls and refreshes with it. The Day Planner pager
+   * does not use it.
+   */
+  header?: React.ReactNode;
 }
 
 export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineViewProps>(
@@ -52,6 +57,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
       refreshControl,
       showEndLabel,
       pinnedItemId,
+      header,
     },
     ref,
   ) => {
@@ -128,8 +134,11 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
             flexDirection: 'row',
             flexGrow: 1,
           },
-          timelineRow: {
+          // Stacks the header above the timeline row, and fills the row's width.
+          scrollColumn: {
             flex: 1,
+          },
+          timelineRow: {
             flexDirection: 'row',
             position: 'relative',
           },
@@ -212,49 +221,52 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         showsVerticalScrollIndicator={false}
         onScrollEndDrag={onScrollSettled}
         onMomentumScrollEnd={onScrollSettled}>
-        <View style={[styles.timelineRow, {height: timelineHeight}]}>
-          {/* Only today's page needs the divider; mounting it elsewhere just runs a minute timer to render null. */}
-          {selectedCruiseDay === adjustedCruiseDayToday && (
-            <DayPlannerNowDivider
-              dayStart={dayStart}
-              timelineHeight={getTimelineHeight(totalSlots)}
-              selectedCruiseDay={selectedCruiseDay}
-              boatTimeZoneID={timeZoneID ?? appConfig.portTimeZoneID}
-            />
-          )}
+        <View style={styles.scrollColumn}>
+          {header}
+          <View style={[styles.timelineRow, {height: timelineHeight}]}>
+            {/* Only today's page needs the divider; mounting it elsewhere just runs a minute timer to render null. */}
+            {selectedCruiseDay === adjustedCruiseDayToday && (
+              <DayPlannerNowDivider
+                dayStart={dayStart}
+                timelineHeight={getTimelineHeight(totalSlots)}
+                selectedCruiseDay={selectedCruiseDay}
+                boatTimeZoneID={timeZoneID ?? appConfig.portTimeZoneID}
+              />
+            )}
 
-          {/* Time labels column — zIndex so it renders above the now divider */}
-          <View style={[styles.timeColumn, {height: timelineHeight}]}>
-            {timeSlots.map((slot, index) => (
-              <View key={index} style={[styles.timeSlot, getGridLineStyle(slot.slotType)]}>
-                {slot.label ? (
-                  <Text style={styles.timeLabel} variant={'bodyMedium'}>
-                    {slot.label}
-                  </Text>
-                ) : null}
-              </View>
-            ))}
-          </View>
-
-          {/* Events column */}
-          <View style={[styles.eventsColumn, {height: timelineHeight}]}>
-            {/* Grid lines */}
-            <View style={styles.gridLines}>
+            {/* Time labels column — zIndex so it renders above the now divider */}
+            <View style={[styles.timeColumn, {height: timelineHeight}]}>
               {timeSlots.map((slot, index) => (
-                <View key={index} style={[styles.gridLine, getGridLineStyle(slot.slotType)]} />
+                <View key={index} style={[styles.timeSlot, getGridLineStyle(slot.slotType)]}>
+                  {slot.label ? (
+                    <Text style={styles.timeLabel} variant={'bodyMedium'}>
+                      {slot.label}
+                    </Text>
+                  ) : null}
+                </View>
               ))}
             </View>
 
-            {/* Event cards */}
-            <View style={styles.eventsContainer}>
-              {layoutItems.map(item => (
-                <DayPlannerCard
-                  key={item.id}
-                  item={item}
-                  onPress={() => handleItemPress(item)}
-                  highlighted={item.id === pinnedItemId}
-                />
-              ))}
+            {/* Events column */}
+            <View style={[styles.eventsColumn, {height: timelineHeight}]}>
+              {/* Grid lines */}
+              <View style={styles.gridLines}>
+                {timeSlots.map((slot, index) => (
+                  <View key={index} style={[styles.gridLine, getGridLineStyle(slot.slotType)]} />
+                ))}
+              </View>
+
+              {/* Event cards */}
+              <View style={styles.eventsContainer}>
+                {layoutItems.map(item => (
+                  <DayPlannerCard
+                    key={item.id}
+                    item={item}
+                    onPress={() => handleItemPress(item)}
+                    highlighted={item.id === pinnedItemId}
+                  />
+                ))}
+              </View>
             </View>
           </View>
         </View>

@@ -9,6 +9,7 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrQueryClientContext} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useServerUrl} from '#src/Hooks/useServerUrl';
 import {createLogger} from '#src/Libraries/Logger';
 import {BadResponseFormatError, createQueryClient, createSessionPersister} from '#src/Libraries/Network/APIClient';
 import {isHttpClientError, shouldRetryQuery} from '#src/Libraries/Network/Retry';
@@ -30,14 +31,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {setSnackbarPayload} = useSnackbar();
   const tokenData = currentSession?.tokenData || null;
 
-  const serverUrl = useMemo(() => {
-    if (!currentSession) {
-      // First-launch / no session only. Not a substitute while Session is hydrating;
-      // SessionProvider withholds children until load completes.
-      return appConfig.serverUrl;
-    }
-    return currentSession.serverUrl;
-  }, [currentSession, appConfig.serverUrl]);
+  const serverUrl = useServerUrl();
 
   /**
    * Establish the primary query client. Some day there may be multiple of these.
