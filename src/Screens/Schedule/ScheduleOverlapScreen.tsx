@@ -181,6 +181,10 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
       if (itemId === routeEventId) {
         return true;
       }
+      // A threshold of 0 disables the duration filter.
+      if (appConfig.schedule.overlapExcludeDurationHours <= 0) {
+        return true;
+      }
       // Filter out events with duration >= overlapExcludeDurationHours
       const durationHours = (new Date(item.endTime).getTime() - new Date(item.startTime).getTime()) / (1000 * 60 * 60);
       if (durationHours >= appConfig.schedule.overlapExcludeDurationHours) {
