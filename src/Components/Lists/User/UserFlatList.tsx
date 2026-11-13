@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 
-import {AppFlashList} from '#src/Components/Lists/AppFlashList';
+import {AppFlatList} from '#src/Components/Lists/AppFlatList';
 import {UserFlatListItem} from '#src/Components/Lists/Items/UserFlatListItem';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useAppFlashList} from '#src/Hooks/useAppFlashList';
@@ -17,7 +17,7 @@ interface UserFlatListProps {
 }
 
 /**
- * A virtualized list of users (e.g. favorites, blocks, mutes). Uses AppFlashList
+ * A virtualized list of users (e.g. favorites, blocks, mutes). Uses AppFlatList
  * with Divider separators and optional header/footer.
  */
 export const UserFlatList = ({
@@ -54,7 +54,7 @@ export const UserFlatList = ({
   }, [renderListHeader, getDividerHeader]);
 
   return (
-    <AppFlashList<UserHeader>
+    <AppFlatList<UserHeader>
       refreshControl={refreshControl}
       renderItem={renderItem}
       data={userHeaders}

@@ -1,8 +1,7 @@
-import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef} from 'react';
-import {RefreshControlProps} from 'react-native';
+import {FlatList, RefreshControlProps} from 'react-native';
 
-import {AppFlashList} from '#src/Components/Lists/AppFlashList';
+import {AppFlatList} from '#src/Components/Lists/AppFlatList';
 import {ForumThreadListItem} from '#src/Components/Lists/Items/Forum/ForumThreadListItem';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useAppFlashList} from '#src/Hooks/useAppFlashList';
@@ -35,7 +34,7 @@ export const ForumThreadList = ({
   onScrollThreshold,
   scrollToTopIntent,
 }: ForumThreadListProps) => {
-  const listRef = useRef<FlashListRef<ForumListData>>(null);
+  const listRef = useRef<FlatList<ForumListData>>(null);
   const {enableSelection, setEnableSelection, selectedItems} = useSelection();
   const {getListSeparator, getListHeader, getListFooter} = useAppFlashList({
     data: forumListData,
@@ -65,7 +64,7 @@ export const ForumThreadList = ({
   );
 
   return (
-    <AppFlashList<ForumListData>
+    <AppFlatList<ForumListData>
       ref={listRef}
       renderListHeader={getListHeader}
       renderListFooter={getListFooter}

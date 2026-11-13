@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {type FlashListRef} from '@shopify/flash-list';
 import React, {useMemo, useRef} from 'react';
+import {FlatList} from 'react-native';
 
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {KaraokeSongList, type KaraokeSongListItem} from '#src/Components/Lists/Karaoke/KaraokeSongList';
@@ -39,7 +39,7 @@ export const KaraokeFavoritesListScreen = (props: Props) => {
 };
 
 const KaraokeFavoritesListScreenInner = (_props: Props) => {
-  const listRef = useRef<FlashListRef<KaraokeSongListItem>>(null);
+  const listRef = useRef<FlatList<KaraokeSongListItem>>(null);
   const {data, refetch, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage} = useKaraokeSongsQuery({
     favorite: true,
   });

@@ -1,8 +1,7 @@
-import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef} from 'react';
-import {RefreshControlProps} from 'react-native';
+import {FlatList, RefreshControlProps} from 'react-native';
 
-import {AppFlashList} from '#src/Components/Lists/AppFlashList';
+import {AppFlatList} from '#src/Components/Lists/AppFlatList';
 import {FezChatListItem} from '#src/Components/Lists/Items/FezChatListItem';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useAppFlashList} from '#src/Hooks/useAppFlashList';
@@ -22,7 +21,7 @@ interface SeamailFlatListProps {
  * A list of joined Fez chats (Seamail, private events, and LFGs). There are no previous pages.
  */
 export const SeamailFlatList = (props: SeamailFlatListProps) => {
-  const flatListRef = useRef<FlashListRef<FezData>>(null);
+  const flatListRef = useRef<FlatList<FezData>>(null);
   const {enableSelection, setEnableSelection, selectedItems} = useSelection();
   const {getListSeparator, getListHeader, getListFooter} = useAppFlashList({
     data: props.fezList,
@@ -48,7 +47,7 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
   );
 
   return (
-    <AppFlashList<FezData>
+    <AppFlatList<FezData>
       ref={flatListRef}
       refreshControl={props.refreshControl}
       renderItem={renderItem}
@@ -59,7 +58,6 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
       renderListFooter={getListFooter}
       onScrollThreshold={props.onScrollThreshold}
       handleLoadNext={props.handleLoadNext}
-      // This is because FlashListV2 uses the first item for some internal anchoring.
       maintainVisibleContentPosition={{disabled: true}}
     />
   );

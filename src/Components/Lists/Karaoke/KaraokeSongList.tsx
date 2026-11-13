@@ -1,8 +1,7 @@
-import {type FlashListRef} from '@shopify/flash-list';
 import React, {forwardRef, useCallback} from 'react';
-import {RefreshControlProps} from 'react-native';
+import {FlatList, RefreshControlProps} from 'react-native';
 
-import {AppFlashList} from '#src/Components/Lists/AppFlashList';
+import {AppFlatList} from '#src/Components/Lists/AppFlatList';
 import {KaraokeSongListItem} from '#src/Components/Lists/Items/KaraokeSongListItem';
 import type {KaraokeSongListItemData} from '#src/Components/Lists/Items/KaraokeSongListItem';
 import {useAppFlashList} from '#src/Hooks/useAppFlashList';
@@ -26,7 +25,7 @@ interface KaraokeSongListProps {
 
 const KaraokeSongListInner = (
   {items, swipeableEnabled = false, refreshControl, hasNextPage, handleLoadNext, listHeader}: KaraokeSongListProps,
-  ref: React.ForwardedRef<FlashListRef<KaraokeSongListItem>>,
+  ref: React.ForwardedRef<FlatList<KaraokeSongListItem>>,
 ) => {
   const {getListSeparator, getListFooter} = useAppFlashList({data: items, hasNextPage});
 
@@ -42,7 +41,7 @@ const KaraokeSongListInner = (
   }, []);
 
   return (
-    <AppFlashList<KaraokeSongListItem>
+    <AppFlatList<KaraokeSongListItem>
       ref={ref}
       data={items}
       renderItem={renderItem}
@@ -56,6 +55,4 @@ const KaraokeSongListInner = (
   );
 };
 
-export const KaraokeSongList = forwardRef<FlashListRef<KaraokeSongListItem>, KaraokeSongListProps>(
-  KaraokeSongListInner,
-);
+export const KaraokeSongList = forwardRef<FlatList<KaraokeSongListItem>, KaraokeSongListProps>(KaraokeSongListInner);
