@@ -17,7 +17,6 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
-import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useMenu} from '#src/Hooks/useMenu';
 import {getShareLink, ShareContentType, ShareLinkMode} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -50,7 +49,6 @@ export const ForumThreadScreenActionsMenu = ({
   const commonNavigation = useCommonStack();
   const relationMutation = useForumRelationMutation();
   const [refreshing, setRefreshing] = useState(false);
-  const {updateFavorite, updateMute, invalidateForum} = useForumCacheReducer();
 
   const handleCreateLfg = useCallback(() => {
     closeMenu();
@@ -75,20 +73,15 @@ export const ForumThreadScreenActionsMenu = ({
     if (forumData) {
       setRefreshing(true);
       const newValue = !forumData.isFavorite;
-      // Optimistic: flip the cache immediately so the icon is already correct by the time the
-      // spinner clears, instead of waiting on a (possibly slow) network round trip to do it.
-      updateFavorite(forumData.forumID, forumData.categoryID, newValue);
+      // The mutation hook flips the cache optimistically and rolls back on error.
       relationMutation.mutate(
         {
           forumID: forumData.forumID,
+          categoryID: forumData.categoryID,
           relationType: 'favorite',
           action: newValue ? 'create' : 'delete',
         },
         {
-          onError: () => {
-            updateFavorite(forumData.forumID, forumData.categoryID, !newValue);
-            invalidateForum(forumData.forumID, forumData.categoryID);
-          },
           onSettled: () => {
             setRefreshing(false);
             closeMenu();
@@ -96,24 +89,20 @@ export const ForumThreadScreenActionsMenu = ({
         },
       );
     }
-  }, [forumData, updateFavorite, invalidateForum, relationMutation, closeMenu]);
+  }, [forumData, relationMutation, closeMenu]);
 
   const handleMute = useCallback(() => {
     if (forumData) {
       setRefreshing(true);
       const newValue = !forumData.isMuted;
-      updateMute(forumData.forumID, forumData.categoryID, newValue);
       relationMutation.mutate(
         {
           forumID: forumData.forumID,
+          categoryID: forumData.categoryID,
           relationType: 'mute',
           action: newValue ? 'create' : 'delete',
         },
         {
-          onError: () => {
-            updateMute(forumData.forumID, forumData.categoryID, !newValue);
-            invalidateForum(forumData.forumID, forumData.categoryID);
-          },
           onSettled: () => {
             setRefreshing(false);
             closeMenu();
@@ -121,7 +110,7 @@ export const ForumThreadScreenActionsMenu = ({
         },
       );
     }
-  }, [forumData, updateMute, invalidateForum, relationMutation, closeMenu]);
+  }, [forumData, relationMutation, closeMenu]);
 
   const handleHelp = () => {
     closeMenu();

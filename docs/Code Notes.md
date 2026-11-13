@@ -89,6 +89,13 @@ For a destructive/mutating action, `close()` before calling `mutate()`, not in `
 `onSuccess` drops the row from the cache (e.g. via a cache reducer), `onSettled` fires against an
 already-unmounted swipeable.
 
+Derive a swipe button's pending state from the mutation, not per-row `useState`:
+`mutation.isPending && mutation.variables?.id === itemId`. FlashList recycles cells, so local state
+(and the mutation observer) outlives the item it was started for; matching on the variables keeps
+a spinner from showing up on whatever thread the cell is recycled into. Use a separate mutation
+instance per action (e.g. Forum favorite vs. mute) so one action's in-flight state can't overwrite
+the other's.
+
 ## Websocket Keepalive
 
 https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104

@@ -10,7 +10,6 @@ import {PostAsTwitarrTeamMenuItem} from '#src/Components/Menus/Items/PostAsTwita
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {useMenu} from '#src/Hooks/useMenu';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
@@ -42,7 +41,6 @@ export const FezChatScreenActionsMenu = ({
   const muteMutation = useFezMuteMutation();
   const favoriteMutation = useFezFavoriteMutation();
   const commonNavigation = useCommonStack();
-  const {updateMute, updateFavorite, invalidateFez} = useFezCacheReducer();
   const [muteRefreshing, setMuteRefreshing] = React.useState(false);
   const [favoriteRefreshing, setFavoriteRefreshing] = React.useState(false);
 
@@ -59,20 +57,13 @@ export const FezChatScreenActionsMenu = ({
   const handleMute = () => {
     setMuteRefreshing(true);
     const newMuted = !isMuted;
-    // Optimistic: flip the cache immediately so the icon is already correct by the time the
-    // spinner clears, instead of waiting on a (possibly slow) network round trip to do it.
-    // This brings the menu path in line with FezChatListItemSwipeable's swipe-to-mute.
-    updateMute(fezID, newMuted);
+    // The mutation hook flips the cache optimistically and rolls back on error.
     muteMutation.mutate(
       {
         action: newMuted ? 'mute' : 'unmute',
         fezID: fezID,
       },
       {
-        onError: () => {
-          updateMute(fezID, !newMuted);
-          invalidateFez(fezID);
-        },
         onSettled: () => {
           setMuteRefreshing(false);
           closeMenu();
@@ -82,24 +73,19 @@ export const FezChatScreenActionsMenu = ({
   };
 
   /**
-   * Toggle the favorite flag on this chat. Optimistic: flip the cache before the request, roll
-   * back and invalidate on failure. Swiftarr rejects favoriting a muted chat, hence the disabled
+   * Toggle the favorite flag on this chat. The mutation hook flips the cache before the request and
+   * rolls back on failure. Swiftarr rejects favoriting a muted chat, hence the disabled
    * state below.
    */
   const handleFavorite = () => {
     setFavoriteRefreshing(true);
     const newFavorite = !isFavorite;
-    updateFavorite(fezID, newFavorite);
     favoriteMutation.mutate(
       {
         action: newFavorite ? 'favorite' : 'unfavorite',
         fezID: fezID,
       },
       {
-        onError: () => {
-          updateFavorite(fezID, !newFavorite);
-          invalidateFez(fezID);
-        },
         onSettled: () => {
           setFavoriteRefreshing(false);
           closeMenu();
