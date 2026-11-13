@@ -7,7 +7,70 @@ RNGH practice, correctness/recycling findings, and a phased remediation plan tha
 execute. Written 2026-10-14 against RN 0.86.2, react-native-gesture-handler 3.2.1 (patched),
 react-native-reanimated 4.5.x, @shopify/flash-list 2.3.x.
 
-> **Check upstream first.** The root-cause fix for the scroll "stick"
+> **Status as of 2026-11-13.** Two things have changed since this was written; the sections below
+> are kept as the original analysis and are annotated where they no longer match the code.
+>
+> - `978b2f91` upgraded RNGH to 3.4.0 (which contains #4582), deleted the 3.2.1 patch and the
+>   `failOffsetY` prop, and did most of Phase 2 and Phase 3. See the ticked work items.
+> - A separate "row sticks part-way open" bug turned out to be caused by system reduced motion, not
+>   by anything analysed here. See [Reduced motion stall](#reduced-motion-stall) directly below.
+
+## Reduced motion stall
+
+Found and fixed 2026-11-13 (`19f67d2b`) against RNGH 3.4.0 and Reanimated 4.5.1, on a Pixel 11 Pro
+running Android 17.
+
+**Symptom.** A row swiped part-way and released stays frozen at the release position, then some
+time later (300 ms to over a second) jumps fully open or closed with no animation. A full swipe to
+the end stop looks fine. Does not reproduce on simulators or emulators.
+
+**Cause.** The device has system animations turned off.
+
+- Reanimated on Android reports reduced motion when `Settings.Global.TRANSITION_ANIMATION_SCALE`
+  is `0` (`NativeProxy.getIsReducedMotion`). That is set by Accessibility > "Remove animations" and
+  by Developer options > "Transition animation scale: off". It is read once at app start.
+- `ReanimatedSwipeable.animateRow` builds its spring with `reduceMotion: ReduceMotion.System`.
+  Under reduced motion Reanimated replaces the animation with a single synchronous value set
+  (`onFrame = () => true`), so no animation frame is ever requested.
+- On Android that lone update, made from the Pan's `onDeactivate` worklet, is not flushed to the
+  screen. It only appears when something unrelated causes a flush or a React commit, hence the
+  variable delay and the jump.
+- A full swipe hides it because the row is already at the clamped end position
+  (`overshootLeft` / `overshootRight` are off), so there is nothing left to draw.
+- Simulators and emulators have animations on, so they take the normal spring path.
+
+Why the lone update is not flushed was not traced into Reanimated / RNGH. It is an upstream bug
+and has not been reported yet.
+
+**Evidence.** Identical injected partial swipe (`adb shell input swipe 850 Y 500 Y 1200`) on the
+Seamail list, recorded with `adb shell screenrecord`, which only emits a frame when the screen
+changes, so frame timestamps show exactly when the row moved.
+
+| Build | Transition animation scale | After release |
+| --- | --- | --- |
+| Before fix (FlatList) | 0 | Frozen 309 ms, then fully open in one frame |
+| Before fix (FlatList) | 1 (app relaunched) | First spring frame at 8 ms, continuous 120 Hz for about 650 ms |
+| After fix (FlatList) | 0 | Open case settled in 9-13 ms; close case in 8 ms |
+| After fix (FlashList) | 0 | Open case settled in about 19 ms; close case in about 16 ms |
+
+**Fix.** `BaseSwipeable` reads `useReducedMotion()` and, when it is on, passes `animationOptions`
+with `reduceMotion: ReduceMotion.Never` and a spring stiff enough to land within a frame
+(`REDUCED_MOTION_ANIMATION_OPTIONS`). The row still snaps with no visible animation, but the settle
+goes through the animation-frame path, which does flush. With animations on, nothing changes.
+Because `animationOptions` feeds `animateRow`, this also covers `swipeable.close()` and tap-to-close.
+
+**FlatList experiment.** `d04ffa16` swapped the five swipeable lists from FlashList to a
+FlatList-backed `AppFlatList` to rule out recycling. It was not the cause and was reverted in
+`01781b4c`. On FlashList with the fix, a row swiped open, scrolled to the end of the list and back
+comes back closed and no other row shows as open.
+
+**Not verified.** Only Seamail was exercised, with slow injected swipes. Fast finger flicks and
+the Forum, User, Karaoke and Boardgame lists share `BaseSwipeable` but were not individually tested.
+
+**Debugging note.** For any "physical device only" animation or gesture bug, check
+`adb shell settings get global transition_animation_scale` first.
+
+> **Check upstream first.** (Done in `978b2f91`; kept for history.) The root-cause fix for the scroll "stick"
 > ([software-mansion/react-native-gesture-handler#4582](https://github.com/software-mansion/react-native-gesture-handler/pull/4582))
 > merged on 2026-10-12, two days before this document was written, and at the time of writing exists
 > only in `3.4.0-nightly-20261012`. Before executing Phase 1, check whether a stable RNGH release
@@ -73,6 +136,10 @@ sequenceDiagram
 ```
 
 ## Current state
+
+> Describes the code as of 2026-10-14. Since `978b2f91`: RNGH is 3.4.0 with no patch,
+> `BaseSwipeable` has no `failOffsetY` and no unused props, and `package.json` declares `^3.4.0`.
+> The architecture line and the list inventory are still accurate.
 
 Architecture: `AppFlashList` (FlashList v2, always recycling, plain RN ScrollView) -> memoized
 `*ListItem` -> `*ListItemSwipeable` (mutations, per-row `useState` spinners, panels) ->
@@ -260,22 +327,30 @@ Architecture: `AppFlashList` (FlashList v2, always recycling, plain RN ScrollVie
 
 ## Work items
 
-- [ ] Pin RNGH to exact 3.2.1, hoist `FAIL_OFFSET_Y`, rewrite the `BaseSwipeable` comment citing
-      RNGH #4367 / #4582 / #4592, optionally gate on `isAndroid`.
-- [ ] Open a tracking issue to upgrade to the first stable RNGH containing #4582 (+#4592), remove
-      the patch and `failOffsetY`, and retest Android scroll / fling / pull-to-refresh.
-- [ ] Move optimistic apply / rollback into `useMutation` `onMutate` / `onError` with context for
-      Fez favorite / mute and Forum relation / pin mutations; update all callers.
-- [ ] Split `ForumThreadListItemSwipeable`'s shared `relationMutation` into separate favorite /
-      mute instances.
-- [ ] Add `disabled` while pending to Boardgame / Karaoke Favorite; add cache reducers and drop
-      success-path invalidation.
-- [ ] Replace per-row `useState` spinner flags with FlashList `useRecyclingState` keyed on item id
-      in all five swipeables.
-- [ ] Drop `isMuted` / `isFavorite` from the `FezChatListItemSwipeable` key; remove the stale
-      `SeamailFlatList` comment; verify no panel ghosting.
-- [ ] `StyleSheet.create` in `useMemo` for panel styles, `useCallback` render panels, public import
-      path, remove unused `BaseSwipeable` props, `undefined` for empty panels, docstrings.
+Ticks reflect what the `978b2f91` commit message says it did; they were not re-audited line by line.
+
+- [x] ~~Pin RNGH to exact 3.2.1, hoist `FAIL_OFFSET_Y`, rewrite the `BaseSwipeable` comment.~~
+      Superseded: `978b2f91` upgraded straight to 3.4.0 and removed the patch and the prop.
+- [x] Upgrade to the first stable RNGH containing #4582 and remove the patch and `failOffsetY`
+      (`978b2f91`). The Android scroll / fling / pull-to-refresh retest in Verification is not
+      recorded as done.
+- [x] Move optimistic apply / rollback into `useMutation` `onMutate` / `onError` for Fez favorite /
+      mute and Forum relation / pin mutations; update all callers (`978b2f91`).
+- [x] Split `ForumThreadListItemSwipeable`'s shared `relationMutation` into separate favorite /
+      mute instances (`978b2f91`).
+- [ ] Boardgame / Karaoke Favorite: `disabled` while pending is done (`978b2f91`). Still open: add
+      cache reducers and drop success-path invalidation.
+- [x] Per-row `useState` spinner flags removed (`978b2f91`). Done by deriving pending state from
+      `mutation.isPending && mutation.variables?.id === itemId` instead of `useRecyclingState`.
+- [x] Drop `isMuted` / `isFavorite` from the `FezChatListItemSwipeable` key and remove the stale
+      `SeamailFlatList` comment (`978b2f91`). No ghosting seen on Seamail on 2026-11-13.
+- [ ] Panel styles and render panels memoized, public import path, unused `BaseSwipeable` props
+      removed, `undefined` for the empty Forum left panel (`978b2f91`). Not confirmed: docstrings
+      on every handler.
+- [x] Fix the part-way-open stall under system reduced motion (`19f67d2b`).
+- [ ] Report the unflushed reduced-motion update upstream (Reanimated / RNGH); drop
+      `REDUCED_MOTION_ANIMATION_OPTIONS` once a fixed release ships.
+- [ ] Hand-test partial swipes with animations off on the Forum, User, Karaoke and Boardgame lists.
 - [ ] Add `accessibilityActions` / `onAccessibilityAction` on swipeable rows; add a non-swipe path
       for Karaoke Favorite.
 - [ ] Document swipe actions in Boardgame / Forum / Karaoke help screens; fix `MainHelpScreen`
@@ -286,6 +361,10 @@ Architecture: `AppFlashList` (FlashList v2, always recycling, plain RN ScrollVie
 - Android physical device: a vertical scroll starting on a row flings; a diagonal scroll does not
   open a row; pull-to-refresh started on a row releases cleanly; swipe a row open, scroll it out of
   view and back, confirm the recycled cell is closed and shows no spinner.
+- Reduced motion: with `adb shell settings put global transition_animation_scale 0` and the app
+  relaunched, swipe a row part-way (both short of and past half the panel width) and release; it
+  must snap closed or open immediately, with no freeze. Repeat with the scale at `1` and confirm
+  the normal spring.
 - Mutation: favorite on a `?favorite=true` list with the network killed, confirm the row returns;
   favorite then immediately mute on a Forum row, confirm both settle and neither spinner sticks.
 - `yarn lint` and `yarn tsc` clean; no `eslint-disable`.
