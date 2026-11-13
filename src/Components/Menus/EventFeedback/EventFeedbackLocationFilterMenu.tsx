@@ -12,7 +12,7 @@ interface EventFeedbackLocationFilterMenuProps {
 }
 
 /**
- * Header filter for the admin feedback reports list. Rooms come from the loaded reports.
+ * Header location filter for the admin feedback reports list and the host event picker.
  */
 export const EventFeedbackLocationFilterMenu = ({
   locations,
