@@ -1,7 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
+import {type FlashListRef} from '@shopify/flash-list';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {View} from 'react-native';
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {Divider} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -66,7 +67,7 @@ const BoardgameRecommendScreenInner = ({navigation}: Props) => {
   const guideMutation = useBoardgameRecommendMutation();
   const [games, setGames] = useState<BoardgameData[]>([]);
   const [fieldValues, setFieldValues] = useState<BoardgameRecommendationData>(defaultValues);
-  const listRef = useRef<FlatList<BoardgameData>>(null);
+  const listRef = useRef<FlashListRef<BoardgameData>>(null);
 
   const onSubmit = async (values: BoardgameRecommendationData, helpers: FormikHelpers<BoardgameRecommendationData>) => {
     setFieldValues(values);

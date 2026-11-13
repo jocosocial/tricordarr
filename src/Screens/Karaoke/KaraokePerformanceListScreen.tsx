@@ -1,6 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
+import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {View} from 'react-native';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -40,7 +41,7 @@ export const KaraokePerformanceListScreen = (props: Props) => {
 };
 
 const KaraokePerformanceListScreenInner = ({navigation}: Props) => {
-  const listRef = useRef<FlatList<KaraokeSongListItem>>(null);
+  const listRef = useRef<FlashListRef<KaraokeSongListItem>>(null);
   const {visible, openMenu, closeMenu} = useMenu();
   const [searchQuery, setSearchQuery] = useState('');
   /** Only search when user submits (search icon or keyboard submit). */
