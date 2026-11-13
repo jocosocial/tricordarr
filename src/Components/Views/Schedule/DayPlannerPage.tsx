@@ -84,6 +84,8 @@ const DayPlannerPageComponent = ({
   const scrollViewRef = useRef<ScrollView>(null);
   const hasPositioned = useRef(false);
   const {preRegistrationMode} = usePreRegistration();
+  // Pre-registration users can't list what they've joined, only what they own.
+  const fezEndpoint = preRegistrationMode ? 'owner' : 'joined';
   const {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForFirstItem, getScrollOffsetForTimeOfDay} =
     useDayPlanner();
 
@@ -108,10 +110,10 @@ const DayPlannerPageComponent = ({
     refetch: refetchLfgJoined,
   } = useLfgListQuery({
     cruiseDay: cruiseDay - 1,
-    endpoint: 'joined',
+    endpoint: fezEndpoint,
     hidePast: false,
     options: {
-      enabled: enabled && !preRegistrationMode,
+      enabled,
     },
   });
 
@@ -124,9 +126,10 @@ const DayPlannerPageComponent = ({
     refetch: refetchPersonalEvents,
   } = usePersonalEventsQuery({
     cruiseDay: cruiseDay - 1,
+    endpoint: fezEndpoint,
     hidePast: false,
     options: {
-      enabled: enabled && !preRegistrationMode,
+      enabled,
     },
   });
 
@@ -188,12 +191,8 @@ const DayPlannerPageComponent = ({
   }, [dayPlannerItems, dayStart, getScrollOffsetForFirstItem, scrollTo]);
 
   const refresh = useCallback(async () => {
-    const refreshes: Promise<any>[] = [refetchEvents()];
-    if (!preRegistrationMode) {
-      refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
-    }
-    await Promise.all(refreshes);
-  }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents, preRegistrationMode]);
+    await Promise.all([refetchEvents(), refetchLfgJoined(), refetchPersonalEvents()]);
+  }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents]);
 
   /**
    * Position this page once, the first time it actually has a timeline to position: carry over

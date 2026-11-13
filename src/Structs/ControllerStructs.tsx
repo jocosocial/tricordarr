@@ -8,6 +8,7 @@ import {FezType} from '#src/Enums/FezType';
 import {FezVisibility} from '#src/Enums/FezVisibility';
 import {LikeType} from '#src/Enums/LikeType';
 import {ModeratorActionType} from '#src/Enums/ModeratorActionType';
+import {QuartermasterCategory} from '#src/Enums/QuartermasterCategory';
 import {ReportType} from '#src/Enums/ReportType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {UserRoleType} from '#src/Enums/UserRoleType';
@@ -1843,4 +1844,136 @@ export namespace ModeratorActionLogResponseData {
   export const getCacheKeys = (): QueryKey[] => {
     return [['/mod/moderationlog']];
   };
+}
+
+/**
+ * A single item in a Quartermastarr create request.
+ * Category, location and hideOwnerName are shared via the enclosing `QuartermasterCreateData`.
+ */
+export interface QuartermasterItemEntry {
+  /// A short name or title for the item. Required; 2-100 characters.
+  itemName: string;
+  /// An optional longer description of the item. At most 2048 characters.
+  itemDescription?: string;
+  /// An optional photo of the item. At most one image per item.
+  image?: ImageUploadData;
+}
+
+/**
+ * Used to batch-create one or more Quartermastarr items.
+ * Required by: `POST /api/v3/quartermaster/create`
+ */
+export interface QuartermasterCreateData {
+  /// Whether the items are on offer (`have`) or wanted (`need`). Applies to all items in the batch.
+  category: QuartermasterCategory;
+  /// Optional free-text location for pickup/exchange. 3-100 characters when present.
+  /// Required when `hideOwnerName` is true.
+  location?: string;
+  /// When true, the owner's identity is hidden from other users. Requires `location`.
+  hideOwnerName: boolean;
+  /// One or more items to create. 1-10 items per call.
+  items: QuartermasterItemEntry[];
+}
+
+/**
+ * Used to update a single Quartermastarr item. Every field is replaced on each call.
+ * Required by: `POST /api/v3/quartermaster/ID/update`
+ */
+export interface QuartermasterContentData {
+  /// The updated category.
+  category: QuartermasterCategory;
+  /// The updated item name. 2-100 characters.
+  itemName: string;
+  /// The updated description. At most 2048 characters. Omitting it clears it.
+  itemDescription?: string;
+  /// The updated location. 3-100 characters when present. Omitting it clears it.
+  location?: string;
+  /// When true, the owner's identity is hidden from other users. Requires `location`.
+  hideOwnerName: boolean;
+  /// The item's photo. Omitting it removes the photo; `{filename}` keeps the existing photo;
+  /// `{image}` replaces it.
+  image?: ImageUploadData;
+}
+
+/**
+ * A Quartermastarr item.
+ * Returned by `GET /api/v3/quartermaster`, `GET /api/v3/quartermaster/ID`,
+ * `POST /api/v3/quartermaster/create` and `POST /api/v3/quartermaster/ID/update`.
+ */
+export interface QuartermasterData {
+  /// The item's ID.
+  itemID: string;
+  /// Whether the owner has or needs the item.
+  category: QuartermasterCategory;
+  /// A short name/title for the item. Masked to a review notice when the item is quarantined.
+  itemName: string;
+  /// An optional longer description. Masked when quarantined.
+  itemDescription?: string;
+  /// An optional free-text pickup/exchange location. Masked when quarantined.
+  location?: string;
+  /// Filename of the item's photo. Absent when there is no photo, or when quarantined.
+  image?: string;
+  /// The item's creator. Absent when `hideOwnerName` is true and the viewer is not the owner.
+  /// Note that the public endpoints hide it from moderators too; only the mod endpoint reveals it.
+  owner?: UserHeader;
+  /// Whether the owner has chosen to hide their identity from other users.
+  hideOwnerName: boolean;
+  /// The item's current moderation status.
+  moderationStatus: ContentModerationStatus;
+  /// The time of the item's most recent modification.
+  lastModificationTime: string;
+}
+
+/**
+ * A paginated list of Quartermastarr items.
+ * Returned by `GET /api/v3/quartermaster`.
+ */
+export interface QuartermasterListData {
+  /// Pagination into the result set.
+  paginator: Paginator;
+  /// The items in the result set.
+  items: QuartermasterData[];
+}
+
+/**
+ * A prior state of a Quartermastarr item, for moderators.
+ * Note that the saved edit shows the state BEFORE the edit, so `author` changed the contents
+ * to those of the NEXT edit (or to the current state).
+ */
+export interface QuartermasterEditLogData {
+  /// The ID of the item.
+  itemID: string;
+  /// The ID of the edit.
+  editID: string;
+  /// The timestamp of the edit.
+  createdAt: string;
+  /// Who initiated the edit. Usually the item's owner, but could be a moderator.
+  author: UserHeader;
+  /// The item name just before `author` edited it.
+  itemName: string;
+  /// The item description just before `author` edited it. Empty string if there was none.
+  itemDescription: string;
+  /// The location just before `author` edited it. Empty string if there was none.
+  location: string;
+  /// The image filename just before `author` edited it. Empty string if there was none.
+  image: string;
+  /// Whether the owner's name was hidden just before `author` edited it.
+  hideOwnerName: boolean;
+}
+
+/**
+ * Data a moderator needs to moderate a Quartermastarr item.
+ * Returned by `GET /api/v3/mod/quartermaster/ID`.
+ */
+export interface QuartermasterModerationData {
+  /// The item, with quarantine masking overridden and the owner always shown.
+  item: QuartermasterData;
+  /// True if the item has been soft-deleted.
+  isDeleted: boolean;
+  /// The moderation status of this item.
+  moderationStatus: ContentModerationStatus;
+  /// Previous edits to the item.
+  edits: QuartermasterEditLogData[];
+  /// User reports against this item.
+  reports: ReportModerationData[];
 }

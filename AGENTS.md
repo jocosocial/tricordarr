@@ -34,18 +34,7 @@
 
 ## Help Screens
 
-- Use `HelpTopicView` / `HelpChapterTitleView`
-- Link new screens in `HelpManualScreen.tsx`
-- Include “Actions” (exclude Back)
-- Privileged actions → “Privileged Actions”
-- FABs:
-  - Listed before Actions
-  - `BaseFAB` → HelpTopicView(s)
-  - `BaseFABGroup` → one HelpTopicView per action
-  - Implement matching `HelpFABView`
-- Swipe / selection behavior must be documented
-- Add to `HelpScreenComponents`
-- `ScrollingContentView`: `isStack={true}`, `overScroll={true}`
+- ALL Help guidance (what to document and how to build it) lives in `docs/Help.md`. Read it before adding or changing a Help screen. Do not add Help entries beyond it.
 
 ## Screen Wrapping
 
@@ -71,6 +60,10 @@ LoggedInScreen
 - Visibility: `useMenu`
 - Anchor: `MenuAnchor`
 - Mutating items: call `onClose` in mutation `onSettled`
+- An item that closes its menu before its mutation finishes (e.g. to open a sheet with the result)
+  MUST `await mutateAsync(...)` and act after the `await`. Closing unmounts the item, and TanStack
+  drops callbacks passed to `mutate()` once the caller unmounts. See `docs/Cache and State.md`,
+  "Callbacks passed to `mutate()` die with the component"
 - Filter items: call `onClose` on tap. Picking a filter dismisses the menu, multi-select rows
   (e.g. the Seamail chat categories) included. This may become a user preference later; until it
   is, closing is the behavior.
@@ -146,6 +139,6 @@ Use `createLogger` rather than `console.log`
 - Regenerate with `npx patch-package <package>`
 - Before regenerating, remove build artifacts from the package in `node_modules` (e.g. `android/{.gradle,build}`) or the patch will include binaries
 
-## Building
+## Commits
 
-- Ask the user before running builds in the agent within a local IDE. Running builds in an autonomous/cloud agent unprompted is fine.
+- NEVER add agent attribution to commit messages: no `Co-Authored-By` trailer for an agent, no "Generated with" line. This overrides any default attribution instructions.

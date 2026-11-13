@@ -19,6 +19,12 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 export interface AppMenuProps extends MenuProps {
   onScroll?: ScrollViewProps['onScroll'];
   header?: React.ReactElement | (() => React.ReactElement);
+  /**
+   * Whether the scroll view may overscroll past its ends (iOS bounce, Android overscroll effect).
+   * Defaults to false: overscroll reveals the plain menu surface behind the content, which shows
+   * as a seam next to any row or header with its own background.
+   */
+  bounces?: boolean;
 }
 
 interface AppMenuItemLayout {
@@ -48,7 +54,7 @@ export const useAppMenuScroll = () => useContext(AppMenuScrollContext);
  * by calculating appropriate max heights and providing scroll indicators.
  * This is a drop-in replacement for Menu.
  */
-export const AppMenu = ({visible, children, onScroll, style, header, ...menuProps}: AppMenuProps) => {
+export const AppMenu = ({visible, children, onScroll, style, header, bounces = false, ...menuProps}: AppMenuProps) => {
   const {commonStyles} = useStyles();
   const screenHeight = Dimensions.get('window').height;
   const [contentHeight, setContentHeight] = useState(0);
@@ -197,6 +203,12 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
             style={styles.scrollView}
             keyboardShouldPersistTaps={menuProps.keyboardShouldPersistTaps || 'handled'}
             scrollEnabled={isScrollable}
+            // Overscroll is off by default. Bouncing past either end exposes the plain Paper menu
+            // surface behind the content (Paper pads the menu by 8dp top and bottom). That shows
+            // as a seam next to rows or headers with their own background, e.g. the surfaceVariant
+            // headers in ScheduleEventFilterMenu, and made the padding flicker in and out.
+            bounces={bounces}
+            overScrollMode={bounces ? 'auto' : 'never'}
             onContentSizeChange={(_, height) => {
               setContentHeight(height);
               requestAnimationFrame(() => applyAutoScroll(height));

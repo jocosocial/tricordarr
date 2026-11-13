@@ -42,8 +42,8 @@ export const ServerHealthcheckResultView = ({serverHealthPassed}: ServerHealthch
       )}
       {!serverHealthPassed && (
         <Text>
-          Server check failed. Press the Help button above for troubleshooting steps. If the issue persists, go to the
-          Twitarr or JoCo Cruise Info Desk for assistance.
+          Server check failed. Press the Help button above/below for troubleshooting steps. If the issue persists, go to
+          the Twitarr or JoCo Cruise Info Desk for assistance.
         </Text>
       )}
       {updatedAt && (

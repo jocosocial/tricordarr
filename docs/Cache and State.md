@@ -134,6 +134,33 @@ Two failure shapes, two different fixes:
 
 See also "Optimistic Cache Updates (local-first reducer pattern)" below: that pattern adds a step _before_ the mutation starts, but doesn't remove the requirement here to disable the control while it's in flight.
 
+### Callbacks passed to `mutate()` die with the component
+
+TanStack Query runs the callbacks passed to `mutate(variables, {onSuccess, onError, onSettled})` only while the component that called it is still mounted. If it unmounts first, the request still completes and the data is thrown away, with no error. Callbacks given to the hook itself (`useMutation({onSuccess})`, including `useTokenAuthMutation`'s error snackbar) aren't affected.
+
+This bites any control that unmounts before its request finishes. The common case is a `Menu.Item` that calls `closeMenu()` before the mutation, since a Paper menu unmounts its items once its close animation ends. The ICS Download and Save Contact items did this: they closed the menu, then opened the download sheet from `mutate()`'s `onSuccess`. The sheet only opened when the request beat the close animation, so on a fresh load it took several taps.
+
+It's a race, so it can look platform-specific or only show on a slow first request. Watch for anything that unmounts the caller: closing a menu or sheet, `navigation.goBack()`, or a list row that disappears.
+
+- **Keep the caller mounted until the mutation settles.** This is the Menus convention in `AGENTS.md`: call `closeMenu()` from `onSettled`, not before `mutate()`.
+- **If the control has to go away first,** for example to make room for a sheet, `await mutation.mutateAsync(...)` and do the follow-up after the `await`. The promise settles whether or not the caller is mounted. Catch the rejection, since the hook's `onError` already reports it:
+
+  ```tsx
+  const handlePress = async () => {
+    closeMenu();
+    let ics: string;
+    try {
+      ics = await mutateAsync(event.eventID);
+    } catch {
+      // useTokenAuthMutation already shows the error.
+      return;
+    }
+    openDownloadSheet({...});
+  };
+  ```
+
+- **Work that must always happen,** like a cache reducer, belongs in the hook's own callbacks rather than `mutate()`'s.
+
 ## Optimistic Cache Updates (local-first reducer pattern)
 
 If you only update the cache after the server responds, any control whose _appearance_ depends on that cache (a star, a checkmark, a mute icon) sits in the wrong state for the entire round trip — and on the ship's slow network (see "Mutation In-Flight State" above), that's long enough for the user to notice. The fix: for a toggle where you already know the new value the instant the user taps (a boolean flip, a field the user picked), call the reducer _before_ calling `mutation.mutate(...)`, not inside `onSuccess`.

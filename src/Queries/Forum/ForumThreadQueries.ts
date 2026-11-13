@@ -1,4 +1,8 @@
-import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
+import {
+  TokenAuthPaginationQueryOptionsTypeV2,
+  useTokenAuthPaginationQuery,
+  useTokenAuthQuery,
+} from '#src/Queries/TokenAuthQuery';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 /**
@@ -8,8 +12,17 @@ import {ForumData, PostData} from '#src/Structs/ControllerStructs';
  * soft-deleted. `GET /forum/{forumID}?startPost={id}` looks up the thread by UUID
  * and uses the post ID only as a pagination offset — the same approach as the site UI.
  * Prefer both IDs whenever the caller has them (moderation View in Context).
+ *
+ * Like opening a Fez chat, this refetches on mount and window focus by default so the thread is always current.
  */
-export const useForumThreadQuery = (forumID?: string, postID?: string, options = {}) => {
+export const useForumThreadQuery = (
+  forumID?: string,
+  postID?: string,
+  options: TokenAuthPaginationQueryOptionsTypeV2<ForumData> = {
+    refetchOnWindowFocus: 'always',
+    refetchOnMount: 'always',
+  },
+) => {
   if (!forumID && !postID) {
     throw new Error('Invalid usage of useForumThreadQuery()');
   }

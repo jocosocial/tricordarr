@@ -1,6 +1,6 @@
 import {AxiosError} from 'axios';
 
-import {isHttpClientError, shouldRetryQuery} from '#src/Libraries/Network/Retry';
+import {isHttpClientError, isHttpNotFoundError, shouldRetryQuery} from '#src/Libraries/Network/Retry';
 
 /**
  * Minimal AxiosError with an optional HTTP status. `isAxiosError` is true so
@@ -14,6 +14,25 @@ function axiosError(status?: number): AxiosError {
   }
   return error;
 }
+
+describe('isHttpNotFoundError', () => {
+  it('is true for HTTP 404', () => {
+    expect(isHttpNotFoundError(axiosError(404))).toBe(true);
+  });
+
+  it.each([400, 403, 500])('is false for HTTP %s', status => {
+    expect(isHttpNotFoundError(axiosError(status))).toBe(false);
+  });
+
+  it('is false for a network failure with no response', () => {
+    expect(isHttpNotFoundError(axiosError())).toBe(false);
+  });
+
+  it('is false for a non-Axios error and for no error', () => {
+    expect(isHttpNotFoundError(new Error('nope'))).toBe(false);
+    expect(isHttpNotFoundError(null)).toBe(false);
+  });
+});
 
 describe('isHttpClientError', () => {
   it.each([400, 401, 404, 429])('is true for HTTP %s', status => {

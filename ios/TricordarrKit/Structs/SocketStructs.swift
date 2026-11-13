@@ -174,6 +174,8 @@ struct SocketNotificationData: Codable {
 	var info: String
 	/// An ID of an Announcement, Fez, Twarrt, ForumPost, or Event.
 	var contentID: String
+	/// An ID of a related parent object, when one exists. For forum mention and alertword post notifications this is the Forum ID.
+	var secondaryContentID: String?
 	/// For .incomingPhoneCall notifications, the caller.
 	var caller: UserHeader?
 	/// For .incomingPhoneCall notification,s the caller's IP addresses. May be nil, in which case the receiver opens a server socket instead.

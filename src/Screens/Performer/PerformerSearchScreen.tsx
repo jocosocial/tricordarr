@@ -15,6 +15,7 @@ import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Ma
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {MaintenanceModeScreen} from '#src/Screens/Checkpoint/MaintenanceModeScreen';
+import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.performerSearchScreen>;
 
@@ -44,6 +45,18 @@ const PerformerSearchScreenInner = ({navigation, route}: Props) => {
     [commonStyles.paddingSmall],
   );
 
+  /**
+   * Open the tapped performer's page.
+   */
+  const onPressPerformer = useCallback(
+    (header: PerformerHeaderData) => {
+      if (header.id) {
+        navigation.push(CommonStackComponents.performerScreen, {id: header.id});
+      }
+    },
+    [navigation],
+  );
+
   const getNavButtons = useCallback(() => {
     return (
       <View>
@@ -69,7 +82,7 @@ const PerformerSearchScreenInner = ({navigation, route}: Props) => {
       <View style={styles.buttonContainer}>
         <PerformerTypeButtons performerType={performerType} setPerformerType={setPerformerType} />
       </View>
-      <PerformerSearchBar performerType={performerType} />
+      <PerformerSearchBar performerType={performerType} onPress={onPressPerformer} />
     </AppView>
   );
 };

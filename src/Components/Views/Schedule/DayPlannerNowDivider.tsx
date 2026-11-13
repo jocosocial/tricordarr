@@ -9,6 +9,8 @@ import useDateTime from '#src/Libraries/DateTime';
 interface DayPlannerNowDividerProps {
   /** Start of the displayed day (for pixel offset calculation) */
   dayStart: Date;
+  /** Total height of the timeline in pixels; the line is hidden when now falls past it. */
+  timelineHeight: number;
   /** The cruise day being viewed (1-indexed) */
   selectedCruiseDay: number | undefined;
   /** Boat timezone for the selected day (must match timeline labels and scroll-to-now). */
@@ -20,7 +22,12 @@ interface DayPlannerNowDividerProps {
  * effective cruise day. Uses the same logic as getScrollOffsetForTimeOfDay
  * so the line and "scroll to now" stay in sync.
  */
-export const DayPlannerNowDivider = ({dayStart, selectedCruiseDay, boatTimeZoneID}: DayPlannerNowDividerProps) => {
+export const DayPlannerNowDivider = ({
+  dayStart,
+  timelineHeight,
+  selectedCruiseDay,
+  boatTimeZoneID,
+}: DayPlannerNowDividerProps) => {
   const {theme} = useAppTheme();
   const {startDate, endDate, adjustedCruiseDayToday} = useCruise();
   const {getMinutesFromDayStartForNow} = useDayPlanner();
@@ -45,8 +52,11 @@ export const DayPlannerNowDivider = ({dayStart, selectedCruiseDay, boatTimeZoneI
       return null;
     }
 
-    return (minutesFromDayStart / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
+    const offset = (minutesFromDayStart / DAY_PLANNER_CONFIG.MINUTES_PER_ROW) * DAY_PLANNER_CONFIG.ROW_HEIGHT;
+    // A shorter window (overlap view) must not draw the line outside the timeline.
+    return offset >= timelineHeight ? null : offset;
   }, [
+    timelineHeight,
     minutelyUpdatingDate,
     selectedCruiseDay,
     adjustedCruiseDayToday,

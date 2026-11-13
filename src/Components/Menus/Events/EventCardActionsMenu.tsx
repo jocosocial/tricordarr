@@ -2,11 +2,13 @@ import React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
+import {ManagePerformersMenuItem} from '#src/Components/Menus/Events/Items/ManagePerformersMenuItem';
 import {NeedsPhotographerMenuItem} from '#src/Components/Menus/Events/Items/NeedsPhotographerMenuItem';
 import {OpenInSchedMenuItem} from '#src/Components/Menus/Events/Items/OpenInSchedMenuItem';
 import {PhotographingMenuItem} from '#src/Components/Menus/Events/Items/PhotographingMenuItem';
 import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
@@ -24,6 +26,8 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
   const {hasShutternaut, hasShutternautManager} = useRoles();
+  const {hasTwitarrTeam} = usePrivilege();
+  const isShadow = props.eventData.eventType === EventType.shadow;
 
   const anchorWithMenu = React.cloneElement(props.anchor, {
     onLongPress: openMenu,
@@ -40,6 +44,12 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const handleSetOrganizerPress = () => {
     commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
       eventID: String(props.eventData.eventID),
+    });
+  };
+
+  const handleManagePerformersPress = () => {
+    commonNavigation.push(CommonStackComponents.eventPerformersManageScreen, {
+      eventID: props.eventData.eventID,
     });
   };
 
@@ -64,12 +74,9 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.eventData.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.eventData} />
       <OpenInSchedMenuItem closeMenu={closeMenu} eventUid={props.eventData.uid} />
-      {props.eventData.eventType === EventType.shadow && (
-        <>
-          <Divider bold={true} />
-          <SetOrganizerMenuItem closeMenu={closeMenu} onPress={handleSetOrganizerPress} />
-        </>
-      )}
+      {(isShadow || hasTwitarrTeam) && <Divider bold={true} />}
+      {isShadow && <SetOrganizerMenuItem closeMenu={closeMenu} onPress={handleSetOrganizerPress} />}
+      {hasTwitarrTeam && <ManagePerformersMenuItem onPress={handleManagePerformersPress} />}
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
       {hasShutternaut && (
         <PhotographingMenuItem

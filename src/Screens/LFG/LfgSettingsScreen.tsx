@@ -1,7 +1,6 @@
 import {Formik} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {SegmentedButtons, Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -20,7 +19,6 @@ import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
-import {FezListEndpoints, SegmentedButtonType} from '#src/Types';
 
 export const LfgSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -29,7 +27,6 @@ export const LfgSettingsScreen = () => {
   const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.schedule.hidePastLfgs);
   const {setLfgHidePastFilter} = useLfgFilter();
   const {commonStyles} = useStyles();
-  const [defaultScreen, setDefaultScreen] = useState<FezListEndpoints>(appConfig.schedule.defaultLfgList);
 
   const handleHidePastLfgs = () => {
     const newValue = !appConfig.schedule.hidePastLfgs;
@@ -42,38 +39,6 @@ export const LfgSettingsScreen = () => {
     });
     setHidePastLfgs(newValue);
     setLfgHidePastFilter(newValue);
-  };
-
-  const lfgDefaultButtons: SegmentedButtonType[] = [
-    {
-      value: 'open',
-      label: 'Find',
-      icon: AppIcons.lfgFind,
-      testID: 'lfgSettingsDefaultFind-button',
-    },
-    {
-      value: 'joined',
-      label: 'Joined',
-      icon: AppIcons.lfgJoined,
-      testID: 'lfgSettingsDefaultJoined-button',
-    },
-    {
-      value: 'owner',
-      label: 'Owned',
-      icon: AppIcons.lfgOwned,
-      testID: 'lfgSettingsDefaultOwned-button',
-    },
-  ];
-
-  const handleLfgDefaultScreen = (value: string) => {
-    updateAppConfig({
-      ...appConfig,
-      schedule: {
-        ...appConfig.schedule,
-        defaultLfgList: value as FezListEndpoints,
-      },
-    });
-    setDefaultScreen(value as FezListEndpoints);
   };
 
   const toggleValue = (configKey: keyof PushNotificationConfig) => {
@@ -128,10 +93,6 @@ export const LfgSettingsScreen = () => {
               </ListSection>
             </View>
           </Formik>
-        </PaddedContentView>
-        <PaddedContentView>
-          <Text style={commonStyles.marginBottomSmall}>Default LFG Screen</Text>
-          <SegmentedButtons buttons={lfgDefaultButtons} value={defaultScreen} onValueChange={handleLfgDefaultScreen} />
         </PaddedContentView>
         <PaddedContentView padSides={false}>
           <Formik initialValues={{}} onSubmit={() => {}}>

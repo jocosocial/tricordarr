@@ -8,7 +8,7 @@ import {WithIntent, WithScrollToTopIntent} from '#src/Types/RouteParams';
 export type LfgStackParamList = CommonStackParamList & {
   LfgListScreen: WithScrollToTopIntent<
     WithIntent<{
-      endpoint: FezListEndpoints;
+      endpoint?: FezListEndpoints;
       onlyNew?: boolean;
       cruiseDay?: number;
     }>

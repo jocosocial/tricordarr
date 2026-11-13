@@ -241,6 +241,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
     autoCancel,
     ongoing,
     markAsReadUrl,
+    notificationData.secondaryContentID,
   );
 };
 

@@ -108,6 +108,8 @@ export interface SocketNotificationData {
   info: string;
   /// An ID of an Announcement, Fez, Twarrt, ForumPost, or Event.
   contentID: string;
+  /// An ID of a related parent object, when one exists. For forum mention and alertword post notifications this is the Forum ID.
+  secondaryContentID?: string;
   /// For .incomingPhoneCall notifications, the caller.
   caller?: UserHeader;
   /// For .incomingPhoneCall notification,s the caller's IP addresses. May be nil, in which case the receiver opens a server socket instead.

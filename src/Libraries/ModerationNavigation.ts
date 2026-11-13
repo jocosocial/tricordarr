@@ -5,7 +5,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stack
 
 /**
  * Opens the native moderation screen for a piece of content.
- * Twarrts and Quartermaster are not implemented in the app, so they fall back to the site UI.
+ * Twarrts are not implemented in the app, so they fall back to the site UI.
  */
 export const pushModerateScreen = (
   navigation: StackNavigationProp<CommonStackParamList>,
@@ -46,11 +46,7 @@ export const pushModerateScreen = (
       navigation.push(CommonStackComponents.moderatePrivateEventScreen, {id});
       return;
     case ReportType.quartermasterItem:
-      navigation.push(CommonStackComponents.siteUIScreen, {
-        resource: 'quartermaster',
-        id,
-        moderate: true,
-      });
+      navigation.push(CommonStackComponents.moderateQuartermasterScreen, {id});
       return;
   }
 };
@@ -59,7 +55,16 @@ export const pushModerateScreen = (
  * Resource names previously used by ModerateMenuItem / site UI moderate URLs.
  */
 export type ModerateResource =
-  'forum' | 'forumpost' | 'photostream' | 'lfg' | 'fezpost' | 'userprofile' | 'user' | 'personalevent' | 'twarrt';
+  | 'forum'
+  | 'forumpost'
+  | 'photostream'
+  | 'lfg'
+  | 'fezpost'
+  | 'userprofile'
+  | 'user'
+  | 'personalevent'
+  | 'twarrt'
+  | 'quartermaster';
 
 /**
  * Maps site-UI moderate resource names to native screens.
@@ -96,6 +101,9 @@ export const pushModerateResource = (
       return;
     case 'twarrt':
       pushModerateScreen(navigation, ReportType.twarrt, id);
+      return;
+    case 'quartermaster':
+      pushModerateScreen(navigation, ReportType.quartermasterItem, id);
       return;
   }
 };

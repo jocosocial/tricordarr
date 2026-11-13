@@ -17,6 +17,8 @@ interface BoardgameFlatListProps {
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
   listHeader?: React.ComponentType<any>;
+  /** When true, anchor the scroll buttons above a bottom-right FAB. */
+  scrollButtonRaised?: boolean;
 }
 
 const BoardgameFlatListInner = (
@@ -30,6 +32,7 @@ const BoardgameFlatListInner = (
     handleLoadNext,
     handleLoadPrevious: _handleLoadPrevious,
     listHeader,
+    scrollButtonRaised,
   }: BoardgameFlatListProps,
   ref: React.ForwardedRef<FlashListRef<BoardgameData>>,
 ) => {
@@ -51,6 +54,7 @@ const BoardgameFlatListInner = (
       renderItemSeparator={getListSeparator}
       onScrollThreshold={onScrollThreshold}
       handleLoadNext={handleLoadNext}
+      scrollButtonRaised={scrollButtonRaised}
     />
   );
 };

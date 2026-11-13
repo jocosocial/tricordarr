@@ -14,9 +14,11 @@ import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
+import {LfgPreRegistrationEmptyView} from '#src/Components/Views/Static/LfgPreRegistrationEmptyView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useLfgFilter} from '#src/Context/Contexts/LfgFilterContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -42,7 +44,6 @@ import {FezListEndpoints, ScheduleFlatListSeparator} from '#src/Types';
 
 interface LfgListScreenInnerProps {
   endpoint: FezListEndpoints;
-  setEndpoint: (endpoint: FezListEndpoints) => void;
   enableFilters?: boolean;
   enableReportOnly?: boolean;
   listHeader?: ReactElement;
@@ -58,7 +59,6 @@ interface LfgListScreenInnerProps {
  */
 const LfgListScreenInner = ({
   endpoint,
-  setEndpoint,
   enableFilters = true,
   enableReportOnly,
   listHeader,
@@ -68,9 +68,12 @@ const LfgListScreenInner = ({
   scrollToTopIntent,
 }: LfgListScreenInnerProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew, lfgFavoriteFilter} = useLfgFilter();
-  // Only /fez/joined and /fez/owner accept ?favorite=true; don't leak the filter onto the others.
-  const supportsFavorite = endpoint === 'joined' || endpoint === 'owner';
+  // /fez/open has no FezParticipant pivot, so ?favorite and ?onlynew are meaningless there.
+  // Swiftarr currently ignores ?onlynew on /fez/owner too (upstream issue filed); sending it is harmless
+  // and will start narrowing once that lands, with no client change needed.
+  const supportsMemberFilters = endpoint === 'joined' || endpoint === 'owner';
   const {commonStyles} = useStyles();
+  const {preRegistrationMode} = usePreRegistration();
   const [fezList, setFezList] = useState<FezData[]>([]);
   const listRef = useRef<FlashListRef<FezData>>(null);
   // const processedIntentRef = useRef<string | null>(null);
@@ -89,8 +92,8 @@ const LfgListScreenInner = ({
       // selectedCruiseDay === 0 means "All Days" in the UI, pass undefined to API to get all days
       cruiseDay: endpoint === 'former' || selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
       hidePast: lfgHidePastFilter,
-      onlyNew: lfgOnlyNew,
-      favorite: supportsFavorite ? lfgFavoriteFilter : undefined,
+      onlyNew: supportsMemberFilters ? lfgOnlyNew : undefined,
+      favorite: supportsMemberFilters ? lfgFavoriteFilter : undefined,
     });
   const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
   const {handleLoadNext} = usePagination({
@@ -105,8 +108,6 @@ const LfgListScreenInner = ({
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
   const {notificationSocket} = useSocket();
-  const [showFabLabel, setShowFabLabel] = useState(true);
-  const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const {invalidateFez} = useFezCacheReducer();
 
   // We used to show the time separators for all days all lists. However since realizing that sorting
@@ -123,23 +124,26 @@ const LfgListScreenInner = ({
         <MaterialHeaderButtons>
           {enableFilters && (
             <>
-              <Item
-                title={'Search'}
-                iconName={AppIcons.search}
-                onPress={() =>
-                  navigation.push(LfgStackComponents.lfgSearchScreen, {
-                    endpoint: endpoint,
-                  })
-                }
-              />
-              <LfgFilterMenu enableUnread={endpoint === 'joined'} enableFavorite={supportsFavorite} />
+              {/* Search isn't available to pre-registration users. */}
+              {!preRegistrationMode && (
+                <Item
+                  title={'Search'}
+                  iconName={AppIcons.search}
+                  onPress={() =>
+                    navigation.push(LfgStackComponents.lfgSearchScreen, {
+                      endpoint: endpoint,
+                    })
+                  }
+                />
+              )}
+              <LfgFilterMenu />
             </>
           )}
           <LfgListActionsMenu endpoint={endpoint} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [enableFilters, endpoint, navigation, supportsFavorite]);
+  }, [enableFilters, endpoint, navigation, preRegistrationMode]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -237,19 +241,16 @@ const LfgListScreenInner = ({
             showDayInDividers={showDayInDividers}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             separator={listSeparator}
-            onScrollThreshold={onScrollThreshold}
             handleLoadNext={handleLoadNext}
             hasNextPage={hasNextPage}
             enableReportOnly={enableReportOnly}
             showDayInCard={true}
-            listHeader={listHeader}
+            listHeader={preRegistrationMode && fezList.length === 0 ? <LfgPreRegistrationEmptyView /> : listHeader}
             overScroll={true}
           />
         )}
       </View>
-      {showFab && (
-        <LfgFAB showLabel={showFabLabel} endpoint={endpoint} setEndpoint={setEndpoint} cruiseDay={selectedCruiseDay} />
-      )}
+      {showFab && <LfgFAB cruiseDay={selectedCruiseDay} />}
     </AppView>
   );
 };
@@ -261,16 +262,40 @@ interface LfgListScreenWithEndpointProps extends StackScreenProps<
 
 /**
  * Middle component that handles route parameters and state management.
+ *
+ * The Find/Joined/Owned source now lives in `LfgFilterContext` (it's a filter, selected from the
+ * LfgFilterMenu), not local state. The route param is kept in sync in both directions so deep
+ * links (`lfg/:endpoint?`), the navigator's title, and `useScrollToTopIntent`'s
+ * `{key: 'endpoint', value: 'joined'}` route-param matching all keep working unchanged. 'former'
+ * is a separate pushed screen and never writes into the context.
  */
 const LfgListScreenWithEndpoint = ({route, navigation}: LfgListScreenWithEndpointProps) => {
-  const [endpoint, setEndpoint] = useState<FezListEndpoints>(route.params.endpoint);
+  const {lfgSourceFilter, setLfgSourceFilter} = useLfgFilter();
+  const isFormer = route.params.endpoint === 'former';
+  // In pre-registration mode LfgFilterProvider holds the source on Owned, so this (and the
+  // route param and title it syncs to) follows the source like any other selection.
+  const endpoint: FezListEndpoints = isFormer ? 'former' : lfgSourceFilter;
 
-  // Sync state with route params (for external navigation)
+  // Tracks the last value written by either direction, so the two effects below don't fight.
+  const lastSyncedRef = useRef<FezListEndpoints | undefined>(undefined);
+
+  // Adopt an externally-set route param (initial mount, deep link) into the context.
   useEffect(() => {
-    if (route.params.endpoint !== endpoint) {
-      setEndpoint(route.params.endpoint);
+    // A link to /lfg replaces the params without one, and initialParams only applies on first mount.
+    const param = route.params.endpoint ?? 'open';
+    if (param !== 'former' && param !== lastSyncedRef.current) {
+      lastSyncedRef.current = param;
+      setLfgSourceFilter(param);
     }
-  }, [route.params.endpoint, endpoint]);
+  }, [route.params.endpoint, setLfgSourceFilter]);
+
+  // Mirror context changes (from the filter menu) back onto the route param.
+  useEffect(() => {
+    if (!isFormer && lastSyncedRef.current !== lfgSourceFilter) {
+      lastSyncedRef.current = lfgSourceFilter;
+      navigation.setParams({endpoint: lfgSourceFilter});
+    }
+  }, [lfgSourceFilter, isFormer, navigation]);
 
   // Determine endpoint-specific props
   const enableFilters = endpoint !== 'former';
@@ -285,20 +310,11 @@ const LfgListScreenWithEndpoint = ({route, navigation}: LfgListScreenWithEndpoin
     former: '/lfg/former',
   };
 
-  const wrappedSetEndpoint = useCallback(
-    (newEndpoint: FezListEndpoints) => {
-      setEndpoint(newEndpoint);
-      navigation.setParams({endpoint: newEndpoint});
-    },
-    [navigation],
-  );
-
   return (
     <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={urlPathMap[endpoint]}>
       <LfgListScreenInner
         key={route.params.intent}
         endpoint={endpoint}
-        setEndpoint={wrappedSetEndpoint}
         enableFilters={enableFilters}
         enableReportOnly={enableReportOnly}
         showFab={showFab}
@@ -328,7 +344,9 @@ export const LfgListScreen = (props: Props) => {
 
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen helpScreen={CommonStackComponents.lfgHelpScreen}>
+      <PreRegistrationScreen
+        helpScreen={CommonStackComponents.lfgHelpScreen}
+        allowed={props.route.params.endpoint !== 'former'}>
         <LfgListScreenWithEndpoint {...props} />
       </PreRegistrationScreen>
     </LoggedInScreen>

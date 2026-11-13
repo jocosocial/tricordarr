@@ -26,6 +26,8 @@ export const styleDefaults = {
   // Floor for a swipe action button's width. Roughly the height of a two-line list row (a typical
   // Seamail), so a short icon+word button is about square there and stays that width on taller rows.
   swipeableButtonMinWidth: 68,
+  // Border marking the current thing, such as a ship map location or the event being compared in Overlapping Events.
+  highlightBorderWidth: 2,
 };
 
 export type StyleDefaults = typeof styleDefaults;

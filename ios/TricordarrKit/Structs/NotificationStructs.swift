@@ -12,6 +12,7 @@ struct UserInfoData: Codable {
 	var type: NotificationTypeData
 	var url: String
 	var markAsReadUrl: String?
+	var secondaryContentID: String?
 }
 
 extension UserInfoData {
@@ -22,6 +23,9 @@ extension UserInfoData {
 		]
 		if let markAsReadUrl = markAsReadUrl {
 			dict["markAsReadUrl"] = markAsReadUrl
+		}
+		if let secondaryContentID = secondaryContentID {
+			dict["secondaryContentID"] = secondaryContentID
 		}
 		return dict
 	}

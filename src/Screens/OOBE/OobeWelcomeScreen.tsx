@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Pressable, StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Text} from 'react-native-paper';
@@ -14,32 +14,24 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {createLogger} from '#src/Libraries/Logger';
+import {useSecretTrigger} from '#src/Hooks/useSecretTrigger';
+import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
-
-const logger = createLogger('OobeWelcomeScreen.tsx');
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
+import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
 
-const VERSION_TAPS_TO_FAULT = 10;
-
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {currentSession, findOrCreateSession, updateSession} = useSession();
+  const {currentSession, findOrCreateSession} = useSession();
   const {appConfig} = useConfig();
-  const {theme} = useAppTheme();
-  const {oobeCompleted} = useOobe();
+  const {oobeFinish} = useOobe();
   const {fromAsset} = useAppImage();
-  const [versionTapCount, setVersionTapCount] = useState(0);
-  const [fault, setFault] = useState(false);
-
-  if (fault) {
-    throw Error("Intentional critical fault. I hope you know what you're doing.");
-  }
+  const rootNavigation = useRootStack();
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
@@ -58,44 +50,29 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
 
   const isInitializing = !currentSession;
 
-  const onPreRegistrationPress = async () => {
-    if (!currentSession) {
-      logger.warn('Cannot update session: no current session');
-      return;
-    }
-    await updateSession(currentSession.sessionID, {
-      // Preserve existing server URL when re-running OOBE after completion
-      ...(oobeCompleted ? {} : {serverUrl: appConfig.preRegistrationServerUrl}),
-      preRegistrationMode: true,
-    });
-    navigation.push(OobeStackComponents.oobeServerScreen);
+  const onPress = () => {
+    navigation.push(OobeStackComponents.oobeLocationScreen);
   };
 
-  const onPress = async () => {
-    if (!currentSession) {
-      logger.warn('Cannot update session: no current session');
-      return;
-    }
-    await updateSession(currentSession.sessionID, {
-      // Preserve existing server URL when re-running OOBE after completion
-      ...(oobeCompleted ? {} : {serverUrl: appConfig.serverUrl}),
-      preRegistrationMode: false,
-    });
-    navigation.push(OobeStackComponents.oobeServerScreen);
-  };
+  // Secret escape hatch, formerly a tap-the-header-title secret (via SecretHeaderTitle) on
+  // OobeServerScreen. Relocated here onto the version/build text, via the same hook, since
+  // this screen no longer has a header to hang it on. Its own tap count is independent of
+  // versionTapCount below, so the two secrets never interfere with each other.
+  const {onPress: onVersionPress} = useSecretTrigger({
+    onTrigger: () => {
+      oobeFinish();
+      rootNavigation.replace(RootStackComponents.rootContentScreen, {
+        screen: BottomTabComponents.homeTab,
+        params: {
+          screen: MainStackComponents.mainScreen,
+        },
+      });
+    },
+  });
 
-  const onVersionPress = () => {
-    const next = versionTapCount + 1;
-    setVersionTapCount(next);
-    if (next >= VERSION_TAPS_TO_FAULT) {
-      setFault(true);
-    }
-  };
-
-  // This used to have a useFocusEffect that would disable preregistration mode
-  // which caught if you entered prereg and then changed your mind. This actually
-  // sucks as a pattern so I'm turning it off and making that happen depending on
-  // how you proceed.
+  // preRegistrationMode is no longer set from this screen. It's derived on OobeServerScreen
+  // from the server's own ClientSettingsData.enablePreregistration once a server URL is
+  // chosen, rather than from which button the user tapped here.
 
   // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
   return (
@@ -126,15 +103,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
           </Pressable>
         </PaddedContentView>
       </ScrollingContentView>
-      <OobeButtonsView
-        rightOnPress={onPress}
-        leftOnPress={onPreRegistrationPress}
-        leftButtonColor={theme.colors.twitarrNeutralButton}
-        leftText={'Pre-Registration'}
-        leftButtonTextColor={theme.colors.onTwitarrNeutralButton}
-        rightDisabled={isInitializing}
-        leftDisabled={isInitializing}
-      />
+      <OobeButtonsView rightOnPress={onPress} rightDisabled={isInitializing} />
     </AppView>
   );
 };

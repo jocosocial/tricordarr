@@ -420,7 +420,8 @@ public class WebsocketNotifier: NSObject {
 				body: socketNotification.info,
 				type: socketNotification.type,
 				url: url,
-				markAsReadUrl: markAsReadUrl
+				markAsReadUrl: markAsReadUrl,
+				secondaryContentID: socketNotification.secondaryContentID
 			)
 		}
 	}

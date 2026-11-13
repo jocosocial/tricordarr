@@ -19,7 +19,7 @@ export const NetworkHelpScreen = () => {
         <HelpChapterTitleView title={'General'}>
           <HelpTopicView title={'Enable Airplane Mode'} icon={AppIcons.airplaneMode}>
             You must not be connected to cellular data. Leaving cellular data active once we are at sea can cause you to
-            incur significant roaming charges.
+            incur significant roaming charges!
           </HelpTopicView>
           <HelpTopicView title={'Ship Wi-Fi'} icon={AppIcons.wifi}>
             You must be connected to the ship's WiFi network. See platform-specific notes below.
