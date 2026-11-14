@@ -105,6 +105,8 @@ LoggedInScreen
 - NEVER disable ESLint validation such as `eslint-disable-next-line react-hooks/exhaustive-deps`
 - Do not remove comments unless they are no longer relevant or are being updated
 - New or altered functions must have docstrings. Omitting props is OK.
+- A component docstring says what the component is for, in a sentence or two. Do not enumerate its cases, branches, or literal strings; that restates the implementation and goes stale
+- Avoid inline JSX comments (`{/* ... */}` inside the returned markup). Put the comment in the component body, above the logic or variable it explains
 
 ## Lists
 
