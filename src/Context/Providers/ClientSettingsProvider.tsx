@@ -160,6 +160,9 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
   // started rather than sending a second request. Pre-registration mode is only ever taken from the
   // server here (and OOBE's Next), never on ordinary data changes, so the developer toggle holds.
   // The target is cleared before awaiting so re-renders can't apply twice.
+  // Only a successful apply ends the error suppression early. When the new server didn't answer,
+  // its other queries are failing at the same moment and would each raise a Snackbar, so the
+  // suppression is left to run out on SwiftarrQueryClientProvider's grace timer instead.
   useEffect(() => {
     if (!serverSwitchTarget || serverUrl !== serverSwitchTarget) {
       return;
@@ -172,9 +175,9 @@ export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
           return;
         }
         await applyClientSettings(data);
+        setServerSwitchInProgress(false);
       })
-      .catch(error => logger.error('Failed to apply client settings after server switch:', error))
-      .finally(() => setServerSwitchInProgress(false));
+      .catch(error => logger.error('Failed to apply client settings after server switch:', error));
   }, [applyClientSettings, refetch, serverSwitchTarget, serverUrl, setServerSwitchInProgress]);
 
   const value = useMemo(

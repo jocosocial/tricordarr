@@ -37,8 +37,11 @@ export function useOpenQuery<TData, TQueryParams = Object, TError extends Error 
   const {isLoading} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
   const maintenanceGated = useMaintenanceGate(endpoint);
+  // The healthcheck is how a disruption gets diagnosed and cleared, so it must keep running
+  // through one. Otherwise a re-keyed health query (e.g. after a server switch) never fetches.
+  const disruptionGated = disruptionDetected && endpoint !== '/client/health';
   const queryKey = [endpoint, queryParams, ...queryKeyExtraData];
-  const enabled = !isLoading && !disruptionDetected && !maintenanceGated && (options?.enabled ?? true);
+  const enabled = !isLoading && !disruptionGated && !maintenanceGated && (options?.enabled ?? true);
 
   const result = useQuery<TData, TError, TData>({
     queryKey,
