@@ -11,6 +11,7 @@ import {AxiosError} from 'axios';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useMaintenanceGate} from '#src/Hooks/useMaintenanceBlocked';
 import {
   getNextPageParam,
   getPreviousPageParam,
@@ -35,8 +36,9 @@ export function useOpenQuery<TData, TQueryParams = Object, TError extends Error 
 ): UseQueryResult<TData, TError> {
   const {isLoading} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
+  const maintenanceGated = useMaintenanceGate(endpoint);
   const queryKey = [endpoint, queryParams, ...queryKeyExtraData];
-  const enabled = !isLoading && !disruptionDetected && (options?.enabled ?? true);
+  const enabled = !isLoading && !disruptionDetected && !maintenanceGated && (options?.enabled ?? true);
 
   const result = useQuery<TData, TError, TData>({
     queryKey,
@@ -114,6 +116,7 @@ export function useOpenPaginationQuery<
   const {isLoading} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
   const {appConfig} = useConfig();
+  const maintenanceGated = useMaintenanceGate(endpoint);
 
   const defaultQueryFn = async ({pageParam}: {pageParam: PaginationQueryParams}) => {
     const {data: responseData} = await apiGet<TQueryFnData, TQueryParams>(endpoint, {
@@ -131,6 +134,6 @@ export function useOpenPaginationQuery<
     initialPageParam: {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize},
     getNextPageParam: (lastPage: TQueryFnData) => getNextPageParam(lastPage),
     getPreviousPageParam: (firstPage: TQueryFnData) => getPreviousPageParam(firstPage),
-    enabled: !isLoading && !disruptionDetected && (options?.enabled ?? true),
+    enabled: !isLoading && !disruptionDetected && !maintenanceGated && (options?.enabled ?? true),
   });
 }
