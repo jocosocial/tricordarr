@@ -6,7 +6,6 @@ import {StyleSheet, View} from 'react-native';
 import {Portal} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import {ErrorBanner} from '#src/Components/Banners/ErrorBanner';
 import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {ConnectionDisruptedWarningView} from '#src/Components/Views/Warnings/ConnectionDisruptedWarningView';
 import {MinAccessLevelWarningView} from '#src/Components/Views/Warnings/MinAccessLevelWarningView';
@@ -84,7 +83,6 @@ export const AppView = ({
           sits above KeyboardProvider in App.tsx — this renders outside any keyboard
           handling regardless of where it's placed here. */}
       <Portal>
-        <ErrorBanner />
         <AppSnackbar />
       </Portal>
       {preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
