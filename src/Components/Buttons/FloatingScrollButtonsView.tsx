@@ -10,6 +10,8 @@ interface FloatingScrollAction {
   onPress: () => void;
   icon: IconSource;
   testID: string;
+  /** Greys out the button, e.g. when the list is already at the edge it scrolls to. */
+  disabled?: boolean;
 }
 
 interface FloatingScrollButtonsViewProps {
@@ -56,6 +58,7 @@ export const FloatingScrollButtonsView = ({actions, small = false, raised = fals
           testID={action.testID}
           icon={action.icon}
           onPress={action.onPress}
+          disabled={action.disabled}
           small={small}
         />
       ))}

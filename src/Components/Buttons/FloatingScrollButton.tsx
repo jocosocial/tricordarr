@@ -8,6 +8,7 @@ interface FloatingScrollButtonProps {
   onPress: () => void;
   icon?: IconSource;
   small?: boolean;
+  disabled?: boolean;
   testID: string;
 }
 
@@ -20,7 +21,17 @@ export const FloatingScrollButton = ({
   onPress,
   icon = AppIcons.scrollDown,
   small = false,
+  disabled = false,
   testID,
 }: FloatingScrollButtonProps) => {
-  return <IconButton testID={testID} icon={icon} size={small ? 15 : 30} onPress={onPress} mode={'contained-tonal'} />;
+  return (
+    <IconButton
+      testID={testID}
+      icon={icon}
+      size={small ? 15 : 30}
+      onPress={onPress}
+      disabled={disabled}
+      mode={'contained-tonal'}
+    />
+  );
 };
