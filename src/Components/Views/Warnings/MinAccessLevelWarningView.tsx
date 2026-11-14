@@ -40,7 +40,6 @@ export const MinAccessLevelWarningView = () => {
       variant={'neutral'}
       title={'Maintenance Mode'}
       message={`Only ${UserAccessLevel.getLabel(minAccessLevel)} users and above may log in.`}
-      messageVariant={'labelMedium'}
       containerStyle={styles.container}
       titleStyle={styles.text}
       messageStyle={styles.text}

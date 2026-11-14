@@ -46,7 +46,6 @@ export const PreRegistrationWarningView = () => {
           ? 'Press and hold here when you are physically on the ship.'
           : 'Complete setup to start using Twitarr.'
       }
-      messageVariant={'labelMedium'}
       onPress={onPress}
       onLongPress={oobeCompleted ? returnToOobe : undefined}
       containerStyle={commonStyles.paddingHorizontalSmall}

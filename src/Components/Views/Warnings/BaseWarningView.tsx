@@ -86,7 +86,7 @@ export const BaseWarningView = ({
     });
   }, [commonStyles, containerStyle, messageStyle, titleStyle, variant]);
 
-  const resolvedMessageVariant = messageVariant ?? (title ? 'bodyMedium' : undefined);
+  const resolvedMessageVariant = messageVariant ?? (title ? 'labelMedium' : undefined);
   const isPressable = !!(onPress || onLongPress);
 
   if (!visible) {

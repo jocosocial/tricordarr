@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 
-import {BlockedOrMutedBanner} from '#src/Components/Banners/BlockedOrMutedBanner';
 import {UserProfileFABGroup} from '#src/Components/Buttons/FloatingActionButtons/UserProfileFABGroup';
 import {UserProfileSelfFAB} from '#src/Components/Buttons/FloatingActionButtons/UserProfileSelfFAB';
 import {HeaderProfileFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileFavoriteButton';
@@ -17,6 +16,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {UserProfileView} from '#src/Components/Views/UserProfileView';
+import {BlockedOrMutedWarningView} from '#src/Components/Views/Warnings/BlockedOrMutedWarningView';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -134,7 +134,7 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
       <ScrollingContentView
         isStack={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
+        <BlockedOrMutedWarningView muted={isMuted} blocked={isBlocked} />
         <UserProfileView user={data} setRefreshing={setRefreshing} />
         {data.note && (
           <PaddedContentView>
