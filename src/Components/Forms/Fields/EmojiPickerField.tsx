@@ -5,11 +5,12 @@ import {IconButton} from 'react-native-paper';
 
 import {Emoji} from '#src/Components/Icons/Emoji';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CustomEmoji} from '#src/Enums/Emoji';
+import {useCustomEmoji} from '#src/Hooks/useCustomEmoji';
 import {PostContentData} from '#src/Structs/ControllerStructs';
 
 export const EmojiPickerField = () => {
   const {commonStyles} = useStyles();
+  const CustomEmoji = useCustomEmoji();
   const {values, setFieldValue} = useFormikContext<PostContentData>();
 
   const styles = StyleSheet.create({
@@ -28,19 +29,19 @@ export const EmojiPickerField = () => {
     setFieldValue('text', `${values.text}${emoji}`);
   };
 
-  const getEmojiIcon = (emoji: keyof typeof CustomEmoji) => <Emoji style={styles.emoji} emojiName={emoji} />;
+  const getEmojiIcon = (emoji: string) => <Emoji style={styles.emoji} emojiName={emoji} />;
 
   return (
     <View style={styles.outerView}>
       {Object.keys(CustomEmoji)
-        .filter(emoji => !CustomEmoji[emoji as keyof typeof CustomEmoji].secret)
+        .filter(emoji => !CustomEmoji[emoji as string].secret)
         .map((emoji, index) => {
           return (
             <IconButton
               testID={`contentPostEmoji${emoji}-button`}
               key={index}
               onPress={() => handleEmojiPress(emoji)}
-              icon={() => getEmojiIcon(emoji as keyof typeof CustomEmoji)}
+              icon={() => getEmojiIcon(emoji as string)}
             />
           );
         })}

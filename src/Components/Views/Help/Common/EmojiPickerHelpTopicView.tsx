@@ -5,10 +5,11 @@ import {Emoji} from '#src/Components/Icons/Emoji';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CustomEmoji} from '#src/Enums/Emoji';
+import {useCustomEmoji} from '#src/Hooks/useCustomEmoji';
 
 export const EmojiPickerHelpTopicView = () => {
   const {commonStyles} = useStyles();
+  const CustomEmoji = useCustomEmoji();
 
   const styles = StyleSheet.create({
     emojiContainer: {
@@ -35,9 +36,7 @@ export const EmojiPickerHelpTopicView = () => {
     },
   });
 
-  const emojiList = Object.keys(CustomEmoji).filter(
-    emoji => !CustomEmoji[emoji as keyof typeof CustomEmoji].secret,
-  ) as Array<keyof typeof CustomEmoji>;
+  const emojiList = Object.keys(CustomEmoji).filter(emoji => !CustomEmoji[emoji as string].secret) as Array<string>;
 
   return (
     <>

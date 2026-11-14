@@ -5,7 +5,7 @@ import EmojiPicker from 'rn-emoji-keyboard';
 
 import {ReactionIcon} from '#src/Components/Reactions/ReactionIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CustomEmoji} from '#src/Enums/Emoji';
+import {useCustomEmoji} from '#src/Hooks/useCustomEmoji';
 
 interface EmojiPickerModalProps {
   open: boolean;
@@ -16,11 +16,10 @@ interface EmojiPickerModalProps {
 /** Lets a user select common, custom, or any Unicode emoji reaction. */
 export const EmojiPickerModal = ({open, onClose, onEmojiSelected}: EmojiPickerModalProps) => {
   const {commonStyles} = useStyles();
+  const CustomEmoji = useCustomEmoji();
   const [unicodePickerOpen, setUnicodePickerOpen] = useState(false);
   const commonReactions = ['👍', '❤️', '😆', '😂', '🎉', '👀', '✅'];
-  const customReactions = Object.keys(CustomEmoji).filter(
-    reaction => !CustomEmoji[reaction as keyof typeof CustomEmoji].secret,
-  );
+  const customReactions = Object.keys(CustomEmoji).filter(reaction => !CustomEmoji[reaction as string].secret);
   const styles = useMemo(
     () =>
       StyleSheet.create({
@@ -69,7 +68,7 @@ export const EmojiPickerModal = ({open, onClose, onEmojiSelected}: EmojiPickerMo
                   </TouchableOpacity>
                 ))}
               </View>
-              <Text style={styles.sectionTitle}>Twit-arr Emoji</Text>
+              <Text style={styles.sectionTitle}>Twit-arr</Text>
               <View style={styles.choices}>
                 {customReactions.map(reaction => (
                   <TouchableOpacity

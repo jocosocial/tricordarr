@@ -9,7 +9,7 @@ import {MarkdownText} from '#src/Components/Text/MarkdownText';
 import {stripObjectReplacementCharacters} from '#src/Components/Text/MarkdownUtils';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CustomEmoji} from '#src/Enums/Emoji';
+import {useCustomEmoji} from '#src/Hooks/useCustomEmoji';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 
 interface ContentTextProps {
@@ -62,6 +62,7 @@ export const ContentText = ({
   selectable = true,
 }: ContentTextProps) => {
   const {commonStyles} = useStyles();
+  const CustomEmoji = useCustomEmoji();
   const {data} = useUserKeywordQuery({
     keywordType: 'alertwords',
     options: {
@@ -88,8 +89,8 @@ export const ContentText = ({
         if (!token) {
           return;
         }
-        if (CustomEmoji[token as keyof typeof CustomEmoji]) {
-          return <Emoji key={key} emojiName={token as keyof typeof CustomEmoji} />;
+        if (CustomEmoji[token as string]) {
+          return <Emoji key={key} emojiName={token as string} />;
         }
         if (hashtagOnPressFunction && token.startsWith('#')) {
           return (
@@ -117,7 +118,7 @@ export const ContentText = ({
         return token;
       });
     },
-    [appConfig.userPreferences.highlightForumAlertWords, commonStyles.linkText, undWords],
+    [appConfig.userPreferences.highlightForumAlertWords, commonStyles.linkText, undWords, CustomEmoji],
   );
 
   const renderContentText = useCallback(
