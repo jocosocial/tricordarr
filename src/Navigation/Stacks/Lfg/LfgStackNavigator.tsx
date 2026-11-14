@@ -29,7 +29,8 @@ export const LfgStackNavigator = () => {
             former: 'Former Groups',
           };
           return {
-            title: titleMap[route.params.endpoint],
+            // A link to /lfg replaces the params without an endpoint once this screen is mounted.
+            title: titleMap[route.params.endpoint ?? 'open'],
           };
         }}
       />

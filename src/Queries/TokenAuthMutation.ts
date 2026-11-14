@@ -48,7 +48,8 @@ function getErrorMessage(error: AxiosError<ErrorResponse>): string {
 
 /**
  * Common mutation wrapper. Somewhat of a misnomer being called "Token Auth Mutation" because
- * there is no check to see if you're logged in or not.
+ * there is no check to see if you're logged in or not. A hook-level `options.onError` runs in
+ * addition to the default snackbar/log handler rather than replacing it.
  * @param mutationFn
  * @param options
  */
@@ -62,12 +63,14 @@ export function useTokenAuthMutation<
   options?: Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'>,
 ): UseMutationResult<TData, TError, TVariables, TContext> {
   const {setSnackbarPayload} = useSnackbar();
+  const {onError: optionsOnError, ...restOptions} = options ?? {};
   return useMutation<TData, TError, TVariables, TContext>({
     mutationFn: mutationFn,
-    onError: error => {
+    ...restOptions,
+    onError: (error, variables, context, mutationContext) => {
       setSnackbarPayload({message: getErrorMessage(error), messageType: 'error'});
       logger.error('Token auth mutation failed.', error);
+      return optionsOnError?.(error, variables, context, mutationContext);
     },
-    ...options,
   });
 }

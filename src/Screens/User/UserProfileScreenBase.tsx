@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 
-import {BlockedOrMutedBanner} from '#src/Components/Banners/BlockedOrMutedBanner';
 import {UserProfileFABGroup} from '#src/Components/Buttons/FloatingActionButtons/UserProfileFABGroup';
 import {UserProfileSelfFAB} from '#src/Components/Buttons/FloatingActionButtons/UserProfileSelfFAB';
 import {HeaderProfileFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileFavoriteButton';
@@ -17,6 +16,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {UserProfileView} from '#src/Components/Views/UserProfileView';
+import {BlockedOrMutedWarningView} from '#src/Components/Views/Warnings/BlockedOrMutedWarningView';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -54,10 +54,11 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
   const [isBlocked, setIsBlocked] = useState(false);
   const commonNavigation = useCommonStack();
   const {setString} = useClipboard();
-  const {refetch: refetchFavorites} = useUserFavoritesQuery();
-  const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
-  const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
   const {preRegistrationMode} = usePreRegistration();
+  // Swiftarr doesn't allow these lists during pre-registration.
+  const {refetch: refetchFavorites} = useUserFavoritesQuery({enabled: !preRegistrationMode});
+  const {data: mutes, refetch: refetchMutes} = useUserMutesQuery({enabled: !preRegistrationMode});
+  const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery({enabled: !preRegistrationMode});
   const {oobeCompleted} = useOobe();
   const isSelf = data?.header.userID === currentUserID;
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
@@ -133,13 +134,18 @@ const UserProfileScreenBaseInner = ({data, refetch, isLoading}: Props) => {
       <ScrollingContentView
         isStack={true}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
+        <BlockedOrMutedWarningView muted={isMuted} blocked={isBlocked} />
         <UserProfileView user={data} setRefreshing={setRefreshing} />
         {data.note && (
           <PaddedContentView>
             <UserNoteCard
               user={data}
-              onPress={() => commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {user: data})}
+              // Notes can't be edited in pre-registration mode. Long press to copy still works.
+              onPress={
+                preRegistrationMode
+                  ? undefined
+                  : () => commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {user: data})
+              }
               onLongPress={() => {
                 if (data.note !== undefined) {
                   setString(data.note);

@@ -29,8 +29,8 @@ export const ScheduleDayPlannerHelpScreen = () => {
         <HelpChapterTitleView title={'Floating Action Button'}>
           <HelpFABView icon={AppIcons.new} label={'New'} />
           <HelpTopicView>
-            Press the "New" button in the lower right to choose what to create for the currently selected day. This
-            button only appears when not in pre-registration mode.
+            Press the "New" button in the lower right to choose what to create for the currently selected day. In
+            pre-registration mode, the Day Planner shows only the LFGs and private events you created.
           </HelpTopicView>
           <HelpTopicView title={'Private Event'} icon={AppIcons.eventCreate}>
             Create a new private event on the selected day.

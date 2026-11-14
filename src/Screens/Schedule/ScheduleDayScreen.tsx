@@ -123,7 +123,7 @@ const ScheduleDayScreenActual = ({
     endpoint: 'owner',
     hidePast: false,
     options: {
-      enabled: scheduleSources.has('lfgOwned') && !preRegistrationMode && isLoggedIn,
+      enabled: scheduleSources.has('lfgOwned') && isLoggedIn,
     },
   });
   const {
@@ -143,9 +143,11 @@ const ScheduleDayScreenActual = ({
     // and subject to correct refetching.
     // https://github.com/jocosocial/tricordarr/issues/253
     hidePast: false,
-    onlyNew: scheduleFilterSettings.eventPersonalUnreadFilter ? true : undefined,
+    // Pre-registration users can only list the events they own, and have nothing unread.
+    endpoint: preRegistrationMode ? 'owner' : 'joined',
+    onlyNew: scheduleFilterSettings.eventPersonalUnreadFilter && !preRegistrationMode ? true : undefined,
     options: {
-      enabled: scheduleSources.has('privateEvents') && !preRegistrationMode && isLoggedIn,
+      enabled: scheduleSources.has('privateEvents') && isLoggedIn,
     },
   });
 
@@ -156,19 +158,22 @@ const ScheduleDayScreenActual = ({
     refresh: useCallback(async () => {
       let refreshes: Promise<any>[] = [refetchEvents()];
       // LFGs and personal events require an account; skip refetching a source entirely while
-      // it isn't enabled, mirroring the query `enabled` gates above.
-      if (!preRegistrationMode && isLoggedIn) {
-        if (scheduleSources.has('lfgJoined')) {
-          refreshes.push(refetchLfgJoined());
-        }
+      // it isn't enabled, mirroring the query `enabled` gates above. Pre-registration users only
+      // have the sources they own.
+      if (isLoggedIn) {
         if (scheduleSources.has('lfgOwned')) {
           refreshes.push(refetchLfgOwned());
         }
         if (scheduleSources.has('privateEvents')) {
           refreshes.push(refetchPersonalEvents());
         }
-        if (scheduleSources.has('lfgOpen')) {
-          refreshes.push(refetchLfgOpen());
+        if (!preRegistrationMode) {
+          if (scheduleSources.has('lfgJoined')) {
+            refreshes.push(refetchLfgJoined());
+          }
+          if (scheduleSources.has('lfgOpen')) {
+            refreshes.push(refetchLfgOpen());
+          }
         }
       }
       await Promise.all(refreshes);

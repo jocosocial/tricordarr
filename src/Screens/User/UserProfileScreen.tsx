@@ -1,6 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
@@ -12,9 +13,12 @@ import {UserProfileScreenBase} from '#src/Screens/User/UserProfileScreenBase';
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userProfileScreen>;
 
 export const UserProfileScreen = (props: Props) => {
+  const {currentUserID} = useSession();
+  // Swiftarr only allows pre-registration users to view their own profile.
+  const isSelf = !!currentUserID && props.route.params.userID === currentUserID;
   return (
     <LoggedInScreen>
-      <PreRegistrationScreen helpScreen={CommonStackComponents.userProfilesHelpScreen}>
+      <PreRegistrationScreen helpScreen={CommonStackComponents.userProfilesHelpScreen} allowed={isSelf}>
         <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/profile'}>
           <UserProfileScreenInner {...props} />
         </DisabledFeatureScreen>

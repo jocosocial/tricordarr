@@ -1,8 +1,10 @@
 import {useField, useFormikContext} from 'formik';
 import React from 'react';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
-import {Button, Divider, HelperText, Menu} from 'react-native-paper';
+import {Button, HelperText} from 'react-native-paper';
 
+import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -89,8 +91,10 @@ export const PickerField = <TData,>({
     },
   });
 
+  // AppMenu caps the height and scrolls (a raw Paper Menu clips long lists), opens with the
+  // current value in view, and bridges portal contexts itself.
   return (
-    <Menu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={
@@ -117,19 +121,17 @@ export const PickerField = <TData,>({
           {meta.error && <HelperText type={'error'}>{meta.error}</HelperText>}
         </View>
       }>
-      {choices.map((item, index) => {
-        return (
-          <React.Fragment key={index}>
-            {index !== 0 && <Divider />}
-            <Menu.Item onPress={() => handleSelect(item)} title={getTitle(item)} />
-          </React.Fragment>
-        );
-      })}
+      {choices.map((item, index) => (
+        <SelectableMenuItem
+          key={index}
+          title={getTitle(item)}
+          selected={item === value}
+          onPress={() => handleSelect(item)}
+        />
+      ))}
       {addUndefinedOption && (
-        <React.Fragment>
-          <Menu.Item title={'None'} onPress={() => handleSelect(undefined)} />
-        </React.Fragment>
+        <SelectableMenuItem title={'None'} selected={value === undefined} onPress={() => handleSelect(undefined)} />
       )}
-    </Menu>
+    </AppMenu>
   );
 };

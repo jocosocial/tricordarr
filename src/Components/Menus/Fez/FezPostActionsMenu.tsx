@@ -1,6 +1,7 @@
 import React, {ReactNode} from 'react';
 import {Menu} from 'react-native-paper';
 
+import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
@@ -23,6 +24,7 @@ interface FezPostActionsMenuProps {
  */
 export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: FezPostActionsMenuProps) => {
   const {setString} = useClipboard();
+  const bridged = useMenuContextBridge();
   const commonNavigation = useCommonStack();
   const {hasModerator} = usePrivilege();
 
@@ -36,29 +38,31 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
-      <Menu.Item
-        dense={false}
-        leadingIcon={AppIcons.copy}
-        title={'Copy'}
-        onPress={() => {
-          setString(fezPost.text);
-          closeMenu();
-        }}
-      />
-      {fez && fez.fezType !== FezType.closed && (
-        <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
-      )}
-      {hasModerator && (
+      <MenuContextBridge bridged={bridged}>
         <Menu.Item
           dense={false}
-          leadingIcon={AppIcons.moderator}
-          title={'Moderate'}
+          leadingIcon={AppIcons.copy}
+          title={'Copy'}
           onPress={() => {
+            setString(fezPost.text);
             closeMenu();
-            pushModerateResource(commonNavigation, 'fezpost', fezPost.postID.toString());
           }}
         />
-      )}
+        {fez && fez.fezType !== FezType.closed && (
+          <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
+        )}
+        {hasModerator && (
+          <Menu.Item
+            dense={false}
+            leadingIcon={AppIcons.moderator}
+            title={'Moderate'}
+            onPress={() => {
+              closeMenu();
+              pushModerateResource(commonNavigation, 'fezpost', fezPost.postID.toString());
+            }}
+          />
+        )}
+      </MenuContextBridge>
     </Menu>
   );
 };

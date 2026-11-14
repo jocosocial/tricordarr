@@ -1,10 +1,6 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 
-import {StringOrError} from '#src/Types';
-
 export interface ErrorHandlerContextType {
-  errorBanner?: string;
-  setErrorBanner: (e: StringOrError) => void;
   hasUnsavedWork: boolean;
   setHasUnsavedWork: Dispatch<SetStateAction<boolean>>;
 }

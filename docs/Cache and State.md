@@ -134,6 +134,33 @@ Two failure shapes, two different fixes:
 
 See also "Optimistic Cache Updates (local-first reducer pattern)" below: that pattern adds a step _before_ the mutation starts, but doesn't remove the requirement here to disable the control while it's in flight.
 
+### Callbacks passed to `mutate()` die with the component
+
+TanStack Query runs the callbacks passed to `mutate(variables, {onSuccess, onError, onSettled})` only while the component that called it is still mounted. If it unmounts first, the request still completes and the data is thrown away, with no error. Callbacks given to the hook itself (`useMutation({onSuccess})`, including `useTokenAuthMutation`'s error snackbar) aren't affected.
+
+This bites any control that unmounts before its request finishes. The common case is a `Menu.Item` that calls `closeMenu()` before the mutation, since a Paper menu unmounts its items once its close animation ends. The ICS Download and Save Contact items did this: they closed the menu, then opened the download sheet from `mutate()`'s `onSuccess`. The sheet only opened when the request beat the close animation, so on a fresh load it took several taps.
+
+It's a race, so it can look platform-specific or only show on a slow first request. Watch for anything that unmounts the caller: closing a menu or sheet, `navigation.goBack()`, or a list row that disappears.
+
+- **Keep the caller mounted until the mutation settles.** This is the Menus convention in `AGENTS.md`: call `closeMenu()` from `onSettled`, not before `mutate()`.
+- **If the control has to go away first,** for example to make room for a sheet, `await mutation.mutateAsync(...)` and do the follow-up after the `await`. The promise settles whether or not the caller is mounted. Catch the rejection, since the hook's `onError` already reports it:
+
+  ```tsx
+  const handlePress = async () => {
+    closeMenu();
+    let ics: string;
+    try {
+      ics = await mutateAsync(event.eventID);
+    } catch {
+      // useTokenAuthMutation already shows the error.
+      return;
+    }
+    openDownloadSheet({...});
+  };
+  ```
+
+- **Work that must always happen,** like a cache reducer, belongs in the hook's own callbacks rather than `mutate()`'s.
+
 ## Optimistic Cache Updates (local-first reducer pattern)
 
 If you only update the cache after the server responds, any control whose _appearance_ depends on that cache (a star, a checkmark, a mute icon) sits in the wrong state for the entire round trip — and on the ship's slow network (see "Mutation In-Flight State" above), that's long enough for the user to notice. The fix: for a toggle where you already know the new value the instant the user taps (a boolean flip, a field the user picked), call the reducer _before_ calling `mutation.mutate(...)`, not inside `onSuccess`.
@@ -153,13 +180,13 @@ Order of operations:
 - **The action is destructive and confirmed.** Delete, cancel, leave-a-group: the user already confirmed through an alert; rolling back an optimistic delete on failure is a worse surprise than a half-second wait. Apply these in `onSuccess`.
 - **The result depends on the server and isn't a simple flip.** Bulk imports, admin diff apply, thread/message create-then-navigate flows: there's no single "new value" to show optimistically, or the screen navigates away before it would matter anyway.
 
-**Why this isn't `onMutate`.** A reader who knows TanStack Query will expect the canonical `onMutate` recipe, and will otherwise "fix" this later. The per-call options accepted by `mutation.mutate(vars, {...})` are only `onSuccess`/`onError`/`onSettled` — `onMutate` is not among them — and our mutation hooks are shared across many call sites, so a hook-level `onMutate` has no way to know which entity the user just tapped. Calling the reducer in the tap handler is the equivalent step, moved to the only place that has the context.
+**Where the apply/rollback lives.** For the Fez favorite/mute and Forum favorite/mute/pin mutations the apply and rollback are in the _hook_ (`onMutate` / `onError` in `useFezFavoriteMutation`, `useFezMuteMutation`, `useForumRelationMutation`, `useForumPinMutation`), derived from the mutation variables (which carry the entity id, plus `categoryID` for forums). Per-call `mutate(vars, {onError})` callbacks only fire while the calling component is still mounted, and only for the latest `mutate()` call, so on a `?favorite=true` list (where the optimistic update removes the row and unmounts the cell) a rollback in the call site could never run. Callers just call `mutate()`; the other toggles in this doc still use the call-site pattern above.
 
 **One-way actions with no rollback.** Some reducer actions have no inverse — `markRead` collapses `readCount` toward `postCount` and can't be un-applied without having captured the prior counts. For these, apply eagerly and say so: there is no `onError` rollback, and a failed request self-heals on the next refetch. Don't let the rule above imply otherwise.
 
 **Rollback is a tiebreak, not a truth.** Inverting the boolean restores the value we _captured at tap time_. If anything else changed the entity during the round trip (a websocket push, a concurrent refetch, the same entity toggled from another screen), the rollback writes stale data back. `updateFavorite` is the sharpest case: it also re-runs `primeEventDetail` with a whole stale `EventData`. Hence the invalidate in step 4.
 
-**The error snackbar still fires.** `useTokenAuthMutation` registers its own `onError` at the hook level (`src/Queries/TokenAuthMutation.ts`), and a per-call `onError` passed to `mutate()` runs _in addition to_ it, not instead. So a rollback handler neither suppresses the snackbar nor needs to raise one itself — don't add a duplicate.
+**The error snackbar still fires.** `useTokenAuthMutation` registers its own `onError` at the hook level (`src/Queries/TokenAuthMutation.ts`), and a per-call `onError` passed to `mutate()`, or an `onError` in the hook's `options`, runs _in addition to_ it, not instead. So a rollback handler neither suppresses the snackbar nor needs to raise one itself — don't add a duplicate.
 
 A small before/after, from the real fix in `src/Components/Cards/Schedule/EventCard.tsx`:
 

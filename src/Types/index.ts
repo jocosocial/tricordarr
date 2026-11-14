@@ -39,6 +39,7 @@ export type ScheduleFilterSettings = {
   eventPersonalUnreadFilter: boolean;
   showJoinedLfgs: boolean;
   showOpenLfgs: boolean;
+  preRegistrationMode: boolean;
 };
 
 export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;

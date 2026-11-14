@@ -1,4 +1,5 @@
-import React, {PropsWithChildren, useCallback, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useMemo} from 'react';
+import {StyleSheet} from 'react-native';
 import {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SharedValue} from 'react-native-reanimated';
 
@@ -20,195 +21,181 @@ interface ForumThreadListItemSwipeableProps extends PropsWithChildren {
   enabled?: boolean;
 }
 
+/**
+ * Swipe actions for a forum thread row: Event/Pin on the left, Mute/Favorite/Read on the right.
+ * Favorite and Mute each get their own mutation instance so one can't overwrite the other's
+ * in-flight state. The pending flags are derived from the mutation's variables rather than local
+ * state, so a recycled cell showing a different thread never inherits another thread's spinner.
+ */
 export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeableProps) => {
   const {theme} = useAppTheme();
-  const relationMutation = useForumRelationMutation();
-  const [muteRefreshing, setMuteRefreshing] = useState(false);
-  const [favoriteRefreshing, setFavoriteRefreshing] = useState(false);
-  const [readRefreshing, setReadRefreshing] = useState(false);
-  const [pinRefreshing, setPinRefreshing] = useState(false);
+  const favoriteMutation = useForumRelationMutation();
+  const muteMutation = useForumRelationMutation();
   const commonNavigation = useCommonStack();
-  const eventID = props.forumListData.eventID;
+  const {forumID, eventID, isFavorite, isMuted, isPinned} = props.forumListData;
+  const {categoryID} = props;
   const {hasModerator} = usePrivilege();
   const pinMutation = useForumPinMutation();
   const markReadMutation = useForumMarkReadMutation();
-  const {markRead, updateFavorite, updateMute, updatePinned, invalidateForum} = useForumCacheReducer();
+  const {markRead} = useForumCacheReducer();
 
-  const handleMarkAsRead = useCallback(
-    async (swipeable: SwipeableMethods) => {
-      swipeable.close();
-      setReadRefreshing(true);
-      // Applied eagerly with no rollback: markRead collapses readCount toward postCount and
-      // can't be un-applied without capturing the prior counts. A failed request self-heals
-      // on the next refetch.
-      markRead(props.forumListData.forumID, props.categoryID);
-      markReadMutation.mutate(
-        {
-          forumID: props.forumListData.forumID,
-        },
-        {
-          onSettled: () => {
-            setReadRefreshing(false);
-            swipeable.close();
-          },
-        },
-      );
-    },
-    [markRead, markReadMutation, props.forumListData.forumID, props.categoryID],
+  const favoriteRefreshing = favoriteMutation.isPending && favoriteMutation.variables?.forumID === forumID;
+  const muteRefreshing = muteMutation.isPending && muteMutation.variables?.forumID === forumID;
+  const readRefreshing = markReadMutation.isPending && markReadMutation.variables?.forumID === forumID;
+  const pinRefreshing = pinMutation.isPending && pinMutation.variables?.forumID === forumID;
+  const relationRefreshing = favoriteRefreshing || muteRefreshing;
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        event: {backgroundColor: theme.colors.twitarrNeutralButton},
+        eventText: {color: theme.colors.onTwitarrNeutralButton},
+        pin: {backgroundColor: theme.colors.elevation.level1},
+        mute: {backgroundColor: theme.colors.elevation.level2},
+        favorite: {backgroundColor: theme.colors.elevation.level1},
+        read: {backgroundColor: theme.colors.elevation.level3},
+      }),
+    [theme],
   );
 
+  /**
+   * Mark the thread read. Applied eagerly with no rollback: markRead collapses readCount toward
+   * postCount and can't be un-applied without capturing the prior counts. A failed request
+   * self-heals on the next refetch. Closes up front so the row is already shut when it re-renders.
+   */
+  const handleMarkAsRead = useCallback(
+    (swipeable: SwipeableMethods) => {
+      swipeable.close();
+      markRead(forumID, categoryID);
+      markReadMutation.mutate({forumID});
+    },
+    [markRead, markReadMutation, forumID, categoryID],
+  );
+
+  /** Toggle favorite. The mutation hook handles the optimistic cache update and rollback. */
   const handleFavorite = useCallback(
     (swipeable: SwipeableMethods) => {
-      setFavoriteRefreshing(true);
-      const newValue = !props.forumListData.isFavorite;
-      // Optimistic: flip the cache immediately so the icon is already correct by the time the
-      // spinner clears, instead of waiting on a (possibly slow) network round trip to do it.
-      updateFavorite(props.forumListData.forumID, props.categoryID, newValue);
-      relationMutation.mutate(
+      favoriteMutation.mutate(
         {
-          forumID: props.forumListData.forumID,
+          forumID,
+          categoryID,
           relationType: 'favorite',
-          action: newValue ? 'create' : 'delete',
+          action: isFavorite ? 'delete' : 'create',
         },
-        {
-          onError: () => {
-            updateFavorite(props.forumListData.forumID, props.categoryID, !newValue);
-            invalidateForum(props.forumListData.forumID, props.categoryID);
-          },
-          onSettled: () => {
-            setFavoriteRefreshing(false);
-            swipeable.close();
-          },
-        },
+        {onSettled: () => swipeable.close()},
       );
     },
-    [
-      relationMutation,
-      props.forumListData.forumID,
-      props.forumListData.isFavorite,
-      props.categoryID,
-      updateFavorite,
-      invalidateForum,
-    ],
+    [favoriteMutation, forumID, categoryID, isFavorite],
   );
 
+  /** Toggle mute. The mutation hook handles the optimistic cache update and rollback. */
   const handleMute = useCallback(
     (swipeable: SwipeableMethods) => {
-      setMuteRefreshing(true);
-      const newValue = !props.forumListData.isMuted;
-      updateMute(props.forumListData.forumID, props.categoryID, newValue);
-      relationMutation.mutate(
+      muteMutation.mutate(
         {
-          forumID: props.forumListData.forumID,
+          forumID,
+          categoryID,
           relationType: 'mute',
-          action: newValue ? 'create' : 'delete',
+          action: isMuted ? 'delete' : 'create',
         },
-        {
-          onError: () => {
-            updateMute(props.forumListData.forumID, props.categoryID, !newValue);
-            invalidateForum(props.forumListData.forumID, props.categoryID);
-          },
-          onSettled: () => {
-            setMuteRefreshing(false);
-            swipeable.close();
-          },
-        },
+        {onSettled: () => swipeable.close()},
       );
     },
-    [
-      relationMutation,
-      props.forumListData.forumID,
-      props.forumListData.isMuted,
-      props.categoryID,
-      updateMute,
-      invalidateForum,
-    ],
+    [muteMutation, forumID, categoryID, isMuted],
   );
 
-  const handlePin = (swipeable: SwipeableMethods) => {
-    setPinRefreshing(true);
-    const newValue = !props.forumListData.isPinned;
-    updatePinned(props.forumListData.forumID, props.categoryID, newValue);
-    pinMutation.mutate(
-      {
-        forumID: props.forumListData.forumID,
-        action: newValue ? 'pin' : 'unpin',
-      },
-      {
-        onError: () => {
-          updatePinned(props.forumListData.forumID, props.categoryID, !newValue);
-          invalidateForum(props.forumListData.forumID, props.categoryID);
+  /** Moderator pin toggle. The mutation hook handles the optimistic cache update and rollback. */
+  const handlePin = useCallback(
+    (swipeable: SwipeableMethods) => {
+      if (!categoryID) {
+        return;
+      }
+      pinMutation.mutate(
+        {
+          forumID,
+          categoryID,
+          action: isPinned ? 'unpin' : 'pin',
         },
-        onSettled: () => {
-          setPinRefreshing(false);
-          swipeable.close();
-        },
-      },
-    );
-  };
+        {onSettled: () => swipeable.close()},
+      );
+    },
+    [pinMutation, forumID, categoryID, isPinned],
+  );
 
-  const renderLeftPanel = (
-    progressAnimatedValue: SharedValue<number>,
-    dragAnimatedValue: SharedValue<number>,
-    swipeable: SwipeableMethods,
-  ) => {
-    return (
+  /** Open the event this thread belongs to, then close the swipeable. */
+  const handleEvent = useCallback(
+    (swipeable: SwipeableMethods) => {
+      if (!eventID) {
+        return;
+      }
+      swipeable.close();
+      commonNavigation.push(CommonStackComponents.eventScreen, {eventID});
+    },
+    [commonNavigation, eventID],
+  );
+
+  const showPin = hasModerator && !!categoryID;
+
+  /** Event (when the thread belongs to one) and Pin (moderators, inside a category). */
+  const renderLeftPanel = useCallback(
+    (
+      _progressAnimatedValue: SharedValue<number>,
+      _dragAnimatedValue: SharedValue<number>,
+      swipeable: SwipeableMethods,
+    ) => (
       <>
         {eventID && (
           <SwipeableButton
             testID={'forumThreadEvent-button'}
             text={'Event'}
             iconName={AppIcons.events}
-            onPress={() => {
-              swipeable.close();
-              commonNavigation.push(CommonStackComponents.eventScreen, {
-                eventID: eventID,
-              });
-            }}
-            style={{backgroundColor: theme.colors.twitarrNeutralButton}}
-            textStyle={{color: theme.colors.onTwitarrNeutralButton}}
+            onPress={() => handleEvent(swipeable)}
+            style={styles.event}
+            textStyle={styles.eventText}
             iconColor={theme.colors.onTwitarrNeutralButton}
           />
         )}
-        {hasModerator && props.categoryID && (
+        {showPin && (
           <SwipeableButton
             testID={'forumThreadPin-button'}
-            text={props.forumListData.isPinned ? 'Unpin' : 'Pin'}
+            text={isPinned ? 'Unpin' : 'Pin'}
             refreshing={pinRefreshing}
             disabled={pinRefreshing}
             onPress={() => handlePin(swipeable)}
             iconName={AppIcons.moderator}
-            style={{backgroundColor: theme.colors.elevation.level1}}
+            style={styles.pin}
           />
         )}
       </>
-    );
-  };
+    ),
+    [eventID, showPin, isPinned, pinRefreshing, styles, theme, handleEvent, handlePin],
+  );
 
-  const renderRightPanel = (
-    progressAnimatedValue: SharedValue<number>,
-    dragAnimatedValue: SharedValue<number>,
-    swipeable: SwipeableMethods,
-  ) => {
-    return (
+  /** Mute, Favorite, Read. Mute and Favorite are mutually exclusive on the server. */
+  const renderRightPanel = useCallback(
+    (
+      _progressAnimatedValue: SharedValue<number>,
+      _dragAnimatedValue: SharedValue<number>,
+      swipeable: SwipeableMethods,
+    ) => (
       <>
         <SwipeableButton
           testID={'forumThreadMute-button'}
-          text={props.forumListData.isMuted ? 'Unmute' : 'Mute'}
-          iconName={props.forumListData.isMuted ? AppIcons.unmute : AppIcons.mute}
-          style={{backgroundColor: theme.colors.elevation.level2}}
+          text={isMuted ? 'Unmute' : 'Mute'}
+          iconName={isMuted ? AppIcons.unmute : AppIcons.mute}
+          style={styles.mute}
           onPress={() => handleMute(swipeable)}
           refreshing={muteRefreshing}
-          disabled={props.forumListData.isFavorite || muteRefreshing}
+          disabled={isFavorite || relationRefreshing}
         />
         <SwipeableButton
           testID={'forumThreadFavorite-button'}
-          text={props.forumListData.isFavorite ? 'Unfavorite' : 'Favorite'}
-          iconName={props.forumListData.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
+          text={isFavorite ? 'Unfavorite' : 'Favorite'}
+          iconName={isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
           onPress={() => handleFavorite(swipeable)}
           refreshing={favoriteRefreshing}
-          style={{backgroundColor: theme.colors.elevation.level1}}
-          disabled={props.forumListData.isMuted || favoriteRefreshing}
+          style={styles.favorite}
+          disabled={isMuted || relationRefreshing}
         />
         <SwipeableButton
           testID={'forumThreadRead-button'}
@@ -217,17 +204,29 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           onPress={() => handleMarkAsRead(swipeable)}
           refreshing={readRefreshing}
           disabled={readRefreshing}
-          style={{backgroundColor: theme.colors.elevation.level3}}
+          style={styles.read}
         />
       </>
-    );
-  };
+    ),
+    [
+      isMuted,
+      isFavorite,
+      muteRefreshing,
+      favoriteRefreshing,
+      relationRefreshing,
+      readRefreshing,
+      styles,
+      handleMute,
+      handleFavorite,
+      handleMarkAsRead,
+    ],
+  );
 
   return (
     <BaseSwipeable
-      key={props.forumListData.forumID}
+      key={forumID}
       enabled={props.enabled}
-      renderLeftPanel={renderLeftPanel}
+      renderLeftPanel={eventID || showPin ? renderLeftPanel : undefined}
       renderRightPanel={renderRightPanel}>
       {props.children}
     </BaseSwipeable>

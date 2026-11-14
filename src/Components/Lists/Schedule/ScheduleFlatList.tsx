@@ -1,11 +1,12 @@
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {ReactElement, useCallback} from 'react';
-import {RefreshControlProps} from 'react-native';
+import {RefreshControlProps, View} from 'react-native';
 
 import {FezCard} from '#src/Components/Cards/Schedule/FezCard';
 import {EventCardListItem} from '#src/Components/Lists/Items/Event/EventCardListItem';
 import {PersonalEventCardListItem} from '#src/Components/Lists/Items/PersonalEvent/PersonalEventCardListItem';
 import {ScheduleFlatListBase} from '#src/Components/Lists/Schedule/ScheduleFlatListBase';
+import {ScheduleItemHighlightView} from '#src/Components/Views/Schedule/ScheduleItemHighlightView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {FezType} from '#src/Enums/FezType';
@@ -25,12 +26,21 @@ interface ScheduleFlatListProps<TItem> {
   showDayInDividers?: boolean;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
+  /** Content above the first time divider that scrolls and refreshes with the list. */
+  headerContent?: ReactElement;
   initialScrollIndex?: number;
   setRefreshing?: (value: boolean) => void;
   onScrollThreshold?: (condition: boolean) => void;
   handleLoadNext?: () => void;
   hasNextPage?: boolean;
+  /** ID of an event or fez whose card gets a highlight border. */
+  highlightedItemId?: string;
 }
+
+/**
+ * Get the ID of a schedule item, whichever kind it is.
+ */
+const getItemId = (item: EventData | FezData) => ('fezID' in item ? item.fezID : item.eventID);
 
 export const ScheduleFlatList = <TItem extends EventData | FezData>({
   items,
@@ -38,10 +48,12 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
   separator = 'time',
   showDayInDividers = true,
   listRef,
+  headerContent,
   setRefreshing,
   onScrollThreshold,
   handleLoadNext,
   hasNextPage,
+  highlightedItemId,
 }: ScheduleFlatListProps<TItem>): React.JSX.Element => {
   const commonNavigation = useCommonStack();
   const {appConfig} = useConfig();
@@ -49,9 +61,11 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
   const {tzAtTime} = useTimeZone();
   const minutelyUpdatingDate = useDateTime('minute');
 
-  // https://reactnative.dev/docs/optimizing-flatlist-configuration
-  const renderItem = useCallback(
-    ({item}: {item: TItem}) => {
+  /**
+   * Render the card for a schedule item.
+   */
+  const renderCard = useCallback(
+    (item: TItem) => {
       // Compute timezone offset from boat-at-now to item timezone for marker calculation
       const tzOffset =
         item.startTime && item.timeZoneID
@@ -112,22 +126,31 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
     ],
   );
 
-  const keyExtractor = (item: TItem) => {
-    if ('fezID' in item) {
-      return item.fezID;
-    } else {
-      return item.eventID;
-    }
-  };
+  // https://reactnative.dev/docs/optimizing-flatlist-configuration
+  const renderItem = useCallback(
+    ({item}: {item: TItem}) => {
+      if (getItemId(item) !== highlightedItemId) {
+        return renderCard(item);
+      }
+      return (
+        <View>
+          {renderCard(item)}
+          <ScheduleItemHighlightView />
+        </View>
+      );
+    },
+    [renderCard, highlightedItemId],
+  );
 
   return (
     <ScheduleFlatListBase
       listRef={listRef}
-      keyExtractor={keyExtractor}
+      keyExtractor={getItemId}
       items={items}
       renderItem={renderItem}
       separator={separator}
       showDayInDividers={showDayInDividers}
+      headerContent={headerContent}
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
       handleLoadNext={handleLoadNext}

@@ -10,6 +10,7 @@ import {ForumPostActionsReplyItem} from '#src/Components/Menus/Forum/Items/Forum
 import {ForumPostActionsReportItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReportItem';
 import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsShowThreadItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
 import {useForumComposer} from '#src/Context/Contexts/ForumComposerContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -38,16 +39,14 @@ export const ForumPostActionsMenu = ({
   forumData,
 }: ForumPostActionsMenuProps) => {
   const {currentUserID} = useSession();
+  const bridged = useMenuContextBridge();
   const bySelf = currentUserID === forumPost.author.userID;
-  // Apparently this doesn't get to be available in the sub items? That's annoying.
   const commonNavigation = useCommonStack();
   const {setString} = useClipboard();
-  // Undefined outside a thread composer. Same portal caveat as the navigation above, so
-  // read it here and pass the callback down.
+  // Undefined outside a thread composer. Replying to yourself would tag yourself, and Swiftarr
+  // drops self-mentions (`userDidntMentionSelf` in ForumController), so there is nothing to gain.
   const composer = useForumComposer();
-  // Replying to yourself would tag yourself, and Swiftarr drops self-mentions
-  // (`userDidntMentionSelf` in ForumController), so there is nothing to gain.
-  const onReply = composer && !bySelf ? composer.mentionUser : undefined;
+  const showReply = !!composer && !bySelf;
 
   /**
    * closeMenu comes from the instance established in MessageView so we need to drill
@@ -55,59 +54,59 @@ export const ForumPostActionsMenu = ({
    */
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
-      {(onReply || enableShowInThread) && (
-        <>
-          {onReply && <ForumPostActionsReplyItem forumPost={forumPost} closeMenu={closeMenu} onReply={onReply} />}
-          {enableShowInThread && (
-            <ForumPostActionsShowThreadItem forumPost={forumPost} closeMenu={closeMenu} navigation={commonNavigation} />
-          )}
-          <Divider bold={true} />
-        </>
-      )}
-      <Menu.Item
-        dense={false}
-        leadingIcon={AppIcons.copy}
-        title={'Copy'}
-        onPress={() => {
-          setString(forumPost.text);
-          closeMenu();
-        }}
-      />
-      <ShareMenuItem
-        contentType={ShareContentType.forumPost}
-        contentID={forumPost.postID}
-        contentText={forumPost.text}
-        closeMenu={closeMenu}
-      />
-      <Divider bold={true} />
-      {bySelf && (
-        <>
-          <Menu.Item
-            dense={false}
-            leadingIcon={AppIcons.edit}
-            title={'Edit'}
-            onPress={() => {
-              closeMenu();
-              commonNavigation.push(CommonStackComponents.forumPostEditScreen, {
-                postData: forumPost,
-                forumID: forumData?.forumID,
-              });
-            }}
-          />
-          <ForumPostActionsDeleteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
-        </>
-      )}
-      <Divider bold={true} />
-      <ForumPostActionsFavoriteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
-      {enablePinnedPosts && (
-        <ForumPostActionsPinItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
-      )}
-      <Divider bold={true} />
-      <ForumPostActionsReportItem forumPost={forumPost} closeMenu={closeMenu} navigation={commonNavigation} />
-      <Divider bold={true} />
-      <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} navigation={commonNavigation} />
-      <Divider bold={true} />
-      <ForumPostActionsReactionItem forumPost={forumPost} />
+      <MenuContextBridge bridged={bridged}>
+        {(showReply || enableShowInThread) && (
+          <>
+            {showReply && <ForumPostActionsReplyItem forumPost={forumPost} closeMenu={closeMenu} />}
+            {enableShowInThread && <ForumPostActionsShowThreadItem forumPost={forumPost} closeMenu={closeMenu} />}
+            <Divider bold={true} />
+          </>
+        )}
+        <Menu.Item
+          dense={false}
+          leadingIcon={AppIcons.copy}
+          title={'Copy'}
+          onPress={() => {
+            setString(forumPost.text);
+            closeMenu();
+          }}
+        />
+        <ShareMenuItem
+          contentType={ShareContentType.forumPost}
+          contentID={forumPost.postID}
+          contentText={forumPost.text}
+          closeMenu={closeMenu}
+        />
+        <Divider bold={true} />
+        {bySelf && (
+          <>
+            <Menu.Item
+              dense={false}
+              leadingIcon={AppIcons.edit}
+              title={'Edit'}
+              onPress={() => {
+                closeMenu();
+                commonNavigation.push(CommonStackComponents.forumPostEditScreen, {
+                  postData: forumPost,
+                  forumID: forumData?.forumID,
+                });
+              }}
+            />
+            <ForumPostActionsDeleteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
+          </>
+        )}
+        <Divider bold={true} />
+        <ForumPostActionsFavoriteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
+        {enablePinnedPosts && (
+          <ForumPostActionsPinItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
+        )}
+        <Divider bold={true} />
+        <ForumPostActionsReportItem forumPost={forumPost} closeMenu={closeMenu} />
+        <Divider bold={true} />
+        <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} />
+        <Divider bold={true} />
+        <ForumPostActionsReactionItem forumPost={forumPost} />
+      </MenuContextBridge>
     </Menu>
   );
 };

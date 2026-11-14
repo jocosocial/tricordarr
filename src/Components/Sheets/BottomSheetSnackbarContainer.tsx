@@ -11,8 +11,8 @@ const HANDLE_HEIGHT = 24;
 const BottomSheetSnackbarOffsetContext = createContext<(height: number) => void>(() => {});
 
 /**
- * BottomSheetView that reports its on-screen height (plus handle) so the portal
- * snackbar can sit above the sheet, matching ImageViewerSnackbar's footer offset.
+ * BottomSheetView that reports its on-screen height (plus handle) so the sheet's
+ * snackbar can sit above it, matching ImageViewerSnackbar's footer offset.
  */
 export const MeasuredBottomSheetView = ({children}: PropsWithChildren) => {
   const setSheetHeight = useContext(BottomSheetSnackbarOffsetContext);
@@ -28,11 +28,11 @@ export const MeasuredBottomSheetView = ({children}: PropsWithChildren) => {
 };
 
 /**
- * Gorhom `containerComponent` so AppSnackbar renders in the same portal as the
- * sheet. Paper's Portal.Host sits below that overlay, which is why a snackbar
- * there is hidden by the sheet (same reason Lightbox owns ImageViewerSnackbar).
- * Offset is sheet height plus safe area and a small gap so the toast sits
- * clearly above the handle.
+ * Gorhom `containerComponent` so AppSnackbar renders in the same overlay as the
+ * sheet. The screen's own snackbar lives inline in AppView, underneath the sheet
+ * overlay, which is why one is needed here (same reason Lightbox owns
+ * ImageViewerSnackbar). Offset is sheet height plus a small gap so the toast
+ * sits clearly above the handle; the sheet already covers the bottom inset.
  */
 export const BottomSheetSnackbarContainer = ({children}: PropsWithChildren) => {
   const [sheetHeight, setSheetHeight] = useState(0);
@@ -41,7 +41,7 @@ export const BottomSheetSnackbarContainer = ({children}: PropsWithChildren) => {
   return (
     <BottomSheetSnackbarOffsetContext.Provider value={setSheetHeight}>
       {children}
-      <AppSnackbar overlay bottomOffset={bottomOffset} />
+      <AppSnackbar ignoreBottomInset bottomOffset={bottomOffset} />
     </BottomSheetSnackbarOffsetContext.Provider>
   );
 };

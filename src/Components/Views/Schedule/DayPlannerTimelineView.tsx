@@ -1,5 +1,13 @@
 import React, {forwardRef, useCallback, useMemo} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  GestureResponderEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  RefreshControlProps,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {DayPlannerCard} from '#src/Components/Cards/Schedule/DayPlannerCard';
@@ -7,6 +15,7 @@ import {DayPlannerNowDivider} from '#src/Components/Views/Schedule/DayPlannerNow
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {DAY_PLANNER_CONFIG, useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
@@ -28,28 +37,79 @@ interface DayPlannerTimelineViewProps {
    * would cost a callback per frame for the same information.
    */
   onScrollSettled?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  /** Optional pull-to-refresh control passed through to the ScrollView. The Day Planner pager does not use it. */
+  refreshControl?: React.ReactElement<RefreshControlProps>;
+  /**
+   * Adds a row after dayEnd so its line gets an hour label. dayEnd must be on the hour. The Day Planner pager does
+   * not use it.
+   */
+  showEndLabel?: boolean;
+  /** Item to keep in the first column and highlight. The Day Planner pager does not use it. */
+  pinnedItemId?: string;
+  /**
+   * Content above the timeline, inside the scroll view so it scrolls and refreshes with it. The Day Planner pager
+   * does not use it.
+   */
+  header?: React.ReactNode;
+  /**
+   * Long press on a card. The caller owns the resulting menu (see DayPlannerCardActionsMenu), keeping
+   * the timeline menu-agnostic. The overlap view does not pass it, so its cards only respond to a tap.
+   */
+  onItemLongPress?: (item: DayPlannerItemWithLayout, event: GestureResponderEvent) => void;
+  /**
+   * Passed to the ScrollView. The Day Planner sets it false while a card menu is open: the menu's
+   * overlay only catches NEW touches, so a long press that is held and then dragged would still
+   * scroll the timeline under the menu. Disabling scroll cancels that in-progress drag.
+   */
+  scrollEnabled?: boolean;
 }
 
 export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineViewProps>(
-  ({items, dayStart, dayEnd, timeZoneID, selectedCruiseDay, onScrollSettled}, ref) => {
+  (
+    {
+      items,
+      dayStart,
+      dayEnd,
+      timeZoneID,
+      selectedCruiseDay,
+      onScrollSettled,
+      refreshControl,
+      showEndLabel,
+      pinnedItemId,
+      header,
+      onItemLongPress,
+      scrollEnabled,
+    },
+    ref,
+  ) => {
     const {theme} = useAppTheme();
     const {commonStyles} = useStyles();
     const commonNavigation = useCommonStack();
     const {appConfig} = useConfig();
     const {adjustedCruiseDayToday} = useCruise();
+    const {preRegistrationMode} = usePreRegistration();
     const {calculateItemLayout, generateTimeSlotLabels, getTimelineHeight} = useDayPlanner();
     const {primeEventDetail} = useEventCacheReducer();
     const {primeFezDetail} = useFezCacheReducer();
 
     // Calculate layout for all items
     const layoutItems = useMemo(() => {
-      return calculateItemLayout(items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents);
-    }, [items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents, calculateItemLayout]);
+      return calculateItemLayout(items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents, pinnedItemId);
+    }, [items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents, calculateItemLayout, pinnedItemId]);
+
+    // Rows in the window. The real Day Planner's window is exactly 24h (getDayBoundaries adds absolute
+    // hours from the same base), so this stays 96 there; the overlap view passes a shorter window.
+    const totalSlots = useMemo(
+      () => Math.round((dayEnd.getTime() - dayStart.getTime()) / (DAY_PLANNER_CONFIG.MINUTES_PER_ROW * 60 * 1000)),
+      [dayStart, dayEnd],
+    );
+
+    const displaySlots = showEndLabel ? totalSlots + 1 : totalSlots;
 
     // Generate time slot labels (in boat time when timeZoneID provided)
     const timeSlots = useMemo(() => {
-      return generateTimeSlotLabels(dayStart, timeZoneID);
-    }, [dayStart, timeZoneID, generateTimeSlotLabels]);
+      return generateTimeSlotLabels(dayStart, timeZoneID, displaySlots);
+    }, [dayStart, timeZoneID, displaySlots, generateTimeSlotLabels]);
 
     const handleItemPress = useCallback(
       (item: DayPlannerItemWithLayout) => {
@@ -95,8 +155,11 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
             flexDirection: 'row',
             flexGrow: 1,
           },
-          timelineRow: {
+          // Stacks the header above the timeline row, and fills the row's width.
+          scrollColumn: {
             flex: 1,
+          },
+          timelineRow: {
             flexDirection: 'row',
             position: 'relative',
           },
@@ -148,16 +211,23 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         }),
       [theme, commonStyles],
     );
-    const timelineHeight = getTimelineHeight();
+    const timelineHeight = getTimelineHeight(displaySlots);
 
     if (items.length === 0) {
       return (
         <View style={styles.emptyMessage}>
           <Text style={styles.emptyText}>No items in your Day Planner for this day.</Text>
-          <Text style={styles.emptyText}>
-            Follow events on the schedule! Once you're on board, you can join LFGs or create private events to see them
-            here.
-          </Text>
+          {preRegistrationMode ? (
+            <Text style={styles.emptyText}>
+              Follow events on the schedule, or use the New button to create your own LFGs and private events. You'll be
+              able to join other LFGs and Private Events once on board.
+            </Text>
+          ) : (
+            <Text style={styles.emptyText}>
+              Follow events on the schedule, join LFGs, or use the New button to create your own LFGs and private
+              events.
+            </Text>
+          )}
         </View>
       );
     }
@@ -168,46 +238,58 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         style={styles.container}
         contentContainerStyle={styles.scrollContent}
         scrollsToTop={false}
+        scrollEnabled={scrollEnabled}
+        refreshControl={refreshControl}
         showsVerticalScrollIndicator={false}
         onScrollEndDrag={onScrollSettled}
         onMomentumScrollEnd={onScrollSettled}>
-        <View style={[styles.timelineRow, {height: timelineHeight}]}>
-          {/* Only today's page needs the divider; mounting it elsewhere just runs a minute timer to render null. */}
-          {selectedCruiseDay === adjustedCruiseDayToday && (
-            <DayPlannerNowDivider
-              dayStart={dayStart}
-              selectedCruiseDay={selectedCruiseDay}
-              boatTimeZoneID={timeZoneID ?? appConfig.portTimeZoneID}
-            />
-          )}
+        <View style={styles.scrollColumn}>
+          {header}
+          <View style={[styles.timelineRow, {height: timelineHeight}]}>
+            {/* Only today's page needs the divider; mounting it elsewhere just runs a minute timer to render null. */}
+            {selectedCruiseDay === adjustedCruiseDayToday && (
+              <DayPlannerNowDivider
+                dayStart={dayStart}
+                timelineHeight={getTimelineHeight(totalSlots)}
+                selectedCruiseDay={selectedCruiseDay}
+                boatTimeZoneID={timeZoneID ?? appConfig.portTimeZoneID}
+              />
+            )}
 
-          {/* Time labels column — zIndex so it renders above the now divider */}
-          <View style={[styles.timeColumn, {height: timelineHeight}]}>
-            {timeSlots.map((slot, index) => (
-              <View key={index} style={[styles.timeSlot, getGridLineStyle(slot.slotType)]}>
-                {slot.label ? (
-                  <Text style={styles.timeLabel} variant={'bodyMedium'}>
-                    {slot.label}
-                  </Text>
-                ) : null}
-              </View>
-            ))}
-          </View>
-
-          {/* Events column */}
-          <View style={[styles.eventsColumn, {height: timelineHeight}]}>
-            {/* Grid lines */}
-            <View style={styles.gridLines}>
+            {/* Time labels column — zIndex so it renders above the now divider */}
+            <View style={[styles.timeColumn, {height: timelineHeight}]}>
               {timeSlots.map((slot, index) => (
-                <View key={index} style={[styles.gridLine, getGridLineStyle(slot.slotType)]} />
+                <View key={index} style={[styles.timeSlot, getGridLineStyle(slot.slotType)]}>
+                  {slot.label ? (
+                    <Text style={styles.timeLabel} variant={'bodyMedium'}>
+                      {slot.label}
+                    </Text>
+                  ) : null}
+                </View>
               ))}
             </View>
 
-            {/* Event cards */}
-            <View style={styles.eventsContainer}>
-              {layoutItems.map(item => (
-                <DayPlannerCard key={item.id} item={item} onPress={() => handleItemPress(item)} />
-              ))}
+            {/* Events column */}
+            <View style={[styles.eventsColumn, {height: timelineHeight}]}>
+              {/* Grid lines */}
+              <View style={styles.gridLines}>
+                {timeSlots.map((slot, index) => (
+                  <View key={index} style={[styles.gridLine, getGridLineStyle(slot.slotType)]} />
+                ))}
+              </View>
+
+              {/* Event cards */}
+              <View style={styles.eventsContainer}>
+                {layoutItems.map(item => (
+                  <DayPlannerCard
+                    key={item.id}
+                    item={item}
+                    onPress={() => handleItemPress(item)}
+                    onLongPress={onItemLongPress ? event => onItemLongPress(item, event) : undefined}
+                    highlighted={item.id === pinnedItemId}
+                  />
+                ))}
+              </View>
             </View>
           </View>
         </View>

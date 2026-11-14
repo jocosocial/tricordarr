@@ -39,6 +39,7 @@ import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
 import {PreRegistrationHelpScreen} from '#src/Screens/Disabled/PreRegistrationHelpScreen';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
 import {EventLocationScreen} from '#src/Screens/Event/EventLocationScreen';
+import {EventPerformersManageScreen} from '#src/Screens/Event/EventPerformersManageScreen';
 import {EventScreen} from '#src/Screens/Event/EventScreen';
 import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
@@ -118,6 +119,7 @@ import {ModerateMicroKaraokeSongsScreen} from '#src/Screens/Moderation/Content/M
 import {ModeratePhotostreamScreen} from '#src/Screens/Moderation/Content/ModeratePhotostreamScreen';
 import {ModeratePrivateEventScreen} from '#src/Screens/Moderation/Content/ModeratePrivateEventScreen';
 import {ModerateProfileScreen} from '#src/Screens/Moderation/Content/ModerateProfileScreen';
+import {ModerateQuartermasterScreen} from '#src/Screens/Moderation/Content/ModerateQuartermasterScreen';
 import {ModerateUserScreen} from '#src/Screens/Moderation/Content/ModerateUserScreen';
 import {ModeratorGuideScreen} from '#src/Screens/Moderation/ModeratorGuideScreen';
 import {ModeratorHomeScreen} from '#src/Screens/Moderation/ModeratorHomeScreen';
@@ -129,12 +131,17 @@ import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScree
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {PerformerHelpScreen} from '#src/Screens/Performer/PerformerHelpScreen';
 import {PerformerScreen} from '#src/Screens/Performer/PerformerScreen';
+import {PerformerSelfScreen} from '#src/Screens/Performer/PerformerSelfScreen';
 import {PersonalEventCreateScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateScreen';
 import {PersonalEventEditScreen} from '#src/Screens/PersonalEvent/PersonalEventEditScreen';
 import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScreen';
 import {PhotostreamEventScreen} from '#src/Screens/Photostream/PhotostreamEventScreen';
 import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
 import {PhotostreamUserScreen} from '#src/Screens/Photostream/PhotostreamUserScreen';
+import {QuartermasterCreateScreen} from '#src/Screens/Quartermaster/QuartermasterCreateScreen';
+import {QuartermasterEditScreen} from '#src/Screens/Quartermaster/QuartermasterEditScreen';
+import {QuartermasterHelpScreen} from '#src/Screens/Quartermaster/QuartermasterHelpScreen';
+import {QuartermasterItemScreen} from '#src/Screens/Quartermaster/QuartermasterItemScreen';
 import {RegCodeManageScreen} from '#src/Screens/RegCode/RegCodeManageScreen';
 import {RegCodeStatsScreen} from '#src/Screens/RegCode/RegCodeStatsScreen';
 import {EventHelpScreen} from '#src/Screens/Schedule/EventHelpScreen';
@@ -332,6 +339,31 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.moderatePhotostreamScreen}
         component={ModeratePhotostreamScreen}
         options={{title: 'Moderate Photo'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.moderateQuartermasterScreen}
+        component={ModerateQuartermasterScreen}
+        options={{title: 'Moderate Item'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.quartermasterItemScreen}
+        component={QuartermasterItemScreen}
+        options={{title: 'Quartermastarr Item'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.quartermasterCreateScreen}
+        component={QuartermasterCreateScreen}
+        options={{title: 'New Item'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.quartermasterEditScreen}
+        component={QuartermasterEditScreen}
+        options={{title: 'Edit Item'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.quartermasterHelpScreen}
+        component={QuartermasterHelpScreen}
+        options={{title: 'Quartermastarr Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.moderatePrivateEventScreen}
@@ -797,6 +829,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.performerEditScreen}
         component={PerformerEditScreen}
         options={{title: 'Edit Performer'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.performerSelfScreen}
+        component={PerformerSelfScreen}
+        options={{title: 'Performer Bio'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventPerformersManageScreen}
+        component={EventPerformersManageScreen}
+        options={{title: 'Manage Performers'}}
       />
       <Stack.Screen
         name={CommonStackComponents.eventSettingsScreen}

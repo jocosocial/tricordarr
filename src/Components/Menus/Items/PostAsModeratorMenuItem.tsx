@@ -8,16 +8,16 @@ import {AppIcons} from '#src/Enums/Icons';
 
 interface PostAsModeratorMenuItemProps {
   closeMenu: () => void;
-  active?: boolean;
-  onPress?: () => void;
 }
 
-export const PostAsModeratorMenuItem = ({closeMenu, active, onPress}: PostAsModeratorMenuItemProps) => {
+/**
+ * Toggles the screen's moderator elevation. Reads ElevationContext directly, so it must render
+ * inside a MenuContextBridge (AppMenu provides one).
+ */
+export const PostAsModeratorMenuItem = ({closeMenu}: PostAsModeratorMenuItemProps) => {
   const {hasModerator} = usePrivilege();
   const {asModerator, toggleModerator} = useElevation();
   const {commonStyles} = useStyles();
-  const isActive = active ?? asModerator;
-  const handlePress = onPress ?? toggleModerator;
 
   if (!hasModerator) {
     return null;
@@ -28,10 +28,10 @@ export const PostAsModeratorMenuItem = ({closeMenu, active, onPress}: PostAsMode
       dense={false}
       leadingIcon={AppIcons.moderator}
       onPress={() => {
-        handlePress();
+        toggleModerator();
         closeMenu();
       }}
-      style={isActive ? commonStyles.surfaceVariant : undefined}
+      style={asModerator ? commonStyles.surfaceVariant : undefined}
     />
   );
 };

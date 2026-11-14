@@ -107,13 +107,13 @@ const ForumThreadScreenBaseInner = ({
   startFromPost,
 }: Props) => {
   const navigation = useCommonStack();
-  const {asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam} = useElevation();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postInputRef = useRef<TextInput | null>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const markReadMutation = useForumMarkReadMutation();
   const flatListRef = useRef<TConversationListV2Ref>(null);
   const {hasModerator} = usePrivilege();
+  const {asModerator, asTwitarrTeam} = useElevation();
   const {maxForumPostImages} = useClientSettings();
   const {appConfig} = useConfig();
   // This is used deep in the FlatList to star posts by favorite users.
@@ -208,18 +208,11 @@ const ForumThreadScreenBaseInner = ({
           )}
           <ForumThreadPinnedPostsItem forumID={forumData.forumID} navigation={navigation} />
           <ForumThreadSearchPostsItem navigation={navigation} forum={forumData} />
-          <ForumThreadScreenActionsMenu
-            forumData={forumData}
-            onRefresh={onRefresh}
-            asModerator={asModerator}
-            asTwitarrTeam={asTwitarrTeam}
-            toggleModerator={toggleModerator}
-            toggleTwitarrTeam={toggleTwitarrTeam}
-          />
+          <ForumThreadScreenActionsMenu forumData={forumData} onRefresh={onRefresh} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [forumData, navigation, onRefresh, asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam]);
+  }, [forumData, navigation, onRefresh]);
 
   useEffect(() => {
     navigation.setOptions({

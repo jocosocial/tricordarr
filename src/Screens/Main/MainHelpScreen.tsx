@@ -36,7 +36,7 @@ export const MainHelpScreen = () => {
           </HelpTopicView>
           <HelpTopicView title={'Swipe'}>
             Some list items can be swiped to the left or right to perform actions. The orientation of the swipe can be
-            customized in the Appearance Settings.
+            customized in the Accessibility Settings.
           </HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>

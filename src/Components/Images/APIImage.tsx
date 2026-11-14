@@ -18,7 +18,6 @@ import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
 import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -74,7 +73,6 @@ export const APIImage = ({
   const [imageSourceMetadata, setImageSourceMetadata] = useState<AppImageMetaData>(
     staticSize === 'identicon' ? fromIdenticon(path, appConfig, serverUrl) : fromFileName(path, appConfig, serverUrl),
   );
-  const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const [imageSource, setImageSource] = useState<FastImageSource | undefined>(undefined);
   // True from the moment a source URI is handed to FastImage until it loads or errors.
@@ -143,7 +141,7 @@ export const APIImage = ({
    */
   const onPressDefault = useCallback(() => {
     if (viewerImages.length === 0) {
-      setErrorBanner('Error loading image');
+      setSnackbarPayload({message: 'Error loading image', messageType: 'error'});
       return;
     }
     openLightbox({
@@ -156,7 +154,7 @@ export const APIImage = ({
       ),
       index: 0,
     });
-  }, [openLightbox, setErrorBanner, viewerImages, thumbRef, mode, avatarSize, toLightboxImage]);
+  }, [openLightbox, setSnackbarPayload, viewerImages, thumbRef, mode, avatarSize, toLightboxImage]);
 
   /**
    * Callback that fires when the image fails to load. This will display an error message

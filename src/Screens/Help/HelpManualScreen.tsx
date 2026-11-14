@@ -99,6 +99,12 @@ export const HelpManualScreen = () => {
             onPress={() => commonNavigation.push(CommonStackComponents.performerHelpScreen)}
           />
           <DataFieldListItem
+            title={'Quartermastarr'}
+            description={'Find and offer items with other attendees.'}
+            icon={AppIcons.quartermaster}
+            onPress={() => commonNavigation.push(CommonStackComponents.quartermasterHelpScreen)}
+          />
+          <DataFieldListItem
             title={'KrakenTalk'}
             description={'On-board WiFi calling with your friends.'}
             icon={AppIcons.krakentalk}

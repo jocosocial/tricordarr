@@ -1,4 +1,5 @@
-import React, {PropsWithChildren, useCallback, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useMemo} from 'react';
+import {StyleSheet} from 'react-native';
 import {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SharedValue} from 'react-native-reanimated';
 
@@ -20,103 +21,81 @@ interface FezChatListItemSwipeableProps extends PropsWithChildren {
   enabled?: boolean;
 }
 
+/**
+ * Swipe actions for a chat row: LFG/Event on the left, Mute/Favorite/Read on the right. The
+ * pending flags are derived from each mutation's variables rather than local state, so a recycled
+ * cell showing a different chat never inherits another chat's spinner.
+ */
 export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) => {
   const {theme} = useAppTheme();
   const muteMutation = useFezMuteMutation();
   const favoriteMutation = useFezFavoriteMutation();
   const markReadMutation = useFezMarkReadMutation();
-  const {updateMute, updateFavorite, markRead, invalidateFez} = useFezCacheReducer();
-  const [muteRefreshing, setMuteRefreshing] = useState(false);
-  const [favoriteRefreshing, setFavoriteRefreshing] = useState(false);
-  const [readRefreshing, setReadRefreshing] = useState(false);
+  const {markRead} = useFezCacheReducer();
   const commonNavigation = useCommonStack();
-  const isLfg = FezType.isLFGType(props.fez.fezType);
-  const isPrivateEvent = props.fez.fezType === FezType.privateEvent;
+  const {fez} = props;
+  const {fezID, members} = fez;
+  const isLfg = FezType.isLFGType(fez.fezType);
+  const isPrivateEvent = fez.fezType === FezType.privateEvent;
   const showParentScreen = isLfg || isPrivateEvent;
 
+  const muteRefreshing = muteMutation.isPending && muteMutation.variables?.fezID === fezID;
+  const favoriteRefreshing = favoriteMutation.isPending && favoriteMutation.variables?.fezID === fezID;
+  const readRefreshing = markReadMutation.isPending && markReadMutation.variables?.fezID === fezID;
+  const relationRefreshing = muteRefreshing || favoriteRefreshing;
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        parent: {backgroundColor: theme.colors.twitarrNeutralButton},
+        parentText: {color: theme.colors.onTwitarrNeutralButton},
+        mute: {backgroundColor: theme.colors.elevation.level2},
+        favorite: {backgroundColor: theme.colors.elevation.level4},
+        read: {backgroundColor: theme.colors.elevation.level3},
+      }),
+    [theme],
+  );
+
+  /** Toggle mute. The mutation hook handles the optimistic cache update and rollback. */
   const handleMute = useCallback(
     (swipeable: SwipeableMethods) => {
-      if (!props.fez.members) {
+      if (!members) {
         return;
       }
-      const newMuted = !props.fez.members.isMuted;
-      updateMute(props.fez.fezID, newMuted);
-      setMuteRefreshing(true);
-      const action = props.fez.members.isMuted ? 'unmute' : 'mute';
-      muteMutation.mutate(
-        {
-          action: action,
-          fezID: props.fez.fezID,
-        },
-        {
-          onError: () => {
-            updateMute(props.fez.fezID, !newMuted);
-            invalidateFez(props.fez.fezID);
-          },
-          onSettled: () => {
-            setMuteRefreshing(false);
-            swipeable.close();
-          },
-        },
-      );
+      muteMutation.mutate({action: members.isMuted ? 'unmute' : 'mute', fezID}, {onSettled: () => swipeable.close()});
     },
-    [muteMutation, props.fez.fezID, props.fez.members, updateMute, invalidateFez],
+    [muteMutation, fezID, members],
   );
 
   /**
-   * Toggle the favorite flag on this chat. Optimistic: flip the cache before the request, roll
-   * back and invalidate on failure. Swiftarr rejects favoriting a muted chat, hence the disabled
-   * state on the button.
+   * Toggle the favorite flag on this chat. The mutation hook handles the optimistic cache update
+   * and rollback. Swiftarr rejects favoriting a muted chat, hence the disabled state on the button.
    */
   const handleFavorite = useCallback(
     (swipeable: SwipeableMethods) => {
-      if (!props.fez.members) {
+      if (!members) {
         return;
       }
-      const newFavorite = !props.fez.members.isFavorite;
-      updateFavorite(props.fez.fezID, newFavorite);
-      setFavoriteRefreshing(true);
       favoriteMutation.mutate(
-        {
-          action: newFavorite ? 'favorite' : 'unfavorite',
-          fezID: props.fez.fezID,
-        },
-        {
-          onError: () => {
-            updateFavorite(props.fez.fezID, !newFavorite);
-            invalidateFez(props.fez.fezID);
-          },
-          onSettled: () => {
-            setFavoriteRefreshing(false);
-            swipeable.close();
-          },
-        },
+        {action: members.isFavorite ? 'unfavorite' : 'favorite', fezID},
+        {onSettled: () => swipeable.close()},
       );
     },
-    [favoriteMutation, props.fez.fezID, props.fez.members, updateFavorite, invalidateFez],
+    [favoriteMutation, fezID, members],
   );
 
+  /**
+   * Mark the chat read. Applied eagerly with no rollback: markRead collapses readCount toward
+   * postCount and can't be un-applied without capturing the prior counts. A failed request
+   * self-heals on the next refetch. Closes up front so the row is already shut when it re-renders.
+   */
   const handleMarkAsRead = useCallback(
     (swipeable: SwipeableMethods) => {
       swipeable.close();
-      setReadRefreshing(true);
-      // Applied eagerly with no rollback: markRead collapses readCount toward postCount and
-      // can't be un-applied without capturing the prior counts. A failed request self-heals
-      // on the next refetch.
-      markRead(props.fez.fezID);
-      markReadMutation.mutate(
-        {
-          fezID: props.fez.fezID,
-        },
-        {
-          onSettled: () => {
-            setReadRefreshing(false);
-            swipeable.close();
-          },
-        },
-      );
+      markRead(fezID);
+      markReadMutation.mutate({fezID});
     },
-    [markRead, markReadMutation, props.fez.fezID],
+    [markRead, markReadMutation, fezID],
   );
 
   /**
@@ -125,57 +104,56 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
   const handleOpenParent = useCallback(
     (swipeable: SwipeableMethods) => {
       swipeable.close();
-      openFezParentScreen(commonNavigation, props.fez);
+      openFezParentScreen(commonNavigation, fez);
     },
-    [commonNavigation, props.fez],
+    [commonNavigation, fez],
   );
 
-  const renderLeftPanel = (
-    progressAnimatedValue: SharedValue<number>,
-    dragAnimatedValue: SharedValue<number>,
-    swipeable: SwipeableMethods,
-  ) => {
-    return (
+  /** LFG or Event, whichever parent this chat belongs to. */
+  const renderLeftPanel = useCallback(
+    (
+      _progressAnimatedValue: SharedValue<number>,
+      _dragAnimatedValue: SharedValue<number>,
+      swipeable: SwipeableMethods,
+    ) => (
       <SwipeableButton
         testID={isLfg ? 'fezChatLfg-button' : 'fezChatEvent-button'}
         text={isLfg ? 'LFG' : 'Event'}
         iconName={isLfg ? AppIcons.lfg : AppIcons.personalEvent}
         onPress={() => handleOpenParent(swipeable)}
-        style={{backgroundColor: theme.colors.twitarrNeutralButton}}
-        textStyle={{color: theme.colors.onTwitarrNeutralButton}}
+        style={styles.parent}
+        textStyle={styles.parentText}
         iconColor={theme.colors.onTwitarrNeutralButton}
       />
-    );
-  };
+    ),
+    [isLfg, styles, theme, handleOpenParent],
+  );
 
-  const renderRightPanel = (
-    progressAnimatedValue: SharedValue<number>,
-    dragAnimatedValue: SharedValue<number>,
-    swipeable: SwipeableMethods,
-  ) => {
-    if (!props.fez.members) {
-      return null;
-    }
-
-    return (
+  /** Mute, Favorite, Read. Mute and Favorite are mutually exclusive on the server. */
+  const renderRightPanel = useCallback(
+    (
+      _progressAnimatedValue: SharedValue<number>,
+      _dragAnimatedValue: SharedValue<number>,
+      swipeable: SwipeableMethods,
+    ) => (
       <>
         <SwipeableButton
           testID={'seamailMute-button'}
-          text={props.fez.members?.isMuted ? 'Unmute' : 'Mute'}
-          iconName={props.fez.members?.isMuted ? AppIcons.unmute : AppIcons.mute}
-          style={{backgroundColor: theme.colors.elevation.level2}}
+          text={members?.isMuted ? 'Unmute' : 'Mute'}
+          iconName={members?.isMuted ? AppIcons.unmute : AppIcons.mute}
+          style={styles.mute}
           onPress={() => handleMute(swipeable)}
           refreshing={muteRefreshing}
-          disabled={!!props.fez.members?.isFavorite || muteRefreshing}
+          disabled={!!members?.isFavorite || relationRefreshing}
         />
         <SwipeableButton
           testID={'seamailFavorite-button'}
-          text={props.fez.members?.isFavorite ? 'Unfavorite' : 'Favorite'}
-          iconName={props.fez.members?.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
-          style={{backgroundColor: theme.colors.elevation.level4}}
+          text={members?.isFavorite ? 'Unfavorite' : 'Favorite'}
+          iconName={members?.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
+          style={styles.favorite}
           onPress={() => handleFavorite(swipeable)}
           refreshing={favoriteRefreshing}
-          disabled={!!props.fez.members?.isMuted || favoriteRefreshing}
+          disabled={!!members?.isMuted || relationRefreshing}
         />
         <SwipeableButton
           testID={'seamailRead-button'}
@@ -184,18 +162,30 @@ export const FezChatListItemSwipeable = (props: FezChatListItemSwipeableProps) =
           onPress={() => handleMarkAsRead(swipeable)}
           refreshing={readRefreshing}
           disabled={readRefreshing}
-          style={{backgroundColor: theme.colors.elevation.level3}}
+          style={styles.read}
         />
       </>
-    );
-  };
+    ),
+    [
+      members?.isMuted,
+      members?.isFavorite,
+      muteRefreshing,
+      favoriteRefreshing,
+      relationRefreshing,
+      readRefreshing,
+      styles,
+      handleMute,
+      handleFavorite,
+      handleMarkAsRead,
+    ],
+  );
 
   return (
     <BaseSwipeable
-      key={`${props.fez.fezID}-${props.fez.members?.isMuted}-${props.fez.members?.isFavorite}`}
-      enabled={props.enabled !== undefined ? props.enabled && !!props.fez.members : !!props.fez.members}
+      key={fezID}
+      enabled={props.enabled !== undefined ? props.enabled && !!members : !!members}
       renderLeftPanel={showParentScreen ? renderLeftPanel : undefined}
-      renderRightPanel={renderRightPanel}>
+      renderRightPanel={members ? renderRightPanel : undefined}>
       {props.children}
     </BaseSwipeable>
   );

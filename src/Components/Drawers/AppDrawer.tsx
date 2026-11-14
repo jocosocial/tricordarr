@@ -26,7 +26,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
-  const {hasShutternaut, hasShutternautManager, hasAccountManager, hasHuntManager} = useRoles();
+  const {hasShutternaut, hasShutternautManager, hasAccountManager, hasHuntManager, hasPerformerSelfEditor} = useRoles();
   const {data: userNotificationData} = useUserNotificationDataQuery({
     enabled: oobeCompleted && !preRegistrationMode,
   });
@@ -145,6 +145,11 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.performer}
                 onPress={() => Linking.openURL(appUrl('performers'))}
               />
+              <PaperDrawer.Item
+                label={'Quartermastarr'}
+                icon={AppIcons.quartermaster}
+                onPress={() => Linking.openURL(appUrl('quartermaster'))}
+              />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
               {hasVerified && (
@@ -216,6 +221,13 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.feedback}
                 onPress={() => Linking.openURL(appUrl('eventfeedback'))}
               />
+              {(hasPerformerSelfEditor || hasTwitarrTeam) && (
+                <PaperDrawer.Item
+                  label={'Performer Profile'}
+                  icon={AppIcons.performer}
+                  onPress={() => push(CommonStackComponents.performerSelfScreen)}
+                />
+              )}
               {(hasShutternaut || hasShutternautManager || hasTwitarrTeam) && (
                 <PaperDrawer.Item
                   label={'Shutternaut Calendar'}

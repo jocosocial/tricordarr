@@ -1,21 +1,20 @@
-import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
-import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostActionsModerateItemProps {
   closeMenu: () => void;
   forumPost: PostData;
-  navigation: StackNavigationProp<CommonStackParamList>;
 }
 
-export const ForumPostActionsModerateItem = ({forumPost, closeMenu, navigation}: ForumPostActionsModerateItemProps) => {
+export const ForumPostActionsModerateItem = ({forumPost, closeMenu}: ForumPostActionsModerateItemProps) => {
   const {hasModerator} = usePrivilege();
+  const navigation = useCommonStack();
 
   if (!hasModerator) {
     return null;

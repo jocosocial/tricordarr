@@ -3,30 +3,32 @@ import {Menu} from 'react-native-paper';
 
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 interface SetOrganizerMenuItemProps {
   closeMenu: () => void;
-  onPress: () => void;
+  eventID: string;
   disabled?: boolean;
 }
 
 /**
- * Menu items portal up to the Portal.Host which likely does not have the navigators available.
+ * Opens the add-performer screen for a shadow event. Must render inside a MenuContextBridge.
  */
-export const SetOrganizerMenuItem = (props: SetOrganizerMenuItemProps) => {
+export const SetOrganizerMenuItem = ({closeMenu, eventID, disabled}: SetOrganizerMenuItemProps) => {
   const {snackbarTry} = useSnackbar();
+  const navigation = useCommonStack();
 
   const handlePress = useCallback(() => {
-    props.closeMenu();
-    props.onPress();
-  }, [props]);
+    closeMenu();
+    navigation.push(CommonStackComponents.eventAddPerformerScreen, {eventID: String(eventID)});
+  }, [closeMenu, eventID, navigation]);
 
   return (
     <Menu.Item
       title={'Set Organizer'}
       leadingIcon={AppIcons.performer}
       onPress={snackbarTry(handlePress)}
-      disabled={props.disabled}
+      disabled={disabled}
     />
   );
 };

@@ -1,5 +1,4 @@
 import React, {Dispatch, SetStateAction} from 'react';
-import {Linking} from 'react-native';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -9,6 +8,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {alertClearCookies} from '#src/Libraries/Alerts/SiteUIAlerts';
+import {openInBrowser} from '#src/Libraries/Browser';
 import {createLogger} from '#src/Libraries/Logger';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -47,7 +47,7 @@ export const SiteUIScreenActionsMenu = ({onHome, getCurrentUrl, setKey}: SiteUIS
   const handleOpenInBrowser = () => {
     closeMenu();
     const currentUrl = getCurrentUrl();
-    Linking.openURL(currentUrl).catch(err => {
+    openInBrowser(currentUrl).catch(err => {
       logger.error('Failed to open URL in browser:', err);
     });
   };

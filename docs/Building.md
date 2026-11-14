@@ -47,8 +47,9 @@ ABI) to build for an emulator.
 
 We tried switching the `.vscode/tasks.json` task to the `gradlew` path above to
 speed up the local dev loop, but it doesn't produce an installable-on-device
-APK: it builds a *debug*-variant APK signed with the checked-in
-`android/app/debug.keystore` and a static `versionCode`, whereas `eas build
+APK: it builds a *debug*-variant APK signed with the per-machine
+`~/.android/debug.keystore` (created automatically by the Android Gradle Plugin)
+and a static `versionCode`, whereas `eas build
 --local --profile development` builds a *release*-variant APK signed with
 EAS-managed release credentials and a `versionCode` from EAS's remote counter.
 Those are two different build variants with different signatures — installing

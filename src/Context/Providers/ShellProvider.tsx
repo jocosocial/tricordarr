@@ -15,8 +15,8 @@ import {MenuProvider} from '#src/Context/Providers/MenuProvider';
  * SnackbarProvider is a dependency of SwiftarrQueryClientProvider so it can't live in here.
  *
  * Lightbox renders after Portal.Host so the image viewer covers Paper menus and dialogs.
- * It also owns its own snackbar: SnackBarBase renders Paper's Snackbar inline rather than
- * through a Portal, so one owned by SnackbarProvider would paint underneath the overlay.
+ * It also owns its own snackbar: the app snackbar renders inline in each screen's AppView,
+ * inside the navigators, so it would paint underneath the overlay.
  *
  * Stateless helper contexts (pure derivation/factory functions) live in HelperProvider,
  * not here - this provider is for UI-primitive state only.
