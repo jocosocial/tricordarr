@@ -144,6 +144,9 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
     activeControlsRef.current = controls;
   }, []);
 
+  // Only the visible page can open a card menu, so one flag covers the whole pager.
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const registerScrollController = useCallback((day: number, controller: DayPlannerScrollController | null) => {
     if (controller) {
       scrollControllersRef.current.set(day, controller);
@@ -288,6 +291,7 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
         style={commonStyles.flex}
         initialPage={activeIndex}
         overdrag
+        scrollEnabled={!menuOpen}
         onPageSelected={handlePageSelected}
         onPageScrollStateChanged={handlePageScrollStateChanged}
         onPageScroll={onPageScroll as never}>
@@ -303,6 +307,7 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
               onRegisterScrollController={registerScrollControllerCallbacks[day - 1]}
               onScrollSettled={handleScrollSettled}
               getSharedOffset={getSharedOffset}
+              onMenuVisibleChange={setMenuOpen}
             />
           </View>
         ))}

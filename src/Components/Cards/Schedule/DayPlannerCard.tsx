@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {GestureResponderEvent, StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Text, TouchableRipple} from 'react-native-paper';
 
@@ -35,6 +35,8 @@ type DayPlannerCardContentLevel = 'titleOnly' | 'titleAndLocation';
 interface DayPlannerCardProps {
   item: DayPlannerItemWithLayout;
   onPress?: () => void;
+  /** Receives the touch event so the caller can anchor a menu at the press location. */
+  onLongPress?: (event: GestureResponderEvent) => void;
   /** Draws a red border around the card, matching the ship map's location highlight. */
   highlighted?: boolean;
 }
@@ -70,7 +72,7 @@ const staticStyles = StyleSheet.create({
   },
 });
 
-export const DayPlannerCard = ({item, onPress, highlighted}: DayPlannerCardProps) => {
+export const DayPlannerCard = ({item, onPress, onLongPress, highlighted}: DayPlannerCardProps) => {
   const {theme} = useAppTheme();
   const {hasShutternaut, hasShutternautManager} = useRoles();
   const {getBackgroundColor, getTextColor} = useDayPlanner();
@@ -184,7 +186,7 @@ export const DayPlannerCard = ({item, onPress, highlighted}: DayPlannerCardProps
    */
   return (
     <View style={dynamicStyles.container}>
-      <TouchableRipple style={dynamicStyles.card} onPress={onPress} borderless>
+      <TouchableRipple style={dynamicStyles.card} onPress={onPress} onLongPress={onLongPress} borderless>
         <View style={staticStyles.fill}>
           {item.compactedTheme && (
             <LinearGradient

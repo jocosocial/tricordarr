@@ -2,6 +2,7 @@ import React, {ReactNode} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
 import {ModerateMenuItem} from '#src/Components/Menus/Items/ModerateMenuItem';
+import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
@@ -17,6 +18,7 @@ interface PhotostreamImageActionsMenuProps {
 
 export const PhotostreamImageActionsMenu = ({visible, closeMenu, anchor, image}: PhotostreamImageActionsMenuProps) => {
   const {hasModerator} = usePrivilege();
+  const bridged = useMenuContextBridge();
   const commonNavigation = useCommonStack();
 
   const handleReport = () => {
@@ -29,18 +31,15 @@ export const PhotostreamImageActionsMenu = ({visible, closeMenu, anchor, image}:
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
-      <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
-      {hasModerator && (
-        <>
-          <Divider bold={true} />
-          <ModerateMenuItem
-            closeMenu={closeMenu}
-            resourceID={image.postID.toString()}
-            resource={'photostream'}
-            navigation={commonNavigation}
-          />
-        </>
-      )}
+      <MenuContextBridge bridged={bridged}>
+        <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
+        {hasModerator && (
+          <>
+            <Divider bold={true} />
+            <ModerateMenuItem closeMenu={closeMenu} resourceID={image.postID.toString()} resource={'photostream'} />
+          </>
+        )}
+      </MenuContextBridge>
     </Menu>
   );
 };

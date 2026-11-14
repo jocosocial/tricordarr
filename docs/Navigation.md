@@ -27,12 +27,38 @@ NavigationContainer          ← root NavigationContext
               PersonalEventScreen, LfgScreen, …
 ```
 
-Hooks in a component that **mounts in the portal** (some menu items) see the root container, not the nested stack. TypeScript still types `useCommonStack()` as the common stack, so this compiles and then does the wrong thing:
+Paper's `PortalManager` re-renders portal children from its own state at the host, so the only React contexts that survive are Paper's theme and settings. Hooks in a component that **mounts in the portal** (menu items) see the root container, not the nested stack. TypeScript still types `useCommonStack()` as the common stack, so this compiles and then does the wrong thing:
 
+- `push()` is `undefined` on the root container: tapping the item hard-crashes (`undefined is not a function`)
 - `getState().routes` is OOBE / main tabs / lighter — not `PersonalEventScreen`
 - `goBack()` / `pop()` run on the **root** stack
 
-React Native Paper menus have the same Host. Closures created in a parent that is still in the navigator tree are fine; calling `useNavigation()` inside a component that itself mounts in the portal is not. See `SetOrganizerMenuItem`.
+The same applies to every provider mounted below the host. Screen-scoped providers (`ElevationProvider`, `ForumComposerProvider`, `SelectionProvider`, `MentionTextFieldProvider`) are invisible to a portaled item, which silently reads the context's default value.
+
+### `MenuContextBridge`
+
+The children elements still come from the menu, which is in the navigator tree, so a provider placed **inside** the Menu travels into the portal with them. `src/Components/Menus/MenuContextBridge.tsx` has two halves:
+
+- `useMenuContextBridge()` runs in the **menu component** (in the tree) and captures `NavigationContext`, `NavigationRouteContext`, `ElevationContext` and `ForumComposerContext`.
+- `<MenuContextBridge bridged={...}>` is rendered **inside** the Menu and re-provides those values around the children.
+
+The split matters: the bridge component is itself portaled, so it cannot read the contexts on its own. The values have to arrive as a prop from the hook. (The first version read them inside the bridge and crashed exactly like the un-bridged code.) With both halves in place, menu items use the normal hooks (`useCommonStack()`, `useFezAlert()`, `useElevation()`, `useForumComposer()`) and nothing needs to be drilled in as a prop.
+
+```tsx
+const bridged = useMenuContextBridge();
+return (
+  <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
+    <MenuContextBridge bridged={bridged}>{/* items */}</MenuContextBridge>
+  </Menu>
+);
+```
+
+- `AppMenu` does both halves automatically.
+- A raw Paper `<Menu>` must render `<MenuContextBridge>` as its **only** direct child (see `EventCardActionsMenu`, `ForumPostActionsMenu`, `DayPlannerCardActionsMenu`). A `no-restricted-syntax` rule in `.eslintrc.js` flags any other element, fragment or `{expression}` child of a raw `Menu`, so a missing bridge fails lint rather than crashing on tap.
+- Only the contexts listed in the bridge are carried. A new screen-scoped provider whose value a menu item reads must be added there, or the item reads the default.
+- Moving `Portal.Host` is not the fix: it has to sit above the navigators so menus and snackbars can paint over the header and tab bar.
+
+Closures created in the menu itself were always fine, and still are; the bridge is what makes hooks inside the items safe too.
 
 `Alert.alert` is not a portal. Destructive confirms that run from a screen or header-menu parent should use stack hooks (`useNavigation()`, `useCommonStack()`, …), not NavigationRef.
 
@@ -64,11 +90,9 @@ popToOrPush(navigation, CommonStackComponents.lfgScreen, {fezID}, 'fezID');
 
 [`src/Libraries/NavigationRef.ts`](../src/Libraries/NavigationRef.ts) holds `navigationRef` on `NavigationContainer`. Use it from code that is **not** inside a nested stack: LinkingProvider, CallProvider, NotificationDataListener, and cross-tab `setParams`.
 
-Do not call `useCommonStack()` / `useNavigation()` from components that themselves mount in the portal.
+Inside a menu, rely on `MenuContextBridge` (above) rather than NavigationRef. Outside a menu, do not call `useCommonStack()` / `useNavigation()` from a component that itself mounts in a portal (snackbar content, for example) unless something re-provides the context there.
 
 Screens, headers, and `Alert.alert` callbacks in those parents should keep using the stack hooks.
-
-Passing a `navigation` object **into** a portaled menu item as a prop also works: the hook runs on the screen, and the object stays valid after the element remounts in the portal.
 
 ## Scroll-to-top
 

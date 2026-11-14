@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {Menu, MenuProps} from 'react-native-paper';
 
+import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
 import {MenuScrollIndicator} from '#src/Components/Views/MenuScrollIndicator';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
@@ -53,9 +54,13 @@ export const useAppMenuScroll = () => useContext(AppMenuScrollContext);
  * A generic wrapper around react-native-paper Menu that handles screen clipping issues
  * by calculating appropriate max heights and providing scroll indicators.
  * This is a drop-in replacement for Menu.
+ *
+ * Children are wrapped in MenuContextBridge so menu items can use navigation and screen-scoped
+ * context hooks directly despite rendering in the Paper Portal.
  */
 export const AppMenu = ({visible, children, onScroll, style, header, bounces = false, ...menuProps}: AppMenuProps) => {
   const {commonStyles} = useStyles();
+  const bridged = useMenuContextBridge();
   const screenHeight = Dimensions.get('window').height;
   const [contentHeight, setContentHeight] = useState(0);
   const [scrollY, setScrollY] = useState(0);
@@ -195,33 +200,35 @@ export const AppMenu = ({visible, children, onScroll, style, header, bounces = f
       statusBarHeight={0}
       keyboardShouldPersistTaps={menuProps.keyboardShouldPersistTaps || 'handled'}
       {...menuProps}>
-      <AppMenuScrollContext.Provider value={scrollContextValue}>
-        <View ref={containerRef} style={styles.scrollViewContainer}>
-          {renderHeader()}
-          <ScrollView
-            ref={scrollViewRef}
-            style={styles.scrollView}
-            keyboardShouldPersistTaps={menuProps.keyboardShouldPersistTaps || 'handled'}
-            scrollEnabled={isScrollable}
-            // Overscroll is off by default. Bouncing past either end exposes the plain Paper menu
-            // surface behind the content (Paper pads the menu by 8dp top and bottom). That shows
-            // as a seam next to rows or headers with their own background, e.g. the surfaceVariant
-            // headers in ScheduleEventFilterMenu, and made the padding flicker in and out.
-            bounces={bounces}
-            overScrollMode={bounces ? 'auto' : 'never'}
-            onContentSizeChange={(_, height) => {
-              setContentHeight(height);
-              requestAnimationFrame(() => applyAutoScroll(height));
-            }}
-            onScroll={handleScroll}
-            scrollEventThrottle={16}
-            scrollsToTop={false}>
-            {children}
-          </ScrollView>
-          <MenuScrollIndicator visible={showTopIndicator} onPress={scrollToTop} direction={'up'} />
-          <MenuScrollIndicator visible={showBottomIndicator} onPress={scrollToBottom} direction={'down'} />
-        </View>
-      </AppMenuScrollContext.Provider>
+      <MenuContextBridge bridged={bridged}>
+        <AppMenuScrollContext.Provider value={scrollContextValue}>
+          <View ref={containerRef} style={styles.scrollViewContainer}>
+            {renderHeader()}
+            <ScrollView
+              ref={scrollViewRef}
+              style={styles.scrollView}
+              keyboardShouldPersistTaps={menuProps.keyboardShouldPersistTaps || 'handled'}
+              scrollEnabled={isScrollable}
+              // Overscroll is off by default. Bouncing past either end exposes the plain Paper menu
+              // surface behind the content (Paper pads the menu by 8dp top and bottom). That shows
+              // as a seam next to rows or headers with their own background, e.g. the surfaceVariant
+              // headers in ScheduleEventFilterMenu, and made the padding flicker in and out.
+              bounces={bounces}
+              overScrollMode={bounces ? 'auto' : 'never'}
+              onContentSizeChange={(_, height) => {
+                setContentHeight(height);
+                requestAnimationFrame(() => applyAutoScroll(height));
+              }}
+              onScroll={handleScroll}
+              scrollEventThrottle={16}
+              scrollsToTop={false}>
+              {children}
+            </ScrollView>
+            <MenuScrollIndicator visible={showTopIndicator} onPress={scrollToTop} direction={'up'} />
+            <MenuScrollIndicator visible={showBottomIndicator} onPress={scrollToBottom} direction={'down'} />
+          </View>
+        </AppMenuScrollContext.Provider>
+      </MenuContextBridge>
     </Menu>
   );
 };

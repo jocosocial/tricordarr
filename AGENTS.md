@@ -59,6 +59,11 @@ LoggedInScreen
 
 - Visibility: `useMenu`
 - Anchor: `MenuAnchor`
+- Menu children render in the Paper Portal and lose navigation and screen-scoped contexts. `AppMenu`
+  bridges them automatically; a raw Paper `<Menu>` MUST call `useMenuContextBridge()` in the menu
+  component and render `<MenuContextBridge bridged={...}>` as its only direct child (lint-enforced).
+  Menu items then use the normal hooks; do not drill `navigation` in as a prop. See
+  `docs/Navigation.md`, "MenuContextBridge"
 - Mutating items: call `onClose` in mutation `onSettled`
 - An item that closes its menu before its mutation finishes (e.g. to open a sheet with the result)
   MUST `await mutateAsync(...)` and act after the `await`. Closing unmounts the item, and TanStack

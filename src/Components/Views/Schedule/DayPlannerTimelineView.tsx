@@ -1,5 +1,13 @@
 import React, {forwardRef, useCallback, useMemo} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  GestureResponderEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  RefreshControlProps,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {DayPlannerCard} from '#src/Components/Cards/Schedule/DayPlannerCard';
@@ -43,6 +51,17 @@ interface DayPlannerTimelineViewProps {
    * does not use it.
    */
   header?: React.ReactNode;
+  /**
+   * Long press on a card. The caller owns the resulting menu (see DayPlannerCardActionsMenu), keeping
+   * the timeline menu-agnostic. The overlap view does not pass it, so its cards only respond to a tap.
+   */
+  onItemLongPress?: (item: DayPlannerItemWithLayout, event: GestureResponderEvent) => void;
+  /**
+   * Passed to the ScrollView. The Day Planner sets it false while a card menu is open: the menu's
+   * overlay only catches NEW touches, so a long press that is held and then dragged would still
+   * scroll the timeline under the menu. Disabling scroll cancels that in-progress drag.
+   */
+  scrollEnabled?: boolean;
 }
 
 export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineViewProps>(
@@ -58,6 +77,8 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
       showEndLabel,
       pinnedItemId,
       header,
+      onItemLongPress,
+      scrollEnabled,
     },
     ref,
   ) => {
@@ -217,6 +238,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
         style={styles.container}
         contentContainerStyle={styles.scrollContent}
         scrollsToTop={false}
+        scrollEnabled={scrollEnabled}
         refreshControl={refreshControl}
         showsVerticalScrollIndicator={false}
         onScrollEndDrag={onScrollSettled}
@@ -263,6 +285,7 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
                     key={item.id}
                     item={item}
                     onPress={() => handleItemPress(item)}
+                    onLongPress={onItemLongPress ? event => onItemLongPress(item, event) : undefined}
                     highlighted={item.id === pinnedItemId}
                   />
                 ))}

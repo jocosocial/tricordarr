@@ -24,6 +24,22 @@ module.exports = {
         patterns: ['./*', '../*'],
       },
     ],
+    'no-restricted-syntax': [
+      'error',
+      {
+        // A raw react-native-paper <Menu> renders its children in the Paper Portal, where navigation
+        // and screen-scoped contexts are lost (hooks in menu items then crash or read defaults).
+        // MenuContextBridge re-provides them and must be the Menu's ONLY direct child: any other
+        // element, fragment or {expression} child is flagged. AppMenu does this for you; prefer it.
+        // `Menu.Item` is a JSXMemberExpression, so it is not treated as a Menu here.
+        selector:
+          "JSXElement[openingElement.name.type='JSXIdentifier'][openingElement.name.name='Menu'] > " +
+          ":matches(JSXElement[openingElement.name.name!='MenuContextBridge'], JSXExpressionContainer, JSXFragment)",
+        message:
+          'A raw Paper <Menu> must render <MenuContextBridge> as its only direct child (or use AppMenu). ' +
+          'See docs/Navigation.md, "MenuContextBridge".',
+      },
+    ],
     // Maximum line length
     'max-len': [
       'error',

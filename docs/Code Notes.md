@@ -96,6 +96,16 @@ a spinner from showing up on whatever thread the cell is recycled into. Use a se
 instance per action (e.g. Forum favorite vs. mute) so one action's in-flight state can't overwrite
 the other's.
 
+## Day Planner Card Menus
+
+The list card menus (`EventCardActionsMenu` etc.) wrap the card as the Paper `Menu` anchor. Do not
+do that for `DayPlannerCard`: Paper renders an element anchor inside a plain `View`, which collapses
+an absolutely positioned card (its percentage `left`/`width` resolve against the zero-size wrapper)
+and measures the anchor as 0x0, so the menu opens in the wrong place. The planner instead has one
+`DayPlannerCardActionsMenu` per page, anchored at the long-press coordinates (`anchor={{x, y}}`,
+which Paper supports natively), and reuses the list menus' `*ActionsMenuItems` so both offer the
+same actions.
+
 ## Websocket Keepalive
 
 https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104

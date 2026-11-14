@@ -3,6 +3,7 @@ import React from 'react';
 import {Menu} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -53,7 +54,7 @@ export const ModeratorForumThreadChangeCategoryButtonView = ({
 
   return (
     <PaddedContentView>
-      <Menu
+      <AppMenu
         visible={visible}
         onDismiss={closeMenu}
         anchor={
@@ -75,7 +76,7 @@ export const ModeratorForumThreadChangeCategoryButtonView = ({
             onPress={() => onSetCategory(category.categoryID)}
           />
         ))}
-      </Menu>
+      </AppMenu>
     </PaddedContentView>
   );
 };

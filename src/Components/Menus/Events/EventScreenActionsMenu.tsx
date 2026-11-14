@@ -87,22 +87,12 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       <OpenInSchedMenuItem closeMenu={closeMenu} eventUid={props.event.uid} />
       {props.event.eventType === EventType.shadow && (
         <SetOrganizerMenuItem
-          onPress={() => {
-            commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
-              eventID: String(props.event.eventID),
-            });
-          }}
+          eventID={props.event.eventID}
           closeMenu={closeMenu}
           disabled={!(preRegistrationMode || hasPerformerSelfEditor)}
         />
       )}
-      {hasTwitarrTeam && (
-        <ManagePerformersMenuItem
-          onPress={() =>
-            commonNavigation.push(CommonStackComponents.eventPerformersManageScreen, {eventID: props.event.eventID})
-          }
-        />
-      )}
+      {hasTwitarrTeam && <ManagePerformersMenuItem eventID={props.event.eventID} />}
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
       {hasShutternaut && (
         <PhotographingMenuItem

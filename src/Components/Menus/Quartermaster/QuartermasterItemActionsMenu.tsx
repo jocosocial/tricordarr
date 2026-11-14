@@ -71,12 +71,7 @@ export const QuartermasterItemActionsMenu = ({item}: QuartermasterItemActionsMen
       {viewer.hasModerator && (
         <>
           <Divider bold={true} />
-          <ModerateMenuItem
-            closeMenu={closeMenu}
-            resourceID={item.itemID}
-            resource={'quartermaster'}
-            navigation={navigation}
-          />
+          <ModerateMenuItem closeMenu={closeMenu} resourceID={item.itemID} resource={'quartermaster'} />
         </>
       )}
     </AppMenu>

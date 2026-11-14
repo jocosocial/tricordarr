@@ -27,20 +27,9 @@ import {ForumData} from '#src/Structs/ControllerStructs';
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
   onRefresh: () => void;
-  asModerator: boolean;
-  asTwitarrTeam: boolean;
-  toggleModerator: () => void;
-  toggleTwitarrTeam: () => void;
 }
 
-export const ForumThreadScreenActionsMenu = ({
-  forumData,
-  onRefresh,
-  asModerator,
-  asTwitarrTeam,
-  toggleModerator,
-  toggleTwitarrTeam,
-}: ForumThreadActionsMenuProps) => {
+export const ForumThreadScreenActionsMenu = ({forumData, onRefresh}: ForumThreadActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {data: profilePublicData} = useUserProfileQuery();
@@ -174,19 +163,14 @@ export const ForumThreadScreenActionsMenu = ({
       <Divider bold={true} />
       {hasTwitarrTeam && (
         <>
-          <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} active={asTwitarrTeam} onPress={toggleTwitarrTeam} />
+          <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} />
           <Divider bold={true} />
         </>
       )}
       {hasModerator && (
         <>
-          <PostAsModeratorMenuItem closeMenu={closeMenu} active={asModerator} onPress={toggleModerator} />
-          <ModerateMenuItem
-            closeMenu={closeMenu}
-            resourceID={forumData.forumID}
-            resource={'forum'}
-            navigation={commonNavigation}
-          />
+          <PostAsModeratorMenuItem closeMenu={closeMenu} />
+          <ModerateMenuItem closeMenu={closeMenu} resourceID={forumData.forumID} resource={'forum'} />
           <ForumThreadPinItem
             isPinned={forumData.isPinned}
             refreshing={refreshing}

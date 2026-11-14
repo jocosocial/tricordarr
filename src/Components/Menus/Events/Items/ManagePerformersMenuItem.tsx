@@ -2,19 +2,23 @@ import React from 'react';
 import {Menu} from 'react-native-paper';
 
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 
 interface ManagePerformersMenuItemProps {
-  onPress: () => void;
+  eventID: string;
 }
 
 /**
- * TwitarrTeam: open the screen to link/unlink performers for this event. Callers gate
- * visibility on hasTwitarrTeam.
- *
- * Navigation comes in via onPress rather than a navigation hook here: menu items portal up to
- * the Portal.Host, which doesn't have the navigators available (same as SetOrganizerMenuItem).
- * Navigation item, so no closeMenu; menus close on navigation.
+ * Opens the performer management screen for an event. Navigation item, so no closeMenu; menus close
+ * on navigation. Must render inside a MenuContextBridge.
  */
-export const ManagePerformersMenuItem = ({onPress}: ManagePerformersMenuItemProps) => {
-  return <Menu.Item title={'Manage Performers'} leadingIcon={AppIcons.twitarrteam} onPress={onPress} />;
+export const ManagePerformersMenuItem = ({eventID}: ManagePerformersMenuItemProps) => {
+  const navigation = useCommonStack();
+  return (
+    <Menu.Item
+      title={'Manage Performers'}
+      leadingIcon={AppIcons.twitarrteam}
+      onPress={() => navigation.push(CommonStackComponents.eventPerformersManageScreen, {eventID})}
+    />
+  );
 };

@@ -9,6 +9,7 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
@@ -140,7 +141,7 @@ export const ModerationUserAccessSectionView = ({
       </ListSection>
       <DataFieldListItem title={'Current Access Level'} description={UserAccessLevel.getLabel(accessLevel)} />
       <PaddedContentView>
-        <Menu
+        <AppMenu
           visible={visible}
           onDismiss={closeMenu}
           anchor={
@@ -162,7 +163,7 @@ export const ModerationUserAccessSectionView = ({
               onPress={() => onSetAccessLevel(level)}
             />
           ))}
-        </Menu>
+        </AppMenu>
       </PaddedContentView>
       <DataFieldListItem
         title={'Temporary Quarantine'}
