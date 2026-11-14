@@ -14,13 +14,13 @@ It does not search for a “common” navigator. It returns whatever `Navigation
 
 ## Paper portals remount outside those stacks
 
-`AppView` renders snackbars and banners inside react-native-paper `<Portal>`. Portal content is remounted at `Portal.Host` in `ShellProvider`, which wraps `RootStackNavigator` but is **not** inside a tab or stack navigator:
+react-native-paper `Menu` (and anything else wrapped in Paper's `<Portal>`) is remounted at `Portal.Host` in `ShellProvider`, which wraps `RootStackNavigator` but is **not** inside a tab or stack navigator:
 
 ```
 NavigationContainer          ← root NavigationContext
   PaperProvider
     ShellProvider
-      Portal.Host            ← menus, snackbars remount here
+      Portal.Host            ← menus remount here
         RootStackNavigator
           Bottom tabs
             Schedule / LFG / … stacks
@@ -56,7 +56,8 @@ return (
 - `AppMenu` does both halves automatically.
 - A raw Paper `<Menu>` must render `<MenuContextBridge>` as its **only** direct child (see `EventCardActionsMenu`, `ForumPostActionsMenu`, `DayPlannerCardActionsMenu`). A `no-restricted-syntax` rule in `.eslintrc.js` flags any other element, fragment or `{expression}` child of a raw `Menu`, so a missing bridge fails lint rather than crashing on tap.
 - Only the contexts listed in the bridge are carried. A new screen-scoped provider whose value a menu item reads must be added there, or the item reads the default.
-- Moving `Portal.Host` is not the fix: it has to sit above the navigators so menus and snackbars can paint over the header and tab bar.
+- Moving `Portal.Host` is not the fix: it has to sit above the navigators so menus can paint over the header and tab bar.
+- The app snackbar is **not** portaled. `AppView` renders `AppSnackbar` inline as its last child, so it pins to the bottom of the screen content (just above the tab bar) and keeps every context. Keep it that way; a portaled snackbar would lose them again.
 
 Closures created in the menu itself were always fine, and still are; the bridge is what makes hooks inside the items safe too.
 
@@ -90,7 +91,7 @@ popToOrPush(navigation, CommonStackComponents.lfgScreen, {fezID}, 'fezID');
 
 [`src/Libraries/NavigationRef.ts`](../src/Libraries/NavigationRef.ts) holds `navigationRef` on `NavigationContainer`. Use it from code that is **not** inside a nested stack: LinkingProvider, CallProvider, NotificationDataListener, and cross-tab `setParams`.
 
-Inside a menu, rely on `MenuContextBridge` (above) rather than NavigationRef. Outside a menu, do not call `useCommonStack()` / `useNavigation()` from a component that itself mounts in a portal (snackbar content, for example) unless something re-provides the context there.
+Inside a menu, rely on `MenuContextBridge` (above) rather than NavigationRef. Outside a menu, do not call `useCommonStack()` / `useNavigation()` from a component that itself mounts in a portal unless something re-provides the context there.
 
 Screens, headers, and `Alert.alert` callbacks in those parents should keep using the stack hooks.
 

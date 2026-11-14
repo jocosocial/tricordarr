@@ -3,7 +3,6 @@ import {HeaderHeightContext} from '@react-navigation/elements';
 import {useFocusEffect} from '@react-navigation/native';
 import React, {PropsWithChildren, useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Portal} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
@@ -77,19 +76,20 @@ export const AppView = ({
     }, [navHeaderHeight, headerHeight]),
   );
 
+  // The snackbar is rendered last and inline (not in a Paper Portal) so it paints over the
+  // screen content, keeps navigation and screen contexts, and pins to the bottom of this
+  // view, which is just above the tab bar. Absolute children ignore this view's padding,
+  // so on a tab screen the tab bar covers the bottom inset and Paper's own inset padding
+  // is dropped; without a tab bar Paper's padding is kept. It is still outside any
+  // per-screen KeyboardAvoidingView, so the keyboard does not shift it.
   return (
     <View style={styles.appView}>
-      {/* Paper's Portal teleports to the PortalHost mounted in NavigationProvider, which
-          sits above KeyboardProvider in App.tsx — this renders outside any keyboard
-          handling regardless of where it's placed here. */}
-      <Portal>
-        <AppSnackbar />
-      </Portal>
       {preRegistrationMode && !disablePreRegistrationWarning && <PreRegistrationWarningView />}
       {!disableMinAccessLevelWarning && <MinAccessLevelWarningView />}
       {disruptionDetected && <ConnectionDisruptedWarningView />}
       {children}
       <UnsavedChangesWarningView isVisible={hasUnsavedWork} />
+      <AppSnackbar ignoreBottomInset={!!tabBarHeight} />
     </View>
   );
 };
