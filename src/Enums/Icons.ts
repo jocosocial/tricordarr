@@ -122,6 +122,7 @@ export enum AppIcons {
   show = 'eye',
   hide = 'eye-off',
   passed = 'check-circle-outline',
+  checking = 'dots-horizontal-circle-outline',
   eventCreate = 'calendar-plus', // I wanted -outline but it's not available in my version
   personalEvent = 'calendar-account', // I wanted -outline but it's not available in my version
   dayPlanner = 'book-clock',

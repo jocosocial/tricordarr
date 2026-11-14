@@ -1,10 +1,6 @@
-import {type QueryFunctionContext, useInfiniteQuery} from '@tanstack/react-query';
-
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useOpenPaginationQuery, useOpenQuery} from '#src/Queries/OpenQuery';
-import {getNextPageParam, getPreviousPageParam, PaginationQueryParams} from '#src/Queries/Pagination';
+import {PaginationQueryParams} from '#src/Queries/Pagination';
 import {type TokenAuthPaginationQueryOptionsTypeV2} from '#src/Queries/TokenAuthQuery';
 import {KaraokePerformedSongsResult, KaraokeSongData, KaraokeSongResponseData} from '#src/Structs/ControllerStructs';
 
@@ -68,29 +64,24 @@ export const useKaraokeSongsQuery = (params: {
   options?: TokenAuthPaginationQueryOptionsTypeV2<KaraokeSongResponseWithPaginator>;
 }) => {
   const {search, favorite, options} = params;
-  const {isLoading} = useSession();
+  const {apiGet} = useSwiftarrQueryClient();
   const trimmedSearch = search?.trim() ?? '';
   const searchAllowed = trimmedSearch.length >= 3 || trimmedSearch.length === 1 || trimmedSearch === '#';
-  const enabled = options?.enabled !== false && (searchAllowed || favorite === true);
-
-  const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
-  const {appConfig} = useConfig();
 
   const queryParams: KaraokeSongsQueryParams = {
     ...(favorite && {favorite: true}),
     ...(trimmedSearch && {search: trimmedSearch}),
   };
 
-  return useInfiniteQuery({
-    ...options,
-    queryKey: ['/karaoke', queryParams, ...queryKeyExtraData],
-    queryFn: (ctx: QueryFunctionContext) =>
-      fetchKaraokeSongsPage(apiGet, queryParams, ctx.pageParam as PaginationQueryParams),
-    initialPageParam: {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize} as PaginationQueryParams,
-    getNextPageParam: (lastPage: KaraokeSongResponseWithPaginator) => getNextPageParam(lastPage),
-    getPreviousPageParam: (firstPage: KaraokeSongResponseWithPaginator) => getPreviousPageParam(firstPage),
-    enabled: !isLoading && !disruptionDetected && enabled,
-  });
+  return useOpenPaginationQuery<KaraokeSongResponseWithPaginator, KaraokeSongsQueryParams>(
+    '/karaoke',
+    {
+      ...options,
+      enabled: options?.enabled !== false && (searchAllowed || favorite === true),
+      queryFn: ctx => fetchKaraokeSongsPage(apiGet, queryParams, ctx.pageParam),
+    },
+    queryParams,
+  );
 };
 
 /**

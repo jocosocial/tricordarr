@@ -1,9 +1,7 @@
 import {PropsWithChildren} from 'react';
 
 import {MaintenanceModeView} from '#src/Components/Views/Static/MaintenanceModeView';
-import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
-import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
+import {useMaintenanceBlocked} from '#src/Hooks/useMaintenanceBlocked';
 
 /**
  * Checkpoint to ensure the server isn't in maintenance mode for the current user. If logged
@@ -11,13 +9,7 @@ import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
  * blocks whenever the server is restricting access at all.
  */
 export const MaintenanceModeScreen = ({children}: PropsWithChildren) => {
-  const {isAccessRestricted, minAccessLevel} = useClientSettings();
-  const {isLoggedIn, currentSession} = useSession();
-  const userAccessLevel = currentSession?.tokenData?.accessLevel;
-
-  const blocked =
-    isAccessRestricted &&
-    (isLoggedIn ? !UserAccessLevel.hasAccess(userAccessLevel ?? UserAccessLevel.unverified, minAccessLevel) : true);
+  const blocked = useMaintenanceBlocked();
 
   if (blocked) {
     return <MaintenanceModeView />;

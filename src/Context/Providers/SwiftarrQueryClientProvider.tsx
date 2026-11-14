@@ -245,7 +245,11 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         if (!isHttpClientError(error)) {
           setErrorCount(prev => prev + 1);
         }
-        if (!disruptionDetected && !serverSwitchInProgress) {
+        // A request that was already in flight when client settings revealed maintenance mode lands
+        // here late. MaintenanceModeView already explains it, so don't also show an error.
+        const isMaintenanceResponse =
+          isAxiosError(error) && error.response?.status === 401 && /maintenance mode/i.test(errorString);
+        if (!disruptionDetected && !serverSwitchInProgress && !isMaintenanceResponse) {
           setSnackbarPayload({message: errorString, messageType: 'error'});
         }
       },
