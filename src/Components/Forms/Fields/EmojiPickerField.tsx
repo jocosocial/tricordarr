@@ -4,8 +4,8 @@ import {StyleSheet, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 
 import {Emoji} from '#src/Components/Icons/Emoji';
+import {useCustomEmoji} from '#src/Context/Contexts/CustomEmojiContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useCustomEmoji} from '#src/Hooks/useCustomEmoji';
 import {PostContentData} from '#src/Structs/ControllerStructs';
 
 export const EmojiPickerField = () => {

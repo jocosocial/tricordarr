@@ -8,8 +8,8 @@ import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {MarkdownText} from '#src/Components/Text/MarkdownText';
 import {stripObjectReplacementCharacters} from '#src/Components/Text/MarkdownUtils';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useCustomEmoji} from '#src/Context/Contexts/CustomEmojiContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useCustomEmoji} from '#src/Hooks/useCustomEmoji';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 
 interface ContentTextProps {

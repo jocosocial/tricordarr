@@ -1,6 +1,6 @@
-import {useMemo} from 'react';
-import {ImageSourcePropType} from 'react-native';
+import React, {PropsWithChildren, useMemo} from 'react';
 
+import {CustomEmojiCatalog, CustomEmojiContext} from '#src/Context/Contexts/CustomEmojiContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useOpenQuery} from '#src/Queries/OpenQuery';
 
@@ -10,18 +10,12 @@ interface CustomEmojiData {
   imageURL: string;
 }
 
-interface CustomEmojiEntry {
-  source: ImageSourcePropType;
-  secret: boolean;
-  name: string;
-}
-
 /**
  * Emoji shipped inside the app. The ship's wifi is unreliable, so these must render with no network:
  * on a cold query cache the server catalog hasn't arrived yet, and even a cached catalog only holds
  * image URLs that still have to be downloaded.
  */
-const bundledEmoji: Record<string, CustomEmojiEntry> = {
+const bundledEmoji: CustomEmojiCatalog = {
   ':arr:': {source: require('#assets/emoji/small/arr.png'), secret: false, name: 'arr'},
   ':back-deck-juice:': {
     source: require('#assets/emoji/small/back-deck-juice.png'),
@@ -47,17 +41,21 @@ const bundledEmoji: Record<string, CustomEmojiEntry> = {
 };
 
 /**
- * Shares the custom emoji catalog across pickers and post rendering.
+ * Provides the custom emoji catalog to pickers and post rendering.
  *
  * Starts from the bundled set and lets the server catalog extend it, so emoji the server adds after
  * this build shipped still appear. Where both know an emoji, the bundled image wins because it needs
  * no download.
+ *
+ * This is a provider rather than a hook that queries: every emoji, reaction chip and post body reads
+ * the catalog, and a long thread would otherwise hold a query observer for each of them. It sits
+ * above ShellProvider so dialogs and menus rendered in the Paper portal can read it too.
  */
-export const useCustomEmoji = () => {
+export const CustomEmojiProvider = ({children}: PropsWithChildren) => {
   const {serverUrl} = useSwiftarrQueryClient();
   const {data} = useOpenQuery<CustomEmojiData[]>('/client/emoji', {staleTime: 24 * 60 * 60 * 1000});
-  return useMemo(() => {
-    const emojis: Record<string, CustomEmojiEntry> = {...bundledEmoji};
+  const catalog = useMemo(() => {
+    const emojis: CustomEmojiCatalog = {...bundledEmoji};
     for (const emoji of data ?? []) {
       emojis[emoji.reaction] = {
         source: bundledEmoji[emoji.reaction]?.source ?? {uri: new URL(emoji.imageURL, serverUrl).toString()},
@@ -67,4 +65,6 @@ export const useCustomEmoji = () => {
     }
     return emojis;
   }, [data, serverUrl]);
+
+  return <CustomEmojiContext.Provider value={catalog}>{children}</CustomEmojiContext.Provider>;
 };

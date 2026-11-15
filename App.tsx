@@ -22,6 +22,7 @@ import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/No
 import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
 import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
+import {CustomEmojiProvider} from '#src/Context/Providers/CustomEmojiProvider';
 import {EnableUserNotificationProvider} from '#src/Context/Providers/EnableUserNotificationProvider';
 import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
@@ -116,18 +117,20 @@ function App(): React.JSX.Element {
                                       <EnableUserNotificationProvider>
                                         <FilterProvider>
                                           <SignOutProvider>
-                                            <HelperProvider>
-                                              <ShellProvider>
-                                                <AppEventHandler />
-                                                <AppFocusHandler />
-                                                <ForeignLinkHandler />
-                                                <PushNotificationService />
-                                                <NotificationDataListener />
-                                                <NotificationDataPoller />
-                                                <RootStackNavigator />
-                                                <CallOverlay />
-                                              </ShellProvider>
-                                            </HelperProvider>
+                                            <CustomEmojiProvider>
+                                              <HelperProvider>
+                                                <ShellProvider>
+                                                  <AppEventHandler />
+                                                  <AppFocusHandler />
+                                                  <ForeignLinkHandler />
+                                                  <PushNotificationService />
+                                                  <NotificationDataListener />
+                                                  <NotificationDataPoller />
+                                                  <RootStackNavigator />
+                                                  <CallOverlay />
+                                                </ShellProvider>
+                                              </HelperProvider>
+                                            </CustomEmojiProvider>
                                           </SignOutProvider>
                                         </FilterProvider>
                                       </EnableUserNotificationProvider>

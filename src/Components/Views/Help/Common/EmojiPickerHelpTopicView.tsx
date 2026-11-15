@@ -4,8 +4,8 @@ import {StyleSheet, Text, View} from 'react-native';
 import {Emoji} from '#src/Components/Icons/Emoji';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
+import {useCustomEmoji} from '#src/Context/Contexts/CustomEmojiContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useCustomEmoji} from '#src/Hooks/useCustomEmoji';
 
 export const EmojiPickerHelpTopicView = () => {
   const {commonStyles} = useStyles();

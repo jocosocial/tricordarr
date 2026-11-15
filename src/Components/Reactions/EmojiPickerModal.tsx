@@ -4,8 +4,8 @@ import {Button, Dialog, Portal, Text} from 'react-native-paper';
 import EmojiPicker from 'rn-emoji-keyboard';
 
 import {ReactionIcon} from '#src/Components/Reactions/ReactionIcon';
+import {useCustomEmoji} from '#src/Context/Contexts/CustomEmojiContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useCustomEmoji} from '#src/Hooks/useCustomEmoji';
 
 interface EmojiPickerModalProps {
   open: boolean;

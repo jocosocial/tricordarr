@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {Emoji} from '#src/Components/Icons/Emoji';
-import {useCustomEmoji} from '#src/Hooks/useCustomEmoji';
+import {useCustomEmoji} from '#src/Context/Contexts/CustomEmojiContext';
 
 interface ReactionIconProps {
   reaction: string;
