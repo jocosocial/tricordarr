@@ -27,7 +27,8 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccoun
 /**
  * Last step before the setup flow commits: log in, create an account, or proceed without one on
  * the chosen server. Log in and create (by way of the code of conduct) run their own screens and
- * commit there; proceeding commits here. When setup is re-run on a server the user is already signed in to, there is nothing to
+ * commit there; proceeding commits here. Boarding passes the pre-registration username on to the
+ * login form. When setup is re-run on a server the user is already signed in to, there is nothing to
  * choose and it confirms the account instead.
  */
 export const OobeAccountScreen = ({navigation, route}: Props) => {
@@ -42,6 +43,10 @@ export const OobeAccountScreen = ({navigation, route}: Props) => {
 
   const onThisServer = currentSession?.serverUrl === serverUrl;
   const confirmAccount = mode === 'firstRun' && onThisServer && isLoggedIn && !!currentAccount;
+
+  // Boarding leaves the pre-registration account behind, and people forget which username they
+  // registered with, so offer it on the production login form. It is empty until the first whoami.
+  const boardingUsername = mode === 'boarding' ? currentAccount?.username || undefined : undefined;
 
   const onProceed = async () => {
     // Already browsing this server without an account: there is no session to change.
@@ -100,7 +105,9 @@ export const OobeAccountScreen = ({navigation, route}: Props) => {
       ) : (
         <AccountChoiceView
           onCreate={() => navigation.push(OobeStackComponents.oobeRegisterConductScreen, {mode, serverUrl})}
-          onLogin={() => navigation.push(OobeStackComponents.oobeLoginScreen, {mode, serverUrl})}
+          onLogin={() =>
+            navigation.push(OobeStackComponents.oobeLoginScreen, {mode, serverUrl, username: boardingUsername})
+          }
           onProceed={onProceed}
           preRegistrationMode={serverUrl === normalizeServerUrl(appConfig.preRegistrationServerUrl)}
           disabled={busy}
