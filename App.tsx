@@ -13,15 +13,7 @@ import {KeyboardProvider} from 'react-native-keyboard-controller';
 import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
 import {initialWindowMetrics, SafeAreaProvider} from 'react-native-safe-area-context';
 
-import {CallOverlay} from '#src/Components/Call/CallOverlay';
-import {AccountCookieSync} from '#src/Components/Libraries/AccountCookieSync';
-import {AccountIdentitySync} from '#src/Components/Libraries/AccountIdentitySync';
-import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
-import {AppFocusHandler} from '#src/Components/Libraries/AppFocusHandler';
-import {ForeignLinkHandler} from '#src/Components/Libraries/ForeignLinkHandler';
-import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
-import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
-import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
+import {TricordarrApp} from '#src/Components/Libraries/TricordarrApp';
 import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
 import {EffectiveConfigProvider} from '#src/Context/Providers/EffectiveConfigProvider';
@@ -46,7 +38,6 @@ import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
 import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
-import {RootStackNavigator} from '#src/Navigation/Stacks/Root/RootStackNavigator';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -127,16 +118,7 @@ function App(): React.JSX.Element {
                                               <SignOutProvider>
                                                 <HelperProvider>
                                                   <ShellProvider>
-                                                    <AccountCookieSync />
-                                                    <AccountIdentitySync />
-                                                    <AppEventHandler />
-                                                    <AppFocusHandler />
-                                                    <ForeignLinkHandler />
-                                                    <PushNotificationService />
-                                                    <NotificationDataListener />
-                                                    <NotificationDataPoller />
-                                                    <RootStackNavigator />
-                                                    <CallOverlay />
+                                                    <TricordarrApp />
                                                   </ShellProvider>
                                                 </HelperProvider>
                                               </SignOutProvider>
