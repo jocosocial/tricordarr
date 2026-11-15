@@ -15,7 +15,7 @@ import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
 import {RecoveryKeyScreen} from '#src/Screens/Settings/Account/RecoveryKeyScreen';
 import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
 import {SessionDetailsScreen} from '#src/Screens/Settings/Account/SessionDetailsScreen';
-import {SessionSettingsScreen} from '#src/Screens/Settings/Account/SessionSettingsScreen';
+import {AccountsSettingsScreen} from '#src/Screens/Settings/Account/AccountsSettingsScreen';
 import {TimeSettingsScreen} from '#src/Screens/Settings/Config/TimeSettingsScreen';
 import {AccountInfoSettingsScreen} from '#src/Screens/Settings/Developer/AccountInfoSettingsScreen';
 import {CheckpointPreviewSettingScreen} from '#src/Screens/Settings/Developer/CheckpointPreviewSettingScreen';
@@ -169,8 +169,8 @@ export const SettingsStackNavigator = () => {
         options={{title: 'Time Settings'}}
       />
       <Stack.Screen
-        name={SettingsStackScreenComponents.sessionSettings}
-        component={SessionSettingsScreen}
+        name={SettingsStackScreenComponents.accountsSettings}
+        component={AccountsSettingsScreen}
         options={{title: 'Accounts'}}
       />
       <Stack.Screen

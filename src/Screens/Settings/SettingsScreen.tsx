@@ -37,7 +37,7 @@ export const SettingsScreen = ({navigation}: Props) => {
             <NavigationListItem
               title={'Accounts'}
               description={'Switch between, add and remove the accounts on this device.'}
-              navComponent={SettingsStackScreenComponents.sessionSettings}
+              navComponent={SettingsStackScreenComponents.accountsSettings}
             />
             <NavigationListItem
               title={'Server URL'}

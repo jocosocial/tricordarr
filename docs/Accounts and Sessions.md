@@ -77,7 +77,7 @@ One-time, on first launch with no `SESSIONS_V2`: `loadSessionData` / `migrateLeg
 
 ## UI
 
-Settings > Accounts (`SessionSettingsScreen`): accounts with avatar, `username`, server, status badge ("Signed out", "Signed out remotely"), a check on the current one, a menu for Sign Out / Remove; Add Account (the setup flow in `addAccount` mode). Long-pressing the avatar in the Today header (or Switch Account in its menu) opens the quick-switch sheet. `SessionDetailsScreen` is a developer screen.
+Settings > Accounts (`AccountsSettingsScreen`): accounts with avatar, `username`, server, status badge ("Signed out", "Signed out remotely"), a check on the current one, a menu for Sign Out / Remove; Add Account (the setup flow in `addAccount` mode). Long-pressing the avatar in the Today header (or Switch Account in its menu) opens the quick-switch sheet. `SessionDetailsScreen` is a developer screen.
 
 ## Tests
 

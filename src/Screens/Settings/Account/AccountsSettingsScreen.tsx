@@ -20,7 +20,7 @@ import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackCom
  * Accounts: every account and anonymous session on this device (tap to switch, menu to sign out or
  * remove) and adding another. Adding picks a server first, so there is no separate list of servers.
  */
-export const SessionSettingsScreen = () => {
+export const AccountsSettingsScreen = () => {
   const settingsNavigation = useSettingsStack();
   const {accounts, sessions} = useSession();
 

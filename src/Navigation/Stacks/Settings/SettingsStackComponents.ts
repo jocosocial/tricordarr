@@ -32,7 +32,7 @@ export type SettingsStackParamList = CommonStackParamList & {
     queryHash: string;
   };
   TimeSettingsScreen: undefined;
-  SessionSettingsScreen: undefined;
+  AccountsSettingsScreen: undefined;
   SessionDetailsScreen: {
     sessionID: string;
   };
@@ -67,7 +67,7 @@ export enum SettingsStackScreenComponents {
   queryKeysSettingsScreen = 'QueryKeysSettingsScreen',
   queryDataSettingsScreen = 'QueryDataSettingsScreen',
   timeSettingsScreen = 'TimeSettingsScreen',
-  sessionSettings = 'SessionSettingsScreen',
+  accountsSettings = 'AccountsSettingsScreen',
   sessionDetails = 'SessionDetailsScreen',
   loggingSettings = 'LoggingSettingsScreen',
   checkpointSettingScreen = 'CheckpointSettingScreen',

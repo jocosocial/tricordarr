@@ -8,7 +8,8 @@ import {getAccountListEntries} from '#src/Libraries/Account';
 
 /**
  * Every account and anonymous session, oldest first. Tapping a row switches to it; rows are
- * disabled while a switch is in flight so a second tap cannot start another.
+ * disabled while a switch is in flight so a second tap cannot start another. Switching keeps the
+ * current navigation state so the user stays on the screen hosting the list.
  */
 export const AccountList = () => {
   const {accounts, sessions, switchToSession} = useSession();
@@ -22,14 +23,14 @@ export const AccountList = () => {
             key={entry.key}
             account={entry.account}
             disabled={isSwitching}
-            onPress={() => switchAccount(entry.account)}
+            onPress={() => switchAccount(entry.account, {preserveNavigation: true})}
           />
         ) : (
           <AnonymousSessionListItem
             key={entry.key}
             session={entry.session}
             disabled={isSwitching}
-            onPress={() => switchToSession(entry.session.sessionID)}
+            onPress={() => switchToSession(entry.session.sessionID, {preserveNavigation: true})}
           />
         ),
       )}

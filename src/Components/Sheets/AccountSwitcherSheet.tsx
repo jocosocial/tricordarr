@@ -46,7 +46,7 @@ export const AccountSwitcherSheet = ({isPresented, onDismiss}: AccountSwitcherSh
 
   const onManage = () => {
     mainNavigation.push(MainStackComponents.mainSettingsScreen, {
-      screen: SettingsStackScreenComponents.sessionSettings,
+      screen: SettingsStackScreenComponents.accountsSettings,
     });
   };
 
