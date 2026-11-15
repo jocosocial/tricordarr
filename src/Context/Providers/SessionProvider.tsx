@@ -57,13 +57,13 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
   const pendingRef = useRef<string | null>(null);
   const [freshServerSessionID, setFreshServerSessionID] = useState<string | null>(null);
 
-  // Load (and if needed migrate) from storage on mount.
+  // Load from storage on mount.
   useEffect(() => {
     let cancelled = false;
     loadSessionData()
-      .then(({data, persist}) => {
+      .then(data => {
         if (!cancelled) {
-          store.dispatch({type: 'loaded', persist, ...data});
+          store.dispatch({type: 'loaded', ...data});
         }
       })
       .catch(error => {

@@ -5,13 +5,10 @@
  * https://github.com/jocosocial/tricordarr/issues/145
  */
 export const StorageKeys = {
-  // Device-wide config. The pre-split blob (APP_CONFIG_V2) is only read by the migration.
+  // Device-wide config.
   APP_CONFIG: 'APP_CONFIG_V3',
-  LEGACY_APP_CONFIG: 'APP_CONFIG_V2',
   WS_HEALTHCHECK_DATA: 'WS_HEALTHCHECK_DATA_V3',
   FGS_START: 'FGS_START_V2',
-  // Pre-account-model sessions (with tokens inline). Only read by the migration.
-  LEGACY_SESSIONS_DATA: 'SESSIONS_DATA_V1',
   ACCOUNTS: 'ACCOUNTS_V1',
   SESSIONS: 'SESSIONS_V2',
   SERVER_PROFILES: 'SERVER_PROFILES_V1',

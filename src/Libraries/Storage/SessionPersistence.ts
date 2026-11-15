@@ -29,7 +29,7 @@ const EMPTY_STATE: SessionState = {
  * and clearing the cache of an account that just signed out or was revoked so a signed-out user's
  * data does not stay on disk.
  *
- * `prev` null writes everything (used after the one-time migration).
+ * `prev` null writes everything, as when seeding storage from a whole state.
  */
 export const persistSessionState = async (prev: SessionState | null, next: SessionState): Promise<void> => {
   const before = prev ?? EMPTY_STATE;

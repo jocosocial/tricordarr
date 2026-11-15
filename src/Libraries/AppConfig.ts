@@ -426,66 +426,6 @@ export const reviveAccountPreferences = (raw: Partial<AccountPreferences>): Acco
 };
 
 /**
- * Parse a legacy single-blob AppConfig (APP_CONFIG_V2) into an effective config, filling in
- * fields it predates. Only the migration reads the legacy blob.
- */
-export const parseLegacyAppConfig = (rawConfig: string): AppConfig => {
-  let appConfig = JSON.parse(rawConfig) as AppConfig;
-  // Reconstruct cruiseStartDate as midnight in the port timezone.
-  // Prefer cruiseStartDateStr (timezone-safe) with fallback for old stored configs.
-  if (!appConfig.cruiseStartDateStr) {
-    // Backward compat: extract UTC date from legacy stored ISO string
-    const raw = new Date(appConfig.cruiseStartDate as unknown as string);
-    const y = raw.getUTCFullYear();
-    const m = String(raw.getUTCMonth() + 1).padStart(2, '0');
-    const d = String(raw.getUTCDate()).padStart(2, '0');
-    appConfig.cruiseStartDateStr = `${y}-${m}-${d}`;
-  }
-  appConfig.cruiseStartDate = buildCruiseStartDateFromStr(appConfig.cruiseStartDateStr, appConfig.portTimeZoneID);
-  if (appConfig.muteNotifications) {
-    appConfig.muteNotifications = new Date(appConfig.muteNotifications);
-  }
-
-  // "Migration"
-  if (appConfig.manualTimeOffset === undefined) {
-    appConfig.manualTimeOffset = 0;
-  }
-  if (appConfig.logLevel === undefined) {
-    appConfig.logLevel = LogLevel.DEBUG;
-  }
-  if (appConfig.silenceTimezoneWarnings === undefined) {
-    appConfig.silenceTimezoneWarnings = false;
-  }
-  if (appConfig.imagePreloadDelaySeconds === undefined) {
-    appConfig.imagePreloadDelaySeconds = 2;
-  }
-  if (appConfig.dismissWelcomeAboard === undefined) {
-    appConfig.dismissWelcomeAboard = false;
-  }
-  if (appConfig.dismissMinAccessWarning === undefined) {
-    appConfig.dismissMinAccessWarning = false;
-  }
-  if (appConfig.shipCode === undefined) {
-    appConfig.shipCode = ShipCode.halEd;
-  }
-  if (appConfig.apiClientConfig.mutationTimeout === undefined) {
-    appConfig.apiClientConfig.mutationTimeout = defaultAppConfig.apiClientConfig.mutationTimeout;
-  }
-  if (appConfig.apiClientConfig.serverSwitchGracePeriod === undefined) {
-    appConfig.apiClientConfig.serverSwitchGracePeriod = defaultAppConfig.apiClientConfig.serverSwitchGracePeriod;
-  }
-  // Used to be stored under apiClientConfig. It is server data and now lives in the ServerProfile;
-  // the old value is dropped rather than moved, since /client/settings supplies it again.
-  delete (appConfig.apiClientConfig as {canonicalHostnames?: string[]}).canonicalHostnames;
-  appConfig.canonicalHostnames = defaultAppConfig.canonicalHostnames;
-  appConfig.backgroundNotifications = appConfig.backgroundNotifications ?? false;
-  appConfig.schedule = {...defaultAppConfig.schedule, ...appConfig.schedule};
-  appConfig.userPreferences = {...defaultAppConfig.userPreferences, ...appConfig.userPreferences};
-  appConfig.pushNotifications = {...defaultAppConfig.pushNotifications, ...appConfig.pushNotifications};
-  return appConfig;
-};
-
-/**
  * Default device config, derived from the default effective config.
  */
 export const defaultDeviceConfig: DeviceConfig = splitAppConfig(defaultAppConfig).device;
@@ -502,20 +442,12 @@ const reviveDeviceConfig = (raw: Partial<DeviceConfig>): DeviceConfig => ({
 });
 
 /**
- * Returns the device config: APP_CONFIG_V3 if present, else the device part of a legacy
- * APP_CONFIG_V2 blob (the one-time migration), else the defaults. The migration does not write
- * V3 itself; the first save does. Old keys are left in place.
+ * Returns the device config: APP_CONFIG_V3 if present, else the defaults.
  */
 export const getDeviceConfig = async (): Promise<DeviceConfig> => {
   const raw = await AsyncStorage.getItem(StorageKeys.APP_CONFIG);
   if (raw) {
     return reviveDeviceConfig(JSON.parse(raw) as Partial<DeviceConfig>);
-  }
-  const legacy = await AsyncStorage.getItem(StorageKeys.LEGACY_APP_CONFIG);
-  if (legacy) {
-    const {device, preferences} = splitAppConfig(parseLegacyAppConfig(legacy));
-    // Revived like a stored V3 config, so device fields the legacy blob predates get defaults.
-    return reviveDeviceConfig({...device, defaultPreferences: preferences});
   }
   return defaultDeviceConfig;
 };

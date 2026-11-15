@@ -48,7 +48,6 @@ import {SessionStore} from '#src/Context/State/SessionStore';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {getAccountListEntries} from '#src/Libraries/Account';
 import {defaultAccountPreferences} from '#src/Libraries/AppConfig';
-import {migrateLegacySessions} from '#src/Libraries/Storage/SessionMigration';
 import {persistSessionState} from '#src/Libraries/Storage/SessionPersistence';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
 import {Account} from '#src/Structs/SessionStructs';
@@ -502,7 +501,6 @@ describe('boarding', () => {
     const seeded = preRegistered();
     store.dispatch({
       type: 'loaded',
-      persist: true,
       accounts: seeded.accounts,
       sessions: seeded.sessions,
       serverProfiles: seeded.serverProfiles,
@@ -510,7 +508,8 @@ describe('boarding', () => {
       preferences: seeded.preferences,
       lastSessionID: seeded.currentSessionID,
     });
-    await store.flush();
+    // A load writes nothing, so put the seeded state on disk the way a previous run would have.
+    await persistSessionState(null, store.getState());
     expect(mockSecureStore.has('ACCOUNT_TOKEN_V1_pre')).toBe(true);
     store.dispatch({
       type: 'account-signed-in',
@@ -527,144 +526,6 @@ describe('boarding', () => {
     expect(mockSecureStore.has('ACCOUNT_TOKEN_V1_ship')).toBe(true);
     expect(mockRemovedCacheKeys.sort()).toEqual(['query-cache-pre-anon', 'query-cache-pre-s']);
     expect(mockSecureStore.get('LAST_SESSION_ID_V1')).toBe('ship-s');
-  });
-});
-
-describe('migrateLegacySessions', () => {
-  let counter = 0;
-  const newID = () => `new-${++counter}`;
-  const legacyConfig = JSON.stringify({
-    serverUrl: SERVER,
-    cruiseStartDateStr: '2026-03-01',
-    cruiseLength: 9,
-    portTimeZoneID: 'America/New_York',
-    schedBaseUrl: 'https://sched.example.com',
-    wifiNetworkNames: ['ShipWifi'],
-    shipCode: 'hal-ed',
-    pushNotifications: {announcement: false},
-    markReadCancelPush: false,
-    schedule: {hidePastLfgs: true, enableLateDayFlip: false},
-    userPreferences: {showScrollButton: false},
-    apiClientConfig: {mutationTimeout: 1, serverSwitchGracePeriod: 1},
-    dismissWelcomeAboard: true,
-  });
-
-  const legacySessions = [
-    {
-      sessionID: 'old-1',
-      serverUrl: 'https://twitarr.com/',
-      preRegistrationMode: false,
-      tokenData: token('u1'),
-      createdAt: t(0),
-      lastUsedAt: t(5),
-      oobeCompletedVersion: 3,
-    },
-    {
-      sessionID: 'old-2',
-      serverUrl: OTHER_SERVER,
-      preRegistrationMode: false,
-      tokenData: null,
-      createdAt: t(0),
-      lastUsedAt: t(1),
-    },
-    {
-      sessionID: 'old-3',
-      serverUrl: 'https://TWITARR.com',
-      preRegistrationMode: false,
-      tokenData: token('u1'),
-      createdAt: t(0),
-      lastUsedAt: t(2),
-    },
-  ];
-
-  beforeEach(() => {
-    counter = 0;
-  });
-
-  it('turns tokened sessions into accounts, deduped on server and user, and keeps session ids', () => {
-    const result = migrateLegacySessions({
-      legacySessions,
-      lastSessionID: 'old-1',
-      legacyConfig,
-      newID,
-      now: t(9),
-    });
-    expect(result.accounts).toHaveLength(1);
-    expect(result.accounts[0]).toMatchObject({serverUrl: SERVER, userID: 'u1', username: '', status: 'signedIn'});
-    const accountID = result.accounts[0].accountID;
-    expect(result.tokens[accountID]).toEqual(token('u1'));
-    expect(result.sessions.map(s => s.sessionID).sort()).toEqual(['old-1', 'old-2']);
-    expect(result.sessions.find(s => s.sessionID === 'old-1')?.accountID).toBe(accountID);
-    expect(result.sessions.find(s => s.sessionID === 'old-2')?.accountID).toBeNull();
-    expect(result.lastSessionID).toBe('old-1');
-  });
-
-  it('copies user fields to account preferences and server fields to a profile per server', () => {
-    const result = migrateLegacySessions({legacySessions, lastSessionID: 'old-1', legacyConfig, newID, now: t(9)});
-    const prefs = result.preferences[result.accounts[0].accountID];
-    expect(prefs.markReadCancelPush).toBe(false);
-    expect(prefs.pushNotifications.announcement).toBe(false);
-    expect(prefs.schedule.hidePastLfgs).toBe(true);
-    expect(prefs.schedule).not.toHaveProperty('enableLateDayFlip');
-    expect(prefs.userPreferences.showScrollButton).toBe(false);
-    expect(prefs.dismissWelcomeAboard).toBe(true);
-    expect(prefs.backgroundNotifications).toBe(false);
-    expect(result.serverProfiles.map(p => p.serverUrl).sort()).toEqual([OTHER_SERVER, SERVER]);
-    expect(result.serverProfiles[0]).toMatchObject({cruiseLength: 9, wifiNetworkNames: ['ShipWifi']});
-  });
-
-  it('moves pre-registration mode from the legacy sessions to their server profiles', () => {
-    const start = 'https://start.twitarr.com';
-    const session = (sessionID: string, serverUrl: string, preRegistrationMode: boolean, used: number) => ({
-      sessionID,
-      serverUrl,
-      preRegistrationMode,
-      tokenData: null,
-      createdAt: t(0),
-      lastUsedAt: t(used),
-    });
-    const migrate = (sessions: ReturnType<typeof session>[]) =>
-      migrateLegacySessions({
-        legacySessions: sessions,
-        lastSessionID: sessions[0].sessionID,
-        legacyConfig,
-        newID,
-        now: t(9),
-      });
-
-    // The old model could hold two sessions for one server that differed only in the flag.
-    const result = migrate([
-      session('pre', start, true, 5),
-      session('pre-off', start, false, 1),
-      session('ship', SERVER, false, 2),
-    ]);
-    expect(result.sessions.map(s => s.sessionID)).toEqual(['pre', 'ship']);
-    expect(result.serverProfiles.find(p => p.serverUrl === start)).toMatchObject({preRegistrationMode: true});
-    expect(result.serverProfiles.find(p => p.serverUrl === start)?.preRegistrationOverride).toBeUndefined();
-    expect(result.serverProfiles.find(p => p.serverUrl === SERVER)).toMatchObject({preRegistrationMode: false});
-
-    // Turned off by hand on the pre-registration server: kept as an override so the server's
-    // own setting does not turn it back on.
-    const disabled = migrate([session('pre', start, false, 5)]);
-    expect(disabled.serverProfiles[0]).toMatchObject({preRegistrationMode: false, preRegistrationOverride: false});
-  });
-
-  it('takes the device OOBE version from the current session', () => {
-    const result = migrateLegacySessions({legacySessions, lastSessionID: 'old-1', legacyConfig, newID, now: t(9)});
-    expect(result.oobeCompletedVersion).toBe(3);
-  });
-
-  it('migrates without a legacy config', () => {
-    const result = migrateLegacySessions({
-      legacySessions,
-      lastSessionID: 'old-2',
-      legacyConfig: null,
-      newID,
-      now: t(9),
-    });
-    expect(result.accounts).toHaveLength(1);
-    expect(result.lastSessionID).toBe('old-2');
-    expect(result.oobeCompletedVersion).toBe(3);
   });
 });
 

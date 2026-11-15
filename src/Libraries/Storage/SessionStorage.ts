@@ -36,7 +36,7 @@ export namespace SessionStorage {
   export const getServerProfiles = (): Promise<ServerProfile[]> => readList<ServerProfile>(StorageKeys.SERVER_PROFILES);
 
   /**
-   * Whether the account-model storage exists yet. False on a fresh install or before the migration.
+   * Whether the account-model storage exists yet. False until the first session is written.
    */
   export const hasSessionsV2 = async (): Promise<boolean> =>
     (await AsyncStorage.getItem(StorageKeys.SESSIONS)) !== null;
@@ -84,7 +84,7 @@ export namespace SessionStorage {
   };
 
   /**
-   * Load the whole account model. Null when none has been written yet (migration time).
+   * Load the whole account model. Null when none has been written yet.
    */
   export const loadAll = async (): Promise<LoadedSessionData | null> => {
     if (!(await hasSessionsV2())) {
@@ -176,22 +176,4 @@ export namespace SessionStorage {
   export const setOobeCompletedVersion = async (version: number): Promise<void> => {
     await AsyncStorage.setItem(StorageKeys.OOBE_COMPLETED_VERSION, String(version));
   };
-
-  /**
-   * Pre-account-model sessions, for the migration only.
-   */
-  export const getLegacySessions = async (): Promise<unknown[]> => {
-    try {
-      const data = await SecureStore.getItemAsync(StorageKeys.LEGACY_SESSIONS_DATA);
-      return data ? (JSON.parse(data) as unknown[]) : [];
-    } catch (error) {
-      logger.error('Error loading legacy sessions:', error);
-      return [];
-    }
-  };
-
-  /**
-   * Pre-split AppConfig blob (APP_CONFIG_V2), for the migration only.
-   */
-  export const getLegacyConfig = (): Promise<string | null> => AsyncStorage.getItem(StorageKeys.LEGACY_APP_CONFIG);
 }

@@ -19,7 +19,7 @@ Small scalar config: AsyncStorage via `StorageKeys` in `src/Libraries/Storage/in
 
 Tokens are in the Keychain/Keystore rather than AsyncStorage, one small value per account, which also sidesteps the ~2 KB value caution on older iOS that a single blob of every session was creeping toward.
 
-The pre-account-model keys (`SESSIONS_DATA_V1`, `APP_CONFIG_V2`) are left in place after the one-time migration (the `StorageKeys` versioning convention) and can be deleted a release later.
+The pre-account-model keys (`SESSIONS_DATA_V1`, `APP_CONFIG_V2`) are never read; a device that only has them starts fresh. They are left in place (the `StorageKeys` versioning convention) rather than deleted.
 
 React Query cache: a file in the documents directory via `QueryCacheStorage.ts`. One file per session, named `query-cache-${sessionID}.json`.
 

@@ -77,9 +77,9 @@ Forgot Password / Forgot Username take the login form's `serverUrl` the same way
 
 `useConfig().appConfig` is the merged view (`EffectiveConfigProvider`), so its ~100 consumers did not change; `updateAppConfig(fullConfig)` splits the write back to the right home. Headless code (workers, push managers, mark-as-read) calls `getEffectiveConfig(sessionID?)`, which resolves the same merge through `LAST_SESSION_ID`. The merged view is what `setAppConfig` mirrors to native.
 
-## Migration
+## No migration
 
-One-time, on first launch with no `SESSIONS_V2`: `loadSessionData` / `migrateLegacySessions`. Each legacy session with a token becomes an Account (deduped on server+user; `username` empty until the first whoami, shown as the userID meanwhile) plus a Session; tokenless ones become anonymous Sessions. Legacy session IDs are kept, so existing cache files and `LAST_SESSION_ID` still work. The legacy config's user fields become each account's preferences, its server fields a ServerProfile per distinct server, the rest `APP_CONFIG_V3`. A legacy session's `preRegistrationMode` moves to its server's profile (the current session speaks for a server that had two); turned off on the pre-registration server, it is kept as an override. The legacy `apiClientConfig.canonicalHostnames` is dropped; `/client/settings` supplies it again. The current session's OOBE version becomes the device's. Old keys are left in place.
+Storage from before the account model (`SESSIONS_DATA_V1`, `APP_CONFIG_V2`) is not read. A device that has only those keys loads an empty account model and default device config, so it runs setup like a fresh install. `loadSessionData` reads `SESSIONS_V2` and friends, or returns an empty model.
 
 ## UI
 
@@ -87,7 +87,7 @@ Settings > Accounts (`AccountsSettingsScreen`): accounts with avatar, `username`
 
 ## Tests
 
-`__tests__/unit/TestSessionReducer.ts`: reducer transitions, stale-source guards, boarding (the cutoff and preference carry-over), migration from legacy fixtures, persistence (including that removing an account deletes its token, preferences and cache file), and the config split/merge.
+`__tests__/unit/TestSessionReducer.ts`: reducer transitions, stale-source guards, boarding (the cutoff and preference carry-over), persistence (including that removing an account deletes its token, preferences and cache file), and the config split/merge.
 
 ## Open questions (decisions taken)
 

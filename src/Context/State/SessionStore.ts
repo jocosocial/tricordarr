@@ -50,8 +50,8 @@ export class SessionStore {
 
   /**
    * Dispatch an action to update state. State updates are synchronous and atomic; the storage
-   * writes they imply are queued behind earlier ones. A `loaded` action does not write unless
-   * it says `persist` (the migration), since it only reflects what storage already holds.
+   * writes they imply are queued behind earlier ones. A `loaded` action does not write, since it
+   * only reflects what storage already holds.
    */
   dispatch(action: SessionAction): void {
     const prev = this.state;
@@ -60,10 +60,9 @@ export class SessionStore {
       return;
     }
     this.state = next;
-    if (action.type !== 'loaded' || action.persist) {
-      const base = action.type === 'loaded' ? null : prev;
+    if (action.type !== 'loaded') {
       writeQueue = writeQueue
-        .then(() => persistSessionState(base, next))
+        .then(() => persistSessionState(prev, next))
         .catch(error => logger.error('Error persisting session state:', error));
     }
     // Notify all listeners synchronously

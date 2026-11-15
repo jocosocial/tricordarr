@@ -27,7 +27,7 @@ export interface SessionState {
 }
 
 /**
- * Everything a `loaded` action hands the reducer, as read (and possibly migrated) from storage.
+ * Everything a `loaded` action hands the reducer, as read from storage.
  */
 export interface LoadedSessionData {
   accounts: Account[];
@@ -48,7 +48,7 @@ export interface LoadedSessionData {
  * A's row after the user has switched to B.
  */
 export type SessionAction =
-  | ({type: 'loaded'; persist?: boolean} & LoadedSessionData)
+  | ({type: 'loaded'} & LoadedSessionData)
   | {
       /**
        * Upsert on (serverUrl, userID), find-or-create its session, and switch to it. If the current

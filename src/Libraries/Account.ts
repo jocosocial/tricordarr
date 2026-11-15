@@ -2,7 +2,7 @@ import {serverUrlHost} from '#src/Libraries/ServerUrl';
 import {Account, ServerProfile, Session} from '#src/Structs/SessionStructs';
 
 /**
- * `username`, or the userID until the username has been fetched (migrated accounts).
+ * `username`, or the userID if the username has not been fetched yet.
  */
 export const accountName = (account: Account): string => account.username || account.userID;
 

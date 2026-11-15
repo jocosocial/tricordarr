@@ -7,8 +7,8 @@ import {useUserProfileQuery, useUserWhoamiQuery} from '#src/Queries/User/UserQue
 const logger = createLogger('AccountIdentitySync.tsx');
 
 /**
- * Keeps the active account's row current from /user/whoami and /user/profile: the username (empty
- * after a migration), avatar and, importantly, access level, which the login-time
+ * Keeps the active account's row current from /user/whoami and /user/profile: the username, avatar
+ * and, importantly, access level, which the login-time
  * snapshot on the token lets go stale. Both queries are already used elsewhere (roles, the main
  * account menu), so this adds no requests of its own.
  *
