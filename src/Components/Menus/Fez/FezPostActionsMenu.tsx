@@ -1,9 +1,9 @@
-import React, {ReactNode} from 'react';
+import React, {ReactNode, useMemo} from 'react';
 import {Menu} from 'react-native-paper';
 
 import {ReactionMenuItem} from '#src/Components/Menus/Items/ReactionMenuItem';
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
-import {FezPostReactionPicker} from '#src/Components/Reactions/FezPostReactionPicker';
+import {PostReactionPicker} from '#src/Components/Reactions/PostReactionPicker';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {FezType} from '#src/Enums/FezType';
@@ -12,6 +12,7 @@ import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {useLazyVisibility} from '#src/Hooks/useLazyVisibility';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
+import {canReactTo, ReactionTarget} from '#src/Libraries/Reactions/ReactionActions';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
@@ -33,8 +34,8 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
   const {hasModerator} = usePrivilege();
   const {currentUserID} = useSession();
   const picker = useLazyVisibility();
-  // Swiftarr refuses reactions on your own posts, and without the chat its cache cannot be updated.
-  const canReact = !!fez && !!currentUserID && currentUserID !== fezPost.author.userID;
+  const reactionTarget = useMemo<ReactionTarget>(() => ({kind: 'fezPost', post: fezPost, fez}), [fez, fezPost]);
+  const canReact = canReactTo(reactionTarget, currentUserID);
 
   const handleReport = () => {
     closeMenu();
@@ -80,9 +81,7 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
           )}
         </MenuContextBridge>
       </Menu>
-      {picker.mounted && (
-        <FezPostReactionPicker fezPost={fezPost} fez={fez} open={picker.visible} onClose={picker.hide} />
-      )}
+      {picker.mounted && <PostReactionPicker target={reactionTarget} open={picker.visible} onClose={picker.hide} />}
     </>
   );
 };

@@ -1,13 +1,12 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Text} from 'react-native-paper';
+import {ActivityIndicator, Text} from 'react-native-paper';
 
 import {ReactionIcon} from '#src/Components/Reactions/ReactionIcon';
 import {ReactionsDetailModal} from '#src/Components/Views/Modals/ReactionsDetailModal';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {styleDefaults} from '#src/Context/Providers/StyleProvider';
 import {useLazyVisibility} from '#src/Hooks/useLazyVisibility';
 import {ReactionData} from '#src/Structs/ControllerStructs';
 
@@ -15,14 +14,15 @@ interface ReactionBadgesProps {
   reactions: ReactionData[];
   /** Toggles the current user's reaction on the tapped badge. Taps do nothing when omitted. */
   onBadgePress?: (reaction: string) => void;
-  alignRight?: boolean;
+  /** The reaction whose request is in flight, if any. Its badge shows a spinner for its count. */
+  pendingReaction?: string;
 }
 
 /**
  * Displays the grouped reactions beneath a post. A tap toggles the user's own reaction, matching the
  * web UI; a long press opens the participant list.
  */
-export const ReactionBadges = ({reactions, onBadgePress, alignRight = false}: ReactionBadgesProps) => {
+export const ReactionBadges = ({reactions, onBadgePress, pendingReaction}: ReactionBadgesProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const {currentUserID} = useSession();
@@ -34,13 +34,6 @@ export const ReactionBadges = ({reactions, onBadgePress, alignRight = false}: Re
         row: {
           ...commonStyles.flexRow,
           ...commonStyles.flexWrap,
-          ...(alignRight ? commonStyles.flexEnd : commonStyles.flexStart),
-          ...commonStyles.fullWidth,
-          // Same inset as MessageView gives the message text, so the badges line up with it.
-          ...commonStyles.paddingHorizontalSmall,
-          // MessageView pads the bottom of the message text; pull the badges up into that padding
-          // so they sit directly beneath the text.
-          marginTop: -styleDefaults.marginSize / 2,
         },
         badge: {
           ...commonStyles.flexRow,
@@ -55,15 +48,15 @@ export const ReactionBadges = ({reactions, onBadgePress, alignRight = false}: Re
         selectedBadge: {
           backgroundColor: theme.colors.primary,
         },
-        selectedText: {
-          color: theme.colors.onPrimary,
-        },
         text: {
           ...commonStyles.bold,
           ...commonStyles.marginLeftSmall,
         },
+        selectedText: {
+          color: theme.colors.onPrimary,
+        },
       }),
-    [alignRight, commonStyles, theme.colors.onPrimary, theme.colors.primary, theme.colors.reactionBadge],
+    [commonStyles, theme.colors.onPrimary, theme.colors.primary, theme.colors.reactionBadge],
   );
 
   if (reactions.length === 0) {
@@ -75,15 +68,31 @@ export const ReactionBadges = ({reactions, onBadgePress, alignRight = false}: Re
       <View style={styles.row}>
         {reactions.map(reaction => {
           const selected = !!currentUserID && ReactionData.hasUserReacted([reaction], currentUserID);
+          const pending = pendingReaction === reaction.reaction;
+          const count = reaction.users.length;
+          const tapHint = selected ? 'Tap to remove your reaction.' : 'Tap to add your reaction.';
           return (
             <TouchableOpacity
-              accessibilityLabel={`${reaction.reaction}, ${reaction.users.length} reactions`}
+              // Shared by every badge, like the message testID; flows narrow it with `text` or `index`.
+              testID={'reactionBadge-button'}
+              accessibilityRole={'button'}
+              accessibilityLabel={`${reaction.reaction}, ${count} ${count === 1 ? 'reaction' : 'reactions'}`}
+              accessibilityHint={`${onBadgePress ? `${tapHint} ` : ''}Long press to see who reacted.`}
+              accessibilityState={{selected, busy: pending}}
               key={reaction.reaction}
               onPress={onBadgePress ? () => onBadgePress(reaction.reaction) : undefined}
               onLongPress={details.show}
               style={[styles.badge, selected && styles.selectedBadge]}>
               <ReactionIcon reaction={reaction.reaction} />
-              <Text style={[styles.text, selected && styles.selectedText]}>{reaction.users.length}</Text>
+              {pending ? (
+                <ActivityIndicator
+                  size={theme.fonts.bodyMedium.fontSize}
+                  color={selected ? theme.colors.onPrimary : undefined}
+                  style={commonStyles.marginLeftSmall}
+                />
+              ) : (
+                <Text style={[styles.text, selected && styles.selectedText]}>{count}</Text>
+              )}
             </TouchableOpacity>
           );
         })}

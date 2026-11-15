@@ -3,7 +3,7 @@ import React, {memo} from 'react';
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {ContentPostImages} from '#src/Components/Images/ContentPostImages';
 import {FezPostActionsMenu} from '#src/Components/Menus/Fez/FezPostActionsMenu';
-import {FezPostReactionBadges} from '#src/Components/Reactions/FezPostReactionBadges';
+import {PostReactionBadges} from '#src/Components/Reactions/PostReactionBadges';
 import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
 import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView';
@@ -77,7 +77,7 @@ const FezPostListItemInternal = ({fezPost, fez, fullWidth}: FezPostListItemProps
           fullWidth={fullWidth}
           reactionBadges={
             fezPost.reactions?.length ? (
-              <FezPostReactionBadges fezPost={fezPost} fez={fez} alignRight={messageOnRight} />
+              <PostReactionBadges target={{kind: 'fezPost', post: fezPost, fez}} />
             ) : undefined
           }
           renderActionsMenu={({visible, closeMenu, anchor}) => (

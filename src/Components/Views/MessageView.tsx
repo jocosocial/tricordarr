@@ -9,6 +9,7 @@ import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useUserHeader} from '#src/Context/Contexts/UserHeaderContext';
+import {styleDefaults} from '#src/Context/Providers/StyleProvider';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
@@ -96,6 +97,12 @@ export const MessageView = ({
           ...commonStyles.paddingSmall,
           ...commonStyles.roundedBorderLarge,
         },
+        // Sits below the pressable above, so it mirrors that padding: the same horizontal inset to
+        // line the badges up with the text, and a negative top margin to cancel the bottom padding.
+        reactionBadges: {
+          ...commonStyles.paddingHorizontalSmall,
+          marginTop: -styleDefaults.marginSize / 2,
+        },
         authorContainer: {
           ...commonStyles.flexRow,
           ...commonStyles.alignItemsCenter,
@@ -175,7 +182,7 @@ export const MessageView = ({
           </View>
         </View>
       </TouchableOpacity>
-      {reactionBadges}
+      {reactionBadges ? <View style={styles.reactionBadges}>{reactionBadges}</View> : null}
     </View>
   );
 };

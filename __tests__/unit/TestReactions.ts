@@ -1,5 +1,6 @@
 import {LikeType} from '#src/Enums/LikeType';
 import {postDataFromDetail} from '#src/Libraries/Moderation/Content';
+import {canReactTo, reactionToggleAction} from '#src/Libraries/Reactions/ReactionActions';
 import {
   applyFezPostReactions,
   applyPostDetailReactions,
@@ -75,6 +76,52 @@ describe('ReactionData.hasUserReacted', () => {
 
   it('is false for empty reactions', () => {
     expect(ReactionData.hasUserReacted([], james.userID)).toBe(false);
+  });
+});
+
+describe('reactionToggleAction', () => {
+  it('removes a reaction the user already has', () => {
+    expect(reactionToggleAction([thumbs, arr], james.userID, '👍')).toBe('delete');
+  });
+
+  it('adds a reaction the user does not have, even when others do', () => {
+    expect(reactionToggleAction([thumbs, arr], james.userID, ':arr:')).toBe('create');
+  });
+
+  it('adds when the post has no reactions yet', () => {
+    expect(reactionToggleAction(undefined, james.userID, '👍')).toBe('create');
+    expect(reactionToggleAction([], james.userID, '👍')).toBe('create');
+  });
+
+  it('would add rather than remove for a picked emoji that differs from its stored form', () => {
+    // The reason the picker is add-only and only badges, which hold the stored string, toggle.
+    const stored: ReactionData = {reaction: '☺', users: [james]};
+    expect(reactionToggleAction([stored], james.userID, '☺️')).toBe('create');
+    expect(reactionToggleAction([stored], james.userID, stored.reaction)).toBe('delete');
+  });
+});
+
+describe('canReactTo', () => {
+  const heidisPost = makePost({author: heidi});
+
+  it("allows reacting to another user's forum post", () => {
+    expect(canReactTo({kind: 'forumPost', post: heidisPost}, james.userID)).toBe(true);
+  });
+
+  it("refuses the user's own post", () => {
+    expect(canReactTo({kind: 'forumPost', post: heidisPost}, heidi.userID)).toBe(false);
+    expect(canReactTo({kind: 'fezPost', post: makeFezPost(1), fez: makeFez([])}, james.userID)).toBe(false);
+  });
+
+  it('refuses when signed out', () => {
+    expect(canReactTo({kind: 'forumPost', post: heidisPost}, null)).toBe(false);
+    expect(canReactTo({kind: 'forumPost', post: heidisPost}, undefined)).toBe(false);
+  });
+
+  it('needs the chat for a chat post, since its cache is what gets updated', () => {
+    const post = makeFezPost(1);
+    expect(canReactTo({kind: 'fezPost', post, fez: makeFez([post])}, heidi.userID)).toBe(true);
+    expect(canReactTo({kind: 'fezPost', post}, heidi.userID)).toBe(false);
   });
 });
 

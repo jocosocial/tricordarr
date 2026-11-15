@@ -3,7 +3,7 @@ import React, {memo} from 'react';
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {ContentPostImages} from '#src/Components/Images/ContentPostImages';
 import {ForumPostActionsMenu} from '#src/Components/Menus/Forum/ForumPostActionsMenu';
-import {ForumPostReactionBadges} from '#src/Components/Reactions/ForumPostReactionBadges';
+import {PostReactionBadges} from '#src/Components/Reactions/PostReactionBadges';
 import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
 import {MessageView} from '#src/Components/Views/MessageView';
@@ -91,7 +91,7 @@ const ForumPostListItemInternal = ({
           isPinned={postData.isPinned}
           reactionBadges={
             postData.reactions?.length ? (
-              <ForumPostReactionBadges forumPost={postData} forumID={forumData?.forumID} />
+              <PostReactionBadges target={{kind: 'forumPost', post: postData, forumID: forumData?.forumID}} />
             ) : undefined
           }
           onPress={enableShowInThread ? handleShowInThread : undefined}

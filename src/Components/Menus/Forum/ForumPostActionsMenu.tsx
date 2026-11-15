@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React, {ReactNode, useMemo} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
 import {ForumPostActionsDeleteItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsDeleteItem';
@@ -11,12 +11,13 @@ import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/
 import {ReactionMenuItem} from '#src/Components/Menus/Items/ReactionMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
-import {ForumPostReactionPicker} from '#src/Components/Reactions/ForumPostReactionPicker';
+import {PostReactionPicker} from '#src/Components/Reactions/PostReactionPicker';
 import {useForumComposer} from '#src/Context/Contexts/ForumComposerContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {useLazyVisibility} from '#src/Hooks/useLazyVisibility';
+import {canReactTo, ReactionTarget} from '#src/Libraries/Reactions/ReactionActions';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
@@ -44,6 +45,10 @@ export const ForumPostActionsMenu = ({
   const bridged = useMenuContextBridge();
   const bySelf = currentUserID === forumPost.author.userID;
   const picker = useLazyVisibility();
+  const reactionTarget = useMemo<ReactionTarget>(
+    () => ({kind: 'forumPost', post: forumPost, forumID: forumData?.forumID}),
+    [forumData?.forumID, forumPost],
+  );
   const commonNavigation = useCommonStack();
   const {setString} = useClipboard();
   // Undefined outside a thread composer. Replying to yourself would tag yourself, and Swiftarr
@@ -110,8 +115,7 @@ export const ForumPostActionsMenu = ({
           <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} />
           <Divider bold={true} />
           <ReactionMenuItem
-            // Swiftarr refuses reactions on your own posts.
-            disabled={!currentUserID || bySelf}
+            disabled={!canReactTo(reactionTarget, currentUserID)}
             onPress={() => {
               closeMenu();
               picker.show();
@@ -119,14 +123,7 @@ export const ForumPostActionsMenu = ({
           />
         </MenuContextBridge>
       </Menu>
-      {picker.mounted && (
-        <ForumPostReactionPicker
-          forumPost={forumPost}
-          forumID={forumData?.forumID}
-          open={picker.visible}
-          onClose={picker.hide}
-        />
-      )}
+      {picker.mounted && <PostReactionPicker target={reactionTarget} open={picker.visible} onClose={picker.hide} />}
     </>
   );
 };
