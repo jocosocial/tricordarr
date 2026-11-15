@@ -141,6 +141,20 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
 
   // Effects
 
+  // SocketProvider lives inside SessionBoundaryProvider, so it unmounts on every session change. Sockets are
+  // authenticated as the outgoing account, so they must not outlive it.
+  const socketsRef = useRef<{notification?: ReconnectingWebSocket; fez: Record<string, ReconnectingWebSocket>}>({
+    fez: {},
+  });
+  socketsRef.current = {notification: notificationSocket, fez: fezSockets};
+  useEffect(() => {
+    const sockets = socketsRef;
+    return () => {
+      sockets.current.notification?.close();
+      Object.values(sockets.current.fez).forEach(ws => ws.close());
+    };
+  }, []);
+
   useEffect(() => {
     logger.debug('Triggering openNotificationSocket useEffect.');
     if (isLoggedIn && oobeCompleted) {

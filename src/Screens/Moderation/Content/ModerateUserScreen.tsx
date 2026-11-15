@@ -5,7 +5,7 @@ import {ModeratorReportFAB} from '#src/Components/Buttons/FloatingActionButtons/
 import {useModerationHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ModerationHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
-import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
+import {UserListItem} from '#src/Components/Lists/Items/User/UserListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';

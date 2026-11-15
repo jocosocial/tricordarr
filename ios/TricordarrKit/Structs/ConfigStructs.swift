@@ -13,7 +13,6 @@ import Foundation
 /// API client configuration matching TypeScript APIClientConfig
 struct APIClientConfig: Codable {
 	var defaultPageSize: Int
-	var canonicalHostnames: [String]
 	var cacheBuster: String
 	var cacheTime: Int
 	var retry: Int

@@ -1,11 +1,31 @@
 import {useQueryClient} from '@tanstack/react-query';
-import {isAxiosError} from 'axios';
+import {HttpStatusCode, isAxiosError} from 'axios';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {STALE} from '#src/Libraries/Time/Time';
-import {useOpenQuery, usePublicQuery} from '#src/Queries/OpenQuery';
+import {useExplicitOpenQuery, useOpenQuery, usePublicQuery} from '#src/Queries/OpenQuery';
 import {ClientSettingsData, HealthResponse} from '#src/Structs/ControllerStructs';
 
+/**
+ * The body of a failed /client/health request. Axios throws on a 500, but the healthcheck endpoint
+ * still answers with a HealthResponse then, so that body is recovered; anything else is rethrown.
+ */
+const recoverHealthResponse = (error: unknown): HealthResponse => {
+  if (isAxiosError(error) && error.response?.data) {
+    return error.response.data as HealthResponse;
+  }
+  throw error;
+};
+
+/**
+ * Whether a healthcheck response says the server is healthy.
+ */
+export const isHealthyResponse = (data: HealthResponse | null | undefined) =>
+  data?.status === HttpStatusCode.Ok && !data.error;
+
+/**
+ * Healthcheck of the active session's server.
+ */
 export const useHealthQuery = (options = {}) => {
   const client = useQueryClient();
   const {apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
@@ -30,24 +50,29 @@ export const useHealthQuery = (options = {}) => {
         // endpoint returns something if thats the case. This forces the response data to be set if we got
         // a valid healthcheck response back. It also wipes out any past data on fail because apparently
         // the keepPreviousData and cacheTime above aren't enough.
-        if (isAxiosError(error) && error.response?.data) {
-          const responseData = error.response.data as HealthResponse;
-          if (!responseData.error) {
-            // Set query data to null to wipe out past data
-            client.setQueryData(queryKey, null);
-            // Return the response data anyway (query will succeed with this data)
-            return responseData;
-          } else {
-            // Set query data explicitly and return it
-            client.setQueryData(queryKey, responseData);
-            return responseData;
-          }
-        }
-        throw error;
+        const responseData = recoverHealthResponse(error);
+        // Without an error, set query data to null to wipe out past data; otherwise set it explicitly.
+        // Either way the response data is returned (query will succeed with this data).
+        client.setQueryData(queryKey, responseData.error ? responseData : null);
+        return responseData;
       }
     },
     ...options,
   });
+};
+
+/**
+ * Healthcheck of an explicit server, independent of the active session, for flows that choose a
+ * server without switching to it. Never retried or cached: a result is only ever for the server it
+ * was asked about.
+ */
+export const useExplicitServerHealthQuery = (serverUrl: string | undefined) => {
+  return useExplicitOpenQuery<HealthResponse>(
+    serverUrl,
+    '/client/health',
+    {retry: false, staleTime: 0},
+    recoverHealthResponse,
+  );
 };
 
 /**

@@ -1,87 +1,95 @@
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, StackActions, useNavigation, useRoute} from '@react-navigation/native';
 import {FormikHelpers} from 'formik';
-import React, {useCallback, useEffect, useState} from 'react';
-import {ActivityIndicator, Text} from 'react-native-paper';
+import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import {Text} from 'react-native-paper';
 
 import {LoginForm} from '#src/Components/Forms/User/LoginForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useOobe} from '#src/Context/Contexts/OobeContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
+import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useOnboardingCommit} from '#src/Hooks/useOnboardingCommit';
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
-import {startPushProvider} from '#src/Libraries/Notifications/Push';
+import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {LoginFormValues} from '#src/Types/FormValues';
 
+/**
+ * Log in to a server. The server is explicit: the route's `serverUrl` (add account, sign a revoked
+ * account back in), else the active session's. Logging in never signs anyone else out; the new
+ * account is added beside the existing ones and becomes the active one. Inside the setup flow the
+ * route's `mode` decides what else the sign-in does (see useOnboardingCommit).
+ */
 export const LoginScreen = () => {
-  const {commonStyles} = useStyles();
+  // Hooks rather than screen props: the setup stack renders this screen too. Its params are a
+  // superset of the Settings stack's.
   const navigation = useNavigation();
+  const route = useRoute<RouteProp<OobeStackParamList, 'LoginScreen'>>();
+  const mode = route.params?.mode;
+  const {commonStyles} = useStyles();
   const loginMutation = useLoginMutation();
-  const {signIn} = useSession();
-  const {oobeCompleted} = useOobe();
-  const {serverUrl} = useSwiftarrQueryClient();
-  const {currentSession, findOrCreateSession} = useSession();
-  const {appConfig} = useConfig();
-  const [isSessionReady, setIsSessionReady] = useState(false);
-  const {signIn: signInWebview} = useTwitarrWebview();
-
-  // Create session on mount if none exists
+  const {commitSignIn} = useOnboardingCommit(mode);
+  const {serverUrl: sessionServerUrl} = useSwiftarrQueryClient();
+  const {siteLogin} = useTwitarrWebview();
+  const {setSnackbarPayload} = useSnackbar();
+  const serverUrl = normalizeServerUrl(route.params?.serverUrl ?? sessionServerUrl);
+  const recoveryParams = useMemo(() => ({serverUrl, mode}), [serverUrl, mode]);
+  // The sign-in usually remounts the session scope, taking this screen with it.
+  const mounted = useRef(true);
   useEffect(() => {
-    const initializeSession = async () => {
-      if (!currentSession) {
-        // Create a default session if none exists
-        await findOrCreateSession(appConfig.serverUrl, false);
-      }
-      setIsSessionReady(true);
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
     };
-
-    initializeSession();
-  }, [currentSession, findOrCreateSession, appConfig.serverUrl]);
+  }, []);
 
   const onSubmit = useCallback(
-    (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
-      loginMutation.mutate(formValues, {
-        onSuccess: async response => {
-          signInWebview(formValues);
-          await signIn(response.data);
-          if (oobeCompleted) {
-            await startPushProvider();
+    async (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
+      try {
+        const response = await loginMutation.mutateAsync({serverUrl, ...formValues});
+        const siteCookie = await siteLogin(formValues, serverUrl);
+        const account = await commitSignIn(serverUrl, response.data, siteCookie);
+        // The account switch lands on the new session's home (or the next setup step). Client
+        // settings and roles re-key on the new session and fetch on their own.
+        // The setup flow's session step confirms the sign-in, so only a login outside it toasts.
+        if (!mode) {
+          setSnackbarPayload({
+            message: `Signed in as ${account.username || formValues.username}`,
+            messageType: 'success',
+          });
+        }
+        // Signing in to the account that is already active keeps the same scope and this screen.
+        // Inside the setup flow that still moves on to the session step.
+        if (mounted.current) {
+          if (mode) {
+            navigation.dispatch(StackActions.replace(OobeStackComponents.oobeSessionScreen, {mode}));
+          } else {
+            navigation.goBack();
           }
-          // Client settings and roles re-key on the new userID and fetch on their own;
-          // ClientSettingsProvider and RoleProvider apply the results.
-          navigation.goBack();
-        },
-        onSettled: () => formikHelpers.setSubmitting(false),
-      });
+        }
+      } catch {
+        // The mutation's own onError already showed the failure.
+      } finally {
+        formikHelpers.setSubmitting(false);
+      }
     },
-    [loginMutation, signIn, oobeCompleted, navigation, signInWebview],
+    [loginMutation, serverUrl, siteLogin, commitSignIn, navigation, setSnackbarPayload, mode],
   );
 
-  if (!isSessionReady) {
-    return (
-      <AppView>
-        <ScrollingContentView isStack={true}>
-          <PaddedContentView padTop={true}>
-            <ActivityIndicator />
-          </PaddedContentView>
-        </ScrollingContentView>
-      </AppView>
-    );
-  }
-
   return (
-    <AppView>
+    <AppView disablePreRegistrationWarning={!!mode}>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
           <Text style={commonStyles.marginBottom}>Logging in to {serverUrl}.</Text>
           <Text style={commonStyles.marginBottom}>Usernames are case-insensitive.</Text>
-          <LoginForm onSubmit={onSubmit} />
+          <LoginForm onSubmit={onSubmit} initialUsername={route.params?.username} recoveryParams={recoveryParams} />
         </PaddedContentView>
       </ScrollingContentView>
+      {mode && <OobeButtonsView leftOnPress={() => navigation.goBack()} />}
     </AppView>
   );
 };

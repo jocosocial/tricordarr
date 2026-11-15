@@ -30,6 +30,10 @@ type AvatarImageProps = {
    * Force use of identicon even if userHeader.userImage exists.
    */
   forceIdenticon?: boolean;
+  /**
+   * Server to load the image from, when it is not the active session's (another account's avatar).
+   */
+  serverUrl?: string;
 };
 
 /**
@@ -44,6 +48,7 @@ export const AvatarImage = ({
   small = false,
   icon = AppIcons.user,
   forceIdenticon = false,
+  serverUrl,
 }: AvatarImageProps) => {
   const {styleDefaults} = useStyles();
   const size = small ? styleDefaults.avatarSizeSmall : styleDefaults.avatarSize;
@@ -80,6 +85,7 @@ export const AvatarImage = ({
       size={size}
       staticSize={useIdenticon ? 'identicon' : 'thumb'}
       disableTouch={true}
+      serverUrl={serverUrl}
     />
   );
 };

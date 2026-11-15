@@ -9,7 +9,7 @@ import {HuntHeaderButtons} from '#src/Components/Buttons/HeaderButtons/HuntHeade
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {HuntPuzzleCallInForm} from '#src/Components/Forms/HuntPuzzleCallInForm';
-import {HuntPuzzleCallInListItem} from '#src/Components/Lists/Items/HuntPuzzleCallInListItem';
+import {HuntPuzzleCallInListItem} from '#src/Components/Lists/Items/Hunts/HuntPuzzleCallInListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ContentText} from '#src/Components/Text/ContentText';
 import {AppView} from '#src/Components/Views/AppView';

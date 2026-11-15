@@ -5,7 +5,7 @@ import {View} from 'react-native';
 import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
-import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
+import {UserListItem} from '#src/Components/Lists/Items/User/UserListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';

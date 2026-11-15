@@ -5,7 +5,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import tinycolor from 'tinycolor2';
 
 import {fgsWorkerNotificationIDs, PressAction} from '#src/Enums/Notifications';
-import {getAppConfig} from '#src/Libraries/AppConfig';
+import {getEffectiveConfig} from '#src/Libraries/EffectiveConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {buildWebSocket, wsHealthcheck} from '#src/Libraries/Network/Websockets';
 import {recordNotificationEvent} from '#src/Libraries/NotificationLog';
@@ -89,7 +89,7 @@ const createSharedWebSocket = async () => {
 const fgsWorker = async () => {
   logger.debug('Worker is starting');
 
-  const appConfig = await getAppConfig();
+  const appConfig = await getEffectiveConfig();
   if (!appConfig.enableNotificationSocket) {
     logger.debug('notification socket not enabled in app config. Shutting down.');
     // I've thought about generating a notification for when the worker shuts down, but this

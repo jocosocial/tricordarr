@@ -7,14 +7,14 @@ import {createLogger} from '#src/Libraries/Logger';
 const logger = createLogger('useDisablePreRegistration.ts');
 
 /**
- * Shared flow for turning off pre-registration mode on the current session. Used by the Cruise
+ * Shared flow for turning off pre-registration mode on the current session's server. Used by the Cruise
  * Settings button and the hidden multi-tap on the pre-registration banner.
  *
- * `promptDisablePreRegistration` shows the confirmation alert and, on confirm, updates the session.
+ * `promptDisablePreRegistration` shows the confirmation alert and, on confirm, overrides the server's own setting (no remount).
  * `isDisabling` is true while that update is in flight so callers can ignore re-entry.
  */
 export const useDisablePreRegistration = () => {
-  const {currentSession, updateSession} = useSession();
+  const {currentSession, setPreRegistrationOverride} = useSession();
   const [isDisabling, setIsDisabling] = useState(false);
 
   const promptDisablePreRegistration = () => {
@@ -26,7 +26,7 @@ export const useDisablePreRegistration = () => {
       setIsDisabling(true);
       try {
         logger.debug('toggling pre-registration mode to', false);
-        await updateSession(currentSession.sessionID, {preRegistrationMode: false});
+        await setPreRegistrationOverride(currentSession.serverUrl, false);
       } finally {
         setIsDisabling(false);
       }

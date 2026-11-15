@@ -9,7 +9,7 @@ import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
 import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
-import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
+import {FezPostListItem} from '#src/Components/Lists/Items/Fez/FezPostListItem';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useTime} from '#src/Context/Contexts/TimeContext';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';

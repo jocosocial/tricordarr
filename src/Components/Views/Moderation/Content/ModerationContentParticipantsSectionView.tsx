@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
+import {FezParticipantListItem} from '#src/Components/Lists/Items/Fez/FezParticipantListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';

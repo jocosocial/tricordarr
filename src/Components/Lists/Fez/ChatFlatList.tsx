@@ -7,7 +7,7 @@ import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
-import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
+import {FezPostListItem} from '#src/Components/Lists/Items/Fez/FezPostListItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';

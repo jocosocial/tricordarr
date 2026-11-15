@@ -1,5 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Pressable, StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Text} from 'react-native-paper';
@@ -15,6 +15,7 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSecretTrigger} from '#src/Hooks/useSecretTrigger';
+import {createLogger} from '#src/Libraries/Logger';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
@@ -23,11 +24,16 @@ import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponen
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
+const logger = createLogger('OobeWelcomeScreen.tsx');
+
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
 
+/**
+ * First screen of first-run setup. No session exists yet; the account step creates it.
+ */
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {currentSession, findOrCreateSession} = useSession();
+  const {currentSession, switchToServer} = useSession();
   const {appConfig} = useConfig();
   const {oobeFinish} = useOobe();
   const {fromAsset} = useAppImage();
@@ -37,18 +43,6 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
     text: commonStyles.textCenter,
     image: commonStyles.roundedBorderLarge,
   });
-
-  // Ensure a session exists on mount - create default production session if needed
-  useEffect(() => {
-    const initializeSession = async () => {
-      if (!currentSession) {
-        await findOrCreateSession(appConfig.serverUrl, false);
-      }
-    };
-    initializeSession();
-  }, [currentSession, findOrCreateSession, appConfig.serverUrl]);
-
-  const isInitializing = !currentSession;
 
   const onPress = () => {
     navigation.push(OobeStackComponents.oobeLocationScreen);
@@ -61,6 +55,12 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {onPress: onVersionPress} = useSecretTrigger({
     onTrigger: () => {
       oobeFinish();
+      // Skipping setup still needs a session to land in. Creating one remounts the navigators,
+      // which then start in the app because setup is now complete.
+      if (!currentSession) {
+        switchToServer(appConfig.serverUrl).catch(error => logger.error('Failed to create session:', error));
+        return;
+      }
       rootNavigation.replace(RootStackComponents.rootContentScreen, {
         screen: BottomTabComponents.homeTab,
         params: {
@@ -70,9 +70,9 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
     },
   });
 
-  // preRegistrationMode is no longer set from this screen. It's derived on OobeServerScreen
-  // from the server's own ClientSettingsData.enablePreregistration once a server URL is
-  // chosen, rather than from which button the user tapped here.
+  // Pre-registration mode is not set from this screen. It is the chosen server's own
+  // ClientSettingsData.enablePreregistration, recorded on its ServerProfile once a session on it
+  // loads, rather than which button the user tapped here.
 
   // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
   return (
@@ -103,7 +103,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
           </Pressable>
         </PaddedContentView>
       </ScrollingContentView>
-      <OobeButtonsView rightOnPress={onPress} rightDisabled={isInitializing} />
+      <OobeButtonsView rightOnPress={onPress} />
     </AppView>
   );
 };

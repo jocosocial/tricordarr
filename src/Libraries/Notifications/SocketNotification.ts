@@ -1,7 +1,7 @@
 import notifee, {EventType, Notification, NotificationPressAction} from 'react-native-notify-kit';
 
 import {PressAction} from '#src/Enums/Notifications';
-import {getAppConfig} from '#src/Libraries/AppConfig';
+import {getEffectiveConfig} from '#src/Libraries/EffectiveConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {
   announcementsChannel,
@@ -76,7 +76,7 @@ export const getNotificationEventDestination = (
  * @param event WebSocketMessageEvent payload.
  */
 export const generatePushNotificationFromEvent = async (event: WebSocketMessageEvent) => {
-  const appConfig = await getAppConfig();
+  const appConfig = await getEffectiveConfig();
   const notificationData = JSON.parse(event.data) as SocketNotificationData;
   const notificationType = SocketNotificationData.getType(notificationData);
 

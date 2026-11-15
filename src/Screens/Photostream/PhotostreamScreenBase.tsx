@@ -8,7 +8,7 @@ import {PhotostreamFAB} from '#src/Components/Buttons/FloatingActionButtons/Phot
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
-import {PhotostreamListItem} from '#src/Components/Lists/Items/PhotostreamListItem';
+import {PhotostreamListItem} from '#src/Components/Lists/Items/Photostream/PhotostreamListItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';

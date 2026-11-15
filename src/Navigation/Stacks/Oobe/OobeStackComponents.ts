@@ -3,19 +3,21 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 import {OobeLocation} from '#src/Enums/OobeLocation';
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {WithIntent} from '#src/Types/RouteParams';
+import {OnboardingMode} from '#src/Types/RouteParams';
 
 export type OobeStackParamList = CommonStackParamList & {
   OobeWelcomeScreen: undefined;
   OobeLocationScreen: undefined;
-  OobeServerScreen: {location?: OobeLocation} | undefined;
-  OobeConductScreen: undefined;
-  OobeAccountScreen: undefined;
-  LoginScreen: undefined;
+  // serverUrl is the server to start on; defaults to the active session's.
+  OobeServerScreen: {mode: OnboardingMode; serverUrl?: string; location?: OobeLocation};
+  OobeAccountScreen: {mode: OnboardingMode; serverUrl: string};
+  LoginScreen: {serverUrl?: string; username?: string; mode?: OnboardingMode} | undefined;
   OobeFinishScreen: undefined;
-  RegisterScreen: undefined;
+  RegisterConductScreen: {serverUrl?: string; mode?: OnboardingMode} | undefined;
+  RegisterScreen: {serverUrl?: string; mode?: OnboardingMode} | undefined;
+  OobeSessionScreen: {mode: OnboardingMode};
   OobePermissionsScreen: undefined;
-  OobePreregistrationScreen: WithIntent<{}, 'onboarding'>;
+  OobePreregistrationScreen: undefined;
   OobeScheduleDayScreen: undefined;
 };
 
@@ -23,11 +25,12 @@ export enum OobeStackComponents {
   oobeWelcomeScreen = 'OobeWelcomeScreen',
   oobeLocationScreen = 'OobeLocationScreen',
   oobeServerScreen = 'OobeServerScreen',
-  oobeConductScreen = 'OobeConductScreen',
   oobeAccountScreen = 'OobeAccountScreen',
+  oobeRegisterConductScreen = 'RegisterConductScreen',
   oobeRegisterScreen = 'RegisterScreen',
   oobeFinishScreen = 'OobeFinishScreen',
   oobeLoginScreen = 'LoginScreen',
+  oobeSessionScreen = 'OobeSessionScreen',
   oobePermissionsScreen = 'OobePermissionsScreen',
   oobePreregistrationScreen = 'OobePreregistrationScreen',
   oobeScheduleDayScreen = 'OobeScheduleDayScreen',

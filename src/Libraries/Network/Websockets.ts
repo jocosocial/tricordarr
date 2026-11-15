@@ -1,6 +1,6 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-import {getAppConfig} from '#src/Libraries/AppConfig';
+import {getEffectiveConfig} from '#src/Libraries/EffectiveConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {getAuthHeaders} from '#src/Libraries/Network/APIClient';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
@@ -28,7 +28,7 @@ const buildNormalizedWebSocketUrl = async (pathSuffix: string, errorContext?: st
     const suffix = errorContext ? ` ${errorContext}` : '';
     throw new Error(`[Websockets.ts] No current session found or session missing serverUrl${suffix}`);
   }
-  const {urlPrefix} = await getAppConfig();
+  const {urlPrefix} = await getEffectiveConfig();
   const httpUrl = `${session.serverUrl}${urlPrefix}${pathSuffix}`;
   return normalizeToWebSocketUrl(httpUrl);
 };
@@ -68,10 +68,11 @@ const WebSocketConstructor = (options?: WebSocketOptions) => {
  */
 export const getToken = async () => {
   const session = await SessionStorage.getCurrentSession();
-  if (session?.tokenData?.token) {
-    return session.tokenData.token;
+  if (!session?.accountID) {
+    return undefined;
   }
-  return undefined;
+  const tokenData = await SessionStorage.getTokenForAccount(session.accountID);
+  return tokenData?.token;
 };
 
 const DEFAULT_RECONNECT_OPTIONS = {

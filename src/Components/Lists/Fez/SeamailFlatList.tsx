@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useRef} from 'react';
 import {RefreshControlProps} from 'react-native';
 
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {FezChatListItem} from '#src/Components/Lists/Items/FezChatListItem';
+import {FezChatListItem} from '#src/Components/Lists/Items/Fez/FezChatListItem';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {FezData} from '#src/Structs/ControllerStructs';
