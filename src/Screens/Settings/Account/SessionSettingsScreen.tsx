@@ -17,12 +17,12 @@ import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackCo
 import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 
 /**
- * Accounts: every account on this device (tap to switch, menu to sign out or remove) and adding
- * another. Adding picks a server first, so there is no separate list of servers.
+ * Accounts: every account and anonymous session on this device (tap to switch, menu to sign out or
+ * remove) and adding another. Adding picks a server first, so there is no separate list of servers.
  */
 export const SessionSettingsScreen = () => {
   const settingsNavigation = useSettingsStack();
-  const {accounts} = useSession();
+  const {accounts, sessions} = useSession();
 
   const getNavButtons = useCallback(
     () => (
@@ -49,7 +49,7 @@ export const SessionSettingsScreen = () => {
         <PaddedContentView padSides={false}>
           <ListSection>
             <ListSubheader>Accounts</ListSubheader>
-            {accounts.length === 0 && (
+            {accounts.length === 0 && sessions.length === 0 && (
               <MinorActionListItem
                 title={'No accounts'}
                 icon={AppIcons.info}

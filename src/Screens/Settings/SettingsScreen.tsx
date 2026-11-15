@@ -4,16 +4,12 @@ import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
 import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
-import {SettingsAccountListItem} from '#src/Components/Lists/Items/Settings/SettingsAccountListItem';
-import {SettingsLoginListItem} from '#src/Components/Lists/Items/Settings/SettingsLoginListItem';
-import {SettingsRegistrationListItem} from '#src/Components/Lists/Items/Settings/SettingsRegistrationListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {SettingsHeaderTitle} from '#src/Components/Navigation/SettingsHeaderTitle';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {
   SettingsStackParamList,
@@ -25,8 +21,6 @@ export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreen
 export const SettingsScreen = ({navigation}: Props) => {
   const {appConfig} = useConfig();
   const getHeaderTitle = useCallback(() => <SettingsHeaderTitle />, []);
-  const {isLoggedIn} = useSession();
-
   useEffect(() => {
     navigation.setOptions({
       headerTitle: getHeaderTitle,
@@ -40,8 +34,6 @@ export const SettingsScreen = ({navigation}: Props) => {
           <Divider bold={true} />
           <ListSection>
             <ListSubheader>General</ListSubheader>
-            {isLoggedIn ? <SettingsAccountListItem /> : <SettingsLoginListItem />}
-            {!isLoggedIn && <SettingsRegistrationListItem />}
             <NavigationListItem
               title={'Accounts'}
               description={'Switch between, add and remove the accounts on this device.'}

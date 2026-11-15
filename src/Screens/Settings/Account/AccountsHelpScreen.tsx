@@ -15,6 +15,10 @@ export const AccountsHelpScreen = () => {
             Every account you have logged in to on this device is listed here. The check marks the account you are using
             now.
           </HelpTopicView>
+          <HelpTopicView title={'nobody'} icon={AppIcons.anonymous}>
+            Browsing a server without being logged in. Logging in from it replaces the row with your account. Settings
+            changed while not logged in become the starting settings for accounts you add later.
+          </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Account Badges'}>
           <HelpTopicView title={'Signed out'}>
@@ -36,7 +40,7 @@ export const AccountsHelpScreen = () => {
           </HelpTopicView>
           <HelpTopicView title={'Remove'} icon={AppIcons.delete}>
             Deletes the account's saved login, settings and cached content from this device. It does not delete the
-            account on the server.
+            account on the server. On a nobody row it deletes that row's cached content.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Notifications'}>

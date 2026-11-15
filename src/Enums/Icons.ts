@@ -42,6 +42,7 @@ export enum AppIcons {
   // Users
   profile = 'account-details-outline',
   user = 'account',
+  anonymous = 'account-question-outline',
   edituser = 'account-edit',
   group = 'account-group',
   password = 'form-textbox-password',

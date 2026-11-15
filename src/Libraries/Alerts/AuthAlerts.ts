@@ -48,6 +48,16 @@ export const alertRemoveAccount = (label: string, onConfirm: () => void, onCance
 };
 
 /**
+ * Confirms removing an anonymous session and its cached content from this device.
+ */
+export const alertRemoveAnonymousSession = (label: string, onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert('Remove', `Remove ${label} from this device? Its cached content is deleted.`, [
+    {text: 'Close', style: 'cancel', onPress: onCancel},
+    {text: 'Remove', style: 'destructive', onPress: onConfirm},
+  ]);
+};
+
+/**
  * Offers to log in as an alt account the user just created on the site.
  */
 export const alertLoginAsAlt = (onConfirm: () => void, onCancel?: () => void): void => {

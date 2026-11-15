@@ -46,6 +46,7 @@ jest.mock('#src/Libraries/Logger', () => ({
 import {getInitialState, selectCurrentSession, sessionReducer, SessionState} from '#src/Context/State/SessionState';
 import {SessionStore} from '#src/Context/State/SessionStore';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
+import {getAccountListEntries} from '#src/Libraries/Account';
 import {defaultAccountPreferences} from '#src/Libraries/AppConfig';
 import {migrateLegacySessions} from '#src/Libraries/Storage/SessionMigration';
 import {persistSessionState} from '#src/Libraries/Storage/SessionPersistence';
@@ -282,8 +283,44 @@ describe('sessionReducer', () => {
       now: t(3),
     });
     state = sessionReducer(state, {type: 'switched-to-server', serverUrl: SERVER, newSessionID: 'anon-2', now: t(4)});
-    state = signIn(state, 'a1', 'u1', 's1-again', 5);
+    state = sessionReducer(state, {type: 'switched-to-session', sessionID: 's1', now: t(5)});
+    state = signIn(state, 'a1', 'u1', 's1-again', 6);
     expect(state.sessions.map(s => s.sessionID).sort()).toEqual(['anon', 's1']);
+  });
+
+  it('signing in from an anonymous session on the same server replaces it', () => {
+    let state = sessionReducer(loaded(), {
+      type: 'switched-to-server',
+      serverUrl: SERVER,
+      newSessionID: 'anon',
+      now: t(1),
+    });
+    state = signIn(state, 'a1', 'u1', 's1', 2);
+    expect(state.sessions.map(s => s.sessionID)).toEqual(['s1']);
+    expect(state.currentSessionID).toBe('s1');
+  });
+
+  it('signing in again after signing out of the only account leaves no anonymous session', () => {
+    let state = signIn(loaded(), 'a1', 'u1', 's1', 1);
+    state = sessionReducer(state, {type: 'account-signed-out', accountID: 'a1', newSessionID: 'anon', now: t(2)});
+    state = signIn(state, 'a-new', 'u1', 's-new', 3);
+    expect(state.sessions.map(s => s.sessionID)).toEqual(['s1']);
+  });
+
+  it('signing in keeps anonymous sessions that are not current or are on another server', () => {
+    let state = sessionReducer(loaded(), {
+      type: 'switched-to-server',
+      serverUrl: OTHER_SERVER,
+      newSessionID: 'anon-other',
+      now: t(1),
+    });
+    state = signIn(state, 'a1', 'u1', 's1', 2);
+    expect(state.sessions.map(s => s.sessionID).sort()).toEqual(['anon-other', 's1']);
+
+    state = sessionReducer(state, {type: 'switched-to-server', serverUrl: SERVER, newSessionID: 'anon', now: t(3)});
+    state = sessionReducer(state, {type: 'switched-to-session', sessionID: 's1', now: t(4)});
+    state = signIn(state, 'a2', 'u2', 's2', 5);
+    expect(state.sessions.map(s => s.sessionID).sort()).toEqual(['anon', 'anon-other', 's1', 's2']);
   });
 
   it('removing the current anonymous session falls back to the most recently used one', () => {
@@ -297,6 +334,34 @@ describe('sessionReducer', () => {
     state = sessionReducer(state, {type: 'session-removed', sessionID: 'srv', now: t(3)});
     expect(state.currentSessionID).toBe('s1');
     expect(state.sessions.map(s => s.sessionID)).toEqual(['s1']);
+  });
+
+  it('removing the current anonymous session does not fall back to a signed-out account', () => {
+    let state = signIn(loaded(), 'a1', 'u1', 's1', 1);
+    state = signIn(state, 'a2', 'u2', 's2', 2);
+    state = sessionReducer(state, {type: 'account-signed-out', accountID: 'a1', newSessionID: 'anon', now: t(3)});
+    // s1 is now the most recently used session, but its account has no token.
+    state = sessionReducer(state, {type: 'switched-to-session', sessionID: 's1', now: t(4)});
+    state = sessionReducer(state, {
+      type: 'switched-to-server',
+      serverUrl: OTHER_SERVER,
+      newSessionID: 'srv',
+      now: t(5),
+    });
+    state = sessionReducer(state, {type: 'session-removed', sessionID: 'srv', now: t(6)});
+    expect(state.currentSessionID).toBe('s2');
+  });
+
+  it('removing the last session leaves no current session', () => {
+    let state = sessionReducer(loaded(), {
+      type: 'switched-to-server',
+      serverUrl: SERVER,
+      newSessionID: 'anon',
+      now: t(1),
+    });
+    state = sessionReducer(state, {type: 'session-removed', sessionID: 'anon', now: t(2)});
+    expect(state.sessions).toHaveLength(0);
+    expect(state.currentSessionID).toBeNull();
   });
 
   it('updates preferences for one account only', () => {
@@ -323,6 +388,28 @@ describe('sessionReducer', () => {
     });
     expect(state.serverProfiles).toHaveLength(1);
     expect(state.serverProfiles[0]).toMatchObject({cruiseLength: 8, portTimeZoneID: 'UTC', updatedAt: t(2)});
+  });
+});
+
+describe('getAccountListEntries', () => {
+  it('lists accounts and anonymous sessions together, oldest first', () => {
+    let state = sessionReducer(loaded(), {
+      type: 'switched-to-server',
+      serverUrl: OTHER_SERVER,
+      newSessionID: 'anon-other',
+      now: t(1),
+    });
+    state = sessionReducer(state, {
+      type: 'account-signed-in',
+      account: {...makeAccount('a1', 'u1'), createdAt: t(2)},
+      token: token('u1'),
+      newSessionID: 's1',
+      preferences: defaultAccountPreferences,
+      now: t(2),
+    });
+    state = sessionReducer(state, {type: 'switched-to-server', serverUrl: SERVER, newSessionID: 'anon', now: t(3)});
+    const entries = getAccountListEntries(state.accounts, state.sessions);
+    expect(entries.map(e => `${e.kind}:${e.key}`)).toEqual(['anonymous:anon-other', 'account:a1', 'anonymous:anon']);
   });
 });
 

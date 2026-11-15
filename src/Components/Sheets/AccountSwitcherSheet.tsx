@@ -6,7 +6,13 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useAccountSwitcher} from '#src/Hooks/useAccountSwitcher';
-import {accountLabel, isAccountPreRegistration, sortAccountsForDisplay} from '#src/Libraries/Account';
+import {
+  accountLabel,
+  AccountListEntry,
+  anonymousSessionLabel,
+  getAccountListEntries,
+  isServerPreRegistration,
+} from '#src/Libraries/Account';
 import {navigateToAddAccount} from '#src/Libraries/Navigation';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
@@ -17,22 +23,24 @@ interface AccountSwitcherSheetProps {
 }
 
 /**
- * Quick account switcher: one button per account (a check marks the current one), plus Add Account
- * and Manage Accounts. Opened by long-pressing the account avatar. Buttons are disabled while a
+ * Quick account switcher: one button per account or anonymous session, plus Add Account and Manage
+ * Accounts. Opened by long-pressing the account avatar. Buttons are disabled while a
  * switch is in flight.
  */
 export const AccountSwitcherSheet = ({isPresented, onDismiss}: AccountSwitcherSheetProps) => {
-  const {accounts, currentAccount, serverProfiles} = useSession();
+  const {accounts, sessions, currentSession, serverProfiles, switchToSession} = useSession();
   const {switchAccount, isSwitching} = useAccountSwitcher();
   const mainNavigation = useMainStack();
   const {theme} = useAppTheme();
+  const entries = getAccountListEntries(accounts, sessions);
 
-  const onSwitch = async (accountID: string) => {
-    const account = accounts.find(a => a.accountID === accountID);
-    // No explicit dismiss: a switch remounts the scope (sheet included), and a login redirect is a
-    // navigation, which closes the sheet.
-    if (account && account.accountID !== currentAccount?.accountID) {
-      await switchAccount(account);
+  // No explicit dismiss: a switch remounts the scope (sheet included), and a login redirect is a
+  // navigation, which closes the sheet.
+  const onSwitch = async (entry: AccountListEntry) => {
+    if (entry.kind === 'anonymous') {
+      await switchToSession(entry.session.sessionID);
+    } else if (entry.account.accountID !== currentSession?.accountID) {
+      await switchAccount(entry.account);
     }
   };
 
@@ -43,27 +51,27 @@ export const AccountSwitcherSheet = ({isPresented, onDismiss}: AccountSwitcherSh
   };
 
   return (
-    <AppBottomSheet
-      title={'Accounts'}
-      isPresented={isPresented}
-      onDismiss={onDismiss}
-      buttonCount={accounts.length + 2}>
-      {sortAccountsForDisplay(accounts).map(account => {
-        const isCurrent = account.accountID === currentAccount?.accountID;
+    <AppBottomSheet title={'Accounts'} isPresented={isPresented} onDismiss={onDismiss} buttonCount={entries.length + 2}>
+      {entries.map(entry => {
+        const serverUrl = entry.kind === 'account' ? entry.account.serverUrl : entry.session.serverUrl;
+        const isCurrent =
+          entry.kind === 'account'
+            ? entry.account.accountID === currentSession?.accountID
+            : entry.session.sessionID === currentSession?.sessionID;
         return (
           <AppBottomSheetButton
-            key={account.accountID}
-            buttonText={accountLabel(account)}
-            // Pre-registration accounts are marked with their own icon; the current account is already green.
+            key={entry.key}
+            buttonText={entry.kind === 'account' ? accountLabel(entry.account) : anonymousSessionLabel(entry.session)}
+            // Pre-registration servers are marked with their own icon; the current row is already green.
             icon={
-              isAccountPreRegistration(account, serverProfiles)
+              isServerPreRegistration(serverProfiles.find(p => p.serverUrl === serverUrl))
                 ? AppIcons.preregistration
                 : isCurrent
                   ? AppIcons.check
                   : undefined
             }
-            onPress={() => onSwitch(account.accountID)}
-            testID={`switchAccount-${account.accountID}`}
+            onPress={() => onSwitch(entry)}
+            testID={entry.kind === 'account' ? `switchAccount-${entry.key}` : `switchSession-${entry.key}`}
             disabled={isSwitching}
             // The current account is the positive (green) color; the rest use the FAB greys.
             buttonColor={isCurrent ? theme.colors.twitarrPositiveButton : theme.colors.inverseSurface}

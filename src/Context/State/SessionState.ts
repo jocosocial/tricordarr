@@ -50,7 +50,10 @@ export interface LoadedSessionData {
 export type SessionAction =
   | ({type: 'loaded'; persist?: boolean} & LoadedSessionData)
   | {
-      /** Upsert on (serverUrl, userID), find-or-create its session, and switch to it. */
+      /**
+       * Upsert on (serverUrl, userID), find-or-create its session, and switch to it. If the current
+       * session is anonymous on the same server it is deleted.
+       */
       type: 'account-signed-in';
       account: Account;
       token: TokenStringData;
@@ -318,6 +321,12 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
         };
         sessions = [...sessions, session];
       }
+      // Logging in from an anonymous session upgrades it: the anonymous session on that server goes
+      // in the same step instead of lingering beside the account.
+      const upgradedFrom = selectCurrentSession(state);
+      if (upgradedFrom && upgradedFrom.accountID === null && upgradedFrom.serverUrl === account.serverUrl) {
+        sessions = sessions.filter(s => s.sessionID !== upgradedFrom.sessionID);
+      }
       const next = activateSession(
         {
           ...state,
@@ -395,8 +404,12 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
       if (state.currentSessionID !== action.sessionID) {
         return next;
       }
-      // Fall back to the most recently used remaining session, or none.
-      const fallback = [...sessions].sort((a, b) => b.lastUsedAt.localeCompare(a.lastUsedAt))[0];
+      // Fall back to the most recently used remaining session that is usable (anonymous, or a
+      // signed-in account's), or none. A signed-out account's session has no token to run on.
+      const signedIn = new Set(state.accounts.filter(a => a.status === 'signedIn').map(a => a.accountID));
+      const fallback = sessions
+        .filter(s => s.accountID === null || signedIn.has(s.accountID))
+        .sort((a, b) => b.lastUsedAt.localeCompare(a.lastUsedAt))[0];
       return fallback
         ? activateSession({...next, currentSessionID: null}, fallback.sessionID, action.now)
         : {...next, currentSessionID: null};
