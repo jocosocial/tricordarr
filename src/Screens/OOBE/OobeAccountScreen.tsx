@@ -47,6 +47,8 @@ export const OobeAccountScreen = ({navigation, route}: Props) => {
   // Boarding leaves the pre-registration account behind, and people forget which username they
   // registered with, so offer it on the production login form. It is empty until the first whoami.
   const boardingUsername = mode === 'boarding' ? currentAccount?.username || undefined : undefined;
+  // Accounts are per year and they already have this year's, so boarding with one only offers login.
+  const hadAccount = mode === 'boarding' && !!currentAccount;
 
   const onProceed = async () => {
     // Already browsing this server without an account: there is no session to change.
@@ -111,6 +113,7 @@ export const OobeAccountScreen = ({navigation, route}: Props) => {
           onProceed={onProceed}
           preRegistrationMode={serverUrl === normalizeServerUrl(appConfig.preRegistrationServerUrl)}
           disabled={busy}
+          hideCreate={hadAccount}
         />
       )}
       <OobeButtonsView

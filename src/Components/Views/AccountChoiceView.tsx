@@ -14,6 +14,11 @@ interface AccountChoiceViewProps {
   /** Whether pre-registration applies to the server being chosen. Defaults to the active session's. */
   preRegistrationMode?: boolean;
   disabled?: boolean;
+  /**
+   * Leave out Create Account and the text leading up to it, for someone who already has an account,
+   * and word the log in text to say so.
+   */
+  hideCreate?: boolean;
 }
 
 /**
@@ -26,6 +31,7 @@ export const AccountChoiceView = ({
   onProceed,
   preRegistrationMode,
   disabled,
+  hideCreate,
 }: AccountChoiceViewProps) => {
   const {theme} = useAppTheme();
   const {preRegistrationMode: sessionPreRegistrationMode} = usePreRegistration();
@@ -33,27 +39,33 @@ export const AccountChoiceView = ({
 
   return (
     <ScrollingContentView isStack={false}>
-      <PaddedContentView>
-        <Text>Accounts are new every year. Only create an account if you have not done so this year.</Text>
-      </PaddedContentView>
-      {!preRegistration && (
-        <PaddedContentView>
-          <Text>
-            If you created an account during pre-registration, you can instead log in with that account below.
-          </Text>
-        </PaddedContentView>
+      {!hideCreate && (
+        <>
+          <PaddedContentView>
+            <Text>Accounts are new every year. Only create an account if you have not done so this year.</Text>
+          </PaddedContentView>
+          {!preRegistration && (
+            <PaddedContentView>
+              <Text>
+                If you created an account during pre-registration, you should instead log in with that account below.
+              </Text>
+            </PaddedContentView>
+          )}
+          <PaddedContentView>
+            <PrimaryActionButton
+              testID={'oobeCreateAccount-button'}
+              buttonText={'Create Account'}
+              onPress={onCreate}
+              disabled={disabled}
+            />
+          </PaddedContentView>
+        </>
       )}
       <PaddedContentView>
-        <PrimaryActionButton
-          testID={'oobeCreateAccount-button'}
-          buttonText={'Create Account'}
-          onPress={onCreate}
-          disabled={disabled}
-        />
-      </PaddedContentView>
-      <PaddedContentView>
         <Text>
-          If you already created an account this year (including during pre-registration) you can log in with it below.
+          {hideCreate
+            ? 'It looks like you already created an account during pre-registration! Press this button to log in with it.'
+            : 'If you already created an account this year (including during pre-registration) you can log in with it below.'}
         </Text>
       </PaddedContentView>
       <PaddedContentView>

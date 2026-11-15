@@ -47,7 +47,7 @@ First-run setup, boarding and Add Account are one flow (`OobeStackNavigator`) in
 - **boarding**: Welcome Aboard (long-press the pre-registration banner), Server (pre-filled with the default, production, server), Account, *commit*, Permissions, Finish.
 - **addAccount**: Server, Account, *commit*.
 
-When boarding, the Account step passes the pre-registration account's username to the login form as its initial username, since people forget the one they registered with.
+When boarding, the Account step passes the pre-registration account's username to the login form as its initial username, since people forget the one they registered with. A user who boards with a pre-registration account is not offered Create Account (or the text leading up to it), and the Log In text tells them they already have an account. One who boards anonymously sees all three options.
 
 At the Account step, Create Account goes through Conduct (`RegisterConductScreen`) before Register; Log In and Proceed Without an Account skip it. Register outside the setup flow (the Today account menu) goes through the same screen in the Settings stack, so every account creation agrees to the server's code of conduct first.
 
