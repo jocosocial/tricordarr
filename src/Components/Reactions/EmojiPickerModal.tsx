@@ -7,6 +7,25 @@ import {ReactionIcon} from '#src/Components/Reactions/ReactionIcon';
 import {useCustomEmoji} from '#src/Context/Contexts/CustomEmojiContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
+/** Named so each choice gets a stable testID; emoji themselves are not valid testID stems. */
+const commonReactions = [
+  {reaction: '👍', name: 'ThumbsUp'},
+  {reaction: '❤️', name: 'Heart'},
+  {reaction: '😆', name: 'Laugh'},
+  {reaction: '😂', name: 'Joy'},
+  {reaction: '🎉', name: 'Party'},
+  {reaction: '👀', name: 'Eyes'},
+  {reaction: '✅', name: 'Check'},
+];
+
+/** `:back-deck-juice:` becomes `BackDeckJuice`, the camelCase stem docs/Testing.md asks for. */
+const testIDStem = (token: string) =>
+  token
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean)
+    .map(part => part[0].toUpperCase() + part.slice(1))
+    .join('');
+
 interface EmojiPickerModalProps {
   open: boolean;
   onClose: () => void;
@@ -18,7 +37,6 @@ export const EmojiPickerModal = ({open, onClose, onEmojiSelected}: EmojiPickerMo
   const {commonStyles} = useStyles();
   const CustomEmoji = useCustomEmoji();
   const [unicodePickerOpen, setUnicodePickerOpen] = useState(false);
-  const commonReactions = ['👍', '❤️', '😆', '😂', '🎉', '👀', '✅'];
   const customReactions = Object.keys(CustomEmoji).filter(reaction => !CustomEmoji[reaction as string].secret);
   const styles = useMemo(
     () =>
@@ -56,8 +74,10 @@ export const EmojiPickerModal = ({open, onClose, onEmojiSelected}: EmojiPickerMo
             <ScrollView>
               <Text style={styles.sectionTitle}>Common</Text>
               <View style={styles.choices}>
-                {commonReactions.map(reaction => (
+                {commonReactions.map(({reaction, name}) => (
                   <TouchableOpacity
+                    testID={`reactionPicker${name}-button`}
+                    accessibilityRole={'button'}
                     accessibilityLabel={`React with ${reaction}`}
                     key={reaction}
                     onPress={() => handleSelection(reaction)}
@@ -70,7 +90,9 @@ export const EmojiPickerModal = ({open, onClose, onEmojiSelected}: EmojiPickerMo
               <View style={styles.choices}>
                 {customReactions.map(reaction => (
                   <TouchableOpacity
-                    accessibilityLabel={`React with ${reaction}`}
+                    testID={`reactionPicker${testIDStem(reaction)}-button`}
+                    accessibilityRole={'button'}
+                    accessibilityLabel={`React with ${CustomEmoji[reaction].name}`}
                     key={reaction}
                     onPress={() => handleSelection(reaction)}
                     style={styles.choice}>
@@ -81,8 +103,12 @@ export const EmojiPickerModal = ({open, onClose, onEmojiSelected}: EmojiPickerMo
             </ScrollView>
           </Dialog.ScrollArea>
           <Dialog.Actions>
-            <Button onPress={() => setUnicodePickerOpen(true)}>More Emoji</Button>
-            <Button onPress={onClose}>Cancel</Button>
+            <Button testID={'reactionPickerMoreEmoji-button'} onPress={() => setUnicodePickerOpen(true)}>
+              More Emoji
+            </Button>
+            <Button testID={'reactionPickerCancel-button'} onPress={onClose}>
+              Cancel
+            </Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

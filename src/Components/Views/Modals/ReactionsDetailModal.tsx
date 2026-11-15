@@ -60,7 +60,9 @@ export const ReactionsDetailModal = ({reactions, visible, onDismiss}: ReactionsD
           <ReactionsDetailModalContent reactions={reactions} />
         </Dialog.ScrollArea>
         <Dialog.Actions>
-          <Button onPress={onDismiss}>Close</Button>
+          <Button testID={'reactionsDetailClose-button'} onPress={onDismiss}>
+            Close
+          </Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>
