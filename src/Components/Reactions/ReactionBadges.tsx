@@ -36,6 +36,8 @@ export const ReactionBadges = ({reactions, onBadgePress, alignRight = false}: Re
           ...commonStyles.flexWrap,
           ...(alignRight ? commonStyles.flexEnd : commonStyles.flexStart),
           ...commonStyles.fullWidth,
+          // Same inset as MessageView gives the message text, so the badges line up with it.
+          ...commonStyles.paddingHorizontalSmall,
           // MessageView pads the bottom of the message text; pull the badges up into that padding
           // so they sit directly beneath the text.
           marginTop: -styleDefaults.marginSize / 2,
