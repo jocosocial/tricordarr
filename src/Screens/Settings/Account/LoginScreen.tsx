@@ -55,10 +55,14 @@ export const LoginScreen = () => {
         const account = await commitSignIn(serverUrl, response.data, siteCookie);
         // The account switch lands on the new session's home (or the next setup step). Client
         // settings and roles re-key on the new session and fetch on their own.
-        setSnackbarPayload({
-          message: `Signed in as ${account.username || formValues.username}`,
-          messageType: 'success',
-        });
+        // First run and boarding carry on to the permissions step, where the toast would only
+        // sit over its buttons; the setup flow is its own confirmation.
+        if (mode !== 'firstRun' && mode !== 'boarding') {
+          setSnackbarPayload({
+            message: `Signed in as ${account.username || formValues.username}`,
+            messageType: 'success',
+          });
+        }
         // Signing in to the account that is already active keeps the same scope and this screen.
         if (mounted.current) {
           navigation.goBack();
@@ -69,7 +73,7 @@ export const LoginScreen = () => {
         formikHelpers.setSubmitting(false);
       }
     },
-    [loginMutation, serverUrl, siteLogin, commitSignIn, navigation, setSnackbarPayload],
+    [loginMutation, serverUrl, siteLogin, commitSignIn, navigation, setSnackbarPayload, mode],
   );
 
   return (
