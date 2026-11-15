@@ -86,8 +86,8 @@ export interface AccountPreferences {
   schedule: Omit<ScheduleConfig, 'enableLateDayFlip'>;
   dismissWelcomeAboard: boolean;
   /**
-   * Whether this account gets a background socket while it is not the active one. Android only;
-   * see selectPushAccounts.
+   * Whether this account gets a background socket while it is not the active one. See
+   * selectPushAccounts.
    */
   backgroundNotifications: boolean;
 }

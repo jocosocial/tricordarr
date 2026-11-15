@@ -21,6 +21,6 @@ export interface NotificationLogEntry {
   source: NotificationLogSource;
   /// The raw socket JSON payload, as received.
   raw: string;
-  /// The account whose socket delivered the event. Absent on iOS and on entries from older builds.
+  /// The account whose socket delivered the event. Absent on entries from older builds.
   accountID?: string;
 }

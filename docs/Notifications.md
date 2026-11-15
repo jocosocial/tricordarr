@@ -38,8 +38,8 @@ account), `cancelContentNotification`, `cancelSecondaryNotifications`, and the e
 
 ### Accounts
 
-One service, one socket per account. The service is device-wide, not part of a session: it is not
-torn down when the session changes.
+Both platforms: one background provider per device, one socket per account inside it. The provider
+is device-wide, not part of a session: it is not torn down when the session changes.
 
 - **Which accounts** (`selectPushAccounts` in `Push/PushAccounts.ts`): the active account, plus any
   other signed-in account whose `backgroundNotifications` preference is on (Settings > Background
@@ -47,28 +47,32 @@ torn down when the session changes.
   server load). Never an account that is signed out, revoked, or on a server in pre-registration
   mode, and none at all before setup is complete or with the background worker switched off.
   Each account is filtered with its own push preferences and mute time.
-- **Syncing**: `startPushProvider()` on Android is a reconcile (`syncAndroidPushService`). It reads
-  the account model from storage, hands native the full list, and starts the service, or stops it
-  when the list is empty. `PushNotificationService` calls it on launch, on every session change
-  (it remounts with the session), and when the account list, a token or a push preference
-  changes. Native reopens only the sockets whose server or token changed. `stopPushProvider()`
-  stops every account (the Stop button). Session changes call
-  `releasePushProviderForSessionChange()`, which is a no-op on Android.
-- **Identity**: each notification is tagged `acct:<accountID>` so content IDs cannot collide across
-  accounts, and shows the username as sub text when more than one account is connected. "Connection
-  lost" is one notification per account. The service notification lists the connected usernames.
+- **Syncing**: `startPushProvider()` (`Push/index.ts`) is a reconcile, the same on both platforms.
+  It reads the account model from storage, hands native the full list through `syncPushAccounts`,
+  and starts the provider, or stops it when the list is empty. `PushNotificationService` calls it
+  on launch, on every session change (it remounts with the session), and when the account list, a
+  token, a push preference or the Wi-Fi networks change. Native reopens only the sockets whose
+  server or token changed. `stopPushProvider()` stops every account. `SessionProvider` does not
+  touch the provider on a switch.
+- **Identity**: content IDs are only unique within an account, so each notification is scoped to
+  its account (Android tag `acct:<accountID>`; iOS identifier `<accountID>:<contentID>` and thread
+  `accountID`) and shows the username (Android sub text, iOS subtitle) when more than one account
+  is connected. On Android "Connection lost" is one notification per account and the service
+  notification lists the connected usernames.
 - **Taps**: the deep link carries `?account=<accountID>`. `NavigationProvider`'s linking filter
   drops a link for an account that is not the active one, and `AccountLinkHandler` switches to that
   account (`useAccountSwitcher`, so a signed-out account gets the login form) and opens the link
   once the new session has mounted. The marker is stripped before routing, so it never becomes a
   route param. Helpers are in `Libraries/Notifications/AccountLink.ts`.
-- **Mark as Read** runs natively with the token of the notification's account. `onMarkAsRead`
-  carries the `accountID` and JS syncs caches only if that account is active.
+- **Mark as Read** (Android) runs natively with the token of the notification's account.
+  `onMarkAsRead` carries the `accountID` and JS syncs caches only if that account is active.
+- **Dismissing**: `cancelContentNotification` / `cancelSecondaryNotifications` in `Content.ts` go
+  through native on both platforms, for the active account.
 - **Status**: `getWebsocketStatus()` has one entry per connected account. The header indicator
   (`useBackgroundConnectionStatus`) shows the active account's; the settings screen lists them all.
 - **Log**: entries carry the `accountID` of the socket that delivered them. The log screen labels
   another account's events and does not open them.
-- **Revoked**: a rejected token marks that account's socket `Revoked` natively and stops retrying.
+- **Revoked** (Android): a rejected token marks that account's socket `Revoked` natively and stops retrying.
   JS marks the account revoked when it next uses that token; an inactive account stays `signedIn`
   in the account model until then.
 
@@ -106,18 +110,27 @@ is only used by the call foreground service (`CallForegroundService.ts`), so the
 
 ## iOS
 
-`TricordarrKit/WebsocketNotifier.swift` owns the socket inside the local push extension and posts
-notifications natively. JS drives it through `setupLocalPushManager`; `syncPushAccounts` is a thin
-single-account wrapper over the same code. `getWebsocketStatus()` returns one entry with
-`accountID: "default"`.
+One provider, a socket per account, same contract as Android (see "Accounts" above).
 
-iOS is still active-account only: one extension socket, dropped before a session change
-(`releasePushProviderForSessionChange`) and restarted for the new account. Its notifications carry
-no account, so one delivered before a switch opens in whichever account is active when tapped.
-Per-account sockets in the extension and account identity in `userInfo` are not done.
+| Piece                            | Role                                                                                                                                                                                           |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `WebsocketNotifierGroup`         | The provider: one `WebsocketNotifier` per account, started, stopped and health-checked together. The local push extension runs one; the app runs another for when the extension is not active. |
+| `WebsocketNotifier`              | One account's socket. Filters with that account's preferences, posts the notification, records the log entry, and persists its status per account in the App Group defaults.                   |
+| `PushAccountConfig`              | Swift mirror of the JS `PushAccount`. The same dictionaries are stored in the `NEAppPushManager` provider configuration under `accounts`, which is how the extension gets them.                |
+| `Notifications.syncPushAccounts` | Entry point from JS. Feeds the in-app group, saves the manager, and arbitrates between extension and in-app as before. An empty list disables the manager and stops everything.                |
+
+- The extension only runs on the manager's `matchSSIDs`, which is the union of the synced accounts'
+  `wifiNetworkNames` (each from its own server's profile). On a network only one server is on, the
+  other accounts' sockets fail and retry on the healthcheck timer.
+- The extension reads its accounts in `start()`. A changed provider configuration is expected to
+  restart it; that has not been re-verified on a device since this became multi-account.
+- A tap opens `tricordarr://<path>?account=<accountID>` (`Notifications.handleNotificationDeepLink`),
+  which JS handles the same way as on Android.
+- There is no Mark as Read action and no `Revoked` state on iOS. A rejected token keeps retrying on
+  the healthcheck timer until JS stops syncing the account.
+- `setupLocalPushManager` / `clearLocalPushManager` are gone; `syncPushAccounts` replaced them.
 
 ## notify-kit
 
-Still used on iOS (`getInitialNotification`, `onForegroundEvent`, `cancelDisplayedNotification`),
-for channel creation, the developer test screen, and the Android call foreground service. Its
+Still used on iOS (`getInitialNotification`, `onForegroundEvent`), for channel creation, the developer test screen, and the Android call foreground service. Its
 Android autolinking cannot be excluded until calls leave its service.

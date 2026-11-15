@@ -1,6 +1,6 @@
 # Accounts and Sessions
 
-Prerequisite for multiple accounts ([#334](https://github.com/jocosocial/tricordarr/issues/334)). Reference implementation studied: Bluesky `social-app` (`src/state/session`). Notification identity (account in payloads and tags) and the native multi-socket Android service are described in [Notifications](Notifications.md); on iOS background notifications are active-account only, restarted on a switch.
+Prerequisite for multiple accounts ([#334](https://github.com/jocosocial/tricordarr/issues/334)). Reference implementation studied: Bluesky `social-app` (`src/state/session`). Notification identity (account in payloads and tags) and the native multi-socket background providers are described in [Notifications](Notifications.md).
 
 ## Model
 
@@ -27,12 +27,12 @@ Context API: `useSession()` (`SessionContext.ts`). Notable: `signIn(serverUrl, t
 
 Above the scope (device-scoped): Config, Session, EffectiveConfig, Oobe, PreRegistration, Permissions, Theme, Navigation, Keyboard, Style, ErrorHandler, Snackbar. Below it everything that touches the API client, query cache or sockets. See [Navigation](Navigation.md) for the navigator consequences.
 
-Because the scope unmounts, anything that must outlive the old session (releasing the iOS push provider) happens in `SessionProvider` before the dispatch, not in the scope.
+Because the scope unmounts, anything that must outlive the old session happens in `SessionProvider` before the dispatch, not in the scope. The background push provider is not one of those: it is device-wide and keyed by account, and the new session's `PushNotificationService` re-syncs it.
 
 ## Flows
 
 - **Login / Register**: take an explicit `serverUrl` (the route param, else the active session's), never `appConfig.serverUrl`. `POST /auth/login` on that server, site login for the webview cookie, then `signIn`, which reads whoami, upserts the account, finds or creates its session and switches. Logging in never signs anyone else out. Forgot Password/Username act on that same explicit server.
-- **Switch**: release the old account's push provider (iOS; the Android service is keyed by account and is re-synced after the remount), dispatch, the scope remounts, `AccountCookieSync` puts that account's webview cookie back, `AccountIdentitySync` keeps the account row current, `EffectiveConfigProvider` re-mirrors config to native, the caller toasts "Signed in as username".
+- **Switch**: dispatch, the scope remounts, `PushNotificationService` re-syncs the push provider's accounts, `AccountCookieSync` puts that account's webview cookie back, `AccountIdentitySync` keeps the account row current, `EffectiveConfigProvider` re-mirrors config to native, the caller toasts "Signed in as username".
 - **Sign out (this device)** clears the token and the account's cookie and cache, keeps the row, and switches to the next most recently used signed-in account, else the anonymous session for the server. **Sign out all devices** also calls `/auth/logout`. **Remove** deletes the account, token, cookie, preferences and sessions (with cache files).
 - **Server change**: `switchToServer` finds or creates the anonymous session for the server.
 - **Pre-registration mode** is a property of the server, so it lives on its `ServerProfile` and every session on that server agrees. `preRegistrationMode` is the server's own `enablePreregistration`, mirrored from `/client/settings` by `ClientSettingsProvider` whenever that data changes; for a server nothing is known about yet, `SessionProvider` assumes it from whether the URL is the pre-registration server. `preRegistrationOverride` is a local decision that wins over it: the developer toggle and the banner's hidden disable (`setPreRegistrationOverride`; setting it to what the server reports clears it). Read it with `usePreRegistration()` or `isServerPreRegistration(profile)`.
@@ -72,7 +72,7 @@ Forgot Password / Forgot Username take the login form's `serverUrl` the same way
 `AppConfig.ts` splits the old single blob three ways:
 
 - **DeviceConfig** (`APP_CONFIG_V3`): urlPrefix, apiClientConfig, worker/socket flags, developer flags, accessibility, logLevel, timezone-warning flags, `enableLateDayFlip`, `serverUrl` (only "default server for a new session"), and `defaultPreferences`.
-- **AccountPreferences** (`ACCOUNT_PREFS_V1_<accountID>`): push toggles, mute, `markReadCancelPush`, `userPreferences.*`, `schedule.*` (minus `enableLateDayFlip`), `dismissWelcomeAboard`, `backgroundNotifications` (Android: keep this account's notification socket while another account is active). A new account starts from `defaultPreferences`; with no account signed in, edits to preferences become the defaults.
+- **AccountPreferences** (`ACCOUNT_PREFS_V1_<accountID>`): push toggles, mute, `markReadCancelPush`, `userPreferences.*`, `schedule.*` (minus `enableLateDayFlip`), `dismissWelcomeAboard`, `backgroundNotifications` (keep this account's notification socket while another account is active). A new account starts from `defaultPreferences`; with no account signed in, edits to preferences become the defaults.
 - **ServerProfile**: the per-server fields above.
 
 `useConfig().appConfig` is the merged view (`EffectiveConfigProvider`), so its ~100 consumers did not change; `updateAppConfig(fullConfig)` splits the write back to the right home. Headless code (workers, push managers, mark-as-read) calls `getEffectiveConfig(sessionID?)`, which resolves the same merge through `LAST_SESSION_ID`. The merged view is what `setAppConfig` mirrors to native.

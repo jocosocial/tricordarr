@@ -5,7 +5,6 @@ import {markAsReadPressAction, PressAction, settingsPressAction} from '#src/Enum
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {getCurrentPushAccountID} from '#src/Libraries/Notifications/Push/PushAccounts';
-import {isAndroid} from '#src/Libraries/Platform/Detection';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
@@ -193,48 +192,32 @@ export async function generateContentNotification(
 }
 
 /**
- * Dismiss the displayed notification for one piece of content (its notification ID is the content ID).
- * On Android the notification was posted by the native push service, which notify-kit cannot see.
+ * Dismiss the active account's displayed notification for one piece of content. The native push
+ * provider posted it, scoped to the account, so only native can find it.
  * Never throws; a failure to dismiss is only logged.
  */
 export async function cancelContentNotification(contentID: string) {
   try {
-    if (isAndroid) {
-      const accountID = await getCurrentPushAccountID();
-      if (accountID) {
-        NativeTricordarrModule.cancelContentNotification(accountID, contentID);
-      }
-      return;
+    const accountID = await getCurrentPushAccountID();
+    if (accountID) {
+      NativeTricordarrModule.cancelContentNotification(accountID, contentID);
     }
-    await notifee.cancelDisplayedNotification(contentID);
   } catch (error) {
     logger.error('Failed to cancel content notification', error);
   }
 }
 
 /**
- * Dismiss any displayed notifications that belong to the given secondary object (e.g. a forum).
- * Some notifications are keyed by their own content ID (e.g. a post ID), so they are matched on the
- * `secondaryContentID` (the parent ID) that the server includes in the socket event.
+ * Dismiss the active account's displayed notifications that belong to the given secondary object
+ * (e.g. a forum). Some notifications are keyed by their own content ID (e.g. a post ID), so they
+ * are matched on the `secondaryContentID` (the parent ID) that the server includes in the socket event.
  * @param secondaryContentID The parent object ID whose notifications should be cancelled.
  */
 export async function cancelSecondaryNotifications(secondaryContentID: string) {
   try {
-    // On Android the notifications are posted by the native push service, which notify-kit cannot see.
-    if (isAndroid) {
-      const accountID = await getCurrentPushAccountID();
-      if (accountID) {
-        NativeTricordarrModule.cancelSecondaryNotifications(accountID, secondaryContentID);
-      }
-      return;
-    }
-    const displayed = await notifee.getDisplayedNotifications();
-    const ids = displayed
-      .filter(n => n.id && n.notification.data?.secondaryContentID === secondaryContentID)
-      .map(n => n.id as string);
-    if (ids.length > 0) {
-      logger.debug(`Cancelling ${ids.length} notification(s) for secondary content ${secondaryContentID}`);
-      await notifee.cancelDisplayedNotifications(ids);
+    const accountID = await getCurrentPushAccountID();
+    if (accountID) {
+      NativeTricordarrModule.cancelSecondaryNotifications(accountID, secondaryContentID);
     }
   } catch (error) {
     logger.error('Failed to cancel secondary notifications', error);

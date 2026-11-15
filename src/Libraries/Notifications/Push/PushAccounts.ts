@@ -1,12 +1,12 @@
 import {isAccountPreRegistration} from '#src/Libraries/Account';
-import {AccountPreferences, DeviceConfig, getDeviceConfig} from '#src/Libraries/AppConfig';
+import {AccountPreferences, DeviceConfig, getDeviceConfig, mergeAppConfig} from '#src/Libraries/AppConfig';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
 import {Account, ServerProfile} from '#src/Structs/SessionStructs';
 
 /**
  * An account the native background service connects for, as accepted by
- * `NativeTricordarrModule.syncPushAccounts`. `accountID` is the `Account.accountID`; native treats
- * it as an opaque key.
+ * `NativeTricordarrModule.syncPushAccounts` on both platforms. `accountID` is the
+ * `Account.accountID`; native treats it as an opaque key.
  */
 export interface PushAccount {
   accountID: string;
@@ -20,6 +20,8 @@ export interface PushAccount {
     pushNotifications: Record<string, boolean>;
     muteNotificationsUntil?: number;
   };
+  /** The networks the account's server is on. iOS only runs its extension while joined to one. */
+  wifiNetworkNames: string[];
 }
 
 /**
@@ -62,6 +64,7 @@ export const selectPushAccounts = (inputs: PushAccountInputs): PushAccount[] => 
   for (const account of accounts) {
     const token = tokens[account.accountID];
     const prefs = preferences[account.accountID] ?? deviceConfig.defaultPreferences;
+    const profile = serverProfiles.find(p => p.serverUrl === account.serverUrl);
     const isActive = account.accountID === activeAccountID;
     if (account.status !== 'signedIn' || !token || isAccountPreRegistration(account, serverProfiles)) {
       continue;
@@ -81,6 +84,8 @@ export const selectPushAccounts = (inputs: PushAccountInputs): PushAccount[] => 
         pushNotifications: {...prefs.pushNotifications},
         muteNotificationsUntil: prefs.muteNotifications ? new Date(prefs.muteNotifications).getTime() : undefined,
       },
+      // The effective config supplies the same defaults the settings screen shows.
+      wifiNetworkNames: [...mergeAppConfig(deviceConfig, prefs, profile).wifiNetworkNames],
     });
   }
   return pushAccounts;

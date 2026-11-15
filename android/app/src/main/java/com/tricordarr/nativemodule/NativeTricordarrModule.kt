@@ -83,14 +83,6 @@ class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTric
     ImageBlur.blurTextInImage(inputFilePath, callback)
   }
 
-  override fun setupLocalPushManager(
-    socketUrl: String,
-    token: String,
-    enable: Boolean,
-  ) {
-    Log.d(NAME, "setupLocalPushManager is a no-op on Android")
-  }
-
   override fun setAppConfig(appConfigJson: String) {
     Log.d(NAME, "setAppConfig is a no-op on Android")
   }
@@ -173,10 +165,6 @@ class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTric
 
   override fun cancelSecondaryNotifications(accountID: String, secondaryContentID: String) {
     NotificationBuilder.cancelSecondary(reactApplicationContext, accountID, secondaryContentID)
-  }
-
-  override fun clearLocalPushManager() {
-    Log.d(NAME, "clearLocalPushManager is a no-op on Android")
   }
 
   // On Android the native push service appends `fgs` entries to the same JSONL file JS reads

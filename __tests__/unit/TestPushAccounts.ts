@@ -110,6 +110,21 @@ describe('selectPushAccounts', () => {
     expect(ids(makeInputs({deviceConfig, preferences: {b: background}}))).toEqual([]);
   });
 
+  it('gives each account the networks of its own server', () => {
+    const beta = 'https://beta.twitarr.com';
+    const inputs = makeInputs({
+      accounts: [makeAccount('a'), makeAccount('b', {serverUrl: beta})],
+      serverProfiles: [
+        {...makeProfile(SERVER, false), wifiNetworkNames: ['ShipWifi']},
+        {...makeProfile(beta, false), wifiNetworkNames: ['BetaWifi', 'BetaGuest']},
+      ],
+      preferences: {b: background},
+    });
+    const [a, b] = selectPushAccounts(inputs);
+    expect(a.wifiNetworkNames).toEqual(['ShipWifi']);
+    expect(b.wifiNetworkNames).toEqual(['BetaWifi', 'BetaGuest']);
+  });
+
   it('gives each account its own identity, token and preferences', () => {
     const mutedUntil = new Date('2026-03-01T12:00:00.000Z');
     const inputs = makeInputs({

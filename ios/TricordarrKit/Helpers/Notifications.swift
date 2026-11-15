@@ -23,14 +23,13 @@ import UserNotifications
 	/// The pushManager is the instance that handles the local push provider.
 	@objc dynamic var backgroundPushManager: NEAppPushManager?
 	/// InApp runs when app is foregrounded and the extension isn't running.
-	@objc dynamic var foregroundPushProvider = WebsocketNotifier(isInApp: true)
+	@objc dynamic var foregroundPushProvider = WebsocketNotifierGroup(isInApp: true)
 	/// This timer is used in various places to determine if the foregroundPushProvider should be started.
 	private var providerDownTimer: Timer?
 	/// Logger for this class
 	private let logger = Logging.getLogger("Notifications")
-	/// Stored socket URL and token for configuring the background manager
-	private var storedSocketUrl: String?
-	private var storedToken: String?
+	/// The accounts JS last synced, for configuring the background manager and the in-app provider
+	private var storedAccounts: [PushAccountConfig] = []
 	/// KVO observation token for backgroundPushManager.isActive
 	private var isActiveObservation: NSKeyValueObservation?
 	/// Observer token for AppConfig change notifications
@@ -48,45 +47,64 @@ import UserNotifications
 	}
 
 	/**
-	 Configure the providers with settings. Called from the JavaScript side over the "bridge".
+	 Replaces the accounts the providers hold notification sockets for. Called from the JavaScript side
+	 over the "bridge" with the same JSON Android gets (see `PushAccount` in `Push/PushAccounts.ts`), on
+	 launch and whenever the accounts, their tokens or their preferences change. An empty list turns
+	 everything off.
+	 */
+	@objc public static func syncPushAccounts(accountsJson: String) {
+		let accounts = PushAccountConfig.list(fromJson: accountsJson)
+		// The providers use timers and KVO that expect the main thread.
+		DispatchQueue.main.async {
+			let instance = Notifications.shared
+			instance.logger.log(
+				"[Notifications.swift] syncPushAccounts with \(accounts.count, privacy: .public) accounts"
+			)
+			WebsocketNotifier.prunePersistedStatus(keeping: Set(accounts.map { $0.accountID }))
+			if accounts.isEmpty {
+				clearSettings()
+				return
+			}
+			instance.saveSettings(accounts: accounts)
+			appStarted()
+		}
+	}
+
+	/**
+	 Configure the providers with the synced accounts.
 	 Ensures foreground/background providers are reconciled after config updates.
 	 */
-	@objc static func saveSettings(socketUrl: String, token: String) {
+	private func saveSettings(accounts: [PushAccountConfig]) {
 		// Store settings for background manager configuration
-		Notifications.shared.storedSocketUrl = socketUrl
-		Notifications.shared.storedToken = token
+		storedAccounts = accounts
 
 		// Update foreground provider
-		if let urlComponents = URLComponents(string: socketUrl) {
-			Notifications.shared.foregroundPushProvider.updateConfig(serverURL: urlComponents.url, token: token)
-		}
-		Notifications.shared.reconcileProviderCycle(reason: "saveSettings")
+		foregroundPushProvider.setAccounts(accounts)
+		reconcileProviderCycle(reason: "saveSettings")
 
 		// Update background manager if it exists
-		if let manager = Notifications.shared.backgroundPushManager {
-			Notifications.shared.saveSettings(for: manager)
+		if let manager = backgroundPushManager {
+			saveSettings(for: manager)
 		}
 	}
 
 	/**
 	 Clears all stored notification settings and stops all providers.
-	 Provides a clean slate by clearing stored socket URL, token, disabling the background push manager,
+	 Provides a clean slate by clearing the stored accounts, disabling the background push manager,
 	 and stopping/clearing the foreground push provider.
-	 Called from the JavaScript side over the "bridge".
 	 */
-	@objc public static func clearSettings() {
+	static func clearSettings() {
 		let instance = Notifications.shared
 		instance.logger.log("[Notifications.swift] clearSettings called")
 
 		// Clear stored settings
-		instance.storedSocketUrl = nil
-		instance.storedToken = nil
+		instance.storedAccounts = []
 
 		// Stop foreground push provider if running
 		instance.checkStopInAppSocket()
 
 		// Clear foreground push provider config
-		instance.foregroundPushProvider.updateConfig(serverURL: nil, token: nil)
+		instance.foregroundPushProvider.setAccounts([])
 
 		// Disable background push manager if it exists and is currently enabled.
 		// Skip save when already disabled to avoid duplicate save and "configuration is unchanged" / NEAppPushErrorDomain errors.
@@ -170,7 +188,7 @@ import UserNotifications
 		return ForegroundPushProviderStatus(
 			lastPing: lastPingString,
 			isActive: provider.startState,
-			socketPingInterval: provider.socketPingTimer?.timeInterval
+			socketPingInterval: provider.socketPingInterval
 		)
 	}
 
@@ -186,33 +204,17 @@ import UserNotifications
 	}
 
 	/**
-	 Gets the current status of the websocket connection, however it is being run (extension or in-app).
-	 Read from the shared App Group UserDefaults suite since `WebsocketNotifier` persists its status there,
-	 which works regardless of which process (extension or app) currently owns the socket.
-	 Called from the JavaScript side over the "bridge".
-
-	 - Returns: WebsocketStatus struct with optional state, lastHealthcheckAt, lastHealthcheckSuccess, lastError, and lastErrorAt
-	 */
-	static func getWebsocketStatus() -> WebsocketStatus {
-		let defaults = UserDefaults(suiteName: WebsocketNotifier.appGroupSuiteName)
-		return WebsocketStatus(
-			state: defaults?.string(forKey: "ws_state"),
-			lastHealthcheckAt: defaults?.object(forKey: "ws_last_healthcheck_at") as? Double,
-			lastHealthcheckSuccess: defaults?.object(forKey: "ws_last_healthcheck_success") as? Bool,
-			lastError: defaults?.string(forKey: "ws_last_error"),
-			lastErrorAt: defaults?.object(forKey: "ws_last_error_at") as? Double
-		)
-	}
-
-	/**
-	 Gets the current status of the websocket connection as a dictionary.
-	 Objective-C bridge method that converts WebsocketStatus to [String: Any].
+	 Gets the current status of each synced account's websocket connection, however it is being run
+	 (extension or in-app). Read from the shared App Group UserDefaults suite since `WebsocketNotifier`
+	 persists its status there, which works regardless of which process currently owns the socket.
 	 Called from the Objective-C bridge.
 
-	 - Returns: Dictionary with keys: "state", "lastHealthcheckAt", "lastHealthcheckSuccess", "lastError", "lastErrorAt" (String/Bool/Double or NSNull; the `*At` timestamps are epoch milliseconds)
+	 - Returns: One dictionary per account with keys: "accountID", "state", "lastHealthcheckAt", "lastHealthcheckSuccess", "lastError", "lastErrorAt" (String/Bool/Double or NSNull; the `*At` timestamps are epoch milliseconds)
 	 */
-	@objc public static func getWebsocketStatusDictionary() -> [String: Any] {
-		return getWebsocketStatus().asDictionary
+	@objc public static func getWebsocketStatusDictionaries() -> [[String: Any]] {
+		return Notifications.shared.storedAccounts.map {
+			WebsocketNotifier.persistedStatus(accountID: $0.accountID).asDictionary
+		}
 	}
 
 	// MARK: - Notification Generation
@@ -231,6 +233,8 @@ import UserNotifications
 	   - url: A URL string associated with the content. This is typically used for deep linking.
 	   - markAsReadUrl: An optional URL string used to mark the content as read when acted upon.
 	   - secondaryContentID: An optional ID of a related parent object (the Forum ID for forum post notifications), used to dismiss related notifications.
+	   - accountID: The account whose socket delivered the event. Scopes the notification's identity and thread, and travels in the tap's deep link.
+	   - accountName: The account's username, shown as the subtitle. Passed only when several accounts are connected.
 	 */
 	static func generateContentNotification(
 		_ id: String = UUID().uuidString,
@@ -239,14 +243,17 @@ import UserNotifications
 		type: NotificationTypeData,
 		url: String,
 		markAsReadUrl: String? = nil,
-		secondaryContentID: String? = nil
+		secondaryContentID: String? = nil,
+		accountID: String? = nil,
+		accountName: String? = nil
 	) {
 		// `userInfo` is the equivant of `data` in Notifee
 		let userInfo = UserInfoData(
 			type: type,
 			url: url,
 			markAsReadUrl: markAsReadUrl,
-			secondaryContentID: secondaryContentID
+			secondaryContentID: secondaryContentID,
+			accountID: accountID
 		)
 
 		// Construct the notification payload
@@ -255,9 +262,19 @@ import UserNotifications
 		content.body = body
 		content.sound = .default
 		content.userInfo = userInfo.asDictionary
+		if let accountID = accountID {
+			content.threadIdentifier = accountID
+		}
+		if let accountName = accountName, !accountName.isEmpty {
+			content.subtitle = accountName
+		}
 
 		// Send it
-		let request = UNNotificationRequest(identifier: id, content: content, trigger: nil)
+		let request = UNNotificationRequest(
+			identifier: contentNotificationIdentifier(id, accountID: accountID),
+			content: content,
+			trigger: nil
+		)
 		UNUserNotificationCenter.current()
 			.add(request) { error in
 				if let error = error {
@@ -269,6 +286,43 @@ import UserNotifications
 
 				Logging.logger.log("[Notifications.swift] Local notification posted successfully")
 			}
+	}
+
+	/// Content IDs are only unique within an account, so a notification's identifier is scoped to its account.
+	private static func contentNotificationIdentifier(_ contentID: String, accountID: String?) -> String {
+		guard let accountID = accountID else { return contentID }
+		return "\(accountID):\(contentID)"
+	}
+
+	/**
+	 Removes the delivered notification for one piece of content of an account.
+	 Called from the JavaScript side over the "bridge".
+	 */
+	@objc public static func cancelContentNotification(accountID: String, contentID: String) {
+		// The bare content ID covers notifications delivered before identifiers were per account.
+		UNUserNotificationCenter.current()
+			.removeDeliveredNotifications(withIdentifiers: [
+				contentNotificationIdentifier(contentID, accountID: accountID), contentID,
+			])
+	}
+
+	/**
+	 Removes every delivered notification of an account that belongs to a parent object, e.g. a forum.
+	 Called from the JavaScript side over the "bridge".
+	 */
+	@objc public static func cancelSecondaryNotifications(accountID: String, secondaryContentID: String) {
+		let center = UNUserNotificationCenter.current()
+		center.getDeliveredNotifications { notifications in
+			let identifiers = notifications.compactMap { notification -> String? in
+				let userInfo = notification.request.content.userInfo
+				let notificationAccountID = userInfo["accountID"] as? String
+				guard userInfo["secondaryContentID"] as? String == secondaryContentID,
+					notificationAccountID == nil || notificationAccountID == accountID
+				else { return nil }
+				return notification.request.identifier
+			}
+			center.removeDeliveredNotifications(withIdentifiers: identifiers)
+		}
 	}
 
 	// MARK: - Notification Handling
@@ -328,8 +382,8 @@ import UserNotifications
 	private func saveSettings(for manager: NEAppPushManager) {
 		logger.info("[Notifications.swift] saveSettings for manager")
 
-		guard let socketUrl = storedSocketUrl, let token = storedToken else {
-			logger.error("[Notifications.swift] Cannot save settings for manager: socketUrl or token is nil")
+		guard !storedAccounts.isEmpty else {
+			logger.error("[Notifications.swift] Cannot save settings for manager: no accounts")
 			return
 		}
 
@@ -338,7 +392,7 @@ import UserNotifications
 			return
 		}
 
-		let settings = PushManagerSettings(socketUrl: socketUrl, token: token, appConfig: appConfig)
+		let settings = PushManagerSettings(accounts: storedAccounts, appConfig: appConfig)
 
 		//
 		guard settings.hasManagerChanged(manager) || !manager.isEnabled else {
@@ -427,7 +481,7 @@ import UserNotifications
 	 Initialize and configure the background push manager at app startup.
 	 Loads existing manager from preferences, configures it, sets up observers, and manages the foreground/background provider lifecycle.
 	 */
-	@objc static func appStarted() {
+	static func appStarted() {
 		#if !targetEnvironment(simulator)
 			let instance = Notifications.shared
 
@@ -503,9 +557,9 @@ import UserNotifications
 	private func handleAppConfigChange(_ notification: Foundation.Notification) {
 		logger.log("[Notifications.swift] appConfigDidChange received")
 
-		guard storedSocketUrl != nil, storedToken != nil, AppConfig.shared != nil else {
+		guard !storedAccounts.isEmpty, AppConfig.shared != nil else {
 			logger.log(
-				"[Notifications.swift] appConfigDidChange: prerequisites missing (socketUrl/token/appConfig), skipping"
+				"[Notifications.swift] appConfigDidChange: prerequisites missing (accounts/appConfig), skipping"
 			)
 			return
 		}
@@ -550,19 +604,28 @@ import UserNotifications
 		return UserInfoData(
 			type: type,
 			url: urlString,
-			markAsReadUrl: userInfo["markAsReadUrl"] as? String
+			markAsReadUrl: userInfo["markAsReadUrl"] as? String,
+			accountID: userInfo["accountID"] as? String
 		)
 	}
 
 	/**
 	 Constructs a deep link URL with the tricordarr:// prefix from a notification URL path.
 	 The urlPath should start with a /, so we add tricordarr:/ to get tricordarr://...
+	 The account travels as an `account` query parameter, which the JavaScript side uses to open the
+	 link in that account, switching to it first if another one is active.
 	
 	 - Parameter urlPath: The URL path from the notification (e.g., "/seamail/123")
+	 - Parameter accountID: The account the notification was delivered for, if it recorded one
 	 - Returns: The constructed deep link URL object, or nil if the URL is invalid (logs error on failure)
 	 */
-	private func createDeepLinkUrl(from urlPath: String) -> URL? {
-		let deepLinkUrl = "tricordarr:/\(urlPath)"
+	private func createDeepLinkUrl(from urlPath: String, accountID: String?) -> URL? {
+		var deepLinkUrl = "tricordarr:/\(urlPath)"
+		if let accountID = accountID,
+			let encoded = accountID.addingPercentEncoding(withAllowedCharacters: .alphanumerics)
+		{
+			deepLinkUrl += "\(deepLinkUrl.contains("?") ? "&" : "?")account=\(encoded)"
+		}
 		guard let url = URL(string: deepLinkUrl) else {
 			logger.error(
 				"[Notifications.swift] Invalid URL string in notification userInfo: \(urlPath, privacy: .public)"
@@ -593,7 +656,7 @@ import UserNotifications
 		}
 
 		// Construct the deep link URL with the tricordarr:// prefix
-		guard let url = createDeepLinkUrl(from: userInfoData.url) else {
+		guard let url = createDeepLinkUrl(from: userInfoData.url, accountID: userInfoData.accountID) else {
 			return
 		}
 

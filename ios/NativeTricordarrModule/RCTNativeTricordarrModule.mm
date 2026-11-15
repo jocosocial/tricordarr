@@ -37,19 +37,6 @@
   [AppConfig setAppConfigWithAppConfigJson:appConfigJson];
 }
 
-- (void)setupLocalPushManager:(nonnull NSString *)socketUrl
-                        token:(nonnull NSString *)token
-                       enable:(BOOL)enable {
-  NSLog(@"setupLocalPushManager called with parameters:");
-  NSLog(@"  socketUrl: %@", socketUrl);
-  NSLog(@"  token: %@", token);
-  NSLog(@"  enable: %@", enable ? @"YES" : @"NO");
-
-  [AppConfig setupLocalPushManagerWithSocketUrl:socketUrl
-                                          token:token
-                                         enable:enable];
-}
-
 - (void)getBackgroundPushManagerStatus:(RCTPromiseResolveBlock)resolve
                                 reject:(RCTPromiseRejectBlock)reject {
   NSDictionary *status =
@@ -64,56 +51,21 @@
   resolve(status);
 }
 
-// iOS runs a single extension socket and does not know JS's account IDs, so it reports one entry
-// under a fixed ID. Multi-account sockets in the extension are a later phase.
+// One entry per synced account, whichever of the extension or the in-app provider runs its socket.
 - (void)getWebsocketStatus:(RCTPromiseResolveBlock)resolve
                      reject:(RCTPromiseRejectBlock)reject {
-  NSMutableDictionary *status =
-      [[Notifications getWebsocketStatusDictionary] mutableCopy];
-  status[@"accountID"] = @"default";
-  resolve(@[ status ]);
+  resolve([Notifications getWebsocketStatusDictionaries]);
 }
 
-// Thin wrapper over setupLocalPushManager for the single-account case: the first enabled account
-// becomes the extension's socket, and an empty list clears everything. JS still drives iOS
-// through setupLocalPushManager until that is retired.
+// The extension and the in-app provider each hold one socket per account in this list, and an
+// empty list turns them off.
 - (void)syncPushAccounts:(nonnull NSString *)accountsJson {
-  NSData *data = [accountsJson dataUsingEncoding:NSUTF8StringEncoding];
-  NSArray *accounts = data ? [NSJSONSerialization JSONObjectWithData:data
-                                                             options:0
-                                                               error:nil]
-                           : nil;
-  if (![accounts isKindOfClass:[NSArray class]] || accounts.count == 0) {
-    [Notifications clearSettings];
-    return;
-  }
-  NSDictionary *account = accounts.firstObject;
-  NSString *serverUrl = account[@"serverUrl"];
-  NSString *urlPrefix = account[@"urlPrefix"] ?: @"";
-  NSString *token = account[@"token"];
-  if (![serverUrl isKindOfClass:[NSString class]] ||
-      ![token isKindOfClass:[NSString class]]) {
-    NSLog(@"syncPushAccounts: first account is missing serverUrl or token");
-    return;
-  }
-  NSString *socketUrl = [NSString
-      stringWithFormat:@"%@%@/notification/socket", serverUrl, urlPrefix];
-  if ([socketUrl hasPrefix:@"https://"]) {
-    socketUrl = [socketUrl stringByReplacingCharactersInRange:NSMakeRange(0, 5)
-                                                   withString:@"wss"];
-  } else if ([socketUrl hasPrefix:@"http://"]) {
-    socketUrl = [socketUrl stringByReplacingCharactersInRange:NSMakeRange(0, 4)
-                                                   withString:@"ws"];
-  }
-  BOOL enabled = [account[@"enabled"] boolValue];
-  [AppConfig setupLocalPushManagerWithSocketUrl:socketUrl
-                                          token:token
-                                         enable:enabled];
+  [Notifications syncPushAccountsWithAccountsJson:accountsJson];
 }
 
 - (void)setPushAccountEnabled:(nonnull NSString *)accountID
                       enabled:(BOOL)enabled {
-  NSLog(@"setPushAccountEnabled is a no-op on iOS (single account)");
+  NSLog(@"setPushAccountEnabled is a no-op on iOS; JS syncs the full list instead");
 }
 
 - (void)startBackgroundService {
@@ -124,20 +76,16 @@
   NSLog(@"stopBackgroundService is a no-op on iOS");
 }
 
-// Notification identifiers are the content ID (see Notifications.generateContentNotification).
 - (void)cancelContentNotification:(nonnull NSString *)accountID
                         contentID:(nonnull NSString *)contentID {
-  [[UNUserNotificationCenter currentNotificationCenter]
-      removeDeliveredNotificationsWithIdentifiers:@[ contentID ]];
+  [Notifications cancelContentNotificationWithAccountID:accountID
+                                              contentID:contentID];
 }
 
 - (void)cancelSecondaryNotifications:(nonnull NSString *)accountID
                   secondaryContentID:(nonnull NSString *)secondaryContentID {
-  NSLog(@"cancelSecondaryNotifications is a no-op on iOS; JS uses notify-kit there");
-}
-
-- (void)clearLocalPushManager {
-  [Notifications clearSettings];
+  [Notifications cancelSecondaryNotificationsWithAccountID:accountID
+                                        secondaryContentID:secondaryContentID];
 }
 
 - (void)getNotificationLog:(RCTPromiseResolveBlock)resolve
