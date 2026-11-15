@@ -247,8 +247,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         // here late. MaintenanceModeView already explains it, so don't also show an error.
         const isMaintenanceResponse =
           isAxiosError(error) && error.response?.status === 401 && /maintenance mode/i.test(errorString);
-        // A 401 on a request that carried this session's token means the server no longer honors
-        // it (typically a "log out all devices" from elsewhere deleted the shared token). Revoke
+        // A 401 on a request that carried this session's token means the server no longer honors the
+        // token (typically a "log out all devices" from elsewhere deleted the shared token). Revoke
         // just this account; the revoke is guarded by sessionID so a late 401 can't hit another.
         const sentToken = isAxiosError(error) ? String(error.config?.headers?.Authorization ?? '') : '';
         const isRevokedToken =
