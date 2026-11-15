@@ -96,7 +96,7 @@ export interface SessionContextType {
   /** Record fields learned from whoami. Ignored if `sourceSessionID` is no longer current. */
   updateAccountIdentity: (
     accountID: string,
-    patch: Partial<Pick<Account, 'username' | 'displayName' | 'userImage' | 'accessLevel'>>,
+    patch: Partial<Pick<Account, 'username' | 'userImage' | 'accessLevel'>>,
     sourceSessionID: string,
   ) => Promise<void>;
   /** A token route returned 401. Ignored if `sourceSessionID` is no longer current. */

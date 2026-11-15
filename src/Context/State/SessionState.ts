@@ -90,7 +90,7 @@ export type SessionAction =
   | {
       type: 'account-updated';
       accountID: string;
-      patch: Partial<Pick<Account, 'username' | 'displayName' | 'userImage' | 'accessLevel'>>;
+      patch: Partial<Pick<Account, 'username' | 'userImage' | 'accessLevel'>>;
       sourceSessionID?: string;
     }
   | {

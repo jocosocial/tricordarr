@@ -13,7 +13,6 @@ export interface Account {
   userID: string;
   /** Captured from /user/whoami after login, for the switcher. Empty until it has been fetched. */
   username: string;
-  displayName?: string;
   userImage?: string;
   /** Refreshed from whoami; the login-time snapshot on the token goes stale. */
   accessLevel: UserAccessLevel;

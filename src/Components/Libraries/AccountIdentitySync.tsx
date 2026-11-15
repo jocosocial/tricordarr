@@ -8,7 +8,7 @@ const logger = createLogger('AccountIdentitySync.tsx');
 
 /**
  * Keeps the active account's row current from /user/whoami and /user/profile: the username (empty
- * after a migration), display name, avatar and, importantly, access level, which the login-time
+ * after a migration), avatar and, importantly, access level, which the login-time
  * snapshot on the token lets go stale. Both queries are already used elsewhere (roles, the main
  * account menu), so this adds no requests of its own.
  *
@@ -22,13 +22,11 @@ export const AccountIdentitySync = () => {
   const sessionID = currentSession?.sessionID;
   const accountID = currentAccount?.accountID;
   const username = currentAccount?.username;
-  const displayName = currentAccount?.displayName;
   const userImage = currentAccount?.userImage;
   const accessLevel = currentAccount?.accessLevel;
 
   const whoamiUsername = whoami?.username;
   const whoamiAccessLevel = whoami?.accessLevel;
-  const profileDisplayName = profile?.header.displayName;
   const profileUserImage = profile?.header.userImage;
   const whoamiUserID = whoami?.userID;
 
@@ -42,7 +40,6 @@ export const AccountIdentitySync = () => {
     const patch = {
       ...(whoamiUsername !== username ? {username: whoamiUsername} : {}),
       ...(whoamiAccessLevel !== accessLevel ? {accessLevel: whoamiAccessLevel} : {}),
-      ...(profileDisplayName !== displayName ? {displayName: profileDisplayName} : {}),
       ...(profileUserImage !== userImage ? {userImage: profileUserImage} : {}),
     };
     if (Object.keys(patch).length === 0) {
@@ -59,11 +56,9 @@ export const AccountIdentitySync = () => {
     whoamiUserID,
     whoamiUsername,
     whoamiAccessLevel,
-    profileDisplayName,
     profileUserImage,
     username,
     accessLevel,
-    displayName,
     userImage,
     updateAccountIdentity,
   ]);

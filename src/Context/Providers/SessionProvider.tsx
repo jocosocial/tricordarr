@@ -436,7 +436,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
   const updateAccountIdentity = useCallback(
     async (
       accountID: string,
-      patch: Partial<Pick<Account, 'username' | 'displayName' | 'userImage' | 'accessLevel'>>,
+      patch: Partial<Pick<Account, 'username' | 'userImage' | 'accessLevel'>>,
       sourceSessionID: string,
     ) => {
       store.dispatch({type: 'account-updated', accountID, patch, sourceSessionID});
