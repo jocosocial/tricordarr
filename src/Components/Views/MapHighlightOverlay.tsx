@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import Animated from 'react-native-reanimated';
 
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useHighlightAnimation} from '#src/Hooks/useHighlightAnimation';
 import {ShipLabel} from '#src/Structs/ShipStructs';
@@ -16,10 +17,6 @@ interface MapHighlightOverlayProps {
 /// Width of the port/starboard edge arrow, as a fraction of the image width.
 const ARROW_WIDTH_FRACTION = 0.03;
 
-/// Box border thickness. Also used to pad the box out from the label's raw
-/// bounds by the same amount, so the border doesn't sit flush against the text.
-const BOX_BORDER_WIDTH = 4;
-
 /**
  * Absolutely-positioned sibling of the deck image: a bordered box on every
  * target label (a venue can be captioned more than once on a deck — Lido
@@ -29,6 +26,7 @@ const BOX_BORDER_WIDTH = 4;
  */
 export const MapHighlightOverlay = ({width, height, labels}: MapHighlightOverlayProps) => {
   const {theme} = useAppTheme();
+  const {styleDefaults} = useStyles();
   const {triggerPulseAnimation, pulseAnimatedStyle} = useHighlightAnimation({});
 
   React.useEffect(() => {
@@ -53,7 +51,7 @@ export const MapHighlightOverlay = ({width, height, labels}: MapHighlightOverlay
     },
     box: {
       position: 'absolute',
-      borderWidth: BOX_BORDER_WIDTH,
+      borderWidth: styleDefaults.highlightBorderWidth,
       borderColor: theme.colors.twitarrNegativeButton,
       borderRadius: 4,
     },
@@ -65,15 +63,18 @@ export const MapHighlightOverlay = ({width, height, labels}: MapHighlightOverlay
   });
 
   const arrowWidth = width * ARROW_WIDTH_FRACTION;
+  // Also pads the box out from the label's raw bounds by the same amount, so the
+  // border doesn't sit flush against the text.
+  const boxBorderWidth = styleDefaults.highlightBorderWidth;
 
   return (
     <View style={styles.container} pointerEvents={'none'}>
       {labels.map((label, index) => {
         const boxStyle = {
-          left: label.x * width - BOX_BORDER_WIDTH,
-          top: label.y * height - BOX_BORDER_WIDTH,
-          width: Math.max(label.w * width, 6) + BOX_BORDER_WIDTH * 2,
-          height: Math.max(label.h * height, 6) + BOX_BORDER_WIDTH * 2,
+          left: label.x * width - boxBorderWidth,
+          top: label.y * height - boxBorderWidth,
+          width: Math.max(label.w * width, 6) + boxBorderWidth * 2,
+          height: Math.max(label.h * height, 6) + boxBorderWidth * 2,
         };
         const arrowStyle = {
           top: label.y * height,

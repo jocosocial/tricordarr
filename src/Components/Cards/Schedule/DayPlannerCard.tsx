@@ -1,10 +1,11 @@
 import React, {useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {GestureResponderEvent, StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Text, TouchableRipple} from 'react-native-paper';
 
 import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatusBadge';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {ScheduleItemHighlightView} from '#src/Components/Views/Schedule/ScheduleItemHighlightView';
 import {
   COMPACT_THEME_DURATION_MINUTES,
   COMPACT_THEME_FADE_MINUTES,
@@ -34,6 +35,10 @@ type DayPlannerCardContentLevel = 'titleOnly' | 'titleAndLocation';
 interface DayPlannerCardProps {
   item: DayPlannerItemWithLayout;
   onPress?: () => void;
+  /** Receives the touch event so the caller can anchor a menu at the press location. */
+  onLongPress?: (event: GestureResponderEvent) => void;
+  /** Draws a red border around the card, matching the ship map's location highlight. */
+  highlighted?: boolean;
 }
 
 // Layout constants for the day planner card
@@ -67,7 +72,7 @@ const staticStyles = StyleSheet.create({
   },
 });
 
-export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
+export const DayPlannerCard = ({item, onPress, onLongPress, highlighted}: DayPlannerCardProps) => {
   const {theme} = useAppTheme();
   const {hasShutternaut, hasShutternautManager} = useRoles();
   const {getBackgroundColor, getTextColor} = useDayPlanner();
@@ -181,7 +186,7 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
    */
   return (
     <View style={dynamicStyles.container}>
-      <TouchableRipple style={dynamicStyles.card} onPress={onPress} borderless>
+      <TouchableRipple style={dynamicStyles.card} onPress={onPress} onLongPress={onLongPress} borderless>
         <View style={staticStyles.fill}>
           {item.compactedTheme && (
             <LinearGradient
@@ -216,6 +221,7 @@ export const DayPlannerCard = ({item, onPress}: DayPlannerCardProps) => {
               </Text>
             )}
           </View>
+          {highlighted && <ScheduleItemHighlightView borderRadius={3} />}
         </View>
       </TouchableRipple>
     </View>

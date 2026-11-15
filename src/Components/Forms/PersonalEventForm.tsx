@@ -12,6 +12,7 @@ import {SuggestedTextField} from '#src/Components/Forms/Fields/SuggestedTextFiel
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
 import {UserChipsField} from '#src/Components/Forms/Fields/UserChipsField';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezVisibility} from '#src/Enums/FezVisibility';
 import {getUserSuggestedLocations} from '#src/Libraries/Ship';
@@ -26,11 +27,17 @@ interface PersonalEventFormProps {
   create?: boolean;
   /**
    * Show the Unlisted switch. Defaults to `create`, since a new event can always pick its
-   * visibility. On edit only the owner of an existing privateEvent may change it: the server
-   * refuses a visibility change on any other type, and an event created without guests is a
-   * personalEvent that can never become unlisted.
+   * visibility. On edit only the owner may change it: on a privateEvent directly, and on a
+   * personalEvent by converting it (one-way) into a privateEvent. The server refuses a visibility
+   * change from anyone else.
    */
   showVisibility?: boolean;
+  /**
+   * Show the Participants field. Defaults to `create`. On edit it's only meaningful for the owner
+   * of a personalEvent, where adding anyone converts it into a privateEvent. In pre-registration
+   * mode the field is shown but disabled, since other users can't be added yet.
+   */
+  showParticipants?: boolean;
 }
 
 const validationSchema = Yup.object().shape({
@@ -46,6 +53,7 @@ export const PersonalEventForm = ({
   buttonText = 'Save',
   create = true,
   showVisibility = create,
+  showParticipants = create,
 }: PersonalEventFormProps) => {
   const {commonStyles} = useStyles();
   const styles = {
@@ -53,6 +61,7 @@ export const PersonalEventForm = ({
     buttonContainer: [commonStyles.marginTopSmall],
   };
   const {data: profilePublicData} = useUserProfileQuery();
+  const {preRegistrationMode} = usePreRegistration();
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -95,11 +104,13 @@ export const PersonalEventForm = ({
               value={values.duration}
             />
           </View>
-          {create && (
+          {showParticipants && (
             <UserChipsField
               name={'initialUsers'}
               testID={'personalEventParticipants-input'}
               label={'Participants (Optional)'}
+              disabled={preRegistrationMode}
+              helperText={preRegistrationMode ? "You'll be able to invite others once we're on board." : undefined}
             />
           )}
           {showVisibility && (
@@ -107,7 +118,11 @@ export const PersonalEventForm = ({
               name={'visibility'}
               testID={'personalEventUnlisted-switch'}
               label={'Unlisted'}
-              helperText={'Lets anyone with the link view and join this event.'}
+              helperText={
+                preRegistrationMode
+                  ? "Lets anyone with the link view and join this event. People won't be able to see or join it until we're on board."
+                  : 'Lets anyone with the link view and join this event.'
+              }
               onPress={() =>
                 setFieldValue(
                   'visibility',

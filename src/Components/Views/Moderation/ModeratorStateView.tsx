@@ -4,6 +4,7 @@ import {Menu} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useModeration} from '#src/Context/Contexts/ModerationContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -37,7 +38,7 @@ export const ModeratorStateView = ({data}: ModeratorStateViewProps) => {
         description={ContentModerationStatus.getLabel(data.moderationStatus)}
       />
       <PaddedContentView>
-        <Menu
+        <AppMenu
           visible={visible}
           onDismiss={closeMenu}
           anchor={
@@ -76,7 +77,7 @@ export const ModeratorStateView = ({data}: ModeratorStateViewProps) => {
               }}
             />
           ))}
-        </Menu>
+        </AppMenu>
       </PaddedContentView>
     </View>
   );

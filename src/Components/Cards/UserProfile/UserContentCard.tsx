@@ -3,6 +3,7 @@ import {Card, List} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -16,11 +17,14 @@ interface UserContentCardProps {
 /**
  * This used to have a button to your owned LFGs. But doing that with the common screens pattern
  * got super complicated and not worth it. Maybe some day.
+ * The links stay visible but disabled in pre-registration mode, where the screens aren't available.
  */
 export const UserContentCard = ({user}: UserContentCardProps) => {
   const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
   const {hasModerator} = usePrivilege();
+  const {preRegistrationMode} = usePreRegistration();
+  const linkStyle = preRegistrationMode ? commonStyles.disabled : undefined;
 
   const getIcon = (icon: string) => <AppIcon style={[commonStyles.marginLeft]} icon={icon} />;
 
@@ -32,17 +36,23 @@ export const UserContentCard = ({user}: UserContentCardProps) => {
           <List.Item
             title={'Forums'}
             left={() => getIcon(AppIcons.forum)}
+            disabled={preRegistrationMode}
+            style={linkStyle}
             onPress={() => commonNavigation.push(CommonStackComponents.forumThreadUserScreen, {user: user.header})}
           />
           <List.Item
             title={'Photostream'}
             left={() => getIcon(AppIcons.photostream)}
+            disabled={preRegistrationMode}
+            style={linkStyle}
             onPress={() => commonNavigation.push(CommonStackComponents.photostreamUserScreen, {user: user.header})}
           />
           {hasModerator && (
             <List.Item
               title={'Forum Posts'}
               left={() => getIcon(AppIcons.moderator)}
+              disabled={preRegistrationMode}
+              style={linkStyle}
               onPress={() => commonNavigation.push(CommonStackComponents.forumPostUserScreen, {user: user.header})}
             />
           )}

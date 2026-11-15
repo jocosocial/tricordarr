@@ -1,6 +1,7 @@
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
+import {QuartermasterCategory} from '#src/Enums/QuartermasterCategory';
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {SettingsStackParamList} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
@@ -15,6 +16,7 @@ export type MainStackParamList = CommonStackParamList & {
   MainConductScreen: undefined;
   PhotostreamScreen: Optional<WithScrollToTopIntent>;
   PhotostreamImageCreateScreen: undefined;
+  QuartermasterListScreen: Optional<WithScrollToTopIntent<{category?: QuartermasterCategory; mine?: boolean}>>;
   MicroKaraokeListScreen: undefined;
   MicroKaraokeSongScreen: {
     songID: number;
@@ -55,6 +57,7 @@ export enum MainStackComponents {
   userDirectoryScreen = 'UserDirectoryScreen',
   conductScreen = 'MainConductScreen',
   photostreamScreen = 'PhotostreamScreen',
+  quartermasterListScreen = 'QuartermasterListScreen',
   photostreamImageCreateScreen = 'PhotostreamImageCreateScreen',
   microKaraokeListScreen = 'MicroKaraokeListScreen',
   microKaraokeSongScreen = 'MicroKaraokeSongScreen',

@@ -22,6 +22,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {FezVisibility} from '#src/Enums/FezVisibility';
@@ -58,6 +59,7 @@ export const ScheduleItemScreenBase = ({
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
   const {startDate, endDate} = useCruise();
+  const {preRegistrationMode} = usePreRegistration();
   const {tzAtTime} = useTimeZone();
 
   const styles = StyleSheet.create({
@@ -203,10 +205,14 @@ export const ScheduleItemScreenBase = ({
                     <UserChipsListItem
                       users={eventData.members?.participants}
                       title={'Participants'}
-                      onPress={() =>
-                        navigation.push(CommonStackComponents.lfgParticipationScreen, {
-                          fezID: eventData.fezID,
-                        })
+                      // Participant management isn't available to pre-registration users.
+                      onPress={
+                        preRegistrationMode
+                          ? undefined
+                          : () =>
+                              navigation.push(CommonStackComponents.lfgParticipationScreen, {
+                                fezID: eventData.fezID,
+                              })
                       }
                     />
                   )}

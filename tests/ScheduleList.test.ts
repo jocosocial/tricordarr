@@ -12,6 +12,7 @@ const baseFilterSettings: ScheduleFilterSettings = {
   eventPersonalUnreadFilter: false,
   showJoinedLfgs: false,
   showOpenLfgs: false,
+  preRegistrationMode: false,
 };
 
 const makeEvent = (overrides: Partial<EventData> = {}): EventData => ({
@@ -74,6 +75,16 @@ describe('resolveScheduleSources', () => {
   it('never defaults to Owned LFGs, since they already arrive via Joined LFGs', () => {
     const sources = resolveScheduleSources({...baseFilterSettings, showJoinedLfgs: true, showOpenLfgs: true});
     expect(sources.has('lfgOwned')).toBe(false);
+  });
+
+  it('defaults to Owned LFGs in place of Joined LFGs in pre-registration mode', () => {
+    const sources = resolveScheduleSources({...baseFilterSettings, showJoinedLfgs: true, preRegistrationMode: true});
+    expect(sources).toEqual(new Set(['officialEvents', 'privateEvents', 'lfgOwned']));
+  });
+
+  it('leaves out Owned LFGs in pre-registration mode when the Joined LFGs config setting is off', () => {
+    const sources = resolveScheduleSources({...baseFilterSettings, preRegistrationMode: true});
+    expect(sources).toEqual(new Set(['officialEvents', 'privateEvents']));
   });
 
   it('returns the explicit selection verbatim, ignoring config defaults', () => {

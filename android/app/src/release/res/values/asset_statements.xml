@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="asset_statements" translatable="false">[
+    {\"include\": \"https://twitarr.com/.well-known/assetlinks.json\"},
+    {\"include\": \"https://start.twitarr.com/.well-known/assetlinks.json\"}
+  ]</string>
+</resources>

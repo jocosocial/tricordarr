@@ -23,7 +23,6 @@ export const ConnectionDisruptedWarningView = () => {
       variant={'error'}
       title={'Connection Disrupted'}
       message={'Tap here for more information'}
-      messageVariant={'labelSmall'}
       onPress={onPress}
       disabled={commonRoute.name === CommonStackComponents.configServerUrl}
     />

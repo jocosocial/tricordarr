@@ -21,12 +21,23 @@ interface AvatarImageFieldProps<TFormData> {
   name: keyof TFormData;
   testIDPrefix: string;
   imageData: ImageUploadData;
+  /**
+   * Overrides when the delete button is disabled. By default it is disabled unless `imageData`
+   * had a filename, which suits an avatar that can only be cleared once it exists. Forms where a
+   * freshly picked image should also be removable pass this.
+   */
+  disableDelete?: boolean;
 }
 
 /**
  * Shares lot with UserProfileAvatar but not in a Form context.
  */
-export const AvatarImageField = <TFormData,>({imageData, name, testIDPrefix}: AvatarImageFieldProps<TFormData>) => {
+export const AvatarImageField = <TFormData,>({
+  imageData,
+  name,
+  testIDPrefix,
+  disableDelete,
+}: AvatarImageFieldProps<TFormData>) => {
   const {commonStyles, styleDefaults} = useStyles();
   const {setSnackbarPayload} = useSnackbar();
   const [field, _2, helpers] = useField<ImageUploadData>(name as string);
@@ -120,7 +131,7 @@ export const AvatarImageField = <TFormData,>({imageData, name, testIDPrefix}: Av
         pickImage={pickImage}
         takeImage={takeImage}
         style={commonStyles.justifyCenter}
-        disableDelete={!imageData.filename}
+        disableDelete={disableDelete ?? !imageData.filename}
       />
     </View>
   );

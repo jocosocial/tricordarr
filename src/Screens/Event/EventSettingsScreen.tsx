@@ -16,6 +16,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePermissions} from '#src/Context/Contexts/PermissionsContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {ScheduleOverlapViewMode} from '#src/Enums/ScheduleOverlapViewMode';
 import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
@@ -41,6 +42,19 @@ const timeZoneLabelButtons: SegmentedButtonType[] = [
   },
 ];
 
+const overlapViewModeButtons: SegmentedButtonType[] = [
+  {
+    value: ScheduleOverlapViewMode.list,
+    label: ScheduleOverlapViewMode.getLabel(ScheduleOverlapViewMode.list),
+    testID: 'overlapViewModeList-button',
+  },
+  {
+    value: ScheduleOverlapViewMode.timeline,
+    label: ScheduleOverlapViewMode.getLabel(ScheduleOverlapViewMode.timeline),
+    testID: 'overlapViewModeTimeline-button',
+  },
+];
+
 export const EventSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const {hasNotificationPermission} = usePermissions();
@@ -53,6 +67,7 @@ export const EventSettingsScreen = () => {
   const {commonStyles} = useStyles();
   const [joined, setJoined] = useState(appConfig.schedule.eventsShowJoinedLfgs);
   const [open, setOpen] = useState(appConfig.schedule.eventsShowOpenLfgs);
+  const [overlapOnlyYourEvents, setOverlapOnlyYourEvents] = useState(appConfig.schedule.overlapOnlyYourEvents);
   const [overlapExcludeDurationHours, setOverlapExcludeDurationHours] = useState(
     appConfig.schedule.overlapExcludeDurationHours,
   );
@@ -111,6 +126,20 @@ export const EventSettingsScreen = () => {
     setCompactThemeEvents(!appConfig.schedule.compactThemeEvents);
   };
 
+  /**
+   * Toggle and persist whether the Overlapping Events screen opens showing only the user's events.
+   */
+  const handleOverlapOnlyYourEvents = () => {
+    updateAppConfig({
+      ...appConfig,
+      schedule: {
+        ...appConfig.schedule,
+        overlapOnlyYourEvents: !appConfig.schedule.overlapOnlyYourEvents,
+      },
+    });
+    setOverlapOnlyYourEvents(!appConfig.schedule.overlapOnlyYourEvents);
+  };
+
   const handleShowMarkersOutsideCruiseWeek = () => {
     updateAppConfig({
       ...appConfig,
@@ -131,6 +160,19 @@ export const EventSettingsScreen = () => {
       schedule: {
         ...appConfig.schedule,
         timeZoneLabelMode: value as TimeZoneLabelMode,
+      },
+    });
+  };
+
+  /**
+   * Persist the view (list or Planner) the Overlapping Events screen uses.
+   */
+  const handleOverlapViewMode = (value: string) => {
+    updateAppConfig({
+      ...appConfig,
+      schedule: {
+        ...appConfig.schedule,
+        overlapViewMode: value as ScheduleOverlapViewMode,
       },
     });
   };
@@ -284,7 +326,35 @@ export const EventSettingsScreen = () => {
                   }}
                   style={[commonStyles.paddingHorizontalSmall, commonStyles.paddingTopSmall]}
                 />
+                <BooleanField
+                  name={'overlapOnlyYourEvents'}
+                  testID={'overlapOnlyYourEvents-switch'}
+                  label={'Show Only Your Events by Default'}
+                  helperText={
+                    'Start the Overlapping Events screen showing only events you have joined, own, or favorited. A temporary toggle is available in the header.'
+                  }
+                  onPress={handleOverlapOnlyYourEvents}
+                  value={overlapOnlyYourEvents}
+                  style={commonStyles.paddingHorizontalSmall}
+                />
               </ListSection>
+            </View>
+          </Formik>
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text style={commonStyles.marginBottomSmall}>Overlapping View</Text>
+          <SegmentedButtons
+            buttons={overlapViewModeButtons}
+            value={appConfig.schedule.overlapViewMode}
+            onValueChange={handleOverlapViewMode}
+          />
+          <Text variant={'bodySmall'} style={styles.helperText}>
+            List shows events in time order. Planner places them side by side by time.
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView padSides={false}>
+          <Formik initialValues={{}} onSubmit={() => {}}>
+            <View>
               <ListSection>
                 <ListSubheader>Push Notifications</ListSubheader>
                 <BooleanField

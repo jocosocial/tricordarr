@@ -2,6 +2,7 @@ import React, {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
 
 import {FezPostActionsReactionItem} from '#src/Components/Menus/Fez/Items/FezPostActionsReactionItem';
+import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
 import {EmojiPickerModal} from '#src/Components/Reactions/EmojiPickerModal';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -29,6 +30,7 @@ interface FezPostActionsMenuProps {
 export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: FezPostActionsMenuProps) => {
   const {setString} = useClipboard();
   const {currentUserID} = useSession();
+  const bridged = useMenuContextBridge();
   const commonNavigation = useCommonStack();
   const {hasModerator} = usePrivilege();
   const {updatePostReactions} = useFezCacheReducer();
@@ -59,36 +61,38 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
   return (
     <>
       <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
-        <Menu.Item
-          dense={false}
-          leadingIcon={AppIcons.copy}
-          title={'Copy'}
-          onPress={() => {
-            setString(fezPost.text);
-            closeMenu();
-          }}
-        />
-        <FezPostActionsReactionItem
-          disabled={!fez || bySelf || reactionMutation.isPending}
-          onPress={() => {
-            closeMenu();
-            setPickerOpen(true);
-          }}
-        />
-        {fez && fez.fezType !== FezType.closed && (
-          <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
-        )}
-        {hasModerator && (
+        <MenuContextBridge bridged={bridged}>
           <Menu.Item
             dense={false}
-            leadingIcon={AppIcons.moderator}
-            title={'Moderate'}
+            leadingIcon={AppIcons.copy}
+            title={'Copy'}
             onPress={() => {
+              setString(fezPost.text);
               closeMenu();
-              pushModerateResource(commonNavigation, 'fezpost', fezPost.postID.toString());
             }}
           />
-        )}
+          <FezPostActionsReactionItem
+            disabled={!fez || bySelf || reactionMutation.isPending}
+            onPress={() => {
+              closeMenu();
+              setPickerOpen(true);
+            }}
+          />
+          {fez && fez.fezType !== FezType.closed && (
+            <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
+          )}
+          {hasModerator && (
+            <Menu.Item
+              dense={false}
+              leadingIcon={AppIcons.moderator}
+              title={'Moderate'}
+              onPress={() => {
+                closeMenu();
+                pushModerateResource(commonNavigation, 'fezpost', fezPost.postID.toString());
+              }}
+            />
+          )}
+        </MenuContextBridge>
       </Menu>
       <EmojiPickerModal open={pickerOpen} onClose={() => setPickerOpen(false)} onEmojiSelected={handleReaction} />
     </>

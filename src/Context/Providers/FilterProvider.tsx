@@ -2,6 +2,7 @@ import React, {PropsWithChildren} from 'react';
 
 import {ForumFilterProvider} from '#src/Context/Providers/ForumFilterProvider';
 import {LfgFilterProvider} from '#src/Context/Providers/LfgFilterProvider';
+import {QuartermasterFilterProvider} from '#src/Context/Providers/QuartermasterFilterProvider';
 import {ScheduleFilterProvider} from '#src/Context/Providers/ScheduleFilterProvider';
 import {SeamailFilterProvider} from '#src/Context/Providers/SeamailFilterProvider';
 
@@ -15,7 +16,9 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
     <LfgFilterProvider>
       <ScheduleFilterProvider>
         <ForumFilterProvider>
-          <SeamailFilterProvider>{children}</SeamailFilterProvider>
+          <SeamailFilterProvider>
+            <QuartermasterFilterProvider>{children}</QuartermasterFilterProvider>
+          </SeamailFilterProvider>
         </ForumFilterProvider>
       </ScheduleFilterProvider>
     </LfgFilterProvider>

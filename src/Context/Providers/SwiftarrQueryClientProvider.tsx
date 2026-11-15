@@ -9,6 +9,7 @@ import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrQueryClientContext} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useServerUrl} from '#src/Hooks/useServerUrl';
 import {createLogger} from '#src/Libraries/Logger';
 import {BadResponseFormatError, createQueryClient, createSessionPersister} from '#src/Libraries/Network/APIClient';
 import {isHttpClientError, shouldRetryQuery} from '#src/Libraries/Network/Retry';
@@ -30,14 +31,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {setSnackbarPayload} = useSnackbar();
   const tokenData = currentSession?.tokenData || null;
 
-  const serverUrl = useMemo(() => {
-    if (!currentSession) {
-      // First-launch / no session only. Not a substitute while Session is hydrating;
-      // SessionProvider withholds children until load completes.
-      return appConfig.serverUrl;
-    }
-    return currentSession.serverUrl;
-  }, [currentSession, appConfig.serverUrl]);
+  const serverUrl = useServerUrl();
 
   /**
    * Establish the primary query client. Some day there may be multiple of these.
@@ -251,7 +245,11 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         if (!isHttpClientError(error)) {
           setErrorCount(prev => prev + 1);
         }
-        if (!disruptionDetected && !serverSwitchInProgress) {
+        // A request that was already in flight when client settings revealed maintenance mode lands
+        // here late. MaintenanceModeView already explains it, so don't also show an error.
+        const isMaintenanceResponse =
+          isAxiosError(error) && error.response?.status === 401 && /maintenance mode/i.test(errorString);
+        if (!disruptionDetected && !serverSwitchInProgress && !isMaintenanceResponse) {
           setSnackbarPayload({message: errorString, messageType: 'error'});
         }
       },

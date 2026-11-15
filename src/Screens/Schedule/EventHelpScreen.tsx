@@ -5,6 +5,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {DownloadButtonHelpTopicView} from '#src/Components/Views/Help/Common/DownloadButtonHelpTopicView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
+import {ManagePerformersHelpTopicView} from '#src/Components/Views/Help/Common/ManagePerformersHelpTopicView';
 import {NeedsPhotographerHelpTopicView} from '#src/Components/Views/Help/Common/NeedsPhotographerHelpTopicView';
 import {OfficialPerformersHelpTopicView} from '#src/Components/Views/Help/Common/OfficialPerformersHelpTopicView';
 import {OverlappingHelpTopicView} from '#src/Components/Views/Help/Common/OverlappingHelpTopicView';
@@ -85,6 +86,7 @@ export const EventHelpScreen = ({route}: EventHelpScreenProps) => {
         <HelpChapterTitleView title={'Privileged Actions'} />
         <PhotographingHelpTopicView />
         <NeedsPhotographerHelpTopicView />
+        <ManagePerformersHelpTopicView />
       </ScrollingContentView>
     </AppView>
   );

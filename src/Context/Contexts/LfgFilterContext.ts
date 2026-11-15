@@ -6,7 +6,7 @@ import {LfgListSource} from '#src/Types';
 interface LfgFilterContextType {
   lfgCruiseDayFilter?: number;
   setLfgCruiseDayFilter: Dispatch<SetStateAction<number | undefined>>;
-  /** Which of the Find/Joined/Owned lists is selected. Defaults to 'open' (Find). */
+  /** Which of the Find/Joined/Owned lists is selected. Defaults to 'open' (Find), or 'owner' (Owned) in pre-registration. */
   lfgSourceFilter: LfgListSource;
   /** Switches the selected source, clearing Favorites/Unread if the new source can't honor them. */
   setLfgSourceFilter: (source: LfgListSource) => void;

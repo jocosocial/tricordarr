@@ -20,5 +20,7 @@ export interface UserSearchBarProps {
   sort?: UserMatchSort;
   label?: string;
   autoSearch?: boolean;
+  /** Makes the search bar read-only, so no users can be found or picked. */
+  disabled?: boolean;
   testID: string;
 }

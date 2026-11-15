@@ -16,6 +16,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -47,6 +48,18 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
   });
   const flashListRef = useRef<FlashListRef<PerformerHeaderData>>(null);
   const [performers, setPerformers] = useState<PerformerHeaderData[]>([]);
+
+  /**
+   * Open the tapped performer's page.
+   */
+  const onPressPerformer = useCallback(
+    (header: PerformerHeaderData) => {
+      if (header.id) {
+        navigation.push(CommonStackComponents.performerScreen, {id: header.id});
+      }
+    },
+    [navigation],
+  );
 
   const renderListHeader = useCallback(() => {
     return (
@@ -106,6 +119,7 @@ const PerformerListScreenInner = ({navigation, route}: Props) => {
         handleLoadNext={handleLoadNext}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderListHeader={renderListHeader}
+        onPress={onPressPerformer}
       />
     </AppView>
   );

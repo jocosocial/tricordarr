@@ -16,8 +16,8 @@ export const ForumComposerContext = createContext<ForumComposerContextType | und
  * a locked thread the user cannot post to, so callers can use it to decide whether to
  * offer composer-dependent actions such as Reply.
  *
- * React Native Paper menu items remount inside `Portal.Host` and therefore cannot read
- * this context. Call this hook from the menu itself and pass what you need down as a
- * prop. See `docs/Navigation.md`.
+ * React Native Paper menu items remount inside `Portal.Host`, which drops this context. Menu
+ * items can still call this hook because `MenuContextBridge` re-provides it inside every menu
+ * (AppMenu does so automatically). See `docs/Navigation.md`.
  */
 export const useForumComposer = () => useContext(ForumComposerContext);

@@ -98,8 +98,14 @@ export const useLfgListQuery = ({
   });
 };
 
+/**
+ * Lists Personal and Private Events. Defaults to the ones the user has joined; pass
+ * `endpoint: 'owner'` for only the ones they created (the only list available during
+ * pre-registration).
+ */
 export const usePersonalEventsQuery = ({
   cruiseDay,
+  endpoint = 'joined',
   excludeFezType,
   onlyNew,
   search,
@@ -113,7 +119,7 @@ export const usePersonalEventsQuery = ({
     excludeFezType,
     fezType,
     hidePast,
-    endpoint: 'joined',
+    endpoint,
     options,
     onlyNew,
     search,

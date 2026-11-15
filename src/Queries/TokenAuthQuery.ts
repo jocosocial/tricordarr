@@ -13,6 +13,7 @@ import {AxiosError} from 'axios';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useMaintenanceGate} from '#src/Hooks/useMaintenanceBlocked';
 import {shouldQueryEnable} from '#src/Libraries/Network/APIClient';
 import {
   getNextPageParam,
@@ -45,7 +46,8 @@ export function useTokenAuthQuery<TData, TQueryParams = Object, TError extends E
 ): UseQueryResult<TData, TError> {
   const {isLoggedIn} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
-  const enabled = shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled);
+  const maintenanceGated = useMaintenanceGate(endpoint);
+  const enabled = shouldQueryEnable(isLoggedIn, disruptionDetected || maintenanceGated, options?.enabled);
   const queryKey = [endpoint, queryParams, ...queryKeyExtraData];
 
   const result = useQuery<TData, TError, TData>({
@@ -187,6 +189,7 @@ export function useTokenAuthPaginationQuery<
   const {isLoggedIn} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
   const {appConfig} = useConfig();
+  const maintenanceGated = useMaintenanceGate(endpoint);
 
   const defaultQueryFn = async ({pageParam}: {pageParam: PaginationQueryParams}) => {
     const {data: responseData} = await apiGet<TQueryFnData, TQueryParams>(endpoint, {
@@ -204,6 +207,6 @@ export function useTokenAuthPaginationQuery<
     initialPageParam: {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize},
     getNextPageParam: (lastPage: TQueryFnData) => getNextPageParam(lastPage),
     getPreviousPageParam: (firstPage: TQueryFnData) => getPreviousPageParam(firstPage),
-    enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
+    enabled: shouldQueryEnable(isLoggedIn, disruptionDetected || maintenanceGated, options?.enabled),
   });
 }

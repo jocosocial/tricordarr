@@ -7,15 +7,17 @@ import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
+import {useServerHealthStatus} from '#src/Hooks/useServerHealthStatus';
 
-interface ServerHealthcheckResultViewProps {
-  serverHealthPassed: boolean;
-}
+const RESULT_ICON_SIZE = 100;
 
-export const ServerHealthcheckResultView = ({serverHealthPassed}: ServerHealthcheckResultViewProps) => {
+/**
+ * Shows the outcome of the current server healthcheck, or that one is in progress.
+ */
+export const ServerHealthcheckResultView = () => {
   const {commonStyles} = useStyles();
-  const {data: serverHealthData, dataUpdatedAt, errorUpdatedAt, isError, isSuccess} = useHealthQuery();
+  const {healthQuery, checking, passed} = useServerHealthStatus();
+  const {data: serverHealthData, dataUpdatedAt, errorUpdatedAt, isError, isSuccess} = healthQuery;
   const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
@@ -24,26 +26,36 @@ export const ServerHealthcheckResultView = ({serverHealthPassed}: ServerHealthch
     },
   });
 
+  // Never show a previous result while a check is running; it may be for another server.
+  if (checking) {
+    return (
+      <View style={styles.viewContainer}>
+        <AppIcon icon={AppIcons.checking} size={RESULT_ICON_SIZE} />
+        <Text>Checking server...</Text>
+      </View>
+    );
+  }
+
   // https://github.com/TanStack/query/discussions/1229
   const updatedAt = isError ? new Date(errorUpdatedAt) : isSuccess ? new Date(dataUpdatedAt) : undefined;
 
   return (
     <View style={styles.viewContainer}>
-      {serverHealthPassed ? (
-        <AppIcon icon={AppIcons.passed} size={100} color={theme.colors.twitarrPositiveButton} />
+      {passed ? (
+        <AppIcon icon={AppIcons.passed} size={RESULT_ICON_SIZE} color={theme.colors.twitarrPositiveButton} />
       ) : (
-        <AppIcon icon={AppIcons.error} size={100} color={theme.colors.twitarrNegativeButton} />
+        <AppIcon icon={AppIcons.error} size={RESULT_ICON_SIZE} color={theme.colors.twitarrNegativeButton} />
       )}
-      {serverHealthPassed && <Text>Server check passed!</Text>}
-      {!serverHealthPassed && serverHealthData?.error && (
-        <Text>
+      {passed && <Text>Server check passed!</Text>}
+      {!passed && serverHealthData?.error && (
+        <Text style={commonStyles.textCenter}>
           The Twitarr server is down. Try again later. Error: {serverHealthData.reason} ({serverHealthData.status})
         </Text>
       )}
-      {!serverHealthPassed && (
-        <Text>
-          Server check failed. Press the Help button above/below for troubleshooting steps. If the issue persists, go to
-          the Twitarr or JoCo Cruise Info Desk for assistance.
+      {!passed && (
+        <Text style={commonStyles.textCenter}>
+          Server check failed. Press the Help button for troubleshooting steps. If the issue persists, go to the Twitarr
+          or JoCo Cruise Info Desk for assistance.
         </Text>
       )}
       {updatedAt && (

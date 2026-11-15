@@ -5,12 +5,12 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FavoriteMenuItem} from '#src/Components/Menus/Items/FavoriteMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
-import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useMenu} from '#src/Hooks/useMenu';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {ShareContentType} from '#src/Libraries/Sharing';
@@ -27,39 +27,33 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   const {currentUserID} = useSession();
   const {confirmCancel} = useFezAlert(fezData);
   const favoriteMutation = useFezFavoriteMutation();
-  const {updateFavorite, invalidateFez} = useFezCacheReducer();
   const [favoriteRefreshing, setFavoriteRefreshing] = useState(false);
+  const {preRegistrationMode} = usePreRegistration();
 
   const isMember = !!fezData.members;
   const isFavorite = !!fezData.members?.isFavorite;
   const isMuted = !!fezData.members?.isMuted;
 
   /**
-   * Toggle the favorite flag on this LFG. Optimistic: flip the cache before the request so the
-   * star is already correct by the time the spinner clears, and roll back (plus invalidate) on
-   * failure. Swiftarr rejects favoriting a muted chat, hence the disabled state below.
+   * Toggle the favorite flag on this LFG. The mutation hook flips the cache before the request so
+   * the star is already correct by the time the spinner clears, and rolls back on failure. Swiftarr rejects favoriting a muted chat, hence the disabled state below.
    */
   const handleFavorite = useCallback(() => {
     setFavoriteRefreshing(true);
     const newValue = !isFavorite;
-    updateFavorite(fezData.fezID, newValue);
     favoriteMutation.mutate(
       {
         fezID: fezData.fezID,
         action: newValue ? 'favorite' : 'unfavorite',
       },
       {
-        onError: () => {
-          updateFavorite(fezData.fezID, !newValue);
-          invalidateFez(fezData.fezID);
-        },
         onSettled: () => {
           setFavoriteRefreshing(false);
           closeMenu();
         },
       },
     );
-  }, [isFavorite, fezData.fezID, updateFavorite, favoriteMutation, invalidateFez, closeMenu]);
+  }, [isFavorite, fezData.fezID, favoriteMutation, closeMenu]);
 
   const menuAnchor = <Item title={'LFG Menu'} iconName={AppIcons.menu} onPress={openMenu} />;
 
@@ -74,7 +68,8 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
         }}
       />
       <Divider bold={true} />
-      {isMember && (
+      {/* Favoriting and reporting aren't available to pre-registration users. */}
+      {isMember && !preRegistrationMode && (
         <FavoriteMenuItem
           onPress={handleFavorite}
           isFavorite={isFavorite}
@@ -94,17 +89,19 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
         />
       )}
       <ShareMenuItem contentType={ShareContentType.lfg} contentID={fezData.fezID} closeMenu={closeMenu} />
-      <Menu.Item
-        leadingIcon={AppIcons.report}
-        title={'Report'}
-        onPress={() => {
-          closeMenu();
-          commonNavigation.push(CommonStackComponents.reportScreen, {
-            contentType: ReportContentType.fez,
-            contentID: fezData.fezID,
-          });
-        }}
-      />
+      {!preRegistrationMode && (
+        <Menu.Item
+          leadingIcon={AppIcons.report}
+          title={'Report'}
+          onPress={() => {
+            closeMenu();
+            commonNavigation.push(CommonStackComponents.reportScreen, {
+              contentType: ReportContentType.fez,
+              contentID: fezData.fezID,
+            });
+          }}
+        />
+      )}
       {hasModerator && (
         <Menu.Item
           leadingIcon={AppIcons.moderator}

@@ -116,9 +116,13 @@ export enum AppIcons {
   unpin = 'pin-off',
   check = 'check',
   photostream = 'image-multiple',
+  quartermaster = 'package-variant',
+  quartermasterHave = 'hand-heart-outline',
+  quartermasterNeed = 'hand-extended-outline',
   show = 'eye',
   hide = 'eye-off',
   passed = 'check-circle-outline',
+  checking = 'dots-horizontal-circle-outline',
   eventCreate = 'calendar-plus', // I wanted -outline but it's not available in my version
   personalEvent = 'calendar-account', // I wanted -outline but it's not available in my version
   dayPlanner = 'book-clock',
@@ -138,6 +142,7 @@ export enum AppIcons {
   instagram = 'instagram',
   performer = 'piano',
   official = 'shield-check',
+  performerUnlink = 'link-variant-off',
   archive = 'archive',
   hunts = 'puzzle',
   thumbnail = 'image-size-select-small',

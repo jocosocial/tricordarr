@@ -1,23 +1,18 @@
-import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostActionsShowThreadItemProps {
   forumPost: PostData;
   closeMenu: () => void;
-  navigation: StackNavigationProp<CommonStackParamList>;
 }
 
-export const ForumPostActionsShowThreadItem = ({
-  forumPost,
-  closeMenu,
-  navigation,
-}: ForumPostActionsShowThreadItemProps) => {
+export const ForumPostActionsShowThreadItem = ({forumPost, closeMenu}: ForumPostActionsShowThreadItemProps) => {
+  const navigation = useCommonStack();
   const {asPrivilegedUser} = useElevation();
 
   const onPress = () => {

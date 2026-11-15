@@ -12,13 +12,15 @@ interface PerformerFlashListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadNext?: () => void;
   renderListHeader?: React.ComponentType<any>;
+  /** Passed to each card. Should be a stable reference. */
+  onPress: (header: PerformerHeaderData) => void;
 }
 
 /**
  * Two-column grid of performer cards, shared by the performer list and search screens.
  */
 const PerformerFlashListInner = (
-  {items, refreshControl, handleLoadNext, renderListHeader}: PerformerFlashListProps,
+  {items, refreshControl, handleLoadNext, renderListHeader, onPress}: PerformerFlashListProps,
   ref: React.ForwardedRef<FlashListRef<PerformerHeaderData>>,
 ) => {
   const {commonStyles} = useStyles();
@@ -37,11 +39,11 @@ const PerformerFlashListInner = (
     ({item, index}: {item: PerformerHeaderData; index: number}) => {
       return (
         <View key={`performer-${item.name}-${index}`} style={styles.cardContainer}>
-          <PerformerHeaderCard header={item} />
+          <PerformerHeaderCard header={item} onPress={onPress} />
         </View>
       );
     },
-    [styles.cardContainer],
+    [styles.cardContainer, onPress],
   );
 
   /**

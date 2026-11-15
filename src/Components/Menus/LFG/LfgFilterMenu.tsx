@@ -5,6 +5,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FilterMenuAnchor} from '#src/Components/Menus/FilterMenuAnchor';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {useLfgFilter} from '#src/Context/Contexts/LfgFilterContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -21,6 +22,10 @@ interface LfgFilterMenuProps {
  * the top; everything below it refines whichever source is selected (AND, not OR). Favorites and
  * Unread require a FezParticipant pivot, which only exists once you've joined, so both are
  * disabled on Find.
+ *
+ * In pre-registration mode users can only list the LFGs they own (LfgFilterProvider holds them
+ * on Owned), and can't favorite or read chats, so the other sources and member filters are
+ * disabled.
  */
 export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
@@ -39,8 +44,9 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
     anyLfgFilterActive,
   } = useLfgFilter();
   const {data: userNotificationData} = useUserNotificationDataQuery({enabled: false});
+  const {preRegistrationMode} = usePreRegistration();
 
-  const supportsMemberFilters = lfgSourceFilter !== 'open';
+  const supportsMemberFilters = lfgSourceFilter !== 'open' && !preRegistrationMode;
   const joinedBadge = getBadgeDisplayValue(userNotificationData?.newFezMessageCount);
   const joinedLabel = joinedBadge ? `Joined (${joinedBadge})` : 'Joined';
 
@@ -84,12 +90,14 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
         title={'Find'}
         selected={lfgSourceFilter === 'open'}
         onPress={() => handleSourceSelection('open')}
+        disabled={preRegistrationMode}
       />
       <SelectableMenuItem
         leadingIcon={AppIcons.lfgJoined}
         title={joinedLabel}
         selected={lfgSourceFilter === 'joined'}
         onPress={() => handleSourceSelection('joined')}
+        disabled={preRegistrationMode}
       />
       <SelectableMenuItem
         leadingIcon={AppIcons.lfgOwned}

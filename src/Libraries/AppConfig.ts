@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment-timezone';
 
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
+import {ScheduleOverlapViewMode} from '#src/Enums/ScheduleOverlapViewMode';
 import {ShipCode} from '#src/Enums/ShipCode';
 import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {LogLevel} from '#src/Libraries/Logger/types';
@@ -43,6 +44,8 @@ export interface ScheduleConfig {
   hidePastLfgs: boolean;
   enableLateDayFlip: boolean;
   overlapExcludeDurationHours: number;
+  overlapViewMode: ScheduleOverlapViewMode;
+  overlapOnlyYourEvents: boolean;
   compactThemeEvents: boolean;
   timeZoneLabelMode: TimeZoneLabelMode;
   showMarkersOutsideCruiseWeek: boolean;
@@ -160,6 +163,8 @@ export const defaultAppConfig: AppConfig = {
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
     overlapExcludeDurationHours: 4,
+    overlapViewMode: ScheduleOverlapViewMode.timeline,
+    overlapOnlyYourEvents: true,
     compactThemeEvents: true,
     timeZoneLabelMode: TimeZoneLabelMode.offset,
     showMarkersOutsideCruiseWeek: false,
@@ -253,6 +258,12 @@ export const getAppConfig = async () => {
   }
   if (appConfig.schedule.timeZoneLabelMode === undefined) {
     appConfig.schedule.timeZoneLabelMode = TimeZoneLabelMode.offset;
+  }
+  if (appConfig.schedule.overlapViewMode === undefined) {
+    appConfig.schedule.overlapViewMode = ScheduleOverlapViewMode.timeline;
+  }
+  if (appConfig.schedule.overlapOnlyYourEvents === undefined) {
+    appConfig.schedule.overlapOnlyYourEvents = true;
   }
   if (appConfig.schedule.showMarkersOutsideCruiseWeek === undefined) {
     appConfig.schedule.showMarkersOutsideCruiseWeek = false;

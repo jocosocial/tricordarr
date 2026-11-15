@@ -15,7 +15,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {alertDisablePreRegistration} from '#src/Libraries/Alerts/SettingsAlerts';
+import {useDisablePreRegistration} from '#src/Hooks/useDisablePreRegistration';
 import {createLogger} from '#src/Libraries/Logger';
 import {CruiseSettingsFormValues} from '#src/Types/FormValues';
 
@@ -24,6 +24,7 @@ const logger = createLogger('CruiseSettingsScreen.tsx');
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const {currentSession, updateSession} = useSession();
+  const {promptDisablePreRegistration} = useDisablePreRegistration();
   const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
   const [refreshing, setRefreshing] = useState(false);
@@ -74,16 +75,16 @@ export const CruiseSettingsScreen = () => {
     setRefreshing(false);
   };
 
+  /**
+   * Enables pre-registration mode, or prompts to disable it via the shared disable flow.
+   */
   const togglePreRegistrationMode = async () => {
     if (!currentSession) {
       logger.error('Cannot toggle pre-registration mode: no current session');
       return;
     }
     if (currentSession.preRegistrationMode) {
-      alertDisablePreRegistration(async () => {
-        logger.debug('toggling pre-registration mode to', false);
-        await updateSession(currentSession.sessionID, {preRegistrationMode: false});
-      });
+      promptDisablePreRegistration();
       return;
     }
     logger.debug('toggling pre-registration mode to', true);

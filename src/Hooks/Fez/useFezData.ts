@@ -1,4 +1,5 @@
 import {InfiniteData, QueryClient, useQueryClient} from '@tanstack/react-query';
+import {AxiosError} from 'axios';
 import pluralize from 'pluralize';
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
@@ -11,7 +12,7 @@ import {findInPages, PageItemAccessor} from '#src/Libraries/CacheReduction';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {TokenAuthPaginationQueryOptionsTypeV2} from '#src/Queries/TokenAuthQuery';
-import {FezData, FezListData} from '#src/Structs/ControllerStructs';
+import {ErrorResponse, FezData, FezListData} from '#src/Structs/ControllerStructs';
 
 const fezListKeyPrefixes = ['/fez/joined', '/fez/owner', '/fez/open', '/fez/former'];
 const fezListAccessor: PageItemAccessor<FezListData, FezData> = {
@@ -54,6 +55,7 @@ interface UseFezDataReturn {
   isFetchingPreviousPage: boolean;
   isFetching: boolean;
   isLoading: boolean;
+  error: AxiosError<ErrorResponse> | null;
   isOwner: boolean;
   isMember: boolean;
   isParticipant: boolean;
@@ -98,6 +100,7 @@ export const getParticipantLabel = (fez: FezData): string => {
  * Captures the initial readCount from list caches first (unaffected by detail GET
  * mark-as-read), then from detail data, so callers can pass it forward (e.g. to a
  * chat screen) and show the correct unread badge.
+ * Exposes the fez query's error so a screen can tell why it has no fez data.
  */
 export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDataOptions): UseFezDataReturn => {
   const queryClient = useQueryClient();
@@ -106,6 +109,7 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
   const {getAdjustedMoment} = useTime();
   const {
     data,
+    error,
     fetchNextPage,
     fetchPreviousPage,
     hasNextPage,
@@ -264,6 +268,7 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
     isFetchingPreviousPage,
     isFetching,
     isLoading,
+    error,
     isOwner,
     isMember,
     isParticipant,

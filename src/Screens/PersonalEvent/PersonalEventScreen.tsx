@@ -6,11 +6,14 @@ import {Item} from 'react-navigation-header-buttons';
 import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEditButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PersonalEventScreenActionsMenu} from '#src/Components/Menus/PersonalEvents/PersonalEventScreenActionsMenu';
+import {PreRegistrationView} from '#src/Components/Views/Static/PreRegistrationView';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezData, useMarkFezReadEffect} from '#src/Hooks/Fez/useFezData';
 import {openFezChatScreen} from '#src/Libraries/Navigation';
+import {isHttpNotFoundError} from '#src/Libraries/Network/Retry';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
@@ -20,7 +23,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.person
 
 export const PersonalEventScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen helpScreen={CommonStackComponents.scheduleHelpScreen}>
+    <PreRegistrationScreen helpScreen={CommonStackComponents.scheduleHelpScreen} allowed={true}>
       <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/privateevent/list'}>
         <PersonalEventScreenInner {...props} />
       </DisabledFeatureScreen>
@@ -28,9 +31,15 @@ export const PersonalEventScreen = (props: Props) => {
   );
 };
 
+/**
+ * Private event detail content. In pre-registration mode Swiftarr returns a 404 for any event the
+ * user doesn't own, so that shows the PreRegistrationView rather than waiting forever on data that
+ * won't come.
+ */
 const PersonalEventScreenInner = ({navigation, route}: Props) => {
   const {
     fezData: eventData,
+    error,
     isFetching,
     isOwner,
     isParticipant,
@@ -40,8 +49,11 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
     fezID: route.params.eventID,
   });
   useMarkFezReadEffect(eventData, initialReadCount);
+  const {preRegistrationMode} = usePreRegistration();
 
-  const showChat = eventData?.fezType === FezType.privateEvent && isParticipant;
+  // Chat isn't available to pre-registration users.
+  const showChat = !preRegistrationMode && eventData?.fezType === FezType.privateEvent && isParticipant;
+  const showPreRegistrationView = preRegistrationMode && !eventData && isHttpNotFoundError(error);
 
   const getNavButtons = useCallback(() => {
     return (
@@ -76,10 +88,15 @@ const PersonalEventScreenInner = ({navigation, route}: Props) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: getNavButtons,
+      // PreRegistrationView sets its own help button, and child effects run before this one.
+      ...(showPreRegistrationView ? undefined : {headerRight: getNavButtons}),
       title: 'Private Event',
     });
-  }, [getNavButtons, navigation, eventData]);
+  }, [getNavButtons, navigation, eventData, showPreRegistrationView]);
+
+  if (showPreRegistrationView) {
+    return <PreRegistrationView helpScreen={CommonStackComponents.scheduleHelpScreen} />;
+  }
 
   return (
     <ScheduleItemScreenBase

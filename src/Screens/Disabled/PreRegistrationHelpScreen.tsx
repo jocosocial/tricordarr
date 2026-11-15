@@ -26,6 +26,14 @@ export const PreRegistrationHelpScreen = () => {
             generate reminder notifications. You can also import favorites from a Sched.com account if you've done this
             over there already.
           </HelpTopicView>
+          <HelpTopicView title={'LFGs'} icon={AppIcons.lfg}>
+            Create your own Looking For Group events ahead of time. Nobody else can see or join them until we're all on
+            board. Use Share to get a link you can hand out. Chat and participants become available once we're on board.
+          </HelpTopicView>
+          <HelpTopicView title={'Private Events'} icon={AppIcons.eventCreate}>
+            Create your own private events to plan your schedule. They appear in your Day Planner. Inviting guests and
+            chat become available once we're on board.
+          </HelpTopicView>
           <HelpTopicView title={'Performer'} icon={AppIcons.performer}>
             If you are hosting a Shadow Cruise event you can optionally create a performer profile for yourself. This
             will be visible to other Twitarr users and will be attached to the event you're hosting. This is separate

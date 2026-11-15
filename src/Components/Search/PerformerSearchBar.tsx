@@ -11,6 +11,8 @@ import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
 
 interface PerformerSearchBarProps {
   performerType: PerformerType;
+  /** Called when a result is tapped. Should be a stable reference. */
+  onPress: (header: PerformerHeaderData) => void;
 }
 
 /**
@@ -18,7 +20,7 @@ interface PerformerSearchBarProps {
  * query only runs once the user submits a search (search icon or keyboard
  * return), matching the other search bars in the app.
  */
-export const PerformerSearchBar = ({performerType}: PerformerSearchBarProps) => {
+export const PerformerSearchBar = ({performerType, onPress}: PerformerSearchBarProps) => {
   const [queryEnable, setQueryEnable] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const {data, refetch, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage} = usePerformersQuery({
@@ -87,6 +89,7 @@ export const PerformerSearchBar = ({performerType}: PerformerSearchBarProps) => 
         ref={listRef}
         items={performers}
         handleLoadNext={safeHandleLoadNext}
+        onPress={onPress}
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={!!searchQuery} />}
       />
     </>

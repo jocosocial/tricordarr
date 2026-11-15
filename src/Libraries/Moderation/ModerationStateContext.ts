@@ -7,6 +7,7 @@ import {
   ForumModerationData,
   ForumPostModerationData,
   ProfileModerationData,
+  QuartermasterModerationData,
 } from '#src/Structs/ControllerStructs';
 
 /**
@@ -20,7 +21,12 @@ export const isClosedReportsParam = (closed?: boolean | string): boolean => {
  * Union of per-content moderation payloads that support Set State.
  */
 export type ModeratedContentData =
-  ForumPostModerationData | ForumModerationData | FezModerationData | FezPostModerationData | ProfileModerationData;
+  | ForumPostModerationData
+  | ForumModerationData
+  | FezModerationData
+  | FezPostModerationData
+  | ProfileModerationData
+  | QuartermasterModerationData;
 
 /**
  * Set-state path, content ID, and cache keys derived from a moderate-screen payload.

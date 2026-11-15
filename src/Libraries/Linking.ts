@@ -2,7 +2,7 @@ import type {PathConfig, PathConfigMap} from '@react-navigation/core';
 import {LinkingOptions} from '@react-navigation/native';
 
 import {getPath} from '#src/Libraries/RouteDefinitions';
-import {appLinkPrefix} from '#src/Libraries/UrlParser';
+import {appLinkPrefix, universalLinkHosts} from '#src/Libraries/UrlParser';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
@@ -22,6 +22,13 @@ type DeepLinksConfig<ParamList extends {}> = {
 // TypeScript cannot reverse-infer nested ParamList from NavigatorScreenParams,
 // so we explicitly provide it via the generic parameter.
 const tabLinkConfig = <T extends {}>(config: PathConfig<T>): any => config;
+
+/**
+ * Restrict a route's params to UUIDs. The web UI has pages like `/forum/search` and
+ * `/seamail/create` beside its `:id` routes. Without this they would open the native screen with
+ * the word as its ID, instead of falling through to SiteUILinkScreen.
+ */
+const uuidPath = (path: string): string => path.replace(/:(\w+)/g, ':$1([0-9a-fA-F-]{36})');
 
 /**
  * Route map of all routes necessary for deep linking. initialRouteName's should probably
@@ -62,22 +69,37 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
                 LoginScreen: getPath(SettingsStackScreenComponents.login),
               },
             },
-            UserProfileScreen: getPath(CommonStackComponents.userProfileScreen),
+            UserProfileScreen: uuidPath(getPath(CommonStackComponents.userProfileScreen)),
             UserSelfProfileScreen: getPath(CommonStackComponents.userSelfProfileScreen),
             UsernameProfileScreen: getPath(CommonStackComponents.usernameProfileScreen),
             UsersListScreen: getPath(CommonStackComponents.usersList),
             MapScreen: getPath(CommonStackComponents.mapScreen),
-            UserDirectoryScreen: getPath(MainStackComponents.userDirectoryScreen),
+            // The web UI calls this page /directory.
+            UserDirectoryScreen: {
+              path: getPath(MainStackComponents.userDirectoryScreen),
+              alias: ['directory'],
+            },
             MainConductScreen: getPath(MainStackComponents.conductScreen),
             DailyThemesScreen: getPath(CommonStackComponents.dailyThemesScreen),
             PhotostreamScreen: getPath(MainStackComponents.photostreamScreen),
             MicroKaraokeListScreen: getPath(MainStackComponents.microKaraokeListScreen),
             PerformerListScreen: getPath(MainStackComponents.performerListScreen),
+            PerformerSelfScreen: getPath(CommonStackComponents.performerSelfScreen),
+            PerformerScreen: uuidPath(getPath(CommonStackComponents.performerScreen)),
+            QuartermasterListScreen: {
+              path: getPath(MainStackComponents.quartermasterListScreen),
+              alias: ['quartermaster/need', 'quartermaster/owned', 'quartermaster/about'],
+              parse: {
+                // Query-string values arrive as strings.
+                mine: (value?: string) => value === 'true',
+              },
+            },
+            QuartermasterItemScreen: uuidPath(getPath(CommonStackComponents.quartermasterItemScreen)),
             MainTimeZoneScreen: getPath(CommonStackComponents.mainTimeZoneScreen),
             BoardgameListScreen: getPath(MainStackComponents.boardgameListScreen),
             HuntListScreen: getPath(MainStackComponents.huntListScreen),
-            HuntScreen: getPath(CommonStackComponents.huntScreen),
-            HuntPuzzleScreen: getPath(CommonStackComponents.huntPuzzleScreen),
+            HuntScreen: uuidPath(getPath(CommonStackComponents.huntScreen)),
+            HuntPuzzleScreen: uuidPath(getPath(CommonStackComponents.huntPuzzleScreen)),
             KaraokePerformanceListScreen: getPath(MainStackComponents.karaokePerformanceListScreen),
             KaraokeSearchScreen: getPath(MainStackComponents.karaokeSearchScreen),
             KaraokeFavoritesListScreen: getPath(MainStackComponents.karaokeFavoritesListScreen),
@@ -102,6 +124,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             ModerateUserScreen: getPath(CommonStackComponents.moderateUserScreen),
             ModeratePhotostreamScreen: getPath(CommonStackComponents.moderatePhotostreamScreen),
             ModeratePrivateEventScreen: getPath(CommonStackComponents.moderatePrivateEventScreen),
+            ModerateQuartermasterScreen: getPath(CommonStackComponents.moderateQuartermasterScreen),
             ModerateMicroKaraokeSongsScreen: getPath(CommonStackComponents.moderateMicroKaraokeSongsScreen),
             ModerateMicroKaraokeSongScreen: getPath(CommonStackComponents.moderateMicroKaraokeSongScreen),
           },
@@ -110,8 +133,8 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           initialRouteName: ChatStackScreenComponents.seamailListScreen,
           screens: {
             SeamailListScreen: getPath(ChatStackScreenComponents.seamailListScreen),
-            SeamailChatScreen: getPath(CommonStackComponents.seamailChatScreen),
-            PrivateEventChatScreen: getPath(CommonStackComponents.privateEventChatScreen),
+            SeamailChatScreen: uuidPath(getPath(CommonStackComponents.seamailChatScreen)),
+            PrivateEventChatScreen: uuidPath(getPath(CommonStackComponents.privateEventChatScreen)),
             KrakenTalkReceiveScreen: getPath(ChatStackScreenComponents.krakenTalkReceiveScreen),
           },
         }),
@@ -119,7 +142,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           initialRouteName: LfgStackComponents.lfgListScreen,
           screens: {
             LfgListScreen: {
-              path: 'lfg/:endpoint?',
+              path: 'lfg/:endpoint(open|joined|owner|former)?',
               parse: {
                 endpoint: (value?: string) => {
                   // Default to 'open' when no endpoint in URL
@@ -134,8 +157,8 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
                 },
               },
             },
-            LfgScreen: getPath(CommonStackComponents.lfgScreen),
-            LfgChatScreen: getPath(CommonStackComponents.lfgChatScreen),
+            LfgScreen: uuidPath(getPath(CommonStackComponents.lfgScreen)),
+            LfgChatScreen: uuidPath(getPath(CommonStackComponents.lfgChatScreen)),
             LfgHelpScreen: getPath(CommonStackComponents.lfgHelpScreen),
           },
         }),
@@ -143,17 +166,17 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           initialRouteName: CommonStackComponents.scheduleDayScreen,
           screens: {
             ScheduleDayScreen: getPath(CommonStackComponents.scheduleDayScreen),
-            EventScreen: getPath(CommonStackComponents.eventScreen),
-            PersonalEventScreen: getPath(CommonStackComponents.personalEventScreen),
+            EventScreen: uuidPath(getPath(CommonStackComponents.eventScreen)),
+            PersonalEventScreen: uuidPath(getPath(CommonStackComponents.personalEventScreen)),
           },
         }),
         ForumsTab: tabLinkConfig<ForumStackParamList>({
           initialRouteName: ForumStackComponents.forumCategoriesScreen,
           screens: {
             ForumCategoriesScreen: getPath(ForumStackComponents.forumCategoriesScreen),
-            ForumCategoryScreen: getPath(ForumStackComponents.forumCategoryScreen),
+            ForumCategoryScreen: uuidPath(getPath(ForumStackComponents.forumCategoryScreen)),
             ForumPostMentionScreen: getPath(ForumStackComponents.forumPostMentionScreen),
-            ForumThreadScreen: getPath(CommonStackComponents.forumThreadScreen),
+            ForumThreadScreen: uuidPath(getPath(CommonStackComponents.forumThreadScreen)),
             ForumThreadPostScreen: getPath(CommonStackComponents.forumThreadPostScreen),
           },
         }),
@@ -166,12 +189,10 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
 /**
  * This is the actual Linking object that we export and include in App.tsx.
  * https://developer.android.com/training/app-links
- * I've tried making App Links worked, but couldn't get it going. https://beta.twitarr.com
- * kept sending me to the browser. Maybe I have to go through the asset generation/verification?
- * idk...
+ * NavigationProvider extends `filter` with the checks that depend on the session.
  */
 export const navigationLinking: LinkingOptions<RootStackParamList> = {
-  prefixes: [appLinkPrefix].filter(prefix => prefix !== undefined) as string[],
+  prefixes: [appLinkPrefix, ...universalLinkHosts.map(host => `https://${host}`)],
   filter: url => !url.includes('expo-development-client'),
   config: deepLinksConf,
 };

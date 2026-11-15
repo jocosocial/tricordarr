@@ -19,9 +19,17 @@ export const PersonalEventHelpScreen = () => {
           friends. Useful for a single-app schedule for your day or making reminders for yourself.
         </HelpTopicView>
         <HelpTopicView>
-          You can add guests when creating a private event. This automatically creates a Seamail chat. If you create the
-          event without guests, you cannot add users later; you'll need to create a new private event and invite them at
-          creation. If the event already has guests, you can add or remove users later.
+          You can add guests when creating a private event. This automatically creates a Seamail chat. If the event
+          already has guests, you can add or remove users later.
+        </HelpTopicView>
+        <HelpTopicView title={'Adding Guests Later'} icon={AppIcons.group}>
+          If you created an event without guests, you can still add some by editing it. Adding guests or making the
+          event unlisted turns it into a private event with guests. This can't be undone: it can no longer be deleted,
+          only cancelled.
+        </HelpTopicView>
+        <HelpTopicView title={'Pre-Registration'} icon={AppIcons.preregistration}>
+          Before the cruise you can create, edit, cancel, and delete your own private events. Nobody else can see them
+          yet, and guests, chat, and reporting become available once we're all on board.
         </HelpTopicView>
         <HelpTopicView title={'Visibility'} icon={AppIcons.hide}>
           You can make a private event unlisted, which allows anyone with a link to view and join the event. By default

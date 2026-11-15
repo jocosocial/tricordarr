@@ -4,12 +4,14 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
+import {ManagePerformersMenuItem} from '#src/Components/Menus/Events/Items/ManagePerformersMenuItem';
 import {NeedsPhotographerMenuItem} from '#src/Components/Menus/Events/Items/NeedsPhotographerMenuItem';
 import {OpenInSchedMenuItem} from '#src/Components/Menus/Events/Items/OpenInSchedMenuItem';
 import {PhotographingMenuItem} from '#src/Components/Menus/Events/Items/PhotographingMenuItem';
 import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {EventType} from '#src/Enums/EventType';
@@ -29,6 +31,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   const {preRegistrationMode} = usePreRegistration();
   const {isLoggedIn} = useSession();
   const {hasPerformerSelfEditor, hasShutternaut, hasShutternautManager} = useRoles();
+  const {hasTwitarrTeam} = usePrivilege();
 
   const handleHelp = () => {
     if (props.event.eventType === EventType.shadow) {
@@ -84,15 +87,12 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       <OpenInSchedMenuItem closeMenu={closeMenu} eventUid={props.event.uid} />
       {props.event.eventType === EventType.shadow && (
         <SetOrganizerMenuItem
-          onPress={() => {
-            commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
-              eventID: String(props.event.eventID),
-            });
-          }}
+          eventID={props.event.eventID}
           closeMenu={closeMenu}
           disabled={!(preRegistrationMode || hasPerformerSelfEditor)}
         />
       )}
+      {hasTwitarrTeam && <ManagePerformersMenuItem eventID={props.event.eventID} />}
       {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
       {hasShutternaut && (
         <PhotographingMenuItem

@@ -7,10 +7,8 @@ import {LoginForm} from '#src/Components/Forms/User/LoginForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
-import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -26,8 +24,6 @@ export const LoginScreen = () => {
   const {signIn} = useSession();
   const {oobeCompleted} = useOobe();
   const {serverUrl} = useSwiftarrQueryClient();
-  const {updateClientSettings} = useClientSettings();
-  const {refetch: refetchRoles} = useRoles();
   const {currentSession, findOrCreateSession} = useSession();
   const {appConfig} = useConfig();
   const [isSessionReady, setIsSessionReady] = useState(false);
@@ -55,22 +51,14 @@ export const LoginScreen = () => {
           if (oobeCompleted) {
             await startPushProvider();
           }
-          /**
-           * This is a hack to wait a beat for the login processing to complete.
-           * I never could find a way to get updateClientSettings() to fire off
-           * immediately after login and not get an `undefined` payload. The query
-           * function never even fired. So this is gonna have to do until we figure
-           * out something better.
-           */
-          setTimeout(async () => {
-            await Promise.all([updateClientSettings(), refetchRoles()]);
-          }, 1000);
+          // Client settings and roles re-key on the new userID and fetch on their own;
+          // ClientSettingsProvider and RoleProvider apply the results.
           navigation.goBack();
         },
         onSettled: () => formikHelpers.setSubmitting(false),
       });
     },
-    [loginMutation, signIn, oobeCompleted, updateClientSettings, navigation, refetchRoles, signInWebview],
+    [loginMutation, signIn, oobeCompleted, navigation, signInWebview],
   );
 
   if (!isSessionReady) {

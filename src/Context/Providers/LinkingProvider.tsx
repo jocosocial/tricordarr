@@ -2,8 +2,8 @@ import React, {PropsWithChildren, useCallback} from 'react';
 import {Linking} from 'react-native';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {LinkingContext} from '#src/Context/Contexts/LinkingContext';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {isNavigationReady, push} from '#src/Libraries/NavigationRef';
@@ -16,7 +16,7 @@ const logger = createLogger('LinkingProvider.tsx');
 export const LinkingProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
-  const {setErrorBanner} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
 
   /**
    * Transform a URL path for the app's deep linking scheme.
@@ -64,7 +64,7 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
             logger.debug('Stack-specific screen, using Linking.openURL for', finalUrl);
             Linking.openURL(finalUrl).catch(err => {
               logger.error('Failed to open URL:', finalUrl, err);
-              setErrorBanner('Failed to open URL: ' + finalUrl);
+              setSnackbarPayload({message: 'Failed to open URL: ' + finalUrl, messageType: 'error'});
             });
             return;
           }
@@ -75,10 +75,10 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
       logger.debug('Falling back to Linking.openURL for', finalUrl);
       Linking.openURL(finalUrl).catch(err => {
         logger.error('Failed to open URL:', finalUrl, err);
-        setErrorBanner('Failed to open URL: ' + finalUrl);
+        setSnackbarPayload({message: 'Failed to open URL: ' + finalUrl, messageType: 'error'});
       });
     },
-    [setErrorBanner],
+    [setSnackbarPayload],
   );
 
   /**
@@ -88,10 +88,10 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
    * - URLs matching the current server or canonical hostnames
    * - External URLs (opened directly)
    *
-   * This would normally get covered by Android App Links
-   * https://developer.android.com/training/app-links but verifying a non-public
-   * server is a problem, and it's a lot of work. Plus I want to translate certain URLs
-   * until we fix the upstream. So this exists.
+   * This only covers links tapped inside the app. Links from outside it arrive through iOS
+   * Universal Links and Android App Links, which can't cover non-public servers and only claim
+   * the hosts in `universalLinkHosts`. I also want to translate certain URLs until we fix the
+   * upstream. So this exists.
    *
    * https://github.com/jocosocial/tricordarr/issues/252
    */
@@ -112,22 +112,22 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
       if (url.startsWith('mailto:') && isIOS) {
         isEmulator().then(emulator => {
           if (emulator) {
-            setErrorBanner('mail links on iPhone simulator are not supported');
+            setSnackbarPayload({message: 'mail links on iPhone simulator are not supported', messageType: 'error'});
             return;
           }
           Linking.openURL(url).catch(err => {
             logger.error('Failed to open external URL:', url, err);
-            setErrorBanner('Failed to open URL: ' + url);
+            setSnackbarPayload({message: 'Failed to open URL: ' + url, messageType: 'error'});
           });
         });
         return;
       }
       Linking.openURL(url).catch(err => {
         logger.error('Failed to open external URL:', url, err);
-        setErrorBanner('Failed to open URL: ' + url);
+        setSnackbarPayload({message: 'Failed to open URL: ' + url, messageType: 'error'});
       });
     },
-    [serverUrl, appConfig.apiClientConfig.canonicalHostnames, openAppUrl, setErrorBanner],
+    [serverUrl, appConfig.apiClientConfig.canonicalHostnames, openAppUrl, setSnackbarPayload],
   );
 
   return (

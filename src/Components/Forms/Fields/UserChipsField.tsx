@@ -19,6 +19,10 @@ interface UserChipsFieldProps {
   minCount?: number;
   /** Error message when below minCount. Defaults to "Add at least one participant." when minCount is 1. */
   minCountErrorMessage?: string;
+  /** Show the field but don't allow adding users. */
+  disabled?: boolean;
+  /** Informational text shown below the search bar. */
+  helperText?: string;
 }
 export const UserChipsField = ({
   name,
@@ -28,6 +32,8 @@ export const UserChipsField = ({
   searchFavorersOnly = false,
   minCount,
   minCountErrorMessage,
+  disabled = false,
+  helperText,
 }: UserChipsFieldProps) => {
   const {commonStyles} = useStyles();
   const {currentUserID} = useSession();
@@ -75,7 +81,9 @@ export const UserChipsField = ({
               // Explicitly clear the search bar when a user is added
               // https://github.com/jocosocial/tricordarr/issues/256
               clearOnPress={true}
+              disabled={disabled}
             />
+            {helperText && <HelperText type={'info'}>{helperText}</HelperText>}
             {minCount != null && field.value.length < minCount ? (
               <HelperText type={'error'}>{minCountErrorMessage ?? meta.error}</HelperText>
             ) : null}

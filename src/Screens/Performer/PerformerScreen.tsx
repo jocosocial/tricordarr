@@ -38,7 +38,7 @@ const PerformerScreenInner = ({route, navigation}: Props) => {
     return (
       <View>
         <MaterialHeaderButtons>
-          {data && eventID && currentUserID === data?.user?.userID && (
+          {data && currentUserID === data?.user?.userID && (
             <Item
               title={'Edit'}
               iconName={AppIcons.edit}

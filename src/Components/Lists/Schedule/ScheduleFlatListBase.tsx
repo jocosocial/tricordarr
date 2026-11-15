@@ -19,6 +19,8 @@ interface ScheduleFlatListBaseProps<TItem> {
   showDayInDividers?: boolean;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
+  /** Content above the default header's first divider. Ignored when listHeader replaces that header. */
+  headerContent?: ReactElement;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   initialScrollIndex?: number;
   listRef?: React.RefObject<FlashListRef<TItem> | null>;
@@ -40,6 +42,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
   refreshControl,
   listHeader,
   listFooter,
+  headerContent,
   initialScrollIndex,
   listRef,
   renderItem,
@@ -59,29 +62,40 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
     ...commonStyles.paddingHorizontalSmall,
   };
 
+  /**
+   * Default header: any headerContent, then a divider labeled for the first item.
+   */
   const renderListHeader = useCallback(() => {
-    if (!items[0]) {
-      return <TimeDivider label={'No items to display'} />;
-    }
-    if (separator === 'none') {
-      return <></>;
-    }
-    const firstItem = items[0];
-    if (!firstItem.startTime || !firstItem.timeZoneID) {
-      return <SpaceDivider />;
-    }
+    const getDivider = () => {
+      if (!items[0]) {
+        return <TimeDivider label={'No items to display'} />;
+      }
+      if (separator === 'none') {
+        return <></>;
+      }
+      const firstItem = items[0];
+      if (!firstItem.startTime || !firstItem.timeZoneID) {
+        return <SpaceDivider />;
+      }
 
-    let label: string | undefined = getTimeMarker(
-      firstItem.startTime,
-      firstItem.timeZoneID,
-      showDayInDividers,
-      timeZoneLabelMode,
+      let label: string | undefined = getTimeMarker(
+        firstItem.startTime,
+        firstItem.timeZoneID,
+        showDayInDividers,
+        timeZoneLabelMode,
+      );
+      if (separator === 'day') {
+        label = getDayMarker(firstItem.startTime, firstItem.timeZoneID, showDayInDividers);
+      }
+      return <TimeDivider label={label} />;
+    };
+    return (
+      <>
+        {headerContent}
+        {getDivider()}
+      </>
     );
-    if (separator === 'day') {
-      label = getDayMarker(firstItem.startTime, firstItem.timeZoneID, showDayInDividers);
-    }
-    return <TimeDivider label={label} />;
-  }, [items, separator, showDayInDividers, timeZoneLabelMode]);
+  }, [items, separator, showDayInDividers, timeZoneLabelMode, headerContent]);
 
   const renderListFooter = useCallback(() => {
     let footer: ReactElement = <></>;

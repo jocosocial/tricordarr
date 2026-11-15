@@ -13,3 +13,13 @@ export const alertDeleteProfile = (onConfirm: () => void, onCancel?: () => void)
     ],
   );
 };
+
+/**
+ * Confirms manually linking a performer to an event (TwitarrTeam).
+ */
+export const alertLinkPerformer = (performerName: string, eventTitle: string, onConfirm: () => void): void => {
+  Alert.alert('Link Performer', `Link ${performerName} to ${eventTitle}?`, [
+    {text: 'Cancel', style: 'cancel'},
+    {text: 'Link', onPress: onConfirm},
+  ]);
+};

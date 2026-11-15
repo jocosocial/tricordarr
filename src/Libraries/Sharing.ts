@@ -14,6 +14,7 @@ export enum ShareContentType {
   privateEvent = 'privateevent',
   performer = 'performer',
   hunt = 'hunt',
+  quartermaster = 'quartermaster',
   puzzle = 'puzzle',
   siteUI = 'siteui',
   forumPostModerate = 'moderate/forumpost',
@@ -25,6 +26,7 @@ export enum ShareContentType {
   photostreamModerate = 'moderate/photostream',
   privateEventModerate = 'moderate/personalevent',
   microKaraokeSongModerate = 'moderate/microkaraoke/song',
+  quartermasterModerate = 'moderate/quartermaster',
 }
 
 /**
@@ -40,6 +42,7 @@ export const shareContentTypeLabels: Record<ShareContentType, string> = {
   [ShareContentType.privateEvent]: 'Private Event',
   [ShareContentType.performer]: 'Performer',
   [ShareContentType.hunt]: 'Puzzle Hunt',
+  [ShareContentType.quartermaster]: 'Quartermastarr Item',
   [ShareContentType.puzzle]: 'Puzzle',
   [ShareContentType.siteUI]: 'Link',
   [ShareContentType.forumPostModerate]: 'Moderator View',
@@ -51,6 +54,7 @@ export const shareContentTypeLabels: Record<ShareContentType, string> = {
   [ShareContentType.photostreamModerate]: 'Moderator View',
   [ShareContentType.privateEventModerate]: 'Moderator View',
   [ShareContentType.microKaraokeSongModerate]: 'Moderator View',
+  [ShareContentType.quartermasterModerate]: 'Moderator View',
 };
 
 /**

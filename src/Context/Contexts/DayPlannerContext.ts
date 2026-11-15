@@ -18,7 +18,7 @@ export const DAY_PLANNER_CONFIG = {
   MINUTES_PER_ROW: 15,
   // Height of each 15-minute row in pixels
   ROW_HEIGHT: 25,
-  // Total hours displayed (24 hours, always)
+  // Total hours of the full-day timeline (24 hours; the overlap view fits a shorter window to its items)
   TOTAL_HOURS: 24,
   // Minimum event height to ensure visibility of short events
   MIN_EVENT_HEIGHT: 40,
@@ -53,10 +53,12 @@ export interface DayPlannerContextType {
     dayStart: Date,
     dayEnd: Date,
     compactThemeEvents?: boolean,
+    pinnedItemId?: string,
   ) => DayPlannerItemWithLayout[];
   generateTimeSlotLabels: (
     dayStart: Date,
     timeZoneID?: string,
+    totalSlots?: number,
   ) => {time: Date; label: string; slotType: TimeSlotType}[];
   getDayBoundaries: (
     cruiseStartDate: Date,
@@ -64,7 +66,12 @@ export interface DayPlannerContextType {
     enableLateDayFlip: boolean,
     timeZoneID: string,
   ) => {dayStart: Date; dayEnd: Date};
-  getTimelineHeight: () => number;
+  getTimelineHeight: (totalSlots?: number) => number;
+  getItemsTimelineWindow: (
+    items: DayPlannerItem[],
+    timeZoneID: string,
+    compactThemeEvents?: boolean,
+  ) => {dayStart: Date; dayEnd: Date} | null;
   getScrollOffsetForFirstItem: (items: {startTime: Date}[], dayStart: Date) => number;
   getMinutesFromDayStartForNow: (timeZoneID: string, dayStart: Date, now: Date) => number | null;
   getScrollOffsetForTimeOfDay: (timeZoneID: string, dayStart: Date) => number;

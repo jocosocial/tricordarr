@@ -13,11 +13,13 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useImage} from '#src/Context/Contexts/ImageContext';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {usePhotostreamCacheReducer} from '#src/Hooks/Photostream/usePhotostreamCacheReducer';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {assertPhotostreamCaptureDateAllowed} from '#src/Libraries/ImageCaptureDate';
 import {createLogger} from '#src/Libraries/Logger';
 import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -51,14 +53,26 @@ const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
   const dispatchScrollToTop = useScrollToTopIntent();
   const {fromData} = useImage();
   const {prependImage} = usePhotostreamCacheReducer();
+  const {setSnackbarPayload} = useSnackbar();
 
   const onSubmit = async (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => {
     if (!values.image) {
       helpers.setSubmitting(false);
       return;
     }
+    // Re-check at submit time since the photo may have aged out while the form was open.
+    const capturedAt = values.capturedAt ? new Date(values.capturedAt) : undefined;
+    try {
+      assertPhotostreamCaptureDateAllowed(capturedAt);
+    } catch (err) {
+      if (err instanceof Error) {
+        setSnackbarPayload({message: err.message, messageType: 'error'});
+      }
+      helpers.setSubmitting(false);
+      return;
+    }
     const payload: PhotostreamUploadData = {
-      createdAt: new Date().toISOString(), // @TODO extract the date from the image
+      createdAt: capturedAt.toISOString(),
       ...(values.locationName ? {locationName: values.locationName} : undefined),
       ...(values.eventData ? {eventID: values.eventData.eventID} : undefined),
       image: values.image,

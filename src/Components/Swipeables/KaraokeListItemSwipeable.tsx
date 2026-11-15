@@ -1,4 +1,5 @@
-import React, {PropsWithChildren, useCallback, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useMemo} from 'react';
+import {StyleSheet} from 'react-native';
 import {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SharedValue} from 'react-native-reanimated';
 
@@ -23,6 +24,8 @@ interface KaraokeListItemSwipeableProps extends PropsWithChildren {
  * Swipe actions for a karaoke song row: Favorite (any logged-in user) and Log
  * (karaokemanager only). Swiping is disabled entirely while logged out, since
  * favoriting is the only action available to a non-manager and it requires a token.
+ * The favorite pending flag is derived from the mutation's variables so a recycled cell never
+ * inherits another song's spinner.
  */
 export const KaraokeListItemSwipeable = ({
   children,
@@ -35,52 +38,56 @@ export const KaraokeListItemSwipeable = ({
   const {hasKaraokeManager} = useRoles();
   const {isLoggedIn} = useSession();
   const favoriteMutation = useKaraokeFavoriteMutation();
-  const [favoriteRefreshing, setFavoriteRefreshing] = useState(false);
+  const {songID, artist, songName, isFavorite} = song;
 
+  const favoriteRefreshing = favoriteMutation.isPending && favoriteMutation.variables?.songID === songID;
   const showLogButton = showLogButtonProp !== false && hasKaraokeManager;
 
-  const handleFavorite = useCallback(
-    (swipeable: SwipeableMethods) => {
-      setFavoriteRefreshing(true);
-      favoriteMutation.mutate(
-        {songID: song.songID, action: song.isFavorite ? 'unfavorite' : 'favorite'},
-        {
-          onSettled: () => {
-            setFavoriteRefreshing(false);
-            swipeable.close();
-          },
-        },
-      );
-    },
-    [favoriteMutation, song.songID, song.isFavorite],
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        favorite: {backgroundColor: theme.colors.elevation.level1},
+        log: {backgroundColor: theme.colors.elevation.level2},
+      }),
+    [theme],
   );
 
+  /** Toggle favorite. Disabled in the panel while in flight. */
+  const handleFavorite = useCallback(
+    (swipeable: SwipeableMethods) => {
+      favoriteMutation.mutate(
+        {songID, action: isFavorite ? 'unfavorite' : 'favorite'},
+        {onSettled: () => swipeable.close()},
+      );
+    },
+    [favoriteMutation, songID, isFavorite],
+  );
+
+  /** Open the log-performance screen for this song, then close the swipeable. */
   const handleLog = useCallback(
     (swipeable: SwipeableMethods) => {
       swipeable.close();
-      navigation.push(MainStackComponents.karaokeLogPerformanceScreen, {
-        songID: song.songID,
-        artist: song.artist,
-        songName: song.songName,
-      });
+      navigation.push(MainStackComponents.karaokeLogPerformanceScreen, {songID, artist, songName});
     },
-    [navigation, song.songID, song.artist, song.songName],
+    [navigation, songID, artist, songName],
   );
 
-  const renderRightPanel = (
-    _progressAnimatedValue: SharedValue<number>,
-    _dragAnimatedValue: SharedValue<number>,
-    swipeable: SwipeableMethods,
-  ) => {
-    return (
+  /** Favorite, plus Log for karaoke managers. */
+  const renderRightPanel = useCallback(
+    (
+      _progressAnimatedValue: SharedValue<number>,
+      _dragAnimatedValue: SharedValue<number>,
+      swipeable: SwipeableMethods,
+    ) => (
       <>
         <SwipeableButton
           testID={'karaokeFavorite-button'}
-          text={song.isFavorite ? 'Unfavorite' : 'Favorite'}
-          iconName={song.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
+          text={isFavorite ? 'Unfavorite' : 'Favorite'}
+          iconName={isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
           onPress={() => handleFavorite(swipeable)}
           refreshing={favoriteRefreshing}
-          style={{backgroundColor: theme.colors.elevation.level1}}
+          disabled={favoriteRefreshing}
+          style={styles.favorite}
         />
         {showLogButton && (
           <SwipeableButton
@@ -88,15 +95,16 @@ export const KaraokeListItemSwipeable = ({
             text={'Log'}
             iconName={AppIcons.karaokeLog}
             onPress={() => handleLog(swipeable)}
-            style={{backgroundColor: theme.colors.elevation.level2}}
+            style={styles.log}
           />
         )}
       </>
-    );
-  };
+    ),
+    [isFavorite, favoriteRefreshing, showLogButton, styles, handleFavorite, handleLog],
+  );
 
   return (
-    <BaseSwipeable key={song.songID} enabled={enabled && isLoggedIn} renderRightPanel={renderRightPanel}>
+    <BaseSwipeable key={songID} enabled={enabled && isLoggedIn} renderRightPanel={renderRightPanel}>
       {children}
     </BaseSwipeable>
   );

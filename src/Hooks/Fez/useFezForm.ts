@@ -28,15 +28,25 @@ const defaultStartTime = () => ({
   minutes: 0,
 });
 
+/**
+ * Whether these personal event form values can only be saved as a privateEvent, mirroring the
+ * Swiftarr rule: a personalEvent has no other participants and can't change from its type's default
+ * visibility.
+ */
+const personalEventRequiresPrivate = (values: FezFormValues): boolean =>
+  values.initialUsers.length > 0 || values.visibility === FezVisibility.unlisted;
+
 export interface UseFezFormReturn {
   getInitialValues: (params?: UseFezFormParams) => FezFormValues;
   getInitialValuesFromFez: (fez: FezData) => FezFormValues;
+  personalEventRequiresPrivate: (values: FezFormValues) => boolean;
 }
 
 /**
  * Returns getInitialValues for create flows. Deduplicates cruise date,
  * start time, and capacity/duration defaults used by LfgCreateScreenBase and
- * PersonalEventCreateScreen.
+ * PersonalEventCreateScreen. Also shares the personal event type rule between the personal event
+ * create and edit flows.
  */
 export const useFezForm = (): UseFezFormReturn => {
   const {startDate, adjustedCruiseDayToday} = useCruise();
@@ -92,5 +102,5 @@ export const useFezForm = (): UseFezFormReturn => {
     };
   }, []);
 
-  return {getInitialValues, getInitialValuesFromFez};
+  return {getInitialValues, getInitialValuesFromFez, personalEventRequiresPrivate};
 };

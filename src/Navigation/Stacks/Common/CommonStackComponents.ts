@@ -2,6 +2,7 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 import type {FezType} from '#src/Enums/FezType';
+import type {QuartermasterCategory} from '#src/Enums/QuartermasterCategory';
 import type {ReportContentType} from '#src/Enums/ReportContentType';
 import {UserRoleType} from '#src/Enums/UserRoleType';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
@@ -17,6 +18,7 @@ import {
   PerformerData,
   PostData,
   ProfilePublicData,
+  QuartermasterData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
 import {
@@ -110,6 +112,18 @@ export type CommonStackParamList = {
   ModeratePrivateEventScreen: {
     id: string;
   };
+  ModerateQuartermasterScreen: {
+    id: string;
+  };
+  QuartermasterItemScreen: {
+    itemID: string;
+  };
+  QuartermasterCreateScreen: Optional<{
+    category?: QuartermasterCategory;
+  }>;
+  QuartermasterEditScreen: {
+    item: QuartermasterData;
+  };
   ModerateMicroKaraokeSongsScreen: undefined;
   ModerateMicroKaraokeSongScreen: {
     id: string;
@@ -166,7 +180,12 @@ export type CommonStackParamList = {
   SeamailSearchScreen: {
     forUser?: string;
   };
-  SeamailCreateScreen?: WithElevation<WithInitialUserHeaders<{}>>;
+  SeamailCreateScreen?: WithElevation<
+    WithInitialUserHeaders<{
+      /** Prefills the seamail subject. */
+      initialTitle?: string;
+    }>
+  >;
   ForumPostMentionScreen: Optional<WithElevation>;
   ForumPostPinnedScreen: {
     forumID: string;
@@ -309,14 +328,18 @@ export type CommonStackParamList = {
   EventAddPerformerScreen: {
     eventID: string;
   };
+  EventPerformersManageScreen: {
+    eventID: string;
+  };
   PerformerCreateScreen: {
     performerType: PerformerType;
-    eventID: string;
+    eventID?: string;
   };
   PerformerEditScreen: {
     performerData: PerformerData;
-    eventID: string;
+    eventID?: string;
   };
+  PerformerSelfScreen: undefined;
   EventSettingsScreen: undefined;
   ScheduleDayScreen: ScheduleDayParams & Optional<NoDrawerParams>;
   ScheduleDayPlannerScreen: {
@@ -335,6 +358,7 @@ export type CommonStackParamList = {
   ModeratorHelpScreen: undefined;
   BoardgameHelpScreen: undefined;
   PhotostreamHelpScreen: undefined;
+  QuartermasterHelpScreen: undefined;
   KaraokeHelpScreen: undefined;
   MicroKaraokeHelpScreen: undefined;
   MapHelpScreen: undefined;
@@ -456,6 +480,10 @@ export enum CommonStackComponents {
   moderateUserScreen = 'ModerateUserScreen',
   moderatePhotostreamScreen = 'ModeratePhotostreamScreen',
   moderatePrivateEventScreen = 'ModeratePrivateEventScreen',
+  moderateQuartermasterScreen = 'ModerateQuartermasterScreen',
+  quartermasterItemScreen = 'QuartermasterItemScreen',
+  quartermasterCreateScreen = 'QuartermasterCreateScreen',
+  quartermasterEditScreen = 'QuartermasterEditScreen',
   moderateMicroKaraokeSongsScreen = 'ModerateMicroKaraokeSongsScreen',
   moderateMicroKaraokeSongScreen = 'ModerateMicroKaraokeSongScreen',
   easterEggScreen = 'EasterEggScreen',
@@ -546,6 +574,8 @@ export enum CommonStackComponents {
   eventAddPerformerScreen = 'EventAddPerformerScreen',
   performerCreateScreen = 'PerformerCreateScreen',
   performerEditScreen = 'PerformerEditScreen',
+  performerSelfScreen = 'PerformerSelfScreen',
+  eventPerformersManageScreen = 'EventPerformersManageScreen',
   eventSettingsScreen = 'EventSettingsScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleDayPlannerScreen = 'ScheduleDayPlannerScreen',
@@ -560,6 +590,7 @@ export enum CommonStackComponents {
   moderatorHelpScreen = 'ModeratorHelpScreen',
   boardgameHelpScreen = 'BoardgameHelpScreen',
   photostreamHelpScreen = 'PhotostreamHelpScreen',
+  quartermasterHelpScreen = 'QuartermasterHelpScreen',
   karaokeHelpScreen = 'KaraokeHelpScreen',
   microKaraokeHelpScreen = 'MicroKaraokeHelpScreen',
   mapHelpScreen = 'MapHelpScreen',
@@ -659,6 +690,7 @@ export type HelpScreenComponents =
   | CommonStackComponents.shutternautHelpScreen
   | CommonStackComponents.boardgameHelpScreen
   | CommonStackComponents.photostreamHelpScreen
+  | CommonStackComponents.quartermasterHelpScreen
   | CommonStackComponents.karaokeHelpScreen
   | CommonStackComponents.microKaraokeHelpScreen
   | CommonStackComponents.userProfileHelpScreen

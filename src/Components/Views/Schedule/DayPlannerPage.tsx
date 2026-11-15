@@ -1,16 +1,22 @@
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, ScrollView, View} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {GestureResponderEvent, NativeScrollEvent, NativeSyntheticEvent, ScrollView, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
+import {
+  DayPlannerCardActionsMenu,
+  DayPlannerMenuTarget,
+} from '#src/Components/Menus/Schedule/DayPlannerCardActionsMenu';
 import {DayPlannerTimelineView} from '#src/Components/Views/Schedule/DayPlannerTimelineView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useDayPlanner} from '#src/Context/Contexts/DayPlannerContext';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useMenu} from '#src/Hooks/useMenu';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
+import {DayPlannerItem} from '#src/Types/DayPlanner';
 
 export interface DayPlannerPageControls {
   scrollToNow: () => void;
@@ -59,6 +65,11 @@ interface DayPlannerPageProps {
    * any page has ever been scrolled, in which case we fall back to scrollToFirstItem.
    */
   getSharedOffset: () => number | null;
+  /**
+   * Fires when this page's card actions menu opens or closes, so the parent can lock the pager:
+   * the menu's overlay does not stop a horizontal swipe from reaching the PagerView underneath.
+   */
+  onMenuVisibleChange: (visible: boolean) => void;
 }
 
 /**
@@ -77,6 +88,7 @@ const DayPlannerPageComponent = ({
   onRegisterScrollController,
   onScrollSettled,
   getSharedOffset,
+  onMenuVisibleChange,
 }: DayPlannerPageProps) => {
   const {startDate} = useCruise();
   const {appConfig} = useConfig();
@@ -84,8 +96,28 @@ const DayPlannerPageComponent = ({
   const scrollViewRef = useRef<ScrollView>(null);
   const hasPositioned = useRef(false);
   const {preRegistrationMode} = usePreRegistration();
+  // Pre-registration users can't list what they've joined, only what they own.
+  const fezEndpoint = preRegistrationMode ? 'owner' : 'joined';
   const {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForFirstItem, getScrollOffsetForTimeOfDay} =
     useDayPlanner();
+  const {visible: menuVisible, openMenu, closeMenu} = useMenu();
+  const [menuTarget, setMenuTarget] = useState<DayPlannerMenuTarget | null>(null);
+
+  /**
+   * One menu per page, anchored at the finger rather than on the card. pageX/pageY are window
+   * coordinates, which is what Paper's coordinate anchor expects.
+   */
+  const handleItemLongPress = useCallback(
+    (item: DayPlannerItem, event: GestureResponderEvent) => {
+      setMenuTarget({item, x: event.nativeEvent.pageX, y: event.nativeEvent.pageY});
+      openMenu();
+    },
+    [openMenu],
+  );
+
+  useEffect(() => {
+    onMenuVisibleChange(menuVisible);
+  }, [menuVisible, onMenuVisibleChange]);
 
   const {
     data: eventData,
@@ -108,10 +140,10 @@ const DayPlannerPageComponent = ({
     refetch: refetchLfgJoined,
   } = useLfgListQuery({
     cruiseDay: cruiseDay - 1,
-    endpoint: 'joined',
+    endpoint: fezEndpoint,
     hidePast: false,
     options: {
-      enabled: enabled && !preRegistrationMode,
+      enabled,
     },
   });
 
@@ -124,9 +156,10 @@ const DayPlannerPageComponent = ({
     refetch: refetchPersonalEvents,
   } = usePersonalEventsQuery({
     cruiseDay: cruiseDay - 1,
+    endpoint: fezEndpoint,
     hidePast: false,
     options: {
-      enabled: enabled && !preRegistrationMode,
+      enabled,
     },
   });
 
@@ -188,12 +221,8 @@ const DayPlannerPageComponent = ({
   }, [dayPlannerItems, dayStart, getScrollOffsetForFirstItem, scrollTo]);
 
   const refresh = useCallback(async () => {
-    const refreshes: Promise<any>[] = [refetchEvents()];
-    if (!preRegistrationMode) {
-      refreshes.push(refetchLfgJoined(), refetchPersonalEvents());
-    }
-    await Promise.all(refreshes);
-  }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents, preRegistrationMode]);
+    await Promise.all([refetchEvents(), refetchLfgJoined(), refetchPersonalEvents()]);
+  }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents]);
 
   /**
    * Position this page once, the first time it actually has a timeline to position: carry over
@@ -289,7 +318,10 @@ const DayPlannerPageComponent = ({
         timeZoneID={boatTimeZoneID}
         selectedCruiseDay={cruiseDay}
         onScrollSettled={handleScrollSettled}
+        onItemLongPress={handleItemLongPress}
+        scrollEnabled={!menuVisible}
       />
+      <DayPlannerCardActionsMenu target={menuTarget} visible={menuVisible} closeMenu={closeMenu} />
     </View>
   );
 };

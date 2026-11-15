@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React from 'react';
 import {SegmentedButtons} from 'react-native-paper';
 
 import {AppIcons} from '#src/Enums/Icons';
@@ -7,7 +7,7 @@ import {SegmentedButtonType} from '#src/Types';
 
 interface PerformerTypeButtonsProps {
   performerType: PerformerType;
-  setPerformerType: Dispatch<SetStateAction<PerformerType>>;
+  setPerformerType: (performerType: PerformerType) => void;
 }
 
 export const PerformerTypeButtons = (props: PerformerTypeButtonsProps) => {

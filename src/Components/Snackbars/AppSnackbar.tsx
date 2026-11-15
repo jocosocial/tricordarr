@@ -7,42 +7,48 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface AppSnackbarProps {
   /**
-   * Skip the tab-bar offset. Use when the snackbar is already in an overlay
-   * (bottom sheet portal) that covers the tab bar.
+   * Drop Paper's bottom safe-area padding. Use when something below the snackbar
+   * already covers that inset: the tab bar on a tab screen, or a bottom sheet
+   * overlay.
    */
-  overlay?: boolean;
+  ignoreBottomInset?: boolean;
   /**
-   * Distance from the bottom of the overlay to the snackbar. Paper pins its
+   * Distance from the bottom of the parent to the snackbar. Paper pins its
    * wrapper to the bottom of the parent; pass a measured height (sheet, footer)
    * so the toast sits above that UI instead of covering it.
    */
   bottomOffset?: number;
 }
 
-export const AppSnackbar = ({overlay = false, bottomOffset = 0}: AppSnackbarProps) => {
+/**
+ * The app-wide snackbar fed by `useSnackbar()`. Paper's Snackbar is absolutely
+ * positioned at the bottom of whatever parent renders it, so this is placed
+ * inline (no Portal): last in `AppView` it sits just above the tab bar, and in a
+ * bottom sheet container it sits above the sheet. Rendering inline keeps the
+ * navigation and screen contexts, which a Portal would drop.
+ */
+export const AppSnackbar = ({ignoreBottomInset = false, bottomOffset = 0}: AppSnackbarProps) => {
   const {snackbarPayload, setSnackbarPayload} = useSnackbar();
   const {theme} = useAppTheme();
 
   const styles = useMemo(
     () =>
       StyleSheet.create({
-        snackbar: {
-          // For some reason styleDefaults.overScrollHeight is undefined.
-          marginBottom: overlay ? 0 : 100,
-        },
         // Snackbar uses .onSurface color, so we need to invert
         // any custom text.
         // https://callstack.github.io/react-native-paper/docs/components/Snackbar/
         text: {
           color: theme.colors.surface,
         },
+        // Paper merges wrapperStyle over its own paddings, so only name paddingBottom
+        // when overriding it; an explicit undefined would clear Paper's inset padding.
         wrapper: {
           bottom: bottomOffset,
-          paddingBottom: 0,
+          ...(ignoreBottomInset ? {paddingBottom: 0} : undefined),
           zIndex: 1,
         },
       }),
-    [bottomOffset, overlay, theme.colors.surface],
+    [bottomOffset, ignoreBottomInset, theme.colors.surface],
   );
 
   if (!snackbarPayload) {
@@ -51,8 +57,8 @@ export const AppSnackbar = ({overlay = false, bottomOffset = 0}: AppSnackbarProp
 
   return (
     <Snackbar
-      style={[styles.snackbar, snackbarPayload.style]}
-      wrapperStyle={overlay ? styles.wrapper : undefined}
+      style={snackbarPayload.style}
+      wrapperStyle={styles.wrapper}
       duration={snackbarPayload.duration || 5000}
       visible={!!snackbarPayload}
       action={snackbarPayload.action || {label: 'Close'}}

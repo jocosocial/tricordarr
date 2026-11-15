@@ -24,7 +24,7 @@ export const useReportMutation = () => {
 /**
  * URL path segment for content types that support `setstate`.
  */
-export type ModerationSetStatePath = 'twarrt' | 'forumpost' | 'forum' | 'fez' | 'fezpost' | 'profile';
+export type ModerationSetStatePath = 'twarrt' | 'forumpost' | 'forum' | 'fez' | 'fezpost' | 'profile' | 'quartermaster';
 
 interface SetModerationStateProps {
   path: ModerationSetStatePath;

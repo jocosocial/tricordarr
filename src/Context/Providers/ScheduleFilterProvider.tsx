@@ -1,6 +1,7 @@
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {ScheduleFilterContext} from '#src/Context/Contexts/ScheduleFilterContext';
 import {EventType} from '#src/Enums/EventType';
@@ -17,6 +18,7 @@ import {ScheduleFilterSettings} from '#src/Types';
  */
 export const ScheduleFilterProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
+  const {preRegistrationMode} = usePreRegistration();
   const {hasShutternaut, hasShutternautManager} = useRoles();
   const [eventSources, setEventSources] = useState<ScheduleSourceKey[]>([]);
   const [eventTypeFilter, setEventTypeFilter] = useState('');
@@ -139,6 +141,7 @@ export const ScheduleFilterProvider = ({children}: PropsWithChildren) => {
       eventPersonalUnreadFilter,
       showJoinedLfgs: appConfig.schedule.eventsShowJoinedLfgs,
       showOpenLfgs: appConfig.schedule.eventsShowOpenLfgs,
+      preRegistrationMode,
     }),
     [
       eventSources,
@@ -148,6 +151,7 @@ export const ScheduleFilterProvider = ({children}: PropsWithChildren) => {
       eventPersonalUnreadFilter,
       appConfig.schedule.eventsShowJoinedLfgs,
       appConfig.schedule.eventsShowOpenLfgs,
+      preRegistrationMode,
     ],
   );
 

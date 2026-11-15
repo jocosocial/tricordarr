@@ -19,7 +19,6 @@ import {
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
@@ -50,7 +49,6 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
   // back until the user picks a day, so All Days → Planner → Back stays on All Days.
   const selectedCruiseDay = contextCruiseDay === 0 ? adjustedCruiseDayToday : contextCruiseDay;
   const {commonStyles} = useStyles();
-  const {preRegistrationMode} = usePreRegistration();
   const pagerRef = useRef<PagerView>(null);
   const activeControlsRef = useRef<DayPlannerPageControls | null>(null);
 
@@ -145,6 +143,9 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
   const handleActiveControlsChange = useCallback((controls: DayPlannerPageControls | null) => {
     activeControlsRef.current = controls;
   }, []);
+
+  // Only the visible page can open a card menu, so one flag covers the whole pager.
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const registerScrollController = useCallback((day: number, controller: DayPlannerScrollController | null) => {
     if (controller) {
@@ -290,6 +291,7 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
         style={commonStyles.flex}
         initialPage={activeIndex}
         overdrag
+        scrollEnabled={!menuOpen}
         onPageSelected={handlePageSelected}
         onPageScrollStateChanged={handlePageScrollStateChanged}
         onPageScroll={onPageScroll as never}>
@@ -305,11 +307,12 @@ const ScheduleDayPlannerScreenInner = ({navigation}: Props) => {
               onRegisterScrollController={registerScrollControllerCallbacks[day - 1]}
               onScrollSettled={handleScrollSettled}
               getSharedOffset={getSharedOffset}
+              onMenuVisibleChange={setMenuOpen}
             />
           </View>
         ))}
       </AnimatedPagerView>
-      {!preRegistrationMode && <ScheduleDayPlannerFAB cruiseDay={selectedCruiseDay} />}
+      <ScheduleDayPlannerFAB cruiseDay={selectedCruiseDay} />
     </AppView>
   );
 };

@@ -68,6 +68,10 @@ export const EventFeedbackHelpScreen = ({route}: EventFeedbackHelpScreenProps) =
           </>
         ) : (
           <HelpChapterTitleView title={'Actions'}>
+            <HelpTopicView title={'Filter'} icon={AppIcons.filter}>
+              Limit the list to events in one room. Scanning a room poster starts with that room selected. Long press
+              the filter button to clear the filter.
+            </HelpTopicView>
             <HelpButtonHelpTopicView />
           </HelpChapterTitleView>
         )}

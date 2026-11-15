@@ -39,6 +39,7 @@ export const SuggestedTextField = ({
   maxLength,
   suggestions = [],
   disabled,
+  showErrorWithoutTouch = true,
 }: SuggestedTextFieldProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {isSubmitting} = useFormikContext();
@@ -46,9 +47,13 @@ export const SuggestedTextField = ({
   const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
 
+  // Same rule as TextField. The suggestion menu and typing never mark this field touched, so
+  // requiring `touched` hid errors that other fields show.
+  const shouldShowError = showErrorWithoutTouch ? !!meta.error : !!meta.error && meta.touched;
+
   const styles = StyleSheet.create({
     outline: {
-      borderColor: meta.error ? theme.colors.error : theme.colors.onBackground,
+      borderColor: shouldShowError ? theme.colors.error : theme.colors.onBackground,
     },
     headerContainer: {
       ...commonStyles.paddingVerticalSmall,
@@ -97,7 +102,7 @@ export const SuggestedTextField = ({
             numberOfLines={numberOfLines}
             secureTextEntry={secureTextEntry}
             label={label}
-            error={!!meta.error}
+            error={shouldShowError}
             left={left}
             right={suggestionsIcon}
             inputMode={inputMode}
@@ -110,8 +115,8 @@ export const SuggestedTextField = ({
             disabled={disabled || isSubmitting}
             outlineStyle={styles.outline}
           />
-          <HelperText type={'error'} visible={!!meta.error && meta.touched}>
-            {meta.error}
+          <HelperText type={'error'} visible={shouldShowError}>
+            {shouldShowError ? meta.error : undefined}
           </HelperText>
         </View>
       }>

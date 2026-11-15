@@ -9,7 +9,7 @@ import {
   PageItemAccessor,
   sortedInsertIntoPages,
 } from '#src/Libraries/CacheReduction';
-import {PerformerData, PerformerHeaderData, PerformerResponseData} from '#src/Structs/ControllerStructs';
+import {EventData, PerformerData, PerformerHeaderData, PerformerResponseData} from '#src/Structs/ControllerStructs';
 
 /** Accessor for PerformerResponseData pages (performers is required). */
 const performerListAccessor: PageItemAccessor<PerformerResponseData, PerformerHeaderData> = {
@@ -19,6 +19,10 @@ const performerListAccessor: PageItemAccessor<PerformerResponseData, PerformerHe
 
 /** Ascending comparator matching the server's alphabetical-by-name list order. */
 const byNameComparator = (a: PerformerHeaderData, b: PerformerHeaderData) => a.name.localeCompare(b.name);
+
+/** Ascending start-time comparator so a newly linked event lands in schedule order on the performer page. */
+const byStartTimeComparator = (a: EventData, b: EventData) =>
+  new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
 
 const listKeyForHeader = (header: PerformerHeaderData) =>
   header.isOfficialPerformer ? '/performer/official' : '/performer/shadow';
@@ -159,8 +163,65 @@ export const usePerformerCacheReducer = () => {
     [removePerformerDetail, removePerformerFromLists, removePerformerFromEvent],
   );
 
+  /**
+   * Apply `updater` to every `/performer/*` detail cache (including `/performer/self`) that holds
+   * the given performer. List caches hold PerformerResponseData, not PerformerData, so they're
+   * skipped by the `header` check.
+   */
+  const updatePerformerDetails = useCallback(
+    (performerID: string, updater: (performer: PerformerData) => PerformerData) => {
+      for (const query of queryClient.getQueryCache().findAll({
+        predicate: q => typeof q.queryKey[0] === 'string' && (q.queryKey[0] as string).startsWith('/performer/'),
+      })) {
+        queryClient.setQueryData<PerformerData>(query.queryKey, oldData => {
+          if (!oldData?.header || oldData.header.id !== performerID) {
+            return oldData;
+          }
+          return updater(oldData);
+        });
+      }
+    },
+    [queryClient],
+  );
+
+  /**
+   * Apply a TwitarrTeam manual link: add the performer to the event's `performers` list and the
+   * event to the performer's `events` list, wherever either is cached.
+   */
+  const linkPerformerToEvent = useCallback(
+    (header: PerformerHeaderData, event: EventData) => {
+      if (!header.id) {
+        return;
+      }
+      upsertPerformerInEvent(event.eventID, header);
+      updatePerformerDetails(header.id, performer =>
+        performer.events.some(e => e.eventID === event.eventID)
+          ? performer
+          : {...performer, events: [...performer.events, event].sort(byStartTimeComparator)},
+      );
+    },
+    [upsertPerformerInEvent, updatePerformerDetails],
+  );
+
+  /**
+   * Apply a TwitarrTeam unlink: remove the performer from the event's `performers` list and the
+   * event from the performer's `events` list, wherever either is cached.
+   */
+  const unlinkPerformerFromEvent = useCallback(
+    (performerID: string, eventID: string) => {
+      removePerformerFromEvent(eventID, performerID);
+      updatePerformerDetails(performerID, performer => ({
+        ...performer,
+        events: performer.events.filter(e => e.eventID !== eventID),
+      }));
+    },
+    [removePerformerFromEvent, updatePerformerDetails],
+  );
+
   return {
     deletePerformer,
+    linkPerformerToEvent,
+    unlinkPerformerFromEvent,
     upsertPerformer,
   };
 };

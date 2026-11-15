@@ -8,16 +8,16 @@ import {AppIcons} from '#src/Enums/Icons';
 
 interface PostAsTwitarrTeamMenuItemProps {
   closeMenu: () => void;
-  active?: boolean;
-  onPress?: () => void;
 }
 
-export const PostAsTwitarrTeamMenuItem = ({closeMenu, active, onPress}: PostAsTwitarrTeamMenuItemProps) => {
+/**
+ * Toggles the screen's TwitarrTeam elevation. Reads ElevationContext directly, so it must render
+ * inside a MenuContextBridge (AppMenu provides one).
+ */
+export const PostAsTwitarrTeamMenuItem = ({closeMenu}: PostAsTwitarrTeamMenuItemProps) => {
   const {hasTwitarrTeam} = usePrivilege();
   const {asTwitarrTeam, toggleTwitarrTeam} = useElevation();
   const {commonStyles} = useStyles();
-  const isActive = active ?? asTwitarrTeam;
-  const handlePress = onPress ?? toggleTwitarrTeam;
 
   if (!hasTwitarrTeam) {
     return null;
@@ -28,10 +28,10 @@ export const PostAsTwitarrTeamMenuItem = ({closeMenu, active, onPress}: PostAsTw
       dense={false}
       leadingIcon={AppIcons.twitarrteam}
       onPress={() => {
-        handlePress();
+        toggleTwitarrTeam();
         closeMenu();
       }}
-      style={isActive ? commonStyles.surfaceVariant : undefined}
+      style={asTwitarrTeam ? commonStyles.surfaceVariant : undefined}
     />
   );
 };

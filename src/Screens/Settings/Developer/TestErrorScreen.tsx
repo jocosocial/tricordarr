@@ -8,7 +8,6 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -21,7 +20,6 @@ const logger = createLogger('TestErrorScreen.tsx');
 
 export const TestErrorScreen = () => {
   const {theme} = useAppTheme();
-  const {setErrorBanner, errorBanner} = useErrorHandler();
   const {snackbarPayload, setSnackbarPayload} = useSnackbar();
   const {commonStyles} = useStyles();
   const {refetch: refetchErrorQuery, isFetching: isFetchingError} = useOpenQuery('/nonexistant', {
@@ -48,14 +46,6 @@ export const TestErrorScreen = () => {
       <ScrollingContentView
         refreshControl={<AppRefreshControl refreshing={isFetchingError || isFetchingSuccess} enabled={false} />}>
         <PaddedContentView>
-          <Text>Banner: {errorBanner}</Text>
-          <PrimaryActionButton
-            testID={'banner-button'}
-            buttonText={'Banner'}
-            buttonColor={theme.colors.twitarrNegativeButton}
-            onPress={() => setErrorBanner('This is a banner error.')}
-            style={[commonStyles.marginTopSmall]}
-          />
           <Text>Snackbar: {snackbarPayload?.message}</Text>
           <PrimaryActionButton
             testID={'snackbar-button'}

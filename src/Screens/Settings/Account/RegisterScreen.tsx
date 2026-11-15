@@ -7,10 +7,8 @@ import {UserCreateForm} from '#src/Components/Forms/User/UserCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
-import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
@@ -28,9 +26,7 @@ export const RegisterScreen = () => {
   const {currentSession, findOrCreateSession} = useSession();
   const {appConfig} = useConfig();
   const [isSessionReady, setIsSessionReady] = useState(false);
-  const {updateClientSettings} = useClientSettings();
   const {oobeCompleted} = useOobe();
-  const {refetch: refetchRoles} = useRoles();
   const {signIn: signInWebview} = useTwitarrWebview();
 
   // Create session on mount if none exists
@@ -62,9 +58,8 @@ export const RegisterScreen = () => {
               if (oobeCompleted) {
                 await startPushProvider();
               }
-              setTimeout(async () => {
-                await Promise.all([updateClientSettings(), refetchRoles()]);
-              }, 1000);
+              // Client settings and roles re-key on the new userID and fetch on their own;
+              // ClientSettingsProvider and RoleProvider apply the results.
               navigation.replace(CommonStackComponents.recoveryKeyScreen, {
                 recoveryKey: userCreateResponse.data.recoveryKey,
                 username: userCreateResponse.data.username,
@@ -82,16 +77,7 @@ export const RegisterScreen = () => {
         },
       });
     },
-    [
-      createMutation,
-      loginMutation,
-      oobeCompleted,
-      navigation,
-      refetchRoles,
-      signIn,
-      signInWebview,
-      updateClientSettings,
-    ],
+    [createMutation, loginMutation, oobeCompleted, navigation, signIn, signInWebview],
   );
 
   if (!isSessionReady) {

@@ -1,5 +1,4 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import {FormikHelpers} from 'formik';
 import React from 'react';
 
 import {ShadowPerformerForm} from '#src/Components/Forms/Performer/ShadowPerformerForm';
@@ -19,7 +18,11 @@ export const PerformerEditScreen = (props: Props) => {
   return (
     <DisabledFeatureScreen
       feature={SwiftarrFeature.performers}
-      urlPath={`/performer/shadow/addtoevent/${props.route.params.eventID}`}>
+      urlPath={
+        props.route.params.eventID
+          ? `/performer/shadow/addtoevent/${props.route.params.eventID}`
+          : '/performer/shadow/self'
+      }>
       <PerformerEditScreenInner {...props} />
     </DisabledFeatureScreen>
   );
@@ -29,20 +32,21 @@ const PerformerEditScreenInner = ({navigation, route}: Props) => {
   const performerMutation = usePerformerUpsertMutation();
   const {upsertPerformer} = usePerformerCacheReducer();
 
-  const onSubmit = (values: PerformerUploadData, helpers: FormikHelpers<PerformerUploadData>) => {
-    performerMutation.mutate(
-      {
+  /**
+   * Awaits the mutation so Formik keeps the submit button disabled until the request settles.
+   * Without an eventID the profile is saved via `/performer/self`, unattached to any event.
+   */
+  const onSubmit = async (values: PerformerUploadData) => {
+    try {
+      const response = await performerMutation.mutateAsync({
         performerData: values,
         eventID: route.params.eventID,
-      },
-      {
-        onSuccess: response => {
-          upsertPerformer(response.data);
-          navigation.goBack();
-        },
-        onSettled: () => helpers.setSubmitting(false),
-      },
-    );
+      });
+      upsertPerformer(response.data);
+      navigation.goBack();
+    } catch {
+      // useTokenAuthMutation surfaces the error in a snackbar.
+    }
   };
 
   const initialValues: PerformerUploadData = {

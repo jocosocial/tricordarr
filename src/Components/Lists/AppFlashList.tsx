@@ -1,5 +1,5 @@
 import {FlashList, type FlashListRef, ListRenderItem} from '@shopify/flash-list';
-import React, {forwardRef, useCallback, useState} from 'react';
+import React, {forwardRef, useCallback, useRef, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, View, ViewStyle} from 'react-native';
 
 import {FloatingScrollButtonsView} from '#src/Components/Buttons/FloatingScrollButtonsView';
@@ -63,8 +63,25 @@ const AppFlashListInner = <TItem,>(
 ) => {
   const {commonStyles, styleDefaults} = useStyles();
   const {appConfig} = useConfig();
+  /**
+   * The scroll buttons need a handle on the list even when the caller passes no ref, so the list
+   * always holds its own ref and mirrors it to the forwarded one (object or callback).
+   */
+  const internalRef = useRef<FlashListRef<TItem> | null>(null);
+  const setRefs = useCallback(
+    (instance: FlashListRef<TItem> | null) => {
+      internalRef.current = instance;
+      if (typeof ref === 'function') {
+        ref(instance);
+      } else if (ref) {
+        ref.current = instance;
+      }
+    },
+    [ref],
+  );
   const effectiveScrollButton = enableScrollButton ?? appConfig.userPreferences.showScrollButton;
   const [showScrollButtons, setShowScrollButtons] = useState(false);
+  const [atBottom, setAtBottom] = useState(false);
 
   /**
    * Callback handler for when the scroll button is pressed.
@@ -72,17 +89,13 @@ const AppFlashListInner = <TItem,>(
    * ref.current?.scrollToOffset({offset: contentHeight, animated: true});
    */
   const handleScrollButtonPress = useCallback(() => {
-    if (ref && typeof ref !== 'function' && ref.current) {
-      ref.current.scrollToOffset({offset: 0, animated: true});
-    }
-  }, [ref]);
+    internalRef.current?.scrollToOffset({offset: 0, animated: true});
+  }, []);
 
   /** Scroll to the final item in the list. */
   const handleScrollToEnd = useCallback(() => {
-    if (ref && typeof ref !== 'function' && ref.current) {
-      ref.current.scrollToEnd({animated: true});
-    }
-  }, [ref]);
+    internalRef.current?.scrollToEnd({animated: true});
+  }, []);
 
   /**
    * Show the scroll buttons when a certain scroll threshold has been hit.
@@ -105,6 +118,8 @@ const AppFlashListInner = <TItem,>(
       const scrollThresholdCondition = distanceFromTop > styleDefaults.listScrollThreshold;
       // Both buttons share the hidden range near the top and stay put near the bottom, as on inverted lists.
       setShowScrollButtons(distanceFromTop > scrollThreshold);
+      // Disables the scroll-to-end button once the list is already at its end.
+      setAtBottom(scrollableHeight - distanceFromTop <= styleDefaults.marginSize);
       if (onScrollThreshold) {
         onScrollThreshold(scrollThresholdCondition);
       }
@@ -116,7 +131,7 @@ const AppFlashListInner = <TItem,>(
   return (
     <View style={commonStyles.flex}>
       <FlashList
-        ref={ref}
+        ref={setRefs}
         data={data}
         renderItem={renderItem}
         onScroll={effectiveScrollButton ? onScroll : undefined}
@@ -142,7 +157,12 @@ const AppFlashListInner = <TItem,>(
           raised={scrollButtonRaised}
           actions={[
             {testID: 'flashListScrollUp-button', icon: AppIcons.scrollUp, onPress: handleScrollButtonPress},
-            {testID: 'flashListScrollDown-button', icon: AppIcons.scrollDown, onPress: handleScrollToEnd},
+            {
+              testID: 'flashListScrollDown-button',
+              icon: AppIcons.scrollDown,
+              onPress: handleScrollToEnd,
+              disabled: atBottom,
+            },
           ]}
         />
       )}

@@ -1,4 +1,4 @@
-import {isAxiosError} from 'axios';
+import {HttpStatusCode, isAxiosError} from 'axios';
 
 /**
  * True when the error is an Axios HTTP response in the 4XX client-error range.
@@ -7,6 +7,13 @@ import {isAxiosError} from 'axios';
 export const isHttpClientError = (error: Error): boolean => {
   const status = isAxiosError(error) ? error.response?.status : undefined;
   return status !== undefined && status >= 400 && status < 500;
+};
+
+/**
+ * True when the error is an Axios HTTP 404 response. Network failures and other statuses are not.
+ */
+export const isHttpNotFoundError = (error: Error | null): boolean => {
+  return isAxiosError(error) && error.response?.status === HttpStatusCode.NotFound;
 };
 
 /**

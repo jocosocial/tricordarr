@@ -8,6 +8,24 @@ import URLParse from 'url-parse';
 export const appLinkPrefix = 'tricordarr://';
 
 /**
+ * Hosts claimed for iOS Universal Links and Android App Links in release builds.
+ * The OS reads the claims from the build, so these must match `Tricordarr.entitlements` and
+ * `android/app/src/release/AndroidManifest.xml`. Changing them requires a new release.
+ */
+export const releaseLinkHosts = ['twitarr.com', 'start.twitarr.com'];
+
+/**
+ * Hosts claimed in debug builds. These must match `Tricordarr.Debug.entitlements` and
+ * `android/app/src/debug/AndroidManifest.xml`.
+ */
+export const debugLinkHosts = [...releaseLinkHosts, 'beta.twitarr.com', 'alpha.twitarr.com'];
+
+/**
+ * Hosts that this build claims, and so the hosts the OS may hand to the app.
+ */
+export const universalLinkHosts = __DEV__ ? debugLinkHosts : releaseLinkHosts;
+
+/**
  * Join URL parts, normalizing leading and trailing slashes.
  * Coerces numbers so callers can pass values like Date.now().
  * Omits undefined and empty parts so optional segments do not become `"undefined"` or a trailing slash.
@@ -88,4 +106,36 @@ export const isTwitarrUrl = (url: string, serverUrl: string, canonicalHostnames:
   }
   // Public Twitarr hostname from the canonical list.
   return canonicalHostnames.includes(new URLParse(url).hostname);
+};
+
+/**
+ * True when the URL is an https link on a host that this build claims from the OS.
+ */
+export const isUniversalLink = (url: string): boolean => {
+  const parsed = new URLParse(url);
+  return parsed.protocol === 'https:' && universalLinkHosts.includes(parsed.hostname);
+};
+
+/**
+ * True when the OS handed us a link for a server this session isn't using.
+ * Uses the same rule as in-app links, so a canonical host opens on the session's server.
+ */
+export const isForeignAppLink = (url: string, serverUrl: string, canonicalHostnames: string[]): boolean =>
+  isUniversalLink(url) && !isTwitarrUrl(url, serverUrl, canonicalHostnames);
+
+/**
+ * Decide whether React Navigation should route a link it received from the OS.
+ * Universal Links are dropped before OOBE finishes, since their initial state would otherwise
+ * replace the OOBE route, and when they belong to another server. App-scheme links always pass.
+ */
+export const shouldRouteIncomingLink = (
+  url: string,
+  oobeCompleted: boolean,
+  serverUrl: string,
+  canonicalHostnames: string[],
+): boolean => {
+  if (!isUniversalLink(url)) {
+    return true;
+  }
+  return oobeCompleted && !isForeignAppLink(url, serverUrl, canonicalHostnames);
 };

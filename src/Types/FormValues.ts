@@ -1,5 +1,6 @@
 import {FezType} from '#src/Enums/FezType';
 import {FezVisibility} from '#src/Enums/FezVisibility';
+import {QuartermasterCategory} from '#src/Enums/QuartermasterCategory';
 import {ShipCode} from '#src/Enums/ShipCode';
 import {ServerUrlChoice} from '#src/Libraries/Network/ServerChoices';
 import {EventData, ImageUploadData, UserHeader} from '#src/Structs/ControllerStructs';
@@ -128,6 +129,8 @@ export interface PhotostreamCreateFormValues {
   eventData?: EventData;
   locationName?: string;
   image?: string;
+  /** ISO8601 time the image was taken. */
+  capturedAt?: string;
   savePhoto?: boolean;
 }
 
@@ -187,4 +190,15 @@ export interface AdminScheduleApplyFormValues {
 
 export interface HuntPuzzleCallInFormValues {
   puzzleAnswer: string;
+}
+
+export interface QuartermasterFormValues {
+  category: QuartermasterCategory;
+  itemName: string;
+  itemDescription: string;
+  /** Empty string means no location. */
+  location: string;
+  hideOwnerName: boolean;
+  /** `{filename}` keeps an existing photo, `{image}` is a new one, `{}` is none. */
+  image: ImageUploadData;
 }

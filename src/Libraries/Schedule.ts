@@ -14,7 +14,9 @@ import {CruiseDayTime, ScheduleCardMarkerType, ScheduleFilterSettings} from '#sr
  * in ScheduleDayScreen and buildScheduleList below, so the two can't drift apart.
  *
  * Owned LFGs are intentionally excluded from the default set: they already arrive via the
- * Joined LFGs list, so including them by default would be redundant, not additive.
+ * Joined LFGs list, so including them by default would be redundant, not additive. The exception
+ * is pre-registration mode, where the Joined LFGs list isn't available, so Owned LFGs take its
+ * place under the same config setting.
  * @param filterSettings
  */
 export const resolveScheduleSources = (filterSettings: ScheduleFilterSettings): Set<ScheduleSourceKey> => {
@@ -23,7 +25,7 @@ export const resolveScheduleSources = (filterSettings: ScheduleFilterSettings): 
   }
   const defaults: ScheduleSourceKey[] = ['officialEvents', 'privateEvents'];
   if (filterSettings.showJoinedLfgs) {
-    defaults.push('lfgJoined');
+    defaults.push(filterSettings.preRegistrationMode ? 'lfgOwned' : 'lfgJoined');
   }
   if (filterSettings.showOpenLfgs) {
     defaults.push('lfgOpen');

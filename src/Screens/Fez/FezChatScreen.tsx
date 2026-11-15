@@ -120,7 +120,7 @@ export const FezChatScreen = (props: Props) => {
 };
 
 const FezChatScreenInner = ({route}: Props) => {
-  const {asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam} = useElevation();
+  const {asModerator, asTwitarrTeam} = useElevation();
   const {
     fezData: fez,
     fezPages,
@@ -189,18 +189,11 @@ const FezChatScreenInner = ({route}: Props) => {
               }
             />
           )}
-          <FezChatScreenActionsMenu
-            fezID={route.params.fezID}
-            onRefresh={onRefresh}
-            asModerator={asModerator}
-            asTwitarrTeam={asTwitarrTeam}
-            toggleModerator={toggleModerator}
-            toggleTwitarrTeam={toggleTwitarrTeam}
-          />
+          <FezChatScreenActionsMenu fezID={route.params.fezID} onRefresh={onRefresh} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [fez, onRefresh, navigation, route.params.fezID, asModerator, asTwitarrTeam, toggleModerator, toggleTwitarrTeam]);
+  }, [fez, onRefresh, navigation, route.params.fezID]);
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {

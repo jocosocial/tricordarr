@@ -21,7 +21,7 @@ export const SeamailSelectionHeaderButtons = (props: SeamailSelectionHeaderButto
   const {commonStyles} = useStyles();
   const muteMutation = useFezMuteMutation();
   const queryClient = useQueryClient();
-  const {markRead, updateMute} = useFezCacheReducer();
+  const {markRead} = useFezCacheReducer();
   // Tracks the batch mutation separately from props.setRefreshing: that drives the pull-to-refresh
   // spinner on the parent list, not this button's own tappability. Without it a fast repeat tap
   // re-fires the whole batch and can flip a relation back off before the first pass lands. See #533.
@@ -47,9 +47,7 @@ export const SeamailSelectionHeaderButtons = (props: SeamailSelectionHeaderButto
     const mutations = props.selectedItems.map(selectedItem => {
       const sourceItem = props.items?.find(item => item.fezID === selectedItem.id);
       if (!sourceItem?.members) return Promise.resolve();
-      const newMuted = !sourceItem.members.isMuted;
       const action = sourceItem.members.isMuted ? 'unmute' : 'mute';
-      updateMute(sourceItem.fezID, newMuted);
       return muteMutation.mutateAsync({action, fezID: sourceItem.fezID});
     });
     await Promise.allSettled(mutations);
