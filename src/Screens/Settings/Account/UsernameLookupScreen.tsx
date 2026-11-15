@@ -15,6 +15,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {normalized} from '#src/Libraries/RegistrationCode';
+import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUsernameLookupMutation} from '#src/Queries/Auth/RecoveryMutations';
 import {UserHeader} from '#src/Structs/ControllerStructs';
@@ -24,14 +25,17 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userna
 
 /**
  * Recovers a forgotten username from a registration code plus the account password or
- * recovery key. Reached from the login form, so it runs while logged out.
+ * recovery key. Reached from the login form, so it runs while logged out and acts on the server
+ * that form was logging in to (the route's, else the active session's).
  */
-export const UsernameLookupScreen = ({navigation}: Props) => {
+export const UsernameLookupScreen = ({navigation, route}: Props) => {
   const lookupMutation = useUsernameLookupMutation();
   const [userHeader, setUserHeader] = useState<UserHeader>();
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
-  const {serverUrl} = useSwiftarrQueryClient();
+  const {serverUrl: sessionServerUrl} = useSwiftarrQueryClient();
+  const serverUrl = normalizeServerUrl(route.params?.serverUrl ?? sessionServerUrl);
+  const inSetupFlow = !!route.params?.mode;
   const {setString} = useClipboard();
 
   const styles = useMemo(
@@ -55,6 +59,7 @@ export const UsernameLookupScreen = ({navigation}: Props) => {
   const onSubmit = (values: UsernameLookupFormValues, helpers: FormikHelpers<UsernameLookupFormValues>) => {
     lookupMutation.mutate(
       {
+        serverUrl,
         // THO mails codes as "ABC DEF"; swiftarr stores and matches them as "abcdef".
         registrationCode: normalized(values.registrationCode),
         recoveryKey: values.recoveryKey,
@@ -70,7 +75,7 @@ export const UsernameLookupScreen = ({navigation}: Props) => {
 
   if (userHeader) {
     return (
-      <AppView>
+      <AppView disablePreRegistrationWarning={inSetupFlow}>
         <ScrollingContentView isStack={true}>
           <PaddedContentView padTop={true}>
             <Text>Found your account on {serverUrl}. Your username is:</Text>
@@ -106,7 +111,7 @@ export const UsernameLookupScreen = ({navigation}: Props) => {
   }
 
   return (
-    <AppView>
+    <AppView disablePreRegistrationWarning={inSetupFlow}>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
           <Text style={commonStyles.marginBottom}>

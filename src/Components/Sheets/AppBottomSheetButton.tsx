@@ -15,10 +15,15 @@ const styles = StyleSheet.create({
 interface AppBottomSheetButtonProps {
   buttonText: string;
   onPress: () => void;
-  icon: IconSource;
+  /** Omit for a text-only button. */
+  icon?: IconSource;
   testID: string;
   disabled?: boolean;
   isLoading?: boolean;
+  /** Overrides the default neutral (blue) background. */
+  buttonColor?: string;
+  /** Overrides the text and icon color; pair with `buttonColor`. */
+  textColor?: string;
 }
 
 /**
@@ -31,6 +36,8 @@ export const AppBottomSheetButton = ({
   testID,
   disabled,
   isLoading,
+  buttonColor,
+  textColor,
 }: AppBottomSheetButtonProps) => {
   const {theme} = useAppTheme();
 
@@ -38,7 +45,8 @@ export const AppBottomSheetButton = ({
     <PrimaryActionButton
       buttonText={buttonText}
       onPress={onPress}
-      buttonColor={theme.colors.twitarrNeutralButton}
+      buttonColor={buttonColor ?? theme.colors.twitarrNeutralButton}
+      textColor={textColor}
       icon={icon}
       testID={testID}
       viewStyle={styles.button}

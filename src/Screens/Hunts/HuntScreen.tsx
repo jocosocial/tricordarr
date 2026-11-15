@@ -6,7 +6,7 @@ import {Divider, Text} from 'react-native-paper';
 
 import {HuntHeaderButtons} from '#src/Components/Buttons/HeaderButtons/HuntHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {HuntPuzzleListItem} from '#src/Components/Lists/Items/HuntPuzzleListItem';
+import {HuntPuzzleListItem} from '#src/Components/Lists/Items/Hunts/HuntPuzzleListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ContentText} from '#src/Components/Text/ContentText';
 import {AppView} from '#src/Components/Views/AppView';

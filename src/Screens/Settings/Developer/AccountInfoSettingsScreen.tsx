@@ -19,8 +19,8 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
  */
 export const AccountInfoSettingsScreen = () => {
   const {data: profilePublicData, refetch: refetchProfile} = useUserProfileQuery();
-  const {currentSession, currentUserID} = useSession();
-  const tokenData = currentSession?.tokenData || null;
+  const {currentAccount, currentToken, currentUserID} = useSession();
+  const tokenData = currentToken;
   const {roles, refetch: refetchRoles} = useRoles();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -43,7 +43,11 @@ export const AccountInfoSettingsScreen = () => {
         <View>
           <ListSubheader>Token Auth Data</ListSubheader>
           <DataFieldListItem title={'UserID'} description={tokenData?.userID} />
-          <DataFieldListItem title={'Access Level'} description={UserAccessLevel.getLabel(tokenData?.accessLevel)} />
+          <DataFieldListItem title={'Account ID'} description={currentAccount?.accountID} />
+          <DataFieldListItem
+            title={'Access Level'}
+            description={UserAccessLevel.getLabel(currentAccount?.accessLevel)}
+          />
           <DataFieldListItem title={'Token'} description={tokenData?.token} sensitive={true} />
         </View>
         <View>

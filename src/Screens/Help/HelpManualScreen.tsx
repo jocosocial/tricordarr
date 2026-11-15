@@ -39,6 +39,12 @@ export const HelpManualScreen = () => {
             onPress={() => commonNavigation.push(CommonStackComponents.networkHelpScreen)}
           />
           <DataFieldListItem
+            title={'Accounts'}
+            description={'Logging in to more than one account, switching between them, and signing out.'}
+            icon={AppIcons.altAccount}
+            onPress={() => commonNavigation.push(CommonStackComponents.accountsHelpScreen)}
+          />
+          <DataFieldListItem
             title={'Notification Log'}
             description={
               'A record of every notification event this device received, even ones that did not produce a push notification.'

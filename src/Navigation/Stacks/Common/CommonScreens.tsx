@@ -166,6 +166,7 @@ import {SeamailSearchHelpScreen} from '#src/Screens/Seamail/SeamailSearchHelpScr
 import {SeamailSearchScreen} from '#src/Screens/Seamail/SeamailSearchScreen';
 import {AccessibilitySettingsScreen} from '#src/Screens/Settings/AccessibilitySettingsScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
+import {AccountsHelpScreen} from '#src/Screens/Settings/Account/AccountsHelpScreen';
 import {RecoveryKeyScreen} from '#src/Screens/Settings/Account/RecoveryKeyScreen';
 import {UsernameLookupScreen} from '#src/Screens/Settings/Account/UsernameLookupScreen';
 import {ChatSettingsScreen} from '#src/Screens/Settings/ChatSettingsScreen';
@@ -464,6 +465,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.configServerUrl}
         component={ConfigServerUrlScreen}
         options={{title: 'Server URL'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.accountsHelpScreen}
+        component={AccountsHelpScreen}
+        options={{title: 'Accounts Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.networkHelpScreen}

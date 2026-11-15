@@ -14,6 +14,7 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {useOnboardingCommit} from '#src/Hooks/useOnboardingCommit';
 import {createLogger} from '#src/Libraries/Logger';
 import {saveImageToCameraRoll} from '#src/Libraries/Storage/ImageStorage';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -22,6 +23,10 @@ const logger = createLogger('RecoveryKeyScreen.tsx');
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.recoveryKeyScreen>;
 
+/**
+ * Shows a new account's recovery key, once, and holds the user here until they acknowledge it. For
+ * a fresh registration the account is not signed in yet; acknowledging does that.
+ */
 export const RecoveryKeyScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
@@ -30,9 +35,21 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
   const canLeaveRef = useRef(false);
   const screenshotRef = useRef<View>(null);
   const [capturing, setCapturing] = useState(false);
+  const [signingIn, setSigningIn] = useState(false);
   const recoveryKey = route.params.recoveryKey;
   const username = route.params.username;
-  const {serverUrl} = useSwiftarrQueryClient();
+  const pendingSignIn = route.params.pendingSignIn;
+  const {serverUrl: sessionServerUrl} = useSwiftarrQueryClient();
+  const serverUrl = route.params.serverUrl ?? sessionServerUrl;
+  const {commitSignIn} = useOnboardingCommit(pendingSignIn?.mode);
+  // The sign-in remounts the session scope, taking this screen with it.
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -54,7 +71,19 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
     return unsubscribe;
   }, [navigation, setSnackbarPayload]);
 
-  const onAcknowledge = () => {
+  const onAcknowledge = async () => {
+    if (pendingSignIn) {
+      setSigningIn(true);
+      try {
+        await commitSignIn(serverUrl, pendingSignIn.token, pendingSignIn.siteCookie);
+      } catch (error) {
+        logger.error('Failed to sign in after registration', error);
+      }
+      if (!mounted.current) {
+        return;
+      }
+      setSigningIn(false);
+    }
     canLeaveRef.current = true;
     navigation.goBack();
   };
@@ -113,7 +142,7 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
   );
 
   return (
-    <AppView>
+    <AppView disablePreRegistrationWarning={!!pendingSignIn?.mode}>
       <ScrollingContentView isStack={true}>
         <View ref={screenshotRef} collapsable={false} style={styles.capture}>
           <PaddedContentView padTop={true}>
@@ -169,7 +198,8 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
             testID={'acknowledged-button'}
             buttonColor={theme.colors.twitarrPositiveButton}
             buttonText={'Acknowledged'}
-            disabled={capturing}
+            disabled={capturing || signingIn}
+            isLoading={signingIn}
             onPress={onAcknowledge}
           />
         </PaddedContentView>

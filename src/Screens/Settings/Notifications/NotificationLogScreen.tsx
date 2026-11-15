@@ -6,7 +6,7 @@ import {Divider, Searchbar} from 'react-native-paper';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {NotificationLogListItem} from '#src/Components/Lists/Items/NotificationLogListItem';
+import {NotificationLogListItem} from '#src/Components/Lists/Items/Settings/NotificationLogListItem';
 import {NotificationLogActionsMenu} from '#src/Components/Menus/Settings/NotificationLogActionsMenu';
 import {
   NotificationLogFilterMenu,

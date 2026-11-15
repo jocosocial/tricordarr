@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
 
-import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
+import {UserListItem} from '#src/Components/Lists/Items/User/UserListItem';
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {AppIcons} from '#src/Enums/Icons';

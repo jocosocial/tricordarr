@@ -13,14 +13,8 @@ import {KeyboardProvider} from 'react-native-keyboard-controller';
 import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
 import {initialWindowMetrics, SafeAreaProvider} from 'react-native-safe-area-context';
 
-import {CallOverlay} from '#src/Components/Call/CallOverlay';
-import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
-import {AppFocusHandler} from '#src/Components/Libraries/AppFocusHandler';
-import {ForeignLinkHandler} from '#src/Components/Libraries/ForeignLinkHandler';
-import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
-import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
-import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
-import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
+import {TricordarrApp} from '#src/Components/Libraries/TricordarrApp';
+import {ConfigSessionProvider} from '#src/Context/Providers/ConfigSessionProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
 import {EnableUserNotificationProvider} from '#src/Context/Providers/EnableUserNotificationProvider';
 import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
@@ -31,7 +25,7 @@ import {NavigationProvider} from '#src/Context/Providers/NavigationProvider';
 import {OobeProvider} from '#src/Context/Providers/OobeProvider';
 import {PermissionsProvider} from '#src/Context/Providers/PermissionsProvider';
 import {PreRegistrationProvider} from '#src/Context/Providers/PreRegistrationProvider';
-import {SessionProvider} from '#src/Context/Providers/SessionProvider';
+import {SessionBoundaryProvider} from '#src/Context/Providers/SessionBoundaryProvider';
 import {ShellProvider} from '#src/Context/Providers/ShellProvider';
 import {SignOutProvider} from '#src/Context/Providers/SignOutProvider';
 import {SnackbarProvider} from '#src/Context/Providers/SnackbarProvider';
@@ -42,7 +36,6 @@ import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
 import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
-import {RootStackNavigator} from '#src/Navigation/Stacks/Root/RootStackNavigator';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -92,23 +85,26 @@ function App(): React.JSX.Element {
    * SnackbarProvider shouldn't need anything.
    * LinkingProvider needs ConfigProvider and SwiftarrQueryClientProvider.
    * AppNavigationThemeProvider should be within SafeAreaProvider.
-   * SessionProvider needs ConfigProvider for defaultAppConfig.
+   * ConfigSessionProvider bundles ConfigProvider, SessionProvider (needs device config for urlPrefix and
+   * default preferences) and EffectiveConfigProvider (needs both; it is what `useConfig()` reads).
    * SwiftarrQueryClientProvider needs SessionProvider for currentSession.
+   * SessionBoundaryProvider remounts everything beneath it on a session change (one QueryClient per
+   * session). Everything above it is device-scoped.
    */
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <GestureHandlerRootView style={styles.root}>
-        <ConfigProvider>
-          <SessionProvider>
-            <OobeProvider>
-              <PreRegistrationProvider>
-                <PermissionsProvider>
-                  <ThemeProvider>
-                    <NavigationProvider>
-                      <KeyboardProvider>
-                        <StyleProvider>
-                          <ErrorHandlerProvider>
-                            <SnackbarProvider>
+        <ConfigSessionProvider>
+          <OobeProvider>
+            <PreRegistrationProvider>
+              <PermissionsProvider>
+                <ThemeProvider>
+                  <NavigationProvider>
+                    <KeyboardProvider>
+                      <StyleProvider>
+                        <ErrorHandlerProvider>
+                          <SnackbarProvider>
+                            <SessionBoundaryProvider>
                               <SwiftarrQueryClientProvider>
                                 <LoadingProvider>
                                   <CriticalErrorProvider>
@@ -118,14 +114,7 @@ function App(): React.JSX.Element {
                                           <SignOutProvider>
                                             <HelperProvider>
                                               <ShellProvider>
-                                                <AppEventHandler />
-                                                <AppFocusHandler />
-                                                <ForeignLinkHandler />
-                                                <PushNotificationService />
-                                                <NotificationDataListener />
-                                                <NotificationDataPoller />
-                                                <RootStackNavigator />
-                                                <CallOverlay />
+                                                <TricordarrApp />
                                               </ShellProvider>
                                             </HelperProvider>
                                           </SignOutProvider>
@@ -135,17 +124,17 @@ function App(): React.JSX.Element {
                                   </CriticalErrorProvider>
                                 </LoadingProvider>
                               </SwiftarrQueryClientProvider>
-                            </SnackbarProvider>
-                          </ErrorHandlerProvider>
-                        </StyleProvider>
-                      </KeyboardProvider>
-                    </NavigationProvider>
-                  </ThemeProvider>
-                </PermissionsProvider>
-              </PreRegistrationProvider>
-            </OobeProvider>
-          </SessionProvider>
-        </ConfigProvider>
+                            </SessionBoundaryProvider>
+                          </SnackbarProvider>
+                        </ErrorHandlerProvider>
+                      </StyleProvider>
+                    </KeyboardProvider>
+                  </NavigationProvider>
+                </ThemeProvider>
+              </PermissionsProvider>
+            </PreRegistrationProvider>
+          </OobeProvider>
+        </ConfigSessionProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>
   );

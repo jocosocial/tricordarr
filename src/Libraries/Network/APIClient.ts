@@ -5,7 +5,7 @@ import {AxiosResponse} from 'axios';
 import {encode as base64_encode} from 'base-64';
 import superjson from 'superjson';
 
-import {queryCacheStorage} from '#src/Libraries/Storage/QueryCacheStorage';
+import {getQueryCacheKey, queryCacheStorage} from '#src/Libraries/Storage/QueryCacheStorage';
 
 // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
 export class BadResponseFormatError extends Error {
@@ -69,7 +69,7 @@ export const createSessionPersister = (sessionID: string) => {
     // The default [de]serializer turns undefined into null, which breaks pageParam.
     serialize: superjson.stringify,
     deserialize: superjson.parse,
-    key: `query-cache-${sessionID}`,
+    key: getQueryCacheKey(sessionID),
   });
 };
 

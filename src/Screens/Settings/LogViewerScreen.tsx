@@ -7,7 +7,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {LogEntryListItem} from '#src/Components/Lists/Items/LogEntryListItem';
+import {LogEntryListItem} from '#src/Components/Lists/Items/Settings/LogEntryListItem';
 import {
   LogViewerFilterMenu,
   LogViewerLevelFilter,

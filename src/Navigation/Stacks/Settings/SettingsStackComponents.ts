@@ -17,11 +17,13 @@ export type SettingsStackParamList = CommonStackParamList & {
   ChangePasswordScreen: undefined;
   ChangeUsernameScreen: undefined;
   AccountManagementScreen: undefined;
-  LoginScreen: undefined;
+  // serverUrl and username pre-fill the form (add account, sign a revoked account back in).
+  LoginScreen: {serverUrl?: string; username?: string} | undefined;
   FeatureSettingsScreen: undefined;
   NotificationPollerSettingsScreen: undefined;
   LoadingSettingScreen: undefined;
-  RegisterScreen: undefined;
+  RegisterConductScreen: {serverUrl?: string} | undefined;
+  RegisterScreen: {serverUrl?: string} | undefined;
   CruiseSettingsScreen: undefined;
   UserInfoSettingsScreen: undefined;
   AboutSettingsScreen: undefined;
@@ -31,7 +33,7 @@ export type SettingsStackParamList = CommonStackParamList & {
     queryHash: string;
   };
   TimeSettingsScreen: undefined;
-  SessionSettingsScreen: undefined;
+  AccountsSettingsScreen: undefined;
   SessionDetailsScreen: {
     sessionID: string;
   };
@@ -58,6 +60,7 @@ export enum SettingsStackScreenComponents {
   featureSettingsScreen = 'FeatureSettingsScreen',
   notificationPollerSettingsScreen = 'NotificationPollerSettingsScreen',
   loadingSettingScreen = 'LoadingSettingScreen',
+  registerConductScreen = 'RegisterConductScreen',
   registerScreen = 'RegisterScreen',
   cruiseSettingsScreen = 'CruiseSettingsScreen',
   accountInfoSettingsScreen = 'UserInfoSettingsScreen',
@@ -66,7 +69,7 @@ export enum SettingsStackScreenComponents {
   queryKeysSettingsScreen = 'QueryKeysSettingsScreen',
   queryDataSettingsScreen = 'QueryDataSettingsScreen',
   timeSettingsScreen = 'TimeSettingsScreen',
-  sessionSettings = 'SessionSettingsScreen',
+  accountsSettings = 'AccountsSettingsScreen',
   sessionDetails = 'SessionDetailsScreen',
   loggingSettings = 'LoggingSettingsScreen',
   checkpointSettingScreen = 'CheckpointSettingScreen',

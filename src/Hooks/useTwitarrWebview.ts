@@ -1,106 +1,69 @@
-import CookieManager from '@preeternal/react-native-cookie-manager';
+import axios from 'axios';
 import {useCallback} from 'react';
 
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {createLogger} from '#src/Libraries/Logger';
-import {isIOS} from '#src/Libraries/Platform/Detection';
-import {usePublicMutation} from '#src/Queries/PublicMutation';
+import {getClientIdentityHeaders} from '#src/Libraries/Network/ClientHeaders';
+import {clearSiteCookie, extractSessionCookie, setSiteCookie} from '#src/Libraries/Network/SiteCookies';
+import {joinUrl} from '#src/Libraries/UrlParser';
 import {LoginFormValues} from '#src/Types/FormValues';
 
 const logger = createLogger('useTwitarrWebview.ts');
 
 /**
- * Hook for handling webview-based login that sets cookies.
- * Returns a signIn function that calls the /login endpoint and extracts
- * the swiftarr_session cookie from the response to set it with CookieManager.
+ * Hook for the webview's cookie session. `siteLogin` calls the site's /login endpoint on an
+ * explicit server and sets the swiftarr_session cookie from the response; `clearCookies` removes
+ * the cookie for one server (the current one by default) rather than every server's.
  */
 export const useTwitarrWebview = () => {
-  const {publicPost, serverUrl} = useSwiftarrQueryClient();
+  const {serverUrl: currentServerUrl} = useSwiftarrQueryClient();
+  const {appConfig} = useConfig();
 
   /**
-   * Extracts the swiftarr_session cookie value from the Set-Cookie header.
-   * The Set-Cookie header format is: swiftarr_session=value; path=/; ...
+   * Log in to the site on `serverUrl` and set the cookie. Returns the raw cookie value so the
+   * caller can store it against the account, or null if the login failed or sent no cookie. A
+   * failure here is logged, not thrown: the API login already succeeded and only the webview
+   * (Site UI screens) is affected.
    */
-  const extractCookieValue = useCallback((setCookieHeader: string | string[] | undefined): string | null => {
-    if (!setCookieHeader) {
-      return null;
-    }
-
-    // Handle array of Set-Cookie headers (some servers send multiple)
-    const headers = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
-
-    for (const header of headers) {
-      // Find the swiftarr_session cookie
-      const match = header.match(/swiftarr_session=([^;]+)/);
-      if (match && match[1]) {
-        return match[1];
-      }
-    }
-
-    return null;
-  }, []);
-
-  const siteLoginMutation = usePublicMutation(
-    useCallback(
-      async (loginValues: LoginFormValues) => {
-        const response = await publicPost<string, LoginFormValues>('/login', loginValues, {
+  const siteLogin = useCallback(
+    async (loginValues: LoginFormValues, serverUrl: string = currentServerUrl): Promise<string | null> => {
+      try {
+        const response = await axios.post<string>(joinUrl(serverUrl, '/login'), loginValues, {
           headers: {
             'Content-Type': 'application/json',
+            ...getClientIdentityHeaders(),
           },
+          timeout: appConfig.apiClientConfig.mutationTimeout,
         });
-
-        // Extract the cookie from Set-Cookie header
         // Note: axios lowercases header names, so it's 'set-cookie' not 'Set-Cookie'
-        const setCookieHeader = response.headers['set-cookie'];
-        const cookieValue = extractCookieValue(setCookieHeader);
-
-        if (cookieValue) {
-          logger.info('Setting swiftarr_session cookie for server URL.', serverUrl);
-          // Set the cookie using CookieManager
-          await CookieManager.set(
-            serverUrl,
-            {
-              name: 'swiftarr_session',
-              value: cookieValue,
-              path: '/',
-              // Domain will be automatically determined from the URL
-            },
-            isIOS,
-          );
-        } else {
+        const cookieValue = extractSessionCookie(response.headers['set-cookie']);
+        if (!cookieValue) {
           logger.warn('No swiftarr_session cookie found in response');
+          return null;
         }
-
-        return response.data;
-      },
-      [publicPost, serverUrl, extractCookieValue],
-    ),
-  );
-
-  const signIn = useCallback(
-    (loginValues: LoginFormValues) => {
-      return siteLoginMutation.mutate(loginValues);
+        await setSiteCookie(serverUrl, cookieValue);
+        return cookieValue;
+      } catch (error) {
+        logger.warn('Site login failed:', error);
+        return null;
+      }
     },
-    [siteLoginMutation],
+    [currentServerUrl, appConfig.apiClientConfig.mutationTimeout],
   );
 
   /**
-   * Clears all cookies. On iOS, clears both NSHTTPCookieStorage and WKHTTPCookieStore.
-   * clearAll(true) clears WKHTTPCookieStore, clearAll(false) clears NSHTTPCookieStorage.
-   *
-   * This was having issues on iOS with cookies not clearing on signOut.
+   * Clears the swiftarr_session cookie for a server (the current one by default).
    */
-  const clearCookies = useCallback(async () => {
-    if (isIOS) {
-      await CookieManager.clearAll(false); // Clear NSHTTPCookieStorage
-      await CookieManager.clearAll(true); // Clear WKHTTPCookieStore
-    } else {
-      await CookieManager.clearAll();
-    }
-  }, []);
+  const clearCookies = useCallback(
+    async (serverUrl: string = currentServerUrl) => {
+      await clearSiteCookie(serverUrl);
+    },
+    [currentServerUrl],
+  );
 
   return {
-    signIn,
+    siteLogin,
     clearCookies,
   };
 };

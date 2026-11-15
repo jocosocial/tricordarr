@@ -1,30 +1,43 @@
-import React, {PropsWithChildren, useCallback, useEffect, useMemo, useRef, useSyncExternalStore} from 'react';
+import React, {PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore} from 'react';
 import {v4 as uuidv4} from 'uuid';
 
-import {SessionContext, SessionContextType} from '#src/Context/Contexts/SessionContext';
+import {useDeviceConfig} from '#src/Context/Contexts/DeviceConfigContext';
+import {
+  SessionContext,
+  SessionContextType,
+  SignInOptions,
+  SwitchOptions,
+  SwitchResult,
+} from '#src/Context/Contexts/SessionContext';
+import {selectCurrentSession, SessionAction, SessionState} from '#src/Context/State/SessionState';
 import {SessionStore} from '#src/Context/State/SessionStore';
-import {useOneTaskAtATime} from '#src/Hooks/useOneTaskAtATime';
+import {AccountPreferences} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
+import {stashNavigationState} from '#src/Libraries/NavigationRef';
+import {stopPushProvider} from '#src/Libraries/Notifications/Push';
+import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
+import {loadSessionData} from '#src/Libraries/Storage/SessionLoader';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
+import {fetchWhoami} from '#src/Queries/ServerAuth';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
-import {Session} from '#src/Structs/SessionStructs';
+import {Account, ServerProfile} from '#src/Structs/SessionStructs';
 
 const logger = createLogger('SessionProvider.tsx');
 
 /**
- * SessionProvider refactored to use reducer pattern and useSyncExternalStore
- * for synchronous state access, eliminating race conditions.
+ * SessionProvider owns accounts, sessions and server profiles in a reducer-backed store read via
+ * useSyncExternalStore, so state access is synchronous and persistence happens in `dispatch`
+ * (see SessionStore) rather than in an effect.
  *
- * Withholds children until sessions have loaded from storage (same pattern as
- * ConfigProvider) so query clients never fire against AppConfig.serverUrl while
- * a real session is still hydrating.
+ * Withholds children until the store has loaded from storage (same pattern as ConfigProvider) so
+ * nothing fires against a default server while a real session is still hydrating.
  *
  * Architecture based on Bluesky's session management:
  * https://github.com/bluesky-social/social-app/blob/55806f10870128f7702714b5968c64a0e908281e/src/state/session/index.tsx
  */
 export const SessionProvider = ({children}: PropsWithChildren) => {
+  const {deviceConfig} = useDeviceConfig();
   // Create store instance (persists across renders)
-  // Based on Bluesky's SessionStore pattern
   const storeRef = useRef<SessionStore | null>(null);
   if (!storeRef.current) {
     storeRef.current = new SessionStore();
@@ -32,277 +45,485 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
   const store = storeRef.current;
 
   // Subscribe to store changes using useSyncExternalStore for synchronous state access
-  // This ensures components always get the latest state without race conditions
-  // See: https://github.com/bluesky-social/social-app/blob/55806f10870128f7702714b5968c64a0e908281e/src/state/session/index.tsx
-  const state = useSyncExternalStore(
+  const state: SessionState = useSyncExternalStore(
     store.subscribe.bind(store),
     store.getState.bind(store),
     store.getState.bind(store), // Server snapshot (same as client for React Native)
   );
 
-  // Separate cancellation hooks for load and persist to prevent them from aborting each other
-  // Based on Bluesky's useOneTaskAtATime pattern
-  const cancelLoadTask = useOneTaskAtATime();
-  const cancelPersistTask = useOneTaskAtATime();
+  const [pendingAccountID, setPendingAccountID] = useState<string | null>(null);
+  // A ref as well as state: the race guard must see a switch that was accepted a moment ago in the
+  // same tick, before React has re-rendered with the state value.
+  const pendingRef = useRef<string | null>(null);
+  const [freshServerSessionID, setFreshServerSessionID] = useState<string | null>(null);
 
-  // Load initial state from storage on mount
+  // Load from storage on mount.
   useEffect(() => {
-    const loadSessions = async () => {
-      const signal = cancelLoadTask();
-      try {
-        const loadedSessions = await SessionStorage.getAll();
-        if (signal.aborted) return;
-
-        const lastSessionID = await SessionStorage.getLastSessionID();
-        if (signal.aborted) return;
-
-        // Dispatch loaded-sessions action
-        store.dispatch({
-          type: 'loaded-sessions',
-          sessions: loadedSessions,
-          lastSessionID,
-        });
-      } catch (error) {
+    let cancelled = false;
+    loadSessionData()
+      .then(data => {
+        if (!cancelled) {
+          store.dispatch({type: 'loaded', ...data});
+        }
+      })
+      .catch(error => {
         logger.error('Error loading sessions:', error);
-        // Still dispatch with empty state to mark as loaded
-        if (!signal.aborted) {
+        if (!cancelled) {
+          // Still dispatch with empty state to mark as loaded.
           store.dispatch({
-            type: 'loaded-sessions',
+            type: 'loaded',
+            accounts: [],
             sessions: [],
+            serverProfiles: [],
+            tokens: {},
+            preferences: {},
             lastSessionID: null,
           });
         }
-      }
+      });
+    return () => {
+      cancelled = true;
     };
+  }, [store]);
 
-    loadSessions();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run on mount
+  const currentSession = useMemo(() => selectCurrentSession(state), [state]);
 
-  // Handle persistence when needsPersist flag is set
-  useEffect(() => {
-    if (!state.needsPersist) {
-      return;
-    }
+  const currentAccount = useMemo(
+    () => state.accounts.find(a => a.accountID === currentSession?.accountID) ?? null,
+    [state.accounts, currentSession],
+  );
 
-    const persistState = async () => {
-      const signal = cancelPersistTask();
-
-      try {
-        // Persist all sessions atomically
-        if (signal.aborted) return;
-        await SessionStorage.saveAll(state.sessions);
-
-        // Persist last session ID if current session exists
-        if (state.currentSessionID) {
-          if (signal.aborted) return;
-          await SessionStorage.setLastSessionID(state.currentSessionID);
-        } else {
-          if (signal.aborted) return;
-          await SessionStorage.setLastSessionID('');
-        }
-
-        if (!signal.aborted) {
-          store.dispatch({type: 'persisted'});
-        }
-      } catch (error) {
-        logger.error('Error persisting sessions:', error);
-      }
-    };
-
-    persistState();
-  }, [state.needsPersist, state.sessions, state.currentSessionID, store, cancelPersistTask]);
-
-  // Computed values from state
-  const currentSession = useMemo(() => {
-    if (!state.currentSessionID) {
+  const currentToken = useMemo(() => {
+    if (!currentAccount || currentAccount.status !== 'signedIn') {
       return null;
     }
-    return state.sessions.find(s => s.sessionID === state.currentSessionID) || null;
-  }, [state.sessions, state.currentSessionID]);
+    return state.tokens[currentAccount.accountID] ?? null;
+  }, [currentAccount, state.tokens]);
 
-  const currentUserID = useMemo(() => {
-    return currentSession?.tokenData?.userID || null;
-  }, [currentSession]);
+  const accountPreferences = useMemo(
+    () => (currentAccount ? (state.preferences[currentAccount.accountID] ?? null) : null),
+    [currentAccount, state.preferences],
+  );
 
-  const isLoggedIn = useMemo(() => {
-    return !!currentSession?.tokenData;
-  }, [currentSession]);
+  const serverProfile = useMemo(
+    () => state.serverProfiles.find(p => p.serverUrl === currentSession?.serverUrl) ?? null,
+    [state.serverProfiles, currentSession?.serverUrl],
+  );
 
-  // Session operations - all dispatch actions synchronously
-  const switchSession = useCallback(
-    async (sessionID: string) => {
-      const session = state.sessions.find(s => s.sessionID === sessionID);
-      if (!session) {
+  const currentUserID = currentToken ? (currentAccount?.userID ?? null) : null;
+  const isLoggedIn = !!currentToken;
+
+  /**
+   * Dispatch with the non-deterministic inputs (time, a candidate session id) filled in.
+   */
+  const dispatchStamped = useCallback(
+    <T extends SessionAction['type']>(
+      build: (ctx: {now: string; newSessionID: string}) => Extract<SessionAction, {type: T}>,
+    ) => {
+      store.dispatch(build({now: new Date().toISOString(), newSessionID: uuidv4()}));
+    },
+    [store],
+  );
+
+  /**
+   * Remember sessions created by an action as needing the server's client settings applied.
+   */
+  const trackFreshSession = useCallback(
+    (beforeIDs: Set<string>) => {
+      const after = selectCurrentSession(store.getState());
+      if (after && !beforeIDs.has(after.sessionID)) {
+        setFreshServerSessionID(after.sessionID);
+      }
+    },
+    [store],
+  );
+
+  /**
+   * Shared shape of every switch: ignore if one is pending, stop the old account's background
+   * providers (they are device-global, not scoped to the remounting subtree), freeze the visible
+   * screen, then dispatch. The keyed SessionBoundaryProvider remount does the rest.
+   */
+  const runSwitch = useCallback(
+    async (pendingID: string | null, options: SwitchOptions | undefined, dispatch: () => void) => {
+      options?.onSwitchStart?.();
+      if (options?.preserveNavigation) {
+        stashNavigationState();
+      }
+      try {
+        await stopPushProvider();
+      } catch (error) {
+        logger.error('Failed to stop push provider before switch:', error);
+      }
+      const before = new Set(store.getState().sessions.map(s => s.sessionID));
+      dispatch();
+      trackFreshSession(before);
+      if (pendingID) {
+        // Let the remount happen before another switch is allowed.
+        setTimeout(() => {
+          pendingRef.current = null;
+          setPendingAccountID(null);
+        }, 0);
+      }
+    },
+    [store, trackFreshSession],
+  );
+
+  const switchToAccount = useCallback(
+    async (accountID: string, options?: SwitchOptions): Promise<SwitchResult> => {
+      if (pendingRef.current) {
+        logger.debug('Switch already pending, ignoring switch to', accountID);
+        return 'ignored';
+      }
+      const current = store.getState();
+      const account = current.accounts.find(a => a.accountID === accountID);
+      if (!account) {
+        logger.warn('Attempted to switch to non-existent account:', accountID);
+        return 'ignored';
+      }
+      if (account.status !== 'signedIn' || !current.tokens[accountID]) {
+        return 'needs-login';
+      }
+      const target = [...current.sessions]
+        .filter(s => s.accountID === accountID)
+        .sort((a, b) => b.lastUsedAt.localeCompare(a.lastUsedAt))[0];
+      if (!target) {
+        logger.warn('Account has no session:', accountID);
+        return 'ignored';
+      }
+      if (target.sessionID === current.currentSessionID) {
+        return 'ignored';
+      }
+      pendingRef.current = accountID;
+      setPendingAccountID(accountID);
+      await runSwitch(accountID, options, () =>
+        store.dispatch({type: 'switched-to-session', sessionID: target.sessionID, now: new Date().toISOString()}),
+      );
+      return 'switched';
+    },
+    [store, runSwitch],
+  );
+
+  const switchToSession = useCallback(
+    async (sessionID: string, options?: SwitchOptions) => {
+      if (pendingRef.current) {
+        return;
+      }
+      const current = store.getState();
+      const target = current.sessions.find(s => s.sessionID === sessionID);
+      if (!target) {
         logger.warn('Attempted to switch to non-existent session:', sessionID);
         return;
       }
-
-      // Dispatch action synchronously - persistence happens in useEffect
-      store.dispatch({
-        type: 'switched-to-session',
-        sessionID,
-      });
-    },
-    [state.sessions, store],
-  );
-
-  const createSession = useCallback(
-    async (serverUrl: string, preRegistrationMode: boolean): Promise<Session> => {
-      const now = new Date().toISOString();
-      const newSession: Session = {
-        sessionID: uuidv4(),
-        serverUrl,
-        preRegistrationMode,
-        tokenData: null,
-        createdAt: now,
-        lastUsedAt: now,
-      };
-
-      // Dispatch action synchronously - persistence happens in useEffect
-      store.dispatch({
-        type: 'created-session',
-        session: newSession,
-      });
-
-      return newSession;
-    },
-    [store],
-  );
-
-  const findOrCreateSession = useCallback(
-    async (serverUrl: string, preRegistrationMode: boolean): Promise<Session> => {
-      // Try to find existing session matching criteria
-      const existing = state.sessions.find(
-        s => s.serverUrl === serverUrl && s.preRegistrationMode === preRegistrationMode,
-      );
-
-      if (existing) {
-        // Switch to existing session
-        await switchSession(existing.sessionID);
-        return existing;
-      }
-
-      // Create new session
-      return await createSession(serverUrl, preRegistrationMode);
-    },
-    [state.sessions, switchSession, createSession],
-  );
-
-  const updateSessionToken = useCallback(
-    async (sessionID: string, tokenData: TokenStringData | null) => {
-      const currentState = store.getState();
-      const session = currentState.sessions.find(s => s.sessionID === sessionID);
-      if (!session) {
-        logger.warn('Attempted to update token for non-existent session:', sessionID);
+      if (target.sessionID === current.currentSessionID) {
         return;
       }
+      const pendingID = target.accountID ?? sessionID;
+      pendingRef.current = pendingID;
+      setPendingAccountID(pendingID);
+      await runSwitch(pendingID, options, () =>
+        store.dispatch({type: 'switched-to-session', sessionID, now: new Date().toISOString()}),
+      );
+    },
+    [store, runSwitch],
+  );
 
+  /**
+   * Pre-registration mode is the server's own setting, read from /client/settings once a session
+   * on it loads. For a server nothing is known about yet, assume it from whether this is the
+   * pre-registration server, so the new session does not start out in the wrong mode.
+   */
+  const seedServerProfile = useCallback(
+    (serverUrl: string) => {
+      const known = store.getState().serverProfiles.find(p => p.serverUrl === serverUrl);
+      if (known?.preRegistrationMode !== undefined) {
+        return;
+      }
       store.dispatch({
-        type: 'updated-session',
-        sessionID,
-        updates: {tokenData},
+        type: 'server-profile-updated',
+        serverUrl,
+        patch: {preRegistrationMode: serverUrl === normalizeServerUrl(deviceConfig.preRegistrationServerUrl)},
+        now: new Date().toISOString(),
       });
     },
-    [store],
+    [store, deviceConfig.preRegistrationServerUrl],
+  );
+
+  const switchToServer = useCallback(
+    async (serverUrl: string, options?: SwitchOptions) => {
+      if (pendingRef.current) {
+        return;
+      }
+      const normalized = normalizeServerUrl(serverUrl);
+      const current = selectCurrentSession(store.getState());
+      if (current && current.accountID === null && current.serverUrl === normalized) {
+        return;
+      }
+      seedServerProfile(normalized);
+      pendingRef.current = normalized;
+      setPendingAccountID(normalized);
+      await runSwitch(normalized, options, () =>
+        dispatchStamped(({now, newSessionID}) => ({
+          type: 'switched-to-server',
+          serverUrl: normalized,
+          newSessionID,
+          boardFromSessionID: options?.boardFromSessionID,
+          now,
+        })),
+      );
+    },
+    [store, runSwitch, dispatchStamped, seedServerProfile],
   );
 
   const signIn = useCallback(
-    async (tokenData: TokenStringData) => {
-      if (!currentSession) {
-        logger.error('Cannot sign in: no current session');
-        return;
-      }
-      await updateSessionToken(currentSession.sessionID, tokenData);
-    },
-    [currentSession, updateSessionToken],
-  );
-
-  const signOut = useCallback(async () => {
-    if (!currentSession) {
-      logger.error('Cannot sign out: no current session');
-      return;
-    }
-    await updateSessionToken(currentSession.sessionID, null);
-  }, [currentSession, updateSessionToken]);
-
-  const updateSession = useCallback(
-    async (sessionID: string, updates: Partial<Session>) => {
-      const currentState = store.getState();
-      const session = currentState.sessions.find(s => s.sessionID === sessionID);
-      if (!session) {
-        logger.warn('Attempted to update non-existent session:', sessionID);
-        return;
+    async (serverUrl: string, token: TokenStringData, options?: SignInOptions): Promise<Account> => {
+      const normalized = normalizeServerUrl(serverUrl);
+      // The whoami read is best effort: a login that succeeded must not fail because this did.
+      let username = '';
+      let accessLevel = token.accessLevel;
+      try {
+        const whoami = await fetchWhoami(
+          normalized,
+          deviceConfig.urlPrefix,
+          token.token,
+          deviceConfig.apiClientConfig.requestTimeout,
+        );
+        username = whoami.username;
+        accessLevel = whoami.accessLevel;
+      } catch (error) {
+        logger.warn('Unable to read whoami during sign in:', error);
       }
 
-      // If server URL is changing and this is the current session, clear token directly
-      if (updates.serverUrl !== undefined && updates.serverUrl !== session.serverUrl) {
-        if (sessionID === currentState.currentSessionID && session.tokenData) {
-          store.dispatch({
-            type: 'updated-session',
-            sessionID,
-            updates: {tokenData: null},
-          });
+      seedServerProfile(normalized);
+      const current = store.getState();
+
+      // Block switches for the instant the scope remounts, same as the explicit switches.
+      pendingRef.current = normalized;
+      setPendingAccountID(normalized);
+      try {
+        await stopPushProvider();
+      } catch (error) {
+        logger.error('Failed to stop push provider before sign in:', error);
+      }
+      const before = new Set(current.sessions.map(s => s.sessionID));
+      const now = new Date().toISOString();
+      const existing = current.accounts.find(a => a.serverUrl === normalized && a.userID === token.userID);
+      const account: Account = {
+        accountID: existing?.accountID ?? uuidv4(),
+        serverUrl: normalized,
+        userID: token.userID,
+        username,
+        accessLevel,
+        status: 'signedIn',
+        createdAt: now,
+        lastUsedAt: now,
+      };
+      if (options?.siteCookie) {
+        try {
+          await SessionStorage.setCookieForAccount(account.accountID, options.siteCookie);
+        } catch (error) {
+          logger.error('Failed to store site cookie:', error);
         }
       }
-
       store.dispatch({
-        type: 'updated-session',
-        sessionID,
-        updates,
+        type: 'account-signed-in',
+        account,
+        token,
+        newSessionID: uuidv4(),
+        preferences: deviceConfig.defaultPreferences,
+        boardFromSessionID: options?.boardFromSessionID,
+        now,
       });
+      trackFreshSession(before);
+      setTimeout(() => {
+        pendingRef.current = null;
+        setPendingAccountID(null);
+      }, 0);
+      const stored = store.getState().accounts.find(a => a.serverUrl === normalized && a.userID === token.userID);
+      return stored ?? account;
+    },
+    [store, deviceConfig, trackFreshSession, seedServerProfile],
+  );
+
+  const signOut = useCallback(
+    async (accountID?: string) => {
+      const target = accountID ?? selectCurrentSession(store.getState())?.accountID;
+      if (!target) {
+        logger.error('Cannot sign out: no account');
+        return;
+      }
+      const isCurrent = selectCurrentSession(store.getState())?.accountID === target;
+      if (isCurrent) {
+        try {
+          await stopPushProvider();
+        } catch (error) {
+          logger.error('Failed to stop push provider before sign out:', error);
+        }
+      }
+      const before = new Set(store.getState().sessions.map(s => s.sessionID));
+      dispatchStamped(({now, newSessionID}) => ({type: 'account-signed-out', accountID: target, newSessionID, now}));
+      trackFreshSession(before);
+    },
+    [store, dispatchStamped, trackFreshSession],
+  );
+
+  const removeAccount = useCallback(
+    async (accountID: string, options?: SwitchOptions) => {
+      const isCurrent = selectCurrentSession(store.getState())?.accountID === accountID;
+      if (isCurrent) {
+        options?.onSwitchStart?.();
+        try {
+          await stopPushProvider();
+        } catch (error) {
+          logger.error('Failed to stop push provider before remove:', error);
+        }
+      }
+      const before = new Set(store.getState().sessions.map(s => s.sessionID));
+      dispatchStamped(({now, newSessionID}) => ({type: 'account-removed', accountID, newSessionID, now}));
+      trackFreshSession(before);
+    },
+    [store, dispatchStamped, trackFreshSession],
+  );
+
+  const removeSession = useCallback(
+    async (sessionID: string, options?: SwitchOptions) => {
+      const isCurrent = store.getState().currentSessionID === sessionID;
+      if (isCurrent) {
+        options?.onSwitchStart?.();
+        try {
+          await stopPushProvider();
+        } catch (error) {
+          logger.error('Failed to stop push provider before removing session:', error);
+        }
+      }
+      store.dispatch({type: 'session-removed', sessionID, now: new Date().toISOString()});
     },
     [store],
   );
 
-  const deleteSession = useCallback(
-    async (sessionID: string) => {
-      // Dispatch action synchronously - persistence happens in useEffect
-      // The persist effect will write the filtered sessions array via saveAll()
-      store.dispatch({
-        type: 'deleted-session',
-        sessionID,
-      });
+  const updateAccountPreferences = useCallback(
+    async (accountID: string, patch: Partial<AccountPreferences>) => {
+      store.dispatch({type: 'preferences-updated', accountID, patch});
     },
     [store],
+  );
+
+  const updateServerProfile = useCallback(
+    async (serverUrl: string, patch: Partial<Omit<ServerProfile, 'serverUrl' | 'updatedAt'>>) => {
+      dispatchStamped(({now}) => ({
+        type: 'server-profile-updated',
+        serverUrl: normalizeServerUrl(serverUrl),
+        patch,
+        now,
+      }));
+    },
+    [dispatchStamped],
+  );
+
+  const setPreRegistrationOverride = useCallback(
+    async (serverUrl: string, preRegistrationMode: boolean) => {
+      const normalized = normalizeServerUrl(serverUrl);
+      const reported = store.getState().serverProfiles.find(p => p.serverUrl === normalized)?.preRegistrationMode;
+      dispatchStamped(({now}) => ({
+        type: 'server-profile-updated',
+        serverUrl: normalized,
+        patch: {preRegistrationOverride: preRegistrationMode === (reported ?? false) ? undefined : preRegistrationMode},
+        now,
+      }));
+    },
+    [store, dispatchStamped],
+  );
+
+  const updateAccountIdentity = useCallback(
+    async (
+      accountID: string,
+      patch: Partial<Pick<Account, 'username' | 'userImage' | 'accessLevel'>>,
+      sourceSessionID: string,
+    ) => {
+      store.dispatch({type: 'account-updated', accountID, patch, sourceSessionID});
+    },
+    [store],
+  );
+
+  const markAccountRevoked = useCallback(
+    async (accountID: string, sourceSessionID: string) => {
+      const before = new Set(store.getState().sessions.map(s => s.sessionID));
+      dispatchStamped(({now, newSessionID}) => ({
+        type: 'account-revoked',
+        accountID,
+        newSessionID,
+        sourceSessionID,
+        now,
+      }));
+      trackFreshSession(before);
+    },
+    [store, dispatchStamped, trackFreshSession],
   );
 
   const clearAllSessions = useCallback(async () => {
-    store.dispatch({type: 'clear-all-sessions'});
+    store.dispatch({type: 'cleared'});
   }, [store]);
+
+  const clearFreshServerSession = useCallback(() => setFreshServerSessionID(null), []);
 
   const contextValue: SessionContextType = useMemo(
     () => ({
       currentSession,
+      currentAccount,
+      currentToken,
       currentUserID,
+      accounts: state.accounts,
       sessions: state.sessions,
-      switchSession,
-      createSession,
-      findOrCreateSession,
-      updateSession,
-      deleteSession,
-      clearAllSessions,
-      updateSessionToken,
+      serverProfiles: state.serverProfiles,
+      serverProfile,
+      accountPreferences,
+      isLoggedIn,
+      isLoading: state.isLoading,
+      pendingAccountID,
+      freshServerSessionID,
+      clearFreshServerSession,
       signIn,
       signOut,
-      isLoading: state.isLoading,
-      isLoggedIn,
+      switchToAccount,
+      switchToSession,
+      switchToServer,
+      removeSession,
+      removeAccount,
+      updateAccountPreferences,
+      updateServerProfile,
+      setPreRegistrationOverride,
+      updateAccountIdentity,
+      markAccountRevoked,
+      clearAllSessions,
+      getTokenForAccount: SessionStorage.getTokenForAccount,
     }),
     [
       currentSession,
+      currentAccount,
+      currentToken,
       currentUserID,
+      state.accounts,
       state.sessions,
+      state.serverProfiles,
       state.isLoading,
-      switchSession,
-      createSession,
-      findOrCreateSession,
-      updateSession,
-      deleteSession,
-      clearAllSessions,
-      updateSessionToken,
+      serverProfile,
+      accountPreferences,
+      isLoggedIn,
+      pendingAccountID,
+      freshServerSessionID,
+      clearFreshServerSession,
       signIn,
       signOut,
-      isLoggedIn,
+      switchToAccount,
+      switchToSession,
+      switchToServer,
+      removeSession,
+      removeAccount,
+      updateAccountPreferences,
+      updateServerProfile,
+      setPreRegistrationOverride,
+      updateAccountIdentity,
+      markAccountRevoked,
+      clearAllSessions,
     ],
   );
 

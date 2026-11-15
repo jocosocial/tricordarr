@@ -1,6 +1,6 @@
 import React, {Dispatch, memo, SetStateAction, useCallback} from 'react';
 
-import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
+import {UserListItem} from '#src/Components/Lists/Items/User/UserListItem';
 import {UserListItemSwipeable} from '#src/Components/Swipeables/UserListItemSwipeable';
 import {type UserRelationMode} from '#src/Queries/Users/UserRelationConstants';
 import {UserHeader} from '#src/Structs/ControllerStructs';

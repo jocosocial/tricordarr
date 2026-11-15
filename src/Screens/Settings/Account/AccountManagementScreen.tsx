@@ -1,5 +1,6 @@
+import {useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 
 import {MinorActionListItem} from '#src/Components/Lists/Items/MinorActionListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -11,6 +12,7 @@ import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {alertLoginAsAlt} from '#src/Libraries/Alerts/AuthAlerts';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {
   SettingsStackParamList,
@@ -32,9 +34,23 @@ type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenCompone
  */
 export const AccountManagementScreen = ({navigation}: Props) => {
   const settingsNavigation = useSettingsStack();
-  const {isLoggedIn, currentUserID} = useSession();
+  const {isLoggedIn, currentUserID, currentSession} = useSession();
   const {confirmLogout} = useSignOut();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  // Set when the Create Alt Account web page is opened, so coming back can offer to log in to it.
+  const altPendingRef = useRef(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!altPendingRef.current) {
+        return;
+      }
+      altPendingRef.current = false;
+      alertLoginAsAlt(() =>
+        settingsNavigation.push(SettingsStackScreenComponents.login, {serverUrl: currentSession?.serverUrl}),
+      );
+    }, [settingsNavigation, currentSession?.serverUrl]),
+  );
 
   const logoutOptions = {
     onLogoutStart: () => setIsLoggingOut(true),
@@ -66,11 +82,12 @@ export const AccountManagementScreen = ({navigation}: Props) => {
                 <MinorActionListItem
                   title={'Create Alt Account'}
                   icon={AppIcons.altAccount}
-                  onPress={() =>
+                  onPress={() => {
+                    altPendingRef.current = true;
                     navigation.push(CommonStackComponents.siteUIScreen, {
                       resource: 'createAltAccount',
-                    })
-                  }
+                    });
+                  }}
                 />
               </ListSection>
               <ListSection>

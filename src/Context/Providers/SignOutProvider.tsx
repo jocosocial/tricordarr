@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query';
 import React, {PropsWithChildren, useCallback} from 'react';
 
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
@@ -6,7 +5,6 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {ConfirmLogoutOptions, SignOutContext, SignOutContextType} from '#src/Context/Contexts/SignOutContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
-import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {alertLogout} from '#src/Libraries/Alerts/AuthAlerts';
 import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
 
@@ -18,7 +16,7 @@ import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
  *
  * Confirmed logout must run in this order (see ConfirmLogoutOptions):
  *   1. onLogoutStart — freeze the visible screen's logged-in UI
- *   2. performSignOut — clear token, sockets, query cache, cookies
+ *   2. performSignOut — clear token, sockets (the scope remount drops the query cache)
  *   3. onLoggedOut — navigate (usually goBack)
  *
  * Navigating in (1) reveals Today/Settings still logged-in. Teardown without (1)
@@ -29,20 +27,18 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
   const {setEnableUserNotifications} = useEnableUserNotification();
   const {closeNotificationSocket, dispatchFezSockets} = useSocket();
   const {signOut} = useSession();
-  const queryClient = useQueryClient();
-  const {clearCookies} = useTwitarrWebview();
 
   /**
-   * Local session teardown. Order inside matters: disable notifications before
-   * clearing the token so PushNotificationService does not restart FGS without
-   * credentials; clear the query cache after `signOut()` so logged-in widgets
-   * (Today appointments, avatar, etc.) drop before any later navigation.
+   * Local sign-out of the current account. Signing out switches to the next most recently used
+   * account (or the anonymous session for the server), which remounts the session scope: the
+   * query client, sockets and the cache file go with the old one, and AccountCookieSync puts the
+   * right webview cookie back. What is left to do here is stopping notifications first. Disable
+   * user notifications and close the sockets before clearing the token so PushNotificationService
+   * does not restart FGS without credentials. The push provider itself is stopped by
+   * SessionProvider.signOut, ahead of the switch, since this scope will not be around to react
+   * to the state flip.
    */
   const performSignOut = useCallback(async () => {
-    // Disable user notifications. Push provider teardown (stopPushProvider) is handled by
-    // PushNotificationService when this state flips: its effect calls stopPushProvider() once.
-    // We do not call stopPushProvider() here to avoid duplicate clearSettings on iOS and
-    // NEAppPushManager "configuration is unchanged" errors.
     setEnableUserNotifications(false);
 
     // Close notification socket
@@ -53,15 +49,9 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
       type: WebSocketStorageActions.clear,
     });
 
-    // Sign out from session (clears token data)
+    // Sign the current account out (clears its token, keeps the row)
     await signOut();
-
-    // Clear React Query cache
-    queryClient.clear();
-
-    // Clear webview cookies
-    await clearCookies();
-  }, [setEnableUserNotifications, closeNotificationSocket, dispatchFezSockets, signOut, queryClient, clearCookies]);
+  }, [setEnableUserNotifications, closeNotificationSocket, dispatchFezSockets, signOut]);
 
   /**
    * Freeze current UI, tear down session+cache, then navigate. Must not reorder:

@@ -2,90 +2,52 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {Text} from 'react-native-paper';
 
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
-import {ServerUrlSettingsView} from '#src/Components/Views/Settings/ServerUrlSettingsView';
-import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
+import {ServerChoiceView} from '#src/Components/Views/ServerChoiceView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {OobeLocation} from '#src/Enums/OobeLocation';
-import {useRefresh} from '#src/Hooks/useRefresh';
-import {useServerHealthStatus} from '#src/Hooks/useServerHealthStatus';
-import {createLogger} from '#src/Libraries/Logger';
+import {useExplicitServerHealthStatus} from '#src/Hooks/useServerHealthStatus';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
-import {useClientSettingsQuery} from '#src/Queries/Client/ClientQueries';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
 
-const logger = createLogger('OobeServerScreen.tsx');
-
+/**
+ * Choose the server to set up and see its healthcheck. The choice is only held on this screen and
+ * handed to the next step. Nothing about the active session changes until the account step, so
+ * backing out leaves the app as it was.
+ */
 export const OobeServerScreen = ({navigation, route}: Props) => {
-  const location = route.params?.location ?? OobeLocation.ship;
+  const {mode, location} = route.params;
   const {currentSession} = useSession();
-  const {
-    healthQuery: {refetch, isFetching},
-    passed: serverHealthPassed,
-  } = useServerHealthStatus();
-  const {refreshing, onRefresh} = useRefresh({refresh: refetch, isRefreshing: isFetching});
-  const [busy, setBusy] = useState(false);
+  const {appConfig} = useConfig();
   const {theme} = useAppTheme();
   const {hasUnsavedWork} = useErrorHandler();
-  const {applyClientSettings} = useClientSettings();
-  // Prefetch client settings once the healthcheck passes so pressing Next only writes
-  // already-loaded state rather than fetching on tap. Never relies on stale data: this
-  // query is disabled until a fresh healthcheck pass and refetches on every mount.
-  const {data: clientSettingsData, isFetching: isFetchingClientSettings} = useClientSettingsQuery({
-    enabled: serverHealthPassed,
-    staleTime: 0,
-    refetchOnMount: 'always',
-  });
-
-  const onBackPress = () => {
-    navigation.goBack();
-  };
-
-  const onNextPress = async () => {
-    if (!currentSession || !clientSettingsData) {
-      logger.warn('Cannot proceed: no current session or client settings not loaded');
-      return;
-    }
-    setBusy(true);
-    try {
-      // The server's own ClientSettingsData is the source of truth for pre-registration
-      // mode, not which location card the user tapped. This lets the URL entered here
-      // (whether or not it matches the card that got us here) win. A server switch on this
-      // screen already applied it, but the server the user arrived with never went through one.
-      await applyClientSettings(clientSettingsData);
-      navigation.push(OobeStackComponents.oobeConductScreen);
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const onHelpPress = () => {
-    navigation.push(CommonStackComponents.networkHelpScreen);
-  };
+  const [serverUrl, setServerUrl] = useState(
+    route.params.serverUrl ?? currentSession?.serverUrl ?? appConfig.serverUrl,
+  );
+  const health = useExplicitServerHealthStatus(serverUrl);
 
   const isLand = location === OobeLocation.land;
-
-  return (
-    <AppView>
-      <ScrollingContentView refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+  // Adding an account is the one case where choosing some other server is the point.
+  const header =
+    mode === 'addAccount' ? undefined : (
+      <>
         {!isLand && (
-          <PaddedContentView>
+          <PaddedContentView padTop={true}>
             <Text>
               Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs, private DNS, or
               other network blockers.
             </Text>
           </PaddedContentView>
         )}
-        <PaddedContentView>
+        <PaddedContentView padTop={isLand}>
           <Text>
             Do not change this unless instructed to do so by the Twitarr Dev Team or THO.
             {isLand ? (
@@ -95,18 +57,20 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
             )}
           </Text>
         </PaddedContentView>
-        <ServerUrlSettingsView />
-      </ScrollingContentView>
+      </>
+    );
+
+  return (
+    <AppView disablePreRegistrationWarning={true}>
+      <ServerChoiceView serverUrl={serverUrl} onChange={setServerUrl} health={health} header={header} />
       <OobeButtonsView
-        leftOnPress={onBackPress}
+        leftOnPress={() => navigation.goBack()}
         middleText={'Help'}
-        middleOnPress={onHelpPress}
+        middleOnPress={() => navigation.push(CommonStackComponents.networkHelpScreen)}
         middleIcon={AppIcons.help}
         middleButtonColor={theme.colors.twitarrNegativeButton}
-        rightOnPress={onNextPress}
-        rightDisabled={
-          !serverHealthPassed || isFetching || isFetchingClientSettings || !clientSettingsData || hasUnsavedWork || busy
-        }
+        rightOnPress={() => navigation.push(OobeStackComponents.oobeAccountScreen, {mode, serverUrl})}
+        rightDisabled={!health.passed || hasUnsavedWork}
       />
     </AppView>
   );

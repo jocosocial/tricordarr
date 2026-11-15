@@ -5,6 +5,11 @@ import {createLogger} from '#src/Libraries/Logger';
 const logger = createLogger('QueryCacheStorage.ts');
 
 /**
+ * Persister key (and file basename) of a session's query cache.
+ */
+export const getQueryCacheKey = (sessionID: string) => `query-cache-${sessionID}`;
+
+/**
  * Resolve the cache file for a persister key. Lives in the documents directory
  * so the OS cannot evict it.
  */

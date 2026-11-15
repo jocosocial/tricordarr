@@ -1,3 +1,4 @@
+import {flushSessionWrites} from '#src/Context/State/SessionStore';
 import {
   startForegroundServiceWorker,
   stopForegroundServiceWorker,
@@ -6,6 +7,8 @@ import {clearLocalPushManager, startLocalPushManager} from '#src/Libraries/Notif
 import {isIOS} from '#src/Libraries/Platform/Detection';
 
 export const startPushProvider = async () => {
+  // The providers resolve the account from storage (LAST_SESSION_ID); let a just-dispatched switch land first.
+  await flushSessionWrites();
   if (isIOS) {
     await startLocalPushManager();
   } else {

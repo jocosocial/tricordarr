@@ -19,10 +19,12 @@ import {
   PostData,
   ProfilePublicData,
   QuartermasterData,
+  TokenStringData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
 import {
   NoDrawerParams,
+  OnboardingMode,
   Optional,
   ScheduleDayParams,
   WithElevation,
@@ -67,11 +69,17 @@ export type CommonStackParamList = {
     // against the ship index by MapScreen itself.
     location?: string;
   };
-  AccountRecoveryScreen: undefined;
-  UsernameLookupScreen: undefined;
+  // serverUrl is the server the login form was for; defaults to the active session's. mode is set
+  // inside the setup flow.
+  AccountRecoveryScreen: {serverUrl?: string; mode?: OnboardingMode} | undefined;
+  UsernameLookupScreen: {serverUrl?: string; mode?: OnboardingMode} | undefined;
   RecoveryKeyScreen: {
     recoveryKey: string;
     username: string;
+    // The server the account was created on; defaults to the active session's.
+    serverUrl?: string;
+    // A fresh registration that has not been signed in yet. Acknowledging the key signs it in.
+    pendingSignIn?: {token: TokenStringData; siteCookie: string | null; mode?: OnboardingMode};
   };
   ReportScreen: {
     contentType: ReportContentType;
@@ -192,6 +200,7 @@ export type CommonStackParamList = {
   };
   ConfigServerUrlScreen: undefined;
   NetworkHelpScreen: undefined;
+  AccountsHelpScreen: undefined;
   ForumPostHashtagScreen: {
     hashtag: string;
   };
@@ -504,6 +513,7 @@ export enum CommonStackComponents {
   forumPostPinnedScreen = 'ForumPostPinnedScreen',
   configServerUrl = 'ConfigServerUrlScreen',
   networkHelpScreen = 'NetworkHelpScreen',
+  accountsHelpScreen = 'AccountsHelpScreen',
   forumPostHashtagScreen = 'ForumPostHashtagScreen',
   seamailChatScreen = 'SeamailChatScreen',
   fezChatDetailsScreen = 'FezChatDetailsScreen',

@@ -103,7 +103,7 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
         return;
       }
 
-      if (isTwitarrUrl(url, serverUrl, appConfig.apiClientConfig.canonicalHostnames)) {
+      if (isTwitarrUrl(url, serverUrl, appConfig.canonicalHostnames)) {
         openAppUrl(appUrl(extractPathFromWebUrl(url)));
         return;
       }
@@ -127,7 +127,7 @@ export const LinkingProvider = ({children}: PropsWithChildren) => {
         setSnackbarPayload({message: 'Failed to open URL: ' + url, messageType: 'error'});
       });
     },
-    [serverUrl, appConfig.apiClientConfig.canonicalHostnames, openAppUrl, setSnackbarPayload],
+    [serverUrl, appConfig.canonicalHostnames, openAppUrl, setSnackbarPayload],
   );
 
   return (
