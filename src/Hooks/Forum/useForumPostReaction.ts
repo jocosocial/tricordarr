@@ -12,7 +12,7 @@ import {PostData, ReactionData} from '#src/Structs/ControllerStructs';
 export const useForumPostReaction = (forumPost: PostData, forumID?: string) => {
   const {currentUserID} = useSession();
   const {updatePostReactions} = useForumCacheReducer();
-  const {mutate, isPending} = useForumPostReactionMutation();
+  const {mutate} = useForumPostReactionMutation();
   const canReact = !!currentUserID && currentUserID !== forumPost.author.userID;
 
   const send = useCallback(
@@ -47,5 +47,5 @@ export const useForumPostReaction = (forumPost: PostData, forumID?: string) => {
     [currentUserID, forumPost.reactions, send],
   );
 
-  return {addReaction, toggleReaction, canReact, isPending};
+  return {addReaction, toggleReaction, canReact};
 };

@@ -13,7 +13,7 @@ import {FezData, FezPostData, ReactionData} from '#src/Structs/ControllerStructs
 export const useFezPostReaction = (fezPost: FezPostData, fez?: FezData) => {
   const {currentUserID} = useSession();
   const {updatePostReactions} = useFezCacheReducer();
-  const {mutate, isPending} = useFezPostReactionMutation();
+  const {mutate} = useFezPostReactionMutation();
   const fezID = fez?.fezID;
   const canReact = !!fezID && !!currentUserID && currentUserID !== fezPost.author.userID;
 
@@ -49,5 +49,5 @@ export const useFezPostReaction = (fezPost: FezPostData, fez?: FezData) => {
     [currentUserID, fezPost.reactions, send],
   );
 
-  return {addReaction, toggleReaction, canReact, isPending};
+  return {addReaction, toggleReaction, canReact};
 };

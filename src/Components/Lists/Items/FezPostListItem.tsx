@@ -3,6 +3,7 @@ import React, {memo} from 'react';
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {ContentPostImages} from '#src/Components/Images/ContentPostImages';
 import {FezPostActionsMenu} from '#src/Components/Menus/Fez/FezPostActionsMenu';
+import {FezPostReactionBadges} from '#src/Components/Reactions/FezPostReactionBadges';
 import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
 import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView';
@@ -10,7 +11,6 @@ import {MessageView} from '#src/Components/Views/MessageView';
 import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
-import {useFezPostReaction} from '#src/Hooks/Fez/useFezPostReaction';
 import {useChatStack} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
@@ -32,7 +32,6 @@ const FezPostListItemInternal = ({fezPost, fez, fullWidth}: FezPostListItemProps
   const {currentUserID} = useSession();
   const {asPrivilegedUser} = useElevation();
   const seamailNavigation = useChatStack();
-  const {toggleReaction, canReact} = useFezPostReaction(fezPost, fez);
 
   let showAuthor = fez ? fez.participantCount > 2 : true;
 
@@ -76,8 +75,11 @@ const FezPostListItemInternal = ({fezPost, fez, fullWidth}: FezPostListItemProps
           messageOnRight={messageOnRight}
           showAuthor={showAuthor}
           fullWidth={fullWidth}
-          reactions={fezPost.reactions}
-          onReactionPress={canReact ? toggleReaction : undefined}
+          reactionBadges={
+            fezPost.reactions?.length ? (
+              <FezPostReactionBadges fezPost={fezPost} fez={fez} alignRight={messageOnRight} />
+            ) : undefined
+          }
           renderActionsMenu={({visible, closeMenu, anchor}) => (
             <FezPostActionsMenu visible={visible} closeMenu={closeMenu} anchor={anchor} fezPost={fezPost} fez={fez} />
           )}

@@ -1,15 +1,16 @@
-import React, {ReactNode, useState} from 'react';
+import React, {ReactNode} from 'react';
 import {Menu} from 'react-native-paper';
 
-import {FezPostActionsReactionItem} from '#src/Components/Menus/Fez/Items/FezPostActionsReactionItem';
+import {ReactionMenuItem} from '#src/Components/Menus/Items/ReactionMenuItem';
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
-import {EmojiPickerModal} from '#src/Components/Reactions/EmojiPickerModal';
+import {FezPostReactionPicker} from '#src/Components/Reactions/FezPostReactionPicker';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
-import {useFezPostReaction} from '#src/Hooks/Fez/useFezPostReaction';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {useLazyVisibility} from '#src/Hooks/useLazyVisibility';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
@@ -30,8 +31,10 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
   const bridged = useMenuContextBridge();
   const commonNavigation = useCommonStack();
   const {hasModerator} = usePrivilege();
-  const {addReaction, canReact, isPending} = useFezPostReaction(fezPost, fez);
-  const [pickerOpen, setPickerOpen] = useState(false);
+  const {currentUserID} = useSession();
+  const picker = useLazyVisibility();
+  // Swiftarr refuses reactions on your own posts, and without the chat its cache cannot be updated.
+  const canReact = !!fez && !!currentUserID && currentUserID !== fezPost.author.userID;
 
   const handleReport = () => {
     closeMenu();
@@ -54,11 +57,11 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
               closeMenu();
             }}
           />
-          <FezPostActionsReactionItem
-            disabled={!canReact || isPending}
+          <ReactionMenuItem
+            disabled={!canReact}
             onPress={() => {
               closeMenu();
-              setPickerOpen(true);
+              picker.show();
             }}
           />
           {fez && fez.fezType !== FezType.closed && (
@@ -77,7 +80,9 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
           )}
         </MenuContextBridge>
       </Menu>
-      <EmojiPickerModal open={pickerOpen} onClose={() => setPickerOpen(false)} onEmojiSelected={addReaction} />
+      {picker.mounted && (
+        <FezPostReactionPicker fezPost={fezPost} fez={fez} open={picker.visible} onClose={picker.hide} />
+      )}
     </>
   );
 };

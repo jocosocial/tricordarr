@@ -41,10 +41,9 @@ export const EmojiPickerModal = ({open, onClose, onEmojiSelected}: EmojiPickerMo
     [commonStyles],
   );
 
-  /** Selects a reaction and closes either picker. */
+  /** Selects a reaction from the dialog and closes it. */
   const handleSelection = (reaction: string) => {
     onEmojiSelected(reaction);
-    setUnicodePickerOpen(false);
     onClose();
   };
 
@@ -93,7 +92,8 @@ export const EmojiPickerModal = ({open, onClose, onEmojiSelected}: EmojiPickerMo
           setUnicodePickerOpen(false);
           onClose();
         }}
-        onEmojiSelected={emojiObject => handleSelection(emojiObject.emoji)}
+        // The library calls onClose itself after a selection, so this must not close as well.
+        onEmojiSelected={emojiObject => onEmojiSelected(emojiObject.emoji)}
       />
     </>
   );

@@ -1,22 +1,22 @@
-import React, {ReactNode, useState} from 'react';
+import React, {ReactNode} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 
 import {ForumPostActionsDeleteItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsDeleteItem';
 import {ForumPostActionsFavoriteItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsFavoriteItem';
 import {ForumPostActionsModerateItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsModerateItem';
 import {ForumPostActionsPinItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsPinItem';
-import {ForumPostActionsReactionItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReactionItem';
 import {ForumPostActionsReplyItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReplyItem';
 import {ForumPostActionsReportItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReportItem';
 import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsShowThreadItem';
+import {ReactionMenuItem} from '#src/Components/Menus/Items/ReactionMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
-import {EmojiPickerModal} from '#src/Components/Reactions/EmojiPickerModal';
+import {ForumPostReactionPicker} from '#src/Components/Reactions/ForumPostReactionPicker';
 import {useForumComposer} from '#src/Context/Contexts/ForumComposerContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useForumPostReaction} from '#src/Hooks/Forum/useForumPostReaction';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {useLazyVisibility} from '#src/Hooks/useLazyVisibility';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
@@ -43,8 +43,7 @@ export const ForumPostActionsMenu = ({
   const {currentUserID} = useSession();
   const bridged = useMenuContextBridge();
   const bySelf = currentUserID === forumPost.author.userID;
-  const {addReaction, canReact, isPending} = useForumPostReaction(forumPost, forumData?.forumID);
-  const [pickerOpen, setPickerOpen] = useState(false);
+  const picker = useLazyVisibility();
   const commonNavigation = useCommonStack();
   const {setString} = useClipboard();
   // Undefined outside a thread composer. Replying to yourself would tag yourself, and Swiftarr
@@ -110,16 +109,24 @@ export const ForumPostActionsMenu = ({
           <Divider bold={true} />
           <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} />
           <Divider bold={true} />
-          <ForumPostActionsReactionItem
-            disabled={!canReact || isPending}
+          <ReactionMenuItem
+            // Swiftarr refuses reactions on your own posts.
+            disabled={!currentUserID || bySelf}
             onPress={() => {
               closeMenu();
-              setPickerOpen(true);
+              picker.show();
             }}
           />
         </MenuContextBridge>
       </Menu>
-      <EmojiPickerModal open={pickerOpen} onClose={() => setPickerOpen(false)} onEmojiSelected={addReaction} />
+      {picker.mounted && (
+        <ForumPostReactionPicker
+          forumPost={forumPost}
+          forumID={forumData?.forumID}
+          open={picker.visible}
+          onClose={picker.hide}
+        />
+      )}
     </>
   );
 };
