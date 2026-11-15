@@ -1,4 +1,5 @@
 import {LikeType} from '#src/Enums/LikeType';
+import {postDataFromDetail} from '#src/Libraries/Moderation/Content';
 import {
   applyFezPostReactions,
   applyPostDetailReactions,
@@ -166,5 +167,23 @@ describe('chat socket message guards', () => {
     expect(isSocketFezMemberChangeData(memberChange)).toBe(true);
     expect(isSocketFezMemberChangeData(reactionUpdate)).toBe(false);
     expect(isSocketFezMemberChangeData(newPost)).toBe(false);
+  });
+});
+
+describe('postDataFromDetail', () => {
+  it('keeps reactions when a moderated post is converted for editing', () => {
+    const detail: PostDetailData = {
+      postID: 7,
+      forumID: 'forum-id',
+      createdAt: '2026-01-01T00:00:00Z',
+      author: james,
+      text: 'Cached text',
+      isBookmarked: false,
+      laughs: [],
+      likes: [heidi],
+      loves: [],
+      reactions: [thumbs],
+    };
+    expect(postDataFromDetail(detail).reactions).toEqual([thumbs]);
   });
 });
