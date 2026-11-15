@@ -65,25 +65,34 @@ interface UseFezDataReturn {
   isFavorite: boolean;
   isFull: boolean;
   participantLabel: string | undefined;
-  getParticipantLabel: (fez: FezData) => string;
+  getParticipantLabel: (fez: FezData, options?: ParticipantLabelOptions) => string;
   refetch: () => Promise<unknown>;
   resetInitialReadCount: () => void;
+}
+
+/**
+ * Options for getParticipantLabel.
+ */
+export interface ParticipantLabelOptions {
+  /** Drop the minimum suffix and the waitlisted count, leaving only the participant count (or "Full"). */
+  compact?: boolean;
 }
 
 /**
  * Returns a string describing the number of participants in a fez.
  * This is not in the hook because it gets called in at least one place that may not have
  * a Fez (ScheduleItemScreenBase.tsx). And we know how we feel about conditional hooks.
+ * With `compact`, the minimum and waitlisted details are omitted for space-constrained rows.
  */
-export const getParticipantLabel = (fez: FezData): string => {
+export const getParticipantLabel = (fez: FezData, options: ParticipantLabelOptions = {}): string => {
+  const {compact = false} = options;
   let minimumSuffix = '';
-  if (fez.minParticipants !== 0) {
+  if (!compact && fez.minParticipants !== 0) {
     minimumSuffix = `, ${fez.minParticipants} minimum`;
   }
   if (fez.maxParticipants === 0) {
     return `${fez.participantCount} ${pluralize('attendee', fez.participantCount)}${minimumSuffix}`;
   }
-  const waitlistCount: number = fez.members?.waitingList.length || 0;
   let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} ${pluralize(
     'participant',
     fez.maxParticipants,
@@ -91,6 +100,10 @@ export const getParticipantLabel = (fez: FezData): string => {
   if (fez.participantCount >= fez.maxParticipants) {
     attendeeCountString = 'Full';
   }
+  if (compact) {
+    return attendeeCountString;
+  }
+  const waitlistCount: number = fez.members?.waitingList.length || 0;
   return `${attendeeCountString}, ${waitlistCount} waitlisted${minimumSuffix}`;
 };
 
