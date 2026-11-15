@@ -141,7 +141,7 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
   /**
    * Shared shape of every switch: ignore if one is pending, stop the old account's background
    * providers (they are device-global, not scoped to the remounting subtree), freeze the visible
-   * screen, then dispatch. The keyed SessionScope remount does the rest.
+   * screen, then dispatch. The keyed SessionBoundaryProvider remount does the rest.
    */
   const runSwitch = useCallback(
     async (pendingID: string | null, options: SwitchOptions | undefined, dispatch: () => void) => {

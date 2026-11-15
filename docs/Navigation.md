@@ -101,11 +101,11 @@ Screens, headers, and `Alert.alert` callbacks in those parents should keep using
 
 ## Session switches remount the root navigator
 
-`SessionScope` (`src/Context/Providers/SessionScope.tsx`) keys everything beneath it on `sessionID`, `RootStackNavigator` included. Switching accounts or servers therefore unmounts the navigator and mounts a fresh one under the same `NavigationContainer`: navigation state resets to the root's initial route (home, or OOBE if it has not been completed). `NavigationProvider`, `navigationRef` and `linking` sit above the key and survive, so `navigationRef` calls made after the remount work; screens and stack hooks from before it are gone, so do not use them after an `await switchTo...()`.
+`SessionBoundaryProvider` (`src/Context/Providers/SessionBoundaryProvider.tsx`) keys everything beneath it on `sessionID`, `RootStackNavigator` included. Switching accounts or servers therefore unmounts the navigator and mounts a fresh one under the same `NavigationContainer`: navigation state resets to the root's initial route (home, or OOBE if it has not been completed). `NavigationProvider`, `navigationRef` and `linking` sit above the key and survive, so `navigationRef` calls made after the remount work; screens and stack hooks from before it are gone, so do not use them after an `await switchTo...()`.
 
 A flow that switches mid-stack and wants to keep its place (Settings > Server URL) passes `{preserveNavigation: true}`. That calls `stashNavigationState()` before the switch and `RootStackNavigator` `resetRoot`s the stashed state once it has mounted. Push the screen you want to land on *before* switching so it is in the stashed state.
 
-Anything that must outlive a switch belongs above `SessionScope`. The setup flow is the example: its commit step creates the session, which remounts the navigators, so `OobeProvider.resumeAfterCommit` tells the fresh `OobeStackNavigator` to start at the permissions step. Prefer that (flow position as state above the scope) over stashing navigation state for anything new.
+Anything that must outlive a switch belongs above `SessionBoundaryProvider`. The setup flow is the example: its commit step creates the session, which remounts the navigators, so `OobeProvider.resumeAfterCommit` tells the fresh `OobeStackNavigator` to start at the permissions step. Prefer that (flow position as state above the scope) over stashing navigation state for anything new.
 
 ## The setup flow
 

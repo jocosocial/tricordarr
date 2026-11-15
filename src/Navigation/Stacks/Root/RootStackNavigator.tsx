@@ -63,7 +63,7 @@ export const RootStackNavigator = () => {
   }, [navigation, footerHeight]);
 
   // A flow that switched sessions mid-stack (Settings > Server URL) stashed
-  // its navigation state before the SessionScope remount reset it. Put it back once the container
+  // its navigation state before the SessionBoundaryProvider remount reset it. Put it back once the container
   // is ready again. The navigator has to mount first, and would flash the initial route (Today)
   // for a frame, so it stays invisible until the state is restored.
   const [stashed] = useState(() => consumeStashedNavigationState());

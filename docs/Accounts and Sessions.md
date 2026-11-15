@@ -21,9 +21,9 @@ Stale-source guard: an action produced asynchronously (whoami, a 401) carries th
 
 Context API: `useSession()` (`SessionContext.ts`). Notable: `signIn(serverUrl, token, {boardFromSessionID})`, `signOut(accountID?)`, `switchToAccount`, `switchToServer(serverUrl, {preserveNavigation, boardFromSessionID})`, `removeAccount`, `removeSession`. `switchToAccount` returns `'needs-login'` for a signed-out or revoked account instead of switching; `useAccountSwitcher` turns that into the login form pre-filled with `username@server`. A pending switch blocks further switches.
 
-## SessionScope
+## SessionBoundaryProvider
 
-`SessionScope` remounts everything beneath it on every session change. Each mount of `SwiftarrQueryClientProvider` creates its own `QueryClient`, persister (`query-cache-<sessionID>`) and axios clients from that session's account token and server, so cached data cannot cross sessions. Sockets, filters, selection state and navigation reset with it. `queryKeyExtraData` (`[sessionID, serverUrl, userID]`) stays so cache reducers remain correct even if two clients ever shared a cache.
+`SessionBoundaryProvider` remounts everything beneath it on every session change. Each mount of `SwiftarrQueryClientProvider` creates its own `QueryClient`, persister (`query-cache-<sessionID>`) and axios clients from that session's account token and server, so cached data cannot cross sessions. Sockets, filters, selection state and navigation reset with it. `queryKeyExtraData` (`[sessionID, serverUrl, userID]`) stays so cache reducers remain correct even if two clients ever shared a cache.
 
 Above the scope (device-scoped): Config, Session, EffectiveConfig, Oobe, PreRegistration, Permissions, Theme, Navigation, Keyboard, Style, ErrorHandler, Snackbar. Below it everything that touches the API client, query cache or sockets. See [Navigation](Navigation.md) for the navigator consequences.
 

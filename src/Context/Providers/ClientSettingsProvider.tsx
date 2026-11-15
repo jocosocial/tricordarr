@@ -65,7 +65,7 @@ export const buildCruiseStartDate = (dateStr: string, portTimeZoneID: string): D
 
 /**
  * Mirrors the server's /client/settings into the active ServerProfile and exposes the
- * server-driven limits. Mounted under SessionScope, so there is one instance per session.
+ * server-driven limits. Mounted under SessionBoundaryProvider, so there is one instance per session.
  */
 export const ClientSettingsProvider = ({children}: PropsWithChildren) => {
   const {data: clientSettings, refetch} = useClientSettingsQuery();

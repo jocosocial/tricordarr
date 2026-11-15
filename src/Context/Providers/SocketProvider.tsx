@@ -141,7 +141,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
 
   // Effects
 
-  // SocketProvider lives inside SessionScope, so it unmounts on every session change. Sockets are
+  // SocketProvider lives inside SessionBoundaryProvider, so it unmounts on every session change. Sockets are
   // authenticated as the outgoing account, so they must not outlive it.
   const socketsRef = useRef<{notification?: ReconnectingWebSocket; fez: Record<string, ReconnectingWebSocket>}>({
     fez: {},

@@ -22,7 +22,7 @@ const logger = createLogger('SwiftarrQueryClientProvider.tsx');
 /**
  * The session's API clients, QueryClient and persisted cache.
  *
- * Mounted under SessionScope, which remounts it on every session change, so everything here lives
+ * Mounted under SessionBoundaryProvider, which remounts it on every session change, so everything here lives
  * and dies with exactly one session: the QueryClient is created once per mount, the axios pair is
  * built from that session's account token and server, and the cache file is that session's.
  * Cache reducers still match on `queryKeyExtraData` so they stay correct even if two clients ever
@@ -97,7 +97,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   }, [appConfig.apiClientConfig.requestTimeout, serverUrl]);
 
   /**
-   * One QueryClient per mount, and SessionScope mounts once per session. Bluesky throws if the key
+   * One QueryClient per mount, and SessionBoundaryProvider mounts once per session. Bluesky throws if the key
    * changes while mounted; a mismatch here would mean a cache mixing two sessions, so it is logged
    * as an error instead of being allowed to pass silently.
    */
@@ -105,7 +105,11 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const [queryClient] = useState(() => createQueryClient(currentSession?.sessionID ?? 'none'));
   useEffect(() => {
     if ((currentSession?.sessionID ?? null) !== mountedSessionID) {
-      logger.error('Session changed without a SessionScope remount.', mountedSessionID, currentSession?.sessionID);
+      logger.error(
+        'Session changed without a SessionBoundaryProvider remount.',
+        mountedSessionID,
+        currentSession?.sessionID,
+      );
     }
   }, [currentSession?.sessionID, mountedSessionID]);
 

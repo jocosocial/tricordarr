@@ -38,7 +38,7 @@ let stashedState: RootState | undefined;
 
 /**
  * Remember the current navigation state so the next RootStackNavigator mount can restore it.
- * A session switch remounts the root navigator (see SessionScope), which resets navigation; a
+ * A session switch remounts the root navigator (see SessionBoundaryProvider), which resets navigation; a
  * flow that switches mid-stack calls this first to keep its place.
  */
 export const stashNavigationState = (): void => {

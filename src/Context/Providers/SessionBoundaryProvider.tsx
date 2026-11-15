@@ -12,7 +12,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
  * ErrorHandler, Snackbar) are device-scoped and survive a switch. Everything that reads the API
  * client, the query cache, sockets or the root navigator belongs beneath it.
  */
-export const SessionScope = ({children}: PropsWithChildren) => {
+export const SessionBoundaryProvider = ({children}: PropsWithChildren) => {
   const {currentSession} = useSession();
   return <Fragment key={currentSession?.sessionID ?? 'none'}>{children}</Fragment>;
 };
