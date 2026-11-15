@@ -122,14 +122,17 @@ export namespace SocketNotificationData {
 }
 
 /**
- * Custom to Tricordarr. Debug info about the platform-specific background websocket
- * (Android's JS-managed ReconnectingWebSocket, or iOS's native LocalPushExtension socket).
- * Shared shape so both platforms' settings screens can render the same fields.
+ * Custom to Tricordarr. Health of one account's background notification socket, as reported by
+ * the native side (Android's TwitarrPushService, or iOS's LocalPushExtension socket).
+ * `failedCount` and `startedAt` are Android-only today. Timestamps are epoch milliseconds.
  */
-export interface WebsocketDebugStatus {
+export interface PerAccountStatus {
+  accountID: string;
   state?: string;
-  lastHealthcheckAt?: string;
+  lastHealthcheckAt?: number;
   lastHealthcheckSuccess?: boolean;
+  failedCount?: number;
+  startedAt?: number;
   lastError?: string;
-  lastErrorAt?: string;
+  lastErrorAt?: number;
 }

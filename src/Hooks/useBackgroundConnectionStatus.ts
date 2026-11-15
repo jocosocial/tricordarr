@@ -1,13 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useCallback, useEffect, useState} from 'react';
 import {AppState, AppStateStatus} from 'react-native';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
-import {getSharedWebSocket} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
-import {isAndroid} from '#src/Libraries/Platform/Detection';
-import {StorageKeys} from '#src/Libraries/Storage';
-import {WebsocketDebugStatus} from '#src/Structs/SocketStructs';
+import {getCurrentBackgroundStatus} from '#src/Libraries/Notifications/Push/BackgroundStatus';
+import {PerAccountStatus} from '#src/Structs/SocketStructs';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
@@ -18,7 +15,7 @@ export type BackgroundConnectionStatus = 'disabled' | 'connected' | 'warning' | 
 // user-configured healthcheck interval.
 const FAST_POLL_INTERVAL_MS = 2000;
 
-const deriveStatus = (isOpen: boolean, healthStatus?: WebsocketDebugStatus | null): BackgroundConnectionStatus => {
+const deriveStatus = (isOpen: boolean, healthStatus?: PerAccountStatus | null): BackgroundConnectionStatus => {
   if (healthStatus?.lastHealthcheckSuccess === false) {
     return 'error';
   }
@@ -26,11 +23,11 @@ const deriveStatus = (isOpen: boolean, healthStatus?: WebsocketDebugStatus | nul
 };
 
 /**
- * Live health of the background notification path (Android foreground-service socket,
- * or iOS native background push manager socket). Polls the same status primitives used
- * by BackgroundConnectionSettingsAndroidView/IOSView: quickly while not yet connected,
- * at the user's configured healthcheck interval once connected, and again whenever the
- * app returns to the foreground.
+ * Live health of the background notification path (Android native foreground-service socket,
+ * or iOS native background push manager socket). Pulls `getWebsocketStatus()`, the same
+ * primitive used by BackgroundConnectionSettingsAndroidView/IOSView: quickly while not yet
+ * connected, at the user's configured healthcheck interval once connected, and again whenever
+ * the app returns to the foreground or Android reports a status change.
  */
 export const useBackgroundConnectionStatus = (): BackgroundConnectionStatus => {
   const {enableUserNotifications} = useEnableUserNotification();
@@ -42,15 +39,8 @@ export const useBackgroundConnectionStatus = (): BackgroundConnectionStatus => {
       return 'disabled';
     }
 
-    if (isAndroid) {
-      const ws = await getSharedWebSocket();
-      const isOpen = ws?.readyState === WebSocket.OPEN;
-      const item = await AsyncStorage.getItem(StorageKeys.WS_HEALTHCHECK_DATA);
-      const healthStatus = item ? (JSON.parse(item) as WebsocketDebugStatus) : undefined;
-      return deriveStatus(isOpen, healthStatus);
-    }
-    const healthStatus = await NativeTricordarrModule.getWebsocketStatus();
-    return deriveStatus(healthStatus.state === 'Open', healthStatus);
+    const healthStatus = await getCurrentBackgroundStatus();
+    return deriveStatus(healthStatus?.state === 'Open', healthStatus);
   }, [enableUserNotifications]);
 
   useEffect(() => {
@@ -76,11 +66,17 @@ export const useBackgroundConnectionStatus = (): BackgroundConnectionStatus => {
       }
     };
     const subscription = AppState.addEventListener('change', onAppStateChange);
+    // Android only (iOS never emits), so an update lands without waiting for the next poll.
+    const statusSubscription = NativeTricordarrModule.onBackgroundStatusChanged(() => {
+      clearTimeout(timeoutId);
+      poll();
+    });
 
     return () => {
       cancelled = true;
       clearTimeout(timeoutId);
       subscription.remove();
+      statusSubscription.remove();
     };
   }, [checkStatus, appConfig.fgsWorkerHealthTimer]);
 

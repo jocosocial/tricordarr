@@ -10,30 +10,17 @@ import {createLogger} from '#src/Libraries/Logger';
 import {getUrlForNotificationEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {appUrl} from '#src/Libraries/UrlParser';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {headlessApiGet} from '#src/Queries/HeadlessApi';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
+
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
 const logger = createLogger('AppEventHandler.tsx');
 
 /**
- * "Mark As Read" from a background notification action: dismiss the notification, then mark its
- * content read on the server.
+ * Background events occur when the app is still running but not in the users view. This must be
+ * registered once at module scope, not during render, and needs no React state: Mark as Read is
+ * handled natively on Android, and these events only ever need to navigate somewhere.
  */
-const handleMarkAsReadBackground = async (notification?: Notification) => {
-  if (notification?.id) {
-    await notifee.cancelDisplayedNotification(notification.id);
-  }
-  const markAsReadUrl = notification?.data?.markAsReadUrl?.toString();
-  if (!markAsReadUrl) {
-    return;
-  }
-  await headlessApiGet(markAsReadUrl);
-};
-
-// Background events occur when the app is still running but not in the users view.
-// The OS may kill the app at any time. Registered once at module scope: notifee keeps a single
-// handler, so registering it from a component's render would replace it on every render (and on
-// every session remount), and it must exist before any component does.
 notifee.onBackgroundEvent(async (event: Event) => {
   logger.debug('onBackgroundEvent responding to event', event.type);
 
@@ -46,16 +33,6 @@ notifee.onBackgroundEvent(async (event: Event) => {
   }
 
   const {notification, pressAction} = event.detail;
-
-  // Look for Mark As Read press actions. This will fire off a request to the server which
-  // assumes the user read the content and updates its state accordingly.
-  if (pressAction?.id === PressAction.markAsRead) {
-    logger.info('onBackgroundEvent is marking as read.');
-    await handleMarkAsReadBackground(notification);
-    return;
-  }
-
-  // The default response is to then navigate the user somewhere.
   const url = getUrlForNotificationEvent(event.type, notification, pressAction);
   if (url) {
     const linkingUrl = appUrl(url);
@@ -146,6 +123,23 @@ export const AppEventHandler = () => {
       unsubscribe();
     };
   }, [handleMarkAsRead, linkTo]);
+
+  // The native push service posts Android notifications and handles their taps as deep links.
+  // When its Mark as Read action succeeds it tells us so we can sync the caches for that content.
+  useEffect(() => {
+    /**
+     * Syncs the fez caches and unread counts after the native Mark as Read action succeeded.
+     */
+    const handleNativeMarkAsRead = async (contentID: string) => {
+      logger.info('native Mark as Read succeeded for', contentID);
+      await invalidateFez(contentID);
+      await refetchUserNotificationData();
+    };
+    const subscription = NativeTricordarrModule.onMarkAsRead(({contentID}) => {
+      handleNativeMarkAsRead(contentID).catch(error => logger.error('Failed to sync after native Mark as Read', error));
+    });
+    return () => subscription.remove();
+  }, [invalidateFez, refetchUserNotificationData]);
 
   // Void is not a valid React component.
   return null;

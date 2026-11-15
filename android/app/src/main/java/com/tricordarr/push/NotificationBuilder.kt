@@ -1,0 +1,189 @@
+package com.tricordarr.push
+
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.Person
+import com.tricordarr.R
+import java.text.DateFormat
+import java.util.Date
+
+/**
+ * Android half of the notification port: turns a [NotificationPlan] into a posted notification,
+ * and builds the service, "connection lost" and "tap to reconnect" notifications.
+ */
+object NotificationBuilder {
+  private const val TAG = "NotificationBuilder"
+  private const val SERVICE_NOTIFICATION_TAG = "push-service"
+  const val SERVICE_NOTIFICATION_ID = 0x7472
+  private const val CONNECTION_LOST_ID = 0x7473
+  private const val RECONNECT_ID = 0x7474
+  private const val SERVICE_CHANNEL = "service"
+  private const val BRAND_COLOR = 0xFF063953.toInt()
+
+  const val ACTION_MARK_AS_READ = "com.tricordarr.push.MARK_AS_READ"
+  const val EXTRA_ACCOUNT_ID = "accountID"
+  const val EXTRA_CONTENT_ID = "contentID"
+  const val EXTRA_MARK_AS_READ_URL = "markAsReadUrl"
+
+  private const val SETTINGS_PATH = "settings/pushnotifications"
+  private const val BACKGROUND_CONNECTION_LINK = NotificationPlanner.APP_LINK_PREFIX + "settings/backgroundconnection"
+
+  private val immutableUpdate = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+
+  private fun viewIntent(context: Context, link: String?): Intent =
+    if (link != null) {
+      Intent(Intent.ACTION_VIEW, Uri.parse(link)).setPackage(context.packageName)
+    } else {
+      context.packageManager.getLaunchIntentForPackage(context.packageName) ?: Intent()
+    }.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+  private fun activityPendingIntent(context: Context, requestCode: Int, link: String?): PendingIntent =
+    PendingIntent.getActivity(context, requestCode, viewIntent(context, link), immutableUpdate)
+
+  private fun notify(context: Context, tag: String?, id: Int, notification: Notification) {
+    try {
+      NotificationManagerCompat.from(context).notify(tag, id, notification)
+    } catch (e: SecurityException) {
+      // POST_NOTIFICATIONS revoked. JS also refuses to start the service without it.
+      Log.w(TAG, "Not allowed to post notifications", e)
+    }
+  }
+
+  /** Posts a content notification for [plan]. [username] is only shown when several accounts are active. */
+  fun post(context: Context, plan: NotificationPlan, username: String? = null) {
+    val builder = NotificationCompat.Builder(context, plan.channelID)
+      .setSmallIcon(R.drawable.ic_notification)
+      .setContentTitle(plan.title)
+      .setContentText(plan.body)
+      .setStyle(NotificationCompat.BigTextStyle().bigText(plan.body))
+      .setAutoCancel(plan.autoCancel)
+      .setOngoing(plan.ongoing)
+      .setContentIntent(activityPendingIntent(context, plan.id, plan.deepLink))
+      .addExtras(
+        android.os.Bundle().apply {
+          putString(EXTRA_CONTENT_ID, plan.contentID)
+          putString("secondaryContentID", plan.secondaryContentID)
+        },
+      )
+    username?.takeIf { it.isNotEmpty() }?.let { builder.setSubText(it) }
+
+    if (plan.messaging) {
+      val sender = Person.Builder().setName(plan.title).build()
+      val style = findActive(context, plan.tag, plan.id)
+        ?.let { NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(it) }
+        ?: NotificationCompat.MessagingStyle(Person.Builder().setName("You").build())
+      style.addMessage(plan.body, System.currentTimeMillis(), sender)
+      builder.setStyle(style)
+    }
+
+    if (plan.markAsReadUrl != null) {
+      val markRead = Intent(context, MarkAsReadReceiver::class.java)
+        .setAction(ACTION_MARK_AS_READ)
+        .setData(Uri.parse("tricordarr-markread://${Uri.encode(plan.accountID)}/${Uri.encode(plan.contentID)}"))
+        .putExtra(EXTRA_ACCOUNT_ID, plan.accountID)
+        .putExtra(EXTRA_CONTENT_ID, plan.contentID)
+        .putExtra(EXTRA_MARK_AS_READ_URL, plan.markAsReadUrl)
+      builder.addAction(
+        0,
+        "Mark as Read",
+        PendingIntent.getBroadcast(context, plan.id, markRead, immutableUpdate),
+      )
+    }
+    val settingsLink = NotificationPlanner.withAccount(
+      "${NotificationPlanner.APP_LINK_PREFIX}$SETTINGS_PATH?notificationType=${Uri.encode(plan.type)}",
+      plan.accountID,
+    )
+    builder.addAction(0, "Settings", activityPendingIntent(context, plan.id, settingsLink))
+
+    notify(context, plan.tag, plan.id, builder.build())
+  }
+
+  private fun findActive(context: Context, tag: String, id: Int): Notification? {
+    val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    return manager.activeNotifications.firstOrNull { it.id == id && it.tag == tag }?.notification
+  }
+
+  /** Dismisses the notification for one piece of content, if it is showing. */
+  fun cancelContent(context: Context, accountID: String, contentID: String) {
+    NotificationManagerCompat.from(context).cancel(NotificationPlanner.tagFor(accountID), NotificationPlanner.idFor(contentID))
+  }
+
+  /** Dismisses every notification of [accountID] that belongs to a parent object, e.g. a forum. */
+  fun cancelSecondary(context: Context, accountID: String, secondaryContentID: String) {
+    val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    val tag = NotificationPlanner.tagFor(accountID)
+    manager.activeNotifications
+      .filter { it.tag == tag && it.notification.extras.getString("secondaryContentID") == secondaryContentID }
+      .forEach { manager.cancel(it.tag, it.id) }
+  }
+
+  /** The persistent foreground service notification. [body] lists the connected accounts. */
+  fun serviceNotification(context: Context, body: String): Notification =
+    NotificationCompat.Builder(context, SERVICE_CHANNEL)
+      .setSmallIcon(R.drawable.ic_notification)
+      .setContentTitle("Twitarr Server Connection")
+      .setContentText(body)
+      .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+      .setColor(BRAND_COLOR)
+      .setColorized(true)
+      // Not ongoing, so on Android 14+ the user can dismiss it and the service keeps running.
+      .setOngoing(false)
+      .setOnlyAlertOnce(true)
+      .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+      .setContentIntent(activityPendingIntent(context, SERVICE_NOTIFICATION_ID, NotificationPlanner.APP_LINK_PREFIX + "home"))
+      .addAction(0, "Settings", activityPendingIntent(context, SERVICE_NOTIFICATION_ID + 1, BACKGROUND_CONNECTION_LINK))
+      .build()
+
+  /** Refreshes the text of the already-showing service notification. */
+  fun updateServiceNotification(context: Context, body: String) {
+    notify(context, null, SERVICE_NOTIFICATION_ID, serviceNotification(context, body))
+  }
+
+  /** Posted after enough consecutive failures. The service stays up and keeps retrying. */
+  fun postConnectionLost(context: Context, username: String?) {
+    val time = DateFormat.getTimeInstance().format(Date())
+    val who = username?.takeIf { it.isNotEmpty() }?.let { " for $it" } ?: ""
+    val notification = NotificationCompat.Builder(context, SERVICE_CHANNEL)
+      .setSmallIcon(R.drawable.ic_notification)
+      .setContentTitle("Twitarr Connection Lost")
+      .setContentText("Connection$who lost at $time. Still trying to reconnect.")
+      .setColor(0xFF8B1A1A.toInt())
+      .setColorized(true)
+      .setAutoCancel(true)
+      .setContentIntent(activityPendingIntent(context, CONNECTION_LOST_ID, BACKGROUND_CONNECTION_LINK))
+      .build()
+    notify(context, SERVICE_NOTIFICATION_TAG, CONNECTION_LOST_ID, notification)
+  }
+
+  fun cancelConnectionLost(context: Context) {
+    NotificationManagerCompat.from(context).cancel(SERVICE_NOTIFICATION_TAG, CONNECTION_LOST_ID)
+  }
+
+  /**
+   * Background foreground-service starts are blocked on API 31+ outside a few exemptions, so when
+   * one is refused we ask the user to open the app, which restarts the service from the foreground.
+   */
+  fun postReconnectNeeded(context: Context) {
+    val notification = NotificationCompat.Builder(context, SERVICE_CHANNEL)
+      .setSmallIcon(R.drawable.ic_notification)
+      .setContentTitle("Twitarr Notifications Paused")
+      .setContentText("Tap to reconnect to the Twitarr server.")
+      .setColor(Color.rgb(6, 57, 83))
+      .setAutoCancel(true)
+      .setContentIntent(activityPendingIntent(context, RECONNECT_ID, null))
+      .build()
+    notify(context, SERVICE_NOTIFICATION_TAG, RECONNECT_ID, notification)
+  }
+
+  fun cancelReconnectNeeded(context: Context) {
+    NotificationManagerCompat.from(context).cancel(SERVICE_NOTIFICATION_TAG, RECONNECT_ID)
+  }
+}

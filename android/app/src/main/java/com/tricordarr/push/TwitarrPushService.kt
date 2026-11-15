@@ -1,0 +1,208 @@
+package com.tricordarr.push
+
+import android.app.Service
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.net.ConnectivityManager
+import android.net.Network
+import android.os.Build
+import android.os.IBinder
+import android.util.Log
+import androidx.core.app.ServiceCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+
+/**
+ * Foreground service that owns the notification WebSocket(s) and posts notifications natively,
+ * so push keeps working with no React context (app swiped away, or after a reboot).
+ *
+ * One [AccountConnection] per enabled account; today JS syncs a single account. The set of
+ * accounts comes from [PushAccountStore], which JS replaces through `syncPushAccounts`.
+ */
+class TwitarrPushService : Service(), AccountConnection.Callbacks {
+  private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+  private val lock = Any()
+  private val connections = mutableMapOf<String, AccountConnection>()
+
+  private lateinit var store: PushAccountStore
+  private lateinit var statusStore: PushStatusStore
+  private lateinit var events: NotificationEvents
+  private var networkCallback: ConnectivityManager.NetworkCallback? = null
+  private var loopStarted = false
+
+  override fun onBind(intent: Intent?): IBinder? = null
+
+  override fun onCreate() {
+    super.onCreate()
+    store = PushAccountStore(this)
+    statusStore = PushStatusStore(this)
+    events = NotificationEvents.load(this)
+    PushChannels.ensure(this, events)
+    running = true
+  }
+
+  override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    try {
+      val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING
+      } else {
+        ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST
+      }
+      ServiceCompat.startForeground(
+        this,
+        NotificationBuilder.SERVICE_NOTIFICATION_ID,
+        NotificationBuilder.serviceNotification(this, "Connecting to the Twitarr server."),
+        type,
+      )
+    } catch (e: Exception) {
+      // ForegroundServiceStartNotAllowedException and friends: we were started from a context
+      // Android does not allow. Ask the user to open the app instead of crashing.
+      Log.w(TAG, "Unable to enter the foreground", e)
+      NotificationBuilder.postReconnectNeeded(this)
+      stopSelf()
+      return START_NOT_STICKY
+    }
+    NotificationBuilder.cancelReconnectNeeded(this)
+    reconcile()
+    startLoopsOnce()
+    return START_STICKY
+  }
+
+  override fun onDestroy() {
+    running = false
+    networkCallback?.let {
+      runCatching { (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).unregisterNetworkCallback(it) }
+    }
+    synchronized(lock) {
+      connections.values.forEach { it.stop() }
+      connections.clear()
+    }
+    scope.cancel()
+    super.onDestroy()
+  }
+
+  private fun startLoopsOnce() {
+    if (loopStarted) return
+    loopStarted = true
+    val manager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val callback = object : ConnectivityManager.NetworkCallback() {
+      override fun onAvailable(network: Network) {
+        synchronized(lock) { connections.values.forEach { it.kick() } }
+      }
+    }
+    networkCallback = callback
+    runCatching { manager.registerDefaultNetworkCallback(callback) }
+      .onFailure { Log.w(TAG, "Unable to watch connectivity", it) }
+
+    // Picks up store changes JS made while we are running, and drives the healthcheck.
+    scope.launch {
+      while (isActive) {
+        delay(RECONCILE_INTERVAL_MS)
+        reconcile()
+        synchronized(lock) { connections.values.forEach { it.healthcheck() } }
+      }
+    }
+  }
+
+  /** Makes the running connections match the enabled accounts in the store. */
+  private fun reconcile() {
+    val accounts = store.load().filter { it.enabled }
+    if (accounts.isEmpty()) {
+      Log.d(TAG, "No enabled accounts. Stopping.")
+      statusStore.retainOnly(emptySet())
+      stopSelf()
+      return
+    }
+    synchronized(lock) {
+      val wanted = accounts.map { it.accountID }.toSet()
+      connections.keys.filter { it !in wanted }.forEach { connections.remove(it)?.stop() }
+      for (account in accounts) {
+        val existing = connections[account.accountID]
+        if (existing != null && !existing.account.connectionDiffers(account)) {
+          // Only prefs (or username) changed, no need to reconnect.
+          existing.account = account
+          continue
+        }
+        existing?.stop()
+        val connection = AccountConnection(
+          account,
+          statusStore.get(account.accountID),
+          scope,
+          PushHttp.socketClient,
+          this,
+        )
+        connections[account.accountID] = connection
+        connection.start()
+      }
+      statusStore.retainOnly(wanted)
+      if (connections.values.all { it.isTerminal }) {
+        Log.d(TAG, "Every account is revoked. Stopping.")
+        stopSelf()
+      }
+    }
+    refreshServiceNotification()
+  }
+
+  private fun refreshServiceNotification() {
+    val connected = synchronized(lock) {
+      connections.values.filter { it.status.state == SocketState.OPEN }.map { it.account.username }
+    }
+    val body = when {
+      connected.isEmpty() -> "Waiting to connect to the Twitarr server."
+      connected.all { it.isEmpty() } -> "Connected to the Twitarr server."
+      else -> "Connected: " + connected.filter { it.isNotEmpty() }.joinToString(", ")
+    }
+    if (running) {
+      NotificationBuilder.updateServiceNotification(this, body)
+    }
+  }
+
+  override fun onStatus(status: AccountStatus) {
+    statusStore.put(status)
+    PushEvents.listener?.onBackgroundStatusChanged(status)
+    if (status.state == SocketState.OPEN || status.state == SocketState.CLOSED || status.state == SocketState.REVOKED) {
+      refreshServiceNotification()
+    }
+  }
+
+  override fun onMessage(connection: AccountConnection, text: String) {
+    val account = connection.account
+    val data = runCatching { JSONObject(text) }.getOrNull()
+    val type = data?.let { NotificationPlanner.typeOf(it) } ?: "unknown"
+    NotificationLogWriter.append(this, account.accountID, type, text, data)
+    PushEvents.listener?.onNotificationSocketEvent(account.accountID, text)
+
+    when (val result = NotificationPlanner.plan(events, account, text, System.currentTimeMillis())) {
+      is PlanResult.Post -> {
+        val multi = synchronized(lock) { connections.size } > 1
+        NotificationBuilder.post(this, result.plan, if (multi) account.username else null)
+      }
+      is PlanResult.Skip -> Log.d(TAG, "Not notifying: ${result.reason}")
+    }
+  }
+
+  override fun onConnectionLost(account: PushAccount) {
+    NotificationBuilder.postConnectionLost(this, account.username)
+  }
+
+  override fun onRecovered(account: PushAccount) {
+    NotificationBuilder.cancelConnectionLost(this)
+  }
+
+  companion object {
+    private const val TAG = "TwitarrPushService"
+    private const val RECONCILE_INTERVAL_MS = 30_000L
+
+    /** True while this process has the service alive. A stale persisted "Open" is not trusted without it. */
+    @Volatile
+    var running = false
+      private set
+  }
+}

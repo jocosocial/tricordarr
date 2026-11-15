@@ -113,6 +113,14 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace = "com.tricordarr"
+    sourceSets {
+        // specs/NotificationEvents.json is the single source for the notification event table. It is
+        // copied into a generated asset dir so the Kotlin push service can read it at runtime.
+        main.assets.srcDir(layout.buildDirectory.dir("generated/notificationEvents"))
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
     defaultConfig {
         applicationId "com.tricordarr"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -152,6 +160,12 @@ android {
     }
 }
 
+tasks.register('copyNotificationEvents', Copy) {
+    from(file("$rootDir/../specs/NotificationEvents.json"))
+    into(layout.buildDirectory.dir("generated/notificationEvents"))
+}
+tasks.matching { it.name == 'preBuild' }.configureEach { dependsOn('copyNotificationEvents') }
+
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
@@ -170,4 +184,11 @@ dependencies {
 
     // ML Kit OCR
     implementation 'com.google.mlkit:text-recognition:16.0.1'
+
+    // Native push service. OkHttp is pinned to the 4.9.2 React Native bundles; do not force 5.x.
+    implementation 'com.squareup.okhttp3:okhttp:4.9.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20240303'
 }

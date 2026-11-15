@@ -52,12 +52,6 @@ public class WebsocketNotifier: NSObject {
 
 	static let appGroupSuiteName = "group.com.grantcohoe.tricordarr"
 
-	private static let iso8601Formatter: ISO8601DateFormatter = {
-		let formatter = ISO8601DateFormatter()
-		formatter.formatOptions.insert(.withFractionalSeconds)
-		return formatter
-	}()
-
 	/// Persists the socket's connection state and/or healthcheck (ping) results to the shared App Group
 	/// `UserDefaults` suite so the main app process can read it regardless of whether the extension or the
 	/// in-app provider currently owns the socket. Only one `WebsocketNotifier` runs at a time, so a single
@@ -71,11 +65,11 @@ public class WebsocketNotifier: NSObject {
 		}
 		if let healthcheckSuccess = healthcheckSuccess {
 			defaults.set(healthcheckSuccess, forKey: "ws_last_healthcheck_success")
-			defaults.set(Self.iso8601Formatter.string(from: Date()), forKey: "ws_last_healthcheck_at")
+			defaults.set(Date().timeIntervalSince1970 * 1000, forKey: "ws_last_healthcheck_at")
 		}
 		if let error = error {
 			defaults.set(error, forKey: "ws_last_error")
-			defaults.set(Self.iso8601Formatter.string(from: Date()), forKey: "ws_last_error_at")
+			defaults.set(Date().timeIntervalSince1970 * 1000, forKey: "ws_last_error_at")
 		}
 	}
 
@@ -403,7 +397,9 @@ public class WebsocketNotifier: NSObject {
 
 		case .privateEventUnreadMsg:
 			title = "New Private Event Message"
-			url = "/privateevent/\(socketNotification.contentID)"
+			// Matches specs/NotificationEvents.json. This used to drop the `/chat` suffix and land on
+			// the event details instead of its chat.
+			url = "/privateevent/\(socketNotification.contentID)/chat"
 
 		case .microKaraokeSongReady:
 			title = "Micro Karaoke Music Video Ready"

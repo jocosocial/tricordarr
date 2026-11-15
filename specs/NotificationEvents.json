@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "channelGroups": {
+    "system": {
+      "name": "System",
+      "description": "Tricordarr-specific events such as server connection issues and alerts."
+    },
+    "content": {
+      "name": "Content",
+      "description": "Content that comes from Twitarr itself such as Seamails or Twarrts."
+    }
+  },
+  "channels": {
+    "connection": {
+      "name": "Connection",
+      "group": "system",
+      "description": "Server connection events."
+    },
+    "service": {
+      "name": "Service",
+      "group": "system",
+      "description": "Background processes associated with Tricordarr.",
+      "badge": false
+    },
+    "seamail": {
+      "name": "Seamail",
+      "group": "content",
+      "description": "Seamail content from the Twitarr server."
+    },
+    "lfg": {
+      "name": "LFG",
+      "group": "content",
+      "description": "LFG content from the Twitarr server."
+    },
+    "announcements": {
+      "name": "Announcements",
+      "group": "content",
+      "description": "Announcements from the Twitarr server."
+    },
+    "forums": {
+      "name": "Forums",
+      "group": "content",
+      "description": "Forum content from the Twitarr server."
+    },
+    "krakentalkcalls": {
+      "name": "KrakenTalk Calls",
+      "group": "content",
+      "description": "KrakenTalk calls through Twitarr.",
+      "vibrationPattern": [1, 500, 500, 500, 500, 500, 1500, 500, 500, 500, 500, 500, 1500, 1]
+    },
+    "krakentalkmgmt": {
+      "name": "KrakenTalk Call Management",
+      "group": "content",
+      "description": "Signalling messages for KrakenTalk."
+    },
+    "events": {
+      "name": "Events",
+      "group": "content",
+      "description": "Event content from the Twitarr server."
+    }
+  },
+  "events": {
+    "seamailUnreadMsg": {
+      "channel": "seamail",
+      "title": "New Seamail",
+      "url": "/seamail/{contentID}",
+      "markAsReadUrl": "/fez/{contentID}",
+      "messaging": true
+    },
+    "fezUnreadMsg": {
+      "channel": "lfg",
+      "title": "New LFG Message",
+      "url": "/lfg/{contentID}/chat",
+      "markAsReadUrl": "/fez/{contentID}",
+      "messaging": true
+    },
+    "privateEventUnreadMsg": {
+      "channel": "events",
+      "title": "New Private Event Message",
+      "url": "/privateevent/{contentID}/chat",
+      "markAsReadUrl": "/fez/{contentID}",
+      "messaging": true
+    },
+    "announcement": {
+      "channel": "announcements",
+      "title": "Announcement",
+      "url": "/home",
+      "markAsReadUrl": "/notification/global"
+    },
+    "alertwordPost": {
+      "channel": "forums",
+      "title": "Forum Alert Word",
+      "url": "/forum/containingpost/{contentID}"
+    },
+    "forumMention": {
+      "channel": "forums",
+      "title": "Forum Mention",
+      "url": "/forumpost/mentions"
+    },
+    "twitarrTeamForumMention": {
+      "channel": "forums",
+      "title": "TwitarrTeam Forum Mention",
+      "url": "/forum/containingpost/{contentID}"
+    },
+    "moderatorForumMention": {
+      "channel": "forums",
+      "title": "Moderator Forum Mention",
+      "url": "/forum/containingpost/{contentID}"
+    },
+    "incomingPhoneCall": {
+      "channel": "krakentalkcalls",
+      "title": "Incoming Call",
+      "url": "/phonecall/{contentID}/from/{callerUserID}/{callerUsername}",
+      "autoCancel": false,
+      "ongoing": true
+    },
+    "phoneCallEnded": {
+      "channel": "krakentalkmgmt",
+      "title": "Call Ended"
+    },
+    "followedEventStarting": {
+      "channel": "events",
+      "title": "Followed Event Starting",
+      "url": "/events/{contentID}"
+    },
+    "joinedLFGStarting": {
+      "channel": "lfg",
+      "title": "Joined LFG Starting",
+      "url": "/lfg/{contentID}"
+    },
+    "personalEventStarting": {
+      "channel": "events",
+      "title": "Private Event Starting",
+      "url": "/privateevent/{contentID}"
+    },
+    "addedToPrivateEvent": {
+      "channel": "events",
+      "title": "Added to Private Event",
+      "url": "/privateevent/{contentID}"
+    },
+    "addedToLFG": {
+      "channel": "lfg",
+      "title": "Added to LFG",
+      "url": "/lfg/{contentID}"
+    },
+    "addedToSeamail": {
+      "channel": "seamail",
+      "title": "Added to Seamail",
+      "url": "/seamail/{contentID}"
+    },
+    "privateEventCanceled": {
+      "channel": "events",
+      "title": "Private Event Canceled",
+      "url": "/privateevent/{contentID}"
+    },
+    "lfgCanceled": {
+      "channel": "lfg",
+      "title": "LFG Canceled",
+      "url": "/lfg/{contentID}"
+    }
+  }
+}

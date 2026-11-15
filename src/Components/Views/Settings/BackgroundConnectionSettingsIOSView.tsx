@@ -24,8 +24,9 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {buildWebsocketURL} from '#src/Libraries/Network/Websockets';
+import {getCurrentBackgroundStatus} from '#src/Libraries/Notifications/Push/BackgroundStatus';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {WebsocketDebugStatus} from '#src/Structs/SocketStructs';
+import {PerAccountStatus} from '#src/Structs/SocketStructs';
 import {BackgroundConnectionSettingsFormValues} from '#src/Types/FormValues';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
@@ -59,7 +60,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
   const tokenData = currentToken;
   const [managerStatus, setManagerStatus] = useState<ManagerStatus | null>(null);
   const [foregroundProviderStatus, setForegroundProviderStatus] = useState<ForegroundProviderStatus | null>(null);
-  const [websocketStatus, setWebsocketStatus] = useState<WebsocketDebugStatus | null>(null);
+  const [websocketStatus, setWebsocketStatus] = useState<PerAccountStatus | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(async () => {
@@ -197,8 +198,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
 
   const fetchWebsocketStatus = async () => {
     try {
-      const status = await NativeTricordarrModule.getWebsocketStatus();
-      setWebsocketStatus(status);
+      setWebsocketStatus((await getCurrentBackgroundStatus()) ?? null);
     } catch (error) {
       logger.error('Failed to fetch websocket status:', error);
     }

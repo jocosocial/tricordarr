@@ -35,7 +35,6 @@ import {ThemeProvider} from '#src/Context/Providers/ThemeProvider';
 import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
-import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -54,11 +53,6 @@ if (__DEV__) {
 }
 
 console.log('[App.tsx] Tricordarr start!');
-// Declare what the Foreground Service worker function should be.
-// After the configureAxios() was deprecated and removed, this was acting kinda
-// weird. Moved it further up in this file.
-registerFgsWorker();
-
 // Time and locale setup, used in various places within the app.
 registerTranslation('en', paperEn);
 

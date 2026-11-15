@@ -1,6 +1,5 @@
 import {InfiniteData, InvalidateQueryFilters, useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
-import notifee from 'react-native-notify-kit';
 import {v4 as uuidv4} from 'uuid';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -21,6 +20,7 @@ import {
 } from '#src/Libraries/CacheReduction';
 import {calcCruiseDayTime, swiftTimestampToISO} from '#src/Libraries/DateTime';
 import {publicFezField} from '#src/Libraries/Moderation/Content';
+import {cancelContentNotification} from '#src/Libraries/Notifications/Content';
 import {applyAppendedPostCounts, applyMarkReadCounts, postReadCountsUnchanged} from '#src/Libraries/UnreadCounts';
 import {
   FezData,
@@ -865,7 +865,7 @@ export const useFezCacheReducer = () => {
       updateFezInAllListCaches(fezID, readUpdater);
       updateFezDetailCache(fezID, readUpdater);
       if (appConfig.markReadCancelPush) {
-        notifee.cancelDisplayedNotification(fezID);
+        cancelContentNotification(fezID);
       }
     },
     [appConfig.markReadCancelPush, updateFezInAllListCaches, updateFezDetailCache],

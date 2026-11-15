@@ -113,10 +113,10 @@ extension ForegroundPushProviderStatus {
 
 struct WebsocketStatus: Codable {
 	var state: String?
-	var lastHealthcheckAt: String?
+	var lastHealthcheckAt: Double?
 	var lastHealthcheckSuccess: Bool?
 	var lastError: String?
-	var lastErrorAt: String?
+	var lastErrorAt: Double?
 }
 
 extension WebsocketStatus {

@@ -197,10 +197,10 @@ import UserNotifications
 		let defaults = UserDefaults(suiteName: WebsocketNotifier.appGroupSuiteName)
 		return WebsocketStatus(
 			state: defaults?.string(forKey: "ws_state"),
-			lastHealthcheckAt: defaults?.string(forKey: "ws_last_healthcheck_at"),
+			lastHealthcheckAt: defaults?.object(forKey: "ws_last_healthcheck_at") as? Double,
 			lastHealthcheckSuccess: defaults?.object(forKey: "ws_last_healthcheck_success") as? Bool,
 			lastError: defaults?.string(forKey: "ws_last_error"),
-			lastErrorAt: defaults?.string(forKey: "ws_last_error_at")
+			lastErrorAt: defaults?.object(forKey: "ws_last_error_at") as? Double
 		)
 	}
 
@@ -209,7 +209,7 @@ import UserNotifications
 	 Objective-C bridge method that converts WebsocketStatus to [String: Any].
 	 Called from the Objective-C bridge.
 
-	 - Returns: Dictionary with keys: "state", "lastHealthcheckAt", "lastHealthcheckSuccess", "lastError", "lastErrorAt" (each String/Bool or NSNull)
+	 - Returns: Dictionary with keys: "state", "lastHealthcheckAt", "lastHealthcheckSuccess", "lastError", "lastErrorAt" (String/Bool/Double or NSNull; the `*At` timestamps are epoch milliseconds)
 	 */
 	@objc public static func getWebsocketStatusDictionary() -> [String: Any] {
 		return getWebsocketStatus().asDictionary

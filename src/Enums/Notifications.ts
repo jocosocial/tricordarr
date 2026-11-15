@@ -1,10 +1,5 @@
 import {AndroidAction} from 'react-native-notify-kit';
 
-export enum fgsWorkerNotificationIDs {
-  worker = 'fgsWorkerNotificationID',
-  shutdown = 'fgsShutdownNotificationID',
-}
-
 export enum PressAction {
   default = 'default',
   twitarrTab = 'twitarrTab',

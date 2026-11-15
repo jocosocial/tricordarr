@@ -1,26 +1,13 @@
 import notifee, {EventType, Notification, NotificationPressAction} from 'react-native-notify-kit';
 
 import {PressAction} from '#src/Enums/Notifications';
-import {getEffectiveConfig} from '#src/Libraries/EffectiveConfig';
 import {createLogger} from '#src/Libraries/Logger';
-import {
-  announcementsChannel,
-  callMgmtChannel,
-  callsChannel,
-  eventChannel,
-  forumChannel,
-  lfgChannel,
-  seamailChannel,
-  serviceChannel,
-} from '#src/Libraries/Notifications/Channels';
-import {generateContentNotification} from '#src/Libraries/Notifications/Content';
-import {notificationEventTitles} from '#src/Libraries/Notifications/NotificationEventTitles';
 import {getPath} from '#src/Libraries/RouteDefinitions';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
-import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
+import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('SocketNotification.ts');
 
@@ -68,181 +55,6 @@ export const getNotificationEventDestination = (
     default:
       return undefined;
   }
-};
-
-/**
- * Generate a Notifee notification from a WebSocket event. This usually means that something
- * has come in from the socket, and we probably want to tell the user about it.
- * @param event WebSocketMessageEvent payload.
- */
-export const generatePushNotificationFromEvent = async (event: WebSocketMessageEvent) => {
-  const appConfig = await getEffectiveConfig();
-  const notificationData = JSON.parse(event.data) as SocketNotificationData;
-  const notificationType = SocketNotificationData.getType(notificationData);
-
-  let channel = serviceChannel;
-  let url = '';
-  let pressActionID = PressAction.twitarrTab;
-  let title = 'From Tricordarr';
-  let autoCancel = false;
-  let ongoing = false;
-  let markAsReadUrl: string | undefined;
-
-  // Do not generate a notification if the user has disabled that category.
-  if (!appConfig.pushNotifications[notificationType]) {
-    logger.debug('user has disabled category', notificationType);
-    return;
-  }
-
-  // Do not generate a notification if the user has muted notifications.
-  if (appConfig.muteNotifications) {
-    if (new Date() < appConfig.muteNotifications) {
-      logger.debug('user has muted notifications.');
-      return;
-    }
-  }
-
-  logger.debug('Responding to message with type', notificationType);
-
-  // Figure out what we want to display and how to display it.
-  // Whenever you add notification types here, there needs to be entries in
-  // AppConfig for them as well.
-  switch (notificationType) {
-    case NotificationTypeData.seamailUnreadMsg:
-      channel = seamailChannel;
-      url = `/seamail/${notificationData.contentID}`;
-      pressActionID = PressAction.seamail;
-      title = notificationEventTitles[notificationType] ?? title;
-      markAsReadUrl = `/fez/${notificationData.contentID}`;
-      break;
-    case NotificationTypeData.fezUnreadMsg:
-      channel = lfgChannel;
-      url = `/lfg/${notificationData.contentID}/chat`;
-      pressActionID = PressAction.lfg;
-      title = notificationEventTitles[notificationType] ?? title;
-      markAsReadUrl = `/fez/${notificationData.contentID}`;
-      break;
-    case NotificationTypeData.announcement:
-      channel = announcementsChannel;
-      url = '/home';
-      pressActionID = PressAction.home;
-      title = notificationEventTitles[notificationType] ?? title;
-      markAsReadUrl = '/notification/global';
-      autoCancel = true;
-      break;
-    case NotificationTypeData.alertwordPost:
-      channel = forumChannel;
-      url = `/forum/containingpost/${notificationData.contentID}`;
-      pressActionID = PressAction.forum;
-      title = notificationEventTitles[notificationType] ?? title;
-      break;
-    case NotificationTypeData.forumMention:
-      channel = forumChannel;
-      url = '/forumpost/mentions';
-      pressActionID = PressAction.forum;
-      title = notificationEventTitles[notificationType] ?? title;
-      break;
-    case NotificationTypeData.twitarrTeamForumMention:
-      channel = forumChannel;
-      url = `/forum/containingpost/${notificationData.contentID}`;
-      pressActionID = PressAction.forum;
-      title = notificationEventTitles[notificationType] ?? title;
-      break;
-    case NotificationTypeData.moderatorForumMention:
-      channel = forumChannel;
-      url = `/forum/containingpost/${notificationData.contentID}`;
-      pressActionID = PressAction.forum;
-      title = notificationEventTitles[notificationType] ?? title;
-      break;
-    case NotificationTypeData.incomingPhoneCall:
-      channel = callsChannel;
-      pressActionID = PressAction.krakentalk;
-      url = notificationData.caller
-        ? `/phonecall/${notificationData.contentID}/from/${notificationData.caller.userID}/${notificationData.caller.username}`
-        : '';
-      title = notificationEventTitles[notificationType] ?? title;
-      autoCancel = false;
-      ongoing = true;
-      break;
-    case NotificationTypeData.phoneCallEnded:
-      channel = callMgmtChannel;
-      pressActionID = PressAction.krakentalk;
-      title = notificationEventTitles[notificationType] ?? title;
-      break;
-    case NotificationTypeData.followedEventStarting:
-      channel = eventChannel;
-      pressActionID = PressAction.event;
-      title = notificationEventTitles[notificationType] ?? title;
-      url = `/events/${notificationData.contentID}`;
-      break;
-    case NotificationTypeData.joinedLFGStarting:
-      channel = lfgChannel;
-      pressActionID = PressAction.lfg;
-      title = notificationEventTitles[notificationType] ?? title;
-      url = `/lfg/${notificationData.contentID}`;
-      break;
-    case NotificationTypeData.personalEventStarting:
-      channel = eventChannel;
-      pressActionID = PressAction.personalEvent;
-      title = notificationEventTitles[notificationType] ?? title;
-      url = `/privateevent/${notificationData.contentID}`;
-      break;
-    case NotificationTypeData.addedToPrivateEvent:
-      channel = eventChannel;
-      pressActionID = PressAction.personalEvent;
-      title = notificationEventTitles[notificationType] ?? title;
-      url = `/privateevent/${notificationData.contentID}`;
-      break;
-    case NotificationTypeData.addedToLFG:
-      channel = lfgChannel;
-      pressActionID = PressAction.lfg;
-      title = notificationEventTitles[notificationType] ?? title;
-      url = `/lfg/${notificationData.contentID}`;
-      break;
-    case NotificationTypeData.addedToSeamail:
-      channel = seamailChannel;
-      pressActionID = PressAction.seamail;
-      title = notificationEventTitles[notificationType] ?? title;
-      url = `/seamail/${notificationData.contentID}`;
-      break;
-    case NotificationTypeData.privateEventCanceled:
-      channel = eventChannel;
-      pressActionID = PressAction.event;
-      title = notificationEventTitles[notificationType] ?? title;
-      url = `/privateevent/${notificationData.contentID}`;
-      break;
-    case NotificationTypeData.lfgCanceled:
-      channel = lfgChannel;
-      pressActionID = PressAction.lfg;
-      title = notificationEventTitles[notificationType] ?? title;
-      url = `/lfg/${notificationData.contentID}`;
-      break;
-    case NotificationTypeData.privateEventUnreadMsg:
-      channel = eventChannel;
-      pressActionID = PressAction.personalEvent;
-      title = notificationEventTitles[notificationType] ?? title;
-      url = `/privateevent/${notificationData.contentID}/chat`;
-      markAsReadUrl = `/fez/${notificationData.contentID}`;
-      break;
-    default:
-      logger.warn(`Ignoring event of type ${notificationType}`);
-      break;
-  }
-
-  logger.info(`Calling generateContentNotification() for type ${notificationType}`);
-  await generateContentNotification(
-    notificationData.contentID,
-    title,
-    notificationData.info,
-    channel,
-    notificationType,
-    url,
-    pressActionID,
-    autoCancel,
-    ongoing,
-    markAsReadUrl,
-    notificationData.secondaryContentID,
-  );
 };
 
 /**

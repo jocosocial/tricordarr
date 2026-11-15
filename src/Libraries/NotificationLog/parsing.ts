@@ -8,10 +8,10 @@ const RETENTION_DAYS = 7;
 export const MAX_ENTRIES = 1000;
 const DEDUP_WINDOW_MS = 5000;
 
-// Raw JSON shape written to each line of the file. Dates are stored as ISO strings since
-// JSON has no native Date type.
+// Raw JSON shape written to each line of the file. Dates are stored as ISO strings (JS, iOS) or
+// epoch milliseconds (Android native); `new Date()` accepts both.
 export interface StoredNotificationLogEntry {
-  timestamp: string;
+  timestamp: string | number;
   type: string;
   contentID: string;
   info: string;

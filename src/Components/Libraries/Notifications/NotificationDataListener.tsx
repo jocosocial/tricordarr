@@ -11,7 +11,6 @@ import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {createLogger} from '#src/Libraries/Logger';
 import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
 import {recordNotificationEvent} from '#src/Libraries/NotificationLog';
-import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {isEmulator, isIOS} from '#src/Libraries/Platform/Detection';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
@@ -64,7 +63,7 @@ export const NotificationDataListener = () => {
         case NotificationTypeData.incomingPhoneCall: {
           // For incoming phone calls:
           // - On iOS: Use CallKit for native incoming call UI
-          // - On Android: Generate push notification
+          // - On Android: nothing to do here. The native push service already posted the notification.
           logger.debug('Incoming phone call notification');
 
           if (isIOS) {
@@ -94,12 +93,6 @@ export const NotificationDataListener = () => {
             } else {
               logger.warn('No caller info in phone call notification');
             }
-          } else {
-            // On Android, use push notification
-            logger.debug('Generating push notification for incoming call');
-            generatePushNotificationFromEvent(event).catch(error => {
-              logger.error('Failed to generate push notification for incoming call:', error);
-            });
           }
           break;
         }
