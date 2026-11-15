@@ -40,14 +40,6 @@ export const OobeProvider = ({children}: PropsWithChildren) => {
   const oobeFinish = useCallback(async () => {
     await setOobeCompletedVersion(appConfig.oobeExpectedVersion);
     setResumeAfterCommit(false);
-    // @TODO remove this after 2026. This is here because the decision to start with thumbs
-    // happened after preregistration opened so a ton of people have the original default
-    // of skipping thumbnails.
-    // @TODO: I changed my mind at the last minute, yolo.
-    // updateAppConfig({
-    //   ...appConfig,
-    //   skipThumbnails: false,
-    // });
   }, [appConfig.oobeExpectedVersion, setOobeCompletedVersion]);
 
   const contextValue = useMemo(
