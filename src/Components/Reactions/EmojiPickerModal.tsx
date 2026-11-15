@@ -26,7 +26,6 @@ export const EmojiPickerModal = ({open, onClose, onEmojiSelected}: EmojiPickerMo
         choices: {
           ...commonStyles.flexRow,
           ...commonStyles.flexWrap,
-          ...commonStyles.justifyCenter,
         },
         choice: {
           ...commonStyles.alignItemsCenter,
