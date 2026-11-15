@@ -5,7 +5,6 @@ import {BoardgameDataProvider} from '#src/Context/Providers/BoardgameDataProvide
 import {DayPlannerProvider} from '#src/Context/Providers/DayPlannerProvider';
 import {ImageProvider} from '#src/Context/Providers/ImageProvider';
 import {ModerationProvider} from '#src/Context/Providers/ModerationProvider';
-import {PostDetailDataProvider} from '#src/Context/Providers/PostDetailDataProvider';
 import {SelectableProvider} from '#src/Context/Providers/SelectableProvider';
 import {UserHeaderProvider} from '#src/Context/Providers/UserHeaderProvider';
 import {UserNotificationDataProvider} from '#src/Context/Providers/UserNotificationDataProvider';
@@ -27,11 +26,9 @@ export const HelperProvider = ({children}: PropsWithChildren) => {
           <SelectableProvider>
             <UserNotificationDataProvider>
               <BoardgameDataProvider>
-                <PostDetailDataProvider>
-                  <UserHeaderProvider>
-                    <ImageProvider>{children}</ImageProvider>
-                  </UserHeaderProvider>
-                </PostDetailDataProvider>
+                <UserHeaderProvider>
+                  <ImageProvider>{children}</ImageProvider>
+                </UserHeaderProvider>
               </BoardgameDataProvider>
             </UserNotificationDataProvider>
           </SelectableProvider>
