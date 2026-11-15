@@ -51,7 +51,12 @@ import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {type FezData, type FezPostData, type PostContentData} from '#src/Structs/ControllerStructs';
-import {SocketFezMemberChangeData, SocketFezPostData, SocketFezReactionData} from '#src/Structs/SocketStructs';
+import {
+  isSocketFezMemberChangeData,
+  isSocketFezPostData,
+  isSocketFezReactionData,
+  SocketFezMessage,
+} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('FezChatScreen.tsx');
 
@@ -198,17 +203,15 @@ const FezChatScreenInner = ({route}: Props) => {
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       logger.info('fezSocketMessageHandler responding event', event);
-      const socketMessage = JSON.parse(event.data);
-      if (socketMessage.reactionUpdate === true) {
-        const reactionData = socketMessage as SocketFezReactionData;
-        updatePostReactions(route.params.fezID, reactionData.postID, reactionData.reactions);
-      } else if ('joined' in socketMessage) {
-        const memberChangeData = socketMessage as SocketFezMemberChangeData;
-        const changeActionString = memberChangeData.joined ? 'joined' : 'left';
-        const changeString = `User ${memberChangeData.user.username} has ${changeActionString} the chat.`;
+      const socketMessage: SocketFezMessage = JSON.parse(event.data);
+      if (isSocketFezReactionData(socketMessage)) {
+        updatePostReactions(route.params.fezID, socketMessage.postID, socketMessage.reactions);
+      } else if (isSocketFezMemberChangeData(socketMessage)) {
+        const changeActionString = socketMessage.joined ? 'joined' : 'left';
+        const changeString = `User ${socketMessage.user.username} has ${changeActionString} the chat.`;
         setSnackbarPayload({message: changeString});
-      } else if ('postID' in socketMessage) {
-        const socketFezPostData = socketMessage as SocketFezPostData;
+      } else if (isSocketFezPostData(socketMessage)) {
+        const socketFezPostData = socketMessage;
         if (lastProcessedPostIDRef.current === socketFezPostData.postID) {
           return;
         }

@@ -35,6 +35,22 @@ export interface SocketFezReactionData {
   reactions: ReactionData[];
 }
 
+/** Every payload Swiftarr sends over a chat socket. */
+export type SocketFezMessage = SocketFezReactionData | SocketFezMemberChangeData | SocketFezPostData;
+
+/**
+ * Reaction updates carry a `postID` like new posts do, so they are told apart by the
+ * `reactionUpdate` marker and must be checked before `isSocketFezPostData`.
+ */
+export const isSocketFezReactionData = (message: SocketFezMessage): message is SocketFezReactionData =>
+  'reactionUpdate' in message && message.reactionUpdate === true;
+
+export const isSocketFezMemberChangeData = (message: SocketFezMessage): message is SocketFezMemberChangeData =>
+  'joined' in message;
+
+export const isSocketFezPostData = (message: SocketFezMessage): message is SocketFezPostData =>
+  !isSocketFezReactionData(message) && 'postID' in message;
+
 export enum NotificationTypeData {
   // Notifies Everyone
   /// A server-wide announcement has just been added.

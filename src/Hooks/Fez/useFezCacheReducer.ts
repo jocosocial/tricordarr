@@ -21,6 +21,7 @@ import {
 } from '#src/Libraries/CacheReduction';
 import {calcCruiseDayTime, swiftTimestampToISO} from '#src/Libraries/DateTime';
 import {publicFezField} from '#src/Libraries/Moderation/Content';
+import {applyFezPostReactions} from '#src/Libraries/Reactions/ReactionCacheReduction';
 import {applyAppendedPostCounts, applyMarkReadCounts, postReadCountsUnchanged} from '#src/Libraries/UnreadCounts';
 import {
   FezData,
@@ -675,18 +676,7 @@ export const useFezCacheReducer = () => {
   /** Replaces one post after a reaction change without changing unread or post counts. */
   const updatePostReactions = useCallback(
     (fezID: string, postID: number, reactions: FezPostData['reactions']) => {
-      updateFezDetailCache(fezID, fez => {
-        if (!fez.members?.posts) {
-          return fez;
-        }
-        return {
-          ...fez,
-          members: {
-            ...fez.members,
-            posts: fez.members.posts.map(post => (post.postID === postID ? {...post, reactions} : post)),
-          },
-        };
-      });
+      updateFezDetailCache(fezID, fez => applyFezPostReactions(fez, postID, reactions));
     },
     [updateFezDetailCache],
   );
