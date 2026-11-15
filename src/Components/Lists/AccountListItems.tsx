@@ -7,11 +7,12 @@ import {useAccountSwitcher} from '#src/Hooks/useAccountSwitcher';
 import {getAccountListEntries} from '#src/Libraries/Account';
 
 /**
- * Every account and anonymous session, oldest first. Tapping a row switches to it; rows are
+ * The rows for every account and anonymous session, oldest first. Not a scrolling list: it renders
+ * inline in a parent's section. Tapping a row switches to it; rows are
  * disabled while a switch is in flight so a second tap cannot start another. Switching keeps the
  * current navigation state so the user stays on the screen hosting the list.
  */
-export const AccountList = () => {
+export const AccountListItems = () => {
   const {accounts, sessions, switchToSession} = useSession();
   const {switchAccount, isSwitching} = useAccountSwitcher();
 

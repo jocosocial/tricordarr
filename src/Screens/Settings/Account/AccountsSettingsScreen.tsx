@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
-import {AccountList} from '#src/Components/Lists/AccountList';
+import {AccountListItems} from '#src/Components/Lists/AccountListItems';
 import {MinorActionListItem} from '#src/Components/Lists/Items/MinorActionListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -57,7 +57,7 @@ export const AccountsSettingsScreen = () => {
                 description={'Add an account to log in.'}
               />
             )}
-            <AccountList />
+            <AccountListItems />
             <MinorActionListItem
               title={'Add Account'}
               icon={AppIcons.new}
