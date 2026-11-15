@@ -34,6 +34,10 @@ const initialValues: LoginFormValues = {
   password: '',
 };
 
+/**
+ * The login form. The button follows the schema itself rather than Formik's `isValid`, which reads
+ * true until the first validation run, so a prefilled or short value would not disable it.
+ */
 // https://formik.org/docs/guides/react-native
 export const LoginForm = ({onSubmit, initialUsername = '', recoveryParams}: LoginFormProps) => {
   const {commonStyles} = useStyles();
@@ -68,7 +72,7 @@ export const LoginForm = ({onSubmit, initialUsername = '', recoveryParams}: Logi
             showErrorWithoutTouch={false}
           />
           <PrimaryActionButton
-            disabled={!values.username || !values.password || isSubmitting}
+            disabled={!validationSchema.isValidSync(values) || isSubmitting}
             isLoading={isSubmitting}
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
