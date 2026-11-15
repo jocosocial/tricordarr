@@ -1,4 +1,4 @@
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {RouteProp, StackActions, useNavigation, useRoute} from '@react-navigation/native';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import {Text} from 'react-native-paper';
@@ -14,7 +14,7 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {useOnboardingCommit} from '#src/Hooks/useOnboardingCommit';
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
-import {OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {LoginFormValues} from '#src/Types/FormValues';
 
@@ -55,17 +55,21 @@ export const LoginScreen = () => {
         const account = await commitSignIn(serverUrl, response.data, siteCookie);
         // The account switch lands on the new session's home (or the next setup step). Client
         // settings and roles re-key on the new session and fetch on their own.
-        // First run and boarding carry on to the permissions step, where the toast would only
-        // sit over its buttons; the setup flow is its own confirmation.
-        if (mode !== 'firstRun' && mode !== 'boarding') {
+        // The setup flow's session step confirms the sign-in, so only a login outside it toasts.
+        if (!mode) {
           setSnackbarPayload({
             message: `Signed in as ${account.username || formValues.username}`,
             messageType: 'success',
           });
         }
         // Signing in to the account that is already active keeps the same scope and this screen.
+        // Inside the setup flow that still moves on to the session step.
         if (mounted.current) {
-          navigation.goBack();
+          if (mode) {
+            navigation.dispatch(StackActions.replace(OobeStackComponents.oobeSessionScreen, {mode}));
+          } else {
+            navigation.goBack();
+          }
         }
       } catch {
         // The mutation's own onError already showed the failure.

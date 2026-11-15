@@ -57,9 +57,10 @@ export type Optional<T> = T | undefined;
 /**
  * Why the setup flow is running. All three share the server, conduct and account steps, which act
  * on an explicit server and change nothing about the active session until the account step commits.
+ * Each then shows the session step, confirming the session the commit produced.
  * - firstRun: no session yet (or setup is being re-run). Continues to permissions and finish.
  * - boarding: leaving pre-registration for the ship. The commit deletes the pre-registration server,
  *   then it continues to permissions and finish like a first run.
- * - addAccount: adding another account or server beside the existing ones.
+ * - addAccount: adding another account or server beside the existing ones. Ends at the session step.
  */
 export type OnboardingMode = 'firstRun' | 'boarding' | 'addAccount';

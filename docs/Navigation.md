@@ -105,7 +105,7 @@ Screens, headers, and `Alert.alert` callbacks in those parents should keep using
 
 A flow that switches mid-stack and wants to keep its place (Settings > Server URL) passes `{preserveNavigation: true}`. That calls `stashNavigationState()` before the switch and `RootStackNavigator` `resetRoot`s the stashed state once it has mounted. Push the screen you want to land on *before* switching so it is in the stashed state.
 
-Anything that must outlive a switch belongs above `SessionBoundaryProvider`. The setup flow is the example: its commit step creates the session, which remounts the navigators, so `OobeProvider.resumeAfterCommit` tells the fresh `OobeStackNavigator` to start at the permissions step. Prefer that (flow position as state above the scope) over stashing navigation state for anything new.
+Anything that must outlive a switch belongs above `SessionBoundaryProvider`. The setup flow is the example: its commit step creates the session, which remounts the navigators, so `OobeProvider.resumeMode` tells the fresh `OobeStackNavigator` to start at the session step, and in which mode. Prefer that (flow position as state above the scope) over stashing navigation state for anything new.
 
 ## The setup flow
 

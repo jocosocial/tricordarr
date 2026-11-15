@@ -4,6 +4,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {OobeContext} from '#src/Context/Contexts/OobeContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
+import {OnboardingMode} from '#src/Types/RouteParams';
 
 const logger = createLogger('OobeProvider.tsx');
 
@@ -16,7 +17,7 @@ const logger = createLogger('OobeProvider.tsx');
 export const OobeProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const [completedVersion, setCompletedVersion] = useState<number>();
-  const [resumeAfterCommit, setResumeAfterCommit] = useState(false);
+  const [resumeMode, setResumeMode] = useState<OnboardingMode | null>(null);
 
   useEffect(() => {
     SessionStorage.getOobeCompletedVersion()
@@ -39,7 +40,7 @@ export const OobeProvider = ({children}: PropsWithChildren) => {
 
   const oobeFinish = useCallback(async () => {
     await setOobeCompletedVersion(appConfig.oobeExpectedVersion);
-    setResumeAfterCommit(false);
+    setResumeMode(null);
   }, [appConfig.oobeExpectedVersion, setOobeCompletedVersion]);
 
   const contextValue = useMemo(
@@ -48,10 +49,10 @@ export const OobeProvider = ({children}: PropsWithChildren) => {
       oobeCompletedVersion: completedVersion ?? 0,
       oobeFinish,
       setOobeCompletedVersion,
-      resumeAfterCommit,
-      setResumeAfterCommit,
+      resumeMode,
+      setResumeMode,
     }),
-    [oobeCompleted, completedVersion, oobeFinish, setOobeCompletedVersion, resumeAfterCommit],
+    [oobeCompleted, completedVersion, oobeFinish, setOobeCompletedVersion, resumeMode],
   );
 
   if (completedVersion === undefined) {

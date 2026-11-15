@@ -43,9 +43,11 @@ Because the scope unmounts, anything that must outlive the old session (stopping
 
 First-run setup, boarding and Add Account are one flow (`OobeStackNavigator`) in three modes (`OnboardingMode` in `src/Types/RouteParams.ts`):
 
-- **firstRun**: Welcome, Location, Server, Account, *commit*, Permissions, Finish.
-- **boarding**: Welcome Aboard (long-press the pre-registration banner), Server (pre-filled with the default, production, server), Account, *commit*, Permissions, Finish.
-- **addAccount**: Server, Account, *commit*.
+- **firstRun**: Welcome, Location, Server, Account, *commit*, Session, Permissions, Finish.
+- **boarding**: Welcome Aboard (long-press the pre-registration banner), Server (pre-filled with the default, production, server), Account, *commit*, Session, Permissions, Finish.
+- **addAccount**: Server, Account, *commit*, Session (Done returns to the app).
+
+The Session step (`OobeSessionScreen`) shows what the commit produced: the signed-in account (username, server, access level) or anonymous browsing on the server. It is the confirmation for every mode, so setup never shows the "Signed in as" toast. It offers no account changes; those are in Settings > Accounts. Paths that commit nothing because the session is already the chosen one (proceeding anonymously on the current server, confirming the account on a re-run, signing in again to the active account) push the same step.
 
 When boarding, the Account step passes the pre-registration account's username to the login form as its initial username, since people forget the one they registered with. A user who boards with a pre-registration account is not offered Create Account (or the text leading up to it), and the Log In text tells them they already have an account. One who boards anonymously sees all three options.
 
@@ -58,7 +60,7 @@ Two rules hold it together:
 
 What the modes add:
 
-- **firstRun** and **boarding** set `OobeProvider.resumeAfterCommit`. The commit remounts the navigators; the root navigator then starts in the setup stack, which starts at Permissions instead of Welcome. The flag is cleared by `oobeFinish`.
+- Every mode sets `OobeProvider.resumeMode` to itself. The commit remounts the navigators; the root navigator then starts in the setup stack, which starts at the Session step instead of Welcome and hands it the mode. The flag is cleared by `oobeFinish`, or by the Session step's Done in **addAccount**.
 - **boarding** passes `boardFromSessionID`. In the same reduction that activates the new session, the reducer's `retireServer` deletes every account, session and the profile of the server being left, and persistence deletes their tokens, cookies, preferences and cache files. This is the cutoff: after it there is no pre-registration session to switch back to and the banner is gone. A sign-in seeds the new account's preferences from the pre-registration account's; proceeding without an account writes them to `DeviceConfig.defaultPreferences` instead, so the anonymous session uses them and a later sign-in starts from them. Both ways of committing cut off. Boarding onto the server being left (a developer toggling pre-registration on one server) retires nothing.
 
 A registration shows its recovery key *before* signing in: `RegisterScreen` creates the user and gets a token, then hands both to `RecoveryKeyScreen` (`pendingSignIn`), and acknowledging the key commits. Signing in first would remount the navigators and the key would never be shown.

@@ -26,7 +26,7 @@ const hiddenStyles = StyleSheet.create({
 export const RootStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createStackNavigator<RootStackParamList>();
-  const {oobeCompleted, resumeAfterCommit} = useOobe();
+  const {oobeCompleted, resumeMode} = useOobe();
   const {currentSession} = useSession();
   const {setHasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
@@ -91,9 +91,9 @@ export const RootStackNavigator = () => {
 
   // Setup is where a session gets created, so a device with no session goes there even if it
   // completed setup before (every session was removed, or storage was reset). A setup flow that
-  // just changed the session (first run, boarding) also comes back here to finish its last steps.
+  // just changed the session (any mode) also comes back here to finish its last steps.
   let initialRouteName = RootStackComponents.oobeNavigator;
-  if (oobeCompleted && currentSession && !resumeAfterCommit) {
+  if (oobeCompleted && currentSession && !resumeMode) {
     initialRouteName = RootStackComponents.rootContentScreen;
   }
 

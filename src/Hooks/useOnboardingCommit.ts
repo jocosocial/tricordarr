@@ -23,7 +23,7 @@ const logger = createLogger('useOnboardingCommit.ts');
 export const useOnboardingCommit = (mode?: OnboardingMode) => {
   const {signIn, switchToServer, currentSession, accountPreferences} = useSession();
   const {deviceConfig, updateDeviceConfig} = useDeviceConfig();
-  const {oobeCompleted, setResumeAfterCommit} = useOobe();
+  const {oobeCompleted, setResumeMode} = useOobe();
   const {clearCookies} = useTwitarrWebview();
 
   /**
@@ -31,9 +31,9 @@ export const useOnboardingCommit = (mode?: OnboardingMode) => {
    * pre-registration session to retire when boarding.
    */
   const prepare = useCallback(async (): Promise<string | undefined> => {
-    // Both continue to the permissions and finish steps on the far side of the remount.
-    if (mode === 'firstRun' || mode === 'boarding') {
-      setResumeAfterCommit(true);
+    // Every mode continues at the session step on the far side of the remount.
+    if (mode) {
+      setResumeMode(mode);
     }
     if (mode !== 'boarding' || !currentSession) {
       return undefined;
@@ -45,7 +45,7 @@ export const useOnboardingCommit = (mode?: OnboardingMode) => {
       logger.warn('Failed to clear the pre-registration site cookie:', error);
     }
     return currentSession.sessionID;
-  }, [mode, currentSession, setResumeAfterCommit, clearCookies]);
+  }, [mode, currentSession, setResumeMode, clearCookies]);
 
   /**
    * Commit by signing in with a token already obtained from `serverUrl`.
@@ -55,9 +55,9 @@ export const useOnboardingCommit = (mode?: OnboardingMode) => {
       const boardFromSessionID = await prepare();
       const account = await signIn(serverUrl, token, {siteCookie, boardFromSessionID});
       // Signing in to the account that is already active changes no session, so nothing remounts
-      // and there is nothing to resume.
+      // and there is nothing to resume. The caller is still mounted and moves on to the session step.
       if (currentSession?.accountID === account.accountID && currentSession.serverUrl === account.serverUrl) {
-        setResumeAfterCommit(false);
+        setResumeMode(null);
       }
       // During first-run setup the finish step starts push, after the permissions step.
       if (oobeCompleted) {
@@ -65,7 +65,7 @@ export const useOnboardingCommit = (mode?: OnboardingMode) => {
       }
       return account;
     },
-    [prepare, signIn, oobeCompleted, currentSession, setResumeAfterCommit],
+    [prepare, signIn, oobeCompleted, currentSession, setResumeMode],
   );
 
   /**

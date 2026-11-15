@@ -9,16 +9,15 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
+import {SignedInAccountView} from '#src/Components/Views/SignedInAccountView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSignOut} from '#src/Context/Contexts/SignOutContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {useOnboardingCommit} from '#src/Hooks/useOnboardingCommit';
 import {createLogger} from '#src/Libraries/Logger';
 import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
-import {useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
 
 const logger = createLogger('OobeAccountScreen.tsx');
 
@@ -38,7 +37,6 @@ export const OobeAccountScreen = ({navigation, route}: Props) => {
   const {appConfig} = useConfig();
   const {confirmLogout} = useSignOut();
   const {commitAnonymous} = useOnboardingCommit(mode);
-  const rootNavigation = useRootStack();
   const [busy, setBusy] = useState(false);
 
   const onThisServer = currentSession?.serverUrl === serverUrl;
@@ -53,11 +51,7 @@ export const OobeAccountScreen = ({navigation, route}: Props) => {
   const onProceed = async () => {
     // Already browsing this server without an account: there is no session to change.
     if (onThisServer && !isLoggedIn) {
-      if (mode === 'firstRun') {
-        navigation.push(OobeStackComponents.oobePermissionsScreen);
-      } else {
-        rootNavigation.goBack();
-      }
+      navigation.push(OobeStackComponents.oobeSessionScreen, {mode});
       return;
     }
     setBusy(true);
@@ -74,15 +68,7 @@ export const OobeAccountScreen = ({navigation, route}: Props) => {
     <AppView disablePreRegistrationWarning={true}>
       {confirmAccount ? (
         <ScrollingContentView>
-          <PaddedContentView>
-            <Text>Successfully logged in as user: {currentAccount.username}</Text>
-          </PaddedContentView>
-          <PaddedContentView>
-            <Text>
-              Access level: {UserAccessLevel.getLabel(currentAccount.accessLevel)} (
-              {UserAccessLevel.getDescription(currentAccount.accessLevel)})
-            </Text>
-          </PaddedContentView>
+          <SignedInAccountView account={currentAccount} serverUrl={serverUrl} />
           <PaddedContentView>
             <Text>
               If this is incorrect or you wish to change accounts, you can log out below. To proceed with your current
@@ -118,7 +104,7 @@ export const OobeAccountScreen = ({navigation, route}: Props) => {
       )}
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}
-        rightOnPress={() => navigation.push(OobeStackComponents.oobePermissionsScreen)}
+        rightOnPress={() => navigation.push(OobeStackComponents.oobeSessionScreen, {mode})}
         rightDisabled={!confirmAccount}
       />
     </AppView>

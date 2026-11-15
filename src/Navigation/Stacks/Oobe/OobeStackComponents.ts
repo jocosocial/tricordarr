@@ -15,6 +15,7 @@ export type OobeStackParamList = CommonStackParamList & {
   OobeFinishScreen: undefined;
   RegisterConductScreen: {serverUrl?: string; mode?: OnboardingMode} | undefined;
   RegisterScreen: {serverUrl?: string; mode?: OnboardingMode} | undefined;
+  OobeSessionScreen: {mode: OnboardingMode};
   OobePermissionsScreen: undefined;
   OobePreregistrationScreen: undefined;
   OobeScheduleDayScreen: undefined;
@@ -29,6 +30,7 @@ export enum OobeStackComponents {
   oobeRegisterScreen = 'RegisterScreen',
   oobeFinishScreen = 'OobeFinishScreen',
   oobeLoginScreen = 'LoginScreen',
+  oobeSessionScreen = 'OobeSessionScreen',
   oobePermissionsScreen = 'OobePermissionsScreen',
   oobePreregistrationScreen = 'OobePreregistrationScreen',
   oobeScheduleDayScreen = 'OobeScheduleDayScreen',
