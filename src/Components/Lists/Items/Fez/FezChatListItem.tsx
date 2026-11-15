@@ -183,7 +183,7 @@ const FezChatListItemInternal = ({fez, enableSelection, setEnableSelection, sele
           <SeamailMessageCountIndicator badgeCount={badgeCount} totalPostCount={totalPostCount} />
           {showParticipation && (
             <Text variant={'bodyMedium'} style={styles.participantStyle}>
-              {getParticipantLabel(fez)}
+              {getParticipantLabel(fez, {compact: true})}
             </Text>
           )}
           <View>
