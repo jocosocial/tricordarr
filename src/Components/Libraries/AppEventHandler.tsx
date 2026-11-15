@@ -1,5 +1,4 @@
 import {useLinkTo} from '@react-navigation/native';
-import axios from 'axios';
 import {useCallback, useEffect} from 'react';
 import {Linking} from 'react-native';
 import notifee, {Event, EventType, Notification} from 'react-native-notify-kit';
@@ -7,24 +6,20 @@ import notifee, {Event, EventType, Notification} from 'react-native-notify-kit';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {PressAction} from '#src/Enums/Notifications';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
-import {getEffectiveConfig} from '#src/Libraries/EffectiveConfig';
 import {createLogger} from '#src/Libraries/Logger';
-import {getAuthHeaders} from '#src/Libraries/Network/APIClient';
-import {getToken} from '#src/Libraries/Network/Websockets';
 import {getUrlForNotificationEvent} from '#src/Libraries/Notifications/SocketNotification';
-import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
-import {appUrl, joinUrl} from '#src/Libraries/UrlParser';
+import {appUrl} from '#src/Libraries/UrlParser';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {headlessApiGet} from '#src/Queries/HeadlessApi';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('AppEventHandler.tsx');
 
 /**
- * "Mark As Read" from a background notification action, where there is no React tree (or API
- * client) to use. Resolves the server and token for the active account the same way the push
- * providers do, through LAST_SESSION_ID.
+ * "Mark As Read" from a background notification action: dismiss the notification, then mark its
+ * content read on the server.
  */
-const markAsReadHeadless = async (notification?: Notification) => {
+const handleMarkAsReadBackground = async (notification?: Notification) => {
   if (notification?.id) {
     await notifee.cancelDisplayedNotification(notification.id);
   }
@@ -32,20 +27,7 @@ const markAsReadHeadless = async (notification?: Notification) => {
   if (!markAsReadUrl) {
     return;
   }
-  const [session, token, config] = await Promise.all([
-    SessionStorage.getCurrentSession(),
-    getToken(),
-    getEffectiveConfig(),
-  ]);
-  if (!session || !token) {
-    logger.warn('Cannot mark as read without a session and token.');
-    return;
-  }
-  await axios.get(markAsReadUrl, {
-    baseURL: joinUrl(session.serverUrl, config.urlPrefix),
-    headers: getAuthHeaders(undefined, undefined, token),
-    timeout: config.apiClientConfig.requestTimeout,
-  });
+  await headlessApiGet(markAsReadUrl);
 };
 
 // Background events occur when the app is still running but not in the users view.
@@ -69,7 +51,7 @@ notifee.onBackgroundEvent(async (event: Event) => {
   // assumes the user read the content and updates its state accordingly.
   if (pressAction?.id === PressAction.markAsRead) {
     logger.info('onBackgroundEvent is marking as read.');
-    await markAsReadHeadless(notification);
+    await handleMarkAsReadBackground(notification);
     return;
   }
 

@@ -14,11 +14,11 @@ import {SessionStore} from '#src/Context/State/SessionStore';
 import {AccountPreferences} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {stashNavigationState} from '#src/Libraries/NavigationRef';
-import {fetchWhoami} from '#src/Libraries/Network/ServerAuth';
 import {stopPushProvider} from '#src/Libraries/Notifications/Push';
 import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
 import {loadSessionData} from '#src/Libraries/Storage/SessionLoader';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
+import {fetchWhoami} from '#src/Queries/ServerAuth';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {Account, ServerProfile} from '#src/Structs/SessionStructs';
 

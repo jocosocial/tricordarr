@@ -1,5 +1,5 @@
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {loginToServer} from '#src/Libraries/Network/ServerAuth';
+import {loginToServer} from '#src/Queries/ServerAuth';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
 
 interface LoginMutationProps {

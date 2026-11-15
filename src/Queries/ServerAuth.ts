@@ -1,7 +1,7 @@
 import axios from 'axios';
-import DeviceInfo from 'react-native-device-info';
 
 import {getAuthHeaders} from '#src/Libraries/Network/APIClient';
+import {getApiClientHeaders} from '#src/Libraries/Network/ClientHeaders';
 import {joinUrl} from '#src/Libraries/UrlParser';
 import {
   CreatedUserData,
@@ -19,13 +19,6 @@ import {
  * to work before any session points at that server.
  */
 
-const baseHeaders = () => ({
-  Accept: 'application/json',
-  'X-Swiftarr-Client': `${DeviceInfo.getApplicationName()} ${DeviceInfo.getVersion()}`,
-  // https://www.reddit.com/r/reactnative/comments/15frmyb/is_axios_caching/
-  'Cache-Control': 'no-store',
-});
-
 /**
  * POST /auth/login on the given server with basic credentials.
  */
@@ -37,7 +30,7 @@ export const loginToServer = async (
   timeout: number,
 ) => {
   return await axios.post<TokenStringData>(joinUrl(joinUrl(serverUrl, urlPrefix), '/auth/login'), undefined, {
-    headers: {...baseHeaders(), ...getAuthHeaders(username, password)},
+    headers: {...getApiClientHeaders(), ...getAuthHeaders(username, password)},
     timeout,
   });
 };
@@ -47,7 +40,7 @@ export const loginToServer = async (
  */
 export const fetchWhoami = async (serverUrl: string, urlPrefix: string, token: string, timeout: number) => {
   const response = await axios.get<CurrentUserData>(joinUrl(joinUrl(serverUrl, urlPrefix), '/user/whoami'), {
-    headers: {...baseHeaders(), ...getAuthHeaders(undefined, undefined, token)},
+    headers: {...getApiClientHeaders(), ...getAuthHeaders(undefined, undefined, token)},
     timeout,
   });
   return response.data;
@@ -64,7 +57,7 @@ export const createUserOnServer = async (
   timeout: number,
 ) => {
   return await axios.post<CreatedUserData>(joinUrl(joinUrl(serverUrl, urlPrefix), '/user/create'), data, {
-    headers: baseHeaders(),
+    headers: getApiClientHeaders(),
     timeout,
   });
 };
@@ -80,7 +73,7 @@ export const recoverAccountOnServer = async (
   timeout: number,
 ) => {
   return await axios.post<TokenStringData>(joinUrl(joinUrl(serverUrl, urlPrefix), '/auth/recovery'), data, {
-    headers: baseHeaders(),
+    headers: getApiClientHeaders(),
     timeout,
   });
 };
@@ -96,7 +89,7 @@ export const lookupUsernameOnServer = async (
   timeout: number,
 ) => {
   return await axios.post<UserHeader>(joinUrl(joinUrl(serverUrl, urlPrefix), '/auth/username'), data, {
-    headers: baseHeaders(),
+    headers: getApiClientHeaders(),
     timeout,
   });
 };

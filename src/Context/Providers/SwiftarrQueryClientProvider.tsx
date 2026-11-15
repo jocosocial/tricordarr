@@ -2,7 +2,6 @@ import {Query, QueryKey} from '@tanstack/react-query';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
-import DeviceInfo from 'react-native-device-info';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
@@ -13,6 +12,7 @@ import {useServerUrl} from '#src/Hooks/useServerUrl';
 import {createLogger} from '#src/Libraries/Logger';
 import {navigateToLogin} from '#src/Libraries/Navigation';
 import {BadResponseFormatError, createQueryClient, createSessionPersister} from '#src/Libraries/Network/APIClient';
+import {getApiClientHeaders, getClientIdentityHeaders} from '#src/Libraries/Network/ClientHeaders';
 import {isHttpClientError, shouldRetryQuery} from '#src/Libraries/Network/Retry';
 import {joinUrl} from '#src/Libraries/UrlParser';
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
@@ -52,10 +52,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       headers: {
         ...(isLoggedIn && tokenData ? {Authorization: `Bearer ${tokenData.token}`} : undefined),
         ...(isLoggedIn && tokenData ? {'X-Swiftarr-User': tokenData.userID} : undefined),
-        Accept: 'application/json',
-        'X-Swiftarr-Client': `${DeviceInfo.getApplicationName()} ${DeviceInfo.getVersion()}`,
-        // https://www.reddit.com/r/reactnative/comments/15frmyb/is_axios_caching/
-        'Cache-Control': 'no-store',
+        ...getApiClientHeaders(),
       },
       timeout: appConfig.apiClientConfig.requestTimeout,
       timeoutErrorMessage: 'Tricordarr/Axios request timeout.',
@@ -77,11 +74,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const PublicQueryClient = useMemo(() => {
     const client = axios.create({
       baseURL: serverUrl,
-      headers: {
-        'X-Swiftarr-Client': `${DeviceInfo.getApplicationName()} ${DeviceInfo.getVersion()}`,
-        // https://www.reddit.com/r/reactnative/comments/15frmyb/is_axios_caching/
-        'Cache-Control': 'no-store',
-      },
+      headers: getClientIdentityHeaders(),
       timeout: appConfig.apiClientConfig.requestTimeout,
       timeoutErrorMessage: 'Tricordarr/Axios request timeout.',
     });

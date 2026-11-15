@@ -1,6 +1,6 @@
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {lookupUsernameOnServer, recoverAccountOnServer} from '#src/Libraries/Network/ServerAuth';
 import {usePublicMutation} from '#src/Queries/PublicMutation';
+import {lookupUsernameOnServer, recoverAccountOnServer} from '#src/Queries/ServerAuth';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
 import {UserRecoveryData, UserUsernameLookupData} from '#src/Structs/ControllerStructs';
 

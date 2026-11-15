@@ -1,10 +1,10 @@
 import axios from 'axios';
 import {useCallback} from 'react';
-import DeviceInfo from 'react-native-device-info';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {createLogger} from '#src/Libraries/Logger';
+import {getClientIdentityHeaders} from '#src/Libraries/Network/ClientHeaders';
 import {clearSiteCookie, extractSessionCookie, setSiteCookie} from '#src/Libraries/Network/SiteCookies';
 import {joinUrl} from '#src/Libraries/UrlParser';
 import {LoginFormValues} from '#src/Types/FormValues';
@@ -32,8 +32,7 @@ export const useTwitarrWebview = () => {
         const response = await axios.post<string>(joinUrl(serverUrl, '/login'), loginValues, {
           headers: {
             'Content-Type': 'application/json',
-            'X-Swiftarr-Client': `${DeviceInfo.getApplicationName()} ${DeviceInfo.getVersion()}`,
-            'Cache-Control': 'no-store',
+            ...getClientIdentityHeaders(),
           },
           timeout: appConfig.apiClientConfig.mutationTimeout,
         });

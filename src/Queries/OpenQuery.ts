@@ -12,6 +12,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useMaintenanceGate} from '#src/Hooks/useMaintenanceBlocked';
+import {getClientIdentityHeaders} from '#src/Libraries/Network/ClientHeaders';
 import {joinUrl} from '#src/Libraries/UrlParser';
 import {
   getNextPageParam,
@@ -55,7 +56,7 @@ const useExplicitServerQuery = <TData, TError extends Error>(
       const url = joinUrl(serverUrl, apiPrefixed ? appConfig.urlPrefix : undefined, endpoint);
       try {
         const response = await axios.get<TData>(url, {
-          headers: {'Cache-Control': 'no-store'},
+          headers: getClientIdentityHeaders(),
           timeout: appConfig.apiClientConfig.requestTimeout,
           timeoutErrorMessage: 'Tricordarr/Axios request timeout.',
         });

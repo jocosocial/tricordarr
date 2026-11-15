@@ -1,6 +1,6 @@
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {createUserOnServer} from '#src/Libraries/Network/ServerAuth';
+import {createUserOnServer} from '#src/Queries/ServerAuth';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
 import {KeywordData, UserCreateData, UserPasswordData, UserUsernameData} from '#src/Structs/ControllerStructs';
 import {KeywordAction, KeywordType} from '#src/Types';
