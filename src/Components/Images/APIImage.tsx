@@ -42,6 +42,11 @@ interface APIImageV2Props {
    * Size for avatar mode. Defaults to styleDefaults.avatarSize.
    */
   size?: number;
+  /**
+   * Load from this server instead of the active session's. Image URLs carry no credentials, so
+   * this is how another account's avatar (on its own server) can be shown.
+   */
+  serverUrl?: string;
 }
 
 /**
@@ -59,6 +64,7 @@ export const APIImage = ({
   staticSize,
   onPress,
   size,
+  serverUrl: serverUrlOverride,
 }: APIImageV2Props) => {
   const [viewerImages, setViewerImages] = useState<AppImageMetaData[]>([]);
   const hasRequestedFullPreload = React.useRef(false);
@@ -68,7 +74,8 @@ export const APIImage = ({
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
   const {appConfig} = useConfig();
-  const {serverUrl} = useSwiftarrQueryClient();
+  const {serverUrl: sessionServerUrl} = useSwiftarrQueryClient();
+  const serverUrl = serverUrlOverride ?? sessionServerUrl;
   const {fromIdenticon, fromFileName, toLightboxImage} = useAppImage();
   const [imageSourceMetadata, setImageSourceMetadata] = useState<AppImageMetaData>(
     staticSize === 'identicon' ? fromIdenticon(path, appConfig, serverUrl) : fromFileName(path, appConfig, serverUrl),

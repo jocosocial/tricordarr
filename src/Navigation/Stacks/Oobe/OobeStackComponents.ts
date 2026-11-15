@@ -3,19 +3,20 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 import {OobeLocation} from '#src/Enums/OobeLocation';
 import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {WithIntent} from '#src/Types/RouteParams';
+import {OnboardingMode} from '#src/Types/RouteParams';
 
 export type OobeStackParamList = CommonStackParamList & {
   OobeWelcomeScreen: undefined;
   OobeLocationScreen: undefined;
-  OobeServerScreen: {location?: OobeLocation} | undefined;
-  OobeConductScreen: undefined;
-  OobeAccountScreen: undefined;
-  LoginScreen: undefined;
+  // serverUrl is the server to start on; defaults to the active session's.
+  OobeServerScreen: {mode: OnboardingMode; serverUrl?: string; location?: OobeLocation};
+  OobeConductScreen: {mode: OnboardingMode; serverUrl: string};
+  OobeAccountScreen: {mode: OnboardingMode; serverUrl: string};
+  LoginScreen: {serverUrl?: string; username?: string; mode?: OnboardingMode} | undefined;
   OobeFinishScreen: undefined;
-  RegisterScreen: undefined;
+  RegisterScreen: {serverUrl?: string; mode?: OnboardingMode} | undefined;
   OobePermissionsScreen: undefined;
-  OobePreregistrationScreen: WithIntent<{}, 'onboarding'>;
+  OobePreregistrationScreen: undefined;
   OobeScheduleDayScreen: undefined;
 };
 

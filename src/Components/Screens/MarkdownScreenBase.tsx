@@ -28,6 +28,7 @@ interface MarkdownScreenBaseProps {
   };
   scrollViewStyle?: object;
   actionsMenu?: ReactElement;
+  disablePreRegistrationWarning?: boolean;
 }
 
 /**
@@ -46,6 +47,7 @@ export const MarkdownScreenBase = ({
   navigation,
   scrollViewStyle,
   actionsMenu,
+  disablePreRegistrationWarning,
 }: MarkdownScreenBaseProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [submittedSearchQuery, setSubmittedSearchQuery] = useState('');
@@ -195,14 +197,14 @@ export const MarkdownScreenBase = ({
 
   if (!data) {
     return (
-      <AppView>
+      <AppView disablePreRegistrationWarning={disablePreRegistrationWarning}>
         <LoadingView />
       </AppView>
     );
   }
 
   return (
-    <AppView>
+    <AppView disablePreRegistrationWarning={disablePreRegistrationWarning}>
       {isSearchActive && enableSearch && (
         <>
           <SearchBarBase

@@ -86,7 +86,7 @@ export const HyperlinkText = ({children, disableLinkInterpolation = false}: Hype
   };
 
   const handleText = (linkUrl: string): ReactNode => {
-    if (isTwitarrUrl(linkUrl, serverUrl, appConfig.apiClientConfig.canonicalHostnames)) {
+    if (isTwitarrUrl(linkUrl, serverUrl, appConfig.canonicalHostnames)) {
       const matchedMapping = urlPathLabelMappings.find(mapping => {
         return mapping.pattern.test(linkUrl);
       });

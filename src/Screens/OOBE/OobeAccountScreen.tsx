@@ -1,94 +1,81 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useState} from 'react';
 import {Text} from 'react-native-paper';
 
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {MinorActionListItem} from '#src/Components/Lists/Items/MinorActionListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {AccountChoiceView} from '#src/Components/Views/AccountChoiceView';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
-import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSignOut} from '#src/Context/Contexts/SignOutContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
+import {useOnboardingCommit} from '#src/Hooks/useOnboardingCommit';
+import {createLogger} from '#src/Libraries/Logger';
+import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
+
+const logger = createLogger('OobeAccountScreen.tsx');
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccountScreen>;
 
-export const OobeAccountScreen = ({navigation}: Props) => {
-  const {theme} = useAppTheme();
-  const {isLoggedIn, currentSession} = useSession();
-  const accessLevel = currentSession?.tokenData?.accessLevel;
-  const {data: profilePublicData} = useUserProfileQuery();
+/**
+ * Last step before the setup flow commits: log in, create an account, or proceed without one on
+ * the chosen server. Log in and create run their own screens and commit there; proceeding commits
+ * here. When setup is re-run on a server the user is already signed in to, there is nothing to
+ * choose and it confirms the account instead.
+ */
+export const OobeAccountScreen = ({navigation, route}: Props) => {
+  const {mode} = route.params;
+  const serverUrl = normalizeServerUrl(route.params.serverUrl);
+  const {isLoggedIn, currentAccount, currentSession} = useSession();
+  const {appConfig} = useConfig();
   const {confirmLogout} = useSignOut();
-  const {preRegistrationMode} = usePreRegistration();
+  const {commitAnonymous} = useOnboardingCommit(mode);
+  const rootNavigation = useRootStack();
+  const [busy, setBusy] = useState(false);
+
+  const onThisServer = currentSession?.serverUrl === serverUrl;
+  const confirmAccount = mode === 'firstRun' && onThisServer && isLoggedIn && !!currentAccount;
+
+  const onProceed = async () => {
+    // Already browsing this server without an account: there is no session to change.
+    if (onThisServer && !isLoggedIn) {
+      if (mode === 'firstRun') {
+        navigation.push(OobeStackComponents.oobePermissionsScreen);
+      } else {
+        rootNavigation.goBack();
+      }
+      return;
+    }
+    setBusy(true);
+    try {
+      await commitAnonymous(serverUrl);
+    } catch (error) {
+      logger.error('Failed to switch server:', error);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return (
-    <AppView>
-      {!isLoggedIn && (
-        <ScrollingContentView isStack={false}>
+    <AppView disablePreRegistrationWarning={true}>
+      {confirmAccount ? (
+        <ScrollingContentView>
           <PaddedContentView>
-            <Text>Accounts are new every year. Only create an account if you have not done so this year.</Text>
-          </PaddedContentView>
-          {!preRegistrationMode && (
-            <PaddedContentView>
-              <Text>
-                If you created an account during pre-registration, you can instead log in with that account below.
-              </Text>
-            </PaddedContentView>
-          )}
-          <PaddedContentView>
-            <PrimaryActionButton
-              testID={'oobeCreateAccount-button'}
-              buttonText={'Create Account'}
-              onPress={() => navigation.push(OobeStackComponents.oobeRegisterScreen)}
-            />
+            <Text>Successfully logged in as user: {currentAccount.username}</Text>
           </PaddedContentView>
           <PaddedContentView>
             <Text>
-              If you already created an account this year (including during pre-registration) you can log in with it
-              below.
+              Access level: {UserAccessLevel.getLabel(currentAccount.accessLevel)} (
+              {UserAccessLevel.getDescription(currentAccount.accessLevel)})
             </Text>
           </PaddedContentView>
-          <PaddedContentView>
-            <PrimaryActionButton
-              testID={'oobeLogIn-button'}
-              buttonColor={theme.colors.twitarrNeutralButton}
-              buttonText={'Log In'}
-              onPress={() => navigation.push(OobeStackComponents.oobeLoginScreen)}
-            />
-          </PaddedContentView>
-          <PaddedContentView>
-            <Text>You can also use some areas of Twitarr without creating an account now or ever.</Text>
-          </PaddedContentView>
-          <PaddedContentView>
-            <PrimaryActionButton
-              testID={'oobeProceedWithoutAccount-button'}
-              buttonColor={theme.colors.twitarrNegativeButton}
-              textColor={theme.colors.onTwitarrNegativeButton}
-              buttonText={'Proceed Without an Account'}
-              onPress={() => navigation.push(OobeStackComponents.oobePermissionsScreen)}
-            />
-          </PaddedContentView>
-        </ScrollingContentView>
-      )}
-      {isLoggedIn && profilePublicData && (
-        <ScrollingContentView>
-          <PaddedContentView>
-            <Text>Successfully logged in as user: {profilePublicData.header.username}</Text>
-          </PaddedContentView>
-          {accessLevel && (
-            <PaddedContentView>
-              <Text>
-                Access level: {UserAccessLevel.getLabel(accessLevel)} ({UserAccessLevel.getDescription(accessLevel)})
-              </Text>
-            </PaddedContentView>
-          )}
           <PaddedContentView>
             <Text>
               If this is incorrect or you wish to change accounts, you can log out below. To proceed with your current
@@ -100,37 +87,29 @@ export const OobeAccountScreen = ({navigation}: Props) => {
               <MinorActionListItem
                 title={'Logout this device'}
                 icon={AppIcons.logout}
-                onPress={() => confirmLogout({onLoggedOut: () => navigation.goBack()})}
+                onPress={() => confirmLogout()}
               />
               <MinorActionListItem
                 title={'Logout all devices'}
                 icon={AppIcons.error}
-                onPress={() => confirmLogout({allDevices: true, onLoggedOut: () => navigation.goBack()})}
+                onPress={() => confirmLogout({allDevices: true})}
               />
             </ListSection>
           </PaddedContentView>
         </ScrollingContentView>
-      )}
-      {isLoggedIn && !profilePublicData && (
-        <ScrollingContentView>
-          <PaddedContentView>
-            <Text>Something went wrong. Try logging out and logging in again.</Text>
-          </PaddedContentView>
-          <PaddedContentView padSides={false}>
-            <ListSection>
-              <MinorActionListItem
-                title={'Logout this device'}
-                icon={AppIcons.logout}
-                onPress={() => confirmLogout({onLoggedOut: () => navigation.goBack()})}
-              />
-            </ListSection>
-          </PaddedContentView>
-        </ScrollingContentView>
+      ) : (
+        <AccountChoiceView
+          onCreate={() => navigation.push(OobeStackComponents.oobeRegisterScreen, {mode, serverUrl})}
+          onLogin={() => navigation.push(OobeStackComponents.oobeLoginScreen, {mode, serverUrl})}
+          onProceed={onProceed}
+          preRegistrationMode={serverUrl === normalizeServerUrl(appConfig.preRegistrationServerUrl)}
+          disabled={busy}
+        />
       )}
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}
         rightOnPress={() => navigation.push(OobeStackComponents.oobePermissionsScreen)}
-        rightDisabled={!(isLoggedIn && profilePublicData)}
+        rightDisabled={!confirmAccount}
       />
     </AppView>
   );

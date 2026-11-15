@@ -14,10 +14,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {styleDefaults} from '#src/Context/Providers/StyleProvider';
 import {OobeLocation} from '#src/Enums/OobeLocation';
-import {createLogger} from '#src/Libraries/Logger';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
-
-const logger = createLogger('OobeLocationScreen.tsx');
 
 // @ts-ignore
 import mainviewDay from '#assets/mainview_day.jpg';
@@ -43,37 +40,32 @@ const screenStyles = StyleSheet.create({
   },
 });
 
+/**
+ * First-run setup asks where the user is, which decides the server the next step starts on.
+ */
 export const OobeLocationScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {currentSession, updateSession} = useSession();
+  const {currentSession} = useSession();
   const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
   const {fromAsset} = useAppImage();
   const [selectedLocation, setSelectedLocation] = useState<OobeLocation | undefined>(undefined);
-  const [busy, setBusy] = useState(false);
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
   });
 
-  const onNextPress = async () => {
-    if (!currentSession || !selectedLocation) {
-      logger.warn('Cannot update session: no current session or no location selected');
+  const onNextPress = () => {
+    if (!selectedLocation) {
       return;
     }
-    setBusy(true);
-    try {
-      const serverUrl =
-        selectedLocation === OobeLocation.land ? appConfig.preRegistrationServerUrl : appConfig.serverUrl;
-      // Preserve existing server URL when re-running OOBE after completion.
-      await updateSession(currentSession.sessionID, oobeCompleted ? {} : {serverUrl});
-      navigation.push(OobeStackComponents.oobeServerScreen, {location: selectedLocation});
-    } finally {
-      setBusy(false);
-    }
+    const locationServerUrl =
+      selectedLocation === OobeLocation.land ? appConfig.preRegistrationServerUrl : appConfig.serverUrl;
+    // Preserve the existing server when re-running setup after completion. Otherwise start on the
+    // chosen location's server. Nothing is switched here; the account step does that.
+    const serverUrl = oobeCompleted && currentSession ? currentSession.serverUrl : locationServerUrl;
+    navigation.push(OobeStackComponents.oobeServerScreen, {mode: 'firstRun', location: selectedLocation, serverUrl});
   };
-
-  const cardsDisabled = busy || !currentSession;
 
   const onBackPress = () => {
     navigation.goBack();
@@ -96,7 +88,6 @@ export const OobeLocationScreen = ({navigation}: Props) => {
             image={fromAsset(preregistration, 'preregistration.jpg')}
             selected={selectedLocation === OobeLocation.land}
             onPress={() => setSelectedLocation(OobeLocation.land)}
-            disabled={cardsDisabled}
             testID={'oobeLocationLand-card'}
           />
         </View>
@@ -109,16 +100,11 @@ export const OobeLocationScreen = ({navigation}: Props) => {
             image={fromAsset(mainviewDay, 'mainview_day.jpg')}
             selected={selectedLocation === OobeLocation.ship}
             onPress={() => setSelectedLocation(OobeLocation.ship)}
-            disabled={cardsDisabled}
             testID={'oobeLocationShip-card'}
           />
         </View>
       </ScrollingContentView>
-      <OobeButtonsView
-        leftOnPress={onBackPress}
-        rightOnPress={onNextPress}
-        rightDisabled={!selectedLocation || cardsDisabled}
-      />
+      <OobeButtonsView leftOnPress={onBackPress} rightOnPress={onNextPress} rightDisabled={!selectedLocation} />
     </AppView>
   );
 };

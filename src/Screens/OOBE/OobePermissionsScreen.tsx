@@ -49,6 +49,10 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
     }
   };
 
+  // This is the first screen when setup resumes after creating its session; that step cannot be
+  // undone from here, so there is nothing to go back to.
+  const canGoBack = navigation.canGoBack();
+
   const onNextPress = () => {
     navigation.push(OobeStackComponents.oobeFinishScreen);
   };
@@ -121,7 +125,11 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
         </PaddedContentView>
         {notificationPermissionStatus === RESULTS.GRANTED && <BatteryOptimizationSettingsView />}
       </ScrollingContentView>
-      <OobeButtonsView leftOnPress={() => navigation.goBack()} rightText={'Next'} rightOnPress={onNextPress} />
+      <OobeButtonsView
+        leftOnPress={canGoBack ? () => navigation.goBack() : undefined}
+        rightText={'Next'}
+        rightOnPress={onNextPress}
+      />
     </AppView>
   );
 };

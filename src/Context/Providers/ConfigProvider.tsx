@@ -1,51 +1,44 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {PropsWithChildren, useEffect, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 
-import {ConfigContext} from '#src/Context/Contexts/ConfigContext';
-import {AppConfig, defaultAppConfig, getAppConfig} from '#src/Libraries/AppConfig';
+import {DeviceConfigContext} from '#src/Context/Contexts/DeviceConfigContext';
+import {defaultDeviceConfig, DeviceConfig, getDeviceConfig, saveDeviceConfig} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
-import {StorageKeys} from '#src/Libraries/Storage';
-
-import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
 const logger = createLogger('ConfigProvider.tsx');
 
+/**
+ * Loads and persists the device-wide config (APP_CONFIG_V3). The effective config that
+ * `useConfig()` returns is assembled below the SessionProvider by EffectiveConfigProvider, which
+ * is also what mirrors it to the native modules.
+ */
 export const ConfigProvider = ({children}: PropsWithChildren) => {
-  const [appConfig, setAppConfig] = useState<AppConfig>();
+  const [deviceConfig, setDeviceConfig] = useState<DeviceConfig>();
   const [isReady, setIsReady] = useState<boolean>(false);
 
-  const loadAppConfig = async () => {
-    logger.debug('loadAppConfig start');
-    const config = await getAppConfig();
-    setAppConfig(config);
-    NativeTricordarrModule.setAppConfig(JSON.stringify(config));
-    logger.debug('loadAppConfig finished');
-  };
-
   useEffect(() => {
-    logger.debug('useEffect calling loadAppConfig...');
-    loadAppConfig()
-      .then(() => {
-        logger.debug('useEffect finished!');
-        setIsReady(true);
-      })
+    logger.debug('Loading device config...');
+    getDeviceConfig()
+      .then(config => setDeviceConfig(config))
       .catch(error => {
         logger.error('Failed to load config, using defaults:', error);
-        setAppConfig(defaultAppConfig);
-        setIsReady(true);
-      });
+        setDeviceConfig(defaultDeviceConfig);
+      })
+      .finally(() => setIsReady(true));
   }, []);
 
-  const updateAppConfig = (newConfig: AppConfig) => {
-    logger.info('Updating app config to', newConfig);
+  const updateDeviceConfig = useCallback((newConfig: DeviceConfig) => {
+    logger.info('Updating device config to', newConfig);
     // Update state immediately to avoid race conditions where consumers navigate
     // before the state is updated.
-    setAppConfig(newConfig);
-    NativeTricordarrModule.setAppConfig(JSON.stringify(newConfig));
+    setDeviceConfig(newConfig);
     // Persist to storage in the background.
-    AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(newConfig));
-    logger.debug('updateAppConfig finished');
-  };
+    saveDeviceConfig(newConfig).catch(error => logger.error('Failed to save device config:', error));
+  }, []);
+
+  const value = useMemo(
+    () => (deviceConfig ? {deviceConfig, updateDeviceConfig} : undefined),
+    [deviceConfig, updateDeviceConfig],
+  );
 
   // This should eventually show the splash screen.
   // https://github.com/jocosocial/tricordarr/issues/390
@@ -54,18 +47,10 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
     return null;
   }
 
-  if (!appConfig) {
-    logger.error('App config is empty?');
+  if (!value) {
+    logger.error('Device config is empty?');
     return null;
   }
 
-  return (
-    <ConfigContext.Provider
-      value={{
-        appConfig,
-        updateAppConfig,
-      }}>
-      {children}
-    </ConfigContext.Provider>
-  );
+  return <DeviceConfigContext.Provider value={value}>{children}</DeviceConfigContext.Provider>;
 };

@@ -20,7 +20,7 @@ export const ForeignLinkHandler = () => {
   const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
   const {serverUrl} = useSwiftarrQueryClient();
-  const canonicalHostnames = appConfig.apiClientConfig.canonicalHostnames;
+  const canonicalHostnames = appConfig.canonicalHostnames;
   // A later server change must not alert again for the link that launched the app.
   const checkedInitialUrl = useRef(false);
 

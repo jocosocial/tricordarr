@@ -25,8 +25,7 @@ export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreen
 export const SettingsScreen = ({navigation}: Props) => {
   const {appConfig} = useConfig();
   const getHeaderTitle = useCallback(() => <SettingsHeaderTitle />, []);
-  const {currentSession} = useSession();
-  const tokenData = currentSession?.tokenData || null;
+  const {isLoggedIn} = useSession();
 
   useEffect(() => {
     navigation.setOptions({
@@ -41,8 +40,13 @@ export const SettingsScreen = ({navigation}: Props) => {
           <Divider bold={true} />
           <ListSection>
             <ListSubheader>General</ListSubheader>
-            {tokenData ? <SettingsAccountListItem /> : <SettingsLoginListItem />}
-            {!tokenData && <SettingsRegistrationListItem />}
+            {isLoggedIn ? <SettingsAccountListItem /> : <SettingsLoginListItem />}
+            {!isLoggedIn && <SettingsRegistrationListItem />}
+            <NavigationListItem
+              title={'Accounts'}
+              description={'Switch between, add and remove the accounts on this device.'}
+              navComponent={SettingsStackScreenComponents.sessionSettings}
+            />
             <NavigationListItem
               title={'Server URL'}
               description={'URL of the Twitarr server.'}
@@ -139,11 +143,6 @@ export const SettingsScreen = ({navigation}: Props) => {
               title={'Query Client'}
               description={'Settings for the Twitarr API client.'}
               navComponent={SettingsStackScreenComponents.querySettingsScreen}
-            />
-            <NavigationListItem
-              title={'Sessions'}
-              description={'Manage local account sessions.'}
-              navComponent={SettingsStackScreenComponents.sessionSettings}
             />
             <NavigationListItem
               title={'About'}

@@ -1,14 +1,16 @@
 import {useNavigation} from '@react-navigation/native';
 import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useLayout} from '#src/Context/Contexts/LayoutContext';
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {createLogger} from '#src/Libraries/Logger';
+import {consumeStashedNavigationState, navigationRef} from '#src/Libraries/NavigationRef';
 import {OobeStackNavigator} from '#src/Navigation/Stacks/Oobe/OobeStackNavigator';
 import {RootStackComponents, RootStackParamList} from '#src/Navigation/Stacks/Root/RootStackComponents';
 import {BottomTabNavigator} from '#src/Navigation/Tabs/Bottom/BottomTabNavigator';
@@ -16,11 +18,16 @@ import {LighterScreen} from '#src/Screens/Main/LighterScreen';
 
 const logger = createLogger('RootStackNavigator.tsx');
 
+const hiddenStyles = StyleSheet.create({
+  hidden: {flex: 1, opacity: 0},
+  visible: {flex: 1},
+});
+
 export const RootStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createStackNavigator<RootStackParamList>();
-  const {appConfig} = useConfig();
-  const {currentSession, isLoading} = useSession();
+  const {oobeCompleted, resumeAfterCommit} = useOobe();
+  const {currentSession} = useSession();
   const {setHasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const {footerHeight} = useLayout();
@@ -55,37 +62,64 @@ export const RootStackNavigator = () => {
     return unsubscribe;
   }, [navigation, footerHeight]);
 
-  // Wait for session loading to complete before deciding initial route
-  if (isLoading) {
-    return null;
-  }
+  // A flow that switched sessions mid-stack (Settings > Server URL) stashed
+  // its navigation state before the SessionScope remount reset it. Put it back once the container
+  // is ready again. The navigator has to mount first, and would flash the initial route (Today)
+  // for a frame, so it stays invisible until the state is restored.
+  const [stashed] = useState(() => consumeStashedNavigationState());
+  const [restoring, setRestoring] = useState(!!stashed);
+  useEffect(() => {
+    if (!stashed) {
+      return;
+    }
+    let attempts = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const restore = () => {
+      if (navigationRef.isReady()) {
+        navigationRef.resetRoot(stashed);
+        // Let the restored state render before revealing it.
+        timer = setTimeout(() => setRestoring(false), 0);
+      } else if (attempts++ < 20) {
+        timer = setTimeout(restore, 50);
+      } else {
+        setRestoring(false);
+      }
+    };
+    restore();
+    return () => clearTimeout(timer);
+  }, [stashed]);
 
+  // Setup is where a session gets created, so a device with no session goes there even if it
+  // completed setup before (every session was removed, or storage was reset). A setup flow that
+  // just changed the session (first run, boarding) also comes back here to finish its last steps.
   let initialRouteName = RootStackComponents.oobeNavigator;
-  if ((currentSession?.oobeCompletedVersion ?? 0) >= appConfig.oobeExpectedVersion) {
+  if (oobeCompleted && currentSession && !resumeAfterCommit) {
     initialRouteName = RootStackComponents.rootContentScreen;
   }
 
   return (
-    <Stack.Navigator
-      initialRouteName={initialRouteName}
-      screenOptions={{...screenOptions, headerShown: false}}
-      screenListeners={{
-        state: () => {
-          logger.debug('navigation state change handler.');
-          setHasUnsavedWork(false);
-          // KrakenTalk call declined messages highlighted that this was previously
-          // clearing the snackbar too aggressively.
-          const state = navigation.getState();
-          const currentRootRoute = state?.routes[state.index]?.name;
-          if (previousRootRouteRef.current !== undefined && currentRootRoute !== previousRootRouteRef.current) {
-            setSnackbarPayload(undefined);
-          }
-          previousRootRouteRef.current = currentRootRoute;
-        },
-      }}>
-      <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />
-      <Stack.Screen name={RootStackComponents.rootContentScreen} component={BottomTabNavigator} />
-      <Stack.Screen name={RootStackComponents.lighterScreen} component={LighterScreen} />
-    </Stack.Navigator>
+    <View style={restoring ? hiddenStyles.hidden : hiddenStyles.visible}>
+      <Stack.Navigator
+        initialRouteName={initialRouteName}
+        screenOptions={{...screenOptions, headerShown: false}}
+        screenListeners={{
+          state: () => {
+            logger.debug('navigation state change handler.');
+            setHasUnsavedWork(false);
+            // KrakenTalk call declined messages highlighted that this was previously
+            // clearing the snackbar too aggressively.
+            const state = navigation.getState();
+            const currentRootRoute = state?.routes[state.index]?.name;
+            if (previousRootRouteRef.current !== undefined && currentRootRoute !== previousRootRouteRef.current) {
+              setSnackbarPayload(undefined);
+            }
+            previousRootRouteRef.current = currentRootRoute;
+          },
+        }}>
+        <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />
+        <Stack.Screen name={RootStackComponents.rootContentScreen} component={BottomTabNavigator} />
+        <Stack.Screen name={RootStackComponents.lighterScreen} component={LighterScreen} />
+      </Stack.Navigator>
+    </View>
   );
 };

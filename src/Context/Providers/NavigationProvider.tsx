@@ -22,7 +22,7 @@ export const NavigationProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
   const serverUrl = useServerUrl();
-  const canonicalHostnames = appConfig.apiClientConfig.canonicalHostnames;
+  const canonicalHostnames = appConfig.canonicalHostnames;
 
   /**
    * Add the session-dependent checks to the static linking config. ForeignLinkHandler tells the

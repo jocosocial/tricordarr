@@ -12,6 +12,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useClientSettings} from '#src/Context/Contexts/ClientSettingsContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -23,7 +24,8 @@ const logger = createLogger('CruiseSettingsScreen.tsx');
 
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
-  const {currentSession, updateSession} = useSession();
+  const {currentSession, setPreRegistrationOverride} = useSession();
+  const {preRegistrationMode} = usePreRegistration();
   const {promptDisablePreRegistration} = useDisablePreRegistration();
   const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
@@ -83,12 +85,12 @@ export const CruiseSettingsScreen = () => {
       logger.error('Cannot toggle pre-registration mode: no current session');
       return;
     }
-    if (currentSession.preRegistrationMode) {
+    if (preRegistrationMode) {
       promptDisablePreRegistration();
       return;
     }
     logger.debug('toggling pre-registration mode to', true);
-    await updateSession(currentSession.sessionID, {preRegistrationMode: true});
+    await setPreRegistrationOverride(currentSession.serverUrl, true);
   };
 
   const handleDismissMinAccessWarning = () => {
@@ -118,7 +120,7 @@ export const CruiseSettingsScreen = () => {
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
             testID={'cruisePreRegistration-button'}
-            buttonText={currentSession?.preRegistrationMode ? 'Disable' : 'Enable'}
+            buttonText={preRegistrationMode ? 'Disable' : 'Enable'}
             onPress={togglePreRegistrationMode}
             buttonColor={theme.colors.twitarrNeutralButton}
           />

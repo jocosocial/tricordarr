@@ -1,12 +1,8 @@
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {createUserOnServer} from '#src/Libraries/Network/ServerAuth';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
-import {
-  CreatedUserData,
-  KeywordData,
-  UserCreateData,
-  UserPasswordData,
-  UserUsernameData,
-} from '#src/Structs/ControllerStructs';
+import {KeywordData, UserCreateData, UserPasswordData, UserUsernameData} from '#src/Structs/ControllerStructs';
 import {KeywordAction, KeywordType} from '#src/Types';
 
 interface KeywordMutationProps {
@@ -57,11 +53,24 @@ export const useUserUsernameMutation = (options = {}) => {
   return useTokenAuthMutation(userUsernameHandler, options);
 };
 
-export const useUserCreateQuery = (options = {}) => {
-  const {apiPost} = useSwiftarrQueryClient();
+/**
+ * Create an account on an explicit server, independent of the active session.
+ */
+export const useUserCreateMutation = (options = {}) => {
+  const {appConfig} = useConfig();
 
-  const userCreateHandler = async ({username, password, verification}: UserCreateData) =>
-    await apiPost<CreatedUserData, UserCreateData>('/user/create', {username, password, verification});
+  const userCreateHandler = async ({
+    serverUrl,
+    username,
+    password,
+    verification,
+  }: UserCreateData & {serverUrl: string}) =>
+    await createUserOnServer(
+      serverUrl,
+      appConfig.urlPrefix,
+      {username, password, verification},
+      appConfig.apiClientConfig.mutationTimeout,
+    );
 
   return useTokenAuthMutation(userCreateHandler, options);
 };

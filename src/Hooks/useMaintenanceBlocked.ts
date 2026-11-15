@@ -14,8 +14,8 @@ const MAINTENANCE_EXEMPT_ENDPOINTS = ['/client/health', '/client/settings'];
  */
 export const useMaintenanceBlocked = () => {
   const {isAccessRestricted, minAccessLevel} = useClientSettings();
-  const {isLoggedIn, currentSession} = useSession();
-  const userAccessLevel = currentSession?.tokenData?.accessLevel;
+  const {isLoggedIn, currentAccount} = useSession();
+  const userAccessLevel = currentAccount?.accessLevel;
   return (
     isAccessRestricted &&
     (isLoggedIn ? !UserAccessLevel.hasAccess(userAccessLevel ?? UserAccessLevel.unverified, minAccessLevel) : true)

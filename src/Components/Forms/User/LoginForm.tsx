@@ -11,9 +11,17 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {PasswordValidation, UsernameValidation} from '#src/Libraries/ValidationSchema';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {LoginFormValues} from '#src/Types/FormValues';
+import {OnboardingMode} from '#src/Types/RouteParams';
 
 interface LoginFormProps {
   onSubmit: (values: LoginFormValues, helpers: FormikHelpers<LoginFormValues>) => void;
+  /** Pre-fill the username (signing a revoked or signed-out account back in). */
+  initialUsername?: string;
+  /**
+   * Handed to Forgot Password / Forgot Username so they act on the server this form is logging in
+   * to, which is not necessarily the active session's.
+   */
+  recoveryParams?: {serverUrl?: string; mode?: OnboardingMode};
 }
 
 const validationSchema = Yup.object().shape({
@@ -27,7 +35,7 @@ const initialValues: LoginFormValues = {
 };
 
 // https://formik.org/docs/guides/react-native
-export const LoginForm = ({onSubmit}: LoginFormProps) => {
+export const LoginForm = ({onSubmit, initialUsername = '', recoveryParams}: LoginFormProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const commonNavigation = useCommonStack();
@@ -44,7 +52,10 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
   );
 
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+    <Formik
+      initialValues={{...initialValues, username: initialUsername}}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting}) => (
         <View>
           <UsernameTextField testID={'loginUsername-input'} showErrorWithoutTouch={false} />
@@ -67,14 +78,14 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
           <PrimaryActionButton
             testID={'loginForgotPassword-button'}
             buttonText={'Forgot Password'}
-            onPress={() => commonNavigation.push(CommonStackComponents.accountRecoveryScreen)}
+            onPress={() => commonNavigation.push(CommonStackComponents.accountRecoveryScreen, recoveryParams)}
             viewStyle={styles.buttonContainer}
             buttonColor={theme.colors.twitarrNeutralButton}
           />
           <PrimaryActionButton
             testID={'loginForgotUsername-button'}
             buttonText={'Forgot Username'}
-            onPress={() => commonNavigation.push(CommonStackComponents.usernameLookupScreen)}
+            onPress={() => commonNavigation.push(CommonStackComponents.usernameLookupScreen, recoveryParams)}
             viewStyle={styles.buttonContainer}
             buttonColor={theme.colors.twitarrNeutralButton}
           />

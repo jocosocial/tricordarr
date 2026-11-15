@@ -13,9 +13,9 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
   const [hasTHO, setHasTHO] = useState(false);
   const [hasVerified, setHasVerified] = useState(false);
   const [hasAdmin, setHasAdmin] = useState(false);
-  const {currentSession} = useSession();
-  const tokenData = currentSession?.tokenData || null;
-  const accessLevel = tokenData?.accessLevel || UserAccessLevel.unverified;
+  const {currentAccount, isLoggedIn} = useSession();
+  // Refreshed from whoami, so a promotion or demotion shows up without logging in again.
+  const accessLevel = (isLoggedIn && currentAccount?.accessLevel) || UserAccessLevel.unverified;
   // Maybe these should come from SwiftarrClientConfig some day?
   const privilegedUsernames = ['admin', 'twitarrteam', 'tho', 'moderator'];
 
@@ -36,7 +36,7 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
     if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.admin)) {
       setHasAdmin(true);
     }
-  }, [accessLevel, tokenData]);
+  }, [accessLevel]);
 
   const clearLevels = () => {
     setHasModerator(false);

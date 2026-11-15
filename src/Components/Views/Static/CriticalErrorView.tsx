@@ -77,12 +77,19 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
     }
     setIsLoadingSessions(true);
     try {
-      const [sessions, lastSessionID] = await Promise.all([SessionStorage.getAll(), SessionStorage.getLastSessionID()]);
+      const [accounts, sessions, serverProfiles, lastSessionID] = await Promise.all([
+        SessionStorage.getAccounts(),
+        SessionStorage.getSessions(),
+        SessionStorage.getServerProfiles(),
+        SessionStorage.getLastSessionID(),
+      ]);
       setSessionsJson(
         JSON.stringify(
           {
             lastSessionID,
+            accounts,
             sessions,
+            serverProfiles,
           },
           null,
           2,

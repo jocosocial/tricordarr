@@ -23,8 +23,8 @@ import {ErrorResponse, FezData} from '#src/Structs/ControllerStructs';
 
 /**
  * Clone of useQuery for endpoints that do not require a logged-in user.
- * Disabled while Session is hydrating so the request uses the session server URL
- * (or the first-launch AppConfig default) rather than a stale fallback.
+ * Disabled while Session is hydrating and while there is no session at all (first-run setup
+ * before a server has been chosen), so a request only ever goes to the session's server.
  */
 export function useOpenQuery<TData, TQueryParams = Object, TError extends Error = AxiosError<ErrorResponse>>(
   endpoint: string,
@@ -34,14 +34,14 @@ export function useOpenQuery<TData, TQueryParams = Object, TError extends Error 
   },
   queryParams?: TQueryParams,
 ): UseQueryResult<TData, TError> {
-  const {isLoading} = useSession();
+  const {isLoading, currentSession} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
   const maintenanceGated = useMaintenanceGate(endpoint);
   // The healthcheck is how a disruption gets diagnosed and cleared, so it must keep running
   // through one. Otherwise a re-keyed health query (e.g. after a server switch) never fetches.
   const disruptionGated = disruptionDetected && endpoint !== '/client/health';
   const queryKey = [endpoint, queryParams, ...queryKeyExtraData];
-  const enabled = !isLoading && !disruptionGated && !maintenanceGated && (options?.enabled ?? true);
+  const enabled = !isLoading && !!currentSession && !disruptionGated && !maintenanceGated && (options?.enabled ?? true);
 
   const result = useQuery<TData, TError, TData>({
     queryKey,
@@ -59,8 +59,8 @@ export function useOpenQuery<TData, TQueryParams = Object, TError extends Error 
 
 /**
  * Clone of useQuery for unauthenticated public (non-API-prefix) endpoints.
- * Disabled while Session is hydrating so the request uses the session server URL
- * (or the first-launch AppConfig default) rather than a stale fallback.
+ * Disabled while Session is hydrating and while there is no session at all (first-run setup
+ * before a server has been chosen), so a request only ever goes to the session's server.
  */
 export function usePublicQuery<TData, TQueryParams = Object, TError extends Error = AxiosError<ErrorResponse>>(
   endpoint: string,
@@ -70,10 +70,10 @@ export function usePublicQuery<TData, TQueryParams = Object, TError extends Erro
   },
   queryParams?: TQueryParams,
 ): UseQueryResult<TData, TError> {
-  const {isLoading} = useSession();
+  const {isLoading, currentSession} = useSession();
   const {disruptionDetected, publicGet, queryKeyExtraData} = useSwiftarrQueryClient();
   const queryKey = [endpoint, queryParams, ...queryKeyExtraData];
-  const enabled = !isLoading && !disruptionDetected && (options?.enabled ?? true);
+  const enabled = !isLoading && !!currentSession && !disruptionDetected && (options?.enabled ?? true);
 
   const result = useQuery<TData, TError, TData>({
     queryKey,
@@ -116,7 +116,7 @@ export function useOpenPaginationQuery<
   options?: PaginationQueryOptionsType<TQueryFnData, TError, TData>,
   queryParams?: TQueryParams,
 ): UseInfiniteQueryResult<TData, TError> {
-  const {isLoading} = useSession();
+  const {isLoading, currentSession} = useSession();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
   const {appConfig} = useConfig();
   const maintenanceGated = useMaintenanceGate(endpoint);
@@ -137,6 +137,6 @@ export function useOpenPaginationQuery<
     initialPageParam: {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize},
     getNextPageParam: (lastPage: TQueryFnData) => getNextPageParam(lastPage),
     getPreviousPageParam: (firstPage: TQueryFnData) => getPreviousPageParam(firstPage),
-    enabled: !isLoading && !disruptionDetected && !maintenanceGated && (options?.enabled ?? true),
+    enabled: !isLoading && !!currentSession && !disruptionDetected && !maintenanceGated && (options?.enabled ?? true),
   });
 }

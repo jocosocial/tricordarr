@@ -7,6 +7,7 @@ import {ShipCode} from '#src/Enums/ShipCode';
 import {TimeZoneLabelMode} from '#src/Enums/TimeZoneLabelMode';
 import {LogLevel} from '#src/Libraries/Logger/types';
 import {StorageKeys} from '#src/Libraries/Storage';
+import type {ServerProfile} from '#src/Structs/SessionStructs';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 export type PushNotificationConfig = {
@@ -15,7 +16,6 @@ export type PushNotificationConfig = {
 
 export interface APIClientConfig {
   defaultPageSize: number;
-  canonicalHostnames: string[];
   cacheBuster: string;
   cacheTime: number;
   retry: number;
@@ -72,7 +72,52 @@ export interface UserPreferences {
   seamailIncludePrivateEvents: boolean;
 }
 
-export interface AppConfig {
+/**
+ * Settings that belong to one account rather than to the device. A new account starts from
+ * DeviceConfig.defaultPreferences; with no account signed in the defaults are edited in place.
+ * Stored per account in AsyncStorage as ACCOUNT_PREFS_V1_<accountID>.
+ */
+export interface AccountPreferences {
+  pushNotifications: PushNotificationConfig;
+  muteNotifications?: Date;
+  markReadCancelPush: boolean;
+  userPreferences: UserPreferences;
+  // enableLateDayFlip is app-wide, so it lives on DeviceConfig instead.
+  schedule: Omit<ScheduleConfig, 'enableLateDayFlip'>;
+  dismissWelcomeAboard: boolean;
+  /**
+   * Whether this account gets a background socket while it is not the active one. Stored but
+   * not acted on yet; the native notification service work consumes it.
+   */
+  backgroundNotifications: boolean;
+}
+
+/**
+ * The per-server slice of the effective config. Persisted as a ServerProfile (SessionStructs.ts),
+ * which keeps cruiseStartDateStr and derives cruiseStartDate from it.
+ */
+export interface ServerConfigFields {
+  cruiseStartDateStr: string;
+  cruiseStartDate: Date;
+  cruiseLength: number;
+  portTimeZoneID: string;
+  schedBaseUrl: string;
+  // Which ship's deck maps to fetch from /public/ship/<code>/. Hardcoded client-side
+  // for now; should eventually come from the server via /client/settings.
+  shipCode: ShipCode;
+  wifiNetworkNames: string[];
+  dismissMinAccessWarning: boolean;
+  // Hostnames the server says are also it (e.g. twitarr.com), from /client/settings. Links to
+  // them are routed in-app.
+  canonicalHostnames: string[];
+}
+
+/**
+ * The effective ("merged") config that `useConfig()` consumers read: DeviceConfig, plus the active
+ * ServerProfile, plus the active AccountPreferences. Never stored as such. See splitAppConfig
+ * and mergeAppConfig.
+ */
+export interface AppConfig extends ServerConfigFields {
   serverUrl: string;
   urlPrefix: string;
   enableBackgroundWorker: boolean;
@@ -85,30 +130,21 @@ export interface AppConfig {
   oobeExpectedVersion: number;
   enableDeveloperOptions: boolean;
   enableExperiments: boolean;
-  cruiseStartDateStr: string;
-  cruiseStartDate: Date;
-  cruiseLength: number;
   schedule: ScheduleConfig;
-  portTimeZoneID: string;
   apiClientConfig: APIClientConfig;
   enableEasterEgg: boolean;
   accessibility: AccessibilityConfig;
   muteNotifications?: Date;
   skipThumbnails: boolean;
   imagePreloadDelaySeconds: number;
-  schedBaseUrl: string;
-  // Which ship's deck maps to fetch from /public/ship/<code>/. Hardcoded client-side
-  // for now; should eventually come from the server via /client/settings.
-  shipCode: ShipCode;
   userPreferences: UserPreferences;
   markReadCancelPush: boolean;
   preRegistrationServerUrl: string;
   manualTimeOffset: number;
-  wifiNetworkNames: string[];
   forceShowTimezoneWarning: boolean;
   silenceTimezoneWarnings: boolean;
   dismissWelcomeAboard: boolean;
-  dismissMinAccessWarning: boolean;
+  backgroundNotifications: boolean;
   logLevel: LogLevel;
 }
 
@@ -170,9 +206,9 @@ export const defaultAppConfig: AppConfig = {
     showMarkersOutsideCruiseWeek: false,
   },
   portTimeZoneID: 'America/New_York',
+  canonicalHostnames: ['twitarr.com'],
   apiClientConfig: {
     defaultPageSize: 50,
-    canonicalHostnames: ['twitarr.com'],
     cacheBuster: new Date().toString(),
     cacheTime: defaultCacheTime,
     retry: 2, // 3 attempts total (initial, retry 1, retry 2)
@@ -212,36 +248,200 @@ export const defaultAppConfig: AppConfig = {
   silenceTimezoneWarnings: false,
   dismissWelcomeAboard: false,
   dismissMinAccessWarning: false,
+  backgroundNotifications: false,
   // logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
   logLevel: LogLevel.DEBUG,
 };
 
 /**
- * Returns the current AppConfig, either from storage or generates from default + "env vars".
+ * The device-wide slice of the config, persisted as APP_CONFIG_V3. Everything in AppConfig that is
+ * not per-server (ServerConfigFields) or per-account (AccountPreferences), plus the defaults a new
+ * account's preferences start from. `serverUrl` here only means "default server for a new session".
  */
-export const getAppConfig = async () => {
-  let rawConfig = await AsyncStorage.getItem(StorageKeys.APP_CONFIG);
-  if (!rawConfig) {
-    return defaultAppConfig;
+export type DeviceConfig = Omit<AppConfig, keyof ServerConfigFields | keyof AccountPreferences> & {
+  enableLateDayFlip: boolean;
+  defaultPreferences: AccountPreferences;
+};
+
+/**
+ * Pull the account-scoped preferences out of an effective config.
+ */
+export const pickAccountPreferences = (config: AppConfig): AccountPreferences => {
+  const {enableLateDayFlip: _enableLateDayFlip, ...schedule} = config.schedule;
+  return {
+    pushNotifications: config.pushNotifications,
+    muteNotifications: config.muteNotifications,
+    markReadCancelPush: config.markReadCancelPush,
+    userPreferences: config.userPreferences,
+    schedule,
+    dismissWelcomeAboard: config.dismissWelcomeAboard,
+    backgroundNotifications: config.backgroundNotifications,
+  };
+};
+
+/**
+ * The fields of an effective config that persist in a ServerProfile.
+ */
+export type ServerProfileFields = Required<
+  Pick<
+    ServerProfile,
+    | 'cruiseStartDateStr'
+    | 'cruiseLength'
+    | 'portTimeZoneID'
+    | 'schedBaseUrl'
+    | 'shipCode'
+    | 'wifiNetworkNames'
+    | 'dismissMinAccessWarning'
+    | 'canonicalHostnames'
+  >
+>;
+
+/**
+ * Pull the per-server fields out of an effective config.
+ */
+export const pickServerProfileFields = (config: ServerConfigFields): ServerProfileFields => ({
+  cruiseStartDateStr: config.cruiseStartDateStr,
+  cruiseLength: config.cruiseLength,
+  portTimeZoneID: config.portTimeZoneID,
+  schedBaseUrl: config.schedBaseUrl,
+  shipCode: config.shipCode,
+  wifiNetworkNames: config.wifiNetworkNames,
+  dismissMinAccessWarning: config.dismissMinAccessWarning,
+  canonicalHostnames: config.canonicalHostnames,
+});
+
+export const defaultAccountPreferences: AccountPreferences = pickAccountPreferences(defaultAppConfig);
+
+export const defaultServerProfileFields: ServerProfileFields = pickServerProfileFields(defaultAppConfig);
+
+/**
+ * Split an effective config into its device, account and server parts.
+ */
+export const splitAppConfig = (
+  config: AppConfig,
+): {device: DeviceConfig; preferences: AccountPreferences; server: ServerProfileFields} => {
+  const preferences = pickAccountPreferences(config);
+  const {
+    cruiseStartDateStr: _a,
+    cruiseStartDate: _b,
+    cruiseLength: _c,
+    portTimeZoneID: _d,
+    schedBaseUrl: _e,
+    shipCode: _f,
+    wifiNetworkNames: _g,
+    dismissMinAccessWarning: _h,
+    canonicalHostnames: _p,
+    pushNotifications: _i,
+    muteNotifications: _j,
+    markReadCancelPush: _k,
+    userPreferences: _l,
+    schedule: _m,
+    dismissWelcomeAboard: _n,
+    backgroundNotifications: _o,
+    ...device
+  } = config;
+  return {
+    device: {
+      ...device,
+      enableLateDayFlip: config.schedule.enableLateDayFlip,
+      // defaultPreferences is owned by the caller (it is only edited while no account is active).
+      defaultPreferences: defaultAccountPreferences,
+    },
+    preferences,
+    server: pickServerProfileFields(config),
+  };
+};
+
+/**
+ * Midnight in the port time zone on the given date-only string. Timezone-safe, unlike building a
+ * Date from the string directly.
+ */
+const buildCruiseStartDateFromStr = (dateStr: string, portTimeZoneID: string): Date =>
+  moment.tz(dateStr, 'YYYY-MM-DD', portTimeZoneID).toDate();
+
+/**
+ * The config fields of a (possibly sparse) server profile, leaving out its identity fields.
+ */
+const pickProfileConfig = (profile: Partial<ServerProfileFields>): Partial<ServerProfileFields> => ({
+  cruiseStartDateStr: profile.cruiseStartDateStr,
+  cruiseLength: profile.cruiseLength,
+  portTimeZoneID: profile.portTimeZoneID,
+  schedBaseUrl: profile.schedBaseUrl,
+  shipCode: profile.shipCode,
+  wifiNetworkNames: profile.wifiNetworkNames,
+  dismissMinAccessWarning: profile.dismissMinAccessWarning,
+  canonicalHostnames: profile.canonicalHostnames,
+});
+
+/**
+ * Merge device config, the active account's preferences and the active server profile into the
+ * effective config that `useConfig()` consumers read. Headless code gets the same view from
+ * getEffectiveConfig.
+ */
+export const mergeAppConfig = (
+  device: DeviceConfig,
+  preferences: AccountPreferences,
+  profile?: Partial<ServerProfileFields> | null,
+): AppConfig => {
+  const {enableLateDayFlip, defaultPreferences: _defaultPreferences, ...deviceRest} = device;
+  // Only the profile's config fields. The profile also carries its own serverUrl (the session's
+  // server), which must not replace AppConfig.serverUrl, the device's default for a new session.
+  const server: ServerProfileFields = {
+    ...defaultServerProfileFields,
+    ...stripUndefined(pickProfileConfig(profile ?? {})),
+  };
+  return {
+    ...deviceRest,
+    ...preferences,
+    schedule: {...preferences.schedule, enableLateDayFlip},
+    ...server,
+    cruiseStartDate: buildCruiseStartDateFromStr(server.cruiseStartDateStr, server.portTimeZoneID),
+  };
+};
+
+/**
+ * Drop undefined values so a sparse ServerProfile does not blank out the defaults beneath it.
+ */
+const stripUndefined = <T extends object>(obj: T): T =>
+  Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined)) as T;
+
+/**
+ * Fill in fields that stored preferences from older releases lack and revive the mute Date.
+ */
+export const reviveAccountPreferences = (raw: Partial<AccountPreferences>): AccountPreferences => {
+  const base = defaultAccountPreferences;
+  const prefs: AccountPreferences = {
+    ...base,
+    ...raw,
+    pushNotifications: {...base.pushNotifications, ...raw.pushNotifications},
+    userPreferences: {...base.userPreferences, ...raw.userPreferences},
+    schedule: {...base.schedule, ...raw.schedule},
+  };
+  if (raw.muteNotifications) {
+    prefs.muteNotifications = new Date(raw.muteNotifications);
+  } else {
+    delete prefs.muteNotifications;
   }
+  return prefs;
+};
+
+/**
+ * Parse a legacy single-blob AppConfig (APP_CONFIG_V2) into an effective config, filling in
+ * fields it predates. Only the migration reads the legacy blob.
+ */
+export const parseLegacyAppConfig = (rawConfig: string): AppConfig => {
   let appConfig = JSON.parse(rawConfig) as AppConfig;
   // Reconstruct cruiseStartDate as midnight in the port timezone.
   // Prefer cruiseStartDateStr (timezone-safe) with fallback for old stored configs.
-  if (appConfig.cruiseStartDateStr) {
-    appConfig.cruiseStartDate = moment
-      .tz(appConfig.cruiseStartDateStr, 'YYYY-MM-DD', appConfig.portTimeZoneID)
-      .toDate();
-  } else {
+  if (!appConfig.cruiseStartDateStr) {
     // Backward compat: extract UTC date from legacy stored ISO string
     const raw = new Date(appConfig.cruiseStartDate as unknown as string);
     const y = raw.getUTCFullYear();
     const m = String(raw.getUTCMonth() + 1).padStart(2, '0');
     const d = String(raw.getUTCDate()).padStart(2, '0');
     appConfig.cruiseStartDateStr = `${y}-${m}-${d}`;
-    appConfig.cruiseStartDate = moment
-      .tz(appConfig.cruiseStartDateStr, 'YYYY-MM-DD', appConfig.portTimeZoneID)
-      .toDate();
   }
+  appConfig.cruiseStartDate = buildCruiseStartDateFromStr(appConfig.cruiseStartDateStr, appConfig.portTimeZoneID);
   if (appConfig.muteNotifications) {
     appConfig.muteNotifications = new Date(appConfig.muteNotifications);
   }
@@ -249,24 +449,6 @@ export const getAppConfig = async () => {
   // "Migration"
   if (appConfig.manualTimeOffset === undefined) {
     appConfig.manualTimeOffset = 0;
-  }
-  if (appConfig.schedule.overlapExcludeDurationHours === undefined) {
-    appConfig.schedule.overlapExcludeDurationHours = 4;
-  }
-  if (appConfig.schedule.compactThemeEvents === undefined) {
-    appConfig.schedule.compactThemeEvents = true;
-  }
-  if (appConfig.schedule.timeZoneLabelMode === undefined) {
-    appConfig.schedule.timeZoneLabelMode = TimeZoneLabelMode.offset;
-  }
-  if (appConfig.schedule.overlapViewMode === undefined) {
-    appConfig.schedule.overlapViewMode = ScheduleOverlapViewMode.timeline;
-  }
-  if (appConfig.schedule.overlapOnlyYourEvents === undefined) {
-    appConfig.schedule.overlapOnlyYourEvents = true;
-  }
-  if (appConfig.schedule.showMarkersOutsideCruiseWeek === undefined) {
-    appConfig.schedule.showMarkersOutsideCruiseWeek = false;
   }
   if (appConfig.logLevel === undefined) {
     appConfig.logLevel = LogLevel.DEBUG;
@@ -276,21 +458,6 @@ export const getAppConfig = async () => {
   }
   if (appConfig.imagePreloadDelaySeconds === undefined) {
     appConfig.imagePreloadDelaySeconds = 2;
-  }
-  if (appConfig.userPreferences.showScrollButton === undefined) {
-    appConfig.userPreferences.showScrollButton = true;
-  }
-  if (appConfig.userPreferences.autoCompressOversizedImages === undefined) {
-    appConfig.userPreferences.autoCompressOversizedImages = true;
-  }
-  if (appConfig.userPreferences.shareAppURI === undefined) {
-    appConfig.userPreferences.shareAppURI = false;
-  }
-  if (appConfig.userPreferences.seamailIncludeLfgs === undefined) {
-    appConfig.userPreferences.seamailIncludeLfgs = true;
-  }
-  if (appConfig.userPreferences.seamailIncludePrivateEvents === undefined) {
-    appConfig.userPreferences.seamailIncludePrivateEvents = true;
   }
   if (appConfig.dismissWelcomeAboard === undefined) {
     appConfig.dismissWelcomeAboard = false;
@@ -307,7 +474,55 @@ export const getAppConfig = async () => {
   if (appConfig.apiClientConfig.serverSwitchGracePeriod === undefined) {
     appConfig.apiClientConfig.serverSwitchGracePeriod = defaultAppConfig.apiClientConfig.serverSwitchGracePeriod;
   }
-
-  // Ok now we're done
+  // Used to be stored under apiClientConfig. It is server data and now lives in the ServerProfile;
+  // the old value is dropped rather than moved, since /client/settings supplies it again.
+  delete (appConfig.apiClientConfig as {canonicalHostnames?: string[]}).canonicalHostnames;
+  appConfig.canonicalHostnames = defaultAppConfig.canonicalHostnames;
+  appConfig.backgroundNotifications = appConfig.backgroundNotifications ?? false;
+  appConfig.schedule = {...defaultAppConfig.schedule, ...appConfig.schedule};
+  appConfig.userPreferences = {...defaultAppConfig.userPreferences, ...appConfig.userPreferences};
+  appConfig.pushNotifications = {...defaultAppConfig.pushNotifications, ...appConfig.pushNotifications};
   return appConfig;
+};
+
+/**
+ * Default device config, derived from the default effective config.
+ */
+export const defaultDeviceConfig: DeviceConfig = splitAppConfig(defaultAppConfig).device;
+
+/**
+ * Fill in device fields that a stored APP_CONFIG_V3 from an older release lacks.
+ */
+const reviveDeviceConfig = (raw: Partial<DeviceConfig>): DeviceConfig => ({
+  ...defaultDeviceConfig,
+  ...raw,
+  apiClientConfig: {...defaultDeviceConfig.apiClientConfig, ...raw.apiClientConfig},
+  accessibility: {...defaultDeviceConfig.accessibility, ...raw.accessibility},
+  defaultPreferences: reviveAccountPreferences(raw.defaultPreferences ?? {}),
+});
+
+/**
+ * Returns the device config: APP_CONFIG_V3 if present, else the device part of a legacy
+ * APP_CONFIG_V2 blob (the one-time migration), else the defaults. The migration does not write
+ * V3 itself; the first save does. Old keys are left in place.
+ */
+export const getDeviceConfig = async (): Promise<DeviceConfig> => {
+  const raw = await AsyncStorage.getItem(StorageKeys.APP_CONFIG);
+  if (raw) {
+    return reviveDeviceConfig(JSON.parse(raw) as Partial<DeviceConfig>);
+  }
+  const legacy = await AsyncStorage.getItem(StorageKeys.LEGACY_APP_CONFIG);
+  if (legacy) {
+    const {device, preferences} = splitAppConfig(parseLegacyAppConfig(legacy));
+    // Revived like a stored V3 config, so device fields the legacy blob predates get defaults.
+    return reviveDeviceConfig({...device, defaultPreferences: preferences});
+  }
+  return defaultDeviceConfig;
+};
+
+/**
+ * Persist the device config (APP_CONFIG_V3).
+ */
+export const saveDeviceConfig = async (config: DeviceConfig): Promise<void> => {
+  await AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(config));
 };

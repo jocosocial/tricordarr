@@ -28,10 +28,10 @@ export const AnnouncementPostAsButtons = ({
   label,
 }: AnnouncementPostAsButtonsProps) => {
   const [field, , helpers] = useField<string>(name);
-  const {currentSession} = useSession();
+  const {currentAccount} = useSession();
   const {data: profilePublicData} = useUserProfileQuery();
   const {commonStyles} = useStyles();
-  const accessLevel = currentSession?.tokenData?.accessLevel;
+  const accessLevel = currentAccount?.accessLevel;
 
   const buttons = useMemo(() => {
     const privileged: SegmentedButtonType[] = [];

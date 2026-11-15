@@ -22,3 +22,41 @@ export const alertDeleteSession = (onConfirm: () => void, onCancel?: () => void)
     {text: 'Delete', style: 'destructive', onPress: onConfirm},
   ]);
 };
+
+/**
+ * Confirms signing an account out of this device. Other accounts and the account's row stay.
+ */
+export const alertSignOutAccount = (label: string, onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert('Sign Out', `Sign ${label} out of this device? You can sign back in later.`, [
+    {text: 'Close', style: 'cancel', onPress: onCancel},
+    {text: 'Sign Out', style: 'destructive', onPress: onConfirm},
+  ]);
+};
+
+/**
+ * Confirms removing an account and its local data (token, preferences, cached content) from this device.
+ */
+export const alertRemoveAccount = (label: string, onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert(
+    'Remove Account',
+    `Remove ${label} from this device? Its saved login, settings and cached content are deleted. This does not delete the account on the server.`,
+    [
+      {text: 'Close', style: 'cancel', onPress: onCancel},
+      {text: 'Remove', style: 'destructive', onPress: onConfirm},
+    ],
+  );
+};
+
+/**
+ * Offers to log in as an alt account the user just created on the site.
+ */
+export const alertLoginAsAlt = (onConfirm: () => void, onCancel?: () => void): void => {
+  Alert.alert(
+    'Alt Account',
+    'If you created an alt account, you can log in to it now. It is added beside this account.',
+    [
+      {text: 'Not Now', style: 'cancel', onPress: onCancel},
+      {text: 'Log In', onPress: onConfirm},
+    ],
+  );
+};

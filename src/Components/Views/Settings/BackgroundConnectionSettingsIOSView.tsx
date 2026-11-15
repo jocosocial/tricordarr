@@ -55,8 +55,8 @@ export const BackgroundConnectionSettingsIOSView = () => {
   const {theme} = useAppTheme();
   const {setSnackbarPayload} = useSnackbar();
   const formikRef = useRef<FormikProps<BackgroundConnectionSettingsFormValues>>(null);
-  const {currentSession} = useSession();
-  const tokenData = currentSession?.tokenData || null;
+  const {currentToken} = useSession();
+  const tokenData = currentToken;
   const [managerStatus, setManagerStatus] = useState<ManagerStatus | null>(null);
   const [foregroundProviderStatus, setForegroundProviderStatus] = useState<ForegroundProviderStatus | null>(null);
   const [websocketStatus, setWebsocketStatus] = useState<WebsocketDebugStatus | null>(null);

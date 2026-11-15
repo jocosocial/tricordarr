@@ -14,6 +14,8 @@ import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
 import {initialWindowMetrics, SafeAreaProvider} from 'react-native-safe-area-context';
 
 import {CallOverlay} from '#src/Components/Call/CallOverlay';
+import {AccountCookieSync} from '#src/Components/Libraries/AccountCookieSync';
+import {AccountIdentitySync} from '#src/Components/Libraries/AccountIdentitySync';
 import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
 import {AppFocusHandler} from '#src/Components/Libraries/AppFocusHandler';
 import {ForeignLinkHandler} from '#src/Components/Libraries/ForeignLinkHandler';
@@ -22,6 +24,7 @@ import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/No
 import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
 import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
+import {EffectiveConfigProvider} from '#src/Context/Providers/EffectiveConfigProvider';
 import {EnableUserNotificationProvider} from '#src/Context/Providers/EnableUserNotificationProvider';
 import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
@@ -32,6 +35,7 @@ import {OobeProvider} from '#src/Context/Providers/OobeProvider';
 import {PermissionsProvider} from '#src/Context/Providers/PermissionsProvider';
 import {PreRegistrationProvider} from '#src/Context/Providers/PreRegistrationProvider';
 import {SessionProvider} from '#src/Context/Providers/SessionProvider';
+import {SessionScope} from '#src/Context/Providers/SessionScope';
 import {ShellProvider} from '#src/Context/Providers/ShellProvider';
 import {SignOutProvider} from '#src/Context/Providers/SignOutProvider';
 import {SnackbarProvider} from '#src/Context/Providers/SnackbarProvider';
@@ -92,58 +96,67 @@ function App(): React.JSX.Element {
    * SnackbarProvider shouldn't need anything.
    * LinkingProvider needs ConfigProvider and SwiftarrQueryClientProvider.
    * AppNavigationThemeProvider should be within SafeAreaProvider.
-   * SessionProvider needs ConfigProvider for defaultAppConfig.
+   * SessionProvider needs ConfigProvider (device config) for urlPrefix and default preferences.
+   * EffectiveConfigProvider needs both; it is what `useConfig()` reads.
    * SwiftarrQueryClientProvider needs SessionProvider for currentSession.
+   * SessionScope remounts everything beneath it on a session change (one QueryClient per
+   * session). Everything above it is device-scoped.
    */
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <GestureHandlerRootView style={styles.root}>
         <ConfigProvider>
           <SessionProvider>
-            <OobeProvider>
-              <PreRegistrationProvider>
-                <PermissionsProvider>
-                  <ThemeProvider>
-                    <NavigationProvider>
-                      <KeyboardProvider>
-                        <StyleProvider>
-                          <ErrorHandlerProvider>
-                            <SnackbarProvider>
-                              <SwiftarrQueryClientProvider>
-                                <LoadingProvider>
-                                  <CriticalErrorProvider>
-                                    <TwitarrProvider>
-                                      <EnableUserNotificationProvider>
-                                        <FilterProvider>
-                                          <SignOutProvider>
-                                            <HelperProvider>
-                                              <ShellProvider>
-                                                <AppEventHandler />
-                                                <AppFocusHandler />
-                                                <ForeignLinkHandler />
-                                                <PushNotificationService />
-                                                <NotificationDataListener />
-                                                <NotificationDataPoller />
-                                                <RootStackNavigator />
-                                                <CallOverlay />
-                                              </ShellProvider>
-                                            </HelperProvider>
-                                          </SignOutProvider>
-                                        </FilterProvider>
-                                      </EnableUserNotificationProvider>
-                                    </TwitarrProvider>
-                                  </CriticalErrorProvider>
-                                </LoadingProvider>
-                              </SwiftarrQueryClientProvider>
-                            </SnackbarProvider>
-                          </ErrorHandlerProvider>
-                        </StyleProvider>
-                      </KeyboardProvider>
-                    </NavigationProvider>
-                  </ThemeProvider>
-                </PermissionsProvider>
-              </PreRegistrationProvider>
-            </OobeProvider>
+            <EffectiveConfigProvider>
+              <OobeProvider>
+                <PreRegistrationProvider>
+                  <PermissionsProvider>
+                    <ThemeProvider>
+                      <NavigationProvider>
+                        <KeyboardProvider>
+                          <StyleProvider>
+                            <ErrorHandlerProvider>
+                              <SnackbarProvider>
+                                <SessionScope>
+                                  <SwiftarrQueryClientProvider>
+                                    <LoadingProvider>
+                                      <CriticalErrorProvider>
+                                        <TwitarrProvider>
+                                          <EnableUserNotificationProvider>
+                                            <FilterProvider>
+                                              <SignOutProvider>
+                                                <HelperProvider>
+                                                  <ShellProvider>
+                                                    <AccountCookieSync />
+                                                    <AccountIdentitySync />
+                                                    <AppEventHandler />
+                                                    <AppFocusHandler />
+                                                    <ForeignLinkHandler />
+                                                    <PushNotificationService />
+                                                    <NotificationDataListener />
+                                                    <NotificationDataPoller />
+                                                    <RootStackNavigator />
+                                                    <CallOverlay />
+                                                  </ShellProvider>
+                                                </HelperProvider>
+                                              </SignOutProvider>
+                                            </FilterProvider>
+                                          </EnableUserNotificationProvider>
+                                        </TwitarrProvider>
+                                      </CriticalErrorProvider>
+                                    </LoadingProvider>
+                                  </SwiftarrQueryClientProvider>
+                                </SessionScope>
+                              </SnackbarProvider>
+                            </ErrorHandlerProvider>
+                          </StyleProvider>
+                        </KeyboardProvider>
+                      </NavigationProvider>
+                    </ThemeProvider>
+                  </PermissionsProvider>
+                </PreRegistrationProvider>
+              </OobeProvider>
+            </EffectiveConfigProvider>
           </SessionProvider>
         </ConfigProvider>
       </GestureHandlerRootView>

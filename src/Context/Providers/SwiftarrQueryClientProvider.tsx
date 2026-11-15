@@ -1,7 +1,7 @@
 import {Query, QueryKey} from '@tanstack/react-query';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
-import React, {PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 import DeviceInfo from 'react-native-device-info';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -11,6 +11,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {SwiftarrQueryClientContext} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useServerUrl} from '#src/Hooks/useServerUrl';
 import {createLogger} from '#src/Libraries/Logger';
+import {navigateToLogin} from '#src/Libraries/Navigation';
 import {BadResponseFormatError, createQueryClient, createSessionPersister} from '#src/Libraries/Network/APIClient';
 import {isHttpClientError, shouldRetryQuery} from '#src/Libraries/Network/Retry';
 import {joinUrl} from '#src/Libraries/UrlParser';
@@ -18,10 +19,19 @@ import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
 const logger = createLogger('SwiftarrQueryClientProvider.tsx');
 
+/**
+ * The session's API clients, QueryClient and persisted cache.
+ *
+ * Mounted under SessionScope, which remounts it on every session change, so everything here lives
+ * and dies with exactly one session: the QueryClient is created once per mount, the axios pair is
+ * built from that session's account token and server, and the cache file is that session's.
+ * Cache reducers still match on `queryKeyExtraData` so they stay correct even if two clients ever
+ * share a cache.
+ */
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
-  const {currentSession, isLoggedIn} = useSession();
+  const {currentSession, currentAccount, currentToken, isLoggedIn, markAccountRevoked} = useSession();
   const [errorCount, setErrorCount] = useState(0);
   // TRUE while ConfigServerUrlScreen is mid-swap to a new server, before maintenance-mode
   // status is known. Suppresses the generic error Snackbar so a transient 401 from some other
@@ -29,7 +39,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   // has a chance to resolve.
   const [serverSwitchInProgress, setServerSwitchInProgress] = useState(false);
   const {setSnackbarPayload} = useSnackbar();
-  const tokenData = currentSession?.tokenData || null;
+  const tokenData = currentToken;
 
   const serverUrl = useServerUrl();
 
@@ -87,37 +97,25 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   }, [appConfig.apiClientConfig.requestTimeout, serverUrl]);
 
   /**
-   * Create a stable QueryClient instance that persists across session changes.
-   * Use a ref to ensure the client is only created once and remains stable for hydration.
-   * Session isolation is maintained via session-scoped persister and query key scoping.
-   * The client itself doesn't need to be recreated per session - the persister handles isolation.
+   * One QueryClient per mount, and SessionScope mounts once per session. Bluesky throws if the key
+   * changes while mounted; a mismatch here would mean a cache mixing two sessions, so it is logged
+   * as an error instead of being allowed to pass silently.
    */
-  const queryClientRef = useRef<ReturnType<typeof createQueryClient> | null>(null);
-
-  // Create the client once on mount - it will remain stable for hydration
-  if (!queryClientRef.current) {
-    // Create with a stable identifier - the actual session isolation is handled by the persister
-    queryClientRef.current = createQueryClient('stable');
-  }
-
-  const queryClient = queryClientRef.current;
+  const [mountedSessionID] = useState(currentSession?.sessionID ?? null);
+  const [queryClient] = useState(() => createQueryClient(currentSession?.sessionID ?? 'none'));
+  useEffect(() => {
+    if ((currentSession?.sessionID ?? null) !== mountedSessionID) {
+      logger.error('Session changed without a SessionScope remount.', mountedSessionID, currentSession?.sessionID);
+    }
+  }, [currentSession?.sessionID, mountedSessionID]);
 
   /**
-   * Create session-scoped persister for query cache isolation.
-   * Update persister when session changes, but keep client stable.
+   * Session-scoped persister for this session's query cache file.
    */
-  const sessionPersister = useMemo(() => {
-    if (!currentSession) {
-      // Use a stable placeholder key - PersistQueryClientProvider will hydrate from this
-      // When session loads, the key will change and trigger re-hydration via the key prop
-      return createSessionPersister('__pending_session__');
-    }
-    return createSessionPersister(currentSession.sessionID);
-  }, [currentSession]);
-
-  // Use sessionID (or placeholder) as key to force PersistQueryClientProvider to remount
-  // when session loads, ensuring it re-hydrates with the correct persister
-  const persistKey = currentSession?.sessionID || '__pending_session__';
+  const sessionPersister = useMemo(
+    () => createSessionPersister(mountedSessionID ?? '__pending_session__'),
+    [mountedSessionID],
+  );
 
   /**
    * Bonus data to inject into the clients query keys.
@@ -201,10 +199,9 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
   // https://tanstack.com/query/v4/docs/react/guides/query-invalidation
   const onSuccess = () => {
-    if (!queryClientRef.current) return;
     logger.debug('Successfully loaded query client.');
-    queryClientRef.current.resumePausedMutations().then(() => {
-      queryClientRef.current?.invalidateQueries().then(() => {
+    queryClient.resumePausedMutations().then(() => {
+      queryClient.invalidateQueries().then(() => {
         logger.debug('Finished resuming offline data.');
       });
     });
@@ -227,8 +224,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
 
   // Configure query cache error/success handlers
   useEffect(() => {
-    if (!queryClientRef.current) return;
-    const queryCache = queryClientRef.current.getQueryCache();
+    const queryCache = queryClient.getQueryCache();
     queryCache.config = {
       onError: (error, query) => {
         let errorString = String(error);
@@ -249,6 +245,33 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         // here late. MaintenanceModeView already explains it, so don't also show an error.
         const isMaintenanceResponse =
           isAxiosError(error) && error.response?.status === 401 && /maintenance mode/i.test(errorString);
+        // A 401 on a request that carried this session's token means the server no longer honors
+        // it (typically a "log out all devices" from elsewhere deleted the shared token). Revoke
+        // just this account; the revoke is guarded by sessionID so a late 401 can't hit another.
+        const sentToken = isAxiosError(error) ? String(error.config?.headers?.Authorization ?? '') : '';
+        const isRevokedToken =
+          isAxiosError(error) &&
+          error.response?.status === 401 &&
+          !isMaintenanceResponse &&
+          !!currentAccount &&
+          !!currentToken &&
+          !!currentSession &&
+          sentToken === `Bearer ${currentToken.token}`;
+        if (isRevokedToken) {
+          const label = currentAccount.username || 'your account';
+          markAccountRevoked(currentAccount.accountID, currentSession.sessionID).catch(err =>
+            logger.error('Failed to mark account revoked:', err),
+          );
+          setSnackbarPayload({
+            message: `Your session for ${label} was signed out. Tap to sign in again.`,
+            messageType: 'error',
+            action: {
+              label: 'Sign In',
+              onPress: () => navigateToLogin({serverUrl: currentAccount.serverUrl, username: currentAccount.username}),
+            },
+          });
+          return;
+        }
         if (!disruptionDetected && !serverSwitchInProgress && !isMaintenanceResponse) {
           setSnackbarPayload({message: errorString, messageType: 'error'});
         }
@@ -270,7 +293,17 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         }
       },
     };
-  }, [disruptionDetected, serverSwitchInProgress, errorCount, setSnackbarPayload]);
+  }, [
+    queryClient,
+    disruptionDetected,
+    serverSwitchInProgress,
+    errorCount,
+    setSnackbarPayload,
+    currentAccount,
+    currentToken,
+    currentSession,
+    markAccountRevoked,
+  ]);
 
   const shouldDehydrateQuery = (query: Query) => {
     // Exclude queries that have never completed a fetch - there's no data to persist.
@@ -303,32 +336,10 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     return !noDehydrateEndpoints.includes(endpoint) && !query.meta?.noDehydrate;
   };
 
-  // Track previous sessionID to detect actual session switches (not initial load)
-  const previousSessionIDRef = useRef<string | null>(null);
-
-  // Clear query cache when session changes to ensure clean state
-  // Only clear when switching between two real sessions, not on initial load
   useEffect(() => {
-    if (!queryClientRef.current) return; // Don't run until client is created
-
-    const currentSessionID = currentSession?.sessionID || null;
-    const previousSessionID = previousSessionIDRef.current;
-
-    // Only clear cache when switching between two different real sessions (not initial load from null)
-    if (currentSession && previousSessionID !== null && previousSessionID !== currentSessionID) {
-      logger.debug('Session changed, clearing query cache');
-      queryClientRef.current.clear();
-    }
-
-    // Update ref after processing
-    previousSessionIDRef.current = currentSessionID;
-  }, [currentSession]);
-
-  useEffect(() => {
-    if (!queryClientRef.current) return;
     logger.debug('Configuring query client');
-    const currentOptions = queryClientRef.current.getDefaultOptions();
-    queryClientRef.current.setDefaultOptions({
+    const currentOptions = queryClient.getDefaultOptions();
+    queryClient.setDefaultOptions({
       ...currentOptions,
       queries: {
         ...currentOptions.queries,
@@ -345,7 +356,12 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         networkMode: 'online',
       },
     });
-  }, [appConfig.apiClientConfig.cacheTime, appConfig.apiClientConfig.retry, appConfig.apiClientConfig.staleTime]);
+  }, [
+    queryClient,
+    appConfig.apiClientConfig.cacheTime,
+    appConfig.apiClientConfig.retry,
+    appConfig.apiClientConfig.staleTime,
+  ]);
 
   return (
     <SwiftarrQueryClientContext.Provider
@@ -366,7 +382,6 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         serverUrl,
       }}>
       <PersistQueryClientProvider
-        key={persistKey}
         client={queryClient}
         persistOptions={{
           persister: sessionPersister,

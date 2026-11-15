@@ -5,9 +5,26 @@
  * https://github.com/jocosocial/tricordarr/issues/145
  */
 export const StorageKeys = {
-  APP_CONFIG: 'APP_CONFIG_V2',
+  // Device-wide config. The pre-split blob (APP_CONFIG_V2) is only read by the migration.
+  APP_CONFIG: 'APP_CONFIG_V3',
+  LEGACY_APP_CONFIG: 'APP_CONFIG_V2',
   WS_HEALTHCHECK_DATA: 'WS_HEALTHCHECK_DATA_V3',
   FGS_START: 'FGS_START_V2',
-  SESSIONS_DATA: 'SESSIONS_DATA_V1',
+  // Pre-account-model sessions (with tokens inline). Only read by the migration.
+  LEGACY_SESSIONS_DATA: 'SESSIONS_DATA_V1',
+  ACCOUNTS: 'ACCOUNTS_V1',
+  SESSIONS: 'SESSIONS_V2',
+  SERVER_PROFILES: 'SERVER_PROFILES_V1',
+  OOBE_COMPLETED_VERSION: 'APP_OOBE_COMPLETED_VERSION_V1',
   LAST_SESSION_ID: 'LAST_SESSION_ID_V1',
+} as const;
+
+/**
+ * Per-account storage keys: a token in SecureStore, preferences in AsyncStorage.
+ */
+export const AccountStorageKeys = {
+  token: (accountID: string) => `ACCOUNT_TOKEN_V1_${accountID}`,
+  preferences: (accountID: string) => `ACCOUNT_PREFS_V1_${accountID}`,
+  // Raw swiftarr_session webview cookie value, so it can be put back when switching to the account.
+  cookie: (accountID: string) => `ACCOUNT_COOKIE_V1_${accountID}`,
 } as const;

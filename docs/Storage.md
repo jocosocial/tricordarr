@@ -2,9 +2,24 @@
 
 ## Map
 
-Sessions and tokens: `expo-secure-store` via `SessionStorage.ts`.
+Accounts, sessions, tokens: see [Accounts and Sessions](Accounts%20and%20Sessions.md). Tokens are `expo-secure-store` (one value per account); the metadata is AsyncStorage. Read and written via `SessionStorage.ts` and `SessionPersistence.ts`.
 
-Small scalar config: AsyncStorage via `StorageKeys` in `src/Libraries/Storage/index.ts` (`AppConfig`, FGS healthcheck, FGS start time).
+Small scalar config: AsyncStorage via `StorageKeys` in `src/Libraries/Storage/index.ts` (device config, FGS healthcheck, FGS start time).
+
+| Store | Key | Scope |
+|---|---|---|
+| SecureStore | `ACCOUNT_TOKEN_V1_<accountID>` | account (secret) |
+| SecureStore | `ACCOUNT_COOKIE_V1_<accountID>` | account (secret): raw `swiftarr_session` webview cookie |
+| SecureStore | `LAST_SESSION_ID_V1` | device pointer; the one thing background code reads |
+| AsyncStorage | `ACCOUNTS_V1`, `SESSIONS_V2`, `SERVER_PROFILES_V1` | small metadata arrays |
+| AsyncStorage | `ACCOUNT_PREFS_V1_<accountID>` | account |
+| AsyncStorage | `APP_CONFIG_V3` | device |
+| AsyncStorage | `APP_OOBE_COMPLETED_VERSION_V1` | device |
+| File | `query-cache-<sessionID>.json` | session; deleted with the session |
+
+Tokens are in the Keychain/Keystore rather than AsyncStorage, one small value per account, which also sidesteps the ~2 KB value caution on older iOS that a single blob of every session was creeping toward.
+
+The pre-account-model keys (`SESSIONS_DATA_V1`, `APP_CONFIG_V2`) are left in place after the one-time migration (the `StorageKeys` versioning convention) and can be deleted a release later.
 
 React Query cache: a file in the documents directory via `QueryCacheStorage.ts`. One file per session, named `query-cache-${sessionID}.json`.
 
@@ -24,7 +39,7 @@ File writes are not atomic. The adapter writes a `.tmp` sibling then `moveSync`s
 
 Restore is all-or-nothing: one corrupt file discards the whole cache. TanStack already does that cleanup in `persistQueryClientRestore`.
 
-Deleting a session does not remove its persisted cache, so orphans accumulate (previously AsyncStorage rows, now files). `deleteSession` in `SessionProvider.tsx` is where that would be fixed.
+Removing a session (or an account, which removes its sessions) deletes its cache file, and signing an account out or revoking it clears the cache of its sessions. `persistSessionState` does this by diffing the previous and next state, so no caller has to remember to.
 
 ## Rule
 

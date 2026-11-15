@@ -171,7 +171,7 @@ export const SettingsStackNavigator = () => {
       <Stack.Screen
         name={SettingsStackScreenComponents.sessionSettings}
         component={SessionSettingsScreen}
-        options={{title: 'Sessions'}}
+        options={{title: 'Accounts'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.sessionDetails}

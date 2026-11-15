@@ -1,31 +1,45 @@
-import React, {PropsWithChildren, useCallback, useMemo, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {OobeContext} from '#src/Context/Contexts/OobeContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
 import {createLogger} from '#src/Libraries/Logger';
+import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
 
 const logger = createLogger('OobeProvider.tsx');
 
+/**
+ * OOBE completion is device-level (APP_OOBE_COMPLETED_VERSION_V1): a second account on a device
+ * that already onboarded does not re-run it. Withholds children until the stored version has been
+ * read, like the config and session providers, so the root navigator never picks its initial
+ * route from a placeholder.
+ */
 export const OobeProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
-  const {currentSession, updateSession} = useSession();
-  const [onboarding, setOnboarding] = useState(false);
+  const [completedVersion, setCompletedVersion] = useState<number>();
+  const [resumeAfterCommit, setResumeAfterCommit] = useState(false);
 
-  const oobeCompleted = useMemo(() => {
-    const completedVersion = currentSession?.oobeCompletedVersion ?? 0;
-    return completedVersion === appConfig.oobeExpectedVersion;
-  }, [currentSession?.oobeCompletedVersion, appConfig.oobeExpectedVersion]);
+  useEffect(() => {
+    SessionStorage.getOobeCompletedVersion()
+      .then(setCompletedVersion)
+      .catch(error => {
+        logger.error('Failed to read OOBE version:', error);
+        setCompletedVersion(0);
+      });
+  }, []);
+
+  const oobeCompleted = (completedVersion ?? 0) >= appConfig.oobeExpectedVersion;
+
+  /**
+   * Record OOBE as completed at the expected version (or any version, for the developer reset).
+   */
+  const setOobeCompletedVersion = useCallback(async (version: number) => {
+    setCompletedVersion(version);
+    await SessionStorage.setOobeCompletedVersion(version);
+  }, []);
 
   const oobeFinish = useCallback(async () => {
-    if (!currentSession) {
-      logger.warn('Cannot finish OOBE: no current session');
-      return;
-    }
-    await updateSession(currentSession.sessionID, {
-      oobeCompletedVersion: appConfig.oobeExpectedVersion,
-    });
-    setOnboarding(false);
+    await setOobeCompletedVersion(appConfig.oobeExpectedVersion);
+    setResumeAfterCommit(false);
     // @TODO remove this after 2026. This is here because the decision to start with thumbs
     // happened after preregistration opened so a ton of people have the original default
     // of skipping thumbnails.
@@ -34,18 +48,24 @@ export const OobeProvider = ({children}: PropsWithChildren) => {
     //   ...appConfig,
     //   skipThumbnails: false,
     // });
-    // The persist effect handles writing lastSessionID based on currentSessionID
-  }, [currentSession, updateSession, appConfig]);
+  }, [appConfig.oobeExpectedVersion, setOobeCompletedVersion]);
 
   const contextValue = useMemo(
     () => ({
       oobeCompleted,
+      oobeCompletedVersion: completedVersion ?? 0,
       oobeFinish,
-      onboarding,
-      setOnboarding,
+      setOobeCompletedVersion,
+      resumeAfterCommit,
+      setResumeAfterCommit,
     }),
-    [oobeCompleted, oobeFinish, onboarding],
+    [oobeCompleted, completedVersion, oobeFinish, setOobeCompletedVersion, resumeAfterCommit],
   );
+
+  if (completedVersion === undefined) {
+    logger.debug('OOBE state is not ready.');
+    return null;
+  }
 
   return <OobeContext.Provider value={contextValue}>{children}</OobeContext.Provider>;
 };

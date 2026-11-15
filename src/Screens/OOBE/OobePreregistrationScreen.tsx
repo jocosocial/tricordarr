@@ -1,4 +1,3 @@
-import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -10,33 +9,22 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useOobe} from '#src/Context/Contexts/OobeContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {OobeLocation} from '#src/Enums/OobeLocation';
-import {createLogger} from '#src/Libraries/Logger';
-import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
-import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
-import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
-import {TokenStringData} from '#src/Structs/ControllerStructs';
-
-const logger = createLogger('OobePreregistrationScreen.tsx');
+import {OobeStackComponents, useOobeStack} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
-type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePreregistrationScreen>;
-
-export const OobePreregistrationScreen = ({navigation, route}: Props) => {
+/**
+ * "Welcome Aboard": the start of leaving pre-registration for the ship, opened from the
+ * pre-registration banner.
+ */
+export const OobePreregistrationScreen = () => {
   const {commonStyles} = useStyles();
-  const {currentSession, updateSession, signIn} = useSession();
-  const rootNavigation = useRootStack();
+  const navigation = useOobeStack();
   const {appConfig} = useConfig();
-  const {oobeCompleted, setOnboarding} = useOobe();
   const {fromAsset} = useAppImage();
-  const [sessionServerURL, setSessionServerURL] = React.useState(appConfig.preRegistrationServerUrl);
-  const [sessionTokenData, setSessionTokenData] = React.useState<TokenStringData | null>(null);
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
@@ -47,49 +35,21 @@ export const OobePreregistrationScreen = ({navigation, route}: Props) => {
     image: commonStyles.roundedBorderLarge,
   });
 
-  const onPress = async () => {
-    if (!currentSession) {
-      logger.warn('Cannot update session: no current session');
-      return;
-    }
-    // Store some current session data so we can restore it if we go back.
-    setSessionServerURL(currentSession.serverUrl);
-    setSessionTokenData(currentSession.tokenData);
-    // Update current session to production mode
-    const useOnboardingServerUrl = route.params?.intent === 'onboarding' || !oobeCompleted;
-    await updateSession(currentSession.sessionID, {
-      // When intent is onboarding, always use appConfig.serverUrl
-      // Otherwise preserve existing server URL when re-running OOBE after completion
-      ...(useOnboardingServerUrl ? {serverUrl: appConfig.serverUrl} : {}),
-      preRegistrationMode: false,
+  // Boarding is the setup flow against the production server (the default one). Nothing about the
+  // current session changes until that flow ends with a login, a new account, or proceeding
+  // without one, so backing out at any point leaves the pre-registration session exactly as it
+  // was. That final step is also the cutoff: it deletes the pre-registration server's accounts.
+  const onPress = () => {
+    navigation.push(OobeStackComponents.oobeServerScreen, {
+      mode: 'boarding',
+      location: OobeLocation.ship,
+      serverUrl: appConfig.serverUrl,
     });
-    if (useOnboardingServerUrl) {
-      setOnboarding(true);
-    }
-    navigation.push(OobeStackComponents.oobeServerScreen, {location: OobeLocation.ship});
   };
 
-  const onBackPress = async () => {
-    if (!currentSession) {
-      logger.warn('Cannot update session: no current session');
-      return;
-    }
-    // Update current session server URL to whatever it was using before.
-    await updateSession(currentSession.sessionID, {
-      serverUrl: sessionServerURL,
-      preRegistrationMode: true,
-    });
-    if (sessionTokenData) {
-      await signIn(sessionTokenData);
-    }
-    // This animation still doesn't look great, but it's good enough.
-    rootNavigation.setOptions({animationTypeForReplace: 'pop'});
-    rootNavigation.replace(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.mainScreen,
-      },
-    });
+  // First screen of a flow pushed over the app, so going back returns to wherever that was.
+  const onBackPress = () => {
+    navigation.goBack();
   };
 
   return (

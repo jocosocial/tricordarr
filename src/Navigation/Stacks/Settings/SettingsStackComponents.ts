@@ -17,11 +17,12 @@ export type SettingsStackParamList = CommonStackParamList & {
   ChangePasswordScreen: undefined;
   ChangeUsernameScreen: undefined;
   AccountManagementScreen: undefined;
-  LoginScreen: undefined;
+  // serverUrl and username pre-fill the form (add account, sign a revoked account back in).
+  LoginScreen: {serverUrl?: string; username?: string} | undefined;
   FeatureSettingsScreen: undefined;
   NotificationPollerSettingsScreen: undefined;
   LoadingSettingScreen: undefined;
-  RegisterScreen: undefined;
+  RegisterScreen: {serverUrl?: string} | undefined;
   CruiseSettingsScreen: undefined;
   UserInfoSettingsScreen: undefined;
   AboutSettingsScreen: undefined;

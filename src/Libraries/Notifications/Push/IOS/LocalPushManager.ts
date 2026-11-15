@@ -1,6 +1,6 @@
 import {checkNotifications, RESULTS} from 'react-native-permissions';
 
-import {getAppConfig} from '#src/Libraries/AppConfig';
+import {getEffectiveConfig} from '#src/Libraries/EffectiveConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {buildWebsocketURL, getToken} from '#src/Libraries/Network/Websockets';
 
@@ -22,7 +22,7 @@ export const startLocalPushManager = async () => {
     return;
   }
   try {
-    const [socketUrl, token, appConfig] = await Promise.all([buildWebsocketURL(), getToken(), getAppConfig()]);
+    const [socketUrl, token, appConfig] = await Promise.all([buildWebsocketURL(), getToken(), getEffectiveConfig()]);
     if (!socketUrl || !token) {
       logger.error('Failed to get socket URL or token. Not starting manager.');
       return;

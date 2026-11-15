@@ -2,7 +2,7 @@ import {Directory, File, Paths} from 'expo-file-system';
 import {AppState} from 'react-native';
 import {consoleTransport, logger as rnLogger} from 'react-native-logs';
 
-import {getAppConfig} from '#src/Libraries/AppConfig';
+import {getDeviceConfig} from '#src/Libraries/AppConfig';
 import {LogBuffer} from '#src/Libraries/Logger/LogBuffer';
 import {LogEntry, Logger, LogLevel} from '#src/Libraries/Logger/types';
 
@@ -153,7 +153,7 @@ logBuffer = new LogBuffer(getCurrentLogFile, logInternalError);
 const initializeLogger = async () => {
   try {
     // Load config
-    const appConfig = await getAppConfig();
+    const appConfig = await getDeviceConfig();
     currentLogLevel = appConfig.logLevel;
     rootLogger.setSeverity(currentLogLevel);
 

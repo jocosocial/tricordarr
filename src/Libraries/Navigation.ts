@@ -2,7 +2,13 @@ import {StackActions} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 import {FezType} from '#src/Enums/FezType';
+import {navigationRef} from '#src/Libraries/NavigationRef';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
+import {OobeStackComponents} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
+import {RootStackComponents} from '#src/Navigation/Stacks/Root/RootStackComponents';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
+import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 /**
@@ -74,4 +80,56 @@ export const openFezChatScreen = (
   } else if (FezType.isLFGType(fezType)) {
     popToOrPush(navigation, CommonStackComponents.lfgChatScreen, {fezID, initialReadCount}, 'fezID');
   }
+};
+
+/**
+ * Open the login form from code outside any stack (a snackbar action, an account switcher). Pass the
+ * server and username to pre-fill them, e.g. to sign a revoked account back in.
+ */
+export const navigateToLogin = (params?: {serverUrl?: string; username?: string}): void => {
+  if (!navigationRef.isReady()) {
+    return;
+  }
+  navigationRef.navigate(RootStackComponents.rootContentScreen, {
+    screen: BottomTabComponents.homeTab,
+    params: {
+      screen: MainStackComponents.mainSettingsScreen,
+      params: {
+        screen: SettingsStackScreenComponents.login,
+        params,
+      },
+    },
+  });
+};
+
+/**
+ * Open the setup flow to add an account (pick a server, conduct, then log in / create / proceed),
+ * starting on `serverUrl` if given. It is a root-level stack, so this works from anywhere: the
+ * switcher sheet and the Accounts screen.
+ */
+export const navigateToAddAccount = (serverUrl?: string): void => {
+  if (!navigationRef.isReady()) {
+    return;
+  }
+  navigationRef.dispatch(
+    StackActions.push(RootStackComponents.oobeNavigator, {
+      screen: OobeStackComponents.oobeServerScreen,
+      params: {mode: 'addAccount', serverUrl},
+    }),
+  );
+};
+
+/**
+ * Open the setup flow to leave pre-registration for the ship, starting at its "Welcome Aboard"
+ * screen. Pushed on top of the app, so backing out returns to where the user was.
+ */
+export const navigateToBoarding = (): void => {
+  if (!navigationRef.isReady()) {
+    return;
+  }
+  navigationRef.dispatch(
+    StackActions.push(RootStackComponents.oobeNavigator, {
+      screen: OobeStackComponents.oobePreregistrationScreen,
+    }),
+  );
 };

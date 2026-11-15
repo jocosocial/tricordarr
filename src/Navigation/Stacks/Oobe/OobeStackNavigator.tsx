@@ -1,6 +1,7 @@
 import {createStackNavigator} from '@react-navigation/stack';
-import React from 'react';
+import React, {useState} from 'react';
 
+import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonScreens} from '#src/Navigation/Stacks/Common/CommonScreens';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
@@ -15,14 +16,23 @@ import {OobeWelcomeScreen} from '#src/Screens/OOBE/OobeWelcomeScreen';
 import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
 import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
 
+/**
+ * The setup flow: first run, boarding from pre-registration, and adding an account. See
+ * OnboardingMode. Entered at a specific screen for the latter two; first run starts at the welcome
+ * screen. First run and boarding come back in at permissions once their commit has changed the
+ * session and remounted the navigators.
+ */
 export const OobeStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createStackNavigator<OobeStackParamList>();
+  const {resumeAfterCommit} = useOobe();
+  // Decided once per mount; the flag is cleared when setup finishes.
+  const [initialRouteName] = useState(
+    resumeAfterCommit ? OobeStackComponents.oobePermissionsScreen : OobeStackComponents.oobeWelcomeScreen,
+  );
 
   return (
-    <Stack.Navigator
-      initialRouteName={OobeStackComponents.oobeWelcomeScreen}
-      screenOptions={{...screenOptions, headerShown: true}}>
+    <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
         name={OobeStackComponents.oobeWelcomeScreen}
         component={OobeWelcomeScreen}
