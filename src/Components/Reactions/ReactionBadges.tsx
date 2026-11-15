@@ -48,17 +48,20 @@ export const ReactionBadges = ({reactions, onBadgePress, alignRight = false}: Re
           ...commonStyles.roundedBorderLarge,
           ...commonStyles.marginRightSmall,
           ...commonStyles.marginBottomSmall,
-          backgroundColor: theme.colors.secondaryContainer,
+          backgroundColor: theme.colors.reactionBadge,
         },
         selectedBadge: {
-          backgroundColor: theme.colors.primaryContainer,
+          backgroundColor: theme.colors.primary,
+        },
+        selectedText: {
+          color: theme.colors.onPrimary,
         },
         text: {
           ...commonStyles.bold,
           ...commonStyles.marginLeftSmall,
         },
       }),
-    [alignRight, commonStyles, theme.colors.primaryContainer, theme.colors.secondaryContainer],
+    [alignRight, commonStyles, theme.colors.onPrimary, theme.colors.primary, theme.colors.reactionBadge],
   );
 
   if (reactions.length === 0) {
@@ -78,7 +81,7 @@ export const ReactionBadges = ({reactions, onBadgePress, alignRight = false}: Re
               onLongPress={details.show}
               style={[styles.badge, selected && styles.selectedBadge]}>
               <ReactionIcon reaction={reaction.reaction} />
-              <Text style={styles.text}>{reaction.users.length}</Text>
+              <Text style={[styles.text, selected && styles.selectedText]}>{reaction.users.length}</Text>
             </TouchableOpacity>
           );
         })}

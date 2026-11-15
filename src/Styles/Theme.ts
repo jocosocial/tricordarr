@@ -92,6 +92,9 @@ export const twitarrTheme = {
     onImageViewer: 'rgb(255, 255, 255)',
     constantBlack: 'rgb(0, 0, 0)',
     constantWhite: 'rgb(255, 255, 255)',
+    // A translucent shade rather than a fixed colour, so the badge is darker than whichever message
+    // bubble it sits on (other users' and the user's own bubbles differ).
+    reactionBadge: 'rgba(0, 0, 0, 0.1)',
     constantAlphaBlack: 'rgba(0, 0, 0, 0.5)',
     // Lifted from the Site UI's Bootstrap .alert-warning colors.
     warningBannerBackground: 'rgb(255, 243, 205)',
@@ -171,6 +174,8 @@ export const twitarrThemeDark = {
     onImageViewer: 'rgb(255, 255, 255)',
     constantBlack: 'rgb(0, 0, 0)',
     constantWhite: 'rgb(255, 255, 255)',
+    // See the light theme. Dark bubbles need a stronger shade for the same contrast.
+    reactionBadge: 'rgba(0, 0, 0, 0.3)',
     constantAlphaBlack: 'rgba(0, 0, 0, 0.5)',
     // Lifted from the Site UI's Bootstrap .alert-warning colors.
     warningBannerBackground: 'rgb(51, 39, 1)',
