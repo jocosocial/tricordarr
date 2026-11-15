@@ -31,9 +31,9 @@ export const AccountsHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
           <HelpTopicView title={'Add Account'} icon={AppIcons.new}>
-            Walks through the same steps as first-time setup: pick a server (it is checked first), accept the code of
-            conduct, then log in, create an account, or proceed without one. Nothing is signed out, and nothing changes
-            until you finish.
+            Walks through the same steps as first-time setup: pick a server (it is checked first), then log in, create
+            an account (after accepting the code of conduct), or proceed without one. Nothing is signed out, and nothing
+            changes until you finish.
           </HelpTopicView>
           <HelpTopicView title={'Sign Out'} icon={AppIcons.logout}>
             Signs the account out of this device only. Its row stays so you can sign back in quickly.

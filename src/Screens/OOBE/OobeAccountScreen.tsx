@@ -26,8 +26,8 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccoun
 
 /**
  * Last step before the setup flow commits: log in, create an account, or proceed without one on
- * the chosen server. Log in and create run their own screens and commit there; proceeding commits
- * here. When setup is re-run on a server the user is already signed in to, there is nothing to
+ * the chosen server. Log in and create (by way of the code of conduct) run their own screens and
+ * commit there; proceeding commits here. When setup is re-run on a server the user is already signed in to, there is nothing to
  * choose and it confirms the account instead.
  */
 export const OobeAccountScreen = ({navigation, route}: Props) => {
@@ -99,7 +99,7 @@ export const OobeAccountScreen = ({navigation, route}: Props) => {
         </ScrollingContentView>
       ) : (
         <AccountChoiceView
-          onCreate={() => navigation.push(OobeStackComponents.oobeRegisterScreen, {mode, serverUrl})}
+          onCreate={() => navigation.push(OobeStackComponents.oobeRegisterConductScreen, {mode, serverUrl})}
           onLogin={() => navigation.push(OobeStackComponents.oobeLoginScreen, {mode, serverUrl})}
           onProceed={onProceed}
           preRegistrationMode={serverUrl === normalizeServerUrl(appConfig.preRegistrationServerUrl)}

@@ -6,7 +6,6 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonScreens} from '#src/Navigation/Stacks/Common/CommonScreens';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {OobeAccountScreen} from '#src/Screens/OOBE/OobeAccountScreen';
-import {OobeConductScreen} from '#src/Screens/OOBE/OobeConductScreen';
 import {OobeFinishScreen} from '#src/Screens/OOBE/OobeFinishScreen';
 import {OobeLocationScreen} from '#src/Screens/OOBE/OobeLocationScreen';
 import {OobePermissionsScreen} from '#src/Screens/OOBE/OobePermissionsScreen';
@@ -14,6 +13,7 @@ import {OobePreregistrationScreen} from '#src/Screens/OOBE/OobePreregistrationSc
 import {OobeServerScreen} from '#src/Screens/OOBE/OobeServerScreen';
 import {OobeWelcomeScreen} from '#src/Screens/OOBE/OobeWelcomeScreen';
 import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
+import {RegisterConductScreen} from '#src/Screens/Settings/Account/RegisterConductScreen';
 import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
 
 /**
@@ -49,16 +49,16 @@ export const OobeStackNavigator = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name={OobeStackComponents.oobeConductScreen}
-        component={OobeConductScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
         name={OobeStackComponents.oobeAccountScreen}
         component={OobeAccountScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen name={OobeStackComponents.oobeLoginScreen} component={LoginScreen} options={{headerShown: false}} />
+      <Stack.Screen
+        name={OobeStackComponents.oobeRegisterConductScreen}
+        component={RegisterConductScreen}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name={OobeStackComponents.oobeRegisterScreen}
         component={RegisterScreen}

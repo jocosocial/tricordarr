@@ -9,13 +9,14 @@ import {
 } from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
 import {AboutSettingsScreen} from '#src/Screens/Settings/AboutSettingsScreen';
 import {AccountManagementScreen} from '#src/Screens/Settings/Account/AccountManagementScreen';
+import {AccountsSettingsScreen} from '#src/Screens/Settings/Account/AccountsSettingsScreen';
 import {ChangePasswordScreen} from '#src/Screens/Settings/Account/ChangePasswordScreen';
 import {ChangeUsernameScreen} from '#src/Screens/Settings/Account/ChangeUsernameScreen';
 import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
 import {RecoveryKeyScreen} from '#src/Screens/Settings/Account/RecoveryKeyScreen';
+import {RegisterConductScreen} from '#src/Screens/Settings/Account/RegisterConductScreen';
 import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
 import {SessionDetailsScreen} from '#src/Screens/Settings/Account/SessionDetailsScreen';
-import {AccountsSettingsScreen} from '#src/Screens/Settings/Account/AccountsSettingsScreen';
 import {TimeSettingsScreen} from '#src/Screens/Settings/Config/TimeSettingsScreen';
 import {AccountInfoSettingsScreen} from '#src/Screens/Settings/Developer/AccountInfoSettingsScreen';
 import {CheckpointPreviewSettingScreen} from '#src/Screens/Settings/Developer/CheckpointPreviewSettingScreen';
@@ -93,6 +94,11 @@ export const SettingsStackNavigator = () => {
         options={{title: 'Change Password'}}
       />
       <Stack.Screen name={SettingsStackScreenComponents.login} component={LoginScreen} options={{title: 'Login'}} />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.registerConductScreen}
+        component={RegisterConductScreen}
+        options={{title: 'Code of Conduct'}}
+      />
       <Stack.Screen
         name={SettingsStackScreenComponents.registerScreen}
         component={RegisterScreen}

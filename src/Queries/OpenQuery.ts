@@ -6,12 +6,13 @@ import {
   UseQueryOptions,
   UseQueryResult,
 } from '@tanstack/react-query';
-import {AxiosError} from 'axios';
+import axios, {AxiosError} from 'axios';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useMaintenanceGate} from '#src/Hooks/useMaintenanceBlocked';
+import {joinUrl} from '#src/Libraries/UrlParser';
 import {
   getNextPageParam,
   getPreviousPageParam,
@@ -20,6 +21,81 @@ import {
   WithPaginator,
 } from '#src/Queries/Pagination';
 import {ErrorResponse, FezData} from '#src/Structs/ControllerStructs';
+
+/**
+ * Meta for a query that reads an explicit server rather than the session's. The session's
+ * QueryCache handlers leave the disruption error count alone for these, since a result from a
+ * server the user is only choosing says nothing about the session's own server. Never persisted.
+ */
+export const EXPLICIT_SERVER_QUERY_META = {explicitServer: true, noDehydrate: true};
+
+type ExplicitServerQueryOptions<TData, TError extends Error> = Omit<
+  UseQueryOptions<TData, TError, TData>,
+  'queryKey' | 'queryFn'
+>;
+
+/**
+ * Shared body of the explicit-server queries. A bare request with no token, so nothing of the
+ * session (its server, token or gating) is involved; disabled only until there is a server.
+ * `recover` turns a thrown error into data for endpoints that answer with a body on failure.
+ */
+const useExplicitServerQuery = <TData, TError extends Error>(
+  serverUrl: string | undefined,
+  endpoint: string,
+  apiPrefixed: boolean,
+  options?: ExplicitServerQueryOptions<TData, TError>,
+  recover?: (error: unknown) => TData,
+): UseQueryResult<TData, TError> => {
+  const {appConfig} = useConfig();
+  return useQuery<TData, TError, TData>({
+    gcTime: 0,
+    ...options,
+    queryKey: [endpoint, {serverUrl}],
+    queryFn: async () => {
+      const url = joinUrl(serverUrl, apiPrefixed ? appConfig.urlPrefix : undefined, endpoint);
+      try {
+        const response = await axios.get<TData>(url, {
+          headers: {'Cache-Control': 'no-store'},
+          timeout: appConfig.apiClientConfig.requestTimeout,
+          timeoutErrorMessage: 'Tricordarr/Axios request timeout.',
+        });
+        return response.data;
+      } catch (error) {
+        if (recover) {
+          return recover(error);
+        }
+        throw error;
+      }
+    },
+    meta: {...options?.meta, ...EXPLICIT_SERVER_QUERY_META},
+    enabled: !!serverUrl && (options?.enabled ?? true),
+  });
+};
+
+/**
+ * Clone of useOpenQuery against an explicit server instead of the session's, for flows that choose
+ * a server without switching to it (the setup flow before its commit). See useExplicitServerQuery.
+ */
+export function useExplicitOpenQuery<TData, TError extends Error = AxiosError<ErrorResponse>>(
+  serverUrl: string | undefined,
+  endpoint: string,
+  options?: ExplicitServerQueryOptions<TData, TError>,
+  recover?: (error: unknown) => TData,
+): UseQueryResult<TData, TError> {
+  return useExplicitServerQuery<TData, TError>(serverUrl, endpoint, true, options, recover);
+}
+
+/**
+ * Clone of usePublicQuery against an explicit server instead of the session's. See
+ * useExplicitOpenQuery.
+ */
+export function useExplicitPublicQuery<TData, TError extends Error = AxiosError<ErrorResponse>>(
+  serverUrl: string | undefined,
+  endpoint: string,
+  options?: ExplicitServerQueryOptions<TData, TError>,
+): UseQueryResult<TData, TError> {
+  return useExplicitServerQuery<TData, TError>(serverUrl, endpoint, false, options);
+}
 
 /**
  * Clone of useQuery for endpoints that do not require a logged-in user.

@@ -22,6 +22,7 @@ export type SettingsStackParamList = CommonStackParamList & {
   FeatureSettingsScreen: undefined;
   NotificationPollerSettingsScreen: undefined;
   LoadingSettingScreen: undefined;
+  RegisterConductScreen: {serverUrl?: string} | undefined;
   RegisterScreen: {serverUrl?: string} | undefined;
   CruiseSettingsScreen: undefined;
   UserInfoSettingsScreen: undefined;
@@ -59,6 +60,7 @@ export enum SettingsStackScreenComponents {
   featureSettingsScreen = 'FeatureSettingsScreen',
   notificationPollerSettingsScreen = 'NotificationPollerSettingsScreen',
   loadingSettingScreen = 'LoadingSettingScreen',
+  registerConductScreen = 'RegisterConductScreen',
   registerScreen = 'RegisterScreen',
   cruiseSettingsScreen = 'CruiseSettingsScreen',
   accountInfoSettingsScreen = 'UserInfoSettingsScreen',

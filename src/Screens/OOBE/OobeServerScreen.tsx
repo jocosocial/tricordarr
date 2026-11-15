@@ -12,7 +12,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {OobeLocation} from '#src/Enums/OobeLocation';
-import {useExplicitServerHealth} from '#src/Hooks/useExplicitServerHealth';
+import {useExplicitServerHealthStatus} from '#src/Hooks/useServerHealthStatus';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 
@@ -32,7 +32,7 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
   const [serverUrl, setServerUrl] = useState(
     route.params.serverUrl ?? currentSession?.serverUrl ?? appConfig.serverUrl,
   );
-  const health = useExplicitServerHealth(serverUrl);
+  const health = useExplicitServerHealthStatus(serverUrl);
 
   const isLand = location === OobeLocation.land;
   // Adding an account is the one case where choosing some other server is the point.
@@ -69,7 +69,7 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
         middleOnPress={() => navigation.push(CommonStackComponents.networkHelpScreen)}
         middleIcon={AppIcons.help}
         middleButtonColor={theme.colors.twitarrNegativeButton}
-        rightOnPress={() => navigation.push(OobeStackComponents.oobeConductScreen, {mode, serverUrl})}
+        rightOnPress={() => navigation.push(OobeStackComponents.oobeAccountScreen, {mode, serverUrl})}
         rightDisabled={!health.passed || hasUnsavedWork}
       />
     </AppView>

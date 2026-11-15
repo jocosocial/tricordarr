@@ -238,7 +238,9 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         }
         logger.debug('Query error encountered via', query.queryKey);
         logger.debug('Error details:', error);
-        if (!isHttpClientError(error)) {
+        // An explicit-server query (setup flow) reads some other server, so it says nothing about
+        // whether this session's server is disrupted.
+        if (!isHttpClientError(error) && !query.meta?.explicitServer) {
           setErrorCount(prev => prev + 1);
         }
         // A request that was already in flight when client settings revealed maintenance mode lands
@@ -277,7 +279,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         }
       },
       onSuccess: (data, query) => {
-        if (errorCount !== 0) {
+        // Likewise, another server answering must not clear this session's disruption.
+        if (errorCount !== 0 && !query.meta?.explicitServer) {
           // Images get cached by a different query mechanism now so this is no longer relevant.
           // Leaving the documentation here for future lolz.
           // Axios honors cache-control headers that we set on the images and will

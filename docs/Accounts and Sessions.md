@@ -43,13 +43,15 @@ Because the scope unmounts, anything that must outlive the old session (stopping
 
 First-run setup, boarding and Add Account are one flow (`OobeStackNavigator`) in three modes (`OnboardingMode` in `src/Types/RouteParams.ts`):
 
-- **firstRun**: Welcome, Location, Server, Conduct, Account, *commit*, Permissions, Finish.
-- **boarding**: Welcome Aboard (long-press the pre-registration banner), Server (pre-filled with the default, production, server), Conduct, Account, *commit*, Permissions, Finish.
-- **addAccount**: Server, Conduct, Account, *commit*.
+- **firstRun**: Welcome, Location, Server, Account, *commit*, Permissions, Finish.
+- **boarding**: Welcome Aboard (long-press the pre-registration banner), Server (pre-filled with the default, production, server), Account, *commit*, Permissions, Finish.
+- **addAccount**: Server, Account, *commit*.
+
+At the Account step, Create Account goes through Conduct (`RegisterConductScreen`) before Register; Log In and Proceed Without an Account skip it. Register outside the setup flow (the Today account menu) goes through the same screen in the Settings stack, so every account creation agrees to the server's code of conduct first.
 
 Two rules hold it together:
 
-1. **Nothing before the commit touches the session.** The server, conduct and account steps take an explicit `serverUrl` param and read that server directly (`useExplicitServerHealth`, `useExplicitServerConduct`). First run has no session at all until the commit; `useOpenQuery` and friends stay disabled without one, so nothing fires at a default server. Backing out of boarding or Add Account at any step leaves the app exactly as it was.
+1. **Nothing before the commit touches the session.** The server, account, conduct and register steps take an explicit `serverUrl` param and read that server directly (`useExplicitServerHealthStatus`, `useExplicitServerConductQuery`, built on `useExplicitOpenQuery` / `useExplicitPublicQuery`: a bare request with no token, never persisted, and kept out of the session's disruption error count). First run has no session at all until the commit; `useOpenQuery` and friends stay disabled without one, so nothing fires at a default server. Backing out of boarding or Add Account at any step leaves the app exactly as it was.
 2. **The commit is one call**, `useOnboardingCommit(mode)`: `commitSignIn` (from `LoginScreen`, or `RecoveryKeyScreen` after a registration) or `commitAnonymous` ("Proceed Without an Account"). It is a normal `signIn` / `switchToServer`, plus what the mode adds.
 
 What the modes add:

@@ -44,7 +44,7 @@ export const MainAccountMenu = () => {
 
   const handleRegister = () => {
     mainNavigation.push(MainStackComponents.mainSettingsScreen, {
-      screen: SettingsStackScreenComponents.registerScreen,
+      screen: SettingsStackScreenComponents.registerConductScreen,
     });
   };
 

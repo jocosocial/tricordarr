@@ -10,10 +10,10 @@ export type OobeStackParamList = CommonStackParamList & {
   OobeLocationScreen: undefined;
   // serverUrl is the server to start on; defaults to the active session's.
   OobeServerScreen: {mode: OnboardingMode; serverUrl?: string; location?: OobeLocation};
-  OobeConductScreen: {mode: OnboardingMode; serverUrl: string};
   OobeAccountScreen: {mode: OnboardingMode; serverUrl: string};
   LoginScreen: {serverUrl?: string; username?: string; mode?: OnboardingMode} | undefined;
   OobeFinishScreen: undefined;
+  RegisterConductScreen: {serverUrl?: string; mode?: OnboardingMode} | undefined;
   RegisterScreen: {serverUrl?: string; mode?: OnboardingMode} | undefined;
   OobePermissionsScreen: undefined;
   OobePreregistrationScreen: undefined;
@@ -24,8 +24,8 @@ export enum OobeStackComponents {
   oobeWelcomeScreen = 'OobeWelcomeScreen',
   oobeLocationScreen = 'OobeLocationScreen',
   oobeServerScreen = 'OobeServerScreen',
-  oobeConductScreen = 'OobeConductScreen',
   oobeAccountScreen = 'OobeAccountScreen',
+  oobeRegisterConductScreen = 'RegisterConductScreen',
   oobeRegisterScreen = 'RegisterScreen',
   oobeFinishScreen = 'OobeFinishScreen',
   oobeLoginScreen = 'LoginScreen',
