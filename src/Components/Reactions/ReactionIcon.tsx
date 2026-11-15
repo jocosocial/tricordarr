@@ -28,7 +28,9 @@ export const ReactionIcon = ({reaction, size = 20}: ReactionIconProps) => {
     [size],
   );
 
-  if (reaction in CustomEmoji) {
+  // Own keys only: a reaction is arbitrary text from the server, and `in` also matches inherited
+  // keys such as `constructor`.
+  if (Object.hasOwn(CustomEmoji, reaction)) {
     return <Emoji emojiName={reaction as string} style={styles.customEmoji} />;
   }
   return <Text style={styles.unicodeEmoji}>{reaction}</Text>;
