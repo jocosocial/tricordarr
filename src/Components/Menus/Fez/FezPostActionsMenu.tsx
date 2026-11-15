@@ -5,16 +5,14 @@ import {FezPostActionsReactionItem} from '#src/Components/Menus/Fez/Items/FezPos
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
 import {EmojiPickerModal} from '#src/Components/Reactions/EmojiPickerModal';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useSession} from '#src/Context/Contexts/SessionContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
-import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
+import {useFezPostReaction} from '#src/Hooks/Fez/useFezPostReaction';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {pushModerateResource} from '#src/Libraries/ModerationNavigation';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {useFezPostReactionMutation} from '#src/Queries/Fez/FezPostReactionMutations';
-import {FezData, FezPostData, ReactionData} from '#src/Structs/ControllerStructs';
+import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
 interface FezPostActionsMenuProps {
   visible: boolean;
@@ -29,14 +27,11 @@ interface FezPostActionsMenuProps {
  */
 export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: FezPostActionsMenuProps) => {
   const {setString} = useClipboard();
-  const {currentUserID} = useSession();
   const bridged = useMenuContextBridge();
   const commonNavigation = useCommonStack();
   const {hasModerator} = usePrivilege();
-  const {updatePostReactions} = useFezCacheReducer();
-  const reactionMutation = useFezPostReactionMutation();
+  const {addReaction, canReact, isPending} = useFezPostReaction(fezPost, fez);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const bySelf = currentUserID === fezPost.author.userID;
 
   const handleReport = () => {
     closeMenu();
@@ -44,18 +39,6 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
       contentType: ReportContentType.fezPost,
       contentID: fezPost.postID,
     });
-  };
-
-  /** Adds or removes the selected reaction and applies the returned post to the chat cache. */
-  const handleReaction = (reaction: string) => {
-    if (!fez || !currentUserID) {
-      return;
-    }
-    const action = ReactionData.hasUserReacted(fezPost.reactions ?? [], currentUserID, reaction) ? 'delete' : 'create';
-    reactionMutation.mutate(
-      {fezPostID: fezPost.postID.toString(), reaction, action},
-      {onSuccess: response => updatePostReactions(fez.fezID, response.data.postID, response.data.reactions)},
-    );
   };
 
   return (
@@ -72,7 +55,7 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
             }}
           />
           <FezPostActionsReactionItem
-            disabled={!fez || bySelf || reactionMutation.isPending}
+            disabled={!canReact || isPending}
             onPress={() => {
               closeMenu();
               setPickerOpen(true);
@@ -94,7 +77,7 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
           )}
         </MenuContextBridge>
       </Menu>
-      <EmojiPickerModal open={pickerOpen} onClose={() => setPickerOpen(false)} onEmojiSelected={handleReaction} />
+      <EmojiPickerModal open={pickerOpen} onClose={() => setPickerOpen(false)} onEmojiSelected={addReaction} />
     </>
   );
 };

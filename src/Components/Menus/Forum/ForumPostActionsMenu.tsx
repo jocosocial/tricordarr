@@ -15,12 +15,11 @@ import {EmojiPickerModal} from '#src/Components/Reactions/EmojiPickerModal';
 import {useForumComposer} from '#src/Context/Contexts/ForumComposerContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
+import {useForumPostReaction} from '#src/Hooks/Forum/useForumPostReaction';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {useForumPostReactionMutation} from '#src/Queries/Forum/ForumPostReactionMutations';
-import {ForumData, PostData, ReactionData} from '#src/Structs/ControllerStructs';
+import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -44,8 +43,7 @@ export const ForumPostActionsMenu = ({
   const {currentUserID} = useSession();
   const bridged = useMenuContextBridge();
   const bySelf = currentUserID === forumPost.author.userID;
-  const reactionMutation = useForumPostReactionMutation();
-  const {updatePostReactions} = useForumCacheReducer();
+  const {addReaction, canReact, isPending} = useForumPostReaction(forumPost, forumData?.forumID);
   const [pickerOpen, setPickerOpen] = useState(false);
   const commonNavigation = useCommonStack();
   const {setString} = useClipboard();
@@ -53,20 +51,6 @@ export const ForumPostActionsMenu = ({
   // drops self-mentions (`userDidntMentionSelf` in ForumController), so there is nothing to gain.
   const composer = useForumComposer();
   const showReply = !!composer && !bySelf;
-
-  /** Adds or removes the selected reaction and applies the returned post to every forum cache. */
-  const handleReaction = (reaction: string) => {
-    if (!currentUserID) {
-      return;
-    }
-    const action = ReactionData.hasUserReacted(forumPost.reactions ?? [], currentUserID, reaction)
-      ? 'delete'
-      : 'create';
-    reactionMutation.mutate(
-      {postID: forumPost.postID.toString(), reaction, action},
-      {onSuccess: response => updatePostReactions(response.data, forumData?.forumID)},
-    );
-  };
 
   /**
    * closeMenu comes from the instance established in MessageView so we need to drill
@@ -127,7 +111,7 @@ export const ForumPostActionsMenu = ({
           <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} />
           <Divider bold={true} />
           <ForumPostActionsReactionItem
-            disabled={bySelf || reactionMutation.isPending}
+            disabled={!canReact || isPending}
             onPress={() => {
               closeMenu();
               setPickerOpen(true);
@@ -135,7 +119,7 @@ export const ForumPostActionsMenu = ({
           />
         </MenuContextBridge>
       </Menu>
-      <EmojiPickerModal open={pickerOpen} onClose={() => setPickerOpen(false)} onEmojiSelected={handleReaction} />
+      <EmojiPickerModal open={pickerOpen} onClose={() => setPickerOpen(false)} onEmojiSelected={addReaction} />
     </>
   );
 };

@@ -38,6 +38,8 @@ interface MessageViewProps {
   isBookmarked?: boolean;
   isPinned?: boolean;
   reactions?: ReactionData[];
+  /** Toggles the current user's contribution to a reaction chip. Omit where the user may not react. */
+  onReactionPress?: (reaction: string) => void;
   renderActionsMenu: (props: MessageViewActionsMenuProps) => ReactNode;
   /**
    * Applied to the pressable that opens the actions menu, so E2E flows can long-press a
@@ -67,6 +69,7 @@ export const MessageView = ({
   isBookmarked,
   isPinned,
   reactions = [],
+  onReactionPress,
   renderActionsMenu,
   testID,
 }: MessageViewProps) => {
@@ -182,7 +185,8 @@ export const MessageView = ({
       <ReactionBadges
         reactions={reactions}
         currentUserID={currentUserID ?? ''}
-        onBadgePress={() => setReactionDetailsVisible(true)}
+        onBadgePress={onReactionPress}
+        onBadgeLongPress={() => setReactionDetailsVisible(true)}
         alignRight={messageOnRight}
       />
       <ReactionsDetailModal

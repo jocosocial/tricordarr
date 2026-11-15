@@ -50,8 +50,9 @@ export const ForumThreadHelpScreen = () => {
             above.
           </HelpTopicView>
           <HelpTopicView title={'React'}>
-            Choose React to add a unicode or custom emoji reaction to a post. Choose a reaction you have already added
-            to remove it. Tap a reaction badge below a post to see who reacted.
+            Choose React to add a unicode or custom emoji reaction to another user's post. Reactions appear as badges
+            below the post. Tap a badge to add your own reaction to it, or to remove your reaction if you already
+            reacted. Long-press a badge to see who reacted with what.
           </HelpTopicView>
           <ReportButtonHelpTopicView />
           <ModerateButtonHelpTopicView />

@@ -10,12 +10,23 @@ import {ReactionData} from '#src/Structs/ControllerStructs';
 interface ReactionBadgesProps {
   reactions?: ReactionData[];
   currentUserID: string;
-  onBadgePress: () => void;
+  /** Toggles the current user's contribution to the tapped reaction. Taps do nothing when omitted. */
+  onBadgePress?: (reaction: string) => void;
+  onBadgeLongPress: () => void;
   alignRight?: boolean;
 }
 
-/** Displays the grouped reactions beneath a post and opens their participant list. */
-export const ReactionBadges = ({reactions, currentUserID, onBadgePress, alignRight = false}: ReactionBadgesProps) => {
+/**
+ * Displays the grouped reactions beneath a post. A tap toggles the user's own reaction, matching the
+ * web UI; a long press opens the participant list.
+ */
+export const ReactionBadges = ({
+  reactions,
+  currentUserID,
+  onBadgePress,
+  onBadgeLongPress,
+  alignRight = false,
+}: ReactionBadgesProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
   const safeReactions = reactions ?? [];
@@ -70,7 +81,8 @@ export const ReactionBadges = ({reactions, currentUserID, onBadgePress, alignRig
           <TouchableOpacity
             accessibilityLabel={`${reaction.reaction}, ${reaction.users.length} reactions`}
             key={reaction.reaction}
-            onPress={onBadgePress}
+            onPress={onBadgePress ? () => onBadgePress(reaction.reaction) : undefined}
+            onLongPress={onBadgeLongPress}
             style={selected ? styles.selectedBadge : styles.badge}>
             <ReactionIcon reaction={reaction.reaction} />
             <Text style={styles.text}>{reaction.users.length}</Text>
