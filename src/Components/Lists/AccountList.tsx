@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {AccountListItem} from '#src/Components/Lists/Items/AccountListItem';
-import {AnonymousSessionListItem} from '#src/Components/Lists/Items/AnonymousSessionListItem';
+import {AccountListItem} from '#src/Components/Lists/Items/Settings/AccountListItem';
+import {AnonymousSessionListItem} from '#src/Components/Lists/Items/Settings/AnonymousSessionListItem';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAccountSwitcher} from '#src/Hooks/useAccountSwitcher';
 import {getAccountListEntries} from '#src/Libraries/Account';

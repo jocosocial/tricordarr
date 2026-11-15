@@ -8,7 +8,7 @@ import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPerformerListItem';
 import {EventPhotographerListItem} from '#src/Components/Lists/Items/Event/EventPhotographerListItem';
-import {UserChipsListItem} from '#src/Components/Lists/Items/UserChipsListItem';
+import {UserChipsListItem} from '#src/Components/Lists/Items/User/UserChipsListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {EventLocationActionsMenu} from '#src/Components/Menus/Events/EventLocationActionsMenu';
 import {ContentText} from '#src/Components/Text/ContentText';

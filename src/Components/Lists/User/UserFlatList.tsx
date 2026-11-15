@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {UserFlatListItem} from '#src/Components/Lists/Items/UserFlatListItem';
+import {UserFlatListItem} from '#src/Components/Lists/Items/User/UserFlatListItem';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {type UserRelationMode} from '#src/Queries/Users/UserRelationConstants';

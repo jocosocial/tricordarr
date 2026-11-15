@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
-import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
+import {UserListItem} from '#src/Components/Lists/Items/User/UserListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {UserMatchSearchBar} from '#src/Components/Search/UserSearchBar/UserMatchSearchBar';

@@ -3,8 +3,8 @@ import React, {forwardRef, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {KaraokeSongListItem} from '#src/Components/Lists/Items/KaraokeSongListItem';
-import type {KaraokeSongListItemData} from '#src/Components/Lists/Items/KaraokeSongListItem';
+import {KaraokeSongListItem} from '#src/Components/Lists/Items/Karaoke/KaraokeSongListItem';
+import type {KaraokeSongListItemData} from '#src/Components/Lists/Items/Karaoke/KaraokeSongListItem';
 import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {KaraokePerformedSongsData, KaraokeSongData} from '#src/Structs/ControllerStructs';
 

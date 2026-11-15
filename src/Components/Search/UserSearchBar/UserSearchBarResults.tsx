@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
+import {UserListItem} from '#src/Components/Lists/Items/User/UserListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';

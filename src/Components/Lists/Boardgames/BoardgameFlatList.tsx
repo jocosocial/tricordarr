@@ -3,7 +3,7 @@ import React, {forwardRef, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
-import {BoardgameListItem} from '#src/Components/Lists/Items/BoardgameListItem';
+import {BoardgameListItem} from '#src/Components/Lists/Items/Boardgames/BoardgameListItem';
 import {useAppFlashList} from '#src/Hooks/useAppFlashList';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
+import {UserListItem} from '#src/Components/Lists/Items/User/UserListItem';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {UserHeader} from '#src/Structs/ControllerStructs';
