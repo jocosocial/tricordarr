@@ -84,14 +84,18 @@ const pruneIfNeeded = async (): Promise<void> => {
  * of whether it will produce a push notification. Call this before any mute/category
  * early-return so the log reflects everything the socket actually delivered. Fire-and-forget:
  * failures are logged and swallowed rather than thrown, since a logging problem should never
- * interrupt notification handling.
+ * interrupt notification handling. `accountID` is the account whose socket delivered the event.
  *
  * On iOS the actual write is a no-op: the notification socket that matters (background
  * delivery) lives entirely in native Swift (see WebsocketNotifier.swift), and the in-app JS
  * socket only ever duplicates what the native side already recorded via the App Group-backed
  * native log. See docs/Code Notes.md for the full rationale.
  */
-export const recordNotificationEvent = async (rawData: string, source: NotificationLogSource): Promise<void> => {
+export const recordNotificationEvent = async (
+  rawData: string,
+  source: NotificationLogSource,
+  accountID?: string,
+): Promise<void> => {
   if (isIOS) {
     notifyNotificationLogListeners();
     return;
@@ -106,6 +110,7 @@ export const recordNotificationEvent = async (rawData: string, source: Notificat
       info: notificationData.info ?? '',
       source,
       raw: rawData,
+      accountID,
     };
     ensureLogDirectory();
     if (!NOTIFICATION_LOG_FILE.exists) {

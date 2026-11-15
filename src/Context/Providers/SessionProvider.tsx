@@ -14,7 +14,7 @@ import {SessionStore} from '#src/Context/State/SessionStore';
 import {AccountPreferences} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {stashNavigationState} from '#src/Libraries/NavigationRef';
-import {stopPushProvider} from '#src/Libraries/Notifications/Push';
+import {releasePushProviderForSessionChange} from '#src/Libraries/Notifications/Push';
 import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
 import {loadSessionData} from '#src/Libraries/Storage/SessionLoader';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
@@ -139,9 +139,9 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
   );
 
   /**
-   * Shared shape of every switch: ignore if one is pending, stop the old account's background
-   * providers (they are device-global, not scoped to the remounting subtree), freeze the visible
-   * screen, then dispatch. The keyed SessionBoundaryProvider remount does the rest.
+   * Shared shape of every switch: ignore if one is pending, release the old account's background
+   * provider where it holds a single account (it is device-global, not scoped to the remounting
+   * subtree), freeze the visible screen, then dispatch. The keyed SessionBoundaryProvider remount does the rest.
    */
   const runSwitch = useCallback(
     async (pendingID: string | null, options: SwitchOptions | undefined, dispatch: () => void) => {
@@ -150,9 +150,9 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
         stashNavigationState();
       }
       try {
-        await stopPushProvider();
+        await releasePushProviderForSessionChange();
       } catch (error) {
-        logger.error('Failed to stop push provider before switch:', error);
+        logger.error('Failed to release push provider before switch:', error);
       }
       const before = new Set(store.getState().sessions.map(s => s.sessionID));
       dispatch();
@@ -300,9 +300,9 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       pendingRef.current = normalized;
       setPendingAccountID(normalized);
       try {
-        await stopPushProvider();
+        await releasePushProviderForSessionChange();
       } catch (error) {
-        logger.error('Failed to stop push provider before sign in:', error);
+        logger.error('Failed to release push provider before sign in:', error);
       }
       const before = new Set(current.sessions.map(s => s.sessionID));
       const now = new Date().toISOString();
@@ -354,9 +354,9 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       const isCurrent = selectCurrentSession(store.getState())?.accountID === target;
       if (isCurrent) {
         try {
-          await stopPushProvider();
+          await releasePushProviderForSessionChange();
         } catch (error) {
-          logger.error('Failed to stop push provider before sign out:', error);
+          logger.error('Failed to release push provider before sign out:', error);
         }
       }
       const before = new Set(store.getState().sessions.map(s => s.sessionID));
@@ -372,9 +372,9 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       if (isCurrent) {
         options?.onSwitchStart?.();
         try {
-          await stopPushProvider();
+          await releasePushProviderForSessionChange();
         } catch (error) {
-          logger.error('Failed to stop push provider before remove:', error);
+          logger.error('Failed to release push provider before remove:', error);
         }
       }
       const before = new Set(store.getState().sessions.map(s => s.sessionID));
@@ -390,9 +390,9 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       if (isCurrent) {
         options?.onSwitchStart?.();
         try {
-          await stopPushProvider();
+          await releasePushProviderForSessionChange();
         } catch (error) {
-          logger.error('Failed to stop push provider before removing session:', error);
+          logger.error('Failed to release push provider before removing session:', error);
         }
       }
       store.dispatch({type: 'session-removed', sessionID, now: new Date().toISOString()});

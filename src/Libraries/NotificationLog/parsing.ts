@@ -17,6 +17,7 @@ export interface StoredNotificationLogEntry {
   info: string;
   source: NotificationLogSource;
   raw: string;
+  accountID?: string;
 }
 
 export const serializeEntry = (entry: StoredNotificationLogEntry): string => JSON.stringify(entry);
@@ -35,6 +36,7 @@ const parseLine = (line: string): NotificationLogEntry | null => {
       info: parsed.info,
       source: parsed.source,
       raw: parsed.raw,
+      accountID: parsed.accountID || undefined,
     };
   } catch {
     return null;
@@ -60,9 +62,9 @@ export const parseJsonl = (text: string): NotificationLogEntry[] => {
 };
 
 /**
- * Drops entries older than RETENTION_DAYS and collapses near-duplicate entries (same type,
- * contentID, and info within DEDUP_WINDOW_MS) that can occur on Android when the in-app
- * socket and the foreground-service socket are both briefly connected at once. Returns
+ * Drops entries older than RETENTION_DAYS and collapses near-duplicate entries (same account,
+ * type, contentID, and info within DEDUP_WINDOW_MS) that occur on Android because the in-app
+ * socket and the native service's socket both receive the active account's events. Returns
  * newest-first.
  */
 export const applyRetentionAndDedup = (entries: NotificationLogEntry[]): NotificationLogEntry[] => {
@@ -74,7 +76,7 @@ export const applyRetentionAndDedup = (entries: NotificationLogEntry[]): Notific
   const deduped: NotificationLogEntry[] = [];
   const lastSeenAt = new Map<string, number>();
   for (const entry of sorted) {
-    const key = `${entry.type}|${entry.contentID}|${entry.info}`;
+    const key = `${entry.accountID ?? ''}|${entry.type}|${entry.contentID}|${entry.info}`;
     const previous = lastSeenAt.get(key);
     if (previous !== undefined && previous - entry.timestamp.getTime() < DEDUP_WINDOW_MS) {
       continue;

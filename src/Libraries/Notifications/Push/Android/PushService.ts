@@ -8,34 +8,34 @@ import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 const logger = createLogger('PushService.ts');
 
 /**
- * Hand the current account list to the native Android push service. The service reads it from its
- * own encrypted store, so this must run on sign-in/out/switch and whenever the push preferences
- * change. Safe to call while the service is running; it reconciles itself.
+ * Make the native Android push service match the account model: hand it every account that
+ * should have a background socket, then start it, or stop it when there are none. The service is
+ * device-wide and keyed by account, so this runs on app launch and after anything that changes
+ * the accounts, the active one, their tokens or their push preferences. A running service only
+ * reopens the sockets whose server or token changed.
  */
-export const syncAndroidPushAccounts = async () => {
-  NativeTricordarrModule.syncPushAccounts(JSON.stringify(await buildPushAccounts()));
-};
-
-/**
- * Start the native Android foreground service that owns the notification socket and posts
- * notifications. Called on every app launch, so it must be cheap when the service is already
- * running (native just reconciles).
- */
-export async function startAndroidPushService() {
+export async function syncAndroidPushService() {
   const {status: notificationPermission} = await checkNotifications();
   // Android 13 API Level 33 added POST_NOTIFICATIONS permission. Devices less than that return UNAVAILABLE.
   // We can safely assume that notifications are allowed and available if that is the case.
   if (notificationPermission !== RESULTS.UNAVAILABLE && notificationPermission !== RESULTS.GRANTED) {
-    logger.debug('Notification permission not allowed. Not starting the push service.');
+    logger.debug('Notification permission not allowed. Stopping the push service.');
+    await stopAndroidPushService();
     return;
   }
-  await syncAndroidPushAccounts();
-  logger.debug('Starting native push service.');
-  NativeTricordarrModule.startBackgroundService();
+  const accounts = await buildPushAccounts();
+  logger.debug('Syncing push accounts with the native push service:', accounts.length);
+  NativeTricordarrModule.syncPushAccounts(JSON.stringify(accounts));
+  if (accounts.length > 0) {
+    NativeTricordarrModule.startBackgroundService();
+  } else {
+    NativeTricordarrModule.stopBackgroundService();
+  }
 }
 
 /**
- * Stop the native Android push service and forget the accounts, which also drops the stored token.
+ * Stop the native Android push service for every account and forget them, which also drops the
+ * stored tokens.
  */
 export async function stopAndroidPushService() {
   logger.debug('Stopping native push service.');

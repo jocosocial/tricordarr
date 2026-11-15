@@ -3,6 +3,7 @@ import {useCallback, useEffect} from 'react';
 import {Linking} from 'react-native';
 import notifee, {Event, EventType, Notification} from 'react-native-notify-kit';
 
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {PressAction} from '#src/Enums/Notifications';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
@@ -53,6 +54,8 @@ export const AppEventHandler = () => {
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {apiGet} = useSwiftarrQueryClient();
   const {invalidateFez} = useFezCacheReducer();
+  const {currentAccount} = useSession();
+  const currentAccountID = currentAccount?.accountID;
 
   // Responds to a "Mark As Read" notification action press. Marks the content read on the
   // server, then syncs whatever local cache backs that content's unread state so badges
@@ -126,6 +129,7 @@ export const AppEventHandler = () => {
 
   // The native push service posts Android notifications and handles their taps as deep links.
   // When its Mark as Read action succeeds it tells us so we can sync the caches for that content.
+  // It serves every account with a background socket, and only the active one has caches here.
   useEffect(() => {
     /**
      * Syncs the fez caches and unread counts after the native Mark as Read action succeeded.
@@ -135,11 +139,15 @@ export const AppEventHandler = () => {
       await invalidateFez(contentID);
       await refetchUserNotificationData();
     };
-    const subscription = NativeTricordarrModule.onMarkAsRead(({contentID}) => {
+    const subscription = NativeTricordarrModule.onMarkAsRead(({accountID, contentID}) => {
+      if (accountID !== currentAccountID) {
+        logger.debug('native Mark as Read was for another account, nothing to sync');
+        return;
+      }
       handleNativeMarkAsRead(contentID).catch(error => logger.error('Failed to sync after native Mark as Read', error));
     });
     return () => subscription.remove();
-  }, [invalidateFez, refetchUserNotificationData]);
+  }, [currentAccountID, invalidateFez, refetchUserNotificationData]);
 
   // Void is not a valid React component.
   return null;

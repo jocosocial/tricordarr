@@ -147,8 +147,11 @@ object NotificationBuilder {
     notify(context, null, SERVICE_NOTIFICATION_ID, serviceNotification(context, body))
   }
 
+  /** Each account gets its own "connection lost" notification, so one recovering leaves the others showing. */
+  private fun connectionLostTag(accountID: String): String = "$SERVICE_NOTIFICATION_TAG:$accountID"
+
   /** Posted after enough consecutive failures. The service stays up and keeps retrying. */
-  fun postConnectionLost(context: Context, username: String?) {
+  fun postConnectionLost(context: Context, accountID: String, username: String?) {
     val time = DateFormat.getTimeInstance().format(Date())
     val who = username?.takeIf { it.isNotEmpty() }?.let { " for $it" } ?: ""
     val notification = NotificationCompat.Builder(context, SERVICE_CHANNEL)
@@ -160,11 +163,19 @@ object NotificationBuilder {
       .setAutoCancel(true)
       .setContentIntent(activityPendingIntent(context, CONNECTION_LOST_ID, BACKGROUND_CONNECTION_LINK))
       .build()
-    notify(context, SERVICE_NOTIFICATION_TAG, CONNECTION_LOST_ID, notification)
+    notify(context, connectionLostTag(accountID), CONNECTION_LOST_ID, notification)
   }
 
-  fun cancelConnectionLost(context: Context) {
-    NotificationManagerCompat.from(context).cancel(SERVICE_NOTIFICATION_TAG, CONNECTION_LOST_ID)
+  fun cancelConnectionLost(context: Context, accountID: String) {
+    NotificationManagerCompat.from(context).cancel(connectionLostTag(accountID), CONNECTION_LOST_ID)
+  }
+
+  /** Dismisses the "connection lost" notification of every account, for when the service stops. */
+  fun cancelAllConnectionLost(context: Context) {
+    val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    manager.activeNotifications
+      .filter { it.id == CONNECTION_LOST_ID && it.tag?.startsWith("$SERVICE_NOTIFICATION_TAG:") == true }
+      .forEach { manager.cancel(it.tag, it.id) }
   }
 
   /**

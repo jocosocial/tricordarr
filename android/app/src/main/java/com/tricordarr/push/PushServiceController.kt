@@ -34,7 +34,7 @@ object PushServiceController {
 
   fun stop(context: Context) {
     context.stopService(Intent(context, TwitarrPushService::class.java))
-    NotificationBuilder.cancelConnectionLost(context)
+    NotificationBuilder.cancelAllConnectionLost(context)
     NotificationBuilder.cancelReconnectNeeded(context)
     // The service's onDestroy only runs if it was alive in this process.
     val statusStore = PushStatusStore(context)

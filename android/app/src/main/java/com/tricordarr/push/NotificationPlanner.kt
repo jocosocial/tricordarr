@@ -103,7 +103,7 @@ object NotificationPlanner {
     )
   }
 
-  /** Adds `?account=<id>` for the tap-to-switch work to come. JS ignores it today. */
+  /** Adds `?account=<id>` so JS opens the link in the account the notification was for, switching if needed. */
   fun withAccount(link: String, accountID: String): String {
     val separator = if (link.contains('?')) '&' else '?'
     return "$link${separator}account=${java.net.URLEncoder.encode(accountID, "UTF-8")}"

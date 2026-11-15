@@ -31,15 +31,46 @@ keeps running; it is never re-posted.
 account), `cancelContentNotification`, `cancelSecondaryNotifications`, and the events
 `onNotificationSocketEvent`, `onBackgroundStatusChanged`, `onMarkAsRead` (Android only).
 
-- `accountID` is an opaque string. Until the account model lands JS passes the current
-  `sessionID` (`getCurrentPushAccountID()` in `Push/PushAccounts.ts`).
-- `PushNotificationService` starts/stops the service and re-syncs when the push preferences,
-  mute time, `urlPrefix`, or session token change. The native filter uses the synced copy.
-- Sign-out syncs `[]`, which also drops the stored token.
-- Notification taps are `tricordarr://` deep links with `?account=<accountID>` (ignored by JS for
-  now). Each notification is tagged `acct:<accountID>`.
+- `accountID` is the `Account.accountID` from the account model (see
+  [Accounts and Sessions](Accounts%20and%20Sessions.md)). Native treats it as an opaque string.
 - The JS in-app notification socket (`SocketProvider`) still runs while the app is foregrounded, for
-  cache invalidation. The native service posts the notifications.
+  the active account's cache invalidation. The native service posts the notifications.
+
+### Accounts
+
+One service, one socket per account. The service is device-wide, not part of a session: it is not
+torn down when the session changes.
+
+- **Which accounts** (`selectPushAccounts` in `Push/PushAccounts.ts`): the active account, plus any
+  other signed-in account whose `backgroundNotifications` preference is on (Settings > Background
+  Connection > "Notify When Not Active", off by default because every socket costs battery and
+  server load). Never an account that is signed out, revoked, or on a server in pre-registration
+  mode, and none at all before setup is complete or with the background worker switched off.
+  Each account is filtered with its own push preferences and mute time.
+- **Syncing**: `startPushProvider()` on Android is a reconcile (`syncAndroidPushService`). It reads
+  the account model from storage, hands native the full list, and starts the service, or stops it
+  when the list is empty. `PushNotificationService` calls it on launch, on every session change
+  (it remounts with the session), and when the account list, a token or a push preference
+  changes. Native reopens only the sockets whose server or token changed. `stopPushProvider()`
+  stops every account (the Stop button). Session changes call
+  `releasePushProviderForSessionChange()`, which is a no-op on Android.
+- **Identity**: each notification is tagged `acct:<accountID>` so content IDs cannot collide across
+  accounts, and shows the username as sub text when more than one account is connected. "Connection
+  lost" is one notification per account. The service notification lists the connected usernames.
+- **Taps**: the deep link carries `?account=<accountID>`. `NavigationProvider`'s linking filter
+  drops a link for an account that is not the active one, and `AccountLinkHandler` switches to that
+  account (`useAccountSwitcher`, so a signed-out account gets the login form) and opens the link
+  once the new session has mounted. The marker is stripped before routing, so it never becomes a
+  route param. Helpers are in `Libraries/Notifications/AccountLink.ts`.
+- **Mark as Read** runs natively with the token of the notification's account. `onMarkAsRead`
+  carries the `accountID` and JS syncs caches only if that account is active.
+- **Status**: `getWebsocketStatus()` has one entry per connected account. The header indicator
+  (`useBackgroundConnectionStatus`) shows the active account's; the settings screen lists them all.
+- **Log**: entries carry the `accountID` of the socket that delivered them. The log screen labels
+  another account's events and does not open them.
+- **Revoked**: a rejected token marks that account's socket `Revoked` natively and stops retrying.
+  JS marks the account revoked when it next uses that token; an inactive account stays `signedIn`
+  in the account model until then.
 
 ### Shared event table
 
@@ -79,6 +110,11 @@ is only used by the call foreground service (`CallForegroundService.ts`), so the
 notifications natively. JS drives it through `setupLocalPushManager`; `syncPushAccounts` is a thin
 single-account wrapper over the same code. `getWebsocketStatus()` returns one entry with
 `accountID: "default"`.
+
+iOS is still active-account only: one extension socket, dropped before a session change
+(`releasePushProviderForSessionChange`) and restarted for the new account. Its notifications carry
+no account, so one delivered before a switch opens in whichever account is active when tapped.
+Per-account sockets in the extension and account identity in `userInfo` are not done.
 
 ## notify-kit
 

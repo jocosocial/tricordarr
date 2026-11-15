@@ -3,8 +3,10 @@ import {StyleSheet} from 'react-native';
 import {List} from 'react-native-paper';
 
 import {useDownloadSheet} from '#src/Context/Contexts/DownloadSheetContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {accountName} from '#src/Libraries/Account';
 import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
 import {NotificationLogEntry} from '#src/Libraries/NotificationLog/types';
 import {getNotificationTypeTitle} from '#src/Libraries/Notifications/NotificationEventTitles';
@@ -18,15 +20,28 @@ interface NotificationLogListItemProps {
 /**
  * A single row in the NotificationLogScreen list. Modeled on LogEntryListItem: always shows
  * the full title/description text (no truncation), and long-press shares the raw socket
- * payload via the download sheet.
+ * payload via the download sheet. An event that another account received is labelled with that
+ * account and does not open, since its content belongs to that account's session.
  */
 export const NotificationLogListItem = ({entry}: NotificationLogListItemProps) => {
   const {commonStyles} = useStyles();
   const {openDownloadSheet} = useDownloadSheet();
   const {setSnackbarPayload} = useSnackbar();
   const commonNavigation = useCommonStack();
+  const {accounts, currentAccount} = useSession();
+  // Entries without an account (iOS, older builds) are taken to be the active account's.
+  const isOtherAccount = entry.accountID !== undefined && entry.accountID !== currentAccount?.accountID;
+  const otherAccount = isOtherAccount ? accounts.find(account => account.accountID === entry.accountID) : undefined;
+  const otherAccountName = otherAccount ? accountName(otherAccount) : 'another account';
 
   const handlePress = () => {
+    if (isOtherAccount) {
+      setSnackbarPayload({
+        message: `This event was for ${otherAccountName}. Switch accounts to open it.`,
+        messageType: 'info',
+      });
+      return;
+    }
     const destination = getNotificationEventDestination(entry.type, entry.contentID);
     if (!destination) {
       setSnackbarPayload({message: 'Nothing to open for this event.', messageType: 'info'});
@@ -75,7 +90,7 @@ export const NotificationLogListItem = ({entry}: NotificationLogListItemProps) =
 
   return (
     <List.Item
-      title={`${entry.timestamp.toLocaleString()} · ${getNotificationTypeTitle(entry.type)}`}
+      title={`${entry.timestamp.toLocaleString()} · ${getNotificationTypeTitle(entry.type)}${isOtherAccount ? ` · ${otherAccountName}` : ''}`}
       titleNumberOfLines={0}
       description={entry.info}
       descriptionNumberOfLines={0}

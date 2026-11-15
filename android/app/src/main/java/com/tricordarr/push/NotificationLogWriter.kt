@@ -10,7 +10,7 @@ import java.io.File
  * (`<documents>/notifications/notification-log.jsonl`, where expo-file-system's `Paths.document`
  * is the app files dir). The format must stay in step with `src/Libraries/NotificationLog/parsing.ts`.
  * `timestamp` is epoch milliseconds, which `new Date()` in the parser accepts alongside the ISO
- * strings JS writes. Entries additionally carry an `accountID`, which JS ignores for now.
+ * strings JS writes. Entries carry the `accountID` whose socket delivered the event.
  */
 object NotificationLogWriter {
   private const val TAG = "NotificationLogWriter"

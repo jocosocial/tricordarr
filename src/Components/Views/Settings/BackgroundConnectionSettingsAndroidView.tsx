@@ -16,11 +16,13 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {accountLabel} from '#src/Libraries/Account';
 import {createLogger} from '#src/Libraries/Logger';
 import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
-import {getCurrentBackgroundStatus} from '#src/Libraries/Notifications/Push/BackgroundStatus';
+import {getBackgroundStatuses} from '#src/Libraries/Notifications/Push/BackgroundStatus';
 import {PerAccountStatus} from '#src/Structs/SocketStructs';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
@@ -33,15 +35,22 @@ export const BackgroundConnectionSettingsAndroidView = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {enableUserNotifications} = useEnableUserNotification();
   const {appConfig, updateAppConfig} = useConfig();
-  const [status, setStatus] = useState<PerAccountStatus | undefined>();
+  const {accounts, currentAccount} = useSession();
+  const [statuses, setStatuses] = useState<PerAccountStatus[]>([]);
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
 
   /**
-   * Pull the background socket status from native, which is the source of truth.
+   * Pull the background socket statuses from native, which is the source of truth. There is one
+   * per account the service is connected for, shown with the active account first.
    */
   const fetchStatus = useCallback(async () => {
-    setStatus(await getCurrentBackgroundStatus());
-  }, []);
+    const all = await getBackgroundStatuses();
+    const activeAccountID = currentAccount?.accountID;
+    setStatuses([
+      ...all.filter(status => status.accountID === activeAccountID),
+      ...all.filter(status => status.accountID !== activeAccountID),
+    ]);
+  }, [currentAccount?.accountID]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -70,6 +79,21 @@ export const BackgroundConnectionSettingsAndroidView = () => {
       enableBackgroundWorker: newValue,
     });
     setEnable(newValue);
+  };
+
+  const handleBackgroundNotifications = () => {
+    updateAppConfig({
+      ...appConfig,
+      backgroundNotifications: !appConfig.backgroundNotifications,
+    });
+  };
+
+  /**
+   * Name of the account a status belongs to, for its section header.
+   */
+  const statusTitle = (status: PerAccountStatus) => {
+    const account = accounts.find(a => a.accountID === status.accountID);
+    return account ? accountLabel(account) : 'Unknown Account';
   };
 
   return (
@@ -105,35 +129,54 @@ export const BackgroundConnectionSettingsAndroidView = () => {
                 helperText={'Use this to disable the worker if it is causing problems.'}
                 value={enable}
               />
+              {currentAccount && (
+                <BooleanField
+                  name={'backgroundNotifications'}
+                  testID={'backgroundNotifications-switch'}
+                  label={'Notify When Not Active'}
+                  onPress={handleBackgroundNotifications}
+                  style={commonStyles.paddingHorizontalSmall}
+                  helperText={`Keep getting notifications for ${accountLabel(currentAccount)} while you are using another account. Each account kept connected uses a little more battery.`}
+                  value={appConfig.backgroundNotifications}
+                />
+              )}
             </View>
           </Formik>
         </PaddedContentView>
-        <ListSection>
-          <ListSubheader>Status</ListSubheader>
-          <DataFieldListItem
-            title={'Previous Start'}
-            description={<RelativeTimeTag date={status?.startedAt ? new Date(status.startedAt) : undefined} />}
-          />
-          <DataFieldListItem title={'Socket State'} description={status?.state ?? 'Unknown'} />
-          <DataFieldListItem
-            title={'Last Healthcheck'}
-            description={
-              status?.lastHealthcheckAt ? (
-                <RelativeTimeTag date={new Date(status.lastHealthcheckAt)} />
-              ) : (
-                <Text>Unknown</Text>
-              )
-            }
-          />
-          {status?.lastHealthcheckAt && (
+        {statuses.length === 0 && (
+          <ListSection>
+            <ListSubheader>Status</ListSubheader>
+            <DataFieldListItem title={'Socket State'} description={'Not connected for any account'} />
+          </ListSection>
+        )}
+        {statuses.map(status => (
+          <ListSection key={status.accountID}>
+            <ListSubheader>Status: {statusTitle(status)}</ListSubheader>
             <DataFieldListItem
-              title={'Last Healthcheck Result'}
-              description={status.lastHealthcheckSuccess ? 'Success' : 'Failure'}
+              title={'Previous Start'}
+              description={<RelativeTimeTag date={status.startedAt ? new Date(status.startedAt) : undefined} />}
             />
-          )}
-          <DataFieldListItem title={'Failed Count'} description={String(status?.failedCount ?? 0)} />
-          {status?.lastError && <DataFieldListItem title={'Last Error'} description={status.lastError} />}
-        </ListSection>
+            <DataFieldListItem title={'Socket State'} description={status.state ?? 'Unknown'} />
+            <DataFieldListItem
+              title={'Last Healthcheck'}
+              description={
+                status.lastHealthcheckAt ? (
+                  <RelativeTimeTag date={new Date(status.lastHealthcheckAt)} />
+                ) : (
+                  <Text>Unknown</Text>
+                )
+              }
+            />
+            {status.lastHealthcheckAt && (
+              <DataFieldListItem
+                title={'Last Healthcheck Result'}
+                description={status.lastHealthcheckSuccess ? 'Success' : 'Failure'}
+              />
+            )}
+            <DataFieldListItem title={'Failed Count'} description={String(status.failedCount ?? 0)} />
+            {status.lastError && <DataFieldListItem title={'Last Error'} description={status.lastError} />}
+          </ListSection>
+        ))}
         <PaddedContentView padBottom={false} />
         <PaddedContentView padSides={false}>
           <HelperText type={'info'} style={{color: theme.colors.onBackground}}>

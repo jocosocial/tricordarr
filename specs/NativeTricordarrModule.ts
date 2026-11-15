@@ -39,7 +39,9 @@ export interface Spec extends TurboModule {
    * Replaces the full list of accounts the background service connects for. `accountsJson` is a
    * JSON array of `{accountID, userID, username, serverUrl, urlPrefix, token, enabled, prefs}`
    * where `prefs` is `{pushNotifications: {[type]: boolean}, muteNotificationsUntil?: epochMs}`.
-   * `accountID` is an opaque key native never parses. Call on sign-in/out/switch/prefs change.
+   * `accountID` is the JS `Account.accountID`, an opaque key native never parses. The list is every
+   * account that should have a socket (the active one plus those opted in to background
+   * notifications), so call it on sign-in/out/switch/prefs change.
    */
   syncPushAccounts(accountsJson: string): void;
   setPushAccountEnabled(accountID: string, enabled: boolean): void;

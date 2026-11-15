@@ -27,7 +27,8 @@ const logger = createLogger('NotificationDataListener.tsx');
  */
 export const NotificationDataListener = () => {
   const {enableUserNotifications} = useEnableUserNotification();
-  const {isLoggedIn} = useSession();
+  const {isLoggedIn, currentAccount} = useSession();
+  const currentAccountID = currentAccount?.accountID;
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({
@@ -42,7 +43,7 @@ export const NotificationDataListener = () => {
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       logger.debug('wsMessageHandler received data from server:', event.data);
-      recordNotificationEvent(event.data, 'app');
+      recordNotificationEvent(event.data, 'app', currentAccountID);
       const notificationData = JSON.parse(event.data) as SocketNotificationData;
       const notificationType = SocketNotificationData.getType(notificationData);
       logger.debug(`Notification type: ${notificationType}`);
@@ -111,7 +112,7 @@ export const NotificationDataListener = () => {
         }
       }
     },
-    [invalidateFez, refetchAnnouncements, refetchUserNotificationData, receiveCall, endCall],
+    [currentAccountID, invalidateFez, refetchAnnouncements, refetchUserNotificationData, receiveCall, endCall],
   );
 
   const addHandler = useCallback(() => {

@@ -5,7 +5,6 @@ import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotific
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {createLogger} from '#src/Libraries/Logger';
 import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
-import {syncAndroidPushAccounts} from '#src/Libraries/Notifications/Push/Android/PushService';
 import {isAndroid} from '#src/Libraries/Platform/Detection';
 
 const logger = createLogger('PushNotificationService.tsx');
@@ -15,18 +14,24 @@ const logger = createLogger('PushNotificationService.tsx');
  * system.
  *
  * iOS uses a combination of a background `NEAppPushManager` and a websocket listener to generate
- * notifications purely on the native side.
+ * notifications purely on the native side, for the active account only.
  *
- * Android uses a native Kotlin foreground service (TwitarrPushService) that owns the socket and
- * posts notifications itself. JS only tells it which accounts to serve: it syncs the account list,
- * including the push preferences, whenever they change.
+ * Android uses a native Kotlin foreground service (TwitarrPushService) that owns one socket per
+ * account and posts notifications itself. It serves the active account plus any other account
+ * that opted in to background notifications, so it is not tied to the active session: JS only
+ * re-syncs the account list whenever something that feeds it changes.
  */
 export const PushNotificationService = () => {
   const {enableUserNotifications} = useEnableUserNotification();
-  const {isLoading, isLoggedIn, currentSession} = useSession();
+  const {isLoading, isLoggedIn, accounts, currentSession, currentToken} = useSession();
   const {appConfig} = useConfig();
+  // Signing out or removing an account that is not the active one remounts nothing, so watch the list.
+  const accountsKey = accounts.map(account => `${account.accountID}:${account.status}`).join(',');
 
   useEffect(() => {
+    if (isAndroid) {
+      return;
+    }
     logger.debug('isLoggedIn', isLoggedIn, 'enableUserNotifications', enableUserNotifications);
     if (isLoading || enableUserNotifications === null) {
       logger.debug('Conditions for push notifications not met. Not starting.');
@@ -41,20 +46,26 @@ export const PushNotificationService = () => {
     }
   }, [enableUserNotifications, isLoggedIn, isLoading]);
 
-  // The native service filters with its own copy of the preferences, so push changes to it.
+  // The native service decides from its own copy of the accounts and their preferences, so push
+  // every change to it. It works out from storage which accounts to serve (and stops itself when
+  // there are none), which is why this also runs while the active session cannot be notified.
   useEffect(() => {
-    if (!isAndroid || !enableUserNotifications) {
+    if (!isAndroid || isLoading || enableUserNotifications === null) {
       return;
     }
-    syncAndroidPushAccounts().catch(error => logger.error('Failed to sync push accounts', error));
+    startPushProvider().catch(error => logger.error('Failed to sync the push service', error));
   }, [
+    isLoading,
     enableUserNotifications,
+    accountsKey,
     currentSession?.sessionID,
-    currentSession?.tokenData?.token,
+    currentToken?.token,
     appConfig.pushNotifications,
     appConfig.muteNotifications,
+    appConfig.backgroundNotifications,
     appConfig.urlPrefix,
     appConfig.enableNotificationSocket,
+    appConfig.enableBackgroundWorker,
   ]);
 
   return null;

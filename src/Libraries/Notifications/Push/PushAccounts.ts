@@ -1,9 +1,12 @@
-import {getAppConfig} from '#src/Libraries/AppConfig';
+import {isAccountPreRegistration} from '#src/Libraries/Account';
+import {AccountPreferences, DeviceConfig, getDeviceConfig} from '#src/Libraries/AppConfig';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
+import {Account, ServerProfile} from '#src/Structs/SessionStructs';
 
 /**
  * An account the native background service connects for, as accepted by
- * `NativeTricordarrModule.syncPushAccounts`. `accountID` is an opaque key native never parses.
+ * `NativeTricordarrModule.syncPushAccounts`. `accountID` is the `Account.accountID`; native treats
+ * it as an opaque key.
  */
 export interface PushAccount {
   accountID: string;
@@ -20,40 +23,100 @@ export interface PushAccount {
 }
 
 /**
- * Identity used for the single current login until the account model lands. When it does this
- * becomes the real accountID and native needs no change.
+ * Everything `selectPushAccounts` decides from, already read out of storage.
+ */
+export interface PushAccountInputs {
+  deviceConfig: DeviceConfig;
+  oobeCompletedVersion: number;
+  accounts: Account[];
+  serverProfiles: ServerProfile[];
+  /** The account of the current session, or null when it is anonymous or there is none. */
+  activeAccountID: string | null;
+  /** Bearer tokens by accountID. An account with no entry is skipped. */
+  tokens: Record<string, string | undefined>;
+  /** Stored preferences by accountID. An account with none uses the device defaults. */
+  preferences: Record<string, AccountPreferences | undefined>;
+}
+
+/**
+ * The account of the current session, for addressing its notifications on the native side.
+ * Reads storage so it works outside React.
  */
 export const getCurrentPushAccountID = async (): Promise<string | undefined> => {
   const session = await SessionStorage.getCurrentSession();
-  return session?.sessionID;
+  return session?.accountID ?? undefined;
 };
 
 /**
- * The accounts the background service should hold sockets for. Reads storage directly so it works
- * outside React. Empty when signed out, pre-registration, or without a token.
+ * Decide which accounts get a background notification socket. The active account always does;
+ * any other signed-in account does only if it opted in with `backgroundNotifications`. Nothing
+ * does until setup is complete or while the background worker is switched off, and never an
+ * account on a server in pre-registration mode.
  */
-export const buildPushAccounts = async (): Promise<PushAccount[]> => {
-  const [session, appConfig] = await Promise.all([SessionStorage.getCurrentSession(), getAppConfig()]);
-  const token = session?.tokenData?.token;
-  if (!session || !session.serverUrl || !token || session.preRegistrationMode) {
+export const selectPushAccounts = (inputs: PushAccountInputs): PushAccount[] => {
+  const {deviceConfig, oobeCompletedVersion, accounts, serverProfiles, activeAccountID, tokens, preferences} = inputs;
+  if (!deviceConfig.enableBackgroundWorker || oobeCompletedVersion < deviceConfig.oobeExpectedVersion) {
     return [];
   }
-  return [
-    {
-      accountID: session.sessionID,
-      userID: session.tokenData?.userID ?? '',
-      // Not known outside React yet. Native only shows it when several accounts are active.
-      username: '',
-      serverUrl: session.serverUrl,
-      urlPrefix: appConfig.urlPrefix,
+  const pushAccounts: PushAccount[] = [];
+  for (const account of accounts) {
+    const token = tokens[account.accountID];
+    const prefs = preferences[account.accountID] ?? deviceConfig.defaultPreferences;
+    const isActive = account.accountID === activeAccountID;
+    if (account.status !== 'signedIn' || !token || isAccountPreRegistration(account, serverProfiles)) {
+      continue;
+    }
+    if (!isActive && !prefs.backgroundNotifications) {
+      continue;
+    }
+    pushAccounts.push({
+      accountID: account.accountID,
+      userID: account.userID,
+      username: account.username,
+      serverUrl: account.serverUrl,
+      urlPrefix: deviceConfig.urlPrefix,
       token,
-      enabled: appConfig.enableNotificationSocket,
+      enabled: deviceConfig.enableNotificationSocket,
       prefs: {
-        pushNotifications: {...appConfig.pushNotifications},
-        muteNotificationsUntil: appConfig.muteNotifications
-          ? new Date(appConfig.muteNotifications).getTime()
-          : undefined,
+        pushNotifications: {...prefs.pushNotifications},
+        muteNotificationsUntil: prefs.muteNotifications ? new Date(prefs.muteNotifications).getTime() : undefined,
       },
-    },
-  ];
+    });
+  }
+  return pushAccounts;
+};
+
+/**
+ * The accounts the background service should hold sockets for, read from storage so it works
+ * outside React.
+ */
+export const buildPushAccounts = async (): Promise<PushAccount[]> => {
+  const [deviceConfig, oobeCompletedVersion, accounts, serverProfiles, session] = await Promise.all([
+    getDeviceConfig(),
+    SessionStorage.getOobeCompletedVersion(),
+    SessionStorage.getAccounts(),
+    SessionStorage.getServerProfiles(),
+    SessionStorage.getCurrentSession(),
+  ]);
+  const tokens: PushAccountInputs['tokens'] = {};
+  const preferences: PushAccountInputs['preferences'] = {};
+  await Promise.all(
+    accounts.map(async account => {
+      const [token, prefs] = await Promise.all([
+        SessionStorage.getTokenForAccount(account.accountID),
+        SessionStorage.getAccountPreferences(account.accountID),
+      ]);
+      tokens[account.accountID] = token?.token;
+      preferences[account.accountID] = prefs ?? undefined;
+    }),
+  );
+  return selectPushAccounts({
+    deviceConfig,
+    oobeCompletedVersion,
+    accounts,
+    serverProfiles,
+    activeAccountID: session?.accountID ?? null,
+    tokens,
+    preferences,
+  });
 };

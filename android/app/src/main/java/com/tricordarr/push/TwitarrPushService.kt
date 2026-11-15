@@ -23,8 +23,9 @@ import org.json.JSONObject
  * Foreground service that owns the notification WebSocket(s) and posts notifications natively,
  * so push keeps working with no React context (app swiped away, or after a reboot).
  *
- * One [AccountConnection] per enabled account; today JS syncs a single account. The set of
- * accounts comes from [PushAccountStore], which JS replaces through `syncPushAccounts`.
+ * One [AccountConnection] per enabled account. JS decides which accounts those are (the active
+ * one, plus any that opted in to notifications while inactive) and replaces the list in
+ * [PushAccountStore] through `syncPushAccounts`.
  */
 class TwitarrPushService : Service(), AccountConnection.Callbacks {
   private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -122,7 +123,10 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
     }
     synchronized(lock) {
       val wanted = accounts.map { it.accountID }.toSet()
-      connections.keys.filter { it !in wanted }.forEach { connections.remove(it)?.stop() }
+      connections.keys.filter { it !in wanted }.forEach {
+        connections.remove(it)?.stop()
+        NotificationBuilder.cancelConnectionLost(this, it)
+      }
       for (account in accounts) {
         val existing = connections[account.accountID]
         if (existing != null && !existing.account.connectionDiffers(account)) {
@@ -189,11 +193,11 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
   }
 
   override fun onConnectionLost(account: PushAccount) {
-    NotificationBuilder.postConnectionLost(this, account.username)
+    NotificationBuilder.postConnectionLost(this, account.accountID, account.username)
   }
 
   override fun onRecovered(account: PushAccount) {
-    NotificationBuilder.cancelConnectionLost(this)
+    NotificationBuilder.cancelConnectionLost(this, account.accountID)
   }
 
   companion object {
