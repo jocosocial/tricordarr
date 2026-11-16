@@ -3,12 +3,14 @@ import React, {memo} from 'react';
 import {AvatarImage} from '#src/Components/Images/AvatarImage';
 import {ContentPostImages} from '#src/Components/Images/ContentPostImages';
 import {FezPostActionsMenu} from '#src/Components/Menus/Fez/FezPostActionsMenu';
+import {PostReactionBadges} from '#src/Components/Reactions/PostReactionBadges';
 import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
 import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView';
 import {MessageView} from '#src/Components/Views/MessageView';
 import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
+import {usePendingReaction} from '#src/Context/Contexts/PostReactionContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useChatStack} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -30,6 +32,7 @@ interface FezPostListItemProps {
 const FezPostListItemInternal = ({fezPost, fez, fullWidth}: FezPostListItemProps) => {
   const {currentUserID} = useSession();
   const {asPrivilegedUser} = useElevation();
+  const pendingReaction = usePendingReaction('fezPost', fezPost.postID);
   const seamailNavigation = useChatStack();
 
   let showAuthor = fez ? fez.participantCount > 2 : true;
@@ -74,6 +77,12 @@ const FezPostListItemInternal = ({fezPost, fez, fullWidth}: FezPostListItemProps
           messageOnRight={messageOnRight}
           showAuthor={showAuthor}
           fullWidth={fullWidth}
+          reactionBadges={
+            // Also while a first reaction is being sent, so its placeholder badge has somewhere to show.
+            fezPost.reactions?.length || pendingReaction ? (
+              <PostReactionBadges target={{kind: 'fezPost', post: fezPost, fez}} />
+            ) : undefined
+          }
           renderActionsMenu={({visible, closeMenu, anchor}) => (
             <FezPostActionsMenu visible={visible} closeMenu={closeMenu} anchor={anchor} fezPost={fezPost} fez={fez} />
           )}

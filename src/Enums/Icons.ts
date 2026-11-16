@@ -39,6 +39,7 @@ export enum AppIcons {
   help = 'help-circle-outline',
   copy = 'content-copy',
   reply = 'reply',
+  react = 'emoticon-outline',
   // Users
   profile = 'account-details-outline',
   user = 'account',

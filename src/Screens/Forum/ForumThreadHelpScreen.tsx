@@ -49,8 +49,10 @@ export const ForumThreadHelpScreen = () => {
             Pin or unpin this post to this thread. Pinned posts are accessed through the Pinned Posts action described
             above.
           </HelpTopicView>
-          <HelpTopicView>
-            You can also add reactions to this post using one of the three reaction buttons.
+          <HelpTopicView title={'React'} icon={AppIcons.react}>
+            Choose React to add a reaction to another user's post. Reactions appear as badges below the post. Tap a
+            badge to add your own reaction to it, or to remove your reaction if you already reacted. Long-press a badge
+            to see who reacted with what.
           </HelpTopicView>
           <ReportButtonHelpTopicView />
           <ModerateButtonHelpTopicView />

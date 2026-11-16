@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo} from 'react';
-import {StyleProp, TextStyle} from 'react-native';
+import {StyleProp, StyleSheet, TextStyle, useWindowDimensions} from 'react-native';
 import {Text} from 'react-native-paper';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
@@ -8,8 +8,10 @@ import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {MarkdownText} from '#src/Components/Text/MarkdownText';
 import {stripObjectReplacementCharacters} from '#src/Components/Text/MarkdownUtils';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useCustomEmoji} from '#src/Context/Contexts/CustomEmojiContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CustomEmoji} from '#src/Enums/Emoji';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {styleDefaults} from '#src/Context/Providers/StyleProvider';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 
 interface ContentTextProps {
@@ -62,6 +64,15 @@ export const ContentText = ({
   selectable = true,
 }: ContentTextProps) => {
   const {commonStyles} = useStyles();
+  const CustomEmoji = useCustomEmoji();
+  const {theme} = useAppTheme();
+  const {fontScale} = useWindowDimensions();
+  // The size this text is actually drawn at, so custom emoji in it can match: an explicit style
+  // wins over the variant, and the system's text size setting scales both.
+  const variantFont = theme.fonts[textVariant ?? 'default'];
+  const textFontSize =
+    (StyleSheet.flatten(textStyle)?.fontSize ??
+      ('fontSize' in variantFont ? variantFont.fontSize : styleDefaults.fontSize)) * fontScale;
   const {data} = useUserKeywordQuery({
     keywordType: 'alertwords',
     options: {
@@ -88,8 +99,8 @@ export const ContentText = ({
         if (!token) {
           return;
         }
-        if (CustomEmoji[token as keyof typeof CustomEmoji]) {
-          return <Emoji key={key} emojiName={token as keyof typeof CustomEmoji} />;
+        if (CustomEmoji[token as string]) {
+          return <Emoji key={key} emojiName={token as string} textFontSize={textFontSize} />;
         }
         if (hashtagOnPressFunction && token.startsWith('#')) {
           return (
@@ -117,7 +128,7 @@ export const ContentText = ({
         return token;
       });
     },
-    [appConfig.userPreferences.highlightForumAlertWords, commonStyles.linkText, undWords],
+    [appConfig.userPreferences.highlightForumAlertWords, commonStyles.linkText, undWords, CustomEmoji, textFontSize],
   );
 
   const renderContentText = useCallback(

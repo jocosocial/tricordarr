@@ -51,7 +51,12 @@ import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {type FezData, type FezPostData, type PostContentData} from '#src/Structs/ControllerStructs';
-import {SocketFezMemberChangeData, SocketFezPostData} from '#src/Structs/SocketStructs';
+import {
+  isSocketFezMemberChangeData,
+  isSocketFezPostData,
+  isSocketFezReactionData,
+  SocketFezMessage,
+} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('FezChatScreen.tsx');
 
@@ -142,7 +147,7 @@ const FezChatScreenInner = ({route}: Props) => {
   const {setSnackbarPayload} = useSnackbar();
   const {openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
-  const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
+  const {appendPost: appendPostToCache, markRead, updatePostReactions} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
   const flatListRef = useRef<TConversationListV2Ref>(null);
   const fezSocketWithHandlerRef = useRef<{
@@ -198,14 +203,20 @@ const FezChatScreenInner = ({route}: Props) => {
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       logger.info('fezSocketMessageHandler responding event', event);
-      const socketMessage = JSON.parse(event.data);
-      if ('joined' in socketMessage) {
-        const memberChangeData = socketMessage as SocketFezMemberChangeData;
-        const changeActionString = memberChangeData.joined ? 'joined' : 'left';
-        const changeString = `User ${memberChangeData.user.username} has ${changeActionString} the chat.`;
+      const socketMessage: SocketFezMessage = JSON.parse(event.data);
+      if (isSocketFezReactionData(socketMessage)) {
+        updatePostReactions(
+          route.params.fezID,
+          socketMessage.postID,
+          socketMessage.reactions,
+          socketMessage.reactionRevision,
+        );
+      } else if (isSocketFezMemberChangeData(socketMessage)) {
+        const changeActionString = socketMessage.joined ? 'joined' : 'left';
+        const changeString = `User ${socketMessage.user.username} has ${changeActionString} the chat.`;
         setSnackbarPayload({message: changeString});
-      } else if ('postID' in socketMessage) {
-        const socketFezPostData = socketMessage as SocketFezPostData;
+      } else if (isSocketFezPostData(socketMessage)) {
+        const socketFezPostData = socketMessage;
         if (lastProcessedPostIDRef.current === socketFezPostData.postID) {
           return;
         }
@@ -215,7 +226,7 @@ const FezChatScreenInner = ({route}: Props) => {
         appendPostToCache(route.params.fezID, socketFezPostData);
       }
     },
-    [appendPostToCache, route.params.fezID, setSnackbarPayload],
+    [appendPostToCache, route.params.fezID, setSnackbarPayload, updatePostReactions],
   );
   fezSocketMessageHandlerRef.current = fezSocketMessageHandler;
 

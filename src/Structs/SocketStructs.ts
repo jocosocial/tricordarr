@@ -1,8 +1,11 @@
-import {UserHeader} from '#src/Structs/ControllerStructs';
+import {ReactionData, UserHeader} from '#src/Structs/ControllerStructs';
 
 export interface SocketFezPostData {
   /// PostID of the new post
   postID: number;
+  /** Initial reaction snapshot for the new chat post. */
+  reactions?: ReactionData[];
+  reactionRevision?: number;
   /// User that posted. Should be a current member of the fez; socket should get a `SocketMemberChangeData` adding a new user before any posts by that user.
   /// But, there's a possible race condition where membership could change before the socket is opened. Unless you update FezData after opening the socket, you may
   /// see posts from users that don't appear to be members of the fez.
@@ -27,6 +30,30 @@ export interface SocketFezMemberChangeData {
   /// Please don't try parsing this to gather data. This field is here so the Javascript can insert HTML that matches what the HTTP endpoints render.
   html?: string;
 }
+
+/** Complete reaction state for a chat post after a participant adds or removes one. */
+export interface SocketFezReactionData {
+  reactionUpdate: true;
+  postID: number;
+  reactions: ReactionData[];
+  reactionRevision?: number;
+}
+
+/** Every payload Swiftarr sends over a chat socket. */
+export type SocketFezMessage = SocketFezReactionData | SocketFezMemberChangeData | SocketFezPostData;
+
+/**
+ * Reaction updates carry a `postID` like new posts do, so they are told apart by the
+ * `reactionUpdate` marker and must be checked before `isSocketFezPostData`.
+ */
+export const isSocketFezReactionData = (message: SocketFezMessage): message is SocketFezReactionData =>
+  'reactionUpdate' in message && message.reactionUpdate === true;
+
+export const isSocketFezMemberChangeData = (message: SocketFezMessage): message is SocketFezMemberChangeData =>
+  'joined' in message;
+
+export const isSocketFezPostData = (message: SocketFezMessage): message is SocketFezPostData =>
+  !isSocketFezReactionData(message) && 'postID' in message;
 
 export enum NotificationTypeData {
   // Notifies Everyone

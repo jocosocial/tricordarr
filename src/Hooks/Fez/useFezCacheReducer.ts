@@ -21,6 +21,7 @@ import {
 } from '#src/Libraries/CacheReduction';
 import {calcCruiseDayTime, swiftTimestampToISO} from '#src/Libraries/DateTime';
 import {publicFezField} from '#src/Libraries/Moderation/Content';
+import {applyFezPostReactions} from '#src/Libraries/Reactions/ReactionCacheReduction';
 import {applyAppendedPostCounts, applyMarkReadCounts, postReadCountsUnchanged} from '#src/Libraries/UnreadCounts';
 import {
   FezData,
@@ -672,6 +673,17 @@ export const useFezCacheReducer = () => {
     [queryClient, updateFezInListCachesWithReorder],
   );
 
+  /** Replaces one post after a reaction change without changing unread or post counts. */
+  const updatePostReactions = useCallback(
+    (fezID: string, postID: number, reactions: FezPostData['reactions'], reactionRevision?: number) => {
+      // Updates for posts not yet cached are discarded. An in-flight page response can then load an
+      // older snapshot; its counts stay stale until another reaction update or refresh. We accept
+      // this narrow display race rather than buffer snapshots for unloaded posts.
+      updateFezDetailCache(fezID, fez => applyFezPostReactions(fez, postID, reactions, reactionRevision));
+    },
+    [updateFezDetailCache],
+  );
+
   /**
    * Replace FezData across all caches after a membership change (join, unjoin,
    * add participant, remove participant). These mutations return updated FezData.
@@ -912,5 +924,6 @@ export const useFezCacheReducer = () => {
     updateFezVisibility,
     updateMembership,
     updateMute,
+    updatePostReactions,
   };
 };

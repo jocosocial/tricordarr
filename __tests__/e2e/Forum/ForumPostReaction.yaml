@@ -1,0 +1,85 @@
+# Reacting to a forum post: add a reaction from the picker, see who reacted, remove it again.
+#
+# The picker only ever adds. Removing goes through the badge, because Swiftarr stores a
+# canonical form of each emoji and the badge holds that stored string.
+#
+# Precondition: the app is signed in (see ForumPostReply.yaml for why that is manual).
+#
+# FORUM_THREAD must name a thread in FORUM_CATEGORY whose first post is by another user, since
+# React is disabled on your own posts. No other user may have the ✅ reaction on that post: the
+# flow adds it and expects the badge to disappear once it is removed again.
+appId: ${APP_ID}
+env:
+  FORUM_CATEGORY: 'General'
+  FORUM_THREAD: 'Reply caret test thread'
+---
+- launchApp:
+    arguments:
+      '-EXDevMenuIsOnboardingFinished': true
+- extendedWaitUntil:
+    visible: '(?s).*Forums.*'
+    timeout: 120000
+- tapOn: '(?s).*Forums.*'
+# Moderator accounts see extra categories that push the rest below the fold.
+- scrollUntilVisible:
+    element: '(?s).*${FORUM_CATEGORY}.*'
+    direction: DOWN
+- tapOn: '(?s).*${FORUM_CATEGORY}.*'
+- tapOn: '(?s).*${FORUM_THREAD}.*'
+- assertVisible:
+    id: 'forumPost-message'
+    index: 0
+
+# Let the push transition finish first: on iOS a long press that starts while the thread is still
+# sliding in is dropped, and the menu never opens.
+- waitForAnimationToEnd
+
+# A run that failed after adding ✅ leaves it behind, and this flow could then never pass again.
+# Take it off first so every run starts from the same state.
+- runFlow:
+    when:
+      visible:
+        id: 'reactionBadge-button'
+        text: '✅, 1 reaction'
+    commands:
+      - tapOn:
+          id: 'reactionBadge-button'
+          text: '✅, 1 reaction'
+      - extendedWaitUntil:
+          notVisible:
+            id: 'reactionBadge-button'
+            text: '✅.*'
+          timeout: 15000
+
+# Add ✅ from the picker.
+- longPressOn:
+    id: 'forumPost-message'
+    index: 0
+- tapOn:
+    id: 'postActionsReact-button'
+- tapOn:
+    id: 'reactionPickerCheck-button'
+# Badges share one id; the accessibility label carries the emoji and the count.
+- extendedWaitUntil:
+    visible:
+      id: 'reactionBadge-button'
+      text: '✅, 1 reaction'
+    timeout: 15000
+
+# A long press lists who reacted.
+- longPressOn:
+    id: 'reactionBadge-button'
+    text: '✅, 1 reaction'
+- assertVisible: 'Reactions'
+- tapOn:
+    id: 'reactionsDetailClose-button'
+
+# A tap on a badge you reacted with removes your reaction, and with it the last ✅.
+- tapOn:
+    id: 'reactionBadge-button'
+    text: '✅, 1 reaction'
+- extendedWaitUntil:
+    notVisible:
+      id: 'reactionBadge-button'
+      text: '✅.*'
+    timeout: 15000

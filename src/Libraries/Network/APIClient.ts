@@ -5,6 +5,7 @@ import {AxiosResponse} from 'axios';
 import {encode as base64_encode} from 'base-64';
 import superjson from 'superjson';
 
+import {shareReactionSnapshots} from '#src/Libraries/Reactions/ReactionSnapshotSharing';
 import {getQueryCacheKey, queryCacheStorage} from '#src/Libraries/Storage/QueryCacheStorage';
 
 // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
@@ -54,7 +55,7 @@ export function getAuthHeaders(
  * https://tanstack.com/query/latest/docs/react/overview
  */
 export const createQueryClient = (_sessionID: string): QueryClient => {
-  return new QueryClient();
+  return new QueryClient({defaultOptions: {queries: {structuralSharing: shareReactionSnapshots}}});
 };
 
 /**

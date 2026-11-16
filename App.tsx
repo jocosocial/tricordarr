@@ -16,6 +16,7 @@ import {initialWindowMetrics, SafeAreaProvider} from 'react-native-safe-area-con
 import {TricordarrApp} from '#src/Components/Libraries/TricordarrApp';
 import {ConfigSessionProvider} from '#src/Context/Providers/ConfigSessionProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
+import {CustomEmojiProvider} from '#src/Context/Providers/CustomEmojiProvider';
 import {EnableUserNotificationProvider} from '#src/Context/Providers/EnableUserNotificationProvider';
 import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
@@ -24,6 +25,7 @@ import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
 import {NavigationProvider} from '#src/Context/Providers/NavigationProvider';
 import {OobeProvider} from '#src/Context/Providers/OobeProvider';
 import {PermissionsProvider} from '#src/Context/Providers/PermissionsProvider';
+import {PostReactionProvider} from '#src/Context/Providers/PostReactionProvider';
 import {PreRegistrationProvider} from '#src/Context/Providers/PreRegistrationProvider';
 import {SessionBoundaryProvider} from '#src/Context/Providers/SessionBoundaryProvider';
 import {ShellProvider} from '#src/Context/Providers/ShellProvider';
@@ -112,11 +114,15 @@ function App(): React.JSX.Element {
                                       <EnableUserNotificationProvider>
                                         <FilterProvider>
                                           <SignOutProvider>
-                                            <HelperProvider>
-                                              <ShellProvider>
-                                                <TricordarrApp />
-                                              </ShellProvider>
-                                            </HelperProvider>
+                                            <CustomEmojiProvider>
+                                              <PostReactionProvider>
+                                                <HelperProvider>
+                                                  <ShellProvider>
+                                                    <TricordarrApp />
+                                                  </ShellProvider>
+                                                </HelperProvider>
+                                              </PostReactionProvider>
+                                            </CustomEmojiProvider>
                                           </SignOutProvider>
                                         </FilterProvider>
                                       </EnableUserNotificationProvider>

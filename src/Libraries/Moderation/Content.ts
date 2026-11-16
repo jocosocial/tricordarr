@@ -22,6 +22,7 @@ export const postDataFromDetail = (detail: PostDetailData): PostData => {
     isBookmarked: detail.isBookmarked,
     userLike: detail.userLike,
     likeCount: detail.laughs.length + detail.likes.length + detail.loves.length,
+    reactions: detail.reactions,
   };
 };
 

@@ -16,6 +16,7 @@ import {
   updateItemsInPages,
 } from '#src/Libraries/CacheReduction';
 import {publicForumTitle} from '#src/Libraries/Moderation/Content';
+import {applyPostDetailReactions, applyPostReactions} from '#src/Libraries/Reactions/ReactionCacheReduction';
 import {
   applyAppendedPostCounts,
   applyDeletedPostCounts,
@@ -928,6 +929,19 @@ export const useForumCacheReducer = () => {
     [queryClient, updatePostInThreadCaches, updatePostInSearchCaches],
   );
 
+  /** Replaces reaction metadata for one post across thread, search, and detail caches. */
+  const updatePostReactions = useCallback(
+    (updatedPost: PostData, forumID?: string) => {
+      const updater = (post: PostData) => applyPostReactions(post, updatedPost);
+      updatePostInThreadCaches(updatedPost.postID, forumID, updater);
+      updatePostInSearchCaches(updatedPost.postID, updater);
+      queryClient.setQueriesData<PostDetailData>({queryKey: [`/forum/post/${updatedPost.postID}`]}, oldData =>
+        oldData ? applyPostDetailReactions(oldData, updatedPost) : oldData,
+      );
+    },
+    [queryClient, updatePostInSearchCaches, updatePostInThreadCaches],
+  );
+
   /**
    * After a moderator-initiated post edit, patch the forum post moderation
    * cache: update the cached PostDetailData's text/images and insert a
@@ -1102,6 +1116,7 @@ export const useForumCacheReducer = () => {
     updatePostBookmark,
     updatePostModeration,
     updatePostPin,
+    updatePostReactions,
     updateThreadVisibility,
   };
 };

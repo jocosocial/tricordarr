@@ -271,7 +271,9 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
           });
           return;
         }
-        if (!disruptionDetected && !serverSwitchInProgress && !isMaintenanceResponse) {
+        // meta.silentError marks a query whose failure the user need not hear about, such as the
+        // custom emoji catalog. It only skips the message; disruption counting above is unaffected.
+        if (!disruptionDetected && !serverSwitchInProgress && !isMaintenanceResponse && !query.meta?.silentError) {
           setSnackbarPayload({message: errorString, messageType: 'error'});
         }
       },
