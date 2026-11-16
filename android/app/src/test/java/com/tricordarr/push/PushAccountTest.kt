@@ -17,6 +17,21 @@ class PushAccountTest {
   }
 
   @Test
+  fun mayAutoStartUntilTheCruiseEnds() {
+    val account = TestSupport.account()
+    assertTrue(account.mayAutoStart(1_000L))
+    assertTrue(account.copy(autoStartUntil = 2_000L).mayAutoStart(2_000L))
+    assertFalse(account.copy(autoStartUntil = 2_000L).mayAutoStart(2_001L))
+  }
+
+  @Test
+  fun autoStartUntilRoundTripsThroughJson() {
+    val limited = TestSupport.account().copy(autoStartUntil = 5_000L)
+    assertEquals(listOf(limited), PushAccount.listFromJson(PushAccount.listToJson(listOf(limited))))
+    assertNull(PushAccount.listFromJson(PushAccount.listToJson(listOf(TestSupport.account()))).single().autoStartUntil)
+  }
+
+  @Test
   fun jsonRoundTrips() {
     val account = TestSupport.account(mapOf("seamailUnreadMsg" to true, "announcement" to false), mute = 123L)
     val parsed = PushAccount.listFromJson(PushAccount.listToJson(listOf(account)))

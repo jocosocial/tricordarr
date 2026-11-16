@@ -145,6 +145,12 @@ export interface AppConfig extends ServerConfigFields {
   silenceTimezoneWarnings: boolean;
   dismissWelcomeAboard: boolean;
   backgroundNotifications: boolean;
+  /**
+   * Device-wide. Whether the Android worker may restart itself on boot or app update after an
+   * account's cruise is over. Off by default so phones do not keep launching it forever. Opening
+   * the app still starts the worker either way. See selectPushAccounts.
+   */
+  keepRunningAfterCruise: boolean;
   logLevel: LogLevel;
 }
 
@@ -249,6 +255,7 @@ export const defaultAppConfig: AppConfig = {
   dismissWelcomeAboard: false,
   dismissMinAccessWarning: false,
   backgroundNotifications: true,
+  keepRunningAfterCruise: false,
   // logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
   logLevel: LogLevel.DEBUG,
 };

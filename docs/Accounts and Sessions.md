@@ -94,4 +94,4 @@ Settings > Accounts (`AccountsSettingsScreen`): accounts with avatar, `username`
 - Preferences: `userPreferences.*` are all per-account (the Model section), including swipe orientation, scroll button and photo options that the draft proposed as device-wide. Moving individual fields to `DeviceConfig` is a local change in `pickAccountPreferences` / `splitAppConfig`.
 - `preRegistrationMode` is on `ServerProfile`, not `Session` (it was on `Session` in the first draft).
 - No cap on accounts.
-- `backgroundNotifications` defaults to on.
+- `backgroundNotifications` defaults to on. The device-wide `keepRunningAfterCruise` (Android: let the worker restart itself on boot or app update after the cruise ends) defaults to off.

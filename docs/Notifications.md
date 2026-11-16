@@ -128,6 +128,16 @@ One provider, a socket per account, same contract as Android (see "Accounts" abo
   the healthcheck timer until JS stops syncing the account.
 - `setupLocalPushManager` / `clearLocalPushManager` are gone; `syncPushAccounts` replaced them.
 
+### After the cruise
+
+A boot or app-update restart nobody asked for must not run forever. JS puts `autoStartUntil` on each
+synced account (`selectPushAccounts`): the end of its server's cruise (start day plus length, in the
+port timezone, from the mirrored `ServerProfile`), or nothing if the dates are not known yet or the
+device-wide `keepRunningAfterCruise` setting is on (Background Connection settings). `PushBootReceiver` calls
+`PushServiceController.startOnBoot`, which skips the start when no enabled account may auto-start. Opening
+the app still starts the worker (`startBackgroundService`), and a worker that is already running is not
+stopped.
+
 ## Android: call foreground service
 
 `CallService` keeps the process alive, with an ongoing notification, while a KrakenTalk call is active.

@@ -26,7 +26,12 @@ data class PushAccount(
   val token: String,
   val enabled: Boolean,
   val prefs: PushPrefs,
+  /** Epoch ms after which the worker must not restart on its own (boot, app update). Null: no limit. */
+  val autoStartUntil: Long? = null,
 ) {
+  /** Whether a restart that nobody asked for (boot, app update) may bring this account's worker back. */
+  fun mayAutoStart(now: Long): Boolean = autoStartUntil == null || now <= autoStartUntil
+
   /** The username, or the userID until the username is known. */
   fun name(): String = username.ifEmpty { userID }
 
@@ -55,6 +60,9 @@ data class PushAccount(
       put("urlPrefix", urlPrefix)
       put("token", token)
       put("enabled", enabled)
+      if (autoStartUntil != null) {
+        put("autoStartUntil", autoStartUntil)
+      }
       put(
         "prefs",
         JSONObject().apply {
@@ -94,6 +102,7 @@ data class PushAccount(
         token = json.getString("token"),
         enabled = json.optBoolean("enabled", true),
         prefs = PushPrefs(types, mute),
+        autoStartUntil = if (json.has("autoStartUntil") && !json.isNull("autoStartUntil")) json.getLong("autoStartUntil") else null,
       )
     }
 

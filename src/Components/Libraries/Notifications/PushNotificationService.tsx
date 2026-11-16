@@ -48,6 +48,11 @@ export const PushNotificationService = () => {
     appConfig.urlPrefix,
     appConfig.enableNotificationSocket,
     appConfig.enableBackgroundWorker,
+    // autoStartUntil is derived from these, so a change must reach native.
+    appConfig.keepRunningAfterCruise,
+    appConfig.cruiseStartDateStr,
+    appConfig.cruiseLength,
+    appConfig.portTimeZoneID,
   ]);
 
   return null;

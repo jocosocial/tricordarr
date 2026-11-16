@@ -32,6 +32,18 @@ object PushServiceController {
     return start(context)
   }
 
+  /**
+   * Starts the service after a boot or app update, which nobody asked for. An account whose cruise
+   * is over (see [PushAccount.autoStartUntil]) does not bring it back; opening the app still can.
+   */
+  fun startOnBoot(context: Context): Boolean {
+    val now = System.currentTimeMillis()
+    if (PushAccountStore(context).load().none { it.enabled && it.mayAutoStart(now) }) {
+      return false
+    }
+    return start(context)
+  }
+
   fun stop(context: Context) {
     context.stopService(Intent(context, TwitarrPushService::class.java))
     NotificationBuilder.cancelAllConnectionLost(context)

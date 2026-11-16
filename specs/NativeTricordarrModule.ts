@@ -38,7 +38,8 @@ export interface Spec extends TurboModule {
   /**
    * Replaces the full list of accounts the background service connects for. `accountsJson` is a
    * JSON array of `{accountID, userID, username, serverUrl, urlPrefix, token, enabled, prefs,
-   * wifiNetworkNames}` where `prefs` is `{pushNotifications: {[type]: boolean},
+   * wifiNetworkNames, autoStartUntil?}` where `autoStartUntil` is epoch ms after which Android does not
+   * restart the worker on boot or app update (absent: no limit), and `prefs` is `{pushNotifications: {[type]: boolean},
    * muteNotificationsUntil?: epochMs}`. On iOS an empty list also turns the providers off.
    * `accountID` is the JS `Account.accountID`, an opaque key native never parses. The list is every
    * account that should have a socket (the active one plus those opted in to background

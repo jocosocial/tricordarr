@@ -1,3 +1,5 @@
+import moment from 'moment-timezone';
+
 import {isAccountPreRegistration} from '#src/Libraries/Account';
 import {AccountPreferences, DeviceConfig, getDeviceConfig, mergeAppConfig} from '#src/Libraries/AppConfig';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
@@ -22,6 +24,11 @@ export interface PushAccount {
   };
   /** The networks the account's server is on. iOS only runs its extension while joined to one. */
   wifiNetworkNames: string[];
+  /**
+   * Epoch ms after which Android must not restart the worker on its own (boot, app update). Absent
+   * means no limit: the device is set to keep running, or its server's cruise dates are not known.
+   */
+  autoStartUntil?: number;
 }
 
 /**
@@ -47,6 +54,20 @@ export interface PushAccountInputs {
 export const getCurrentPushAccountID = async (): Promise<string | undefined> => {
   const session = await SessionStorage.getCurrentSession();
   return session?.accountID ?? undefined;
+};
+
+/**
+ * When the cruise on a server ends: its start day plus its length, in the port's timezone. Undefined
+ * until the server's /client/settings have been mirrored into the profile.
+ */
+export const cruiseEndMs = (profile?: ServerProfile): number | undefined => {
+  if (!profile?.cruiseStartDateStr || !profile.cruiseLength || !profile.portTimeZoneID) {
+    return undefined;
+  }
+  const end = moment
+    .tz(profile.cruiseStartDateStr, 'YYYY-MM-DD', profile.portTimeZoneID)
+    .add(profile.cruiseLength, 'days');
+  return end.isValid() ? end.valueOf() : undefined;
 };
 
 /**
@@ -86,6 +107,7 @@ export const selectPushAccounts = (inputs: PushAccountInputs): PushAccount[] => 
       },
       // The effective config supplies the same defaults the settings screen shows.
       wifiNetworkNames: [...mergeAppConfig(deviceConfig, prefs, profile).wifiNetworkNames],
+      autoStartUntil: deviceConfig.keepRunningAfterCruise ? undefined : cruiseEndMs(profile),
     });
   }
   return pushAccounts;

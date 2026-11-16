@@ -28,7 +28,7 @@ import {
   stashAccountLink,
   stripLinkAccount,
 } from '#src/Libraries/Notifications/AccountLink';
-import {PushAccountInputs, selectPushAccounts} from '#src/Libraries/Notifications/Push/PushAccounts';
+import {cruiseEndMs, PushAccountInputs, selectPushAccounts} from '#src/Libraries/Notifications/Push/PushAccounts';
 import {Account, ServerProfile} from '#src/Structs/SessionStructs';
 
 const SERVER = 'https://twitarr.com';
@@ -105,6 +105,38 @@ describe('selectPushAccounts', () => {
       preferences: {b: optedOut},
     });
     expect(ids(inputs)).toEqual([]);
+  });
+
+  describe('autoStartUntil', () => {
+    const cruiseProfile = (): ServerProfile => ({
+      ...makeProfile(SERVER, false),
+      cruiseStartDateStr: '2026-03-01',
+      cruiseLength: 8,
+      portTimeZoneID: 'America/New_York',
+    });
+    // Eight days from midnight, 1 March in New York (EST until 8 March, EDT after).
+    const cruiseEnd = Date.UTC(2026, 2, 9, 4, 0, 0);
+
+    it('is the end of the cruise in the port timezone', () => {
+      expect(cruiseEndMs(cruiseProfile())).toBe(cruiseEnd);
+    });
+
+    it('is unknown until the server settings have been mirrored', () => {
+      expect(cruiseEndMs(makeProfile(SERVER, false))).toBeUndefined();
+      expect(cruiseEndMs(undefined)).toBeUndefined();
+    });
+
+    it('limits an account to the end of its server cruise', () => {
+      const [a] = selectPushAccounts(makeInputs({serverProfiles: [cruiseProfile()]}));
+      expect(a.autoStartUntil).toBe(cruiseEnd);
+    });
+
+    it('is dropped for every account when the device keeps running after the cruise', () => {
+      const deviceConfig = {...defaultDeviceConfig, keepRunningAfterCruise: true};
+      const accounts = selectPushAccounts(makeInputs({deviceConfig, serverProfiles: [cruiseProfile()]}));
+      expect(accounts).toHaveLength(2);
+      accounts.forEach(account => expect(account.autoStartUntil).toBeUndefined());
+    });
   });
 
   it('serves nothing until setup is complete', () => {

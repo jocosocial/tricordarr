@@ -88,6 +88,13 @@ export const BackgroundConnectionSettingsAndroidView = () => {
     });
   };
 
+  const handleKeepRunningAfterCruise = () => {
+    updateAppConfig({
+      ...appConfig,
+      keepRunningAfterCruise: !appConfig.keepRunningAfterCruise,
+    });
+  };
+
   /**
    * Name of the account a status belongs to, for its section header.
    */
@@ -128,6 +135,17 @@ export const BackgroundConnectionSettingsAndroidView = () => {
                 style={commonStyles.paddingHorizontalSmall}
                 helperText={'Use this to disable the worker if it is causing problems.'}
                 value={enable}
+              />
+              <BooleanField
+                name={'keepRunningAfterCruise'}
+                testID={'keepRunningAfterCruise-switch'}
+                label={'Keep Running After the Cruise'}
+                onPress={handleKeepRunningAfterCruise}
+                style={commonStyles.paddingHorizontalSmall}
+                helperText={
+                  'After the cruise ends, the worker stops restarting itself when the phone reboots or the app updates. Opening the app still starts it.'
+                }
+                value={appConfig.keepRunningAfterCruise}
               />
               {currentAccount && (
                 <BooleanField
