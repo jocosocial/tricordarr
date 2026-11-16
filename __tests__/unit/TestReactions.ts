@@ -5,6 +5,7 @@ import {
   CustomEmojiData,
   reactionAccessibilityName,
 } from '#src/Libraries/Reactions/CustomEmojiCatalog';
+import {inlineEmojiStyle} from '#src/Libraries/Reactions/InlineEmojiStyle';
 import {canReactTo, reactionToggleAction} from '#src/Libraries/Reactions/ReactionActions';
 import {
   applyFezPostReactions,
@@ -288,5 +289,20 @@ describe('reactionAccessibilityName', () => {
     expect(reactionAccessibilityName(catalog, '👍')).toBe('👍');
     expect(reactionAccessibilityName(catalog, ':unknown:')).toBe(':unknown:');
     expect(reactionAccessibilityName(catalog, 'constructor')).toBe('constructor');
+  });
+});
+
+describe('inlineEmojiStyle', () => {
+  it('sizes the emoji from the text, so it matches body text today and follows other sizes', () => {
+    expect(inlineEmojiStyle(16, 'android')).toEqual({width: 20, height: 20});
+    expect(inlineEmojiStyle(12, 'android')).toEqual({width: 15, height: 15});
+    // 16pt text at the largest accessibility size.
+    expect(inlineEmojiStyle(16 * 2, 'android')).toEqual({width: 40, height: 40});
+  });
+
+  it('drops the emoji below the baseline on iOS only, in proportion to the text', () => {
+    expect(inlineEmojiStyle(16, 'ios').transform).toEqual([{translateY: 16 * 0.2}]);
+    expect(inlineEmojiStyle(32, 'ios').transform).toEqual([{translateY: 32 * 0.2}]);
+    expect(inlineEmojiStyle(16, 'android').transform).toBeUndefined();
   });
 });
