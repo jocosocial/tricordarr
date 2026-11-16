@@ -90,17 +90,17 @@
       for each foreground service.
       This also needs a corresponding permission above!
       https://developer.android.com/develop/background-work/services/fg-service-types
-      https://notifee.app/react-native/docs/android/foreground-service
-      -->
-      <service android:name="app.notifee.core.ForegroundService" android:foregroundServiceType="remoteMessaging" tools:replace="android:foregroundServiceType" />
 
-      <!--
-      Native notification socket service. Replaces the notify-kit worker; notify-kit's service above
-      is now only used for calls. Uses remoteMessaging, which the app already declares to Play, rather
-      than specialUse, which would need a new declaration.
+      Native notification socket service. Uses remoteMessaging, which the app already declares to Play,
+      rather than specialUse, which would need a new declaration. CallService below uses the same type.
       -->
       <service
         android:name=".push.TwitarrPushService"
+        android:exported="false"
+        android:foregroundServiceType="remoteMessaging" />
+      <!-- Keeps a KrakenTalk call alive, with its notification, while the app is backgrounded. -->
+      <service
+        android:name=".push.CallService"
         android:exported="false"
         android:foregroundServiceType="remoteMessaging" />
       <receiver android:name=".push.PushBootReceiver" android:exported="true">

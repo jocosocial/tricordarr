@@ -76,6 +76,16 @@
   NSLog(@"stopBackgroundService is a no-op on iOS");
 }
 
+- (void)showCallNotification:(nonnull NSString *)remoteUsername
+                 startedAtMs:(double)startedAtMs
+                     isMuted:(BOOL)isMuted {
+  NSLog(@"showCallNotification is a no-op on iOS; CallKit presents the call");
+}
+
+- (void)dismissCallNotification {
+  NSLog(@"dismissCallNotification is a no-op on iOS");
+}
+
 - (void)cancelContentNotification:(nonnull NSString *)accountID
                         contentID:(nonnull NSString *)contentID {
   [Notifications cancelContentNotificationWithAccountID:accountID

@@ -1,41 +1,11 @@
-import {contentChannelGroup, systemChannelGroup} from '#src/Libraries/Notifications/ChannelGroups';
-import {
-  announcementsChannel,
-  callMgmtChannel,
-  callsChannel,
-  connectionChannel,
-  eventChannel,
-  forumChannel,
-  lfgChannel,
-  seamailChannel,
-  serviceChannel,
-} from '#src/Libraries/Notifications/Channels';
 import {notificationEventTitles} from '#src/Libraries/Notifications/NotificationEventTitles';
 import {allRoutes, pathToRegex} from '#src/Libraries/RouteDefinitions';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 import notificationEvents from '#specs/NotificationEvents.json';
 
-// specs/NotificationEvents.json is read by TS, Kotlin (and eventually Swift), so these tests are
-// what keeps the copies from drifting.
-
-jest.mock('react-native-notify-kit', () => ({
-  __esModule: true,
-  default: {},
-  AndroidImportance: {},
-}));
-
-const tsChannels = [
-  connectionChannel,
-  serviceChannel,
-  seamailChannel,
-  lfgChannel,
-  announcementsChannel,
-  forumChannel,
-  callsChannel,
-  callMgmtChannel,
-  eventChannel,
-];
+// specs/NotificationEvents.json is read by TS and Kotlin, so these tests are what keeps the
+// copies from drifting.
 
 describe('NotificationEvents.json', () => {
   it('only describes event types the TS enum knows about', () => {
@@ -47,29 +17,6 @@ describe('NotificationEvents.json', () => {
     Object.entries(notificationEvents.events).forEach(([type, event]) => {
       expect(notificationEventTitles[type as keyof typeof NotificationTypeData]).toBe(event.title);
     });
-  });
-
-  it('agrees with the TS channel definitions', () => {
-    const jsonChannels = notificationEvents.channels as Record<
-      string,
-      {name: string; group: string; description: string; vibrationPattern?: number[]}
-    >;
-    expect(Object.keys(jsonChannels).sort()).toEqual(tsChannels.map(channel => channel.id).sort());
-    tsChannels.forEach(channel => {
-      const json = jsonChannels[channel.id];
-      expect(json.name).toBe(channel.name);
-      expect(json.group).toBe(channel.groupId);
-      expect(json.description).toBe(channel.description);
-      expect(json.vibrationPattern).toEqual(channel.vibrationPattern);
-    });
-  });
-
-  it('agrees with the TS channel groups', () => {
-    const groups = notificationEvents.channelGroups as Record<string, {name: string; description: string}>;
-    [systemChannelGroup, contentChannelGroup].forEach(group => {
-      expect(groups[group.id]).toEqual({name: group.name, description: group.description});
-    });
-    expect(Object.keys(groups)).toHaveLength(2);
   });
 
   it('references only declared channels', () => {

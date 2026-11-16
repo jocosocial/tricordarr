@@ -50,6 +50,14 @@ export interface Spec extends TurboModule {
   startBackgroundService(): void;
   /** Android: stop the native foreground service. iOS: no-op. */
   stopBackgroundService(): void;
+  /**
+   * Android: show the ongoing in-call notification and keep the process alive in a foreground
+   * service. Calling it again updates the notification (e.g. mute). `startedAtMs` is epoch
+   * milliseconds; the system counts the chronometer from it. iOS: no-op, CallKit presents the call.
+   */
+  showCallNotification(remoteUsername: string, startedAtMs: number, isMuted: boolean): void;
+  /** Android: remove the in-call notification and stop its foreground service. iOS: no-op. */
+  dismissCallNotification(): void;
   /** Dismisses the displayed notification for one piece of content of an account. */
   cancelContentNotification(accountID: string, contentID: string): void;
   /** Dismisses every displayed notification of an account that belongs to a parent object, e.g. a forum. */

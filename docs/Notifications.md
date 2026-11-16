@@ -5,8 +5,7 @@ background and turns events into local notifications.
 
 ## Android: native foreground service
 
-`android/app/src/main/java/com/tricordarr/push/`. Replaces the old JS worker that ran inside
-notify-kit's foreground service. It runs with no React context, so notifications keep arriving
+`android/app/src/main/java/com/tricordarr/push/`. It runs with no React context, so notifications keep arriving
 after the app is swiped away or the device reboots.
 
 | Piece                                         | Role                                                                                                                                                                                                                                       |
@@ -96,8 +95,7 @@ customizations. Add a new event by adding it to the JSON, `NotificationTypeData`
 `remoteMessaging`, the type the app already declares to Play, so no new declaration is needed. It
 has no time cap and is not on the Android 15 boot-restart blocklist. `specialUse` (subtype
 "persistent local-network notification socket; no FCM available at sea") is the more literal fit
-but needs a fresh Play declaration. notify-kit's own `ForegroundService` stays `remoteMessaging` and
-is only used by the call foreground service (`CallForegroundService.ts`), so the two no longer collide.
+but needs a fresh Play declaration. `CallService` (the in-call notification) uses the same type.
 
 ### Testing
 
@@ -130,7 +128,17 @@ One provider, a socket per account, same contract as Android (see "Accounts" abo
   the healthcheck timer until JS stops syncing the account.
 - `setupLocalPushManager` / `clearLocalPushManager` are gone; `syncPushAccounts` replaced them.
 
-## notify-kit
+## Android: call foreground service
 
-Still used on iOS (`getInitialNotification`, `onForegroundEvent`), for channel creation, and the Android call foreground service. Its
-Android autolinking cannot be excluded until calls leave its service.
+`CallService` keeps the process alive, with an ongoing notification, while a KrakenTalk call is active.
+`CallProvider` calls `showCallForegroundNotification` when the call becomes active (and again when mute
+changes) and `dismissCallForegroundNotification` when it ends; both go through
+`NativeTricordarrModule.showCallNotification` / `dismissCallNotification` to `CallServiceController`.
+The system counts the call duration from the start time, so nothing updates it each second. A tap opens
+the app (the call UI is an overlay). The module methods are no-ops on iOS, where CallKit presents the call.
+
+## No notification library
+
+There is no JS notification library. Android posts and handles taps natively (a tap is a `tricordarr://`
+deep link); iOS does the same through `Notifications` in `TricordarrKit`. Channels and groups come from
+`specs/NotificationEvents.json`, created by `PushChannels.kt`.

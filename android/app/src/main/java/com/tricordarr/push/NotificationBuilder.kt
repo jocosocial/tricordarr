@@ -27,6 +27,8 @@ object NotificationBuilder {
   private const val RECONNECT_ID = 0x7474
   private const val SERVICE_CHANNEL = "service"
   private const val CONNECTION_CHANNEL = "connection"
+  private const val CALL_CHANNEL = "krakentalkcalls"
+  const val CALL_NOTIFICATION_ID = 0x7475
   private const val BRAND_COLOR = 0xFF063953.toInt()
 
   const val ACTION_MARK_AS_READ = "com.tricordarr.push.MARK_AS_READ"
@@ -145,6 +147,36 @@ object NotificationBuilder {
       .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
       .setContentIntent(activityPendingIntent(context, SERVICE_NOTIFICATION_ID, BACKGROUND_CONNECTION_LINK))
       .build()
+
+  /**
+   * The ongoing notification for an active call. The chronometer is counted by the system from
+   * [startedAtMs], so nothing has to update it every second.
+   */
+  fun callNotification(context: Context, remoteUsername: String, startedAtMs: Long, muted: Boolean): Notification =
+    NotificationCompat.Builder(context, CALL_CHANNEL)
+      .setSmallIcon(R.drawable.ic_notification)
+      .setContentTitle("Call with $remoteUsername")
+      .setContentText(if (muted) "Muted" else "In call")
+      .setColor(BRAND_COLOR)
+      .setColorized(true)
+      .setOngoing(true)
+      // The calls channel carries the incoming-call ring, which an in-call update must not repeat.
+      .setSilent(true)
+      .setCategory(NotificationCompat.CATEGORY_CALL)
+      .setUsesChronometer(true)
+      .setWhen(startedAtMs)
+      .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+      .setContentIntent(activityPendingIntent(context, CALL_NOTIFICATION_ID, NotificationPlanner.APP_LINK_PREFIX + "home"))
+      .build()
+
+  /** Refreshes the already-showing call notification, e.g. when the mute state changes. */
+  fun updateCallNotification(context: Context, remoteUsername: String, startedAtMs: Long, muted: Boolean) {
+    notify(context, null, CALL_NOTIFICATION_ID, callNotification(context, remoteUsername, startedAtMs, muted))
+  }
+
+  fun cancelCallNotification(context: Context) {
+    NotificationManagerCompat.from(context).cancel(null, CALL_NOTIFICATION_ID)
+  }
 
   /** Refreshes the text of the already-showing service notification. */
   fun updateServiceNotification(context: Context, subText: String?, text: String, expanded: String?) {

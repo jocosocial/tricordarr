@@ -10,6 +10,7 @@ import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.Arguments
 import android.util.Log
 import com.tricordarr.push.AccountStatus
+import com.tricordarr.push.CallServiceController
 import com.tricordarr.push.NotificationBuilder
 import com.tricordarr.push.PushAccount
 import com.tricordarr.push.PushAccountStore
@@ -157,6 +158,14 @@ class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTric
 
   override fun stopBackgroundService() {
     PushServiceController.stop(reactApplicationContext)
+  }
+
+  override fun showCallNotification(remoteUsername: String, startedAtMs: Double, isMuted: Boolean) {
+    CallServiceController.show(reactApplicationContext, remoteUsername, startedAtMs.toLong(), isMuted)
+  }
+
+  override fun dismissCallNotification() {
+    CallServiceController.dismiss(reactApplicationContext)
   }
 
   override fun cancelContentNotification(accountID: String, contentID: String) {
