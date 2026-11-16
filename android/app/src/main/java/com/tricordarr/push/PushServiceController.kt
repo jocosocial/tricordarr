@@ -13,16 +13,30 @@ object PushServiceController {
    * Starts the service. Returns false if Android refused (background FGS starts are blocked on
    * API 31+ except from boot, a notification tap, or with battery optimization off), in which case
    * a "tap to reconnect" notification has been posted.
+   *
+   * A service that is already running gets a plain start, so it is not asked to enter the foreground
+   * again: that would repost its notification, which the user may have dismissed.
    */
-  fun start(context: Context): Boolean =
-    try {
-      ContextCompat.startForegroundService(context, Intent(context, TwitarrPushService::class.java))
+  fun start(context: Context): Boolean {
+    val intent = Intent(context, TwitarrPushService::class.java)
+    return try {
+      if (TwitarrPushService.running) {
+        context.startService(intent)
+      } else {
+        ContextCompat.startForegroundService(context, intent)
+      }
       true
     } catch (e: IllegalStateException) {
-      Log.w(TAG, "Foreground service start was not allowed", e)
-      NotificationBuilder.postReconnectNeeded(context)
-      false
+      Log.w(TAG, "Service start was not allowed", e)
+      if (TwitarrPushService.running) {
+        // Already up; nothing needs the user's attention.
+        true
+      } else {
+        NotificationBuilder.postReconnectNeeded(context)
+        false
+      }
     }
+  }
 
   /** Starts the service only if the store has an enabled account. Used by boot and package-replaced. */
   fun startIfConfigured(context: Context): Boolean {

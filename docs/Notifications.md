@@ -10,7 +10,7 @@ after the app is swiped away or the device reboots.
 
 | Piece                                         | Role                                                                                                                                                                                                                                       |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `TwitarrPushService`                          | Foreground service (`specialUse`). One `AccountConnection` per enabled account. Reconciles with the store every 30s, reconnects on `onAvailable`.                                                                                          |
+| `TwitarrPushService`                          | Foreground service (`remoteMessaging`). One `AccountConnection` per enabled account. Reconciles with the store every 30s, reconnects on `onAvailable`.                                                                                     |
 | `AccountConnection`                           | OkHttp 4.9.2 WebSocket to `<server><urlPrefix>/notification/socket`, 30s ping (detects half-open sockets), 1s to 30s jittered backoff. A 401 on the handshake means the token was revoked: status becomes `Revoked` and it stops retrying. |
 | `PushAccountStore`                            | Accounts and tokens, encrypted with an app-owned AndroidKeyStore AES-GCM key. JS replaces the list with `syncPushAccounts`; native never reads expo-secure-store.                                                                          |
 | `NotificationPlanner` / `NotificationBuilder` | Port of the old `generatePushNotificationFromEvent` / `generateContentNotification`. The planner is Android-free and unit tested.                                                                                                          |
@@ -95,7 +95,12 @@ customizations. Add a new event by adding it to the JSON, `NotificationTypeData`
 `remoteMessaging`, the type the app already declares to Play, so no new declaration is needed. It
 has no time cap and is not on the Android 15 boot-restart blocklist. `specialUse` (subtype
 "persistent local-network notification socket; no FCM available at sea") is the more literal fit
-but needs a fresh Play declaration. `CallService` (the in-call notification) uses the same type.
+but needs a fresh Play declaration.
+
+`CallService` (the in-call notification) declares `microphone|remoteMessaging`. `microphone` is what keeps
+`AudioRecord` capturing when the app is backgrounded (Android 11+ silences it otherwise). It needs
+`FOREGROUND_SERVICE_MICROPHONE`, `RECORD_AUDIO` granted when the service starts, and its own Play Console
+foreground-service declaration. `phoneCall` is not an option: it requires the Telecom framework.
 
 ### Testing
 
@@ -103,8 +108,22 @@ but needs a fresh Play declaration. `CallService` (the in-call notification) use
 - Device matrix (not automatable): foreground, background, swiped away, reboot, Doze, battery
   optimization on/off, airplane mode toggle, server `auth/logout` (expect `Revoked`), tap with the
   process dead but the task in recents, Mark as Read from the shade.
-- Android 17 (`targetSdk` 37) adds `ACCESS_LOCAL_NETWORK`; needed if the ship server resolves to a
-  private address. Not yet declared because `targetSdk` is 36.
+
+### Before raising `targetSdk` to 37
+
+Android 17 adds the `ACCESS_LOCAL_NETWORK` runtime permission for apps that target it. It is deliberately
+not declared today because `targetSdk` is 36, so raising the target is a blocker until it is handled:
+
+- The Twitarr server lives on the ship's network, so every request and the notification socket are
+  local-network traffic whenever the server resolves to a private address.
+- Without the grant, the worker's connections would fail the same way an unreachable server does, and
+  the failures would count toward giving up. A boot-started service has no UI to ask from.
+- Declare the permission, request it from the app while it is visible (ahead of starting the worker),
+  and treat a denial as its own state in Background Connection settings rather than as a connection
+  failure.
+- Confirm the exact behavior (which hosts count as local, and whether a hostname that resolves to a
+  private address is covered) against the Android 17 docs when doing the bump; this note was written
+  before that was tested.
 
 ## iOS
 

@@ -30,15 +30,18 @@ class CallService : Service() {
       intent?.getBooleanExtra(CallServiceController.EXTRA_MUTED, false) ?: false,
     )
     try {
-      // Same type the push service uses, which the app already declares to Play.
+      // Microphone keeps call audio capture running while the app is backgrounded (Android 11+
+      // silences AudioRecord otherwise). It needs RECORD_AUDIO granted when the service starts, which
+      // the call flow asks for first. Remote messaging is the type the app already declares to Play.
       val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-        ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING
+        ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE or ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING
       } else {
         ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST
       }
       ServiceCompat.startForeground(this, NotificationBuilder.CALL_NOTIFICATION_ID, notification, type)
     } catch (e: Exception) {
-      // The call itself carries on; only the notification and the background guarantee are lost.
+      // The call itself carries on; only the notification and the background guarantee are lost. A
+      // SecurityException here usually means RECORD_AUDIO was not granted yet.
       Log.w(TAG, "Unable to enter the foreground", e)
       stopSelf()
     }

@@ -109,7 +109,7 @@ object NotificationBuilder {
     notify(context, plan.tag, plan.id, builder.build())
   }
 
-  private fun findActive(context: Context, tag: String, id: Int): Notification? {
+  private fun findActive(context: Context, tag: String?, id: Int): Notification? {
     val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     return manager.activeNotifications.firstOrNull { it.id == id && it.tag == tag }?.notification
   }
@@ -138,6 +138,8 @@ object NotificationBuilder {
       .setSmallIcon(R.drawable.ic_notification)
       .setSubText(subText)
       .setContentText(text)
+      // The default "when" is the post time, shown as a relative "Now" that never updates.
+      .setShowWhen(false)
       .apply { expanded?.let { setStyle(NotificationCompat.BigTextStyle().bigText(it)) } }
       .setColor(BRAND_COLOR)
       .setColorized(true)
@@ -178,9 +180,18 @@ object NotificationBuilder {
     NotificationManagerCompat.from(context).cancel(null, CALL_NOTIFICATION_ID)
   }
 
-  /** Refreshes the text of the already-showing service notification. */
-  fun updateServiceNotification(context: Context, subText: String?, text: String, expanded: String?) {
+  /**
+   * Refreshes the text of the already-showing service notification. Posting by the same ID would
+   * bring it back after the user swiped it away (Android 14+ allows that while the service keeps
+   * running), so a dismissed notification is left dismissed until the service next enters the foreground.
+   * Returns whether the notification was updated.
+   */
+  fun updateServiceNotification(context: Context, subText: String?, text: String, expanded: String?): Boolean {
+    if (findActive(context, null, SERVICE_NOTIFICATION_ID) == null) {
+      return false
+    }
     notify(context, null, SERVICE_NOTIFICATION_ID, serviceNotification(context, subText, text, expanded))
+    return true
   }
 
   /** Each account gets its own "connection lost" notification, so one recovering leaves the others showing. */
@@ -201,6 +212,8 @@ object NotificationBuilder {
       )
       .setColor(0xFF8B1A1A.toInt())
       .setColorized(true)
+      // The text already carries the time of loss; a relative "Now" would go stale.
+      .setShowWhen(false)
       .setAutoCancel(true)
       .setContentIntent(activityPendingIntent(context, CONNECTION_LOST_ID, BACKGROUND_CONNECTION_LINK))
       .build()
@@ -229,6 +242,7 @@ object NotificationBuilder {
       .setContentTitle("Twitarr Notifications Paused")
       .setContentText("Tap to reconnect to the Twitarr server.")
       .setColor(Color.rgb(6, 57, 83))
+      .setShowWhen(false)
       .setAutoCancel(true)
       .setContentIntent(activityPendingIntent(context, RECONNECT_ID, null))
       .build()

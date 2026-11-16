@@ -17,6 +17,7 @@
     -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
     <!-- Restart the push service after a reboot. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- Reconnect the push socket as soon as the network comes back. -->
@@ -92,17 +93,20 @@
       https://developer.android.com/develop/background-work/services/fg-service-types
 
       Native notification socket service. Uses remoteMessaging, which the app already declares to Play,
-      rather than specialUse, which would need a new declaration. CallService below uses the same type.
+      rather than specialUse, which would need a new declaration. CallService below adds the microphone type.
       -->
       <service
         android:name=".push.TwitarrPushService"
         android:exported="false"
         android:foregroundServiceType="remoteMessaging" />
-      <!-- Keeps a KrakenTalk call alive, with its notification, while the app is backgrounded. -->
+      <!--
+      Keeps a KrakenTalk call alive, with its notification, while the app is backgrounded. The
+      microphone type is what lets AudioRecord keep capturing once the app leaves the foreground.
+      -->
       <service
         android:name=".push.CallService"
         android:exported="false"
-        android:foregroundServiceType="remoteMessaging" />
+        android:foregroundServiceType="microphone|remoteMessaging" />
       <receiver android:name=".push.PushBootReceiver" android:exported="true">
         <intent-filter>
           <action android:name="android.intent.action.BOOT_COMPLETED" />

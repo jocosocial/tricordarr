@@ -18,6 +18,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.text.DateFormat
+import java.util.Date
 
 /**
  * Foreground service that owns the notification WebSocket(s) and posts notifications natively,
@@ -49,32 +51,48 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
     running = true
   }
 
+  /** What the service notification last showed, so an unchanged refresh does not repost it. */
+  private var lastNotificationContent: List<String?>? = null
+
+  /** Set once this instance has entered the foreground, so later start requests leave the notification alone. */
+  private var inForeground = false
+
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    try {
-      val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-        ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING
-      } else {
-        ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST
+    if (!inForeground) {
+      try {
+        enterForeground()
+      } catch (e: Exception) {
+        // ForegroundServiceStartNotAllowedException and friends: we were started from a context
+        // Android does not allow. Ask the user to open the app instead of crashing.
+        Log.w(TAG, "Unable to enter the foreground", e)
+        NotificationBuilder.postReconnectNeeded(this)
+        stopSelf()
+        return START_NOT_STICKY
       }
-      ServiceCompat.startForeground(
-        this,
-        NotificationBuilder.SERVICE_NOTIFICATION_ID,
-        NotificationBuilder.serviceNotification(this, null, "Connecting to the Twitarr server"),
-        type,
-      )
-    } catch (e: Exception) {
-      // ForegroundServiceStartNotAllowedException and friends: we were started from a context
-      // Android does not allow. Ask the user to open the app instead of crashing.
-      Log.w(TAG, "Unable to enter the foreground", e)
-      NotificationBuilder.postReconnectNeeded(this)
-      stopSelf()
-      return START_NOT_STICKY
     }
     NotificationBuilder.cancelReconnectNeeded(this)
     // A start request means the app was opened (or the phone booted), so retry accounts that gave up.
     reconcile(restartGaveUp = true)
     startLoopsOnce()
     return START_STICKY
+  }
+
+  /** Shows the placeholder notification and promotes the service. Throws if Android refuses. */
+  private fun enterForeground() {
+    // The placeholder below replaces whatever was showing, so the next refresh must repost.
+    lastNotificationContent = null
+    val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+      ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING
+    } else {
+      ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST
+    }
+    ServiceCompat.startForeground(
+      this,
+      NotificationBuilder.SERVICE_NOTIFICATION_ID,
+      NotificationBuilder.serviceNotification(this, null, "Connecting to the Twitarr server"),
+      type,
+    )
+    inForeground = true
   }
 
   override fun onDestroy() {
@@ -158,26 +176,38 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
     refreshServiceNotification()
   }
 
+  /**
+   * Rewrites the service notification from the connection states. It shows when each open socket
+   * was last confirmed alive, as an absolute time, because the system's own timestamp renders as a
+   * relative "Now" that goes stale. The oldest check wins, so a quiet account is not hidden by a
+   * busy one. Reposts only when the text changes, which is once a minute at most.
+   */
   private fun refreshServiceNotification() {
     val connected = synchronized(lock) {
-      connections.values.filter { it.status.state == SocketState.OPEN }.map { it.account }
+      connections.values.filter { it.status.state == SocketState.OPEN }.map { it.account to it.status.lastHealthcheckAt }
     }
-    val labels = connected.map { it.label() }
-    val single = connected.singleOrNull()
+    val accounts = connected.map { it.first }
+    val labels = accounts.map { it.label() }
+    val single = accounts.singleOrNull()
+    val checked = connected.mapNotNull { it.second }.minOrNull()
+      ?.let { DateFormat.getTimeInstance(DateFormat.SHORT).format(Date(it)) }
     val subText = when {
       single != null -> single.name()
       labels.isEmpty() -> null
-      else -> "${labels.size} accounts"
+      else -> listOfNotNull("${labels.size} accounts", checked).joinToString(" · ")
     }
     val text = when {
-      single != null -> "Connected to ${single.host()}"
+      single != null -> listOfNotNull("Connected to ${single.host()}", checked?.let { "checked $it" }).joinToString(" · ")
       labels.isEmpty() -> "Waiting to connect to the Twitarr server"
       else -> labels.joinToString(", ")
     }
     // The collapsed row runs several accounts together on one line; expanding gives each its own.
     val expanded = if (labels.size > 1) labels.joinToString("\n") else null
-    if (running) {
-      NotificationBuilder.updateServiceNotification(this, subText, text, expanded)
+    val content = listOf(subText, text, expanded)
+    if (running && content != lastNotificationContent) {
+      if (NotificationBuilder.updateServiceNotification(this, subText, text, expanded)) {
+        lastNotificationContent = content
+      }
     }
   }
 
