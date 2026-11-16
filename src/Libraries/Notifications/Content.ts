@@ -1,7 +1,3 @@
-import notifee, {AndroidAction, AndroidChannelGroup} from 'react-native-notify-kit';
-import removeMd from 'remove-markdown';
-
-import {markAsReadPressAction, PressAction, settingsPressAction} from '#src/Enums/Notifications';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {getCurrentPushAccountID} from '#src/Libraries/Notifications/Push/PushAccounts';
@@ -135,61 +131,6 @@ export const contentNotificationCategories: ContentNotificationCategories = {
     description: "A Private Event that you have joined has been canceled by it's creator",
   },
 };
-
-/**
- * Display a notification for a content event from JS (notify-kit). Android push notifications from
- * the socket are posted natively by TwitarrPushService; this remains for the developer test
- * screen. The notification ID is the content ID.
- * @param secondaryContentID Optional related parent ID (the forum ID for forum posts), stored in the notification data.
- */
-export async function generateContentNotification(
-  id: string,
-  title: string,
-  body: string,
-  channel: AndroidChannelGroup,
-  type: string,
-  url: string,
-  pressActionID: string = PressAction.twitarrTab,
-  autoCancel: boolean = false,
-  ongoing: boolean = false,
-  markAsReadUrl?: string,
-  secondaryContentID?: string,
-) {
-  logger.debug('Displaying notification with pressID', pressActionID);
-
-  let actions: AndroidAction[] = [settingsPressAction];
-  if (markAsReadUrl) {
-    actions = [markAsReadPressAction, ...actions];
-  }
-
-  const data = {
-    type: type,
-    url: url,
-    contentID: id,
-    ...(markAsReadUrl ? {markAsReadUrl: markAsReadUrl} : undefined),
-    ...(secondaryContentID ? {secondaryContentID: secondaryContentID} : undefined),
-  };
-
-  await notifee.displayNotification({
-    id: id,
-    title: title,
-    body: removeMd(body),
-    data: data,
-    android: {
-      ongoing: ongoing,
-      channelId: channel.id,
-      // smallIcon: 'mail', // optional, defaults to 'ic_launcher'.
-      autoCancel: autoCancel,
-      // https://notifee.app/react-native/docs/android/interaction
-      pressAction: {
-        id: pressActionID,
-        launchActivity: 'default',
-      },
-      smallIcon: 'ic_notification',
-      actions: actions,
-    },
-  });
-}
 
 /**
  * Dismiss the active account's displayed notification for one piece of content. The native push

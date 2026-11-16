@@ -132,5 +132,5 @@ One provider, a socket per account, same contract as Android (see "Accounts" abo
 
 ## notify-kit
 
-Still used on iOS (`getInitialNotification`, `onForegroundEvent`), for channel creation, the developer test screen, and the Android call foreground service. Its
+Still used on iOS (`getInitialNotification`, `onForegroundEvent`), for channel creation, and the Android call foreground service. Its
 Android autolinking cannot be excluded until calls leave its service.

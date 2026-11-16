@@ -382,7 +382,7 @@ public class WebsocketNotifier: NSObject {
 			Notifications.generateContentNotification(
 				socketNotification.contentID,
 				title: title,
-				body: socketNotification.info,
+				body: MarkdownText.plainText(socketNotification.info),
 				type: socketNotification.type,
 				url: url,
 				markAsReadUrl: markAsReadUrl,

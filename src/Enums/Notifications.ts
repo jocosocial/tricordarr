@@ -1,5 +1,3 @@
-import {AndroidAction} from 'react-native-notify-kit';
-
 export enum PressAction {
   default = 'default',
   twitarrTab = 'twitarrTab',
@@ -14,27 +12,3 @@ export enum PressAction {
   personalEvent = 'personalEvent',
   markAsRead = 'markAsRead',
 }
-
-/**
- * The standard Mark As Read action. Consumed in generateContentNotification()
- * for content types that can be marked as read.
- */
-export const markAsReadPressAction: AndroidAction = {
-  title: 'Mark as Read',
-  pressAction: {
-    id: PressAction.markAsRead,
-    launchActivity: 'default',
-  },
-};
-
-/**
- * The standard Content Settings action. Consumed in generateContentNotification()
- * for all content types.
- */
-export const settingsPressAction: AndroidAction = {
-  title: 'Settings',
-  pressAction: {
-    id: PressAction.contentSettings,
-    launchActivity: 'default',
-  },
-};
