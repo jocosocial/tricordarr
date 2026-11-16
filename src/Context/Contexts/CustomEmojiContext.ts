@@ -1,16 +1,8 @@
 import {createContext, useContext} from 'react';
-import {ImageSourcePropType} from 'react-native';
 
-export interface CustomEmojiEntry {
-  source: ImageSourcePropType;
-  secret: boolean;
-  name: string;
-}
+import {CustomEmojiCatalog, emptyCustomEmojiCatalog} from '#src/Libraries/Reactions/CustomEmojiCatalog';
 
-/** Custom emoji keyed by token, such as `:arr:`. */
-export type CustomEmojiCatalog = Record<string, CustomEmojiEntry>;
-
-export const CustomEmojiContext = createContext<CustomEmojiCatalog>({});
+export const CustomEmojiContext = createContext<CustomEmojiCatalog>(emptyCustomEmojiCatalog());
 
 /** The custom emoji catalog shared by pickers and post rendering. */
 export const useCustomEmoji = () => useContext(CustomEmojiContext);

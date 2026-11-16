@@ -1,70 +1,43 @@
-import React, {PropsWithChildren, useMemo} from 'react';
+import FastImage from '@d11/react-native-fast-image';
+import React, {PropsWithChildren, useEffect, useMemo} from 'react';
 
-import {CustomEmojiCatalog, CustomEmojiContext} from '#src/Context/Contexts/CustomEmojiContext';
+import {CustomEmojiContext} from '#src/Context/Contexts/CustomEmojiContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {buildCustomEmojiCatalog, CustomEmojiData} from '#src/Libraries/Reactions/CustomEmojiCatalog';
 import {useOpenQuery} from '#src/Queries/OpenQuery';
-
-interface CustomEmojiData {
-  reaction: string;
-  name: string;
-  imageURL: string;
-}
-
-/**
- * Emoji shipped inside the app. The ship's wifi is unreliable, so these must render with no network:
- * on a cold query cache the server catalog hasn't arrived yet, and even a cached catalog only holds
- * image URLs that still have to be downloaded.
- */
-const bundledEmoji: CustomEmojiCatalog = {
-  ':arr:': {source: require('#assets/emoji/small/arr.png'), secret: false, name: 'arr'},
-  ':back-deck-juice:': {
-    source: require('#assets/emoji/small/back-deck-juice.png'),
-    secret: false,
-    name: 'back-deck-juice',
-  },
-  ':buffet:': {source: require('#assets/emoji/small/buffet.png'), secret: false, name: 'buffet'},
-  ':die:': {source: require('#assets/emoji/small/die.png'), secret: false, name: 'die'},
-  ':die-ship:': {source: require('#assets/emoji/small/die-ship.png'), secret: false, name: 'die-ship'},
-  ':hottub:': {source: require('#assets/emoji/small/hottub.png'), secret: false, name: 'hottub'},
-  ':joco:': {source: require('#assets/emoji/small/joco.png'), secret: false, name: 'joco'},
-  ':pirate:': {source: require('#assets/emoji/small/pirate.png'), secret: false, name: 'pirate'},
-  ':ship:': {source: require('#assets/emoji/small/ship.png'), secret: false, name: 'ship'},
-  ':ship-front:': {source: require('#assets/emoji/small/ship-front.png'), secret: false, name: 'ship-front'},
-  ':tropical-drink:': {
-    source: require('#assets/emoji/small/tropical-drink.png'),
-    secret: false,
-    name: 'tropical-drink',
-  },
-  ':wangwang:': {source: require('#assets/emoji/small/wangwang.png'), secret: false, name: 'wangwang'},
-  ':zombie:': {source: require('#assets/emoji/small/zombie.png'), secret: false, name: 'zombie'},
-  ':mbta:': {source: require('#assets/emoji/small/mbta.png'), secret: true, name: 'mbta'},
-};
 
 /**
  * Provides the custom emoji catalog to pickers and post rendering.
  *
- * Starts from the bundled set and lets the server catalog extend it, so emoji the server adds after
- * this build shipped still appear. Where both know an emoji, the bundled image wins because it needs
- * no download.
+ * Swiftarr's catalog is the only definition of custom emoji; the app bundles none. A bundled list
+ * was a second definition that the server could add to but never remove from. The catalog is kept
+ * in the persisted query cache and its images in FastImage's disk cache, so both survive an offline
+ * start once they have loaded. Until the first load, emoji tokens render as plain text.
  *
- * This is a provider rather than a hook that queries: every emoji, reaction chip and post body reads
- * the catalog, and a long thread would otherwise hold a query observer for each of them. It sits
- * above ShellProvider so dialogs and menus rendered in the Paper portal can read it too.
+ * This is a provider rather than a hook that queries: every emoji, reaction badge and post body
+ * reads the catalog, and a long thread would otherwise hold a query observer for each of them. It
+ * sits above ShellProvider so dialogs and menus rendered in the Paper portal can read it too.
  */
 export const CustomEmojiProvider = ({children}: PropsWithChildren) => {
   const {serverUrl} = useSwiftarrQueryClient();
-  const {data} = useOpenQuery<CustomEmojiData[]>('/client/emoji', {staleTime: 24 * 60 * 60 * 1000});
-  const catalog = useMemo(() => {
-    const emojis: CustomEmojiCatalog = {...bundledEmoji};
-    for (const emoji of data ?? []) {
-      emojis[emoji.reaction] = {
-        source: bundledEmoji[emoji.reaction]?.source ?? {uri: new URL(emoji.imageURL, serverUrl).toString()},
-        secret: false,
-        name: emoji.name,
-      };
+  const {data} = useOpenQuery<CustomEmojiData[]>('/client/emoji', {
+    staleTime: 24 * 60 * 60 * 1000,
+    // A server that predates the endpoint answers 404 on every launch. Posts are still readable
+    // without custom emoji, so that is not worth an error message.
+    meta: {silentError: true},
+  });
+  const catalog = useMemo(() => buildCustomEmojiCatalog(data, serverUrl), [data, serverUrl]);
+
+  // Download every image as soon as the catalog is known, so emoji are already on disk when a post
+  // or the picker first shows them rather than appearing one by one over ship wifi. FastImage never
+  // re-downloads a URL it has cached, which is fine because an emoji's image is never changed: a new
+  // picture means a new emoji, with its own URL.
+  useEffect(() => {
+    const sources = Object.values(catalog).map(emoji => ({uri: emoji.uri}));
+    if (sources.length > 0) {
+      FastImage.preload(sources);
     }
-    return emojis;
-  }, [data, serverUrl]);
+  }, [catalog]);
 
   return <CustomEmojiContext.Provider value={catalog}>{children}</CustomEmojiContext.Provider>;
 };

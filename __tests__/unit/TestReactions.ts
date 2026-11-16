@@ -1,5 +1,10 @@
 import {LikeType} from '#src/Enums/LikeType';
 import {postDataFromDetail} from '#src/Libraries/Moderation/Content';
+import {
+  buildCustomEmojiCatalog,
+  CustomEmojiData,
+  reactionAccessibilityName,
+} from '#src/Libraries/Reactions/CustomEmojiCatalog';
 import {canReactTo, reactionToggleAction} from '#src/Libraries/Reactions/ReactionActions';
 import {
   applyFezPostReactions,
@@ -232,5 +237,56 @@ describe('postDataFromDetail', () => {
       reactions: [thumbs],
     };
     expect(postDataFromDetail(detail).reactions).toEqual([thumbs]);
+  });
+});
+
+describe('buildCustomEmojiCatalog', () => {
+  const server = 'https://twitarr.example';
+  const data: CustomEmojiData[] = [
+    {reaction: ':arr:', name: 'arr', imageURL: '/img/emoji/small/arr.png', secret: false},
+    {reaction: ':mbta:', name: 'MBTA', imageURL: '/img/emoji/small/mbta.png', secret: true},
+    // A server that predates the secret flag omits it.
+    {reaction: ':joco:', name: 'Joco', imageURL: '/img/emoji/small/joco.png'},
+  ];
+
+  it('is empty until the server has answered, since the app bundles no emoji', () => {
+    expect(Object.keys(buildCustomEmojiCatalog(undefined, server))).toEqual([]);
+  });
+
+  it('resolves image URLs against the server and carries the secret flag', () => {
+    const catalog = buildCustomEmojiCatalog(data, server);
+    expect(catalog[':arr:']).toEqual({uri: `${server}/img/emoji/small/arr.png`, secret: false, name: 'arr'});
+    expect(catalog[':mbta:'].secret).toBe(true);
+    expect(catalog[':joco:'].secret).toBe(false);
+  });
+
+  it('does not mistake inherited object members for emoji', () => {
+    // Post text is looked up word by word; on an ordinary object these would be truthy.
+    const catalog = buildCustomEmojiCatalog(data, server);
+    for (const word of ['constructor', 'toString', 'valueOf', 'hasOwnProperty', '__proto__']) {
+      expect(catalog[word]).toBeUndefined();
+    }
+  });
+
+  it('skips an emoji whose image URL cannot be resolved', () => {
+    const catalog = buildCustomEmojiCatalog(data, '');
+    expect(Object.keys(catalog)).toEqual([]);
+  });
+});
+
+describe('reactionAccessibilityName', () => {
+  const catalog = buildCustomEmojiCatalog(
+    [{reaction: ':hottub:', name: 'hot tub', imageURL: '/img/emoji/small/hottub.png'}],
+    'https://twitarr.example',
+  );
+
+  it('reads a custom emoji by its name, not its token', () => {
+    expect(reactionAccessibilityName(catalog, ':hottub:')).toBe('hot tub');
+  });
+
+  it('leaves Unicode emoji and unknown tokens as they are', () => {
+    expect(reactionAccessibilityName(catalog, '👍')).toBe('👍');
+    expect(reactionAccessibilityName(catalog, ':unknown:')).toBe(':unknown:');
+    expect(reactionAccessibilityName(catalog, 'constructor')).toBe('constructor');
   });
 });

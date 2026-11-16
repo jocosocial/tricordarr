@@ -86,7 +86,8 @@ export const EmojiPickerModal = ({open, onClose, onEmojiSelected}: EmojiPickerMo
                   </TouchableOpacity>
                 ))}
               </View>
-              <Text style={styles.sectionTitle}>Twit-arr</Text>
+              {/* Empty until the catalog has loaded from the server at least once. */}
+              {customReactions.length > 0 && <Text style={styles.sectionTitle}>Twit-arr</Text>}
               <View style={styles.choices}>
                 {customReactions.map(reaction => (
                   <TouchableOpacity
