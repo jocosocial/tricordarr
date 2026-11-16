@@ -59,10 +59,25 @@
       "description": "Event content from the Twitarr server."
     }
   },
+  "unposted": {
+    "phoneCallAnswered": {
+      "doc": "The callee answered the call, possibly on another device."
+    },
+    "alertwordTwarrt": {
+      "doc": "A user has posted a Twarrt that contains a word this user has set as an alertword."
+    },
+    "twarrtMention": {
+      "doc": "A user has posted a Twarrt that @mentions this user."
+    },
+    "microKaraokeSongReady": {
+      "doc": "A Micro Karaoke song the user contributed to is ready for viewing. ."
+    }
+  },
   "events": {
     "seamailUnreadMsg": {
       "channel": "seamail",
       "title": "New Seamail",
+      "doc": "A participant in a Seamail thread the user is a member of has posted a new message.",
       "url": "/seamail/{contentID}",
       "markAsReadUrl": "/fez/{contentID}",
       "messaging": true
@@ -70,6 +85,7 @@
     "fezUnreadMsg": {
       "channel": "lfg",
       "title": "New LFG Message",
+      "doc": "A participant in a Chat the user is a member of has posted a new message.",
       "url": "/lfg/{contentID}/chat",
       "markAsReadUrl": "/fez/{contentID}",
       "messaging": true
@@ -77,6 +93,7 @@
     "privateEventUnreadMsg": {
       "channel": "events",
       "title": "New Private Event Message",
+      "doc": "An invitee to a Private Event has posted a new chat message in the event's chat.",
       "url": "/privateevent/{contentID}/chat",
       "markAsReadUrl": "/fez/{contentID}",
       "messaging": true
@@ -84,78 +101,94 @@
     "announcement": {
       "channel": "announcements",
       "title": "Announcement",
+      "doc": "A server-wide announcement has just been added.",
       "url": "/home",
       "markAsReadUrl": "/notification/global"
     },
     "alertwordPost": {
       "channel": "forums",
       "title": "Forum Alert Word",
+      "doc": "A user has posted a Forum Post that contains a word this user has set as an alertword.",
       "url": "/forum/containingpost/{contentID}"
     },
     "forumMention": {
       "channel": "forums",
       "title": "Forum Mention",
+      "doc": "A user has posted a Forum Post that @mentions this user.",
       "url": "/forumpost/mentions"
     },
     "twitarrTeamForumMention": {
       "channel": "forums",
       "title": "TwitarrTeam Forum Mention",
+      "doc": "A new or edited forum post that now @mentions @twitarrteam.",
       "url": "/forum/containingpost/{contentID}"
     },
     "moderatorForumMention": {
       "channel": "forums",
       "title": "Moderator Forum Mention",
+      "doc": "A new or edited forum post that now @mentions @moderator.",
       "url": "/forum/containingpost/{contentID}"
     },
     "incomingPhoneCall": {
       "channel": "krakentalkcalls",
       "title": "Incoming Call",
+      "doc": "Someone is trying to call this user via KrakenTalk.'",
       "url": "/phonecall/{contentID}/from/{callerUserID}/{callerUsername}",
       "autoCancel": false,
       "ongoing": true
     },
     "phoneCallEnded": {
       "channel": "krakentalkmgmt",
-      "title": "Call Ended"
+      "title": "Call Ended",
+      "doc": "Caller hung up while phone was rining, or other party ended the call in progress, or callee declined"
     },
     "followedEventStarting": {
       "channel": "events",
       "title": "Followed Event Starting",
+      "doc": "An event the user is following is about to start.",
       "url": "/events/{contentID}"
     },
     "joinedLFGStarting": {
       "channel": "lfg",
       "title": "Joined LFG Starting",
+      "doc": "An LFG the user has joined is about to start.",
       "url": "/lfg/{contentID}"
     },
     "personalEventStarting": {
       "channel": "events",
       "title": "Private Event Starting",
+      "doc": "A Personal Event the user has created or was added to is about to start.",
       "url": "/privateevent/{contentID}"
     },
     "addedToPrivateEvent": {
       "channel": "events",
       "title": "Added to Private Event",
+      "doc": "The creator of the event has added this user.",
       "url": "/privateevent/{contentID}"
     },
     "addedToLFG": {
       "channel": "lfg",
       "title": "Added to LFG",
+      "doc": "The creator of the LFG has added this user.",
       "url": "/lfg/{contentID}"
     },
     "addedToSeamail": {
       "channel": "seamail",
       "title": "Added to Seamail",
-      "url": "/seamail/{contentID}"
+      "doc": "Only for 'open' seamails. The owner of the chata has added this user.",
+      "url": "/seamail/{contentID}",
+      "note": "Added to Chat - only fires when someone else adds you to their chat.\nNote: I'm specifically not making notifications for \"Removed From Chat\" because: it can feel mean to receive that notification, and there's nowhere for the notification to take the user."
     },
     "privateEventCanceled": {
       "channel": "events",
       "title": "Private Event Canceled",
+      "doc": "A Private Event the user has joined has been canceled.",
       "url": "/privateevent/{contentID}"
     },
     "lfgCanceled": {
       "channel": "lfg",
       "title": "LFG Canceled",
+      "doc": "An LFG the user has joined has been canceled.",
       "url": "/lfg/{contentID}"
     }
   }

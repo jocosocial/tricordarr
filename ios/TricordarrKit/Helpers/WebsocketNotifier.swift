@@ -250,11 +250,7 @@ public class WebsocketNotifier: NSObject {
 	// MARK: - Message/Event Processing
 
 	private func generatePushNotificationFromEvent(_ socketNotification: SocketNotificationData) {
-		var sendNotification = true
-		var title = "From Tricordarr"
-		var url = ""
-		var markAsReadUrl: String? = nil
-		self.logger.log("[WebsocketNotifier.swift] generatePushNotificationFromEvent send \(sendNotification)")
+		self.logger.log("[WebsocketNotifier.swift] generatePushNotificationFromEvent")
 
 		// Each account is filtered with its own preferences: the category toggles and the mute time.
 		if account?.allowsNotification(socketNotification.type) == false {
@@ -265,44 +261,10 @@ public class WebsocketNotifier: NSObject {
 			return
 		}
 
-		// Generate URL and markAsReadUrl based on notification type, matching JavaScript generatePushNotificationFromEvent
+		// Phone calls are handled here rather than through the generated event table.
 		switch socketNotification.type {
-		case .seamailUnreadMsg:
-			title = "New Seamail"
-			url = "/seamail/\(socketNotification.contentID)"
-			markAsReadUrl = "/fez/\(socketNotification.contentID)"
-
-		case .fezUnreadMsg:
-			title = "New LFG Message"
-			url = "/lfg/\(socketNotification.contentID)/chat"
-			markAsReadUrl = "/fez/\(socketNotification.contentID)"
-
-		case .announcement:
-			title = "Announcement"
-			url = "/home"
-			markAsReadUrl = "/notification/global"
-
-		case .alertwordPost:
-			title = "Forum Alert Word"
-			url = "/forum/containingpost/\(socketNotification.contentID)"
-
-		case .forumMention:
-			title = "Forum Mention"
-			url = "/forumpost/mentions"
-
-		case .twitarrTeamForumMention:
-			title = "TwitarrTeam Forum Mention"
-			url = "/forum/containingpost/\(socketNotification.contentID)"
-
-		case .moderatorForumMention:
-			title = "Moderator Forum Mention"
-			url = "/forum/containingpost/\(socketNotification.contentID)"
-
 		case .incomingPhoneCall:
 			if let caller = socketNotification.caller {
-				title = "Incoming Call"
-				url =
-					"/phonecall/\(socketNotification.contentID)/from/\(caller.userID.uuidString)/\(caller.username)"
 				self.incomingCallNotification(
 					name: socketNotification.info,
 					callID: socketNotification.contentID,
@@ -310,87 +272,47 @@ public class WebsocketNotifier: NSObject {
 					callerAddr: socketNotification.callerAddress
 				)
 			}
-			sendNotification = false
+			return
 
 		case .phoneCallAnswered:
-			sendNotification = false
 			UserDefaults(suiteName: "group.com.grantcohoe.tricordarr")?
 				.set(socketNotification.contentID, forKey: "phoneCallAnswered")
 			self.logger.log("TricordarrPushProvider set UserDefault for phoneCallAnswered")
+			return
 
 		case .phoneCallEnded:
-			sendNotification = false
 			UserDefaults(suiteName: "group.com.grantcohoe.tricordarr")?
 				.set(socketNotification.contentID, forKey: "phoneCallEnded")
 			self.logger.log("TricordarrPushProvider set UserDefault for phoneCallEnded")
+			return
 
-		case .followedEventStarting:
-			title = "Followed Event Starting"
-			url = "/events/\(socketNotification.contentID)"
-
-		case .joinedLFGStarting:
-			title = "Joined LFG Starting"
-			url = "/lfg/\(socketNotification.contentID)"
-
-		case .personalEventStarting:
-			title = "Personal Event Starting"
-			url = "/privateevent/\(socketNotification.contentID)"
-
-		case .addedToPrivateEvent:
-			title = "Added to Private Event"
-			url = "/privateevent/\(socketNotification.contentID)"
-
-		case .addedToLFG:
-			title = "Added to LFG"
-			url = "/lfg/\(socketNotification.contentID)"
-
-		case .addedToSeamail:
-			title = "Added to Seamail"
-			url = "/seamail/\(socketNotification.contentID)"
-
-		case .privateEventCanceled:
-			title = "Private Event Canceled"
-			url = "/privateevent/\(socketNotification.contentID)"
-
-		case .lfgCanceled:
-			title = "LFG Canceled"
-			url = "/lfg/\(socketNotification.contentID)"
-
-		case .alertwordTwarrt:
-			title = "Alert Word"
-		// No URL defined in JavaScript for this type
-
-		case .twarrtMention:
-			title = "Someone Mentioned You"
-		// No URL defined in JavaScript for this type
-
-		case .privateEventUnreadMsg:
-			title = "New Private Event Message"
-			// Matches specs/NotificationEvents.json. This used to drop the `/chat` suffix and land on
-			// the event details instead of its chat.
-			url = "/privateevent/\(socketNotification.contentID)/chat"
-
-		case .microKaraokeSongReady:
-			title = "Micro Karaoke Music Video Ready"
-		// No URL defined in JavaScript for this type
-
-		@unknown default:
+		default:
 			break
 		}
 
-		if sendNotification {
-			Notifications.generateContentNotification(
-				socketNotification.contentID,
-				title: title,
-				body: MarkdownText.plainText(socketNotification.info),
-				type: socketNotification.type,
-				url: url,
-				markAsReadUrl: markAsReadUrl,
-				secondaryContentID: socketNotification.secondaryContentID,
-				accountID: account?.accountID,
-				accountName: showAccountName ? account?.username : nil
-			)
-		}
+		// Types with no entry in specs/NotificationEvents.json do not post.
+		guard let spec = socketNotification.type.eventSpec else { return }
+		let title = spec.title
+		let url = Self.expandTemplate(spec.url, contentID: socketNotification.contentID) ?? ""
+		let markAsReadUrl = Self.expandTemplate(spec.markAsReadUrl, contentID: socketNotification.contentID)
+
+		Notifications.generateContentNotification(
+			socketNotification.contentID,
+			title: title,
+			body: MarkdownText.plainText(socketNotification.info),
+			type: socketNotification.type,
+			url: url,
+			markAsReadUrl: markAsReadUrl,
+			secondaryContentID: socketNotification.secondaryContentID,
+			accountID: account?.accountID,
+			accountName: showAccountName ? account?.username : nil
+		)
+	}
+
+	/// Substitutes `{contentID}` in a URL template from the generated event table. Only that placeholder is
+	/// needed here; the call URL is built in the phone-call branch.
+	private static func expandTemplate(_ template: String?, contentID: String) -> String? {
+		template?.replacingOccurrences(of: "{contentID}", with: contentID)
 	}
 
 	func receiveNextMessage() {

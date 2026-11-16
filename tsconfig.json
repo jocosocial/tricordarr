@@ -24,6 +24,9 @@
       ],
       "#specs/*": [
         "./specs/*"
+      ],
+      "#scripts/*": [
+        "./scripts/*"
       ]
     }
   }

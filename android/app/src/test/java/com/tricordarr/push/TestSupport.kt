@@ -1,13 +1,8 @@
 package com.tricordarr.push
 
-import java.io.File
-
-/** Loads the real shared event table so the tests exercise exactly what the app bundles. */
+/** Uses the real generated event table so the tests exercise exactly what the app ships. */
 object TestSupport {
-  val events: NotificationEvents by lazy {
-    // Gradle runs unit tests with the module directory (android/app) as the working directory.
-    NotificationEvents.parse(File("../../specs/NotificationEvents.json").readText())
-  }
+  val events: NotificationEvents = NotificationEventTable.table
 
   fun account(
     types: Map<String, Boolean> = emptyMap(),

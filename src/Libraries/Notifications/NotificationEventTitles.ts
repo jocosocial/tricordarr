@@ -4,8 +4,8 @@ import notificationEvents from '#specs/NotificationEvents.json';
 
 /**
  * User-facing title for a single notification event, matching the push notification title
- * where one is shown. Derived from `specs/NotificationEvents.json`, the table the native Android
- * service also reads, so the two cannot drift.
+ * where one is shown. Derived from `specs/NotificationEvents.json`, the table the generated Swift
+ * and Kotlin code also come from, so they cannot drift.
  */
 export const notificationEventTitles: Partial<Record<keyof typeof NotificationTypeData, string>> = Object.fromEntries(
   Object.entries(notificationEvents.events).map(([type, event]) => [type, event.title]),

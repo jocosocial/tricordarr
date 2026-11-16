@@ -1,3 +1,7 @@
 # https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
 # Set the default behavior, in case people don't have core.autocrlf set.
 * text=auto
+
+# Generated notification event tables; collapse them in diffs.
+*.generated.swift linguist-generated=true
+*.generated.kt linguist-generated=true

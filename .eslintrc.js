@@ -96,6 +96,11 @@ module.exports = {
             group: 'internal',
             position: 'after',
           },
+          {
+            pattern: '#scripts/**',
+            group: 'internal',
+            position: 'after',
+          },
         ],
         pathGroupsExcludedImportTypes: ['builtin'],
         alphabetize: {

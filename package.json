@@ -7,6 +7,7 @@
     "ios": "expo run:ios --scheme Development",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "codegen:notifications": "node scripts/generate-notification-events.js",
     "typecheck": "scripts/tsc-errors-by-src-dir.sh",
     "start": "expo start",
     "test": "jest",

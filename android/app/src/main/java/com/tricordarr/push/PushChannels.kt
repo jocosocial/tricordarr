@@ -8,9 +8,8 @@ import androidx.core.app.NotificationManagerCompat
 /**
  * Creates the notification channels and groups natively, so notifications can be posted when the
  * service starts from boot with no JS having run. Channel IDs and group membership come from the
- * shared table and must match what `src/Libraries/Notifications/Channels.ts` creates: a channel's
- * group binding is immutable, and creating an existing channel is a no-op that preserves the
- * user's customizations.
+ * generated event table and must not change: a channel's group binding is immutable, and creating
+ * an existing channel is a no-op that preserves the user's customizations.
  */
 object PushChannels {
   fun ensure(context: Context, events: NotificationEvents) {

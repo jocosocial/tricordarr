@@ -46,7 +46,7 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
     super.onCreate()
     store = PushAccountStore(this)
     statusStore = PushStatusStore(this)
-    events = NotificationEvents.load(this)
+    events = NotificationEventTable.table
     PushChannels.ensure(this, events)
     running = true
   }

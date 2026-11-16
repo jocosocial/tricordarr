@@ -113,11 +113,6 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace = "com.tricordarr"
-    sourceSets {
-        // specs/NotificationEvents.json is the single source for the notification event table. It is
-        // copied into a generated asset dir so the Kotlin push service can read it at runtime.
-        main.assets.srcDir(layout.buildDirectory.dir("generated/notificationEvents"))
-    }
     testOptions {
         unitTests.returnDefaultValues = true
     }
@@ -159,12 +154,6 @@ android {
         }
     }
 }
-
-tasks.register('copyNotificationEvents', Copy) {
-    from(file("$rootDir/../specs/NotificationEvents.json"))
-    into(layout.buildDirectory.dir("generated/notificationEvents"))
-}
-tasks.matching { it.name == 'preBuild' }.configureEach { dependsOn('copyNotificationEvents') }
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin

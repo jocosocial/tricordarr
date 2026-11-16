@@ -7,7 +7,7 @@ import com.facebook.react.ReactHost
 import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.tricordarr.nativemodule.NativeTricordarrPackage
-import com.tricordarr.push.NotificationEvents
+import com.tricordarr.push.NotificationEventTable
 import com.tricordarr.push.PushChannels
 import android.content.res.Configuration
 import expo.modules.ApplicationLifecycleDispatcher
@@ -32,7 +32,7 @@ class MainApplication : Application(), ReactApplication {
     loadReactNative(this)
     // Creating an existing channel is a no-op, so this only makes the channels exist (and show up
     // in system settings) from launch, whether or not a service has started yet.
-    PushChannels.ensure(this, NotificationEvents.load(this))
+    PushChannels.ensure(this, NotificationEventTable.table)
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
   }
 

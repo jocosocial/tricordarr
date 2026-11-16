@@ -10,6 +10,7 @@ module.exports = api => {
           '#src': './src',
           '#assets': './assets',
           '#specs': './specs',
+          '#scripts': './scripts',
         },
       },
     ],

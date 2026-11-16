@@ -17,7 +17,7 @@ class CallService : Service() {
 
   override fun onCreate() {
     super.onCreate()
-    PushChannels.ensure(this, NotificationEvents.load(this))
+    PushChannels.ensure(this, NotificationEventTable.table)
     running = true
   }
 
