@@ -163,14 +163,19 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
       connections.values.filter { it.status.state == SocketState.OPEN }.map { it.account }
     }
     val labels = connected.map { it.label() }
-    val subText = when (labels.size) {
-      0 -> null
-      1 -> "1 account"
+    val single = connected.singleOrNull()
+    val subText = when {
+      single != null -> single.name()
+      labels.isEmpty() -> null
       else -> "${labels.size} accounts"
     }
-    val text = if (labels.isEmpty()) "Waiting to connect to the Twitarr server" else labels.joinToString(", ")
-    // The collapsed row runs the accounts together on one line; expanding gives each its own.
-    val expanded = if (labels.isEmpty()) null else labels.joinToString("\n")
+    val text = when {
+      single != null -> "Connected to ${single.host()}"
+      labels.isEmpty() -> "Waiting to connect to the Twitarr server"
+      else -> labels.joinToString(", ")
+    }
+    // The collapsed row runs several accounts together on one line; expanding gives each its own.
+    val expanded = if (labels.size > 1) labels.joinToString("\n") else null
     if (running) {
       NotificationBuilder.updateServiceNotification(this, subText, text, expanded)
     }
