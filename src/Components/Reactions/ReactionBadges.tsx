@@ -4,17 +4,22 @@ import {ActivityIndicator, Text} from 'react-native-paper';
 
 import {ReactionIcon} from '#src/Components/Reactions/ReactionIcon';
 import {ReactionsDetailModal} from '#src/Components/Views/Modals/ReactionsDetailModal';
+import {useCustomEmoji} from '#src/Context/Contexts/CustomEmojiContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useLazyVisibility} from '#src/Hooks/useLazyVisibility';
+import {reactionAccessibilityName} from '#src/Libraries/Reactions/CustomEmojiCatalog';
 import {ReactionData} from '#src/Structs/ControllerStructs';
 
 interface ReactionBadgesProps {
   reactions: ReactionData[];
   /** Toggles the current user's reaction on the tapped badge. Taps do nothing when omitted. */
   onBadgePress?: (reaction: string) => void;
-  /** The reaction whose request is in flight, if any. Its badge shows a spinner for its count. */
+  /**
+   * The reaction whose request is in flight, if any. Its badge shows a spinner for its count; if
+   * the post has no such badge yet, a placeholder badge stands in until Swiftarr answers.
+   */
   pendingReaction?: string;
 }
 
@@ -27,6 +32,7 @@ export const ReactionBadges = ({reactions, onBadgePress, pendingReaction}: React
   const {theme} = useAppTheme();
   const {currentUserID} = useSession();
   const details = useLazyVisibility();
+  const CustomEmoji = useCustomEmoji();
 
   const styles = useMemo(
     () =>
@@ -55,11 +61,21 @@ export const ReactionBadges = ({reactions, onBadgePress, pendingReaction}: React
         selectedText: {
           color: theme.colors.onPrimary,
         },
+        // Badges that will not respond while another reaction on this post is being sent.
+        waitingBadge: {
+          opacity: 0.5,
+        },
       }),
     [commonStyles, theme.colors.onPrimary, theme.colors.primary, theme.colors.reactionBadge],
   );
 
-  if (reactions.length === 0) {
+  // A reaction being added that no badge shows yet: the first of its kind on this post.
+  const pendingAddition =
+    pendingReaction !== undefined && !reactions.some(reaction => reaction.reaction === pendingReaction)
+      ? pendingReaction
+      : undefined;
+
+  if (reactions.length === 0 && pendingAddition === undefined) {
     return null;
   }
 
@@ -69,6 +85,10 @@ export const ReactionBadges = ({reactions, onBadgePress, pendingReaction}: React
         {reactions.map(reaction => {
           const selected = !!currentUserID && ReactionData.hasUserReacted([reaction], currentUserID);
           const pending = pendingReaction === reaction.reaction;
+          // One request per post at a time: until it settles, taps on the other badges are ignored,
+          // so they are dimmed rather than left looking tappable.
+          const waiting = pendingReaction !== undefined && !pending;
+          const pressable = !!onBadgePress && pendingReaction === undefined;
           const count = reaction.users.length;
           const tapHint = selected ? 'Tap to remove your reaction.' : 'Tap to add your reaction.';
           return (
@@ -76,13 +96,16 @@ export const ReactionBadges = ({reactions, onBadgePress, pendingReaction}: React
               // Shared by every badge, like the message testID; flows narrow it with `text` or `index`.
               testID={'reactionBadge-button'}
               accessibilityRole={'button'}
-              accessibilityLabel={`${reaction.reaction}, ${count} ${count === 1 ? 'reaction' : 'reactions'}`}
-              accessibilityHint={`${onBadgePress ? `${tapHint} ` : ''}Long press to see who reacted.`}
-              accessibilityState={{selected, busy: pending}}
+              // A custom emoji is announced by its name ("arr"), not its token (":arr:").
+              accessibilityLabel={`${reactionAccessibilityName(CustomEmoji, reaction.reaction)}, ${count} ${
+                count === 1 ? 'reaction' : 'reactions'
+              }`}
+              accessibilityHint={`${pressable ? `${tapHint} ` : ''}Long press to see who reacted.`}
+              accessibilityState={{selected, busy: pending, disabled: waiting}}
               key={reaction.reaction}
-              onPress={onBadgePress ? () => onBadgePress(reaction.reaction) : undefined}
+              onPress={pressable ? () => onBadgePress(reaction.reaction) : undefined}
               onLongPress={details.show}
-              style={[styles.badge, selected && styles.selectedBadge]}>
+              style={[styles.badge, selected && styles.selectedBadge, waiting && styles.waitingBadge]}>
               <ReactionIcon reaction={reaction.reaction} />
               {pending ? (
                 <ActivityIndicator
@@ -96,6 +119,18 @@ export const ReactionBadges = ({reactions, onBadgePress, pendingReaction}: React
             </TouchableOpacity>
           );
         })}
+        {pendingAddition !== undefined && (
+          <View
+            testID={'reactionBadgePending-view'}
+            accessible={true}
+            accessibilityRole={'progressbar'}
+            accessibilityLabel={`Adding ${reactionAccessibilityName(CustomEmoji, pendingAddition)} reaction`}
+            accessibilityState={{busy: true}}
+            style={styles.badge}>
+            <ReactionIcon reaction={pendingAddition} />
+            <ActivityIndicator size={theme.fonts.bodyMedium.fontSize} style={commonStyles.marginLeftSmall} />
+          </View>
+        )}
       </View>
       {details.mounted && (
         <ReactionsDetailModal reactions={reactions} visible={details.visible} onDismiss={details.hide} />

@@ -9,6 +9,7 @@ import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarCon
 import {MessageView} from '#src/Components/Views/MessageView';
 import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
 import {useElevation} from '#src/Context/Contexts/ElevationContext';
+import {usePendingReaction} from '#src/Context/Contexts/PostReactionContext';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
@@ -36,6 +37,7 @@ const ForumPostListItemInternal = ({
   const forumNavigation = useForumStackNavigation();
   const commonNavigation = useCommonStack();
   const {asPrivilegedUser} = useElevation();
+  const pendingReaction = usePendingReaction('forumPost', postData.postID);
 
   const handleAuthorAvatarPress = () => {
     forumNavigation.push(CommonStackComponents.userProfileScreen, {
@@ -90,7 +92,8 @@ const ForumPostListItemInternal = ({
           isBookmarked={postData.isBookmarked}
           isPinned={postData.isPinned}
           reactionBadges={
-            postData.reactions?.length ? (
+            // Also while a first reaction is being sent, so its placeholder badge has somewhere to show.
+            postData.reactions?.length || pendingReaction ? (
               <PostReactionBadges target={{kind: 'forumPost', post: postData, forumID: forumData?.forumID}} />
             ) : undefined
           }

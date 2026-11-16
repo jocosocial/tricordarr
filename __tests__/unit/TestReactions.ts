@@ -6,12 +6,13 @@ import {
   reactionAccessibilityName,
 } from '#src/Libraries/Reactions/CustomEmojiCatalog';
 import {inlineEmojiStyle} from '#src/Libraries/Reactions/InlineEmojiStyle';
-import {canReactTo, reactionToggleAction} from '#src/Libraries/Reactions/ReactionActions';
+import {canReactTo, reactionTargetKey, reactionToggleAction} from '#src/Libraries/Reactions/ReactionActions';
 import {
   applyFezPostReactions,
   applyPostDetailReactions,
   applyPostReactions,
 } from '#src/Libraries/Reactions/ReactionCacheReduction';
+import {createReactionPendingStore} from '#src/Libraries/Reactions/ReactionPendingStore';
 import {FezData, FezPostData, PostData, PostDetailData, ReactionData, UserHeader} from '#src/Structs/ControllerStructs';
 import {
   isSocketFezMemberChangeData,
@@ -289,6 +290,46 @@ describe('reactionAccessibilityName', () => {
     expect(reactionAccessibilityName(catalog, '👍')).toBe('👍');
     expect(reactionAccessibilityName(catalog, ':unknown:')).toBe(':unknown:');
     expect(reactionAccessibilityName(catalog, 'constructor')).toBe('constructor');
+  });
+});
+
+describe('reaction pending store', () => {
+  const forumPost = reactionTargetKey('forumPost', 7);
+
+  it('keeps forum and chat posts with the same ID apart', () => {
+    expect(reactionTargetKey('forumPost', 7)).not.toBe(reactionTargetKey('fezPost', 7));
+  });
+
+  it('reports the reaction in flight until it ends', () => {
+    const store = createReactionPendingStore();
+    expect(store.get(forumPost)).toBeUndefined();
+    expect(store.begin(forumPost, '👍')).toBe(true);
+    expect(store.get(forumPost)).toBe('👍');
+    store.end(forumPost);
+    expect(store.get(forumPost)).toBeUndefined();
+  });
+
+  it('refuses a second request for a post that is already busy', () => {
+    // The picker and the badges share this, so a badge tap during a picker request is dropped.
+    const store = createReactionPendingStore();
+    store.begin(forumPost, '👍');
+    expect(store.begin(forumPost, '🎉')).toBe(false);
+    expect(store.get(forumPost)).toBe('👍');
+    expect(store.begin(reactionTargetKey('fezPost', 7), '🎉')).toBe(true);
+  });
+
+  it('notifies subscribers on each change and stops after unsubscribing', () => {
+    const store = createReactionPendingStore();
+    const listener = jest.fn();
+    const unsubscribe = store.subscribe(listener);
+    store.begin(forumPost, '👍');
+    store.begin(forumPost, '🎉'); // refused: no change, no notification
+    store.end(forumPost);
+    store.end(forumPost); // already ended
+    expect(listener).toHaveBeenCalledTimes(2);
+    unsubscribe();
+    store.begin(forumPost, '👍');
+    expect(listener).toHaveBeenCalledTimes(2);
   });
 });
 

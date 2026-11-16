@@ -25,6 +25,7 @@ import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
 import {NavigationProvider} from '#src/Context/Providers/NavigationProvider';
 import {OobeProvider} from '#src/Context/Providers/OobeProvider';
 import {PermissionsProvider} from '#src/Context/Providers/PermissionsProvider';
+import {PostReactionProvider} from '#src/Context/Providers/PostReactionProvider';
 import {PreRegistrationProvider} from '#src/Context/Providers/PreRegistrationProvider';
 import {SessionBoundaryProvider} from '#src/Context/Providers/SessionBoundaryProvider';
 import {ShellProvider} from '#src/Context/Providers/ShellProvider';
@@ -114,11 +115,13 @@ function App(): React.JSX.Element {
                                         <FilterProvider>
                                           <SignOutProvider>
                                             <CustomEmojiProvider>
-                                              <HelperProvider>
-                                                <ShellProvider>
-                                                  <TricordarrApp />
-                                                </ShellProvider>
-                                              </HelperProvider>
+                                              <PostReactionProvider>
+                                                <HelperProvider>
+                                                  <ShellProvider>
+                                                    <TricordarrApp />
+                                                  </ShellProvider>
+                                                </HelperProvider>
+                                              </PostReactionProvider>
                                             </CustomEmojiProvider>
                                           </SignOutProvider>
                                         </FilterProvider>

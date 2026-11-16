@@ -11,6 +11,9 @@ export type ReactionTarget =
 
 export type ReactionAction = 'create' | 'delete';
 
+/** Identifies a post across forums and chats, whose post IDs are numbered separately. */
+export const reactionTargetKey = (kind: ReactionTarget['kind'], postID: number): string => `${kind}:${postID}`;
+
 /**
  * What tapping a reaction badge should do: remove the reaction if the user already reacted with
  * it, otherwise add it. `reaction` must be the string Swiftarr returned, since the comparison is

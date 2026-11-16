@@ -9,8 +9,8 @@ interface PostReactionBadgesProps {
 }
 
 /**
- * Reaction badges for a forum or chat post. Render this only for posts that have reactions: it
- * holds the mutation and cache reducers, which posts without badges have no use for.
+ * Reaction badges for a forum or chat post. Rows render this only when the post has reactions or one
+ * is being sent, so a post with nothing to show adds no views.
  */
 export const PostReactionBadges = ({target}: PostReactionBadgesProps) => {
   const {toggleReaction, canReact, pendingReaction} = usePostReaction(target);

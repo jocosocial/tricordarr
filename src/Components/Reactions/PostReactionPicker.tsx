@@ -11,8 +11,8 @@ interface PostReactionPickerProps {
 }
 
 /**
- * Reaction picker for a forum or chat post. Mount this only once the user asks to react: it holds
- * the picker, mutation and cache reducers, which are too heavy to keep idle on every post in a list.
+ * Reaction picker for a forum or chat post. Mount this only once the user asks to react: the picker
+ * dialog and emoji keyboard are too heavy to keep idle on every post in a list.
  */
 export const PostReactionPicker = ({target, open, onClose}: PostReactionPickerProps) => {
   const {addReaction} = usePostReaction(target);
