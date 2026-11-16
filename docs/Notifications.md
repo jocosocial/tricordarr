@@ -128,6 +128,16 @@ One provider, a socket per account, same contract as Android (see "Accounts" abo
   the healthcheck timer until JS stops syncing the account.
 - `setupLocalPushManager` / `clearLocalPushManager` are gone; `syncPushAccounts` replaced them.
 
+### Giving up
+
+A port call takes the user out of reach of the ship's server, so the worker does not retry forever. An
+account that fails 10 times in a row with no successful connection between them
+(`HealthTracker.DEFAULT_GIVE_UP_AFTER_FAILURES`) stops retrying and its state becomes `Stopped`. With the
+reconnect backoff (1s doubling to 30s) that is about 2.5 to 3 minutes, but the limit is the count, not
+the time. Its "connection lost" notification says to open the app. When every account has given up or is
+revoked, the service stops itself. Opening the app (`startBackgroundService`) restarts accounts that gave up.
+Rejoining Wi-Fi does not, because the network callback only wakes connections that are still retrying.
+
 ### After the cruise
 
 A boot or app-update restart nobody asked for must not run forever. JS puts `autoStartUntil` on each

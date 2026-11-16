@@ -60,6 +60,7 @@ class HealthTracker(
   private val accountID: String,
   initial: AccountStatus? = null,
   private val failureThreshold: Int = DEFAULT_FAILURE_THRESHOLD,
+  private val giveUpAfterFailures: Int = DEFAULT_GIVE_UP_AFTER_FAILURES,
   private val clock: () -> Long = System::currentTimeMillis,
 ) {
   var status: AccountStatus = initial ?: AccountStatus(accountID)
@@ -110,6 +111,16 @@ class HealthTracker(
     )
   }
 
+  /**
+   * True once [giveUpAfterFailures] failures in a row have gone by with no successful connection
+   * between them. Past that the server is not coming back soon (the ship's server is out of reach
+   * on a port call), and retrying only costs battery.
+   */
+  fun shouldGiveUp(): Boolean = status.failedCount >= giveUpAfterFailures
+
+  /** The connection stopped retrying. It stays stopped until the app is opened or credentials change. */
+  fun onGaveUp(): AccountStatus = update(status.copy(state = SocketState.STOPPED))
+
   /** The server closed the socket cleanly. Not a failure, but the socket is no longer open. */
   fun onClosed(): AccountStatus = update(status.copy(state = SocketState.CLOSED))
 
@@ -134,5 +145,6 @@ class HealthTracker(
 
   companion object {
     const val DEFAULT_FAILURE_THRESHOLD = 10
+    const val DEFAULT_GIVE_UP_AFTER_FAILURES = 10
   }
 }

@@ -186,14 +186,19 @@ object NotificationBuilder {
   /** Each account gets its own "connection lost" notification, so one recovering leaves the others showing. */
   private fun connectionLostTag(accountID: String): String = "$SERVICE_NOTIFICATION_TAG:$accountID"
 
-  /** Posted after enough consecutive failures. The service stays up and keeps retrying. */
-  fun postConnectionLost(context: Context, accountID: String, label: String?) {
+  /**
+   * Posted after enough consecutive failures, and again, reworded, when the account gives up. Until it
+   * gives up the service stays up and keeps retrying.
+   */
+  fun postConnectionLost(context: Context, accountID: String, label: String?, gaveUp: Boolean = false) {
     val time = DateFormat.getTimeInstance().format(Date())
     val who = label?.takeIf { it.isNotEmpty() }?.let { " for $it" } ?: ""
     val notification = NotificationCompat.Builder(context, CONNECTION_CHANNEL)
       .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle("Twitarr Connection Lost")
-      .setContentText("Connection$who lost at $time. Still trying to reconnect.")
+      .setContentText(
+        if (gaveUp) "Connection$who lost at $time. Open Tricordarr to reconnect." else "Connection$who lost at $time. Still trying to reconnect.",
+      )
       .setColor(0xFF8B1A1A.toInt())
       .setColorized(true)
       .setAutoCancel(true)

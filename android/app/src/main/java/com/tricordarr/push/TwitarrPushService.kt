@@ -71,7 +71,8 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
       return START_NOT_STICKY
     }
     NotificationBuilder.cancelReconnectNeeded(this)
-    reconcile()
+    // A start request means the app was opened (or the phone booted), so retry accounts that gave up.
+    reconcile(restartGaveUp = true)
     startLoopsOnce()
     return START_STICKY
   }
@@ -112,8 +113,11 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
     }
   }
 
-  /** Makes the running connections match the enabled accounts in the store. */
-  private fun reconcile() {
+  /**
+   * Makes the running connections match the enabled accounts in the store. [restartGaveUp] also
+   * restarts accounts that gave up, which is what opening the app asks for.
+   */
+  private fun reconcile(restartGaveUp: Boolean = false) {
     val accounts = store.load().filter { it.enabled }
     if (accounts.isEmpty()) {
       Log.d(TAG, "No enabled accounts. Stopping.")
@@ -129,7 +133,7 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
       }
       for (account in accounts) {
         val existing = connections[account.accountID]
-        if (existing != null && !existing.account.connectionDiffers(account)) {
+        if (existing != null && !existing.account.connectionDiffers(account) && !(restartGaveUp && existing.isGaveUp)) {
           // Only prefs (or username) changed, no need to reconnect.
           existing.account = account
           continue
@@ -198,6 +202,18 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
 
   override fun onConnectionLost(account: PushAccount) {
     NotificationBuilder.postConnectionLost(this, account.accountID, account.label())
+  }
+
+  override fun onGaveUp(account: PushAccount) {
+    // Leaves the "connection lost" notification up, reworded to say nothing is retrying any more.
+    NotificationBuilder.postConnectionLost(this, account.accountID, account.label(), gaveUp = true)
+    val allDone = synchronized(lock) { connections.values.all { it.isTerminal } }
+    if (allDone) {
+      Log.d(TAG, "Every account is revoked or gave up. Stopping.")
+      stopSelf()
+    } else {
+      refreshServiceNotification()
+    }
   }
 
   override fun onRecovered(account: PushAccount) {

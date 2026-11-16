@@ -35,6 +35,28 @@ class HealthTrackerTest {
   }
 
   @Test
+  fun givesUpAfterEnoughConsecutiveFailures() {
+    val t = HealthTracker("a", giveUpAfterFailures = 3, clock = { 0L })
+    assertFalse(t.shouldGiveUp())
+    t.onFailure("x")
+    t.onFailure("x")
+    assertFalse(t.shouldGiveUp())
+    t.onFailure("x")
+    assertTrue(t.shouldGiveUp())
+    assertEquals(SocketState.STOPPED, t.onGaveUp().state)
+  }
+
+  @Test
+  fun aSuccessfulConnectionRestartsTheFailureCount() {
+    val t = HealthTracker("a", giveUpAfterFailures = 3, clock = { 0L })
+    t.onFailure("x")
+    t.onFailure("x")
+    t.onOpen()
+    t.onFailure("x")
+    assertFalse(t.shouldGiveUp())
+  }
+
+  @Test
   fun failureRecordsTheError() {
     val status = tracker().onFailure("boom")
     assertEquals(SocketState.CLOSED, status.state)

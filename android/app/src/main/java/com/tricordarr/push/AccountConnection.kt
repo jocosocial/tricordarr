@@ -35,6 +35,9 @@ class AccountConnection(
     fun onConnectionLost(account: PushAccount)
 
     fun onRecovered(account: PushAccount)
+
+    /** The account was unreachable for too long and has stopped retrying. */
+    fun onGaveUp(account: PushAccount)
   }
 
   private sealed class Outcome {
@@ -52,8 +55,13 @@ class AccountConnection(
 
   val status: AccountStatus get() = synchronized(tracker) { tracker.status }
 
-  /** True once the token has been rejected; nothing more will happen until credentials change. */
-  val isTerminal: Boolean get() = status.state == SocketState.REVOKED
+  /** True once the connection has stopped retrying, until the app is opened or credentials change. */
+  @Volatile
+  var isGaveUp: Boolean = false
+    private set
+
+  /** True once the token has been rejected or retrying was given up; nothing more happens on its own. */
+  val isTerminal: Boolean get() = status.state == SocketState.REVOKED || isGaveUp
 
   fun start() {
     job = scope.launch { run() }
@@ -97,6 +105,14 @@ class AccountConnection(
           if (outcome.error != null) {
             publish { tracker.onFailure(outcome.error) }
             val lost = synchronized(tracker) { tracker.consumeConnectionLost() }
+            if (synchronized(tracker) { tracker.shouldGiveUp() }) {
+              // Reported through onGaveUp alone, so the user is not told twice for the same failure.
+              Log.i(TAG, "Giving up on ${account.accountID} after repeated failures")
+              isGaveUp = true
+              publish { tracker.onGaveUp() }
+              callbacks.onGaveUp(account)
+              return
+            }
             if (lost) callbacks.onConnectionLost(account)
           } else {
             publish { tracker.onClosed() }
