@@ -1,5 +1,5 @@
 import {useLinkTo} from '@react-navigation/native';
-import {useCallback, useEffect} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 import {Linking} from 'react-native';
 
 import {useOobe} from '#src/Context/Contexts/OobeContext';
@@ -39,6 +39,13 @@ export const AccountLinkHandler = () => {
   const {setSnackbarPayload} = useSnackbar();
   const linkTo = useLinkTo();
   const currentAccountID = currentAccount?.accountID ?? null;
+  // linkTo changes identity as navigation settles after a switch. Keeping it in a ref lets the
+  // effect below depend only on the account, so it is not re-run (and its retry timer cancelled)
+  // after it has already taken the held link.
+  const linkToRef = useRef(linkTo);
+  useEffect(() => {
+    linkToRef.current = linkTo;
+  }, [linkTo]);
 
   const handleUrl = useCallback(
     (url: string | null) => {
@@ -89,7 +96,8 @@ export const AccountLinkHandler = () => {
   }, [handleUrl]);
 
   // Open the link that caused the switch into this session. The root navigator mounts alongside
-  // this component, so wait for it before navigating.
+  // this component, so wait for it before navigating. The held link is taken exactly once, so the
+  // retry timer below must survive anything but the account (or the component) changing.
   useEffect(() => {
     const url = consumeAccountLink(currentAccountID);
     const path = url ? extractPathFromTricordarrUrl(url) : undefined;
@@ -101,7 +109,7 @@ export const AccountLinkHandler = () => {
     const open = () => {
       if (navigationRef.isReady()) {
         logger.debug('Opening link after account switch', path);
-        linkTo(`/${path}`);
+        linkToRef.current(`/${path}`);
       } else if (attempts++ < NAVIGATION_READY_ATTEMPTS) {
         timer = setTimeout(open, NAVIGATION_READY_INTERVAL_MS);
       } else {
@@ -110,7 +118,7 @@ export const AccountLinkHandler = () => {
     };
     open();
     return () => clearTimeout(timer);
-  }, [currentAccountID, linkTo]);
+  }, [currentAccountID]);
 
   // Void is not a valid React component.
   return null;
