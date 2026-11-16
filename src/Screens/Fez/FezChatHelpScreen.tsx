@@ -37,9 +37,9 @@ export const FezChatHelpScreen = () => {
         <HelpChapterTitleView title={'Post Actions'}>
           <HelpTopicView>Long-press on a message to access a menu of additional actions.</HelpTopicView>
           <HelpTopicView title={'React'} icon={AppIcons.react}>
-            Choose React to add a reaction to another participant's message. Reactions appear as
-            badges below the message. Tap a badge to add your own reaction to it, or to remove your reaction if you
-            already reacted. Long-press a badge to see who reacted with what.
+            Choose React to add a reaction to another participant's message. Reactions appear as badges below the
+            message. Tap a badge to add your own reaction to it, or to remove your reaction if you already reacted.
+            Long-press a badge to see who reacted with what.
           </HelpTopicView>
           <CopyButtonHelpTopicView />
           <ReportButtonHelpTopicView />
