@@ -16,8 +16,7 @@ export const reactionTargetKey = (kind: ReactionTarget['kind'], postID: number):
 
 /**
  * What tapping a reaction badge should do: remove the reaction if the user already reacted with
- * it, otherwise add it. `reaction` must be the string Swiftarr returned, since the comparison is
- * exact and Swiftarr stores a canonical form (a picked `☺️` comes back as `☺`).
+ * it, otherwise add it. Reaction identity uses the exact Unicode sequence or custom token.
  */
 export const reactionToggleAction = (
   reactions: ReactionData[] | undefined,

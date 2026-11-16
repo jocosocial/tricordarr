@@ -17,9 +17,8 @@ export const usePostReaction = (target: ReactionTarget) => {
   const canReact = canReactTo(target, currentUserID);
 
   /**
-   * Adds a reaction chosen in the picker. The picker never removes: Swiftarr stores a canonical form
-   * (`☺️` comes back as `☺`), so a picked emoji cannot be matched reliably against the user's
-   * existing reactions. Adding one the user already has is a no-op on the server.
+   * Adds a reaction chosen in the picker using its exact Unicode sequence or custom token.
+   * Adding one the user already has is a no-op on the server.
    */
   const addReaction = useCallback(
     (reaction: string) => {
