@@ -675,8 +675,11 @@ export const useFezCacheReducer = () => {
 
   /** Replaces one post after a reaction change without changing unread or post counts. */
   const updatePostReactions = useCallback(
-    (fezID: string, postID: number, reactions: FezPostData['reactions']) => {
-      updateFezDetailCache(fezID, fez => applyFezPostReactions(fez, postID, reactions));
+    (fezID: string, postID: number, reactions: FezPostData['reactions'], reactionRevision?: number) => {
+      // Updates for posts not yet cached are discarded. An in-flight page response can then load an
+      // older snapshot; its counts stay stale until another reaction update or refresh. We accept
+      // this narrow display race rather than buffer snapshots for unloaded posts.
+      updateFezDetailCache(fezID, fez => applyFezPostReactions(fez, postID, reactions, reactionRevision));
     },
     [updateFezDetailCache],
   );

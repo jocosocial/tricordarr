@@ -39,7 +39,12 @@ export const PostReactionProvider = ({children}: PropsWithChildren) => {
         if (target.kind === 'forumPost') {
           updateForumPostReactions(response.data as PostData, target.forumID);
         } else if (target.fez) {
-          updateFezPostReactions(target.fez.fezID, response.data.postID, response.data.reactions);
+          updateFezPostReactions(
+            target.fez.fezID,
+            response.data.postID,
+            response.data.reactions,
+            response.data.reactionRevision,
+          );
         }
       } catch {
         // useTokenAuthMutation has already shown and logged the error.

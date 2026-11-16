@@ -6,7 +6,12 @@ import {FezData, PostData, PostDetailData, ReactionData} from '#src/Structs/Cont
  */
 
 /** Replaces one chat post's reactions, leaving unread and post counts alone. */
-export const applyFezPostReactions = (fez: FezData, postID: number, reactions: ReactionData[] | undefined): FezData => {
+export const applyFezPostReactions = (
+  fez: FezData,
+  postID: number,
+  reactions: ReactionData[] | undefined,
+  reactionRevision?: number,
+): FezData => {
   if (!fez.members?.posts) {
     return fez;
   }
@@ -14,22 +19,34 @@ export const applyFezPostReactions = (fez: FezData, postID: number, reactions: R
     ...fez,
     members: {
       ...fez.members,
-      posts: fez.members.posts.map(post => (post.postID === postID ? {...post, reactions} : post)),
+      posts: fez.members.posts.map(post =>
+        post.postID === postID && (reactionRevision ?? 0) >= (post.reactionRevision ?? 0)
+          ? {...post, reactions, reactionRevision}
+          : post,
+      ),
     },
   };
 };
 
 /** Copies the reaction fields of a forum post returned by Swiftarr onto a cached copy of it. */
-export const applyPostReactions = (post: PostData, updatedPost: PostData): PostData => ({
-  ...post,
-  userLike: updatedPost.userLike,
-  likeCount: updatedPost.likeCount,
-  reactions: updatedPost.reactions,
-});
+export const applyPostReactions = (post: PostData, updatedPost: PostData): PostData =>
+  (updatedPost.reactionRevision ?? 0) < (post.reactionRevision ?? 0)
+    ? post
+    : {
+        ...post,
+        userLike: updatedPost.userLike,
+        likeCount: updatedPost.likeCount,
+        reactions: updatedPost.reactions,
+        reactionRevision: updatedPost.reactionRevision,
+      };
 
 /** Copies the reaction fields of a forum post returned by Swiftarr onto its cached detail. */
-export const applyPostDetailReactions = (detail: PostDetailData, updatedPost: PostData): PostDetailData => ({
-  ...detail,
-  userLike: updatedPost.userLike,
-  reactions: updatedPost.reactions,
-});
+export const applyPostDetailReactions = (detail: PostDetailData, updatedPost: PostData): PostDetailData =>
+  (updatedPost.reactionRevision ?? 0) < (detail.reactionRevision ?? 0)
+    ? detail
+    : {
+        ...detail,
+        userLike: updatedPost.userLike,
+        reactions: updatedPost.reactions,
+        reactionRevision: updatedPost.reactionRevision,
+      };

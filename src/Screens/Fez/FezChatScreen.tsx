@@ -205,7 +205,12 @@ const FezChatScreenInner = ({route}: Props) => {
       logger.info('fezSocketMessageHandler responding event', event);
       const socketMessage: SocketFezMessage = JSON.parse(event.data);
       if (isSocketFezReactionData(socketMessage)) {
-        updatePostReactions(route.params.fezID, socketMessage.postID, socketMessage.reactions);
+        updatePostReactions(
+          route.params.fezID,
+          socketMessage.postID,
+          socketMessage.reactions,
+          socketMessage.reactionRevision,
+        );
       } else if (isSocketFezMemberChangeData(socketMessage)) {
         const changeActionString = socketMessage.joined ? 'joined' : 'left';
         const changeString = `User ${socketMessage.user.username} has ${changeActionString} the chat.`;

@@ -135,13 +135,13 @@ describe('PostReactionProvider', () => {
 
   it('removes through the unreact endpoint and updates the chat cache for a chat post', async () => {
     const reactions: ReactionData[] = [];
-    mockApiPost.mockResolvedValueOnce({data: {postID: 7, reactions}});
+    mockApiPost.mockResolvedValueOnce({data: {postID: 7, reactions, reactionRevision: 4}});
 
     send(fezTarget, ':arr:', 'delete');
     await flush();
 
     expect(mockApiPost).toHaveBeenCalledWith('/fez/post/7/unreact', {reaction: ':arr:'});
-    expect(mockUpdateFezPostReactions).toHaveBeenCalledWith('fez-id', 7, reactions);
+    expect(mockUpdateFezPostReactions).toHaveBeenCalledWith('fez-id', 7, reactions, 4);
     expect(mockUpdateForumPostReactions).not.toHaveBeenCalled();
     expect(pending.fez).toBeUndefined();
   });
