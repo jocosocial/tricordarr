@@ -26,6 +26,7 @@ object NotificationBuilder {
   private const val CONNECTION_LOST_ID = 0x7473
   private const val RECONNECT_ID = 0x7474
   private const val SERVICE_CHANNEL = "service"
+  private const val CONNECTION_CHANNEL = "connection"
   private const val BRAND_COLOR = 0xFF063953.toInt()
 
   const val ACTION_MARK_AS_READ = "com.tricordarr.push.MARK_AS_READ"
@@ -125,36 +126,39 @@ object NotificationBuilder {
       .forEach { manager.cancel(it.tag, it.id) }
   }
 
-  /** The persistent foreground service notification. [body] lists the connected accounts. */
-  fun serviceNotification(context: Context, body: String): Notification =
+  /**
+   * The persistent foreground service notification. [subText] sits in the small header line,
+   * [text] is the collapsed content, and [expanded], when present, replaces it when the
+   * notification is expanded.
+   */
+  fun serviceNotification(context: Context, subText: String?, text: String, expanded: String? = null): Notification =
     NotificationCompat.Builder(context, SERVICE_CHANNEL)
       .setSmallIcon(R.drawable.ic_notification)
-      .setContentTitle("Twitarr Server Connection")
-      .setContentText(body)
-      .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+      .setSubText(subText)
+      .setContentText(text)
+      .apply { expanded?.let { setStyle(NotificationCompat.BigTextStyle().bigText(it)) } }
       .setColor(BRAND_COLOR)
       .setColorized(true)
       // Not ongoing, so on Android 14+ the user can dismiss it and the service keeps running.
       .setOngoing(false)
       .setOnlyAlertOnce(true)
       .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-      .setContentIntent(activityPendingIntent(context, SERVICE_NOTIFICATION_ID, NotificationPlanner.APP_LINK_PREFIX + "home"))
-      .addAction(0, "Settings", activityPendingIntent(context, SERVICE_NOTIFICATION_ID + 1, BACKGROUND_CONNECTION_LINK))
+      .setContentIntent(activityPendingIntent(context, SERVICE_NOTIFICATION_ID, BACKGROUND_CONNECTION_LINK))
       .build()
 
   /** Refreshes the text of the already-showing service notification. */
-  fun updateServiceNotification(context: Context, body: String) {
-    notify(context, null, SERVICE_NOTIFICATION_ID, serviceNotification(context, body))
+  fun updateServiceNotification(context: Context, subText: String?, text: String, expanded: String?) {
+    notify(context, null, SERVICE_NOTIFICATION_ID, serviceNotification(context, subText, text, expanded))
   }
 
   /** Each account gets its own "connection lost" notification, so one recovering leaves the others showing. */
   private fun connectionLostTag(accountID: String): String = "$SERVICE_NOTIFICATION_TAG:$accountID"
 
   /** Posted after enough consecutive failures. The service stays up and keeps retrying. */
-  fun postConnectionLost(context: Context, accountID: String, username: String?) {
+  fun postConnectionLost(context: Context, accountID: String, label: String?) {
     val time = DateFormat.getTimeInstance().format(Date())
-    val who = username?.takeIf { it.isNotEmpty() }?.let { " for $it" } ?: ""
-    val notification = NotificationCompat.Builder(context, SERVICE_CHANNEL)
+    val who = label?.takeIf { it.isNotEmpty() }?.let { " for $it" } ?: ""
+    val notification = NotificationCompat.Builder(context, CONNECTION_CHANNEL)
       .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle("Twitarr Connection Lost")
       .setContentText("Connection$who lost at $time. Still trying to reconnect.")
@@ -183,7 +187,7 @@ object NotificationBuilder {
    * one is refused we ask the user to open the app, which restarts the service from the foreground.
    */
   fun postReconnectNeeded(context: Context) {
-    val notification = NotificationCompat.Builder(context, SERVICE_CHANNEL)
+    val notification = NotificationCompat.Builder(context, CONNECTION_CHANNEL)
       .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle("Twitarr Notifications Paused")
       .setContentText("Tap to reconnect to the Twitarr server.")

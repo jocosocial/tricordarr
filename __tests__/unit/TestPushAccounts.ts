@@ -54,7 +54,7 @@ const makeProfile = (serverUrl: string, preRegistrationMode: boolean): ServerPro
   updatedAt: '2026-01-01T00:00:00.000Z',
 });
 
-const background = {...defaultAccountPreferences, backgroundNotifications: true};
+const optedOut = {...defaultAccountPreferences, backgroundNotifications: false};
 
 const makeInputs = (overrides: Partial<PushAccountInputs> = {}): PushAccountInputs => ({
   deviceConfig: defaultDeviceConfig,
@@ -70,16 +70,20 @@ const makeInputs = (overrides: Partial<PushAccountInputs> = {}): PushAccountInpu
 const ids = (inputs: PushAccountInputs) => selectPushAccounts(inputs).map(account => account.accountID);
 
 describe('selectPushAccounts', () => {
-  it('serves only the active account by default', () => {
-    expect(ids(makeInputs())).toEqual(['a']);
+  it('serves inactive accounts too by default', () => {
+    expect(ids(makeInputs())).toEqual(['a', 'b']);
   });
 
-  it('also serves an inactive account that opted in', () => {
-    expect(ids(makeInputs({preferences: {b: background}}))).toEqual(['a', 'b']);
+  it('skips an inactive account that opted out', () => {
+    expect(ids(makeInputs({preferences: {b: optedOut}}))).toEqual(['a']);
   });
 
-  it('keeps serving opted-in accounts while the active session is anonymous', () => {
-    expect(ids(makeInputs({activeAccountID: null, preferences: {b: background}}))).toEqual(['b']);
+  it('keeps serving accounts while the active session is anonymous', () => {
+    expect(ids(makeInputs({activeAccountID: null}))).toEqual(['a', 'b']);
+  });
+
+  it('skips every account that opted out while the active session is anonymous', () => {
+    expect(ids(makeInputs({activeAccountID: null, preferences: {a: optedOut, b: optedOut}}))).toEqual([]);
   });
 
   it('skips accounts that are signed out, revoked, or have no token', () => {
@@ -91,13 +95,15 @@ describe('selectPushAccounts', () => {
         makeAccount('d'),
       ],
       tokens: {a: 'token-a', b: 'token-b', d: 'token-d'},
-      preferences: {b: background, c: background, d: background},
     });
     expect(ids(inputs)).toEqual(['d']);
   });
 
   it('skips accounts on a server in pre-registration mode, even the active one', () => {
-    const inputs = makeInputs({accounts: [makeAccount('a', {serverUrl: PREREG}), makeAccount('b')]});
+    const inputs = makeInputs({
+      accounts: [makeAccount('a', {serverUrl: PREREG}), makeAccount('b')],
+      preferences: {b: optedOut},
+    });
     expect(ids(inputs)).toEqual([]);
   });
 
@@ -107,7 +113,7 @@ describe('selectPushAccounts', () => {
 
   it('serves nothing while the background worker is switched off', () => {
     const deviceConfig = {...defaultDeviceConfig, enableBackgroundWorker: false};
-    expect(ids(makeInputs({deviceConfig, preferences: {b: background}}))).toEqual([]);
+    expect(ids(makeInputs({deviceConfig}))).toEqual([]);
   });
 
   it('gives each account the networks of its own server', () => {
@@ -118,7 +124,6 @@ describe('selectPushAccounts', () => {
         {...makeProfile(SERVER, false), wifiNetworkNames: ['ShipWifi']},
         {...makeProfile(beta, false), wifiNetworkNames: ['BetaWifi', 'BetaGuest']},
       ],
-      preferences: {b: background},
     });
     const [a, b] = selectPushAccounts(inputs);
     expect(a.wifiNetworkNames).toEqual(['ShipWifi']);
@@ -132,7 +137,7 @@ describe('selectPushAccounts', () => {
       serverProfiles: [],
       preferences: {
         b: {
-          ...background,
+          ...defaultAccountPreferences,
           muteNotifications: mutedUntil,
           pushNotifications: {...defaultAccountPreferences.pushNotifications, seamailUnreadMsg: false},
         },

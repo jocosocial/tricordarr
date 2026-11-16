@@ -248,7 +248,7 @@ export const defaultAppConfig: AppConfig = {
   silenceTimezoneWarnings: false,
   dismissWelcomeAboard: false,
   dismissMinAccessWarning: false,
-  backgroundNotifications: false,
+  backgroundNotifications: true,
   // logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
   logLevel: LogLevel.DEBUG,
 };

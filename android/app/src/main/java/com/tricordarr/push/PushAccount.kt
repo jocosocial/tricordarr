@@ -27,6 +27,15 @@ data class PushAccount(
   val enabled: Boolean,
   val prefs: PushPrefs,
 ) {
+  /** The username, or the userID until the username is known. */
+  fun name(): String = username.ifEmpty { userID }
+
+  /** The server URL without its scheme, matching the JS serverUrlHost. */
+  fun host(): String = serverUrl.replace(Regex("^https?://"), "")
+
+  /** `username@server` label, matching the JS accountLabel. */
+  fun label(): String = "${name()}@${host()}"
+
   /** The wss:// (or ws://) URL of the Swiftarr notification socket. */
   fun socketUrl(): String = toWebSocketUrl(serverUrl + urlPrefix + "/notification/socket")
 

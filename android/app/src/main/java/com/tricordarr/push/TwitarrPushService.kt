@@ -59,7 +59,7 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
       ServiceCompat.startForeground(
         this,
         NotificationBuilder.SERVICE_NOTIFICATION_ID,
-        NotificationBuilder.serviceNotification(this, "Connecting to the Twitarr server."),
+        NotificationBuilder.serviceNotification(this, null, "Connecting to the Twitarr server"),
         type,
       )
     } catch (e: Exception) {
@@ -156,15 +156,19 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
 
   private fun refreshServiceNotification() {
     val connected = synchronized(lock) {
-      connections.values.filter { it.status.state == SocketState.OPEN }.map { it.account.username }
+      connections.values.filter { it.status.state == SocketState.OPEN }.map { it.account }
     }
-    val body = when {
-      connected.isEmpty() -> "Waiting to connect to the Twitarr server."
-      connected.all { it.isEmpty() } -> "Connected to the Twitarr server."
-      else -> "Connected: " + connected.filter { it.isNotEmpty() }.joinToString(", ")
+    val labels = connected.map { it.label() }
+    val subText = when (labels.size) {
+      0 -> null
+      1 -> "1 account"
+      else -> "${labels.size} accounts"
     }
+    val text = if (labels.isEmpty()) "Waiting to connect to the Twitarr server" else labels.joinToString(", ")
+    // The collapsed row runs the accounts together on one line; expanding gives each its own.
+    val expanded = if (labels.isEmpty()) null else labels.joinToString("\n")
     if (running) {
-      NotificationBuilder.updateServiceNotification(this, body)
+      NotificationBuilder.updateServiceNotification(this, subText, text, expanded)
     }
   }
 
@@ -193,7 +197,7 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
   }
 
   override fun onConnectionLost(account: PushAccount) {
-    NotificationBuilder.postConnectionLost(this, account.accountID, account.username)
+    NotificationBuilder.postConnectionLost(this, account.accountID, account.label())
   }
 
   override fun onRecovered(account: PushAccount) {

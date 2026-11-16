@@ -43,8 +43,8 @@ is device-wide, not part of a session: it is not torn down when the session chan
 
 - **Which accounts** (`selectPushAccounts` in `Push/PushAccounts.ts`): the active account, plus any
   other signed-in account whose `backgroundNotifications` preference is on (Settings > Background
-  Connection > "Notify When Not Active", off by default because every socket costs battery and
-  server load). Never an account that is signed out, revoked, or on a server in pre-registration
+  Connection > "Notify When Not Active", on by default; turning it off saves the battery and
+  server load of one more socket). Never an account that is signed out, revoked, or on a server in pre-registration
   mode, and none at all before setup is complete or with the background worker switched off.
   Each account is filtered with its own push preferences and mute time.
 - **Syncing**: `startPushProvider()` (`Push/index.ts`) is a reconcile, the same on both platforms.
