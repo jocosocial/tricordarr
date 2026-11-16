@@ -28,12 +28,12 @@ describe('reaction snapshot revisions', () => {
     expect(applyFezPostReactions(fez, 1, [], 2).members?.posts?.[0]).toBe(post);
   });
 
-  it('accepts a newer empty snapshot and refuses older or unversioned replacements', () => {
+  it('accepts a newer empty snapshot and refuses older or pre-feature replacements', () => {
     const post = {postID: 1, reactions, reactionRevision: 3} as PostData;
     const updated = applyPostReactions(post, {...post, reactions: [], reactionRevision: 4});
     expect(updated.reactions).toEqual([]);
     expect(updated.reactionRevision).toBe(4);
-    expect(applyPostReactions(updated, {...post, reactionRevision: undefined})).toBe(updated);
+    expect(applyPostReactions(updated, {...post, reactions: undefined, reactionRevision: undefined})).toBe(updated);
     const fez = {members: {posts: [post]}} as unknown as FezData;
     const next = applyFezPostReactions(fez, 1, [], 4);
     expect(applyFezPostReactions(next, 1, reactions, 3).members?.posts?.[0].reactions).toEqual([]);

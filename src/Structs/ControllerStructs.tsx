@@ -231,7 +231,7 @@ export interface FezPostData {
   image?: string;
   /// Reactions grouped by Unicode emoji or custom emoji token.
   reactions?: ReactionData[];
-  /** Monotonic revision of the reaction snapshot; absent in older payloads. */
+  /** Monotonic revision; absent on servers and cached posts predating emoji reactions. */
   reactionRevision?: number;
 }
 
@@ -899,7 +899,7 @@ export interface PostData {
   likeCount: number;
   /// Reactions grouped by Unicode emoji or custom emoji token.
   reactions?: ReactionData[];
-  /** Monotonic revision of the reaction snapshot; absent in older payloads. */
+  /** Monotonic revision; absent on servers and cached posts predating emoji reactions. */
   reactionRevision?: number;
   /// Whether the post has been pinned to the forum.
   isPinned?: boolean;
@@ -948,7 +948,7 @@ export interface PostDetailData {
   loves: UserHeader[];
   /// Reactions grouped by Unicode emoji or custom emoji token.
   reactions?: ReactionData[];
-  /** Monotonic revision of the reaction snapshot; absent in older payloads. */
+  /** Monotonic revision; absent on servers and cached posts predating emoji reactions. */
   reactionRevision?: number;
 }
 
