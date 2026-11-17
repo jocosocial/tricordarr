@@ -1,14 +1,17 @@
+import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {
   appLinkPrefix,
   appSiteUrl,
   appUrl,
   extractPathFromTricordarrUrl,
+  findLinkCandidates,
   isForeignAppLink,
   isTwitarrUrl,
   isUniversalLink,
   joinUrl,
   shouldRouteIncomingLink,
 } from '#src/Libraries/UrlParser';
+import {Account, ServerProfile, Session} from '#src/Structs/SessionStructs';
 
 describe('appUrl', () => {
   it('joins a path onto the tricordarr scheme without a third slash', () => {
@@ -165,5 +168,61 @@ describe('shouldRouteIncomingLink', () => {
 
   it('always routes the app scheme, including during OOBE', () => {
     expect(shouldRouteIncomingLink(`${appLinkPrefix}oobe`, false, serverUrl, canonicalHostnames)).toBe(true);
+  });
+});
+
+describe('findLinkCandidates', () => {
+  const START = 'https://start.twitarr.com';
+  const SHIP = 'https://twitarr.com';
+  const link = `${START}/forums`;
+  const account = (id: string, serverUrl: string, overrides: Partial<Account> = {}): Account => ({
+    accountID: id,
+    serverUrl,
+    userID: `user-${id}`,
+    username: id,
+    accessLevel: UserAccessLevel.verified,
+    status: 'signedIn',
+    createdAt: `2026-01-0${id.length}T00:00:00Z`,
+    lastUsedAt: '2026-01-01T00:00:00Z',
+    ...overrides,
+  });
+  const session = (id: string, serverUrl: string, accountID: string | null): Session => ({
+    sessionID: id,
+    serverUrl,
+    accountID,
+    createdAt: '2026-01-01T00:00:00Z',
+    lastUsedAt: '2026-01-01T00:00:00Z',
+  });
+  const keys = (entries: {key: string}[]) => entries.map(e => e.key);
+
+  it('finds nothing when no account is on the link server', () => {
+    expect(findLinkCandidates(link, [account('a', SHIP)], [], [])).toEqual([]);
+  });
+
+  it('finds the one signed-in account on the link server', () => {
+    const result = findLinkCandidates(link, [account('a', SHIP), account('b', START)], [], []);
+    expect(keys(result)).toEqual(['b']);
+  });
+
+  it('finds every account on the link server', () => {
+    const result = findLinkCandidates(link, [account('a', START), account('b', START)], [], []);
+    expect(keys(result).sort()).toEqual(['a', 'b']);
+  });
+
+  it('includes signed-out accounts', () => {
+    const result = findLinkCandidates(link, [account('a', START, {status: 'signedOut'})], [], []);
+    expect(keys(result)).toEqual(['a']);
+  });
+
+  it('includes anonymous sessions but not the sessions of accounts', () => {
+    const sessions = [session('s1', START, null), session('s2', START, 'a')];
+    const result = findLinkCandidates(link, [account('a', START)], sessions, []);
+    expect(keys(result).sort()).toEqual(['a', 's1']);
+  });
+
+  it('matches a server that lists the link host as canonical', () => {
+    const profiles = [{serverUrl: SHIP, canonicalHostnames: ['start.twitarr.com']}] as ServerProfile[];
+    const result = findLinkCandidates(link, [account('a', SHIP)], [], profiles);
+    expect(keys(result)).toEqual(['a']);
   });
 });

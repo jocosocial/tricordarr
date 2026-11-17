@@ -1,6 +1,10 @@
 import urlJoin from 'url-join';
 import URLParse from 'url-parse';
 
+import {AccountListEntry, getAccountListEntries} from '#src/Libraries/Account';
+import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
+import {Account, ServerProfile, Session} from '#src/Structs/SessionStructs';
+
 /**
  * Scheme prefix registered with React Navigation for in-app deep links.
  * Used as `navigationLinking.prefixes` in Linking.ts.
@@ -8,22 +12,12 @@ import URLParse from 'url-parse';
 export const appLinkPrefix = 'tricordarr://';
 
 /**
- * Hosts claimed for iOS Universal Links and Android App Links in release builds.
- * The OS reads the claims from the build, so these must match `Tricordarr.entitlements` and
- * `android/app/src/release/AndroidManifest.xml`. Changing them requires a new release.
+ * Hosts claimed for iOS Universal Links and Android App Links, in every build type.
+ * The OS reads the claims from the build, so these must match `Tricordarr.entitlements`,
+ * `Tricordarr.Debug.entitlements` and the `AndroidManifest.xml` of both build types.
+ * Changing them requires a new release.
  */
-export const releaseLinkHosts = ['twitarr.com', 'start.twitarr.com'];
-
-/**
- * Hosts claimed in debug builds. These must match `Tricordarr.Debug.entitlements` and
- * `android/app/src/debug/AndroidManifest.xml`.
- */
-export const debugLinkHosts = [...releaseLinkHosts, 'beta.twitarr.com', 'alpha.twitarr.com'];
-
-/**
- * Hosts that this build claims, and so the hosts the OS may hand to the app.
- */
-export const universalLinkHosts = __DEV__ ? debugLinkHosts : releaseLinkHosts;
+export const universalLinkHosts = ['twitarr.com', 'start.twitarr.com', 'beta.twitarr.com', 'alpha.twitarr.com'];
 
 /**
  * Join URL parts, normalizing leading and trailing slashes.
@@ -122,6 +116,26 @@ export const isUniversalLink = (url: string): boolean => {
  */
 export const isForeignAppLink = (url: string, serverUrl: string, canonicalHostnames: string[]): boolean =>
   isUniversalLink(url) && !isTwitarrUrl(url, serverUrl, canonicalHostnames);
+
+/**
+ * The accounts and anonymous sessions on this device that a universal link belongs to: those whose
+ * server is the link's origin, or whose server lists the link's host as canonical.
+ */
+export const findLinkCandidates = (
+  url: string,
+  accounts: Account[],
+  sessions: Session[],
+  serverProfiles: ServerProfile[],
+): AccountListEntry[] => {
+  const linkOrigin = normalizeServerUrl(url);
+  const linkHost = new URLParse(url).hostname;
+  const matchesServer = (serverUrl: string): boolean =>
+    normalizeServerUrl(serverUrl) === linkOrigin ||
+    !!serverProfiles.find(p => p.serverUrl === serverUrl)?.canonicalHostnames?.includes(linkHost);
+  return getAccountListEntries(accounts, sessions).filter(entry =>
+    matchesServer(entry.kind === 'account' ? entry.account.serverUrl : entry.session.serverUrl),
+  );
+};
 
 /**
  * Decide whether React Navigation should route a link it received from the OS.

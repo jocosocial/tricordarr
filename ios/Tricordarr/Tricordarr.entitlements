@@ -6,8 +6,12 @@
 	<array>
 		<string>applinks:twitarr.com</string>
 		<string>applinks:start.twitarr.com</string>
+		<string>applinks:beta.twitarr.com</string>
+		<string>applinks:alpha.twitarr.com</string>
 		<string>webcredentials:twitarr.com</string>
 		<string>webcredentials:start.twitarr.com</string>
+		<string>webcredentials:beta.twitarr.com</string>
+		<string>webcredentials:alpha.twitarr.com</string>
 	</array>
 	<key>com.apple.developer.networking.networkextension</key>
 	<array>
