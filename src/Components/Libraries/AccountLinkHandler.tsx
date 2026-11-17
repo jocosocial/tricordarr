@@ -28,17 +28,19 @@ const NAVIGATION_READY_ATTEMPTS = 20;
 const NAVIGATION_READY_INTERVAL_MS = 50;
 
 /**
- * High level functional component that makes a notification tap land in the account the
- * notification was for. NavigationProvider's linking filter drops a link addressed to another
- * account; this switches to that account and opens the link once the new session has mounted.
+ * High level functional component that opens a link in the session it was meant for. For a
+ * notification tap, NavigationProvider's linking filter drops a link addressed to another account;
+ * this switches to that account. For a universal link, ForeignLinkHandler holds the link until the
+ * user lands on its server. Either way the link opens once the new session has mounted.
  */
 export const AccountLinkHandler = () => {
-  const {accounts, currentAccount} = useSession();
-  const {oobeCompleted} = useOobe();
+  const {accounts, currentAccount, currentSession} = useSession();
+  const {oobeCompleted, resumeMode} = useOobe();
   const {switchAccount} = useAccountSwitcher();
   const {setSnackbarPayload} = useSnackbar();
   const linkTo = useLinkTo();
   const currentAccountID = currentAccount?.accountID ?? null;
+  const currentServerUrl = currentSession?.serverUrl;
   // linkTo changes identity as navigation settles after a switch. Keeping it in a ref lets the
   // effect below depend only on the account, so it is not re-run (and its retry timer cancelled)
   // after it has already taken the held link.
@@ -63,10 +65,10 @@ export const AccountLinkHandler = () => {
       }
       logger.info('Received link for another account, switching to', account.accountID);
       stashAccountLink(account.accountID, stripLinkAccount(url));
-      // A signed-out account goes to the login form instead, and the link is not kept for later.
+      // A signed-out account goes to the login form, and the link is kept for the sign-in.
       switchAccount(account)
         .then(result => {
-          if (result !== 'switched') {
+          if (result === 'ignored') {
             clearAccountLink();
           }
         })
@@ -97,9 +99,14 @@ export const AccountLinkHandler = () => {
 
   // Open the link that caused the switch into this session. The root navigator mounts alongside
   // this component, so wait for it before navigating. The held link is taken exactly once, so the
-  // retry timer below must survive anything but the account (or the component) changing.
+  // retry timer below must survive anything but the session (or the component) changing. While the
+  // setup flow is still running (resumeMode), the link waits: opening it now would navigate
+  // underneath the flow.
   useEffect(() => {
-    const url = consumeAccountLink(currentAccountID);
+    if (resumeMode) {
+      return;
+    }
+    const url = consumeAccountLink({accountID: currentAccountID, serverUrl: currentServerUrl});
     const path = url ? extractPathFromTricordarrUrl(url) : undefined;
     if (path === undefined) {
       return;
@@ -118,7 +125,7 @@ export const AccountLinkHandler = () => {
     };
     open();
     return () => clearTimeout(timer);
-  }, [currentAccountID]);
+  }, [currentAccountID, currentServerUrl, resumeMode]);
 
   // Void is not a valid React component.
   return null;

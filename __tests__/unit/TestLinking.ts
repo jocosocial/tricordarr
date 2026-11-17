@@ -4,7 +4,7 @@ import {join} from 'path';
 import {getPathFromState, getStateFromPath} from '@react-navigation/core';
 
 import {navigationLinking} from '#src/Libraries/Linking';
-import {debugLinkHosts, releaseLinkHosts} from '#src/Libraries/UrlParser';
+import {universalLinkHosts} from '#src/Libraries/UrlParser';
 
 const uuid = 'B13F1F2C-6CAC-4A33-A0AC-A19873EF5A12';
 
@@ -136,14 +136,14 @@ describe('native link claims', () => {
   const hosts = (buildType: string) => matches(manifest(buildType), /android:host="([^"]+)"/g);
   const paths = (buildType: string) => matches(manifest(buildType), /android:path\w*="([^"]+)"/g);
 
-  it('claims the release hosts in release builds', () => {
-    expect(applinks('Tricordarr.entitlements')).toEqual(sorted(releaseLinkHosts));
-    expect(hosts('release')).toEqual(sorted(releaseLinkHosts));
+  it('claims the same hosts in release builds', () => {
+    expect(applinks('Tricordarr.entitlements')).toEqual(sorted(universalLinkHosts));
+    expect(hosts('release')).toEqual(sorted(universalLinkHosts));
   });
 
-  it('claims the debug hosts in debug builds', () => {
-    expect(applinks('Tricordarr.Debug.entitlements')).toEqual(sorted(debugLinkHosts));
-    expect(hosts('debug')).toEqual(sorted(debugLinkHosts));
+  it('claims the same hosts in debug builds', () => {
+    expect(applinks('Tricordarr.Debug.entitlements')).toEqual(sorted(universalLinkHosts));
+    expect(hosts('debug')).toEqual(sorted(universalLinkHosts));
   });
 
   it('claims every Android path, matching the server', () => {
@@ -152,9 +152,9 @@ describe('native link claims', () => {
   });
 
   it('shares credentials with the hosts each build claims', () => {
-    expect(webcredentials('Tricordarr.entitlements')).toEqual(sorted(releaseLinkHosts));
-    expect(webcredentials('Tricordarr.Debug.entitlements')).toEqual(sorted(debugLinkHosts));
-    expect(assetStatements('release')).toEqual(sorted(releaseLinkHosts));
-    expect(assetStatements('debug')).toEqual(sorted(debugLinkHosts));
+    expect(webcredentials('Tricordarr.entitlements')).toEqual(sorted(universalLinkHosts));
+    expect(webcredentials('Tricordarr.Debug.entitlements')).toEqual(sorted(universalLinkHosts));
+    expect(assetStatements('release')).toEqual(sorted(universalLinkHosts));
+    expect(assetStatements('debug')).toEqual(sorted(universalLinkHosts));
   });
 });

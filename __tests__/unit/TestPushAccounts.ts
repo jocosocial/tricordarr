@@ -25,7 +25,9 @@ import {
   consumeAccountLink,
   getLinkAccountID,
   isOtherAccountLink,
+  PENDING_LINK_TTL_MS,
   stashAccountLink,
+  stashServerLink,
   stripLinkAccount,
 } from '#src/Libraries/Notifications/AccountLink';
 import {cruiseEndMs, PushAccountInputs, selectPushAccounts} from '#src/Libraries/Notifications/Push/PushAccounts';
@@ -211,19 +213,49 @@ describe('account links', () => {
 
   it('hands a held link to its account once', () => {
     stashAccountLink('b', 'tricordarr://seamail/123');
-    expect(consumeAccountLink('b')).toBe('tricordarr://seamail/123');
-    expect(consumeAccountLink('b')).toBeUndefined();
+    expect(consumeAccountLink({accountID: 'b'})).toBe('tricordarr://seamail/123');
+    expect(consumeAccountLink({accountID: 'b'})).toBeUndefined();
   });
 
   it('drops a held link when a different account becomes active', () => {
     stashAccountLink('b', 'tricordarr://seamail/123');
-    expect(consumeAccountLink('a')).toBeUndefined();
-    expect(consumeAccountLink('b')).toBeUndefined();
+    expect(consumeAccountLink({accountID: 'a'})).toBeUndefined();
+    expect(consumeAccountLink({accountID: 'b'})).toBeUndefined();
   });
 
   it('forgets a held link when the switch does not happen', () => {
     stashAccountLink('b', 'tricordarr://seamail/123');
     clearAccountLink();
-    expect(consumeAccountLink('b')).toBeUndefined();
+    expect(consumeAccountLink({accountID: 'b'})).toBeUndefined();
+  });
+
+  it('hands a server link to any session on that server, once', () => {
+    stashServerLink('https://start.twitarr.com/', 'tricordarr://forums');
+    expect(consumeAccountLink({accountID: null, serverUrl: 'https://start.twitarr.com'})).toBe('tricordarr://forums');
+    expect(consumeAccountLink({accountID: null, serverUrl: 'https://start.twitarr.com'})).toBeUndefined();
+  });
+
+  it('drops a server link when a session on another server becomes active', () => {
+    stashServerLink('https://start.twitarr.com', 'tricordarr://forums');
+    expect(consumeAccountLink({accountID: 'a', serverUrl: 'https://twitarr.com'})).toBeUndefined();
+    expect(consumeAccountLink({accountID: 'b', serverUrl: 'https://start.twitarr.com'})).toBeUndefined();
+  });
+
+  it('does not hand a server link to an account link request without a server', () => {
+    stashServerLink('https://start.twitarr.com', 'tricordarr://forums');
+    expect(consumeAccountLink({accountID: 'a'})).toBeUndefined();
+  });
+
+  it('lets a held link expire', () => {
+    const now = jest.spyOn(Date, 'now');
+    now.mockReturnValue(1_000);
+    stashServerLink('https://start.twitarr.com', 'tricordarr://forums');
+    now.mockReturnValue(1_000 + PENDING_LINK_TTL_MS + 1);
+    expect(consumeAccountLink({serverUrl: 'https://start.twitarr.com'})).toBeUndefined();
+    now.mockReturnValue(1_000);
+    stashAccountLink('b', 'tricordarr://seamail/123');
+    now.mockReturnValue(1_000 + PENDING_LINK_TTL_MS + 1);
+    expect(consumeAccountLink({accountID: 'b'})).toBeUndefined();
+    now.mockRestore();
   });
 });
