@@ -56,6 +56,19 @@ object NotificationPlanner {
     }
   }
 
+  /**
+   * Stops a call ringing on this device. The incoming call notification is keyed by the call ID,
+   * which is the content ID of every event about that call.
+   */
+  private fun dismissCall(account: PushAccount, data: JSONObject): PlanResult {
+    val callID = data.opt("contentID")?.toString().orEmpty()
+    if (callID.isEmpty()) {
+      return PlanResult.Skip("call event has no ID")
+    }
+    return PlanResult.Dismiss(account.accountID, callID)
+  }
+
+  /** Decides what one socket event does for [account]: post a notification, dismiss one, or nothing. */
   fun plan(events: NotificationEvents, account: PushAccount, raw: String, nowMillis: Long): PlanResult {
     val data = try {
       JSONObject(raw)
@@ -63,23 +76,23 @@ object NotificationPlanner {
       return PlanResult.Skip("unparseable event")
     }
     val type = typeOf(data) ?: return PlanResult.Skip("event has no type")
+    val isSignal = type in events.signals
 
     // Call signalling keeps the call notifications in step, so the category toggles never block it.
-    if (type !in events.signals && account.prefs.pushNotifications[type] != true) {
+    // Only an explicit false disables a category: a type the synced preferences do not know yet
+    // (added by an app update) is on, as it is in the JS defaults and on iOS.
+    if (!isSignal && account.prefs.pushNotifications[type] == false) {
       return PlanResult.Skip("category $type disabled")
     }
     if (type == PHONE_CALL_ANSWERED) {
-      // Answered on this device or another, the call no longer needs to ring here. The incoming call
-      // notification is keyed by the call ID, which is this event's content ID.
-      val callID = data.opt("contentID")?.toString().orEmpty()
-      if (callID.isEmpty()) {
-        return PlanResult.Skip("answered call has no ID")
-      }
-      return PlanResult.Dismiss(account.accountID, callID)
+      // Answered on this device or another, the call no longer needs to ring here.
+      return dismissCall(account, data)
     }
     val mutedUntil = account.prefs.muteNotificationsUntil
     if (mutedUntil != null && nowMillis < mutedUntil) {
-      return PlanResult.Skip("notifications muted")
+      // Mute stops anything new being posted, but a call that rang before the mute began must still
+      // stop ringing, so call signalling clears it instead of posting over it.
+      return if (isSignal) dismissCall(account, data) else PlanResult.Skip("notifications muted")
     }
     val spec = events.events[type] ?: return PlanResult.Skip("no notification for type $type")
 
@@ -129,7 +142,7 @@ object NotificationPlanner {
   private val QUOTE = Regex("(?m)^\\s{0,3}>\\s?")
   private val EMPHASIS = Regex("[*_~`]+")
 
-  /** A small port of the `remove-markdown` package the JS side used for notification bodies. */
+  /** Strips Markdown syntax from a notification body, keeping the text of links and images. */
   fun stripMarkdown(text: String): String =
     text
       .replace(IMAGE, "$1")

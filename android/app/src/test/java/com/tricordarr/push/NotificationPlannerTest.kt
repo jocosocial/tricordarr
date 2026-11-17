@@ -69,9 +69,8 @@ class NotificationPlannerTest {
   }
 
   @Test
-  fun missingCategoryIsTreatedAsDisabled() {
-    val result = NotificationPlanner.plan(events, TestSupport.account(), """{"type":{"announcement":{}},"contentID":"a"}""", 0L)
-    assertTrue(result is PlanResult.Skip)
+  fun missingCategoryIsTreatedAsEnabled() {
+    post("""{"type":{"announcement":{}},"contentID":"a"}""", TestSupport.account())
   }
 
   @Test
@@ -99,6 +98,15 @@ class NotificationPlannerTest {
   fun callSignallingIgnoresTheCategoryToggles() {
     val account = TestSupport.account(all + ("phoneCallEnded" to false))
     post("""{"type":{"phoneCallEnded":{}},"info":"x","contentID":"c1"}""", account)
+  }
+
+  @Test
+  fun mutedCallSignallingClearsTheRingingNotificationInsteadOfPosting() {
+    val account = TestSupport.account(all, mute = 1_000L)
+    val ended = NotificationPlanner.plan(events, account, """{"type":{"phoneCallEnded":{}},"info":"x","contentID":"c1"}""", 999L)
+    assertEquals(PlanResult.Dismiss("acct-1", "c1"), ended)
+    val answered = NotificationPlanner.plan(events, account, """{"type":{"phoneCallAnswered":{}},"contentID":"c1"}""", 999L)
+    assertEquals(PlanResult.Dismiss("acct-1", "c1"), answered)
   }
 
   @Test

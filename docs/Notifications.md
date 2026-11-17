@@ -3,32 +3,7 @@
 Push notifications on a ship with no FCM/APNs: a socket to the Swiftarr server stays open in the
 background and turns events into local notifications.
 
-## Android: native foreground service
-
-`android/app/src/main/java/com/tricordarr/push/`. It runs with no React context, so notifications keep arriving
-after the app is swiped away or the device reboots.
-
-| Piece                                         | Role                                                                                                                                                                                                                                       |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `TwitarrPushService`                          | Foreground service (`remoteMessaging`). One `AccountConnection` per enabled account. Reconciles with the store every 30s, reconnects on `onAvailable`.                                                                                     |
-| `AccountConnection`                           | OkHttp 4.9.2 WebSocket to `<server><urlPrefix>/notification/socket`, 30s ping (detects half-open sockets), 1s to 30s jittered backoff. A 401 on the handshake means the token was revoked: status becomes `Revoked` and it stops retrying. |
-| `PushAccountStore`                            | Accounts and tokens, encrypted with an app-owned AndroidKeyStore AES-GCM key. JS replaces the list with `syncPushAccounts`; native never reads expo-secure-store.                                                                          |
-| `NotificationPlanner` / `NotificationBuilder` | Port of the old `generatePushNotificationFromEvent` / `generateContentNotification`. The planner is Android-free and unit tested.                                                                                                          |
-| `MarkAsReadReceiver`                          | The "Mark as Read" action: cancels the notification, calls the endpoint with the account's token, emits `onMarkAsRead` so JS refreshes caches.                                                                                             |
-| `PushBootReceiver`                            | Restarts the service on `BOOT_COMPLETED` and `MY_PACKAGE_REPLACED` (not `LOCKED_BOOT_COMPLETED`: Keystore needs first unlock).                                                                                                             |
-| `PushStatusStore`                             | Per-account health (`state`, last healthcheck, `failedCount`, `startedAt`). Native is the source of truth; JS pulls `getWebsocketStatus()`.                                                                                                |
-
-The service posts three notifications of its own:
-
-- **Service**: the foreground notification, listing the connected usernames. It is not `ongoing`,
-  so on Android 14+ the user can swipe it away. The service keeps running, and the notification
-  stays gone until the service next enters the foreground.
-- **Twitarr Connection Lost**: one per account, posted when the account stops retrying after 10
-  consecutive failures (see "Giving up" below).
-- **Tap to reconnect**: posted when Android refuses to let the service enter the foreground, which
-  happens on API 31+ when it is started from the background. Opening the app starts it again.
-
-### JS contract
+## JS contract
 
 `specs/NativeTricordarrModule.ts`: `syncPushAccounts`, `setPushAccountEnabled`,
 `startBackgroundService`, `stopBackgroundService`, `getWebsocketStatus` (array, one entry per
@@ -40,7 +15,7 @@ account), `cancelContentNotification`, `cancelSecondaryNotifications`, and the e
 - The JS in-app notification socket (`SocketProvider`) still runs while the app is foregrounded, for
   the active account's cache invalidation. The native service posts the notifications.
 
-### Accounts
+## Accounts
 
 Both platforms: one background provider per device, one socket per account inside it. The provider
 is device-wide, not part of a session: it is not torn down when the session changes.
@@ -80,7 +55,7 @@ is device-wide, not part of a session: it is not torn down when the session chan
   JS marks the account revoked when it next uses that token; an inactive account stays `signedIn`
   in the account model until then.
 
-### Shared event table
+## Shared event table
 
 `specs/NotificationEvents.json` is the one hand-edited source for event type to channel, title, tap
 URL, and mark-as-read path, plus the channel and group definitions. All three platforms get
@@ -109,13 +84,17 @@ The TS side builds the push notification settings from `specs` too. `contentNoti
 deprecated type's toggle. `contentNotificationSections` groups the settings by channel (sections
 sorted by channel name) for `PushNotificationSettingsScreen`, with unposted types in a final "Other"
 section and signal types left out. The default
-`AppConfig.pushNotifications` turns every type on except deprecated ones.
+`AppConfig.pushNotifications` turns every type on except deprecated ones. Natively, only an explicit
+`false` in an account's synced preferences turns a type off: a type the preferences do not list yet
+(added by an app update, before JS has synced again) is on, on both platforms.
 
 `signal: true` marks call signalling (`phoneCallAnswered`, `phoneCallEnded`). A signal type has no
 setting, and neither platform checks the category toggles for it: they exist to keep the call UI in
-step, not to inform the user. On Android, `phoneCallEnded` still posts "Call Ended" over the ringing
-notification (same call ID), and `phoneCallAnswered` dismisses the ringing notification
-(`PlanResult.Dismiss`). On iOS CallKit is driven by `CallProvider` from the app's own socket:
+step, not to inform the user. Mute does not stop a signal ending a ring either, on either platform.
+On Android, `phoneCallEnded` still posts "Call Ended" over the ringing notification (same call ID),
+and `phoneCallAnswered` dismisses the ringing notification (`PlanResult.Dismiss`). While the account
+is muted, `phoneCallEnded` dismisses the ringing notification too, in place of posting. On iOS
+neither signal posts anything: CallKit is driven by `CallProvider` from the app's own socket:
 `phoneCallAnswered` ends a call that is still ringing on this device with the `AnsweredElsewhere`
 reason, while the device that answered is already past ringing and is left alone. Nothing on the
 app side receives the push extension's `reportIncomingCall`, so on iOS a call only rings while the
@@ -131,6 +110,31 @@ customizations. Add a new event by adding it to the JSON (`events` or `unposted`
 default. Behaviour beyond posting is still hand-written: the cache invalidation per type in
 `NotificationDataListener`, and the call handling in `NotificationPlanner`, `WebsocketNotifier` and
 `CallProvider`.
+
+## Android: native foreground service
+
+`android/app/src/main/java/com/tricordarr/push/`. It runs with no React context, so notifications keep arriving
+after the app is swiped away or the device reboots.
+
+| Piece                                         | Role                                                                                                                                                                                                                                       |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `TwitarrPushService`                          | Foreground service (`remoteMessaging`). One `AccountConnection` per enabled account. Reconciles with the store every 30s, reconnects on `onAvailable`.                                                                                     |
+| `AccountConnection`                           | OkHttp 4.9.2 WebSocket to `<server><urlPrefix>/notification/socket`, 30s ping (detects half-open sockets), 1s to 30s jittered backoff. A 401 on the handshake means the token was revoked: status becomes `Revoked` and it stops retrying. |
+| `PushAccountStore`                            | Accounts and tokens, encrypted with an app-owned AndroidKeyStore AES-GCM key. JS replaces the list with `syncPushAccounts`; native never reads expo-secure-store.                                                                          |
+| `NotificationPlanner` / `NotificationBuilder` | Port of the old `generatePushNotificationFromEvent` / `generateContentNotification`. The planner is Android-free and unit tested.                                                                                                          |
+| `MarkAsReadReceiver`                          | The "Mark as Read" action: cancels the notification, calls the endpoint with the account's token, emits `onMarkAsRead` so JS refreshes caches.                                                                                             |
+| `PushBootReceiver`                            | Restarts the service on `BOOT_COMPLETED` and `MY_PACKAGE_REPLACED` (not `LOCKED_BOOT_COMPLETED`: Keystore needs first unlock).                                                                                                             |
+| `PushStatusStore`                             | Per-account health (`state`, last healthcheck, `failedCount`, `startedAt`). Native is the source of truth; JS pulls `getWebsocketStatus()`.                                                                                                |
+
+The service posts three notifications of its own:
+
+- **Service**: the foreground notification, listing the connected usernames. It is not `ongoing`,
+  so on Android 14+ the user can swipe it away. The service keeps running, and the notification
+  stays gone until the service next enters the foreground.
+- **Twitarr Connection Lost**: one per account, posted when the account stops retrying after 10
+  consecutive failures (see "Giving up" below).
+- **Tap to reconnect**: posted when Android refuses to let the service enter the foreground, which
+  happens on API 31+ when it is started from the background. Opening the app starts it again.
 
 ### Foreground service type
 
@@ -169,6 +173,9 @@ not declared today because `targetSdk` is 36, so raising the target is a blocker
 
 ### Giving up
 
+Android only. iOS has no failure count and never gives up: a failed socket is retried on the
+healthcheck timer for as long as the account is synced.
+
 A port call takes the user out of reach of the ship's server, so the worker does not retry forever. An
 account that fails 10 times in a row with no successful connection between them
 (`HealthTracker.DEFAULT_GIVE_UP_AFTER_FAILURES`) stops retrying and its state becomes `Stopped`. With the
@@ -179,6 +186,10 @@ Rejoining Wi-Fi does not, because the network callback only wakes connections th
 
 ### After the cruise
 
+Android only. iOS ignores `autoStartUntil` (`PushAccountConfig` does not carry it) and has no
+`keepRunningAfterCruise` toggle: the extension runs whenever the device is on one of the
+manager's `matchSSIDs`.
+
 A boot or app-update restart nobody asked for must not run forever. JS puts `autoStartUntil` on each
 synced account (`selectPushAccounts`): the end of its server's cruise (start day plus length, in the
 port timezone, from the mirrored `ServerProfile`), or nothing if the dates are not known yet or the
@@ -186,6 +197,15 @@ device-wide `keepRunningAfterCruise` setting is on (Background Connection settin
 `PushServiceController.startOnBoot`, which skips the start when no enabled account may auto-start. Opening
 the app still starts the worker (`startBackgroundService`), and a worker that is already running is not
 stopped.
+
+## Android: call foreground service
+
+`CallService` keeps the process alive, with an ongoing notification, while a KrakenTalk call is active.
+`CallProvider` calls `showCallForegroundNotification` when the call becomes active (and again when mute
+changes) and `dismissCallForegroundNotification` when it ends; both go through
+`NativeTricordarrModule.showCallNotification` / `dismissCallNotification` to `CallServiceController`.
+The system counts the call duration from the start time, so nothing updates it each second. A tap opens
+the app (the call UI is an overlay). The module methods are no-ops on iOS, where CallKit presents the call.
 
 ## iOS
 
@@ -208,15 +228,6 @@ One provider, a socket per account, same contract as Android (see "Accounts" abo
 - There is no Mark as Read action and no `Revoked` state on iOS. A rejected token keeps retrying on
   the healthcheck timer until JS stops syncing the account.
 - `setupLocalPushManager` / `clearLocalPushManager` are gone; `syncPushAccounts` replaced them.
-
-## Android: call foreground service
-
-`CallService` keeps the process alive, with an ongoing notification, while a KrakenTalk call is active.
-`CallProvider` calls `showCallForegroundNotification` when the call becomes active (and again when mute
-changes) and `dismissCallForegroundNotification` when it ends; both go through
-`NativeTricordarrModule.showCallNotification` / `dismissCallNotification` to `CallServiceController`.
-The system counts the call duration from the start time, so nothing updates it each second. A tap opens
-the app (the call UI is an overlay). The module methods are no-ops on iOS, where CallKit presents the call.
 
 ## No notification library
 

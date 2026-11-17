@@ -47,8 +47,7 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <!--
-    I don't do anything with fullscreen yet. But this permission showed up anyway when targeting Android 15.
-    https://github.com/invertase/notifee/issues/1027
+    I don't do anything with fullscreen yet, so strip this permission if a dependency's manifest declares it.
     -->
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" tools:node="remove" />
 

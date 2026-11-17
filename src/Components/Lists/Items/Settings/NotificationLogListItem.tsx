@@ -28,7 +28,7 @@ export const NotificationLogListItem = ({entry}: NotificationLogListItemProps) =
   const {setSnackbarPayload} = useSnackbar();
   const {openAppUrl} = useLinking();
   const {accounts, currentAccount} = useSession();
-  // Entries without an account (iOS, older builds) are taken to be the active account's.
+  // Entries without an account (logged by an older build) are taken to be the active account's.
   const isOtherAccount = entry.accountID !== undefined && entry.accountID !== currentAccount?.accountID;
   const otherAccount = isOtherAccount ? accounts.find(account => account.accountID === entry.accountID) : undefined;
   const otherAccountName = otherAccount ? accountName(otherAccount) : 'another account';

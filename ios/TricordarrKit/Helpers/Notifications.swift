@@ -247,7 +247,7 @@ import UserNotifications
 		accountID: String? = nil,
 		accountName: String? = nil
 	) {
-		// `userInfo` is the equivant of `data` in Notifee
+		// `userInfo` is the notification's data payload. The tap handler and the cancel functions read it back.
 		let userInfo = UserInfoData(
 			type: type,
 			url: url,

@@ -6,7 +6,7 @@ import org.json.JSONObject
 /**
  * Per-account notification preferences, copied from the JS AppConfig by `syncPushAccounts`.
  * [pushNotifications] maps a NotificationTypeData key to whether the user wants it. A type that
- * is missing from the map is treated as disabled, matching the JS `!pushNotifications[type]`.
+ * is missing from the map is treated as enabled, matching the JS defaults and iOS.
  */
 data class PushPrefs(
   val pushNotifications: Map<String, Boolean>,

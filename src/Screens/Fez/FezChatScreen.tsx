@@ -349,21 +349,8 @@ const FezChatScreenInner = ({route}: Props) => {
     });
   }, [getFezHeaderTitle, getNavButtons, navigation]);
 
-  // Visible useEffect
-  // 20260308 The query now refetches on mount by default so this is no longer needed.
-  // Reload on so that when the user taps a Seamail notification while this screen is active in the background
-  // it will update with the latest data. This refetches a little aggressively when coming from the background
-  // so some day some debouncing should be implemented.
-  // useEffect(() => {
-  //   const checkInitial = async () => {
-  //     const initialNotification = await notifee.getInitialNotification();
-  //     if (initialNotification && appStateVisible === 'active') {
-  //       await refetch();
-  //     }
-  //   };
-  //   logger.debug('Triggering appStateVisible useEffect', appStateVisible);
-  //   checkInitial();
-  // }, [appStateVisible, refetch]);
+  // 20260308 The query now refetches on mount by default, so there is no effect here to reload when the
+  // user taps a Seamail notification while this screen is active in the background.
 
   const [readyToShow, setReadyToShow] = useState(false);
   const {commonStyles} = useStyles();
