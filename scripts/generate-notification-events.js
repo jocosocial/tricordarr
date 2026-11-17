@@ -117,7 +117,7 @@ function kotlinOptional(value) {
 
 /**
  * Returns the generated TypeScript source: the `NotificationTypeData` enum, merged with a namespace
- * holding the per-type titles shown in the notification log.
+ * holding the per-type titles shown in the notification log and the route path each type opens.
  */
 function renderTypeScript(spec) {
   validate(spec);
@@ -153,6 +153,27 @@ function renderTypeScript(spec) {
     '   * back to the raw type string for unposted or unrecognized types (e.g. `unknown`).',
     '   */',
     '  export const getTitle = (type: string): string => titles[type as NotificationTypeData] ?? type;',
+    '',
+    '  /** App route path that each posted event opens, with `{placeholders}` for the IDs it needs. */',
+    '  const urls: Partial<Record<NotificationTypeData, string>> = {',
+  );
+  Object.entries(spec.events).forEach(([type, event]) => {
+    if (event.url !== undefined) {
+      lines.push(`    [NotificationTypeData.${type}]: ${tsString(event.url)},`);
+    }
+  });
+  lines.push(
+    '  };',
+    '',
+    '  /**',
+    '   * Returns the app route path (e.g. `/seamail/<id>`) that a notification event opens, the same one',
+    '   * its push notification opens. Undefined when the type has no destination, or when its path needs',
+    '   * more than the content ID (e.g. an incoming call).',
+    '   */',
+    '  export const getUrl = (type: string, contentID: string): string | undefined => {',
+    "    const url = urls[type as NotificationTypeData]?.replace('{contentID}', contentID);",
+    "    return url && !url.includes('{') ? url : undefined;",
+    '  };',
     '}',
     '',
   );

@@ -100,4 +100,35 @@ export namespace NotificationTypeData {
    * back to the raw type string for unposted or unrecognized types (e.g. `unknown`).
    */
   export const getTitle = (type: string): string => titles[type as NotificationTypeData] ?? type;
+
+  /** App route path that each posted event opens, with `{placeholders}` for the IDs it needs. */
+  const urls: Partial<Record<NotificationTypeData, string>> = {
+    [NotificationTypeData.seamailUnreadMsg]: '/seamail/{contentID}',
+    [NotificationTypeData.fezUnreadMsg]: '/lfg/{contentID}/chat',
+    [NotificationTypeData.privateEventUnreadMsg]: '/privateevent/{contentID}/chat',
+    [NotificationTypeData.announcement]: '/home',
+    [NotificationTypeData.alertwordPost]: '/forum/containingpost/{contentID}',
+    [NotificationTypeData.forumMention]: '/forumpost/mentions',
+    [NotificationTypeData.twitarrTeamForumMention]: '/forum/containingpost/{contentID}',
+    [NotificationTypeData.moderatorForumMention]: '/forum/containingpost/{contentID}',
+    [NotificationTypeData.incomingPhoneCall]: '/phonecall/{contentID}/from/{callerUserID}/{callerUsername}',
+    [NotificationTypeData.followedEventStarting]: '/events/{contentID}',
+    [NotificationTypeData.joinedLFGStarting]: '/lfg/{contentID}',
+    [NotificationTypeData.personalEventStarting]: '/privateevent/{contentID}',
+    [NotificationTypeData.addedToPrivateEvent]: '/privateevent/{contentID}',
+    [NotificationTypeData.addedToLFG]: '/lfg/{contentID}',
+    [NotificationTypeData.addedToSeamail]: '/seamail/{contentID}',
+    [NotificationTypeData.privateEventCanceled]: '/privateevent/{contentID}',
+    [NotificationTypeData.lfgCanceled]: '/lfg/{contentID}',
+  };
+
+  /**
+   * Returns the app route path (e.g. `/seamail/<id>`) that a notification event opens, the same one
+   * its push notification opens. Undefined when the type has no destination, or when its path needs
+   * more than the content ID (e.g. an incoming call).
+   */
+  export const getUrl = (type: string, contentID: string): string | undefined => {
+    const url = urls[type as NotificationTypeData]?.replace('{contentID}', contentID);
+    return url && !url.includes('{') ? url : undefined;
+  };
 }
