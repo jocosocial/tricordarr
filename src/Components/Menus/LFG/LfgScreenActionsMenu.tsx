@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FavoriteMenuItem} from '#src/Components/Menus/Items/FavoriteMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -88,7 +89,6 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
           disabled={fezData.cancelled}
         />
       )}
-      <ShareMenuItem contentType={ShareContentType.lfg} contentID={fezData.fezID} closeMenu={closeMenu} />
       {!preRegistrationMode && (
         <Menu.Item
           leadingIcon={AppIcons.report}
@@ -102,16 +102,19 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
           }}
         />
       )}
-      {hasModerator && (
-        <Menu.Item
-          leadingIcon={AppIcons.moderator}
-          title={'Moderate'}
-          onPress={() => {
-            pushModerateResource(commonNavigation, 'lfg', fezData.fezID);
-            closeMenu();
-          }}
-        />
-      )}
+      <PrivilegedMenuGroup>
+        {hasModerator && (
+          <Menu.Item
+            leadingIcon={AppIcons.moderator}
+            title={'Moderate'}
+            onPress={() => {
+              pushModerateResource(commonNavigation, 'lfg', fezData.fezID);
+              closeMenu();
+            }}
+          />
+        )}
+      </PrivilegedMenuGroup>
+      <ShareMenuItem contentType={ShareContentType.lfg} contentID={fezData.fezID} closeMenu={closeMenu} />
       <Menu.Item
         leadingIcon={AppIcons.help}
         title={'Help'}

@@ -1,8 +1,9 @@
 import React, {ReactNode} from 'react';
-import {Divider, Menu} from 'react-native-paper';
+import {Menu} from 'react-native-paper';
 
 import {ModerateMenuItem} from '#src/Components/Menus/Items/ModerateMenuItem';
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
@@ -33,12 +34,11 @@ export const PhotostreamImageActionsMenu = ({visible, closeMenu, anchor, image}:
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
       <MenuContextBridge bridged={bridged}>
         <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
-        {hasModerator && (
-          <>
-            <Divider bold={true} />
+        <PrivilegedMenuGroup trailingDivider={false}>
+          {hasModerator && (
             <ModerateMenuItem closeMenu={closeMenu} resourceID={image.postID.toString()} resource={'photostream'} />
-          </>
-        )}
+          )}
+        </PrivilegedMenuGroup>
       </MenuContextBridge>
     </Menu>
   );

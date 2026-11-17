@@ -1,6 +1,8 @@
 import React from 'react';
+import {Menu} from 'react-native-paper';
 
-import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
+import {getStateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {useEventNeedsPhotographerMutation} from '#src/Queries/Events/EventPhotographerMutations';
@@ -13,6 +15,7 @@ interface NeedsPhotographerMenuItemProps {
 }
 
 export const NeedsPhotographerMenuItem = (props: NeedsPhotographerMenuItemProps) => {
+  const {commonStyles} = useStyles();
   const needsPhotographerMutation = useEventNeedsPhotographerMutation();
   const {updateNeedsPhotographer} = useEventCacheReducer();
 
@@ -44,11 +47,17 @@ export const NeedsPhotographerMenuItem = (props: NeedsPhotographerMenuItemProps)
   }
 
   return (
-    <SelectableMenuItem
+    <Menu.Item
       title={'Needs Photographer'}
-      leadingIcon={AppIcons.needsPhotographer}
+      style={props.shutternautData.needsPhotographer ? commonStyles.surfaceVariant : undefined}
+      leadingIcon={getStateLoadingIcon({
+        isLoading: needsPhotographerMutation.isPending,
+        state: props.shutternautData.needsPhotographer,
+        iconTrue: AppIcons.check,
+        iconFalse: AppIcons.needsPhotographer,
+      })}
       onPress={handleNeedsPhotographerToggle}
-      selected={props.shutternautData.needsPhotographer}
+      disabled={needsPhotographerMutation.isPending}
     />
   );
 };

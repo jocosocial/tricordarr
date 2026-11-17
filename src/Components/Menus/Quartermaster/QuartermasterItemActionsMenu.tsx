@@ -1,10 +1,11 @@
 import React from 'react';
-import {Divider, Menu} from 'react-native-paper';
+import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ModerateMenuItem} from '#src/Components/Menus/Items/ModerateMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useQuartermasterDelete} from '#src/Hooks/Quartermaster/useQuartermasterDelete';
@@ -56,7 +57,6 @@ export const QuartermasterItemActionsMenu = ({item}: QuartermasterItemActionsMen
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <ShareMenuItem contentType={ShareContentType.quartermaster} contentID={item.itemID} closeMenu={closeMenu} />
       {canModify && <Menu.Item dense={false} leadingIcon={AppIcons.edit} title={'Edit'} onPress={handleEdit} />}
       {!isOwn && <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />}
       {canModify && (
@@ -68,12 +68,12 @@ export const QuartermasterItemActionsMenu = ({item}: QuartermasterItemActionsMen
           onPress={handleDelete}
         />
       )}
-      {viewer.hasModerator && (
-        <>
-          <Divider bold={true} />
+      <PrivilegedMenuGroup>
+        {viewer.hasModerator && (
           <ModerateMenuItem closeMenu={closeMenu} resourceID={item.itemID} resource={'quartermaster'} />
-        </>
-      )}
+        )}
+      </PrivilegedMenuGroup>
+      <ShareMenuItem contentType={ShareContentType.quartermaster} contentID={item.itemID} closeMenu={closeMenu} />
     </AppMenu>
   );
 };

@@ -11,6 +11,7 @@ import {PostAsModeratorMenuItem} from '#src/Components/Menus/Items/PostAsModerat
 import {PostAsTwitarrTeamMenuItem} from '#src/Components/Menus/Items/PostAsTwitarrTeamMenuItem';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
@@ -159,18 +160,11 @@ export const ForumThreadScreenActionsMenu = ({forumData, onRefresh}: ForumThread
           />
         </>
       )}
-      <ShareMenuItem contentType={ShareContentType.forum} contentID={forumData.forumID} closeMenu={closeMenu} />
-      <Divider bold={true} />
-      {hasTwitarrTeam && (
-        <>
-          <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} />
-          <Divider bold={true} />
-        </>
-      )}
-      {hasModerator && (
-        <>
-          <PostAsModeratorMenuItem closeMenu={closeMenu} />
-          <ModerateMenuItem closeMenu={closeMenu} resourceID={forumData.forumID} resource={'forum'} />
+      <PrivilegedMenuGroup>
+        {hasTwitarrTeam && <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} />}
+        {hasModerator && <PostAsModeratorMenuItem closeMenu={closeMenu} />}
+        {hasModerator && <ModerateMenuItem closeMenu={closeMenu} resourceID={forumData.forumID} resource={'forum'} />}
+        {hasModerator && (
           <ForumThreadPinItem
             isPinned={forumData.isPinned}
             refreshing={refreshing}
@@ -179,9 +173,9 @@ export const ForumThreadScreenActionsMenu = ({forumData, onRefresh}: ForumThread
             closeMenu={closeMenu}
             setRefreshing={setRefreshing}
           />
-          <Divider bold={true} />
-        </>
-      )}
+        )}
+      </PrivilegedMenuGroup>
+      <ShareMenuItem contentType={ShareContentType.forum} contentID={forumData.forumID} closeMenu={closeMenu} />
       <Menu.Item onPress={handleHelp} title={'Help'} leadingIcon={AppIcons.help} />
     </AppMenu>
   );

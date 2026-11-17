@@ -8,6 +8,7 @@ import {MuteMenuItem} from '#src/Components/Menus/Items/MuteMenuItem';
 import {PostAsModeratorMenuItem} from '#src/Components/Menus/Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '#src/Components/Menus/Items/PostAsTwitarrTeamMenuItem';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useFezData} from '#src/Hooks/Fez/useFezData';
@@ -108,24 +109,20 @@ export const FezChatScreenActionsMenu = ({fezID, onRefresh}: FezChatActionsMenuP
           />
         </>
       )}
-      {(hasModerator || hasTwitarrTeam) && (
-        <>
-          <Divider bold={true} />
-          <PostAsModeratorMenuItem closeMenu={closeMenu} />
-          <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} />
-          {hasModerator && (
-            <Menu.Item
-              leadingIcon={AppIcons.moderator}
-              title={'Moderate'}
-              onPress={() => {
-                closeMenu();
-                pushModerateResource(navigation, 'lfg', fezID);
-              }}
-            />
-          )}
-          <Divider bold={true} />
-        </>
-      )}
+      <PrivilegedMenuGroup>
+        {(hasModerator || hasTwitarrTeam) && <PostAsModeratorMenuItem closeMenu={closeMenu} />}
+        {(hasModerator || hasTwitarrTeam) && <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} />}
+        {hasModerator && (
+          <Menu.Item
+            leadingIcon={AppIcons.moderator}
+            title={'Moderate'}
+            onPress={() => {
+              closeMenu();
+              pushModerateResource(navigation, 'lfg', fezID);
+            }}
+          />
+        )}
+      </PrivilegedMenuGroup>
       <Menu.Item
         title={'Help'}
         leadingIcon={AppIcons.help}

@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {UserVCardDownloadMenuItem} from '#src/Components/Menus/User/UserVCardDownloadMenuItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
@@ -124,7 +125,6 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <ShareMenuItem contentType={ShareContentType.user} contentID={profile.header.userID} closeMenu={closeMenu} />
       <UserVCardDownloadMenuItem header={profile.header} closeMenu={closeMenu} />
       <Divider bold={true} />
       <Menu.Item
@@ -138,21 +138,18 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
         onPress={handleMute}
       />
       <Menu.Item leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
-      {(hasModerator || hasTwitarrTeam || hasAccountManager) && (
-        <>
-          <Divider bold={true} />
-          {hasModerator && (
-            <>
-              <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate Profile'} onPress={handleModerate} />
-              <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate User'} onPress={handleModerateUser} />
-            </>
-          )}
-          {(hasTwitarrTeam || hasAccountManager) && (
-            <Menu.Item leadingIcon={AppIcons.registrationCode} title={'Registration'} onPress={handleRegCode} />
-          )}
-        </>
-      )}
-      <Divider bold={true} />
+      <PrivilegedMenuGroup>
+        {hasModerator && (
+          <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate Profile'} onPress={handleModerate} />
+        )}
+        {hasModerator && (
+          <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate User'} onPress={handleModerateUser} />
+        )}
+        {(hasTwitarrTeam || hasAccountManager) && (
+          <Menu.Item leadingIcon={AppIcons.registrationCode} title={'Registration'} onPress={handleRegCode} />
+        )}
+      </PrivilegedMenuGroup>
+      <ShareMenuItem contentType={ShareContentType.user} contentID={profile.header.userID} closeMenu={closeMenu} />
       <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
     </AppMenu>
   );

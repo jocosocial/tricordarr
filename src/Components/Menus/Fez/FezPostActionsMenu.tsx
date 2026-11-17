@@ -2,6 +2,7 @@ import React, {ReactNode} from 'react';
 import {Menu} from 'react-native-paper';
 
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
@@ -51,17 +52,19 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: F
         {fez && fez.fezType !== FezType.closed && (
           <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
         )}
-        {hasModerator && (
-          <Menu.Item
-            dense={false}
-            leadingIcon={AppIcons.moderator}
-            title={'Moderate'}
-            onPress={() => {
-              closeMenu();
-              pushModerateResource(commonNavigation, 'fezpost', fezPost.postID.toString());
-            }}
-          />
-        )}
+        <PrivilegedMenuGroup trailingDivider={false}>
+          {hasModerator && (
+            <Menu.Item
+              dense={false}
+              leadingIcon={AppIcons.moderator}
+              title={'Moderate'}
+              onPress={() => {
+                closeMenu();
+                pushModerateResource(commonNavigation, 'fezpost', fezPost.postID.toString());
+              }}
+            />
+          )}
+        </PrivilegedMenuGroup>
       </MenuContextBridge>
     </Menu>
   );

@@ -9,6 +9,7 @@ import {PhotographingMenuItem} from '#src/Components/Menus/Events/Items/Photogra
 import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {EventType} from '#src/Enums/EventType';
@@ -61,27 +62,27 @@ export const EventCardActionsMenuItems = ({eventData, closeMenu}: EventCardActio
         }
       />
       <Divider bold={true} />
-      <ShareMenuItem contentType={ShareContentType.event} contentID={eventData.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={eventData} />
       <OpenInSchedMenuItem closeMenu={closeMenu} eventUid={eventData.uid} />
-      {(isShadow || hasTwitarrTeam) && <Divider bold={true} />}
       {isShadow && <SetOrganizerMenuItem closeMenu={closeMenu} eventID={eventData.eventID} />}
-      {hasTwitarrTeam && <ManagePerformersMenuItem eventID={eventData.eventID} />}
-      {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
-      {hasShutternaut && (
-        <PhotographingMenuItem
-          eventID={eventData.eventID}
-          shutternautData={eventData.shutternautData}
-          closeMenu={closeMenu}
-        />
-      )}
-      {hasShutternautManager && (
-        <NeedsPhotographerMenuItem
-          eventID={eventData.eventID}
-          shutternautData={eventData.shutternautData}
-          closeMenu={closeMenu}
-        />
-      )}
+      <PrivilegedMenuGroup>
+        {hasTwitarrTeam && <ManagePerformersMenuItem eventID={eventData.eventID} />}
+        {hasShutternaut && (
+          <PhotographingMenuItem
+            eventID={eventData.eventID}
+            shutternautData={eventData.shutternautData}
+            closeMenu={closeMenu}
+          />
+        )}
+        {hasShutternautManager && (
+          <NeedsPhotographerMenuItem
+            eventID={eventData.eventID}
+            shutternautData={eventData.shutternautData}
+            closeMenu={closeMenu}
+          />
+        )}
+      </PrivilegedMenuGroup>
+      <ShareMenuItem contentType={ShareContentType.event} contentID={eventData.eventID} closeMenu={closeMenu} />
     </>
   );
 };

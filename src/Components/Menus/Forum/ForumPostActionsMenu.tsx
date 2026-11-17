@@ -11,7 +11,9 @@ import {ForumPostActionsReportItem} from '#src/Components/Menus/Forum/Items/Foru
 import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsShowThreadItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {useForumComposer} from '#src/Context/Contexts/ForumComposerContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
@@ -39,6 +41,7 @@ export const ForumPostActionsMenu = ({
   forumData,
 }: ForumPostActionsMenuProps) => {
   const {currentUserID} = useSession();
+  const {hasModerator} = usePrivilege();
   const bridged = useMenuContextBridge();
   const bySelf = currentUserID === forumPost.author.userID;
   const commonNavigation = useCommonStack();
@@ -71,12 +74,6 @@ export const ForumPostActionsMenu = ({
             closeMenu();
           }}
         />
-        <ShareMenuItem
-          contentType={ShareContentType.forumPost}
-          contentID={forumPost.postID}
-          contentText={forumPost.text}
-          closeMenu={closeMenu}
-        />
         <Divider bold={true} />
         {bySelf && (
           <>
@@ -93,17 +90,24 @@ export const ForumPostActionsMenu = ({
               }}
             />
             <ForumPostActionsDeleteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
+            <Divider bold={true} />
           </>
         )}
-        <Divider bold={true} />
         <ForumPostActionsFavoriteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
         {enablePinnedPosts && (
           <ForumPostActionsPinItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
         )}
         <Divider bold={true} />
         <ForumPostActionsReportItem forumPost={forumPost} closeMenu={closeMenu} />
-        <Divider bold={true} />
-        <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} />
+        <PrivilegedMenuGroup>
+          {hasModerator && <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} />}
+        </PrivilegedMenuGroup>
+        <ShareMenuItem
+          contentType={ShareContentType.forumPost}
+          contentID={forumPost.postID}
+          contentText={forumPost.text}
+          closeMenu={closeMenu}
+        />
         <Divider bold={true} />
         <ForumPostActionsReactionItem forumPost={forumPost} />
       </MenuContextBridge>

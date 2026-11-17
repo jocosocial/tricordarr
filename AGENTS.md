@@ -75,6 +75,16 @@ LoggedInScreen
 - Navigation items: NO `onClose`
 - Action items (e.g. Share): MUST provide `onClose`
 - Order (from right): three-dots menu, filter, search, any other special actions
+- Item order in an actions menu: normal actions, then privileged actions, then Share, then Help (Help is
+  ALWAYS last; Share is immediately before it, or last when the menu has no Help)
+- Privileged (role-gated: moderator, Twitarr Team, shutternaut, etc.) actions form ONE contiguous group
+  between bold dividers, no dividers inside it even across roles. Wrap them in `PrivilegedMenuGroup`
+  (`src/Components/Menus/PrivilegedMenuGroup.tsx`), gating each item on its role at the call site (it
+  renders nothing when all are gated off; `leadingDivider`/`trailingDivider` false when the group is first/last)
+- Toggle items (block/mute/favorite) are plain `Menu.Item`s: the title flips with state and the icon uses
+  `getStateLoadingIcon`. A toggle whose title must stay fixed (Photographing, Needs Photographer) shows
+  state with a check-mark leading icon and the `commonStyles.surfaceVariant` row highlight. Do NOT use
+  `SelectableMenuItem` (right-justified check) outside filter/sort/picker menus
 
 ## Queries / Mutations
 

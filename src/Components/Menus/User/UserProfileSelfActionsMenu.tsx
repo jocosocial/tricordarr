@@ -32,8 +32,8 @@ export const UserProfileSelfActionsMenu = ({header}: UserProfileSelfActionsMenuP
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <ShareMenuItem contentType={ShareContentType.user} contentID={header.userID} closeMenu={closeMenu} />
       <UserVCardDownloadMenuItem header={header} closeMenu={closeMenu} />
+      <ShareMenuItem contentType={ShareContentType.user} contentID={header.userID} closeMenu={closeMenu} />
       <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
     </AppMenu>
   );
