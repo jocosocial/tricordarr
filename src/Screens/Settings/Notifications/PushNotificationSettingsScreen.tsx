@@ -21,7 +21,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useHighlightAnimation} from '#src/Hooks/useHighlightAnimation';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
-import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
+import {contentNotificationCategories, contentNotificationSections} from '#src/Libraries/Notifications/Content';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {
   SettingsStackParamList,
@@ -178,47 +178,6 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
     hasScrolledToCategory.current = false;
   }, [notificationType]);
 
-  // Group notifications by feature area, sorted alphabetically
-  const notificationGroups = [
-    {
-      title: 'Announcements',
-      categories: ['announcement'] as const,
-    },
-    {
-      title: 'Events',
-      categories: ['followedEventStarting'] as const,
-    },
-    {
-      title: 'Forum',
-      categories: ['alertwordPost', 'forumMention', 'moderatorForumMention', 'twitarrTeamForumMention'] as const,
-    },
-    {
-      title: 'KrakenTalk',
-      categories: ['incomingPhoneCall', 'phoneCallAnswered', 'phoneCallEnded'] as const,
-    },
-    {
-      title: 'LFG',
-      categories: ['fezUnreadMsg', 'addedToLFG', 'joinedLFGStarting', 'lfgCanceled'] as const,
-    },
-    {
-      title: 'MicroKaraoke',
-      categories: ['microKaraokeSongReady'] as const,
-    },
-    {
-      title: 'Private Events',
-      categories: [
-        'personalEventStarting',
-        'addedToPrivateEvent',
-        'privateEventUnreadMsg',
-        'privateEventCanceled',
-      ] as const,
-    },
-    {
-      title: 'Seamail',
-      categories: ['seamailUnreadMsg', 'addedToSeamail'] as const,
-    },
-  ];
-
   return (
     <AppView>
       <ScrollingContentView isStack={true} ref={scrollViewRef} onLayout={handleContentLayout}>
@@ -273,21 +232,12 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
               ref={ref => {
                 scrollContentRef.current = ref;
               }}>
-              {notificationGroups.map(group => {
-                const groupCategories = group.categories
-                  .map(key => contentNotificationCategories[key])
-                  .filter(category => category && !category.disabled)
-                  .sort((a, b) => a.title.localeCompare(b.title));
-
-                if (groupCategories.length === 0) {
-                  return null;
-                }
-
+              {contentNotificationSections.map(group => {
                 return (
                   <View key={group.title}>
                     <ListSubheader>{group.title}</ListSubheader>
                     <View>
-                      {groupCategories.map(category => {
+                      {group.categories.map(category => {
                         const isHighlighted = highlightedCategory === category.configKey;
                         return (
                           <Animated.View

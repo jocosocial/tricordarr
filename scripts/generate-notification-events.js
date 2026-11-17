@@ -34,7 +34,7 @@ const KNOWN_KEYS = {
   group: ['name', 'description'],
   channel: ['name', 'group', 'description', 'badge', 'vibrationPattern'],
   event: ['channel', 'title', 'doc', 'note', 'url', 'markAsReadUrl', 'autoCancel', 'ongoing', 'messaging'],
-  unposted: ['doc', 'note'],
+  unposted: ['title', 'doc', 'note', 'deprecated'],
 };
 
 const REQUIRED_KEYS = {
@@ -42,13 +42,13 @@ const REQUIRED_KEYS = {
   group: ['name', 'description'],
   channel: ['name', 'group', 'description'],
   event: ['channel', 'title', 'doc'],
-  unposted: ['doc'],
+  unposted: ['title', 'doc'],
 };
 
 /**
  * Throws if the spec is internally inconsistent: unknown or missing keys, dangling channel/group
- * references, or a type listed as both posted and unposted. `unposted` maps type to `{doc}` for types
- * that never post a notification.
+ * references, or a type listed as both posted and unposted. `unposted` maps type to `{title, doc}` for
+ * types that never post a notification; `deprecated` marks one whose setting can no longer be changed.
  */
 function validate(spec) {
   const errors = [];
@@ -90,8 +90,14 @@ function validate(spec) {
   }
 }
 
-/** Escapes a string as a single-quoted TypeScript literal, matching the repo's Prettier config. */
+/**
+ * Escapes a string as a TypeScript literal, matching the repo's Prettier config: single-quoted unless
+ * the value has single quotes and no double quotes.
+ */
 function tsString(value) {
+  if (value.includes("'") && !value.includes('"')) {
+    return JSON.stringify(value);
+  }
   return `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
 }
 
@@ -117,7 +123,7 @@ function kotlinOptional(value) {
 
 /**
  * Returns the generated TypeScript source: the `NotificationTypeData` enum, merged with a namespace
- * holding the per-type titles shown in the notification log and the route path each type opens.
+ * holding the channel names and the spec (title, doc, channel, route path) for every type.
  */
 function renderTypeScript(spec) {
   validate(spec);
@@ -139,31 +145,59 @@ function renderTypeScript(spec) {
   lines.push('}', '');
   lines.push(
     'export namespace NotificationTypeData {',
-    '  /** User-facing title for each posted event, matching the push notification title. */',
-    '  const titles: Partial<Record<NotificationTypeData, string>> = {',
+    '  /** ID of a notification channel, as posted on Android. */',
+    '  export type Channel =',
+    ...Object.keys(spec.channels).map(
+      (id, index, ids) => `    | ${tsString(id)}${index === ids.length - 1 ? ';' : ''}`,
+    ),
+    '',
+    '  /** Display name of each channel. */',
+    '  export const channelNames: Record<Channel, string> = {',
   );
-  Object.entries(spec.events).forEach(([type, event]) => {
-    lines.push(`    [NotificationTypeData.${type}]: ${tsString(event.title)},`);
+  Object.entries(spec.channels).forEach(([id, channel]) => {
+    lines.push(`    ${id}: ${tsString(channel.name)},`);
+  });
+  lines.push(
+    '  };',
+    '',
+    '  /** What specs/NotificationEvents.json says about one notification type. */',
+    '  export interface Spec {',
+    '    /** User-facing title, matching the push notification title. */',
+    '    title: string;',
+    '    /** What the event means, from the JSON `doc`. */',
+    '    doc: string;',
+    '    /** Channel the notification posts to. Undefined for a type that never posts one. */',
+    '    channel?: Channel;',
+    '    /** App route path the notification opens, with `{placeholders}` for the IDs it needs. */',
+    '    url?: string;',
+    '    /** The type is no longer used, so its setting cannot be changed. */',
+    '    deprecated?: boolean;',
+    '  }',
+    '',
+    '  /** The spec for every type, posted or not. */',
+    '  export const specs: Record<NotificationTypeData, Spec> = {',
+  );
+  Object.entries(entries).forEach(([type, entry]) => {
+    const fields = [`title: ${tsString(entry.title)}`, `doc: ${tsString(entry.doc)}`];
+    if (entry.channel !== undefined) {
+      fields.push(`channel: ${tsString(entry.channel)}`);
+    }
+    if (entry.url !== undefined) {
+      fields.push(`url: ${tsString(entry.url)}`);
+    }
+    if (entry.deprecated) {
+      fields.push('deprecated: true');
+    }
+    lines.push(`    [NotificationTypeData.${type}]: {`, ...fields.map(field => `      ${field},`), '    },');
   });
   lines.push(
     '  };',
     '',
     '  /**',
     '   * Returns the user-facing title for a notification type, as shown in the notification log. Falls',
-    '   * back to the raw type string for unposted or unrecognized types (e.g. `unknown`).',
+    '   * back to the raw type string for unrecognized types (e.g. `unknown`).',
     '   */',
-    '  export const getTitle = (type: string): string => titles[type as NotificationTypeData] ?? type;',
-    '',
-    '  /** App route path that each posted event opens, with `{placeholders}` for the IDs it needs. */',
-    '  const urls: Partial<Record<NotificationTypeData, string>> = {',
-  );
-  Object.entries(spec.events).forEach(([type, event]) => {
-    if (event.url !== undefined) {
-      lines.push(`    [NotificationTypeData.${type}]: ${tsString(event.url)},`);
-    }
-  });
-  lines.push(
-    '  };',
+    '  export const getTitle = (type: string): string => specs[type as NotificationTypeData]?.title ?? type;',
     '',
     '  /**',
     '   * Returns the app route path (e.g. `/seamail/<id>`) that a notification event opens, the same one',
@@ -171,7 +205,7 @@ function renderTypeScript(spec) {
     '   * more than the content ID (e.g. an incoming call).',
     '   */',
     '  export const getUrl = (type: string, contentID: string): string | undefined => {',
-    "    const url = urls[type as NotificationTypeData]?.replace('{contentID}', contentID);",
+    "    const url = specs[type as NotificationTypeData]?.url?.replace('{contentID}', contentID);",
     "    return url && !url.includes('{') ? url : undefined;",
     '  };',
     '}',

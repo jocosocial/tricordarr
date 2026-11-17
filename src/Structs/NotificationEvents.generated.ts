@@ -73,54 +73,179 @@ export enum NotificationTypeData {
 }
 
 export namespace NotificationTypeData {
-  /** User-facing title for each posted event, matching the push notification title. */
-  const titles: Partial<Record<NotificationTypeData, string>> = {
-    [NotificationTypeData.seamailUnreadMsg]: 'New Seamail',
-    [NotificationTypeData.fezUnreadMsg]: 'New LFG Message',
-    [NotificationTypeData.privateEventUnreadMsg]: 'New Private Event Message',
-    [NotificationTypeData.announcement]: 'Announcement',
-    [NotificationTypeData.alertwordPost]: 'Forum Alert Word',
-    [NotificationTypeData.forumMention]: 'Forum Mention',
-    [NotificationTypeData.twitarrTeamForumMention]: 'TwitarrTeam Forum Mention',
-    [NotificationTypeData.moderatorForumMention]: 'Moderator Forum Mention',
-    [NotificationTypeData.incomingPhoneCall]: 'Incoming Call',
-    [NotificationTypeData.phoneCallEnded]: 'Call Ended',
-    [NotificationTypeData.followedEventStarting]: 'Followed Event Starting',
-    [NotificationTypeData.joinedLFGStarting]: 'Joined LFG Starting',
-    [NotificationTypeData.personalEventStarting]: 'Private Event Starting',
-    [NotificationTypeData.addedToPrivateEvent]: 'Added to Private Event',
-    [NotificationTypeData.addedToLFG]: 'Added to LFG',
-    [NotificationTypeData.addedToSeamail]: 'Added to Seamail',
-    [NotificationTypeData.privateEventCanceled]: 'Private Event Canceled',
-    [NotificationTypeData.lfgCanceled]: 'LFG Canceled',
+  /** ID of a notification channel, as posted on Android. */
+  export type Channel =
+    | 'connection'
+    | 'service'
+    | 'seamail'
+    | 'lfg'
+    | 'announcements'
+    | 'forums'
+    | 'krakentalkcalls'
+    | 'krakentalkmgmt'
+    | 'events';
+
+  /** Display name of each channel. */
+  export const channelNames: Record<Channel, string> = {
+    connection: 'Connection',
+    service: 'Service',
+    seamail: 'Seamail',
+    lfg: 'LFG',
+    announcements: 'Announcements',
+    forums: 'Forums',
+    krakentalkcalls: 'KrakenTalk Calls',
+    krakentalkmgmt: 'KrakenTalk Call Management',
+    events: 'Events',
+  };
+
+  /** What specs/NotificationEvents.json says about one notification type. */
+  export interface Spec {
+    /** User-facing title, matching the push notification title. */
+    title: string;
+    /** What the event means, from the JSON `doc`. */
+    doc: string;
+    /** Channel the notification posts to. Undefined for a type that never posts one. */
+    channel?: Channel;
+    /** App route path the notification opens, with `{placeholders}` for the IDs it needs. */
+    url?: string;
+    /** The type is no longer used, so its setting cannot be changed. */
+    deprecated?: boolean;
+  }
+
+  /** The spec for every type, posted or not. */
+  export const specs: Record<NotificationTypeData, Spec> = {
+    [NotificationTypeData.seamailUnreadMsg]: {
+      title: 'New Seamail',
+      doc: 'A participant in a Seamail thread the user is a member of has posted a new message.',
+      channel: 'seamail',
+      url: '/seamail/{contentID}',
+    },
+    [NotificationTypeData.fezUnreadMsg]: {
+      title: 'New LFG Message',
+      doc: 'A participant in a Chat the user is a member of has posted a new message.',
+      channel: 'lfg',
+      url: '/lfg/{contentID}/chat',
+    },
+    [NotificationTypeData.privateEventUnreadMsg]: {
+      title: 'New Private Event Message',
+      doc: "An invitee to a Private Event has posted a new chat message in the event's chat.",
+      channel: 'events',
+      url: '/privateevent/{contentID}/chat',
+    },
+    [NotificationTypeData.announcement]: {
+      title: 'Announcement',
+      doc: 'A server-wide announcement has just been added.',
+      channel: 'announcements',
+      url: '/home',
+    },
+    [NotificationTypeData.alertwordPost]: {
+      title: 'Forum Alert Word',
+      doc: 'A user has posted a Forum Post that contains a word this user has set as an alertword.',
+      channel: 'forums',
+      url: '/forum/containingpost/{contentID}',
+    },
+    [NotificationTypeData.forumMention]: {
+      title: 'Forum Mention',
+      doc: 'A user has posted a Forum Post that @mentions this user.',
+      channel: 'forums',
+      url: '/forumpost/mentions',
+    },
+    [NotificationTypeData.twitarrTeamForumMention]: {
+      title: 'TwitarrTeam Forum Mention',
+      doc: 'A new or edited forum post that now @mentions @twitarrteam.',
+      channel: 'forums',
+      url: '/forum/containingpost/{contentID}',
+    },
+    [NotificationTypeData.moderatorForumMention]: {
+      title: 'Moderator Forum Mention',
+      doc: 'A new or edited forum post that now @mentions @moderator.',
+      channel: 'forums',
+      url: '/forum/containingpost/{contentID}',
+    },
+    [NotificationTypeData.incomingPhoneCall]: {
+      title: 'Incoming Call',
+      doc: "Someone is trying to call this user via KrakenTalk.'",
+      channel: 'krakentalkcalls',
+      url: '/phonecall/{contentID}/from/{callerUserID}/{callerUsername}',
+    },
+    [NotificationTypeData.phoneCallEnded]: {
+      title: 'Call Ended',
+      doc: 'Caller hung up while phone was rining, or other party ended the call in progress, or callee declined',
+      channel: 'krakentalkmgmt',
+    },
+    [NotificationTypeData.followedEventStarting]: {
+      title: 'Followed Event Starting',
+      doc: 'An event the user is following is about to start.',
+      channel: 'events',
+      url: '/events/{contentID}',
+    },
+    [NotificationTypeData.joinedLFGStarting]: {
+      title: 'Joined LFG Starting',
+      doc: 'An LFG the user has joined is about to start.',
+      channel: 'lfg',
+      url: '/lfg/{contentID}',
+    },
+    [NotificationTypeData.personalEventStarting]: {
+      title: 'Private Event Starting',
+      doc: 'A Personal Event the user has created or was added to is about to start.',
+      channel: 'events',
+      url: '/privateevent/{contentID}',
+    },
+    [NotificationTypeData.addedToPrivateEvent]: {
+      title: 'Added to Private Event',
+      doc: 'The creator of the event has added this user.',
+      channel: 'events',
+      url: '/privateevent/{contentID}',
+    },
+    [NotificationTypeData.addedToLFG]: {
+      title: 'Added to LFG',
+      doc: 'The creator of the LFG has added this user.',
+      channel: 'lfg',
+      url: '/lfg/{contentID}',
+    },
+    [NotificationTypeData.addedToSeamail]: {
+      title: 'Added to Seamail',
+      doc: "Only for 'open' seamails. The owner of the chata has added this user.",
+      channel: 'seamail',
+      url: '/seamail/{contentID}',
+    },
+    [NotificationTypeData.privateEventCanceled]: {
+      title: 'Private Event Canceled',
+      doc: 'A Private Event the user has joined has been canceled.',
+      channel: 'events',
+      url: '/privateevent/{contentID}',
+    },
+    [NotificationTypeData.lfgCanceled]: {
+      title: 'LFG Canceled',
+      doc: 'An LFG the user has joined has been canceled.',
+      channel: 'lfg',
+      url: '/lfg/{contentID}',
+    },
+    [NotificationTypeData.phoneCallAnswered]: {
+      title: 'Call Answered',
+      doc: 'The callee answered the call, possibly on another device.',
+    },
+    [NotificationTypeData.alertwordTwarrt]: {
+      title: 'Twarrt Alert Words',
+      doc: 'A user has posted a Twarrt that contains a word this user has set as an alertword.',
+      deprecated: true,
+    },
+    [NotificationTypeData.twarrtMention]: {
+      title: 'Twarrt Mention',
+      doc: 'A user has posted a Twarrt that @mentions this user.',
+      deprecated: true,
+    },
+    [NotificationTypeData.microKaraokeSongReady]: {
+      title: 'MicroKaraoke Song Ready',
+      doc: 'A Micro Karaoke song the user contributed to is ready for viewing. .',
+    },
   };
 
   /**
    * Returns the user-facing title for a notification type, as shown in the notification log. Falls
-   * back to the raw type string for unposted or unrecognized types (e.g. `unknown`).
+   * back to the raw type string for unrecognized types (e.g. `unknown`).
    */
-  export const getTitle = (type: string): string => titles[type as NotificationTypeData] ?? type;
-
-  /** App route path that each posted event opens, with `{placeholders}` for the IDs it needs. */
-  const urls: Partial<Record<NotificationTypeData, string>> = {
-    [NotificationTypeData.seamailUnreadMsg]: '/seamail/{contentID}',
-    [NotificationTypeData.fezUnreadMsg]: '/lfg/{contentID}/chat',
-    [NotificationTypeData.privateEventUnreadMsg]: '/privateevent/{contentID}/chat',
-    [NotificationTypeData.announcement]: '/home',
-    [NotificationTypeData.alertwordPost]: '/forum/containingpost/{contentID}',
-    [NotificationTypeData.forumMention]: '/forumpost/mentions',
-    [NotificationTypeData.twitarrTeamForumMention]: '/forum/containingpost/{contentID}',
-    [NotificationTypeData.moderatorForumMention]: '/forum/containingpost/{contentID}',
-    [NotificationTypeData.incomingPhoneCall]: '/phonecall/{contentID}/from/{callerUserID}/{callerUsername}',
-    [NotificationTypeData.followedEventStarting]: '/events/{contentID}',
-    [NotificationTypeData.joinedLFGStarting]: '/lfg/{contentID}',
-    [NotificationTypeData.personalEventStarting]: '/privateevent/{contentID}',
-    [NotificationTypeData.addedToPrivateEvent]: '/privateevent/{contentID}',
-    [NotificationTypeData.addedToLFG]: '/lfg/{contentID}',
-    [NotificationTypeData.addedToSeamail]: '/seamail/{contentID}',
-    [NotificationTypeData.privateEventCanceled]: '/privateevent/{contentID}',
-    [NotificationTypeData.lfgCanceled]: '/lfg/{contentID}',
-  };
+  export const getTitle = (type: string): string => specs[type as NotificationTypeData]?.title ?? type;
 
   /**
    * Returns the app route path (e.g. `/seamail/<id>`) that a notification event opens, the same one
@@ -128,7 +253,7 @@ export namespace NotificationTypeData {
    * more than the content ID (e.g. an incoming call).
    */
   export const getUrl = (type: string, contentID: string): string | undefined => {
-    const url = urls[type as NotificationTypeData]?.replace('{contentID}', contentID);
+    const url = specs[type as NotificationTypeData]?.url?.replace('{contentID}', contentID);
     return url && !url.includes('{') ? url : undefined;
   };
 }

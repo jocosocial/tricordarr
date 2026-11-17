@@ -81,7 +81,8 @@ is device-wide, not part of a session: it is not torn down when the session chan
 URL, and mark-as-read path, plus the channel and group definitions. All three platforms get
 generated source from it: `scripts/generate-notification-events.js` writes
 `src/Structs/NotificationEvents.generated.ts` (the TS `NotificationTypeData` enum, merged with a
-namespace providing `NotificationTypeData.getTitle()` for the notification log; import it from
+namespace holding the channel names, a `specs` table with every type's title, doc, channel and tap
+URL, and the `getTitle()` / `getUrl()` helpers the notification log uses; import it from
 `SocketStructs.ts`, which re-exports it),
 `ios/TricordarrKit/Generated/NotificationEvents.generated.swift` (which includes the Swift
 `NotificationTypeData` enum, with each case's doc comment taken from the JSON `doc` field) and
@@ -93,15 +94,22 @@ Every `NotificationTypeData` value must appear in either `events` or `unposted` 
 post a notification: `phoneCallAnswered`, `alertwordTwarrt`, `twarrtMention`,
 `microKaraokeSongReady`). Each entry carries a `doc` string, which becomes the doc comment on the
 TS and Swift enum cases; an optional `note` becomes `//` lines above it. `unposted` maps type to
-`{doc}`. Both enums, the TS titles and the Swift `eventSpec` switch are generated from the JSON, so
-they cannot disagree. `__tests__/unit/TestNotificationEvents.ts` checks the JSON against the declared
+`{title, doc}`, plus `deprecated: true` for a type that is no longer used (the Twarrt types). Both
+enums, the TS spec table and the Swift `eventSpec` switch are generated from the JSON, so they cannot
+disagree.
+
+The TS side builds the push notification settings from `specs` too. `contentNotificationCategories`
+(`Content.ts`) uses each type's `title` and `doc` as the setting label and help text, and disables a
+deprecated type's toggle. `contentNotificationSections` groups the settings by channel for
+`PushNotificationSettingsScreen`, with unposted types in an "Other" section. The default
+`AppConfig.pushNotifications` turns every type on except deprecated ones. `__tests__/unit/TestNotificationEvents.ts` checks the JSON against the declared
 channels, `RouteDefinitions`, and the generated files; `NotificationPlannerTest` checks the Kotlin
 side.
 
 Do not change channel IDs or group membership: group binding is immutable and a new ID loses user
-customizations. Add a new event by adding it to the JSON (`events` or `unposted`), the TS
-`NotificationTypeData` enum, `AppConfig` `pushNotifications`, and `contentNotificationCategories`,
-then run `npm run codegen:notifications`. The Swift enum needs no hand edit.
+customizations. Add a new event by adding it to the JSON (`events` or `unposted`), then run
+`npm run codegen:notifications`. No platform needs a hand edit for the enum, the setting or its
+default.
 
 ### Foreground service type
 
