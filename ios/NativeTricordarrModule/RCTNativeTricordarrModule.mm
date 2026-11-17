@@ -37,19 +37,6 @@
   [AppConfig setAppConfigWithAppConfigJson:appConfigJson];
 }
 
-- (void)setupLocalPushManager:(nonnull NSString *)socketUrl
-                        token:(nonnull NSString *)token
-                       enable:(BOOL)enable {
-  NSLog(@"setupLocalPushManager called with parameters:");
-  NSLog(@"  socketUrl: %@", socketUrl);
-  NSLog(@"  token: %@", token);
-  NSLog(@"  enable: %@", enable ? @"YES" : @"NO");
-
-  [AppConfig setupLocalPushManagerWithSocketUrl:socketUrl
-                                          token:token
-                                         enable:enable];
-}
-
 - (void)getBackgroundPushManagerStatus:(RCTPromiseResolveBlock)resolve
                                 reject:(RCTPromiseRejectBlock)reject {
   NSDictionary *status =
@@ -64,14 +51,51 @@
   resolve(status);
 }
 
+// One entry per synced account, whichever of the extension or the in-app provider runs its socket.
 - (void)getWebsocketStatus:(RCTPromiseResolveBlock)resolve
                      reject:(RCTPromiseRejectBlock)reject {
-  NSDictionary *status = [Notifications getWebsocketStatusDictionary];
-  resolve(status);
+  resolve([Notifications getWebsocketStatusDictionaries]);
 }
 
-- (void)clearLocalPushManager {
-  [Notifications clearSettings];
+// The extension and the in-app provider each hold one socket per account in this list, and an
+// empty list turns them off.
+- (void)syncPushAccounts:(nonnull NSString *)accountsJson {
+  [Notifications syncPushAccountsWithAccountsJson:accountsJson];
+}
+
+- (void)setPushAccountEnabled:(nonnull NSString *)accountID
+                      enabled:(BOOL)enabled {
+  NSLog(@"setPushAccountEnabled is a no-op on iOS; JS syncs the full list instead");
+}
+
+- (void)startBackgroundService {
+  NSLog(@"startBackgroundService is a no-op on iOS");
+}
+
+- (void)stopBackgroundService {
+  NSLog(@"stopBackgroundService is a no-op on iOS");
+}
+
+- (void)showCallNotification:(nonnull NSString *)remoteUsername
+                 startedAtMs:(double)startedAtMs
+                     isMuted:(BOOL)isMuted {
+  NSLog(@"showCallNotification is a no-op on iOS; CallKit presents the call");
+}
+
+- (void)dismissCallNotification {
+  NSLog(@"dismissCallNotification is a no-op on iOS");
+}
+
+- (void)cancelContentNotification:(nonnull NSString *)accountID
+                        contentID:(nonnull NSString *)contentID {
+  [Notifications cancelContentNotificationWithAccountID:accountID
+                                              contentID:contentID];
+}
+
+- (void)cancelSecondaryNotifications:(nonnull NSString *)accountID
+                  secondaryContentID:(nonnull NSString *)secondaryContentID {
+  [Notifications cancelSecondaryNotificationsWithAccountID:accountID
+                                        secondaryContentID:secondaryContentID];
 }
 
 - (void)getNotificationLog:(RCTPromiseResolveBlock)resolve

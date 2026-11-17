@@ -1,17 +1,19 @@
 import {useBackHandler} from '@react-native-community/hooks';
-import {LinkingOptions, NavigationContainer} from '@react-navigation/native';
+import {getStateFromPath, LinkingOptions, NavigationContainer} from '@react-navigation/native';
 import React, {PropsWithChildren, ReactElement, useCallback, useMemo} from 'react';
 import {PaperProvider} from 'react-native-paper';
 import {HeaderButtonsProvider} from 'react-navigation-header-buttons/HeaderButtonsProvider';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {closeAllMenus} from '#src/Hooks/useMenu';
 import {useServerUrl} from '#src/Hooks/useServerUrl';
 import {navigationLinking} from '#src/Libraries/Linking';
 import {createLogger} from '#src/Libraries/Logger';
 import {navigationRef} from '#src/Libraries/NavigationRef';
+import {isOtherAccountLink, stripLinkAccount} from '#src/Libraries/Notifications/AccountLink';
 import {shouldRouteIncomingLink} from '#src/Libraries/UrlParser';
 import {RootStackParamList} from '#src/Navigation/Stacks/Root/RootStackComponents';
 
@@ -22,11 +24,14 @@ export const NavigationProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const {oobeCompleted} = useOobe();
   const serverUrl = useServerUrl();
+  const {currentAccount} = useSession();
+  const currentAccountID = currentAccount?.accountID ?? null;
   const canonicalHostnames = appConfig.canonicalHostnames;
 
   /**
    * Add the session-dependent checks to the static linking config. ForeignLinkHandler tells the
-   * user about the links this drops for belonging to another server.
+   * user about the links this drops for belonging to another server. AccountLinkHandler picks up
+   * the ones dropped for belonging to another account (notification taps) and switches to it.
    */
   const linking = useMemo<LinkingOptions<RootStackParamList>>(
     () => ({
@@ -35,14 +40,18 @@ export const NavigationProvider = ({children}: PropsWithChildren) => {
         if (navigationLinking.filter && !navigationLinking.filter(url)) {
           return false;
         }
-        const shouldRoute = shouldRouteIncomingLink(url, oobeCompleted, serverUrl, canonicalHostnames);
+        const shouldRoute =
+          shouldRouteIncomingLink(url, oobeCompleted, serverUrl, canonicalHostnames) &&
+          !isOtherAccountLink(url, currentAccountID);
         if (!shouldRoute) {
           logger.info('Not routing incoming link', url);
         }
         return shouldRoute;
       },
+      // The account marker on a notification link picks the session, it is not a route param.
+      getStateFromPath: (path, options) => getStateFromPath(stripLinkAccount(path), options),
     }),
-    [oobeCompleted, serverUrl, canonicalHostnames],
+    [oobeCompleted, serverUrl, canonicalHostnames, currentAccountID],
   );
 
   /**

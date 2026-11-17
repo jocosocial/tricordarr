@@ -11,7 +11,6 @@ import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {createLogger} from '#src/Libraries/Logger';
 import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
 import {recordNotificationEvent} from '#src/Libraries/NotificationLog';
-import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {isEmulator, isIOS} from '#src/Libraries/Platform/Detection';
 import {ChatStackScreenComponents} from '#src/Navigation/Stacks/Chat/ChatStackComponents';
 import {BottomTabComponents} from '#src/Navigation/Tabs/Bottom/BottomTabComponents';
@@ -28,7 +27,8 @@ const logger = createLogger('NotificationDataListener.tsx');
  */
 export const NotificationDataListener = () => {
   const {enableUserNotifications} = useEnableUserNotification();
-  const {isLoggedIn} = useSession();
+  const {isLoggedIn, currentAccount} = useSession();
+  const currentAccountID = currentAccount?.accountID;
   const {oobeCompleted} = useOobe();
   const {preRegistrationMode} = usePreRegistration();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({
@@ -37,13 +37,13 @@ export const NotificationDataListener = () => {
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
-  const {receiveCall, endCall} = useCall();
+  const {receiveCall, endCall, callAnsweredElsewhere} = useCall();
   const {invalidateFez} = useFezCacheReducer();
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       logger.debug('wsMessageHandler received data from server:', event.data);
-      recordNotificationEvent(event.data, 'app');
+      recordNotificationEvent(event.data, 'app', currentAccountID);
       const notificationData = JSON.parse(event.data) as SocketNotificationData;
       const notificationType = SocketNotificationData.getType(notificationData);
       logger.debug(`Notification type: ${notificationType}`);
@@ -57,6 +57,11 @@ export const NotificationDataListener = () => {
           endCall();
           break;
         }
+        case NotificationTypeData.phoneCallAnswered: {
+          // The callee picked up, possibly on another device, so stop ringing here.
+          callAnsweredElsewhere(notificationData.contentID);
+          break;
+        }
         case NotificationTypeData.announcement: {
           refetchAnnouncements();
           break;
@@ -64,7 +69,7 @@ export const NotificationDataListener = () => {
         case NotificationTypeData.incomingPhoneCall: {
           // For incoming phone calls:
           // - On iOS: Use CallKit for native incoming call UI
-          // - On Android: Generate push notification
+          // - On Android: nothing to do here. The native push service already posted the notification.
           logger.debug('Incoming phone call notification');
 
           if (isIOS) {
@@ -94,12 +99,6 @@ export const NotificationDataListener = () => {
             } else {
               logger.warn('No caller info in phone call notification');
             }
-          } else {
-            // On Android, use push notification
-            logger.debug('Generating push notification for incoming call');
-            generatePushNotificationFromEvent(event).catch(error => {
-              logger.error('Failed to generate push notification for incoming call:', error);
-            });
           }
           break;
         }
@@ -118,7 +117,15 @@ export const NotificationDataListener = () => {
         }
       }
     },
-    [invalidateFez, refetchAnnouncements, refetchUserNotificationData, receiveCall, endCall],
+    [
+      currentAccountID,
+      invalidateFez,
+      refetchAnnouncements,
+      refetchUserNotificationData,
+      receiveCall,
+      endCall,
+      callAnsweredElsewhere,
+    ],
   );
 
   const addHandler = useCallback(() => {

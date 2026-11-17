@@ -21,7 +21,15 @@ module.exports = {
     'no-restricted-imports': [
       'error',
       {
-        patterns: ['./*', '../*'],
+        patterns: [
+          {group: ['./*', '../*']},
+          {
+            // Generated code is re-exported from a hand-written module (e.g. NotificationTypeData from
+            // SocketStructs); import it from there so the generated file stays an implementation detail.
+            group: ['**/*.generated'],
+            message: 'Import generated code through the module that re-exports it, not from the *.generated file.',
+          },
+        ],
       },
     ],
     'no-restricted-syntax': [
@@ -96,6 +104,11 @@ module.exports = {
             group: 'internal',
             position: 'after',
           },
+          {
+            pattern: '#scripts/**',
+            group: 'internal',
+            position: 'after',
+          },
         ],
         pathGroupsExcludedImportTypes: ['builtin'],
         alphabetize: {
@@ -122,4 +135,13 @@ module.exports = {
     'import/no-named-as-default': 'off',
     'import/no-named-as-default-member': 'off',
   },
+  overrides: [
+    {
+      // The re-exporting modules for generated code.
+      files: ['src/Structs/SocketStructs.ts'],
+      rules: {
+        'no-restricted-imports': ['error', {patterns: ['./*', '../*']}],
+      },
+    },
+  ],
 };

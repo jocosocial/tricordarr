@@ -1,0 +1,69 @@
+package com.tricordarr.push
+
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import androidx.core.content.ContextCompat
+
+/** Starts and stops [TwitarrPushService], handling the cases Android refuses a foreground start. */
+object PushServiceController {
+  private const val TAG = "PushServiceController"
+
+  /**
+   * Starts the service. Returns false if Android refused (background FGS starts are blocked on
+   * API 31+ except from boot, a notification tap, or with battery optimization off), in which case
+   * a "tap to reconnect" notification has been posted.
+   *
+   * A service that is already running gets a plain start, so it is not asked to enter the foreground
+   * again: that would repost its notification, which the user may have dismissed.
+   */
+  fun start(context: Context): Boolean {
+    val intent = Intent(context, TwitarrPushService::class.java)
+    return try {
+      if (TwitarrPushService.running) {
+        context.startService(intent)
+      } else {
+        ContextCompat.startForegroundService(context, intent)
+      }
+      true
+    } catch (e: IllegalStateException) {
+      Log.w(TAG, "Service start was not allowed", e)
+      if (TwitarrPushService.running) {
+        // Already up; nothing needs the user's attention.
+        true
+      } else {
+        NotificationBuilder.postReconnectNeeded(context)
+        false
+      }
+    }
+  }
+
+  /** Starts the service only if the store has an enabled account. Used by boot and package-replaced. */
+  fun startIfConfigured(context: Context): Boolean {
+    if (PushAccountStore(context).load().none { it.enabled }) {
+      return false
+    }
+    return start(context)
+  }
+
+  /**
+   * Starts the service after a boot or app update, which nobody asked for. An account whose cruise
+   * is over (see [PushAccount.autoStartUntil]) does not bring it back; opening the app still can.
+   */
+  fun startOnBoot(context: Context): Boolean {
+    val now = System.currentTimeMillis()
+    if (PushAccountStore(context).load().none { it.enabled && it.mayAutoStart(now) }) {
+      return false
+    }
+    return start(context)
+  }
+
+  fun stop(context: Context) {
+    context.stopService(Intent(context, TwitarrPushService::class.java))
+    NotificationBuilder.cancelAllConnectionLost(context)
+    NotificationBuilder.cancelReconnectNeeded(context)
+    // The service's onDestroy only runs if it was alive in this process.
+    val statusStore = PushStatusStore(context)
+    statusStore.all().forEach { statusStore.put(it.copy(state = SocketState.STOPPED)) }
+  }
+}

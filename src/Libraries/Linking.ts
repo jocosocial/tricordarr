@@ -175,7 +175,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           screens: {
             ForumCategoriesScreen: getPath(ForumStackComponents.forumCategoriesScreen),
             ForumCategoryScreen: uuidPath(getPath(ForumStackComponents.forumCategoryScreen)),
-            ForumPostMentionScreen: getPath(ForumStackComponents.forumPostMentionScreen),
+            ForumPostMentionScreen: getPath(CommonStackComponents.forumPostMentionScreen),
             ForumThreadScreen: uuidPath(getPath(CommonStackComponents.forumThreadScreen)),
             ForumThreadPostScreen: getPath(CommonStackComponents.forumThreadPostScreen),
           },

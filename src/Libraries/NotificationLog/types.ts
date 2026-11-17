@@ -15,10 +15,12 @@ export type NotificationLogSource = 'app' | 'fgs' | 'ios-native';
 export interface NotificationLogEntry {
   timestamp: Date;
   /// The NotificationTypeData key, or 'unknown' if it couldn't be determined.
-  type: keyof typeof NotificationTypeData | 'unknown';
+  type: `${NotificationTypeData}` | 'unknown';
   contentID: string;
   info: string;
   source: NotificationLogSource;
   /// The raw socket JSON payload, as received.
   raw: string;
+  /// The account whose socket delivered the event. Absent on entries from older builds.
+  accountID?: string;
 }

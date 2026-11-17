@@ -44,13 +44,4 @@ extension Notification.Name {
 			return
 		}
 	}
-
-	/// Configures notifications without setting AppConfig.
-	@objc public static func setupLocalPushManager(socketUrl: String, token: String, enable: Bool) {
-    Logging.logger.info("[AppConfig.swift] setupLocalPushManager")
-		Notifications.saveSettings(socketUrl: socketUrl, token: token)
-		if enable {
-			Notifications.appStarted()
-		}
-	}
 }

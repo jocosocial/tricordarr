@@ -3,13 +3,14 @@ import {StyleSheet} from 'react-native';
 import {List} from 'react-native-paper';
 
 import {useDownloadSheet} from '#src/Context/Contexts/DownloadSheetContext';
+import {useLinking} from '#src/Context/Contexts/LinkingContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
+import {accountName} from '#src/Libraries/Account';
 import {NotificationLogEntry} from '#src/Libraries/NotificationLog/types';
-import {getNotificationTypeTitle} from '#src/Libraries/Notifications/NotificationEventTitles';
-import {getNotificationEventDestination} from '#src/Libraries/Notifications/SocketNotification';
-import {CommonStackParamList, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {appUrl} from '#src/Libraries/UrlParser';
+import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 interface NotificationLogListItemProps {
   entry: NotificationLogEntry;
@@ -18,27 +19,36 @@ interface NotificationLogListItemProps {
 /**
  * A single row in the NotificationLogScreen list. Modeled on LogEntryListItem: always shows
  * the full title/description text (no truncation), and long-press shares the raw socket
- * payload via the download sheet.
+ * payload via the download sheet. An event that another account received is labelled with that
+ * account and does not open, since its content belongs to that account's session.
  */
 export const NotificationLogListItem = ({entry}: NotificationLogListItemProps) => {
   const {commonStyles} = useStyles();
   const {openDownloadSheet} = useDownloadSheet();
   const {setSnackbarPayload} = useSnackbar();
-  const commonNavigation = useCommonStack();
+  const {openAppUrl} = useLinking();
+  const {accounts, currentAccount} = useSession();
+  // Entries without an account (logged by an older build) are taken to be the active account's.
+  const isOtherAccount = entry.accountID !== undefined && entry.accountID !== currentAccount?.accountID;
+  const otherAccount = isOtherAccount ? accounts.find(account => account.accountID === entry.accountID) : undefined;
+  const otherAccountName = otherAccount ? accountName(otherAccount) : 'another account';
 
   const handlePress = () => {
-    const destination = getNotificationEventDestination(entry.type, entry.contentID);
-    if (!destination) {
+    if (isOtherAccount) {
+      setSnackbarPayload({
+        message: `This event was for ${otherAccountName}. Switch accounts to open it.`,
+        messageType: 'info',
+      });
+      return;
+    }
+    // Same route the event's push notification opens. openAppUrl pushes it onto the current stack
+    // when it can, so back returns to the log.
+    const url = NotificationTypeData.getUrl(entry.type, entry.contentID);
+    if (!url) {
       setSnackbarPayload({message: 'Nothing to open for this event.', messageType: 'info'});
       return;
     }
-    if ('tab' in destination) {
-      navigationNavigate(destination.tab, {screen: destination.screen, params: destination.params});
-    } else {
-      const {screen, params} = destination;
-      // Screen/params pairs are built in getNotificationEventDestination; Navigation's push tuple can't express that union.
-      (commonNavigation.push as (name: keyof CommonStackParamList, params?: object) => void)(screen, params);
-    }
+    openAppUrl(appUrl(url));
   };
 
   const handleLongPress = () => {
@@ -75,7 +85,7 @@ export const NotificationLogListItem = ({entry}: NotificationLogListItemProps) =
 
   return (
     <List.Item
-      title={`${entry.timestamp.toLocaleString()} · ${getNotificationTypeTitle(entry.type)}`}
+      title={`${entry.timestamp.toLocaleString()} · ${NotificationTypeData.getTitle(entry.type)}${isOtherAccount ? ` · ${otherAccountName}` : ''}`}
       titleNumberOfLines={0}
       description={entry.info}
       descriptionNumberOfLines={0}

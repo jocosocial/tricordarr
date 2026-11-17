@@ -101,7 +101,7 @@ export const allRoutes: RouteDefinition[] = [
   // ==================== Forum Tab Routes ====================
   {screen: ForumStackComponents.forumCategoriesScreen, path: 'forums'},
   {screen: ForumStackComponents.forumCategoryScreen, path: 'forums/:categoryID'},
-  {screen: ForumStackComponents.forumPostMentionScreen, path: 'forumpost/mentions'},
+  {screen: CommonStackComponents.forumPostMentionScreen, path: 'forumpost/mentions'},
   {screen: CommonStackComponents.forumThreadPostScreen, path: 'forum/containingpost/:postID'},
   {screen: CommonStackComponents.forumThreadScreen, path: 'forum/:forumID'},
 
@@ -133,6 +133,7 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     // Forum routes
     CommonStackComponents.forumThreadPostScreen,
     CommonStackComponents.forumThreadScreen,
+    CommonStackComponents.forumPostMentionScreen,
     // Event routes
     CommonStackComponents.eventScreen,
     CommonStackComponents.personalEventScreen,

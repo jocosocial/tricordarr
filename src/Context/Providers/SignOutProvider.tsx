@@ -34,9 +34,9 @@ export const SignOutProvider = ({children}: PropsWithChildren) => {
    * query client, sockets and the cache file go with the old one, and AccountCookieSync puts the
    * right webview cookie back. What is left to do here is stopping notifications first. Disable
    * user notifications and close the sockets before clearing the token so PushNotificationService
-   * does not restart FGS without credentials. The push provider itself is stopped by
-   * SessionProvider.signOut, ahead of the switch, since this scope will not be around to react
-   * to the state flip.
+   * does not restart FGS without credentials. The push provider itself is device-wide and is not
+   * stopped here or by SessionProvider.signOut: the next session's PushNotificationService
+   * re-syncs it, and the signed-out account drops out of the list.
    */
   const performSignOut = useCallback(async () => {
     setEnableUserNotifications(false);

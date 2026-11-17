@@ -22,7 +22,8 @@ import TricordarrKit
 /// https://developer.apple.com/documentation/technologyoverviews/app-extensions
 ///
 class LocalPushProvider: NEAppPushProvider {
-  var websocketNotifier = WebsocketNotifier()
+  /// One provider for every account: a socket per account in the provider configuration.
+  var websocketNotifier = WebsocketNotifierGroup()
   let logger = Logging.getLogger("TricordarrLocalPushProvider")
 
 	override init() {
@@ -40,20 +41,10 @@ class LocalPushProvider: NEAppPushProvider {
       logger.log(
 				"[LocalPushProvider.swift] Provider configuration available with \(config.count, privacy: .public) keys"
 			)
-			if let twitarrURL = config["twitarrURL"] as? String {
-        logger.log(
-					"[LocalPushProvider.swift] twitarrURL from config: \(twitarrURL, privacy: .private)"
-				)
-			} else {
-        logger.error("[LocalPushProvider.swift] twitarrURL not found in provider configuration")
-			}
-			if let token = config["token"] as? String {
-        logger.log(
-					"[LocalPushProvider.swift] token from config: \(token.isEmpty ? "empty" : "present", privacy: .public)"
-				)
-			} else {
-        logger.error("[LocalPushProvider.swift] token not found in provider configuration")
-			}
+			let accountCount = (config["accounts"] as? [Any])?.count ?? 0
+      logger.log(
+				"[LocalPushProvider.swift] accounts in config: \(accountCount, privacy: .public)"
+			)
 		} else {
       logger.error("[LocalPushProvider.swift] Provider configuration is nil")
 		}

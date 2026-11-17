@@ -21,7 +21,7 @@ export const useAccountSwitcher = () => {
       if (result === 'needs-login') {
         navigateToLogin({serverUrl: account.serverUrl, username: account.username});
       } else if (result === 'switched') {
-        setSnackbarPayload({message: `Signed in as ${accountName(account)}`, messageType: 'success'});
+        setSnackbarPayload({message: `Signed in as ${accountName(account)}`, messageType: 'success', duration: 3000});
       }
       return result;
     },

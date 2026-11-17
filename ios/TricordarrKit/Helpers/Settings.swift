@@ -22,6 +22,11 @@ import Foundation
 		return "\(firstScheme):/"
 	}()
 
+	/// Matches what react-native-device-info's `getApplicationName()` reports, so the native and JS
+	/// `X-Swiftarr-Client` headers agree.
+	var appName: String = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
+		?? Bundle.main.infoDictionary?["CFBundleName"] as? String ?? "Tricordarr"
+
 	var appVersion: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
 
 	var bundleId = Bundle.main.bundleIdentifier ?? "com.grantcohoe.unknown"

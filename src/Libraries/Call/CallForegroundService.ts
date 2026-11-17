@@ -1,87 +1,30 @@
-import notifee, {AndroidCategory} from 'react-native-notify-kit';
-import tinycolor from 'tinycolor2';
-
-import {PressAction} from '#src/Enums/Notifications';
-import {callsChannel} from '#src/Libraries/Notifications/Channels';
+import {createLogger} from '#src/Libraries/Logger';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-import {getTheme} from '#src/Styles/Theme';
 
-export const callNotificationID = 'activeCallNotificationID';
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
-const formatCallDuration = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
+const logger = createLogger('CallForegroundService.ts');
 
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+/**
+ * Show the ongoing notification for an active call on Android, in a foreground service so the call
+ * continues when the app is backgrounded. Calling it again updates the notification, for a change
+ * in mute state. The system counts the call duration from [startTime].
+ */
+export function showCallForegroundNotification(remoteUser: UserHeader, startTime: Date, isMuted: boolean) {
+  try {
+    NativeTricordarrModule.showCallNotification(remoteUser.username, startTime.getTime(), isMuted);
+  } catch (error) {
+    logger.error('Failed to show call foreground notification', error);
   }
-  return `${minutes}:${secs.toString().padStart(2, '0')}`;
-};
-
-/**
- * Display a foreground service notification for an active call on Android.
- * This ensures the call continues when the app is backgrounded.
- */
-export async function showCallForegroundNotification(remoteUser: UserHeader, callDuration: number, isMuted: boolean) {
-  const theme = getTheme();
-  const durationText = formatCallDuration(callDuration);
-  const mutedText = isMuted ? ' (Muted)' : '';
-
-  await notifee.displayNotification({
-    id: callNotificationID,
-    title: `Call with ${remoteUser.username}`,
-    body: `Duration: ${durationText}${mutedText}`,
-    android: {
-      channelId: callsChannel.id,
-      asForegroundService: true,
-      color: tinycolor(theme.colors.twitarrPrimary).toHexString(),
-      colorized: true,
-      pressAction: {
-        id: PressAction.krakentalk,
-        launchActivity: 'default',
-      },
-      ongoing: true,
-      category: AndroidCategory.CALL,
-      smallIcon: 'ic_notification',
-      // Update notification every second to show current duration
-      chronometerDirection: 'up',
-    },
-  });
 }
 
 /**
- * Update the call foreground notification with new duration and mute state.
+ * Dismiss the call foreground notification and stop its service when the call ends.
  */
-export async function updateCallForegroundNotification(remoteUser: UserHeader, callDuration: number, isMuted: boolean) {
-  const theme = getTheme();
-  const durationText = formatCallDuration(callDuration);
-  const mutedText = isMuted ? ' (Muted)' : '';
-
-  await notifee.displayNotification({
-    id: callNotificationID,
-    title: `Call with ${remoteUser.username}`,
-    body: `Duration: ${durationText}${mutedText}`,
-    android: {
-      channelId: callsChannel.id,
-      asForegroundService: true,
-      color: tinycolor(theme.colors.twitarrPrimary).toHexString(),
-      colorized: true,
-      pressAction: {
-        id: PressAction.krakentalk,
-        launchActivity: 'default',
-      },
-      ongoing: true,
-      category: AndroidCategory.CALL,
-      smallIcon: 'ic_notification',
-    },
-  });
-}
-
-/**
- * Dismiss the call foreground notification when the call ends.
- */
-export async function dismissCallForegroundNotification() {
-  await notifee.cancelNotification(callNotificationID);
-  await notifee.stopForegroundService();
+export function dismissCallForegroundNotification() {
+  try {
+    NativeTricordarrModule.dismissCallNotification();
+  } catch (error) {
+    logger.error('Failed to dismiss call foreground notification', error);
+  }
 }

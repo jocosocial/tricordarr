@@ -1,5 +1,5 @@
 import {Formik, FormikHelpers, FormikProps} from 'formik';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
@@ -22,10 +22,13 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
+import {accountLabel} from '#src/Libraries/Account';
 import {createLogger} from '#src/Libraries/Logger';
-import {buildWebsocketURL} from '#src/Libraries/Network/Websockets';
+import {startPushProvider} from '#src/Libraries/Notifications/Push';
+import {getBackgroundStatuses} from '#src/Libraries/Notifications/Push/BackgroundStatus';
+import {getCurrentPushAccountID} from '#src/Libraries/Notifications/Push/PushAccounts';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {WebsocketDebugStatus} from '#src/Structs/SocketStructs';
+import {PerAccountStatus} from '#src/Structs/SocketStructs';
 import {BackgroundConnectionSettingsFormValues} from '#src/Types/FormValues';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
@@ -55,11 +58,10 @@ export const BackgroundConnectionSettingsIOSView = () => {
   const {theme} = useAppTheme();
   const {setSnackbarPayload} = useSnackbar();
   const formikRef = useRef<FormikProps<BackgroundConnectionSettingsFormValues>>(null);
-  const {currentToken} = useSession();
-  const tokenData = currentToken;
+  const {accounts, currentAccount} = useSession();
   const [managerStatus, setManagerStatus] = useState<ManagerStatus | null>(null);
   const [foregroundProviderStatus, setForegroundProviderStatus] = useState<ForegroundProviderStatus | null>(null);
-  const [websocketStatus, setWebsocketStatus] = useState<WebsocketDebugStatus | null>(null);
+  const [websocketStatuses, setWebsocketStatuses] = useState<PerAccountStatus[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(async () => {
@@ -134,20 +136,30 @@ export const BackgroundConnectionSettingsIOSView = () => {
     fetchManagerStatus();
   };
 
+  const handleBackgroundNotifications = () => {
+    updateAppConfig({
+      ...appConfig,
+      backgroundNotifications: !appConfig.backgroundNotifications,
+    });
+  };
+
+  /**
+   * Name of the account a socket status belongs to, for its section header.
+   */
+  const statusTitle = (status: PerAccountStatus) => {
+    const account = accounts.find(a => a.accountID === status.accountID);
+    return account ? accountLabel(account) : 'Unknown Account';
+  };
+
   const handleSetupManager = async () => {
-    if (!tokenData) {
-      return;
-    }
     try {
-      const socketUrl = await buildWebsocketURL();
-      logger.debug('setupLocalPushManager', socketUrl, tokenData.token, enable);
-      NativeTricordarrModule.setupLocalPushManager(socketUrl, tokenData.token, enable);
+      await startPushProvider();
       // Refresh status after recycling worker
       fetchManagerStatus();
       fetchForegroundProviderStatus();
       fetchWebsocketStatus();
     } catch (error) {
-      logger.error('Error getting socket URL:', error);
+      logger.error('Error reconfiguring the push provider:', error);
     }
   };
 
@@ -197,19 +209,34 @@ export const BackgroundConnectionSettingsIOSView = () => {
 
   const fetchWebsocketStatus = async () => {
     try {
-      const status = await NativeTricordarrModule.getWebsocketStatus();
-      setWebsocketStatus(status);
+      // One per account the providers are connected for, shown with the active account first.
+      const [all, activeAccountID] = await Promise.all([getBackgroundStatuses(), getCurrentPushAccountID()]);
+      setWebsocketStatuses([
+        ...all.filter(status => status.accountID === activeAccountID),
+        ...all.filter(status => status.accountID !== activeAccountID),
+      ]);
     } catch (error) {
       logger.error('Failed to fetch websocket status:', error);
     }
   };
 
+  /**
+   * The provider configuration for display. Its accounts carry their tokens, so they are reduced
+   * to names here.
+   */
   const parseProviderConfiguration = (configJson?: string): Record<string, any> | null => {
     if (!configJson) {
       return null;
     }
     try {
-      return JSON.parse(configJson);
+      const config = JSON.parse(configJson);
+      if (Array.isArray(config.accounts)) {
+        config.accounts = config.accounts.map(
+          (account: {username?: string; userID?: string; serverUrl?: string}) =>
+            `${account.username || account.userID} (${account.serverUrl})`,
+        );
+      }
+      return config;
     } catch (error) {
       logger.error('Failed to parse provider configuration JSON:', error);
       return null;
@@ -255,6 +282,18 @@ export const BackgroundConnectionSettingsIOSView = () => {
                 value={enable}
                 disabled={preRegistrationMode}
               />
+              {currentAccount && (
+                <BooleanField
+                  name={'backgroundNotifications'}
+                  testID={'backgroundNotifications-switch'}
+                  label={'Notify When Not Active'}
+                  onPress={handleBackgroundNotifications}
+                  style={commonStyles.paddingHorizontalSmall}
+                  helperText={`Keep getting notifications for ${accountLabel(currentAccount)} while you are using another account. Each account kept connected uses a little more battery.`}
+                  value={appConfig.backgroundNotifications}
+                  disabled={preRegistrationMode}
+                />
+              )}
               <SliderField
                 name={'fgsWorkerHealthTimer'}
                 testID={'fgsWorkerHealthTimer-slider'}
@@ -325,42 +364,47 @@ export const BackgroundConnectionSettingsIOSView = () => {
         </ListSection>
         <PaddedContentView padTop={true} padSides={false} padBottom={false}>
           <HelpTopicView>
-            The actual websocket connection may be run by either the background manager or the foreground provider
-            above, whichever is currently active. This reflects whichever of those most recently reported in.
+            There is one websocket connection per account. They may be run by either the background manager or the
+            foreground provider, whichever is currently active. This reflects whichever of those most recently reported
+            in.
           </HelpTopicView>
         </PaddedContentView>
-        <DataFieldListItem title={'Socket State'} description={websocketStatus?.state ?? 'Uninitialized'} />
-        <DataFieldListItem
-          title={'Last Healthcheck'}
-          description={
-            websocketStatus?.lastHealthcheckAt ? (
-              <RelativeTimeTag date={new Date(websocketStatus.lastHealthcheckAt)} />
-            ) : (
-              <Text>Unknown</Text>
-            )
-          }
-        />
-        {websocketStatus?.lastHealthcheckAt && (
-          <DataFieldListItem
-            title={'Last Healthcheck Result'}
-            description={websocketStatus.lastHealthcheckSuccess ? 'Success' : 'Failure'}
-          />
+        {websocketStatuses.length === 0 && (
+          <DataFieldListItem title={'Socket State'} description={'Not connected for any account'} />
         )}
-        {websocketStatus?.lastError && (
-          <>
-            <DataFieldListItem title={'Last Error'} description={websocketStatus.lastError} />
+        {websocketStatuses.map(status => (
+          <React.Fragment key={status.accountID}>
+            <DataFieldListItem title={'Account'} description={statusTitle(status)} />
+            <DataFieldListItem title={'Socket State'} description={status.state ?? 'Uninitialized'} />
             <DataFieldListItem
-              title={'Last Error At'}
+              title={'Last Healthcheck'}
               description={
-                websocketStatus.lastErrorAt ? (
-                  <RelativeTimeTag date={new Date(websocketStatus.lastErrorAt)} />
+                status.lastHealthcheckAt ? (
+                  <RelativeTimeTag date={new Date(status.lastHealthcheckAt)} />
                 ) : (
                   <Text>Unknown</Text>
                 )
               }
             />
-          </>
-        )}
+            {status.lastHealthcheckAt && (
+              <DataFieldListItem
+                title={'Last Healthcheck Result'}
+                description={status.lastHealthcheckSuccess ? 'Success' : 'Failure'}
+              />
+            )}
+            {status.lastError && (
+              <>
+                <DataFieldListItem title={'Last Error'} description={status.lastError} />
+                <DataFieldListItem
+                  title={'Last Error At'}
+                  description={
+                    status.lastErrorAt ? <RelativeTimeTag date={new Date(status.lastErrorAt)} /> : <Text>Unknown</Text>
+                  }
+                />
+              </>
+            )}
+          </React.Fragment>
+        ))}
 
         <ListSection>
           <ListSubheader>Background Provider Configuration</ListSubheader>
@@ -387,7 +431,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
             testID={'reconfigureProvider-button'}
             buttonText={'Reconfigure Provider'}
             onPress={handleSetupManager}
-            disabled={!tokenData || preRegistrationMode}
+            disabled={preRegistrationMode}
             buttonColor={theme.colors.twitarrNeutralButton}
           />
         </PaddedContentView>

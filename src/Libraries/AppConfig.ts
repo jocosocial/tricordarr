@@ -11,7 +11,7 @@ import type {ServerProfile} from '#src/Structs/SessionStructs';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 export type PushNotificationConfig = {
-  [_key in keyof typeof NotificationTypeData]: boolean;
+  [_key in `${NotificationTypeData}`]: boolean;
 };
 
 export interface APIClientConfig {
@@ -86,8 +86,8 @@ export interface AccountPreferences {
   schedule: Omit<ScheduleConfig, 'enableLateDayFlip'>;
   dismissWelcomeAboard: boolean;
   /**
-   * Whether this account gets a background socket while it is not the active one. Stored but
-   * not acted on yet; the native notification service work consumes it.
+   * Whether this account gets a background socket while it is not the active one. See
+   * selectPushAccounts.
    */
   backgroundNotifications: boolean;
 }
@@ -145,6 +145,12 @@ export interface AppConfig extends ServerConfigFields {
   silenceTimezoneWarnings: boolean;
   dismissWelcomeAboard: boolean;
   backgroundNotifications: boolean;
+  /**
+   * Device-wide. Whether the Android worker may restart itself on boot or app update after an
+   * account's cruise is over. Off by default so phones do not keep launching it forever. Opening
+   * the app still starts the worker either way. See selectPushAccounts.
+   */
+  keepRunningAfterCruise: boolean;
   logLevel: LogLevel;
 }
 
@@ -162,30 +168,10 @@ export const defaultAppConfig: AppConfig = {
   enableNotificationPolling: true,
   enableNotificationSocket: true,
   enableFezSocket: true,
-  pushNotifications: {
-    announcement: true,
-    seamailUnreadMsg: true,
-    fezUnreadMsg: true,
-    alertwordTwarrt: false,
-    alertwordPost: true,
-    twarrtMention: false,
-    forumMention: true,
-    followedEventStarting: true,
-    joinedLFGStarting: true,
-    incomingPhoneCall: true,
-    phoneCallAnswered: true,
-    phoneCallEnded: true,
-    moderatorForumMention: true,
-    twitarrTeamForumMention: true,
-    personalEventStarting: true,
-    addedToSeamail: true,
-    addedToLFG: true,
-    addedToPrivateEvent: true,
-    privateEventUnreadMsg: true,
-    microKaraokeSongReady: true,
-    privateEventCanceled: true,
-    lfgCanceled: true,
-  },
+  // Every type is on by default except deprecated ones.
+  pushNotifications: Object.fromEntries(
+    Object.entries(NotificationTypeData.specs).map(([type, spec]) => [type, !spec.deprecated]),
+  ) as PushNotificationConfig,
   fgsWorkerHealthTimer: 20000, // 20000 == 20 seconds
   oobeExpectedVersion: 3,
   enableDeveloperOptions: false,
@@ -248,7 +234,8 @@ export const defaultAppConfig: AppConfig = {
   silenceTimezoneWarnings: false,
   dismissWelcomeAboard: false,
   dismissMinAccessWarning: false,
-  backgroundNotifications: false,
+  backgroundNotifications: true,
+  keepRunningAfterCruise: false,
   // logLevel: __DEV__ ? LogLevel.DEBUG : LogLevel.WARN,
   logLevel: LogLevel.DEBUG,
 };

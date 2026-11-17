@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Formik} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
@@ -7,7 +6,6 @@ import {HelperText, Text} from 'react-native-paper';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
-import {SliderField} from '#src/Components/Forms/Fields/SliderField';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -18,60 +16,56 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useEnableUserNotification} from '#src/Context/Contexts/EnableUserNotificationContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {WebSocketState} from '#src/Libraries/Network/Websockets';
+import {accountLabel} from '#src/Libraries/Account';
+import {createLogger} from '#src/Libraries/Logger';
 import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
-import {fgsFailedCounter, getSharedWebSocket} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
-import {StorageKeys} from '#src/Libraries/Storage';
-import {WebsocketDebugStatus} from '#src/Structs/SocketStructs';
+import {getBackgroundStatuses} from '#src/Libraries/Notifications/Push/BackgroundStatus';
+import {PerAccountStatus} from '#src/Structs/SocketStructs';
+
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
+
+const logger = createLogger('BackgroundConnectionSettingsAndroidView.tsx');
 
 export const BackgroundConnectionSettingsAndroidView = () => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
-  const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
   const {enableUserNotifications} = useEnableUserNotification();
   const {appConfig, updateAppConfig} = useConfig();
-  const [healthData, setHealthData] = useState<WebsocketDebugStatus | undefined>();
+  const {accounts, currentAccount} = useSession();
+  const [statuses, setStatuses] = useState<PerAccountStatus[]>([]);
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
-  const [fgsHealthTime, setFgsHealthTime] = useState(appConfig.fgsWorkerHealthTimer / 1000);
-  const [fgsStartDate, setFgsStartDate] = useState<Date | undefined>();
 
-  const fetchSocketState = useCallback(async () => {
-    const ws = await getSharedWebSocket();
-    if (ws) {
-      setSocketState(ws.readyState);
-    }
-    AsyncStorage.getItem(StorageKeys.WS_HEALTHCHECK_DATA).then(item => {
-      if (item) {
-        const wsData = JSON.parse(item) as WebsocketDebugStatus;
-        setHealthData(wsData);
-      }
-    });
-  }, []);
-
-  const fetchStart = async () => {
-    AsyncStorage.getItem(StorageKeys.FGS_START).then(item => {
-      if (item) {
-        const date = new Date(JSON.parse(item));
-        setFgsStartDate(date);
-      }
-    });
-  };
+  /**
+   * Pull the background socket statuses from native, which is the source of truth. There is one
+   * per account the service is connected for, shown with the active account first.
+   */
+  const fetchStatus = useCallback(async () => {
+    const all = await getBackgroundStatuses();
+    const activeAccountID = currentAccount?.accountID;
+    setStatuses([
+      ...all.filter(status => status.accountID === activeAccountID),
+      ...all.filter(status => status.accountID !== activeAccountID),
+    ]);
+  }, [currentAccount?.accountID]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    fetchSocketState()
-      .then(() => fetchStart())
+    fetchStatus()
+      .catch(error => logger.error('Failed to fetch background status', error))
       .finally(() => setRefreshing(false));
-  }, [fetchSocketState]);
+  }, [fetchStatus]);
 
   useEffect(() => {
-    fetchSocketState()
-      .then(() => fetchStart())
-      .catch(console.error);
-  }, [fetchSocketState]);
+    fetchStatus().catch(error => logger.error('Failed to fetch background status', error));
+    const subscription = NativeTricordarrModule.onBackgroundStatusChanged(() => {
+      fetchStatus().catch(error => logger.error('Failed to fetch background status', error));
+    });
+    return () => subscription.remove();
+  }, [fetchStatus]);
 
   // useBackHandler(() => {
   //   navigation.replace(SettingsStackScreenComponents.settings);
@@ -87,16 +81,26 @@ export const BackgroundConnectionSettingsAndroidView = () => {
     setEnable(newValue);
   };
 
-  const handleHealthChange = (seconds: number) => {
-    const newValue = 1000 * seconds;
-    if (newValue !== appConfig.fgsWorkerHealthTimer) {
-      updateAppConfig({
-        ...appConfig,
-        fgsWorkerHealthTimer: newValue,
-      });
-      setFgsHealthTime(seconds);
-      stopPushProvider().then(() => startPushProvider());
-    }
+  const handleBackgroundNotifications = () => {
+    updateAppConfig({
+      ...appConfig,
+      backgroundNotifications: !appConfig.backgroundNotifications,
+    });
+  };
+
+  const handleKeepRunningAfterCruise = () => {
+    updateAppConfig({
+      ...appConfig,
+      keepRunningAfterCruise: !appConfig.keepRunningAfterCruise,
+    });
+  };
+
+  /**
+   * Name of the account a status belongs to, for its section header.
+   */
+  const statusTitle = (status: PerAccountStatus) => {
+    const account = accounts.find(a => a.accountID === status.accountID);
+    return account ? accountLabel(account) : 'Unknown Account';
   };
 
   return (
@@ -110,7 +114,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
         <PaddedContentView padTop={true}>
           <Text style={commonStyles.marginBottomSmall}>
             The background worker (which Android calls a Foreground Service) is necessary to enable push notifications
-            in an off-grid environment.
+            in an off-grid environment. It runs on its own, so notifications keep arriving after the app is closed.
           </Text>
           <Text>
             Android Law™ currently requires the app to display a notification that this worker has started. You can
@@ -132,49 +136,65 @@ export const BackgroundConnectionSettingsAndroidView = () => {
                 helperText={'Use this to disable the worker if it is causing problems.'}
                 value={enable}
               />
-              <SliderField
-                name={'fgsWorkerHealthTimer'}
-                testID={'fgsWorkerHealthTimer-slider'}
-                label={'Healthcheck Interval'}
-                value={fgsHealthTime}
-                minimumValue={10}
-                maximumValue={60}
-                step={10}
-                unit={'second'}
-                helperText={
-                  "Interval at which the app checks that the socket is open. Don't change this unless instructed to."
-                }
+              <BooleanField
+                name={'keepRunningAfterCruise'}
+                testID={'keepRunningAfterCruise-switch'}
+                label={'Keep Running After the Cruise'}
+                onPress={handleKeepRunningAfterCruise}
                 style={commonStyles.paddingHorizontalSmall}
-                onSlidingComplete={handleHealthChange}
+                helperText={
+                  'After the cruise ends, the worker stops restarting itself when the phone reboots or the app updates. Opening the app still starts it.'
+                }
+                value={appConfig.keepRunningAfterCruise}
               />
+              {currentAccount && (
+                <BooleanField
+                  name={'backgroundNotifications'}
+                  testID={'backgroundNotifications-switch'}
+                  label={'Notify When Not Active'}
+                  onPress={handleBackgroundNotifications}
+                  style={commonStyles.paddingHorizontalSmall}
+                  helperText={`Keep getting notifications for ${accountLabel(currentAccount)} while you are using another account. Each account kept connected uses a little more battery.`}
+                  value={appConfig.backgroundNotifications}
+                />
+              )}
             </View>
           </Formik>
         </PaddedContentView>
-        <ListSection>
-          <ListSubheader>Status</ListSubheader>
-          <DataFieldListItem title={'Previous Start'} description={<RelativeTimeTag date={fgsStartDate} />} />
-          <DataFieldListItem
-            title={'Socket State'}
-            description={WebSocketState[socketState as keyof typeof WebSocketState]}
-          />
-          <DataFieldListItem
-            title={'Last Healthcheck'}
-            description={
-              healthData?.lastHealthcheckAt ? (
-                <RelativeTimeTag date={new Date(healthData.lastHealthcheckAt)} />
-              ) : (
-                <Text>Unknown</Text>
-              )
-            }
-          />
-          {healthData?.lastHealthcheckAt && (
+        {statuses.length === 0 && (
+          <ListSection>
+            <ListSubheader>Status</ListSubheader>
+            <DataFieldListItem title={'Socket State'} description={'Not connected for any account'} />
+          </ListSection>
+        )}
+        {statuses.map(status => (
+          <ListSection key={status.accountID}>
+            <ListSubheader>Status: {statusTitle(status)}</ListSubheader>
             <DataFieldListItem
-              title={'Last Healthcheck Result'}
-              description={healthData.lastHealthcheckSuccess ? 'Success' : 'Failure'}
+              title={'Previous Start'}
+              description={<RelativeTimeTag date={status.startedAt ? new Date(status.startedAt) : undefined} />}
             />
-          )}
-          <DataFieldListItem title={'Failed Count'} description={String(fgsFailedCounter)} />
-        </ListSection>
+            <DataFieldListItem title={'Socket State'} description={status.state ?? 'Unknown'} />
+            <DataFieldListItem
+              title={'Last Healthcheck'}
+              description={
+                status.lastHealthcheckAt ? (
+                  <RelativeTimeTag date={new Date(status.lastHealthcheckAt)} />
+                ) : (
+                  <Text>Unknown</Text>
+                )
+              }
+            />
+            {status.lastHealthcheckAt && (
+              <DataFieldListItem
+                title={'Last Healthcheck Result'}
+                description={status.lastHealthcheckSuccess ? 'Success' : 'Failure'}
+              />
+            )}
+            <DataFieldListItem title={'Failed Count'} description={String(status.failedCount ?? 0)} />
+            {status.lastError && <DataFieldListItem title={'Last Error'} description={status.lastError} />}
+          </ListSection>
+        ))}
         <PaddedContentView padBottom={false} />
         <PaddedContentView padSides={false}>
           <HelperText type={'info'} style={{color: theme.colors.onBackground}}>
@@ -203,7 +223,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
         </PaddedContentView>
         <PaddedContentView padSides={false}>
           <HelperText type={'info'} style={{color: theme.colors.onBackground}}>
-            Note: It may take up to 10 seconds for the worker notification to appear on start.
+            Note: It may take a few seconds for the worker notification to appear on start.
           </HelperText>
         </PaddedContentView>
         <BatteryOptimizationSettingsView />

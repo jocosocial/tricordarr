@@ -148,11 +148,6 @@ export const SettingsScreen = ({navigation}: Props) => {
               <ListSection>
                 <ListSubheader>Developers</ListSubheader>
                 <NavigationListItem
-                  title={'Test Notifications'}
-                  description={'Generate a test notification for debugging.'}
-                  navComponent={SettingsStackScreenComponents.testNotification}
-                />
-                <NavigationListItem
                   title={'Errors'}
                   description={'Generate test error messages.'}
                   navComponent={SettingsStackScreenComponents.testError}

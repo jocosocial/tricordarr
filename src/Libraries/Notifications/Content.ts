@@ -1,10 +1,9 @@
-import notifee, {AndroidAction, AndroidChannelGroup} from 'react-native-notify-kit';
-import removeMd from 'remove-markdown';
-
-import {markAsReadPressAction, PressAction, settingsPressAction} from '#src/Enums/Notifications';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
+import {getCurrentPushAccountID} from '#src/Libraries/Notifications/Push/PushAccounts';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
+
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
 const logger = createLogger('Content');
 
@@ -12,195 +11,85 @@ export interface ContentNotificationCategory {
   title: string;
   disabled?: boolean;
   description?: string;
-  configKey: keyof typeof NotificationTypeData;
+  configKey: `${NotificationTypeData}`;
 }
 
 export type ContentNotificationCategories = {
   [_key in keyof PushNotificationConfig]: ContentNotificationCategory;
 };
 
-export const contentNotificationCategories: ContentNotificationCategories = {
-  announcement: {
-    configKey: 'announcement',
-    title: 'Announcements',
-    description:
-      'Ship-wide public messages from THO or the TwitarrTeam. These are used sparingly and usually contain important information.',
-  },
-  seamailUnreadMsg: {
-    configKey: 'seamailUnreadMsg',
-    title: 'Unread Seamail Messages',
-    description: 'New unread private chat messages sent to you from another user.',
-  },
-  fezUnreadMsg: {
-    configKey: 'fezUnreadMsg',
-    title: 'Unread LFG Messages',
-    description: "New unread chat public messages posted in an LFG you've joined or that you own.",
-  },
-  alertwordPost: {
-    configKey: 'alertwordPost',
-    title: 'Forum Alert Words',
-    description: 'New forum post was made containing one of your configured alert words.',
-  },
-  forumMention: {
-    configKey: 'forumMention',
-    title: 'Forum Mentions',
-    description: 'New forum post was made [@]mentioning you in the content.',
-  },
-  incomingPhoneCall: {
-    configKey: 'incomingPhoneCall',
-    title: 'Incoming Call',
-    description: 'Incoming KrakenTalk hailing frequencies.',
-  },
-  phoneCallAnswered: {
-    configKey: 'phoneCallAnswered',
-    title: 'Call Answered',
-    description: 'KrakenTalk hailing frequencies opened, possibly on another device.',
-  },
-  phoneCallEnded: {
-    configKey: 'phoneCallEnded',
-    title: 'Call Ended',
-    description: 'KrakenTalk hailing frequencies closed.',
-  },
-  followedEventStarting: {
-    configKey: 'followedEventStarting',
-    title: 'Followed Event Reminders',
-    description: 'Reminder that a followed event is starting Soon™.',
-  },
-  personalEventStarting: {
-    configKey: 'personalEventStarting',
-    title: 'Personal Event Starting',
-    description: 'Reminder that a personal event is starting Soon™.',
-  },
-  joinedLFGStarting: {
-    configKey: 'joinedLFGStarting',
-    title: 'Joined LFG Reminders',
-    description: 'Reminder that a joined LFG is starting Soon™.',
-  },
-  moderatorForumMention: {
-    configKey: 'moderatorForumMention',
-    title: 'Moderator Forum Mentions',
-    description: 'Affects moderators only. New forum post was made [@]mentioning moderator.',
-  },
-  twitarrTeamForumMention: {
-    configKey: 'twitarrTeamForumMention',
-    title: 'TwitarrTeam Forum Mentions',
-    description: 'Affects twitarrteam only. New forum post was made [@]mentioning twitarrteam.',
-  },
-  alertwordTwarrt: {
-    configKey: 'alertwordTwarrt',
-    title: 'Twarrt Alert Words',
-    disabled: true,
-  },
-  twarrtMention: {
-    configKey: 'twarrtMention',
-    title: 'Twarrt Mention',
-    disabled: true,
-  },
-  addedToSeamail: {
-    configKey: 'addedToSeamail',
-    title: 'Added To Seamail',
-    description: 'You have been added to a Seamail conversation between other users.',
-  },
-  addedToLFG: {
-    configKey: 'addedToLFG',
-    title: 'Added To LFG',
-    description: 'You have been added to an LFG chat conversation.',
-  },
-  addedToPrivateEvent: {
-    configKey: 'addedToPrivateEvent',
-    title: 'Added To Private Event',
-    description: 'Added to a private calendar event created by another user.',
-  },
-  privateEventUnreadMsg: {
-    configKey: 'privateEventUnreadMsg',
-    title: 'Unread Private Event Message',
-    description: 'Unread chat message in a private event conversation.',
-  },
-  microKaraokeSongReady: {
-    configKey: 'microKaraokeSongReady',
-    title: 'MicroKaraoke Song Ready',
-    description: 'A new song has completed and is available to view.',
-  },
-  lfgCanceled: {
-    configKey: 'lfgCanceled',
-    title: 'LFG Canceled',
-    description: "An LFG that you have joined has been canceled by it's creator",
-  },
-  privateEventCanceled: {
-    configKey: 'privateEventCanceled',
-    title: 'Private Event Canceled',
-    description: "A Private Event that you have joined has been canceled by it's creator",
-  },
-};
-
 /**
- * Display a notification for a content event. The notification ID is the content ID.
- * @param secondaryContentID Optional related parent ID (the forum ID for forum posts), stored in the notification data.
+ * The push notification setting for each type. Title and description come from
+ * specs/NotificationEvents.json, and a deprecated type's setting is disabled.
  */
-export async function generateContentNotification(
-  id: string,
-  title: string,
-  body: string,
-  channel: AndroidChannelGroup,
-  type: string,
-  url: string,
-  pressActionID: string = PressAction.twitarrTab,
-  autoCancel: boolean = false,
-  ongoing: boolean = false,
-  markAsReadUrl?: string,
-  secondaryContentID?: string,
-) {
-  logger.debug('Displaying notification with pressID', pressActionID);
+export const contentNotificationCategories = Object.fromEntries(
+  Object.entries(NotificationTypeData.specs).map(([type, spec]) => [
+    type,
+    {configKey: type, title: spec.title, description: spec.doc, disabled: spec.deprecated},
+  ]),
+) as ContentNotificationCategories;
 
-  let actions: AndroidAction[] = [settingsPressAction];
-  if (markAsReadUrl) {
-    actions = [markAsReadPressAction, ...actions];
-  }
-
-  const data = {
-    type: type,
-    url: url,
-    contentID: id,
-    ...(markAsReadUrl ? {markAsReadUrl: markAsReadUrl} : undefined),
-    ...(secondaryContentID ? {secondaryContentID: secondaryContentID} : undefined),
-  };
-
-  await notifee.displayNotification({
-    id: id,
-    title: title,
-    body: removeMd(body),
-    data: data,
-    android: {
-      ongoing: ongoing,
-      channelId: channel.id,
-      // smallIcon: 'mail', // optional, defaults to 'ic_launcher'.
-      autoCancel: autoCancel,
-      // https://notifee.app/react-native/docs/android/interaction
-      pressAction: {
-        id: pressActionID,
-        launchActivity: 'default',
-      },
-      smallIcon: 'ic_notification',
-      actions: actions,
-    },
-  });
+export interface ContentNotificationSection {
+  title: string;
+  categories: ContentNotificationCategory[];
 }
 
 /**
- * Dismiss any displayed notifications that belong to the given secondary object (e.g. a forum).
- * Some notifications are keyed by their own content ID (e.g. a post ID), so they are matched on the
- * `secondaryContentID` (the parent ID) that the server includes in the socket event.
+ * The settings grouped by the channel each type posts to, sorted by name. Types that never post a
+ * notification have no channel and go in a final "Other" section. Call signalling has no setting, so
+ * it is left out.
+ */
+export const contentNotificationSections: ContentNotificationSection[] = (() => {
+  const byTitle = (a: ContentNotificationCategory, b: ContentNotificationCategory) => a.title.localeCompare(b.title);
+  const channels = new Map<NotificationTypeData.Channel, ContentNotificationCategory[]>();
+  const other: ContentNotificationCategory[] = [];
+  Object.entries(NotificationTypeData.specs).forEach(([type, spec]) => {
+    const category = contentNotificationCategories[type as NotificationTypeData];
+    if (spec.signal) {
+      return;
+    }
+    if (spec.channel) {
+      channels.set(spec.channel, [...(channels.get(spec.channel) ?? []), category]);
+    } else {
+      other.push(category);
+    }
+  });
+  const sections = [...channels.entries()]
+    .map(([channel, categories]) => ({title: NotificationTypeData.channelNames[channel], categories}))
+    .sort((a, b) => a.title.localeCompare(b.title));
+  if (other.length > 0) {
+    sections.push({title: 'Other', categories: other});
+  }
+  return sections.map(section => ({...section, categories: [...section.categories].sort(byTitle)}));
+})();
+
+/**
+ * Dismiss the active account's displayed notification for one piece of content. The native push
+ * provider posted it, scoped to the account, so only native can find it.
+ * Never throws; a failure to dismiss is only logged.
+ */
+export async function cancelContentNotification(contentID: string) {
+  try {
+    const accountID = await getCurrentPushAccountID();
+    if (accountID) {
+      NativeTricordarrModule.cancelContentNotification(accountID, contentID);
+    }
+  } catch (error) {
+    logger.error('Failed to cancel content notification', error);
+  }
+}
+
+/**
+ * Dismiss the active account's displayed notifications that belong to the given secondary object
+ * (e.g. a forum). Some notifications are keyed by their own content ID (e.g. a post ID), so they
+ * are matched on the `secondaryContentID` (the parent ID) that the server includes in the socket event.
  * @param secondaryContentID The parent object ID whose notifications should be cancelled.
  */
 export async function cancelSecondaryNotifications(secondaryContentID: string) {
   try {
-    const displayed = await notifee.getDisplayedNotifications();
-    const ids = displayed
-      .filter(n => n.id && n.notification.data?.secondaryContentID === secondaryContentID)
-      .map(n => n.id as string);
-    if (ids.length > 0) {
-      logger.debug(`Cancelling ${ids.length} notification(s) for secondary content ${secondaryContentID}`);
-      await notifee.cancelDisplayedNotifications(ids);
+    const accountID = await getCurrentPushAccountID();
+    if (accountID) {
+      NativeTricordarrModule.cancelSecondaryNotifications(accountID, secondaryContentID);
     }
   } catch (error) {
     logger.error('Failed to cancel secondary notifications', error);

@@ -187,8 +187,10 @@ Checklist of manual QA cases not yet covered by automated tests.
   * enable / disable all
 * background worker
   * enable / disable
-  * start/stop
-  * change healthcheck interval
+  * start/stop (Android)
+  * keep running after the cruise (Android)
+  * notify when not active
+  * change healthcheck interval (iOS)
 * polling
   * enable / disable
   * change poll interval

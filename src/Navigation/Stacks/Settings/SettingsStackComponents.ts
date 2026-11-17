@@ -7,7 +7,6 @@ import {CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackCom
 export type SettingsStackParamList = CommonStackParamList & {
   SettingsScreen: undefined;
   BackgroundConnectionSettingsScreen: undefined;
-  TestNotificationScreen: undefined;
   TestErrorScreen: undefined;
   SocketSettingsScreen: undefined;
   PushNotificationSettingsScreen: {
@@ -48,7 +47,6 @@ export type SettingsStackParamList = CommonStackParamList & {
 export enum SettingsStackScreenComponents {
   settings = 'SettingsScreen',
   backgroundConnectionSettings = 'BackgroundConnectionSettingsScreen',
-  testNotification = 'TestNotificationScreen',
   testError = 'TestErrorScreen',
   socketSettings = 'SocketSettingsScreen',
   pushNotificationSettings = 'PushNotificationSettingsScreen',

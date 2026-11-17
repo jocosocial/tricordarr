@@ -10,7 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RCTNativeTricordarrModule : NSObject <NativeTricordarrModuleSpec>
+// Subclasses the generated base so the spec's EventEmitter members (Android-only events) are wired.
+@interface RCTNativeTricordarrModule : NativeTricordarrModuleSpecBase <NativeTricordarrModuleSpec>
 
 @end
 

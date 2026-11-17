@@ -29,7 +29,6 @@ import {QueryDataSettingsScreen} from '#src/Screens/Settings/Developer/QueryData
 import {QueryKeysSettingsScreen} from '#src/Screens/Settings/Developer/QueryKeysSettingsScreen';
 import {QuerySettingsScreen} from '#src/Screens/Settings/Developer/QuerySettingsScreen';
 import {TestErrorScreen} from '#src/Screens/Settings/Developer/TestErrorScreen';
-import {TestNotificationScreen} from '#src/Screens/Settings/Developer/TestNotificationScreen';
 import {LoggingSettingsScreen} from '#src/Screens/Settings/LoggingSettingsScreen';
 import {LogViewerScreen} from '#src/Screens/Settings/LogViewerScreen';
 import {BackgroundConnectionSettingsScreen} from '#src/Screens/Settings/Notifications/BackgroundConnectionSettingsScreen';
@@ -56,11 +55,6 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.backgroundConnectionSettings}
         component={BackgroundConnectionSettingsScreen}
         options={{title: 'Background Connection'}}
-      />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.testNotification}
-        component={TestNotificationScreen}
-        options={{title: 'Test Notification'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.testError}

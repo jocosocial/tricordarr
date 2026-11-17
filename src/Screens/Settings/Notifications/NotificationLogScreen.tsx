@@ -24,8 +24,8 @@ import {
   subscribeToNotificationLog,
 } from '#src/Libraries/NotificationLog';
 import {NotificationLogEntry} from '#src/Libraries/NotificationLog/types';
-import {getNotificationTypeTitle} from '#src/Libraries/Notifications/NotificationEventTitles';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 const TIME_FILTER_MS: Record<Exclude<NotificationLogTimeFilter, 'all'>, number> = {
   '1h': 60 * 60 * 1000,
@@ -103,7 +103,7 @@ export const NotificationLogScreen = () => {
   const typeOptions = useMemo(() => {
     const types = new Set(entries.map(entry => entry.type));
     return Array.from(types)
-      .map(type => ({value: type, label: getNotificationTypeTitle(type)}))
+      .map(type => ({value: type, label: NotificationTypeData.getTitle(type)}))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [entries]);
 

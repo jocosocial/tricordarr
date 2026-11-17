@@ -14,7 +14,6 @@ import {SessionStore} from '#src/Context/State/SessionStore';
 import {AccountPreferences} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {stashNavigationState} from '#src/Libraries/NavigationRef';
-import {stopPushProvider} from '#src/Libraries/Notifications/Push';
 import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
 import {loadSessionData} from '#src/Libraries/Storage/SessionLoader';
 import {SessionStorage} from '#src/Libraries/Storage/SessionStorage';
@@ -139,20 +138,15 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
   );
 
   /**
-   * Shared shape of every switch: ignore if one is pending, stop the old account's background
-   * providers (they are device-global, not scoped to the remounting subtree), freeze the visible
-   * screen, then dispatch. The keyed SessionBoundaryProvider remount does the rest.
+   * Shared shape of every switch: ignore if one is pending, freeze the visible screen, then
+   * dispatch. The background push provider is device-wide and keyed by account, so it is left
+   * running and re-synced by the new session's PushNotificationService. The keyed SessionBoundaryProvider remount does the rest.
    */
   const runSwitch = useCallback(
     async (pendingID: string | null, options: SwitchOptions | undefined, dispatch: () => void) => {
       options?.onSwitchStart?.();
       if (options?.preserveNavigation) {
         stashNavigationState();
-      }
-      try {
-        await stopPushProvider();
-      } catch (error) {
-        logger.error('Failed to stop push provider before switch:', error);
       }
       const before = new Set(store.getState().sessions.map(s => s.sessionID));
       dispatch();
@@ -299,11 +293,6 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       // Block switches for the instant the scope remounts, same as the explicit switches.
       pendingRef.current = normalized;
       setPendingAccountID(normalized);
-      try {
-        await stopPushProvider();
-      } catch (error) {
-        logger.error('Failed to stop push provider before sign in:', error);
-      }
       const before = new Set(current.sessions.map(s => s.sessionID));
       const now = new Date().toISOString();
       const existing = current.accounts.find(a => a.serverUrl === normalized && a.userID === token.userID);
@@ -351,14 +340,6 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
         logger.error('Cannot sign out: no account');
         return;
       }
-      const isCurrent = selectCurrentSession(store.getState())?.accountID === target;
-      if (isCurrent) {
-        try {
-          await stopPushProvider();
-        } catch (error) {
-          logger.error('Failed to stop push provider before sign out:', error);
-        }
-      }
       const before = new Set(store.getState().sessions.map(s => s.sessionID));
       dispatchStamped(({now, newSessionID}) => ({type: 'account-signed-out', accountID: target, newSessionID, now}));
       trackFreshSession(before);
@@ -371,11 +352,6 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       const isCurrent = selectCurrentSession(store.getState())?.accountID === accountID;
       if (isCurrent) {
         options?.onSwitchStart?.();
-        try {
-          await stopPushProvider();
-        } catch (error) {
-          logger.error('Failed to stop push provider before remove:', error);
-        }
       }
       const before = new Set(store.getState().sessions.map(s => s.sessionID));
       dispatchStamped(({now, newSessionID}) => ({type: 'account-removed', accountID, newSessionID, now}));
@@ -389,11 +365,6 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
       const isCurrent = store.getState().currentSessionID === sessionID;
       if (isCurrent) {
         options?.onSwitchStart?.();
-        try {
-          await stopPushProvider();
-        } catch (error) {
-          logger.error('Failed to stop push provider before removing session:', error);
-        }
       }
       store.dispatch({type: 'session-removed', sessionID, now: new Date().toISOString()});
     },

@@ -113,6 +113,9 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace = "com.tricordarr"
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
     defaultConfig {
         applicationId "com.tricordarr"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -170,4 +173,11 @@ dependencies {
 
     // ML Kit OCR
     implementation 'com.google.mlkit:text-recognition:16.0.1'
+
+    // Native push service. OkHttp is pinned to the 4.9.2 React Native bundles; do not force 5.x.
+    implementation 'com.squareup.okhttp3:okhttp:4.9.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20240303'
 }

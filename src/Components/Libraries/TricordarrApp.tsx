@@ -3,6 +3,7 @@ import React from 'react';
 import {CallOverlay} from '#src/Components/Call/CallOverlay';
 import {AccountCookieSync} from '#src/Components/Libraries/AccountCookieSync';
 import {AccountIdentitySync} from '#src/Components/Libraries/AccountIdentitySync';
+import {AccountLinkHandler} from '#src/Components/Libraries/AccountLinkHandler';
 import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
 import {AppFocusHandler} from '#src/Components/Libraries/AppFocusHandler';
 import {ForeignLinkHandler} from '#src/Components/Libraries/ForeignLinkHandler';
@@ -20,6 +21,7 @@ export const TricordarrApp = () => {
     <>
       <AccountCookieSync />
       <AccountIdentitySync />
+      <AccountLinkHandler />
       <AppEventHandler />
       <AppFocusHandler />
       <ForeignLinkHandler />

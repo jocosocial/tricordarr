@@ -19,6 +19,7 @@ enum WebsocketConnectionState: String {
 	case closed = "Closed"
 }
 
+/// One account's notification socket. `WebsocketNotifierGroup` owns one of these per account.
 public class WebsocketNotifier: NSObject {
 	public var pushProvider: NEAppPushProvider?  // NULL if notifier is being used in-app @TODO LocalPushProvider
 	var session: URLSession?
@@ -31,9 +32,10 @@ public class WebsocketNotifier: NSObject {
 	var socketPingTimer: Timer?
 	var debugAddr: String = ""
 
-	// Config values that can come from ProviderConfiguration. Must be non-nil to open socket
-	private var serverURL: URL?
-	private var token: String?
+	/// The account this socket is for. Must be non-nil to open the socket.
+	private(set) var account: PushAccountConfig?
+	/// Whether notifications name their account, which only matters when several are connected.
+	var showAccountName: Bool = false
 
 	public init(isInApp: Bool = false) {
 		self.isInApp = isInApp
@@ -52,43 +54,61 @@ public class WebsocketNotifier: NSObject {
 
 	static let appGroupSuiteName = "group.com.grantcohoe.tricordarr"
 
-	private static let iso8601Formatter: ISO8601DateFormatter = {
-		let formatter = ISO8601DateFormatter()
-		formatter.formatOptions.insert(.withFractionalSeconds)
-		return formatter
-	}()
+	private static let statusKeyPrefix = "ws_"
+
+	/// The App Group `UserDefaults` key of one status field of one account's socket.
+	private static func statusKey(_ field: String, accountID: String) -> String {
+		return "\(statusKeyPrefix)\(field).\(accountID)"
+	}
 
 	/// Persists the socket's connection state and/or healthcheck (ping) results to the shared App Group
 	/// `UserDefaults` suite so the main app process can read it regardless of whether the extension or the
-	/// in-app provider currently owns the socket. Only one `WebsocketNotifier` runs at a time, so a single
-	/// shared record of "current socket status" is sufficient.
+	/// in-app provider currently owns the socket. Only one of those runs an account's socket at a time, so
+	/// a single shared record per account is sufficient.
 	private func persistSocketStatus(
 		state: WebsocketConnectionState? = nil, healthcheckSuccess: Bool? = nil, error: String? = nil
 	) {
-		guard let defaults = UserDefaults(suiteName: Self.appGroupSuiteName) else { return }
+		guard let accountID = account?.accountID,
+			let defaults = UserDefaults(suiteName: Self.appGroupSuiteName)
+		else { return }
+		let now = Date().timeIntervalSince1970 * 1000
 		if let state = state {
-			defaults.set(state.rawValue, forKey: "ws_state")
+			defaults.set(state.rawValue, forKey: Self.statusKey("state", accountID: accountID))
 		}
 		if let healthcheckSuccess = healthcheckSuccess {
-			defaults.set(healthcheckSuccess, forKey: "ws_last_healthcheck_success")
-			defaults.set(Self.iso8601Formatter.string(from: Date()), forKey: "ws_last_healthcheck_at")
+			defaults.set(healthcheckSuccess, forKey: Self.statusKey("last_healthcheck_success", accountID: accountID))
+			defaults.set(now, forKey: Self.statusKey("last_healthcheck_at", accountID: accountID))
 		}
 		if let error = error {
-			defaults.set(error, forKey: "ws_last_error")
-			defaults.set(Self.iso8601Formatter.string(from: Date()), forKey: "ws_last_error_at")
+			defaults.set(error, forKey: Self.statusKey("last_error", accountID: accountID))
+			defaults.set(now, forKey: Self.statusKey("last_error_at", accountID: accountID))
 		}
 	}
 
-	/// Parses an ISO8601 date string (with or without fractional seconds) for mute-until. Returns nil if unparseable.
-	private static func parseMuteUntilDate(_ string: String) -> Date? {
-		let withFractional: ISO8601DateFormatter = {
-			let f = ISO8601DateFormatter()
-			f.formatOptions.insert(.withFractionalSeconds)
-			return f
-		}()
-		if let date = withFractional.date(from: string) { return date }
-		let standard = ISO8601DateFormatter()
-		return standard.date(from: string)
+	/// The persisted status of one account's socket, whichever process is running it.
+	static func persistedStatus(accountID: String) -> WebsocketStatus {
+		let defaults = UserDefaults(suiteName: appGroupSuiteName)
+		return WebsocketStatus(
+			accountID: accountID,
+			state: defaults?.string(forKey: statusKey("state", accountID: accountID)),
+			lastHealthcheckAt: defaults?.object(forKey: statusKey("last_healthcheck_at", accountID: accountID)) as? Double,
+			lastHealthcheckSuccess: defaults?.object(forKey: statusKey("last_healthcheck_success", accountID: accountID))
+				as? Bool,
+			lastError: defaults?.string(forKey: statusKey("last_error", accountID: accountID)),
+			lastErrorAt: defaults?.object(forKey: statusKey("last_error_at", accountID: accountID)) as? Double
+		)
+	}
+
+	/// Forgets the persisted status of every account not in `accountIDs`, including the single
+	/// un-keyed record written before sockets were per account.
+	static func prunePersistedStatus(keeping accountIDs: Set<String>) {
+		guard let defaults = UserDefaults(suiteName: appGroupSuiteName) else { return }
+		for key in defaults.dictionaryRepresentation().keys where key.hasPrefix(statusKeyPrefix) {
+			let accountID = key.split(separator: ".", maxSplits: 1).dropFirst().first.map(String.init)
+			if accountID == nil || !accountIDs.contains(accountID!) {
+				defaults.removeObject(forKey: key)
+			}
+		}
 	}
 
 	// MARK: - Debug lifecycle notifications
@@ -121,29 +141,17 @@ public class WebsocketNotifier: NSObject {
 
 	// MARK: - Configuration
 
-	// Don't call this from within websocketnotifier.
-	public func updateConfig(serverURL: URL? = nil, token: String? = nil) {
-    self.logger.log("[WebsocketNotifier.swift] updateConfig")
-		if let provider = pushProvider {
-			if let config = provider.providerConfiguration, let twitarrStr = config["twitarrURL"] as? String,
-				let token = config["token"] as? String,
-				!twitarrStr.isEmpty, !token.isEmpty, let twitarrURL = URL(string: twitarrStr)
-			{
-				self.serverURL = twitarrURL
-				self.token = token
-			}
-			else {
-				self.serverURL = nil
-				self.token = nil
-			}
-		}
-		else {
-			self.serverURL = serverURL
-			self.token = token
-			if startState == true {
-				openWebSocket()
-			}
-		}
+	/// Sets the account this socket is for. A change of server or token reopens a running socket;
+	/// a change of preferences alone just takes effect on the next event.
+	/// Don't call this from within websocketnotifier.
+	func updateConfig(account: PushAccountConfig?) {
+		self.logger.log("[WebsocketNotifier.swift] updateConfig")
+		let reconnect = account?.connectionDiffers(from: self.account) ?? true
+		self.account = account
+		guard startState == true, reconnect else { return }
+		socket?.cancel(with: .goingAway, reason: nil)
+		socket = nil
+		openWebSocket()
 	}
 
 	/**
@@ -157,7 +165,10 @@ public class WebsocketNotifier: NSObject {
 			// for testing and using Twitarr out in the world which I often do. Testing at bars is great.
 			// config.allowsCellularAccess = false
 			config.waitsForConnectivity = true
-			config.httpAdditionalHeaders = ["X-Swiftarr-Client": "Tricordarr \(Settings.shared.appVersion)"]
+			config.httpAdditionalHeaders = [
+				"X-Swiftarr-Client": "\(Settings.shared.appName) \(Settings.shared.appVersion)",
+				"Cache-Control": "no-store",
+			]
 			session = .init(configuration: config, delegate: self, delegateQueue: nil)
 		}
 	}
@@ -171,7 +182,7 @@ public class WebsocketNotifier: NSObject {
 	func openWebSocket() {
     self.logger.log("[WebsocketNotifier.swift] openWebSocket")
 		// No config == no socket.
-		guard let twitarrURL = self.serverURL, let token = self.token, !token.isEmpty else {
+		guard let account = self.account, let twitarrURL = account.socketURL else {
 			self.logger.error("[WebsocketNotifier.swift] openWebSocket essential configuration missing")
 			return
 		}
@@ -187,7 +198,7 @@ public class WebsocketNotifier: NSObject {
 		self.logger.log("[WebsocketNotifier.swift] Opening socket to \(twitarrURL.absoluteString, privacy: .public)")
 		persistSocketStatus(state: .connecting)
 		var request = URLRequest(url: twitarrURL, cachePolicy: .useProtocolCachePolicy)
-		request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+		request.addValue("Bearer \(account.token)", forHTTPHeaderField: "Authorization")
 
 		// Build a new socket, make sure we actually have one, start (resume) it, and listen for messages
 		socket = session?.webSocketTask(with: request)
@@ -242,104 +253,22 @@ public class WebsocketNotifier: NSObject {
 	// MARK: - Message/Event Processing
 
 	private func generatePushNotificationFromEvent(_ socketNotification: SocketNotificationData) {
-		var sendNotification = true
-		var title = "From Tricordarr"
-		var url = ""
-		var markAsReadUrl: String? = nil
-		self.logger.log("[WebsocketNotifier.swift] generatePushNotificationFromEvent send \(sendNotification)")
+		self.logger.log("[WebsocketNotifier.swift] generatePushNotificationFromEvent")
 
-		// Get pushNotifications and muteNotifications from provider config (extension) or AppConfig.shared (in-app)
-		var pushNotifications: [NotificationTypeData: Bool] = [:]
-		var muteNotifications: String? = nil
-
-		if let provider = pushProvider, let config = provider.providerConfiguration {
-			// Extension context: read from provider configuration
-			if let pushNotificationsDict = config["pushNotifications"] as? [String: Bool] {
-				for (key, value) in pushNotificationsDict {
-					if let notificationType = NotificationTypeData(rawValue: key) {
-						pushNotifications[notificationType] = value
-					}
-				}
-			}
-			muteNotifications = config["muteNotifications"] as? String
-      self.logger.log("[WebsocketNotifier.swift] loaded push and mute from provider")
-		}
-		else if let appConfig = AppConfig.shared {
-			// In-app context: read from AppConfig.shared
-			pushNotifications = appConfig.pushNotifications
-			muteNotifications = appConfig.muteNotifications
-      self.logger.log("[WebsocketNotifier.swift] loaded push and mute from appConfig")
-		}
-		else {
-			// Fallback: if neither is available, log and continue (allow notification)
-			self.logger.warning(
-				"[WebsocketNotifier.swift] Could not get pushNotifications or muteNotifications from provider config or AppConfig.shared, allowing notification"
-			)
-		}
-
-		// Do not generate a notification if the user has disabled that category.
-		if pushNotifications[socketNotification.type] == false {
+		// Each account is filtered with its own preferences: the category toggles and the mute time.
+		// Call signalling has no toggle and never posts, so it is not filtered.
+		if !socketNotification.type.isSignal, account?.allowsNotification(socketNotification.type) == false {
 			self.logger
 				.log(
-					"[WebsocketNotifier.swift] user has disabled category \(socketNotification.type.rawValue, privacy: .public)"
+					"[WebsocketNotifier.swift] user has disabled or muted \(socketNotification.type.rawValue, privacy: .public)"
 				)
 			return
 		}
 
-		// Do not generate a notification if the user has muted notifications.
-		if let muteString = muteNotifications {
-			if let muteUntil = Self.parseMuteUntilDate(muteString) {
-				if Date() < muteUntil {
-					self.logger.log(
-						"[WebsocketNotifier.swift] user has muted notifications until \(muteUntil, privacy: .public)"
-					)
-					return
-				}
-			} else {
-				self.logger.warning(
-					"[WebsocketNotifier.swift] Could not parse muteNotifications date string, allowing notification"
-				)
-			}
-		}
-
-		// Generate URL and markAsReadUrl based on notification type, matching JavaScript generatePushNotificationFromEvent
+		// Phone calls are handled here rather than through the generated event table.
 		switch socketNotification.type {
-		case .seamailUnreadMsg:
-			title = "New Seamail"
-			url = "/seamail/\(socketNotification.contentID)"
-			markAsReadUrl = "/fez/\(socketNotification.contentID)"
-
-		case .fezUnreadMsg:
-			title = "New LFG Message"
-			url = "/lfg/\(socketNotification.contentID)/chat"
-			markAsReadUrl = "/fez/\(socketNotification.contentID)"
-
-		case .announcement:
-			title = "Announcement"
-			url = "/home"
-			markAsReadUrl = "/notification/global"
-
-		case .alertwordPost:
-			title = "Forum Alert Word"
-			url = "/forum/containingpost/\(socketNotification.contentID)"
-
-		case .forumMention:
-			title = "Forum Mention"
-			url = "/forumpost/mentions"
-
-		case .twitarrTeamForumMention:
-			title = "TwitarrTeam Forum Mention"
-			url = "/forum/containingpost/\(socketNotification.contentID)"
-
-		case .moderatorForumMention:
-			title = "Moderator Forum Mention"
-			url = "/forum/containingpost/\(socketNotification.contentID)"
-
 		case .incomingPhoneCall:
 			if let caller = socketNotification.caller {
-				title = "Incoming Call"
-				url =
-					"/phonecall/\(socketNotification.contentID)/from/\(caller.userID.uuidString)/\(caller.username)"
 				self.incomingCallNotification(
 					name: socketNotification.info,
 					callID: socketNotification.contentID,
@@ -347,83 +276,40 @@ public class WebsocketNotifier: NSObject {
 					callerAddr: socketNotification.callerAddress
 				)
 			}
-			sendNotification = false
+			return
 
-		case .phoneCallAnswered:
-			sendNotification = false
-			UserDefaults(suiteName: "group.com.grantcohoe.tricordarr")?
-				.set(socketNotification.contentID, forKey: "phoneCallAnswered")
-			self.logger.log("TricordarrPushProvider set UserDefault for phoneCallAnswered")
+		// CallKit is driven by the app's CallProvider from its own socket, which handles these. There
+		// is nothing to post.
+		case .phoneCallAnswered, .phoneCallEnded:
+			return
 
-		case .phoneCallEnded:
-			sendNotification = false
-			UserDefaults(suiteName: "group.com.grantcohoe.tricordarr")?
-				.set(socketNotification.contentID, forKey: "phoneCallEnded")
-			self.logger.log("TricordarrPushProvider set UserDefault for phoneCallEnded")
-
-		case .followedEventStarting:
-			title = "Followed Event Starting"
-			url = "/events/\(socketNotification.contentID)"
-
-		case .joinedLFGStarting:
-			title = "Joined LFG Starting"
-			url = "/lfg/\(socketNotification.contentID)"
-
-		case .personalEventStarting:
-			title = "Personal Event Starting"
-			url = "/privateevent/\(socketNotification.contentID)"
-
-		case .addedToPrivateEvent:
-			title = "Added to Private Event"
-			url = "/privateevent/\(socketNotification.contentID)"
-
-		case .addedToLFG:
-			title = "Added to LFG"
-			url = "/lfg/\(socketNotification.contentID)"
-
-		case .addedToSeamail:
-			title = "Added to Seamail"
-			url = "/seamail/\(socketNotification.contentID)"
-
-		case .privateEventCanceled:
-			title = "Private Event Canceled"
-			url = "/privateevent/\(socketNotification.contentID)"
-
-		case .lfgCanceled:
-			title = "LFG Canceled"
-			url = "/lfg/\(socketNotification.contentID)"
-
-		case .alertwordTwarrt:
-			title = "Alert Word"
-		// No URL defined in JavaScript for this type
-
-		case .twarrtMention:
-			title = "Someone Mentioned You"
-		// No URL defined in JavaScript for this type
-
-		case .privateEventUnreadMsg:
-			title = "New Private Event Message"
-			url = "/privateevent/\(socketNotification.contentID)"
-
-		case .microKaraokeSongReady:
-			title = "Micro Karaoke Music Video Ready"
-		// No URL defined in JavaScript for this type
-
-		@unknown default:
+		default:
 			break
 		}
 
-		if sendNotification {
-			Notifications.generateContentNotification(
-				socketNotification.contentID,
-				title: title,
-				body: socketNotification.info,
-				type: socketNotification.type,
-				url: url,
-				markAsReadUrl: markAsReadUrl,
-				secondaryContentID: socketNotification.secondaryContentID
-			)
-		}
+		// Types with no entry in specs/NotificationEvents.json do not post.
+		guard let spec = socketNotification.type.eventSpec else { return }
+		let title = spec.title
+		let url = Self.expandTemplate(spec.url, contentID: socketNotification.contentID) ?? ""
+		let markAsReadUrl = Self.expandTemplate(spec.markAsReadUrl, contentID: socketNotification.contentID)
+
+		Notifications.generateContentNotification(
+			socketNotification.contentID,
+			title: title,
+			body: MarkdownText.plainText(socketNotification.info),
+			type: socketNotification.type,
+			url: url,
+			markAsReadUrl: markAsReadUrl,
+			secondaryContentID: socketNotification.secondaryContentID,
+			accountID: account?.accountID,
+			accountName: showAccountName ? account?.username : nil
+		)
+	}
+
+	/// Substitutes `{contentID}` in a URL template from the generated event table. Only that placeholder is
+	/// needed here; the call URL is built in the phone-call branch.
+	private static func expandTemplate(_ template: String?, contentID: String) -> String? {
+		template?.replacingOccurrences(of: "{contentID}", with: contentID)
 	}
 
 	func receiveNextMessage() {
@@ -437,8 +323,11 @@ public class WebsocketNotifier: NSObject {
 					self.logger.error(
 						"[WebsocketNotifier.swift] Error during websocket receive: \(error.localizedDescription, privacy: .public)"
 					)
-					self.persistSocketStatus(state: .closed, error: error.localizedDescription)
 					socket.cancel(with: .goingAway, reason: nil)
+					// A socket that was replaced (new token, failed ping) reports its end here too, and
+					// must not take its replacement down with it.
+					guard self.socket === socket else { return }
+					self.persistSocketStatus(state: .closed, error: error.localizedDescription)
 					self.socket = nil
 					self.session?.finishTasksAndInvalidate()
 					self.session = nil
@@ -465,7 +354,7 @@ public class WebsocketNotifier: NSObject {
 					{
 						// Record before generating the push notification so the log reflects every
 						// event the socket delivered, including ones suppressed by mute/category settings.
-						NotificationLog.append(socketNotification, raw: msgData)
+						NotificationLog.append(socketNotification, raw: msgData, accountID: self.account?.accountID)
 						self.generatePushNotificationFromEvent(socketNotification)
 					}
 					else {
@@ -524,14 +413,9 @@ public class WebsocketNotifier: NSObject {
 		if startState == true {
       self.logger.log("[WebsocketNotifier.swift] start called while already started")
 		}
-		else if self.serverURL == nil {
+		else if self.account == nil {
       self.logger.log(
-				"[WebsocketNotifier.swift] \(providerLogTerm) can't start -- no server URL"
-			)
-		}
-		else if self.token == nil || token == "" {
-      self.logger.log(
-				"[WebsocketNotifier.swift] \(providerLogTerm) can't start -- no user token"
+				"[WebsocketNotifier.swift] \(providerLogTerm) can't start -- no account"
 			)
 		}
 		else {
@@ -666,6 +550,7 @@ extension WebsocketNotifier: URLSessionWebSocketDelegate {
     self.logger.log(
       "[WebsocketNotifier.swift] Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public) to \(debugUrl, privacy: .public)"
 		)
+		guard socket === webSocketTask else { return }
 		persistSocketStatus(state: .open)
 	}
 
@@ -676,8 +561,10 @@ extension WebsocketNotifier: URLSessionWebSocketDelegate {
 		reason: Data?
 	) {
     self.logger.log("[WebsocketNotifier.swift] Socket closed with code: \(didCloseWith.rawValue)")
+		webSocketTask.cancel(with: .goingAway, reason: nil)
+		// Only the current socket's close is this account's status; see receiveNextMessage.
+		guard socket === webSocketTask else { return }
 		persistSocketStatus(state: .closed)
-		socket?.cancel(with: .goingAway, reason: nil)
 		socket = nil
 	}
 }

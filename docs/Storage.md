@@ -4,7 +4,7 @@
 
 Accounts, sessions, tokens: see [Accounts and Sessions](Accounts%20and%20Sessions.md). Tokens are `expo-secure-store` (one value per account); the metadata is AsyncStorage. Read and written via `SessionStorage.ts` and `SessionPersistence.ts`.
 
-Small scalar config: AsyncStorage via `StorageKeys` in `src/Libraries/Storage/index.ts` (device config, FGS healthcheck, FGS start time).
+Small scalar config: AsyncStorage via `StorageKeys` in `src/Libraries/Storage/index.ts` (device config, OOBE completed version).
 
 | Store | Key | Scope |
 |---|---|---|

@@ -1,4 +1,3 @@
-import {useAppState} from '@react-native-community/hooks';
 import React, {PropsWithChildren, useCallback, useEffect, useReducer, useRef} from 'react';
 import {Platform} from 'react-native';
 import ReconnectingWebSocket from 'reconnecting-websocket';
@@ -12,7 +11,6 @@ import {NativeAudioEngine} from '#src/Libraries/Audio/NativeAudioEngine';
 import {
   dismissCallForegroundNotification,
   showCallForegroundNotification,
-  updateCallForegroundNotification,
 } from '#src/Libraries/Call/CallForegroundService';
 import {CallEndReason, CallKitService} from '#src/Libraries/Call/CallKitService';
 import {createLogger} from '#src/Libraries/Logger';
@@ -29,7 +27,6 @@ const logger = createLogger('CallProvider.tsx');
 export const CallProvider = ({children}: PropsWithChildren) => {
   const [state, dispatch] = useReducer(callReducer, initialCallState);
   const durationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const notificationUpdateIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioEngineRef = useRef<NativeAudioEngine | null>(null);
   const jitterBufferRef = useRef<AudioJitterBuffer | null>(null);
   const playbackIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -54,7 +51,6 @@ export const CallProvider = ({children}: PropsWithChildren) => {
   // (due to duration timer updating state), cascading through CallContext
   // consumers and thrashing the NotificationDataListener WebSocket handler.
   const phoneSocketRef = useRef<ReconnectingWebSocket | null>(null);
-  const appState = useAppState();
   const {setSnackbarPayload} = useSnackbar();
 
   // Keep refs in sync with state
@@ -964,6 +960,29 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     [declineMutation],
   );
 
+  /**
+   * Stops this device ringing when the incoming call was answered on another device. The device that
+   * answered is already past ringing when the server says so, which leaves its call alone.
+   */
+  const callAnsweredElsewhere = useCallback(
+    (callID: string) => {
+      const call = state.currentCall;
+      if (!call?.isIncoming || state.state !== CallState.RINGING) {
+        return;
+      }
+      // Compare UUIDs case-insensitively (CallKit returns lowercase, server returns uppercase)
+      if (call.callID.toLowerCase() !== callID.toLowerCase()) {
+        return;
+      }
+      logger.debug('[CallProvider] Call answered elsewhere, ending the ringing call', callID);
+      if (callUsesCallKitRef.current) {
+        CallKitService.reportEndCallWithReason(call.callID, CallEndReason.AnsweredElsewhere);
+      }
+      dispatch({type: CallActions.END});
+    },
+    [state.currentCall, state.state],
+  );
+
   const endCall = useCallback(async () => {
     const callID = currentCallIDRef.current;
     const callState = callStateRef.current;
@@ -1012,7 +1031,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
 
     // Dismiss foreground notification on Android
     if (Platform.OS === 'android') {
-      await dismissCallForegroundNotification();
+      dismissCallForegroundNotification();
     }
 
     dispatch({type: CallActions.END});
@@ -1068,7 +1087,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     }
   }, [state.isSpeakerOn]);
 
-  // Duration timer and foreground notification updates
+  // Duration timer
   useEffect(() => {
     if (state.state === CallState.ACTIVE && state.currentCall) {
       // Start duration timer
@@ -1078,75 +1097,31 @@ export const CallProvider = ({children}: PropsWithChildren) => {
           dispatch({type: CallActions.UPDATE_DURATION, payload: duration});
         }
       }, 1000);
-
-      // Show foreground notification on Android when call becomes active
-      if (Platform.OS === 'android') {
-        showCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(error => {
-          logger.error('[CallProvider] Failed to show call foreground notification:', error);
-        });
-
-        // Update notification every second with current duration and mute state
-        notificationUpdateIntervalRef.current = setInterval(() => {
-          if (state.currentCall) {
-            updateCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(
-              error => {
-                logger.error('[CallProvider] Failed to update call foreground notification:', error);
-              },
-            );
-          }
-        }, 1000);
-      }
-    } else {
+    } else if (durationIntervalRef.current) {
       // Clean up intervals
-      if (durationIntervalRef.current) {
-        clearInterval(durationIntervalRef.current);
-        durationIntervalRef.current = null;
-      }
-      if (notificationUpdateIntervalRef.current) {
-        clearInterval(notificationUpdateIntervalRef.current);
-        notificationUpdateIntervalRef.current = null;
-      }
-
-      // Dismiss notification when call ends
-      if (state.state === CallState.ENDED && Platform.OS === 'android') {
-        dismissCallForegroundNotification().catch(error => {
-          logger.error('[CallProvider] Failed to dismiss call foreground notification:', error);
-        });
-      }
+      clearInterval(durationIntervalRef.current);
+      durationIntervalRef.current = null;
     }
 
     return () => {
       if (durationIntervalRef.current) {
         clearInterval(durationIntervalRef.current);
       }
-      if (notificationUpdateIntervalRef.current) {
-        clearInterval(notificationUpdateIntervalRef.current);
-      }
     };
-  }, [state.state, state.currentCall, state.duration, state.isMuted]);
+  }, [state.state, state.currentCall]);
 
-  // Update notification when mute state changes
+  // Android foreground notification: shown while the call is active (and re-sent when the mute
+  // state changes), removed when it ends. The system counts the call time itself.
   useEffect(() => {
-    if (state.state === CallState.ACTIVE && state.currentCall && Platform.OS === 'android') {
-      updateCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(error => {
-        logger.error('[CallProvider] Failed to update call foreground notification after mute change:', error);
-      });
+    if (Platform.OS !== 'android') {
+      return;
     }
-  }, [state.isMuted, state.state, state.currentCall, state.duration]);
-
-  // Handle app state changes (background/foreground)
-  useEffect(() => {
-    if (state.state === CallState.ACTIVE && state.currentCall) {
-      if (appState === 'background' || appState === 'inactive') {
-        // App is backgrounded - ensure foreground notification is showing
-        if (Platform.OS === 'android') {
-          showCallForegroundNotification(state.currentCall.remoteUser, state.duration, state.isMuted).catch(error => {
-            logger.error('[CallProvider] Failed to show call foreground notification in background:', error);
-          });
-        }
-      }
+    if (state.state === CallState.ACTIVE && state.currentCall?.startTime) {
+      showCallForegroundNotification(state.currentCall.remoteUser, state.currentCall.startTime, state.isMuted);
+    } else if (state.state === CallState.ENDED) {
+      dismissCallForegroundNotification();
     }
-  }, [appState, state.state, state.currentCall, state.duration, state.isMuted]);
+  }, [state.state, state.currentCall, state.isMuted]);
 
   // Sync call state with CallKit on iOS
   useEffect(() => {
@@ -1291,6 +1266,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     receiveCall,
     answerCall,
     declineCall,
+    callAnsweredElsewhere,
     endCall,
     toggleMute,
     toggleSpeaker,

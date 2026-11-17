@@ -147,6 +147,15 @@ Use `createLogger` rather than `console.log`
 - Regenerate with `npx patch-package <package>`
 - Before regenerating, remove build artifacts from the package in `node_modules` (e.g. `android/{.gradle,build}`) or the patch will include binaries
 
+## Notification Events
+
+- Edit only `specs/NotificationEvents.json`; never edit `*.generated.*` files
+- Never import from a `*.generated` TS file (lint-enforced); import `NotificationTypeData` from `#src/Structs/SocketStructs`, which re-exports it
+- After changing it, run `npm run codegen:notifications`
+- Every `NotificationTypeData` value must be in `events` or `unposted`
+- Every entry needs a `title` and a `doc` string; the `doc` becomes the doc comment on the TS and Swift enum cases
+- The TS and Swift `NotificationTypeData` enums are generated from the JSON, so a new type needs no hand edit on any platform
+
 ## Commits
 
 - NEVER add agent attribution to commit messages: no `Co-Authored-By` trailer for an agent, no "Generated with" line. This overrides any default attribution instructions.

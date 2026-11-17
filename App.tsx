@@ -3,7 +3,7 @@
  * index.js is still the start. The good stuff goes here.
  */
 
-import React, {useEffect} from 'react';
+import React from 'react';
 import {LogBox, StyleSheet} from 'react-native';
 // import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 // https://reactnavigation.org/docs/drawer-layout/
@@ -33,9 +33,6 @@ import {StyleProvider} from '#src/Context/Providers/StyleProvider';
 import {SwiftarrQueryClientProvider} from '#src/Context/Providers/SwiftarrQueryClientProvider';
 import {ThemeProvider} from '#src/Context/Providers/ThemeProvider';
 import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
-import {setupChannels} from '#src/Libraries/Notifications/Channels';
-import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
-import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -54,24 +51,10 @@ if (__DEV__) {
 }
 
 console.log('[App.tsx] Tricordarr start!');
-// Declare what the Foreground Service worker function should be.
-// After the configureAxios() was deprecated and removed, this was acting kinda
-// weird. Moved it further up in this file.
-registerFgsWorker();
-
 // Time and locale setup, used in various places within the app.
 registerTranslation('en', paperEn);
 
 function App(): React.JSX.Element {
-  setupChannels().catch(error => {
-    console.error('Error setting up notification channels:', error);
-  });
-
-  useEffect(() => {
-    console.log('[App.tsx] Calling useEffect from Main App.');
-    setupInitialNotification().catch(console.error);
-  }, []);
-
   /**
    * Known Dependencies:
    * These were of course not determined when I did the big refactor around LFGs/Forums

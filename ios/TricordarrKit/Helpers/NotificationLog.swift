@@ -38,6 +38,7 @@ import Foundation
 		let info: String
 		let source: String
 		let raw: String
+		let accountID: String?
 	}
 
 	private static var logFileURL: URL? {
@@ -55,8 +56,9 @@ import Foundation
 	/// Records a single notification-socket event. Called from `WebsocketNotifier` right
 	/// after a successful decode, before any mute/category suppression, so the log reflects
 	/// everything the socket actually delivered. Never throws; failures are logged and
-	/// swallowed so a logging problem can't take down the socket receive loop.
-	static func append(_ notification: SocketNotificationData, raw: Data) {
+	/// swallowed so a logging problem can't take down the socket receive loop. `accountID` is the
+	/// account whose socket delivered the event.
+	static func append(_ notification: SocketNotificationData, raw: Data, accountID: String?) {
 		queue.async {
 			guard let url = logFileURL else { return }
 			let rawString = String(data: raw, encoding: .utf8) ?? ""
@@ -66,7 +68,8 @@ import Foundation
 				contentID: notification.contentID,
 				info: notification.info,
 				source: "ios-native",
-				raw: rawString
+				raw: rawString,
+				accountID: accountID
 			)
 			guard let entryData = try? JSONEncoder().encode(entry),
 				var line = String(data: entryData, encoding: .utf8)
