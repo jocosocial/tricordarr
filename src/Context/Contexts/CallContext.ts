@@ -34,6 +34,7 @@ export interface CallContextType {
   receiveCall: (callID: string, callerUserHeader: UserHeader, options?: {useCallKit?: boolean}) => void;
   answerCall: (callID: string) => Promise<void>;
   declineCall: (callID: string) => Promise<void>;
+  callAnsweredElsewhere: (callID: string) => void;
   endCall: () => Promise<void>;
   toggleMute: () => void;
   toggleSpeaker: () => void;

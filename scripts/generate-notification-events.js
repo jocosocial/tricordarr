@@ -32,9 +32,9 @@ const HEADER = [
 const KNOWN_KEYS = {
   root: ['version', 'channelGroups', 'channels', 'events', 'unposted'],
   group: ['name', 'description'],
-  channel: ['name', 'group', 'description', 'badge', 'vibrationPattern', 'settingsChannel'],
-  event: ['channel', 'title', 'doc', 'note', 'url', 'markAsReadUrl', 'autoCancel', 'ongoing', 'messaging'],
-  unposted: ['title', 'doc', 'note', 'deprecated', 'settingsChannel'],
+  channel: ['name', 'group', 'description', 'badge', 'vibrationPattern'],
+  event: ['channel', 'title', 'doc', 'note', 'url', 'markAsReadUrl', 'autoCancel', 'ongoing', 'messaging', 'signal'],
+  unposted: ['title', 'doc', 'note', 'deprecated', 'signal'],
 };
 
 const REQUIRED_KEYS = {
@@ -49,9 +49,8 @@ const REQUIRED_KEYS = {
  * Throws if the spec is internally inconsistent: unknown or missing keys, dangling channel/group
  * references, or a type listed as both posted and unposted. `unposted` maps type to `{title, doc}` for
  * types that never post a notification; `deprecated` marks one whose setting can no longer be changed.
- * A `settingsChannel` names the channel whose settings section lists the type: on a channel it folds
- * that channel's types into another, and on an unposted type it gives the type a section. It must
- * name a channel that has no `settingsChannel` of its own.
+ * `signal` marks call signalling: the type has no user setting and is handled whatever the user's
+ * category toggles say.
  */
 function validate(spec) {
   const errors = [];
@@ -77,12 +76,6 @@ function validate(spec) {
     if (!spec.channelGroups[channel.group]) {
       errors.push(`channel ${id} references missing group "${channel.group}"`);
     }
-    if (channel.settingsChannel !== undefined) {
-      const target = spec.channels[channel.settingsChannel];
-      if (!target || channel.settingsChannel === id || target.settingsChannel !== undefined) {
-        errors.push(`channel ${id} settingsChannel "${channel.settingsChannel}" must be another top-level channel`);
-      }
-    }
   });
   Object.entries(spec.events).forEach(([type, event]) => {
     checkKeys(`event ${type}`, event, 'event');
@@ -93,15 +86,7 @@ function validate(spec) {
       errors.push(`type ${type} is in both events and unposted`);
     }
   });
-  Object.entries(spec.unposted).forEach(([type, entry]) => {
-    checkKeys(`unposted ${type}`, entry, 'unposted');
-    if (entry.settingsChannel !== undefined) {
-      const target = spec.channels[entry.settingsChannel];
-      if (!target || target.settingsChannel !== undefined) {
-        errors.push(`unposted ${type} settingsChannel "${entry.settingsChannel}" must be a top-level channel`);
-      }
-    }
-  });
+  Object.entries(spec.unposted).forEach(([type, entry]) => checkKeys(`unposted ${type}`, entry, 'unposted'));
   if (errors.length) {
     throw new Error(`Invalid NotificationEvents.json:\n  ${errors.join('\n  ')}`);
   }
@@ -185,16 +170,12 @@ function renderTypeScript(spec) {
     '    doc: string;',
     '    /** Channel the notification posts to. Undefined for a type that never posts one. */',
     '    channel?: Channel;',
-    '    /**',
-    '     * Channel whose section the settings screen lists this type in. It differs from `channel` when',
-    "     * the spec folds the type's channel into another, and is undefined for an unposted type with no",
-    '     * section.',
-    '     */',
-    '    settingsChannel?: Channel;',
     '    /** App route path the notification opens, with `{placeholders}` for the IDs it needs. */',
     '    url?: string;',
     '    /** The type is no longer used, so its setting cannot be changed. */',
     '    deprecated?: boolean;',
+    '    /** Call signalling: no user setting, and always handled regardless of the category toggles. */',
+    '    signal?: boolean;',
     '  }',
     '',
     '  /** The spec for every type, posted or not. */',
@@ -205,18 +186,14 @@ function renderTypeScript(spec) {
     if (entry.channel !== undefined) {
       fields.push(`channel: ${tsString(entry.channel)}`);
     }
-    const settingsChannel =
-      entry.channel !== undefined
-        ? (spec.channels[entry.channel].settingsChannel ?? entry.channel)
-        : entry.settingsChannel;
-    if (settingsChannel !== undefined) {
-      fields.push(`settingsChannel: ${tsString(settingsChannel)}`);
-    }
     if (entry.url !== undefined) {
       fields.push(`url: ${tsString(entry.url)}`);
     }
     if (entry.deprecated) {
       fields.push('deprecated: true');
+    }
+    if (entry.signal) {
+      fields.push('signal: true');
     }
     lines.push(`    [NotificationTypeData.${type}]: {`, ...fields.map(field => `      ${field},`), '    },');
   });
@@ -304,6 +281,19 @@ function renderSwift(spec) {
     lines.push(`\t\tcase .${type}:`, '\t\t\treturn nil');
   });
   lines.push('\t\t}', '\t}', '');
+  const signals = Object.entries(entries)
+    .filter(([, entry]) => entry.signal)
+    .map(([type]) => `.${type}`);
+  lines.push(
+    '\t/// True for call signalling, which has no user setting and is handled whatever the category',
+    '\t/// toggles say.',
+    '\tvar isSignal: Bool {',
+    '\t\tswitch self {',
+  );
+  if (signals.length) {
+    lines.push(`\t\tcase ${signals.join(', ')}: return true`);
+  }
+  lines.push('\t\tdefault: return false', '\t\t}', '\t}', '');
   const allTypes = [...Object.keys(spec.events), ...unposted];
   lines.push(
     '\t/// The string form of this type, matching the TypeScript enum values.',
@@ -370,7 +360,10 @@ function renderKotlin(spec) {
       '      ),',
     );
   });
-  lines.push('    ),', '  )', '}', '');
+  const signals = Object.entries({...spec.events, ...spec.unposted})
+    .filter(([, entry]) => entry.signal)
+    .map(([type]) => kotlinString(type));
+  lines.push('    ),', `    signals = setOf(${signals.join(', ')}),`, '  )', '}', '');
   return lines.join('\n');
 }
 

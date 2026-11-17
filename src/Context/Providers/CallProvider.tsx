@@ -960,6 +960,29 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     [declineMutation],
   );
 
+  /**
+   * Stops this device ringing when the incoming call was answered on another device. The device that
+   * answered is already past ringing when the server says so, which leaves its call alone.
+   */
+  const callAnsweredElsewhere = useCallback(
+    (callID: string) => {
+      const call = state.currentCall;
+      if (!call?.isIncoming || state.state !== CallState.RINGING) {
+        return;
+      }
+      // Compare UUIDs case-insensitively (CallKit returns lowercase, server returns uppercase)
+      if (call.callID.toLowerCase() !== callID.toLowerCase()) {
+        return;
+      }
+      logger.debug('[CallProvider] Call answered elsewhere, ending the ringing call', callID);
+      if (callUsesCallKitRef.current) {
+        CallKitService.reportEndCallWithReason(call.callID, CallEndReason.AnsweredElsewhere);
+      }
+      dispatch({type: CallActions.END});
+    },
+    [state.currentCall, state.state],
+  );
+
   const endCall = useCallback(async () => {
     const callID = currentCallIDRef.current;
     const callState = callStateRef.current;
@@ -1243,6 +1266,7 @@ export const CallProvider = ({children}: PropsWithChildren) => {
     receiveCall,
     answerCall,
     declineCall,
+    callAnsweredElsewhere,
     endCall,
     toggleMute,
     toggleSpeaker,

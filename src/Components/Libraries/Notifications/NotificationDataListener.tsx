@@ -37,7 +37,7 @@ export const NotificationDataListener = () => {
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
-  const {receiveCall, endCall} = useCall();
+  const {receiveCall, endCall, callAnsweredElsewhere} = useCall();
   const {invalidateFez} = useFezCacheReducer();
 
   const wsMessageHandler = useCallback(
@@ -55,6 +55,11 @@ export const NotificationDataListener = () => {
         case NotificationTypeData.phoneCallEnded: {
           // Initiator receives this when receiver declines or call ends - sync local call state
           endCall();
+          break;
+        }
+        case NotificationTypeData.phoneCallAnswered: {
+          // The callee picked up, possibly on another device, so stop ringing here.
+          callAnsweredElsewhere(notificationData.contentID);
           break;
         }
         case NotificationTypeData.announcement: {
@@ -112,7 +117,15 @@ export const NotificationDataListener = () => {
         }
       }
     },
-    [currentAccountID, invalidateFez, refetchAnnouncements, refetchUserNotificationData, receiveCall, endCall],
+    [
+      currentAccountID,
+      invalidateFez,
+      refetchAnnouncements,
+      refetchUserNotificationData,
+      receiveCall,
+      endCall,
+      callAnsweredElsewhere,
+    ],
   );
 
   const addHandler = useCallback(() => {

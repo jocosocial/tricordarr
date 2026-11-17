@@ -27,8 +27,6 @@ const chatNotificationCategories = [
   contentNotificationCategories.privateEventUnreadMsg,
   contentNotificationCategories.addedToPrivateEvent,
   contentNotificationCategories.incomingPhoneCall,
-  contentNotificationCategories.phoneCallAnswered,
-  contentNotificationCategories.phoneCallEnded,
 ];
 
 export const ChatSettingsScreen = () => {

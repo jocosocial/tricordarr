@@ -231,6 +231,7 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
         val multi = synchronized(lock) { connections.size } > 1
         NotificationBuilder.post(this, result.plan, if (multi) account.username else null)
       }
+      is PlanResult.Dismiss -> NotificationBuilder.cancelContent(this, result.accountID, result.contentID)
       is PlanResult.Skip -> Log.d(TAG, "Not notifying: ${result.reason}")
     }
   }

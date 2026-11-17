@@ -51,8 +51,7 @@
     "krakentalkmgmt": {
       "name": "KrakenTalk Call Management",
       "group": "content",
-      "description": "Signalling messages for KrakenTalk.",
-      "settingsChannel": "krakentalkcalls"
+      "description": "Signalling messages for KrakenTalk."
     },
     "events": {
       "name": "Events",
@@ -64,7 +63,7 @@
     "phoneCallAnswered": {
       "title": "Call Answered",
       "doc": "The callee answered the call, possibly on another device.",
-      "settingsChannel": "krakentalkcalls"
+      "signal": true
     },
     "alertwordTwarrt": {
       "title": "Twarrt Alert Words",
@@ -148,7 +147,8 @@
     "phoneCallEnded": {
       "channel": "krakentalkmgmt",
       "title": "Call Ended",
-      "doc": "Caller hung up while phone was rining, or other party ended the call in progress, or callee declined"
+      "doc": "Caller hung up while phone was rining, or other party ended the call in progress, or callee declined",
+      "signal": true
     },
     "followedEventStarting": {
       "channel": "events",

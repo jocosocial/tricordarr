@@ -101,14 +101,20 @@ disagree.
 The TS side builds the push notification settings from `specs` too. `contentNotificationCategories`
 (`Content.ts`) uses each type's `title` and `doc` as the setting label and help text, and disables a
 deprecated type's toggle. `contentNotificationSections` groups the settings by channel for
-`PushNotificationSettingsScreen`, with unposted types in an "Other" section. A channel's optional
-`settingsChannel` lists its types under another channel's section without changing the Android
-channel they post to (`krakentalkmgmt` shows under KrakenTalk Calls, but its "Call Ended"
-notification keeps its own channel rather than the ringing call channel's vibration). An unposted
-type can take a `settingsChannel` too, to get a section instead of "Other" (`phoneCallAnswered`). The default
-`AppConfig.pushNotifications` turns every type on except deprecated ones. `__tests__/unit/TestNotificationEvents.ts` checks the JSON against the declared
-channels, `RouteDefinitions`, and the generated files; `NotificationPlannerTest` checks the Kotlin
-side.
+`PushNotificationSettingsScreen`, with unposted types in an "Other" section. The default
+`AppConfig.pushNotifications` turns every type on except deprecated ones.
+
+`signal: true` marks call signalling (`phoneCallAnswered`, `phoneCallEnded`). A signal type has no
+setting, and neither platform checks the category toggles for it: they exist to keep the call UI in
+step, not to inform the user. On Android, `phoneCallEnded` still posts "Call Ended" over the ringing
+notification (same call ID), and `phoneCallAnswered` dismisses the ringing notification
+(`PlanResult.Dismiss`). On iOS CallKit is driven by `CallProvider` from the app's own socket:
+`phoneCallAnswered` ends a call that is still ringing on this device with the `AnsweredElsewhere`
+reason, while the device that answered is already past ringing and is left alone.
+
+`__tests__/unit/TestNotificationEvents.ts` checks the JSON against the declared channels,
+`RouteDefinitions`, and the generated files; `TestNotificationSettings.ts` checks the settings
+sections; `NotificationPlannerTest` checks the Kotlin side.
 
 Do not change channel IDs or group membership: group binding is immutable and a new ID loses user
 customizations. Add a new event by adding it to the JSON (`events` or `unposted`), then run

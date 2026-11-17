@@ -32,4 +32,6 @@ class NotificationEvents(
   val channelGroups: List<ChannelGroupSpec>,
   val channels: List<ChannelSpec>,
   val events: Map<String, EventSpec>,
+  /** Call-signalling types, handled whatever the account's category toggles say. */
+  val signals: Set<String>,
 )

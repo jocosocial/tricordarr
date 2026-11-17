@@ -26,6 +26,9 @@ sealed class PlanResult {
   data class Post(val plan: NotificationPlan) : PlanResult()
 
   data class Skip(val reason: String) : PlanResult()
+
+  /** Remove the account's notification for [contentID], if one is showing. */
+  data class Dismiss(val accountID: String, val contentID: String) : PlanResult()
 }
 
 /**
@@ -35,6 +38,7 @@ sealed class PlanResult {
  */
 object NotificationPlanner {
   const val APP_LINK_PREFIX = "tricordarr://"
+  private const val PHONE_CALL_ANSWERED = "phoneCallAnswered"
 
   /** Notifications are tagged per account so one account's content IDs cannot collide with another's. */
   fun tagFor(accountID: String): String = "acct:$accountID"
@@ -60,8 +64,18 @@ object NotificationPlanner {
     }
     val type = typeOf(data) ?: return PlanResult.Skip("event has no type")
 
-    if (account.prefs.pushNotifications[type] != true) {
+    // Call signalling keeps the call notifications in step, so the category toggles never block it.
+    if (type !in events.signals && account.prefs.pushNotifications[type] != true) {
       return PlanResult.Skip("category $type disabled")
+    }
+    if (type == PHONE_CALL_ANSWERED) {
+      // Answered on this device or another, the call no longer needs to ring here. The incoming call
+      // notification is keyed by the call ID, which is this event's content ID.
+      val callID = data.opt("contentID")?.toString().orEmpty()
+      if (callID.isEmpty()) {
+        return PlanResult.Skip("answered call has no ID")
+      }
+      return PlanResult.Dismiss(account.accountID, callID)
     }
     val mutedUntil = account.prefs.muteNotificationsUntil
     if (mutedUntil != null && nowMillis < mutedUntil) {

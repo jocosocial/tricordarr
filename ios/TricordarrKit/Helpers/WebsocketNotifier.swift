@@ -253,7 +253,8 @@ public class WebsocketNotifier: NSObject {
 		self.logger.log("[WebsocketNotifier.swift] generatePushNotificationFromEvent")
 
 		// Each account is filtered with its own preferences: the category toggles and the mute time.
-		if account?.allowsNotification(socketNotification.type) == false {
+		// Call signalling has no toggle and never posts, so it is not filtered.
+		if !socketNotification.type.isSignal, account?.allowsNotification(socketNotification.type) == false {
 			self.logger
 				.log(
 					"[WebsocketNotifier.swift] user has disabled or muted \(socketNotification.type.rawValue, privacy: .public)"
@@ -274,16 +275,9 @@ public class WebsocketNotifier: NSObject {
 			}
 			return
 
-		case .phoneCallAnswered:
-			UserDefaults(suiteName: "group.com.grantcohoe.tricordarr")?
-				.set(socketNotification.contentID, forKey: "phoneCallAnswered")
-			self.logger.log("TricordarrPushProvider set UserDefault for phoneCallAnswered")
-			return
-
-		case .phoneCallEnded:
-			UserDefaults(suiteName: "group.com.grantcohoe.tricordarr")?
-				.set(socketNotification.contentID, forKey: "phoneCallEnded")
-			self.logger.log("TricordarrPushProvider set UserDefault for phoneCallEnded")
+		// CallKit is driven by the app's CallProvider from its own socket, which handles these. There
+		// is nothing to post.
+		case .phoneCallAnswered, .phoneCallEnded:
 			return
 
 		default:

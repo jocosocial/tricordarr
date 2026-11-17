@@ -281,6 +281,15 @@ extension NotificationTypeData {
 		}
 	}
 
+	/// True for call signalling, which has no user setting and is handled whatever the category
+	/// toggles say.
+	var isSignal: Bool {
+		switch self {
+		case .phoneCallEnded, .phoneCallAnswered: return true
+		default: return false
+		}
+	}
+
 	/// The string form of this type, matching the TypeScript enum values.
 	var rawValue: String {
 		switch self {

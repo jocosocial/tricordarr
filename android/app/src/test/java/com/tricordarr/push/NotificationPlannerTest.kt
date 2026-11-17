@@ -84,9 +84,21 @@ class NotificationPlannerTest {
 
   @Test
   fun typesWithoutATableEntryAreSkipped() {
-    val account = TestSupport.account(mapOf("phoneCallAnswered" to true))
-    val result = NotificationPlanner.plan(events, account, """{"type":{"phoneCallAnswered":{}},"contentID":"a"}""", 0L)
+    val account = TestSupport.account(mapOf("microKaraokeSongReady" to true))
+    val result = NotificationPlanner.plan(events, account, """{"type":{"microKaraokeSongReady":{}},"contentID":"a"}""", 0L)
     assertTrue(result is PlanResult.Skip)
+  }
+
+  @Test
+  fun answeredCallDismissesTheRingingNotification() {
+    val result = NotificationPlanner.plan(events, TestSupport.account(), """{"type":{"phoneCallAnswered":{}},"contentID":"c1"}""", 0L)
+    assertEquals(PlanResult.Dismiss("acct-1", "c1"), result)
+  }
+
+  @Test
+  fun callSignallingIgnoresTheCategoryToggles() {
+    val account = TestSupport.account(all + ("phoneCallEnded" to false))
+    post("""{"type":{"phoneCallEnded":{}},"info":"x","contentID":"c1"}""", account)
   }
 
   @Test

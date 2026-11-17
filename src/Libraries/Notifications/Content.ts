@@ -35,8 +35,9 @@ export interface ContentNotificationSection {
 }
 
 /**
- * The settings grouped by each type's `settingsChannel` from the spec, sorted by name. That is usually
- * the channel the type posts to. Types with no settings channel go in a final "Other" section.
+ * The settings grouped by the channel each type posts to, sorted by name. Types that never post a
+ * notification have no channel and go in a final "Other" section. Call signalling has no setting, so
+ * it is left out.
  */
 export const contentNotificationSections: ContentNotificationSection[] = (() => {
   const byTitle = (a: ContentNotificationCategory, b: ContentNotificationCategory) => a.title.localeCompare(b.title);
@@ -44,9 +45,11 @@ export const contentNotificationSections: ContentNotificationSection[] = (() => 
   const other: ContentNotificationCategory[] = [];
   Object.entries(NotificationTypeData.specs).forEach(([type, spec]) => {
     const category = contentNotificationCategories[type as NotificationTypeData];
-    const channel = spec.settingsChannel;
-    if (channel) {
-      channels.set(channel, [...(channels.get(channel) ?? []), category]);
+    if (spec.signal) {
+      return;
+    }
+    if (spec.channel) {
+      channels.set(spec.channel, [...(channels.get(spec.channel) ?? []), category]);
     } else {
       other.push(category);
     }

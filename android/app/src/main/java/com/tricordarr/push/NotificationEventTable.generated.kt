@@ -266,5 +266,6 @@ object NotificationEventTable {
         messaging = false,
       ),
     ),
+    signals = setOf("phoneCallEnded", "phoneCallAnswered"),
   )
 }
