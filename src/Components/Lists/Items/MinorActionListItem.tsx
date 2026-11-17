@@ -13,9 +13,18 @@ interface MinorActionListItemProps {
   description?: string;
   active?: boolean;
   right?: () => React.ReactNode;
+  disabled?: boolean;
 }
 
-export const MinorActionListItem = ({title, icon, onPress, description, active, right}: MinorActionListItemProps) => {
+export const MinorActionListItem = ({
+  title,
+  icon,
+  onPress,
+  description,
+  active,
+  right,
+  disabled,
+}: MinorActionListItemProps) => {
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
 
@@ -40,6 +49,7 @@ export const MinorActionListItem = ({title, icon, onPress, description, active, 
       left={getIcon}
       onPress={onPress}
       right={right}
+      disabled={disabled}
       description={description}
       titleStyle={styles.title}
       descriptionStyle={styles.description}

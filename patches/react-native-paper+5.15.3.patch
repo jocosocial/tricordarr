@@ -1,3 +1,61 @@
+diff --git a/node_modules/react-native-paper/lib/commonjs/components/Menu/Menu.js b/node_modules/react-native-paper/lib/commonjs/components/Menu/Menu.js
+index dea22ec..4b90e08 100644
+--- a/node_modules/react-native-paper/lib/commonjs/components/Menu/Menu.js
++++ b/node_modules/react-native-paper/lib/commonjs/components/Menu/Menu.js
+@@ -93,6 +93,8 @@ const isBrowser = () => _reactNative.Platform.OS === 'web' && 'document' in glob
+ const Menu = ({
+   visible,
+   statusBarHeight,
++  bottomInset,
++  topInset,
+   overlayAccessibilityLabel = 'Close menu',
+   testID = 'menu',
+   anchor,
+@@ -108,6 +110,7 @@ const Menu = ({
+ }) => {
+   const theme = (0, _theming.useInternalTheme)(themeOverrides);
+   const insets = (0, _reactNativeSafeAreaContext.useSafeAreaInsets)();
++  const reservedBottom = bottomInset ?? insets.bottom;
+   const [rendered, setRendered] = React.useState(visible);
+   const [left, setLeft] = React.useState(0);
+   const [top, setTop] = React.useState(0);
+@@ -223,7 +226,7 @@ const Menu = ({
+       width: menuLayoutResult.width
+     });
+     setWindowLayout({
+-      height: windowLayoutResult.height - keyboardHeightRef.current,
++      height: windowLayoutResult.height - Math.max(keyboardHeightRef.current, reservedBottom),
+       width: windowLayoutResult.width
+     });
+     attachListeners();
+@@ -249,7 +252,7 @@ const Menu = ({
+         prevRendered.current = true;
+       });
+     });
+-  }, [anchor, attachListeners, measureAnchorLayout, theme]);
++  }, [anchor, attachListeners, measureAnchorLayout, reservedBottom, theme]);
+   const hide = React.useCallback(() => {
+     removeListeners();
+     const {
+@@ -418,6 +421,18 @@ const Menu = ({
+       topTransformation = scrollableMenuHeight === windowLayout.height - 2 * SCREEN_INDENT ? -SCREEN_INDENT * 2 : windowLayout.height - menuLayout.height - SCREEN_INDENT - additionalVerticalValue;
+     }
+   }
++  // Keep the menu out from under the status bar / display cutout. Paper only guards the top edge
++  // when opening below the anchor, so a menu flipped above a low anchor, or anchored by coordinates near
++  // the top, can otherwise draw under it. Anything pushed down is shrunk (scrollable) to stay on screen.
++  const minTop = (topInset ?? insets.top) + SCREEN_INDENT;
++  const renderedTop = isCoordinate(anchor) ? topTransformation : topTransformation + additionalVerticalValue;
++  if (renderedTop < minTop) {
++    topTransformation += minTop - renderedTop;
++    if (minTop + (scrollableMenuHeight || menuLayout.height) > windowLayout.height - SCREEN_INDENT) {
++      scrollableMenuHeight = windowLayout.height - SCREEN_INDENT - minTop;
++    }
++  }
++
+   const shadowMenuContainerStyle = {
+     opacity: opacityAnimationRef.current,
+     transform: [{
 diff --git a/node_modules/react-native-paper/lib/commonjs/components/Menu/MenuItem.js b/node_modules/react-native-paper/lib/commonjs/components/Menu/MenuItem.js
 index d8695dd..cedc992 100644
 --- a/node_modules/react-native-paper/lib/commonjs/components/Menu/MenuItem.js
@@ -74,6 +132,64 @@ index d8695dd..cedc992 100644
    md3LeadingIcon: {
      marginLeft: 12
    },
+diff --git a/node_modules/react-native-paper/lib/module/components/Menu/Menu.js b/node_modules/react-native-paper/lib/module/components/Menu/Menu.js
+index f0c9330..14bb9a2 100644
+--- a/node_modules/react-native-paper/lib/module/components/Menu/Menu.js
++++ b/node_modules/react-native-paper/lib/module/components/Menu/Menu.js
+@@ -85,6 +85,8 @@ const isBrowser = () => Platform.OS === 'web' && 'document' in global;
+ const Menu = ({
+   visible,
+   statusBarHeight,
++  bottomInset,
++  topInset,
+   overlayAccessibilityLabel = 'Close menu',
+   testID = 'menu',
+   anchor,
+@@ -100,6 +102,7 @@ const Menu = ({
+ }) => {
+   const theme = useInternalTheme(themeOverrides);
+   const insets = useSafeAreaInsets();
++  const reservedBottom = bottomInset ?? insets.bottom;
+   const [rendered, setRendered] = React.useState(visible);
+   const [left, setLeft] = React.useState(0);
+   const [top, setTop] = React.useState(0);
+@@ -215,7 +218,7 @@ const Menu = ({
+       width: menuLayoutResult.width
+     });
+     setWindowLayout({
+-      height: windowLayoutResult.height - keyboardHeightRef.current,
++      height: windowLayoutResult.height - Math.max(keyboardHeightRef.current, reservedBottom),
+       width: windowLayoutResult.width
+     });
+     attachListeners();
+@@ -241,7 +244,7 @@ const Menu = ({
+         prevRendered.current = true;
+       });
+     });
+-  }, [anchor, attachListeners, measureAnchorLayout, theme]);
++  }, [anchor, attachListeners, measureAnchorLayout, reservedBottom, theme]);
+   const hide = React.useCallback(() => {
+     removeListeners();
+     const {
+@@ -410,6 +413,18 @@ const Menu = ({
+       topTransformation = scrollableMenuHeight === windowLayout.height - 2 * SCREEN_INDENT ? -SCREEN_INDENT * 2 : windowLayout.height - menuLayout.height - SCREEN_INDENT - additionalVerticalValue;
+     }
+   }
++  // Keep the menu out from under the status bar / display cutout. Paper only guards the top edge
++  // when opening below the anchor, so a menu flipped above a low anchor, or anchored by coordinates near
++  // the top, can otherwise draw under it. Anything pushed down is shrunk (scrollable) to stay on screen.
++  const minTop = (topInset ?? insets.top) + SCREEN_INDENT;
++  const renderedTop = isCoordinate(anchor) ? topTransformation : topTransformation + additionalVerticalValue;
++  if (renderedTop < minTop) {
++    topTransformation += minTop - renderedTop;
++    if (minTop + (scrollableMenuHeight || menuLayout.height) > windowLayout.height - SCREEN_INDENT) {
++      scrollableMenuHeight = windowLayout.height - SCREEN_INDENT - minTop;
++    }
++  }
++
+   const shadowMenuContainerStyle = {
+     opacity: opacityAnimationRef.current,
+     transform: [{
 diff --git a/node_modules/react-native-paper/lib/module/components/Menu/MenuItem.js b/node_modules/react-native-paper/lib/module/components/Menu/MenuItem.js
 index 0158113..5472793 100644
 --- a/node_modules/react-native-paper/lib/module/components/Menu/MenuItem.js
@@ -150,6 +266,39 @@ index 0158113..5472793 100644
    md3LeadingIcon: {
      marginLeft: 12
    },
+diff --git a/node_modules/react-native-paper/lib/typescript/components/Menu/Menu.d.ts b/node_modules/react-native-paper/lib/typescript/components/Menu/Menu.d.ts
+index 4dc4540..a75d58d 100644
+--- a/node_modules/react-native-paper/lib/typescript/components/Menu/Menu.d.ts
++++ b/node_modules/react-native-paper/lib/typescript/components/Menu/Menu.d.ts
+@@ -26,6 +26,19 @@ export type Props = {
+      * This is automatically handled on iOS.
+      */
+     statusBarHeight?: number;
++    /**
++     * Space reserved at the bottom of the window that the menu must not draw into, e.g. the system
++     * navigation bar and any bottom tab bar. With Android edge-to-edge the window height includes
++     * the navigation bar, so without this the menu can open underneath it. Defaults to the bottom
++     * safe area inset. The keyboard height takes precedence when it is larger.
++     */
++    bottomInset?: number;
++    /**
++     * Space reserved at the top of the window that the menu must not draw into, e.g. the status bar
++     * and display cutout. With Android edge-to-edge the window extends underneath them. Defaults to
++     * the top safe area inset.
++     */
++    topInset?: number;
+     /**
+      * Callback called when Menu is dismissed. The `visible` prop needs to be updated when this is called.
+      */
+@@ -117,7 +130,7 @@ export declare const ELEVATION_LEVELS_MAP: ElevationLevels[];
+  * wrapping is not necessary if you use Paper's `Modal` instead.
+  */
+ declare const Menu: {
+-    ({ visible, statusBarHeight, overlayAccessibilityLabel, testID, anchor, onDismiss, anchorPosition, contentStyle, style, elevation, mode, children, theme: themeOverrides, keyboardShouldPersistTaps, }: Props): React.JSX.Element;
++    ({ visible, statusBarHeight, bottomInset, topInset, overlayAccessibilityLabel, testID, anchor, onDismiss, anchorPosition, contentStyle, style, elevation, mode, children, theme: themeOverrides, keyboardShouldPersistTaps, }: Props): React.JSX.Element;
+     Item: {
+         ({ leadingIcon, trailingIcon, dense, title, disabled, background, onPress, style, containerStyle, contentStyle, titleStyle, rippleColor: customRippleColor, testID, accessibilityLabel, accessibilityState, theme: themeOverrides, titleMaxFontSizeMultiplier, hitSlop, }: import("./MenuItem").Props): React.JSX.Element;
+         displayName: string;
 diff --git a/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts b/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts
 index d4d611a..eecd00e 100644
 --- a/node_modules/react-native-paper/lib/typescript/components/Menu/MenuItem.d.ts
@@ -323,10 +472,30 @@ index 17e4899..63591d2 100644
                          style={[
                            styles.outline,
 diff --git a/node_modules/react-native-paper/src/components/Menu/Menu.tsx b/node_modules/react-native-paper/src/components/Menu/Menu.tsx
-index 669656c..a484fcf 100644
+index 669656c..858580e 100644
 --- a/node_modules/react-native-paper/src/components/Menu/Menu.tsx
 +++ b/node_modules/react-native-paper/src/components/Menu/Menu.tsx
-@@ -89,6 +89,10 @@ export type Props = {
+@@ -51,6 +51,19 @@ export type Props = {
+    * This is automatically handled on iOS.
+    */
+   statusBarHeight?: number;
++  /**
++   * Space reserved at the bottom of the window that the menu must not draw into, e.g. the system
++   * navigation bar and any bottom tab bar. With Android edge-to-edge the window height includes
++   * the navigation bar, so without this the menu can open underneath it. Defaults to the bottom
++   * safe area inset. The keyboard height takes precedence when it is larger.
++   */
++  bottomInset?: number;
++  /**
++   * Space reserved at the top of the window that the menu must not draw into, e.g. the status bar
++   * and display cutout. With Android edge-to-edge the window extends underneath them. Defaults to
++   * the top safe area inset.
++   */
++  topInset?: number;
+   /**
+    * Callback called when Menu is dismissed. The `visible` prop needs to be updated when this is called.
+    */
+@@ -89,6 +102,10 @@ export type Props = {
     * Inner ScrollView prop
     */
    keyboardShouldPersistTaps?: ScrollViewProps['keyboardShouldPersistTaps'];
@@ -337,7 +506,16 @@ index 669656c..a484fcf 100644
    /**
     * testID to be used on tests.
     */
-@@ -194,6 +198,7 @@ const Menu = ({
+@@ -182,6 +199,8 @@ const isBrowser = () => Platform.OS === 'web' && 'document' in global;
+ const Menu = ({
+   visible,
+   statusBarHeight,
++  bottomInset,
++  topInset,
+   overlayAccessibilityLabel = 'Close menu',
+   testID = 'menu',
+   anchor,
+@@ -194,9 +213,11 @@ const Menu = ({
    children,
    theme: themeOverrides,
    keyboardShouldPersistTaps,
@@ -345,7 +523,52 @@ index 669656c..a484fcf 100644
  }: Props) => {
    const theme = useInternalTheme(themeOverrides);
    const insets = useSafeAreaInsets();
-@@ -687,6 +692,7 @@ const Menu = ({
++  const reservedBottom = bottomInset ?? insets.bottom;
+   const [rendered, setRendered] = React.useState(visible);
+   const [left, setLeft] = React.useState(0);
+   const [top, setTop] = React.useState(0);
+@@ -340,7 +361,9 @@ const Menu = ({
+     });
+ 
+     setWindowLayout({
+-      height: windowLayoutResult.height - keyboardHeightRef.current,
++      height:
++        windowLayoutResult.height -
++        Math.max(keyboardHeightRef.current, reservedBottom),
+       width: windowLayoutResult.width,
+     });
+ 
+@@ -365,7 +388,7 @@ const Menu = ({
+         prevRendered.current = true;
+       });
+     });
+-  }, [anchor, attachListeners, measureAnchorLayout, theme]);
++  }, [anchor, attachListeners, measureAnchorLayout, reservedBottom, theme]);
+ 
+   const hide = React.useCallback(() => {
+     removeListeners();
+@@ -601,6 +624,20 @@ const Menu = ({
+     }
+   }
+ 
++  // Keep the menu out from under the status bar / display cutout. Paper only guards the top edge
++  // when opening below the anchor, so a menu flipped above a low anchor, or anchored by coordinates near
++  // the top, can otherwise draw under it. Anything pushed down is shrunk (scrollable) to stay on screen.
++  const minTop = (topInset ?? insets.top) + SCREEN_INDENT;
++  const renderedTop = isCoordinate(anchor)
++    ? topTransformation
++    : topTransformation + additionalVerticalValue;
++  if (renderedTop < minTop) {
++    topTransformation += minTop - renderedTop;
++    if (minTop + (scrollableMenuHeight || menuLayout.height) > windowLayout.height - SCREEN_INDENT) {
++      scrollableMenuHeight = windowLayout.height - SCREEN_INDENT - minTop;
++    }
++  }
++
+   const shadowMenuContainerStyle = {
+     opacity: opacityAnimationRef.current,
+     transform: [
+@@ -687,6 +724,7 @@ const Menu = ({
                  {(scrollableMenuHeight && (
                    <ScrollView
                      keyboardShouldPersistTaps={keyboardShouldPersistTaps}

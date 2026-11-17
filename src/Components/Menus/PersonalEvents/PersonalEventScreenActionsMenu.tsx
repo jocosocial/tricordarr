@@ -4,6 +4,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -69,7 +70,6 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
           )}
         </>
       )}
-      <ShareMenuItem contentType={ShareContentType.privateEvent} contentID={props.event.fezID} closeMenu={closeMenu} />
       {/* Reporting isn't available to pre-registration users. */}
       {!preRegistrationMode && (
         <Menu.Item
@@ -84,16 +84,19 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
           }}
         />
       )}
-      {hasModerator && (
-        <Menu.Item
-          leadingIcon={AppIcons.moderator}
-          title={'Moderate'}
-          onPress={() => {
-            closeMenu();
-            pushModerateResource(commonNavigation, 'personalevent', props.event.fezID);
-          }}
-        />
-      )}
+      <PrivilegedMenuGroup>
+        {hasModerator && (
+          <Menu.Item
+            leadingIcon={AppIcons.moderator}
+            title={'Moderate'}
+            onPress={() => {
+              closeMenu();
+              pushModerateResource(commonNavigation, 'personalevent', props.event.fezID);
+            }}
+          />
+        )}
+      </PrivilegedMenuGroup>
+      <ShareMenuItem contentType={ShareContentType.privateEvent} contentID={props.event.fezID} closeMenu={closeMenu} />
       <Menu.Item
         leadingIcon={AppIcons.help}
         title={'Help'}

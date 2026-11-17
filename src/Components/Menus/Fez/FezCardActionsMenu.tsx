@@ -4,6 +4,7 @@ import {Divider, Menu} from 'react-native-paper';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenuBottomInset} from '#src/Hooks/useMenuBottomInset';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -51,8 +52,9 @@ interface FezCardActionsMenuProps {
  */
 export const FezCardActionsMenu = (props: FezCardActionsMenuProps) => {
   const bridged = useMenuContextBridge();
+  const bottomInset = useMenuBottomInset();
   return (
-    <Menu visible={props.menuVisible} onDismiss={props.closeMenu} anchor={props.anchor}>
+    <Menu bottomInset={bottomInset} visible={props.menuVisible} onDismiss={props.closeMenu} anchor={props.anchor}>
       <MenuContextBridge bridged={bridged}>
         <FezCardActionsMenuItems fezData={props.fezData} closeMenu={props.closeMenu} />
       </MenuContextBridge>

@@ -7,6 +7,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useAccountSwitcher} from '#src/Hooks/useAccountSwitcher';
+import {useCanAddAccount} from '#src/Hooks/useCanAddAccount';
 import {
   accountLabel,
   AccountListEntry,
@@ -38,6 +39,7 @@ interface ForeignLinkSheetProps {
  */
 export const ForeignLinkSheet = ({url, candidates, isPresented, onDismiss}: ForeignLinkSheetProps) => {
   const {switchToSession, serverProfiles} = useSession();
+  const canAddAccount = useCanAddAccount();
   const {switchAccount, isSwitching} = useAccountSwitcher();
   const {theme} = useAppTheme();
   const linkHost = new URLParse(url).hostname;
@@ -102,7 +104,7 @@ export const ForeignLinkSheet = ({url, candidates, isPresented, onDismiss}: Fore
         icon={AppIcons.new}
         onPress={onAddAccount}
         testID={'foreignLinkAddAccount-button'}
-        disabled={isSwitching}
+        disabled={isSwitching || !canAddAccount}
       />
       <AppBottomSheetButton
         buttonText={'Open in Browser'}

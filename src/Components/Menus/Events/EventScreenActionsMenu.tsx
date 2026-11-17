@@ -10,6 +10,7 @@ import {OpenInSchedMenuItem} from '#src/Components/Menus/Events/Items/OpenInSche
 import {PhotographingMenuItem} from '#src/Components/Menus/Events/Items/PhotographingMenuItem';
 import {SetOrganizerMenuItem} from '#src/Components/Menus/Events/Items/SetOrganizerMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {usePreRegistration} from '#src/Context/Contexts/PreRegistrationContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
@@ -82,7 +83,6 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
         />
       )}
       <Divider bold={true} />
-      <ShareMenuItem contentType={ShareContentType.event} contentID={props.event.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />
       <OpenInSchedMenuItem closeMenu={closeMenu} eventUid={props.event.uid} />
       {props.event.eventType === EventType.shadow && (
@@ -92,23 +92,24 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
           disabled={!(preRegistrationMode || hasPerformerSelfEditor)}
         />
       )}
-      {hasTwitarrTeam && <ManagePerformersMenuItem eventID={props.event.eventID} />}
-      {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
-      {hasShutternaut && (
-        <PhotographingMenuItem
-          eventID={props.event.eventID}
-          shutternautData={props.event.shutternautData}
-          closeMenu={closeMenu}
-        />
-      )}
-      {hasShutternautManager && (
-        <NeedsPhotographerMenuItem
-          eventID={props.event.eventID}
-          shutternautData={props.event.shutternautData}
-          closeMenu={closeMenu}
-        />
-      )}
-      {(hasShutternaut || hasShutternautManager) && <Divider bold={true} />}
+      <PrivilegedMenuGroup>
+        {hasTwitarrTeam && <ManagePerformersMenuItem eventID={props.event.eventID} />}
+        {hasShutternaut && (
+          <PhotographingMenuItem
+            eventID={props.event.eventID}
+            shutternautData={props.event.shutternautData}
+            closeMenu={closeMenu}
+          />
+        )}
+        {hasShutternautManager && (
+          <NeedsPhotographerMenuItem
+            eventID={props.event.eventID}
+            shutternautData={props.event.shutternautData}
+            closeMenu={closeMenu}
+          />
+        )}
+      </PrivilegedMenuGroup>
+      <ShareMenuItem contentType={ShareContentType.event} contentID={props.event.eventID} closeMenu={closeMenu} />
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />
     </AppMenu>
   );

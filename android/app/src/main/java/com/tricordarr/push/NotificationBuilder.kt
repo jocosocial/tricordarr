@@ -36,7 +36,6 @@ object NotificationBuilder {
   const val EXTRA_CONTENT_ID = "contentID"
   const val EXTRA_MARK_AS_READ_URL = "markAsReadUrl"
 
-  private const val SETTINGS_PATH = "settings/pushnotifications"
   private const val BACKGROUND_CONNECTION_LINK = NotificationPlanner.APP_LINK_PREFIX + "settings/backgroundconnection"
 
   private val immutableUpdate = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
@@ -100,11 +99,6 @@ object NotificationBuilder {
         PendingIntent.getBroadcast(context, plan.id, markRead, immutableUpdate),
       )
     }
-    val settingsLink = NotificationPlanner.withAccount(
-      "${NotificationPlanner.APP_LINK_PREFIX}$SETTINGS_PATH?notificationType=${Uri.encode(plan.type)}",
-      plan.accountID,
-    )
-    builder.addAction(0, "Settings", activityPendingIntent(context, plan.id, settingsLink))
 
     notify(context, plan.tag, plan.id, builder.build())
   }

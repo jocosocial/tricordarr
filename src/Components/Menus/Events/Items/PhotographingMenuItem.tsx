@@ -1,7 +1,9 @@
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
+import {Menu} from 'react-native-paper';
 
-import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
+import {getStateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {useEventPhotographerMutation} from '#src/Queries/Events/EventPhotographerMutations';
@@ -15,6 +17,7 @@ interface PhotographingMenuItemProps {
 
 export const PhotographingMenuItem = (props: PhotographingMenuItemProps) => {
   const queryClient = useQueryClient();
+  const {commonStyles} = useStyles();
   const photographerMutation = useEventPhotographerMutation();
   const {updatePhotographer} = useEventCacheReducer();
 
@@ -51,11 +54,17 @@ export const PhotographingMenuItem = (props: PhotographingMenuItemProps) => {
   }
 
   return (
-    <SelectableMenuItem
+    <Menu.Item
       title={'Photographing'}
-      leadingIcon={AppIcons.shutternaut}
+      style={props.shutternautData.userIsPhotographer ? commonStyles.surfaceVariant : undefined}
+      leadingIcon={getStateLoadingIcon({
+        isLoading: photographerMutation.isPending,
+        state: props.shutternautData.userIsPhotographer,
+        iconTrue: AppIcons.check,
+        iconFalse: AppIcons.shutternaut,
+      })}
       onPress={handlePhotographerToggle}
-      selected={props.shutternautData.userIsPhotographer}
+      disabled={photographerMutation.isPending}
     />
   );
 };

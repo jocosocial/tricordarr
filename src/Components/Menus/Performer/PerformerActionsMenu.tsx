@@ -1,9 +1,10 @@
 import React from 'react';
-import {Divider, Menu} from 'react-native-paper';
+import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
@@ -29,10 +30,8 @@ export const PerformerActionsMenu = ({performerData, performerID}: PerformerActi
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <ShareMenuItem contentType={ShareContentType.performer} contentID={performerID} closeMenu={closeMenu} />
-      {((hasModerator && creatorID) || hasTwitarrTeam) && <Divider bold={true} />}
-      {hasModerator && creatorID && (
-        <>
+      <PrivilegedMenuGroup leadingDivider={false}>
+        {hasModerator && creatorID && (
           <Menu.Item
             title={'View Creator Profile'}
             leadingIcon={AppIcons.moderator}
@@ -43,11 +42,8 @@ export const PerformerActionsMenu = ({performerData, performerID}: PerformerActi
               closeMenu();
             }}
           />
-          <Divider bold={true} />
-        </>
-      )}
-      {hasTwitarrTeam && (
-        <>
+        )}
+        {hasTwitarrTeam && (
           <Menu.Item
             title={'Edit Performer'}
             leadingIcon={AppIcons.twitarrteam}
@@ -60,9 +56,9 @@ export const PerformerActionsMenu = ({performerData, performerID}: PerformerActi
               closeMenu();
             }}
           />
-          <Divider bold={true} />
-        </>
-      )}
+        )}
+      </PrivilegedMenuGroup>
+      <ShareMenuItem contentType={ShareContentType.performer} contentID={performerID} closeMenu={closeMenu} />
       <Menu.Item
         title={'Help'}
         leadingIcon={AppIcons.help}

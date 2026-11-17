@@ -6,6 +6,7 @@ import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useAccountSwitcher} from '#src/Hooks/useAccountSwitcher';
+import {useCanAddAccount} from '#src/Hooks/useCanAddAccount';
 import {
   accountLabel,
   AccountListEntry,
@@ -29,6 +30,7 @@ interface AccountSwitcherSheetProps {
  */
 export const AccountSwitcherSheet = ({isPresented, onDismiss}: AccountSwitcherSheetProps) => {
   const {accounts, sessions, currentSession, serverProfiles, switchToSession} = useSession();
+  const canAddAccount = useCanAddAccount();
   const {switchAccount, isSwitching} = useAccountSwitcher();
   const mainNavigation = useMainStack();
   const {theme} = useAppTheme();
@@ -84,6 +86,7 @@ export const AccountSwitcherSheet = ({isPresented, onDismiss}: AccountSwitcherSh
         icon={AppIcons.new}
         onPress={() => navigateToAddAccount()}
         testID={'addAccount-button'}
+        disabled={!canAddAccount}
       />
       <AppBottomSheetButton
         buttonText={'Manage Accounts'}

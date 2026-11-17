@@ -11,10 +11,13 @@ import {ForumPostActionsReportItem} from '#src/Components/Menus/Forum/Items/Foru
 import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsShowThreadItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
+import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {useForumComposer} from '#src/Context/Contexts/ForumComposerContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {useMenuBottomInset} from '#src/Hooks/useMenuBottomInset';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
@@ -29,6 +32,9 @@ interface ForumPostActionsMenuProps {
   forumData?: ForumData;
 }
 
+/**
+ * Long-press actions menu for a forum post, anchored on the element passed in as `anchor`.
+ */
 export const ForumPostActionsMenu = ({
   visible,
   closeMenu,
@@ -39,7 +45,9 @@ export const ForumPostActionsMenu = ({
   forumData,
 }: ForumPostActionsMenuProps) => {
   const {currentUserID} = useSession();
+  const {hasModerator} = usePrivilege();
   const bridged = useMenuContextBridge();
+  const bottomInset = useMenuBottomInset();
   const bySelf = currentUserID === forumPost.author.userID;
   const commonNavigation = useCommonStack();
   const {setString} = useClipboard();
@@ -53,7 +61,7 @@ export const ForumPostActionsMenu = ({
    * that through.
    */
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
+    <Menu bottomInset={bottomInset} visible={visible} onDismiss={closeMenu} anchor={anchor}>
       <MenuContextBridge bridged={bridged}>
         {(showReply || enableShowInThread) && (
           <>
@@ -71,12 +79,6 @@ export const ForumPostActionsMenu = ({
             closeMenu();
           }}
         />
-        <ShareMenuItem
-          contentType={ShareContentType.forumPost}
-          contentID={forumPost.postID}
-          contentText={forumPost.text}
-          closeMenu={closeMenu}
-        />
         <Divider bold={true} />
         {bySelf && (
           <>
@@ -93,17 +95,24 @@ export const ForumPostActionsMenu = ({
               }}
             />
             <ForumPostActionsDeleteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
+            <Divider bold={true} />
           </>
         )}
-        <Divider bold={true} />
         <ForumPostActionsFavoriteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
         {enablePinnedPosts && (
           <ForumPostActionsPinItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
         )}
         <Divider bold={true} />
         <ForumPostActionsReportItem forumPost={forumPost} closeMenu={closeMenu} />
-        <Divider bold={true} />
-        <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} />
+        <PrivilegedMenuGroup>
+          {hasModerator && <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} />}
+        </PrivilegedMenuGroup>
+        <ShareMenuItem
+          contentType={ShareContentType.forumPost}
+          contentID={forumPost.postID}
+          contentText={forumPost.text}
+          closeMenu={closeMenu}
+        />
         <Divider bold={true} />
         <ForumPostActionsReactionItem forumPost={forumPost} />
       </MenuContextBridge>
