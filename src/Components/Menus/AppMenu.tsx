@@ -13,6 +13,7 @@ import {Menu, MenuProps} from 'react-native-paper';
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
 import {MenuScrollIndicator} from '#src/Components/Views/MenuScrollIndicator';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useMenuBottomInset} from '#src/Hooks/useMenuBottomInset';
 
 /**
  * Extended MenuProps that includes onScroll (added via patch to react-native-paper)
@@ -61,6 +62,7 @@ export const useAppMenuScroll = () => useContext(AppMenuScrollContext);
 export const AppMenu = ({visible, children, onScroll, style, header, bounces = false, ...menuProps}: AppMenuProps) => {
   const {commonStyles} = useStyles();
   const bridged = useMenuContextBridge();
+  const bottomInset = useMenuBottomInset();
   const screenHeight = Dimensions.get('window').height;
   const [contentHeight, setContentHeight] = useState(0);
   const [scrollY, setScrollY] = useState(0);
@@ -149,7 +151,8 @@ export const AppMenu = ({visible, children, onScroll, style, header, bounces = f
       // otherwise cover the anchor entirely. Yoga adds margin on top of that computed offset,
       // so a small marginTop nudges the menu down far enough to leave the anchor visible.
       // Keep this a fixed value: using a safe area inset here is what pushed menus far below
-      // their anchors, and the maxHeight below is what keeps the menu clear of the system bars.
+      // their anchors. The bottomInset passed to Menu is what keeps the menu clear of the tab bar
+      // and system navigation bar; the maxHeight below only caps how tall it gets.
       ...commonStyles.marginTop,
       ...(style as object),
     },
@@ -198,6 +201,9 @@ export const AppMenu = ({visible, children, onScroll, style, header, bounces = f
       // statusBarHeight became necessary after upgrade to Expo+RN86 due to menus
       // showing up way too low.
       statusBarHeight={0}
+      // Keeps the menu above the bottom tab bar / system navigation bar; Paper flips it above
+      // its anchor when it would not fit below.
+      bottomInset={bottomInset}
       keyboardShouldPersistTaps={menuProps.keyboardShouldPersistTaps || 'handled'}
       {...menuProps}>
       <MenuContextBridge bridged={bridged}>

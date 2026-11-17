@@ -17,6 +17,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
+import {useMenuBottomInset} from '#src/Hooks/useMenuBottomInset';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
@@ -31,6 +32,9 @@ interface ForumPostActionsMenuProps {
   forumData?: ForumData;
 }
 
+/**
+ * Long-press actions menu for a forum post, anchored on the element passed in as `anchor`.
+ */
 export const ForumPostActionsMenu = ({
   visible,
   closeMenu,
@@ -43,6 +47,7 @@ export const ForumPostActionsMenu = ({
   const {currentUserID} = useSession();
   const {hasModerator} = usePrivilege();
   const bridged = useMenuContextBridge();
+  const bottomInset = useMenuBottomInset();
   const bySelf = currentUserID === forumPost.author.userID;
   const commonNavigation = useCommonStack();
   const {setString} = useClipboard();
@@ -56,7 +61,7 @@ export const ForumPostActionsMenu = ({
    * that through.
    */
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
+    <Menu bottomInset={bottomInset} visible={visible} onDismiss={closeMenu} anchor={anchor}>
       <MenuContextBridge bridged={bridged}>
         {(showReply || enableShowInThread) && (
           <>

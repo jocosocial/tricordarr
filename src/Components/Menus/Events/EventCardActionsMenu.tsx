@@ -15,6 +15,7 @@ import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
+import {useMenuBottomInset} from '#src/Hooks/useMenuBottomInset';
 import {ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {EventData} from '#src/Structs/ControllerStructs';
@@ -100,13 +101,14 @@ interface EventCardActionsMenuProps {
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const bridged = useMenuContextBridge();
+  const bottomInset = useMenuBottomInset();
 
   const anchorWithMenu = React.cloneElement(props.anchor, {
     onLongPress: openMenu,
   });
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={anchorWithMenu}>
+    <Menu bottomInset={bottomInset} visible={visible} onDismiss={closeMenu} anchor={anchorWithMenu}>
       <MenuContextBridge bridged={bridged}>
         <EventCardActionsMenuItems eventData={props.eventData} closeMenu={closeMenu} />
       </MenuContextBridge>

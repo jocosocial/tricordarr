@@ -8,6 +8,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useMenu} from '#src/Hooks/useMenu';
+import {useMenuBottomInset} from '#src/Hooks/useMenuBottomInset';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
 
@@ -87,13 +88,14 @@ interface PersonalEventCardActionsMenuProps {
 export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const bridged = useMenuContextBridge();
+  const bottomInset = useMenuBottomInset();
 
   const anchorWithMenu = React.cloneElement(props.anchor, {
     onLongPress: openMenu,
   });
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={anchorWithMenu}>
+    <Menu bottomInset={bottomInset} visible={visible} onDismiss={closeMenu} anchor={anchorWithMenu}>
       <MenuContextBridge bridged={bridged}>
         <PersonalEventCardActionsMenuItems eventData={props.eventData} closeMenu={closeMenu} />
       </MenuContextBridge>

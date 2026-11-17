@@ -5,6 +5,7 @@ import {EventCardActionsMenuItems} from '#src/Components/Menus/Events/EventCardA
 import {FezCardActionsMenuItems} from '#src/Components/Menus/Fez/FezCardActionsMenu';
 import {MenuContextBridge, useMenuContextBridge} from '#src/Components/Menus/MenuContextBridge';
 import {PersonalEventCardActionsMenuItems} from '#src/Components/Menus/PersonalEvents/PersonalEventCardActionsMenu';
+import {useMenuBottomInset} from '#src/Hooks/useMenuBottomInset';
 import {DayPlannerItem} from '#src/Types/DayPlanner';
 
 /** The planner item being acted on and the window coordinates of the long press that opened the menu. */
@@ -53,8 +54,13 @@ const DayPlannerCardActionsMenuItems = ({item, closeMenu}: DayPlannerCardActions
  */
 export const DayPlannerCardActionsMenu = ({target, visible, closeMenu}: DayPlannerCardActionsMenuProps) => {
   const bridged = useMenuContextBridge();
+  const bottomInset = useMenuBottomInset();
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={{x: target?.x ?? 0, y: target?.y ?? 0}}>
+    <Menu
+      bottomInset={bottomInset}
+      visible={visible}
+      onDismiss={closeMenu}
+      anchor={{x: target?.x ?? 0, y: target?.y ?? 0}}>
       <MenuContextBridge bridged={bridged}>
         {target && <DayPlannerCardActionsMenuItems item={target.item} closeMenu={closeMenu} />}
       </MenuContextBridge>

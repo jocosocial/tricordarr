@@ -7,6 +7,7 @@ import {PrivilegedMenuGroup} from '#src/Components/Menus/PrivilegedMenuGroup';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
+import {useMenuBottomInset} from '#src/Hooks/useMenuBottomInset';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
@@ -17,9 +18,13 @@ interface PhotostreamImageActionsMenuProps {
   image: PhotostreamImageData;
 }
 
+/**
+ * Actions menu for a photostream image, anchored on the element passed in as `anchor`.
+ */
 export const PhotostreamImageActionsMenu = ({visible, closeMenu, anchor, image}: PhotostreamImageActionsMenuProps) => {
   const {hasModerator} = usePrivilege();
   const bridged = useMenuContextBridge();
+  const bottomInset = useMenuBottomInset();
   const commonNavigation = useCommonStack();
 
   const handleReport = () => {
@@ -31,7 +36,7 @@ export const PhotostreamImageActionsMenu = ({visible, closeMenu, anchor, image}:
   };
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
+    <Menu bottomInset={bottomInset} visible={visible} onDismiss={closeMenu} anchor={anchor}>
       <MenuContextBridge bridged={bridged}>
         <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
         <PrivilegedMenuGroup trailingDivider={false}>

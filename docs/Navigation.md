@@ -61,6 +61,15 @@ return (
 
 Closures created in the menu itself were always fine, and still are; the bridge is what makes hooks inside the items safe too.
 
+### Keeping menus above the tab bar
+
+Paper's `Menu` decides whether to open below or above its anchor by measuring against `Dimensions.get('window')`. With Android edge-to-edge that height includes the system navigation bar, and Paper has no idea there is a bottom tab bar, so a menu opened low on the screen used to draw over the tab bar or underneath the 3-button navigation bar. Our `react-native-paper` patch adds a `bottomInset` prop to `Menu` that is subtracted from the usable window height (the keyboard height wins when it is larger), so Paper flips or shifts the menu upward instead.
+
+- `useMenuBottomInset()` (`src/Hooks/useMenuBottomInset.ts`) returns the tab bar height inside a tab navigator, else the bottom safe area inset. Call it in the menu component, next to `useMenuContextBridge()`, because the portaled children cannot read the tab bar context.
+- `AppMenu` passes it automatically. A raw Paper `<Menu>` must pass `bottomInset={useMenuBottomInset()}` itself; without it the patch falls back to the bottom safe area inset, which clears the navigation bar but not the tab bar.
+
+The top edge works the same way in reverse. Paper only keeps a menu off the top of the window when it opens below its anchor, so a menu flipped above a low anchor, or anchored by long-press coordinates near the top (the Day Planner), could draw under the status bar or camera cutout. The patch also adds a `topInset` prop, defaulting to the top safe area inset, and clamps the menu below it (shrinking it into a scrollable menu if it no longer fits). Because the default comes from `useSafeAreaInsets()` inside `Menu` itself, no call site needs to pass anything.
+
 `Alert.alert` is not a portal. Destructive confirms that run from a screen or header-menu parent should use stack hooks (`useNavigation()`, `useCommonStack()`, …), not NavigationRef.
 
 To pop past a named screen in the **current** stack (for example leave a private event from participation, which sits on top of `personalEventScreen`):
