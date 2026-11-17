@@ -245,10 +245,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
                             ref={(ref: React.ComponentRef<typeof Animated.View> | null) => {
                               categoryRefs.current[category.configKey] = ref as View | null;
                             }}
-                            style={[
-                              isHighlighted ? pulseAnimatedStyle : undefined,
-                              commonStyles.paddingHorizontalSmall,
-                            ]}>
+                            style={isHighlighted ? pulseAnimatedStyle : undefined}>
                             <BooleanField
                               name={category.configKey}
                               testID={`${category.configKey}-switch`}
@@ -257,6 +254,7 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
                               onPress={() => toggleValue(category.configKey)}
                               disabled={!hasNotificationPermission || category.disabled}
                               helperText={category.description}
+                              style={commonStyles.paddingHorizontalSmall}
                             />
                           </Animated.View>
                         );
@@ -307,19 +305,20 @@ export const PushNotificationSettingsScreen = ({route}: Props) => {
               useful if you tend to navigate to content (such as a Seamail conversation) without tapping on the
               notification and want the notification to go away.
             </Text>
-            <Formik initialValues={{}} onSubmit={() => {}}>
-              <View>
-                <BooleanField
-                  name={'markReadCancelPush'}
-                  testID={'markReadCancelPush-switch'}
-                  label={'Dismiss Notifications on Read'}
-                  value={markReadCancelPush}
-                  onPress={toggleMarkReadCancelPush}
-                  helperText={'Applies to Seamails, LFGs, and Private Events.'}
-                />
-              </View>
-            </Formik>
           </PaddedContentView>
+          <Formik initialValues={{}} onSubmit={() => {}}>
+            <View>
+              <BooleanField
+                name={'markReadCancelPush'}
+                testID={'markReadCancelPush-switch'}
+                label={'Dismiss Notifications on Read'}
+                value={markReadCancelPush}
+                onPress={toggleMarkReadCancelPush}
+                helperText={'Applies to Seamails, LFGs, and Private Events.'}
+                style={commonStyles.paddingHorizontalSmall}
+              />
+            </View>
+          </Formik>
         </ListSection>
       </ScrollingContentView>
     </AppView>

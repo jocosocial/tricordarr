@@ -106,6 +106,12 @@ export namespace NotificationTypeData {
     doc: string;
     /** Channel the notification posts to. Undefined for a type that never posts one. */
     channel?: Channel;
+    /**
+     * Channel whose section the settings screen lists this type in. It differs from `channel` when
+     * the spec folds the type's channel into another, and is undefined for an unposted type with no
+     * section.
+     */
+    settingsChannel?: Channel;
     /** App route path the notification opens, with `{placeholders}` for the IDs it needs. */
     url?: string;
     /** The type is no longer used, so its setting cannot be changed. */
@@ -118,112 +124,131 @@ export namespace NotificationTypeData {
       title: 'New Seamail',
       doc: 'A participant in a Seamail thread the user is a member of has posted a new message.',
       channel: 'seamail',
+      settingsChannel: 'seamail',
       url: '/seamail/{contentID}',
     },
     [NotificationTypeData.fezUnreadMsg]: {
       title: 'New LFG Message',
       doc: 'A participant in a Chat the user is a member of has posted a new message.',
       channel: 'lfg',
+      settingsChannel: 'lfg',
       url: '/lfg/{contentID}/chat',
     },
     [NotificationTypeData.privateEventUnreadMsg]: {
       title: 'New Private Event Message',
       doc: "An invitee to a Private Event has posted a new chat message in the event's chat.",
       channel: 'events',
+      settingsChannel: 'events',
       url: '/privateevent/{contentID}/chat',
     },
     [NotificationTypeData.announcement]: {
       title: 'Announcement',
       doc: 'A server-wide announcement has just been added.',
       channel: 'announcements',
+      settingsChannel: 'announcements',
       url: '/home',
     },
     [NotificationTypeData.alertwordPost]: {
       title: 'Forum Alert Word',
       doc: 'A user has posted a Forum Post that contains a word this user has set as an alertword.',
       channel: 'forums',
+      settingsChannel: 'forums',
       url: '/forum/containingpost/{contentID}',
     },
     [NotificationTypeData.forumMention]: {
       title: 'Forum Mention',
       doc: 'A user has posted a Forum Post that @mentions this user.',
       channel: 'forums',
+      settingsChannel: 'forums',
       url: '/forumpost/mentions',
     },
     [NotificationTypeData.twitarrTeamForumMention]: {
       title: 'TwitarrTeam Forum Mention',
       doc: 'A new or edited forum post that now @mentions @twitarrteam.',
       channel: 'forums',
+      settingsChannel: 'forums',
       url: '/forum/containingpost/{contentID}',
     },
     [NotificationTypeData.moderatorForumMention]: {
       title: 'Moderator Forum Mention',
       doc: 'A new or edited forum post that now @mentions @moderator.',
       channel: 'forums',
+      settingsChannel: 'forums',
       url: '/forum/containingpost/{contentID}',
     },
     [NotificationTypeData.incomingPhoneCall]: {
       title: 'Incoming Call',
       doc: "Someone is trying to call this user via KrakenTalk.'",
       channel: 'krakentalkcalls',
+      settingsChannel: 'krakentalkcalls',
       url: '/phonecall/{contentID}/from/{callerUserID}/{callerUsername}',
     },
     [NotificationTypeData.phoneCallEnded]: {
       title: 'Call Ended',
       doc: 'Caller hung up while phone was rining, or other party ended the call in progress, or callee declined',
       channel: 'krakentalkmgmt',
+      settingsChannel: 'krakentalkcalls',
     },
     [NotificationTypeData.followedEventStarting]: {
       title: 'Followed Event Starting',
       doc: 'An event the user is following is about to start.',
       channel: 'events',
+      settingsChannel: 'events',
       url: '/events/{contentID}',
     },
     [NotificationTypeData.joinedLFGStarting]: {
       title: 'Joined LFG Starting',
       doc: 'An LFG the user has joined is about to start.',
       channel: 'lfg',
+      settingsChannel: 'lfg',
       url: '/lfg/{contentID}',
     },
     [NotificationTypeData.personalEventStarting]: {
       title: 'Private Event Starting',
       doc: 'A Personal Event the user has created or was added to is about to start.',
       channel: 'events',
+      settingsChannel: 'events',
       url: '/privateevent/{contentID}',
     },
     [NotificationTypeData.addedToPrivateEvent]: {
       title: 'Added to Private Event',
       doc: 'The creator of the event has added this user.',
       channel: 'events',
+      settingsChannel: 'events',
       url: '/privateevent/{contentID}',
     },
     [NotificationTypeData.addedToLFG]: {
       title: 'Added to LFG',
       doc: 'The creator of the LFG has added this user.',
       channel: 'lfg',
+      settingsChannel: 'lfg',
       url: '/lfg/{contentID}',
     },
     [NotificationTypeData.addedToSeamail]: {
       title: 'Added to Seamail',
       doc: "Only for 'open' seamails. The owner of the chata has added this user.",
       channel: 'seamail',
+      settingsChannel: 'seamail',
       url: '/seamail/{contentID}',
     },
     [NotificationTypeData.privateEventCanceled]: {
       title: 'Private Event Canceled',
       doc: 'A Private Event the user has joined has been canceled.',
       channel: 'events',
+      settingsChannel: 'events',
       url: '/privateevent/{contentID}',
     },
     [NotificationTypeData.lfgCanceled]: {
       title: 'LFG Canceled',
       doc: 'An LFG the user has joined has been canceled.',
       channel: 'lfg',
+      settingsChannel: 'lfg',
       url: '/lfg/{contentID}',
     },
     [NotificationTypeData.phoneCallAnswered]: {
       title: 'Call Answered',
       doc: 'The callee answered the call, possibly on another device.',
+      settingsChannel: 'krakentalkcalls',
     },
     [NotificationTypeData.alertwordTwarrt]: {
       title: 'Twarrt Alert Words',
