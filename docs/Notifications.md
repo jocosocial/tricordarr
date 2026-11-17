@@ -94,14 +94,16 @@ Every `NotificationTypeData` value must appear in either `events` or `unposted` 
 post a notification: `phoneCallAnswered`, `alertwordTwarrt`, `twarrtMention`,
 `microKaraokeSongReady`). Each entry carries a `doc` string, which becomes the doc comment on the
 TS and Swift enum cases; an optional `note` becomes `//` lines above it. `unposted` maps type to
-`{title, doc}`, plus `deprecated: true` for a type that is no longer used (the Twarrt types). Both
+`{title, doc}`, plus `deprecated: true` for a type that is no longer used (the Twarrt types) and
+`signal: true` for call signalling (below). Both
 enums, the TS spec table and the Swift `eventSpec` switch are generated from the JSON, so they cannot
 disagree.
 
 The TS side builds the push notification settings from `specs` too. `contentNotificationCategories`
 (`Content.ts`) uses each type's `title` and `doc` as the setting label and help text, and disables a
-deprecated type's toggle. `contentNotificationSections` groups the settings by channel for
-`PushNotificationSettingsScreen`, with unposted types in an "Other" section. The default
+deprecated type's toggle. `contentNotificationSections` groups the settings by channel (sections
+sorted by channel name) for `PushNotificationSettingsScreen`, with unposted types in a final "Other"
+section and signal types left out. The default
 `AppConfig.pushNotifications` turns every type on except deprecated ones.
 
 `signal: true` marks call signalling (`phoneCallAnswered`, `phoneCallEnded`). A signal type has no
@@ -110,7 +112,9 @@ step, not to inform the user. On Android, `phoneCallEnded` still posts "Call End
 notification (same call ID), and `phoneCallAnswered` dismisses the ringing notification
 (`PlanResult.Dismiss`). On iOS CallKit is driven by `CallProvider` from the app's own socket:
 `phoneCallAnswered` ends a call that is still ringing on this device with the `AnsweredElsewhere`
-reason, while the device that answered is already past ringing and is left alone.
+reason, while the device that answered is already past ringing and is left alone. Nothing on the
+app side receives the push extension's `reportIncomingCall`, so on iOS a call only rings while the
+app's own socket is connected.
 
 `__tests__/unit/TestNotificationEvents.ts` checks the JSON against the declared channels,
 `RouteDefinitions`, and the generated files; `TestNotificationSettings.ts` checks the settings
@@ -119,7 +123,9 @@ sections; `NotificationPlannerTest` checks the Kotlin side.
 Do not change channel IDs or group membership: group binding is immutable and a new ID loses user
 customizations. Add a new event by adding it to the JSON (`events` or `unposted`), then run
 `npm run codegen:notifications`. No platform needs a hand edit for the enum, the setting or its
-default.
+default. Behaviour beyond posting is still hand-written: the cache invalidation per type in
+`NotificationDataListener`, and the call handling in `NotificationPlanner`, `WebsocketNotifier` and
+`CallProvider`.
 
 ### Foreground service type
 

@@ -153,7 +153,7 @@ Use `createLogger` rather than `console.log`
 - Never import from a `*.generated` TS file (lint-enforced); import `NotificationTypeData` from `#src/Structs/SocketStructs`, which re-exports it
 - After changing it, run `npm run codegen:notifications`
 - Every `NotificationTypeData` value must be in `events` or `unposted`
-- Every entry needs a `doc` string; it becomes the doc comment on the TS and Swift enum cases
+- Every entry needs a `title` and a `doc` string; the `doc` becomes the doc comment on the TS and Swift enum cases
 - The TS and Swift `NotificationTypeData` enums are generated from the JSON, so a new type needs no hand edit on any platform
 
 ## Commits
