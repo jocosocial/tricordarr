@@ -12,6 +12,8 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useCanAddAccount} from '#src/Hooks/useCanAddAccount';
+import {MAX_ACCOUNTS_MESSAGE} from '#src/Libraries/Account';
 import {navigateToAddAccount} from '#src/Libraries/Navigation';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackComponents';
@@ -23,6 +25,7 @@ import {useSettingsStack} from '#src/Navigation/Stacks/Settings/SettingsStackCom
 export const AccountsSettingsScreen = () => {
   const settingsNavigation = useSettingsStack();
   const {accounts, sessions} = useSession();
+  const canAddAccount = useCanAddAccount();
 
   const getNavButtons = useCallback(
     () => (
@@ -61,8 +64,11 @@ export const AccountsSettingsScreen = () => {
             <MinorActionListItem
               title={'Add Account'}
               icon={AppIcons.new}
-              description={'Log in, create an account, or browse another server.'}
+              description={
+                canAddAccount ? 'Log in, create an account, or browse another server.' : MAX_ACCOUNTS_MESSAGE
+              }
               onPress={() => navigateToAddAccount()}
+              disabled={!canAddAccount}
             />
           </ListSection>
         </PaddedContentView>

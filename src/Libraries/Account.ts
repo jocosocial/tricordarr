@@ -2,6 +2,21 @@ import {serverUrlHost} from '#src/Libraries/ServerUrl';
 import {Account, ServerProfile, Session} from '#src/Structs/SessionStructs';
 
 /**
+ * The most accounts one device can hold, across all servers. Signed-out and revoked accounts count
+ * until they are removed.
+ *
+ * Chosen because Swiftarr defaults to allowing 6 alt accounts: that plus the primary account is 7,
+ * with one bonus for an account on another server. The cap is mostly to keep the account UI
+ * (switcher, lists) from getting unwieldy and to prevent excessive background connections.
+ */
+export const MAX_ACCOUNTS = 8;
+
+/**
+ * User-facing explanation shown wherever adding an account is blocked by `MAX_ACCOUNTS`.
+ */
+export const MAX_ACCOUNTS_MESSAGE = `This device can hold ${MAX_ACCOUNTS} accounts. Remove one in Settings > Accounts to add another.`;
+
+/**
  * `username`, or the userID if the username has not been fetched yet.
  */
 export const accountName = (account: Account): string => account.username || account.userID;

@@ -11,6 +11,7 @@ import {
 } from '#src/Context/Contexts/SessionContext';
 import {selectCurrentSession, SessionAction, SessionState} from '#src/Context/State/SessionState';
 import {SessionStore} from '#src/Context/State/SessionStore';
+import {MAX_ACCOUNTS, MAX_ACCOUNTS_MESSAGE} from '#src/Libraries/Account';
 import {AccountPreferences} from '#src/Libraries/AppConfig';
 import {createLogger} from '#src/Libraries/Logger';
 import {stashNavigationState} from '#src/Libraries/NavigationRef';
@@ -271,6 +272,14 @@ export const SessionProvider = ({children}: PropsWithChildren) => {
   const signIn = useCallback(
     async (serverUrl: string, token: TokenStringData, options?: SignInOptions): Promise<Account> => {
       const normalized = normalizeServerUrl(serverUrl);
+      // Backstop for the entry points that already hide adding an account at the cap. Signing in to
+      // an account the device already holds is always allowed.
+      if (
+        store.getState().accounts.length >= MAX_ACCOUNTS &&
+        !store.getState().accounts.some(a => a.serverUrl === normalized && a.userID === token.userID)
+      ) {
+        throw new Error(MAX_ACCOUNTS_MESSAGE);
+      }
       // The whoami read is best effort: a login that succeeded must not fail because this did.
       let username = '';
       let accessLevel = token.accessLevel;

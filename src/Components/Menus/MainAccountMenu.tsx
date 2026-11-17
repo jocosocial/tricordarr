@@ -7,6 +7,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AccountSwitcherSheet} from '#src/Components/Sheets/AccountSwitcherSheet';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useCanAddAccount} from '#src/Hooks/useCanAddAccount';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/Main/MainStackComponents';
@@ -18,6 +19,7 @@ export const MainAccountMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
   const mainNavigation = useMainStack();
   const {isLoggedIn, accounts} = useSession();
+  const canAddAccount = useCanAddAccount();
   const [switcherOpen, setSwitcherOpen] = useState(false);
 
   const handleManage = () => {
@@ -86,8 +88,13 @@ export const MainAccountMenu = () => {
           </>
         ) : (
           <>
-            <Menu.Item leadingIcon={AppIcons.user} title={'Login'} onPress={handleLogin} />
-            <Menu.Item leadingIcon={AppIcons.registrationCode} title={'Register'} onPress={handleRegister} />
+            <Menu.Item leadingIcon={AppIcons.user} title={'Login'} onPress={handleLogin} disabled={!canAddAccount} />
+            <Menu.Item
+              leadingIcon={AppIcons.registrationCode}
+              title={'Register'}
+              onPress={handleRegister}
+              disabled={!canAddAccount}
+            />
           </>
         )}
         {accounts.length > 0 && (
