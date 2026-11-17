@@ -8,10 +8,11 @@ Links tapped inside the app go through `openWebUrl` in `LinkingProvider.tsx` ins
 Hosts are fixed at build time, so changing them requires a new build. Keep these lists in sync. `__tests__/unit/TestLinking.ts`
 fails if they drift.
 
-| Build   | Hosts                                                                       | JS list            | iOS                             | Android                           |
-| ------- | --------------------------------------------------------------------------- | ------------------ | ------------------------------- | --------------------------------- |
-| Release | `twitarr.com`, `start.twitarr.com`                                          | `releaseLinkHosts` | `Tricordarr.entitlements`       | `src/release/AndroidManifest.xml` |
-| Debug   | `twitarr.com`, `start.twitarr.com`, `beta.twitarr.com`, `alpha.twitarr.com` | `debugLinkHosts`   | `Tricordarr.Debug.entitlements` | `src/debug/AndroidManifest.xml`   |
+| Hosts                                                                       | JS list              | iOS                                                        | Android                                                            |
+| --------------------------------------------------------------------------- | -------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------ |
+| `twitarr.com`, `start.twitarr.com`, `beta.twitarr.com`, `alpha.twitarr.com` | `universalLinkHosts` | `Tricordarr.entitlements`, `Tricordarr.Debug.entitlements` | `src/release/AndroidManifest.xml`, `src/debug/AndroidManifest.xml` |
+
+Every build type claims the same hosts. The `webcredentials` entries and the Android `asset_statements.xml` follow the same list.
 
 `www.twitarr.com` isn't claimed because it redirects, and both platforms need the well-known files served without a redirect.
 
@@ -39,7 +40,12 @@ decides what happens:
 
 - Links are dropped until OOBE is complete, since a link's initial state would otherwise skip it.
 - A link on the session's server, or on a canonical host like `twitarr.com`, opens on the session's server.
-- Any other claimed host shows the alert from `ForeignLinkHandler`, which offers to open it in a browser, and doesn't navigate.
+- Any other claimed host is dropped by the linking filter and handled by `ForeignLinkHandler`, which looks for accounts and anonymous
+  sessions on this device for that server (`findLinkCandidates`). Exactly one signed-in account: it switches to it. Anything else
+  (several, signed out, anonymous only, none): `ForeignLinkSheet` offers each of them, Add Account, and Open in Browser.
+- The link is held by server (`stashServerLink` in `AccountLink.ts`), not by account, so it survives a login as a different user,
+  an anonymous session and Add Account. `AccountLinkHandler` opens it in the next session that lands on that server, but not while
+  the setup flow is still running (`resumeMode`). A held link expires after 10 minutes, and is dropped if any other server is reached.
 
 A path with no native route falls through to `SiteUILinkScreen`. ID params only match UUIDs, so pages like `/forum/search`
 reach it too.
