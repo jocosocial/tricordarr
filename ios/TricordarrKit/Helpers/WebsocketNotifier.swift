@@ -165,7 +165,10 @@ public class WebsocketNotifier: NSObject {
 			// for testing and using Twitarr out in the world which I often do. Testing at bars is great.
 			// config.allowsCellularAccess = false
 			config.waitsForConnectivity = true
-			config.httpAdditionalHeaders = ["X-Swiftarr-Client": "Tricordarr \(Settings.shared.appVersion)"]
+			config.httpAdditionalHeaders = [
+				"X-Swiftarr-Client": "\(Settings.shared.appName) \(Settings.shared.appVersion)",
+				"Cache-Control": "no-store",
+			]
 			session = .init(configuration: config, delegate: self, delegateQueue: nil)
 		}
 	}

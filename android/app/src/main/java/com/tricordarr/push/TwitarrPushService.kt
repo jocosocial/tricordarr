@@ -161,7 +161,7 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
           account,
           statusStore.get(account.accountID),
           scope,
-          PushHttp.socketClient,
+          PushHttp.socketClient(this),
           this,
         )
         connections[account.accountID] = connection

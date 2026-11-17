@@ -37,7 +37,7 @@ class MarkAsReadReceiver : BroadcastReceiver() {
           .header("Authorization", "Bearer ${account.token}")
           .get()
           .build()
-        PushHttp.apiClient.newCall(request).execute().use { response ->
+        PushHttp.apiClient(appContext).newCall(request).execute().use { response ->
           if (response.isSuccessful) {
             PushEvents.listener?.onMarkAsRead(accountID, contentID)
           } else {
