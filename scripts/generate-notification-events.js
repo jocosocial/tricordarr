@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generates the native (Swift and Kotlin) notification event tables from
+ * Generates the TypeScript, Swift and Kotlin notification event tables from
  * specs/NotificationEvents.json. The generated files are checked in; `--check` fails when they are
  * stale.
  */
@@ -9,6 +9,7 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const SPEC_PATH = path.join(ROOT, 'specs', 'NotificationEvents.json');
+const TS_PATH = path.join(ROOT, 'src', 'Structs', 'NotificationEvents.generated.ts');
 const SWIFT_PATH = path.join(ROOT, 'ios', 'TricordarrKit', 'Generated', 'NotificationEvents.generated.swift');
 const KOTLIN_PATH = path.join(
   ROOT,
@@ -89,6 +90,11 @@ function validate(spec) {
   }
 }
 
+/** Escapes a string as a single-quoted TypeScript literal, matching the repo's Prettier config. */
+function tsString(value) {
+  return `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+}
+
 /** Escapes a string as a double-quoted Swift literal. */
 function swiftString(value) {
   return JSON.stringify(value);
@@ -107,6 +113,50 @@ function swiftOptional(value) {
 /** Renders an optional string as a Kotlin literal or `null`. */
 function kotlinOptional(value) {
   return value === undefined ? 'null' : kotlinString(value);
+}
+
+/**
+ * Returns the generated TypeScript source: the `NotificationTypeData` enum, merged with a namespace
+ * holding the per-type titles shown in the notification log.
+ */
+function renderTypeScript(spec) {
+  validate(spec);
+  const entries = {...spec.events, ...spec.unposted};
+  const lines = [HEADER, ''];
+  lines.push(
+    '/** The type of event a notification socket message describes. Cases are sourced from Swiftarr. */',
+    'export enum NotificationTypeData {',
+  );
+  Object.entries(entries).forEach(([type, entry], index) => {
+    if (index > 0) {
+      lines.push('');
+    }
+    if (entry.note) {
+      entry.note.split('\n').forEach(line => lines.push(`  // ${line}`));
+    }
+    lines.push(`  /** ${entry.doc} */`, `  ${type} = ${tsString(type)},`);
+  });
+  lines.push('}', '');
+  lines.push(
+    'export namespace NotificationTypeData {',
+    '  /** User-facing title for each posted event, matching the push notification title. */',
+    '  const titles: Partial<Record<NotificationTypeData, string>> = {',
+  );
+  Object.entries(spec.events).forEach(([type, event]) => {
+    lines.push(`    [NotificationTypeData.${type}]: ${tsString(event.title)},`);
+  });
+  lines.push(
+    '  };',
+    '',
+    '  /**',
+    '   * Returns the user-facing title for a notification type, as shown in the notification log. Falls',
+    '   * back to the raw type string for unposted or unrecognized types (e.g. `unknown`).',
+    '   */',
+    '  export const getTitle = (type: string): string => titles[type as NotificationTypeData] ?? type;',
+    '}',
+    '',
+  );
+  return lines.join('\n');
 }
 
 /**
@@ -242,6 +292,7 @@ function renderKotlin(spec) {
 /** Returns the [path, rendered text] pairs for every generated file. */
 function renderAll(spec) {
   return [
+    [TS_PATH, renderTypeScript(spec)],
     [SWIFT_PATH, renderSwift(spec)],
     [KOTLIN_PATH, renderKotlin(spec)],
   ];
@@ -271,4 +322,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = {renderSwift, renderKotlin, SPEC_PATH, SWIFT_PATH, KOTLIN_PATH};
+module.exports = {renderTypeScript, renderSwift, renderKotlin, SPEC_PATH, TS_PATH, SWIFT_PATH, KOTLIN_PATH};

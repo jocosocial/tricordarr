@@ -5,3 +5,4 @@
 # Generated notification event tables; collapse them in diffs.
 *.generated.swift linguist-generated=true
 *.generated.kt linguist-generated=true
+*.generated.ts linguist-generated=true

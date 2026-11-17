@@ -11,7 +11,7 @@ import type {ServerProfile} from '#src/Structs/SessionStructs';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 export type PushNotificationConfig = {
-  [_key in keyof typeof NotificationTypeData]: boolean;
+  [_key in `${NotificationTypeData}`]: boolean;
 };
 
 export interface APIClientConfig {

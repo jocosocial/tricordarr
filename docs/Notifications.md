@@ -78,22 +78,23 @@ is device-wide, not part of a session: it is not torn down when the session chan
 ### Shared event table
 
 `specs/NotificationEvents.json` is the one hand-edited source for event type to channel, title, tap
-URL, and mark-as-read path, plus the channel and group definitions. TS imports it
-(`NotificationEventTitles.ts`). Swift and Kotlin get generated source from it:
-`scripts/generate-notification-events.js` writes
+URL, and mark-as-read path, plus the channel and group definitions. All three platforms get
+generated source from it: `scripts/generate-notification-events.js` writes
+`src/Structs/NotificationEvents.generated.ts` (the TS `NotificationTypeData` enum, merged with a
+namespace providing `NotificationTypeData.getTitle()` for the notification log; import it from
+`SocketStructs.ts`, which re-exports it),
 `ios/TricordarrKit/Generated/NotificationEvents.generated.swift` (which includes the Swift
 `NotificationTypeData` enum, with each case's doc comment taken from the JSON `doc` field) and
-`android/app/src/main/java/com/tricordarr/push/NotificationEventTable.generated.kt`. Both are checked
+`android/app/src/main/java/com/tricordarr/push/NotificationEventTable.generated.kt`. All are checked
 in, marked `@generated`, and must not be edited by hand. Run `npm run codegen:notifications` after
 changing the JSON; CI runs it with `--check` and fails on stale output.
 
 Every `NotificationTypeData` value must appear in either `events` or `unposted` (types that never
 post a notification: `phoneCallAnswered`, `alertwordTwarrt`, `twarrtMention`,
-`microKaraokeSongReady`). Each entry carries a `doc` string, which becomes the `///` comment on the
-Swift enum case; an optional `note` becomes `//` lines above it. `unposted` maps type to `{doc}`.
-The Swift enum and its `eventSpec` switch are both generated from the JSON, so they cannot disagree;
-the Jest test is what keeps the hand-written TS enum in sync with it.
-`__tests__/unit/TestNotificationEvents.ts` checks the JSON against the TS enum, the declared
+`microKaraokeSongReady`). Each entry carries a `doc` string, which becomes the doc comment on the
+TS and Swift enum cases; an optional `note` becomes `//` lines above it. `unposted` maps type to
+`{doc}`. Both enums, the TS titles and the Swift `eventSpec` switch are generated from the JSON, so
+they cannot disagree. `__tests__/unit/TestNotificationEvents.ts` checks the JSON against the declared
 channels, `RouteDefinitions`, and the generated files; `NotificationPlannerTest` checks the Kotlin
 side.
 

@@ -16,7 +16,7 @@ export const getNotificationEventDestination = (
   type: string,
   contentID: string,
 ): NotificationEventDestination | undefined => {
-  switch (type as keyof typeof NotificationTypeData) {
+  switch (type as NotificationTypeData) {
     case NotificationTypeData.seamailUnreadMsg:
     case NotificationTypeData.addedToSeamail:
       return {screen: CommonStackComponents.seamailChatScreen, params: {fezID: contentID}};

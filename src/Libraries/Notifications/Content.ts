@@ -11,7 +11,7 @@ export interface ContentNotificationCategory {
   title: string;
   disabled?: boolean;
   description?: string;
-  configKey: keyof typeof NotificationTypeData;
+  configKey: `${NotificationTypeData}`;
 }
 
 export type ContentNotificationCategories = {

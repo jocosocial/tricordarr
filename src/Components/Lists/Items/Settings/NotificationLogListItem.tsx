@@ -9,9 +9,9 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {accountName} from '#src/Libraries/Account';
 import {navigate as navigationNavigate} from '#src/Libraries/NavigationRef';
 import {NotificationLogEntry} from '#src/Libraries/NotificationLog/types';
-import {getNotificationTypeTitle} from '#src/Libraries/Notifications/NotificationEventTitles';
 import {getNotificationEventDestination} from '#src/Libraries/Notifications/SocketNotification';
 import {CommonStackParamList, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 interface NotificationLogListItemProps {
   entry: NotificationLogEntry;
@@ -90,7 +90,7 @@ export const NotificationLogListItem = ({entry}: NotificationLogListItemProps) =
 
   return (
     <List.Item
-      title={`${entry.timestamp.toLocaleString()} · ${getNotificationTypeTitle(entry.type)}${isOtherAccount ? ` · ${otherAccountName}` : ''}`}
+      title={`${entry.timestamp.toLocaleString()} · ${NotificationTypeData.getTitle(entry.type)}${isOtherAccount ? ` · ${otherAccountName}` : ''}`}
       titleNumberOfLines={0}
       description={entry.info}
       descriptionNumberOfLines={0}
