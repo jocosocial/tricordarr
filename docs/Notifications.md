@@ -18,10 +18,15 @@ after the app is swiped away or the device reboots.
 | `PushBootReceiver`                            | Restarts the service on `BOOT_COMPLETED` and `MY_PACKAGE_REPLACED` (not `LOCKED_BOOT_COMPLETED`: Keystore needs first unlock).                                                                                                             |
 | `PushStatusStore`                             | Per-account health (`state`, last healthcheck, `failedCount`, `startedAt`). Native is the source of truth; JS pulls `getWebsocketStatus()`.                                                                                                |
 
-Ten consecutive failures post a "Twitarr Connection Lost" notification; the service keeps retrying.
-Foreground starts that Android refuses (API 31+, from the background) post "tap to reconnect".
-The service notification is not `ongoing`, so on Android 14+ users can dismiss it and the service
-keeps running; it is never re-posted.
+The service posts three notifications of its own:
+
+- **Service**: the foreground notification, listing the connected usernames. It is not `ongoing`,
+  so on Android 14+ the user can swipe it away. The service keeps running, and the notification
+  stays gone until the service next enters the foreground.
+- **Twitarr Connection Lost**: one per account, posted when the account stops retrying after 10
+  consecutive failures (see "Giving up" below).
+- **Tap to reconnect**: posted when Android refuses to let the service enter the foreground, which
+  happens on API 31+ when it is started from the background. Opening the app starts it again.
 
 ### JS contract
 
@@ -162,6 +167,26 @@ not declared today because `targetSdk` is 36, so raising the target is a blocker
   private address is covered) against the Android 17 docs when doing the bump; this note was written
   before that was tested.
 
+### Giving up
+
+A port call takes the user out of reach of the ship's server, so the worker does not retry forever. An
+account that fails 10 times in a row with no successful connection between them
+(`HealthTracker.DEFAULT_GIVE_UP_AFTER_FAILURES`) stops retrying and its state becomes `Stopped`. With the
+reconnect backoff (1s doubling to 30s) that is about 2.5 to 3 minutes, but the limit is the count, not
+the time. Its "connection lost" notification says to open the app. When every account has given up or is
+revoked, the service stops itself. Opening the app (`startBackgroundService`) restarts accounts that gave up.
+Rejoining Wi-Fi does not, because the network callback only wakes connections that are still retrying.
+
+### After the cruise
+
+A boot or app-update restart nobody asked for must not run forever. JS puts `autoStartUntil` on each
+synced account (`selectPushAccounts`): the end of its server's cruise (start day plus length, in the
+port timezone, from the mirrored `ServerProfile`), or nothing if the dates are not known yet or the
+device-wide `keepRunningAfterCruise` setting is on (Background Connection settings). `PushBootReceiver` calls
+`PushServiceController.startOnBoot`, which skips the start when no enabled account may auto-start. Opening
+the app still starts the worker (`startBackgroundService`), and a worker that is already running is not
+stopped.
+
 ## iOS
 
 One provider, a socket per account, same contract as Android (see "Accounts" above).
@@ -183,26 +208,6 @@ One provider, a socket per account, same contract as Android (see "Accounts" abo
 - There is no Mark as Read action and no `Revoked` state on iOS. A rejected token keeps retrying on
   the healthcheck timer until JS stops syncing the account.
 - `setupLocalPushManager` / `clearLocalPushManager` are gone; `syncPushAccounts` replaced them.
-
-### Giving up
-
-A port call takes the user out of reach of the ship's server, so the worker does not retry forever. An
-account that fails 10 times in a row with no successful connection between them
-(`HealthTracker.DEFAULT_GIVE_UP_AFTER_FAILURES`) stops retrying and its state becomes `Stopped`. With the
-reconnect backoff (1s doubling to 30s) that is about 2.5 to 3 minutes, but the limit is the count, not
-the time. Its "connection lost" notification says to open the app. When every account has given up or is
-revoked, the service stops itself. Opening the app (`startBackgroundService`) restarts accounts that gave up.
-Rejoining Wi-Fi does not, because the network callback only wakes connections that are still retrying.
-
-### After the cruise
-
-A boot or app-update restart nobody asked for must not run forever. JS puts `autoStartUntil` on each
-synced account (`selectPushAccounts`): the end of its server's cruise (start day plus length, in the
-port timezone, from the mirrored `ServerProfile`), or nothing if the dates are not known yet or the
-device-wide `keepRunningAfterCruise` setting is on (Background Connection settings). `PushBootReceiver` calls
-`PushServiceController.startOnBoot`, which skips the start when no enabled account may auto-start. Opening
-the app still starts the worker (`startBackgroundService`), and a worker that is already running is not
-stopped.
 
 ## Android: call foreground service
 

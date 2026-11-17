@@ -236,13 +236,8 @@ class TwitarrPushService : Service(), AccountConnection.Callbacks {
     }
   }
 
-  override fun onConnectionLost(account: PushAccount) {
-    NotificationBuilder.postConnectionLost(this, account.accountID, account.label())
-  }
-
   override fun onGaveUp(account: PushAccount) {
-    // Leaves the "connection lost" notification up, reworded to say nothing is retrying any more.
-    NotificationBuilder.postConnectionLost(this, account.accountID, account.label(), gaveUp = true)
+    NotificationBuilder.postConnectionLost(this, account.accountID, account.label())
     val allDone = synchronized(lock) { connections.values.all { it.isTerminal } }
     if (allDone) {
       Log.d(TAG, "Every account is revoked or gave up. Stopping.")

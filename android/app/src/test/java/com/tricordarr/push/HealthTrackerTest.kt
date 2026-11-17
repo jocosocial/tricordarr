@@ -6,7 +6,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class HealthTrackerTest {
-  private fun tracker(threshold: Int = 3) = HealthTracker("a", failureThreshold = threshold, clock = { 0L })
+  private fun tracker() = HealthTracker("a", clock = { 0L })
 
   @Test
   fun openResetsFailures() {
@@ -17,21 +17,6 @@ class HealthTrackerTest {
     assertEquals(SocketState.OPEN, status.state)
     assertEquals(0, status.failedCount)
     assertEquals(true, status.lastHealthcheckSuccess)
-  }
-
-  @Test
-  fun connectionLostFiresOncePerOutage() {
-    val t = tracker(threshold = 3)
-    t.onFailure("x")
-    t.onFailure("x")
-    assertFalse(t.consumeConnectionLost())
-    t.onFailure("x")
-    assertTrue(t.consumeConnectionLost())
-    t.onFailure("x")
-    assertFalse(t.consumeConnectionLost())
-    t.onOpen()
-    repeat(3) { t.onFailure("x") }
-    assertTrue(t.consumeConnectionLost())
   }
 
   @Test

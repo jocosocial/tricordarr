@@ -59,26 +59,17 @@ data class AccountStatus(
 class HealthTracker(
   private val accountID: String,
   initial: AccountStatus? = null,
-  private val failureThreshold: Int = DEFAULT_FAILURE_THRESHOLD,
   private val giveUpAfterFailures: Int = DEFAULT_GIVE_UP_AFTER_FAILURES,
   private val clock: () -> Long = System::currentTimeMillis,
 ) {
   var status: AccountStatus = initial ?: AccountStatus(accountID)
     private set
 
-  /** True once per outage, when consecutive failures first reach the threshold. */
-  var connectionLostPending: Boolean = false
-    private set
-
-  private var connectionLostNotified = false
-
   fun onStarted(): AccountStatus = update(status.copy(state = SocketState.CONNECTING, startedAt = clock(), failedCount = 0))
 
   fun onConnecting(): AccountStatus = update(status.copy(state = SocketState.CONNECTING))
 
   fun onOpen(): AccountStatus {
-    connectionLostNotified = false
-    connectionLostPending = false
     return update(
       status.copy(
         state = SocketState.OPEN,
@@ -95,10 +86,6 @@ class HealthTracker(
   fun onFailure(error: String?): AccountStatus {
     val now = clock()
     val failed = status.failedCount + 1
-    if (failed >= failureThreshold && !connectionLostNotified) {
-      connectionLostNotified = true
-      connectionLostPending = true
-    }
     return update(
       status.copy(
         state = SocketState.CLOSED,
@@ -131,20 +118,12 @@ class HealthTracker(
   /** The service is going away. A revoked token stays revoked so JS can still tell the user. */
   fun onStopped(): AccountStatus = if (status.state == SocketState.REVOKED) status else update(status.copy(state = SocketState.STOPPED))
 
-  /** Marks the pending connection-lost notification as delivered. */
-  fun consumeConnectionLost(): Boolean {
-    val pending = connectionLostPending
-    connectionLostPending = false
-    return pending
-  }
-
   private fun update(next: AccountStatus): AccountStatus {
     status = next
     return next
   }
 
   companion object {
-    const val DEFAULT_FAILURE_THRESHOLD = 10
     const val DEFAULT_GIVE_UP_AFTER_FAILURES = 10
   }
 }

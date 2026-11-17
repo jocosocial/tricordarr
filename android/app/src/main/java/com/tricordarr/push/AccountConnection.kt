@@ -32,8 +32,6 @@ class AccountConnection(
 
     fun onMessage(connection: AccountConnection, text: String)
 
-    fun onConnectionLost(account: PushAccount)
-
     fun onRecovered(account: PushAccount)
 
     /** The account was unreachable for too long and has stopped retrying. */
@@ -104,16 +102,13 @@ class AccountConnection(
         is Outcome.Ended -> {
           if (outcome.error != null) {
             publish { tracker.onFailure(outcome.error) }
-            val lost = synchronized(tracker) { tracker.consumeConnectionLost() }
             if (synchronized(tracker) { tracker.shouldGiveUp() }) {
-              // Reported through onGaveUp alone, so the user is not told twice for the same failure.
               Log.i(TAG, "Giving up on ${account.accountID} after repeated failures")
               isGaveUp = true
               publish { tracker.onGaveUp() }
               callbacks.onGaveUp(account)
               return
             }
-            if (lost) callbacks.onConnectionLost(account)
           } else {
             publish { tracker.onClosed() }
           }
