@@ -1,7 +1,9 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {Text} from 'react-native-paper';
 
+import {HeaderBackButton} from '#src/Components/Buttons/HeaderButtons/HeaderBackButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AnonymousSessionView} from '#src/Components/Views/AnonymousSessionView';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -10,6 +12,7 @@ import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {SignedInAccountView} from '#src/Components/Views/SignedInAccountView';
 import {useOobe} from '#src/Context/Contexts/OobeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {MainStackComponents} from '#src/Navigation/Stacks/Main/MainStackComponents';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/Root/RootStackComponents';
@@ -25,12 +28,29 @@ export const OobeSessionScreen = ({navigation, route}: Props) => {
   const {mode} = route.params;
   const {currentAccount, currentSession} = useSession();
   const {setResumeMode} = useOobe();
+  const {commonStyles} = useStyles();
   const rootNavigation = useRootStack();
   const serverUrl = currentSession?.serverUrl ?? '';
 
   // This is the first screen when setup resumes after creating its session; that step cannot be
   // undone from here, so there is nothing to go back to. The button stays, disabled.
   const canGoBack = navigation.canGoBack();
+
+  // With nothing to go back to the header would drop its back button, so draw a disabled one.
+  const getDisabledBackButton = useCallback(
+    () => (
+      <MaterialHeaderButtons style={commonStyles.headerLeftWrapper}>
+        <HeaderBackButton onPress={() => navigation.goBack()} disabled={true} />
+      </MaterialHeaderButtons>
+    ),
+    [commonStyles.headerLeftWrapper, navigation],
+  );
+
+  useEffect(() => {
+    if (!canGoBack) {
+      navigation.setOptions({headerLeft: getDisabledBackButton});
+    }
+  }, [canGoBack, navigation, getDisabledBackButton]);
 
   /**
    * Adding an account ends here; the other modes go on to permissions and finish.
@@ -57,13 +77,15 @@ export const OobeSessionScreen = ({navigation, route}: Props) => {
   return (
     <AppView disablePreRegistrationWarning={true}>
       <ScrollingContentView isStack={true}>
-        {currentAccount ? (
-          <SignedInAccountView account={currentAccount} serverUrl={serverUrl} />
-        ) : (
-          <AnonymousSessionView serverUrl={serverUrl} />
-        )}
+        <PaddedContentView padTop={true}>
+          {currentAccount ? (
+            <SignedInAccountView account={currentAccount} serverUrl={serverUrl} />
+          ) : (
+            <AnonymousSessionView serverUrl={serverUrl} />
+          )}
+        </PaddedContentView>
         <PaddedContentView>
-          <Text>You can sign in, sign out, or add another account at any time from Settings &gt; Accounts.</Text>
+          <Text>You can sign in, sign out, or add another account at any time from the app settings.</Text>
         </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView

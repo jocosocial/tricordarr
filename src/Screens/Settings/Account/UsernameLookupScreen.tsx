@@ -4,15 +4,12 @@ import React, {useMemo, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {UsernameLookupForm} from '#src/Components/Forms/User/UsernameLookupForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
-import {AppIcons} from '#src/Enums/Icons';
 import {useClipboard} from '#src/Hooks/useClipboard';
 import {normalized} from '#src/Libraries/RegistrationCode';
 import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
@@ -28,11 +25,10 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userna
  * recovery key. Reached from the login form, so it runs while logged out and acts on the server
  * that form was logging in to (the route's, else the active session's).
  */
-export const UsernameLookupScreen = ({navigation, route}: Props) => {
+export const UsernameLookupScreen = ({route}: Props) => {
   const lookupMutation = useUsernameLookupMutation();
   const [userHeader, setUserHeader] = useState<UserHeader>();
   const {commonStyles} = useStyles();
-  const {theme} = useAppTheme();
   const {serverUrl: sessionServerUrl} = useSwiftarrQueryClient();
   const serverUrl = normalizeServerUrl(route.params?.serverUrl ?? sessionServerUrl);
   const inSetupFlow = !!route.params?.mode;
@@ -46,7 +42,6 @@ export const UsernameLookupScreen = ({navigation, route}: Props) => {
         },
         username: {
           ...commonStyles.textCenter,
-          ...commonStyles.marginVertical,
           ...commonStyles.noteContainer,
           ...commonStyles.onNoteContainer,
           ...commonStyles.roundedBorder,
@@ -79,31 +74,26 @@ export const UsernameLookupScreen = ({navigation, route}: Props) => {
         <ScrollingContentView isStack={true}>
           <PaddedContentView padTop={true}>
             <Text>Found your account on {serverUrl}. Your username is:</Text>
-            <Text selectable={false} style={styles.username} variant={'titleLarge'}>
+          </PaddedContentView>
+          <PaddedContentView>
+            <Text
+              selectable={false}
+              style={styles.username}
+              variant={'titleLarge'}
+              onLongPress={() => setString(userHeader.username)}>
               {userHeader.username}
             </Text>
+          </PaddedContentView>
+          <PaddedContentView>
+            <Text>Long press your username above to copy it.</Text>
+          </PaddedContentView>
+          <PaddedContentView>
             {userHeader.displayName && (
               <Text>
                 <Text style={styles.fieldLabel}>Display Name: </Text>
                 <Text selectable={false}>{userHeader.displayName}</Text>
               </Text>
             )}
-          </PaddedContentView>
-          <PaddedContentView>
-            <PrimaryActionButton
-              testID={'usernameLookupCopy-button'}
-              buttonColor={theme.colors.twitarrNeutralButton}
-              buttonText={'Copy to Clipboard'}
-              icon={AppIcons.copy}
-              onPress={() => setString(userHeader.username)}
-            />
-          </PaddedContentView>
-          <PaddedContentView>
-            <PrimaryActionButton
-              testID={'usernameLookupBackToLogin-button'}
-              buttonText={'Back to Login'}
-              onPress={() => navigation.goBack()}
-            />
           </PaddedContentView>
         </ScrollingContentView>
       </AppView>

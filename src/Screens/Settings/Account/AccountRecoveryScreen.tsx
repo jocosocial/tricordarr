@@ -3,7 +3,6 @@ import {FormikHelpers} from 'formik';
 import React, {useState} from 'react';
 import {Text} from 'react-native-paper';
 
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {UserRecoveryForm} from '#src/Components/Forms/User/UserRecoveryForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -22,7 +21,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.accoun
  * Reset a forgotten password. Reached from the login form, so it acts on the server that form was
  * logging in to (the route's, else the active session's).
  */
-export const AccountRecoveryScreen = ({navigation, route}: Props) => {
+export const AccountRecoveryScreen = ({route}: Props) => {
   const recoveryMutation = useUserRecoveryMutation();
   const {commonStyles} = useStyles();
   const {serverUrl: sessionServerUrl} = useSwiftarrQueryClient();
@@ -52,13 +51,6 @@ export const AccountRecoveryScreen = ({navigation, route}: Props) => {
         <ScrollingContentView>
           <PaddedContentView>
             <Text>Successfully recovered your account! Please go back and log in with your new password.</Text>
-          </PaddedContentView>
-          <PaddedContentView>
-            <PrimaryActionButton
-              testID={'backToLogin-button'}
-              buttonText={'Back to Login'}
-              onPress={() => navigation.goBack()}
-            />
           </PaddedContentView>
         </ScrollingContentView>
       </AppView>

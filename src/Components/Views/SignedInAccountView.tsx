@@ -1,7 +1,7 @@
 import React from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {Account} from '#src/Structs/SessionStructs';
@@ -19,18 +19,16 @@ export const SignedInAccountView = ({account, serverUrl}: SignedInAccountViewPro
   const {commonStyles} = useStyles();
 
   return (
-    <>
-      <PaddedContentView>
+    <View>
+      <View style={commonStyles.paddingBottomSmall}>
         <Text>
           Signed in as <Text style={commonStyles.bold}>{account.username || account.userID}</Text> on {serverUrl}.
         </Text>
-      </PaddedContentView>
-      <PaddedContentView>
-        <Text>
-          Access level: {UserAccessLevel.getLabel(account.accessLevel)} (
-          {UserAccessLevel.getDescription(account.accessLevel)})
-        </Text>
-      </PaddedContentView>
-    </>
+      </View>
+      <Text>
+        Access level: {UserAccessLevel.getLabel(account.accessLevel)} (
+        {UserAccessLevel.getDescription(account.accessLevel)})
+      </Text>
+    </View>
   );
 };
