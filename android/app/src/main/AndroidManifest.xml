@@ -2,6 +2,14 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!--
+    Android 17 (API 37) blocks traffic to the local network unless the user grants this runtime
+    permission, and apps targeting 37+ no longer get it implicitly with INTERNET. The ship server and
+    the emulator host (10.0.2.2) are local network addresses. Requested on the OOBE server step
+    (LocalNetworkPermissionView), before the first connection. It is in the NEARBY_DEVICES group.
+    https://developer.android.com/privacy-and-security/local-network-permission
+    -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
+    <!--
     The default notification permission behavior changed in Android 13.
     https://developer.android.com/develop/ui/views/notifications/notification-permission
      -->

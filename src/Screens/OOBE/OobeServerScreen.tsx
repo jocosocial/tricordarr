@@ -4,6 +4,7 @@ import {Text} from 'react-native-paper';
 
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {LocalNetworkPermissionView} from '#src/Components/Views/LocalNetworkPermissionView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {ServerChoiceView} from '#src/Components/Views/ServerChoiceView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -35,30 +36,35 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
   const health = useExplicitServerHealthStatus(serverUrl);
 
   const isLand = location === OobeLocation.land;
-  // Adding an account is the one case where choosing some other server is the point.
-  const header =
-    mode === 'addAccount' ? undefined : (
-      <>
-        {!isLand && (
-          <PaddedContentView padTop={true}>
+  // Adding an account is the one case where choosing some other server is the point, so the
+  // guidance is skipped there. The local network permission is needed either way.
+  const header = (
+    <>
+      <LocalNetworkPermissionView onGranted={health.healthQuery.refetch} />
+      {mode !== 'addAccount' && (
+        <>
+          {!isLand && (
+            <PaddedContentView padTop={true}>
+              <Text>
+                Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs, private DNS, or
+                other network blockers.
+              </Text>
+            </PaddedContentView>
+          )}
+          <PaddedContentView padTop={isLand}>
             <Text>
-              Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs, private DNS, or
-              other network blockers.
+              Do not change this unless instructed to do so by the Twitarr Dev Team or THO.
+              {isLand ? (
+                <Text> Should be set to Start during pre-registration.</Text>
+              ) : (
+                <Text> Should be set to Production when on-board.</Text>
+              )}
             </Text>
           </PaddedContentView>
-        )}
-        <PaddedContentView padTop={isLand}>
-          <Text>
-            Do not change this unless instructed to do so by the Twitarr Dev Team or THO.
-            {isLand ? (
-              <Text> Should be set to Start during pre-registration.</Text>
-            ) : (
-              <Text> Should be set to Production when on-board.</Text>
-            )}
-          </Text>
-        </PaddedContentView>
-      </>
-    );
+        </>
+      )}
+    </>
+  );
 
   return (
     <AppView disablePreRegistrationWarning={true}>

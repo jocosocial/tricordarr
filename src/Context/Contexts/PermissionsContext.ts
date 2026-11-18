@@ -9,6 +9,9 @@ interface PermissionsContextType {
   microphonePermissionStatus: PermissionStatus | undefined;
   checkMicrophonePermission: () => Promise<void>;
   requestMicrophonePermission: () => Promise<PermissionStatus>;
+  localNetworkPermissionStatus: PermissionStatus | undefined;
+  checkLocalNetworkPermission: () => Promise<void>;
+  requestLocalNetworkPermission: () => Promise<PermissionStatus>;
 }
 
 export const PermissionsContext = createContext(<PermissionsContextType>{});
