@@ -27,7 +27,7 @@ export const LocalNetworkPermissionWarningView = ({visible = true}: LocalNetwork
       title={'Local Network Permission'}
       message={
         // "The server is on the ship's local network which your device requires explicit permission to connect to."
-        'Connections to local servers (such as the on-board Twitarr server) require explicit permission to function.'
+        'Connections to local servers (such as the on-board Twitarr server) may require explicit permission to function.'
       }
       visible={visible && permissionNeeded}
     />
