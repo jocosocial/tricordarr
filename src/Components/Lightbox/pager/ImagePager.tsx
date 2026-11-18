@@ -8,9 +8,9 @@
 // Original code copied and simplified from the link below as the codebase is currently not maintained:
 // https://github.com/jobtoday/react-native-image-viewing
 import FastImage from '@d11/react-native-fast-image';
+import {NavigationBar} from '@zoontek/react-native-navigation-bar';
 import {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {PixelRatio, StyleSheet, useWindowDimensions, View} from 'react-native';
-import {SystemBars} from 'react-native-edge-to-edge';
+import {PixelRatio, StatusBar, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Gesture} from 'react-native-gesture-handler';
 import PagerView, {
   type PagerViewOnPageSelectedEvent,
@@ -54,7 +54,6 @@ import {StringOrError} from '#src/Types';
 
 type Rect = {x: number; y: number; width: number; height: number};
 
-const systemBarsStyle = {statusBar: 'light' as const, navigationBar: 'light' as const};
 const PIXEL_RATIO = PixelRatio.get();
 
 const SLOW_SPRING: WithSpringConfig = {
@@ -351,13 +350,8 @@ function ImageView({
 
   return (
     <Animated.View style={[styles.container, containerStyle]}>
-      <SystemBars
-        style={systemBarsStyle}
-        hidden={{
-          statusBar: isScaled || !showControls,
-          navigationBar: false,
-        }}
-      />
+      <StatusBar barStyle={'light-content'} hidden={isScaled || !showControls} animated />
+      <NavigationBar barStyle={'light-content'} />
       <Animated.View style={[styles.backdrop, backdropStyle]} renderToHardwareTextureAndroid />
       <PagerView
         scrollEnabled={!isScaled}

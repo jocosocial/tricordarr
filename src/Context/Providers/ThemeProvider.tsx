@@ -1,7 +1,8 @@
 import {DefaultTheme} from '@react-navigation/native';
+import {NavigationBar} from '@zoontek/react-native-navigation-bar';
 import {PropsWithChildren, useCallback, useMemo} from 'react';
 import {useColorScheme} from 'react-native';
-import {SystemBars} from 'react-native-edge-to-edge';
+import {StatusBar} from 'react-native';
 import {adaptNavigationTheme} from 'react-native-paper';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -47,7 +48,8 @@ export const ThemeProvider = ({children}: PropsWithChildren) => {
 
   return (
     <ThemeContext.Provider value={contextValue}>
-      <SystemBars style={darkMode ? 'light' : 'dark'} />
+      <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} />
+      <NavigationBar barStyle={darkMode ? 'light-content' : 'dark-content'} />
       {children}
     </ThemeContext.Provider>
   );
