@@ -7,6 +7,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {LocalNetworkPermissionView} from '#src/Components/Views/LocalNetworkPermissionView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {ServerChoiceView} from '#src/Components/Views/ServerChoiceView';
+import {LocalNetworkPermissionWarningView} from '#src/Components/Views/Warnings/LocalNetworkPermissionWarningView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
@@ -40,6 +41,7 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
   // guidance is skipped there. The local network permission is needed either way.
   const header = (
     <>
+      <LocalNetworkPermissionWarningView visible={!isLand} />
       <LocalNetworkPermissionView onGranted={health.healthQuery.refetch} />
       {mode !== 'addAccount' && (
         <>
