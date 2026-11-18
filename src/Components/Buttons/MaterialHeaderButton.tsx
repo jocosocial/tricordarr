@@ -14,12 +14,14 @@ export const MaterialHeaderButton: HeaderButtonsComponentType = props => {
   const {theme} = useAppTheme();
 
   const {commonStyles} = useStyles();
+  // A disabled button gets the theme's disabled tone so it reads as inert.
+  const disabledColor = props.disabled ? theme.colors.onSurfaceDisabled : undefined;
   const styles = StyleSheet.create({
     button: {
       ...commonStyles.flexRow,
       ...commonStyles.alignItemsCenter,
     },
-    title: {color: theme.colors.onBackground, fontSize: 17, marginLeft: 4},
+    title: {color: disabledColor ?? theme.colors.onBackground, fontSize: 17, marginLeft: 4},
   });
 
   // the `props` here come from <Item ... />
@@ -32,7 +34,7 @@ export const MaterialHeaderButton: HeaderButtonsComponentType = props => {
       // you can customize the colors, by default colors from React navigation theme will be used
       // pressColor="blue"
       {...props}
-      color={props.color || theme.colors.onBackground}
+      color={disabledColor ?? (props.color || theme.colors.onBackground)}
       // alternative way to customize what is rendered:
       renderButton={itemProps => {
         // access anything that was defined on <Item ... />

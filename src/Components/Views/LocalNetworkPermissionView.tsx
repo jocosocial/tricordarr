@@ -34,8 +34,8 @@ export const LocalNetworkPermissionView = ({onGranted}: LocalNetworkPermissionVi
   return (
     <PaddedContentView padTop={true}>
       <Text style={commonStyles.marginBottomSmall}>
-        The production server is on the ship's local network. Newer Android versions require your permission before this app can talk
-        to it. Without this the server check below will fail.
+        The production server is on the ship's local network. Newer Android versions require your permission before this
+        app can talk to it. Without this the server check below will fail.
       </Text>
       {localNetworkPermissionStatus === RESULTS.BLOCKED ? (
         <Text>
