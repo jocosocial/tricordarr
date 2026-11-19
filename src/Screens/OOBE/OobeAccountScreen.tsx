@@ -67,7 +67,7 @@ export const OobeAccountScreen = ({navigation, route}: Props) => {
   return (
     <AppView disablePreRegistrationWarning={true}>
       {confirmAccount ? (
-        <ScrollingContentView>
+        <ScrollingContentView isStack={true}>
           <SignedInAccountView account={currentAccount} serverUrl={serverUrl} />
           <PaddedContentView>
             <Text>

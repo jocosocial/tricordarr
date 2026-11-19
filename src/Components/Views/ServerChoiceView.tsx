@@ -34,7 +34,7 @@ export const ServerChoiceView = ({serverUrl, onChange, health, header}: ServerCh
   };
 
   return (
-    <ScrollingContentView isStack={false}>
+    <ScrollingContentView isStack={true}>
       {header}
       <PaddedContentView padTop={!header}>
         <ServerUrlSettingForm

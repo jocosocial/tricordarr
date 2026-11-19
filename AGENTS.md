@@ -105,6 +105,10 @@ LoggedInScreen
   call goes BEFORE `mutation.mutate()`, with a rollback + invalidate in `onError` — see
   `docs/Cache and State.md` under "Optimistic Cache Updates"
 
+## ScrollingContentView
+
+- ALWAYS pass `isStack` explicitly. `isStack={true}` for any screen under a navigation header (nearly all of them); `false` only for headerless screens (OOBE welcome, location, pre-registration). Put `padTop` on the first `PaddedContentView`. See `docs/Code Notes.md`, "ScrollingContentView `isStack`"
+
 ## Keyboard Avoidance
 
 - `AppView` has no global keyboard handling (removed, see issue #573). A plain scrollable form needs nothing — `ScrollingContentView` already handles it. A screen with a fixed composer/button below a form or list (`ContentPostForm` below `ScrollingContentView` or a chat `ConversationListV2`) needs a local `KeyboardAvoidingView` (`behavior='padding'`, offset from `useKeyboardVerticalOffset`) wrapping both as flex siblings — see `docs/Code Notes.md` under "Keyboard Avoidance" for the pattern and reference screens.
