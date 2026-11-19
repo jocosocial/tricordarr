@@ -38,10 +38,10 @@ export const AccountChoiceView = ({
   const preRegistration = preRegistrationMode ?? sessionPreRegistrationMode;
 
   return (
-    <ScrollingContentView isStack={false}>
+    <ScrollingContentView isStack={true}>
       {!hideCreate && (
         <>
-          <PaddedContentView>
+          <PaddedContentView padTop={true}>
             <Text>Accounts are new every year. Only create an account if you have not done so this year.</Text>
           </PaddedContentView>
           {!preRegistration && (
@@ -61,7 +61,7 @@ export const AccountChoiceView = ({
           </PaddedContentView>
         </>
       )}
-      <PaddedContentView>
+      <PaddedContentView padTop={hideCreate}>
         <Text>
           {hideCreate
             ? 'It looks like you already created an account during pre-registration! Press this button to log in with it.'

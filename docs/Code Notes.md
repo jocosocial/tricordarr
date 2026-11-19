@@ -72,6 +72,15 @@ Reference implementations: `FezChatScreen.tsx`, `ForumThreadScreenBase.tsx` (lis
 
 `KeyboardAvoidingView`'s `keyboardVerticalOffset` is a heuristic (`insets.top + insets.bottom`, `+40` on home-button iPhones), not a true measurement — it approximates the distance from the top of the KAV to the top of the screen. It only works correctly when the KAV is mounted near the top of the screen's own render tree (directly inside `AppView`, not buried under several wrapper views) — see `useKeyboardVerticalOffset` (`src/Hooks/Keyboard/useKeyboardVerticalOffset.ts`) for the exact formula and rationale.
 
+## ScrollingContentView `isStack`
+
+`isStack` says whether a navigation header sits above the screen. `false` (the current default) adds a top margin so content clears the top of a headerless screen; `true` adds none, so the first child controls its own spacing (`PaddedContentView padTop={true}`, or a full-width banner that should sit flush under the header).
+
+- Any screen shown under a navigation header: pass `isStack={true}`. That is nearly every screen. A full-width banner as the first child is the case that visibly breaks without it: it floats one margin below the header (the OOBE server screen's permission banner did).
+- `isStack={false}`: only headerless screens. Today that is the OOBE welcome, location and pre-registration screens.
+- Wrapper views that render the `ScrollingContentView` for a screen (e.g. `ServerChoiceView`, `AccountChoiceView`) should default to `true` for the same reason.
+- Audit (Nov 2026): about 160 usages pass `true`. About 35 mostly older form screens rely on the default and a few others pass `false` while under a header (`KrakenView`, `KrakenTalkReceiveScreen`, `ForumPostEditScreen`); they depend on the margin because their first child has no `padTop`. Moving those to `isStack={true}` with `padTop` on the first child is what lets the default flip to `true`. Until then, always pass `isStack` explicitly in new code.
+
 ## Swipeables
 
 Always call `swipeable.close()`, never `swipeable.reset()`. In gesture-handler v3
