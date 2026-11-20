@@ -12,9 +12,14 @@ import {CategoryData} from '#src/Structs/ControllerStructs';
 
 interface ForumThreadScreenSortMenuProps {
   category?: CategoryData;
+  defaultSort?: ForumSort;
 }
 
-export const ForumThreadScreenSortMenu = (props: ForumThreadScreenSortMenuProps) => {
+/** Renders the category thread sort options and highlights an API-provided default when applicable. */
+export const ForumThreadScreenSortMenu = ({
+  category,
+  defaultSort = category?.defaultSort,
+}: ForumThreadScreenSortMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {forumSortOrder, setForumSortOrder, forumSortDirection, setForumSortDirection} = useForumFilter();
 
@@ -51,30 +56,30 @@ export const ForumThreadScreenSortMenu = (props: ForumThreadScreenSortMenuProps)
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      {props.category && props.category.isEventCategory && (
+      {category && (category.isEventCategory || defaultSort === ForumSort.event) && (
         <SelectableMenuItem
           title={ForumSort.getLabel(ForumSort.event)}
           leadingIcon={AppIcons.events}
-          selected={forumSortOrder === ForumSort.event}
+          selected={forumSortOrder === ForumSort.event || (!forumSortOrder && defaultSort === ForumSort.event)}
           onPress={() => handleFilterSelection(ForumSort.event)}
         />
       )}
       <SelectableMenuItem
         title={ForumSort.getLabel(ForumSort.update)}
         leadingIcon={AppIcons.recent}
-        selected={forumSortOrder === ForumSort.update}
+        selected={forumSortOrder === ForumSort.update || (!forumSortOrder && defaultSort === ForumSort.update)}
         onPress={() => handleFilterSelection(ForumSort.update)}
       />
       <SelectableMenuItem
         title={ForumSort.getLabel(ForumSort.create)}
         leadingIcon={AppIcons.new}
-        selected={forumSortOrder === ForumSort.create}
+        selected={forumSortOrder === ForumSort.create || (!forumSortOrder && defaultSort === ForumSort.create)}
         onPress={() => handleFilterSelection(ForumSort.create)}
       />
       <SelectableMenuItem
         title={ForumSort.getLabel(ForumSort.title)}
         leadingIcon={AppIcons.text}
-        selected={forumSortOrder === ForumSort.title}
+        selected={forumSortOrder === ForumSort.title || (!forumSortOrder && defaultSort === ForumSort.title)}
         onPress={() => handleFilterSelection(ForumSort.title)}
       />
       <Divider bold={true} />
