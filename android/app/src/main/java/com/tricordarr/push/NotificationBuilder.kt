@@ -37,6 +37,7 @@ object NotificationBuilder {
   const val EXTRA_MARK_AS_READ_URL = "markAsReadUrl"
 
   private const val BACKGROUND_CONNECTION_LINK = NotificationPlanner.APP_LINK_PREFIX + "settings/backgroundconnection"
+  private const val HOME_LINK = NotificationPlanner.APP_LINK_PREFIX + "home"
 
   private val immutableUpdate = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
 
@@ -141,7 +142,7 @@ object NotificationBuilder {
       .setOngoing(false)
       .setOnlyAlertOnce(true)
       .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-      .setContentIntent(activityPendingIntent(context, SERVICE_NOTIFICATION_ID, BACKGROUND_CONNECTION_LINK))
+      .setContentIntent(activityPendingIntent(context, SERVICE_NOTIFICATION_ID, HOME_LINK))
       .build()
 
   /**
@@ -162,7 +163,7 @@ object NotificationBuilder {
       .setUsesChronometer(true)
       .setWhen(startedAtMs)
       .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-      .setContentIntent(activityPendingIntent(context, CALL_NOTIFICATION_ID, NotificationPlanner.APP_LINK_PREFIX + "home"))
+      .setContentIntent(activityPendingIntent(context, CALL_NOTIFICATION_ID, HOME_LINK))
       .build()
 
   /** Refreshes the already-showing call notification, e.g. when the mute state changes. */

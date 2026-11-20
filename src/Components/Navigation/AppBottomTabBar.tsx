@@ -1,5 +1,5 @@
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
-import {CommonActions, NavigationState} from '@react-navigation/native';
+import {CommonActions, NavigationState, PartialState} from '@react-navigation/native';
 import {View} from 'react-native';
 import {BottomNavigation} from 'react-native-paper';
 
@@ -12,11 +12,16 @@ const logger = createLogger('AppBottomTabBar.tsx');
 
 /**
  * Walk nested navigator state to the leaf route currently on screen.
+ * Nested `route.state` may be a partial state (e.g. after a deep link) with no `index`, in which
+ * case React Navigation treats the last route as focused. Returns undefined if there is no route.
  */
-const getFocusedRouteName = (state: NavigationState): string => {
-  const route = state.routes[state.index];
+const getFocusedRouteName = (state: NavigationState | PartialState<NavigationState>): string | undefined => {
+  const route = state.routes[state.index ?? state.routes.length - 1];
+  if (!route) {
+    return undefined;
+  }
   if (route.state) {
-    return getFocusedRouteName(route.state as NavigationState);
+    return getFocusedRouteName(route.state);
   }
   return route.name;
 };
