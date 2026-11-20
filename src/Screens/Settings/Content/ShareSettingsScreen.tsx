@@ -10,27 +10,26 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 /**
- * Content settings for how share actions encode a link (app deep link vs public web URL).
+ * Content settings for how the Share action behaves.
  */
 export const ShareSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const {commonStyles} = useStyles();
-  const [shareWebURLs, setShareWebURLs] = React.useState(!appConfig.userPreferences.shareAppURI);
+  const [shareOpensSheet, setShareOpensSheet] = React.useState(appConfig.userPreferences.shareOpensSheet);
 
   /**
-   * Persists shareAppURI as the inverse of this switch (on = web URLs) and
-   * keeps local switch state in sync.
+   * Persists shareOpensSheet and keeps local switch state in sync.
    */
-  const handleShareWebURLs = () => {
-    const newShareWebURLs = !shareWebURLs;
+  const handleShareOpensSheet = () => {
+    const newShareOpensSheet = !shareOpensSheet;
     updateAppConfig({
       ...appConfig,
       userPreferences: {
         ...appConfig.userPreferences,
-        shareAppURI: !newShareWebURLs,
+        shareOpensSheet: newShareOpensSheet,
       },
     });
-    setShareWebURLs(newShareWebURLs);
+    setShareOpensSheet(newShareOpensSheet);
   };
 
   return (
@@ -40,15 +39,15 @@ export const ShareSettingsScreen = () => {
           <Formik initialValues={{}} onSubmit={() => {}}>
             <View>
               <BooleanField
-                name={'shareWebURLs'}
-                testID={'shareWebURLs-switch'}
-                label={'Share Web URLs by Default'}
-                onPress={handleShareWebURLs}
+                name={'shareOpensSheet'}
+                testID={'shareOpensSheet-switch'}
+                label={'Use Advanced Sharing by Default'}
+                onPress={handleShareOpensSheet}
                 style={commonStyles.paddingHorizontalSmall}
                 helperText={
-                  'By default, share content using web URLs which can be opened in any browser. When disabled (the default), by default the sharing action uses a URI that opens to this app. A switch in the share sheet allows you to override this default on a case-by-case basis.'
+                  'Tapping any Share button opens the advanced share sheet instead of copying the link to the clipboard.'
                 }
-                value={shareWebURLs}
+                value={shareOpensSheet}
               />
             </View>
           </Formik>

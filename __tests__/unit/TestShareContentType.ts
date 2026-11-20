@@ -10,14 +10,7 @@ jest.mock('@react-navigation/stack', () => ({
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {getFezPublicShare} from '#src/Libraries/Moderation/Share';
-import {
-  buildShareMessage,
-  getShareLink,
-  getShareSheetTitle,
-  ShareContentType,
-  ShareLinkMode,
-} from '#src/Libraries/Sharing';
-import {appLinkPrefix} from '#src/Libraries/UrlParser';
+import {buildShareMessage, getShareLink, getShareSheetTitle, ShareContentType} from '#src/Libraries/Sharing';
 
 describe('ShareContentType.performer', () => {
   it('uses the singular performer profile path, not the list path', () => {
@@ -75,7 +68,6 @@ describe('getShareLink', () => {
   it('builds a public web URL from type and ID', () => {
     expect(
       getShareLink({
-        mode: ShareLinkMode.web,
         serverUrl,
         contentType: ShareContentType.performer,
         contentID: 'abc-123',
@@ -86,7 +78,6 @@ describe('getShareLink', () => {
   it('returns siteUI content IDs as full web URLs', () => {
     expect(
       getShareLink({
-        mode: ShareLinkMode.web,
         serverUrl,
         contentType: ShareContentType.siteUI,
         contentID: 'https://twitarr.com/faq',
@@ -94,143 +85,54 @@ describe('getShareLink', () => {
     ).toBe('https://twitarr.com/faq');
   });
 
-  it('builds a tricordarr deep link from type and ID', () => {
+  it('builds a hunt web URL', () => {
     expect(
       getShareLink({
-        mode: ShareLinkMode.app,
-        serverUrl,
-        contentType: ShareContentType.forum,
-        contentID: 'abc',
-      }),
-    ).toBe(`${appLinkPrefix}forum/abc`);
-  });
-
-  it('builds a performer deep link without a web-URL roundtrip', () => {
-    expect(
-      getShareLink({
-        mode: ShareLinkMode.app,
-        serverUrl,
-        contentType: ShareContentType.performer,
-        contentID: 'abc-123',
-      }),
-    ).toBe(`${appLinkPrefix}performer/abc-123`);
-  });
-
-  it('builds a hunt web URL and deep link', () => {
-    expect(
-      getShareLink({
-        mode: ShareLinkMode.web,
         serverUrl,
         contentType: ShareContentType.hunt,
         contentID: 'hunt-1',
       }),
     ).toBe('https://twitarr.com/hunt/hunt-1');
-    expect(
-      getShareLink({
-        mode: ShareLinkMode.app,
-        serverUrl,
-        contentType: ShareContentType.hunt,
-        contentID: 'hunt-1',
-      }),
-    ).toBe(`${appLinkPrefix}hunt/hunt-1`);
   });
 
-  it('builds a puzzle web URL and deep link', () => {
+  it('builds a puzzle web URL', () => {
     expect(
       getShareLink({
-        mode: ShareLinkMode.web,
         serverUrl,
         contentType: ShareContentType.puzzle,
         contentID: 'puzzle-1',
       }),
     ).toBe('https://twitarr.com/puzzle/puzzle-1');
-    expect(
-      getShareLink({
-        mode: ShareLinkMode.app,
-        serverUrl,
-        contentType: ShareContentType.puzzle,
-        contentID: 'puzzle-1',
-      }),
-    ).toBe(`${appLinkPrefix}puzzle/puzzle-1`);
   });
 
-  it('extracts the path from a siteUI web URL', () => {
+  it('builds a seamail web URL', () => {
     expect(
       getShareLink({
-        mode: ShareLinkMode.app,
-        serverUrl,
-        contentType: ShareContentType.siteUI,
-        contentID: 'https://twitarr.com/faq',
-      }),
-    ).toBe(`${appLinkPrefix}faq`);
-  });
-
-  it('preserves query and hash on siteUI app links', () => {
-    expect(
-      getShareLink({
-        mode: ShareLinkMode.app,
-        serverUrl,
-        contentType: ShareContentType.siteUI,
-        contentID: 'https://twitarr.com/events/abc?foo=1#bar',
-      }),
-    ).toBe(`${appLinkPrefix}events/abc?foo=1#bar`);
-  });
-
-  it('builds a seamail web URL and deep link', () => {
-    expect(
-      getShareLink({
-        mode: ShareLinkMode.web,
         serverUrl,
         contentType: ShareContentType.seamail,
         contentID: 'fez-1',
       }),
     ).toBe('https://twitarr.com/seamail/fez-1');
-    expect(
-      getShareLink({
-        mode: ShareLinkMode.app,
-        serverUrl,
-        contentType: ShareContentType.seamail,
-        contentID: 'fez-1',
-      }),
-    ).toBe(`${appLinkPrefix}seamail/fez-1`);
   });
 
-  it('builds a personal event web URL and deep link', () => {
+  it('builds a personal event web URL', () => {
     expect(
       getShareLink({
-        mode: ShareLinkMode.web,
         serverUrl,
         contentType: ShareContentType.privateEvent,
         contentID: 'event-1',
       }),
     ).toBe('https://twitarr.com/privateevent/event-1');
-    expect(
-      getShareLink({
-        mode: ShareLinkMode.app,
-        serverUrl,
-        contentType: ShareContentType.privateEvent,
-        contentID: 'event-1',
-      }),
-    ).toBe(`${appLinkPrefix}privateevent/event-1`);
   });
 
-  it('builds a moderator-view web URL and deep link', () => {
+  it('builds a moderator-view web URL', () => {
     expect(
       getShareLink({
-        mode: ShareLinkMode.web,
         serverUrl,
         contentType: ShareContentType.forumPostModerate,
         contentID: 'post-1',
       }),
     ).toBe('https://twitarr.com/moderate/forumpost/post-1');
-    expect(
-      getShareLink({
-        mode: ShareLinkMode.app,
-        serverUrl,
-        contentType: ShareContentType.forumPostModerate,
-        contentID: 'post-1',
-      }),
-    ).toBe(`${appLinkPrefix}moderate/forumpost/post-1`);
   });
 });
 
