@@ -1,4 +1,4 @@
-import {appUrl, extractPathFromWebUrl, joinUrl} from '#src/Libraries/UrlParser';
+import {joinUrl} from '#src/Libraries/UrlParser';
 
 /**
  * The type of content to share. The enum values are the URL paths.
@@ -68,40 +68,20 @@ export const getShareSheetTitle = (contentType?: ShareContentType): string => {
   return `Share ${shareContentTypeLabels[contentType]}`;
 };
 
-/**
- * Whether a share link is a public HTTPS URL or a tricordarr:// deep link.
- */
-export enum ShareLinkMode {
-  web = 'web',
-  app = 'app',
-}
-
 interface GetShareLinkProps {
-  mode: ShareLinkMode;
   serverUrl: string;
   contentType: ShareContentType;
   contentID: string | number;
 }
 
 /**
- * Builds a shareable link for a content item.
- * Web mode returns a public Twitarr URL (`siteUI` IDs are already full URLs).
- * App mode returns a tricordarr:// deep link.
+ * Builds a shareable public Twitarr web URL for a content item (`siteUI` IDs are already full URLs).
  */
-export const getShareLink = ({mode, serverUrl, contentType, contentID}: GetShareLinkProps): string => {
-  const relativePath =
-    contentType === ShareContentType.siteUI
-      ? extractPathFromWebUrl(String(contentID))
-      : joinUrl(contentType, contentID);
-
-  if (mode === ShareLinkMode.app) {
-    return appUrl(relativePath);
-  }
-
+export const getShareLink = ({serverUrl, contentType, contentID}: GetShareLinkProps): string => {
   if (contentType === ShareContentType.siteUI) {
     return String(contentID);
   }
-  return joinUrl(serverUrl, relativePath);
+  return joinUrl(serverUrl, joinUrl(contentType, contentID));
 };
 
 /**

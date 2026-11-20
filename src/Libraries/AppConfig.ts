@@ -67,7 +67,7 @@ export interface UserPreferences {
   highlightForumAlertWords: boolean;
   autosavePhotos: boolean;
   autoCompressOversizedImages: boolean;
-  shareAppURI: boolean;
+  shareOpensSheet: boolean;
   seamailIncludeLfgs: boolean;
   seamailIncludePrivateEvents: boolean;
 }
@@ -222,7 +222,7 @@ export const defaultAppConfig: AppConfig = {
     highlightForumAlertWords: true,
     autosavePhotos: true,
     autoCompressOversizedImages: true,
-    shareAppURI: false,
+    shareOpensSheet: false,
     seamailIncludeLfgs: true,
     seamailIncludePrivateEvents: true,
   },

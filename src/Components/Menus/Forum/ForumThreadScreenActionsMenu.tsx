@@ -19,7 +19,7 @@ import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useMenu} from '#src/Hooks/useMenu';
-import {getShareLink, ShareContentType, ShareLinkMode} from '#src/Libraries/Sharing';
+import {getShareLink, ShareContentType} from '#src/Libraries/Sharing';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
@@ -43,7 +43,6 @@ export const ForumThreadScreenActionsMenu = ({forumData, onRefresh}: ForumThread
   const handleCreateLfg = useCallback(() => {
     closeMenu();
     const threadLink = getShareLink({
-      mode: ShareLinkMode.web,
       serverUrl,
       contentType: ShareContentType.forum,
       contentID: forumData.forumID,
