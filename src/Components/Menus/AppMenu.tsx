@@ -164,6 +164,11 @@ export const AppMenu = ({visible, children, onScroll, style, header, bounces = f
       // Calculate max height: screen height minus top safe area, bottom safe area, and some padding
       // This ensures the menu doesn't extend beyond the screen bounds
       maxHeight: maxMenuHeight,
+      // ScrollView defaults to flexGrow: 1. Paper measures the menu once, as it opens, to decide
+      // whether it fits below the anchor; a ScrollView that grows to its maxHeight there reads as an
+      // oversized menu, so Paper wraps it in a fixed-height scroller that stretches to the screen
+      // bottom with empty space under the last item.
+      flexGrow: 0,
     },
   });
 

@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-paper/lib/commonjs/components/Menu/Menu.js b/node_modules/react-native-paper/lib/commonjs/components/Menu/Menu.js
-index dea22ec..4b90e08 100644
+index dea22ec..6860a29 100644
 --- a/node_modules/react-native-paper/lib/commonjs/components/Menu/Menu.js
 +++ b/node_modules/react-native-paper/lib/commonjs/components/Menu/Menu.js
 @@ -93,6 +93,8 @@ const isBrowser = () => _reactNative.Platform.OS === 'web' && 'document' in glob
@@ -37,7 +37,30 @@ index dea22ec..4b90e08 100644
    const hide = React.useCallback(() => {
      removeListeners();
      const {
-@@ -418,6 +421,18 @@ const Menu = ({
+@@ -261,6 +264,13 @@ const Menu = ({
+       easing: EASING,
+       useNativeDriver: true
+     }).start(() => {
++      // Reopened while this hide animation was running: the visible effect saw prevRendered still
++      // true and skipped show(), so unmounting now would leave visible=true, rendered=false forever.
++      if (prevVisible.current) {
++        prevRendered.current = false;
++        show();
++        return;
++      }
+       setMenuLayout({
+         width: 0,
+         height: 0
+@@ -269,7 +279,7 @@ const Menu = ({
+       prevRendered.current = false;
+       focusFirstDOMNode(anchorRef.current);
+     });
+-  }, [removeListeners, theme]);
++  }, [removeListeners, show, theme]);
+   const updateVisibility = React.useCallback(async display => {
+     // Menu is rendered in Portal, which updates items asynchronously
+     // We need to do the same here so that the ref is up-to-date
+@@ -418,6 +428,18 @@ const Menu = ({
        topTransformation = scrollableMenuHeight === windowLayout.height - 2 * SCREEN_INDENT ? -SCREEN_INDENT * 2 : windowLayout.height - menuLayout.height - SCREEN_INDENT - additionalVerticalValue;
      }
    }
@@ -133,7 +156,7 @@ index d8695dd..cedc992 100644
      marginLeft: 12
    },
 diff --git a/node_modules/react-native-paper/lib/module/components/Menu/Menu.js b/node_modules/react-native-paper/lib/module/components/Menu/Menu.js
-index f0c9330..14bb9a2 100644
+index f0c9330..295c546 100644
 --- a/node_modules/react-native-paper/lib/module/components/Menu/Menu.js
 +++ b/node_modules/react-native-paper/lib/module/components/Menu/Menu.js
 @@ -85,6 +85,8 @@ const isBrowser = () => Platform.OS === 'web' && 'document' in global;
@@ -171,7 +194,30 @@ index f0c9330..14bb9a2 100644
    const hide = React.useCallback(() => {
      removeListeners();
      const {
-@@ -410,6 +413,18 @@ const Menu = ({
+@@ -253,6 +256,13 @@ const Menu = ({
+       easing: EASING,
+       useNativeDriver: true
+     }).start(() => {
++      // Reopened while this hide animation was running: the visible effect saw prevRendered still
++      // true and skipped show(), so unmounting now would leave visible=true, rendered=false forever.
++      if (prevVisible.current) {
++        prevRendered.current = false;
++        show();
++        return;
++      }
+       setMenuLayout({
+         width: 0,
+         height: 0
+@@ -261,7 +271,7 @@ const Menu = ({
+       prevRendered.current = false;
+       focusFirstDOMNode(anchorRef.current);
+     });
+-  }, [removeListeners, theme]);
++  }, [removeListeners, show, theme]);
+   const updateVisibility = React.useCallback(async display => {
+     // Menu is rendered in Portal, which updates items asynchronously
+     // We need to do the same here so that the ref is up-to-date
+@@ -410,6 +420,18 @@ const Menu = ({
        topTransformation = scrollableMenuHeight === windowLayout.height - 2 * SCREEN_INDENT ? -SCREEN_INDENT * 2 : windowLayout.height - menuLayout.height - SCREEN_INDENT - additionalVerticalValue;
      }
    }
@@ -472,7 +518,7 @@ index 17e4899..63591d2 100644
                          style={[
                            styles.outline,
 diff --git a/node_modules/react-native-paper/src/components/Menu/Menu.tsx b/node_modules/react-native-paper/src/components/Menu/Menu.tsx
-index 669656c..858580e 100644
+index 669656c..dde7c9b 100644
 --- a/node_modules/react-native-paper/src/components/Menu/Menu.tsx
 +++ b/node_modules/react-native-paper/src/components/Menu/Menu.tsx
 @@ -51,6 +51,19 @@ export type Props = {
@@ -547,7 +593,28 @@ index 669656c..858580e 100644
  
    const hide = React.useCallback(() => {
      removeListeners();
-@@ -601,6 +624,20 @@ const Menu = ({
+@@ -378,12 +401,19 @@ const Menu = ({
+       easing: EASING,
+       useNativeDriver: true,
+     }).start(() => {
++      // Reopened while this hide animation was running: the visible effect saw prevRendered still
++      // true and skipped show(), so unmounting now would leave visible=true, rendered=false forever.
++      if (prevVisible.current) {
++        prevRendered.current = false;
++        show();
++        return;
++      }
+       setMenuLayout({ width: 0, height: 0 });
+       setRendered(false);
+       prevRendered.current = false;
+       focusFirstDOMNode(anchorRef.current);
+     });
+-  }, [removeListeners, theme]);
++  }, [removeListeners, show, theme]);
+ 
+   const updateVisibility = React.useCallback(
+     async (display: boolean) => {
+@@ -601,6 +631,20 @@ const Menu = ({
      }
    }
  
@@ -568,7 +635,7 @@ index 669656c..858580e 100644
    const shadowMenuContainerStyle = {
      opacity: opacityAnimationRef.current,
      transform: [
-@@ -687,6 +724,7 @@ const Menu = ({
+@@ -687,6 +731,7 @@ const Menu = ({
                  {(scrollableMenuHeight && (
                    <ScrollView
                      keyboardShouldPersistTaps={keyboardShouldPersistTaps}
