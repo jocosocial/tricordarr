@@ -45,12 +45,12 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - EXConstants (57.0.22):
+  - EXConstants (57.0.24):
     - ExpoModulesCore
   - EXJSONUtils (57.0.1)
   - EXManifests (57.0.1):
     - ExpoModulesCore
-  - Expo (57.0.31):
+  - Expo (57.0.33):
     - ExpoModulesCore
     - ExpoModulesJSI
     - hermes-engine
@@ -224,7 +224,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - ExpoAsset (57.0.20):
+  - ExpoAsset (57.0.21):
     - ExpoModulesCore
   - ExpoBlur (57.0.2):
     - ExpoModulesCore
@@ -236,9 +236,9 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (57.0.2):
     - ExpoModulesCore
-  - ExpoLogBox (57.0.4):
+  - ExpoLogBox (57.0.5):
     - React-Core
-  - ExpoModulesCore (57.0.24):
+  - ExpoModulesCore (57.0.26):
     - ExpoModulesJSI
     - hermes-engine
     - RCTRequired
@@ -265,10 +265,10 @@ PODS:
   - ExpoModulesJSI (57.1.3):
     - React-Core
     - ReactCommon
-  - ExpoModulesWorklets (57.0.24):
+  - ExpoModulesWorklets (57.0.26):
     - ExpoModulesCore
     - ExpoModulesJSI
-  - ExpoModulesWorkletsAdapter (57.0.24):
+  - ExpoModulesWorkletsAdapter (57.0.26):
     - ExpoModulesCore
     - ExpoModulesJSI
     - ExpoModulesWorklets
@@ -3344,30 +3344,30 @@ SPEC CHECKSUMS:
   AsyncStorage: 163ab23f6aa37a58b7f2379d0b4ee7ac84d6655c
   BVLinearGradient: cb006ba232a1f3e4f341bb62c42d1098c284da70
   CookieManager: 4465329b104f3890671565066cb527ad2a5264f4
-  EXConstants: 8a0eb5e2553569c0e6710b73a8d90d1ce358c153
+  EXConstants: 3c072d540176acea8cf9b3c41730cc0d22a8b258
   EXJSONUtils: 7a1683cfa2cbe6d11fca97097d51a496755b0287
   EXManifests: f9888c0bf5aaa6ddb7e3d4b224d6d54ac4ca84a4
-  Expo: caadf07d26cefa96b9840e7295c29493ea399cf3
+  Expo: ba623bfcba2e4bea97b54257f9df43478f078092
   expo-dev-client: c8239657705784c0f9bb811df49252e1476ed619
   expo-dev-launcher: 2acc677fde543454a7c5ac7368c150d848638568
   expo-dev-menu: 7bcafc0c82ea4aca3e479b12c7c45b6f2be78bec
   expo-dev-menu-interface: 7a59e803916fbfd1b96c75ff91ea8dddac7e722f
-  ExpoAsset: 2581425f9b581b4fce3c83ffc9f28528d1c4ee68
+  ExpoAsset: a936cb6daa7a1c1f03c9ecc90e2e8feec2c745eb
   ExpoBlur: 69e67b4fbfed6f7325377af2aefa8aa4f00cd2af
   ExpoDomWebView: beaec034e51bd028428b98bb1f2633ab79c6d095
   ExpoFileSystem: 28778f942725170102f7c6cf4dee05a526ddacd0
   ExpoFont: f8198a952ba2ff53c9b393b5269ea435f232cfc3
   ExpoKeepAwake: 72af0b3be3615e59bc819d26061ff4e06b155ee0
-  ExpoLogBox: 80957303325cd4439137765c90a87d7f22aaf2ff
-  ExpoModulesCore: 306ec5a4bfc62c6500990b8e0dbd7a6147481416
+  ExpoLogBox: 1e498d9b63edb2895cacad690bd1848c0546cf01
+  ExpoModulesCore: eddcff7b0f292f3ffccbb237fc17877fefe4885d
   ExpoModulesJSI: ded9f4c72f35fc9400ad85506a94acdd87b2b23b
-  ExpoModulesWorklets: 44a66395ccb9c5683d06fcbfb6b1cc01df62d423
-  ExpoModulesWorkletsAdapter: d40a5e4923c1b8a3882b5e15f90b3488324eff0e
+  ExpoModulesWorklets: a3021e8f3b01c5f9b989ce625782cd296eaaf68f
+  ExpoModulesWorkletsAdapter: 718164ff618f6245d9b18479dd46af9210eadc6d
   ExpoSecureStore: 94793113049a2d7478dfe1a13aa15081e9f61755
   ExpoWebBrowser: a4d7c382116fbe33c1ec7f60293f02b7e97042e4
   EXUpdatesInterface: 92d2aa5194b6fb93ca8ab749db75665cb28b2e60
   FBLazyVector: 3c3be9a019176b5699455f7f66c5444b78a411c6
-  hermes-engine: 2094c5b793d6fed7dd384e91cfcf26cf09c87714
+  hermes-engine: b859cfe0a636a19778007765a53f4bf166f93613
   libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
