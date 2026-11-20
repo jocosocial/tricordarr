@@ -45,7 +45,7 @@ export const ShareSettingsScreen = () => {
                 onPress={handleShareOpensSheet}
                 style={commonStyles.paddingHorizontalSmall}
                 helperText={
-                  'Tapping any Share button opens the advanced share sheet instead of copying the link to the clipboard.'
+                  'Tapping any Share button opens the advanced share sheet instead of sharing the link to other apps.'
                 }
                 value={shareOpensSheet}
               />
