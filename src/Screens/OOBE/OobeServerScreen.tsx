@@ -1,7 +1,10 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {LocalNetworkPermissionView} from '#src/Components/Views/LocalNetworkPermissionView';
@@ -11,7 +14,6 @@ import {LocalNetworkPermissionWarningView} from '#src/Components/Views/Warnings/
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
-import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {OobeLocation} from '#src/Enums/OobeLocation';
 import {useExplicitServerHealthStatus} from '#src/Hooks/useServerHealthStatus';
@@ -29,12 +31,30 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
   const {mode, location} = route.params;
   const {currentSession} = useSession();
   const {appConfig} = useConfig();
-  const {theme} = useAppTheme();
   const {hasUnsavedWork} = useErrorHandler();
   const [serverUrl, setServerUrl] = useState(
     route.params.serverUrl ?? currentSession?.serverUrl ?? appConfig.serverUrl,
   );
   const health = useExplicitServerHealthStatus(serverUrl);
+
+  const getNavButtons = useCallback(
+    () => (
+      <View>
+        <MaterialHeaderButtons>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.networkHelpScreen)}
+          />
+        </MaterialHeaderButtons>
+      </View>
+    ),
+    [navigation],
+  );
+
+  useEffect(() => {
+    navigation.setOptions({headerRight: getNavButtons});
+  }, [getNavButtons, navigation]);
 
   const isLand = location === OobeLocation.land;
   // Adding an account is the one case where choosing some other server is the point, so the
@@ -73,10 +93,6 @@ export const OobeServerScreen = ({navigation, route}: Props) => {
       <ServerChoiceView serverUrl={serverUrl} onChange={setServerUrl} health={health} header={header} />
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}
-        middleText={'Help'}
-        middleOnPress={() => navigation.push(CommonStackComponents.networkHelpScreen)}
-        middleIcon={AppIcons.help}
-        middleButtonColor={theme.colors.twitarrNegativeButton}
         rightOnPress={() => navigation.push(OobeStackComponents.oobeAccountScreen, {mode, serverUrl})}
         rightDisabled={!health.passed || hasUnsavedWork}
       />
