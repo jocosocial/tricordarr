@@ -20,6 +20,8 @@ export const RegisterConductScreen = () => {
   const navigation = useOobeStack();
   const {serverUrl: sessionServerUrl} = useSwiftarrQueryClient();
   const mode = route.params?.mode;
+  // Opened from the register form's consent checkbox: just read it and go back.
+  const viewOnly = route.params?.viewOnly;
   const serverUrl = normalizeServerUrl(route.params?.serverUrl ?? sessionServerUrl);
   const {data, refetch, isFetching} = useExplicitServerConductQuery(serverUrl);
   const {commonStyles} = useStyles();
@@ -33,9 +35,11 @@ export const RegisterConductScreen = () => {
       disablePreRegistrationWarning={!!mode}
       footer={
         <OobeButtonsView
-          leftOnPress={mode ? () => navigation.goBack() : undefined}
-          rightText={'I Agree'}
-          rightOnPress={() => navigation.push(OobeStackComponents.oobeRegisterScreen, {mode, serverUrl})}
+          leftOnPress={mode && !viewOnly ? () => navigation.goBack() : undefined}
+          rightText={viewOnly ? 'Done' : 'I Agree'}
+          rightOnPress={() =>
+            viewOnly ? navigation.goBack() : navigation.push(OobeStackComponents.oobeRegisterScreen, {mode, serverUrl})
+          }
           rightDisabled={!data}
         />
       }

@@ -21,7 +21,7 @@ export type SettingsStackParamList = CommonStackParamList & {
   FeatureSettingsScreen: undefined;
   NotificationPollerSettingsScreen: undefined;
   LoadingSettingScreen: undefined;
-  RegisterConductScreen: {serverUrl?: string} | undefined;
+  RegisterConductScreen: {serverUrl?: string; viewOnly?: boolean} | undefined;
   RegisterScreen: {serverUrl?: string} | undefined;
   CruiseSettingsScreen: undefined;
   UserInfoSettingsScreen: undefined;

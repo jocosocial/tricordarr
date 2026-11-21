@@ -13,10 +13,10 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {useTwitarrWebview} from '#src/Hooks/useTwitarrWebview';
 import {normalizeServerUrl} from '#src/Libraries/ServerUrl';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {OobeStackParamList} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
+import {OobeStackComponents, OobeStackParamList, useOobeStack} from '#src/Navigation/Stacks/Oobe/OobeStackComponents';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {useUserCreateMutation} from '#src/Queries/User/UserMutations';
-import {LoginFormValues, UserRegistrationFormValues} from '#src/Types/FormValues';
+import {LoginFormValues, UserCreateFormValues} from '#src/Types/FormValues';
 
 /**
  * Create an account on a server (the route's, else the active session's) and log in to it. The
@@ -36,11 +36,22 @@ export const RegisterScreen = () => {
   const serverUrl = normalizeServerUrl(route.params?.serverUrl ?? sessionServerUrl);
   const {siteLogin} = useTwitarrWebview();
 
+  // Same route name in both the setup and Settings stacks, so the Oobe navigator typing covers either.
+  const oobeNavigation = useOobeStack();
+  const onConductPress = useCallback(
+    () => oobeNavigation.push(OobeStackComponents.oobeRegisterConductScreen, {mode, serverUrl, viewOnly: true}),
+    [oobeNavigation, mode, serverUrl],
+  );
+
   const onSubmit = useCallback(
-    async (formValues: UserRegistrationFormValues, formikHelpers: FormikHelpers<UserRegistrationFormValues>) => {
+    async (formValues: UserCreateFormValues, formikHelpers: FormikHelpers<UserCreateFormValues>) => {
       setRefreshing(true);
       try {
-        const userCreateResponse = await createMutation.mutateAsync({serverUrl, ...formValues});
+        const userCreateResponse = await createMutation.mutateAsync({
+          serverUrl,
+          ...formValues,
+          agreeToTerms: formValues.agreedToConduct,
+        });
         const loginValues: LoginFormValues = {
           username: formValues.username,
           password: formValues.password,
@@ -87,7 +98,7 @@ export const RegisterScreen = () => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
-          <UserCreateForm onSubmit={onSubmit} />
+          <UserCreateForm onSubmit={onSubmit} onConductPress={onConductPress} />
         </PaddedContentView>
       </ScrollingContentView>
       {mode && <OobeButtonsView leftOnPress={() => navigation.goBack()} leftDisabled={refreshing} />}

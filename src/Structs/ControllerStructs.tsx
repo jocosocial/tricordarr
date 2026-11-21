@@ -445,6 +445,8 @@ export interface UserCreateData {
   /// Verification code, emailed to all cruisegoers by THO before embarkation. On success, user will be created with .verified access level, consuming this code.
   /// Required for creating 'parent' accounts; must be nil when used to create a sub-account with `POST /api/v3/user/add`.
   verification?: string;
+  /// Confirmation that the user has read and agreed to the terms of use. `POST /api/v3/user/create` requires this to be `true` (400 otherwise); `POST /api/v3/user/add` does not use it.
+  agreeToTerms?: boolean;
 }
 
 /// Optional sub-struct that only gets filled out for users with the Shutternaut role.

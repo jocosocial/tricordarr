@@ -64,11 +64,12 @@ export const useUserCreateMutation = (options = {}) => {
     username,
     password,
     verification,
+    agreeToTerms,
   }: UserCreateData & {serverUrl: string}) =>
     await createUserOnServer(
       serverUrl,
       appConfig.urlPrefix,
-      {username, password, verification},
+      {username, password, verification, agreeToTerms},
       appConfig.apiClientConfig.mutationTimeout,
     );
 

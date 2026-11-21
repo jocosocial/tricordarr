@@ -13,7 +13,7 @@ export type OobeStackParamList = CommonStackParamList & {
   OobeAccountScreen: {mode: OnboardingMode; serverUrl: string};
   LoginScreen: {serverUrl?: string; username?: string; mode?: OnboardingMode} | undefined;
   OobeFinishScreen: undefined;
-  RegisterConductScreen: {serverUrl?: string; mode?: OnboardingMode} | undefined;
+  RegisterConductScreen: {serverUrl?: string; mode?: OnboardingMode; viewOnly?: boolean} | undefined;
   RegisterScreen: {serverUrl?: string; mode?: OnboardingMode} | undefined;
   OobeSessionScreen: {mode: OnboardingMode};
   OobePermissionsScreen: undefined;

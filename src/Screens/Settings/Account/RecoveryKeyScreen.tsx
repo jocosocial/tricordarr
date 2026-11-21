@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {LayoutChangeEvent, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {captureRef} from 'react-native-view-shot';
 
@@ -36,6 +36,8 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
   const screenshotRef = useRef<View>(null);
   const [capturing, setCapturing] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
+  // Height of the Acknowledged button area, so snackbars draw above it rather than over it.
+  const [footerHeight, setFooterHeight] = useState(0);
   const recoveryKey = route.params.recoveryKey;
   const username = route.params.username;
   const pendingSignIn = route.params.pendingSignIn;
@@ -87,6 +89,8 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
     canLeaveRef.current = true;
     navigation.goBack();
   };
+
+  const onFooterLayout = (event: LayoutChangeEvent) => setFooterHeight(event.nativeEvent.layout.height);
 
   const onScreenshot = async () => {
     try {
@@ -142,7 +146,7 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
   );
 
   return (
-    <AppView disablePreRegistrationWarning={!!pendingSignIn?.mode}>
+    <AppView disablePreRegistrationWarning={!!pendingSignIn?.mode} snackbarBottomOffset={footerHeight}>
       <ScrollingContentView isStack={true}>
         <View ref={screenshotRef} collapsable={false} style={styles.capture}>
           <PaddedContentView padTop={true}>
@@ -192,7 +196,7 @@ export const RecoveryKeyScreen = ({navigation, route}: Props) => {
           <Text>Press the button below to acknowledge that you have saved your recovery key.</Text>
         </PaddedContentView>
       </ScrollingContentView>
-      <View style={styles.bottomContainer}>
+      <View style={styles.bottomContainer} onLayout={onFooterLayout}>
         <PaddedContentView>
           <PrimaryActionButton
             testID={'acknowledged-button'}
