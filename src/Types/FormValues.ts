@@ -26,6 +26,11 @@ export interface UserRegistrationFormValues {
   verification: string;
 }
 
+export interface UserCreateFormValues extends UserRegistrationFormValues {
+  /** Consent record checkbox, sent to the server as `agreeToTerms`. */
+  agreedToConduct: boolean;
+}
+
 export interface UserProfileFormValues {
   displayName: string;
   realName: string;

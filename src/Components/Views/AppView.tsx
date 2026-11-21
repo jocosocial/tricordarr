@@ -22,6 +22,11 @@ const logger = createLogger('AppView.tsx');
 interface AppViewProps extends PropsWithChildren {
   disablePreRegistrationWarning?: boolean;
   disableMinAccessLevelWarning?: boolean;
+  /**
+   * Lift the snackbar this far above the bottom of the view. Pass the measured height of a fixed
+   * footer (e.g. an action button) so the toast sits above it instead of covering it.
+   */
+  snackbarBottomOffset?: number;
 }
 
 /**
@@ -39,6 +44,7 @@ export const AppView = ({
   children,
   disablePreRegistrationWarning = false,
   disableMinAccessLevelWarning = false,
+  snackbarBottomOffset = 0,
 }: AppViewProps) => {
   const {commonStyles} = useStyles();
   const {disruptionDetected} = useSwiftarrQueryClient();
@@ -89,7 +95,7 @@ export const AppView = ({
       {disruptionDetected && <ConnectionDisruptedWarningView />}
       {children}
       <UnsavedChangesWarningView isVisible={hasUnsavedWork} />
-      <AppSnackbar ignoreBottomInset={!!tabBarHeight} />
+      <AppSnackbar ignoreBottomInset={!!tabBarHeight} bottomOffset={snackbarBottomOffset} />
     </View>
   );
 };
