@@ -1,8 +1,11 @@
 import * as React from 'react';
+import {Linking} from 'react-native';
 
 import {AppDrawer} from '#src/Components/Drawers/AppDrawer';
+import {appUrl} from '#src/Libraries/UrlParser';
 
 let mockHasTwitarrTeam = false;
+let mockHasShutternaut = false;
 let mockHasShutternautManager = false;
 let mockHasAccountManager = false;
 let mockHasHuntManager = false;
@@ -24,7 +27,6 @@ jest.mock('react-native', () => ({
   StyleSheet: {create: (styles: object) => styles},
 }));
 
-jest.mock('#src/Libraries/NavigationRef', () => ({push: jest.fn()}));
 jest.mock('react-native-device-info', () => ({getVersion: () => 'test'}));
 jest.mock('react-native-drawer-layout', () => ({Drawer: 'Drawer'}));
 jest.mock('react-native-paper', () => ({
@@ -44,7 +46,7 @@ jest.mock('#src/Context/Contexts/PrivilegeContext', () => ({
 }));
 jest.mock('#src/Context/Contexts/RoleContext', () => ({
   useRoles: () => ({
-    hasShutternaut: false,
+    hasShutternaut: mockHasShutternaut,
     hasShutternautManager: mockHasShutternautManager,
     hasAccountManager: mockHasAccountManager,
     hasHuntManager: mockHasHuntManager,
@@ -63,6 +65,25 @@ jest.mock('#src/Queries/Alert/NotificationQueries', () => ({
 jest.mock('#src/Queries/User/UserQueries', () => ({
   useUserProfileQuery: () => ({data: undefined}),
 }));
+
+/** Find a drawer item by its label, or undefined if the drawer doesn't offer it. */
+const getDrawerItem = (label: string) => {
+  const drawer = AppDrawer({children: null});
+  let found: {onPress?: () => void} | undefined;
+  const visit = (node: React.ReactNode) => {
+    React.Children.forEach(node, child => {
+      if (!React.isValidElement<{children?: React.ReactNode; label?: string; onPress?: () => void}>(child)) {
+        return;
+      }
+      if (child.props.label === label) {
+        found = child.props;
+      }
+      visit(child.props.children);
+    });
+  };
+  visit(drawer.props.renderDrawerContent());
+  return found;
+};
 
 const getDrawerLabels = () => {
   const drawer = AppDrawer({children: null});
@@ -85,49 +106,44 @@ const getDrawerLabels = () => {
   return labels;
 };
 
-describe('AppDrawer Shutternaut management access', () => {
+describe('AppDrawer Shutternauts hub', () => {
   beforeEach(() => {
     mockHasTwitarrTeam = false;
+    mockHasShutternaut = false;
     mockHasShutternautManager = false;
     mockHasAccountManager = false;
     mockHasHuntManager = false;
+    jest.mocked(Linking.openURL).mockClear();
   });
 
-  it('does not offer Manage Shutternauts to TwitarrTeam alone', () => {
+  it('deep links to the Shutternaut hub for Shutternauts', () => {
+    mockHasShutternaut = true;
+
+    getDrawerItem('Shutternauts')?.onPress?.();
+    expect(Linking.openURL).toHaveBeenCalledWith(appUrl('shutternauts'));
+  });
+
+  it.each([
+    ['Shutternaut Managers', () => (mockHasShutternautManager = true)],
+    ['TwitarrTeam', () => (mockHasTwitarrTeam = true)],
+  ])('offers the hub to %s', (_label, grant) => {
+    grant();
+
+    expect(getDrawerLabels()).toContain('Shutternauts');
+  });
+
+  it('is not offered to users without a Shutternaut role or TwitarrTeam', () => {
+    expect(getDrawerLabels()).not.toContain('Shutternauts');
+  });
+
+  it('replaces the individual Shutternaut drawer items', () => {
+    mockHasShutternautManager = true;
     mockHasTwitarrTeam = true;
 
-    expect(getDrawerLabels()).not.toContain('Manage Shutternauts');
-  });
-
-  it('continues to offer Manage Shutternauts to Shutternaut Managers', () => {
-    mockHasShutternautManager = true;
-
-    expect(getDrawerLabels()).toContain('Manage Shutternauts');
-  });
-});
-
-describe('AppDrawer photographer coverage report access', () => {
-  beforeEach(() => {
-    mockHasTwitarrTeam = false;
-    mockHasShutternautManager = false;
-    mockHasAccountManager = false;
-    mockHasHuntManager = false;
-  });
-
-  it('does not offer Photographer Report to users without the manager role or TwitarrTeam', () => {
-    expect(getDrawerLabels()).not.toContain('Photographer Report');
-  });
-
-  it('offers Photographer Report to Shutternaut Managers', () => {
-    mockHasShutternautManager = true;
-
-    expect(getDrawerLabels()).toContain('Photographer Report');
-  });
-
-  it('offers Photographer Report to TwitarrTeam', () => {
-    mockHasTwitarrTeam = true;
-
-    expect(getDrawerLabels()).toContain('Photographer Report');
+    const labels = getDrawerLabels();
+    expect(labels).not.toContain('Shutternaut Calendar');
+    expect(labels).not.toContain('Manage Shutternauts');
+    expect(labels).not.toContain('Photographer Report');
   });
 });
 

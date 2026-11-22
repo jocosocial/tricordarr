@@ -1,6 +1,7 @@
-import React, {forwardRef, useCallback, useMemo} from 'react';
+import React, {forwardRef, useCallback, useEffect, useMemo, useState} from 'react';
 import {
   GestureResponderEvent,
+  LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
   RefreshControlProps,
@@ -8,7 +9,15 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import {Text} from 'react-native-paper';
+import Animated, {
+  cancelAnimation,
+  ReduceMotion,
+  useAnimatedStyle,
+  useSharedValue,
+  withDecay,
+} from 'react-native-reanimated';
 
 import {DayPlannerCard} from '#src/Components/Cards/Schedule/DayPlannerCard';
 import {DayPlannerNowDivider} from '#src/Components/Views/Schedule/DayPlannerNowDivider';
@@ -62,6 +71,14 @@ interface DayPlannerTimelineViewProps {
    * scroll the timeline under the menu. Disabling scroll cancels that in-progress drag.
    */
   scrollEnabled?: boolean;
+  /**
+   * Fixed-width lanes instead of fitting every lane on screen. Each lane is a third of the screen
+   * (DAY_PLANNER_CONFIG.EXPANDED_VISIBLE_COLUMNS), and when the busiest stretch needs more lanes than that the
+   * events area scrolls sideways while the time column stays put. Toggled by ExpandHeaderButton.
+   */
+  expanded?: boolean;
+  /** Replaces the Day Planner's empty-day message. */
+  emptyMessage?: string;
 }
 
 export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineViewProps>(
@@ -79,6 +96,8 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
       header,
       onItemLongPress,
       scrollEnabled,
+      expanded,
+      emptyMessage,
     },
     ref,
   ) => {
@@ -96,6 +115,85 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     const layoutItems = useMemo(() => {
       return calculateItemLayout(items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents, pinnedItemId);
     }, [items, dayStart, dayEnd, appConfig.schedule.compactThemeEvents, calculateItemLayout, pinnedItemId]);
+
+    // Width the events column actually has on screen, measured so expanded lanes can be sized to it.
+    const [eventsViewportWidth, setEventsViewportWidth] = useState(0);
+    const handleEventsLayout = useCallback((event: LayoutChangeEvent) => {
+      setEventsViewportWidth(event.nativeEvent.layout.width);
+    }, []);
+
+    // Lanes across the whole expanded events area: the busiest stretch's lane count, but never fewer than fit on
+    // screen, so a quiet stretch still gets fixed-width lanes. Zero when not expanded (or not measured yet).
+    const expandedColumns = useMemo(() => {
+      if (!expanded || eventsViewportWidth === 0) {
+        return 0;
+      }
+      const maxColumns = layoutItems.reduce((max, item) => Math.max(max, item.totalColumns), 0);
+      return Math.max(DAY_PLANNER_CONFIG.EXPANDED_VISIBLE_COLUMNS, maxColumns);
+    }, [expanded, eventsViewportWidth, layoutItems]);
+
+    // Cards size themselves as a share of their container, so giving every card the area's full lane count makes
+    // each one exactly one fixed lane wide.
+    const displayItems = useMemo(
+      () => (expandedColumns ? layoutItems.map(item => ({...item, totalColumns: expandedColumns})) : layoutItems),
+      [expandedColumns, layoutItems],
+    );
+
+    // Width of the sideways-scrolling events area, or zero when the lanes fit on screen.
+    const eventsContentWidth =
+      expandedColumns > DAY_PLANNER_CONFIG.EXPANDED_VISIBLE_COLUMNS
+        ? (expandedColumns * eventsViewportWidth) / DAY_PLANNER_CONFIG.EXPANDED_VISIBLE_COLUMNS
+        : 0;
+
+    /**
+     * Sideways scrolling is a pan gesture moving the lanes, not a nested horizontal ScrollView: two nested
+     * ScrollViews each lock to their own axis, so a diagonal drag could only ever move one of them. The pan runs
+     * alongside the native vertical scroll, so one drag moves both. translateX runs from 0 (left edge) down to
+     * minTranslateX (right edge).
+     */
+    const translateX = useSharedValue(0);
+    const panStartX = useSharedValue(0);
+    const minTranslateX = useSharedValue(0);
+    const canPan = eventsContentWidth > 0 && scrollEnabled !== false;
+
+    // Keep the lanes in bounds when the area shrinks (fewer lanes, collapsing, a resize), e.g. not stranded past
+    // the right edge.
+    useEffect(() => {
+      const min = eventsContentWidth > 0 ? eventsViewportWidth - eventsContentWidth : 0;
+      minTranslateX.set(min);
+      if (translateX.get() < min || translateX.get() > 0) {
+        cancelAnimation(translateX);
+        translateX.set(Math.min(0, Math.max(min, translateX.get())));
+      }
+    }, [eventsContentWidth, eventsViewportWidth, minTranslateX, translateX]);
+
+    // Recognized together with the vertical ScrollView's own native gesture.
+    const verticalScrollGesture = useMemo(() => Gesture.Native(), []);
+    const horizontalPanGesture = useMemo(
+      () =>
+        Gesture.Pan()
+          .enabled(canPan)
+          // A mostly vertical drag only scrolls vertically until it has moved sideways too.
+          .activeOffsetX([-10, 10])
+          .simultaneousWithExternalGesture(verticalScrollGesture)
+          .onBegin(() => {
+            cancelAnimation(translateX);
+          })
+          .onStart(() => {
+            panStartX.set(translateX.get());
+          })
+          .onUpdate(event => {
+            translateX.set(Math.min(0, Math.max(minTranslateX.get(), panStartX.get() + event.translationX)));
+          })
+          .onEnd(event => {
+            // The fling's glide is part of the drag, like a native ScrollView's, so it ignores reduced motion. Under
+            // ReduceMotion.System, a device with animations turned off would stop the lanes dead on release.
+            translateX.set(
+              withDecay({velocity: event.velocityX, clamp: [minTranslateX.get(), 0], reduceMotion: ReduceMotion.Never}),
+            );
+          }),
+      [canPan, verticalScrollGesture, translateX, panStartX, minTranslateX],
+    );
 
     // Rows in the window. The real Day Planner's window is exactly 24h (getDayBoundaries adds absolute
     // hours from the same base), so this stays 96 there; the overlap view passes a shorter window.
@@ -213,7 +311,37 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     );
     const timelineHeight = getTimelineHeight(displaySlots);
 
+    // Sized separately from `styles` so measuring the viewport doesn't rebuild every other style.
+    // Expanded, it clips the panned lanes so they slide under the time column rather than over it.
+    const sizedStyles = useMemo(
+      () =>
+        StyleSheet.create({
+          eventsColumn: {
+            ...styles.eventsColumn,
+            height: timelineHeight,
+            overflow: expanded ? 'hidden' : 'visible',
+          },
+        }),
+      [styles.eventsColumn, timelineHeight, expanded],
+    );
+
+    // Sized and moved in one animated style. The lanes fill the column until they need more room than it has,
+    // then take their full scrolling width.
+    const pannedEventsStyle = useAnimatedStyle(() => ({
+      position: 'relative',
+      width: eventsContentWidth > 0 ? eventsContentWidth : '100%',
+      height: timelineHeight,
+      transform: [{translateX: translateX.get()}],
+    }));
+
     if (items.length === 0) {
+      if (emptyMessage) {
+        return (
+          <View style={styles.emptyMessage}>
+            <Text style={styles.emptyText}>{emptyMessage}</Text>
+          </View>
+        );
+      }
       return (
         <View style={styles.emptyMessage}>
           <Text style={styles.emptyText}>No items in your Day Planner for this day.</Text>
@@ -232,68 +360,81 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
       );
     }
 
+    // Grid lines and cards. They sit in the same wrappers whether or not the timeline is expanded, and expanding
+    // only changes those wrappers' widths. Swapping in different wrappers instead would remount every card on every
+    // rendered day, which left the screen blank for a moment after each toggle.
+    const eventsColumnContent = (
+      <>
+        {/* Grid lines */}
+        <View style={styles.gridLines}>
+          {timeSlots.map((slot, index) => (
+            <View key={index} style={[styles.gridLine, getGridLineStyle(slot.slotType)]} />
+          ))}
+        </View>
+
+        {/* Event cards */}
+        <View style={styles.eventsContainer}>
+          {displayItems.map(item => (
+            <DayPlannerCard
+              key={item.id}
+              item={item}
+              onPress={() => handleItemPress(item)}
+              onLongPress={onItemLongPress ? event => onItemLongPress(item, event) : undefined}
+              highlighted={item.id === pinnedItemId}
+            />
+          ))}
+        </View>
+      </>
+    );
+
     return (
-      <ScrollView
-        ref={ref}
-        style={styles.container}
-        contentContainerStyle={styles.scrollContent}
-        scrollsToTop={false}
-        scrollEnabled={scrollEnabled}
-        refreshControl={refreshControl}
-        showsVerticalScrollIndicator={false}
-        onScrollEndDrag={onScrollSettled}
-        onMomentumScrollEnd={onScrollSettled}>
-        <View style={styles.scrollColumn}>
-          {header}
-          <View style={[styles.timelineRow, {height: timelineHeight}]}>
-            {/* Only today's page needs the divider; mounting it elsewhere just runs a minute timer to render null. */}
-            {selectedCruiseDay === adjustedCruiseDayToday && (
-              <DayPlannerNowDivider
-                dayStart={dayStart}
-                timelineHeight={getTimelineHeight(totalSlots)}
-                selectedCruiseDay={selectedCruiseDay}
-                boatTimeZoneID={timeZoneID ?? appConfig.portTimeZoneID}
-              />
-            )}
+      <GestureDetector gesture={verticalScrollGesture}>
+        <ScrollView
+          ref={ref}
+          style={styles.container}
+          contentContainerStyle={styles.scrollContent}
+          scrollsToTop={false}
+          scrollEnabled={scrollEnabled}
+          refreshControl={refreshControl}
+          showsVerticalScrollIndicator={false}
+          onScrollEndDrag={onScrollSettled}
+          onMomentumScrollEnd={onScrollSettled}>
+          <View style={styles.scrollColumn}>
+            {header}
+            <View style={[styles.timelineRow, {height: timelineHeight}]}>
+              {/* Only today's page needs the divider; mounting it elsewhere just runs a minute timer to render null. */}
+              {selectedCruiseDay === adjustedCruiseDayToday && (
+                <DayPlannerNowDivider
+                  dayStart={dayStart}
+                  timelineHeight={getTimelineHeight(totalSlots)}
+                  selectedCruiseDay={selectedCruiseDay}
+                  boatTimeZoneID={timeZoneID ?? appConfig.portTimeZoneID}
+                />
+              )}
 
-            {/* Time labels column — zIndex so it renders above the now divider */}
-            <View style={[styles.timeColumn, {height: timelineHeight}]}>
-              {timeSlots.map((slot, index) => (
-                <View key={index} style={[styles.timeSlot, getGridLineStyle(slot.slotType)]}>
-                  {slot.label ? (
-                    <Text style={styles.timeLabel} variant={'bodyMedium'}>
-                      {slot.label}
-                    </Text>
-                  ) : null}
-                </View>
-              ))}
-            </View>
-
-            {/* Events column */}
-            <View style={[styles.eventsColumn, {height: timelineHeight}]}>
-              {/* Grid lines */}
-              <View style={styles.gridLines}>
+              {/* Time labels column — zIndex so it renders above the now divider */}
+              <View style={[styles.timeColumn, {height: timelineHeight}]}>
                 {timeSlots.map((slot, index) => (
-                  <View key={index} style={[styles.gridLine, getGridLineStyle(slot.slotType)]} />
+                  <View key={index} style={[styles.timeSlot, getGridLineStyle(slot.slotType)]}>
+                    {slot.label ? (
+                      <Text style={styles.timeLabel} variant={'bodyMedium'}>
+                        {slot.label}
+                      </Text>
+                    ) : null}
+                  </View>
                 ))}
               </View>
 
-              {/* Event cards */}
-              <View style={styles.eventsContainer}>
-                {layoutItems.map(item => (
-                  <DayPlannerCard
-                    key={item.id}
-                    item={item}
-                    onPress={() => handleItemPress(item)}
-                    onLongPress={onItemLongPress ? event => onItemLongPress(item, event) : undefined}
-                    highlighted={item.id === pinnedItemId}
-                  />
-                ))}
+              {/* Events column */}
+              <View style={sizedStyles.eventsColumn} onLayout={handleEventsLayout}>
+                <GestureDetector gesture={horizontalPanGesture}>
+                  <Animated.View style={pannedEventsStyle}>{eventsColumnContent}</Animated.View>
+                </GestureDetector>
               </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </GestureDetector>
     );
   },
 );

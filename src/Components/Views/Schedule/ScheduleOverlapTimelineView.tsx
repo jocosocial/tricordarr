@@ -20,6 +20,8 @@ interface ScheduleOverlapTimelineViewProps {
   pinnedItemId: string;
   /** Content above the timeline that scrolls and refreshes with it. */
   header?: React.ReactNode;
+  /** Fixed-width lanes that scroll sideways (see DayPlannerTimelineView's `expanded`). */
+  expanded: boolean;
 }
 
 /**
@@ -33,6 +35,7 @@ export const ScheduleOverlapTimelineView = ({
   refreshControl,
   pinnedItemId,
   header,
+  expanded,
 }: ScheduleOverlapTimelineViewProps) => {
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
@@ -82,6 +85,7 @@ export const ScheduleOverlapTimelineView = ({
         showEndLabel={true}
         pinnedItemId={pinnedItemId}
         header={header}
+        expanded={expanded}
       />
     </View>
   );

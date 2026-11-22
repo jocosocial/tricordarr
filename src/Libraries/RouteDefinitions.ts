@@ -30,6 +30,11 @@ export const allRoutes: RouteDefinition[] = [
   {screen: MainStackComponents.mainScreen, path: 'home'},
   {screen: CommonStackComponents.helpIndexScreen, path: 'help'},
   {screen: CommonStackComponents.adminScreen, path: 'admin'},
+  {screen: CommonStackComponents.regCodeManageScreen, path: 'admin/regcodes'},
+  {screen: CommonStackComponents.userRegCodeScreen, path: 'admin/regcodes/showuser/:userID'},
+  {screen: CommonStackComponents.huntManageScreen, path: 'admin/hunts'},
+  {screen: CommonStackComponents.shutternautHomeScreen, path: 'shutternauts'},
+  {screen: CommonStackComponents.shutternautManageScreen, path: 'userrole/shutternaut/manage'},
   {screen: CommonStackComponents.aboutTricordarrScreen, path: 'about-app'},
   {screen: CommonStackComponents.aboutTwitarrScreen, path: 'about'},
   {screen: CommonStackComponents.privacyScreen, path: 'privacy'},
@@ -93,14 +98,17 @@ export const allRoutes: RouteDefinition[] = [
 
   // ==================== Schedule Tab Routes ====================
   {screen: CommonStackComponents.scheduleDayScreen, path: 'events'},
+  {screen: CommonStackComponents.shutternautReportScreen, path: 'events/photographerreport'},
   {screen: CommonStackComponents.eventScreen, path: 'events/:eventID'},
+  {screen: CommonStackComponents.scheduleDayPlannerScreen, path: 'dayplanner'},
+  {screen: CommonStackComponents.shutternautCalendarScreen, path: 'dayplanner/shutternauts'},
   {screen: CommonStackComponents.personalEventScreen, path: 'privateevent/:eventID'},
   {screen: CommonStackComponents.eventFeedbackFormScreen, path: 'eventfeedback/form/:eventUID'},
   {screen: CommonStackComponents.eventFeedbackSelectScreen, path: 'eventfeedback'},
 
   // ==================== Forum Tab Routes ====================
   {screen: ForumStackComponents.forumCategoriesScreen, path: 'forums'},
-  {screen: ForumStackComponents.forumCategoryScreen, path: 'forums/:categoryID'},
+  {screen: CommonStackComponents.forumCategoryScreen, path: 'forums/:categoryID'},
   {screen: CommonStackComponents.forumPostMentionScreen, path: 'forumpost/mentions'},
   {screen: CommonStackComponents.forumThreadPostScreen, path: 'forum/containingpost/:postID'},
   {screen: CommonStackComponents.forumThreadScreen, path: 'forum/:forumID'},
@@ -139,6 +147,11 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.personalEventScreen,
     CommonStackComponents.eventFeedbackSelectScreen,
     CommonStackComponents.eventFeedbackFormScreen,
+    CommonStackComponents.shutternautCalendarScreen,
+    CommonStackComponents.shutternautReportScreen,
+    CommonStackComponents.shutternautHomeScreen,
+    CommonStackComponents.shutternautManageScreen,
+    CommonStackComponents.scheduleDayPlannerScreen,
     // LFG routes
     CommonStackComponents.lfgChatScreen,
     CommonStackComponents.lfgScreen,
@@ -157,6 +170,10 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     // Hunt routes
     CommonStackComponents.huntScreen,
     CommonStackComponents.huntPuzzleScreen,
+    // Admin routes
+    CommonStackComponents.regCodeManageScreen,
+    CommonStackComponents.userRegCodeScreen,
+    CommonStackComponents.huntManageScreen,
     // Info routes
     CommonStackComponents.privacyScreen,
     // Moderator routes

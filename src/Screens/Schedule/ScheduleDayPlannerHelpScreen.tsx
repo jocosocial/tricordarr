@@ -3,6 +3,7 @@ import React from 'react';
 import {HelpFABView} from '#src/Components/Buttons/FloatingActionButtons/HelpFABView';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ExpandButtonHelpTopicView} from '#src/Components/Views/Help/Common/ExpandButtonHelpTopicView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {ReloadButtonHelpTopicView} from '#src/Components/Views/Help/Common/ReloadButtonHelpTopicView';
 import {ScheduleDayButtonHelpTopicView} from '#src/Components/Views/Help/Common/ScheduleDayButtonHelpTopicView';
@@ -40,6 +41,7 @@ export const ScheduleDayPlannerHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
+          <ExpandButtonHelpTopicView />
           <ReloadButtonHelpTopicView />
           <ScheduleImportHelpTopicView />
           <ScheduleSettingsHelpTopicView />

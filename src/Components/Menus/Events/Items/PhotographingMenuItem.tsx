@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
@@ -7,40 +6,39 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useEventCacheReducer} from '#src/Hooks/Events/useEventCacheReducer';
 import {useEventPhotographerMutation} from '#src/Queries/Events/EventPhotographerMutations';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {EventData} from '#src/Structs/ControllerStructs';
 
 interface PhotographingMenuItemProps {
-  eventID: string;
-  shutternautData: EventData['shutternautData'];
+  event: EventData;
   closeMenu?: () => void;
 }
 
 export const PhotographingMenuItem = (props: PhotographingMenuItemProps) => {
-  const queryClient = useQueryClient();
   const {commonStyles} = useStyles();
   const photographerMutation = useEventPhotographerMutation();
   const {updatePhotographer} = useEventCacheReducer();
+  // Our own header, so the optimistic update can put us in the event's photographers list.
+  const {data: profileData} = useUserProfileQuery();
+
+  const {event} = props;
+  const shutternautData = event.shutternautData;
 
   const handlePhotographerToggle = () => {
-    if (!props.shutternautData) {
+    if (!shutternautData) {
       return;
     }
-    const newValue = !props.shutternautData.userIsPhotographer;
+    const newValue = !shutternautData.userIsPhotographer;
     // Optimistic: flip the cache immediately rather than waiting on the network round trip.
-    updatePhotographer(props.eventID, newValue);
+    updatePhotographer(event, newValue, profileData?.header);
     photographerMutation.mutate(
       {
-        eventID: props.eventID,
+        eventID: event.eventID,
         action: newValue ? 'create' : 'delete',
       },
       {
-        onSuccess: async () => {
-          // The photographers header list (rendered only on the event detail screen) needs
-          // the authoritative UserHeader from the server, so refetch just that one cache entry.
-          await queryClient.invalidateQueries({queryKey: [`/events/${props.eventID}`]});
-        },
         onError: () => {
-          updatePhotographer(props.eventID, !newValue);
+          updatePhotographer(event, !newValue, profileData?.header);
         },
         onSettled: () => {
           props.closeMenu?.();
@@ -49,17 +47,17 @@ export const PhotographingMenuItem = (props: PhotographingMenuItemProps) => {
     );
   };
 
-  if (!props.shutternautData) {
+  if (!shutternautData) {
     return null;
   }
 
   return (
     <Menu.Item
       title={'Photographing'}
-      style={props.shutternautData.userIsPhotographer ? commonStyles.surfaceVariant : undefined}
+      style={shutternautData.userIsPhotographer ? commonStyles.surfaceVariant : undefined}
       leadingIcon={getStateLoadingIcon({
         isLoading: photographerMutation.isPending,
-        state: props.shutternautData.userIsPhotographer,
+        state: shutternautData.userIsPhotographer,
         iconTrue: AppIcons.check,
         iconFalse: AppIcons.shutternaut,
       })}

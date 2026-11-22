@@ -6,7 +6,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
+import {useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 
 export const ForumCategoriesScreenSearchMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
@@ -32,7 +32,7 @@ export const ForumCategoriesScreenSearchMenu = () => {
         leadingIcon={AppIcons.search}
         onPress={() => {
           closeMenu();
-          forumNavigation.push(ForumStackComponents.forumThreadSearchScreen, {});
+          forumNavigation.push(CommonStackComponents.forumThreadSearchScreen, {});
         }}
       />
     </AppMenu>

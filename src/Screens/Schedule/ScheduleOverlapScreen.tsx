@@ -5,6 +5,7 @@ import {StyleSheet, View} from 'react-native';
 import {ActivityIndicator, Menu, Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
+import {ExpandHeaderButton} from '#src/Components/Buttons/HeaderButtons/ExpandHeaderButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
@@ -56,6 +57,8 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   // src/Queries/Events/EventQueries.ts) and can't favorite, so they start on all events.
   const defaultOnlyYourEvents = isLoggedIn && appConfig.schedule.overlapOnlyYourEvents;
   const [onlyYourEvents, setOnlyYourEvents] = useState(defaultOnlyYourEvents);
+  // Fixed-width lanes that scroll sideways on the timeline view. Starts from the user's setting.
+  const [expanded, setExpanded] = useState(appConfig.schedule.expandTimelinesByDefault);
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
 
@@ -316,10 +319,14 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   // back; the effect only fires when the default's value changes, so it never undoes a toggle otherwise.
   useEffect(() => setOnlyYourEvents(defaultOnlyYourEvents), [defaultOnlyYourEvents]);
 
+  // Expand only applies to the timeline; the list view has no lanes.
+  const isTimelineMode = appConfig.schedule.overlapViewMode === ScheduleOverlapViewMode.timeline;
+
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <MaterialHeaderButtons>
+          {isTimelineMode && <ExpandHeaderButton expanded={expanded} onPress={() => setExpanded(!expanded)} />}
           <MenuAnchor
             title={'Only Your Events'}
             active={onlyYourEvents}
@@ -350,7 +357,7 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
         </MaterialHeaderButtons>
       </View>
     );
-  }, [onlyYourEvents, visible, openMenu, closeMenu, commonNavigation]);
+  }, [isTimelineMode, expanded, onlyYourEvents, visible, openMenu, closeMenu, commonNavigation]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -366,15 +373,14 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
           <View style={commonStyles.loadingContainer}>
             <ActivityIndicator size={'large'} />
           </View>
-        ) : appConfig.schedule.overlapViewMode === ScheduleOverlapViewMode.timeline &&
-          cruiseDay !== undefined &&
-          filteredItems.length > 0 ? (
+        ) : isTimelineMode && cruiseDay !== undefined && filteredItems.length > 0 ? (
           <ScheduleOverlapTimelineView
             items={filteredItems}
             cruiseDay={cruiseDay}
             refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             pinnedItemId={routeEventId}
             header={filterHint}
+            expanded={expanded}
           />
         ) : (
           <ScheduleFlatList

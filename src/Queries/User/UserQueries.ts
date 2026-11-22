@@ -21,8 +21,11 @@ export const useUserProfileQuery = <TData = ProfilePublicData>(options: TokenAut
   });
 };
 
+/** Endpoint, and so cache key prefix, of the current user's `CurrentUserData`. */
+export const USER_WHOAMI_ENDPOINT = '/user/whoami';
+
 export const useUserWhoamiQuery = (
   options: TokenAuthQueryOptionsType<CurrentUserData> = {staleTime: STALE.MINUTES.THIRTY},
 ) => {
-  return useTokenAuthQuery<CurrentUserData>('/user/whoami', options);
+  return useTokenAuthQuery<CurrentUserData>(USER_WHOAMI_ENDPOINT, options);
 };

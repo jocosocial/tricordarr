@@ -2,8 +2,9 @@ import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientC
 import {ContentModerationStatus} from '#src/Enums/ContentModerationStatus';
 import {ReportContentType} from '#src/Enums/ReportContentType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
+import {useUserCacheReducer} from '#src/Hooks/User/useUserCacheReducer';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
-import {ReportData} from '#src/Structs/ControllerStructs';
+import {ReportData, UserHeader} from '#src/Structs/ControllerStructs';
 
 interface ModReportMutationProps {
   contentType: ReportContentType;
@@ -91,17 +92,20 @@ export const useForumSetCategoryMutation = () => {
 
 /**
  * Sets a user's access level. Moderators may set quarantined or verified.
- * THO may also set banned or unverified.
+ * THO may also set banned or unverified. Applies the new level to cached lists and the moderation view.
  * POST /api/v3/mod/user/:id/setaccesslevel/:level
  */
 export const useUserSetAccessLevelMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
+  const {setAccessLevel} = useUserCacheReducer();
 
-  const queryHandler = async ({userID, accessLevel}: {userID: string; accessLevel: UserAccessLevel}) => {
-    return await apiPost(`/mod/user/${userID}/setaccesslevel/${accessLevel}`);
+  const queryHandler = async ({user, accessLevel}: {user: UserHeader; accessLevel: UserAccessLevel}) => {
+    return await apiPost(`/mod/user/${user.userID}/setaccesslevel/${accessLevel}`);
   };
 
-  return useTokenAuthMutation(queryHandler);
+  return useTokenAuthMutation(queryHandler, {
+    onSuccess: (_data, variables) => setAccessLevel(variables.user, variables.accessLevel),
+  });
 };
 
 /**

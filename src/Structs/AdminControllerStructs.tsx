@@ -555,17 +555,38 @@ export namespace SettingsAdminData {
  * These endpoints do not have a dedicated Swiftarr DTO.
  */
 export namespace AdminAccessLevelListData {
+  /** The levels THO manages as lists, each served by its own endpoint. */
+  export const listedLevels = [UserAccessLevel.moderator, UserAccessLevel.twitarrteam, UserAccessLevel.tho] as const;
+
+  /**
+   * Cache key of the list holding users at `level`. Every other level has no list.
+   */
+  export const getCacheKeyForLevel = (level: UserAccessLevel): QueryKey | undefined => {
+    switch (level) {
+      case UserAccessLevel.moderator:
+        return ['/admin/moderators'];
+      case UserAccessLevel.twitarrteam:
+        return ['/admin/twitarrteam'];
+      case UserAccessLevel.tho:
+        return ['/admin/tho'];
+      default:
+        return undefined;
+    }
+  };
+
   export const getCacheKeys = (): QueryKey[] => {
-    return [['/admin/moderators'], ['/admin/twitarrteam'], ['/admin/tho']];
+    return listedLevels.map(level => getCacheKeyForLevel(level) as QueryKey);
   };
 }
 
 /**
- * Cache keys for users-with-role lists (`GET /admin/userroles/:role`).
+ * Cache keys for users-with-role lists: THO's `GET /admin/userroles/:role` and the Shutternaut
+ * Manager's `GET /users/userrole/:role`. Both are returned so a change made from either screen
+ * refreshes the other.
  */
 export namespace AdminUserRoleListData {
   export const getCacheKeys = (role: string): QueryKey[] => {
-    return [[`/admin/userroles/${role}`]];
+    return [[`/admin/userroles/${role}`], [`/users/userrole/${role}`]];
   };
 }
 

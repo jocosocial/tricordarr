@@ -47,6 +47,8 @@ export interface ScheduleConfig {
   overlapViewMode: ScheduleOverlapViewMode;
   overlapOnlyYourEvents: boolean;
   compactThemeEvents: boolean;
+  /** Day Planner style timelines open with Expand on. The header button still toggles it per visit. */
+  expandTimelinesByDefault: boolean;
   timeZoneLabelMode: TimeZoneLabelMode;
   showMarkersOutsideCruiseWeek: boolean;
 }
@@ -193,6 +195,7 @@ export const defaultAppConfig: AppConfig = {
     overlapViewMode: ScheduleOverlapViewMode.timeline,
     overlapOnlyYourEvents: true,
     compactThemeEvents: true,
+    expandTimelinesByDefault: false,
     timeZoneLabelMode: TimeZoneLabelMode.offset,
     showMarkersOutsideCruiseWeek: false,
   },

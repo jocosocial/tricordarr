@@ -94,20 +94,8 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       )}
       <PrivilegedMenuGroup>
         {hasTwitarrTeam && <ManagePerformersMenuItem eventID={props.event.eventID} />}
-        {hasShutternaut && (
-          <PhotographingMenuItem
-            eventID={props.event.eventID}
-            shutternautData={props.event.shutternautData}
-            closeMenu={closeMenu}
-          />
-        )}
-        {hasShutternautManager && (
-          <NeedsPhotographerMenuItem
-            eventID={props.event.eventID}
-            shutternautData={props.event.shutternautData}
-            closeMenu={closeMenu}
-          />
-        )}
+        {hasShutternaut && <PhotographingMenuItem event={props.event} closeMenu={closeMenu} />}
+        {hasShutternautManager && <NeedsPhotographerMenuItem event={props.event} closeMenu={closeMenu} />}
       </PrivilegedMenuGroup>
       <ShareMenuItem contentType={ShareContentType.event} contentID={props.event.eventID} closeMenu={closeMenu} />
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />

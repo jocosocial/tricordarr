@@ -16,7 +16,7 @@ import {useMenu} from '#src/Hooks/useMenu';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
-import {DayPlannerItem} from '#src/Types/DayPlanner';
+import {DayPlannerItem, DayPlannerVariant} from '#src/Types/DayPlanner';
 
 export interface DayPlannerPageControls {
   scrollToNow: () => void;
@@ -30,6 +30,13 @@ export interface DayPlannerScrollController {
 
 interface DayPlannerPageProps {
   cruiseDay: number;
+  /**
+   * Which planner this page shows. The Shutternaut Calendar only loads events that have a photographer, so its
+   * LFG and private event queries stay disabled.
+   */
+  variant: DayPlannerVariant;
+  /** Fixed-width lanes that scroll sideways (see DayPlannerTimelineView's `expanded`). */
+  expanded: boolean;
   isActive: boolean;
   /**
    * Whether this day is allowed to fetch yet. False keeps every query disabled (page shows the
@@ -80,6 +87,8 @@ interface DayPlannerPageProps {
  */
 const DayPlannerPageComponent = ({
   cruiseDay,
+  variant,
+  expanded,
   isActive,
   enabled,
   renderTimeline,
@@ -98,8 +107,14 @@ const DayPlannerPageComponent = ({
   const {preRegistrationMode} = usePreRegistration();
   // Pre-registration users can't list what they've joined, only what they own.
   const fezEndpoint = preRegistrationMode ? 'owner' : 'joined';
-  const {buildDayPlannerItems, getDayBoundaries, getScrollOffsetForFirstItem, getScrollOffsetForTimeOfDay} =
-    useDayPlanner();
+  const isShutternaut = variant === 'shutternaut';
+  const {
+    buildDayPlannerItems,
+    buildShutternautCalendarItems,
+    getDayBoundaries,
+    getScrollOffsetForFirstItem,
+    getScrollOffsetForTimeOfDay,
+  } = useDayPlanner();
   const {visible: menuVisible, openMenu, closeMenu} = useMenu();
   const [menuTarget, setMenuTarget] = useState<DayPlannerMenuTarget | null>(null);
 
@@ -125,7 +140,8 @@ const DayPlannerPageComponent = ({
     refetch: refetchEvents,
   } = useEventsQuery({
     cruiseDay: cruiseDay,
-    dayplanner: true,
+    dayplanner: !isShutternaut,
+    hasPhotographer: isShutternaut ? true : undefined,
     options: {
       enabled,
     },
@@ -143,7 +159,7 @@ const DayPlannerPageComponent = ({
     endpoint: fezEndpoint,
     hidePast: false,
     options: {
-      enabled,
+      enabled: enabled && !isShutternaut,
     },
   });
 
@@ -159,7 +175,7 @@ const DayPlannerPageComponent = ({
     endpoint: fezEndpoint,
     hidePast: false,
     options: {
-      enabled,
+      enabled: enabled && !isShutternaut,
     },
   });
 
@@ -180,8 +196,11 @@ const DayPlannerPageComponent = ({
   ]);
 
   const dayPlannerItems = useMemo(() => {
+    if (isShutternaut) {
+      return buildShutternautCalendarItems(eventData);
+    }
     return buildDayPlannerItems(eventData, lfgJoinedData, personalEventData);
-  }, [eventData, lfgJoinedData, personalEventData, buildDayPlannerItems]);
+  }, [isShutternaut, eventData, lfgJoinedData, personalEventData, buildDayPlannerItems, buildShutternautCalendarItems]);
 
   const {tzAtTime} = useTimeZone();
 
@@ -220,9 +239,14 @@ const DayPlannerPageComponent = ({
     scrollTo(getScrollOffsetForFirstItem(dayPlannerItems, dayStart), true);
   }, [dayPlannerItems, dayStart, getScrollOffsetForFirstItem, scrollTo]);
 
+  // The Shutternaut Calendar's fez queries are disabled, so only its events are refetched.
   const refresh = useCallback(async () => {
+    if (isShutternaut) {
+      await refetchEvents();
+      return;
+    }
     await Promise.all([refetchEvents(), refetchLfgJoined(), refetchPersonalEvents()]);
-  }, [refetchEvents, refetchLfgJoined, refetchPersonalEvents]);
+  }, [isShutternaut, refetchEvents, refetchLfgJoined, refetchPersonalEvents]);
 
   /**
    * Position this page once, the first time it actually has a timeline to position: carry over
@@ -320,6 +344,8 @@ const DayPlannerPageComponent = ({
         onScrollSettled={handleScrollSettled}
         onItemLongPress={handleItemLongPress}
         scrollEnabled={!menuVisible}
+        expanded={expanded}
+        emptyMessage={isShutternaut ? 'No events with photographers on this day.' : undefined}
       />
       <DayPlannerCardActionsMenu target={menuTarget} visible={menuVisible} closeMenu={closeMenu} />
     </View>

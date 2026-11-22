@@ -15,9 +15,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {push} from '#src/Libraries/NavigationRef';
 import {appSiteUrl, appUrl} from '#src/Libraries/UrlParser';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
@@ -225,42 +223,28 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 <PaperDrawer.Item
                   label={'Performer Profile'}
                   icon={AppIcons.performer}
-                  onPress={() => push(CommonStackComponents.performerSelfScreen)}
+                  onPress={() => Linking.openURL(appUrl('performer', 'shadow', 'self'))}
                 />
               )}
               {(hasShutternaut || hasShutternautManager || hasTwitarrTeam) && (
                 <PaperDrawer.Item
-                  label={'Shutternaut Calendar'}
+                  label={'Shutternauts'}
                   icon={AppIcons.shutternaut}
-                  onPress={() => Linking.openURL(appSiteUrl('dayplanner', 'shutternauts'))}
-                />
-              )}
-              {hasShutternautManager && (
-                <PaperDrawer.Item
-                  label={'Manage Shutternauts'}
-                  icon={AppIcons.shutternautManager}
-                  onPress={() => Linking.openURL(appSiteUrl('userrole', 'shutternaut', 'manage'))}
-                />
-              )}
-              {(hasShutternautManager || hasTwitarrTeam) && (
-                <PaperDrawer.Item
-                  label={'Photographer Report'}
-                  icon={AppIcons.photographer}
-                  onPress={() => push(CommonStackComponents.shutternautReportScreen)}
+                  onPress={() => Linking.openURL(appUrl('shutternauts'))}
                 />
               )}
               {(hasAccountManager || hasTwitarrTeam) && (
                 <PaperDrawer.Item
                   label={'Registration Codes'}
                   icon={AppIcons.registrationCode}
-                  onPress={() => push(CommonStackComponents.regCodeManageScreen)}
+                  onPress={() => Linking.openURL(appUrl('admin', 'regcodes'))}
                 />
               )}
               {(hasHuntManager || hasTwitarrTeam) && (
                 <PaperDrawer.Item
                   label={'Manage Puzzle Hunts'}
                   icon={AppIcons.hunts}
-                  onPress={() => push(CommonStackComponents.huntManageScreen)}
+                  onPress={() => Linking.openURL(appUrl('admin', 'hunts'))}
                 />
               )}
               {hasModerator && (

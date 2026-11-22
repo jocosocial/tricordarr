@@ -18,7 +18,11 @@ import {useAdminAccess} from '#src/Hooks/Admin/useAdminAccess';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {alertDemoteUser, alertPromoteUser} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {useDemoteUserAccessMutation, usePromoteUserAccessMutation} from '#src/Queries/Admin/UserAccessMutations';
+import {
+  useDemoteUserAccessMutation,
+  usePromoteUserAccessMutation,
+  UserAccessPromoteTarget,
+} from '#src/Queries/Admin/UserAccessMutations';
 import {useModeratorsQuery, useTHOQuery, useTwitarrTeamQuery} from '#src/Queries/Admin/UserAccessQueries';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
@@ -62,14 +66,14 @@ const AdminAccessLevelsScreenInner = ({navigation}: Props) => {
     navigation.push(CommonStackComponents.userProfileScreen, {userID: user.userID});
   };
 
-  const promote = (user: UserHeader, target: 'moderator' | 'twitarrteam' | 'tho', level: UserAccessLevel) => {
-    alertPromoteUser(UserAccessLevel.getLabel(level), user.username, () =>
+  const promote = (user: UserHeader, target: UserAccessPromoteTarget) => {
+    alertPromoteUser(UserAccessLevel.getLabel(target), user.username, () =>
       promoteMutation.mutate(
-        {userID: user.userID, target},
+        {user, target},
         {
           onSuccess: () => {
             setSnackbarPayload({
-              message: `${user.username} promoted to ${UserAccessLevel.getLabel(level)}.`,
+              message: `${user.username} promoted to ${UserAccessLevel.getLabel(target)}.`,
               messageType: 'success',
             });
           },
@@ -80,7 +84,7 @@ const AdminAccessLevelsScreenInner = ({navigation}: Props) => {
 
   const demote = (user: UserHeader) => {
     alertDemoteUser(user.username, () =>
-      demoteMutation.mutate(user.userID, {
+      demoteMutation.mutate(user, {
         onSuccess: () => {
           setSnackbarPayload({message: `${user.username} demoted to Verified.`, messageType: 'success'});
         },
@@ -113,7 +117,7 @@ const AdminAccessLevelsScreenInner = ({navigation}: Props) => {
         <AdminUserManageList
           users={moderators}
           onPressUser={openProfile}
-          onAdd={user => promote(user, 'moderator', UserAccessLevel.moderator)}
+          onAdd={user => promote(user, UserAccessLevel.moderator)}
           onRemove={demote}
           canModify={true}
           searchTestID={'promoteModerator-search'}
@@ -126,7 +130,7 @@ const AdminAccessLevelsScreenInner = ({navigation}: Props) => {
         <AdminUserManageList
           users={twitarrTeam}
           onPressUser={openProfile}
-          onAdd={user => promote(user, 'twitarrteam', UserAccessLevel.twitarrteam)}
+          onAdd={user => promote(user, UserAccessLevel.twitarrteam)}
           onRemove={demote}
           canModify={true}
           searchTestID={'promoteTwitarrTeam-search'}
@@ -139,7 +143,7 @@ const AdminAccessLevelsScreenInner = ({navigation}: Props) => {
         <AdminUserManageList
           users={tho}
           onPressUser={openProfile}
-          onAdd={user => promote(user, 'tho', UserAccessLevel.tho)}
+          onAdd={user => promote(user, UserAccessLevel.tho)}
           onRemove={demote}
           canModify={canPromoteTHO}
           searchTestID={'promoteTHO-search'}

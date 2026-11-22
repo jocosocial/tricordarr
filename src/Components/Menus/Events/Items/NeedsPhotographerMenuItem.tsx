@@ -9,8 +9,7 @@ import {useEventNeedsPhotographerMutation} from '#src/Queries/Events/EventPhotog
 import {EventData} from '#src/Structs/ControllerStructs';
 
 interface NeedsPhotographerMenuItemProps {
-  eventID: string;
-  shutternautData: EventData['shutternautData'];
+  event: EventData;
   closeMenu?: () => void;
 }
 
@@ -19,21 +18,24 @@ export const NeedsPhotographerMenuItem = (props: NeedsPhotographerMenuItemProps)
   const needsPhotographerMutation = useEventNeedsPhotographerMutation();
   const {updateNeedsPhotographer} = useEventCacheReducer();
 
+  const {event} = props;
+  const shutternautData = event.shutternautData;
+
   const handleNeedsPhotographerToggle = () => {
-    if (!props.shutternautData) {
+    if (!shutternautData) {
       return;
     }
-    const newValue = !props.shutternautData.needsPhotographer;
+    const newValue = !shutternautData.needsPhotographer;
     // Optimistic: flip the cache immediately rather than waiting on the network round trip.
-    updateNeedsPhotographer(props.eventID, newValue);
+    updateNeedsPhotographer(event, newValue);
     needsPhotographerMutation.mutate(
       {
-        eventID: props.eventID,
+        eventID: event.eventID,
         action: newValue ? 'create' : 'delete',
       },
       {
         onError: () => {
-          updateNeedsPhotographer(props.eventID, !newValue);
+          updateNeedsPhotographer(event, !newValue);
         },
         onSettled: () => {
           props.closeMenu?.();
@@ -42,17 +44,17 @@ export const NeedsPhotographerMenuItem = (props: NeedsPhotographerMenuItemProps)
     );
   };
 
-  if (!props.shutternautData) {
+  if (!shutternautData) {
     return null;
   }
 
   return (
     <Menu.Item
       title={'Needs Photographer'}
-      style={props.shutternautData.needsPhotographer ? commonStyles.surfaceVariant : undefined}
+      style={shutternautData.needsPhotographer ? commonStyles.surfaceVariant : undefined}
       leadingIcon={getStateLoadingIcon({
         isLoading: needsPhotographerMutation.isPending,
-        state: props.shutternautData.needsPhotographer,
+        state: shutternautData.needsPhotographer,
         iconTrue: AppIcons.check,
         iconFalse: AppIcons.needsPhotographer,
       })}

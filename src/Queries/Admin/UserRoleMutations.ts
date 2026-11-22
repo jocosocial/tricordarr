@@ -1,46 +1,79 @@
-import {useQueryClient} from '@tanstack/react-query';
-
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {UserRoleType} from '#src/Enums/UserRoleType';
+import {useUserCacheReducer} from '#src/Hooks/User/useUserCacheReducer';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
-import {AdminUserRoleListData} from '#src/Structs/AdminControllerStructs';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 interface UserRoleMutationProps {
   role: UserRoleType;
-  userID: string;
+  user: UserHeader;
 }
 
+/**
+ * THO endpoint to give a user any role.
+ */
 export const useAddUserRoleMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
-  const queryClient = useQueryClient();
+  const {grantRole} = useUserCacheReducer();
 
-  const mutationFn = async ({role, userID}: UserRoleMutationProps) => {
-    return await apiPost(`/admin/userroles/${role}/addrole/${userID}`);
+  const mutationFn = async ({role, user}: UserRoleMutationProps) => {
+    return await apiPost(`/admin/userroles/${role}/addrole/${user.userID}`);
   };
 
   return useTokenAuthMutation(mutationFn, {
-    onSuccess: (_data, variables) => {
-      AdminUserRoleListData.getCacheKeys(variables.role)
-        .concat(UserHeader.getCacheKeys())
-        .forEach(key => queryClient.invalidateQueries({queryKey: key}));
-    },
+    onSuccess: (_data, variables) => grantRole(variables.role, variables.user),
   });
 };
 
+/**
+ * THO endpoint to remove any role from a user.
+ */
 export const useRemoveUserRoleMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
-  const queryClient = useQueryClient();
+  const {revokeRole} = useUserCacheReducer();
 
-  const mutationFn = async ({role, userID}: UserRoleMutationProps) => {
-    return await apiPost(`/admin/userroles/${role}/removerole/${userID}`);
+  const mutationFn = async ({role, user}: UserRoleMutationProps) => {
+    return await apiPost(`/admin/userroles/${role}/removerole/${user.userID}`);
   };
 
   return useTokenAuthMutation(mutationFn, {
-    onSuccess: (_data, variables) => {
-      AdminUserRoleListData.getCacheKeys(variables.role)
-        .concat(UserHeader.getCacheKeys())
-        .forEach(key => queryClient.invalidateQueries({queryKey: key}));
-    },
+    onSuccess: (_data, variables) => revokeRole(variables.role, variables.user),
+  });
+};
+
+interface ShutternautRoleMutationProps {
+  user: UserHeader;
+}
+
+/**
+ * Shutternaut Manager endpoint to give a user the Shutternaut role. Unlike the admin endpoint it
+ * only accepts the `shutternaut` role.
+ */
+export const useAddShutternautMutation = () => {
+  const {apiPost} = useSwiftarrQueryClient();
+  const {grantRole} = useUserCacheReducer();
+
+  const mutationFn = async ({user}: ShutternautRoleMutationProps) => {
+    return await apiPost(`/users/userrole/${UserRoleType.shutternaut}/addrole/${user.userID}`);
+  };
+
+  return useTokenAuthMutation(mutationFn, {
+    onSuccess: (_data, variables) => grantRole(UserRoleType.shutternaut, variables.user),
+  });
+};
+
+/**
+ * Shutternaut Manager endpoint to remove the Shutternaut role from a user.
+ */
+export const useRemoveShutternautMutation = () => {
+  const {apiPost} = useSwiftarrQueryClient();
+  const {revokeRole} = useUserCacheReducer();
+
+  const mutationFn = async ({user}: ShutternautRoleMutationProps) => {
+    return await apiPost(`/users/userrole/${UserRoleType.shutternaut}/removerole/${user.userID}`);
+  };
+
+  return useTokenAuthMutation(mutationFn, {
+    onSuccess: (_data, variables) => revokeRole(UserRoleType.shutternaut, variables.user),
   });
 };

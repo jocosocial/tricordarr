@@ -24,14 +24,13 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
 import {useForumListData} from '#src/Hooks/Forum/useForumListData';
 import {useRefresh} from '#src/Hooks/useRefresh';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
-type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumCategoryScreen>;
 
 /**
  * Forum category thread list. Takes `categoryID` only so in-app navigation and

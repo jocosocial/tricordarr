@@ -1,47 +1,45 @@
-import {useQueryClient} from '@tanstack/react-query';
-
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
+import {useUserCacheReducer} from '#src/Hooks/User/useUserCacheReducer';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
-import {AdminAccessLevelListData} from '#src/Structs/AdminControllerStructs';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
-export type UserAccessPromoteTarget = 'moderator' | 'twitarrteam' | 'tho';
+export type UserAccessPromoteTarget = UserAccessLevel.moderator | UserAccessLevel.twitarrteam | UserAccessLevel.tho;
 
 interface PromoteUserProps {
-  userID: string;
+  user: UserHeader;
   target: UserAccessPromoteTarget;
 }
 
+/**
+ * Promotes a verified user to one of the privileged access levels. The target doubles as the
+ * endpoint segment, since `/admin/:level/promote` uses the access level's raw value.
+ */
 export const usePromoteUserAccessMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
-  const queryClient = useQueryClient();
+  const {setAccessLevel} = useUserCacheReducer();
 
-  const mutationFn = async ({userID, target}: PromoteUserProps) => {
-    return await apiPost(`/admin/${target}/promote/${userID}`);
+  const mutationFn = async ({user, target}: PromoteUserProps) => {
+    return await apiPost(`/admin/${target}/promote/${user.userID}`);
   };
 
   return useTokenAuthMutation(mutationFn, {
-    onSuccess: () => {
-      AdminAccessLevelListData.getCacheKeys()
-        .concat(UserHeader.getCacheKeys())
-        .forEach(key => queryClient.invalidateQueries({queryKey: key}));
-    },
+    onSuccess: (_data, variables) => setAccessLevel(variables.user, variables.target),
   });
 };
 
+/**
+ * Returns a privileged user to Verified.
+ */
 export const useDemoteUserAccessMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
-  const queryClient = useQueryClient();
+  const {setAccessLevel} = useUserCacheReducer();
 
-  const mutationFn = async (userID: string) => {
-    return await apiPost(`/admin/user/demote/${userID}`);
+  const mutationFn = async (user: UserHeader) => {
+    return await apiPost(`/admin/user/demote/${user.userID}`);
   };
 
   return useTokenAuthMutation(mutationFn, {
-    onSuccess: () => {
-      AdminAccessLevelListData.getCacheKeys()
-        .concat(UserHeader.getCacheKeys())
-        .forEach(key => queryClient.invalidateQueries({queryKey: key}));
-    },
+    onSuccess: (_data, user) => setAccessLevel(user, UserAccessLevel.verified),
   });
 };

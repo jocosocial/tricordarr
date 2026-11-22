@@ -56,11 +56,10 @@ const ShutternautReportScreenInner = ({navigation}: Props) => {
   const listRef = useRef<FlashListRef<ShutternautScheduleReportData>>(null);
   const [reportRows, setReportRows] = useState<ShutternautScheduleReportData[]>([]);
 
-  // The report is a cruise-wide overview, so it opens on All Days rather than today.
+  // Opens on the current cruise day like the other schedule screens; All Days is still a header tap away.
   const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
     listRef,
     clearList: useCallback(() => setReportRows([]), []),
-    defaultCruiseDay: 0,
   });
 
   const {data, refetch, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage} =

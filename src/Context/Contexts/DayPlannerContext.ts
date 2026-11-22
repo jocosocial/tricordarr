@@ -26,6 +26,8 @@ export const DAY_PLANNER_CONFIG = {
   MIN_EVENT_DURATION_MINUTES: 15,
   // Slots per hour (60 / MINUTES_PER_ROW)
   SLOTS_PER_HOUR: 4,
+  // Lanes that fit on screen when a timeline is expanded; more than this scroll sideways
+  EXPANDED_VISIBLE_COLUMNS: 3,
 } as const;
 
 /** Display duration for compacted "Theme:" events on the Day Planner timeline. */
@@ -48,6 +50,7 @@ export interface DayPlannerContextType {
     lfgData?: InfiniteData<FezListData>,
     personalEventData?: InfiniteData<FezListData>,
   ) => DayPlannerItem[];
+  buildShutternautCalendarItems: (eventData?: EventData[]) => DayPlannerItem[];
   calculateItemLayout: (
     items: DayPlannerItem[],
     dayStart: Date,

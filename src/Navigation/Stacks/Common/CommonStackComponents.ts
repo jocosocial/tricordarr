@@ -147,6 +147,9 @@ export type CommonStackParamList = {
     eventID: string;
   };
   ShutternautReportScreen: undefined;
+  ShutternautCalendarScreen: undefined;
+  ShutternautHomeScreen: undefined;
+  ShutternautManageScreen: undefined;
   PhotostreamEventScreen: WithScrollToTopIntent<{
     eventID: string;
   }>;
@@ -155,6 +158,15 @@ export type CommonStackParamList = {
   }>;
   PersonalEventScreen: {
     eventID: string;
+  };
+  ForumCategoryScreen: WithScrollToTopIntent<{
+    categoryID: string;
+  }>;
+  ForumThreadSearchScreen: {
+    category?: CategoryData;
+  };
+  ForumThreadCreateScreen: {
+    categoryId: string;
   };
   ForumThreadScreen: WithElevation<{
     forumID: string;
@@ -479,6 +491,9 @@ export enum CommonStackComponents {
   moderatorReportsScreen = 'ModeratorReportsScreen',
   moderatorLogScreen = 'ModeratorLogScreen',
   shutternautReportScreen = 'ShutternautReportScreen',
+  shutternautCalendarScreen = 'ShutternautCalendarScreen',
+  shutternautHomeScreen = 'ShutternautHomeScreen',
+  shutternautManageScreen = 'ShutternautManageScreen',
   moderatorGuideScreen = 'ModeratorGuideScreen',
   moderateForumPostScreen = 'ModerateForumPostScreen',
   moderateForumThreadScreen = 'ModerateForumThreadScreen',
@@ -501,6 +516,9 @@ export enum CommonStackComponents {
   eventScreen = 'EventScreen',
   photostreamEventScreen = 'PhotostreamEventScreen',
   photostreamUserScreen = 'PhotostreamUserScreen',
+  forumCategoryScreen = 'ForumCategoryScreen',
+  forumThreadSearchScreen = 'ForumThreadSearchScreen',
+  forumThreadCreateScreen = 'ForumThreadCreateScreen',
   forumThreadScreen = 'ForumThreadScreen',
   alertKeywords = 'AlertKeywordsScreen',
   muteKeywords = 'MuteKeywordsScreen',

@@ -1,28 +1,20 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useEffect} from 'react';
-import {Text} from 'react-native-paper';
 
 import {useAdminHeaderButtons} from '#src/Components/Buttons/HeaderButtons/AdminHeaderButtons';
-import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
-import {AdminUserManageList} from '#src/Components/Lists/Items/Admin/AdminUserManageList';
 import {NavigationListItem} from '#src/Components/Lists/Items/NavigationListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {UserRoleManageView} from '#src/Components/Views/UserRoles/UserRoleManageView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {UserRoleType} from '#src/Enums/UserRoleType';
-import {useRefresh} from '#src/Hooks/useRefresh';
-import {alertPromoteUser, alertRemoveRole} from '#src/Libraries/Alerts/AdminAlerts';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useAddUserRoleMutation, useRemoveUserRoleMutation} from '#src/Queries/Admin/UserRoleMutations';
 import {useUsersWithRoleQuery} from '#src/Queries/Admin/UserRoleQueries';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {NoAccessScreen} from '#src/Screens/Checkpoint/NoAccessScreen';
-import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.adminUserRolesScreen>;
 
@@ -85,13 +77,13 @@ interface AdminUserRoleDetailProps {
   navigation: Props['navigation'];
 }
 
+/**
+ * Members of one role, managed through THO's `/admin/userroles` endpoints.
+ */
 const AdminUserRoleDetail = ({role, navigation}: AdminUserRoleDetailProps) => {
   const {data, refetch, isLoading} = useUsersWithRoleQuery({role});
-  const {refreshing, onRefresh} = useRefresh({refresh: refetch});
   const addMutation = useAddUserRoleMutation();
   const removeMutation = useRemoveUserRoleMutation();
-  const {setSnackbarPayload} = useSnackbar();
-  const roleName = UserRoleType.getLabel(role);
   const getNavButtons = useAdminHeaderButtons();
 
   useEffect(() => {
@@ -100,66 +92,15 @@ const AdminUserRoleDetail = ({role, navigation}: AdminUserRoleDetailProps) => {
     });
   }, [getNavButtons, navigation]);
 
-  const openProfile = (user: UserHeader) => {
-    navigation.push(CommonStackComponents.userProfileScreen, {userID: user.userID});
-  };
-
-  const addRole = (user: UserHeader) => {
-    alertPromoteUser(roleName, user.username, () =>
-      addMutation.mutate(
-        {role, userID: user.userID},
-        {
-          onSuccess: () => {
-            setSnackbarPayload({message: `${roleName} added to ${user.username}.`, messageType: 'success'});
-          },
-        },
-      ),
-    );
-  };
-
-  const removeRole = (user: UserHeader) => {
-    alertRemoveRole(roleName, user.username, () =>
-      removeMutation.mutate(
-        {role, userID: user.userID},
-        {
-          onSuccess: () => {
-            setSnackbarPayload({message: `${roleName} removed from ${user.username}.`, messageType: 'success'});
-          },
-        },
-      ),
-    );
-  };
-
-  if (isLoading && !data) {
-    return (
-      <AppView>
-        <LoadingView />
-      </AppView>
-    );
-  }
-
   return (
-    <AppView>
-      <ScrollingContentView
-        isStack={true}
-        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <PaddedContentView padTop={true}>
-          <Text>Assign or remove the {roleName} role. Users may hold multiple roles.</Text>
-        </PaddedContentView>
-        <ListSection>
-          <ListSubheader>{roleName}</ListSubheader>
-        </ListSection>
-        <AdminUserManageList
-          users={data}
-          onPressUser={openProfile}
-          onAdd={addRole}
-          onRemove={removeRole}
-          canModify={true}
-          searchTestID={'addRole-search'}
-          searchLabel={`Add ${roleName}`}
-          emptyText={`No users have the ${roleName} role.`}
-        />
-      </ScrollingContentView>
-    </AppView>
+    <UserRoleManageView
+      roleName={UserRoleType.getLabel(role)}
+      users={data}
+      isLoading={isLoading}
+      refetch={refetch}
+      addRole={user => addMutation.mutateAsync({role, user})}
+      removeRole={user => removeMutation.mutateAsync({role, user})}
+      busy={addMutation.isPending || removeMutation.isPending}
+    />
   );
 };

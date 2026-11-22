@@ -3,8 +3,15 @@ import {EventData, FezData} from '#src/Structs/ControllerStructs';
 /**
  * Color categories for Day Planner items.
  * Matches the color scheme used in ScheduleDayScreen, with special cases for red/gold team events.
+ * 'photographer' is only used by the Shutternaut Calendar, for events the current user is photographing.
  */
-export type DayPlannerColor = 'redTeam' | 'goldTeam' | 'shadow' | 'schedule' | 'lfg' | 'personalEvent';
+export type DayPlannerColor = 'redTeam' | 'goldTeam' | 'shadow' | 'schedule' | 'lfg' | 'personalEvent' | 'photographer';
+
+/**
+ * Which Day Planner is being shown. 'personal' is the user's own planner (followed events, LFGs, private
+ * events); 'shutternaut' is the shared calendar of every event that has a photographer.
+ */
+export type DayPlannerVariant = 'personal' | 'shutternaut';
 
 /**
  * A unified representation of an item in the Day Planner.

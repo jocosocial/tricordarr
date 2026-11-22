@@ -252,7 +252,7 @@ const ForumThreadScreenBaseInner = ({
 
       // Signal screens to scroll to the top when the user navigates back.
       dispatchScrollToTop(
-        ForumStackComponents.forumCategoryScreen,
+        CommonStackComponents.forumCategoryScreen,
         ForumStackComponents.forumPostSelfScreen,
         ForumStackComponents.forumFavoritesScreen,
         ForumStackComponents.forumMutesScreen,

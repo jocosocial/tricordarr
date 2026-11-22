@@ -23,10 +23,10 @@ import {
   useUserSetAccessLevelMutation,
   useUserTempQuarantineMutation,
 } from '#src/Queries/Moderation/ModerationMutations';
-import {ModeratorActionLogResponseData, UserModerationData} from '#src/Structs/ControllerStructs';
+import {ModeratorActionLogResponseData, UserHeader, UserModerationData} from '#src/Structs/ControllerStructs';
 
 interface ModerationUserAccessSectionViewProps {
-  userID: string;
+  user: UserHeader;
   accessLevel: UserAccessLevel;
   tempQuarantineEndTime?: string;
   testIDPrefix: string;
@@ -44,7 +44,7 @@ const thoAccessLevels = [
  * Access section on the user moderate screen: current level, Set Access Level, temp quarantine, then hours slider.
  */
 export const ModerationUserAccessSectionView = ({
-  userID,
+  user,
   accessLevel,
   tempQuarantineEndTime,
   testIDPrefix,
@@ -87,25 +87,33 @@ export const ModerationUserAccessSectionView = ({
   );
 
   /**
+   * Refetch the moderator action log, whose new entries are written by the server.
+   */
+  const invalidateActionLog = async () => {
+    await invalidateQueryKeys(queryClient, ModeratorActionLogResponseData.getCacheKeys());
+  };
+
+  /**
    * Refetch user moderation data and the moderator action log after an account change.
    */
   const invalidate = async () => {
     await invalidateQueryKeys(
       queryClient,
-      UserModerationData.getCacheKeys(userID).concat(ModeratorActionLogResponseData.getCacheKeys()),
+      UserModerationData.getCacheKeys(user.userID).concat(ModeratorActionLogResponseData.getCacheKeys()),
     );
   };
 
   /**
-   * Apply a selected access level, then refresh cached moderation data.
+   * Apply a selected access level. The mutation writes the new level into the cache; only the
+   * action log is refetched.
    */
   const onSetAccessLevel = (level: UserAccessLevel) => {
     closeMenu();
     accessMutation.mutate(
-      {userID, accessLevel: level},
+      {user, accessLevel: level},
       {
         onSuccess: async () => {
-          await invalidate();
+          await invalidateActionLog();
           setSnackbarPayload({
             message: `Access level set to ${UserAccessLevel.getLabel(level)}.`,
             messageType: 'info',
@@ -120,7 +128,7 @@ export const ModerationUserAccessSectionView = ({
    */
   const applyTempQuarantine = (value: number) => {
     quarantineMutation.mutate(
-      {userID, hours: value},
+      {userID: user.userID, hours: value},
       {
         onSuccess: async () => {
           await invalidate();

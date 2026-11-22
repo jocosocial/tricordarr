@@ -22,6 +22,8 @@ interface UserListItemProps {
   secondaryButtonOnPress?: (uh: UserHeader) => void;
   secondaryButtonIcon?: IconSource;
   disabled?: boolean;
+  /** Blocks taps on the trailing action buttons, e.g. while their mutation is in flight. */
+  buttonDisabled?: boolean;
   enableSelection?: boolean;
   setEnableSelection?: Dispatch<SetStateAction<boolean>>;
   selected?: boolean;
@@ -46,6 +48,7 @@ const UserListItemInternal = ({
   secondaryButtonOnPress,
   secondaryButtonIcon,
   disabled = false,
+  buttonDisabled = false,
   enableSelection = false,
   setEnableSelection,
   selected = false,
@@ -125,6 +128,7 @@ const UserListItemInternal = ({
           size={styleDefaults.avatarSizeSmall}
           icon={buttonIcon}
           onPress={() => buttonOnPress(userHeader)}
+          disabled={buttonDisabled}
         />
       ) : undefined;
     const secondary =
@@ -134,6 +138,7 @@ const UserListItemInternal = ({
           size={styleDefaults.avatarSizeSmall}
           icon={secondaryButtonIcon}
           onPress={() => secondaryButtonOnPress(userHeader)}
+          disabled={buttonDisabled}
         />
       ) : undefined;
     if (!primary && !secondary) {
@@ -153,6 +158,7 @@ const UserListItemInternal = ({
     buttonIcon,
     secondaryButtonOnPress,
     secondaryButtonIcon,
+    buttonDisabled,
     userHeader,
     styleDefaults.avatarSizeSmall,
     styles.actions,

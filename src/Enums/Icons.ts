@@ -22,6 +22,7 @@ export enum AppIcons {
   submit = 'send-circle-outline',
   scrollDown = 'arrow-down-circle',
   scrollUp = 'arrow-up-circle',
+  expandHorizontal = 'arrow-expand-horizontal',
   back = 'arrow-left',
   forward = 'arrow-right',
   reload = 'reload',
