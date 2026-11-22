@@ -143,6 +143,11 @@ export interface AppConfig extends ServerConfigFields {
   manualTimeOffset: number;
   forceShowTimezoneWarning: boolean;
   silenceTimezoneWarnings: boolean;
+  /**
+   * Device-wide. Epoch milliseconds until which the time zone warnings are hidden ("dismiss for today").
+   * Stored as a number so the JSON-persisted config needs no revival. Undefined means not snoozed.
+   */
+  timezoneWarningSnoozeUntil?: number;
   dismissWelcomeAboard: boolean;
   backgroundNotifications: boolean;
   /**

@@ -53,15 +53,20 @@ export const alertDismissMinAccessWarning = (onConfirm: () => void, onCancel?: (
 };
 
 /**
- * Confirms permanently silencing the time zone warnings.
+ * Asks whether to dismiss the time zone warnings for the rest of the day or permanently.
  */
-export const alertSilenceTimezoneWarnings = (onConfirm: () => void, onCancel?: () => void): void => {
+export const alertDismissTimezoneWarning = (
+  onToday: () => void,
+  onPermanent: () => void,
+  onCancel?: () => void,
+): void => {
   Alert.alert(
-    'Silence Time Zone Warnings',
-    'Permanently hide time zone warnings throughout the app? You can turn them back on later in Time Settings.',
+    'Dismiss Time Zone Warning',
+    'Hide time zone warnings for today only, or permanently? You can turn them back on later in Time Settings.',
     [
-      {text: 'No', style: 'cancel', onPress: onCancel},
-      {text: 'Yes', onPress: onConfirm},
+      {text: 'Cancel', style: 'cancel', onPress: onCancel},
+      {text: 'Today Only', onPress: onToday},
+      {text: 'Permanently', onPress: onPermanent},
     ],
   );
 };

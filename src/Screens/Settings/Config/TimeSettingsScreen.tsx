@@ -1,6 +1,7 @@
 import {Formik, FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
+import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -9,6 +10,7 @@ import {TimeSettingsForm} from '#src/Components/Forms/Settings/TimeSettingsForm'
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -16,6 +18,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useDismissTimezoneWarning} from '#src/Hooks/useDismissTimezoneWarning';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {TimeSettingsFormValues} from '#src/Types/FormValues';
 
@@ -30,6 +33,11 @@ export const TimeSettingsScreen = () => {
   const {commonStyles} = useStyles();
   const [forceShowTimezoneWarning, setForceShowTimezoneWarning] = useState(appConfig.forceShowTimezoneWarning);
   const [silenceTimezoneWarnings, setSilenceTimezoneWarnings] = useState(appConfig.silenceTimezoneWarnings);
+  // Only show the snooze while it is still in the future.
+  const snoozeUntil =
+    appConfig.timezoneWarningSnoozeUntil && appConfig.timezoneWarningSnoozeUntil > Date.now()
+      ? new Date(appConfig.timezoneWarningSnoozeUntil)
+      : undefined;
   const {cruiseDayToday, adjustedCruiseDayToday, cruiseDayIndex, adjustedCruiseDayIndex} = useCruise();
 
   const onSubmit = (values: TimeSettingsFormValues, helpers: FormikHelpers<TimeSettingsFormValues>) => {
@@ -40,17 +48,29 @@ export const TimeSettingsScreen = () => {
     helpers.setSubmitting(false);
   };
 
+  const promptDismissTimezoneWarning = useDismissTimezoneWarning({
+    onToday: () => setForceShowTimezoneWarning(false),
+    onPermanent: () => {
+      setSilenceTimezoneWarnings(true);
+      setForceShowTimezoneWarning(false);
+    },
+  });
+
+  /**
+   * Turning silence on asks whether to hide the warnings for today or permanently; turning it off
+   * re-enables them immediately and clears any snooze.
+   */
   const toggleSilenceTimezoneWarnings = () => {
-    const newValue = !silenceTimezoneWarnings;
+    if (!silenceTimezoneWarnings) {
+      promptDismissTimezoneWarning();
+      return;
+    }
     updateAppConfig({
       ...appConfig,
-      silenceTimezoneWarnings: newValue,
-      forceShowTimezoneWarning: newValue ? false : appConfig.forceShowTimezoneWarning,
+      silenceTimezoneWarnings: false,
+      timezoneWarningSnoozeUntil: undefined,
     });
-    setSilenceTimezoneWarnings(newValue);
-    if (newValue) {
-      setForceShowTimezoneWarning(false);
-    }
+    setSilenceTimezoneWarnings(false);
   };
 
   const toggleForceShowTimezoneWarning = () => {
@@ -58,6 +78,7 @@ export const TimeSettingsScreen = () => {
     updateAppConfig({
       ...appConfig,
       forceShowTimezoneWarning: newValue,
+      timezoneWarningSnoozeUntil: newValue ? undefined : appConfig.timezoneWarningSnoozeUntil,
       silenceTimezoneWarnings: newValue ? false : appConfig.silenceTimezoneWarnings,
     });
     setForceShowTimezoneWarning(newValue);
@@ -112,6 +133,13 @@ export const TimeSettingsScreen = () => {
               helperText={'Hide timezone warnings throughout the app.'}
               style={commonStyles.paddingHorizontalSmall}
             />
+            {snoozeUntil && (
+              <PaddedContentView padTop={true}>
+                <Text>
+                  Dismissed for today. Warnings resume <RelativeTimeTag date={snoozeUntil} />.
+                </Text>
+              </PaddedContentView>
+            )}
           </View>
         </Formik>
         {appConfig.enableDeveloperOptions && (
