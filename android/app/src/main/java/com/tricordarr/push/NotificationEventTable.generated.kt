@@ -33,7 +33,7 @@ object NotificationEventTable {
         groupId = "content",
         description = "Seamail content from the Twitarr server.",
         badge = true,
-        vibrationPattern = null,
+        vibrationPattern = longArrayOf(0L, 120L, 80L, 120L, 80L, 400L),
       ),
       ChannelSpec(
         id = "lfg",
@@ -41,7 +41,7 @@ object NotificationEventTable {
         groupId = "content",
         description = "LFG content from the Twitarr server.",
         badge = true,
-        vibrationPattern = null,
+        vibrationPattern = longArrayOf(0L, 120L, 80L, 120L, 80L, 400L),
       ),
       ChannelSpec(
         id = "announcements",
@@ -49,7 +49,7 @@ object NotificationEventTable {
         groupId = "content",
         description = "Announcements from the Twitarr server.",
         badge = true,
-        vibrationPattern = null,
+        vibrationPattern = longArrayOf(0L, 120L, 80L, 120L, 80L, 400L),
       ),
       ChannelSpec(
         id = "forums",
@@ -57,7 +57,7 @@ object NotificationEventTable {
         groupId = "content",
         description = "Forum content from the Twitarr server.",
         badge = true,
-        vibrationPattern = null,
+        vibrationPattern = longArrayOf(0L, 120L, 80L, 120L, 80L, 400L),
       ),
       ChannelSpec(
         id = "krakentalkcalls",
@@ -81,7 +81,7 @@ object NotificationEventTable {
         groupId = "content",
         description = "Event content from the Twitarr server.",
         badge = true,
-        vibrationPattern = null,
+        vibrationPattern = longArrayOf(0L, 120L, 80L, 120L, 80L, 400L),
       ),
     ),
     events = mapOf(

@@ -105,7 +105,12 @@ app's own socket is connected.
 sections; `NotificationPlannerTest` checks the Kotlin side.
 
 Do not change channel IDs or group membership: group binding is immutable and a new ID loses user
-customizations. Add a new event by adding it to the JSON (`events` or `unposted`), then run
+customizations. The normal content channels (`seamail`, `lfg`, `announcements`, `forums`, `events`) use a custom
+vibration pattern, short-short-long (`[0, 120, 80, 120, 80, 400]` ms), so they do not feel like the
+system default double buzz. Android freezes a channel's vibration once it exists, so the pattern only
+applies to fresh installs; there is no migration for existing channels.
+
+Add a new event by adding it to the JSON (`events` or `unposted`), then run
 `npm run codegen:notifications`. No platform needs a hand edit for the enum, the setting or its
 default. Behaviour beyond posting is still hand-written: the cache invalidation per type in
 `NotificationDataListener`, and the call handling in `NotificationPlanner`, `WebsocketNotifier` and
