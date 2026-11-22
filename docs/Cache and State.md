@@ -232,6 +232,13 @@ named action — `invalidateFez` and `invalidateForum` — and those are called 
 Both escape hatches skip queries with no `queryFn` (persisted-cache entries whose screen hasn't
 mounted this session), since React Query has nothing to refetch them with and throws otherwise.
 
+**Fetching a fez detail marks it read.** Swiftarr marks a fez read on every `GET /fez/:id`, so a
+detail refetch is never side-effect free. `invalidateFez` refetches the detail only when it is
+`active` (the lists still use `'all'`), and `useFezData` subscribes the detail query only while its
+screen is focused (`subscribed: isFocused`). Together these keep a chat that is cached, or mounted
+under another tab, from being refetched, and so marked read and its notifications cleared, when a
+new post arrives or the app returns to the foreground. It refetches when the user views it again.
+
 If you are reaching for `invalidateQueries` on a success path, the reducer is missing an action or a
 predicate — write that instead. Refetching a page of results over the ship's network is the cost
 this whole pattern exists to avoid.

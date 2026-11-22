@@ -2,6 +2,17 @@ package com.tricordarr.push
 
 import org.json.JSONObject
 
+/** The user who wrote the content behind a notification, from the socket event's `author` UserHeader. */
+data class NotificationAuthor(
+  val userID: String,
+  val username: String,
+  val displayName: String?,
+  val userImage: String?,
+) {
+  /** The name shown for the sender: the display name, or the username when there is none. */
+  fun name(): String = displayName ?: username
+}
+
 /** Everything needed to post one notification, with no Android types so it can be unit tested. */
 data class NotificationPlan(
   val accountID: String,
@@ -17,6 +28,13 @@ data class NotificationPlan(
   val autoCancel: Boolean,
   val ongoing: Boolean,
   val messaging: Boolean,
+  /** Who wrote the content, when the server sent one. Null from servers that predate the field. */
+  val author: NotificationAuthor? = null,
+  /**
+   * The author's photo as the thumbnail URL the app's AvatarImage loads, so it is the same image
+   * cache key. Null when there is no author or the author has no photo.
+   */
+  val avatarThumbUrl: String? = null,
 ) {
   val tag: String get() = NotificationPlanner.tagFor(accountID)
   val id: Int get() = NotificationPlanner.idFor(contentID)
@@ -112,6 +130,8 @@ object NotificationPlanner {
     }
     path = path?.replace("{contentID}", contentID)
 
+    val author = parseAuthor(data.optJSONObject("author"))
+
     return PlanResult.Post(
       NotificationPlan(
         accountID = account.accountID,
@@ -126,8 +146,50 @@ object NotificationPlanner {
         autoCancel = spec.autoCancel,
         ongoing = spec.ongoing,
         messaging = spec.messaging,
+        author = author,
+        avatarThumbUrl = author?.userImage?.let { account.apiUrl("/image/thumb/$it") },
       ),
     )
+  }
+
+  /** Reads an `author` UserHeader. Null when it is absent or lacks a userID or username. */
+  private fun parseAuthor(json: JSONObject?): NotificationAuthor? {
+    if (json == null) {
+      return null
+    }
+    val userID = optText(json, "userID") ?: return null
+    val username = optText(json, "username") ?: return null
+    return NotificationAuthor(
+      userID = userID,
+      username = username,
+      displayName = optText(json, "displayName"),
+      userImage = optText(json, "userImage"),
+    )
+  }
+
+  /** A non-empty string field. Unlike `optString`, a JSON null is null here, not the text "null". */
+  private fun optText(json: JSONObject, key: String): String? =
+    if (json.isNull(key)) null else json.opt(key)?.toString()?.ifEmpty { null }
+
+  /**
+   * Shared accounts that read better as an abbreviation than as their first letter. Keep in step
+   * with `NotificationAvatar.swift` on iOS.
+   */
+  private val ALIAS_INITIALS = mapOf(
+    "moderator" to "M",
+    "twitarrteam" to "TT",
+    "communitysupport" to "CS",
+    "tho" to "THO",
+  )
+
+  /** The letters drawn on a letter avatar for a user with no photo. */
+  fun avatarInitials(username: String): String {
+    ALIAS_INITIALS[username.lowercase()]?.let { return it }
+    if (username.isEmpty()) {
+      return "?"
+    }
+    val first = String(Character.toChars(username.codePointAt(0)))
+    return first.uppercase()
   }
 
   /** Adds `?account=<id>` so JS opens the link in the account the notification was for, switching if needed. */

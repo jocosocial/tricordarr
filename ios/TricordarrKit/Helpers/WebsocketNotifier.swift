@@ -293,17 +293,30 @@ public class WebsocketNotifier: NSObject {
 		let url = Self.expandTemplate(spec.url, contentID: socketNotification.contentID) ?? ""
 		let markAsReadUrl = Self.expandTemplate(spec.markAsReadUrl, contentID: socketNotification.contentID)
 
-		Notifications.generateContentNotification(
-			socketNotification.contentID,
-			title: title,
-			body: MarkdownText.plainText(socketNotification.info),
-			type: socketNotification.type,
-			url: url,
-			markAsReadUrl: markAsReadUrl,
-			secondaryContentID: socketNotification.secondaryContentID,
-			accountID: account?.accountID,
-			accountName: showAccountName ? account?.username : nil
-		)
+		let pushAccount = self.account
+		let accountName = showAccountName ? pushAccount?.username : nil
+		// Chat events with an author post as communication notifications, showing the sender's avatar.
+		// The avatar may need a fetch, so the work runs on NotificationAvatar's serial queue, which keeps
+		// posts in socket order without blocking the receive loop.
+		let sender = spec.messaging ? socketNotification.author : nil
+		NotificationAvatar.queue.async {
+			let avatar = sender.flatMap { author in
+				pushAccount.map { NotificationAvatar.image(for: author, serverUrl: $0.serverUrl, urlPrefix: $0.urlPrefix) }
+			}
+			Notifications.generateContentNotification(
+				socketNotification.contentID,
+				title: title,
+				body: MarkdownText.plainText(socketNotification.info),
+				type: socketNotification.type,
+				url: url,
+				markAsReadUrl: markAsReadUrl,
+				secondaryContentID: socketNotification.secondaryContentID,
+				accountID: pushAccount?.accountID,
+				accountName: accountName,
+				sender: sender,
+				senderAvatar: avatar
+			)
+		}
 	}
 
 	/// Substitutes `{contentID}` in a URL template from the generated event table. Only that placeholder is

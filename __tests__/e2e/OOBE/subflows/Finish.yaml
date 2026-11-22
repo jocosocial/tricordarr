@@ -1,0 +1,26 @@
+# Shared OOBE steps from the session screen to the end: skip the permission prompts and finish.
+# Each Next repeats until the following screen shows (see ServerSetup.yaml).
+appId: ${APP_ID}
+---
+- extendedWaitUntil:
+    visible: "Session"
+    timeout: 30000
+- repeat:
+    times: 5
+    while:
+      notVisible: "Permissions"
+    commands:
+      - tapOn:
+          id: "oobeNext-button"
+      - waitForAnimationToEnd
+- repeat:
+    times: 5
+    while:
+      notVisible:
+        id: "oobeFinish-button"
+    commands:
+      - tapOn:
+          id: "oobeNext-button"
+      - waitForAnimationToEnd
+- tapOn:
+    id: "oobeFinish-button"

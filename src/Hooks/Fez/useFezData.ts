@@ -1,16 +1,20 @@
+import {useAppState} from '@react-native-community/hooks';
+import {useIsFocused} from '@react-navigation/native';
 import {InfiniteData, QueryClient, useQueryClient} from '@tanstack/react-query';
 import {AxiosError} from 'axios';
 import pluralize from 'pluralize';
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useTime} from '#src/Context/Contexts/TimeContext';
 import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {findInPages, PageItemAccessor} from '#src/Libraries/CacheReduction';
+import {cancelContentNotification} from '#src/Libraries/Notifications/Content';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
+import {defaultFezQueryOptions, useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {TokenAuthPaginationQueryOptionsTypeV2} from '#src/Queries/TokenAuthQuery';
 import {ErrorResponse, FezData, FezListData} from '#src/Structs/ControllerStructs';
 
@@ -114,10 +118,18 @@ export const getParticipantLabel = (fez: FezData, options: ParticipantLabelOptio
  * mark-as-read), then from detail data, so callers can pass it forward (e.g. to a
  * chat screen) and show the correct unread badge.
  * Exposes the fez query's error so a screen can tell why it has no fez data.
+ *
+ * The query only subscribes while the calling screen is focused. Swiftarr marks a fez read on
+ * every detail GET, so a screen left mounted out of view (a chat under another tab or pushed
+ * screen) must not refetch on app focus or invalidation; it fetches again when it is refocused.
  */
 export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDataOptions): UseFezDataReturn => {
   const queryClient = useQueryClient();
-  const queryResult = useFezQuery({fezID, options: queryOptions});
+  const isFocused = useIsFocused();
+  const queryResult = useFezQuery({
+    fezID,
+    options: {...(queryOptions ?? defaultFezQueryOptions), subscribed: isFocused},
+  });
   const {currentUserID} = useSession();
   const {getAdjustedMoment} = useTime();
   const {
@@ -307,14 +319,23 @@ export const useFezData = ({fezID, initialReadCountHint, queryOptions}: UseFezDa
  * Call this from a screen that represents "the user viewed this fez" (chat screens, the personal
  * event detail screen). Screens that only reference a fez in passing (edit forms, action menus,
  * participant lists) should not call this.
+ *
+ * Only marks read while the app is in the foreground and the screen is focused. A chat screen left
+ * open stays mounted with its socket live when the app is backgrounded (or another screen is pushed
+ * over it), and marking read then would clear the push notification for each new post and mark it
+ * read on the server unseen. Returning to the screen marks it read.
  */
 export const useMarkFezReadEffect = (fez: FezData | undefined, initialReadCount: number | undefined): void => {
   const {markRead} = useFezCacheReducer();
   const {data: notificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {isAddedTo} = useUserNotificationData();
+  const {appConfig} = useConfig();
+  const appState = useAppState();
+  const isFocused = useIsFocused();
+  const isViewing = appState === 'active' && isFocused;
 
   useEffect(() => {
-    if (fez && fez.members) {
+    if (isViewing && fez && fez.members) {
       const hasUnread =
         fez.members.readCount !== fez.members.postCount ||
         (initialReadCount !== undefined && initialReadCount < fez.members.postCount);
@@ -326,5 +347,15 @@ export const useMarkFezReadEffect = (fez: FezData | undefined, initialReadCount:
         refetchUserNotificationData();
       }
     }
-  }, [fez, initialReadCount, markRead, notificationData, refetchUserNotificationData, isAddedTo]);
+  }, [isViewing, fez, initialReadCount, markRead, notificationData, refetchUserNotificationData, isAddedTo]);
+
+  // Viewing the fez dismisses its notifications whether or not anything was unread, like viewing a
+  // forum thread does. Opening it from a notification fetches it first, and that GET already marks
+  // it read on the server, so the effect above often finds nothing unread and would leave them up.
+  const fezID = fez?.fezID;
+  useEffect(() => {
+    if (isViewing && fezID && appConfig.markReadCancelPush) {
+      cancelContentNotification(fezID);
+    }
+  }, [isViewing, fezID, fez?.members?.postCount, appConfig.markReadCancelPush]);
 };

@@ -2,24 +2,14 @@ appId: ${APP_ID}
 ---
 - runFlow:
     file: ../SetupApp.yaml
-- tapOn:
-    id: "oobeNext-button"
-- tapOn:
-    id: "serverChoice-button"
-    retryTapIfNoChange: true
-- tapOn: "Emulator"
-- tapOn:
-    id: "serverUrlSave-button"
-- tapOn:
-    id: "oobeNext-button"
-- repeat:
-    times: 7
-    commands: 
-      - scroll
-- tapOn:
-    id: "oobeIAgree-button"
+- runFlow:
+    file: subflows/ServerSetup.yaml
 - tapOn:
     id: "oobeCreateAccount-button"
+# The code of conduct comes before the registration form. I Agree sits in a fixed footer and
+# enables once the document loads.
+- tapOn:
+    id: "oobeIAgree-button"
 - tapOn:
     id: "registerVerification-input"
 - inputText: ${TWITARR_REG_CODE}
@@ -40,11 +30,7 @@ appId: ${APP_ID}
 - tapOn:
     id: "acknowledged-button"
 - tapOn:
-    id: "oobeNext-button"
-# Begin Permissions
-# lol
-# End Permissions
-- tapOn:
-    id: "oobeNext-button"
-- tapOn:
-    id: "oobeFinish-button"
+    text: "Not Now"
+    optional: true
+- runFlow:
+    file: subflows/Finish.yaml

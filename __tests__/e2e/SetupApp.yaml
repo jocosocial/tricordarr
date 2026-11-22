@@ -9,6 +9,19 @@ appId: ${APP_ID}
       platform: iOS
     commands:
     - openLink: "tricordarr://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081"
+    # iOS asks "Open in Tricordarr?" for the dev-client link, sometimes a second time once the
+    # bundle has loaded behind it.
+    - repeat:
+        times: 3
+        while:
+          visible: "Open"
+        commands:
+          - tapOn: "Open"
+          - waitForAnimationToEnd
+    # The dev menu opens over the app once the bundle is loaded.
+    - extendedWaitUntil:
+        visible: "Close"
+        timeout: 120000
     - tapOn: "Close"
 - runFlow:
     when:

@@ -1,0 +1,41 @@
+# Shared OOBE steps from the welcome screen to the account choice: pick "On Land", then point
+# the app at the Emulator server preset (port 3050).
+#
+# A Next tap that lands while the screen is still settling (e.g. right after picking a location,
+# before Next enables) is dropped, so each Next repeats until the following screen shows.
+appId: ${APP_ID}
+---
+- repeat:
+    times: 5
+    while:
+      notVisible: "Select your location:"
+    commands:
+      - tapOn:
+          id: "oobeNext-button"
+      - waitForAnimationToEnd
+- tapOn:
+    id: "oobeLocationLand-card"
+- repeat:
+    times: 5
+    while:
+      notVisible:
+        id: "serverChoice-button"
+    commands:
+      - tapOn:
+          id: "oobeNext-button"
+      - waitForAnimationToEnd
+- tapOn:
+    id: "serverChoice-button"
+    retryTapIfNoChange: true
+- tapOn: "Emulator"
+- tapOn:
+    id: "serverUrlSave-button"
+- repeat:
+    times: 5
+    while:
+      notVisible:
+        id: "oobeLogIn-button"
+    commands:
+      - tapOn:
+          id: "oobeNext-button"
+      - waitForAnimationToEnd

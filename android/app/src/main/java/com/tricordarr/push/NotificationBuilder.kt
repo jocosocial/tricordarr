@@ -11,6 +11,9 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
+import androidx.core.content.LocusIdCompat
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import com.tricordarr.R
 import java.text.DateFormat
@@ -30,7 +33,13 @@ object NotificationBuilder {
   private const val CONNECTION_CHANNEL = "connection"
   private const val CALL_CHANNEL = "krakentalkcalls"
   const val CALL_NOTIFICATION_ID = 0x7475
-  private const val BRAND_COLOR = 0xFF063953.toInt()
+  /**
+   * The service, call and connection notifications share an explicit group. Android bundles an app's
+   * ungrouped notifications on its own, and that bundle would pull chat notifications out of the
+   * Conversations section along with these.
+   */
+  private const val STATUS_GROUP = "status"
+  internal const val BRAND_COLOR = 0xFF063953.toInt()
 
   const val ACTION_MARK_AS_READ = "com.tricordarr.push.MARK_AS_READ"
   const val EXTRA_ACCOUNT_ID = "accountID"
@@ -63,8 +72,10 @@ object NotificationBuilder {
 
   /**
    * Posts a content notification for [plan]. [username] is only shown when several accounts are active.
-   * A messaging plan appends to the MessagingStyle of the notification already showing, with the app
-   * icon as the sender's avatar.
+   * A messaging plan appends to the MessagingStyle of the notification already showing. Its sender is
+   * the event's author with their avatar (see [NotificationAvatar]), posted as a conversation
+   * notification, or the app icon when the server sent no author. Loading an avatar can block
+   * briefly, so never call this on the main thread.
    */
   fun post(context: Context, plan: NotificationPlan, username: String? = null) {
     val builder = NotificationCompat.Builder(context, plan.channelID)
@@ -81,15 +92,35 @@ object NotificationBuilder {
           putString("secondaryContentID", plan.secondaryContentID)
         },
       )
-    username?.takeIf { it.isNotEmpty() }?.let { builder.setSubText(it) }
+    val accountName = username?.takeIf { it.isNotEmpty() }
+    accountName?.let { builder.setSubText(it) }
 
     if (plan.messaging) {
-      // Without an icon Android draws a letter avatar from the name ("N" for "New Seamail").
-      // The round launcher icon is a bundled resource, so it works with no JS running.
-      val sender = Person.Builder()
-        .setName(plan.title)
-        .setIcon(IconCompat.createWithResource(context, R.mipmap.ic_launcher_round))
-        .build()
+      val author = plan.author
+      val sender = if (author != null) {
+        val person = Person.Builder()
+          .setKey(author.userID)
+          .setName(author.name())
+          .setIcon(NotificationAvatar.icon(context, plan))
+          .build()
+        // Linking a long-lived shortcut makes this a conversation notification (Android 11+), as
+        // Signal and Messages post: the avatar is the only icon, in the Conversations section.
+        val shortcutId = publishConversationShortcut(context, plan, person)
+        builder
+          .setShortcutId(shortcutId)
+          .setLocusId(LocusIdCompat(shortcutId))
+          .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+          // The header reads "Tricordarr • New Seamail • 3m"; the sender is the bold title.
+          .setSubText(listOfNotNull(plan.title, accountName).joinToString(" · "))
+        person
+      } else {
+        // An older server sends no author. Without an icon Android draws a letter avatar from the
+        // name ("N" for "New Seamail"), so use the round launcher icon, a bundled resource.
+        Person.Builder()
+          .setName(plan.title)
+          .setIcon(IconCompat.createWithResource(context, R.mipmap.ic_launcher_round))
+          .build()
+      }
       val style = findActive(context, plan.tag, plan.id)
         ?.let { NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(it) }
         ?: NotificationCompat.MessagingStyle(Person.Builder().setName("You").build())
@@ -112,6 +143,31 @@ object NotificationBuilder {
     }
 
     notify(context, plan.tag, plan.id, builder.build())
+  }
+
+  /**
+   * Publishes the long-lived shortcut a conversation notification needs, one per chat of one account,
+   * labelled and pictured as [sender]. A tap opens the chat. Android keeps a bounded number of dynamic
+   * shortcuts, dropping the oldest, and lists recent ones on the launcher icon's long-press menu.
+   * Returns the shortcut ID.
+   */
+  private fun publishConversationShortcut(context: Context, plan: NotificationPlan, sender: Person): String {
+    val shortcutId = "chat:${plan.accountID}:${plan.contentID}"
+    val shortcut = ShortcutInfoCompat.Builder(context, shortcutId)
+      .setLongLived(true)
+      .setShortLabel(sender.name ?: plan.title)
+      .setPerson(sender)
+      .setIcon(sender.icon)
+      .setLocusId(LocusIdCompat(shortcutId))
+      .setIntent(viewIntent(context, plan.deepLink))
+      .build()
+    try {
+      ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
+    } catch (e: Exception) {
+      // Without the shortcut the notification still posts, in the plain messaging layout.
+      Log.w(TAG, "Could not publish conversation shortcut", e)
+    }
+    return shortcutId
   }
 
   private fun findActive(context: Context, tag: String?, id: Int): Notification? {
@@ -140,6 +196,7 @@ object NotificationBuilder {
    */
   fun serviceNotification(context: Context, subText: String?, text: String, expanded: String? = null): Notification =
     NotificationCompat.Builder(context, SERVICE_CHANNEL)
+      .setGroup(STATUS_GROUP)
       .setSmallIcon(R.drawable.ic_notification)
       .setSubText(subText)
       .setContentText(text)
@@ -161,6 +218,7 @@ object NotificationBuilder {
    */
   fun callNotification(context: Context, remoteUsername: String, startedAtMs: Long, muted: Boolean): Notification =
     NotificationCompat.Builder(context, CALL_CHANNEL)
+      .setGroup(STATUS_GROUP)
       .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle("Call with $remoteUsername")
       .setContentText(if (muted) "Muted" else "In call")
@@ -207,6 +265,7 @@ object NotificationBuilder {
     val time = DateFormat.getTimeInstance().format(Date())
     val who = label?.takeIf { it.isNotEmpty() }?.let { " for $it" } ?: ""
     val notification = NotificationCompat.Builder(context, CONNECTION_CHANNEL)
+      .setGroup(STATUS_GROUP)
       .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle("Twitarr Connection Lost")
       .setContentText("Connection$who lost at $time. Open Tricordarr to reconnect.")
@@ -238,6 +297,7 @@ object NotificationBuilder {
    */
   fun postReconnectNeeded(context: Context) {
     val notification = NotificationCompat.Builder(context, CONNECTION_CHANNEL)
+      .setGroup(STATUS_GROUP)
       .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle("Twitarr Notifications Paused")
       .setContentText("Tap to reconnect to the Twitarr server.")

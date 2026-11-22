@@ -26,6 +26,9 @@ struct SocketNotificationData: Codable {
 	var contentID: String
 	/// An ID of a related parent object, when one exists. For forum mention and alertword post notifications this is the Forum ID.
 	var secondaryContentID: String?
+	/// The user who wrote the content that triggered this notification, for notifications about authored content such as
+	/// posts. For content posted as @moderator or @TwitarrTeam, this is that account. Nil when there's no author.
+	var author: UserHeader?
 	/// For .incomingPhoneCall notifications, the caller.
 	var caller: UserHeader?
 	/// For .incomingPhoneCall notification,s the caller's IP addresses. May be nil, in which case the receiver opens a server socket instead.

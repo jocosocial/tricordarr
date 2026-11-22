@@ -14,10 +14,10 @@ interface FezQueryProps {
  * Gets a single Fez Chat.
  * @param fezID String of the Fez Chat ID.
  */
-export const useFezQuery = ({
-  fezID,
-  options = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'},
-}: FezQueryProps) => {
+/** The fez detail query's options when a caller passes none: always refetch on focus and mount. */
+export const defaultFezQueryOptions = {refetchOnWindowFocus: 'always', refetchOnMount: 'always'} as const;
+
+export const useFezQuery = ({fezID, options = defaultFezQueryOptions}: FezQueryProps) => {
   return useTokenAuthPaginationQuery<FezData>(`/fez/${fezID}`, options);
 };
 

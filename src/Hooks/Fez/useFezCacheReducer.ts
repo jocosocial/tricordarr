@@ -889,8 +889,11 @@ export const useFezCacheReducer = () => {
         queryClient.invalidateQueries({queryKey: [key], predicate: hasQueryFn, refetchType: 'all'}),
       );
       if (fezID) {
+        // Only an active (focused, see useFezData) detail query refetches. Swiftarr marks the fez
+        // read on every detail GET, so refetching a cached or out-of-view chat when a new post
+        // arrives would mark it read unseen; it is marked stale and refetches when next viewed.
         invalidations.push(
-          queryClient.invalidateQueries({queryKey: [`/fez/${fezID}`], predicate: hasQueryFn, refetchType: 'all'}),
+          queryClient.invalidateQueries({queryKey: [`/fez/${fezID}`], predicate: hasQueryFn, refetchType: 'active'}),
         );
       }
       return Promise.all(invalidations);
