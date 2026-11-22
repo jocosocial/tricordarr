@@ -2,6 +2,7 @@ import React from 'react';
 
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ExpandButtonHelpTopicView} from '#src/Components/Views/Help/Common/ExpandButtonHelpTopicView';
 import {HelpButtonHelpTopicView} from '#src/Components/Views/Help/Common/HelpButtonHelpTopicView';
 import {OverlappingHelpTopicView} from '#src/Components/Views/Help/Common/OverlappingHelpTopicView';
 import {ReloadButtonHelpTopicView} from '#src/Components/Views/Help/Common/ReloadButtonHelpTopicView';
@@ -24,6 +25,7 @@ export const ScheduleOverlapHelpScreen = () => {
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Actions'}>
+          <ExpandButtonHelpTopicView />
           <ReloadButtonHelpTopicView />
           <ScheduleSettingsHelpTopicView />
           <HelpButtonHelpTopicView />

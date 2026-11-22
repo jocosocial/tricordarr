@@ -12,6 +12,11 @@ interface EventsQueryOptions {
   search?: string;
   location?: string;
   dayplanner?: boolean;
+  /**
+   * Shutternaut-only filter. True returns events with at least one photographer; false returns events
+   * flagged as needing one that nobody has taken. The server rejects either for other users.
+   */
+  hasPhotographer?: boolean;
   options?: EventsQueryOpenOptions;
 }
 
@@ -20,6 +25,7 @@ interface EventsQueryOptions {
  * `useOpenQuery`. `isFavorite` on each result is `false` for a logged-out request, and the
  * `dayplanner` param's personalized fields require a token; callers must hide/gate the UI that
  * would need those while logged out (see ScheduleDayScreen's LFG/personal-event/day-planner bits).
+ * `hasPhotographer` is sent whenever it is defined, since `false` is its own filter.
  */
 export const useEventsQuery = ({
   cruiseDay,
@@ -30,6 +36,7 @@ export const useEventsQuery = ({
   search,
   location,
   dayplanner,
+  hasPhotographer,
   options,
 }: EventsQueryOptions) => {
   return useOpenQuery<EventData[]>('/events', options, {
@@ -41,6 +48,7 @@ export const useEventsQuery = ({
     ...(search && {search: search}),
     ...(location && {location: location}),
     ...(dayplanner && {dayplanner: true}),
+    ...(hasPhotographer !== undefined && {hasPhotographer: hasPhotographer}),
   });
 };
 

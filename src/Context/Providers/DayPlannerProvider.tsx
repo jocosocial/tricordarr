@@ -18,6 +18,19 @@ import {DayPlannerColor, DayPlannerItem, DayPlannerItemWithLayout, DayPlannerThe
 const dayMinutesMax = DAY_PLANNER_CONFIG.TOTAL_HOURS * 60;
 
 /**
+ * Color for a red/gold team event, matched by title (special case kept from web app), or undefined for any other.
+ */
+const getTeamColor = (title: string): DayPlannerColor | undefined => {
+  if (title.toLowerCase().includes('gold team')) {
+    return 'goldTeam';
+  }
+  if (title.toLowerCase().includes('red team')) {
+    return 'redTeam';
+  }
+  return undefined;
+};
+
+/**
  * Determine the color for a Day Planner item based on its type, title, and eventType.
  * Matches the color scheme used in ScheduleDayScreen, with special cases for red/gold team events.
  */
@@ -31,19 +44,23 @@ const getDayPlannerColor = (item: {
     if (item.eventType === EventType.shadow) {
       return 'shadow';
     }
-    // Check for team events by title matching (special case kept from web app)
-    if (item.title.toLowerCase().includes('gold team')) {
-      return 'goldTeam';
-    }
-    if (item.title.toLowerCase().includes('red team')) {
-      return 'redTeam';
-    }
-    return 'schedule';
+    return getTeamColor(item.title) ?? 'schedule';
   }
   if (item.type === 'lfg') {
     return 'lfg';
   }
   return 'personalEvent';
+};
+
+/**
+ * Color for an event on the Shutternaut Calendar, matching the web shared schedule: grey when the current
+ * user is photographing it, then red/gold team, then the schedule blue. Shadow events are not set apart.
+ */
+export const getShutternautCalendarColor = (event: EventData): DayPlannerColor => {
+  if (event.shutternautData?.userIsPhotographer) {
+    return 'photographer';
+  }
+  return getTeamColor(event.title) ?? 'schedule';
 };
 
 /**
@@ -64,6 +81,8 @@ const getBackgroundColor = (color: DayPlannerColor, colors: DayPlannerThemeColor
       return colors.outline;
     case 'personalEvent':
       return colors.twitarrOrange;
+    case 'photographer':
+      return colors.outline;
   }
 };
 
@@ -175,6 +194,38 @@ const buildDayPlannerItems = (
 };
 
 /**
+ * Build the Shutternaut Calendar's items from its events, colored by photographer status rather than event type.
+ */
+const buildShutternautCalendarItems = (eventData?: EventData[]): DayPlannerItem[] => {
+  if (!eventData) {
+    return [];
+  }
+  return eventData
+    .map(event => ({...fromEvent(event), color: getShutternautCalendarColor(event)}))
+    .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+};
+
+/**
+ * Order items for lane allocation: earliest start first, then longest first so long events claim the left
+ * lanes, then title and id so items with the same times keep the same lanes across refetches.
+ */
+const compareItemsForLayout = (a: DayPlannerItem, b: DayPlannerItem): number => {
+  const startDiff = a.startTime.getTime() - b.startTime.getTime();
+  if (startDiff !== 0) {
+    return startDiff;
+  }
+  const durationDiff = b.endTime.getTime() - b.startTime.getTime() - (a.endTime.getTime() - a.startTime.getTime());
+  if (durationDiff !== 0) {
+    return durationDiff;
+  }
+  const titleCompare = a.title.localeCompare(b.title);
+  if (titleCompare !== 0) {
+    return titleCompare;
+  }
+  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+};
+
+/**
  * Clip an item's display times to the day boundaries and calculate display properties.
  * Returns null if the item doesn't intersect the display window.
  */
@@ -223,7 +274,8 @@ const adjustItemForDisplay = (
 /**
  * Calculate layout information for overlapping items.
  * Groups overlapping items and assigns column positions.
- * Ported from SitePrivateEventController.swift lines 290-340.
+ * Ported from SitePrivateEventController.swift lines 290-340, with tie-breaks (see compareItemsForLayout) so
+ * items that start together keep the same lanes across refetches.
  *
  * @param pinnedItemId - Item to keep in the first column. Items overlapping it move to later columns; the rest are
  * assigned as usual.
@@ -240,8 +292,8 @@ export const calculateItemLayout = (
     .map(item => adjustItemForDisplay(item, dayStart, dayEnd, compactThemeEvents))
     .filter((item): item is DayPlannerItem => item !== null);
 
-  // Sort by start time
-  const sorted = [...adjustedItems].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+  // Sort by start time, with tie-breaks so lanes are stable
+  const sorted = [...adjustedItems].sort(compareItemsForLayout);
 
   // Track column assignments for overlapping items
   let columnEndTimes: Date[] = [];
@@ -512,6 +564,7 @@ const dayPlannerContextValue: DayPlannerContextType = {
   fromEvent,
   fromFez,
   buildDayPlannerItems,
+  buildShutternautCalendarItems,
   calculateItemLayout,
   generateTimeSlotLabels,
   getDayBoundaries,

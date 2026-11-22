@@ -68,20 +68,8 @@ export const EventCardActionsMenuItems = ({eventData, closeMenu}: EventCardActio
       {isShadow && <SetOrganizerMenuItem closeMenu={closeMenu} eventID={eventData.eventID} />}
       <PrivilegedMenuGroup>
         {hasTwitarrTeam && <ManagePerformersMenuItem eventID={eventData.eventID} />}
-        {hasShutternaut && (
-          <PhotographingMenuItem
-            eventID={eventData.eventID}
-            shutternautData={eventData.shutternautData}
-            closeMenu={closeMenu}
-          />
-        )}
-        {hasShutternautManager && (
-          <NeedsPhotographerMenuItem
-            eventID={eventData.eventID}
-            shutternautData={eventData.shutternautData}
-            closeMenu={closeMenu}
-          />
-        )}
+        {hasShutternaut && <PhotographingMenuItem event={eventData} closeMenu={closeMenu} />}
+        {hasShutternautManager && <NeedsPhotographerMenuItem event={eventData} closeMenu={closeMenu} />}
       </PrivilegedMenuGroup>
       <ShareMenuItem contentType={ShareContentType.event} contentID={eventData.eventID} closeMenu={closeMenu} />
     </>

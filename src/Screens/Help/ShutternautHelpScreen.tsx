@@ -39,9 +39,14 @@ export const ShutternautHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Shared Calendar'}>
           <HelpTopicView>
-            All Shutternauts can see a shared calendar of events that they are photographing and events that need a
-            photographer. It can be accessed from the app drawer.
+            The Shutternaut Calendar, in the app drawer, shows every event that at least one Shutternaut has signed up
+            to photograph, so you can see what is already covered. Tap an event to see who is photographing it.
           </HelpTopicView>
+          <HelpTopicView>
+            Grey events are ones you are photographing. Blue events are covered by other Shutternauts. Red and gold team
+            events keep their team colors.
+          </HelpTopicView>
+          <HelpTopicView>Long-press an event to change its photographer status.</HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Forums'}>
           <HelpTopicView>

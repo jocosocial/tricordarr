@@ -9,7 +9,9 @@ import {
   calculateItemLayout,
   getItemsTimelineWindow,
   getMinutesFromDayStartForNow,
+  getShutternautCalendarColor,
 } from '#src/Context/Providers/DayPlannerProvider';
+import {EventData} from '#src/Structs/ControllerStructs';
 import {DayPlannerItem} from '#src/Types/DayPlanner';
 
 describe('getMinutesFromDayStartForNow', () => {
@@ -146,5 +148,63 @@ describe('calculateItemLayout pinned item', () => {
 
   it('ignores a pinned id that is not displayed', () => {
     expect(columnsOf([earlier, later], 'missing')).toEqual({earlier: 0, later: 0});
+  });
+});
+
+describe('calculateItemLayout tie-breaks', () => {
+  const tz = 'America/Lower_Princes';
+  const at = (value: string) => moment.tz(`2025-03-06 ${value}`, tz).toDate();
+  const makeItem = (id: string, start: string, end: string, title = id): DayPlannerItem => ({
+    id,
+    title,
+    startTime: at(start),
+    endTime: at(end),
+    type: 'event',
+    color: 'schedule',
+  });
+  const columnsOf = (items: DayPlannerItem[]) => {
+    const layout = calculateItemLayout(items, at('08:00'), at('20:00'), false);
+    return Object.fromEntries(layout.map(item => [item.id, item.columnIndex]));
+  };
+
+  it('gives the longer of two items with the same start the first column', () => {
+    const short = makeItem('short', '10:00', '10:30');
+    const long = makeItem('long', '10:00', '12:00');
+    expect(columnsOf([short, long])).toEqual({long: 0, short: 1});
+  });
+
+  it('orders items with the same times by title, then id, whatever the input order', () => {
+    const items = [
+      makeItem('c', '10:00', '11:00', 'Bravo'),
+      makeItem('b', '10:00', '11:00', 'Alpha'),
+      makeItem('a', '10:00', '11:00', 'Alpha'),
+    ];
+    const expected = {a: 0, b: 1, c: 2};
+    expect(columnsOf(items)).toEqual(expected);
+    expect(columnsOf([...items].reverse())).toEqual(expected);
+    expect(columnsOf([items[1], items[2], items[0]])).toEqual(expected);
+  });
+});
+
+describe('getShutternautCalendarColor', () => {
+  const makeEvent = (title: string, userIsPhotographer: boolean, eventType = 'Gaming'): EventData =>
+    ({
+      title,
+      eventType,
+      shutternautData: {needsPhotographer: false, photographers: [], userIsPhotographer},
+    }) as unknown as EventData;
+
+  it('is grey when you are photographing, even for team events', () => {
+    expect(getShutternautCalendarColor(makeEvent('Gold Team Trivia', true))).toBe('photographer');
+  });
+
+  it('keeps team colors for events someone else is photographing', () => {
+    expect(getShutternautCalendarColor(makeEvent('Gold Team Trivia', false))).toBe('goldTeam');
+    expect(getShutternautCalendarColor(makeEvent('Red Team Trivia', false))).toBe('redTeam');
+  });
+
+  it('uses the schedule blue for everything else, shadow events included', () => {
+    expect(getShutternautCalendarColor(makeEvent('Karaoke', false))).toBe('schedule');
+    expect(getShutternautCalendarColor(makeEvent('Knitting', false, 'Shadow Event'))).toBe('schedule');
   });
 });

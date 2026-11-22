@@ -2,10 +2,12 @@ import {useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
 
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useTimeZone} from '#src/Hooks/useTimeZone';
 import {calcCruiseDayTime} from '#src/Libraries/DateTime';
-import {EventData, PerformerData, PerformerHeaderData} from '#src/Structs/ControllerStructs';
+import {photographerListMembership, withUserPhotographing} from '#src/Libraries/Events/PhotographerCacheReduction';
+import {EventData, PerformerData, PerformerHeaderData, UserHeader} from '#src/Structs/ControllerStructs';
 
 /**
  * Insert an event into a sorted (by startTime ascending) array. Returns the
@@ -46,6 +48,7 @@ export const useEventCacheReducer = () => {
   const {queryKeyExtraData} = useSwiftarrQueryClient();
   const {startDate, endDate} = useCruise();
   const {tzAtTime} = useTimeZone();
+  const {currentUserID} = useSession();
 
   const eventDetailQueryKey = useCallback(
     (eventID: string) => [`/events/${eventID}`, undefined, ...queryKeyExtraData],
@@ -165,6 +168,32 @@ export const useEventCacheReducer = () => {
   );
 
   /**
+   * After an event's photographer state changes, move the already-updated event into or out of the lists whose
+   * membership depends on it: `/events` caches filtered on `hasPhotographer` (the Shutternaut Calendar). See
+   * PhotographerCacheReduction for the rules. The coverage report is deliberately not reduced; see
+   * "Optimistic Cache Updates" in docs/Cache and State.md.
+   */
+  const updatePhotographerCaches = useCallback(
+    (event: EventData) => {
+      const eventCruiseDay = computeCruiseDay(event.startTime);
+      for (const query of queryClient.getQueryCache().findAll({queryKey: ['/events']})) {
+        const params = query.queryKey[1] as Record<string, unknown> | undefined;
+        const belongs = photographerListMembership(params, event, eventCruiseDay);
+        if (belongs === undefined) {
+          continue;
+        }
+        queryClient.setQueryData<EventData[]>(query.queryKey, oldData => {
+          if (!oldData) {
+            return oldData;
+          }
+          return belongs ? insertSortedByStartTime(oldData, event) : removeByEventID(oldData, event.eventID);
+        });
+      }
+    },
+    [queryClient, computeCruiseDay],
+  );
+
+  /**
    * Seed the `/events/{eventID}` detail cache with a complete EventData the
    * caller already has in hand (e.g. from a list response). No network
    * request is made; EventScreen will still background-refetch per its
@@ -195,33 +224,33 @@ export const useEventCacheReducer = () => {
   );
 
   /**
-   * Update shutternautData.userIsPhotographer for an event across all caches.
-   * The `photographers` header list (only rendered on the event detail
-   * screen) is intentionally left untouched here -- a synthetic UserHeader
-   * for the current user would be missing displayName/userImage, so callers
-   * should still request a scoped detail refetch to pick up the authoritative list.
+   * Set whether the current user is photographing an event, across all list, detail, and performer caches.
+   * Both `userIsPhotographer` and the `photographers` list change, using `selfHeader` (the user's own
+   * profile header) for the list entry, so the event screen and the schedule's photographer filters agree
+   * with every other cache. Also moves the event into or out of photographer-dependent lists (see
+   * updatePhotographerCaches).
    */
   const updatePhotographer = useCallback(
-    (eventID: string, newValue: boolean) => {
-      updateEventInAllCaches(eventID, event =>
-        event.shutternautData
-          ? {...event, shutternautData: {...event.shutternautData, userIsPhotographer: newValue}}
-          : event,
-      );
+    (event: EventData, newValue: boolean, selfHeader: UserHeader | undefined) => {
+      const update = (e: EventData) => withUserPhotographing(e, newValue, selfHeader, currentUserID);
+      updateEventInAllCaches(event.eventID, update);
+      updatePhotographerCaches(update(event));
     },
-    [updateEventInAllCaches],
+    [updateEventInAllCaches, updatePhotographerCaches, currentUserID],
   );
 
-  /** Update shutternautData.needsPhotographer for an event across all caches. */
+  /**
+   * Update shutternautData.needsPhotographer for an event across all caches, and move it into or out of
+   * photographer-dependent lists (see updatePhotographerCaches).
+   */
   const updateNeedsPhotographer = useCallback(
-    (eventID: string, newValue: boolean) => {
-      updateEventInAllCaches(eventID, event =>
-        event.shutternautData
-          ? {...event, shutternautData: {...event.shutternautData, needsPhotographer: newValue}}
-          : event,
-      );
+    (event: EventData, newValue: boolean) => {
+      const update = (e: EventData): EventData =>
+        e.shutternautData ? {...e, shutternautData: {...e.shutternautData, needsPhotographer: newValue}} : e;
+      updateEventInAllCaches(event.eventID, update);
+      updatePhotographerCaches(update(event));
     },
-    [updateEventInAllCaches],
+    [updateEventInAllCaches, updatePhotographerCaches],
   );
 
   /** Replace an EventData wholesale (by eventID) in all list, detail, and performer caches. */

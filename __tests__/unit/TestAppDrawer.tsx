@@ -1,8 +1,11 @@
 import * as React from 'react';
+import {Linking} from 'react-native';
 
 import {AppDrawer} from '#src/Components/Drawers/AppDrawer';
+import {appUrl} from '#src/Libraries/UrlParser';
 
 let mockHasTwitarrTeam = false;
+let mockHasShutternaut = false;
 let mockHasShutternautManager = false;
 let mockHasAccountManager = false;
 let mockHasHuntManager = false;
@@ -24,7 +27,6 @@ jest.mock('react-native', () => ({
   StyleSheet: {create: (styles: object) => styles},
 }));
 
-jest.mock('#src/Libraries/NavigationRef', () => ({push: jest.fn()}));
 jest.mock('react-native-device-info', () => ({getVersion: () => 'test'}));
 jest.mock('react-native-drawer-layout', () => ({Drawer: 'Drawer'}));
 jest.mock('react-native-paper', () => ({
@@ -44,7 +46,7 @@ jest.mock('#src/Context/Contexts/PrivilegeContext', () => ({
 }));
 jest.mock('#src/Context/Contexts/RoleContext', () => ({
   useRoles: () => ({
-    hasShutternaut: false,
+    hasShutternaut: mockHasShutternaut,
     hasShutternautManager: mockHasShutternautManager,
     hasAccountManager: mockHasAccountManager,
     hasHuntManager: mockHasHuntManager,
@@ -63,6 +65,25 @@ jest.mock('#src/Queries/Alert/NotificationQueries', () => ({
 jest.mock('#src/Queries/User/UserQueries', () => ({
   useUserProfileQuery: () => ({data: undefined}),
 }));
+
+/** Find a drawer item by its label, or undefined if the drawer doesn't offer it. */
+const getDrawerItem = (label: string) => {
+  const drawer = AppDrawer({children: null});
+  let found: {onPress?: () => void} | undefined;
+  const visit = (node: React.ReactNode) => {
+    React.Children.forEach(node, child => {
+      if (!React.isValidElement<{children?: React.ReactNode; label?: string; onPress?: () => void}>(child)) {
+        return;
+      }
+      if (child.props.label === label) {
+        found = child.props;
+      }
+      visit(child.props.children);
+    });
+  };
+  visit(drawer.props.renderDrawerContent());
+  return found;
+};
 
 const getDrawerLabels = () => {
   const drawer = AppDrawer({children: null});
@@ -103,6 +124,28 @@ describe('AppDrawer Shutternaut management access', () => {
     mockHasShutternautManager = true;
 
     expect(getDrawerLabels()).toContain('Manage Shutternauts');
+  });
+});
+
+describe('AppDrawer Shutternaut Calendar', () => {
+  beforeEach(() => {
+    mockHasTwitarrTeam = false;
+    mockHasShutternaut = false;
+    mockHasShutternautManager = false;
+    mockHasAccountManager = false;
+    mockHasHuntManager = false;
+    jest.mocked(Linking.openURL).mockClear();
+  });
+
+  it('deep links to the shared calendar for Shutternauts', () => {
+    mockHasShutternaut = true;
+
+    getDrawerItem('Shutternaut Calendar')?.onPress?.();
+    expect(Linking.openURL).toHaveBeenCalledWith(appUrl('dayplanner', 'shutternauts'));
+  });
+
+  it('is not offered to users without a Shutternaut role or TwitarrTeam', () => {
+    expect(getDrawerLabels()).not.toContain('Shutternaut Calendar');
   });
 });
 
