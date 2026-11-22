@@ -72,7 +72,7 @@ const ModerateUserScreenInner = ({route}: Props) => {
           onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: data.header.userID})}
         />
         <ModerationUserAccessSectionView
-          userID={id}
+          user={data.header}
           accessLevel={data.accessLevel}
           tempQuarantineEndTime={data.tempQuarantineEndTime}
           testIDPrefix={'userModerate'}

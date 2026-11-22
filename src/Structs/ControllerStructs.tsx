@@ -1698,10 +1698,13 @@ export namespace UserModerationData {
   export const getCacheKeys = (userID?: string): QueryKey[] => {
     const keys = ReportModerationData.getCacheKeys();
     if (userID) {
-      keys.push([`/mod/user/${userID}`]);
+      keys.push(getDetailCacheKey(userID));
     }
     return keys.concat(UserHeader.getCacheKeys());
   };
+
+  /** Cache key of one user's `GET /mod/user/:id`. */
+  export const getDetailCacheKey = (userID: string): QueryKey => [`/mod/user/${userID}`];
 }
 
 /**

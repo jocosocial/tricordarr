@@ -56,8 +56,8 @@ const ShutternautManageScreenInner = ({navigation}: Props) => {
       users={data}
       isLoading={isLoading}
       refetch={refetch}
-      addRole={user => addMutation.mutateAsync({userID: user.userID})}
-      removeRole={user => removeMutation.mutateAsync({userID: user.userID})}
+      addRole={user => addMutation.mutateAsync({user})}
+      removeRole={user => removeMutation.mutateAsync({user})}
       busy={addMutation.isPending || removeMutation.isPending}
     />
   );

@@ -1,46 +1,25 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {useCallback} from 'react';
 
+import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
+import {UserRoleType} from '#src/Enums/UserRoleType';
+import {
+  insertSortedByUsername,
+  removeByUserID,
+  withAccessLevel,
+  withAccessLevelMembership,
+  withRole,
+} from '#src/Libraries/Users/UserAccessCacheReduction';
+import {USER_WHOAMI_ENDPOINT} from '#src/Queries/User/UserQueries';
 import {getRelationListQueryKey, type UserRelationMode} from '#src/Queries/Users/UserRelationConstants';
-import {UserHeader} from '#src/Structs/ControllerStructs';
-
-/** Compare by Unicode code points. Matches Swift's `$0.username < $1.username`. */
-const usernameComparator = (a: UserHeader, b: UserHeader): number => {
-  if (a.username < b.username) return -1;
-  if (a.username > b.username) return 1;
-  return 0;
-};
-
-/**
- * Insert a UserHeader into a sorted array by username. Returns a new array.
- * If the header is already present (by userID), returns unchanged array.
- */
-function insertSortedByUsername(arr: UserHeader[] | undefined, header: UserHeader): UserHeader[] {
-  if (!arr) {
-    return [header];
-  }
-  if (arr.some(h => h.userID === header.userID)) {
-    return arr;
-  }
-  const index = arr.findIndex(h => usernameComparator(header, h) <= 0);
-  const insertAt = index === -1 ? arr.length : index;
-  return [...arr.slice(0, insertAt), header, ...arr.slice(insertAt)];
-}
-
-/**
- * Remove a user (by userID) from an array. Returns a new array.
- */
-function removeByUserID(arr: UserHeader[] | undefined, userID: string): UserHeader[] | undefined {
-  if (!arr) return arr;
-  const next = arr.filter(h => h.userID !== userID);
-  return next.length === arr.length ? arr : next;
-}
+import {AdminAccessLevelListData, AdminUserRoleListData} from '#src/Structs/AdminControllerStructs';
+import {CurrentUserData, UserHeader, UserModerationData} from '#src/Structs/ControllerStructs';
 
 /**
  * Hook that exposes discrete actions for updating React Query caches for user
- * relation lists (favorites, mutes, blocks). Each action uses setQueriesData
- * and returns new arrays so React Query detects changes. Lists are kept
- * sorted alphabetically by username to match the API.
+ * relation lists (favorites, mutes, blocks), role membership and access levels.
+ * Each action uses setQueriesData and returns new arrays so React Query detects
+ * changes. Lists are kept sorted alphabetically by username to match the API.
  */
 export const useUserCacheReducer = () => {
   const queryClient = useQueryClient();
@@ -82,6 +61,64 @@ export const useUserCacheReducer = () => {
     [removeFromRelationList],
   );
 
+  /**
+   * Apply an edit to the whoami cache only when `userID` is the current user, so a change made to
+   * your own account reaches RoleProvider and the session's access level.
+   */
+  const updateSelf = useCallback(
+    (userID: string, updater: (data: CurrentUserData) => CurrentUserData) => {
+      queryClient.setQueriesData<CurrentUserData>({queryKey: [USER_WHOAMI_ENDPOINT]}, oldData =>
+        oldData && oldData.userID === userID ? updater(oldData) : oldData,
+      );
+    },
+    [queryClient],
+  );
+
+  /**
+   * Record that a user was given or lost a role: the role's member lists, and your own roles if it was you.
+   */
+  const setRole = useCallback(
+    (role: UserRoleType, header: UserHeader, granted: boolean) => {
+      for (const queryKey of AdminUserRoleListData.getCacheKeys(role)) {
+        queryClient.setQueriesData<UserHeader[]>({queryKey}, oldData => {
+          if (!oldData) {
+            return oldData;
+          }
+          return granted ? insertSortedByUsername(oldData, header) : removeByUserID(oldData, header.userID);
+        });
+      }
+      updateSelf(header.userID, data => withRole(data, role, granted));
+    },
+    [queryClient, updateSelf],
+  );
+
+  const grantRole = useCallback((role: UserRoleType, header: UserHeader) => setRole(role, header, true), [setRole]);
+  const revokeRole = useCallback((role: UserRoleType, header: UserHeader) => setRole(role, header, false), [setRole]);
+
+  /**
+   * Record a user's new access level: THO's per-level lists, the moderation view of the user, and
+   * your own access level if it was you.
+   */
+  const setAccessLevel = useCallback(
+    (header: UserHeader, accessLevel: UserAccessLevel) => {
+      for (const listLevel of AdminAccessLevelListData.listedLevels) {
+        const queryKey = AdminAccessLevelListData.getCacheKeyForLevel(listLevel);
+        if (!queryKey) {
+          continue;
+        }
+        queryClient.setQueriesData<UserHeader[]>({queryKey}, oldData =>
+          withAccessLevelMembership(oldData, header, listLevel === accessLevel),
+        );
+      }
+      queryClient.setQueriesData<UserModerationData>(
+        {queryKey: UserModerationData.getDetailCacheKey(header.userID)},
+        oldData => (oldData ? withAccessLevel(oldData, accessLevel) : oldData),
+      );
+      updateSelf(header.userID, data => withAccessLevel(data, accessLevel));
+    },
+    [queryClient, updateSelf],
+  );
+
   return {
     addFavorite,
     removeFavorite,
@@ -91,5 +128,8 @@ export const useUserCacheReducer = () => {
     removeBlock,
     addRelation: addToRelationList,
     removeRelation,
+    grantRole,
+    revokeRole,
+    setAccessLevel,
   };
 };

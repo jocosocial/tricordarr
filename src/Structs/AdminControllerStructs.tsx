@@ -555,8 +555,27 @@ export namespace SettingsAdminData {
  * These endpoints do not have a dedicated Swiftarr DTO.
  */
 export namespace AdminAccessLevelListData {
+  /** The levels THO manages as lists, each served by its own endpoint. */
+  export const listedLevels = [UserAccessLevel.moderator, UserAccessLevel.twitarrteam, UserAccessLevel.tho] as const;
+
+  /**
+   * Cache key of the list holding users at `level`. Every other level has no list.
+   */
+  export const getCacheKeyForLevel = (level: UserAccessLevel): QueryKey | undefined => {
+    switch (level) {
+      case UserAccessLevel.moderator:
+        return ['/admin/moderators'];
+      case UserAccessLevel.twitarrteam:
+        return ['/admin/twitarrteam'];
+      case UserAccessLevel.tho:
+        return ['/admin/tho'];
+      default:
+        return undefined;
+    }
+  };
+
   export const getCacheKeys = (): QueryKey[] => {
-    return [['/admin/moderators'], ['/admin/twitarrteam'], ['/admin/tho']];
+    return listedLevels.map(level => getCacheKeyForLevel(level) as QueryKey);
   };
 }
 

@@ -98,8 +98,8 @@ const AdminUserRoleDetail = ({role, navigation}: AdminUserRoleDetailProps) => {
       users={data}
       isLoading={isLoading}
       refetch={refetch}
-      addRole={user => addMutation.mutateAsync({role, userID: user.userID})}
-      removeRole={user => removeMutation.mutateAsync({role, userID: user.userID})}
+      addRole={user => addMutation.mutateAsync({role, user})}
+      removeRole={user => removeMutation.mutateAsync({role, user})}
       busy={addMutation.isPending || removeMutation.isPending}
     />
   );
