@@ -159,6 +159,15 @@ const FezChatScreenInner = ({route}: Props) => {
     isRefreshing: isFetching,
   });
 
+  /**
+   * Reload from the actions menu. Besides refetching, drops the frozen read count so a stale
+   * "New" divider clears. Pull-to-refresh deliberately leaves it alone.
+   */
+  const onMenuReload = useCallback(async () => {
+    await onRefresh();
+    resetInitialReadCount();
+  }, [onRefresh, resetInitialReadCount]);
+
   const getNavButtons = useCallback(() => {
     if (!fez) {
       return <></>;
@@ -189,11 +198,11 @@ const FezChatScreenInner = ({route}: Props) => {
               }
             />
           )}
-          <FezChatScreenActionsMenu fezID={route.params.fezID} onRefresh={onRefresh} />
+          <FezChatScreenActionsMenu fezID={route.params.fezID} onRefresh={onMenuReload} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [fez, onRefresh, navigation, route.params.fezID]);
+  }, [fez, onMenuReload, navigation, route.params.fezID]);
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
