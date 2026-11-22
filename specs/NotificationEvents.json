@@ -25,22 +25,26 @@
     "seamail": {
       "name": "Seamail",
       "group": "content",
-      "description": "Seamail content from the Twitarr server."
+      "description": "Seamail content from the Twitarr server.",
+      "vibrationPattern": [0, 120, 80, 120, 80, 400]
     },
     "lfg": {
       "name": "LFG",
       "group": "content",
-      "description": "LFG content from the Twitarr server."
+      "description": "LFG content from the Twitarr server.",
+      "vibrationPattern": [0, 120, 80, 120, 80, 400]
     },
     "announcements": {
       "name": "Announcements",
       "group": "content",
-      "description": "Announcements from the Twitarr server."
+      "description": "Announcements from the Twitarr server.",
+      "vibrationPattern": [0, 120, 80, 120, 80, 400]
     },
     "forums": {
       "name": "Forums",
       "group": "content",
-      "description": "Forum content from the Twitarr server."
+      "description": "Forum content from the Twitarr server.",
+      "vibrationPattern": [0, 120, 80, 120, 80, 400]
     },
     "krakentalkcalls": {
       "name": "KrakenTalk Calls",
@@ -56,7 +60,8 @@
     "events": {
       "name": "Events",
       "group": "content",
-      "description": "Event content from the Twitarr server."
+      "description": "Event content from the Twitarr server.",
+      "vibrationPattern": [0, 120, 80, 120, 80, 400]
     }
   },
   "unposted": {
