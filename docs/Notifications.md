@@ -131,6 +131,13 @@ after the app is swiped away or the device reboots.
 | `PushBootReceiver`                            | Restarts the service on `BOOT_COMPLETED` and `MY_PACKAGE_REPLACED` (not `LOCKED_BOOT_COMPLETED`: Keystore needs first unlock).                                                                                                             |
 | `PushStatusStore`                             | Per-account health (`state`, last healthcheck, `failedCount`, `startedAt`). Native is the source of truth; JS pulls `getWebsocketStatus()`.                                                                                                |
 
+Event types with `messaging: true` in the shared table (Seamail, LFG and private event messages) post
+as `MessagingStyle`, appending each new message to the notification already showing for that chat;
+the rest use `BigTextStyle`. The sender `Person` carries the round launcher icon
+(`R.mipmap.ic_launcher_round`) as its avatar, since without one Android draws a letter avatar from the
+title ("N" for "New Seamail"). Do not use `ic_notification` there: it is the white status-bar
+silhouette.
+
 The service posts three notifications of its own:
 
 - **Service**: the foreground notification, listing the connected usernames. It is not `ongoing`,

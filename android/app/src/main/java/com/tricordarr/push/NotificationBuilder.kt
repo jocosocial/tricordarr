@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
+import androidx.core.graphics.drawable.IconCompat
 import com.tricordarr.R
 import java.text.DateFormat
 import java.util.Date
@@ -60,7 +61,11 @@ object NotificationBuilder {
     }
   }
 
-  /** Posts a content notification for [plan]. [username] is only shown when several accounts are active. */
+  /**
+   * Posts a content notification for [plan]. [username] is only shown when several accounts are active.
+   * A messaging plan appends to the MessagingStyle of the notification already showing, with the app
+   * icon as the sender's avatar.
+   */
   fun post(context: Context, plan: NotificationPlan, username: String? = null) {
     val builder = NotificationCompat.Builder(context, plan.channelID)
       .setSmallIcon(R.drawable.ic_notification)
@@ -79,7 +84,12 @@ object NotificationBuilder {
     username?.takeIf { it.isNotEmpty() }?.let { builder.setSubText(it) }
 
     if (plan.messaging) {
-      val sender = Person.Builder().setName(plan.title).build()
+      // Without an icon Android draws a letter avatar from the name ("N" for "New Seamail").
+      // The round launcher icon is a bundled resource, so it works with no JS running.
+      val sender = Person.Builder()
+        .setName(plan.title)
+        .setIcon(IconCompat.createWithResource(context, R.mipmap.ic_launcher_round))
+        .build()
       val style = findActive(context, plan.tag, plan.id)
         ?.let { NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(it) }
         ?: NotificationCompat.MessagingStyle(Person.Builder().setName("You").build())
