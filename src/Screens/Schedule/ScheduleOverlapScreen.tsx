@@ -57,8 +57,8 @@ export const ScheduleOverlapScreen = ({navigation, route}: Props) => {
   // src/Queries/Events/EventQueries.ts) and can't favorite, so they start on all events.
   const defaultOnlyYourEvents = isLoggedIn && appConfig.schedule.overlapOnlyYourEvents;
   const [onlyYourEvents, setOnlyYourEvents] = useState(defaultOnlyYourEvents);
-  // Fixed-width lanes that scroll sideways on the timeline view.
-  const [expanded, setExpanded] = useState(false);
+  // Fixed-width lanes that scroll sideways on the timeline view. Starts from the user's setting.
+  const [expanded, setExpanded] = useState(appConfig.schedule.expandTimelinesByDefault);
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
 

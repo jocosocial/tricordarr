@@ -5,12 +5,11 @@ import {ForumThreadSearchBar} from '#src/Components/Search/ForumThreadSearchBar'
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 
-export type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadSearchScreen>;
+export type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadSearchScreen>;
 
 export const ForumThreadSearchScreen = (props: Props) => {
   return (

@@ -10,10 +10,16 @@ export const ShutternautHelpScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>
+        <HelpChapterTitleView title={'Shutternaut Home'}>
+          <HelpTopicView>
+            Open Shutternauts from the app drawer to find the shared calendar and the Shutternaut forum. Managers also
+            get the coverage report and Shutternaut role management there.
+          </HelpTopicView>
+        </HelpChapterTitleView>
         <HelpChapterTitleView title={'Roles'}>
           <HelpTopicView title={'Shutternaut'} icon={AppIcons.shutternaut}>
             With this role you can pick events that you intend to photograph. Contact a Shutternaut Manager to be
-            assigned the Shutternaut role. Managers can assign the role to users through a link in the app drawer.
+            assigned the Shutternaut role.
           </HelpTopicView>
           <HelpTopicView title={'Shutternaut Manager'} icon={AppIcons.shutternautManager}>
             This role allows you to mark events as needing to get photographed by someone. It can also assign the
@@ -39,8 +45,8 @@ export const ShutternautHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Shared Calendar'}>
           <HelpTopicView>
-            The Shutternaut Calendar, in the app drawer, shows every event that at least one Shutternaut has signed up
-            to photograph, so you can see what is already covered. Tap an event to see who is photographing it.
+            The Shutternaut Calendar shows every event that at least one Shutternaut has signed up to photograph, so you
+            can see what is already covered. Tap an event to see who is photographing it.
           </HelpTopicView>
           <HelpTopicView>
             Grey events are ones you are photographing. Blue events are covered by other Shutternauts. Red and gold team
@@ -55,6 +61,12 @@ export const ShutternautHelpScreen = () => {
           </HelpTopicView>
           <HelpTopicView>
             You can post up to eight (8) images in a single forum post. There is a file size limit of 20MB per photo.
+          </HelpTopicView>
+        </HelpChapterTitleView>
+        <HelpChapterTitleView title={'Managing Shutternauts'}>
+          <HelpTopicView>
+            Shutternaut Managers can add or remove the Shutternaut role from users. Search for a user to add them, or
+            tap the delete button next to a user to remove the role.
           </HelpTopicView>
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Coverage Report'}>

@@ -5,8 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {CategoryData} from '#src/Structs/ControllerStructs';
 
 interface ForumCategoryScreenSearchMenuProps {
@@ -15,7 +14,7 @@ interface ForumCategoryScreenSearchMenuProps {
 
 export const ForumCategoryScreenSearchMenu = (props: ForumCategoryScreenSearchMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const forumNavigation = useForumStackNavigation();
+  const navigation = useCommonStack();
 
   return (
     <AppMenu
@@ -28,7 +27,7 @@ export const ForumCategoryScreenSearchMenu = (props: ForumCategoryScreenSearchMe
         leadingIcon={AppIcons.postSearch}
         onPress={() => {
           closeMenu();
-          forumNavigation.push(CommonStackComponents.forumPostSearchScreen, {
+          navigation.push(CommonStackComponents.forumPostSearchScreen, {
             category: props.category,
           });
         }}
@@ -39,7 +38,7 @@ export const ForumCategoryScreenSearchMenu = (props: ForumCategoryScreenSearchMe
         leadingIcon={AppIcons.search}
         onPress={() => {
           closeMenu();
-          forumNavigation.push(ForumStackComponents.forumThreadSearchScreen, {
+          navigation.push(CommonStackComponents.forumThreadSearchScreen, {
             category: props.category,
           });
         }}

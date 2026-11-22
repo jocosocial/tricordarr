@@ -33,6 +33,8 @@ export const allRoutes: RouteDefinition[] = [
   {screen: CommonStackComponents.regCodeManageScreen, path: 'admin/regcodes'},
   {screen: CommonStackComponents.userRegCodeScreen, path: 'admin/regcodes/showuser/:userID'},
   {screen: CommonStackComponents.huntManageScreen, path: 'admin/hunts'},
+  {screen: CommonStackComponents.shutternautHomeScreen, path: 'shutternauts'},
+  {screen: CommonStackComponents.shutternautManageScreen, path: 'userrole/shutternaut/manage'},
   {screen: CommonStackComponents.aboutTricordarrScreen, path: 'about-app'},
   {screen: CommonStackComponents.aboutTwitarrScreen, path: 'about'},
   {screen: CommonStackComponents.privacyScreen, path: 'privacy'},
@@ -106,7 +108,7 @@ export const allRoutes: RouteDefinition[] = [
 
   // ==================== Forum Tab Routes ====================
   {screen: ForumStackComponents.forumCategoriesScreen, path: 'forums'},
-  {screen: ForumStackComponents.forumCategoryScreen, path: 'forums/:categoryID'},
+  {screen: CommonStackComponents.forumCategoryScreen, path: 'forums/:categoryID'},
   {screen: CommonStackComponents.forumPostMentionScreen, path: 'forumpost/mentions'},
   {screen: CommonStackComponents.forumThreadPostScreen, path: 'forum/containingpost/:postID'},
   {screen: CommonStackComponents.forumThreadScreen, path: 'forum/:forumID'},
@@ -147,6 +149,8 @@ export const pushableRoutes: RouteDefinition[] = allRoutes.filter(route =>
     CommonStackComponents.eventFeedbackFormScreen,
     CommonStackComponents.shutternautCalendarScreen,
     CommonStackComponents.shutternautReportScreen,
+    CommonStackComponents.shutternautHomeScreen,
+    CommonStackComponents.shutternautManageScreen,
     CommonStackComponents.scheduleDayPlannerScreen,
     // LFG routes
     CommonStackComponents.lfgChatScreen,

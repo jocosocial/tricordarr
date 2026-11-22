@@ -22,15 +22,14 @@ import {useForumCacheReducer} from '#src/Hooks/Forum/useForumCacheReducer';
 import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVerticalOffset';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {createLogger} from '#src/Libraries/Logger';
-import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {ForumCreateData, ForumData, PostContentData} from '#src/Structs/ControllerStructs';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
-type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadCreateScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadCreateScreen>;
 
 const logger = createLogger('ForumThreadCreateScreen.tsx');
 
@@ -89,7 +88,7 @@ const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
           // Use ref instead of response.data to avoid race condition - ref is set synchronously
           const createdForum = createdForumRef.current;
           if (createdForum) {
-            dispatchScrollToTop(ForumStackComponents.forumCategoryScreen);
+            dispatchScrollToTop(CommonStackComponents.forumCategoryScreen);
             navigation.replace(CommonStackComponents.forumThreadScreen, {
               forumID: createdForum.forumID,
               asPrivilegedUser,

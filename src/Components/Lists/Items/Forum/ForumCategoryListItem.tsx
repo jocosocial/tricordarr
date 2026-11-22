@@ -3,7 +3,8 @@ import React from 'react';
 import {Text} from 'react-native-paper';
 
 import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';
-import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
+import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
+import {useForumStackNavigation} from '#src/Navigation/Stacks/Forum/ForumStackComponents';
 import {CategoryData} from '#src/Structs/ControllerStructs';
 
 interface ForumCategoryListItemProps {
@@ -23,7 +24,7 @@ export const ForumCategoryListItem = ({category}: ForumCategoryListItemProps) =>
     </Text>
   );
   const onPress = () =>
-    forumNavigation.push(ForumStackComponents.forumCategoryScreen, {categoryID: category.categoryID});
+    forumNavigation.push(CommonStackComponents.forumCategoryScreen, {categoryID: category.categoryID});
 
   return (
     <ForumCategoryListItemBase

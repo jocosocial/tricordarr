@@ -53,6 +53,7 @@ import {FezChatHelpScreen} from '#src/Screens/Fez/FezChatHelpScreen';
 import {FezChatScreen} from '#src/Screens/Fez/FezChatScreen';
 import {ForumCategoriesHelpScreen} from '#src/Screens/Forum/ForumCategoriesHelpScreen';
 import {ForumCategoryHelpScreen} from '#src/Screens/Forum/ForumCategoryHelpScreen';
+import {ForumCategoryScreen} from '#src/Screens/Forum/ForumCategoryScreen';
 import {ForumHelpScreen} from '#src/Screens/Forum/ForumHelpScreen';
 import {ForumPostMentionHelpScreen} from '#src/Screens/Forum/ForumPostMentionHelpScreen';
 import {ForumPostSearchHelpScreen} from '#src/Screens/Forum/ForumPostSearchHelpScreen';
@@ -66,9 +67,11 @@ import {ForumPostMentionScreen} from '#src/Screens/Forum/Post/ForumPostMentionSc
 import {ForumPostPinnedScreen} from '#src/Screens/Forum/Post/ForumPostPinnedScreen';
 import {ForumPostSearchScreen} from '#src/Screens/Forum/Post/ForumPostSearchScreen';
 import {ForumPostUserScreen} from '#src/Screens/Forum/Post/ForumPostUserScreen';
+import {ForumThreadCreateScreen} from '#src/Screens/Forum/Thread/ForumThreadCreateScreen';
 import {ForumThreadEditScreen} from '#src/Screens/Forum/Thread/ForumThreadEditScreen';
 import {ForumThreadPostScreen} from '#src/Screens/Forum/Thread/ForumThreadPostScreen';
 import {ForumThreadScreen} from '#src/Screens/Forum/Thread/ForumThreadScreen';
+import {ForumThreadSearchScreen} from '#src/Screens/Forum/Thread/ForumThreadSearchScreen';
 import {ForumThreadUserScreen} from '#src/Screens/Forum/Thread/ForumThreadUserScreen';
 import {HelpManualScreen} from '#src/Screens/Help/HelpManualScreen';
 import {ModeratorHelpScreen} from '#src/Screens/Help/ModeratorHelpScreen';
@@ -183,6 +186,8 @@ import {LoggingHelpScreen} from '#src/Screens/Settings/LoggingHelpScreen';
 import {NetworkHelpScreen} from '#src/Screens/Settings/NetworkHelpScreen';
 import {NotificationLogHelpScreen} from '#src/Screens/Settings/Notifications/NotificationLogHelpScreen';
 import {NotificationLogScreen} from '#src/Screens/Settings/Notifications/NotificationLogScreen';
+import {ShutternautHomeScreen} from '#src/Screens/Shutternaut/ShutternautHomeScreen';
+import {ShutternautManageScreen} from '#src/Screens/Shutternaut/ShutternautManageScreen';
 import {SiteUIHelpScreen} from '#src/Screens/SiteUI/SiteUIHelpScreen';
 import {SiteUILinkScreen} from '#src/Screens/SiteUI/SiteUILinkScreen';
 import {SiteUIScreen} from '#src/Screens/SiteUI/SiteUIScreen';
@@ -303,6 +308,16 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         options={{title: 'Shutternaut Calendar'}}
       />
       <Stack.Screen
+        name={CommonStackComponents.shutternautHomeScreen}
+        component={ShutternautHomeScreen}
+        options={{title: 'Shutternauts'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.shutternautManageScreen}
+        component={ShutternautManageScreen}
+        options={{title: 'Manage Shutternauts'}}
+      />
+      <Stack.Screen
         name={CommonStackComponents.moderatorGuideScreen}
         component={ModeratorGuideScreen}
         options={{title: 'Moderator Guide'}}
@@ -412,6 +427,21 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.photostreamUserScreen}
         component={PhotostreamUserScreen}
         options={{title: 'User Photos'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumCategoryScreen}
+        component={ForumCategoryScreen}
+        options={{title: 'Forums'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumThreadSearchScreen}
+        component={ForumThreadSearchScreen}
+        options={{title: 'Forum Search'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumThreadCreateScreen}
+        component={ForumThreadCreateScreen}
+        options={{title: 'New Forum'}}
       />
       <Stack.Screen
         name={CommonStackComponents.forumThreadScreen}

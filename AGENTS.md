@@ -32,6 +32,10 @@
 - Android emulator: `10.0.2.2`
 - Tell users they may need `adb reverse tcp:7848 tcp:7848` to port forward
 
+## Testing
+
+- ALL guidance on verifying work (typecheck, lint, tests, known failures) lives in `docs/Testing.md`. Read it before running checks or reporting work complete.
+
 ## Help Screens
 
 - ALL Help guidance (what to document and how to build it) lives in `docs/Help.md`. Read it before adding or changing a Help screen. Do not add Help entries beyond it.

@@ -44,3 +44,47 @@ export const useRemoveUserRoleMutation = () => {
     },
   });
 };
+
+interface ShutternautRoleMutationProps {
+  userID: string;
+}
+
+/**
+ * Invalidates every list that could show a change to the Shutternaut role.
+ */
+const useInvalidateShutternautLists = () => {
+  const queryClient = useQueryClient();
+  return () =>
+    AdminUserRoleListData.getCacheKeys(UserRoleType.shutternaut)
+      .concat(UserHeader.getCacheKeys())
+      .forEach(key => queryClient.invalidateQueries({queryKey: key}));
+};
+
+/**
+ * Shutternaut Manager endpoint to give a user the Shutternaut role. Unlike the admin endpoint it
+ * only accepts the `shutternaut` role.
+ */
+export const useAddShutternautMutation = () => {
+  const {apiPost} = useSwiftarrQueryClient();
+  const invalidate = useInvalidateShutternautLists();
+
+  const mutationFn = async ({userID}: ShutternautRoleMutationProps) => {
+    return await apiPost(`/users/userrole/${UserRoleType.shutternaut}/addrole/${userID}`);
+  };
+
+  return useTokenAuthMutation(mutationFn, {onSuccess: invalidate});
+};
+
+/**
+ * Shutternaut Manager endpoint to remove the Shutternaut role from a user.
+ */
+export const useRemoveShutternautMutation = () => {
+  const {apiPost} = useSwiftarrQueryClient();
+  const invalidate = useInvalidateShutternautLists();
+
+  const mutationFn = async ({userID}: ShutternautRoleMutationProps) => {
+    return await apiPost(`/users/userrole/${UserRoleType.shutternaut}/removerole/${userID}`);
+  };
+
+  return useTokenAuthMutation(mutationFn, {onSuccess: invalidate});
+};

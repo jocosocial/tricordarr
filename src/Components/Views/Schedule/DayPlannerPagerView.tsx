@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useCallback, useDeferredValue, useEffect, useMemo, useRef, useState} from 'react';
 import {View} from 'react-native';
 import PagerView, {
   type PagerViewOnPageSelectedEvent,
@@ -19,6 +19,7 @@ import {
 } from '#src/Components/Views/Schedule/DayPlannerPage';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useScheduleCruiseDay} from '#src/Context/Contexts/ScheduleCruiseDayContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -46,9 +47,13 @@ export const DayPlannerPagerView = ({variant}: DayPlannerPagerViewProps) => {
   const {commonStyles} = useStyles();
   const pagerRef = useRef<PagerView>(null);
   const activeControlsRef = useRef<DayPlannerPageControls | null>(null);
+  const {appConfig} = useConfig();
   // Fixed-width lanes that scroll sideways. A sideways swipe then scrolls the lanes, so it stops changing days;
-  // the header day buttons still do.
-  const [expanded, setExpanded] = useState(false);
+  // the header day buttons still do. Starts from the user's setting.
+  const [expanded, setExpanded] = useState(appConfig.schedule.expandTimelinesByDefault);
+  // The day on screen re-lays out with the toggle; the other rendered days follow in a background render, so a
+  // toggle costs one timeline instead of every built one before the screen updates.
+  const deferredExpanded = useDeferredValue(expanded);
 
   // Vertical scroll position shared across days so switching days (swipe or header tap) keeps
   // the same time of day in view instead of resetting. Null until any page has ever scrolled.
@@ -303,7 +308,7 @@ export const DayPlannerPagerView = ({variant}: DayPlannerPagerViewProps) => {
             <DayPlannerPage
               cruiseDay={day}
               variant={variant}
-              expanded={expanded}
+              expanded={day === selectedCruiseDay ? expanded : deferredExpanded}
               isActive={day === selectedCruiseDay}
               enabled={enabledDays.has(day)}
               renderTimeline={renderedDays.has(day)}

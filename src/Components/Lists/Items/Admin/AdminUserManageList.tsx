@@ -16,6 +16,8 @@ interface AdminUserManageListProps {
   searchTestID: string;
   searchLabel: string;
   emptyText: string;
+  /** Disables add and remove while one of their mutations is in flight. */
+  busy?: boolean;
 }
 
 /**
@@ -30,6 +32,7 @@ export const AdminUserManageList = ({
   searchTestID,
   searchLabel,
   emptyText,
+  busy = false,
 }: AdminUserManageListProps) => {
   return (
     <>
@@ -42,6 +45,7 @@ export const AdminUserManageList = ({
             excludeSelf={false}
             clearOnPress={true}
             onPress={onAdd}
+            disabled={busy}
           />
         </PaddedContentView>
       )}
@@ -57,6 +61,7 @@ export const AdminUserManageList = ({
           onPress={() => onPressUser(user)}
           buttonIcon={canModify && onRemove ? AppIcons.delete : undefined}
           buttonOnPress={canModify && onRemove ? onRemove : undefined}
+          buttonDisabled={busy}
         />
       ))}
     </>

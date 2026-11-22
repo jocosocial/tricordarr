@@ -561,11 +561,13 @@ export namespace AdminAccessLevelListData {
 }
 
 /**
- * Cache keys for users-with-role lists (`GET /admin/userroles/:role`).
+ * Cache keys for users-with-role lists: THO's `GET /admin/userroles/:role` and the Shutternaut
+ * Manager's `GET /users/userrole/:role`. Both are returned so a change made from either screen
+ * refreshes the other.
  */
 export namespace AdminUserRoleListData {
   export const getCacheKeys = (role: string): QueryKey[] => {
-    return [[`/admin/userroles/${role}`]];
+    return [[`/admin/userroles/${role}`], [`/users/userrole/${role}`]];
   };
 }
 

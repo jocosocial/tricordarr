@@ -228,23 +228,9 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               )}
               {(hasShutternaut || hasShutternautManager || hasTwitarrTeam) && (
                 <PaperDrawer.Item
-                  label={'Shutternaut Calendar'}
+                  label={'Shutternauts'}
                   icon={AppIcons.shutternaut}
-                  onPress={() => Linking.openURL(appUrl('dayplanner', 'shutternauts'))}
-                />
-              )}
-              {hasShutternautManager && (
-                <PaperDrawer.Item
-                  label={'Manage Shutternauts'}
-                  icon={AppIcons.shutternautManager}
-                  onPress={() => Linking.openURL(appSiteUrl('userrole', 'shutternaut', 'manage'))}
-                />
-              )}
-              {(hasShutternautManager || hasTwitarrTeam) && (
-                <PaperDrawer.Item
-                  label={'Photographer Report'}
-                  icon={AppIcons.photographer}
-                  onPress={() => Linking.openURL(appUrl('events', 'photographerreport'))}
+                  onPress={() => Linking.openURL(appUrl('shutternauts'))}
                 />
               )}
               {(hasAccountManager || hasTwitarrTeam) && (

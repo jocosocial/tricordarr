@@ -11,7 +11,13 @@ import {
 } from 'react-native';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import {Text} from 'react-native-paper';
-import Animated, {cancelAnimation, useAnimatedStyle, useSharedValue, withDecay} from 'react-native-reanimated';
+import Animated, {
+  cancelAnimation,
+  ReduceMotion,
+  useAnimatedStyle,
+  useSharedValue,
+  withDecay,
+} from 'react-native-reanimated';
 
 import {DayPlannerCard} from '#src/Components/Cards/Schedule/DayPlannerCard';
 import {DayPlannerNowDivider} from '#src/Components/Views/Schedule/DayPlannerNowDivider';
@@ -180,7 +186,11 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
             translateX.set(Math.min(0, Math.max(minTranslateX.get(), panStartX.get() + event.translationX)));
           })
           .onEnd(event => {
-            translateX.set(withDecay({velocity: event.velocityX, clamp: [minTranslateX.get(), 0]}));
+            // The fling's glide is part of the drag, like a native ScrollView's, so it ignores reduced motion. Under
+            // ReduceMotion.System, a device with animations turned off would stop the lanes dead on release.
+            translateX.set(
+              withDecay({velocity: event.velocityX, clamp: [minTranslateX.get(), 0], reduceMotion: ReduceMotion.Never}),
+            );
           }),
       [canPan, verticalScrollGesture, translateX, panStartX, minTranslateX],
     );
@@ -270,11 +280,6 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
             flex: 1,
             position: 'relative',
           },
-          // Clips the panned lanes so they slide under the time column rather than over it.
-          eventsScroller: {
-            flex: 1,
-            overflow: 'hidden',
-          },
           gridLines: {
             position: 'absolute',
             top: 0,
@@ -307,21 +312,24 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
     const timelineHeight = getTimelineHeight(displaySlots);
 
     // Sized separately from `styles` so measuring the viewport doesn't rebuild every other style.
+    // Expanded, it clips the panned lanes so they slide under the time column rather than over it.
     const sizedStyles = useMemo(
       () =>
         StyleSheet.create({
           eventsColumn: {
             ...styles.eventsColumn,
             height: timelineHeight,
+            overflow: expanded ? 'hidden' : 'visible',
           },
         }),
-      [styles.eventsColumn, timelineHeight],
+      [styles.eventsColumn, timelineHeight, expanded],
     );
 
-    // Sized and moved in one animated style, since the lane area's width tracks the measured viewport.
+    // Sized and moved in one animated style. The lanes fill the column until they need more room than it has,
+    // then take their full scrolling width.
     const pannedEventsStyle = useAnimatedStyle(() => ({
       position: 'relative',
-      width: eventsContentWidth,
+      width: eventsContentWidth > 0 ? eventsContentWidth : '100%',
       height: timelineHeight,
       transform: [{translateX: translateX.get()}],
     }));
@@ -352,7 +360,9 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
       );
     }
 
-    // Grid lines and cards, shared by the fitted and the sideways-scrolling events column.
+    // Grid lines and cards. They sit in the same wrappers whether or not the timeline is expanded, and expanding
+    // only changes those wrappers' widths. Swapping in different wrappers instead would remount every card on every
+    // rendered day, which left the screen blank for a moment after each toggle.
     const eventsColumnContent = (
       <>
         {/* Grid lines */}
@@ -416,19 +426,11 @@ export const DayPlannerTimelineView = forwardRef<ScrollView, DayPlannerTimelineV
               </View>
 
               {/* Events column */}
-              {expanded ? (
-                <View style={styles.eventsScroller} onLayout={handleEventsLayout}>
-                  {eventsContentWidth > 0 ? (
-                    <GestureDetector gesture={horizontalPanGesture}>
-                      <Animated.View style={pannedEventsStyle}>{eventsColumnContent}</Animated.View>
-                    </GestureDetector>
-                  ) : (
-                    <View style={sizedStyles.eventsColumn}>{eventsColumnContent}</View>
-                  )}
-                </View>
-              ) : (
-                <View style={sizedStyles.eventsColumn}>{eventsColumnContent}</View>
-              )}
+              <View style={sizedStyles.eventsColumn} onLayout={handleEventsLayout}>
+                <GestureDetector gesture={horizontalPanGesture}>
+                  <Animated.View style={pannedEventsStyle}>{eventsColumnContent}</Animated.View>
+                </GestureDetector>
+              </View>
             </View>
           </View>
         </ScrollView>

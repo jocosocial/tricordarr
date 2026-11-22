@@ -56,6 +56,8 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             RegCodeManageScreen: getPath(CommonStackComponents.regCodeManageScreen),
             UserRegCodeScreen: uuidPath(getPath(CommonStackComponents.userRegCodeScreen)),
             HuntManageScreen: getPath(CommonStackComponents.huntManageScreen),
+            ShutternautHomeScreen: getPath(CommonStackComponents.shutternautHomeScreen),
+            ShutternautManageScreen: getPath(CommonStackComponents.shutternautManageScreen),
             EventFeedbackSelectScreen: getPath(CommonStackComponents.eventFeedbackSelectScreen),
             EventFeedbackFormScreen: getPath(CommonStackComponents.eventFeedbackFormScreen),
             AboutTricordarrScreen: getPath(CommonStackComponents.aboutTricordarrScreen),
@@ -180,7 +182,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           initialRouteName: ForumStackComponents.forumCategoriesScreen,
           screens: {
             ForumCategoriesScreen: getPath(ForumStackComponents.forumCategoriesScreen),
-            ForumCategoryScreen: uuidPath(getPath(ForumStackComponents.forumCategoryScreen)),
+            ForumCategoryScreen: uuidPath(getPath(CommonStackComponents.forumCategoryScreen)),
             ForumPostMentionScreen: getPath(CommonStackComponents.forumPostMentionScreen),
             ForumThreadScreen: uuidPath(getPath(CommonStackComponents.forumThreadScreen)),
             ForumThreadPostScreen: getPath(CommonStackComponents.forumThreadPostScreen),

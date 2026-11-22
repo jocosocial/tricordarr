@@ -58,6 +58,8 @@ describe('incoming link routes', () => {
     ['/events/photographerreport', 'ShutternautReportScreen'],
     ['/dayplanner', 'ScheduleDayPlannerScreen'],
     ['/dayplanner/shutternauts', 'ShutternautCalendarScreen'],
+    ['/shutternauts', 'ShutternautHomeScreen'],
+    ['/userrole/shutternaut/manage', 'ShutternautManageScreen'],
     ['/admin/regcodes', 'RegCodeManageScreen'],
     [`/admin/regcodes/showuser/${uuid}`, 'UserRegCodeScreen'],
     ['/admin/hunts', 'HuntManageScreen'],

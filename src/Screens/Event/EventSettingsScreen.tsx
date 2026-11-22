@@ -61,6 +61,7 @@ export const EventSettingsScreen = () => {
   const navigation = useSettingsStack();
   const [enableLateDayFlip, setEnableLateDayFlip] = useState(appConfig.schedule.enableLateDayFlip);
   const [compactThemeEvents, setCompactThemeEvents] = useState(appConfig.schedule.compactThemeEvents);
+  const [expandTimelinesByDefault, setExpandTimelinesByDefault] = useState(appConfig.schedule.expandTimelinesByDefault);
   const [showMarkersOutsideCruiseWeek, setShowMarkersOutsideCruiseWeek] = useState(
     appConfig.schedule.showMarkersOutsideCruiseWeek,
   );
@@ -124,6 +125,20 @@ export const EventSettingsScreen = () => {
       },
     });
     setCompactThemeEvents(!appConfig.schedule.compactThemeEvents);
+  };
+
+  /**
+   * Toggle and persist whether Day Planner style timelines open with Expand on.
+   */
+  const handleExpandTimelinesByDefault = () => {
+    updateAppConfig({
+      ...appConfig,
+      schedule: {
+        ...appConfig.schedule,
+        expandTimelinesByDefault: !appConfig.schedule.expandTimelinesByDefault,
+      },
+    });
+    setExpandTimelinesByDefault(!appConfig.schedule.expandTimelinesByDefault);
   };
 
   /**
@@ -235,6 +250,17 @@ export const EventSettingsScreen = () => {
                   }
                   onPress={handleCompactThemeEvents}
                   value={compactThemeEvents}
+                  style={commonStyles.paddingHorizontalSmall}
+                />
+                <BooleanField
+                  name={'expandTimelinesByDefault'}
+                  testID={'expandTimelinesByDefault-switch'}
+                  label={'Expand Timelines by Default'}
+                  helperText={
+                    'Open the Day Planner, Shutternaut Calendar, and Overlapping Events timeline with Expand on, giving each event a fixed width and scrolling sideways. The Expand button still switches it for that visit.'
+                  }
+                  onPress={handleExpandTimelinesByDefault}
+                  value={expandTimelinesByDefault}
                   style={commonStyles.paddingHorizontalSmall}
                 />
                 <BooleanField

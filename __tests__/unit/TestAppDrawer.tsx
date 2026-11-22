@@ -106,28 +106,7 @@ const getDrawerLabels = () => {
   return labels;
 };
 
-describe('AppDrawer Shutternaut management access', () => {
-  beforeEach(() => {
-    mockHasTwitarrTeam = false;
-    mockHasShutternautManager = false;
-    mockHasAccountManager = false;
-    mockHasHuntManager = false;
-  });
-
-  it('does not offer Manage Shutternauts to TwitarrTeam alone', () => {
-    mockHasTwitarrTeam = true;
-
-    expect(getDrawerLabels()).not.toContain('Manage Shutternauts');
-  });
-
-  it('continues to offer Manage Shutternauts to Shutternaut Managers', () => {
-    mockHasShutternautManager = true;
-
-    expect(getDrawerLabels()).toContain('Manage Shutternauts');
-  });
-});
-
-describe('AppDrawer Shutternaut Calendar', () => {
+describe('AppDrawer Shutternauts hub', () => {
   beforeEach(() => {
     mockHasTwitarrTeam = false;
     mockHasShutternaut = false;
@@ -137,40 +116,34 @@ describe('AppDrawer Shutternaut Calendar', () => {
     jest.mocked(Linking.openURL).mockClear();
   });
 
-  it('deep links to the shared calendar for Shutternauts', () => {
+  it('deep links to the Shutternaut hub for Shutternauts', () => {
     mockHasShutternaut = true;
 
-    getDrawerItem('Shutternaut Calendar')?.onPress?.();
-    expect(Linking.openURL).toHaveBeenCalledWith(appUrl('dayplanner', 'shutternauts'));
+    getDrawerItem('Shutternauts')?.onPress?.();
+    expect(Linking.openURL).toHaveBeenCalledWith(appUrl('shutternauts'));
+  });
+
+  it.each([
+    ['Shutternaut Managers', () => (mockHasShutternautManager = true)],
+    ['TwitarrTeam', () => (mockHasTwitarrTeam = true)],
+  ])('offers the hub to %s', (_label, grant) => {
+    grant();
+
+    expect(getDrawerLabels()).toContain('Shutternauts');
   });
 
   it('is not offered to users without a Shutternaut role or TwitarrTeam', () => {
-    expect(getDrawerLabels()).not.toContain('Shutternaut Calendar');
-  });
-});
-
-describe('AppDrawer photographer coverage report access', () => {
-  beforeEach(() => {
-    mockHasTwitarrTeam = false;
-    mockHasShutternautManager = false;
-    mockHasAccountManager = false;
-    mockHasHuntManager = false;
+    expect(getDrawerLabels()).not.toContain('Shutternauts');
   });
 
-  it('does not offer Photographer Report to users without the manager role or TwitarrTeam', () => {
-    expect(getDrawerLabels()).not.toContain('Photographer Report');
-  });
-
-  it('offers Photographer Report to Shutternaut Managers', () => {
+  it('replaces the individual Shutternaut drawer items', () => {
     mockHasShutternautManager = true;
-
-    expect(getDrawerLabels()).toContain('Photographer Report');
-  });
-
-  it('offers Photographer Report to TwitarrTeam', () => {
     mockHasTwitarrTeam = true;
 
-    expect(getDrawerLabels()).toContain('Photographer Report');
+    const labels = getDrawerLabels();
+    expect(labels).not.toContain('Shutternaut Calendar');
+    expect(labels).not.toContain('Manage Shutternauts');
+    expect(labels).not.toContain('Photographer Report');
   });
 });
 
