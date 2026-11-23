@@ -1,0 +1,107 @@
+diff --git a/node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java b/node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java
+index b68b858..3848150 100644
+--- a/node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java
++++ b/node_modules/@react-native-clipboard/clipboard/android/src/main/java/com/reactnativecommunity/clipboard/ClipboardModule.java
+@@ -152,53 +152,60 @@ public class ClipboardModule extends NativeClipboardModuleSpec {
+     ClipboardManager clipboardManager = getClipboardService();
+     if (!(clipboardManager.hasPrimaryClip())){
+       promise.resolve("");
++      return;
+     }
+-    else if (clipboardManager.getPrimaryClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)){
++    if (clipboardManager.getPrimaryClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)){
+       promise.resolve("");
++      return;
+     }
+-    else {
+-      ClipData clipData = clipboardManager.getPrimaryClip();
+-      if(clipData != null){
+-        ClipData.Item item = clipData.getItemAt(0);
+-        Uri pasteUri = item.getUri();
+-        if (pasteUri != null){
+-          ContentResolver cr = reactContext.getContentResolver();
+-          String mimeType = cr.getType(pasteUri);
+-          if (mimeType != null){
+-            try {
+-              Bitmap bitmap = MediaStore.Images.Media.getBitmap(cr, pasteUri);
+-              ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+-              switch(mimeType){
+-                case MIMETYPE_JPEG:
+-                case MIMETYPE_JPG:
+-                  bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+-                  break;
+-                case MIMETYPE_PNG:
+-                case MIMETYPE_HEIC:
+-                case MIMETYPE_HEIF:
+-                  bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+-                  break;
+-                case MIMETYPE_WEBP:
+-                  if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+-                    bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 100, outputStream);
+-                    break;
+-                  }
+-                  bitmap.compress(Bitmap.CompressFormat.WEBP, 100, outputStream);
+-                  break;
+-                default:
+-                  return;
+-              }
+-              byte[] byteArray = outputStream.toByteArray();
+-              String encodedString = Base64.encodeToString(byteArray, Base64.DEFAULT);
+-              promise.resolve("data:" + mimeType + ";base64," + encodedString);
+-            } catch (IOException e) {
+-              promise.reject(e);
+-              e.printStackTrace();
+-            }
++    ClipData clipData = clipboardManager.getPrimaryClip();
++    if (clipData == null || clipData.getItemCount() == 0){
++      promise.resolve("");
++      return;
++    }
++    ClipData.Item item = clipData.getItemAt(0);
++    Uri pasteUri = item.getUri();
++    if (pasteUri == null){
++      promise.resolve("");
++      return;
++    }
++    ContentResolver cr = reactContext.getContentResolver();
++    String mimeType = cr.getType(pasteUri);
++    if (mimeType == null){
++      promise.resolve("");
++      return;
++    }
++    try {
++      Bitmap bitmap = MediaStore.Images.Media.getBitmap(cr, pasteUri);
++      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
++      switch(mimeType){
++        case MIMETYPE_JPEG:
++        case MIMETYPE_JPG:
++          bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
++          break;
++        case MIMETYPE_PNG:
++        case MIMETYPE_HEIC:
++        case MIMETYPE_HEIF:
++          bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
++          break;
++        case MIMETYPE_WEBP:
++          if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
++            bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 100, outputStream);
++            break;
+           }
+-        }
++          bitmap.compress(Bitmap.CompressFormat.WEBP, 100, outputStream);
++          break;
++        default:
++          // Unsupported image (or non-image) type. Settle the promise rather than leaving the caller hanging.
++          promise.resolve("");
++          return;
+       }
+-      promise.resolve("");
++      byte[] byteArray = outputStream.toByteArray();
++      String encodedString = Base64.encodeToString(byteArray, Base64.DEFAULT);
++      promise.resolve("data:" + mimeType + ";base64," + encodedString);
++    } catch (Exception e) {
++      // Not just IOException: reading a content URI we hold no grant for throws SecurityException.
++      promise.reject(e);
+     }
+   }
+ 

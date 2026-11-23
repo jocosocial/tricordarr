@@ -1,6 +1,6 @@
 import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
 import React, {useEffect} from 'react';
-import {ScrollView, StyleSheet, TextInput, View} from 'react-native';
+import {ScrollView, StyleProp, StyleSheet, TextInput, View, ViewStyle} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import * as Yup from 'yup';
 
@@ -20,6 +20,7 @@ import {useImage} from '#src/Context/Contexts/ImageContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
+import {useContentImageAttachment} from '#src/Hooks/useContentImageAttachment';
 import {createLogger} from '#src/Libraries/Logger';
 import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {PostContentData} from '#src/Structs/ControllerStructs';
@@ -50,6 +51,22 @@ const ElevationPrivilegeSync = () => {
   }, [asPrivilegedUser, setFieldValue]);
 
   return null;
+};
+
+interface ContentPostTextFieldProps {
+  enablePhotos: boolean;
+  maxPhotos: number;
+  style?: StyleProp<ViewStyle>;
+}
+
+/**
+ * The composer's text input, with images pasted into it attached to the post. A component
+ * rather than inline markup because attaching needs the Formik context of the form around it.
+ */
+const ContentPostTextField = ({enablePhotos, maxPhotos, style}: ContentPostTextFieldProps) => {
+  const {attachPastedFiles} = useContentImageAttachment({maxPhotos, enablePhotos});
+
+  return <MentionTextField testID={'contentPostText-input'} style={style} onPaste={attachPastedFiles} />;
 };
 
 interface ContentPostFormProps {
@@ -228,7 +245,7 @@ export const ContentPostForm = ({
                     />
                   </View>
                   <View style={styles.inputWrapperView}>
-                    <MentionTextField testID={'contentPostText-input'} style={styles.input} />
+                    <ContentPostTextField enablePhotos={enablePhotos} maxPhotos={maxPhotos} style={styles.input} />
                     <ContentInsertPhotosView />
                   </View>
                   <View style={styles.inputWrapperViewSide}>

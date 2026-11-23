@@ -120,3 +120,21 @@ export const assertBase64WithinSizeLimit = (base64: string, maxImageSize: number
     throw new Error(getOversizeImageErrorMessage(maxImageSize));
   }
 };
+
+/**
+ * Extract the raw base64 payload from an image data URI, as returned by the clipboard.
+ * Strips the `data:<mime>;base64,` prefix and any whitespace, since iOS wraps the encoded
+ * data at 64 characters and the form field expects a single unbroken base64 string.
+ *
+ * @param dataURI A `data:` URI, or a bare base64 string.
+ * @returns The base64 payload, or undefined when there is nothing to extract.
+ */
+export const getBase64FromDataURI = (dataURI?: string | null): string | undefined => {
+  if (!dataURI) {
+    return undefined;
+  }
+  const commaIndex = dataURI.indexOf(',');
+  const payload = dataURI.startsWith('data:') && commaIndex !== -1 ? dataURI.slice(commaIndex + 1) : dataURI;
+  const base64 = payload.replace(/\s/g, '');
+  return base64 || undefined;
+};

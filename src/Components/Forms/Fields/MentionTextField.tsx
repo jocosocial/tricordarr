@@ -1,3 +1,4 @@
+import PasteInput, {PasteInputProps, PasteTextInputInstance} from '@mattermost/react-native-paste-input';
 import {useField} from 'formik';
 import React, {createContext, useCallback, useContext, useMemo, useRef} from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
@@ -196,18 +197,26 @@ export const MentionTextFieldSuggestions = () => {
 interface MentionTextFieldProps {
   testID: string;
   style?: StyleProp<ViewStyle>;
+  /** Receives files (images, etc) pasted into the field. Text pastes edit the field as usual. */
+  onPaste?: PasteInputProps['onPaste'];
 }
 
 /**
- * The text input for the enclosing provider's field.
+ * The text input for the enclosing provider's field. It is a PasteInput rather than a plain
+ * TextInput so that an image on the clipboard can be pasted straight into the composer.
  */
-export const MentionTextField = ({testID, style}: MentionTextFieldProps) => {
+export const MentionTextField = ({testID, style, onPaste}: MentionTextFieldProps) => {
   const {textInputProps, setInputRefs, onBlur} = useMentionTextFieldContext();
 
+  // PasteInput hands back the TextInput itself on iOS and a TextInput-compatible host instance
+  // on Android, so the rest of the app keeps treating the ref as a TextInput.
+  const setPasteInputRefs = setInputRefs as unknown as React.Ref<PasteTextInputInstance>;
+
   return (
-    <TextInput
+    <PasteInput
       testID={testID}
-      ref={setInputRefs}
+      ref={setPasteInputRefs}
+      onPaste={onPaste}
       // The textInputProps provides onChangeText and onSelectionChange.
       {...textInputProps}
       style={style}

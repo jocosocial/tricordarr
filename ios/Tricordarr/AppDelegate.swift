@@ -34,6 +34,10 @@ class AppDelegate: ExpoAppDelegate {
 			launchOptions: launchOptions
 		)
 
+		// Lets @mattermost/react-native-paste-input locate TextInput views by tag. Without it,
+		// pasting an image into a composer delivers no paste event.
+		PasteInputModule.setup(factory.rootViewFactory)
+
 		// Setup foreground notification handler. This has to be done pretty early in the app
 		// startup process otherwise we could miss notification events.
 		// https://developer.apple.com/documentation/usernotifications/unusernotificationcenterdelegate
