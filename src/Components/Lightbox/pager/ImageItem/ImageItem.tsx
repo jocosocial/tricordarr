@@ -28,6 +28,8 @@ type Props = {
   imageDimensions: ImageDimensions | undefined;
   dismissSwipePan: ReturnType<typeof Gesture.Pan>;
   transforms: Readonly<SharedValue<LightboxTransforms>>;
+  /** The lightbox was dismissed and is playing its close animation before unmounting. */
+  isClosing: boolean;
 };
 
 const ImageItem = (_props: Props) => {
