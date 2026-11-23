@@ -177,6 +177,9 @@ dependencies {
     // Native push service. OkHttp is pinned to the 4.9.2 React Native bundles; do not force 5.x.
     implementation 'com.squareup.okhttp3:okhttp:4.9.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+    // Chat notification avatars read FastImage's Glide cache. FastImage declares Glide as
+    // `implementation`, so it is not on this module's classpath. Keep this at FastImage's glideVersion.
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.json:json:20240303'

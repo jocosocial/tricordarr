@@ -15,6 +15,9 @@ struct UserInfoData: Codable {
 	var secondaryContentID: String?
 	/// The account whose socket delivered the notification, so a tap can open it in that account.
 	var accountID: String?
+	/// The content the notification is about. A chat has one notification per message, so
+	/// clearing the chat finds them all by this.
+	var contentID: String?
 }
 
 extension UserInfoData {
@@ -31,6 +34,9 @@ extension UserInfoData {
 		}
 		if let accountID = accountID {
 			dict["accountID"] = accountID
+		}
+		if let contentID = contentID {
+			dict["contentID"] = contentID
 		}
 		return dict
 	}

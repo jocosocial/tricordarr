@@ -28,6 +28,46 @@ class NotificationPlannerTest {
   }
 
   @Test
+  fun authorWithPhotoGivesTheAppsThumbnailUrl() {
+    val plan = post(
+      """{"type":{"seamailUnreadMsg":{}},"info":"x","contentID":"abc",""" +
+        """"author":{"userID":"u-1","username":"kyellabella","displayName":"Kyella","userImage":"pic.jpg"}}""",
+    )
+    assertEquals(NotificationAuthor("u-1", "kyellabella", "Kyella", "pic.jpg"), plan.author)
+    assertEquals("Kyella", plan.author?.name())
+    assertEquals("https://twitarr.com/api/v3/image/thumb/pic.jpg", plan.avatarThumbUrl)
+  }
+
+  @Test
+  fun authorWithoutPhotoHasNoThumbnail() {
+    val plan = post(
+      """{"type":{"seamailUnreadMsg":{}},"info":"x","contentID":"abc",""" +
+        """"author":{"userID":"u-1","username":"grant","displayName":null,"userImage":null}}""",
+    )
+    assertEquals(NotificationAuthor("u-1", "grant", null, null), plan.author)
+    assertEquals("grant", plan.author?.name())
+    assertNull(plan.avatarThumbUrl)
+  }
+
+  @Test
+  fun missingAuthorIsNull() {
+    val plan = post("""{"type":{"seamailUnreadMsg":{}},"info":"x","contentID":"abc"}""")
+    assertNull(plan.author)
+    assertNull(plan.avatarThumbUrl)
+  }
+
+  @Test
+  fun avatarInitialsUseAliasesThenFirstLetter() {
+    assertEquals("G", NotificationPlanner.avatarInitials("Grant"))
+    assertEquals("K", NotificationPlanner.avatarInitials("kyellabella"))
+    assertEquals("M", NotificationPlanner.avatarInitials("Moderator"))
+    assertEquals("TT", NotificationPlanner.avatarInitials("twitarrteam"))
+    assertEquals("CS", NotificationPlanner.avatarInitials("CommunitySupport"))
+    assertEquals("THO", NotificationPlanner.avatarInitials("THO"))
+    assertEquals("A", NotificationPlanner.avatarInitials("admin"))
+  }
+
+  @Test
   fun privateEventChatGoesToTheChatScreen() {
     val plan = post("""{"type":{"privateEventUnreadMsg":{}},"info":"x","contentID":"9"}""")
     assertEquals("tricordarr://privateevent/9/chat?account=acct-1", plan.deepLink)

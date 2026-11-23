@@ -1,6 +1,7 @@
 import React, {PropsWithChildren, useMemo} from 'react';
 import {Platform, StyleSheet} from 'react-native';
 
+import {DefaultHeaderBackButton} from '#src/Components/Buttons/HeaderButtons/DefaultHeaderBackButton';
 import {StyleContext} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {isAndroid, isIOS} from '#src/Libraries/Platform/Detection';
@@ -480,6 +481,12 @@ export const createCommonStyles = (theme: AppTheme) =>
 
 export type CommonStyles = ReturnType<typeof createCommonStyles>;
 
+/**
+ * Android default headerLeft: our back button when there is somewhere to go back to.
+ */
+const renderAndroidBackButton = ({canGoBack}: {canGoBack?: boolean}) =>
+  canGoBack ? <DefaultHeaderBackButton /> : null;
+
 export const StyleProvider = ({children}: PropsWithChildren) => {
   const {theme} = useAppTheme();
 
@@ -505,6 +512,10 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       // Got the idea from https://github.com/react-navigation/react-navigation/issues/11337
       // https://reactnavigation.org/docs/header-buttons/
       headerBackTitle: 'Back',
+      // The stock Android back button has hardcoded margins that leave the icon off-center in its press
+      // area (react-navigation #7161, #11116). Use the drawer's back button so the title stays aligned with
+      // drawer screens. Screens that set headerLeft still override this.
+      ...(isAndroid ? {headerLeft: renderAndroidBackButton} : {}),
     }),
     [commonStyles, theme.colors.onBackground],
   );

@@ -2,22 +2,8 @@ appId: ${APP_ID}
 ---
 - runFlow:
     file: ../SetupApp.yaml
-- tapOn:
-    id: "oobeNext-button"
-- tapOn:
-    id: "serverChoice-button"
-    retryTapIfNoChange: true
-- tapOn: "Emulator"
-- tapOn:
-    id: "serverUrlSave-button"
-- tapOn:
-    id: "oobeNext-button"
-- repeat:
-    times: 7
-    commands: 
-      - scroll
-- tapOn:
-    id: "oobeIAgree-button"
+- runFlow:
+    file: subflows/ServerSetup.yaml
 - tapOn:
     id: "oobeLogIn-button"
 - tapOn:
@@ -28,12 +14,9 @@ appId: ${APP_ID}
 - inputText: ${TWITARR_PASSWORD}
 - tapOn:
     id: "loginSubmit-button"
+# iOS offers to save the password to the keychain.
 - tapOn:
-    id: "oobeNext-button"
-# Begin Permissions
-# lol
-# End Permissions
-- tapOn:
-    id: "oobeNext-button"
-- tapOn:
-    id: "oobeFinish-button"
+    text: "Not Now"
+    optional: true
+- runFlow:
+    file: subflows/Finish.yaml

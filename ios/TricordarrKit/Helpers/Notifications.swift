@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Intents
 import NetworkExtension
 import UIKit
 import UserNotifications
@@ -235,6 +236,9 @@ import UserNotifications
 	   - secondaryContentID: An optional ID of a related parent object (the Forum ID for forum post notifications), used to dismiss related notifications.
 	   - accountID: The account whose socket delivered the event. Scopes the notification's identity and thread, and travels in the tap's deep link.
 	   - accountName: The account's username, shown as the subtitle. Passed only when several accounts are connected.
+	   - sender: For chat events, the author of the message. When present the notification posts as a communication
+	     notification showing the sender and `senderAvatar`, falling back to a plain one if the system refuses.
+	   - senderAvatar: The sender's avatar, from `NotificationAvatar`.
 	 */
 	static func generateContentNotification(
 		_ id: String = UUID().uuidString,
@@ -245,7 +249,9 @@ import UserNotifications
 		markAsReadUrl: String? = nil,
 		secondaryContentID: String? = nil,
 		accountID: String? = nil,
-		accountName: String? = nil
+		accountName: String? = nil,
+		sender: UserHeader? = nil,
+		senderAvatar: INImage? = nil
 	) {
 		// `userInfo` is the notification's data payload. The tap handler and the cancel functions read it back.
 		let userInfo = UserInfoData(
@@ -253,7 +259,8 @@ import UserNotifications
 			url: url,
 			markAsReadUrl: markAsReadUrl,
 			secondaryContentID: secondaryContentID,
-			accountID: accountID
+			accountID: accountID,
+			contentID: id
 		)
 
 		// Construct the notification payload
@@ -269,10 +276,30 @@ import UserNotifications
 			content.subtitle = accountName
 		}
 
+		let contentIdentifier = contentNotificationIdentifier(id, accountID: accountID)
+		// Most content has one notification, replaced by the next event about it. A chat instead
+		// gets one notification per message, all in the chat's own thread, so iOS stacks them per
+		// conversation as Messages does (Android appends to one MessagingStyle notification).
+		var requestIdentifier = contentIdentifier
+		if type.eventSpec?.messaging == true {
+			requestIdentifier = "\(contentIdentifier):\(UUID().uuidString)"
+			content.threadIdentifier = contentIdentifier
+		}
+		var finalContent: UNNotificationContent = content
+		if let sender = sender {
+			finalContent = communicationContent(
+				content,
+				sender: sender,
+				avatar: senderAvatar,
+				conversationID: contentIdentifier,
+				conversationName: title
+			)
+		}
+
 		// Send it
 		let request = UNNotificationRequest(
-			identifier: contentNotificationIdentifier(id, accountID: accountID),
-			content: content,
+			identifier: requestIdentifier,
+			content: finalContent,
 			trigger: nil
 		)
 		UNUserNotificationCenter.current()
@@ -288,6 +315,57 @@ import UserNotifications
 			}
 	}
 
+	/**
+	 Turns `content` into a communication notification from `sender`, so iOS shows their avatar with the
+	 app icon as a badge. `conversationName` (the event title, e.g. "New Seamail") is the group name, as
+	 the conversation title is on Android. Needs the Communication Notifications entitlement; without it,
+	 or if the system refuses, `content` is returned unchanged.
+	 */
+	private static func communicationContent(
+		_ content: UNMutableNotificationContent,
+		sender: UserHeader,
+		avatar: INImage?,
+		conversationID: String,
+		conversationName: String
+	) -> UNNotificationContent {
+		let person = INPerson(
+			personHandle: INPersonHandle(value: sender.userID.uuidString, type: .unknown),
+			nameComponents: nil,
+			displayName: sender.displayName ?? sender.username,
+			image: avatar,
+			contactIdentifier: nil,
+			customIdentifier: sender.userID.uuidString
+		)
+		let intent = INSendMessageIntent(
+			recipients: nil,
+			outgoingMessageType: .outgoingMessageText,
+			content: content.body,
+			speakableGroupName: INSpeakableString(spokenPhrase: conversationName),
+			conversationIdentifier: conversationID,
+			serviceName: nil,
+			sender: person,
+			attachments: nil
+		)
+		intent.setImage(avatar, forParameterNamed: \.sender)
+		let interaction = INInteraction(intent: intent, response: nil)
+		interaction.direction = .incoming
+		interaction.donate { error in
+			if let error = error {
+				Logging.logger.log(
+					"[Notifications.swift] Could not donate message interaction: \(error.localizedDescription, privacy: .public)"
+				)
+			}
+		}
+		do {
+			return try content.updating(from: intent)
+		} catch {
+			Logging.logger.log(
+				"[Notifications.swift] Posting without sender avatar: \(error.localizedDescription, privacy: .public)"
+			)
+			return content
+		}
+	}
+
 	/// Content IDs are only unique within an account, so a notification's identifier is scoped to its account.
 	private static func contentNotificationIdentifier(_ contentID: String, accountID: String?) -> String {
 		guard let accountID = accountID else { return contentID }
@@ -295,15 +373,29 @@ import UserNotifications
 	}
 
 	/**
-	 Removes the delivered notification for one piece of content of an account.
+	 Removes the delivered notifications for one piece of content of an account: its single
+	 notification, or every message notification in a chat's stack.
 	 Called from the JavaScript side over the "bridge".
 	 */
 	@objc public static func cancelContentNotification(accountID: String, contentID: String) {
+		let center = UNUserNotificationCenter.current()
 		// The bare content ID covers notifications delivered before identifiers were per account.
-		UNUserNotificationCenter.current()
-			.removeDeliveredNotifications(withIdentifiers: [
-				contentNotificationIdentifier(contentID, accountID: accountID), contentID,
-			])
+		center.removeDeliveredNotifications(withIdentifiers: [
+			contentNotificationIdentifier(contentID, accountID: accountID), contentID,
+		])
+		center.getDeliveredNotifications { notifications in
+			let identifiers = notifications.compactMap { notification -> String? in
+				let userInfo = notification.request.content.userInfo
+				guard userInfo["contentID"] as? String == contentID,
+					userInfo["accountID"] as? String == accountID
+				else { return nil }
+				return notification.request.identifier
+			}
+			Logging.logger.log(
+				"[Notifications.swift] cancelContentNotification removing \(identifiers.count, privacy: .public) of \(notifications.count, privacy: .public) delivered"
+			)
+			center.removeDeliveredNotifications(withIdentifiers: identifiers)
+		}
 	}
 
 	/**

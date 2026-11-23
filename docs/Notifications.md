@@ -131,6 +131,43 @@ after the app is swiped away or the device reboots.
 | `PushBootReceiver`                            | Restarts the service on `BOOT_COMPLETED` and `MY_PACKAGE_REPLACED` (not `LOCKED_BOOT_COMPLETED`: Keystore needs first unlock).                                                                                                             |
 | `PushStatusStore`                             | Per-account health (`state`, last healthcheck, `failedCount`, `startedAt`). Native is the source of truth; JS pulls `getWebsocketStatus()`.                                                                                                |
 
+Event types with `messaging: true` in the shared table (Seamail, LFG and private event messages) post
+as `MessagingStyle`, appending each new message to the notification already showing for that chat;
+the rest use `BigTextStyle`.
+
+The sender `Person` is the event's `author` (a `UserHeader` Swiftarr sends on chat, mention and
+alert-word events), named by display name or username.
+
+A chat notification with an author is a _conversation_ notification (Android 11+), like Signal's or
+Google Messages': `publishConversationShortcut` pushes a long-lived dynamic shortcut per chat
+(`chat:<accountID>:<contentID>`) and the notification links it with `setShortcutId` and `setLocusId`.
+Android then shows it in the Conversations section, with the sender's avatar as the only icon (the
+app icon is a small badge on it), and a header of "sender • Tricordarr • time". The conversation
+layout leaves out the subtext, so the event title ("New Seamail") and the account username are
+not shown there. Recent chats also appear on the launcher icon's long-press menu, as with other
+messaging apps; Android caps the number of dynamic shortcuts and drops the oldest.
+
+The service, call and connection notifications share an explicit group (`STATUS_GROUP`). Android
+bundles an app's ungrouped notifications together on its own, and that bundle would pull chats out
+of the Conversations section with the service notification.
+
+The avatar comes from `NotificationAvatar`:
+
+- **Photo**: the author's `userImage`, loaded through Glide from
+  `<server><urlPrefix>/image/thumb/<userImage>`. That is the URL `AvatarImage` shows, and the service
+  shares the process, and so the Glide singleton, with FastImage, whose disk cache is keyed on the bare
+  URL. A photo the app has shown costs no request, and one fetched here is cached for the app. The load
+  is cache-only first, then one network try capped at 4s. It blocks the account's socket reader
+  thread, which keeps events in order; keep it well under the 30s ping. The app's `glide` dependency
+  must match FastImage's `glideVersion`.
+- **Letters**, when there is no photo or it fails: white on brand blue, from
+  `NotificationPlanner.avatarInitials`. That is the first letter of the username, except the shared
+  accounts `moderator` (M), `twitarrteam` (TT), `communitysupport` (CS) and `tho` (THO). The same map is
+  in `NotificationAvatar.swift` on iOS; change both together.
+- **No author** (a server that predates the field): the round launcher icon
+  (`R.mipmap.ic_launcher_round`), since without an icon Android draws a letter avatar from the title
+  ("N" for "New Seamail"). Do not use `ic_notification` there: it is the white status-bar silhouette.
+
 The service posts three notifications of its own:
 
 - **Service**: the foreground notification, listing the connected usernames. It is not `ongoing`,
@@ -233,6 +270,31 @@ One provider, a socket per account, same contract as Android (see "Accounts" abo
 - There is no Mark as Read action and no `Revoked` state on iOS. A rejected token keeps retrying on
   the healthcheck timer until JS stops syncing the account.
 - `setupLocalPushManager` / `clearLocalPushManager` are gone; `syncPushAccounts` replaced them.
+
+### Chat sender avatars (communication notifications)
+
+A chat event (`messaging: true`) that carries an `author` is posted as a communication notification:
+`Notifications.communicationContent` builds an `INSendMessageIntent` with the author as sender (the event
+title as group name), donates it, and posts `content.updating(from:)`. iOS then shows the sender's
+avatar with the app icon as a badge, which is the closest match to Android's `MessagingStyle`.
+
+- Needs the `com.apple.developer.usernotifications.communication` entitlement on the app and the
+  extension (the _Communication Notifications_ capability on both App IDs and their profiles) and
+  `INSendMessageIntent` in the app's `NSUserActivityTypes`. If the system refuses, the plain
+  notification posts and the reason is logged.
+- `NotificationAvatar.swift` supplies the image, with the same photo-or-letters rule and alias map as
+  Android. FastImage's SDWebImage cache is in the app's own sandbox, which the extension cannot read,
+  so photos have their own cache in the App Group container (`Library/Caches/NotificationAvatars`,
+  file named by a hash of `userImage`, at most 200 files). Swiftarr image names are unique per upload,
+  so cached files are never revalidated. A miss is one fetch capped at 4s.
+- Each chat message is its own notification (`<accountID>:<contentID>:<uuid>`) in the chat's own
+  thread (`threadIdentifier` `<accountID>:<contentID>`), so iOS stacks a chat's messages the way
+  Messages does, where Android appends them to one `MessagingStyle` notification. Other types keep
+  one notification per content, replaced by the next event. `userInfo` carries the `contentID`, and
+  `cancelContentNotification` removes every notification of that content, so clearing a chat
+  clears its whole stack.
+- The avatar and the post run on `NotificationAvatar.queue`, a serial queue, so the socket's receive
+  loop never waits on a fetch and posts stay in order.
 
 ## No notification library
 
