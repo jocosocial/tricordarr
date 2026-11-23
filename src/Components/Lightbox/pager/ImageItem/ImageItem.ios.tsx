@@ -48,6 +48,8 @@ type Props = {
   imageDimensions: ImageDimensions | undefined;
   dismissSwipePan: ReturnType<typeof Gesture.Pan>;
   transforms: Readonly<SharedValue<LightboxTransforms>>;
+  /** The lightbox was dismissed and is playing its close animation before unmounting. */
+  isClosing: boolean;
 };
 
 const ImageItem = ({
@@ -60,6 +62,7 @@ const ImageItem = ({
   imageDimensions,
   dismissSwipePan,
   transforms,
+  isClosing,
 }: Props) => {
   const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
   const [scaled, setScaled] = useState(false);
@@ -200,6 +203,13 @@ const ImageItem = ({
     bounces: scaled || isDragging.value,
   }));
 
+  // Off while closing so the native view is recycled without it. React Native's iOS
+  // prepareForRecycle zeroes contentInset and then resets the frame, which re-runs centering while
+  // the stale flag is still set. That puts this image's centering inset back, and the next
+  // ScrollView to reuse the view (often an actions menu) opens with its content pushed out of
+  // sight. Turning the flag off does not recompute the inset, so nothing moves during the close.
+  const centerContent = !isClosing;
+
   return (
     <GestureDetector gesture={composedGesture}>
       <Animated.ScrollView
@@ -211,7 +221,7 @@ const ImageItem = ({
         onScroll={scrollHandler}
         style={containerStyle}
         animatedProps={scrollViewProps}
-        centerContent>
+        centerContent={centerContent}>
         {showLoader && <ActivityIndicator size={'small'} color={'#FFF'} style={styles.loading} />}
         <Animated.View style={[imageCropStyle, imageLayoutStyle]}>
           <Animated.View style={[imageStyle, imageLayoutStyle]}>

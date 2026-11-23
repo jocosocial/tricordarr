@@ -3,6 +3,8 @@ import {StyleSheet, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
+import {HeaderBackButton} from '#src/Components/Buttons/HeaderButtons/HeaderBackButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PagerDots} from '#src/Components/Lightbox/chrome/PagerDots';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
@@ -18,7 +20,9 @@ interface HeaderProps {
 }
 
 /**
- * Lightbox header: pager dots on the left, Info / Save / Share / Close on the right.
+ * Lightbox header: the shared header back button (which closes the lightbox) and pager dots on
+ * the left, Info / Save / Share on the right. The back button matches the one in navigation
+ * headers, so leaving the viewer looks like leaving any other screen.
  * Action icons use Paper IconButton at the same size and shape as navigation headers
  * (and the previous ImageViewerHeaderView). Paper's default 6px margin is stripped
  * so the cluster matches header density. `marginLeft: 'auto'` keeps them
@@ -48,7 +52,6 @@ export const Header = ({
           ...commonStyles.alignItemsCenter,
           pointerEvents: 'box-none',
           paddingTop: insets.top,
-          paddingLeft: 16,
         },
         actions: {
           ...commonStyles.flexRow,
@@ -65,6 +68,9 @@ export const Header = ({
 
   return (
     <View style={styles.root}>
+      <MaterialHeaderButtons left style={commonStyles.headerLeftWrapper}>
+        <HeaderBackButton onPress={onRequestClose} color={theme.colors.onImageViewer} />
+      </MaterialHeaderButtons>
       <PagerDots count={imageCount} activeIndex={activeIndex} />
       <View style={styles.actions}>
         {onPressInfo && (
@@ -94,13 +100,6 @@ export const Header = ({
             style={styles.iconButton}
           />
         )}
-        <IconButton
-          icon={AppIcons.close}
-          onPress={onRequestClose}
-          iconColor={theme.colors.onImageViewer}
-          accessibilityLabel={'Close image'}
-          style={styles.iconButton}
-        />
       </View>
     </View>
   );

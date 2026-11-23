@@ -21,7 +21,8 @@ export const MaterialHeaderButton: HeaderButtonsComponentType = props => {
       ...commonStyles.flexRow,
       ...commonStyles.alignItemsCenter,
     },
-    title: {color: disabledColor ?? theme.colors.onBackground, fontSize: 17, marginLeft: 4},
+    // Follows the icon's color, so an Item given an explicit color keeps its label legible too.
+    title: {color: disabledColor ?? (props.color || theme.colors.onBackground), fontSize: 17, marginLeft: 4},
   });
 
   // the `props` here come from <Item ... />

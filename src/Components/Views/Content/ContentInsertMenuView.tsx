@@ -13,6 +13,7 @@ import {useRoles} from '#src/Context/Contexts/RoleContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useContentImageAttachment} from '#src/Hooks/useContentImageAttachment';
 import {assertImageWithinSizeLimit, getImageCompressPickerOptions} from '#src/Libraries/ImageSize';
 import {createLogger} from '#src/Libraries/Logger';
 import {isIOS} from '#src/Libraries/Platform/Detection';
@@ -38,10 +39,11 @@ export const ContentInsertMenuView = ({
   maxPhotos,
 }: ContentInsertMenuViewProps) => {
   const {setSnackbarPayload} = useSnackbar();
-  const {values, setFieldValue, isSubmitting} = useFormikContext<PostContentData>();
+  const {values, isSubmitting} = useFormikContext<PostContentData>();
   const {hasShutternaut} = useRoles();
   const {styleDefaults} = useStyles();
   const {maxImageSize} = useClientSettings();
+  const {attachBase64Images, pasteFromClipboard} = useContentImageAttachment({maxPhotos, fieldName});
   const {appConfig} = useConfig();
   const autoCompress = appConfig.userPreferences.autoCompressOversizedImages;
   const compressOptions = getImageCompressPickerOptions(autoCompress, styleDefaults.imageSquareCropDimension);
@@ -102,7 +104,16 @@ export const ContentInsertMenuView = ({
   const processImage = (image: Image, fromCamera: boolean = false) => {
     assertImageWithinSizeLimit(image, maxImageSize);
     if (image.data) {
-      setFieldValue(fieldName, values.images.concat([{image: image.data, _shouldSaveToRoll: fromCamera}]));
+      attachBase64Images([image.data], fromCamera);
+      setVisible(false);
+    }
+  };
+
+  /**
+   * Attach the image on the clipboard, closing the menu once it lands.
+   */
+  const pasteImage = async () => {
+    if (await pasteFromClipboard()) {
       setVisible(false);
     }
   };
@@ -126,6 +137,12 @@ export const ContentInsertMenuView = ({
                   title={`Attach Existing Photo (Max: ${maxPhotos})`}
                   right={getIcon}
                   onPress={pickImage}
+                />
+                <List.Item
+                  disabled={currentPhotoCount >= maxPhotos}
+                  title={`Paste Image (Max: ${maxPhotos})`}
+                  right={getIcon}
+                  onPress={pasteImage}
                 />
               </>
             )}

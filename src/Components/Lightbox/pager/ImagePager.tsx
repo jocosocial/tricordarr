@@ -105,6 +105,8 @@ export default function ImageViewRoot({
     setActiveLightbox(nextLightbox);
     setImageIndex(nextLightbox.index);
   }
+  // Dismissed but still mounted for the close animation, until onFullyClosed unmounts it.
+  const isClosing = !!activeLightbox && !nextLightbox;
 
   useEffect(() => {
     if (!nextLightbox) {
@@ -188,6 +190,7 @@ export default function ImageViewRoot({
             safeAreaRef={ref}
             openProgress={openProgress}
             thumbRects={thumbRects}
+            isClosing={isClosing}
           />
         )}
       </Animated.View>
@@ -209,6 +212,7 @@ function ImageView({
   safeAreaRef,
   openProgress,
   thumbRects,
+  isClosing,
 }: {
   lightbox: Lightbox;
   imageIndex: number;
@@ -223,6 +227,7 @@ function ImageView({
   safeAreaRef: AnimatedRef<View>;
   openProgress: SharedValue<number>;
   thumbRects: SharedValue<Record<number, MeasuredDimensions | null>>;
+  isClosing: boolean;
 }) {
   const {images, allowSave = true, allowShare = true} = lightbox;
   // Capture at mount: after a rotation remount this is the preserved
@@ -384,6 +389,7 @@ function ImageView({
               openProgress={openProgress}
               thumbRects={thumbRects}
               imageIndex={i}
+              isClosing={isClosing}
             />
           </View>
         ))}
@@ -434,6 +440,7 @@ const LightboxImage = memo(function LightboxImage({
   dismissSwipeTranslateY,
   thumbRects,
   imageIndex,
+  isClosing,
 }: {
   imageSrc: ImageSource;
   onRequestClose: () => void;
@@ -448,6 +455,7 @@ const LightboxImage = memo(function LightboxImage({
   dismissSwipeTranslateY: SharedValue<number>;
   thumbRects: SharedValue<Record<number, MeasuredDimensions | null>>;
   imageIndex: number;
+  isClosing: boolean;
 }) {
   const [fetchedDims, setFetchedDims] = useState<Dimensions | null>(null);
   const dims = fetchedDims ?? imageSrc.dimensions ?? imageSrc.thumbDimensions;
@@ -609,6 +617,7 @@ const LightboxImage = memo(function LightboxImage({
       imageDimensions={dims ?? undefined}
       dismissSwipePan={dismissSwipePan}
       transforms={transforms}
+      isClosing={isClosing}
     />
   );
 });

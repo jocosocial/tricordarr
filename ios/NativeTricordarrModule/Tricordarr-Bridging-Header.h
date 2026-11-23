@@ -13,3 +13,12 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 #import <UserNotifications/UserNotifications.h>
+
+// @mattermost/react-native-paste-input ships as a static library without a Swift module, and its
+// real PasteInputModule.h pulls in C++ codegen headers under RCT_NEW_ARCH_ENABLED, which a
+// bridging header can't parse. Declare only the entry point AppDelegate calls; the linker still
+// checks it against the library.
+@class RCTRootViewFactory;
+@interface PasteInputModule : RCTEventEmitter
++ (void)setup:(nonnull RCTRootViewFactory *)rootViewFactory;
+@end

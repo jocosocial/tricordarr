@@ -1,0 +1,306 @@
+diff --git a/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputActionCallback.kt b/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputActionCallback.kt
+index 9e60bd9..233abd7 100644
+--- a/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputActionCallback.kt
++++ b/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputActionCallback.kt
+@@ -1,8 +1,5 @@
+ package com.mattermost.pasteinputtext
+ 
+-import android.content.ClipboardManager
+-import android.content.Context
+-import android.net.Uri
+ import android.view.ActionMode
+ import android.view.Menu
+ import android.view.MenuItem
+@@ -27,14 +24,9 @@ class PasteInputActionCallback(editText: PasteInputEditText, disabled: Boolean,
+   }
+ 
+   override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+-    val uri = getUriInClipboard()
+-    if (item?.itemId == android.R.id.paste && uri != null) {
+-      mEditText.getOnPasteListener().onPaste(uri, mEventDispatcher)
+-      mode?.finish()
+-    } else {
+-      mEditText.onTextContextMenuItem(item!!.itemId)
+-    }
+-
++    // Paste goes through the view's OnReceiveContentListener, which splits files from text.
++    mEditText.onTextContextMenuItem(item!!.itemId)
++    if (item.itemId == android.R.id.paste) mode?.finish()
+     return true
+   }
+ 
+@@ -56,17 +48,4 @@ class PasteInputActionCallback(editText: PasteInputEditText, disabled: Boolean,
+       }
+     }
+   }
+-
+-  private fun getUriInClipboard() : Uri? {
+-    val clipboardManager = mEditText.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+-    val clipData = clipboardManager.primaryClip ?: return null
+-    val item = clipData.getItemAt(0) ?: return null
+-    val chars = item.text ?: return null
+-
+-    val text = chars.toString()
+-    return if (text.isNotEmpty()) {
+-      null
+-    } else item.uri
+-
+-  }
+ }
+diff --git a/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputEditText.kt b/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputEditText.kt
+index 1794b53..b2341e2 100644
+--- a/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputEditText.kt
++++ b/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputEditText.kt
+@@ -1,15 +1,12 @@
+ package com.mattermost.pasteinputtext
+ 
+ import android.annotation.SuppressLint
+-import android.os.Build
+-import android.view.inputmethod.EditorInfo
+-import android.view.inputmethod.InputConnection
+-import androidx.core.view.inputmethod.EditorInfoCompat
+-import androidx.core.view.inputmethod.InputConnectionCompat
++import androidx.core.view.ContentInfoCompat
++import androidx.core.view.OnReceiveContentListener
++import androidx.core.view.ViewCompat
+ import com.facebook.react.uimanager.ThemedReactContext
+ import com.facebook.react.uimanager.events.EventDispatcher
+ import com.facebook.react.views.textinput.ReactEditText
+-import java.lang.Exception
+ 
+ 
+ @SuppressLint("ViewConstructor")
+@@ -18,6 +15,29 @@ class PasteInputEditText(context: ThemedReactContext) : ReactEditText(context) {
+   private lateinit var mPasteEventDispatcher: EventDispatcher
+   private var mDisabledCopyPaste: Boolean = false
+ 
++  /**
++   * Every way content reaches the input arrives here: a keyboard's image insert, long-press →
++   * Paste, and drag-and-drop (natively on API 31+, through AppCompat below). Items with a URI are
++   * files and go to the paste listener; text is handed back for the default handling.
++   */
++  private val receiveContentListener = OnReceiveContentListener { _, payload ->
++    if (mDisabledCopyPaste || !::mOnPasteListener.isInitialized) return@OnReceiveContentListener payload
++    val split = payload.partition { item -> item.uri != null }
++    val files: ContentInfoCompat? = split.first
++    if (files != null) {
++      val clip = files.clip
++      val dispatcher = if (::mPasteEventDispatcher.isInitialized) mPasteEventDispatcher else null
++      for (i in 0 until clip.itemCount) {
++        clip.getItemAt(i).uri?.let { mOnPasteListener.onPaste(it, dispatcher) }
++      }
++    }
++    split.second
++  }
++
++  init {
++    ViewCompat.setOnReceiveContentListener(this, arrayOf("image/*", "video/*", "audio/*", "application/*"), receiveContentListener)
++  }
++
+   fun setDisableCopyPaste(disabled: Boolean) {
+     this.mDisabledCopyPaste = disabled
+   }
+@@ -32,29 +52,4 @@ class PasteInputEditText(context: ThemedReactContext) : ReactEditText(context) {
+   fun getOnPasteListener() : IPasteInputListener {
+     return mOnPasteListener
+   }
+-
+-  override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection {
+-    val ic = super.onCreateInputConnection(outAttrs)
+-
+-    EditorInfoCompat.setContentMimeTypes(outAttrs, arrayOf("*/*"))
+-
+-    val callback = InputConnectionCompat.OnCommitContentListener { inputContentInfo, flags, _ ->
+-      val lacksPermission = (flags and InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0
+-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && lacksPermission) {
+-        try {
+-            inputContentInfo.requestPermission()
+-        } catch (e: Exception) {
+-          return@OnCommitContentListener false
+-        }
+-      }
+-
+-      if (!mDisabledCopyPaste) {
+-        getOnPasteListener().onPaste(inputContentInfo.contentUri, mPasteEventDispatcher)
+-      }
+-
+-      true
+-    }
+-
+-    return InputConnectionCompat.createWrapper(ic!!, outAttrs, callback)
+-  }
+ }
+diff --git a/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputListener.kt b/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputListener.kt
+index 9afe1f0..1e0635d 100644
+--- a/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputListener.kt
++++ b/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/PasteInputListener.kt
+@@ -18,8 +18,18 @@ class PasteInputListener(editText: PasteInputEditText, surfaceId: Int) : IPasteI
+   private val mSurfaceId = surfaceId
+ 
+   override fun onPaste(itemUri: Uri, eventDispatcher: EventDispatcher?) {
++    // A provider can refuse (a stale clipboard grant raises SecurityException): that is an error
++    // event for the app to show, never a crash.
++    try {
++      handlePaste(itemUri, eventDispatcher)
++    } catch (e: Exception) {
++      dispatchError(eventDispatcher, e.localizedMessage ?: "The pasted item could not be read.")
++    }
++  }
++
++  private fun handlePaste(itemUri: Uri, eventDispatcher: EventDispatcher?) {
+     val reactContext = mEditText.context as ReactContext
+-    reactContext.contentResolver.getType(itemUri) ?: return
++    val resolvedType = reactContext.contentResolver.getType(itemUri)
+ 
+     var uriString: String = itemUri.toString()
+     val mimeType: String
+@@ -49,11 +59,17 @@ class PasteInputListener(editText: PasteInputEditText, surfaceId: Int) : IPasteI
+       pastImageFromUrlThread.start()
+       return
+     } else {
+-      uriString = RealPathUtil.getRealPathFromURI(reactContext, itemUri) ?: return
++      uriString = RealPathUtil.getRealPathFromURI(reactContext, itemUri)
++        ?: return dispatchError(eventDispatcher, "The pasted item could not be read.")
+     }
+ 
+-    val extension: String = MimeTypeMap.getFileExtensionFromUrl(uriString) ?: return
+-    mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: return
++    // The provider knows what it holds; the extension is only a fallback (many providers name
++    // files without one).
++    val extension: String? = MimeTypeMap.getFileExtensionFromUrl(uriString)
++    mimeType = resolvedType?.takeIf { it != "application/octet-stream" }
++      ?: extension?.let { MimeTypeMap.getSingleton().getMimeTypeFromExtension(it) }
++      ?: resolvedType
++      ?: return dispatchError(eventDispatcher, "The pasted item has no type.")
+     val fileName: String = URLUtil.guessFileName(uriString, null, mimeType)
+ 
+     try {
+@@ -81,4 +97,13 @@ class PasteInputListener(editText: PasteInputEditText, surfaceId: Int) : IPasteI
+ 
+     eventDispatcher?.dispatchEvent(PasteTextInputPasteEvent(mSurfaceId, mEditText.id, event))
+   }
++
++  private fun dispatchError(eventDispatcher: EventDispatcher?, message: String) {
++    val error = Arguments.createMap()
++    error.putString("message", message)
++    val event = Arguments.createMap()
++    event.putArray("data", null)
++    event.putMap("error", error)
++    eventDispatcher?.dispatchEvent(PasteTextInputPasteEvent(mSurfaceId, mEditText.id, event))
++  }
+ }
+diff --git a/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/RealPathUtil.kt b/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/RealPathUtil.kt
+index 02dd7fe..cab84fb 100644
+--- a/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/RealPathUtil.kt
++++ b/node_modules/@mattermost/react-native-paste-input/android/src/main/java/com/mattermost/pasteinputtext/RealPathUtil.kt
+@@ -18,15 +18,9 @@ object RealPathUtil {
+   fun getRealPathFromURI(context: Context, uri: Uri): String? {
+     // DocumentProvider
+     if (DocumentsContract.isDocumentUri(context, uri)) {
+-      // ExternalStorageProvider
+-      if (isExternalStorageDocument(uri)) {
+-        val docId = DocumentsContract.getDocumentId(uri)
+-        val split = docId.split((":").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+-        val type = split[0]
+-        if ("primary".equals(type, ignoreCase = true)) {
+-          return context.getExternalFilesDir(split[1])?.absolutePath
+-        }
+-      } else if (isDownloadsDocument(uri)) {
++      // ExternalStorageProvider documents are copied like any other content (below): the app
++      // cannot read their filesystem path under scoped storage.
++      if (isDownloadsDocument(uri)) {
+         // DownloadsProvider
+         val id = DocumentsContract.getDocumentId(uri)
+         if (!TextUtils.isEmpty(id)) {
+diff --git a/node_modules/@mattermost/react-native-paste-input/ios/PasteInputModule.mm b/node_modules/@mattermost/react-native-paste-input/ios/PasteInputModule.mm
+index 59ff531..5cffeab 100644
+--- a/node_modules/@mattermost/react-native-paste-input/ios/PasteInputModule.mm
++++ b/node_modules/@mattermost/react-native-paste-input/ios/PasteInputModule.mm
+@@ -41,7 +41,7 @@ @interface PasteInputModule ()
+ @property (nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *registrationGenerations;
+ @end
+ 
+-static id _reactHost = nil;
++static RCTRootViewFactory *_rootViewFactory = nil;
+ 
+ @implementation PasteInputModule
+ 
+@@ -55,7 +55,12 @@ + (BOOL)requiresMainQueueSetup
+ + (void)setup:(RCTRootViewFactory *)rootViewFactory
+ {
+ #ifdef RCT_NEW_ARCH_ENABLED
+-    _reactHost = rootViewFactory.reactHost;
++    // The RCTHost is created lazily by the root view factory when the first
++    // surface mounts, which can happen after +setup: runs (e.g. under Expo,
++    // where the app is set up before the first surface renders). So keep the
++    // factory and read reactHost from it at lookup time instead of capturing a
++    // (possibly nil) value here.
++    _rootViewFactory = rootViewFactory;
+ #endif
+ }
+ 
+@@ -173,9 +178,11 @@ - (void)removeListeners:(double)count
+ - (nullable id)getSurfacePresenter
+ {
+ #ifdef RCT_NEW_ARCH_ENABLED
++    // Read the host fresh from the factory (see +setup: for why it's not cached).
++    id reactHost = _rootViewFactory.reactHost;
+     // Try bridgeless mode first (if reactHost is set)
+-    if (_reactHost) {
+-        return [_reactHost performSelector:@selector(surfacePresenter)];
++    if (reactHost) {
++        return [reactHost performSelector:@selector(surfacePresenter)];
+     }
+     // Fallback to bridge mode (Fabric with bridge enabled)
+     else if (self.bridge) {
+diff --git a/node_modules/@mattermost/react-native-paste-input/react-native-paste-input.podspec b/node_modules/@mattermost/react-native-paste-input/react-native-paste-input.podspec
+index bb61e47..a3cd8e1 100644
+--- a/node_modules/@mattermost/react-native-paste-input/react-native-paste-input.podspec
++++ b/node_modules/@mattermost/react-native-paste-input/react-native-paste-input.podspec
+@@ -16,7 +16,9 @@ Pod::Spec.new do |s|
+ 
+   s.source_files = "ios/**/*.{h,m,mm,swift,cpp}"
+ 
+-  if ENV['RCT_NEW_ARCH_ENABLED'] != '1'
++  # React Native 0.82+ is New Architecture only and no longer sets RCT_NEW_ARCH_ENABLED, so refuse
++  # only when an app has explicitly turned it off.
++  if ENV['RCT_NEW_ARCH_ENABLED'] == '0'
+     raise Pod::Informative, "react-native-paste-input #{package["version"]} requires the React Native New Architecture (Fabric/TurboModules)."
+   end
+ 
+diff --git a/node_modules/@mattermost/react-native-paste-input/src/PasteInput.tsx b/node_modules/@mattermost/react-native-paste-input/src/PasteInput.tsx
+index 12befab..b0d63e6 100644
+--- a/node_modules/@mattermost/react-native-paste-input/src/PasteInput.tsx
++++ b/node_modules/@mattermost/react-native-paste-input/src/PasteInput.tsx
+@@ -26,7 +26,12 @@ import React, {
+     forwardRef,
+     useImperativeHandle,
+ } from 'react';
+-import { Platform, TextInput, NativeEventEmitter } from 'react-native';
++import {
++    Platform,
++    TextInput,
++    NativeEventEmitter,
++    findNodeHandle,
++} from 'react-native';
+ import type {
+     PastedFile,
+     PasteInputProps,
+@@ -78,9 +83,14 @@ function PasteInputIOSComponent(
+ 
+     // Register/unregister with native module on mount/unmount
+     useEffect(() => {
+-        // Get the native tag from the ref's internal __nativeTag property
+-        // @ts-ignore - __nativeTag is an internal property
+-        const nativeTag = textInputRef.current?.__nativeTag;
++        // Use findNodeHandle so we work across both legacy and Fabric. Reading
++        // `__nativeTag` directly returns undefined on RN 0.76+/Fabric — the
++        // renderer exposes the tag as `_nativeTag` (single underscore) on the
++        // Fabric instance — which silently breaks paste interception because
++        // the input is never registered with the native module. See #54.
++        const nativeTag = textInputRef.current
++            ? findNodeHandle(textInputRef.current)
++            : null;
+ 
+         if (!nativeTag) {
+             if (__DEV__) {

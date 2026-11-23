@@ -49,6 +49,9 @@ jest.mock('#src/Context/Contexts/ConfigContext', () => ({
 jest.mock('#src/Context/Contexts/ElevationContext', () => ({useElevation: () => ({asPrivilegedUser: undefined})}));
 jest.mock('#src/Context/Contexts/StyleContext', () => ({useStyles: () => ({commonStyles: {}})}));
 jest.mock('#src/Enums/Icons', () => ({AppIcons: {}}));
+jest.mock('#src/Hooks/useContentImageAttachment', () => ({
+  useContentImageAttachment: () => ({attachPastedFiles: jest.fn()}),
+}));
 jest.mock('#src/Libraries/Logger', () => ({
   createLogger: () => ({debug: jest.fn(), info: jest.fn(), error: jest.fn()}),
 }));
