@@ -287,51 +287,48 @@ export const ChatList = <TItem,>({
     onReadyToShowRef.current?.();
   }, []);
 
-  /**
-   * Whether the viewport currently shows the end of the content. Uses FlashList's own measurements:
-   * the child container excludes the header, which `getFirstItemOffset` accounts for.
-   */
-  const isAtBottom = useCallback(() => {
+  /** The furthest the list can scroll, from FlashList's own measurements. Undefined before layout. */
+  const getEndOffset = useCallback((): number | undefined => {
     const list = listRef.current;
     if (!list) {
-      return false;
+      return undefined;
     }
     try {
       const contentHeight = list.getChildContainerDimensions().height + list.getFirstItemOffset();
-      return list.getAbsoluteLastScrollOffset() + list.getWindowSize().height >= contentHeight - AT_BOTTOM_EPSILON;
+      return Math.max(contentHeight - list.getWindowSize().height, 0);
     } catch (error) {
-      // Layout is not initialized yet.
-      logger.debug('isAtBottom measurement unavailable', error);
-      return false;
+      logger.debug('getEndOffset measurement unavailable', error);
+      return undefined;
     }
   }, [listRef]);
 
   /**
-   * For an index anchor, how far (in pixels) the current scroll offset is from the anchor's target
-   * offset, using measured layouts: the anchor's top sits `marginSize` below the top edge, clamped to
-   * the furthest the list can scroll. Undefined when layout is not available yet.
+   * How far (in pixels) the current scroll offset is from the anchor's target offset, using measured
+   * layouts. An index anchor's top sits `marginSize` below the top edge, clamped to the furthest the
+   * list can scroll; an end anchor (no index) is at that furthest offset. Undefined when layout is
+   * not available yet.
    */
   const getAnchorError = useCallback(
-    (index: number): {error: number; target: number} | undefined => {
+    (index?: number): {error: number; target: number} | undefined => {
       const list = listRef.current;
-      const layout = list?.getLayout(index);
-      if (!list || !layout) {
+      const endOffset = getEndOffset();
+      if (!list || endOffset === undefined) {
         return undefined;
       }
-      try {
-        const contentHeight = list.getChildContainerDimensions().height + list.getFirstItemOffset();
-        const maxOffset = Math.max(contentHeight - list.getWindowSize().height, 0);
-        const target = Math.min(layout.y + list.getFirstItemOffset() - styleDefaults.marginSize, maxOffset);
-        // Our own onScroll metrics update on the scroll event itself; FlashList's tracked offset is
-        // updated from a deferred velocity callback and lags a correction by a frame or more.
-        const offset = scrollMetricsRef.current?.offset ?? list.getAbsoluteLastScrollOffset();
-        return {error: offset - target, target};
-      } catch (error) {
-        logger.debug('getAnchorError measurement unavailable', error);
-        return undefined;
+      let target = endOffset;
+      if (index !== undefined) {
+        const layout = list.getLayout(index);
+        if (!layout) {
+          return undefined;
+        }
+        target = Math.min(layout.y + list.getFirstItemOffset() - styleDefaults.marginSize, endOffset);
       }
+      // Our own onScroll metrics update on the scroll event itself; FlashList's tracked offset is
+      // updated from a deferred velocity callback and lags a correction by a frame or more.
+      const offset = scrollMetricsRef.current?.offset ?? list.getAbsoluteLastScrollOffset();
+      return {error: offset - target, target};
     },
-    [listRef, styleDefaults.marginSize],
+    [getEndOffset, listRef, styleDefaults.marginSize],
   );
 
   /** Current index of the anchored item, falling back to the mount-time index if its key is gone. */
@@ -356,6 +353,9 @@ export const ChatList = <TItem,>({
    * the anchor's measured position with the scroll offset and nudges with a plain scrollToOffset
    * (a bounded number of times) until it holds still. scrollToIndex is not used here: it pauses and
    * re-enables offset correction on its own timers, which raced the initial scroll and overshot.
+   *
+   * For an end anchor, startRenderingFromBottom lands on the top of the last item, which is not the
+   * end when that item is taller than the viewport (a gallery). The same nudges take it there.
    */
   const startReadyCheck = useCallback(() => {
     let frames = 0;
@@ -367,12 +367,10 @@ export const ChatList = <TItem,>({
       readyFrameRef.current = null;
       frames++;
       let positioned: boolean;
-      if (anchorIndex === undefined) {
-        positioned = isAtBottom();
-      } else if (frames < nextMeasureFrame) {
+      if (frames < nextMeasureFrame) {
         positioned = false;
       } else {
-        const anchorError = getAnchorError(resolveAnchorIndex(anchorIndex));
+        const anchorError = getAnchorError(anchorIndex === undefined ? undefined : resolveAnchorIndex(anchorIndex));
         if (!anchorError) {
           positioned = false;
         } else if (Math.abs(anchorError.error) <= ANCHOR_TOLERANCE) {
@@ -402,7 +400,7 @@ export const ChatList = <TItem,>({
       }
     };
     readyFrameRef.current = requestAnimationFrame(tick);
-  }, [anchorIndex, isAtBottom, getAnchorError, resolveAnchorIndex, fireReadyToShow, listRef]);
+  }, [anchorIndex, getAnchorError, resolveAnchorIndex, fireReadyToShow, listRef]);
 
   /**
    * FlashList fires `onLoad` once after first layout. That is not "initial scroll done", so it only
@@ -699,7 +697,7 @@ export const ChatList = <TItem,>({
   // After the keyboard settles, a pinned list re-pins on the next frame and then at a few fixed
   // delays, unconditionally. On Android, closing the keyboard reported the list container as
   // transiently taller than its final size, and the final, smaller layout often never reached JS:
-  // every JS-side measure (onLayout, FlashList's window size, isAtBottom) still said "at the bottom"
+  // every JS-side measure (onLayout, FlashList's window size, the end offset) still said "at the bottom"
   // while the native view had shrunk and hid the last post. scrollToEnd goes through the native
   // scroll view, which knows the real size, and is a no-op when already at the end. Bounded; not a loop.
   // A user drag cancels the remaining re-pins (see cancelRepins).

@@ -14,6 +14,7 @@ import {Card} from 'react-native-paper';
 import {useAnimatedRef} from 'react-native-reanimated';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {AppFramedImage} from '#src/Components/Images/AppFramedImage';
 import {AppScaledImage} from '#src/Components/Images/AppScaledImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
 import {useAppImage} from '#src/Context/Contexts/AppImageContext';
@@ -26,6 +27,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {alertImagesDisabled} from '#src/Libraries/Alerts/ImageAlerts';
+import {type ImageFrameAlign} from '#src/Libraries/ImageLayout';
 import {createLogger} from '#src/Libraries/Logger';
 import {APIImageSizePaths, AppImageMetaData} from '#src/Types/AppImageMetaData';
 
@@ -34,7 +36,13 @@ const logger = createLogger('APIImage.tsx');
 interface APIImageV2Props {
   path: string;
   style?: StyleProp<FastImageStyle | RNImageStyle>;
-  mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
+  /**
+   * 'framedimage' fills its parent, which must have a size, in every state including loading,
+   * errored and disabled. The others size themselves.
+   */
+  mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage' | 'framedimage';
+  /** Where the image sits in its frame. Only for 'framedimage' mode. */
+  frameAlign?: ImageFrameAlign;
   disableTouch?: boolean;
   staticSize?: keyof typeof APIImageSizePaths;
   onPress?: () => void;
@@ -60,6 +68,7 @@ export const APIImage = ({
   path,
   style,
   mode = 'scaledimage',
+  frameAlign,
   disableTouch,
   staticSize,
   onPress,
@@ -127,6 +136,13 @@ export const APIImage = ({
       ...commonStyles.fullWidth,
       ...commonStyles.roundedBorderCard,
       overflow: 'hidden',
+    },
+    framedDisabled: {
+      ...StyleSheet.absoluteFill,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+      ...commonStyles.roundedBorderCard,
+      backgroundColor: theme.colors.surfaceVariant,
     },
     avatar: {
       width: avatarSize,
@@ -324,6 +340,13 @@ export const APIImage = ({
    * If the Images feature of Swiftarr is disabled, then show a generic disabled icon.
    */
   if (isDisabled) {
+    if (mode === 'framedimage') {
+      return (
+        <View style={styles.framedDisabled}>
+          <AppIcon icon={AppIcons.imageDisabled} onPress={alertImagesDisabled} />
+        </View>
+      );
+    }
     return (
       <Card.Content style={styles.disabledCard}>
         <AppIcon icon={AppIcons.imageDisabled} onPress={alertImagesDisabled} />
@@ -331,7 +354,9 @@ export const APIImage = ({
     );
   }
 
-  if (!imageSource) {
+  // AppFramedImage shows its own loading state, so the frame is the same before and after the
+  // source resolves.
+  if (!imageSource && mode !== 'framedimage') {
     return (
       <Card.Content style={styles.loadingCard}>
         <ActivityIndicator />
@@ -339,14 +364,15 @@ export const APIImage = ({
     );
   }
 
-  const isThumbnail = imageSource.uri === imageSourceMetadata.thumbURI;
+  const isThumbnail = imageSource?.uri === imageSourceMetadata.thumbURI;
+  const fillStyle = mode === 'framedimage' ? StyleSheet.absoluteFill : undefined;
 
   // A custom onPress skips opening the lightbox so callers can own the gallery
   // (ContentPostImages) or disable it. disableTouch is how AvatarImage opts out.
   return (
-    <View>
-      <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
-        <View ref={thumbRef} collapsable={false} style={styles.imageContainer}>
+    <View style={fillStyle}>
+      <TouchableOpacity style={fillStyle} disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
+        <View ref={thumbRef} collapsable={false} style={fillStyle ?? styles.imageContainer}>
           {mode === 'cardcover' && (
             <FastImage
               resizeMode={'cover'}
@@ -376,7 +402,16 @@ export const APIImage = ({
               onError={onError}
             />
           )}
-          {mode === 'scaledimage' && (
+          {mode === 'framedimage' && (
+            <AppFramedImage
+              image={imageSource}
+              align={frameAlign}
+              onLoad={onLoad}
+              onError={onError}
+              onProgress={onProgress}
+            />
+          )}
+          {mode === 'scaledimage' && imageSource && (
             <AppScaledImage
               image={imageSource}
               style={style as FastImageStyle}
@@ -385,7 +420,7 @@ export const APIImage = ({
               onProgress={onProgress}
             />
           )}
-          {/* scaledimage has its own placeholder + spinner in AppScaledImage. Avatars are
+          {/* scaledimage and framedimage have their own placeholder + spinner. Avatars are
               excluded on purpose: they are small, usually cached, and appear dozens at a
               time in chat and forum lists, where a spinner per row is noise, not feedback. */}
           {isImageLoading && (mode === 'image' || mode === 'cardcover') && (

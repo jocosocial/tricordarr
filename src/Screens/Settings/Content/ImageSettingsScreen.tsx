@@ -19,6 +19,7 @@ export const ImageSettingsScreen = () => {
   const [autoCompressOversizedImages, setAutoCompressOversizedImages] = React.useState(
     appConfig.userPreferences.autoCompressOversizedImages,
   );
+  const [imageGalleryView, setImageGalleryView] = React.useState(appConfig.userPreferences.imageGalleryView);
 
   const handleLoadFullFirst = () => {
     const newvalue = !appConfig.skipThumbnails;
@@ -53,12 +54,36 @@ export const ImageSettingsScreen = () => {
     setAutoCompressOversizedImages(newvalue);
   };
 
+  /** Switches post images between the gallery and the stacked view. */
+  const handleImageGalleryView = () => {
+    const newvalue = !appConfig.userPreferences.imageGalleryView;
+    updateAppConfig({
+      ...appConfig,
+      userPreferences: {
+        ...appConfig.userPreferences,
+        imageGalleryView: newvalue,
+      },
+    });
+    setImageGalleryView(newvalue);
+  };
+
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padSides={false}>
           <Formik initialValues={{}} onSubmit={() => {}}>
             <View>
+              <BooleanField
+                name={'imageGalleryView'}
+                testID={'imageGalleryView-switch'}
+                label={'Gallery View'}
+                onPress={handleImageGalleryView}
+                style={commonStyles.paddingHorizontalSmall}
+                helperText={
+                  'Show the images in a post together as a compact gallery. When off, each image is shown on its own line.'
+                }
+                value={imageGalleryView}
+              />
               <BooleanField
                 name={'skipThumbnails'}
                 testID={'skipThumbnails-switch'}
