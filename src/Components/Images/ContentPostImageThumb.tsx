@@ -5,23 +5,23 @@ import {useAnimatedRef} from 'react-native-reanimated';
 import {APIImage} from '#src/Components/Images/APIImage';
 import {useLightboxControls} from '#src/Components/Lightbox/state';
 import {useAppImage} from '#src/Context/Contexts/AppImageContext';
-import {type ImageFrameAlign} from '#src/Libraries/ImageLayout';
+import {type ImageSize} from '#src/Libraries/ImageLayout';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ContentPostImageThumbProps {
-  fileName: string;
   index: number;
   images: AppImageMetaData[];
   /** Must give the thumbnail a size; the image fills it without affecting it. */
   style: ViewStyle;
-  align: ImageFrameAlign;
+  onImageSize: (fileName: string, size: ImageSize) => void;
 }
 
 /**
  * One thumbnail on a post. Owns the animated ref so the lightbox can zoom open from the tapped
  * image.
  */
-export const ContentPostImageThumb = ({fileName, index, images, style, align}: ContentPostImageThumbProps) => {
+export const ContentPostImageThumb = ({index, images, style, onImageSize}: ContentPostImageThumbProps) => {
+  const {fileName} = images[index];
   const {openLightbox} = useLightboxControls();
   const thumbRef = useAnimatedRef<View>();
   const {toLightboxImage} = useAppImage();
@@ -36,9 +36,12 @@ export const ContentPostImageThumb = ({fileName, index, images, style, align}: C
     });
   }, [images, index, openLightbox, thumbRef, toLightboxImage]);
 
+  /** Reports the loaded image's size along with which image it is. */
+  const handleImageSize = useCallback((size: ImageSize) => onImageSize(fileName, size), [onImageSize, fileName]);
+
   return (
     <View ref={thumbRef} collapsable={false} style={style}>
-      <APIImage path={fileName} mode={'framedimage'} frameAlign={align} onPress={handlePress} />
+      <APIImage path={fileName} mode={'framedimage'} onImageSize={handleImageSize} onPress={handlePress} />
     </View>
   );
 };

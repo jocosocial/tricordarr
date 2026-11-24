@@ -27,7 +27,7 @@ import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {alertImagesDisabled} from '#src/Libraries/Alerts/ImageAlerts';
-import {type ImageFrameAlign} from '#src/Libraries/ImageLayout';
+import {type ImageSize} from '#src/Libraries/ImageLayout';
 import {createLogger} from '#src/Libraries/Logger';
 import {APIImageSizePaths, AppImageMetaData} from '#src/Types/AppImageMetaData';
 
@@ -41,8 +41,8 @@ interface APIImageV2Props {
    * errored and disabled. The others size themselves.
    */
   mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage' | 'framedimage';
-  /** Where the image sits in its frame. Only for 'framedimage' mode. */
-  frameAlign?: ImageFrameAlign;
+  /** Called with the image's own size once it has loaded. Only for 'framedimage' mode. */
+  onImageSize?: (size: ImageSize) => void;
   disableTouch?: boolean;
   staticSize?: keyof typeof APIImageSizePaths;
   onPress?: () => void;
@@ -68,7 +68,7 @@ export const APIImage = ({
   path,
   style,
   mode = 'scaledimage',
-  frameAlign,
+  onImageSize,
   disableTouch,
   staticSize,
   onPress,
@@ -405,10 +405,10 @@ export const APIImage = ({
           {mode === 'framedimage' && (
             <AppFramedImage
               image={imageSource}
-              align={frameAlign}
               onLoad={onLoad}
               onError={onError}
               onProgress={onProgress}
+              onImageSize={onImageSize}
             />
           )}
           {mode === 'scaledimage' && imageSource && (

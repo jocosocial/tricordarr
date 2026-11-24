@@ -1,27 +1,7 @@
-import {getFittedImageSize, getGalleryLayout} from '#src/Libraries/ImageLayout';
-
-describe('getFittedImageSize', () => {
-  it('fits a tall image to the frame height', () => {
-    expect(getFittedImageSize({width: 900, height: 1600}, {width: 400, height: 320})).toEqual({
-      width: 180,
-      height: 320,
-    });
-  });
-
-  it('fits a wide image to the frame width', () => {
-    expect(getFittedImageSize({width: 2000, height: 500}, {width: 400, height: 300})).toEqual({
-      width: 400,
-      height: 100,
-    });
-  });
-
-  it('falls back to the frame when the image size is unusable', () => {
-    expect(getFittedImageSize({width: 0, height: 0}, {width: 400, height: 300})).toEqual({width: 400, height: 300});
-  });
-});
+import {getGalleryLayout, getRowImageSizes} from '#src/Libraries/ImageLayout';
 
 describe('getGalleryLayout', () => {
-  it('gives a single image its own frame', () => {
+  it('gives a single image its own row', () => {
     expect(getGalleryLayout(1)).toEqual({rows: [[0]], rowAspectRatio: 4 / 3});
   });
 
@@ -29,7 +9,7 @@ describe('getGalleryLayout', () => {
     expect(getGalleryLayout(2)).toEqual({rows: [[0, 1]], rowAspectRatio: 2});
   });
 
-  it('spans the third image across the second row', () => {
+  it('puts the third image alone on the second row', () => {
     expect(getGalleryLayout(3).rows).toEqual([[0, 1], [2]]);
   });
 
@@ -50,5 +30,44 @@ describe('getGalleryLayout', () => {
       [4, 5],
       [6, 7],
     ]);
+  });
+});
+
+describe('getRowImageSizes', () => {
+  const row = {width: 404, height: 200};
+  const gap = 4;
+  const portrait = {width: 600, height: 800};
+  const landscape = {width: 800, height: 600};
+
+  it('narrows portrait images to their own shape', () => {
+    expect(getRowImageSizes([portrait, portrait], row, gap)).toEqual([
+      {width: 150, height: 200},
+      {width: 150, height: 200},
+    ]);
+  });
+
+  it('gives a landscape image the width its portrait neighbor does not need', () => {
+    const [first, second] = getRowImageSizes([portrait, landscape], row, gap);
+    expect(first).toEqual({width: 150, height: 200});
+    expect(second).toEqual({width: 250, height: 187.5});
+  });
+
+  it('shrinks two landscape images equally', () => {
+    expect(getRowImageSizes([landscape, landscape], row, gap)).toEqual([
+      {width: 200, height: 150},
+      {width: 200, height: 150},
+    ]);
+  });
+
+  it('gives unknown images an equal share at full height', () => {
+    expect(getRowImageSizes([undefined, portrait], row, gap)).toEqual([
+      {width: 200, height: 200},
+      {width: 150, height: 200},
+    ]);
+  });
+
+  it('never exceeds the row or drops below a tappable size', () => {
+    expect(getRowImageSizes([{width: 1000, height: 100}], row, gap)).toEqual([{width: 404, height: 44}]);
+    expect(getRowImageSizes([{width: 100, height: 1000}], row, gap)).toEqual([{width: 44, height: 200}]);
   });
 });

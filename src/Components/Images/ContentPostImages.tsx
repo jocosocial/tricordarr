@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 
-import {ContentPostImageThumb} from '#src/Components/Images/ContentPostImageThumb';
+import {ContentPostImageRow} from '#src/Components/Images/ContentPostImageRow';
 import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -27,74 +27,48 @@ export const ContentPostImages = ({images, messageOnRight}: ContentPostImagesPro
   const {serverUrl} = useSwiftarrQueryClient();
   const {fromFileName} = useAppImage();
   const galleryView = appConfig.userPreferences.imageGalleryView;
+  const gap = styleDefaults.marginSize / 4;
 
   const viewerImages = useMemo(
     () => images.map(fileName => fromFileName(fileName, appConfig, serverUrl)),
     [images, appConfig, serverUrl, fromFileName],
   );
 
-  const layout = useMemo(() => getGalleryLayout(images.length), [images.length]);
+  const {rows, rowAspectRatio} = useMemo(
+    () =>
+      galleryView
+        ? getGalleryLayout(images.length)
+        : {rows: images.map((_, index) => [index]), rowAspectRatio: POST_IMAGE_ASPECT_RATIO},
+    [galleryView, images],
+  );
 
-  const styles = useMemo(() => {
-    const gap = styleDefaults.marginSize / 4;
-    return StyleSheet.create({
-      container: {
-        ...commonStyles.fullWidth,
-        gap,
-        marginTop: gap,
-      },
-      stackedImage: {
-        ...commonStyles.fullWidth,
-        aspectRatio: POST_IMAGE_ASPECT_RATIO,
-      },
-      row: {
-        ...commonStyles.fullWidth,
-        ...commonStyles.flexRow,
-        aspectRatio: layout.rowAspectRatio,
-        gap,
-      },
-      tile: {
-        ...commonStyles.flex,
-      },
-    });
-  }, [commonStyles, styleDefaults, layout.rowAspectRatio]);
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          ...commonStyles.fullWidth,
+          gap,
+          marginTop: gap,
+        },
+      }),
+    [commonStyles, gap],
+  );
 
   if (images.length === 0) {
     return null;
   }
 
-  if (!galleryView) {
-    return (
-      <View style={styles.container}>
-        {images.map((image, index) => (
-          <ContentPostImageThumb
-            key={image}
-            fileName={image}
-            index={index}
-            images={viewerImages}
-            style={styles.stackedImage}
-            align={messageOnRight ? 'end' : 'start'}
-          />
-        ))}
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
-      {layout.rows.map(row => (
-        <View key={row[0]} style={styles.row}>
-          {row.map(index => (
-            <ContentPostImageThumb
-              key={images[index]}
-              fileName={images[index]}
-              index={index}
-              images={viewerImages}
-              style={styles.tile}
-              align={'center'}
-            />
-          ))}
-        </View>
+      {rows.map(indexes => (
+        <ContentPostImageRow
+          key={images[indexes[0]]}
+          images={viewerImages}
+          indexes={indexes}
+          aspectRatio={rowAspectRatio}
+          gap={gap}
+          alignEnd={messageOnRight}
+        />
       ))}
     </View>
   );
