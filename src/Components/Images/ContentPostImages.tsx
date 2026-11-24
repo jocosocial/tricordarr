@@ -6,7 +6,7 @@ import {useAppImage} from '#src/Context/Contexts/AppImageContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {getGalleryLayout, POST_IMAGE_ASPECT_RATIO} from '#src/Libraries/ImageLayout';
+import {GALLERY_HEIGHT} from '#src/Libraries/ImageLayout';
 
 interface ContentPostImagesProps {
   images: string[];
@@ -14,7 +14,8 @@ interface ContentPostImagesProps {
 }
 
 /**
- * API images for a forum or Fez post, as a gallery or stacked depending on the user's preference.
+ * API images for a forum or Fez post, as one sideways-scrolling gallery or stacked depending on
+ * the user's preference.
  * Tapping any image opens a shared Lightbox populated with every image on the post so the user can
  * swipe between them.
  *
@@ -34,13 +35,10 @@ export const ContentPostImages = ({images, messageOnRight}: ContentPostImagesPro
     [images, appConfig, serverUrl, fromFileName],
   );
 
-  const {rows, rowAspectRatio} = useMemo(
-    () =>
-      galleryView
-        ? getGalleryLayout(images.length)
-        : {rows: images.map((_, index) => [index]), rowAspectRatio: POST_IMAGE_ASPECT_RATIO},
-    [galleryView, images],
-  );
+  const rows = useMemo(() => {
+    const indexes = images.map((_, index) => index);
+    return galleryView ? [indexes] : indexes.map(index => [index]);
+  }, [galleryView, images]);
 
   const styles = useMemo(
     () =>
@@ -65,9 +63,9 @@ export const ContentPostImages = ({images, messageOnRight}: ContentPostImagesPro
           key={images[indexes[0]]}
           images={viewerImages}
           indexes={indexes}
-          aspectRatio={rowAspectRatio}
           gap={gap}
           alignEnd={messageOnRight}
+          height={galleryView ? GALLERY_HEIGHT : undefined}
         />
       ))}
     </View>

@@ -1,9 +1,9 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {LayoutChangeEvent, StyleSheet, View} from 'react-native';
+import {LayoutChangeEvent, ScrollView, StyleSheet, View} from 'react-native';
 
 import {ContentPostImageThumb} from '#src/Components/Images/ContentPostImageThumb';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {getRowImageSizes, type ImageSize} from '#src/Libraries/ImageLayout';
+import {getImageCellSize, type ImageSize, POST_IMAGE_ASPECT_RATIO} from '#src/Libraries/ImageLayout';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ContentPostImageRowProps {
@@ -11,9 +11,10 @@ interface ContentPostImageRowProps {
   images: AppImageMetaData[];
   /** Which of them are in this row. */
   indexes: number[];
-  aspectRatio: number;
   gap: number;
   alignEnd?: boolean;
+  /** Fixed height. Otherwise the height follows the row's width. */
+  height?: number;
 }
 
 // Sizes seen so far, by file name, so a recycled list cell lays out at its final widths right away
@@ -21,18 +22,20 @@ interface ContentPostImageRowProps {
 const knownImageSizes = new Map<string, ImageSize>();
 
 /**
- * One row of a post's images, packed against one side. Each image is as wide as its shape needs. The
- * row's height comes only from its width, so images loading never move anything outside the row.
+ * One row of a post's images, packed against one side, scrolling sideways if they do not fit. The
+ * row's height never depends on its images, so their loading never moves anything outside the row.
  */
-export const ContentPostImageRow = ({images, indexes, aspectRatio, gap, alignEnd}: ContentPostImageRowProps) => {
+export const ContentPostImageRow = ({images, indexes, gap, alignEnd, height}: ContentPostImageRowProps) => {
   const {commonStyles} = useStyles();
   const [rowSize, setRowSize] = useState<ImageSize>();
   const [loadedSizes, setLoadedSizes] = useState<Record<string, ImageSize>>({});
 
   const handleLayout = useCallback((event: LayoutChangeEvent) => {
-    const {width, height} = event.nativeEvent.layout;
+    const {layout} = event.nativeEvent;
     setRowSize(previous =>
-      previous && previous.width === width && previous.height === height ? previous : {width, height},
+      previous && previous.width === layout.width && previous.height === layout.height
+        ? previous
+        : {width: layout.width, height: layout.height},
     );
   }, []);
 
@@ -46,40 +49,48 @@ export const ContentPostImageRow = ({images, indexes, aspectRatio, gap, alignEnd
       StyleSheet.create({
         row: {
           ...commonStyles.fullWidth,
+          ...(height === undefined ? {aspectRatio: POST_IMAGE_ASPECT_RATIO} : {height}),
+        },
+        content: {
           ...commonStyles.flexRow,
           ...(alignEnd ? commonStyles.justifyContentEnd : undefined),
-          aspectRatio,
+          flexGrow: 1,
           gap,
         },
-        unmeasuredTile: {
-          ...commonStyles.flex,
-        },
       }),
-    [commonStyles, alignEnd, aspectRatio, gap],
+    [commonStyles, alignEnd, gap, height],
   );
 
-  const tileSizes = useMemo(() => {
+  const cellSizes = useMemo(() => {
     if (!rowSize) {
       return undefined;
     }
-    const imageSizes = indexes.map(index => {
+    return indexes.map(index => {
       const {fileName} = images[index];
-      return loadedSizes[fileName] ?? knownImageSizes.get(fileName);
+      return getImageCellSize(loadedSizes[fileName] ?? knownImageSizes.get(fileName), rowSize);
     });
-    return getRowImageSizes(imageSizes, rowSize, gap);
-  }, [rowSize, indexes, images, loadedSizes, gap]);
+  }, [rowSize, indexes, images, loadedSizes]);
+
+  const cells = cellSizes?.map((cellSize, position) => (
+    <ContentPostImageThumb
+      key={images[indexes[position]].fileName}
+      index={indexes[position]}
+      images={images}
+      style={cellSize}
+      onImageSize={handleImageSize}
+      showPosition={indexes.length > 1}
+    />
+  ));
 
   return (
     <View style={styles.row} onLayout={handleLayout}>
-      {indexes.map((index, position) => (
-        <ContentPostImageThumb
-          key={images[index].fileName}
-          index={index}
-          images={images}
-          style={tileSizes?.[position] ?? styles.unmeasuredTile}
-          onImageSize={handleImageSize}
-        />
-      ))}
+      {indexes.length > 1 ? (
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.content}>
+          {cells}
+        </ScrollView>
+      ) : (
+        <View style={styles.content}>{cells}</View>
+      )}
     </View>
   );
 };

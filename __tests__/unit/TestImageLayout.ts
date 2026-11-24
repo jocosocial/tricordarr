@@ -1,73 +1,23 @@
-import {getGalleryLayout, getRowImageSizes} from '#src/Libraries/ImageLayout';
+import {getImageCellSize} from '#src/Libraries/ImageLayout';
 
-describe('getGalleryLayout', () => {
-  it('gives a single image its own row', () => {
-    expect(getGalleryLayout(1)).toEqual({rows: [[0]], rowAspectRatio: 4 / 3});
+describe('getImageCellSize', () => {
+  const row = {width: 400, height: 300};
+
+  it('narrows a portrait image to its own shape', () => {
+    expect(getImageCellSize({width: 600, height: 800}, row)).toEqual({width: 225, height: 300});
   });
 
-  it('puts two images side by side', () => {
-    expect(getGalleryLayout(2)).toEqual({rows: [[0, 1]], rowAspectRatio: 2});
+  it('shrinks an image that would be wider than the row', () => {
+    expect(getImageCellSize({width: 1600, height: 800}, row)).toEqual({width: 400, height: 200});
   });
 
-  it('puts the third image alone on the second row', () => {
-    expect(getGalleryLayout(3).rows).toEqual([[0, 1], [2]]);
-  });
-
-  it('puts four images in two rows', () => {
-    expect(getGalleryLayout(4)).toEqual({
-      rows: [
-        [0, 1],
-        [2, 3],
-      ],
-      rowAspectRatio: 2,
-    });
-  });
-
-  it('shows every image of a full post', () => {
-    expect(getGalleryLayout(8).rows).toEqual([
-      [0, 1],
-      [2, 3],
-      [4, 5],
-      [6, 7],
-    ]);
-  });
-});
-
-describe('getRowImageSizes', () => {
-  const row = {width: 404, height: 200};
-  const gap = 4;
-  const portrait = {width: 600, height: 800};
-  const landscape = {width: 800, height: 600};
-
-  it('narrows portrait images to their own shape', () => {
-    expect(getRowImageSizes([portrait, portrait], row, gap)).toEqual([
-      {width: 150, height: 200},
-      {width: 150, height: 200},
-    ]);
-  });
-
-  it('gives a landscape image the width its portrait neighbor does not need', () => {
-    const [first, second] = getRowImageSizes([portrait, landscape], row, gap);
-    expect(first).toEqual({width: 150, height: 200});
-    expect(second).toEqual({width: 250, height: 187.5});
-  });
-
-  it('shrinks two landscape images equally', () => {
-    expect(getRowImageSizes([landscape, landscape], row, gap)).toEqual([
-      {width: 200, height: 150},
-      {width: 200, height: 150},
-    ]);
-  });
-
-  it('gives unknown images an equal share at full height', () => {
-    expect(getRowImageSizes([undefined, portrait], row, gap)).toEqual([
-      {width: 200, height: 200},
-      {width: 150, height: 200},
-    ]);
+  it('gives an unknown image a square cell', () => {
+    expect(getImageCellSize(undefined, row)).toEqual({width: 300, height: 300});
+    expect(getImageCellSize({width: 0, height: 0}, row)).toEqual({width: 300, height: 300});
   });
 
   it('never exceeds the row or drops below a tappable size', () => {
-    expect(getRowImageSizes([{width: 1000, height: 100}], row, gap)).toEqual([{width: 404, height: 44}]);
-    expect(getRowImageSizes([{width: 100, height: 1000}], row, gap)).toEqual([{width: 44, height: 200}]);
+    expect(getImageCellSize({width: 1000, height: 100}, row)).toEqual({width: 400, height: 44});
+    expect(getImageCellSize({width: 100, height: 1000}, row)).toEqual({width: 44, height: 300});
   });
 });

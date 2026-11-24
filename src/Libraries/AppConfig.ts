@@ -69,7 +69,7 @@ export interface UserPreferences {
   highlightForumAlertWords: boolean;
   autosavePhotos: boolean;
   autoCompressOversizedImages: boolean;
-  /** Show a post's images as one compact gallery rather than stacked. */
+  /** Show a post's images as one sideways-scrolling row rather than stacked. */
   imageGalleryView: boolean;
   shareOpensSheet: boolean;
   seamailIncludeLfgs: boolean;

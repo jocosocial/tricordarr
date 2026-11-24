@@ -80,7 +80,7 @@ export const ImageSettingsScreen = () => {
                 onPress={handleImageGalleryView}
                 style={commonStyles.paddingHorizontalSmall}
                 helperText={
-                  'Show the images in a post together as a compact gallery. When off, each image is shown on its own line.'
+                  'Show the images in a post in one row that scrolls sideways. When off, each image is shown on its own line.'
                 }
                 value={imageGalleryView}
               />
