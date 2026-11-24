@@ -16,8 +16,8 @@ export const LfgCreateHelpScreen = () => {
         </HelpChapterTitleView>
         <HelpChapterTitleView title={'Misc'}>
           <HelpTopicView>
-            If you just created an LFG and can't seem to find it in the list, ensure that you are looking at the "Owned
-            LFGs" list and not the "Find LFGs" list.
+            If you just created an LFG and can't seem to find it in the list, check the filter menu. Your LFGs show in
+            the default list, but a type, Hide Past, or Unread filter may be hiding it.
           </HelpTopicView>
         </HelpChapterTitleView>
       </ScrollingContentView>

@@ -147,18 +147,19 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           initialRouteName: LfgStackComponents.lfgListScreen,
           screens: {
             LfgListScreen: {
-              path: 'lfg/:endpoint(open|joined|owner|former)?',
+              path: 'lfg/:endpoint(all|open|joined|owner|former)?',
               parse: {
                 endpoint: (value?: string) => {
-                  // Default to 'open' when no endpoint in URL
-                  if (!value || value === '') return 'open';
+                  // Default to 'all' when no endpoint in URL. 'open' is the old name for the Find list,
+                  // which is now part of 'all'; keep it so existing links still land on the list.
+                  if (!value || value === '' || value === 'open') return 'all';
                   return value;
                 },
               },
               stringify: {
                 endpoint: (value: string) => {
-                  // /lfg maps to 'open', others include endpoint in URL
-                  return (value === 'open' ? undefined : value) as string;
+                  // /lfg maps to 'all', others include endpoint in URL
+                  return (value === 'all' ? undefined : value) as string;
                 },
               },
             },

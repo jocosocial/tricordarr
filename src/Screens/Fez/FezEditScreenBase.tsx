@@ -16,7 +16,7 @@ import {useFezForm} from '#src/Hooks/Fez/useFezForm';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {HelpScreenComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
+import {lfgJoinedListScrollFilter, LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
@@ -127,7 +127,7 @@ export const FezEditScreenBase = ({fez, renderForm, helpScreen, screenTitle, int
       }
     }
 
-    dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+    dispatchScrollToTop(LfgStackComponents.lfgListScreen, lfgJoinedListScrollFilter);
     navigation.goBack();
   };
 

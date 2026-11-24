@@ -90,7 +90,6 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
                 })
               }
               marker={marker}
-              showIcon={true}
             />
           );
         } else {

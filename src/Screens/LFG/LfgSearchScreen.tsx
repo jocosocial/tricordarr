@@ -13,13 +13,13 @@ import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackCo
 import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {FezListEndpoints} from '#src/Types';
+import {LfgListEndpoint} from '#src/Types';
 
 type Props = StackScreenProps<LfgStackParamList, LfgStackComponents.lfgSearchScreen>;
 
 // Matches the labels in LfgFilterMenu's source group.
-const sourceLabels: Record<FezListEndpoints, string> = {
-  open: 'Find',
+const sourceLabels: Record<LfgListEndpoint, string> = {
+  all: 'All',
   joined: 'Joined',
   owner: 'Owned',
   former: 'Former',

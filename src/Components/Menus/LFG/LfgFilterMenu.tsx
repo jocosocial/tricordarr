@@ -18,14 +18,13 @@ interface LfgFilterMenuProps {
 }
 
 /**
- * Filter menu for the unified LFG list. The Find/Joined/Owned source is a single-select group at
- * the top; everything below it refines whichever source is selected (AND, not OR). Favorites and
- * Unread require a FezParticipant pivot, which only exists once you've joined, so both are
- * disabled on Find.
+ * Filter menu for the unified LFG list. The list shows all LFGs by default; Joined and Owned at the
+ * top are toggles that narrow it to one source, and selecting the active one returns to all.
+ * Everything below refines whichever source is selected (AND, not OR). Favorites and Unread only
+ * ever match joined LFGs, so selecting either lists joined LFGs only.
  *
  * In pre-registration mode users can only list the LFGs they own (LfgFilterProvider holds them
- * on Owned), and can't favorite or read chats, so the other sources and member filters are
- * disabled.
+ * on Owned), and can't favorite or read chats, so Joined and the member filters are disabled.
  */
 export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
@@ -36,6 +35,8 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
     setLfgTypeFilter,
     lfgHidePastFilter,
     setLfgHidePastFilter,
+    lfgCancelledFilter,
+    setLfgCancelledFilter,
     lfgOnlyNew,
     setLfgOnlyNew,
     lfgFavoriteFilter,
@@ -46,14 +47,13 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
   const {data: userNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {preRegistrationMode} = usePreRegistration();
 
-  const supportsMemberFilters = lfgSourceFilter !== 'open' && !preRegistrationMode;
+  const supportsMemberFilters = !preRegistrationMode;
   const joinedBadge = getBadgeDisplayValue(userNotificationData?.newFezMessageCount);
   const joinedLabel = joinedBadge ? `Joined (${joinedBadge})` : 'Joined';
 
-  const handleSourceSelection = (newSource: LfgListSource) => {
-    if (newSource !== lfgSourceFilter) {
-      setLfgSourceFilter(newSource);
-    }
+  /** Selecting a source narrows to it; selecting the active one again returns to all LFGs. */
+  const handleSourceSelection = (newSource: Exclude<LfgListSource, 'all'>) => {
+    setLfgSourceFilter(newSource === lfgSourceFilter ? 'all' : newSource);
     closeMenu();
   };
 
@@ -72,6 +72,11 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
     closeMenu();
   };
 
+  const handleCancelledOnly = () => {
+    setLfgCancelledFilter(!lfgCancelledFilter);
+    closeMenu();
+  };
+
   const handleFilterSelection = (newValue: FezType) => {
     if (newValue === lfgTypeFilter) {
       setLfgTypeFilter(undefined);
@@ -85,13 +90,6 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
 
   return (
     <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <SelectableMenuItem
-        leadingIcon={AppIcons.lfgFind}
-        title={'Find'}
-        selected={lfgSourceFilter === 'open'}
-        onPress={() => handleSourceSelection('open')}
-        disabled={preRegistrationMode}
-      />
       <SelectableMenuItem
         leadingIcon={AppIcons.lfgJoined}
         title={joinedLabel}
@@ -118,6 +116,7 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
         selected={lfgOnlyNew}
         disabled={!supportsMemberFilters}
       />
+      <SelectableMenuItem title={'Cancelled'} onPress={handleCancelledOnly} selected={lfgCancelledFilter} />
       <SelectableMenuItem title={'Hide Past'} onPress={handleHidePast} selected={lfgHidePastFilter} />
       {showTypes && (
         <>
