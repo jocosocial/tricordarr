@@ -7,10 +7,12 @@ import {useAppMenuScroll} from '#src/Components/Menus/AppMenu';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 
-// Static: doesn't depend on commonStyles, theme, or props.
+// Static: doesn't depend on commonStyles, theme, or props. The title grows to fill the row so the
+// check stays at the right edge. Using `space-between` on the row instead strands the title at the
+// far right when an item has a leading icon but no check (unselected).
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'space-between',
+  content: {
+    flexGrow: 1,
   },
 });
 
@@ -50,7 +52,7 @@ export const SelectableMenuItem = (props: SelectableMenuItemProps) => {
     <Menu.Item
       title={props.title}
       style={props.selected ? commonStyles.surfaceVariant : undefined}
-      containerStyle={styles.container}
+      contentStyle={styles.content}
       trailingIcon={props.selected ? AppIcons.check : undefined}
       onPress={props.onPress}
       leadingIcon={props.leadingIcon}

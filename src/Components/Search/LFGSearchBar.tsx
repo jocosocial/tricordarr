@@ -7,24 +7,23 @@ import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useLfgFilter} from '#src/Context/Contexts/LfgFilterContext';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useSafePagination} from '#src/Hooks/useSafePagination';
-import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
+import {useLfgSourceQuery} from '#src/Queries/Fez/LfgListQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {FezListEndpoints} from '#src/Types';
+import {LfgListEndpoint} from '#src/Types';
 
 interface LFGSearchBarProps {
-  endpoint: FezListEndpoints;
+  endpoint: LfgListEndpoint;
 }
 
 export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
   const [queryEnable, setQueryEnable] = useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
-  const {lfgHidePastFilter} = useLfgFilter();
-  const {data, refetch, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage} = useLfgListQuery({
+  const {lfgHidePastFilter, lfgCancelledFilter} = useLfgFilter();
+  const {fezzes, refetch, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage} = useLfgSourceQuery({
     search: searchQuery,
     hidePast: lfgHidePastFilter,
-    options: {
-      enabled: queryEnable,
-    },
+    cancelledOnly: endpoint !== 'former' && lfgCancelledFilter,
+    enabled: queryEnable,
     endpoint: endpoint,
   });
   const listRef = useRef<FlashListRef<FezData>>(null);
@@ -59,16 +58,12 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
   });
 
   useEffect(() => {
-    if (data && queryEnable) {
-      let fezDataList: FezData[] = [];
-      data.pages.map(page => {
-        fezDataList = fezDataList.concat(page.fezzes);
-      });
-      setLfgList(fezDataList);
+    if (queryEnable) {
+      setLfgList(fezzes);
     } else {
       setLfgList([]);
     }
-  }, [data, queryEnable]);
+  }, [fezzes, queryEnable]);
 
   return (
     <>

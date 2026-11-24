@@ -18,8 +18,13 @@ describe('LfgFilterProvider source', () => {
   let renderedSources: LfgListSource[];
   let setSource: (source: LfgListSource) => void;
 
+  let filters: ReturnType<typeof useLfgFilterContext>;
+  const useLfgFilterContext = () => useContext(LfgFilterContext)!;
+
   const Consumer = () => {
-    const {lfgSourceFilter, setLfgSourceFilter} = useContext(LfgFilterContext)!;
+    const context = useLfgFilterContext();
+    const {lfgSourceFilter, setLfgSourceFilter} = context;
+    filters = context;
     renderedSources.push(lfgSourceFilter);
     setSource = setLfgSourceFilter;
     return null;
@@ -53,15 +58,15 @@ describe('LfgFilterProvider source', () => {
     mockPreRegistrationMode = false;
   });
 
-  it('starts on Find outside pre-registration mode', () => {
+  it('starts on All outside pre-registration mode', () => {
     render();
-    expect(renderedSources[0]).toBe('open');
+    expect(renderedSources[0]).toBe('all');
   });
 
   it('starts on Owned in pre-registration mode, from the very first render', () => {
     mockPreRegistrationMode = true;
     render();
-    expect(renderedSources).not.toContain('open');
+    expect(renderedSources).not.toContain('all');
     expect(currentSource()).toBe('owner');
   });
 
@@ -79,17 +84,43 @@ describe('LfgFilterProvider source', () => {
     expect(currentSource()).toBe('owner');
   });
 
-  it('moves onto Find when pre-registration mode turns off', () => {
+  it('moves onto All when pre-registration mode turns off', () => {
     mockPreRegistrationMode = true;
     const renderer = render();
     rerenderWithMode(renderer, false);
-    expect(currentSource()).toBe('open');
+    expect(currentSource()).toBe('all');
   });
 
   it('holds on Owned whatever is requested in pre-registration mode', () => {
     mockPreRegistrationMode = true;
     render();
-    act(() => setSource('open'));
+    act(() => setSource('all'));
     expect(currentSource()).toBe('owner');
+  });
+
+  it('leaves the Cancelled filter off by default, and counts it as an active filter', () => {
+    render();
+    expect(filters.lfgCancelledFilter).toBe(false);
+    expect(filters.anyLfgFilterActive).toBe(false);
+    act(() => filters.setLfgCancelledFilter(true));
+    expect(filters.anyLfgFilterActive).toBe(true);
+  });
+
+  it('clears Cancelled with the other filters', () => {
+    render();
+    act(() => filters.setLfgCancelledFilter(true));
+    act(() => filters.clearLfgFilters());
+    expect(filters.lfgCancelledFilter).toBe(false);
+    expect(filters.anyLfgFilterActive).toBe(false);
+  });
+
+  it('keeps Favorites and Unread when switching sources', () => {
+    render();
+    act(() => filters.setLfgFavoriteFilter(true));
+    act(() => filters.setLfgOnlyNew(true));
+    act(() => setSource('joined'));
+    act(() => setSource('all'));
+    expect(filters.lfgFavoriteFilter).toBe(true);
+    expect(filters.lfgOnlyNew).toBe(true);
   });
 });

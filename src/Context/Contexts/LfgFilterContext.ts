@@ -6,19 +6,22 @@ import {LfgListSource} from '#src/Types';
 interface LfgFilterContextType {
   lfgCruiseDayFilter?: number;
   setLfgCruiseDayFilter: Dispatch<SetStateAction<number | undefined>>;
-  /** Which of the Find/Joined/Owned lists is selected. Defaults to 'open' (Find), or 'owner' (Owned) in pre-registration. */
+  /** Which list is selected: all LFGs, only Joined, or only Owned. Defaults to 'all', or 'owner' in pre-registration. */
   lfgSourceFilter: LfgListSource;
-  /** Switches the selected source, clearing Favorites/Unread if the new source can't honor them. */
+  /** Switches the selected source. */
   setLfgSourceFilter: (source: LfgListSource) => void;
   lfgTypeFilter?: FezType;
   setLfgTypeFilter: Dispatch<SetStateAction<FezType | undefined>>;
   lfgHidePastFilter: boolean;
   setLfgHidePastFilter: Dispatch<SetStateAction<boolean>>;
+  /** When true, only cancelled LFGs are shown. Off by default, which leaves cancelled LFGs in the list. */
+  lfgCancelledFilter: boolean;
+  setLfgCancelledFilter: Dispatch<SetStateAction<boolean>>;
   lfgOnlyNew: boolean | undefined;
   setLfgOnlyNew: Dispatch<SetStateAction<boolean | undefined>>;
   lfgFavoriteFilter: boolean | undefined;
   setLfgFavoriteFilter: Dispatch<SetStateAction<boolean | undefined>>;
-  /** Resets source to Find and clears every refinement, including Hide Past back to its config default. */
+  /** Resets source to the default (all) and clears every refinement, including Hide Past back to its config default. */
   clearLfgFilters: () => void;
   anyLfgFilterActive: boolean;
 }

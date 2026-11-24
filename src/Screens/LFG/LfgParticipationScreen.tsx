@@ -23,7 +23,7 @@ import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
+import {lfgJoinedListScrollFilter, LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -82,7 +82,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
       {
         onSuccess: response => {
           updateMembership(fezData.fezID, response.data);
-          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+          dispatchScrollToTop(LfgStackComponents.lfgListScreen, lfgJoinedListScrollFilter);
         },
         onSettled: () => setRefreshing(false),
       },
@@ -120,7 +120,7 @@ const LfgParticipationScreenInner = ({navigation, route}: Props) => {
         {
           onSuccess: response => {
             updateMembership(lfg.fezID, response.data, 'join');
-            dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+            dispatchScrollToTop(LfgStackComponents.lfgListScreen, lfgJoinedListScrollFilter);
           },
           onSettled: () => setRefreshing(false),
         },

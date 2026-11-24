@@ -8,10 +8,10 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
-import {FezListEndpoints} from '#src/Types';
+import {LfgListEndpoint} from '#src/Types';
 
 interface LfgListActionsMenuProps {
-  endpoint: FezListEndpoints;
+  endpoint: LfgListEndpoint;
 }
 
 export const LfgListActionsMenu = ({endpoint}: LfgListActionsMenuProps) => {

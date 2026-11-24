@@ -7,6 +7,7 @@ import {ScheduleItemStatusBadge} from '#src/Components/Badges/ScheduleItemStatus
 import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezCardActionsMenu} from '#src/Components/Menus/Fez/FezCardActionsMenu';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
@@ -15,6 +16,7 @@ import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {getParticipantLabel} from '#src/Hooks/Fez/useFezData';
 import {useMenu} from '#src/Hooks/useMenu';
+import {isUserInFez} from '#src/Libraries/FezMembership';
 import {unreadCount as unreadPostCount} from '#src/Libraries/UnreadCounts';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -25,11 +27,9 @@ interface FezCardProps {
   onPress?: () => void;
   onLongPress?: () => void;
   marker?: ScheduleCardMarkerType;
-  showIcon?: boolean;
   showDay?: boolean;
   titleHeader?: string;
   enableReportOnly?: boolean;
-  icon?: string;
   disabled?: boolean;
   /** When true, shows fez.info as the card description. Off by default so list cards stay compact. */
   showDescription?: boolean;
@@ -42,11 +42,9 @@ const FezCardInternal = ({
   onPress,
   onLongPress,
   marker,
-  showIcon = false,
   showDay = false,
   titleHeader,
   enableReportOnly = false,
-  icon,
   disabled = false,
   showDescription = false,
   addedTo = false,
@@ -54,6 +52,8 @@ const FezCardInternal = ({
   const {theme} = useAppTheme();
   const unreadCount = fez.members ? unreadPostCount(fez.members.postCount, fez.members.readCount) : 0;
   const {commonStyles} = useStyles();
+  const {currentUserID} = useSession();
+  const isMember = isUserInFez(fez, currentUserID);
   const commonNavigation = useCommonStack();
   const {visible: menuVisible, openMenu, closeMenu} = useMenu();
   const {primeFezDetail} = useFezCacheReducer();
@@ -89,14 +89,33 @@ const FezCardInternal = ({
         />
       );
     }
+    // Marks an LFG or event the user is actually in. Moderators get members data on LFGs they have not
+    // joined, so check the participant lists. It rides alongside whatever else the card is showing.
+    const joinedIcon = isMember ? (
+      <AppIcon
+        color={theme.colors.constantWhite}
+        icon={FezType.isLFGType(fez.fezType) ? AppIcons.lfgJoined : AppIcons.personalEvent}
+      />
+    ) : undefined;
+
     if (fez.cancelled) {
-      return <ScheduleItemStatusBadge status={'Cancelled'} />;
+      return (
+        <>
+          {joinedIcon}
+          <ScheduleItemStatusBadge status={'Cancelled'} />
+        </>
+      );
     }
     if (fez.members?.isMuted) {
       // Other mute icons in this app are Red. Because this one is not on the background
       // (is on a FezCard) instead I didn't like the contrast of the red on grey so I'm
       // making this white to match the text and other icons of this card style.
-      return <AppIcon icon={AppIcons.mute} color={theme.colors.constantWhite} />;
+      return (
+        <>
+          {joinedIcon}
+          <AppIcon icon={AppIcons.mute} color={theme.colors.constantWhite} />
+        </>
+      );
     }
     // Unlike mute, the star does not take the slot on its own: a favorited LFG is one you care
     // about, so hiding its unread count or "Added To" badge would be exactly backwards. White
@@ -108,6 +127,7 @@ const FezCardInternal = ({
     if (addedTo) {
       return (
         <>
+          {joinedIcon}
           {favoriteIcon}
           <Badge style={styles.badge}>Added To</Badge>
         </>
@@ -116,21 +136,18 @@ const FezCardInternal = ({
     if (unreadCount) {
       return (
         <>
+          {joinedIcon}
           {favoriteIcon}
           <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>
         </>
       );
     }
-    if (showIcon) {
-      const outputIcon = icon ? icon : FezType.isLFGType(fez.fezType) ? AppIcons.lfg : AppIcons.personalEvent;
-      return (
-        <>
-          {favoriteIcon}
-          <AppIcon color={theme.colors.constantWhite} icon={outputIcon} />
-        </>
-      );
-    }
-    return favoriteIcon;
+    return (
+      <>
+        {joinedIcon}
+        {favoriteIcon}
+      </>
+    );
   };
 
   /**

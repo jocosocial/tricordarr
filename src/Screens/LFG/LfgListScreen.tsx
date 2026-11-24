@@ -34,16 +34,16 @@ import {
   LfgStackParamList,
   useLFGStackNavigation,
 } from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
-import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
+import {useLfgSourceQuery} from '#src/Queries/Fez/LfgListQueries';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {LoggedInScreen} from '#src/Screens/Checkpoint/LoggedInScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
-import {FezListEndpoints, ScheduleFlatListSeparator} from '#src/Types';
+import {LfgListEndpoint, ScheduleFlatListSeparator} from '#src/Types';
 
 interface LfgListScreenInnerProps {
-  endpoint: FezListEndpoints;
+  endpoint: LfgListEndpoint;
   enableFilters?: boolean;
   enableReportOnly?: boolean;
   listHeader?: ReactElement;
@@ -67,24 +67,23 @@ const LfgListScreenInner = ({
   cruiseDayInitial,
   scrollToTopIntent,
 }: LfgListScreenInnerProps) => {
-  const {lfgTypeFilter, lfgHidePastFilter, lfgOnlyNew, setLfgOnlyNew, lfgFavoriteFilter} = useLfgFilter();
-  // /fez/open has no FezParticipant pivot, so ?favorite and ?onlynew are meaningless there.
-  // Swiftarr currently ignores ?onlynew on /fez/owner too (upstream issue filed); sending it is harmless
-  // and will start narrowing once that lands, with no client change needed.
-  const supportsMemberFilters = endpoint === 'joined' || endpoint === 'owner';
+  const {lfgTypeFilter, lfgHidePastFilter, lfgCancelledFilter, lfgOnlyNew, setLfgOnlyNew, lfgFavoriteFilter} =
+    useLfgFilter();
+  // Former has no FezParticipant pivot, so ?favorite and ?onlynew are meaningless there. On 'all'
+  // they make the list query joined only (useLfgSourceQuery), since open LFGs can never match.
+  const supportsMemberFilters = endpoint !== 'former';
   const {commonStyles} = useStyles();
   const {preRegistrationMode} = usePreRegistration();
   const [fezList, setFezList] = useState<FezData[]>([]);
   const listRef = useRef<FlashListRef<FezData>>(null);
-  // const processedIntentRef = useRef<string | null>(null);
 
   const {selectedCruiseDay, isSwitchingDays, handleSetCruiseDay, onDataLoaded, onQueryError} = useCruiseDayPicker({
     listRef,
     clearList: useCallback(() => setFezList([]), []),
     defaultCruiseDay: cruiseDayInitial,
   });
-  const {data, refetch, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching} =
-    useLfgListQuery({
+  const {fezzes, refetch, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching} =
+    useLfgSourceQuery({
       endpoint: endpoint,
       fezType: lfgTypeFilter,
       // @TODO we intend to change this some day. Upstream Swiftarr issue.
@@ -92,6 +91,7 @@ const LfgListScreenInner = ({
       // selectedCruiseDay === 0 means "All Days" in the UI, pass undefined to API to get all days
       cruiseDay: endpoint === 'former' || selectedCruiseDay === 0 ? undefined : selectedCruiseDay - 1,
       hidePast: lfgHidePastFilter,
+      cancelledOnly: endpoint !== 'former' && lfgCancelledFilter,
       onlyNew: supportsMemberFilters ? lfgOnlyNew : undefined,
       favorite: supportsMemberFilters ? lfgFavoriteFilter : undefined,
     });
@@ -111,11 +111,11 @@ const LfgListScreenInner = ({
   const {invalidateFez} = useFezCacheReducer();
 
   // We used to show the time separators for all days all lists. However since realizing that sorting
-  // LFGs is highly variable by endpoint (find, joined, owned all different) that divider is kinda
+  // LFGs is highly variable by endpoint (joined and owned differ from each other) that divider is kinda
   // meaningless. Especially since we already show the time in the card.
-  // Open and Former sort by startTime so those are the only ones we potentially want to show
-  // the dividers in.
-  const showDayInDividers = (selectedCruiseDay === 0 && endpoint === 'open') || endpoint === 'former';
+  // The merged All list and Former sort by startTime so those are the only ones we potentially want
+  // to show the dividers in.
+  const showDayInDividers = (selectedCruiseDay === 0 && endpoint === 'all') || endpoint === 'former';
   const listSeparator: ScheduleFlatListSeparator = showDayInDividers ? 'day' : 'none';
 
   const getNavButtons = useCallback(() => {
@@ -177,11 +177,11 @@ const LfgListScreenInner = ({
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && data.pages) {
-      setFezList(data.pages.flatMap(p => p.fezzes));
+    if (!isLoading) {
+      setFezList(fezzes);
       onDataLoaded();
     }
-  }, [data, onDataLoaded]);
+  }, [fezzes, isLoading, onDataLoaded]);
 
   /**
    * This operates more like an intent than a state.
@@ -225,7 +225,7 @@ const LfgListScreenInner = ({
         <ScheduleHeaderView
           selectedCruiseDay={selectedCruiseDay}
           setCruiseDay={handleSetCruiseDay}
-          scrollToNow={endpoint === 'open' ? scrollToNow : undefined}
+          scrollToNow={endpoint === 'all' ? scrollToNow : undefined}
           enableAll={true}
         />
       )}
@@ -263,7 +263,7 @@ interface LfgListScreenWithEndpointProps extends StackScreenProps<
 /**
  * Middle component that handles route parameters and state management.
  *
- * The Find/Joined/Owned source now lives in `LfgFilterContext` (it's a filter, selected from the
+ * The All/Joined/Owned source now lives in `LfgFilterContext` (it's a filter, selected from the
  * LfgFilterMenu), not local state. The route param is kept in sync in both directions so deep
  * links (`lfg/:endpoint?`), the navigator's title, and `useScrollToTopIntent`'s
  * `{key: 'endpoint', value: 'joined'}` route-param matching all keep working unchanged. 'former'
@@ -274,15 +274,15 @@ const LfgListScreenWithEndpoint = ({route, navigation}: LfgListScreenWithEndpoin
   const isFormer = route.params.endpoint === 'former';
   // In pre-registration mode LfgFilterProvider holds the source on Owned, so this (and the
   // route param and title it syncs to) follows the source like any other selection.
-  const endpoint: FezListEndpoints = isFormer ? 'former' : lfgSourceFilter;
+  const endpoint: LfgListEndpoint = isFormer ? 'former' : lfgSourceFilter;
 
   // Tracks the last value written by either direction, so the two effects below don't fight.
-  const lastSyncedRef = useRef<FezListEndpoints | undefined>(undefined);
+  const lastSyncedRef = useRef<LfgListEndpoint | undefined>(undefined);
 
   // Adopt an externally-set route param (initial mount, deep link) into the context.
   useEffect(() => {
     // A link to /lfg replaces the params without one, and initialParams only applies on first mount.
-    const param = route.params.endpoint ?? 'open';
+    const param = route.params.endpoint ?? 'all';
     if (param !== 'former' && param !== lastSyncedRef.current) {
       lastSyncedRef.current = param;
       setLfgSourceFilter(param);
@@ -303,8 +303,8 @@ const LfgListScreenWithEndpoint = ({route, navigation}: LfgListScreenWithEndpoin
   const showFab = endpoint !== 'former';
 
   // Determine urlPath based on endpoint
-  const urlPathMap: Record<FezListEndpoints, string> = {
-    open: '/lfg',
+  const urlPathMap: Record<LfgListEndpoint, string> = {
+    all: '/lfg',
     joined: '/lfg/joined',
     owner: '/lfg/owned',
     former: '/lfg/former',

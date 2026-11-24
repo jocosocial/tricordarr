@@ -45,7 +45,7 @@ import {
   HelpScreenComponents,
   useCommonStack,
 } from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
+import {lfgJoinedListScrollFilter, LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
@@ -277,7 +277,7 @@ const FezChatScreenInner = ({route}: Props) => {
         });
         appendPostToCache(route.params.fezID, response.data);
         resetInitialReadCount();
-        dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+        dispatchScrollToTop(LfgStackComponents.lfgListScreen, lfgJoinedListScrollFilter);
       } catch (error) {
         // The error snackbar is raised by useTokenAuthMutation's onError. Swallow here so the
         // rejection doesn't escape into Formik's submit handling.
