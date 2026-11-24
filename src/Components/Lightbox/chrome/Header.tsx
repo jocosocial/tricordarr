@@ -1,11 +1,13 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {IconButton} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Item} from 'react-navigation-header-buttons';
 
 import {HeaderBackButton} from '#src/Components/Buttons/HeaderButtons/HeaderBackButton';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PagerDots} from '#src/Components/Lightbox/chrome/PagerDots';
+import {LightboxActionsMenu} from '#src/Components/Menus/Lightbox/LightboxActionsMenu';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -21,11 +23,11 @@ interface HeaderProps {
 
 /**
  * Lightbox header: the shared header back button (which closes the lightbox) and pager dots on
- * the left, Info / Save / Share on the right. The back button matches the one in navigation
+ * the left; an actions menu (download, settings, share) and, in developer mode only, an Info
+ * button on the right. The back button matches the one in navigation
  * headers, so leaving the viewer looks like leaving any other screen.
- * Action icons use Paper IconButton at the same size and shape as navigation headers
- * (and the previous ImageViewerHeaderView). Paper's default 6px margin is stripped
- * so the cluster matches header density. `marginLeft: 'auto'` keeps them
+ * Both use the shared header button components, so size, spacing and hit area match
+ * navigation headers. `marginLeft: 'auto'` keeps them
  * right-justified even when pager dots are hidden for a single image.
  */
 export const Header = ({
@@ -39,6 +41,7 @@ export const Header = ({
   const insets = useSafeAreaInsets();
   const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
 
   const styles = useMemo(
     () =>
@@ -58,9 +61,8 @@ export const Header = ({
           ...commonStyles.alignItemsCenter,
           ...commonStyles.justifyContentEnd,
           marginLeft: 'auto',
-        },
-        iconButton: {
-          ...commonStyles.marginZero,
+          // Matches headerRightContainerStyle in navigation headers so the menu isn't flush to the edge.
+          paddingRight: 16,
         },
       }),
     [commonStyles, insets.top],
@@ -73,33 +75,17 @@ export const Header = ({
       </MaterialHeaderButtons>
       <PagerDots count={imageCount} activeIndex={activeIndex} />
       <View style={styles.actions}>
-        {onPressInfo && (
-          <IconButton
-            icon={AppIcons.info}
-            onPress={onPressInfo}
-            iconColor={theme.colors.onImageViewer}
-            accessibilityLabel={'Image info'}
-            style={styles.iconButton}
-          />
-        )}
-        {onPressSave && (
-          <IconButton
-            icon={AppIcons.download}
-            onPress={onPressSave}
-            iconColor={theme.colors.onImageViewer}
-            accessibilityLabel={'Save image'}
-            style={styles.iconButton}
-          />
-        )}
-        {onPressShare && (
-          <IconButton
-            icon={AppIcons.share}
-            onPress={onPressShare}
-            iconColor={theme.colors.onImageViewer}
-            accessibilityLabel={'Share image'}
-            style={styles.iconButton}
-          />
-        )}
+        <MaterialHeaderButtons>
+          {appConfig.enableDeveloperOptions && onPressInfo && (
+            <Item
+              title={'Image info'}
+              iconName={AppIcons.info}
+              color={theme.colors.onImageViewer}
+              onPress={onPressInfo}
+            />
+          )}
+          <LightboxActionsMenu onPressSave={onPressSave} onPressShare={onPressShare} onRequestClose={onRequestClose} />
+        </MaterialHeaderButtons>
       </View>
     </View>
   );

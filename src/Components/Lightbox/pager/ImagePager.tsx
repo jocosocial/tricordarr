@@ -16,6 +16,7 @@ import PagerView, {
   type PagerViewOnPageSelectedEvent,
   type PageScrollStateChangedNativeEvent,
 } from 'react-native-pager-view';
+import {Portal} from 'react-native-paper';
 import Animated, {
   type AnimatableValue,
   type AnimatedRef,
@@ -159,6 +160,8 @@ export default function ImageViewRoot({
     scheduleOnRN(onRequestClose);
   }, [onRequestClose, openProgress]);
 
+  // The lightbox renders above the app's Portal.Host, so Paper menus opened from its header would
+  // portal beneath it. The nested Portal.Host below keeps them inside the overlay.
   return (
     // Keep it always mounted to avoid flicker on the first frame.
     <View
@@ -166,34 +169,36 @@ export default function ImageViewRoot({
       aria-modal
       accessibilityViewIsModal
       aria-hidden={!activeLightbox}>
-      <Animated.View
-        ref={ref}
-        style={styles.container}
-        collapsable={false}
-        onLayout={e => {
-          const layout = e.nativeEvent.layout;
-          setOrientation(layout.height > layout.width ? 'portrait' : 'landscape');
-        }}>
-        {activeLightbox && (
-          <ImageView
-            key={activeLightbox.id + '-' + orientation}
-            lightbox={activeLightbox}
-            imageIndex={imageIndex}
-            setImageIndex={setImageIndex}
-            orientation={orientation}
-            onRequestClose={onRequestClose}
-            onPressSave={onPressSave}
-            onPressShare={onPressShare}
-            viewerMessage={viewerMessage}
-            setViewerMessage={setViewerMessage}
-            onFlyAway={onFlyAway}
-            safeAreaRef={ref}
-            openProgress={openProgress}
-            thumbRects={thumbRects}
-            isClosing={isClosing}
-          />
-        )}
-      </Animated.View>
+      <Portal.Host>
+        <Animated.View
+          ref={ref}
+          style={styles.container}
+          collapsable={false}
+          onLayout={e => {
+            const layout = e.nativeEvent.layout;
+            setOrientation(layout.height > layout.width ? 'portrait' : 'landscape');
+          }}>
+          {activeLightbox && (
+            <ImageView
+              key={activeLightbox.id + '-' + orientation}
+              lightbox={activeLightbox}
+              imageIndex={imageIndex}
+              setImageIndex={setImageIndex}
+              orientation={orientation}
+              onRequestClose={onRequestClose}
+              onPressSave={onPressSave}
+              onPressShare={onPressShare}
+              viewerMessage={viewerMessage}
+              setViewerMessage={setViewerMessage}
+              onFlyAway={onFlyAway}
+              safeAreaRef={ref}
+              openProgress={openProgress}
+              thumbRects={thumbRects}
+              isClosing={isClosing}
+            />
+          )}
+        </Animated.View>
+      </Portal.Host>
     </View>
   );
 }
