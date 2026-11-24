@@ -1,6 +1,6 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
@@ -11,7 +11,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
-import {type TConversationListV2Ref} from '#src/Components/Lists/ConversationListV2';
+import {type TChatListRef} from '#src/Components/Lists/ChatList';
 import {FezConversationListV2} from '#src/Components/Lists/Fez/FezConversationListV2';
 import {FezChatScreenActionsMenu} from '#src/Components/Menus/Fez/FezChatScreenActionsMenu';
 import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
@@ -26,7 +26,6 @@ import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ElevationProvider} from '#src/Context/Providers/ElevationProvider';
-import {FezPostsActions, useFezPostsReducer} from '#src/Context/Reducers/Fez/FezPostsReducers';
 import {WebSocketStorageActions} from '#src/Context/Reducers/Fez/FezSocketReducer';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
@@ -37,6 +36,7 @@ import {useKeyboardVerticalOffset} from '#src/Hooks/Keyboard/useKeyboardVertical
 import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
+import {getFezInitialScrollIndex} from '#src/Libraries/ChatList';
 import {createLogger} from '#src/Libraries/Logger';
 import {openFezParentScreen} from '#src/Libraries/Navigation';
 import {
@@ -50,22 +50,10 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/Checkpoint/DisabledFeatureScreen';
 import {PreRegistrationScreen} from '#src/Screens/Checkpoint/PreRegistrationScreen';
-import {type FezData, type FezPostData, type PostContentData} from '#src/Structs/ControllerStructs';
+import {type FezPostData, type PostContentData} from '#src/Structs/ControllerStructs';
 import {SocketFezMemberChangeData, SocketFezPostData} from '#src/Structs/SocketStructs';
 
 const logger = createLogger('FezChatScreen.tsx');
-
-const getInitialScrollIndex = (fez: FezData, fezPostsData: FezPostData[], initialReadCount?: number) => {
-  const readCount = initialReadCount ?? fez.members?.readCount;
-  if (!fez.members || readCount === undefined || readCount === fez.members.postCount) {
-    return fezPostsData.length > 0 ? fezPostsData.length - 1 : undefined;
-  }
-  const loadedStart = fez.members.paginator?.start ?? 0;
-  const idx = Math.max(readCount - loadedStart, 0);
-  // Clamp to the loaded data range. readCount can exceed the loaded page
-  // when only a subset of posts have been fetched.
-  return Math.min(idx, fezPostsData.length - 1);
-};
 
 type Props = StackScreenProps<
   CommonStackParamList,
@@ -144,14 +132,28 @@ const FezChatScreenInner = ({route}: Props) => {
   const navigation = useCommonStack();
   const {appendPost: appendPostToCache, markRead} = useFezCacheReducer();
   const dispatchScrollToTop = useScrollToTopIntent();
-  const flatListRef = useRef<TConversationListV2Ref>(null);
+  const flatListRef = useRef<TChatListRef<FezPostData>>(null);
   const fezSocketWithHandlerRef = useRef<{
     ws: ReconnectingWebSocket;
     handler: (e: WebSocketMessageEvent) => void;
   } | null>(null);
   const fezSocketMessageHandlerRef = useRef<(event: WebSocketMessageEvent) => void>(() => {});
   const lastProcessedPostIDRef = useRef<number | null>(null);
-  const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
+  // Flattened straight from the query pages. Derived rather than copied into state so the list never
+  // sees an empty first render. De-duped by postID (first occurrence wins) because the socket append
+  // and a page refetch can briefly both carry the same post.
+  const fezPostsData = useMemo(() => {
+    const seen = new Set<number>();
+    return fezPages
+      .flatMap(page => page.members?.posts || [])
+      .filter(post => {
+        if (seen.has(post.postID)) {
+          return false;
+        }
+        seen.add(post.postID);
+        return true;
+      });
+  }, [fezPages]);
   const {refreshing, setRefreshing, onRefresh} = useRefresh({
     refresh: useCallback(async () => {
       await Promise.all([refetchUserNotificationData(), refetch()]);
@@ -295,14 +297,6 @@ const FezChatScreenInner = ({route}: Props) => {
     ],
   );
 
-  // Initial set useEffect
-  useEffect(() => {
-    dispatchFezPostsData({
-      type: FezPostsActions.set,
-      fezPosts: [...fezPages.flatMap(page => page.members?.posts || [])],
-    });
-  }, [fezPages, dispatchFezPostsData]);
-
   // Socket useEffect: open/attach once per fezID (route param). Cleanup removes listener and
   // closes only on unmount or fezID change. Handler is read from a ref so message updates
   // do not retrigger this effect and create duplicate sockets.
@@ -382,7 +376,7 @@ const FezChatScreenInner = ({route}: Props) => {
     );
   }
 
-  const computedScrollIndex = getInitialScrollIndex(fez, fezPostsData, initialReadCount);
+  const computedScrollIndex = getFezInitialScrollIndex(fez, fezPostsData.length, initialReadCount);
   if (frozenScrollIndexRef.current === null && computedScrollIndex !== undefined && computedScrollIndex >= 0) {
     frozenScrollIndexRef.current = computedScrollIndex;
   }

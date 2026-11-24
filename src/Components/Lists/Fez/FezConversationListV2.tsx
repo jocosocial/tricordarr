@@ -1,8 +1,7 @@
 import React, {useCallback, useRef} from 'react';
 import {RefreshControlProps, View} from 'react-native';
 
-import {type TConversationListV2RefObject} from '#src/Components/Lists/ConversationListV2';
-import {ConversationListV2} from '#src/Components/Lists/ConversationListV2';
+import {ChatList, type TChatListRefObject} from '#src/Components/Lists/ChatList';
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
@@ -10,6 +9,7 @@ import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {FezPostListItem} from '#src/Components/Lists/Items/Fez/FezPostListItem';
+import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useTime} from '#src/Context/Contexts/TimeContext';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
@@ -17,7 +17,7 @@ import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 interface FezConversationListV2Props {
   fez: FezData;
   fezPostData: FezPostData[];
-  listRef: TConversationListV2RefObject;
+  listRef: TChatListRefObject<FezPostData>;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
@@ -33,14 +33,8 @@ interface FezConversationListV2Props {
 }
 
 /**
- * V2 fez conversation list. Wraps ConversationListV2 with fez-specific rendering.
- * Used for Seamail, LFG, and PersonalEvent chat screens.
- *
- * Key differences from ChatFlatList (V1):
- * - Configurable `alignItemsAtEnd` based on whether the chat is fully read.
- * - Exposes `onReadyToShow` to the parent screen for overlay control.
- * - Proper footer with `LoadingNextFooter` when paginating forward.
- * - Uses `paginator.start` for accurate "New" divider placement.
+ * Fez conversation list. Wraps ChatList with fez-specific rendering (day dividers, the "New"
+ * divider, post items). Used for Seamail, LFG, and PersonalEvent chat screens.
  */
 export const FezConversationListV2 = ({
   fez,
@@ -58,6 +52,7 @@ export const FezConversationListV2 = ({
 }: FezConversationListV2Props) => {
   const {commonStyles} = useStyles();
   const {getAdjustedMoment} = useTime();
+  const {currentUserID} = useSession();
 
   const showDayDividers = postDayCount === undefined || postDayCount > 2;
 
@@ -79,29 +74,27 @@ export const FezConversationListV2 = ({
   // provided (e.g. from list cache) so the "New" divider shows correctly on subsequent
   // visits when detail cache is already marked read.
   const effectiveReadCount = initialReadCount ?? fez.members?.readCount ?? 0;
-  const initialReadStateRef = useRef({
-    readCount: effectiveReadCount,
-    paginatorStart: fez.members?.paginator?.start ?? 0,
-  });
-  // initialReadStateRef must stay frozen across ordinary re-renders (new posts arriving,
+  const initialReadCountRef = useRef(effectiveReadCount);
+  // The frozen read count must stay frozen across ordinary re-renders (new posts arriving,
   // props changing shape, etc.) so the divider doesn't drift while the user is reading —
-  // but it also must not stay frozen forever, or a stale readCount/paginatorStart pins the
+  // but it also must not stay frozen forever, or a stale readCount pins the
   // "New" divider at the wrong index permanently once resetInitialReadCount changes
   // initialReadCount upstream (e.g. right after this user sends a post). A useEffect would
   // fix that only after an extra render (a visible flash of the divider in the wrong spot);
   // comparing against lastInitialReadCountRef during render — the "derived state from
-  // props" ref pattern — re-seeds initialReadStateRef synchronously, in the same render
+  // props" ref pattern — re-seeds initialReadCountRef synchronously, in the same render
   // that the new prop value arrives, and only on renders where it actually changed.
   const lastInitialReadCountRef = useRef(initialReadCount);
   if (initialReadCount !== lastInitialReadCountRef.current) {
     lastInitialReadCountRef.current = initialReadCount;
-    initialReadStateRef.current = {
-      readCount: effectiveReadCount,
-      paginatorStart: fez.members?.paginator?.start ?? 0,
-    };
+    initialReadCountRef.current = effectiveReadCount;
   }
+  // The page start is deliberately NOT frozen. `fez` is the first loaded page, so its start drops
+  // when an older page is prepended, and the divider's index in the flattened posts must shift by
+  // the same amount. Freezing it left the divider a page early after loading older posts.
+  const paginatorStart = fez.members?.paginator?.start ?? 0;
 
-  // alignItemsAtEnd is a layout concern — once set false (unreads detected) it must
+  // The anchor is a layout concern — once set false (unreads detected) it must
   // not flip back to true or the list layout will jump. Locked via one-way ref.
   const alignAtEndRef = useRef(fez.members ? effectiveReadCount === fez.members.postCount : true);
   if (alignAtEndRef.current && fez.members && effectiveReadCount !== fez.members.postCount) {
@@ -115,8 +108,7 @@ export const FezConversationListV2 = ({
 
   const newDividerIndex = (() => {
     if (isFullyRead) return undefined;
-    const {readCount, paginatorStart} = initialReadStateRef.current;
-    const idx = readCount - paginatorStart;
+    const idx = initialReadCountRef.current - paginatorStart;
     return idx >= 0 && idx < fezPostData.length ? idx : undefined;
   })();
 
@@ -125,10 +117,9 @@ export const FezConversationListV2 = ({
       if (isFullyRead) {
         return false;
       }
-      const {readCount, paginatorStart} = initialReadStateRef.current;
-      return readCount - paginatorStart === index;
+      return initialReadCountRef.current - paginatorStart === index;
     },
-    [isFullyRead],
+    [isFullyRead, paginatorStart],
   );
 
   const renderItem = useCallback(
@@ -159,31 +150,52 @@ export const FezConversationListV2 = ({
     if (hasNextPage) {
       return <LoadingNextFooter />;
     }
-    return <SpaceDivider />;
+    // No spacer here: ChatList puts the gap below the last post inside the last cell.
+    return null;
   }, [hasNextPage]);
 
   const keyExtractor = useCallback((item: FezPostData) => item.postID.toString(), []);
 
+  /** Recycled cells are only reused for items that render the same chrome (day divider, New divider). */
+  const getItemType = useCallback(
+    (item: FezPostData, index: number) => {
+      if (showNewDivider(index)) {
+        return 'post-with-divider';
+      }
+      if (showDayDividers && showTimeDivider(index)) {
+        return 'post-with-day-divider';
+      }
+      return 'post';
+    },
+    [showDayDividers, showNewDivider, showTimeDivider],
+  );
+
+  const isOwnItem = useCallback((item: FezPostData) => item.author.userID === currentUserID, [currentUserID]);
+
   return (
-    <ConversationListV2<FezPostData>
+    <ChatList<FezPostData>
       listRef={listRef}
       data={fezPostData}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
+      getItemType={getItemType}
       ListHeaderComponent={renderListHeader}
       ListFooterComponent={renderListFooter}
       ItemSeparatorComponent={renderSeparator}
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
-      initialScrollIndex={initialScrollIndex}
-      alignItemsAtEnd={alignAtEndRef.current}
-      maintainScrollAtEnd={true}
-      estimatedItemSize={100}
+      hasNextPage={hasNextPage}
+      hasPreviousPage={hasPreviousPage}
+      anchor={alignAtEndRef.current ? 'end' : {index: initialScrollIndex ?? 0}}
+      // Real-time chat: always follow new posts at the tail, even when the read state says there
+      // are unreads and the list is anchored to the New divider instead of the end.
+      followTail={true}
+      isOwnItem={isOwnItem}
       onReadyToShow={onReadyToShow}
       newDividerIndex={newDividerIndex}
-      // renderItem's "New" divider placement is driven by isFullyRead/initialReadStateRef,
-      // which live outside `data`. LegendList's recycled cells (recycleItems={true}) only
+      // renderItem's "New" divider placement is driven by isFullyRead/initialReadCountRef/paginatorStart,
+      // which live outside `data`. FlashList's recycled cells only
       // redraw when `item`/`index` change or `extraData` changes identity, so without this
       // a cell that already rendered a divider keeps showing it forever — e.g. sending two
       // messages in a row left a stale "New" divider stuck above each one. Combine both
@@ -193,7 +205,8 @@ export const FezConversationListV2 = ({
       // Style is here rather than in the renderItem because the padding we use is
       // also needed for the dividers. It could be added to the divider function as
       // well but this is slightly simpler and covers cases I am not remembering.
-      style={commonStyles.paddingHorizontalSmall}
+      // On the content container, not the list, so the scroll bar stays on the screen edge.
+      contentContainerStyle={commonStyles.paddingHorizontalSmall}
     />
   );
 };

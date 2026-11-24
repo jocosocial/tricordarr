@@ -36,9 +36,10 @@ interface AppViewProps extends PropsWithChildren {
  * This used to also own a global KeyboardAvoidingView wrapping every screen —
  * see issue #573. That caused more problems than it solved (a one-size offset
  * heuristic, double keyboard compensation on form screens, and a scroll-correction
- * loop in ConversationListV2 fighting the KAV's relayout). Keyboard handling is
+ * loop in the chat list fighting the KAV's relayout). Keyboard handling is
  * now per-surface: ScrollingContentView uses KeyboardAwareScrollView for forms,
- * and chat screens use KeyboardAwareLegendList + KeyboardStickyView.
+ * and chat screens wrap ChatList and the composer in a local KeyboardAvoidingView
+ * (see "Keyboard Avoidance" in docs/Code Notes.md).
  */
 export const AppView = ({
   children,

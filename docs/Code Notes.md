@@ -10,10 +10,23 @@ live in [Cache and State](<Cache and State.md>).
 On iPad, tapping the navigation header is treated as a status-bar tap. That fires `scrollToTop` on every `UIScrollView` still in the native hierarchy with the default `scrollsToTop={true}` — including off-screen overlays and inactive tabs. Set `scrollsToTop={false}` on:
 
 - Overlay / nested scrollers: `AppDrawer`, `AppMenu`, `ContentPostForm`
-- Custom-position lists: `DayPlannerTimelineView`, `ScheduleFlatListBase`, `ConversationList`, `ConversationListV2`
+- Custom-position lists: `DayPlannerTimelineView`, `ScheduleFlatListBase`, `ChatList`
 - Shared content wrapper: `ScrollingContentView` (covers Settings and the other screens that use it)
 
 Android ignores the prop. `AppFlashList` and a few raw settings `ScrollView`s still use the default.
+
+## ChatList
+
+`src/Components/Lists/ChatList.tsx` is the chat list for Seamail/LFG/Private Event chats and forum threads (FlashList v2, data oldest to newest), wrapped by `FezConversationListV2` and `ForumConversationListV2`. Things that are easy to break:
+
+- `keyExtractor` is required: FlashList's maintain-visible-content-position is a silent no-op without it, and loading older pages would jump the viewport.
+- The list only honors its initial position at mount, so screens freeze the initial scroll index and remount via `key` when it becomes known (`FezChatScreen`, `ForumThreadScreenBase`; index math in `src/Libraries/ChatList.ts`).
+- The parent shows an overlay until `onReadyToShow` fires. It always fires (position reached, empty list, or a ~750ms fallback). For an index anchor the ready check also corrects FlashList's estimate-based `initialScrollIndex` landing with plain `scrollToOffset` nudges; don't swap that for `scrollToIndex`, which raced the initial scroll and overshot.
+- The list scrolls to the user's own new posts itself (`isOwnItem`); screens must not call `scrollToEnd` after a send.
+- Keyboard: the local `KeyboardAvoidingView` resizes the list. `ChatList` re-pins the bottom on any container resize while the user was near the bottom, plus one bounded pass after `keyboardDidShow/Hide` (near-bottom is snapshotted at `keyboardWill*`). FlashList's own resize autoscroll alone left Android one post short after the keyboard closed. A user drag (`onScrollBeginDrag`) cancels any pending re-pin and suppresses new ones until the drag and its fling end. Momentum only counts when it starts right after a drag ends: Android fires the momentum events for programmatic animated scrolls too, and treating those as the user cancelled the scroll-to-bottom end pin, so scrolling up right after closing the keyboard is not pulled back down. Do not grow this into a multi-frame loop.
+- No spacer in `ListFooterComponent`: FlashList leaves the footer out of its scroll extent (`getMaxScrollOffset`), so `scrollToEnd` from far away landed short and then hopped the footer's height. `ChatList` puts the gap below the last post inside the last cell instead. Horizontal padding goes in `contentContainerStyle`, not `style`, so the scroll indicator stays on the screen edge.
+- `START_RENDERING_FROM_BOTTOM` in `ChatList.tsx` is the one-line switch for the fallback that opens at the last item index instead (short chats then top-align).
+- Do not add Reanimated `entering`/`exiting`/`layout` animations to chat items (Shopify/flash-list#2052).
 
 ## Checkpoints
 
@@ -43,11 +56,11 @@ A screen that's viewable while logged out must still hide (not just query-gate) 
 
 ## Keyboard Avoidance
 
-`AppView` no longer owns a global `KeyboardAvoidingView` (see issue #573) — it caused double compensation on form screens and fought `LegendList`'s `maintainVisibleContentPosition` on chat screens. Keyboard handling is per-screen now. Pick based on what the screen actually contains:
+`AppView` no longer owns a global `KeyboardAvoidingView` (see issue #573) — it caused double compensation on form screens and fought the chat list's `maintainVisibleContentPosition` on chat screens. Keyboard handling is per-screen now. Pick based on what the screen actually contains:
 
 **Plain scrollable form (no fixed bottom composer).** Nothing to do — `ScrollingContentView` already wraps `KeyboardAwareScrollView` internally and handles it. This is the common case (most Settings/create/edit screens).
 
-**A form/list with a fixed-height control pinned below it** (a `ContentPostForm` composer below a `ScrollingContentView`, or below a chat `ConversationListV2`/`FezConversationListV2`/`ForumConversationListV2`). Wrap both as flex siblings in a local `KeyboardAvoidingView`:
+**A form/list with a fixed-height control pinned below it** (a `ContentPostForm` composer below a `ScrollingContentView`, or below a chat `ChatList`, via `FezConversationListV2`/`ForumConversationListV2`). Wrap both as flex siblings in a local `KeyboardAvoidingView`:
 
 ```tsx
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
@@ -68,9 +81,11 @@ return (
 
 Reference implementations: `FezChatScreen.tsx`, `ForumThreadScreenBase.tsx` (list + composer), `SeamailCreateScreen.tsx`, `ForumPostEditScreen.tsx`, `ForumThreadCreateScreen.tsx` (form + composer).
 
-**Do NOT use `react-native-keyboard-controller`'s `KeyboardStickyView` / `KeyboardAwareLegendList` / `useKeyboardChatComposerInset` for this.** They were tried for the chat composer and are broken for our layout: `KeyboardStickyView`'s `translateY` assumes the view's resting position is flush with the true screen bottom, but our composers sit above the bottom tab bar, so the computed shift falls short by roughly the tab bar's height and the composer ends up rendered behind the keyboard. Confirmed on-device (Android emulator, `uiautomator` bounds dump) before reverting to the plain `KeyboardAvoidingView` above. If you're tempted to reach for these components again, verify on a real device/emulator with the keyboard actually open — the bug does not show up in static review.
+**Do NOT use `react-native-keyboard-controller`'s `KeyboardStickyView` / `useKeyboardChatComposerInset` for this.** They were tried for the chat composer and are broken for our layout: `KeyboardStickyView`'s `translateY` assumes the view's resting position is flush with the true screen bottom, but our composers sit above the bottom tab bar, so the computed shift falls short by roughly the tab bar's height and the composer ends up rendered behind the keyboard. Confirmed on-device (Android emulator, `uiautomator` bounds dump) before reverting to the plain `KeyboardAvoidingView` above. If you're tempted to reach for these components again, verify on a real device/emulator with the keyboard actually open — the bug does not show up in static review.
 
 `KeyboardAvoidingView`'s `keyboardVerticalOffset` is a heuristic (`insets.top + insets.bottom`, `+40` on home-button iPhones), not a true measurement — it approximates the distance from the top of the KAV to the top of the screen. It only works correctly when the KAV is mounted near the top of the screen's own render tree (directly inside `AppView`, not buried under several wrapper views) — see `useKeyboardVerticalOffset` (`src/Hooks/Keyboard/useKeyboardVerticalOffset.ts`) for the exact formula and rationale.
+
+The bottom tab bar stays in the layout while the keyboard is open (`keyboardHidesNavigationBar={false}` in `AppBottomTabBar`). Paper's Android default hides the bar only after `keyboardDidShow` and restores it only after `keyboardDidHide`, so every composer screen resized a second time after each keyboard transition: a visible flicker on open, and on close the chat list drew at full height with the bar sliding over the composer. The keyboard covers the bar anyway, and the KAV padding is measured from its own frame, so the offset heuristic above is unaffected.
 
 ## ScrollingContentView `isStack`
 

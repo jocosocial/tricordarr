@@ -20,7 +20,7 @@ export const AppRefreshControl = forwardRef<RefreshControl, AppRefreshControlPro
   ({enabled = true, ...props}, ref) => {
     /**
      * iOS does not support the enabled prop. Android freaks out if the RefreshControl is null
-     * (FlashList and LegendList stopped rendering entirely).
+     * (FlashList stopped rendering entirely).
      */
     if (isIOS && !enabled) {
       return null;

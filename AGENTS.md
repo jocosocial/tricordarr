@@ -115,8 +115,8 @@ LoggedInScreen
 
 ## Keyboard Avoidance
 
-- `AppView` has no global keyboard handling (removed, see issue #573). A plain scrollable form needs nothing — `ScrollingContentView` already handles it. A screen with a fixed composer/button below a form or list (`ContentPostForm` below `ScrollingContentView` or a chat `ConversationListV2`) needs a local `KeyboardAvoidingView` (`behavior='padding'`, offset from `useKeyboardVerticalOffset`) wrapping both as flex siblings — see `docs/Code Notes.md` under "Keyboard Avoidance" for the pattern and reference screens.
-- Do NOT use `KeyboardStickyView` / `KeyboardAwareLegendList` / `useKeyboardChatComposerInset` for a composer pinned above the bottom tab bar — confirmed broken for that layout (details in `docs/Code Notes.md`).
+- `AppView` has no global keyboard handling (removed, see issue #573). A plain scrollable form needs nothing — `ScrollingContentView` already handles it. A screen with a fixed composer/button below a form or list (`ContentPostForm` below `ScrollingContentView` or a chat `ChatList`) needs a local `KeyboardAvoidingView` (`behavior='padding'`, offset from `useKeyboardVerticalOffset`) wrapping both as flex siblings — see `docs/Code Notes.md` under "Keyboard Avoidance" for the pattern and reference screens.
+- Do NOT use `KeyboardStickyView` / `useKeyboardChatComposerInset` for a composer pinned above the bottom tab bar — confirmed broken for that layout (details in `docs/Code Notes.md`).
 
 ## Code Smells
 

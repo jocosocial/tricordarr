@@ -1,8 +1,7 @@
 import React, {useCallback, useMemo} from 'react';
 import {RefreshControlProps, View} from 'react-native';
 
-import {type TConversationListV2RefObject} from '#src/Components/Lists/ConversationListV2';
-import {ConversationListV2} from '#src/Components/Lists/ConversationListV2';
+import {ChatList, type TChatListRefObject} from '#src/Components/Lists/ChatList';
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
@@ -23,7 +22,7 @@ interface ForumConversationListV2Props {
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
   enableShowInThread?: boolean;
-  listRef: TConversationListV2RefObject;
+  listRef: TChatListRefObject<PostData>;
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
   initialScrollIndex?: number;
@@ -37,11 +36,8 @@ interface ForumConversationListV2Props {
 }
 
 /**
- * V2 forum conversation list. Wraps ConversationListV2 with forum-specific rendering.
- *
- * Key differences from V1:
- * - Configurable `alignItemsAtEnd` based on whether the thread is fully read.
- * - Exposes `onReadyToShow` to the parent screen for overlay control.
+ * Forum conversation list. Wraps ChatList with forum-specific rendering (post items, the "New"
+ * divider). Anchors to the end when the thread is fully read, else to `initialScrollIndex`.
  */
 export const ForumConversationListV2 = ({
   postList,
@@ -131,30 +127,48 @@ export const ForumConversationListV2 = ({
     if (hasNextPage) {
       return <LoadingNextFooter />;
     }
-    return <SpaceDivider />;
+    // No spacer here: ChatList puts the gap below the last post inside the last cell.
+    return null;
   }, [hasNextPage]);
 
   const keyExtractor = useCallback((item: PostData) => item.postID.toString(), []);
 
+  /** Recycled cells are only reused for items that render the same chrome (the New divider). */
+  const getItemType = useCallback(
+    (item: PostData, index: number) => (showNewDivider(index) ? 'post-with-divider' : 'post'),
+    [showNewDivider],
+  );
+
+  const isOwnItem = useCallback((item: PostData) => item.author.userID === currentUserID, [currentUserID]);
+
+  // Opened from a specific post: that post is first in the loaded page. Otherwise a fully-read
+  // thread opens at the end and an unread one at the first unread post.
+  const anchor = startFromPost ? {index: 0} : isFullyRead ? ('end' as const) : {index: initialScrollIndex ?? 0};
+
   return (
-    <ConversationListV2<PostData>
+    <ChatList<PostData>
       listRef={listRef}
       data={postList}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
+      getItemType={getItemType}
       ListHeaderComponent={renderListHeader}
       ListFooterComponent={renderListFooter}
       ItemSeparatorComponent={renderSeparator}
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
-      initialScrollIndex={initialScrollIndex}
-      alignItemsAtEnd={isFullyRead}
-      estimatedItemSize={120}
+      hasNextPage={hasNextPage}
+      hasPreviousPage={hasPreviousPage}
+      anchor={anchor}
+      isOwnItem={isOwnItem}
+      // Image-heavy threads: render further beyond the viewport so tall late-loading items are
+      // already laid out when scrolled to (Shopify/flash-list#1951).
+      drawDistance={1000}
       onReadyToShow={onReadyToShow}
       newDividerIndex={newDividerIndex}
       // renderItem's "New" divider placement is driven by isFullyRead/newDividerIndex,
-      // which live outside `data`. LegendList's recycled cells (recycleItems={true}) only
+      // which live outside `data`. FlashList's recycled cells only
       // redraw when `item`/`index` change or `extraData` changes identity, so without this
       // a cell that already rendered a divider would keep showing it after posting (see
       // the same fix in FezConversationListV2). Combine both so every visibility/position
@@ -164,7 +178,8 @@ export const ForumConversationListV2 = ({
       // Style is here rather than in the renderItem because the padding we use is
       // also needed for the dividers. It could be added to the divider function as
       // well but this is slightly simpler and covers cases I am not remembering.
-      style={commonStyles.paddingHorizontalSmall}
+      // On the content container, not the list, so the scroll bar stays on the screen edge.
+      contentContainerStyle={commonStyles.paddingHorizontalSmall}
     />
   );
 };

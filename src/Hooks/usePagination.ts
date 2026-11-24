@@ -1,4 +1,4 @@
-import {useCallback} from 'react';
+import {useCallback, useRef} from 'react';
 
 export interface UsePaginationProps {
   fetchNextPage: () => Promise<any>;
@@ -19,7 +19,9 @@ export interface UsePaginationReturn {
  * Hook to manage pagination for React Query infinite queries.
  *
  * Encapsulates the common pattern of handling next/previous page loading with proper
- * guards against duplicate calls and optional refreshing state management.
+ * guards against duplicate calls and optional refreshing state management. In addition to the
+ * `isFetching*` flags (which only update on the next render), each direction keeps an in-flight ref
+ * so rapid calls between renders, e.g. from scroll events, cannot start a second fetch.
  *
  * @param props - Configuration props
  * @param props.fetchNextPage - Async function to fetch the next page (required)
@@ -57,32 +59,45 @@ export function usePagination({
   isFetchingPreviousPage,
   setRefreshing,
 }: UsePaginationProps): UsePaginationReturn {
+  const loadingNextRef = useRef(false);
+  const loadingPreviousRef = useRef(false);
+
   const handleLoadNext = useCallback(async () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      if (setRefreshing) {
-        setRefreshing(true);
-        try {
+    if (!isFetchingNextPage && hasNextPage && !loadingNextRef.current) {
+      loadingNextRef.current = true;
+      try {
+        if (setRefreshing) {
+          setRefreshing(true);
+          try {
+            await fetchNextPage();
+          } finally {
+            setRefreshing(false);
+          }
+        } else {
           await fetchNextPage();
-        } finally {
-          setRefreshing(false);
         }
-      } else {
-        await fetchNextPage();
+      } finally {
+        loadingNextRef.current = false;
       }
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage, setRefreshing]);
 
   const handleLoadPrevious = useCallback(async () => {
-    if (fetchPreviousPage && !isFetchingPreviousPage && hasPreviousPage) {
-      if (setRefreshing) {
-        setRefreshing(true);
-        try {
+    if (fetchPreviousPage && !isFetchingPreviousPage && hasPreviousPage && !loadingPreviousRef.current) {
+      loadingPreviousRef.current = true;
+      try {
+        if (setRefreshing) {
+          setRefreshing(true);
+          try {
+            await fetchPreviousPage();
+          } finally {
+            setRefreshing(false);
+          }
+        } else {
           await fetchPreviousPage();
-        } finally {
-          setRefreshing(false);
         }
-      } else {
-        await fetchPreviousPage();
+      } finally {
+        loadingPreviousRef.current = false;
       }
     }
   }, [fetchPreviousPage, hasPreviousPage, isFetchingPreviousPage, setRefreshing]);

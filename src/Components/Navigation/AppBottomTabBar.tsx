@@ -45,6 +45,12 @@ export const AppBottomTabBar = (props: BottomTabBarProps) => {
   const {footerHeight} = useLayout();
   const {setSnackbarPayload} = useSnackbar();
 
+  // keyboardHidesNavigationBar defaults to true on Android. Paper then pulls the bar out of the
+  // layout (position absolute) only after keyboardDidShow and puts it back only after
+  // keyboardDidHide, so every screen with a composer resizes twice per keyboard cycle and a chat
+  // list briefly draws at the full height with the bar sliding over the composer. The keyboard
+  // already covers the bar (the window does not resize under react-native-keyboard-controller), and
+  // the KeyboardAvoidingView padding is measured from its own frame, so nothing needs the bar hidden.
   return (
     <View
       collapsable={false}
@@ -56,6 +62,7 @@ export const AppBottomTabBar = (props: BottomTabBarProps) => {
       <BottomNavigation.Bar
         navigationState={props.state}
         safeAreaInsets={props.insets}
+        keyboardHidesNavigationBar={false}
         onTabPress={({route, preventDefault}) => {
           if (getFocusedRouteName(props.state) === CommonStackComponents.recoveryKeyScreen) {
             preventDefault();

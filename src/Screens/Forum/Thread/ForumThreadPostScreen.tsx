@@ -49,6 +49,7 @@ const ForumThreadPostScreenInner = ({route, navigation}: Props) => {
     isFetchingNextPage,
     isFetchingPreviousPage,
     hasNextPage,
+    hasPreviousPage,
   } = useForumThreadQuery(route.params.forumID, route.params.postID);
   const {commonStyles} = useStyles();
 
@@ -97,6 +98,8 @@ const ForumThreadPostScreenInner = ({route, navigation}: Props) => {
       isFetchingNextPage={isFetchingNextPage}
       isFetchingPreviousPage={isFetchingPreviousPage}
       hasNextPage={hasNextPage}
+      // Without this the list never loads the posts before the selected one.
+      hasPreviousPage={hasPreviousPage}
       getListHeader={route.params.postID ? getListHeader : undefined}
       initialElevation={route.params.asPrivilegedUser}
       startFromPost={true}

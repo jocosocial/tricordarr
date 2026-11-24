@@ -12,7 +12,7 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {AppRefreshControl} from '#src/Components/Controls/AppRefreshControl';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {type TConversationListV2Ref} from '#src/Components/Lists/ConversationListV2';
+import {type TChatListRef} from '#src/Components/Lists/ChatList';
 import {ForumConversationListV2} from '#src/Components/Lists/Forums/ForumConversationListV2';
 import {ForumThreadScreenActionsMenu} from '#src/Components/Menus/Forum/ForumThreadScreenActionsMenu';
 import {ForumThreadPinnedPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadPinnedPostsItem';
@@ -39,6 +39,7 @@ import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {paginatedHighWaterMark} from '#src/Libraries/CacheReduction';
+import {getForumInitialScrollIndex} from '#src/Libraries/ChatList';
 import {createLogger} from '#src/Libraries/Logger';
 import {cancelSecondaryNotifications} from '#src/Libraries/Notifications/Content';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -47,7 +48,7 @@ import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations'
 import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {useForumThreadPinnedPostsQuery} from '#src/Queries/Forum/ForumThreadQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
+import {ForumData, ForumListData, PostContentData, PostData} from '#src/Structs/ControllerStructs';
 
 const logger = createLogger('ForumThreadScreenBase.tsx');
 
@@ -111,7 +112,8 @@ const ForumThreadScreenBaseInner = ({
   const postInputRef = useRef<TextInput | null>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const markReadMutation = useForumMarkReadMutation();
-  const flatListRef = useRef<TConversationListV2Ref>(null);
+  const flatListRef = useRef<TChatListRef<PostData>>(null);
+  const frozenScrollIndexRef = useRef<number | null>(null);
   const {hasModerator} = usePrivilege();
   const {asModerator, asTwitarrTeam} = useElevation();
   const {maxForumPostImages} = useClientSettings();
@@ -263,12 +265,8 @@ const ForumThreadScreenBaseInner = ({
       // Clear server unread status (fire-and-forget).
       markReadMutation.mutate({forumID: forumData.forumID});
 
-      // Scroll to the new post.
-      // requestAnimationFrame(() => {
-      //   requestAnimationFrame(() => {
-      flatListRef.current?.scrollToEnd({animated: false});
-      //   });
-      // });
+      // No scroll here: ChatList scrolls to the user's own post itself once it reaches the list
+      // (it knows when the data landed; this handler fires a render or more too early).
     } catch (error) {
       // The error snackbar is raised by useTokenAuthMutation's onError. Swallow here so the
       // rejection doesn't escape into Formik's submit handling.
@@ -289,24 +287,20 @@ const ForumThreadScreenBaseInner = ({
     );
   }
 
-  const getInitialScrollIndex = () => {
-    // startPost returns the selected post as the first item on the page. The
-    // fully-read path below would scroll to the last loaded post and hide it.
-    if (startFromPost) {
-      return forumPosts.length > 0 ? 0 : undefined;
-    }
-    if (!forumListData || forumListData.readCount === forumListData.postCount) {
-      // Fully read: scroll to the last post via initialScrollIndex.
-      // We use this instead of scrollToEnd because scrollToEnd fires before
-      // LegendList has fully laid out recycled content, causing it to land mid-list.
-      return forumPosts.length > 0 ? forumPosts.length - 1 : undefined;
-    }
-    const loadedStart = forumData?.paginator.start ?? 0;
-    const idx = Math.max(forumListData.readCount - loadedStart, 0);
-    // Clamp to the loaded data range. readCount can exceed the loaded page
-    // when only a subset of posts have been fetched.
-    return Math.min(idx, forumPosts.length - 1);
-  };
+  // Frozen once computable so later page loads and reads don't move the anchor; the list is
+  // remounted via `key` when the index first becomes known, because FlashList only honors its
+  // initial scroll position at mount.
+  const computedScrollIndex = getForumInitialScrollIndex(
+    forumPosts.length,
+    forumData?.paginator.start ?? 0,
+    forumListData,
+    startFromPost,
+  );
+  if (frozenScrollIndexRef.current === null && computedScrollIndex !== undefined) {
+    frozenScrollIndexRef.current = computedScrollIndex;
+  }
+  const initialScrollIndex = frozenScrollIndexRef.current ?? computedScrollIndex;
+  const listKey = `${forumData?.forumID ?? 'forum'}-${initialScrollIndex ?? 'bottom'}`;
 
   const showForm = !forumData?.isLocked || hasModerator;
 
@@ -344,6 +338,7 @@ const ForumThreadScreenBaseInner = ({
           keyboardVerticalOffset={keyboardVerticalOffset}>
           <View style={commonStyles.flex}>
             <ForumConversationListV2
+              key={listKey}
               postList={forumPosts}
               handleLoadNext={handleLoadNext}
               handleLoadPrevious={handleLoadPrevious}
@@ -354,7 +349,7 @@ const ForumThreadScreenBaseInner = ({
               listRef={flatListRef}
               hasNextPage={hasNextPage}
               forumListData={forumListData}
-              initialScrollIndex={getInitialScrollIndex()}
+              initialScrollIndex={initialScrollIndex}
               onReadyToShow={onReadyToShow}
               startFromPost={startFromPost}
             />
