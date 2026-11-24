@@ -107,6 +107,11 @@ describe('incoming link routes', () => {
     expect(state).toContain('"endpoint":"joined"');
   });
 
+  it('maps the old /lfg/open link onto the all list', () => {
+    const state = JSON.stringify(getStateFromPath('/lfg/open', navigationLinking.config));
+    expect(state).toContain('"endpoint":"all"');
+  });
+
   it('round-trips restricted params without the regex', () => {
     expect(pathForUrl(`/events/${uuid}`)).toBe(`/events/${uuid}`);
     expect(pathForUrl('/lfg/joined')).toBe('/lfg/joined');

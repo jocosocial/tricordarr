@@ -7,7 +7,6 @@ import {CommonScreens} from '#src/Navigation/Stacks/Common/CommonScreens';
 import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
 import {LfgSearchScreen} from '#src/Screens/LFG/LfgSearchScreen';
-import {FezListEndpoints} from '#src/Types';
 
 export const LfgStackNavigator = () => {
   const {screenOptions} = useStyles();
@@ -20,19 +19,11 @@ export const LfgStackNavigator = () => {
       <Stack.Screen
         name={LfgStackComponents.lfgListScreen}
         component={LfgListScreen}
-        initialParams={{endpoint: 'open'}}
-        options={({route}: {route: RouteProp<LfgStackParamList, 'LfgListScreen'>}) => {
-          const titleMap: Record<FezListEndpoints, string> = {
-            open: 'Find Groups',
-            joined: 'Joined Groups',
-            owner: 'Your Groups',
-            former: 'Former Groups',
-          };
-          return {
-            // A link to /lfg replaces the params without an endpoint once this screen is mounted.
-            title: titleMap[route.params.endpoint ?? 'open'],
-          };
-        }}
+        initialParams={{endpoint: 'all'}}
+        options={({route}: {route: RouteProp<LfgStackParamList, 'LfgListScreen'>}) => ({
+          // The title doesn't follow the Joined/Owned filter; only the separate Former list is named.
+          title: route.params.endpoint === 'former' ? 'Former Groups' : 'Groups',
+        })}
       />
       <Stack.Screen
         name={LfgStackComponents.lfgSearchScreen}

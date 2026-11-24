@@ -4,7 +4,10 @@ import {findRoute, setParamsOnRoute} from '#src/Libraries/NavigationRef';
 
 interface ScrollToTopFilter {
   key: string;
-  value: unknown;
+  /** The param must equal this. Ignored when `anyOf` is set. */
+  value?: unknown;
+  /** The param must equal one of these. */
+  anyOf?: unknown[];
 }
 
 /**
@@ -35,7 +38,7 @@ export const useScrollToTopIntent = () => {
           return true;
         }
         const params = (r.params ?? {}) as Record<string, unknown>;
-        return params[filter.key] === filter.value;
+        return filter.anyOf ? filter.anyOf.includes(params[filter.key]) : params[filter.key] === filter.value;
       });
       if (!route?.key) {
         continue;

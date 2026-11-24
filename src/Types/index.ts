@@ -101,8 +101,15 @@ export type ScheduleFlatListSeparator = 'day' | 'time' | 'none';
 
 export type FezListEndpoints = 'open' | 'joined' | 'owner' | 'former';
 
-/** The LFG list sources a user can pick between in the filter menu. 'former' is a separate screen. */
-export type LfgListSource = Exclude<FezListEndpoints, 'former'>;
+/**
+ * The LFG list sources. 'all' is the default list: LFGs open to join plus the ones the user has
+ * joined or created (merged client-side from /fez/open and /fez/joined). 'joined' and 'owner' are
+ * filter-menu toggles that narrow it. 'former' is a separate pushed screen.
+ */
+export type LfgListSource = 'all' | 'joined' | 'owner';
+
+/** Everything the LFG list screen and its search can show: a source, or the separate Former list. */
+export type LfgListEndpoint = LfgListSource | 'former';
 
 export interface WithFezID {
   fezID: string;

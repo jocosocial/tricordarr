@@ -11,7 +11,7 @@ import {useFezAlert} from '#src/Hooks/Fez/useFezAlert';
 import {useFezCacheReducer} from '#src/Hooks/Fez/useFezCacheReducer';
 import {useFezData} from '#src/Hooks/Fez/useFezData';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
-import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
+import {lfgJoinedListScrollFilter, LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
@@ -46,7 +46,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
         {
           onSuccess: response => {
             updateMembership(lfg.fezID, response.data, 'join');
-            dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+            dispatchScrollToTop(LfgStackComponents.lfgListScreen, lfgJoinedListScrollFilter);
           },
           onSettled: () => {
             setRefreshing(false);

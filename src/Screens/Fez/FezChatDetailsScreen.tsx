@@ -20,7 +20,7 @@ import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Stacks/Common/CommonStackComponents';
-import {LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
+import {lfgJoinedListScrollFilter, LfgStackComponents} from '#src/Navigation/Stacks/Lfg/LfgStackComponents';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.fezChatDetailsScreen>;
@@ -49,7 +49,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
       {
         onSuccess: response => {
           updateMembership(fezID, response.data);
-          dispatchScrollToTop(LfgStackComponents.lfgListScreen, {key: 'endpoint', value: 'joined'});
+          dispatchScrollToTop(LfgStackComponents.lfgListScreen, lfgJoinedListScrollFilter);
         },
       },
     );

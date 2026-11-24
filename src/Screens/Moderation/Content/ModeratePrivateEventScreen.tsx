@@ -122,7 +122,7 @@ const ModeratePrivateEventScreenInner = ({route}: Props) => {
         refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ModerationContentSectionView testIDPrefix={'privateEventModerate'} onViewInContext={onViewInContext}>
           <PaddedContentView padTop={true}>
-            <FezCard fez={fez} showDay={true} showIcon={true} disabled={true} showDescription={true} />
+            <FezCard fez={fez} showDay={true} disabled={true} showDescription={true} />
           </PaddedContentView>
         </ModerationContentSectionView>
         <ModerationContentVisibilitySectionView

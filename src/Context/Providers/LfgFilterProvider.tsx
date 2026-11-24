@@ -11,34 +11,28 @@ export const LfgFilterProvider = ({children}: PropsWithChildren) => {
   // In pre-registration mode users can only list the LFGs they own, so Owned is both the default
   // and the only source.
   const {preRegistrationMode} = usePreRegistration();
-  const defaultSource: LfgListSource = preRegistrationMode ? 'owner' : 'open';
+  const defaultSource: LfgListSource = preRegistrationMode ? 'owner' : 'all';
   const [lfgCruiseDayFilter, setLfgCruiseDayFilter] = useState<number>();
   const [lfgSourceFilter, setLfgSourceFilterState] = useState<LfgListSource>(defaultSource);
   const [lfgTypeFilter, setLfgTypeFilter] = useState<FezType | undefined>();
   const [lfgHidePastFilter, setLfgHidePastFilter] = useState(appConfig.schedule.hidePastLfgs);
+  const [lfgCancelledFilter, setLfgCancelledFilter] = useState(false);
   const [lfgOnlyNew, setLfgOnlyNew] = useState<boolean | undefined>(undefined);
   const [lfgFavoriteFilter, setLfgFavoriteFilter] = useState<boolean | undefined>(undefined);
 
   /**
-   * Switches the selected LFG source. 'open' (Find) has no FezParticipant pivot, so Favorites and
-   * Unread are meaningless there; clear them so a disabled row never carries a stale checkmark.
-   * In pre-registration mode the source is held on Owned whatever is requested (e.g. the LFG list's
-   * initial `endpoint: 'open'` route param).
+   * Switches the selected LFG source. In pre-registration mode the source is held on Owned whatever
+   * is requested (e.g. the LFG list's initial `endpoint: 'all'` route param).
    */
   const setLfgSourceFilter = useCallback(
     (source: LfgListSource) => {
-      const effectiveSource = preRegistrationMode ? 'owner' : source;
-      setLfgSourceFilterState(effectiveSource);
-      if (effectiveSource === 'open') {
-        setLfgFavoriteFilter(undefined);
-        setLfgOnlyNew(undefined);
-      }
+      setLfgSourceFilterState(preRegistrationMode ? 'owner' : source);
     },
     [preRegistrationMode],
   );
 
   /**
-   * Move onto the default source when pre-registration mode changes: Owned on the way in, Find on
+   * Move onto the default source when pre-registration mode changes: Owned on the way in, All on
    * the way out. On mount this matches the initial state, and it doesn't re-run for a selection
    * made while the mode stays the same.
    */
@@ -50,6 +44,7 @@ export const LfgFilterProvider = ({children}: PropsWithChildren) => {
     setLfgSourceFilterState(defaultSource);
     setLfgTypeFilter(undefined);
     setLfgHidePastFilter(appConfig.schedule.hidePastLfgs);
+    setLfgCancelledFilter(false);
     setLfgOnlyNew(undefined);
     setLfgFavoriteFilter(undefined);
   }, [appConfig.schedule.hidePastLfgs, defaultSource]);
@@ -62,6 +57,7 @@ export const LfgFilterProvider = ({children}: PropsWithChildren) => {
       lfgSourceFilter !== defaultSource ||
       !!lfgTypeFilter ||
       lfgHidePastFilter !== appConfig.schedule.hidePastLfgs ||
+      lfgCancelledFilter ||
       lfgOnlyNew === true ||
       lfgFavoriteFilter === true,
     [
@@ -70,6 +66,7 @@ export const LfgFilterProvider = ({children}: PropsWithChildren) => {
       lfgTypeFilter,
       lfgHidePastFilter,
       appConfig.schedule.hidePastLfgs,
+      lfgCancelledFilter,
       lfgOnlyNew,
       lfgFavoriteFilter,
     ],
@@ -86,6 +83,8 @@ export const LfgFilterProvider = ({children}: PropsWithChildren) => {
         setLfgTypeFilter,
         lfgHidePastFilter,
         setLfgHidePastFilter,
+        lfgCancelledFilter,
+        setLfgCancelledFilter,
         lfgOnlyNew,
         setLfgOnlyNew,
         lfgFavoriteFilter,
