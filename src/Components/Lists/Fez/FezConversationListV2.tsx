@@ -26,7 +26,10 @@ interface FezConversationListV2Props {
   initialScrollIndex?: number;
   /** When provided (e.g. from list cache), used for "New" divider instead of fez.members.readCount. */
   initialReadCount?: number;
-  /** When provided, day dividers are only shown when this is > 2. Omit to always show dividers. */
+  /**
+   * When provided, day dividers are only shown when this is > 2 or the chat has more pages than are
+   * loaded. Omit to always show dividers.
+   */
   postDayCount?: number;
   /** Callback fired once the list has reached its initial scroll position. */
   onReadyToShow?: () => void;
@@ -54,19 +57,21 @@ export const FezConversationListV2 = ({
   const {getAdjustedMoment} = useTime();
   const {currentUserID} = useSession();
 
-  const showDayDividers = postDayCount === undefined || postDayCount > 2;
+  // postDayCount only covers the loaded posts. Loading a page could cross the threshold and add every
+  // day divider at once, moving the posts on screen, so a chat with unloaded pages always shows them.
+  // One-way, so that loading the last page does not take them away again.
+  const showDayDividersRef = useRef(false);
+  if (postDayCount === undefined || postDayCount > 2 || hasPreviousPage || hasNextPage) {
+    showDayDividersRef.current = true;
+  }
+  const showDayDividers = showDayDividersRef.current;
 
-  /** Show a TimeDivider above the first item and at each day boundary. */
-  const showTimeDivider = useCallback(
-    (index: number) => {
-      if (index === 0) {
-        return true;
-      }
-      const currentKey = getAdjustedMoment(fezPostData[index].timestamp).format('YYYY-MM-DD');
-      const prevKey = getAdjustedMoment(fezPostData[index - 1].timestamp).format('YYYY-MM-DD');
-      return currentKey !== prevKey;
-    },
-    [fezPostData, getAdjustedMoment],
+  /** Whether two neighboring posts fall on different days. */
+  const isDayBoundary = useCallback(
+    (leading: FezPostData, trailing: FezPostData) =>
+      getAdjustedMoment(leading.timestamp).format('YYYY-MM-DD') !==
+      getAdjustedMoment(trailing.timestamp).format('YYYY-MM-DD'),
+    [getAdjustedMoment],
   );
 
   // Lock initial read state, refreshed only when initialReadCount actually changes value
@@ -126,7 +131,7 @@ export const FezConversationListV2 = ({
     ({item, index}: {item: FezPostData; index: number}) => {
       return (
         <View>
-          {showDayDividers && showTimeDivider(index) && (
+          {showDayDividers && index === 0 && !hasPreviousPage && (
             <TimeDivider label={getAdjustedMoment(item.timestamp).format('dddd MMM Do')} />
           )}
           {showNewDivider(index) && <LabelDivider label={'New'} />}
@@ -134,10 +139,25 @@ export const FezConversationListV2 = ({
         </View>
       );
     },
-    [fez, showDayDividers, showNewDivider, showTimeDivider, getAdjustedMoment],
+    [fez, hasPreviousPage, showDayDividers, showNewDivider, getAdjustedMoment],
   );
 
-  const renderSeparator = useCallback(() => <SpaceDivider />, []);
+  /**
+   * Gap between posts, with the day divider at a day boundary. The divider is here rather than in the
+   * later post because that post may be the oldest one loaded: its divider would come or go when an
+   * older page arrives, and FlashList only holds the top of a cell still, so the text would move.
+   */
+  const renderSeparator = useCallback(
+    ({leadingItem, trailingItem}: {leadingItem: FezPostData; trailingItem: FezPostData}) => (
+      <View>
+        <SpaceDivider />
+        {showDayDividers && isDayBoundary(leadingItem, trailingItem) && (
+          <TimeDivider label={getAdjustedMoment(trailingItem.timestamp).format('dddd MMM Do')} />
+        )}
+      </View>
+    ),
+    [getAdjustedMoment, isDayBoundary, showDayDividers],
+  );
 
   const renderListHeader = useCallback(() => {
     if (hasPreviousPage) {
@@ -156,18 +176,10 @@ export const FezConversationListV2 = ({
 
   const keyExtractor = useCallback((item: FezPostData) => item.postID.toString(), []);
 
-  /** Recycled cells are only reused for items that render the same chrome (day divider, New divider). */
+  /** Recycled cells are only reused for items that render the same chrome (the New divider). */
   const getItemType = useCallback(
-    (item: FezPostData, index: number) => {
-      if (showNewDivider(index)) {
-        return 'post-with-divider';
-      }
-      if (showDayDividers && showTimeDivider(index)) {
-        return 'post-with-day-divider';
-      }
-      return 'post';
-    },
-    [showDayDividers, showNewDivider, showTimeDivider],
+    (item: FezPostData, index: number) => (showNewDivider(index) ? 'post-with-divider' : 'post'),
+    [showNewDivider],
   );
 
   const isOwnItem = useCallback((item: FezPostData) => item.author.userID === currentUserID, [currentUserID]);

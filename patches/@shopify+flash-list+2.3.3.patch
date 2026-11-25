@@ -1,0 +1,471 @@
+diff --git a/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerViewManager.js b/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerViewManager.js
+index 1aa651d..bc27b05 100644
+--- a/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerViewManager.js
++++ b/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerViewManager.js
+@@ -36,6 +36,8 @@ export class RecyclerViewManager {
+         this._animationOptimizationsEnabled = false;
+         this.firstItemOffset = 0;
+         this.ignoreScrollEvents = false;
++        // How far the tracked offset is ahead of the native one while a data update is pending
++        this.pendingAnchorShift = 0;
+         this.isFirstPaintOnUiComplete = false;
+         this.isInitialScrollComplete = false;
+         // updates render stack based on the engaged indices which are sorted. Recycles unused keys.
+@@ -188,6 +190,7 @@ export class RecyclerViewManager {
+     modifyChildrenLayout(layoutInfo, dataLength) {
+         var _a, _b;
+         (_a = this.layoutManager) === null || _a === void 0 ? void 0 : _a.modifyLayout(layoutInfo, dataLength);
++        this.followPendingAnchor();
+         if (dataLength === 0) {
+             return false;
+         }
+@@ -221,9 +224,68 @@ export class RecyclerViewManager {
+         this.itemViewabilityManager.clearLastReportedViewableIndices();
+         this.computeItemViewability();
+     }
++    /**
++     * Prepares for new data before the render stack is recomputed. Offset correction only happens
++     * after the render, so with items added above, the old offset engaged the new items and recycled
++     * the cells of the items on screen, remounting their content.
++     */
++    prepareDataUpdate() {
++        var _a;
++        const layoutManager = this.layoutManager;
++        const added = this.getDataLength() - (layoutManager ? layoutManager.getLayoutCount() : 0);
++        if (!layoutManager || !this.hasRenderedProgressively || added === 0 || this.getDataLength() === 0) {
++            return;
++        }
++        const anchor = (_a = this.getCorrectionAnchor) === null || _a === void 0 ? void 0 : _a.call(this);
++        if (!anchor) {
++            return;
++        }
++        const index = this.propsRef.data.findIndex((_item, i) => this.getDataKey(i) === anchor.key);
++        if (index < 0) {
++            return;
++        }
++        if (added > 0 &&
++            index - anchor.index === added &&
++            this.numColumns === 1 &&
++            !this.propsRef.masonry &&
++            !this.propsRef.horizontal) {
++            layoutManager.prependLayouts(added);
++        }
++        else {
++            layoutManager.modifyLayout([], this.getDataLength());
++        }
++        this.pendingAnchorIndex = index;
++        this.followPendingAnchor();
++    }
++    /**
++     * Moves the tracked offset along with the anchor item while a data update is waiting for its
++     * offset correction, so that measuring the new items does not disengage the items on screen.
++     */
++    followPendingAnchor() {
++        var _a;
++        const anchor = (_a = this.getCorrectionAnchor) === null || _a === void 0 ? void 0 : _a.call(this);
++        const layout = this.pendingAnchorIndex === undefined ? undefined : this.tryGetLayout(this.pendingAnchorIndex);
++        if (!anchor || !layout) {
++            return;
++        }
++        const shift = (this.propsRef.horizontal ? layout.x : layout.y) - anchor.position;
++        this.engagedIndicesTracker.scrollOffset += shift - this.pendingAnchorShift;
++        this.pendingAnchorShift = shift;
++    }
++    /**
++     * Ends the pending data update.
++     * @returns How far the tracked offset has already been moved for it
++     */
++    finishDataUpdate() {
++        const shift = this.pendingAnchorShift;
++        this.pendingAnchorIndex = undefined;
++        this.pendingAnchorShift = 0;
++        return shift;
++    }
+     processDataUpdate() {
+         var _a, _b;
+         if (this.hasLayout()) {
++            this.prepareDataUpdate();
+             this.modifyChildrenLayout([], (_b = (_a = this.propsRef.data) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0);
+             if (this.hasRenderedProgressively && !this.recomputeEngagedIndices()) {
+                 // recomputeEngagedIndices will update the render stack if there are any changes in the engaged indices.
+diff --git a/node_modules/@shopify/flash-list/dist/recyclerview/hooks/useRecyclerViewController.js b/node_modules/@shopify/flash-list/dist/recyclerview/hooks/useRecyclerViewController.js
+index 08724d1..0133eec 100644
+--- a/node_modules/@shopify/flash-list/dist/recyclerview/hooks/useRecyclerViewController.js
++++ b/node_modules/@shopify/flash-list/dist/recyclerview/hooks/useRecyclerViewController.js
+@@ -30,6 +30,26 @@ export function useRecyclerViewController(recyclerViewManager, ref, scrollViewRe
+     // Track the first visible item for maintaining scroll position
+     const firstVisibleItemKey = useRef(undefined);
+     const firstVisibleItemLayout = useRef(undefined);
++    const firstVisibleItemIndex = useRef(0);
++    // The anchor, for moving the tracked offset before the render stack is computed for new data
++    recyclerViewManager.getCorrectionAnchor = () => {
++        if (pauseOffsetCorrection.current ||
++            recyclerViewManager.animationOptimizationsEnabled ||
++            !recyclerViewManager.getIsFirstLayoutComplete() ||
++            !recyclerViewManager.hasStableDataKeys() ||
++            !recyclerViewManager.shouldMaintainVisibleContentPosition() ||
++            !firstVisibleItemKey.current ||
++            !firstVisibleItemLayout.current) {
++            return undefined;
++        }
++        return {
++            key: firstVisibleItemKey.current,
++            index: firstVisibleItemIndex.current,
++            position: recyclerViewManager.props.horizontal
++                ? firstVisibleItemLayout.current.x
++                : firstVisibleItemLayout.current.y,
++        };
++    };
+     // Queue to store callbacks that should be executed after scroll offset updates
+     const pendingScrollCallbacks = useRef([]);
+     // Handle initial scroll position when the list first loads
+@@ -64,6 +84,7 @@ export function useRecyclerViewController(recyclerViewManager, ref, scrollViewRe
+             // Update the tracked first visible item
+             const firstVisibleIndex = Math.max(0, recyclerViewManager.computeVisibleIndices().startIndex);
+             if (firstVisibleIndex !== undefined && firstVisibleIndex >= 0) {
++                firstVisibleItemIndex.current = firstVisibleIndex;
+                 firstVisibleItemKey.current =
+                     recyclerViewManager.getDataKey(firstVisibleIndex);
+                 firstVisibleItemLayout.current = {
+@@ -86,11 +107,14 @@ export function useRecyclerViewController(recyclerViewManager, ref, scrollViewRe
+         pendingScrollCallbacks.current = [];
+         callbacks.forEach((callback) => callback());
+         const currentDataLength = recyclerViewManager.getDataLength();
++        // The tracked offset has already been moved this far for new data
++        const movedOffset = recyclerViewManager.finishDataUpdate();
+         if (recyclerViewManager.getIsFirstLayoutComplete() &&
+             recyclerViewManager.hasStableDataKeys() &&
+             currentDataLength > 0 &&
+             recyclerViewManager.shouldMaintainVisibleContentPosition()) {
+             const hasDataChanged = currentDataLength !== lastDataLengthRef.current;
++            let keepAnchor = false;
+             // If we have a tracked first visible item, maintain its position
+             if (firstVisibleItemKey.current) {
+                 // Try engaged indices first (fast O(n) over rendered items), then
+@@ -118,6 +142,7 @@ export function useRecyclerViewController(recyclerViewManager, ref, scrollViewRe
+                             firstVisibleItemLayout.current.x
+                         : recyclerViewManager.getLayout(currentIndexOfFirstVisibleItem).y -
+                             firstVisibleItemLayout.current.y;
++                    firstVisibleItemIndex.current = currentIndexOfFirstVisibleItem;
+                     firstVisibleItemLayout.current = {
+                         ...recyclerViewManager.getLayout(currentIndexOfFirstVisibleItem),
+                     };
+@@ -132,17 +157,28 @@ export function useRecyclerViewController(recyclerViewManager, ref, scrollViewRe
+                         else {
+                             const scrollToParams = horizontal
+                                 ? {
+-                                    x: recyclerViewManager.getAbsoluteLastScrollOffset() + diff,
++                                    x: recyclerViewManager.getAbsoluteLastScrollOffset() +
++                                        diff -
++                                        movedOffset,
+                                     animated: false,
+                                 }
+                                 : {
+-                                    y: recyclerViewManager.getAbsoluteLastScrollOffset() + diff,
++                                    y: recyclerViewManager.getAbsoluteLastScrollOffset() +
++                                        diff -
++                                        movedOffset,
+                                     animated: false,
+                                 };
+                             (_c = scrollViewRef.current) === null || _c === void 0 ? void 0 : _c.scrollTo(scrollToParams);
+                         }
+                         if (hasDataChanged) {
+-                            updateScrollOffsetWithCallback(recyclerViewManager.getAbsoluteLastScrollOffset() + diff, () => { });
++                            // After correcting for a data change, keep this anchor until the
++                            // next pass. Items newly revealed above it have estimated heights
++                            // now; anchoring to one of them holds its top while it measures,
++                            // which moves the content the user was looking at.
++                            keepAnchor = true;
++                            updateScrollOffsetWithCallback(recyclerViewManager.getAbsoluteLastScrollOffset() +
++                                diff -
++                                movedOffset, () => { });
+                             recyclerViewManager.ignoreScrollEvents = true;
+                             setTimeout(() => {
+                                 recyclerViewManager.ignoreScrollEvents = false;
+@@ -151,7 +187,9 @@ export function useRecyclerViewController(recyclerViewManager, ref, scrollViewRe
+                     }
+                 }
+             }
+-            computeFirstVisibleIndexForOffsetCorrection();
++            if (!keepAnchor) {
++                computeFirstVisibleIndexForOffsetCorrection();
++            }
+         }
+         lastDataLengthRef.current = recyclerViewManager.getDataLength();
+     }, [
+diff --git a/node_modules/@shopify/flash-list/dist/recyclerview/layout-managers/LayoutManager.js b/node_modules/@shopify/flash-list/dist/recyclerview/layout-managers/LayoutManager.js
+index aa37225..3b09e75 100644
+--- a/node_modules/@shopify/flash-list/dist/recyclerview/layout-managers/LayoutManager.js
++++ b/node_modules/@shopify/flash-list/dist/recyclerview/layout-managers/LayoutManager.js
+@@ -104,6 +104,21 @@ export class RVLayoutManager {
+         // Recompute layouts starting from the smallest index in the original indices array
+         this._recomputeLayouts(this.getMinRecomputeIndex(startIndex), this.getMaxRecomputeIndex(startIndex));
+     }
++    /**
++     * Makes room for items added at the start, so that measured sizes stay with their items.
++     * Layouts are stored by index; otherwise every size would belong to the wrong item.
++     * @param count Number of items added
++     */
++    prependLayouts(count) {
++        const added = [];
++        for (let i = 0; i < count; i++) {
++            added.push({ x: 0, y: 0, width: 0, height: 0 });
++        }
++        this.layouts = added.concat(this.layouts);
++        this.spanTracker = new Array(count).concat(this.spanTracker);
++        this.recomputeLayouts(0, this.layouts.length - 1);
++        this.lastSkippedLayoutIndex = Number.MAX_VALUE;
++    }
+     /**
+      * Updates layout information for items and recomputes layout if necessary.
+      * @param layoutInfo Array of layout information for items (real measurements)
+diff --git a/node_modules/@shopify/flash-list/src/recyclerview/RecyclerViewManager.ts b/node_modules/@shopify/flash-list/src/recyclerview/RecyclerViewManager.ts
+index 41704d0..4d2ed3f 100644
+--- a/node_modules/@shopify/flash-list/src/recyclerview/RecyclerViewManager.ts
++++ b/node_modules/@shopify/flash-list/src/recyclerview/RecyclerViewManager.ts
+@@ -38,6 +38,15 @@ export class RecyclerViewManager<T> {
+ 
+   public firstItemOffset = 0;
+   public ignoreScrollEvents = false;
++  // The item held in place by offset correction, or undefined while correction is off
++  public getCorrectionAnchor?: () =>
++    | { key: string; index: number; position: number }
++    | undefined;
++
++  // Index of that item in new data that is waiting for its offset correction
++  private pendingAnchorIndex?: number;
++  // How far the tracked offset is ahead of the native one while a data update is pending
++  private pendingAnchorShift = 0;
+   public isFirstPaintOnUiComplete = false;
+   public isInitialScrollComplete = false;
+ 
+@@ -261,6 +270,7 @@ export class RecyclerViewManager<T> {
+     dataLength: number
+   ): boolean {
+     this.layoutManager?.modifyLayout(layoutInfo, dataLength);
++    this.followPendingAnchor();
+     if (dataLength === 0) {
+       return false;
+     }
+@@ -299,8 +309,81 @@ export class RecyclerViewManager<T> {
+     this.computeItemViewability();
+   }
+ 
++  /**
++   * Prepares for new data before the render stack is recomputed. Offset correction only happens
++   * after the render, so with items added above, the old offset engaged the new items and recycled
++   * the cells of the items on screen, remounting their content.
++   */
++  private prepareDataUpdate() {
++    const layoutManager = this.layoutManager;
++    const dataLength = this.getDataLength();
++    const added = dataLength - (layoutManager?.getLayoutCount() ?? 0);
++    if (
++      !layoutManager ||
++      !this.hasRenderedProgressively ||
++      added === 0 ||
++      dataLength === 0
++    ) {
++      return;
++    }
++    const anchor = this.getCorrectionAnchor?.();
++    if (!anchor) {
++      return;
++    }
++    const index = this.propsRef.data!.findIndex(
++      (_item, i) => this.getDataKey(i) === anchor.key
++    );
++    if (index < 0) {
++      return;
++    }
++    if (
++      added > 0 &&
++      index - anchor.index === added &&
++      this.numColumns === 1 &&
++      !this.propsRef.masonry &&
++      !this.propsRef.horizontal
++    ) {
++      layoutManager.prependLayouts(added);
++    } else {
++      layoutManager.modifyLayout([], dataLength);
++    }
++    this.pendingAnchorIndex = index;
++    this.followPendingAnchor();
++  }
++
++  /**
++   * Moves the tracked offset along with the anchor item while a data update is waiting for its
++   * offset correction, so that measuring the new items does not disengage the items on screen.
++   */
++  private followPendingAnchor() {
++    const anchor = this.getCorrectionAnchor?.();
++    const layout =
++      this.pendingAnchorIndex === undefined
++        ? undefined
++        : this.tryGetLayout(this.pendingAnchorIndex);
++    if (!anchor || !layout) {
++      return;
++    }
++    const shift =
++      (this.propsRef.horizontal ? layout.x : layout.y) - anchor.position;
++    this.engagedIndicesTracker.scrollOffset += shift - this.pendingAnchorShift;
++    this.pendingAnchorShift = shift;
++  }
++
++  /**
++   * Ends the pending data update.
++   * @returns How far the tracked offset has already been moved for it
++   */
++  finishDataUpdate(): number {
++    const shift = this.pendingAnchorShift;
++    this.pendingAnchorIndex = undefined;
++    this.pendingAnchorShift = 0;
++    return shift;
++  }
++
+   processDataUpdate() {
+     if (this.hasLayout()) {
++      this.prepareDataUpdate();
+       this.modifyChildrenLayout([], this.propsRef.data?.length ?? 0);
+       if (this.hasRenderedProgressively && !this.recomputeEngagedIndices()) {
+         // recomputeEngagedIndices will update the render stack if there are any changes in the engaged indices.
+diff --git a/node_modules/@shopify/flash-list/src/recyclerview/hooks/useRecyclerViewController.tsx b/node_modules/@shopify/flash-list/src/recyclerview/hooks/useRecyclerViewController.tsx
+index 3689830..500f0ac 100644
+--- a/node_modules/@shopify/flash-list/src/recyclerview/hooks/useRecyclerViewController.tsx
++++ b/node_modules/@shopify/flash-list/src/recyclerview/hooks/useRecyclerViewController.tsx
+@@ -57,6 +57,29 @@ export function useRecyclerViewController<T>(
+   // Track the first visible item for maintaining scroll position
+   const firstVisibleItemKey = useRef<string | undefined>(undefined);
+   const firstVisibleItemLayout = useRef<RVLayout | undefined>(undefined);
++  const firstVisibleItemIndex = useRef(0);
++
++  // The anchor, for moving the tracked offset before the render stack is computed for new data
++  recyclerViewManager.getCorrectionAnchor = () => {
++    if (
++      pauseOffsetCorrection.current ||
++      recyclerViewManager.animationOptimizationsEnabled ||
++      !recyclerViewManager.getIsFirstLayoutComplete() ||
++      !recyclerViewManager.hasStableDataKeys() ||
++      !recyclerViewManager.shouldMaintainVisibleContentPosition() ||
++      !firstVisibleItemKey.current ||
++      !firstVisibleItemLayout.current
++    ) {
++      return undefined;
++    }
++    return {
++      key: firstVisibleItemKey.current,
++      index: firstVisibleItemIndex.current,
++      position: recyclerViewManager.props.horizontal
++        ? firstVisibleItemLayout.current.x
++        : firstVisibleItemLayout.current.y,
++    };
++  };
+ 
+   // Queue to store callbacks that should be executed after scroll offset updates
+   const pendingScrollCallbacks = useRef<(() => void)[]>([]);
+@@ -102,6 +125,7 @@ export function useRecyclerViewController<T>(
+         recyclerViewManager.computeVisibleIndices().startIndex
+       );
+       if (firstVisibleIndex !== undefined && firstVisibleIndex >= 0) {
++        firstVisibleItemIndex.current = firstVisibleIndex;
+         firstVisibleItemKey.current =
+           recyclerViewManager.getDataKey(firstVisibleIndex);
+         firstVisibleItemLayout.current = {
+@@ -126,6 +150,8 @@ export function useRecyclerViewController<T>(
+     callbacks.forEach((callback) => callback());
+ 
+     const currentDataLength = recyclerViewManager.getDataLength();
++    // The tracked offset has already been moved this far for new data
++    const movedOffset = recyclerViewManager.finishDataUpdate();
+ 
+     if (
+       recyclerViewManager.getIsFirstLayoutComplete() &&
+@@ -134,6 +160,7 @@ export function useRecyclerViewController<T>(
+       recyclerViewManager.shouldMaintainVisibleContentPosition()
+     ) {
+       const hasDataChanged = currentDataLength !== lastDataLengthRef.current;
++      let keepAnchor = false;
+       // If we have a tracked first visible item, maintain its position
+       if (firstVisibleItemKey.current) {
+         // Try engaged indices first (fast O(n) over rendered items), then
+@@ -172,6 +199,7 @@ export function useRecyclerViewController<T>(
+               firstVisibleItemLayout.current!.x
+             : recyclerViewManager.getLayout(currentIndexOfFirstVisibleItem).y -
+               firstVisibleItemLayout.current!.y;
++          firstVisibleItemIndex.current = currentIndexOfFirstVisibleItem;
+           firstVisibleItemLayout.current = {
+             ...recyclerViewManager.getLayout(currentIndexOfFirstVisibleItem),
+           };
+@@ -187,18 +215,31 @@ export function useRecyclerViewController<T>(
+             } else {
+               const scrollToParams = horizontal
+                 ? {
+-                    x: recyclerViewManager.getAbsoluteLastScrollOffset() + diff,
++                    x:
++                      recyclerViewManager.getAbsoluteLastScrollOffset() +
++                      diff -
++                      movedOffset,
+                     animated: false,
+                   }
+                 : {
+-                    y: recyclerViewManager.getAbsoluteLastScrollOffset() + diff,
++                    y:
++                      recyclerViewManager.getAbsoluteLastScrollOffset() +
++                      diff -
++                      movedOffset,
+                     animated: false,
+                   };
+               scrollViewRef.current?.scrollTo(scrollToParams);
+             }
+             if (hasDataChanged) {
++              // After correcting for a data change, keep this anchor until the
++              // next pass. Items newly revealed above it have estimated heights
++              // now; anchoring to one of them holds its top while it measures,
++              // which moves the content the user was looking at.
++              keepAnchor = true;
+               updateScrollOffsetWithCallback(
+-                recyclerViewManager.getAbsoluteLastScrollOffset() + diff,
++                recyclerViewManager.getAbsoluteLastScrollOffset() +
++                  diff -
++                  movedOffset,
+                 () => {}
+               );
+               recyclerViewManager.ignoreScrollEvents = true;
+@@ -210,7 +251,9 @@ export function useRecyclerViewController<T>(
+         }
+       }
+ 
+-      computeFirstVisibleIndexForOffsetCorrection();
++      if (!keepAnchor) {
++        computeFirstVisibleIndexForOffsetCorrection();
++      }
+     }
+     lastDataLengthRef.current = recyclerViewManager.getDataLength();
+   }, [
+diff --git a/node_modules/@shopify/flash-list/src/recyclerview/layout-managers/LayoutManager.ts b/node_modules/@shopify/flash-list/src/recyclerview/layout-managers/LayoutManager.ts
+index fc73c91..37df64c 100644
+--- a/node_modules/@shopify/flash-list/src/recyclerview/layout-managers/LayoutManager.ts
++++ b/node_modules/@shopify/flash-list/src/recyclerview/layout-managers/LayoutManager.ts
+@@ -166,6 +166,22 @@ export abstract class RVLayoutManager {
+     );
+   }
+ 
++  /**
++   * Makes room for items added at the start, so that measured sizes stay with their items.
++   * Layouts are stored by index; otherwise every size would belong to the wrong item.
++   * @param count Number of items added
++   */
++  prependLayouts(count: number): void {
++    const added: RVLayout[] = [];
++    for (let i = 0; i < count; i++) {
++      added.push({ x: 0, y: 0, width: 0, height: 0 });
++    }
++    this.layouts = added.concat(this.layouts);
++    this.spanTracker = new Array<number | undefined>(count).concat(this.spanTracker);
++    this.recomputeLayouts(0, this.layouts.length - 1);
++    this.lastSkippedLayoutIndex = Number.MAX_VALUE;
++  }
++
+   /**
+    * Updates layout information for items and recomputes layout if necessary.
+    * @param layoutInfo Array of layout information for items (real measurements)

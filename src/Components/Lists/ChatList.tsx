@@ -38,6 +38,15 @@ const AUTOSCROLL_TO_BOTTOM_THRESHOLD = 0.2;
 /** Fraction of the viewport from the top below which the load-previous nudge fires. */
 const LOAD_PREVIOUS_NUDGE_FRACTION = 0.2;
 
+/** Fraction of the viewport from the bottom below which the page fill loads the next page. */
+const LOAD_NEXT_FILL_FRACTION = 0.5;
+
+/** Delay before the page fill check, long enough for FlashList to settle the position after a prepend. */
+const PAGE_FILL_DELAY_MS = 500;
+
+/** Upper bound on the doubling delay between page fill checks while a page fails to load. */
+const PAGE_FILL_MAX_DELAY_MS = 30000;
+
 /** Frames the ready check waits before revealing the list regardless of position (~750ms at 60fps). */
 const READY_MAX_FRAMES = 45;
 
@@ -185,7 +194,9 @@ export const ChatList = <TItem,>({
 
   const [scrollButtonDirection, setScrollButtonDirection] = useState<ScrollButtonDirection>(null);
   const scrollButtonDirectionRef = useRef<ScrollButtonDirection>(null);
-  // At the top edge, where the scroll-to-top button has nothing to do and is greyed out.
+  // At the top edge, where the scroll-to-top button has nothing to do and is greyed out. Never set
+  // while an older page exists: the top is only a waypoint then, and greying the button for the
+  // moment the page takes to load just made it flicker off and on.
   const [atTop, setAtTop] = useState(false);
   const atTopRef = useRef(false);
   const scrollMetricsRef = useRef<ScrollMetrics | null>(null);
@@ -204,11 +215,17 @@ export const ChatList = <TItem,>({
   const userScrollingRef = useRef(false);
   const dragEndedAtRef = useRef(0);
   // Until this time (ms), content growth while the list sits at the end re-pins the end. Set by the
-  // scroll-to-bottom buttons; cleared by a user drag.
+  // scroll-to-bottom buttons and the page fill; cleared by a user drag.
   const endPinUntilRef = useRef(0);
+  // Set when an older page is loaded into an end-anchored list that does not fill the viewport yet.
+  // Such a list is bottom-aligned by a FlashList margin that goes away as it fills, which FlashList's
+  // position correction does not count, so the end is pinned once the content outgrows the viewport.
+  const pinEndOnFillRef = useRef(false);
 
   const dataLengthRef = useRef(data.length);
   const dataRef = useRef(data);
+  const handleLoadNextRef = useRef(handleLoadNext);
+  const handleLoadPreviousRef = useRef(handleLoadPrevious);
   // The index anchor is tracked by item key, not position: an older page can be prepended (FlashList
   // fires onStartReached at mount when the anchor is near the top) before positioning finishes, which
   // shifts every index. Captured once at mount, like FlashList's own initialScrollIndex.
@@ -217,6 +234,7 @@ export const ChatList = <TItem,>({
   );
   const onReadyToShowRef = useRef(onReadyToShow);
   const readyFiredRef = useRef(false);
+  const [ready, setReady] = useState(false);
   const readyFrameRef = useRef<number | null>(null);
   const ownScrollFrameRef = useRef<number | null>(null);
   const prevKeysRef = useRef<{first?: string; last?: string}>({
@@ -259,6 +277,8 @@ export const ChatList = <TItem,>({
     dataLengthRef.current = data.length;
     dataRef.current = data;
     onReadyToShowRef.current = onReadyToShow;
+    handleLoadNextRef.current = handleLoadNext;
+    handleLoadPreviousRef.current = handleLoadPrevious;
   });
 
   // Every frame and timer started here is cancelled on unmount. Parent screens remount the list via
@@ -283,6 +303,7 @@ export const ChatList = <TItem,>({
       return;
     }
     readyFiredRef.current = true;
+    setReady(true);
     logger.debug('Firing onReadyToShow');
     onReadyToShowRef.current?.();
   }, []);
@@ -519,6 +540,21 @@ export const ChatList = <TItem,>({
     [commonStyles.paddingBottomSmall, lastIndex, renderItem],
   );
 
+  /**
+   * Tracks whether the list is at the real beginning of the conversation (no older page to load),
+   * touching state only when it actually changed.
+   */
+  const applyAtTop = useCallback(
+    (offset: number) => {
+      const nowAtTop = !hasPreviousPage && offset <= styleDefaults.marginSize;
+      if (nowAtTop !== atTopRef.current) {
+        atTopRef.current = nowAtTop;
+        setAtTop(nowAtTop);
+      }
+    },
+    [hasPreviousPage, styleDefaults.marginSize],
+  );
+
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const {contentSize, layoutMeasurement, contentOffset} = event.nativeEvent;
@@ -529,11 +565,7 @@ export const ChatList = <TItem,>({
       };
       const distanceFromBottom = contentSize.height - layoutMeasurement.height - contentOffset.y;
       isNearBottomRef.current = distanceFromBottom <= styleDefaults.listScrollThreshold;
-      const nowAtTop = contentOffset.y <= styleDefaults.marginSize;
-      if (nowAtTop !== atTopRef.current) {
-        atTopRef.current = nowAtTop;
-        setAtTop(nowAtTop);
-      }
+      applyAtTop(contentOffset.y);
 
       // FlashList's onStartReached stops firing after a few prepends that add less than a threshold of
       // content (Shopify/flash-list#1785), so also load older posts directly when near the top. The
@@ -550,14 +582,64 @@ export const ChatList = <TItem,>({
 
       applyScrollButtonDirection();
     },
-    [
-      applyScrollButtonDirection,
-      handleLoadPrevious,
-      hasPreviousPage,
-      styleDefaults.listScrollThreshold,
-      styleDefaults.marginSize,
-    ],
+    [applyAtTop, applyScrollButtonDirection, handleLoadPrevious, hasPreviousPage, styleDefaults.listScrollThreshold],
   );
+
+  // FlashList's onStartReached/onEndReached and the nudge in onScroll all depend on scroll events. A
+  // list too short to scroll never gets one, and startRenderingFromBottom leaves FlashList's tracked
+  // offset at the last item, which can be outside its start threshold. So a short first page sat on
+  // "Loading previous..." forever. This checks the position once the list is ready and after each
+  // page. It re-checks with a growing delay because a load can also fail or be cancelled by a
+  // refetch. The handlers are read from refs: they change identity around every fetch, and restarting
+  // here on that would retry a failing load with no delay. The pagination hook ignores calls while a
+  // fetch is in flight.
+  //
+  // The position is FlashList's tracked offset, not our last scroll event. FlashList swallows the
+  // scroll event of its own correction after a prepend, so the last event still says the list is at
+  // the top, and going by it loaded every older page in a row. The same goes for the state derived
+  // from that event, so the first check after a page refreshes it.
+  useEffect(() => {
+    if (!ready) {
+      return;
+    }
+    let delay = PAGE_FILL_DELAY_MS;
+    let timer: ReturnType<typeof setTimeout>;
+    const check = () => {
+      const list = listRef.current;
+      const endOffset = getEndOffset();
+      if (list && endOffset !== undefined) {
+        const viewportHeight = list.getWindowSize().height;
+        const offset = Math.min(list.getAbsoluteLastScrollOffset(), endOffset);
+        if (delay === PAGE_FILL_DELAY_MS && scrollMetricsRef.current) {
+          scrollMetricsRef.current = {...scrollMetricsRef.current, offset};
+          applyAtTop(offset);
+          applyScrollButtonDirection();
+        }
+        if (hasPreviousPage && offset < viewportHeight * LOAD_PREVIOUS_NUDGE_FRACTION) {
+          pinEndOnFillRef.current = anchorsToEnd && endOffset === 0;
+          handleLoadPreviousRef.current?.();
+        } else if (hasNextPage && endOffset - offset < viewportHeight * LOAD_NEXT_FILL_FRACTION) {
+          handleLoadNextRef.current?.();
+        }
+      }
+      if (hasPreviousPage || hasNextPage) {
+        delay = Math.min(delay * 2, PAGE_FILL_MAX_DELAY_MS);
+        timer = setTimeout(check, delay);
+      }
+    };
+    timer = setTimeout(check, delay);
+    return () => clearTimeout(timer);
+  }, [
+    anchorsToEnd,
+    applyAtTop,
+    applyScrollButtonDirection,
+    data.length,
+    getEndOffset,
+    hasNextPage,
+    hasPreviousPage,
+    listRef,
+    ready,
+  ]);
 
   /** Primary button: to the "New" divider when there is one, else to the end of the list. */
   /**
@@ -603,9 +685,18 @@ export const ChatList = <TItem,>({
    * buttons, which may have hidden for a bottom that has since moved away; the next scroll event
    * refreshes everything else. Within the button's end-pin window, growth while the list sat at the
    * end re-pins the end. Not mid-animation: the list is only "at the end" once it has landed.
+   * Outgrowing the viewport after a page fill (see pinEndOnFillRef) opens the same window.
    */
   const onContentSizeChange = useCallback(
     (_width: number, height: number) => {
+      const viewportHeight = containerHeightRef.current;
+      if (pinEndOnFillRef.current && viewportHeight !== null && height > viewportHeight + 1) {
+        pinEndOnFillRef.current = false;
+        if (!userScrollingRef.current) {
+          endPinUntilRef.current = Date.now() + END_PIN_MS;
+          scheduleRepin();
+        }
+      }
       const metrics = scrollMetricsRef.current;
       if (!metrics || metrics.contentHeight === height) {
         return;
