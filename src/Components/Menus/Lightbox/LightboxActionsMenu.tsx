@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -13,16 +13,27 @@ interface LightboxActionsMenuProps {
   onPressSave?: () => void;
   onPressShare?: () => void;
   onRequestClose: () => void;
+  onVisibleChange?: (visible: boolean) => void;
 }
 
 /**
  * Actions menu for the image lightbox header: download, image settings, and share. Settings
  * dismisses the lightbox first and then pushes onto whatever screen is underneath, via the global
- * navigation ref because the lightbox renders outside every navigator.
+ * navigation ref because the lightbox renders outside every navigator. Reports its open state through
+ * onVisibleChange so the lightbox can keep its chrome (the menu's anchor) visible while it is open.
  */
-export const LightboxActionsMenu = ({onPressSave, onPressShare, onRequestClose}: LightboxActionsMenuProps) => {
+export const LightboxActionsMenu = ({
+  onPressSave,
+  onPressShare,
+  onRequestClose,
+  onVisibleChange,
+}: LightboxActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {theme} = useAppTheme();
+
+  useEffect(() => {
+    onVisibleChange?.(visible);
+  }, [onVisibleChange, visible]);
 
   return (
     <AppMenu

@@ -244,6 +244,14 @@ function ImageView({
   const [showControls, setShowControls] = useState(true);
   const [isInfoVisible, setIsInfoVisible] = useState(false);
   const [footerHeight, setFooterHeight] = useState(0);
+  // Taps that land while the header actions menu is open must not hide the chrome the menu is anchored to.
+  const isMenuOpenRef = useRef(false);
+  const onMenuVisibleChange = useCallback((visible: boolean) => {
+    isMenuOpenRef.current = visible;
+    if (visible) {
+      setShowControls(true);
+    }
+  }, []);
   const dismissSwipeTranslateY = useSharedValue(0);
   const isFlyingAway = useSharedValue(false);
   const isPagerDragging = useSharedValue(false);
@@ -330,6 +338,9 @@ function ImageView({
   }, [isAnimated, images, thumbRects, onRequestClose]);
 
   const onTap = useCallback(() => {
+    if (isMenuOpenRef.current) {
+      return;
+    }
     setShowControls(show => !show);
   }, []);
 
@@ -406,6 +417,7 @@ function ImageView({
             onPressShare={allowShare ? () => onPressShare(images[imageIndex]) : undefined}
             onPressSave={allowSave ? () => onPressSave(images[imageIndex]) : undefined}
             onPressInfo={() => setIsInfoVisible(visible => !visible)}
+            onMenuVisibleChange={onMenuVisibleChange}
             imageCount={images.length}
             activeIndex={imageIndex}
           />
