@@ -104,6 +104,8 @@ const LfgListScreenInner = ({
   const {scrollToNow} = useScrollToNow({
     items: fezList,
     listRef,
+    // The list is filtered to the selected day, so "now" must be placed on that day, not the real one.
+    selectedCruiseDay,
   });
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
