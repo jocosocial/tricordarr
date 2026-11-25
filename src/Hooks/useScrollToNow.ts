@@ -97,17 +97,23 @@ export function useScrollToNow<T extends EventData | FezData>({
     }
   }, [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, items, startDate, selectedCruiseDay, tzAtTime]);
 
+  /**
+   * Scrolls to the "now" item. Only the very top of the list uses an offset scroll. Every other
+   * index, including the last item, goes through scrollToIndex so the list lands on "now" itself.
+   * (scrollToEnd also scrolls past the final item to the footer, which reads as "jumped to the
+   * bottom" rather than "scrolled to now".)
+   */
   const scrollToNow = useCallback(() => {
     if (items.length === 0 || !listRef.current) {
       return;
     }
-    if (scrollNowIndex === 0) {
-      listRef.current.scrollToOffset({offset: 0});
-    } else if (scrollNowIndex === items.length - 1) {
-      listRef.current.scrollToEnd();
+    // The index is state computed in an effect, so clamp it in case the list shrank since.
+    const index = Math.min(scrollNowIndex, items.length - 1);
+    if (index <= 0) {
+      listRef.current.scrollToOffset({offset: 0, animated: true});
     } else {
       listRef.current.scrollToIndex({
-        index: scrollNowIndex,
+        index,
         // The viewOffset is so that we show the TimeSeparator in the view as well.
         viewOffset: 40,
         animated: true,
