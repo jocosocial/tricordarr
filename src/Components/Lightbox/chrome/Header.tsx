@@ -17,6 +17,7 @@ interface HeaderProps {
   onPressShare?: () => void;
   onPressSave?: () => void;
   onPressInfo?: () => void;
+  onMenuVisibleChange?: (visible: boolean) => void;
   imageCount: number;
   activeIndex: number;
 }
@@ -35,6 +36,7 @@ export const Header = ({
   onPressShare,
   onPressSave,
   onPressInfo,
+  onMenuVisibleChange,
   imageCount,
   activeIndex,
 }: HeaderProps) => {
@@ -84,7 +86,12 @@ export const Header = ({
               onPress={onPressInfo}
             />
           )}
-          <LightboxActionsMenu onPressSave={onPressSave} onPressShare={onPressShare} onRequestClose={onRequestClose} />
+          <LightboxActionsMenu
+            onPressSave={onPressSave}
+            onPressShare={onPressShare}
+            onRequestClose={onRequestClose}
+            onVisibleChange={onMenuVisibleChange}
+          />
         </MaterialHeaderButtons>
       </View>
     </View>
