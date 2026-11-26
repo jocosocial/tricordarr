@@ -105,6 +105,14 @@ describe('getForumThreadReadState', () => {
     expect(getForumThreadReadState(undefined)).toBeUndefined();
   });
 
+  it('is undefined when the server does not report a read count', () => {
+    const page = {...forumPage(200, 826, 0), readCount: undefined};
+    const data = {pages: [page], pageParams: [{start: undefined, limit: 50}]};
+    expect(getForumThreadReadState(data)).toBeUndefined();
+    // With no read state the thread opens on its last post rather than at a NaN index.
+    expect(getForumInitialScrollIndex(50, 200, getForumThreadReadState(data))).toBe(49);
+  });
+
   it('reports a never-read thread as 0 and a fully read one as the total', () => {
     const params = [{start: undefined, limit: 50}];
     expect(getForumThreadReadState({pages: [forumPage(0, 40, 0)], pageParams: params})).toEqual({

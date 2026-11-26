@@ -1,7 +1,7 @@
 import {InfiniteData, QueryObserverResult} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import pluralize from 'pluralize';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
@@ -126,7 +126,9 @@ const ForumThreadScreenBaseInner = ({
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
-  const [readyToShow, setReadyToShow] = useState(false);
+  // Key of the list instance that reported ready. A remount via `listKey` yields a new key, so the
+  // overlay comes back until the new instance is at its initial position.
+  const [readyListKey, setReadyListKey] = useState<string>();
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
 
@@ -279,11 +281,6 @@ const ForumThreadScreenBaseInner = ({
     }
   };
 
-  const onReadyToShow = useCallback(() => {
-    logger.debug('Forum thread list ready to show');
-    setReadyToShow(true);
-  }, []);
-
   // Frozen once computable so later page loads and reads don't move the anchor; the list is
   // remounted via `key` when the index first becomes known, because FlashList only honors its
   // initial scroll position at mount. Computed above the early return below so the hook runs on
@@ -295,6 +292,37 @@ const ForumThreadScreenBaseInner = ({
   const frozenScrollIndex = useFirstDefined(computedScrollIndex);
   const initialScrollIndex = frozenScrollIndex ?? computedScrollIndex;
 
+  const listKey = `${forumData?.forumID ?? 'forum'}-${initialScrollIndex ?? 'bottom'}`;
+  const readyToShow = readyListKey === listKey;
+
+  /** Marks the currently mounted list instance as ready, hiding the overlay. */
+  const onReadyToShow = useCallback(() => {
+    logger.debug('Forum thread list ready to show');
+    setReadyListKey(listKey);
+  }, [listKey]);
+
+  const overlayStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        overlay: {
+          ...commonStyles.positionAbsolute,
+          ...commonStyles.flex,
+          ...commonStyles.justifyCenter,
+          ...commonStyles.alignItemsCenter,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: theme.colors.background,
+          zIndex: 1,
+        },
+        keyboardView: {
+          ...commonStyles.flex,
+        },
+      }),
+    [commonStyles, theme.colors.background],
+  );
+
   if (!isLoaded) {
     return (
       <AppView>
@@ -303,27 +331,7 @@ const ForumThreadScreenBaseInner = ({
     );
   }
 
-  const listKey = `${forumData?.forumID ?? 'forum'}-${initialScrollIndex ?? 'bottom'}`;
-
   const showForm = !forumData?.isLocked || hasModerator;
-
-  const overlayStyles = StyleSheet.create({
-    overlay: {
-      ...commonStyles.positionAbsolute,
-      ...commonStyles.flex,
-      ...commonStyles.justifyCenter,
-      ...commonStyles.alignItemsCenter,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: theme.colors.background,
-      zIndex: 1,
-    },
-    keyboardView: {
-      ...commonStyles.flex,
-    },
-  });
 
   return (
     <ForumComposerProvider formRef={postFormRef} inputRef={postInputRef} enabled={showForm}>

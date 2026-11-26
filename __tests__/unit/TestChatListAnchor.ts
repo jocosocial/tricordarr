@@ -10,8 +10,8 @@ import {
 } from '#src/Libraries/ChatList/Anchor';
 import {
   ANCHOR_CORRECTION_START_FRAME,
-  ANCHOR_CORRECTION_WAIT_FRAMES,
   ANCHOR_MAX_CORRECTIONS,
+  ANCHOR_SCROLL_EVENT_MAX_FRAMES,
   ANCHOR_SETTLED_FRAMES,
   READY_WATCHDOG_FRAMES,
   READY_WATCHDOG_MS,
@@ -23,9 +23,15 @@ const MAX_TICKS = READY_WATCHDOG_FRAMES * 4;
 /**
  * Ticks the ready check until it reports ready (or MAX_TICKS as a guard), feeding
  * each measurement from `measureAt(frame)`. Frames are `frameMs` apart (16ms, 60Hz, by default).
+ * `scrollEventsAt(frame)` is the scroll event count the list has seen by that frame; by default one
+ * arrives every frame, so a correction's event is there on the next frame.
  * Returns every step, so tests can see when it measured, corrected, and revealed.
  */
-const run = (measureAt: (frame: number) => AnchorError | undefined, frameMs = 16) => {
+const run = (
+  measureAt: (frame: number) => AnchorError | undefined,
+  frameMs = 16,
+  scrollEventsAt: (frame: number) => number = frame => frame,
+) => {
   const steps: (ReadyCheckStep & {measured: boolean})[] = [];
   let state: ReadyCheckState = initialReadyCheckState;
   for (let i = 0; i < MAX_TICKS; i++) {
@@ -37,6 +43,7 @@ const run = (measureAt: (frame: number) => AnchorError | undefined, frameMs = 16
         return measureAt(state.frames + 1);
       },
       state.frames * frameMs,
+      scrollEventsAt(state.frames + 1),
     );
     steps.push({...step, measured});
     state = step.state;
@@ -104,14 +111,16 @@ describe('stepReadyCheck', () => {
     expect(steps.every(step => step.scrollTo === undefined)).toBe(true);
   });
 
-  it('corrects toward the target, then waits for the scroll to land before measuring', () => {
+  it('corrects toward the target, then measures once its scroll event arrives', () => {
     const steps = run(() => ({error: 200, target: 400}));
     const correction = steps.find(step => step.scrollTo !== undefined);
     expect(correction?.scrollTo).toBe(400);
     expect(correction?.state.corrections).toBe(1);
+    const events = correction!.state.scrollEventsAtCorrection!;
     let state = correction!.state;
     const measured: boolean[] = [];
-    for (let i = 0; i < ANCHOR_CORRECTION_WAIT_FRAMES; i++) {
+    // No scroll event yet for two frames, then one arrives.
+    for (const count of [events, events, events + 1]) {
       let didMeasure = false;
       state = stepReadyCheck(
         state,
@@ -120,10 +129,40 @@ describe('stepReadyCheck', () => {
           return {error: 0, target: 400};
         },
         0,
+        count,
       ).state;
       measured.push(didMeasure);
     }
     expect(measured).toEqual([false, false, true]);
+  });
+
+  it('does not reveal early when the correction scroll event is late (fast displays)', () => {
+    // The first measurement (at ANCHOR_CORRECTION_START_FRAME) corrects. The correction lands, and
+    // its scroll event arrives, 6 frames later; until then the measurement still reads the
+    // pre-correction offset, which used to look like a correction that changed nothing.
+    const landedAt = ANCHOR_CORRECTION_START_FRAME + 6;
+    const rerun = run(
+      frame => (frame >= landedAt ? {error: 0, target: 400} : {error: 200, target: 400}),
+      8,
+      frame => (frame >= landedAt ? 1 : 0),
+    );
+    const last = rerun[rerun.length - 1];
+    expect(last.ready).toBe(true);
+    expect(last.watchdog).toBe(false);
+    expect(rerun.filter(step => step.scrollTo !== undefined).length).toBe(1);
+    expect(last.state.settledFrames).toBe(ANCHOR_SETTLED_FRAMES);
+  });
+
+  it('measures anyway once the wait for a scroll event runs out', () => {
+    const steps = run(
+      () => ({error: 200, target: 400}),
+      16,
+      () => 0,
+    );
+    const correctionIndex = steps.findIndex(step => step.scrollTo !== undefined);
+    const nextMeasured = steps.findIndex((step, index) => index > correctionIndex && step.measured);
+    expect(nextMeasured - correctionIndex).toBe(ANCHOR_SCROLL_EVENT_MAX_FRAMES);
+    expect(steps[steps.length - 1].ready).toBe(true);
   });
 
   it('gives up waiting when a correction did not change the error', () => {

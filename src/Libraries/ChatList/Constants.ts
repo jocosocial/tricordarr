@@ -6,6 +6,8 @@
  * pixel tolerance), or a watchdog: a backstop in milliseconds that should never fire on a correct
  * path and logs a warning when it does. Do not add a delay or a frame count that something has to
  * wait out; find the event it stands in for and listen to that instead.
+ *
+ * One deliberate exception: `ANCHOR_CORRECTION_START_FRAME` (see its comment for why it is safe).
  */
 
 /**
@@ -63,11 +65,29 @@ export const END_PIN_MS = 2000;
  */
 export const BUTTON_SCROLL_MAX_RETRIES = 3;
 
-/** Frames after onLoad before correcting an index anchor; FlashList's initial scroll settles within ~100ms. */
+/**
+ * Frames after onLoad before the ready check first measures the anchor. A deliberate exception to the
+ * no-frame-count rule above: it saves measuring while layout is still estimated, and correctness does
+ * not depend on it.
+ *
+ * FlashList re-applies `initialScrollIndex` on every commit for 100ms after first layout
+ * (`applyInitialScrollIndex` in `useRecyclerViewController.tsx`), which FlashList exposes no event
+ * for. On a 120Hz display nine frames is 75ms, so the first correction can land inside that window.
+ * That is harmless: FlashList scrolls to `layout.y + viewOffset + firstItemOffset`, the same target
+ * `computeAnchorError` corrects to, so both scrolls go to one place. At worst it spends one of
+ * `ANCHOR_MAX_CORRECTIONS`. The overshoot this window once caused came from `scrollToIndex`'s own
+ * timers, which the check no longer uses.
+ */
 export const ANCHOR_CORRECTION_START_FRAME = 9;
 
-/** Frames to wait after a corrective scroll before measuring again, so the scroll event has landed. */
-export const ANCHOR_CORRECTION_WAIT_FRAMES = 3;
+/**
+ * Bound on frames the ready check waits for the scroll event of its own correction before measuring
+ * anyway. Measuring before that event reads the pre-correction offset, which looks like a correction
+ * that changed nothing and reveals the list early. A correction that moves the list always fires a
+ * scroll event; one that cannot (the measurement does not track the scroll) never does, so this only
+ * bounds that case. Not a delay: the check measures on the first frame after the event.
+ */
+export const ANCHOR_SCROLL_EVENT_MAX_FRAMES = 20;
 
 /** Pixels an index anchor may be off its target and still count as positioned. */
 export const ANCHOR_TOLERANCE = 8;

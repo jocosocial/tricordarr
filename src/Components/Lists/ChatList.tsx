@@ -82,9 +82,9 @@ interface ChatListProps<TItem> {
  * posts, scrolling to the user's own posts, and the floating scroll buttons.
  *
  * Not used directly by screens; domain wrappers (`FezConversationListV2`, `ForumConversationListV2`)
- * supply `renderItem`, dividers, and the anchor. Parent screens hold `readyToShow` state, render an
- * opaque overlay until `onReadyToShow` fires, and remount the list via `key` when the anchor index
- * becomes known (see `FezChatScreen`).
+ * supply `renderItem`, dividers, and the anchor. Parent screens remount the list via `key` when the
+ * anchor index becomes known, and render an opaque overlay until the instance with the current `key`
+ * fires `onReadyToShow`, so a remount is hidden too (see `FezChatScreen`).
  *
  * Each workaround lives in a concern hook under `src/Hooks/ChatList/`, and its decisions, with the
  * reasons for them, in `src/Libraries/ChatList/`. The hooks report what they see to one scroll
@@ -146,7 +146,7 @@ export const ChatList = <TItem,>({
       autoscrollToBottomThreshold: effectiveFollowTail && !hasNextPage ? AUTOSCROLL_TO_BOTTOM_THRESHOLD : undefined,
       animateAutoScrollToBottom: true,
       // Local FlashList patch, opt-in so other lists keep stock behaviour: loading an older page
-      // keeps the posts on screen mounted and still. See docs/Code Notes.md and docs/Dependencies.md.
+      // keeps the posts on screen mounted and still. See docs/ChatList/README.md and docs/Dependencies.md.
       anchorThroughDataUpdates: true,
     }),
     [anchorsToEnd, effectiveFollowTail, hasNextPage],
@@ -208,6 +208,32 @@ export const ChatList = <TItem,>({
     [commonStyles.paddingBottomSmall, lastIndex, renderItem],
   );
 
+  // The stack renders top to bottom, so up stays above down regardless of which direction is
+  // primary.
+  const scrollButtonActions =
+    scrollButtonDirection === 'up'
+      ? [
+          {testID: 'conversationListScroll-button', icon: AppIcons.scrollUp, onPress: onPrimaryPress},
+          {
+            testID: 'conversationListSecondaryScroll-button',
+            icon: AppIcons.scrollDown,
+            onPress: onSecondaryPress,
+          },
+        ]
+      : [
+          {
+            testID: 'conversationListSecondaryScroll-button',
+            icon: AppIcons.scrollUp,
+            onPress: onSecondaryPress,
+            disabled: atTop,
+          },
+          {
+            testID: 'conversationListScroll-button',
+            icon: AppIcons.scrollDown,
+            onPress: onPrimaryPress,
+          },
+        ];
+
   return (
     <View style={commonStyles.flex} onLayout={onContainerLayout}>
       <FlashList<TItem>
@@ -239,34 +265,7 @@ export const ChatList = <TItem,>({
         scrollsToTop={false}
       />
       {effectiveScrollButton && scrollButtonDirection !== null && (
-        // The stack renders top to bottom, so up stays above down regardless of
-        // which direction is primary.
-        <FloatingScrollButtonsView
-          actions={
-            scrollButtonDirection === 'up'
-              ? [
-                  {testID: 'conversationListScroll-button', icon: AppIcons.scrollUp, onPress: onPrimaryPress},
-                  {
-                    testID: 'conversationListSecondaryScroll-button',
-                    icon: AppIcons.scrollDown,
-                    onPress: onSecondaryPress,
-                  },
-                ]
-              : [
-                  {
-                    testID: 'conversationListSecondaryScroll-button',
-                    icon: AppIcons.scrollUp,
-                    onPress: onSecondaryPress,
-                    disabled: atTop,
-                  },
-                  {
-                    testID: 'conversationListScroll-button',
-                    icon: AppIcons.scrollDown,
-                    onPress: onPrimaryPress,
-                  },
-                ]
-          }
-        />
+        <FloatingScrollButtonsView actions={scrollButtonActions} />
       )}
     </View>
   );

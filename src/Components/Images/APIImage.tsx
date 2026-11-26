@@ -1,7 +1,7 @@
 import FastImage, {ImageStyle as FastImageStyle, OnErrorEvent, OnProgressEvent} from '@d11/react-native-fast-image';
 import {type Source as FastImageSource} from '@d11/react-native-fast-image';
 import React from 'react';
-import {useCallback, useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   type ImageStyle as RNImageStyle,
@@ -32,6 +32,28 @@ import {createLogger} from '#src/Libraries/Logger';
 import {APIImageSizePaths, AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 const logger = createLogger('APIImage.tsx');
+
+const staticStyles = StyleSheet.create({
+  fill: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  imageContainer: {
+    position: 'relative',
+  },
+  imageDebugIcon: {
+    position: 'absolute',
+    top: 4,
+    left: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 12,
+    padding: 4,
+    zIndex: 1,
+  },
+});
 
 interface APIImageV2Props {
   path: string;
@@ -99,57 +121,45 @@ export const APIImage = ({
   const {openLightbox} = useLightboxControls();
   const thumbRef = useAnimatedRef<View>();
 
-  const styles = StyleSheet.create({
-    disabledCard: {
-      ...commonStyles.marginVerticalSmall,
-    },
-    image: {
-      ...commonStyles.headerImage,
-      ...style,
-    },
-    loadingCard: {
-      ...commonStyles.marginVerticalSmall,
-    },
-    imageContainer: {
-      position: 'relative',
-    },
-    imageLoadingOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      ...commonStyles.justifyCenter,
-      ...commonStyles.alignItemsCenter,
-    },
-    imageDebugIcon: {
-      position: 'absolute',
-      top: 4,
-      left: 4,
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      borderRadius: 12,
-      padding: 4,
-      zIndex: 1,
-    },
-    cardCover: {
-      height: 195,
-      ...commonStyles.fullWidth,
-      ...commonStyles.roundedBorderCard,
-      overflow: 'hidden',
-    },
-    framedDisabled: {
-      ...StyleSheet.absoluteFill,
-      ...commonStyles.justifyCenter,
-      ...commonStyles.alignItemsCenter,
-      ...commonStyles.roundedBorderCard,
-      backgroundColor: theme.colors.surfaceVariant,
-    },
-    avatar: {
-      width: avatarSize,
-      height: avatarSize,
-      borderRadius: avatarSize / 2,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        disabledCard: {
+          ...commonStyles.marginVerticalSmall,
+        },
+        image: {
+          ...commonStyles.headerImage,
+          ...style,
+        },
+        loadingCard: {
+          ...commonStyles.marginVerticalSmall,
+        },
+        imageLoadingOverlay: {
+          ...staticStyles.fill,
+          ...commonStyles.justifyCenter,
+          ...commonStyles.alignItemsCenter,
+        },
+        cardCover: {
+          height: 195,
+          ...commonStyles.fullWidth,
+          ...commonStyles.roundedBorderCard,
+          overflow: 'hidden',
+        },
+        framedDisabled: {
+          ...StyleSheet.absoluteFill,
+          ...commonStyles.justifyCenter,
+          ...commonStyles.alignItemsCenter,
+          ...commonStyles.roundedBorderCard,
+          backgroundColor: theme.colors.surfaceVariant,
+        },
+        avatar: {
+          width: avatarSize,
+          height: avatarSize,
+          borderRadius: avatarSize / 2,
+        },
+      }),
+    [avatarSize, commonStyles, style, theme.colors.surfaceVariant],
+  );
 
   /**
    * Render cached hits from the local file path so FastImage does not revalidate the original
@@ -366,13 +376,17 @@ export const APIImage = ({
 
   const isThumbnail = imageSource?.uri === imageSourceMetadata.thumbURI;
   const fillStyle = mode === 'framedimage' ? StyleSheet.absoluteFill : undefined;
+  // scaledimage and framedimage have their own placeholder + spinner. Avatars are excluded on
+  // purpose: they are small, usually cached, and appear dozens at a time in chat and forum lists,
+  // where a spinner per row is noise, not feedback.
+  const showLoadingOverlay = isImageLoading && (mode === 'image' || mode === 'cardcover');
 
   // A custom onPress skips opening the lightbox so callers can own the gallery
   // (ContentPostImages) or disable it. disableTouch is how AvatarImage opts out.
   return (
     <View style={fillStyle}>
       <TouchableOpacity style={fillStyle} disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
-        <View ref={thumbRef} collapsable={false} style={fillStyle ?? styles.imageContainer}>
+        <View ref={thumbRef} collapsable={false} style={fillStyle ?? staticStyles.imageContainer}>
           {mode === 'cardcover' && (
             <FastImage
               resizeMode={'cover'}
@@ -420,16 +434,13 @@ export const APIImage = ({
               onProgress={onProgress}
             />
           )}
-          {/* scaledimage and framedimage have their own placeholder + spinner. Avatars are
-              excluded on purpose: they are small, usually cached, and appear dozens at a
-              time in chat and forum lists, where a spinner per row is noise, not feedback. */}
-          {isImageLoading && (mode === 'image' || mode === 'cardcover') && (
+          {showLoadingOverlay && (
             <View style={styles.imageLoadingOverlay} pointerEvents={'none'}>
               <ActivityIndicator />
             </View>
           )}
           {appConfig.enableDeveloperOptions && mode !== 'avatar' && (
-            <View style={styles.imageDebugIcon}>
+            <View style={staticStyles.imageDebugIcon}>
               <AppIcon
                 icon={isThumbnail ? AppIcons.thumbnail : staticSize === 'identicon' ? AppIcons.user : AppIcons.full}
                 small={true}

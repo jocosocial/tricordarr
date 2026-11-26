@@ -22,7 +22,9 @@ export type ForumReadState = Pick<ForumListData, 'readCount' | 'postCount'>;
  *
  * Only the page requested without an explicit `start` counts: the server picked that page from the
  * user's read marker and reported the read count from before it moved the marker. Every later page
- * reports a count its own earlier fetches already advanced. Undefined until that page is loaded.
+ * reports a count its own earlier fetches already advanced. Undefined until that page is loaded, and
+ * when the server does not report a read count (one without swiftarr#688), so the thread opens as
+ * if it had no read state instead of computing a NaN index.
  *
  * @param data The thread's infinite query data.
  */
@@ -32,7 +34,7 @@ export const getForumThreadReadState = (data: InfiniteData<ForumData> | undefine
   }
   const index = data.pageParams.findIndex(param => (param as PaginationQueryParams | undefined)?.start === undefined);
   const page = index >= 0 ? data.pages[index] : undefined;
-  return page ? {readCount: page.readCount, postCount: page.paginator.total} : undefined;
+  return page?.readCount !== undefined ? {readCount: page.readCount, postCount: page.paginator.total} : undefined;
 };
 
 /**

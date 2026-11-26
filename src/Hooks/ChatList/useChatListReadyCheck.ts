@@ -138,6 +138,7 @@ export const useChatListReadyCheck = <TItem>({
               : resolveAnchorIndex(dataRef.current, keyExtractor, anchorKey, anchorIndex),
           ),
         now - firstFrameAt,
+        arbiter.getScrollEventCount(),
       );
       state = step.state;
       if (step.scrollTo !== undefined) {

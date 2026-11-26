@@ -23,7 +23,10 @@ interface UseChatListPageFillProps<TItem> {
 /**
  * Loads pages into ChatList when scroll events cannot: a list too short to scroll gets none, so
  * FlashList's onStartReached/onEndReached never fire. Checks once the list is ready and after each
- * page, re-checking with a doubling delay in case a load fails or a refetch cancels it. Why it reads
+ * page. While a check still finds a page to load (or cannot measure yet) it re-checks with a doubling
+ * delay, in case the load fails or a refetch cancels it. Once a check finds nothing to load it stops:
+ * the list is away from both edges, so scroll events and FlashList's reached callbacks take over, and
+ * the next page that lands starts a new round. Why it reads
  * FlashList's tracked offset and not the last scroll event is in `src/Libraries/ChatList/Pagination.ts`.
  *
  * The handlers are read from refs: they change identity around every fetch, and restarting the check
@@ -58,14 +61,17 @@ export const useChatListPageFill = <TItem>({
       return;
     }
     let delay = PAGE_FILL_DELAY_MS;
+    let isFirstCheck = true;
     let timer: ReturnType<typeof setTimeout>;
     const check = () => {
+      // Unmeasured counts as "still something to do", so a check that runs before layout retries.
+      let wantsPage = true;
       const list = listRef.current;
       const endOffset = arbiter.getEndOffset();
       if (list && endOffset !== undefined) {
         const viewportHeight = list.getWindowSize().height;
         const offset = Math.min(list.getAbsoluteLastScrollOffset(), endOffset);
-        if (delay === PAGE_FILL_DELAY_MS && arbiter.scrollMetrics.current) {
+        if (isFirstCheck && arbiter.scrollMetrics.current) {
           arbiter.scrollMetrics.current = {...arbiter.scrollMetrics.current, offset};
           applyAtTop(offset);
           applyScrollButtonDirection();
@@ -78,6 +84,7 @@ export const useChatListPageFill = <TItem>({
           hasNextPage,
           anchorsToEnd,
         });
+        wantsPage = action.load !== null;
         if (action.load === 'previous') {
           arbiter.dispatch({type: 'loadPrevious', pinEndOnFill: action.pinEndOnFill});
           handleLoadPreviousRef.current?.();
@@ -85,7 +92,8 @@ export const useChatListPageFill = <TItem>({
           handleLoadNextRef.current?.();
         }
       }
-      if (hasPreviousPage || hasNextPage) {
+      isFirstCheck = false;
+      if (wantsPage && (hasPreviousPage || hasNextPage)) {
         delay = nextPageFillDelay(delay);
         timer = setTimeout(check, delay);
       }

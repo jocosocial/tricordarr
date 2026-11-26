@@ -858,7 +858,8 @@ export interface ForumData {
   /// definition as `ForumListData.readCount`, so `readCount - paginator.start` is the index of the
   /// first unread post within `posts`. Only the response to a request without an explicit `start`
   /// reflects where the user was when they opened the thread; every fetch moves the read marker.
-  readCount: number;
+  /// Absent from servers without jocosocial/swiftarr#688.
+  readCount?: number;
 }
 
 export interface PostData {

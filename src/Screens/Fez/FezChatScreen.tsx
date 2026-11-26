@@ -356,16 +356,13 @@ const FezChatScreenInner = ({route}: Props) => {
   // 20260308 The query now refetches on mount by default, so there is no effect here to reload when the
   // user taps a Seamail notification while this screen is active in the background.
 
-  const [readyToShow, setReadyToShow] = useState(false);
+  // Key of the list instance that reported ready. A remount via `listKey` yields a new key, so the
+  // overlay comes back until the new instance is at its initial position.
+  const [readyListKey, setReadyListKey] = useState<string>();
   const {commonStyles} = useStyles();
   const {theme} = useAppTheme();
 
   const keyboardVerticalOffset = useKeyboardVerticalOffset();
-
-  const onReadyToShow = useCallback(() => {
-    logger.debug('Fez chat list ready to show');
-    setReadyToShow(true);
-  }, []);
 
   // Frozen once computable so later page loads and reads don't move the anchor; the list is
   // remounted via `key` when the index first becomes known, because FlashList only honors its
@@ -377,6 +374,37 @@ const FezChatScreenInner = ({route}: Props) => {
   );
   const initialScrollIndex = frozenScrollIndex ?? computedScrollIndex;
 
+  const listKey = `${fez?.fezID ?? 'fez'}-${initialScrollIndex ?? 'bottom'}`;
+  const readyToShow = readyListKey === listKey;
+
+  /** Marks the currently mounted list instance as ready, hiding the overlay. */
+  const onReadyToShow = useCallback(() => {
+    logger.debug('Fez chat list ready to show');
+    setReadyListKey(listKey);
+  }, [listKey]);
+
+  const overlayStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        overlay: {
+          ...commonStyles.positionAbsolute,
+          ...commonStyles.flex,
+          ...commonStyles.justifyCenter,
+          ...commonStyles.alignItemsCenter,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: theme.colors.background,
+          zIndex: 1,
+        },
+        keyboardView: {
+          ...commonStyles.flex,
+        },
+      }),
+    [commonStyles, theme.colors.background],
+  );
+
   // This is kinda hax for the fezPostData below
   if (!fez) {
     return (
@@ -385,26 +413,6 @@ const FezChatScreenInner = ({route}: Props) => {
       </AppView>
     );
   }
-
-  const listKey = `${fez.fezID}-${initialScrollIndex ?? 'bottom'}`;
-
-  const overlayStyles = StyleSheet.create({
-    overlay: {
-      ...commonStyles.positionAbsolute,
-      ...commonStyles.flex,
-      ...commonStyles.justifyCenter,
-      ...commonStyles.alignItemsCenter,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: theme.colors.background,
-      zIndex: 1,
-    },
-    keyboardView: {
-      ...commonStyles.flex,
-    },
-  });
 
   return (
     <AppView>

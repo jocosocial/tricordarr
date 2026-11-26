@@ -18,8 +18,8 @@
 
 import {
   ANCHOR_CORRECTION_START_FRAME,
-  ANCHOR_CORRECTION_WAIT_FRAMES,
   ANCHOR_MAX_CORRECTIONS,
+  ANCHOR_SCROLL_EVENT_MAX_FRAMES,
   ANCHOR_SETTLED_FRAMES,
   ANCHOR_TOLERANCE,
   READY_WATCHDOG_FRAMES,
@@ -102,8 +102,15 @@ export interface ReadyCheckState {
   corrections: number;
   /** Consecutive in-tolerance measurements. */
   settledFrames: number;
-  /** First frame at which the anchor is measured again. */
+  /** First frame at which the anchor is measured. */
   nextMeasureFrame: number;
+  /**
+   * While a correction is in flight: the scroll event count when it was issued. The anchor is measured
+   * again once a later scroll event arrives, or at `scrollWaitUntilFrame`.
+   */
+  scrollEventsAtCorrection?: number;
+  /** Last frame of the wait for a correction's scroll event (see `ANCHOR_SCROLL_EVENT_MAX_FRAMES`). */
+  scrollWaitUntilFrame?: number;
   /** Error measured just before the last correction. */
   lastError?: number;
 }
@@ -127,9 +134,9 @@ export interface ReadyCheckStep {
 }
 
 /**
- * One frame of the ready check. `measure` is only called once the wait for FlashList's own initial
- * scroll (or for the last correction to land) has passed, and returns undefined while layout is
- * unavailable.
+ * One frame of the ready check. `measure` is only called from `ANCHOR_CORRECTION_START_FRAME` on, and
+ * after a correction only once a scroll event newer than it has arrived (bounded by
+ * `ANCHOR_SCROLL_EVENT_MAX_FRAMES`). It returns undefined while layout is unavailable.
  *
  * The anchor is positioned after `ANCHOR_SETTLED_FRAMES` consecutive in-tolerance measurements. When
  * a correction did not change the measured error, the list cannot get any closer (the end of the
@@ -140,17 +147,24 @@ export interface ReadyCheckStep {
  * @param state Progress so far (start from `initialReadyCheckState`).
  * @param measure Measures the anchor's current error.
  * @param elapsedMs Time since the check's first frame.
+ * @param scrollEvents Scroll events the list has received so far (any running count).
  */
 export const stepReadyCheck = (
   state: ReadyCheckState,
   measure: () => AnchorError | undefined,
   elapsedMs: number,
+  scrollEvents: number,
 ): ReadyCheckStep => {
   const frames = state.frames + 1;
   let next: ReadyCheckState = {...state, frames};
   let positioned = false;
   let scrollTo: number | undefined;
-  if (frames >= state.nextMeasureFrame) {
+  const awaitingScroll =
+    state.scrollEventsAtCorrection !== undefined &&
+    scrollEvents <= state.scrollEventsAtCorrection &&
+    frames < (state.scrollWaitUntilFrame ?? 0);
+  if (frames >= state.nextMeasureFrame && !awaitingScroll) {
+    next = {...next, scrollEventsAtCorrection: undefined, scrollWaitUntilFrame: undefined};
     const anchorError = measure();
     if (!anchorError) {
       positioned = false;
@@ -166,7 +180,8 @@ export const stepReadyCheck = (
           ...next,
           corrections: state.corrections + 1,
           lastError: anchorError.error,
-          nextMeasureFrame: frames + ANCHOR_CORRECTION_WAIT_FRAMES,
+          scrollEventsAtCorrection: scrollEvents,
+          scrollWaitUntilFrame: frames + ANCHOR_SCROLL_EVENT_MAX_FRAMES,
         };
         scrollTo = anchorError.target;
       }

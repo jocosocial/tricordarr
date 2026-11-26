@@ -25,6 +25,8 @@ export interface ChatListScrollArbiter {
   isReady: () => boolean;
   /** Latest offset, viewport and content height, from onScroll (and patched by the page fill). */
   scrollMetrics: React.RefObject<ScrollMetrics | null>;
+  /** Scroll events dispatched so far, so a caller can tell whether its own scroll has landed. */
+  getScrollEventCount: () => number;
   /** The furthest the list can scroll, from FlashList's own measurements. Undefined before layout. */
   getEndOffset: () => number | undefined;
 }
@@ -38,6 +40,7 @@ export interface ChatListScrollArbiter {
 export const useChatListScrollArbiter = <TItem>(listRef: TChatListRefObject<TItem>): ChatListScrollArbiter => {
   const stateRef = useRef<ScrollArbiterState>(initialScrollArbiterState);
   const scrollMetrics = useRef<ScrollMetrics | null>(null);
+  const scrollEventCount = useRef(0);
   const repinFrame = useRef<number | null>(null);
   const ownItemFrame = useRef<number | null>(null);
 
@@ -111,6 +114,9 @@ export const useChatListScrollArbiter = <TItem>(listRef: TChatListRefObject<TIte
 
     /** Applies an event to the arbiter state and runs the commands it returns. */
     function dispatch(event: ArbiterEvent) {
+      if (event.type === 'scroll') {
+        scrollEventCount.current += 1;
+      }
       const step = reduceScrollArbiter(stateRef.current, event);
       stateRef.current = step.state;
       step.commands.forEach(run);
@@ -120,6 +126,7 @@ export const useChatListScrollArbiter = <TItem>(listRef: TChatListRefObject<TIte
       dispatch,
       isReady: () => stateRef.current.phase === 'settled',
       scrollMetrics,
+      getScrollEventCount: () => scrollEventCount.current,
       getEndOffset,
     };
   }, [getEndOffset, listRef]);
