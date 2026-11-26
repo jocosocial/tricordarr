@@ -3,9 +3,10 @@ import {
   getFallbackEndIndex,
   getFezInitialScrollIndex,
   getForumInitialScrollIndex,
+  getForumThreadReadState,
   getInitialScrollIndex,
 } from '#src/Libraries/ChatList/InitialScroll';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {FezData, ForumData} from '#src/Structs/ControllerStructs';
 
 const fez = (postCount: number, readCount: number, start: number): FezData =>
   ({
@@ -71,6 +72,57 @@ describe('getForumInitialScrollIndex', () => {
   it('returns undefined with nothing loaded', () => {
     expect(getForumInitialScrollIndex(0, 0, undefined)).toBeUndefined();
     expect(getForumInitialScrollIndex(0, 0, undefined, true)).toBeUndefined();
+  });
+});
+
+/** A thread page as the server returns it: `readCount` is the count from before that request. */
+const forumPage = (start: number, total: number, readCount: number): ForumData =>
+  ({forumID: 'forum-1', paginator: {start, limit: 50, total}, posts: [], readCount}) as unknown as ForumData;
+
+describe('getForumThreadReadState', () => {
+  it('reads the page the server chose (no explicit start)', () => {
+    const data = {pages: [forumPage(200, 826, 230)], pageParams: [{start: undefined, limit: 50}]};
+    expect(getForumThreadReadState(data)).toEqual({readCount: 230, postCount: 826});
+  });
+
+  it('ignores pages loaded later, whose fetches already moved the read marker', () => {
+    // An older page was prepended and a newer one appended after the first fetch.
+    const data = {
+      pages: [forumPage(150, 826, 250), forumPage(200, 826, 230), forumPage(250, 826, 300)],
+      pageParams: [
+        {start: 150, limit: 50},
+        {start: undefined, limit: 50},
+        {start: 250, limit: 50},
+      ],
+    };
+    expect(getForumThreadReadState(data)).toEqual({readCount: 230, postCount: 826});
+  });
+
+  it('is undefined without the server-chosen page or without data', () => {
+    expect(
+      getForumThreadReadState({pages: [forumPage(0, 826, 5)], pageParams: [{start: 0, limit: 50}]}),
+    ).toBeUndefined();
+    expect(getForumThreadReadState(undefined)).toBeUndefined();
+  });
+
+  it('reports a never-read thread as 0 and a fully read one as the total', () => {
+    const params = [{start: undefined, limit: 50}];
+    expect(getForumThreadReadState({pages: [forumPage(0, 40, 0)], pageParams: params})).toEqual({
+      readCount: 0,
+      postCount: 40,
+    });
+    expect(getForumThreadReadState({pages: [forumPage(0, 40, 40)], pageParams: params})).toEqual({
+      readCount: 40,
+      postCount: 40,
+    });
+  });
+
+  it('feeds getForumInitialScrollIndex to open at the first unread post', () => {
+    const readState = getForumThreadReadState({
+      pages: [forumPage(200, 826, 230)],
+      pageParams: [{start: undefined, limit: 50}],
+    });
+    expect(getForumInitialScrollIndex(50, 200, readState)).toBe(30);
   });
 });
 

@@ -4,7 +4,36 @@
  * `FezChatScreen`, `ForumThreadScreenBase`).
  */
 
-import {FezData, ForumListData} from '#src/Structs/ControllerStructs';
+import type {InfiniteData} from '@tanstack/react-query';
+
+import type {PaginationQueryParams} from '#src/Queries/Pagination';
+import {FezData, ForumData, ForumListData} from '#src/Structs/ControllerStructs';
+
+/**
+ * How far the user has read in a forum thread: what the "New" divider and the initial position are
+ * computed from. Comes from the forum list entry the thread was opened from, or else from the thread
+ * fetch itself (see `getForumThreadReadState`).
+ */
+export type ForumReadState = Pick<ForumListData, 'readCount' | 'postCount'>;
+
+/**
+ * The read state a thread fetch reports (`ForumData.readCount`, jocosocial/swiftarr#688), for a
+ * thread opened without a forum list entry (a link, an event forum, a moderation screen).
+ *
+ * Only the page requested without an explicit `start` counts: the server picked that page from the
+ * user's read marker and reported the read count from before it moved the marker. Every later page
+ * reports a count its own earlier fetches already advanced. Undefined until that page is loaded.
+ *
+ * @param data The thread's infinite query data.
+ */
+export const getForumThreadReadState = (data: InfiniteData<ForumData> | undefined): ForumReadState | undefined => {
+  if (!data) {
+    return undefined;
+  }
+  const index = data.pageParams.findIndex(param => (param as PaginationQueryParams | undefined)?.start === undefined);
+  const page = index >= 0 ? data.pages[index] : undefined;
+  return page ? {readCount: page.readCount, postCount: page.paginator.total} : undefined;
+};
 
 /**
  * Index of the post a fez chat should open at, within the loaded posts.
@@ -37,19 +66,20 @@ export const getFezInitialScrollIndex = (
  * Index of the post a forum thread should open at, within the loaded posts.
  *
  * `startFromPost` returns the selected post as the first loaded item, so that is index 0. A thread
- * with no list data, or one that is fully read, opens on its last post. Otherwise it opens on the
- * first unread post (`readCount - paginatorStart`), clamped to the loaded range. Returns undefined
- * when nothing is loaded.
+ * with no read state (its first fetch failed) or one that is fully read opens on its last post.
+ * Otherwise it opens on the first unread post
+ * (`readCount - paginatorStart`), clamped to the loaded range. Returns undefined when nothing is
+ * loaded.
  *
  * @param loadedCount Number of posts currently loaded.
  * @param paginatorStart Offset of the first loaded post within the whole thread.
- * @param forumListData Read state from the forum list, when the thread was opened from it.
+ * @param readState How far the user had read (see `ForumReadState`).
  * @param startFromPost True when the thread was opened from a specific post.
  */
 export const getForumInitialScrollIndex = (
   loadedCount: number,
   paginatorStart: number,
-  forumListData?: Pick<ForumListData, 'readCount' | 'postCount'>,
+  readState?: ForumReadState,
   startFromPost?: boolean,
 ): number | undefined => {
   if (loadedCount <= 0) {
@@ -58,10 +88,10 @@ export const getForumInitialScrollIndex = (
   if (startFromPost) {
     return 0;
   }
-  if (!forumListData || forumListData.readCount === forumListData.postCount) {
+  if (!readState || readState.readCount === readState.postCount) {
     return loadedCount - 1;
   }
-  return Math.min(Math.max(forumListData.readCount - paginatorStart, 0), loadedCount - 1);
+  return Math.min(Math.max(readState.readCount - paginatorStart, 0), loadedCount - 1);
 };
 
 /**

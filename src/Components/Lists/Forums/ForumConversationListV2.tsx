@@ -11,7 +11,8 @@ import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostList
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSession} from '#src/Context/Contexts/SessionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
+import type {ForumReadState} from '#src/Libraries/ChatList/InitialScroll';
+import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumConversationListV2Props {
   postList: PostData[];
@@ -24,7 +25,11 @@ interface ForumConversationListV2Props {
   enableShowInThread?: boolean;
   listRef: TChatListRefObject<PostData>;
   getListHeader?: () => React.JSX.Element;
-  forumListData?: ForumListData;
+  /**
+   * How far the user had read, from the forum list entry or the thread fetch (see `ForumReadState`).
+   * Without it the thread is treated as fully read.
+   */
+  readState?: ForumReadState;
   initialScrollIndex?: number;
   /** Callback fired once the list has reached its initial scroll position. */
   onReadyToShow?: () => void;
@@ -49,7 +54,7 @@ export const ForumConversationListV2 = ({
   enableShowInThread,
   listRef,
   getListHeader,
-  forumListData,
+  readState,
   hasNextPage,
   initialScrollIndex,
   onReadyToShow,
@@ -60,35 +65,31 @@ export const ForumConversationListV2 = ({
   const {hasModerator} = usePrivilege();
 
   // The thread is fully read when readCount equals postCount. A thread opened
-  // from a specific post has no forumListData, which would otherwise look fully
+  // from a specific post has no read state, which would otherwise look fully
   // read and pin the list to the last item — hiding the startPost.
-  const isFullyRead = startFromPost
-    ? false
-    : forumListData
-      ? forumListData.readCount === forumListData.postCount
-      : true;
+  const isFullyRead = startFromPost ? false : readState ? readState.readCount === readState.postCount : true;
 
   // Compute the divider index for the scroll button. Only set when the divider
   // is within the loaded data range.
   const newDividerIndex = useMemo(() => {
-    if (!forumListData || !forumData) return undefined;
-    if (forumListData.postCount === forumListData.readCount) return undefined;
-    const idx = forumListData.readCount - forumData.paginator.start;
+    if (!readState || !forumData) return undefined;
+    if (readState.postCount === readState.readCount) return undefined;
+    const idx = readState.readCount - forumData.paginator.start;
     return idx >= 0 && idx < postList.length ? idx : undefined;
-  }, [forumData, forumListData, postList.length]);
+  }, [forumData, readState, postList.length]);
 
   const showNewDivider = useCallback(
     (index: number) => {
-      if (forumListData && forumData) {
-        if (forumListData.postCount === forumListData.readCount) {
+      if (readState && forumData) {
+        if (readState.postCount === readState.readCount) {
           return false;
         }
         const loadedStartIndex = forumData.paginator.start;
-        return forumListData.readCount - loadedStartIndex === index;
+        return readState.readCount - loadedStartIndex === index;
       }
       return false;
     },
-    [forumData, forumListData],
+    [forumData, readState],
   );
 
   const renderItem = useCallback(

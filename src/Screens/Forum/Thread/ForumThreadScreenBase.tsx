@@ -40,7 +40,7 @@ import {usePagination} from '#src/Hooks/usePagination';
 import {useRefresh} from '#src/Hooks/useRefresh';
 import {useScrollToTopIntent} from '#src/Hooks/useScrollToTopIntent';
 import {paginatedHighWaterMark} from '#src/Libraries/CacheReduction';
-import {getForumInitialScrollIndex} from '#src/Libraries/ChatList/InitialScroll';
+import {type ForumReadState, getForumInitialScrollIndex} from '#src/Libraries/ChatList/InitialScroll';
 import {createLogger} from '#src/Libraries/Logger';
 import {cancelSecondaryNotifications} from '#src/Libraries/Notifications/Content';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/Stacks/Common/CommonStackComponents';
@@ -49,7 +49,7 @@ import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations'
 import {useForumMarkReadMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {useForumThreadPinnedPostsQuery} from '#src/Queries/Forum/ForumThreadQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {ForumData, ForumListData, PostContentData, PostData} from '#src/Structs/ControllerStructs';
+import {ForumData, PostContentData, PostData} from '#src/Structs/ControllerStructs';
 
 const logger = createLogger('ForumThreadScreenBase.tsx');
 
@@ -64,7 +64,12 @@ interface Props {
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
   getListHeader?: () => React.JSX.Element;
-  forumListData?: ForumListData;
+  /**
+   * How far the user had read: from the forum list entry the thread was opened from, else from the
+   * thread fetch (see `ForumReadState`). Undefined when neither is available, which is treated as
+   * fully read.
+   */
+  readState?: ForumReadState;
   /**
    * Unmasked title from a moderation View in Context. Public thread
    * payloads replace quarantined titles with placeholder copy.
@@ -73,7 +78,7 @@ interface Props {
   initialElevation?: keyof typeof PrivilegedUserAccounts;
   /**
    * True when this thread was opened from a specific post. `startPost` returns that
-   * post as the first item, so we must not treat a missing forumListData as fully-read
+   * post as the first item, so we must not treat a missing readState as fully-read
    * and scroll to the end.
    */
   startFromPost?: boolean;
@@ -104,7 +109,7 @@ const ForumThreadScreenBaseInner = ({
   hasNextPage,
   hasPreviousPage,
   getListHeader,
-  forumListData,
+  readState,
   titleOverride,
   startFromPost,
 }: Props) => {
@@ -153,16 +158,16 @@ const ForumThreadScreenBaseInner = ({
       );
       const serverPostCount = forumData.paginator.total;
       if (
-        forumListData &&
-        forumListData.readCount === forumListData.postCount &&
-        forumListData.postCount >= serverPostCount &&
-        forumListData.readCount >= fetchedUpTo
+        readState &&
+        readState.readCount === readState.postCount &&
+        readState.postCount >= serverPostCount &&
+        readState.readCount >= fetchedUpTo
       ) {
         return;
       }
       markRead(forumData.forumID, forumData.categoryID, fetchedUpTo, serverPostCount);
     }
-  }, [forumData, forumListData, markRead, data]);
+  }, [forumData, readState, markRead, data]);
 
   // Viewing the thread dismisses any displayed mention/alertword notifications for it, like opening a seamail does.
   const forumID = forumData?.forumID;
@@ -285,7 +290,7 @@ const ForumThreadScreenBaseInner = ({
   // every render, but only once loading has finished, as before.
   const isLoaded = !!data && !isLoading && !isLoadingFavorites;
   const computedScrollIndex = isLoaded
-    ? getForumInitialScrollIndex(forumPosts.length, forumData?.paginator.start ?? 0, forumListData, startFromPost)
+    ? getForumInitialScrollIndex(forumPosts.length, forumData?.paginator.start ?? 0, readState, startFromPost)
     : undefined;
   const frozenScrollIndex = useFirstDefined(computedScrollIndex);
   const initialScrollIndex = frozenScrollIndex ?? computedScrollIndex;
@@ -346,7 +351,7 @@ const ForumThreadScreenBaseInner = ({
               getListHeader={getListHeader}
               listRef={flatListRef}
               hasNextPage={hasNextPage}
-              forumListData={forumListData}
+              readState={readState}
               initialScrollIndex={initialScrollIndex}
               onReadyToShow={onReadyToShow}
               startFromPost={startFromPost}

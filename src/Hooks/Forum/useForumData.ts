@@ -1,6 +1,7 @@
 import {InfiniteData} from '@tanstack/react-query';
 import {useMemo} from 'react';
 
+import {getForumThreadReadState} from '#src/Libraries/ChatList/InitialScroll';
 import {ForumData} from '#src/Structs/ControllerStructs';
 
 /**
@@ -8,6 +9,7 @@ import {ForumData} from '#src/Structs/ControllerStructs';
  * React Query's infinite query. Metadata comes from the first page; posts
  * are flattened across all pages. `paginator.total` is the max across pages
  * so a later page's server total is not hidden by a stale first page.
+ * `readCount` is the server-chosen page's (see `getForumThreadReadState`).
  *
  * This is pure derivation -- no state, no copy, no sync. It recomputes only
  * when the React Query `data` reference changes.
@@ -48,6 +50,9 @@ export const useForumData = (data: InfiniteData<ForumData> | undefined): ForumDa
         limit: posts.length,
       },
       posts,
+      // Each page reports the read count from before its own fetch; the merged view uses the one
+      // from the page the server chose, which is where the user was when the thread opened.
+      readCount: getForumThreadReadState(data)?.readCount ?? firstPage.readCount,
     };
   }, [data]);
 };
