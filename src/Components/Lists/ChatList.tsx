@@ -59,6 +59,15 @@ const AT_BOTTOM_EPSILON = 50;
  */
 const END_PIN_MS = 2000;
 
+/**
+ * After a scroll button press, how long a scroll that ended short of its edge is sent again. Bounded,
+ * so a stale target cannot move the list long after the press; a touch on the list ends it early.
+ */
+const BUTTON_SCROLL_WINDOW_MS = 2000;
+
+/** Upper bound on repeated scrolls for one scroll button press. */
+const BUTTON_SCROLL_MAX_RETRIES = 3;
+
 /** Momentum beginning within this long of a drag ending is the user's fling, not a programmatic scroll. */
 const FLING_AFTER_DRAG_MS = 100;
 
@@ -87,6 +96,16 @@ const KEYBOARD_SETTLE_DELAYS_MS = [100, 300, 700];
 const DIVIDER_VIEW_POSITION = 0.1;
 
 type ScrollButtonDirection = 'up' | 'down' | null;
+
+/** The list edge a scroll button sends the list to. */
+type ButtonScrollEdge = 'top' | 'end';
+
+interface ButtonScrollTarget {
+  edge: ButtonScrollEdge;
+  /** Time (ms) after which a short landing is left alone. */
+  until: number;
+  retries: number;
+}
 
 interface ScrollMetrics {
   offset: number;
@@ -217,6 +236,11 @@ export const ChatList = <TItem,>({
   // Until this time (ms), content growth while the list sits at the end re-pins the end. Set by the
   // scroll-to-bottom buttons and the page fill; cleared by a user drag.
   const endPinUntilRef = useRef(0);
+  // The edge a scroll button sent the list to, until the list reaches it. On Android, an animated
+  // scroll is cancelled wherever it is when the native maintainVisibleContentPosition shifts the
+  // offset (FlashList's correction as a cell measures or a page arrives). Right after a fling that
+  // happens often, and the button then seemed only to stop the fling. Cleared by a touch on the list.
+  const buttonTargetRef = useRef<ButtonScrollTarget | null>(null);
   // Set when an older page is loaded into an end-anchored list that does not fill the viewport yet.
   // Such a list is bottom-aligned by a FlashList margin that goes away as it fills, which FlashList's
   // position correction does not count, so the end is pinned once the content outgrows the viewport.
@@ -566,6 +590,15 @@ export const ChatList = <TItem,>({
       const distanceFromBottom = contentSize.height - layoutMeasurement.height - contentOffset.y;
       isNearBottomRef.current = distanceFromBottom <= styleDefaults.listScrollThreshold;
       applyAtTop(contentOffset.y);
+      const buttonTarget = buttonTargetRef.current;
+      if (
+        buttonTarget &&
+        (buttonTarget.edge === 'top'
+          ? contentOffset.y <= styleDefaults.marginSize
+          : distanceFromBottom <= AT_BOTTOM_EPSILON)
+      ) {
+        buttonTargetRef.current = null;
+      }
 
       // FlashList's onStartReached stops firing after a few prepends that add less than a threshold of
       // content (Shopify/flash-list#1785), so also load older posts directly when near the top. The
@@ -582,7 +615,14 @@ export const ChatList = <TItem,>({
 
       applyScrollButtonDirection();
     },
-    [applyAtTop, applyScrollButtonDirection, handleLoadPrevious, hasPreviousPage, styleDefaults.listScrollThreshold],
+    [
+      applyAtTop,
+      applyScrollButtonDirection,
+      handleLoadPrevious,
+      hasPreviousPage,
+      styleDefaults.listScrollThreshold,
+      styleDefaults.marginSize,
+    ],
   );
 
   // FlashList's onStartReached/onEndReached and the nudge in onScroll all depend on scroll events. A
@@ -652,22 +692,39 @@ export const ChatList = <TItem,>({
     listRef.current?.scrollToEnd({animated: true});
   }, [listRef]);
 
+  /** Animates to a list edge for a button press. */
+  const scrollToButtonEdge = useCallback(
+    (edge: ButtonScrollEdge) => {
+      if (edge === 'end') {
+        scrollToEndFromButton();
+      } else {
+        listRef.current?.scrollToOffset({offset: 0, animated: true});
+      }
+    },
+    [listRef, scrollToEndFromButton],
+  );
+
+  /** Scrolls to a list edge for a button press and keeps sending it there until it lands (see buttonTargetRef). */
+  const startButtonScroll = useCallback(
+    (edge: ButtonScrollEdge) => {
+      buttonTargetRef.current = {edge, until: Date.now() + BUTTON_SCROLL_WINDOW_MS, retries: 0};
+      scrollToButtonEdge(edge);
+    },
+    [scrollToButtonEdge],
+  );
+
   const handleScrollButtonPress = useCallback(() => {
     if (newDividerIndex !== undefined) {
       listRef.current?.scrollToIndex({index: newDividerIndex, animated: true, viewPosition: DIVIDER_VIEW_POSITION});
     } else {
-      scrollToEndFromButton();
+      startButtonScroll('end');
     }
-  }, [listRef, newDividerIndex, scrollToEndFromButton]);
+  }, [listRef, newDividerIndex, startButtonScroll]);
 
   /** Secondary button: to the list edge opposite the primary button's direction. */
   const handleSecondaryScrollButtonPress = useCallback(() => {
-    if (scrollButtonDirection === 'up') {
-      scrollToEndFromButton();
-    } else {
-      listRef.current?.scrollToOffset({offset: 0, animated: true});
-    }
-  }, [listRef, scrollButtonDirection, scrollToEndFromButton]);
+    startButtonScroll(scrollButtonDirection === 'up' ? 'end' : 'top');
+  }, [scrollButtonDirection, startButtonScroll]);
 
   /** Scrolls to the end on the next frame, replacing any pending re-pin. */
   const scheduleRepin = useCallback(() => {
@@ -762,6 +819,14 @@ export const ChatList = <TItem,>({
     cancelRepins();
   }, [cancelRepins]);
 
+  /**
+   * Any touch on the list hands it back to the user. Touching it stops an animated scroll on Android,
+   * and onMomentumEnd must not take that for a cancelled button scroll and send it again.
+   */
+  const onListTouchStart = useCallback(() => {
+    buttonTargetRef.current = null;
+  }, []);
+
   /** A user drag has ended; a fling may follow (see onMomentumBegin). */
   const onUserScrollEnd = useCallback(() => {
     userScrollingRef.current = false;
@@ -775,10 +840,22 @@ export const ChatList = <TItem,>({
     }
   }, []);
 
-  /** A fling (or programmatic momentum) has ended. */
+  /**
+   * A fling (or programmatic momentum) has ended. A button scroll that ended short of its edge (onScroll
+   * clears the target once it lands) was cancelled on the way, so it is sent again.
+   */
   const onMomentumEnd = useCallback(() => {
+    const buttonTarget = buttonTargetRef.current;
+    if (buttonTarget) {
+      if (Date.now() > buttonTarget.until || buttonTarget.retries >= BUTTON_SCROLL_MAX_RETRIES) {
+        buttonTargetRef.current = null;
+      } else {
+        buttonTarget.retries += 1;
+        scrollToButtonEdge(buttonTarget.edge);
+      }
+    }
     userScrollingRef.current = false;
-  }, []);
+  }, [scrollToButtonEdge]);
 
   // Near-bottom is snapshotted when the keyboard starts moving (scroll events during the resize can
   // briefly report the user as far from the bottom). react-native-keyboard-controller's
@@ -858,6 +935,7 @@ export const ChatList = <TItem,>({
         onEndReached={handleLoadNext}
         onScroll={onScroll}
         onContentSizeChange={onContentSizeChange}
+        onTouchStart={onListTouchStart}
         onScrollBeginDrag={onUserScrollStart}
         onScrollEndDrag={onUserScrollEnd}
         onMomentumScrollBegin={onMomentumBegin}
